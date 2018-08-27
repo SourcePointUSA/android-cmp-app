@@ -120,8 +120,8 @@ public class ConsentLib {
 
     public String msgJSON = null;
     public Integer choiceType = null;
-    public String euconsent;
-    public String consentUUID;
+    public String euconsent = null;
+    public String consentUUID = null;
 
     private ConsentLib(Builder b) {
         Log.i(TAG, "Instantiating consent lib");
@@ -249,16 +249,15 @@ public class ConsentLib {
 
         @JavascriptInterface
         public void sendConsentData(final String euconsent, final String consentUUID) {
-            consentLib.euconsent = euconsent;
-            consentLib.consentUUID = consentUUID;
-
             SharedPreferences.Editor editor = sharedPref.edit();
 
             if (euconsent != null) {
+                consentLib.euconsent = euconsent;
                 editor.putString(EU_CONSENT_KEY, euconsent);
             }
 
             if (consentUUID != null) {
+                consentLib.consentUUID = consentUUID;
                 editor.putString(CONSENT_UUID_KEY, consentUUID);
             }
 
