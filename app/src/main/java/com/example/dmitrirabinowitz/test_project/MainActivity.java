@@ -27,108 +27,57 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
         setContentView(R.layout.activity_main);
 
-        ConsentLib cLib = new ConsentLib(this);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // use step pattern for building ConsentLib to enforce proper parameters
+        ConsentLib cLib = ConsentLib.newBuilder()
+                // required, must be set first used to render WebView and save consent data
+                .setActivity(this)
+                // required, must be set second used to find scenario
+                .setSiteName("dev.local")
+                // optional, if not provided will render WebView on
+                // Activity.getWindow().getDecorView().findViewById(android.R.id.content)
+                .setViewGroup(null)
+                // optional, used for logging purposes for which page of the app the consent lib was
+                // rendered on
+                .setPage("dialogue")
+                // optional, callback triggered when message data is loaded when called message data
+                // will be available as String at cLib.msgJSON
+                .setOnReceiveMessageData(new ConsentLib.Callback() {
+                    @Override
+                    public void run(ConsentLib c) {
+                        Log.i(TAG, "msgJSON from backend: " + c.msgJSON);
+                    }
+                })
+                // optional, callback triggered when message choice is selected when called choice
+                // type will be available as Integer at cLib.choiceType
+                .setOnMessageChoiceSelect(new ConsentLib.Callback() {
+                    @Override
+                    public void run(ConsentLib c) {
+                        Log.i(TAG, "Choice type selected by user: " + c.choiceType.toString());
+                    }
+                })
+                // optional, callback triggered when consent data is captured when called
+                // euconsent will be available as String at cLib.euconsent and under
+                // PreferenceManager.getDefaultSharedPreferences(activity).getString(EU_CONSENT_KEY, null);
+                // consentUUID will be available as String at cLib.consentUUID and under
+                // PreferenceManager.getDefaultSharedPreferences(activity).getString(CONSENT_UUID_KEY null);
+                .setOnSendConsentData(new ConsentLib.Callback() {
+                    @Override
+                    public void run(ConsentLib c) {
+                        Log.i(TAG, "euconsent prop: " + c.euconsent);
+                        Log.i(TAG, "consentUUID prop: " + c.consentUUID);
+                        Log.i(TAG, "euconsent in shared preferences: " + sharedPref.getString(ConsentLib.EU_CONSENT_KEY, null));
+                        Log.i(TAG, "consentUUID in shared preferences: " + sharedPref.getString(ConsentLib.CONSENT_UUID_KEY, null));
+                    }
+                })
+                // generate ConsentLib at this point modifying builder will not do anything
+                .build();
+
+        // begins rendering of WebView in background until message is displayed at which point
+        // WebView will take over view of page
         cLib.run();
     }
 }
-
-//public class MainActivity extends AppCompatActivity {
-//
-//    private static final String TAG = "MainActivity";
-//
-//    private static final String EU_CONSENT_KEY = "euconsent";
-//
-//    private static final String CONSENT_UUID_KEY = "consentUUID";
-//
-//    private SharedPreferences sharedPref;
-//
-//    private WebView webView;
-//
-//    private LinearLayout linearLayout;
-//
-//    private void createLayout() {
-//        linearLayout = new LinearLayout(this);
-//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.MATCH_PARENT);
-//
-//        webView = new WebView(this);
-//
-//        linearLayout.setBackgroundColor(Color.GREEN);
-//
-//        LinearLayout.LayoutParams webviewLayoutParams = new LinearLayout.LayoutParams(
-//                1000,
-//                800);
-//
-//        webView.setLayoutParams(webviewLayoutParams);
-//        webView.setBackgroundColor(Color.TRANSPARENT);
-//
-//        MessageInterface mInterface = new MessageInterface();
-//        webView.addJavascriptInterface(mInterface, "JSReceiver");
-//
-//        linearLayout.addView(webView);
-//
-//        setContentView(linearLayout, layoutParams);
-//    }
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        Log.i(TAG,"setting content view");
-//
-//        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-//
-//        createLayout();
-//
-//        showWebView();
-//    }
-//
-//    void showWebView() {
-//        android.webkit.CookieManager cm = android.webkit.CookieManager.getInstance();
-//        cm.setAcceptCookie(true);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            cm.setAcceptThirdPartyCookies(webView, true);
-//        }
-//        webView.getSettings().setJavaScriptEnabled(true);
-//        webView.loadUrl("http://10.0.2.2:9090/dialogue.html?_sp_cmp_inApp=true");
-//        webView.setWebViewClient(new WebViewClient());
-//    }
-//
-//    private class MessageInterface {
-//        @JavascriptInterface
-//        public void onLoadMessage(final boolean willShowMessage) {
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    if (willShowMessage) {
-//                        LinearLayout.LayoutParams webviewLayoutParams = new LinearLayout.LayoutParams(
-//                                LinearLayout.LayoutParams.MATCH_PARENT,
-//                                LinearLayout.LayoutParams.MATCH_PARENT);
-//
-//                        webView.setLayoutParams(webviewLayoutParams);
-//                    } else {
-//                        linearLayout.removeView(webView);
-//                    }
-//                }
-//            });
-//        }
-//
-//        @JavascriptInterface
-//        public void sendConsentData(String euconsent, String consentUUID) {
-//            android.webkit.CookieManager.getInstance().flush();
-//            Log.i(TAG, "Cookies for cmp after: " + android.webkit.CookieManager.getInstance().getCookie("cmp.sp-stage.net"));
-//            Log.i(TAG, "Cookies for mms after: " + android.webkit.CookieManager.getInstance().getCookie("mms.sp-stage.net"));
-//
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    linearLayout.removeView(webView);
-//                }
-//            });
-//        }
-//    }
-//}
