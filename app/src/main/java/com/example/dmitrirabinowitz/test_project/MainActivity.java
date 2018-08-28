@@ -35,14 +35,32 @@ public class MainActivity extends AppCompatActivity {
         ConsentLib cLib = ConsentLib.newBuilder()
                 // required, must be set first used to render WebView and save consent data
                 .setActivity(this)
-                // required, must be set second used to find scenario
+                // required, must be set second used to find account
+                .setAccountId(22)
+                // required, must be set third used to find scenario
                 .setSiteName("dev.local")
+                // optional, used for running against our stage endpoints
+                .setInternalStage(true)
+                // optional, should not ever be needed provide a custom url for the messaging page
+                // (overrides internal stage)
+                .setInAppMessagePageUrl(null)
+                // optional, should not ever be needed provide a custom domain for mms (overrides
+                // internal stage)
+                .setMmsDomain(null)
+                // optional, should not ever be needed provide a custom domain for cmp (overrides
+                // internal stage)
+                .setCmpDomain(null)
                 // optional, if not provided will render WebView on
                 // Activity.getWindow().getDecorView().findViewById(android.R.id.content)
                 .setViewGroup(null)
                 // optional, used for logging purposes for which page of the app the consent lib was
                 // rendered on
                 .setPage("dialogue")
+                // optional, set custom targeting parameters supports Strings and Integers
+                .setTargetingParam("a", "b")
+                .setTargetingParam("c", 100)
+                // optional, sets debug level defaults to OFF
+                .setDebugLevel(ConsentLib.DebugLevel.DEBUG)
                 // optional, callback triggered when message data is loaded when called message data
                 // will be available as String at cLib.msgJSON
                 .setOnReceiveMessageData(new ConsentLib.Callback() {
