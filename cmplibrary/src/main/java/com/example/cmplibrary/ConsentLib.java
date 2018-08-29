@@ -203,8 +203,6 @@ public class ConsentLib {
     public String consentUUID = null;
 
     private ConsentLib(Builder b) {
-        Log.i(TAG, "Instantiating consent lib");
-
         activity = b.activity;
         siteName = b.siteName;
         accountId = b.accountId;
@@ -283,7 +281,7 @@ public class ConsentLib {
         webView.setLayoutParams(webviewLayoutParams);
         webView.setBackgroundColor(Color.TRANSPARENT);
 
-        MessageInterface mInterface = new MessageInterface(this);
+        MessageInterface mInterface = new MessageInterface();
         webView.addJavascriptInterface(mInterface, "JSReceiver");
 
         viewGroup.addView(webView);
@@ -347,20 +345,15 @@ public class ConsentLib {
         params.add("_sp_debug_level=" + debugLevel.name());
 
         webView.loadUrl(inAppMessagingPageUrl + "?" + TextUtils.join("&", params));
+
         webView.setWebViewClient(new WebViewClient());
     }
 
     private class MessageInterface {
 
-        private final ConsentLib consentLib;
-
-        MessageInterface(ConsentLib c) {
-            consentLib = c;
-        }
-
         @JavascriptInterface
-        public void onReceiveMessageData(final boolean willShowMessage, String _msgJSON) {
-            consentLib.msgJSON = _msgJSON;
+        public void onReceiveMessageData(final boolean willShowMessage, String msgJSON) {
+            ConsentLib.this.msgJSON = msgJSON;
 
             activity.runOnUiThread(new Runnable() {
                 @Override
@@ -380,8 +373,8 @@ public class ConsentLib {
                         android.webkit.CookieSyncManager.getInstance().sync();
                     }
 
-                    if (consentLib.onReceiveMessageData != null) {
-                        consentLib.onReceiveMessageData.run(consentLib);
+                    if (ConsentLib.this.onReceiveMessageData != null) {
+                        ConsentLib.this.onReceiveMessageData.run(ConsentLib.this);
                     }
                 }
             });
@@ -389,10 +382,10 @@ public class ConsentLib {
 
         @JavascriptInterface
         public void onMessageChoiceSelect(int choiceType) {
-            consentLib.choiceType = choiceType;
+            ConsentLib.this.choiceType = choiceType;
 
-            if (consentLib.onMessageChoiceSelect != null) {
-                consentLib.onMessageChoiceSelect.run(consentLib);
+            if (ConsentLib.this.onMessageChoiceSelect != null) {
+                ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this);
             }
         }
 
@@ -401,12 +394,12 @@ public class ConsentLib {
             SharedPreferences.Editor editor = sharedPref.edit();
 
             if (euconsent != null) {
-                consentLib.euconsent = euconsent;
+                ConsentLib.this.euconsent = euconsent;
                 editor.putString(EU_CONSENT_KEY, euconsent);
             }
 
             if (consentUUID != null) {
-                consentLib.consentUUID = consentUUID;
+                ConsentLib.this.consentUUID = consentUUID;
                 editor.putString(CONSENT_UUID_KEY, consentUUID);
             }
 
@@ -419,8 +412,8 @@ public class ConsentLib {
                 public void run() {
                     viewGroup.removeView(webView);
 
-                    if (consentLib.onSendConsentData != null) {
-                        consentLib.onSendConsentData.run(consentLib);
+                    if (ConsentLib.this.onSendConsentData != null) {
+                        ConsentLib.this.onSendConsentData.run(ConsentLib.this);
                     }
                 }
             });
