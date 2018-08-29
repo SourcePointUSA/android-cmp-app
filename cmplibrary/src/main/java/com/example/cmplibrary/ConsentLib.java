@@ -65,6 +65,7 @@ public class ConsentLib {
         BuildStep setOnReceiveMessageData(Callback c);
         BuildStep setOnMessageChoiceSelect(Callback c);
         BuildStep setOnSendConsentData(Callback c);
+        BuildStep setStage(boolean st);
         BuildStep setInternalStage(boolean st);
         BuildStep setInAppMessagePageUrl(String pageUrl);
         BuildStep setMmsDomain(String mmsDomain);
@@ -88,6 +89,7 @@ public class ConsentLib {
         private Callback onReceiveMessageData = null;
         private Callback onMessageChoiceSelect = null;
         private Callback onSendConsentData = null;
+        private boolean isStage = false;
         private boolean isInternalStage = false;
         private String inAppMessagingPageUrl = null;
         private String mmsDomain = null;
@@ -129,6 +131,10 @@ public class ConsentLib {
         }
         public BuildStep setOnSendConsentData(Callback c) {
             onSendConsentData = c;
+            return this;
+        }
+        public BuildStep setStage(boolean st) {
+            isStage = st;
             return this;
         }
         public BuildStep setInternalStage(boolean st) {
@@ -184,6 +190,7 @@ public class ConsentLib {
     private final Callback onReceiveMessageData;
     private final Callback onMessageChoiceSelect;
     private final Callback onSendConsentData;
+    private final boolean isStage;
     private final boolean isInternalStage;
     private final String inAppMessagingPageUrl;
     private final String mmsDomain;
@@ -210,6 +217,7 @@ public class ConsentLib {
         onReceiveMessageData = b.onReceiveMessageData;
         onMessageChoiceSelect = b.onMessageChoiceSelect;
         onSendConsentData = b.onSendConsentData;
+        isStage = b.isStage;
         isInternalStage = b.isInternalStage;
         targetingParams = b.targetingParams;
         debugLevel = b.debugLevel;
@@ -343,6 +351,8 @@ public class ConsentLib {
         params.add("_sp_msg_targetingParams=" + targetingParamsJSON);
 
         params.add("_sp_debug_level=" + debugLevel.name());
+
+        params.add("_sp_msg_stageCampaign=" + isStage);
 
         webView.loadUrl(inAppMessagingPageUrl + "?" + TextUtils.join("&", params));
 

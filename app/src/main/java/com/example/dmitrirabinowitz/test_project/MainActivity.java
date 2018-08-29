@@ -39,6 +39,11 @@ public class MainActivity extends AppCompatActivity {
                 .setAccountId(22)
                 // required, must be set third used to find scenario
                 .setSiteName("dev.local")
+                // optional, used for logging purposes for which page of the app the consent lib was
+                // rendered on
+                .setPage("dialogue")
+                // optional, used for running stage campaigns
+                .setStage(true)
                 // optional, used for running against our stage endpoints
                 .setInternalStage(true)
                 // optional, should not ever be needed provide a custom url for the messaging page
@@ -53,9 +58,6 @@ public class MainActivity extends AppCompatActivity {
                 // optional, if not provided will render WebView on
                 // Activity.getWindow().getDecorView().findViewById(android.R.id.content)
                 .setViewGroup(null)
-                // optional, used for logging purposes for which page of the app the consent lib was
-                // rendered on
-                .setPage("dialogue")
                 // optional, set custom targeting parameters supports Strings and Integers
                 .setTargetingParam("a", "b")
                 .setTargetingParam("c", 100)
