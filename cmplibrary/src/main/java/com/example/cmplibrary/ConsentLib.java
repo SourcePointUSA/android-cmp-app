@@ -368,15 +368,6 @@ public class ConsentLib {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (willShowMessage) {
-                        webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-                        webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-                        webView.bringToFront();
-                        webView.requestLayout();
-                    } else {
-                        viewGroup.removeView(webView);
-                    }
-
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         cm.getInstance().flush();
                     } {
@@ -385,6 +376,19 @@ public class ConsentLib {
 
                     if (ConsentLib.this.onReceiveMessageData != null) {
                         ConsentLib.this.onReceiveMessageData.run(ConsentLib.this);
+                    }
+
+                    if (willShowMessage) {
+                        webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+                        webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+                        webView.bringToFront();
+                        webView.requestLayout();
+                    } else {
+                        if (ConsentLib.this.onInteractionComplete != null) {
+                            ConsentLib.this.onInteractionComplete.run(ConsentLib.this);
+                        }
+
+                        viewGroup.removeView(webView);
                     }
                 }
             });
@@ -420,11 +424,11 @@ public class ConsentLib {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    viewGroup.removeView(webView);
-
                     if (ConsentLib.this.onInteractionComplete != null) {
                         ConsentLib.this.onInteractionComplete.run(ConsentLib.this);
                     }
+
+                    viewGroup.removeView(webView);
                 }
             });
         }
