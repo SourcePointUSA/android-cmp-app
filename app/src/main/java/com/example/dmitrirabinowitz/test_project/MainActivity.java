@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 // rendered on
                 .setPage("dialogue")
                 // optional, used for running stage campaigns
-                .setStage(true)
+                .setStage(false)
                 // optional, used for running against our stage endpoints
                 .setInternalStage(true)
                 // optional, should not ever be needed provide a custom url for the messaging page
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 // PreferenceManager.getDefaultSharedPreferences(activity).getString(EU_CONSENT_KEY, null);
                 // consentUUID will be available as String at cLib.consentUUID and under
                 // PreferenceManager.getDefaultSharedPreferences(activity).getString(CONSENT_UUID_KEY null);
-                .setOnSendConsentData(new ConsentLib.Callback() {
+                .setOnInteractionComplete(new ConsentLib.Callback() {
                     @Override
                     public void run(ConsentLib c) {
                         Log.i(TAG, "euconsent prop: " + c.euconsent);

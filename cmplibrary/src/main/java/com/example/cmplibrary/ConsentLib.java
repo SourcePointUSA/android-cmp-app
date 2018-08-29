@@ -64,7 +64,7 @@ public class ConsentLib {
         BuildStep setViewGroup(ViewGroup v);
         BuildStep setOnReceiveMessageData(Callback c);
         BuildStep setOnMessageChoiceSelect(Callback c);
-        BuildStep setOnSendConsentData(Callback c);
+        BuildStep setOnInteractionComplete(Callback c);
         BuildStep setStage(boolean st);
         BuildStep setInternalStage(boolean st);
         BuildStep setInAppMessagePageUrl(String pageUrl);
@@ -88,7 +88,7 @@ public class ConsentLib {
         private ViewGroup viewGroup = null;
         private Callback onReceiveMessageData = null;
         private Callback onMessageChoiceSelect = null;
-        private Callback onSendConsentData = null;
+        private Callback onInteractionComplete = null;
         private boolean isStage = false;
         private boolean isInternalStage = false;
         private String inAppMessagingPageUrl = null;
@@ -129,8 +129,8 @@ public class ConsentLib {
             onMessageChoiceSelect = c;
             return this;
         }
-        public BuildStep setOnSendConsentData(Callback c) {
-            onSendConsentData = c;
+        public BuildStep setOnInteractionComplete(Callback c) {
+            onInteractionComplete = c;
             return this;
         }
         public BuildStep setStage(boolean st) {
@@ -189,7 +189,7 @@ public class ConsentLib {
     private final ViewGroup viewGroup;
     private final Callback onReceiveMessageData;
     private final Callback onMessageChoiceSelect;
-    private final Callback onSendConsentData;
+    private final Callback onInteractionComplete;
     private final boolean isStage;
     private final boolean isInternalStage;
     private final String inAppMessagingPageUrl;
@@ -216,7 +216,7 @@ public class ConsentLib {
         page = b.page;
         onReceiveMessageData = b.onReceiveMessageData;
         onMessageChoiceSelect = b.onMessageChoiceSelect;
-        onSendConsentData = b.onSendConsentData;
+        onInteractionComplete = b.onInteractionComplete;
         isStage = b.isStage;
         isInternalStage = b.isInternalStage;
         targetingParams = b.targetingParams;
@@ -422,8 +422,8 @@ public class ConsentLib {
                 public void run() {
                     viewGroup.removeView(webView);
 
-                    if (ConsentLib.this.onSendConsentData != null) {
-                        ConsentLib.this.onSendConsentData.run(ConsentLib.this);
+                    if (ConsentLib.this.onInteractionComplete != null) {
+                        ConsentLib.this.onInteractionComplete.run(ConsentLib.this);
                     }
                 }
             });
