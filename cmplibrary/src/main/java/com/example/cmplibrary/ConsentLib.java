@@ -241,6 +241,7 @@ public class ConsentLib {
         }
 
         if (b.viewGroup == null) {
+            // render on top level activity view if no viewGroup specified
             View view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
             if (view instanceof ViewGroup) {
                 viewGroup = (ViewGroup) view;
@@ -252,6 +253,7 @@ public class ConsentLib {
             viewGroup = b.viewGroup;
         }
 
+        // read consent from/store consent to default shared preferences
         sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
 
         euconsent = sharedPref.getString(EU_CONSENT_KEY, null);
@@ -268,6 +270,8 @@ public class ConsentLib {
             protected void onDetachedFromWindow() {
                 super.onDetachedFromWindow();
 
+                // sync cookies on detach window so we don't miss cookie updates when the app is
+                // closed with a message open
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     cm.getInstance().flush();
                 } {
@@ -328,12 +332,6 @@ public class ConsentLib {
             return;
         }
 
-        StringBuilder requestUrl = new StringBuilder();
-
-        requestUrl.append(inAppMessagingPageUrl);
-
-        requestUrl.append("?");
-
         List<String> params = new ArrayList<>();
 
         params.add("_sp_accountId=" + String.valueOf(accountId));
@@ -361,6 +359,7 @@ public class ConsentLib {
 
     private class MessageInterface {
 
+        // called when message loads
         @JavascriptInterface
         public void onReceiveMessageData(final boolean willShowMessage, String msgJSON) {
             ConsentLib.this.msgJSON = msgJSON;
@@ -394,6 +393,7 @@ public class ConsentLib {
             });
         }
 
+        // called when a choice is selected on the message
         @JavascriptInterface
         public void onMessageChoiceSelect(int choiceType) {
             ConsentLib.this.choiceType = choiceType;
@@ -403,6 +403,7 @@ public class ConsentLib {
             }
         }
 
+        // called when interaction with message is complete
         @JavascriptInterface
         public void sendConsentData(final String euconsent, final String consentUUID) {
             SharedPreferences.Editor editor = sharedPref.edit();
