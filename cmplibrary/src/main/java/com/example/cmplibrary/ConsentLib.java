@@ -282,10 +282,12 @@ public class ConsentLib {
             }
         };
 
+        // allow third party cookies for loading mms and consent cookies
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             cm.setAcceptThirdPartyCookies(webView, true);
         }
 
+        // hide web view while it loads initially
         ViewGroup.LayoutParams webviewLayoutParams = new ViewGroup.LayoutParams(
                 0,
                 0);
@@ -377,6 +379,7 @@ public class ConsentLib {
                         ConsentLib.this.onReceiveMessageData.run(ConsentLib.this);
                     }
 
+                    // show web view once we confirm the message is ready to display
                     if (willShowMessage) {
                         webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
                         webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
