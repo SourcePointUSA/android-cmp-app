@@ -254,6 +254,7 @@ public class ConsentLib {
         }
 
         // read consent from/store consent to default shared preferences
+        // per gdpr framework: https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/852cf086fdac6d89097fdec7c948e14a2121ca0e/In-App%20Reference/Android/app/src/main/java/com/smaato/soma/cmpconsenttooldemoapp/cmpconsenttool/storage/CMPStorage.java
         sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
 
         euconsent = sharedPref.getString(EU_CONSENT_KEY, null);
