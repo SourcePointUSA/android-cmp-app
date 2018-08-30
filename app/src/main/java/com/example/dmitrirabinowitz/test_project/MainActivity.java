@@ -38,10 +38,10 @@ public class MainActivity extends AppCompatActivity {
                 // required, must be set second used to find account
                 .setAccountId(22)
                 // required, must be set third used to find scenario
-                .setSiteName("dev.local")
+                .setSiteName("app.android.cmp")
                 // optional, used for logging purposes for which page of the app the consent lib was
                 // rendered on
-                .setPage("dialogue")
+                .setPage("main")
                 // optional, used for running stage campaigns
                 .setStage(false)
                 // optional, used for running against our stage endpoints
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 // Activity.getWindow().getDecorView().findViewById(android.R.id.content)
                 .setViewGroup(null)
                 // optional, set custom targeting parameters supports Strings and Integers
-                .setTargetingParam("a", "b")
+                .setTargetingParam("a", "c")
                 .setTargetingParam("c", 100)
                 // optional, sets debug level defaults to OFF
                 .setDebugLevel(ConsentLib.DebugLevel.DEBUG)
