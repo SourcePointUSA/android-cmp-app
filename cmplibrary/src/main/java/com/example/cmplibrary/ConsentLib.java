@@ -472,6 +472,10 @@ public class ConsentLib {
             }
         }
 
+        if (customVendorIdsToRequest.size() == 0) {
+            return result;
+        }
+
         String consentParam = consentUUID == null ? "[CONSENT_UUID]" : consentUUID;
         String euconsentParam = euconsent == null ? "[EUCONSENT]" : euconsent;
         String response = load("https://" + cmpDomain + "/v2/consent/" + siteId + "/custom-vendors?customVendorIds=" + TextUtils.join(",", customVendorIdsToRequest) + "&consent_uuid=" + consentParam + "&euconsent=" + euconsentParam);
