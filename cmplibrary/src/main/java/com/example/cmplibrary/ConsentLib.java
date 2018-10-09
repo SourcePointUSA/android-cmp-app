@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -478,7 +479,8 @@ public class ConsentLib {
 
         String consentParam = consentUUID == null ? "[CONSENT_UUID]" : consentUUID;
         String euconsentParam = euconsent == null ? "[EUCONSENT]" : euconsent;
-        String response = load("https://" + cmpDomain + "/v2/consent/" + siteId + "/custom-vendors?customVendorIds=" + TextUtils.join(",", customVendorIdsToRequest) + "&consent_uuid=" + consentParam + "&euconsent=" + euconsentParam);
+        String customVendorIdString = URLEncoder.encode(TextUtils.join(",", customVendorIdsToRequest));
+        String response = load("https://" + cmpDomain + "/v2/consent/" + siteId + "/custom-vendors?customVendorIds=" + customVendorIdString + "&consent_uuid=" + consentParam + "&euconsent=" + euconsentParam);
 
         JSONArray consentedCustomVendors;
         try {
