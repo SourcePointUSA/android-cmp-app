@@ -420,6 +420,8 @@ public class ConsentLib {
         return href;
     }
 
+    // get site id corresponding to account id and site name. Read from local storage if present.
+    // Write to local storage after getting response.
     private String getSiteId() {
         String siteIdKey = SP_SITE_ID + "_" + Integer.toString(accountId) + "_" + siteName;
 
@@ -462,6 +464,7 @@ public class ConsentLib {
             return result;
         }
 
+        // read results from local storage if present first
         List<String> customVendorIdsToRequest = new ArrayList<>();
         for (int i = 0; i < customVendorIds.length; i++) {
             String customVendorId = customVendorIds[i];
@@ -492,6 +495,7 @@ public class ConsentLib {
         }
 
         SharedPreferences.Editor editor = sharedPref.edit();
+        // write results to local storage after reading from endpoint
         for (int i = 0; i < consentedCustomVendors.length(); i++) {
             try {
                 JSONObject consentedCustomVendor = consentedCustomVendors.getJSONObject(i);
@@ -515,7 +519,7 @@ public class ConsentLib {
 
     private void finish() {
         if (onInteractionComplete != null) {
-            onInteractionComplete.run(ConsentLib.this);
+            onInteractionComplete.run(this);
         }
 
         viewGroup.removeView(webView);
