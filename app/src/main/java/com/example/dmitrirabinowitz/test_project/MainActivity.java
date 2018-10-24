@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 // required, must be set second used to find account
                 .setAccountId(22)
                 // required, must be set third used to find scenario
-                .setSiteName("app.android.cmp")
+                .setSiteName("app.ios.cmp")
                 // optional, used for logging purposes for which page of the app the consent lib was
                 // rendered on
                 .setPage("main")
@@ -91,6 +91,14 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "consentUUID prop: " + c.consentUUID);
                         Log.i(TAG, "euconsent in shared preferences: " + sharedPref.getString(ConsentLib.EU_CONSENT_KEY, null));
                         Log.i(TAG, "consentUUID in shared preferences: " + sharedPref.getString(ConsentLib.CONSENT_UUID_KEY, null));
+                        c.getVendorConsents(
+                                new String[]{"5bc76807196d3c5730cbab05", "5bc768d8196d3c5730cbab06"},
+                                new ConsentLib.OnLoadComplete() {
+                                    public void onLoadCompleted(Object result) {
+                                        Log.i(TAG, "custom vendor consent 1: " + ((boolean[]) result)[0]);
+                                        Log.i(TAG, "custom vendor consent 2: " + ((boolean[]) result)[1]);
+                                    }
+                                });
                     }
                 })
                 // generate ConsentLib at this point modifying builder will not do anything
