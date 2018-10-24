@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,10 +14,19 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.view.View;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,18 +71,31 @@ public class ConsentLib {
      */
     public interface BuildStep {
         BuildStep setPage(String s);
+
         BuildStep setViewGroup(ViewGroup v);
+
         BuildStep setOnReceiveMessageData(Callback c);
+
         BuildStep setOnMessageChoiceSelect(Callback c);
+
         BuildStep setOnInteractionComplete(Callback c);
+
         BuildStep setStage(boolean st);
+
         BuildStep setInternalStage(boolean st);
+
         BuildStep setInAppMessagePageUrl(String pageUrl);
+
         BuildStep setMmsDomain(String mmsDomain);
+
         BuildStep setCmpDomain(String cmpDomain);
+
         BuildStep setTargetingParam(String key, Integer val);
+
         BuildStep setTargetingParam(String key, String val);
+
         BuildStep setDebugLevel(DebugLevel l);
+
         ConsentLib build();
     }
 
@@ -121,56 +144,69 @@ public class ConsentLib {
             viewGroup = v;
             return this;
         }
+
         public BuildStep setOnReceiveMessageData(Callback c) {
             onReceiveMessageData = c;
             return this;
         }
+
         public BuildStep setOnMessageChoiceSelect(Callback c) {
             onMessageChoiceSelect = c;
             return this;
         }
+
         public BuildStep setOnInteractionComplete(Callback c) {
             onInteractionComplete = c;
             return this;
         }
+
         public BuildStep setStage(boolean st) {
             isStage = st;
             return this;
         }
+
         public BuildStep setInternalStage(boolean st) {
             isInternalStage = st;
             return this;
         }
+
         public BuildStep setInAppMessagePageUrl(String pageUrl) {
             inAppMessagingPageUrl = pageUrl;
             return this;
         }
+
         public BuildStep setMmsDomain(String mmsDomain) {
             this.mmsDomain = mmsDomain;
             return this;
         }
+
         public BuildStep setCmpDomain(String cmpDomain) {
             this.cmpDomain = cmpDomain;
             return this;
         }
+
         public BuildStep setTargetingParam(String key, Integer val) {
             return setTargetingParam(key, (Object) val);
         }
+
         public BuildStep setTargetingParam(String key, String val) {
             return setTargetingParam(key, (Object) val);
         }
+
         private BuildStep setTargetingParam(String key, Object val) {
             try {
                 this.targetingParams.put(key, val);
-            } catch(JSONException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
             return this;
         }
+
         public BuildStep setDebugLevel(DebugLevel l) {
             debugLevel = l;
             return this;
         }
+
         public ConsentLib build() {
             return new ConsentLib(this);
         }
@@ -181,6 +217,9 @@ public class ConsentLib {
     // visible for grabbing consent from shared preferences
     public static final String EU_CONSENT_KEY = "euconsent";
     public static final String CONSENT_UUID_KEY = "consentUUID";
+
+    private static final String SP_PREFIX = "_sp_";
+    private static final String SP_SITE_ID = SP_PREFIX + "site_id";
 
     private final Activity activity;
     private final String siteName;
@@ -207,7 +246,67 @@ public class ConsentLib {
     public String msgJSON = null;
     public Integer choiceType = null;
     public String euconsent = null;
+    public JSONObject[] customConsent = null;
     public String consentUUID = null;
+
+    public interface OnLoadComplete {
+        void onLoadCompleted(Object result);
+    }
+
+    class LoadTask extends AsyncTask<String, Void, String> {
+        private OnLoadComplete listener;
+
+        public LoadTask(OnLoadComplete listener) {
+            this.listener = listener;
+        }
+
+        protected String doInBackground(String... urlString) {
+            URL url;
+            try {
+                url = new URL(urlString[0]);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            HttpURLConnection urlConnection;
+            try {
+                urlConnection = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            try {
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                try {
+                    ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                    int i = in.read();
+                    while (i != -1) {
+                        bo.write(i);
+                        i = in.read();
+                    }
+                    return bo.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            } finally {
+                urlConnection.disconnect();
+            }
+        }
+
+        protected void onPostExecute(String result) {
+            listener.onLoadCompleted(result);
+        }
+    }
+
+    private void load(String urlString, OnLoadComplete callback) {
+        new LoadTask(callback).execute(urlString);
+    }
 
     private ConsentLib(Builder b) {
         activity = b.activity;
@@ -275,7 +374,8 @@ public class ConsentLib {
                 // closed with a message open
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     cm.getInstance().flush();
-                } {
+                }
+                {
                     android.webkit.CookieSyncManager.getInstance().sync();
                 }
 
@@ -303,34 +403,31 @@ public class ConsentLib {
 
         webView.getSettings().setJavaScriptEnabled(true);
 
-        String href = null;
-        try {
-            href = URLEncoder.encode("http://" + siteName + "/" + page, "UTF-8");
-        } catch(UnsupportedEncodingException e) {
-            e.printStackTrace();
+        String href = getHref();
+        if (href == null) {
             return;
         }
 
-        String msgDomain = null;
+        String msgDomain;
         try {
             msgDomain = URLEncoder.encode(mmsDomain, "UTF-8");
-        } catch(UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return;
         }
 
-        String cmpOrigin = null;
+        String cmpOrigin;
         try {
             cmpOrigin = URLEncoder.encode("//" + cmpDomain, "UTF-8");
-        } catch(UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return;
         }
 
-        String targetingParamsJSON = null;
+        String targetingParamsJSON;
         try {
             targetingParamsJSON = URLEncoder.encode(targetingParams.toString(), "UTF-8");
-        } catch(UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return;
         }
@@ -360,6 +457,156 @@ public class ConsentLib {
         webView.setWebViewClient(new WebViewClient());
     }
 
+    private String getHref() {
+        String href = null;
+        try {
+            href = URLEncoder.encode("http://" + siteName + "/" + page, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return href;
+    }
+
+    // get site id corresponding to account id and site name. Read from local storage if present.
+    // Write to local storage after getting response.
+    private void getSiteId(final OnLoadComplete callback) {
+        final String siteIdKey = SP_SITE_ID + "_" + Integer.toString(accountId) + "_" + siteName;
+
+        String storedSiteId = sharedPref.getString(siteIdKey, null);
+        if (storedSiteId != null) {
+            callback.onLoadCompleted(storedSiteId);
+            return;
+        }
+        String href = getHref();
+        if (href == null) {
+            callback.onLoadCompleted(null);
+            return;
+        }
+
+        load(
+                "http://" + mmsDomain + "/get_site_data?account_id=" + Integer.toString(accountId) + "&href=" + href,
+                new OnLoadComplete() {
+                    @Override
+                    public void onLoadCompleted(Object result) {
+                        String siteId;
+                        try {
+                            siteId = new JSONObject((String) result).getString("site_id");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            callback.onLoadCompleted(null);
+                            return;
+                        }
+
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(siteIdKey, siteId);
+                        editor.commit();
+                        callback.onLoadCompleted(siteId);
+                        return;
+                    }
+                }
+        );
+
+
+    }
+
+    public void getVendorConsent(final String customVendorId, final OnLoadComplete callback) {
+        getVendorConsents(new String[]{customVendorId}, new OnLoadComplete() {
+            @Override
+            public void onLoadCompleted(Object result) {
+                callback.onLoadCompleted(((String[]) result)[0]);
+            }
+        });
+    }
+
+    public void getVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) {
+        final String CUSTOMER_VENDOR_PREFIX = SP_PREFIX + "_custom_vendor_consent_";
+
+        getSiteId(new OnLoadComplete() {
+            @Override
+            public void onLoadCompleted(Object result) {
+                if (result == null) {
+                    callback.onLoadCompleted(new boolean[customVendorIds.length]);
+                    return;
+                }
+                String siteId = (String) result;
+
+
+                boolean[] results1 = new boolean[customVendorIds.length];
+                // read results from local storage if present first
+                List<String> customVendorIdsToRequest = new ArrayList<>();
+                for (int i = 0; i < customVendorIds.length; i++) {
+                    String customVendorId = customVendorIds[i];
+                    String storedConsentData = sharedPref.getString(CUSTOMER_VENDOR_PREFIX + customVendorId, null);
+                    if (storedConsentData == null) {
+                        customVendorIdsToRequest.add(customVendorId);
+                    } else {
+                        results1[i] = Boolean.getBoolean(storedConsentData);
+                    }
+                }
+                if (customVendorIdsToRequest.size() == 0) {
+                    callback.onLoadCompleted(results1);
+                    return;
+                }
+
+                String consentParam = consentUUID == null ? "[CONSENT_UUID]" : consentUUID;
+                String euconsentParam = euconsent == null ? "[EUCONSENT]" : euconsent;
+                String customVendorIdString = URLEncoder.encode(TextUtils.join(",", customVendorIdsToRequest));
+                final boolean[] results2 = results1;
+                load("https://" + cmpDomain + "/consent/v2/" + siteId + "/custom-vendors?customVendorIds=" + customVendorIdString + "&consentUUID=" + consentParam + "&euconsent=" + euconsentParam,
+                        new OnLoadComplete(){
+
+                            @Override
+                            public void onLoadCompleted(Object result) {
+                                String response = (String)result;
+
+                                boolean[] results = results2;
+
+                                JSONArray consentedCustomVendors;
+                                try {
+                                    JSONObject consentedCustomData = new JSONObject(response);
+                                    consentedCustomVendors = consentedCustomData.getJSONArray("consentedVendors");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    callback.onLoadCompleted(results);
+                                    return;
+                                }
+
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                // write results to local storage after reading from endpoint
+                                for (int i = 0; i < consentedCustomVendors.length(); i++) {
+                                    try {
+                                        JSONObject consentedCustomVendor = consentedCustomVendors.getJSONObject(i);
+                                        editor.putString(CUSTOMER_VENDOR_PREFIX + consentedCustomVendor.get("_id"), Boolean.toString(true));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                editor.commit();
+
+                                for (int i = 0; i < customVendorIds.length; i++) {
+                                    String customVendorId = customVendorIds[i];
+                                    String storedConsentData = sharedPref.getString(CUSTOMER_VENDOR_PREFIX + customVendorId, null);
+                                    if (storedConsentData != null) {
+                                        results[i] = storedConsentData == "true";
+                                    }
+                                }
+                                callback.onLoadCompleted(results);
+                            }
+                        }
+                );
+
+            }
+        });
+    }
+
+    private void finish() {
+        if (onInteractionComplete != null) {
+            onInteractionComplete.run(this);
+        }
+
+        viewGroup.removeView(webView);
+    }
+
     private class MessageInterface {
 
         // called when message loads
@@ -372,7 +619,8 @@ public class ConsentLib {
                 public void run() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         cm.getInstance().flush();
-                    } {
+                    }
+                    {
                         android.webkit.CookieSyncManager.getInstance().sync();
                     }
 
@@ -387,11 +635,7 @@ public class ConsentLib {
                         webView.bringToFront();
                         webView.requestLayout();
                     } else {
-                        if (ConsentLib.this.onInteractionComplete != null) {
-                            ConsentLib.this.onInteractionComplete.run(ConsentLib.this);
-                        }
-
-                        viewGroup.removeView(webView);
+                        ConsentLib.this.finish();
                     }
                 }
             });
@@ -429,11 +673,7 @@ public class ConsentLib {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (ConsentLib.this.onInteractionComplete != null) {
-                        ConsentLib.this.onInteractionComplete.run(ConsentLib.this);
-                    }
-
-                    viewGroup.removeView(webView);
+                    ConsentLib.this.finish();
                 }
             });
         }
