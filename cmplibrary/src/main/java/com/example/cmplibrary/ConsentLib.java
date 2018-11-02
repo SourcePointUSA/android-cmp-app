@@ -30,12 +30,21 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
+import com.iab.gdpr.consent.VendorConsent;
+import com.iab.gdpr.consent.VendorConsentDecoder;
 /**
  * Created by dmitrirabinowitz on 8/15/18.
  */
 
 public class ConsentLib {
+    ////
+    //// Public
+    ////
+    public static final String IAB_CONSENT_CMP_PRESENT = "IABConsent_CMPPresent";
+    public static final String IAB_CONSENT_SUBJECT_TO_GDPR = "IABConsent_SubjectToGDPR";
+    public static final String IAB_CONSENT_CONSENT_STRING = "IABConsent_ConsentString";
+    public static final String IAB_CONSENT_PARSED_PURPOSE_CONSENTS = "IABConsent_ParsedPurposeConsents";
+    public static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
 
     public enum DebugLevel {
         DEBUG,
@@ -45,7 +54,51 @@ public class ConsentLib {
         ERROR,
         OFF;
     }
+    // visible for grabbing consent from shared preferences
+    public static final String EU_CONSENT_KEY = "euconsent";
+    public static final String CONSENT_UUID_KEY = "consentUUID";
+    public static final int MAX_PURPOSE_ID = 24;
 
+
+    public String msgJSON = null;
+    public Integer choiceType = null;
+    public String euconsent = null;
+    public JSONObject[] customConsent = null;
+    public String consentUUID = null;
+
+    ////
+    //// Private
+    ////
+    private static final String TAG = "ConsentLib";
+
+    private static final String SP_PREFIX = "_sp_";
+    private static final String SP_SITE_ID = SP_PREFIX + "site_id";
+
+    private final Activity activity;
+    private final String siteName;
+    private final int accountId;
+    private final String page;
+    private final ViewGroup viewGroup;
+    private final Callback onReceiveMessageData;
+    private final Callback onMessageChoiceSelect;
+    private final Callback onInteractionComplete;
+    private final boolean isStage;
+    private final boolean isInternalStage;
+    private final String inAppMessagingPageUrl;
+    private final String mmsDomain;
+    private final String cmpDomain;
+    private final JSONObject targetingParams;
+    private final DebugLevel debugLevel;
+
+    private final SharedPreferences sharedPref;
+
+    private android.webkit.CookieManager cm;
+
+    private WebView webView;
+
+    ////
+    //// Interfaces
+    ////
     public interface Callback {
         void run(ConsentLib c);
     }
@@ -64,6 +117,10 @@ public class ConsentLib {
 
     public interface SiteNameStep {
         BuildStep setSiteName(String s);
+    }
+
+    public interface OnLoadComplete {
+        void onLoadCompleted(Object result);
     }
 
     /*
@@ -99,9 +156,10 @@ public class ConsentLib {
         ConsentLib build();
     }
 
-    public static ActivityStep newBuilder() {
-        return new Builder();
-    }
+
+    ////
+    //// Inner classes
+    ////
 
     private static class Builder implements ActivityStep, AccountIdStep, SiteNameStep, BuildStep {
         private Activity activity;
@@ -212,46 +270,6 @@ public class ConsentLib {
         }
     }
 
-    private static final String TAG = "ConsentLib";
-
-    // visible for grabbing consent from shared preferences
-    public static final String EU_CONSENT_KEY = "euconsent";
-    public static final String CONSENT_UUID_KEY = "consentUUID";
-
-    private static final String SP_PREFIX = "_sp_";
-    private static final String SP_SITE_ID = SP_PREFIX + "site_id";
-
-    private final Activity activity;
-    private final String siteName;
-    private final int accountId;
-    private final String page;
-    private final ViewGroup viewGroup;
-    private final Callback onReceiveMessageData;
-    private final Callback onMessageChoiceSelect;
-    private final Callback onInteractionComplete;
-    private final boolean isStage;
-    private final boolean isInternalStage;
-    private final String inAppMessagingPageUrl;
-    private final String mmsDomain;
-    private final String cmpDomain;
-    private final JSONObject targetingParams;
-    private final DebugLevel debugLevel;
-
-    private final SharedPreferences sharedPref;
-
-    private android.webkit.CookieManager cm;
-
-    private WebView webView;
-
-    public String msgJSON = null;
-    public Integer choiceType = null;
-    public String euconsent = null;
-    public JSONObject[] customConsent = null;
-    public String consentUUID = null;
-
-    public interface OnLoadComplete {
-        void onLoadCompleted(Object result);
-    }
 
     class LoadTask extends AsyncTask<String, Void, String> {
         private OnLoadComplete listener;
@@ -303,6 +321,92 @@ public class ConsentLib {
             listener.onLoadCompleted(result);
         }
     }
+
+    private class MessageInterface {
+
+        // called when message loads
+        @JavascriptInterface
+        public void onReceiveMessageData(final boolean willShowMessage, String msgJSON) {
+            ConsentLib.this.msgJSON = msgJSON;
+
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        cm.getInstance().flush();
+                    }
+                    {
+                        android.webkit.CookieSyncManager.getInstance().sync();
+                    }
+
+                    if (ConsentLib.this.onReceiveMessageData != null) {
+                        ConsentLib.this.onReceiveMessageData.run(ConsentLib.this);
+                    }
+
+                    // show web view once we confirm the message is ready to display
+                    if (willShowMessage) {
+                        webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+                        webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+                        webView.bringToFront();
+                        webView.requestLayout();
+                    } else {
+                        ConsentLib.this.finish();
+                    }
+                }
+            });
+        }
+
+        // called when a choice is selected on the message
+        @JavascriptInterface
+        public void onMessageChoiceSelect(int choiceType) {
+            ConsentLib.this.choiceType = choiceType;
+
+            if (ConsentLib.this.onMessageChoiceSelect != null) {
+                ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this);
+            }
+        }
+
+        // called when interaction with message is complete
+        @JavascriptInterface
+        public void sendConsentData(final String euconsent, final String consentUUID) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+
+            if (euconsent != null) {
+                ConsentLib.this.euconsent = euconsent;
+                editor.putString(EU_CONSENT_KEY, euconsent);
+            }
+
+            if (consentUUID != null) {
+                ConsentLib.this.consentUUID = consentUUID;
+                editor.putString(CONSENT_UUID_KEY, consentUUID);
+            }
+
+            if (euconsent != null || consentUUID != null) {
+                editor.commit();
+            }
+
+            setIABVars(euconsent);
+
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ConsentLib.this.finish();
+                }
+            });
+        }
+    }
+
+    ////
+    //// Static functons
+    ////
+
+    public static ActivityStep newBuilder() {
+        return new Builder();
+    }
+
+    ////
+    //// Member Functions
+    ////
 
     private void load(String urlString, OnLoadComplete callback) {
         new LoadTask(callback).execute(urlString);
@@ -358,6 +462,7 @@ public class ConsentLib {
 
         euconsent = sharedPref.getString(EU_CONSENT_KEY, null);
         consentUUID = sharedPref.getString(CONSENT_UUID_KEY, null);
+
     }
 
     public void run() {
@@ -455,6 +560,59 @@ public class ConsentLib {
         webView.loadUrl(inAppMessagingPageUrl + "?" + TextUtils.join("&", params));
 
         webView.setWebViewClient(new WebViewClient());
+
+        // Set standard IAB IABConsent_CMPPresent
+        setSharedPreference(IAB_CONSENT_CMP_PRESENT, "1");
+
+        setSubjectToGDPR();
+    }
+
+    private void setSharedPreference(String key, String value) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    private void setSubjectToGDPR() {
+        String currentVal =  sharedPref.getString(IAB_CONSENT_SUBJECT_TO_GDPR, null);
+        if (currentVal != null) {
+            return;
+        }
+        String url = "https://" + cmpDomain + "/consent/v2/gdpr-status";
+
+        load(url, new OnLoadComplete() {
+            @Override
+            public void onLoadCompleted(Object result) {
+                try {
+                    String gdprApplies= new JSONObject((String) result).getString("gdprApplies");
+                    setSharedPreference(IAB_CONSENT_SUBJECT_TO_GDPR, gdprApplies == "true" ? "1" : "0");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void setIABVars(String euconsent) {
+        setSharedPreference(IAB_CONSENT_CONSENT_STRING, euconsent);
+
+        final VendorConsent vendorConsent = VendorConsentDecoder.fromBase64String(euconsent);
+
+        // Construct and save parsed purposes string
+        char[] allowedPurposes = new char[MAX_PURPOSE_ID];
+        for (int i = 0;i < MAX_PURPOSE_ID; i++) {
+            allowedPurposes[i] = vendorConsent.isPurposeAllowed(i + 1) ? '1' : '0';
+        }
+        Log.i(TAG,"allowedPurposes: " + new String(allowedPurposes));
+        setSharedPreference(IAB_CONSENT_PARSED_PURPOSE_CONSENTS, new String(allowedPurposes));
+
+        // Construct and save parsed vendors string
+        char[] allowedVendors = new char[vendorConsent.getMaxVendorId()];
+        for (int i = 0;i < allowedVendors.length; i++) {
+            allowedVendors[i] = vendorConsent.isVendorAllowed(i + 1) ? '1' : '0';
+        }
+        Log.i(TAG,"allowedVendors: " + new String(allowedVendors));
+        setSharedPreference(IAB_CONSENT_PARSED_VENDOR_CONSENTS, new String(allowedVendors));
     }
 
     private String getHref() {
@@ -605,77 +763,5 @@ public class ConsentLib {
         }
 
         viewGroup.removeView(webView);
-    }
-
-    private class MessageInterface {
-
-        // called when message loads
-        @JavascriptInterface
-        public void onReceiveMessageData(final boolean willShowMessage, String msgJSON) {
-            ConsentLib.this.msgJSON = msgJSON;
-
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        cm.getInstance().flush();
-                    }
-                    {
-                        android.webkit.CookieSyncManager.getInstance().sync();
-                    }
-
-                    if (ConsentLib.this.onReceiveMessageData != null) {
-                        ConsentLib.this.onReceiveMessageData.run(ConsentLib.this);
-                    }
-
-                    // show web view once we confirm the message is ready to display
-                    if (willShowMessage) {
-                        webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-                        webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-                        webView.bringToFront();
-                        webView.requestLayout();
-                    } else {
-                        ConsentLib.this.finish();
-                    }
-                }
-            });
-        }
-
-        // called when a choice is selected on the message
-        @JavascriptInterface
-        public void onMessageChoiceSelect(int choiceType) {
-            ConsentLib.this.choiceType = choiceType;
-
-            if (ConsentLib.this.onMessageChoiceSelect != null) {
-                ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this);
-            }
-        }
-
-        // called when interaction with message is complete
-        @JavascriptInterface
-        public void sendConsentData(final String euconsent, final String consentUUID) {
-            SharedPreferences.Editor editor = sharedPref.edit();
-
-            if (euconsent != null) {
-                ConsentLib.this.euconsent = euconsent;
-                editor.putString(EU_CONSENT_KEY, euconsent);
-            }
-
-            if (consentUUID != null) {
-                ConsentLib.this.consentUUID = consentUUID;
-                editor.putString(CONSENT_UUID_KEY, consentUUID);
-            }
-
-            if (euconsent != null || consentUUID != null) {
-                editor.commit();
-            }
-
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ConsentLib.this.finish();
-                }
-            });
-        }
     }
 }
