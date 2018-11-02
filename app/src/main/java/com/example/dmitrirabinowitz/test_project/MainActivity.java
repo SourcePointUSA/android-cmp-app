@@ -91,6 +91,11 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "consentUUID prop: " + c.consentUUID);
                         Log.i(TAG, "euconsent in shared preferences: " + sharedPref.getString(ConsentLib.EU_CONSENT_KEY, null));
                         Log.i(TAG, "consentUUID in shared preferences: " + sharedPref.getString(ConsentLib.CONSENT_UUID_KEY, null));
+                        Log.i(TAG, "IABConsent_SubjectToGDPR in shared preferences: " + sharedPref.getString(ConsentLib.IAB_CONSENT_SUBJECT_TO_GDPR, null));
+                        Log.i(TAG, "IABConsent_ConsentString in shared preferences: " + sharedPref.getString(ConsentLib.IAB_CONSENT_CONSENT_STRING, null));
+                        Log.i(TAG, "IABConsent_ParsedPurposeConsents in shared preferences: " + sharedPref.getString(ConsentLib.IAB_CONSENT_PARSED_PURPOSE_CONSENTS, null));
+                        Log.i(TAG, "IABConsent_ParsedVendorConsents in shared preferences: " + sharedPref.getString(ConsentLib.IAB_CONSENT_PARSED_VENDOR_CONSENTS, null));
+
                         c.getVendorConsents(
                                 new String[]{"5bc76807196d3c5730cbab05", "5bc768d8196d3c5730cbab06"},
                                 new ConsentLib.OnLoadComplete() {
@@ -107,5 +112,8 @@ public class MainActivity extends AppCompatActivity {
         // begins rendering of WebView in background until message is displayed at which point
         // WebView will take over view of page
         cLib.run();
+
+        // Should set immediately
+        Log.i(TAG, "IABConsent_CMPPresent in shared preferences: " + sharedPref.getString(ConsentLib.IAB_CONSENT_CMP_PRESENT, null));
     }
 }
