@@ -6,6 +6,7 @@
 /captures
 .externalNativeBuild
 .idea
-.idea/*
+.idea/**
+.idea/**/*
 app/local.properties
 app/gradle/wrapper

@@ -8,11 +8,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.content.Context;
 
 import com.example.cmplibrary.ConsentLib;
 import com.example.cmplibrary.ConsentLibException;
 
 import java.util.ArrayList;
+import com.geolocstation.GeolocStation;
+import com.geolocstation.GeolocStationConfig;
+import com.geolocstation.consent.GeolocStationConsent;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,14 +25,31 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPref;
 
     private ConsentLib buildConsentLib(Activity activity) throws ConsentLibException {
+        /////
+        // Teemo SDK
+        String appKey = "00441d4313cb4e8c8ad4d5b9a4f06e3f";
+        String secretKey = "002331c8fd04ccfc5f8eabe00bb52bf5e066f85584b6e3feebc65936f6e2dec3";
+        String endPointUrl = "https://xbrcz866.com/";
+        GeolocStationConfig configuration = new GeolocStationConfig(appKey, secretKey, endPointUrl);
+
+        GeolocStation.initializeWithConfiguration(this, configuration);
+
+        final Context appContext = getApplicationContext();
+        GeolocStationConsent geolocStationConsent = new GeolocStationConsent.Builder(appContext)
+                .build();
+        //geolocStationConsent.showBanner(MainActivity.this);
+
+        /////
+
+
         return ConsentLib.newBuilder()
                 .setActivity(activity)
                 // required, must be set second used to find account
                 .setAccountId(22)
                 // required, must be set third used to find scenario
-                .setSiteName("mobile.demo")
+                .setSiteName("teemo.android.briantest")
                 // optional, used for running stage campaigns
-                .setStage(true)
+                .setStage(false)
                 // optional, set custom targeting parameters value can be String and Integer
                 .setTargetingParam("CMP", "true")
                 // optional, callback triggered when message choice is selected when called choice
@@ -112,6 +133,17 @@ public class MainActivity extends AppCompatActivity {
                                     )
                             );
 
+                            // Letting Teemo know about the Geolocation information collecting purpose consent
+                            c.getPurposeConsent(
+                                "5be615043ee96200104334bb",
+                                new ConsentLib.OnLoadComplete() {
+                                  public void onLoadCompleted(Object result) {
+                                    GeolocStationConsent.setConsent(
+                                        appContext,
+                                        (Boolean) result
+                                        );
+                                  }
+                                });
                         } catch (ConsentLibException e) {
                             e.printStackTrace();
                         }

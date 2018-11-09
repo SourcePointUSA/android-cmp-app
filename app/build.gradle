@@ -31,4 +31,12 @@ dependencies {
     compile 'com.android.volley:volley:1.1.1'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation project(':cmplibrary')
+
+
+    // Required by Teemo
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.android.gms:play-services-ads:15.0.1'
+    implementation 'com.loopj.android:android-async-http:1.4.9'
+    implementation 'com.geolocstation:geolocstation-sdk:1.1.0'
+
 }

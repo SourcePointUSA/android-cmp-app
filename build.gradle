@@ -19,6 +19,14 @@ allprojects {
     repositories {
         google()
         jcenter()
+
+        maven {
+            url "https://api.bitbucket.org/1.0/repositories/databerries/sdk-release/raw/android-sdk"
+            credentials {
+                username = "databerries_sdk"
+                password = "redberries"
+            }
+        }
     }
 }
 
