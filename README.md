@@ -133,6 +133,23 @@ public class MainActivity extends AppCompatActivity {
                                         Log.i(TAG, "custom vendor consent 2: " + ((boolean[]) result)[1]);
                                     }
                                 });
+
+                        c.getPurposeConsents(
+                                new ConsentLib.OnLoadComplete() {
+                                    public void onLoadCompleted(Object result) {
+                                        ConsentLib.PurposeConsent[] results = (ConsentLib.PurposeConsent[])result;
+                                        for (ConsentLib.PurposeConsent purpose : results) {
+                                            Log.i(TAG, "Consented to purpose: " + purpose.name);
+                                        }
+                                    }
+                                });
+                        c.getPurposeConsent(
+                                "5bc4ac5c6fdabb0010940ab1",
+                                new ConsentLib.OnLoadComplete() {
+                                    public void onLoadCompleted(Object result) {
+                                        Log.i(TAG, "Consented to Measurement purpose: " + ((Boolean) result).toString());
+                                    }
+                                });
                     }
                 })
                 // generate ConsentLib at this point modifying builder will not do anything
