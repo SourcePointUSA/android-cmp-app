@@ -30,6 +30,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.iab.gdpr.consent.VendorConsent;
 import com.iab.gdpr.consent.VendorConsentDecoder;
 /**
@@ -73,6 +74,10 @@ public class ConsentLib {
 
     private static final String SP_PREFIX = "_sp_";
     private static final String SP_SITE_ID = SP_PREFIX + "site_id";
+
+    private final static String CUSTOM_VENDOR_PREFIX = SP_PREFIX + "_custom_vendor_consent_";
+    private final static String CUSTOM_PURPOSE_PREFIX = SP_PREFIX + "_custom_purpose_consent_";
+    private final static String CUSTOM_PURPOSE_CONSENTS_JSON = SP_PREFIX + "_custom_purpose_consents_json";
 
     private final Activity activity;
     private final String siteName;
@@ -273,6 +278,7 @@ public class ConsentLib {
 
     class LoadTask extends AsyncTask<String, Void, String> {
         private OnLoadComplete listener;
+        private String urlToLoad;
 
         public LoadTask(OnLoadComplete listener) {
             this.listener = listener;
@@ -280,6 +286,7 @@ public class ConsentLib {
 
         protected String doInBackground(String... urlString) {
             URL url;
+            this.urlToLoad = urlString[0];
             try {
                 url = new URL(urlString[0]);
             } catch (MalformedURLException e) {
@@ -318,6 +325,7 @@ public class ConsentLib {
         }
 
         protected void onPostExecute(String result) {
+            //Log.i(TAG, "Successfully loaded " + this.urlToLoad + ". result: " + result);
             listener.onLoadCompleted(result);
         }
     }
@@ -393,6 +401,16 @@ public class ConsentLib {
                     ConsentLib.this.finish();
                 }
             });
+        }
+    }
+
+
+    public class PurposeConsent {
+        public String name;
+        public String id;
+        public PurposeConsent(String id, String name) {
+            this.name = name;
+            this.id = id;
         }
     }
 
@@ -585,7 +603,7 @@ public class ConsentLib {
             public void onLoadCompleted(Object result) {
                 try {
                     String gdprApplies= new JSONObject((String) result).getString("gdprApplies");
-                    setSharedPreference(IAB_CONSENT_SUBJECT_TO_GDPR, gdprApplies == "true" ? "1" : "0");
+                    setSharedPreference(IAB_CONSENT_SUBJECT_TO_GDPR, gdprApplies.equals("true") ? "1" : "0");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -667,8 +685,8 @@ public class ConsentLib {
 
     }
 
-    public void getVendorConsent(final String customVendorId, final OnLoadComplete callback) {
-        getVendorConsents(new String[]{customVendorId}, new OnLoadComplete() {
+    public void getCustomVendorConsent(final String customVendorId, final OnLoadComplete callback) {
+        getCustomVendorConsents(new String[]{customVendorId}, new OnLoadComplete() {
             @Override
             public void onLoadCompleted(Object result) {
                 callback.onLoadCompleted(((String[]) result)[0]);
@@ -676,83 +694,160 @@ public class ConsentLib {
         });
     }
 
-    public void getVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) {
-        final String CUSTOMER_VENDOR_PREFIX = SP_PREFIX + "_custom_vendor_consent_";
+    public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) {
+        boolean[] storedResults = new boolean[customVendorIds.length];
+        // read results from local storage if present first
+        List<String> customVendorIdsToRequest = new ArrayList<>();
+        for (int i = 0; i < customVendorIds.length; i++) {
+            String customVendorId = customVendorIds[i];
+            String storedConsentData = sharedPref.getString(CUSTOM_VENDOR_PREFIX + customVendorId, null);
+            if (storedConsentData == null) {
+                customVendorIdsToRequest.add(customVendorId);
+            } else {
+                storedResults[i] = Boolean.getBoolean(storedConsentData);
+            }
+        }
+        if (customVendorIdsToRequest.size() == 0) {
+            callback.onLoadCompleted(storedResults);
+            return;
+        }
 
+        final boolean[] finalStoredResults = storedResults;
+
+        loadAndStoreCustomVendorAndPurposeConsents(customVendorIdsToRequest.toArray(new String[0]), new OnLoadComplete() {
+            @Override
+            public void onLoadCompleted(Object _) {
+                boolean[] results = finalStoredResults;
+                for (int i = 0; i < customVendorIds.length; i++) {
+                    String customVendorId = customVendorIds[i];
+                    String storedConsentData = sharedPref.getString(CUSTOM_VENDOR_PREFIX + customVendorId, null);
+                    if (storedConsentData != null) {
+                        results[i] = storedConsentData.equals("true");
+                    }
+                }
+                callback.onLoadCompleted(results);
+            }
+        });
+
+    }
+
+    public void getPurposeConsent(final String id, final OnLoadComplete callback) {
+        final String storedPurposeConsent = sharedPref.getString(CUSTOM_PURPOSE_PREFIX + id, null);
+        if (storedPurposeConsent != null) {
+            callback.onLoadCompleted(storedPurposeConsent.equals("true"));
+        } else {
+            loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
+                @Override
+                public void onLoadCompleted(Object result) {
+                    String storedPurposeConsent = sharedPref.getString(CUSTOM_PURPOSE_PREFIX + id, null);
+                    callback.onLoadCompleted(
+                            storedPurposeConsent!= null && storedPurposeConsent.equals("true")
+                    );
+                }
+            });
+        }
+    }
+
+    public void getPurposeConsents(final OnLoadComplete callback) {
+        String storedPurposeConsentsJson = sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, null);
+        if (storedPurposeConsentsJson != null) {
+            callback.onLoadCompleted(parsePurposeConsentJson(storedPurposeConsentsJson));
+        } else {
+            loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
+                @Override
+                public void onLoadCompleted(Object result) {
+                    callback.onLoadCompleted(
+                            parsePurposeConsentJson(
+                                    sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, null)
+                            )
+                    );
+                }
+            });
+        }
+    }
+
+    private PurposeConsent[] parsePurposeConsentJson(String json) {
+        try {
+            JSONArray array = new JSONArray(json);
+            PurposeConsent[] results = new PurposeConsent[array.length()];
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject consentJson = array.getJSONObject(i);
+                results[i] = new PurposeConsent(
+                        consentJson.getString("_id"),
+                        consentJson.getString("name")
+                );
+            }
+            return results;
+        } catch (JSONException e) {
+            // Should handle error here
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void loadAndStoreCustomVendorAndPurposeConsents(final String[] customVendorIdsToRequest, final OnLoadComplete callback) {
         getSiteId(new OnLoadComplete() {
+
             @Override
             public void onLoadCompleted(Object result) {
                 if (result == null) {
-                    callback.onLoadCompleted(new boolean[customVendorIds.length]);
+                    callback.onLoadCompleted(null);
                     return;
                 }
                 String siteId = (String) result;
 
-
-                boolean[] results1 = new boolean[customVendorIds.length];
-                // read results from local storage if present first
-                List<String> customVendorIdsToRequest = new ArrayList<>();
-                for (int i = 0; i < customVendorIds.length; i++) {
-                    String customVendorId = customVendorIds[i];
-                    String storedConsentData = sharedPref.getString(CUSTOMER_VENDOR_PREFIX + customVendorId, null);
-                    if (storedConsentData == null) {
-                        customVendorIdsToRequest.add(customVendorId);
-                    } else {
-                        results1[i] = Boolean.getBoolean(storedConsentData);
-                    }
-                }
-                if (customVendorIdsToRequest.size() == 0) {
-                    callback.onLoadCompleted(results1);
-                    return;
-                }
-
                 String consentParam = consentUUID == null ? "[CONSENT_UUID]" : consentUUID;
                 String euconsentParam = euconsent == null ? "[EUCONSENT]" : euconsent;
                 String customVendorIdString = URLEncoder.encode(TextUtils.join(",", customVendorIdsToRequest));
-                final boolean[] results2 = results1;
-                load("https://" + cmpDomain + "/consent/v2/" + siteId + "/custom-vendors?customVendorIds=" + customVendorIdString + "&consentUUID=" + consentParam + "&euconsent=" + euconsentParam,
-                        new OnLoadComplete(){
+                String url = "https://" + cmpDomain + "/consent/v2/" + siteId +
+                        "/custom-vendors?customVendorIds=" + customVendorIdString +
+                        "&consentUUID=" + consentParam +
+                        "&euconsent=" + euconsentParam;
+                load(url, new OnLoadComplete() {
 
-                            @Override
-                            public void onLoadCompleted(Object result) {
-                                String response = (String)result;
+                    @Override
+                    public void onLoadCompleted(Object result) {
+                        String response = (String) result;
 
-                                boolean[] results = results2;
+                        JSONArray consentedCustomVendors;
+                        JSONArray consentedCustomPurposes;
 
-                                JSONArray consentedCustomVendors;
-                                try {
-                                    JSONObject consentedCustomData = new JSONObject(response);
-                                    consentedCustomVendors = consentedCustomData.getJSONArray("consentedVendors");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    callback.onLoadCompleted(results);
-                                    return;
-                                }
+                        try {
+                            JSONObject consentedCustomData = new JSONObject(response);
+                            consentedCustomVendors = consentedCustomData.getJSONArray("consentedVendors");
+                            consentedCustomPurposes = consentedCustomData.getJSONArray("consentedPurposes");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            callback.onLoadCompleted(null);
+                            return;
+                        }
 
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                // write results to local storage after reading from endpoint
-                                for (int i = 0; i < consentedCustomVendors.length(); i++) {
-                                    try {
-                                        JSONObject consentedCustomVendor = consentedCustomVendors.getJSONObject(i);
-                                        editor.putString(CUSTOMER_VENDOR_PREFIX + consentedCustomVendor.get("_id"), Boolean.toString(true));
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                editor.commit();
-
-                                for (int i = 0; i < customVendorIds.length; i++) {
-                                    String customVendorId = customVendorIds[i];
-                                    String storedConsentData = sharedPref.getString(CUSTOMER_VENDOR_PREFIX + customVendorId, null);
-                                    if (storedConsentData != null) {
-                                        results[i] = storedConsentData == "true";
-                                    }
-                                }
-                                callback.onLoadCompleted(results);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        // write results to local storage after reading from endpoint
+                        for (int i = 0; i < consentedCustomVendors.length(); i++) {
+                            try {
+                                JSONObject consentedCustomVendor = consentedCustomVendors.getJSONObject(i);
+                                editor.putString(CUSTOM_VENDOR_PREFIX + consentedCustomVendor.get("_id"), Boolean.toString(true));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
-                );
 
+                        editor.putString(CUSTOM_PURPOSE_CONSENTS_JSON, consentedCustomPurposes.toString());
+                        for (int i = 0; i < consentedCustomPurposes.length(); i++) {
+                            try {
+                                JSONObject consentedCustomPurpose = consentedCustomPurposes.getJSONObject(i);
+                                editor.putString(
+                                        CUSTOM_PURPOSE_PREFIX + consentedCustomPurpose.get("_id"), Boolean.toString(true));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        editor.commit();
+                        callback.onLoadCompleted(result);
+                    }
+                });
             }
         });
     }
