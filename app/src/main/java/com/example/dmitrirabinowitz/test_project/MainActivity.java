@@ -16,6 +16,7 @@ import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 
 import com.example.cmplibrary.ConsentLib;
+import com.example.cmplibrary.ConsentLibException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -128,7 +129,11 @@ public class MainActivity extends AppCompatActivity {
 
         // begins rendering of WebView in background until message is displayed at which point
         // WebView will take over view of page
-        cLib.run();
+        try {
+            cLib.run();
+        } catch (ConsentLibException e) {
+            e.printStackTrace();
+        }
 
         // Should set immediately
         Log.i(TAG, "IABConsent_CMPPresent in shared preferences: " + sharedPref.getString(ConsentLib.IAB_CONSENT_CMP_PRESENT, null));
