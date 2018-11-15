@@ -47,12 +47,12 @@ public class ConsentLib {
     public static final String IAB_CONSENT_PARSED_PURPOSE_CONSENTS = "IABConsent_ParsedPurposeConsents";
     public static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
 
-    public static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.cmp.sp-stage.net/";
-    public static final String DEFAULT_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.sourcepoint.mgr.consensu.org/";
-    public static final String DEFAULT_INTERNAL_MMS_DOMAIN = "mms.sp-stage.net";
-    public static final String DEFAULT_MMS_DOMAIN = "mms.sp-prod.net";
-    public static final String DEFAULT_INTERNAL_CMP_DOMAIN = "cmp.sp-stage.net";
-    public static final String DEFAULT_CMP_DOMAIN = "sourcepoint.mgr.consensu.org";
+    private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.cmp.sp-stage.net/";
+    private static final String DEFAULT_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.sourcepoint.mgr.consensu.org/";
+    private static final String DEFAULT_INTERNAL_MMS_DOMAIN = "mms.sp-stage.net";
+    private static final String DEFAULT_MMS_DOMAIN = "mms.sp-prod.net";
+    private static final String DEFAULT_INTERNAL_CMP_DOMAIN = "cmp.sp-stage.net";
+    private static final String DEFAULT_CMP_DOMAIN = "sourcepoint.mgr.consensu.org";
 
     public enum DebugLevel {
         DEBUG,
