@@ -26,13 +26,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.iab.gdpr.consent.VendorConsent;
 import com.iab.gdpr.consent.VendorConsentDecoder;
+
 /**
  * Created by dmitrirabinowitz on 8/15/18.
  */
@@ -46,6 +46,13 @@ public class ConsentLib {
     public static final String IAB_CONSENT_CONSENT_STRING = "IABConsent_ConsentString";
     public static final String IAB_CONSENT_PARSED_PURPOSE_CONSENTS = "IABConsent_ParsedPurposeConsents";
     public static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
+
+    public static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.cmp.sp-stage.net/";
+    public static final String DEFAULT_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.sourcepoint.mgr.consensu.org/";
+    public static final String DEFAULT_INTERNAL_MMS_DOMAIN = "mms.sp-stage.net";
+    public static final String DEFAULT_MMS_DOMAIN = "mms.sp-prod.net";
+    public static final String DEFAULT_INTERNAL_CMP_DOMAIN = "cmp.sp-stage.net";
+    public static final String DEFAULT_CMP_DOMAIN = "sourcepoint.mgr.consensu.org";
 
     public enum DebugLevel {
         DEBUG,
@@ -444,19 +451,21 @@ public class ConsentLib {
         debugLevel = b.debugLevel;
 
         if (b.inAppMessagingPageUrl == null) {
-            inAppMessagingPageUrl = isInternalStage ? "http://in-app-messaging.pm.cmp.sp-stage.net/" : "http://in-app-messaging.pm.sourcepoint.mgr.consensu.org/";
+            inAppMessagingPageUrl = isInternalStage ?
+                    DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL :
+                    DEFAULT_IN_APP_MESSAGING_PAGE_URL;
         } else {
             inAppMessagingPageUrl = b.inAppMessagingPageUrl;
         }
 
         if (b.mmsDomain == null) {
-            mmsDomain = isInternalStage ? "mms.sp-stage.net" : "mms.sp-prod.net";
+            mmsDomain = isInternalStage ? DEFAULT_INTERNAL_MMS_DOMAIN : DEFAULT_MMS_DOMAIN;
         } else {
             mmsDomain = b.mmsDomain;
         }
 
         if (b.cmpDomain == null) {
-            cmpDomain = isInternalStage ? "cmp.sp-stage.net" : "sourcepoint.mgr.consensu.org";
+            cmpDomain = isInternalStage ? DEFAULT_INTERNAL_CMP_DOMAIN : DEFAULT_CMP_DOMAIN;
         } else {
             cmpDomain = b.cmpDomain;
         }
@@ -681,8 +690,6 @@ public class ConsentLib {
                     }
                 }
         );
-
-
     }
 
     public void getCustomVendorConsent(final String customVendorId, final OnLoadComplete callback) {
