@@ -1,19 +1,10 @@
 package com.example.dmitrirabinowitz.test_project;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
-import android.view.View;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.LinearLayout;
 
 import com.example.cmplibrary.ConsentLib;
 import com.example.cmplibrary.ConsentLibException;

@@ -60,7 +60,7 @@ public class ConsentLib {
         TIME,
         WARN,
         ERROR,
-        OFF;
+        OFF
     }
     // visible for grabbing consent from shared preferences
     public static final String EU_CONSENT_KEY = "euconsent";
@@ -89,13 +89,11 @@ public class ConsentLib {
     private final Activity activity;
     private final String siteName;
     private final int accountId;
-    private final String page;
     private final ViewGroup viewGroup;
     private final Callback onReceiveMessageData;
     private final Callback onMessageChoiceSelect;
     private final Callback onInteractionComplete;
     private final boolean isStage;
-    private final boolean isInternalStage;
     private final String inAppMessagingPageUrl;
     private final String mmsDomain;
     private final String cmpDomain;
@@ -441,7 +439,6 @@ public class ConsentLib {
         activity = b.activity;
         siteName = b.siteName;
         accountId = b.accountId;
-        page = b.page;
         onReceiveMessageData = b.onReceiveMessageData;
         onMessageChoiceSelect = b.onMessageChoiceSelect;
         onInteractionComplete = b.onInteractionComplete;
