@@ -9,4 +9,7 @@ public class ConsentLibException extends Exception {
     }
 
     public class NoInternetConnectionException extends ConsentLibException {}
+    public class ApiException extends ConsentLibException {
+        public ApiException(String message) { super(message); }
+    }
 }

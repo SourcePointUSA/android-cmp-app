@@ -157,7 +157,7 @@ public class ConsentLib {
     }
 
     public interface OnLoadComplete {
-        void onLoadCompleted(Object result);
+        void onLoadCompleted(Object result) throws ConsentLibException.ApiException;
     }
 
     /*
@@ -427,7 +427,7 @@ public class ConsentLib {
             }
         }
 
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(String result) throws ConsentLibException.ApiException {
             //Log.i(TAG, "Successfully loaded " + this.urlToLoad + ". result: " + result);
             listener.onLoadCompleted(result);
         }
@@ -563,6 +563,10 @@ public class ConsentLib {
         return "http://" + mmsDomain + "/get_site_data?account_id=" + Integer.toString(accountId) + "&href=" + encodedHref;
     }
 
+    private String getGDPRUrl() {
+        return "https://" + cmpDomain + "/consent/v2/gdpr-status";
+    }
+
     private String inAppMessageRequest() {
         List<String> params = new ArrayList<>();
         params.add("_sp_accountId=" + String.valueOf(accountId));
@@ -586,7 +590,9 @@ public class ConsentLib {
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    public void run() throws ConsentLibException.NoInternetConnectionException {
+    public void run() throws
+            ConsentLibException.NoInternetConnectionException,
+            ConsentLibException.ApiException {
         if(!isThereInternetConnection()) {
             throw new ConsentLibException().new NoInternetConnectionException();
         }
@@ -640,21 +646,17 @@ public class ConsentLib {
         editor.commit();
     }
 
-    private void setSubjectToGDPR() {
-        String currentVal = sharedPref.getString(IAB_CONSENT_SUBJECT_TO_GDPR, null);
-        if (currentVal != null) {
-            return;
-        }
-        String url = "https://" + cmpDomain + "/consent/v2/gdpr-status";
+    private void setSubjectToGDPR() throws ConsentLibException.ApiException {
+        if (sharedPref.getString(IAB_CONSENT_SUBJECT_TO_GDPR, null) != null) { return; }
 
-        load(url, new OnLoadComplete() {
+        load(getGDPRUrl(), new OnLoadComplete() {
             @Override
-            public void onLoadCompleted(Object result) {
+            public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
                 try {
-                    String gdprApplies= new JSONObject((String) result).getString("gdprApplies");
+                    String gdprApplies = new JSONObject((String) result).getString("gdprApplies");
                     setSharedPreference(IAB_CONSENT_SUBJECT_TO_GDPR, gdprApplies.equals("true") ? "1" : "0");
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    throw new ConsentLibException().new ApiException("Failed to get GDPR status. Response from CMP Domain ("+cmpDomain+"):"+result);
                 }
             }
         });
