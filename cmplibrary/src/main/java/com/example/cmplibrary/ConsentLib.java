@@ -204,9 +204,10 @@ public class ConsentLib {
         private String siteName;
         private String page = "";
         private ViewGroup viewGroup = null;
-        private Callback onReceiveMessageData = null;
-        private Callback onMessageChoiceSelect = null;
-        private Callback onInteractionComplete = null;
+        private Callback noOpCallback = new Callback() { @Override public void run(ConsentLib c) { } };
+        private Callback onReceiveMessageData = noOpCallback;
+        private Callback onMessageChoiceSelect = noOpCallback;
+        private Callback onInteractionComplete = noOpCallback;
         private boolean isStage = false;
         private boolean isInternalStage = false;
         private String inAppMessagingPageUrl = null;
@@ -449,9 +450,7 @@ public class ConsentLib {
                         android.webkit.CookieSyncManager.getInstance().sync();
                     }
 
-                    if (ConsentLib.this.onReceiveMessageData != null) {
-                        ConsentLib.this.onReceiveMessageData.run(ConsentLib.this);
-                    }
+                    ConsentLib.this.onReceiveMessageData.run(ConsentLib.this);
 
                     // show web view once we confirm the message is ready to display
                     if (willShowMessage) {
@@ -474,10 +473,7 @@ public class ConsentLib {
             }
 
             ConsentLib.this.choiceType = choiceType;
-
-            if (ConsentLib.this.onMessageChoiceSelect != null) {
-                ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this);
-            }
+            ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this);
         }
 
         // called when interaction with message is complete
@@ -888,10 +884,7 @@ public class ConsentLib {
     }
 
     private void finish() {
-        if (onInteractionComplete != null) {
-            onInteractionComplete.run(this);
-        }
-
+        onInteractionComplete.run(this);
         viewGroup.removeView(webView);
     }
 }
