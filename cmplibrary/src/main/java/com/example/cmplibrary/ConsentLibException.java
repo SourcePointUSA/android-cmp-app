@@ -1,6 +1,7 @@
 package com.example.cmplibrary;
 
 public class ConsentLibException extends Exception {
+    public ConsentLibException() { super(); }
     public ConsentLibException(String message) { super(message); }
 
     public class BuildException extends ConsentLibException {
