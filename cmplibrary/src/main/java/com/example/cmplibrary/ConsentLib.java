@@ -468,7 +468,11 @@ public class ConsentLib {
 
         // called when a choice is selected on the message
         @JavascriptInterface
-        public void onMessageChoiceSelect(int choiceType) {
+        public void onMessageChoiceSelect(int choiceType) throws ConsentLibException.NoInternetConnectionException {
+            if(!ConsentLib.this.isThereInternetConnection()) {
+                throw new ConsentLibException().new NoInternetConnectionException();
+            }
+
             ConsentLib.this.choiceType = choiceType;
 
             if (ConsentLib.this.onMessageChoiceSelect != null) {
@@ -747,7 +751,7 @@ public class ConsentLib {
 
         loadAndStoreCustomVendorAndPurposeConsents(customVendorIdsToRequest.toArray(new String[0]), new OnLoadComplete() {
             @Override
-            public void onLoadCompleted(Object _) {
+            public void onLoadCompleted(Object _result) {
                 boolean[] results = finalStoredResults;
                 for (int i = 0; i < customVendorIds.length; i++) {
                     String customVendorId = customVendorIds[i];
