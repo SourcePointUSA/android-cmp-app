@@ -71,9 +71,9 @@ public class ConsentLib {
     public static final int MAX_PURPOSE_ID = 24;
 
     public Integer choiceType = null;
-    public String euconsent = null;
+    public String euconsent;
     public JSONObject[] customConsent = null;
-    public String consentUUID = null;
+    public String consentUUID;
 
     ////
     //// Private
@@ -369,7 +369,7 @@ public class ConsentLib {
 
 
     class LoadTask extends AsyncTask<String, Void, String> {
-        private OnLoadComplete listener;
+        private final OnLoadComplete listener;
         private String urlToLoad;
 
         public LoadTask(OnLoadComplete listener) {
@@ -491,8 +491,8 @@ public class ConsentLib {
 
 
     public class PurposeConsent {
-        public String name;
-        public String id;
+        public final String name;
+        public final String id;
         public PurposeConsent(String id, String name) {
             this.name = name;
             this.id = id;
@@ -814,12 +814,11 @@ public class ConsentLib {
                 String consentParam = consentUUID == null ? "[CONSENT_UUID]" : consentUUID;
                 String euconsentParam = euconsent == null ? "[EUCONSENT]" : euconsent;
                 String customVendorIdString = URLEncoder.encode(TextUtils.join(",", customVendorIdsToRequest));
-                String url = "https://" + cmpDomain + "/consent/v2/" + siteId +
+                final String consentUrl = "https://" + cmpDomain + "/content/v2/" + siteId +
                         "/custom-vendors?customVendorIds=" + customVendorIdString +
                         "&consentUUID=" + consentParam +
                         "&euconsent=" + euconsentParam;
-                load(url, new OnLoadComplete() {
-
+                load(consentUrl, new OnLoadComplete() {
                     @Override
                     public void onLoadCompleted(Object result) {
                         String response = (String) result;
