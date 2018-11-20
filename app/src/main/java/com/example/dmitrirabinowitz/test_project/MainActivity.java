@@ -56,14 +56,6 @@ public class MainActivity extends AppCompatActivity {
                     .setTargetingParam("c", 100)
                     // optional, sets debug level defaults to OFF
                     .setDebugLevel(ConsentLib.DebugLevel.DEBUG)
-                    // optional, callback triggered when message data is loaded when called message data
-                    // will be available as String at cLib.msgJSON
-                    .setOnReceiveMessageData(new ConsentLib.Callback() {
-                        @Override
-                        public void run(ConsentLib c) {
-                            Log.i(TAG, "msgJSON from backend: " + c.msgJSON);
-                        }
-                    })
                     // optional, callback triggered when message choice is selected when called choice
                     // type will be available as Integer at cLib.choiceType
                     .setOnMessageChoiceSelect(new ConsentLib.Callback() {

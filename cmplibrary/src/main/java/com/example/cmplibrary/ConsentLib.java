@@ -70,8 +70,6 @@ public class ConsentLib {
     public static final String CONSENT_UUID_KEY = "consentUUID";
     public static final int MAX_PURPOSE_ID = 24;
 
-
-    public String msgJSON = null;
     public Integer choiceType = null;
     public String euconsent = null;
     public JSONObject[] customConsent = null;
@@ -93,7 +91,6 @@ public class ConsentLib {
     private final String siteName;
     private final int accountId;
     private final ViewGroup viewGroup;
-    private final Callback onReceiveMessageData;
     private final Callback onMessageChoiceSelect;
     private final Callback onInteractionComplete;
     private final boolean isStage;
@@ -168,8 +165,6 @@ public class ConsentLib {
 
         BuildStep setViewGroup(ViewGroup v);
 
-        BuildStep setOnReceiveMessageData(Callback c);
-
         BuildStep setOnMessageChoiceSelect(Callback c);
 
         BuildStep setOnInteractionComplete(Callback c);
@@ -204,8 +199,7 @@ public class ConsentLib {
         private String siteName;
         private String page = "";
         private ViewGroup viewGroup = null;
-        private Callback noOpCallback = new Callback() { @Override public void run(ConsentLib c) { } };
-        private Callback onReceiveMessageData = noOpCallback;
+        private final Callback noOpCallback = new Callback() { @Override public void run(ConsentLib c) { } };
         private Callback onMessageChoiceSelect = noOpCallback;
         private Callback onInteractionComplete = noOpCallback;
         private boolean isStage = false;
@@ -242,11 +236,6 @@ public class ConsentLib {
 
         public BuildStep setViewGroup(ViewGroup v) {
             viewGroup = v;
-            return this;
-        }
-
-        public BuildStep setOnReceiveMessageData(Callback c) {
-            onReceiveMessageData = c;
             return this;
         }
 
@@ -434,12 +423,9 @@ public class ConsentLib {
     }
 
     private class MessageInterface {
-
-        // called when message loads
+        // called when message loads, brings the WebView to the front when the message is ready
         @JavascriptInterface
-        public void onReceiveMessageData(final boolean willShowMessage, String msgJSON) {
-            ConsentLib.this.msgJSON = msgJSON;
-
+        public void onReceiveMessageData(final boolean willShowMessage, String _msgJSON) {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -450,9 +436,6 @@ public class ConsentLib {
                         android.webkit.CookieSyncManager.getInstance().sync();
                     }
 
-                    ConsentLib.this.onReceiveMessageData.run(ConsentLib.this);
-
-                    // show web view once we confirm the message is ready to display
                     if (willShowMessage) {
                         webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
                         webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -536,7 +519,6 @@ public class ConsentLib {
         activity = b.activity;
         siteName = b.siteName;
         accountId = b.accountId;
-        onReceiveMessageData = b.onReceiveMessageData;
         onMessageChoiceSelect = b.onMessageChoiceSelect;
         onInteractionComplete = b.onInteractionComplete;
         isStage = b.isStage;
