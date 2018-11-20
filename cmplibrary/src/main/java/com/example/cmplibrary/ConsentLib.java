@@ -320,7 +320,7 @@ public class ConsentLib {
             isRequired("site name", siteName);
         }
 
-        private void setDefaults() {
+        private void setDefaults () throws ConsentLibException.BuildException {
             if (inAppMessagingPageUrl == null) {
                 inAppMessagingPageUrl = isInternalStage ?
                         DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL :
@@ -341,8 +341,7 @@ public class ConsentLib {
                 if (view instanceof ViewGroup) {
                     viewGroup = (ViewGroup) view;
                 } else {
-                    viewGroup = null;
-                    Log.e(TAG, "Current window not a ViewGroup can't render WebView");
+                    throw new ConsentLibException().new BuildException("Current window is not a ViewGroup, can't render WebView");
                 }
             }
         }
