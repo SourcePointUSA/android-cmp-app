@@ -26,13 +26,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.iab.gdpr.consent.VendorConsent;
 import com.iab.gdpr.consent.VendorConsentDecoder;
+
 /**
  * Created by dmitrirabinowitz on 8/15/18.
  */
@@ -47,13 +47,20 @@ public class ConsentLib {
     public static final String IAB_CONSENT_PARSED_PURPOSE_CONSENTS = "IABConsent_ParsedPurposeConsents";
     public static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
 
+    private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.cmp.sp-stage.net/";
+    private static final String DEFAULT_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.sourcepoint.mgr.consensu.org/";
+    private static final String DEFAULT_INTERNAL_MMS_DOMAIN = "mms.sp-stage.net";
+    private static final String DEFAULT_MMS_DOMAIN = "mms.sp-prod.net";
+    private static final String DEFAULT_INTERNAL_CMP_DOMAIN = "cmp.sp-stage.net";
+    private static final String DEFAULT_CMP_DOMAIN = "sourcepoint.mgr.consensu.org";
+
     public enum DebugLevel {
         DEBUG,
         INFO,
         TIME,
         WARN,
         ERROR,
-        OFF;
+        OFF
     }
     // visible for grabbing consent from shared preferences
     public static final String EU_CONSENT_KEY = "euconsent";
@@ -82,24 +89,46 @@ public class ConsentLib {
     private final Activity activity;
     private final String siteName;
     private final int accountId;
-    private final String page;
     private final ViewGroup viewGroup;
     private final Callback onReceiveMessageData;
     private final Callback onMessageChoiceSelect;
     private final Callback onInteractionComplete;
     private final boolean isStage;
-    private final boolean isInternalStage;
     private final String inAppMessagingPageUrl;
     private final String mmsDomain;
+    private final EncodedAttribute encodedMsgDomain;
     private final String cmpDomain;
-    private final JSONObject targetingParams;
+    private final EncodedAttribute encodedCmpOrigin;
+    private final EncodedAttribute encodedTargetingParams;
     private final DebugLevel debugLevel;
+    private final EncodedAttribute encodedHref;
 
     private final SharedPreferences sharedPref;
 
     private android.webkit.CookieManager cm;
 
     private WebView webView;
+
+    private static class EncodedAttribute {
+        private String value;
+
+        public EncodedAttribute(String name, String value) throws ConsentLibException {
+            this.value = encode(name, value);
+        }
+
+        private String encode(String attrName, String attrValue) throws ConsentLibException {
+            try {
+                return URLEncoder.encode(attrValue, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new ConsentLibException("Unable to encode "+attrName+", with the value: "+attrValue);
+            }
+        }
+
+        public String getValue() { return value; }
+
+        @Override
+        public String toString() { return getValue(); }
+    }
 
     ////
     //// Interfaces
@@ -152,13 +181,13 @@ public class ConsentLib {
 
         BuildStep setCmpDomain(String cmpDomain);
 
-        BuildStep setTargetingParam(String key, Integer val);
+        BuildStep setTargetingParam(String key, Integer val) throws ConsentLibException.BuildException ;
 
-        BuildStep setTargetingParam(String key, String val);
+        BuildStep setTargetingParam(String key, String val) throws ConsentLibException.BuildException ;
 
         BuildStep setDebugLevel(DebugLevel l);
 
-        ConsentLib build();
+        ConsentLib build() throws ConsentLibException.BuildException;
     }
 
 
@@ -180,7 +209,11 @@ public class ConsentLib {
         private String inAppMessagingPageUrl = null;
         private String mmsDomain = null;
         private String cmpDomain = null;
+        private EncodedAttribute msgDomain = null;
+        private EncodedAttribute cmpOrign = null;
+        private EncodedAttribute href = null;
         private JSONObject targetingParams = new JSONObject();
+        private EncodedAttribute targetingParamsString = null;
         private DebugLevel debugLevel = DebugLevel.OFF;
 
         public AccountIdStep setActivity(Activity a) {
@@ -248,19 +281,22 @@ public class ConsentLib {
             return this;
         }
 
-        public BuildStep setTargetingParam(String key, Integer val) {
+        public BuildStep setTargetingParam(String key, Integer val)
+                throws ConsentLibException.BuildException  {
             return setTargetingParam(key, (Object) val);
         }
 
-        public BuildStep setTargetingParam(String key, String val) {
+        public BuildStep setTargetingParam(String key, String val)
+                throws ConsentLibException.BuildException {
             return setTargetingParam(key, (Object) val);
         }
 
-        private BuildStep setTargetingParam(String key, Object val) {
+        private BuildStep setTargetingParam(String key, Object val) throws ConsentLibException.BuildException {
             try {
                 this.targetingParams.put(key, val);
             } catch (JSONException e) {
-                e.printStackTrace();
+                throw new ConsentLibException()
+                        .new BuildException("error parsing targeting param, key: "+key+" value: "+val);
             }
             return this;
         }
@@ -270,7 +306,70 @@ public class ConsentLib {
             return this;
         }
 
-        public ConsentLib build() {
+        private void setCmpOrign() throws ConsentLibException {
+            cmpOrign = new EncodedAttribute("cmpOrigin", "//" + cmpDomain);
+        }
+
+        private void setMsgDomain() throws ConsentLibException {
+             msgDomain = new EncodedAttribute("mmsDomain", "//" + mmsDomain);
+        }
+
+        private void setTargetingParamsString() throws ConsentLibException {
+            targetingParamsString = new EncodedAttribute("targetingParams", targetingParams.toString());
+        }
+
+        private void setHref() throws ConsentLibException {
+            href = new EncodedAttribute("href", "http://" + siteName + "/" + page);
+        }
+
+        private void isRequired(String attrName, Object value) throws ConsentLibException.BuildException {
+            if(value == null) { throw new ConsentLibException().new BuildException(attrName + " is missing"); }
+        }
+
+        private void validate() throws ConsentLibException.BuildException {
+            isRequired("activity", activity);
+            isRequired("account Id", accountId);
+            isRequired("site name", siteName);
+        }
+
+        private void setDefaults () throws ConsentLibException.BuildException {
+            if (inAppMessagingPageUrl == null) {
+                inAppMessagingPageUrl = isInternalStage ?
+                        DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL :
+                        DEFAULT_IN_APP_MESSAGING_PAGE_URL;
+            }
+
+            if (mmsDomain == null) {
+                mmsDomain = isInternalStage ? DEFAULT_INTERNAL_MMS_DOMAIN : DEFAULT_MMS_DOMAIN;
+            }
+
+            if (cmpDomain == null) {
+                cmpDomain = isInternalStage ? DEFAULT_INTERNAL_CMP_DOMAIN : DEFAULT_CMP_DOMAIN;
+            }
+
+            if (viewGroup == null) {
+                // render on top level activity view if no viewGroup specified
+                View view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+                if (view instanceof ViewGroup) {
+                    viewGroup = (ViewGroup) view;
+                } else {
+                    throw new ConsentLibException().new BuildException("Current window is not a ViewGroup, can't render WebView");
+                }
+            }
+        }
+
+        public ConsentLib build() throws ConsentLibException.BuildException {
+            try {
+                setDefaults();
+                setCmpOrign();
+                setMsgDomain();
+                setTargetingParamsString();
+                setHref();
+                validate();
+            } catch (ConsentLibException e) {
+                throw new ConsentLibException().new BuildException(e.getMessage());
+            }
+
             return new ConsentLib(this);
         }
     }
@@ -434,45 +533,20 @@ public class ConsentLib {
         activity = b.activity;
         siteName = b.siteName;
         accountId = b.accountId;
-        page = b.page;
         onReceiveMessageData = b.onReceiveMessageData;
         onMessageChoiceSelect = b.onMessageChoiceSelect;
         onInteractionComplete = b.onInteractionComplete;
         isStage = b.isStage;
-        isInternalStage = b.isInternalStage;
-        targetingParams = b.targetingParams;
+        encodedTargetingParams = b.targetingParamsString;
         debugLevel = b.debugLevel;
+        inAppMessagingPageUrl = b.inAppMessagingPageUrl;
+        mmsDomain = b.mmsDomain;
+        cmpDomain = b.cmpDomain;
+        viewGroup = b.viewGroup;
+        encodedCmpOrigin = b.cmpOrign;
+        encodedMsgDomain = b.msgDomain;
+        encodedHref = b.href;
 
-        if (b.inAppMessagingPageUrl == null) {
-            inAppMessagingPageUrl = isInternalStage ? "http://in-app-messaging.pm.cmp.sp-stage.net/" : "http://in-app-messaging.pm.sourcepoint.mgr.consensu.org/";
-        } else {
-            inAppMessagingPageUrl = b.inAppMessagingPageUrl;
-        }
-
-        if (b.mmsDomain == null) {
-            mmsDomain = isInternalStage ? "mms.sp-stage.net" : "mms.sp-prod.net";
-        } else {
-            mmsDomain = b.mmsDomain;
-        }
-
-        if (b.cmpDomain == null) {
-            cmpDomain = isInternalStage ? "cmp.sp-stage.net" : "sourcepoint.mgr.consensu.org";
-        } else {
-            cmpDomain = b.cmpDomain;
-        }
-
-        if (b.viewGroup == null) {
-            // render on top level activity view if no viewGroup specified
-            View view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
-            if (view instanceof ViewGroup) {
-                viewGroup = (ViewGroup) view;
-            } else {
-                viewGroup = null;
-                Log.e(TAG, "Current window not a ViewGroup can't render WebView");
-            }
-        } else {
-            viewGroup = b.viewGroup;
-        }
 
         // read consent from/store consent to default shared preferences
         // per gdpr framework: https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/852cf086fdac6d89097fdec7c948e14a2121ca0e/In-App%20Reference/Android/app/src/main/java/com/smaato/soma/cmpconsenttooldemoapp/cmpconsenttool/storage/CMPStorage.java
@@ -480,7 +554,25 @@ public class ConsentLib {
 
         euconsent = sharedPref.getString(EU_CONSENT_KEY, null);
         consentUUID = sharedPref.getString(CONSENT_UUID_KEY, null);
+    }
 
+    private String getSiteIdUrl() {
+        return "http://" + mmsDomain + "/get_site_data?account_id=" + Integer.toString(accountId) + "&href=" + encodedHref;
+    }
+
+    private String inAppMessageRequest() {
+        List<String> params = new ArrayList<>();
+        params.add("_sp_accountId=" + String.valueOf(accountId));
+        params.add("_sp_cmp_inApp=true");
+        params.add("_sp_writeFirstPartyCookies=true");
+        params.add("_sp_siteHref=" + encodedHref);
+        params.add("_sp_msg_domain=" + encodedMsgDomain);
+        params.add("_sp_cmp_origin=" + encodedCmpOrigin);
+        params.add("_sp_msg_targetingParams=" + encodedTargetingParams);
+        params.add("_sp_debug_level=" + debugLevel.name());
+        params.add("_sp_msg_stageCampaign=" + isStage);
+
+        return inAppMessagingPageUrl + "?" + TextUtils.join("&", params);
     }
 
     public void run() {
@@ -512,72 +604,14 @@ public class ConsentLib {
         }
 
         // hide web view while it loads initially
-        ViewGroup.LayoutParams webviewLayoutParams = new ViewGroup.LayoutParams(
-                0,
-                0);
-
-        webView.setLayoutParams(webviewLayoutParams);
+        webView.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
         webView.setBackgroundColor(Color.TRANSPARENT);
-
-        MessageInterface mInterface = new MessageInterface();
-        webView.addJavascriptInterface(mInterface, "JSReceiver");
+        webView.addJavascriptInterface(new MessageInterface(), "JSReceiver");
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl(inAppMessageRequest());
+        webView.setWebViewClient(new WebViewClient());
 
         viewGroup.addView(webView);
-
-        webView.getSettings().setJavaScriptEnabled(true);
-
-        String href = getHref();
-        if (href == null) {
-            return;
-        }
-
-        String msgDomain;
-        try {
-            msgDomain = URLEncoder.encode(mmsDomain, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        String cmpOrigin;
-        try {
-            cmpOrigin = URLEncoder.encode("//" + cmpDomain, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        String targetingParamsJSON;
-        try {
-            targetingParamsJSON = URLEncoder.encode(targetingParams.toString(), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        List<String> params = new ArrayList<>();
-
-        params.add("_sp_accountId=" + String.valueOf(accountId));
-
-        params.add("_sp_cmp_inApp=true");
-
-        params.add("_sp_writeFirstPartyCookies=true");
-
-        params.add("_sp_siteHref=" + href);
-
-        params.add("_sp_msg_domain=" + msgDomain);
-
-        params.add("_sp_cmp_origin=" + cmpOrigin);
-
-        params.add("_sp_msg_targetingParams=" + targetingParamsJSON);
-
-        params.add("_sp_debug_level=" + debugLevel.name());
-
-        params.add("_sp_msg_stageCampaign=" + isStage);
-
-        webView.loadUrl(inAppMessagingPageUrl + "?" + TextUtils.join("&", params));
-
-        webView.setWebViewClient(new WebViewClient());
 
         // Set standard IAB IABConsent_CMPPresent
         setSharedPreference(IAB_CONSENT_CMP_PRESENT, "1");
@@ -592,7 +626,7 @@ public class ConsentLib {
     }
 
     private void setSubjectToGDPR() {
-        String currentVal =  sharedPref.getString(IAB_CONSENT_SUBJECT_TO_GDPR, null);
+        String currentVal = sharedPref.getString(IAB_CONSENT_SUBJECT_TO_GDPR, null);
         if (currentVal != null) {
             return;
         }
@@ -633,16 +667,6 @@ public class ConsentLib {
         setSharedPreference(IAB_CONSENT_PARSED_VENDOR_CONSENTS, new String(allowedVendors));
     }
 
-    private String getHref() {
-        String href = null;
-        try {
-            href = URLEncoder.encode("http://" + siteName + "/" + page, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return href;
-    }
-
     // get site id corresponding to account id and site name. Read from local storage if present.
     // Write to local storage after getting response.
     private void getSiteId(final OnLoadComplete callback) {
@@ -653,14 +677,9 @@ public class ConsentLib {
             callback.onLoadCompleted(storedSiteId);
             return;
         }
-        String href = getHref();
-        if (href == null) {
-            callback.onLoadCompleted(null);
-            return;
-        }
 
         load(
-                "http://" + mmsDomain + "/get_site_data?account_id=" + Integer.toString(accountId) + "&href=" + href,
+                getSiteIdUrl(),
                 new OnLoadComplete() {
                     @Override
                     public void onLoadCompleted(Object result) {
@@ -677,12 +696,9 @@ public class ConsentLib {
                         editor.putString(siteIdKey, siteId);
                         editor.commit();
                         callback.onLoadCompleted(siteId);
-                        return;
                     }
                 }
         );
-
-
     }
 
     public void getCustomVendorConsent(final String customVendorId, final OnLoadComplete callback) {
