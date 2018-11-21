@@ -800,24 +800,23 @@ public class ConsentLib {
         }
     }
 
-    private void loadAndStoreCustomVendorAndPurposeConsents(final String[] customVendorIdsToRequest, final OnLoadComplete callback) {
+    private String getConsentRequest(String siteId, String[] vendorIds) {
+        String consentParam = consentUUID == null ? "[CONSENT_UUID]" : consentUUID;
+        String euconsentParam = euconsent == null ? "[EUCONSENT]" : euconsent;
+        String customVendorIdString = URLEncoder.encode(TextUtils.join(",", vendorIds));
+
+        return "https://" + cmpDomain + "/consent/v2/" + siteId + "/custom-vendors?"+
+                "customVendorIds=" + customVendorIdString +
+                "&consentUUID=" + consentParam +
+                "&euconsent=" + euconsentParam;
+    }
+
+    private void loadAndStoreCustomVendorAndPurposeConsents(final String[] customVendorIdsToRequest, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         getSiteId(new OnLoadComplete() {
-
             @Override
-            public void onLoadCompleted(Object result) {
-                if (result == null) {
-                    callback.onLoadCompleted(null);
-                    return;
-                }
-                String siteId = (String) result;
+            public void onLoadCompleted(Object siteId) {
+                final String consentUrl = getConsentRequest(siteId.toString(), customVendorIdsToRequest);
 
-                String consentParam = consentUUID == null ? "[CONSENT_UUID]" : consentUUID;
-                String euconsentParam = euconsent == null ? "[EUCONSENT]" : euconsent;
-                String customVendorIdString = URLEncoder.encode(TextUtils.join(",", customVendorIdsToRequest));
-                final String consentUrl = "https://" + cmpDomain + "/content/v2/" + siteId +
-                        "/custom-vendors?customVendorIds=" + customVendorIdString +
-                        "&consentUUID=" + consentParam +
-                        "&euconsent=" + euconsentParam;
                 load(consentUrl, new OnLoadComplete() {
                     @Override
                     public void onLoadCompleted(Object result) {
