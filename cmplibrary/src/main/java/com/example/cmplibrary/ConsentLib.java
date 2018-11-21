@@ -96,18 +96,39 @@ public class ConsentLib {
     private final boolean isStage;
     private final String inAppMessagingPageUrl;
     private final String mmsDomain;
-    private final String msgDomain;
+    private final EncodedAttribute encodedMsgDomain;
     private final String cmpDomain;
-    private final String cmpOrigin;
-    private final String targetingParamsString;
+    private final EncodedAttribute encodedCmpOrigin;
+    private final EncodedAttribute encodedTargetingParams;
     private final DebugLevel debugLevel;
-    private final String href;
+    private final EncodedAttribute encodedHref;
 
     private final SharedPreferences sharedPref;
 
     private android.webkit.CookieManager cm;
 
     private WebView webView;
+
+    private static class EncodedAttribute {
+        private String value;
+
+        public EncodedAttribute(String name, String value) throws ConsentLibException {
+            this.value = encode(name, value);
+        }
+
+        private String encode(String attrName, String attrValue) throws ConsentLibException {
+            try {
+                return URLEncoder.encode(attrValue, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new ConsentLibException("Unable to encode "+attrName+", with the value: "+attrValue);
+            }
+        }
+
+        public String getValue() { return value; }
+
+        @Override
+        public String toString() { return getValue(); }
+    }
 
     ////
     //// Interfaces
@@ -188,11 +209,11 @@ public class ConsentLib {
         private String inAppMessagingPageUrl = null;
         private String mmsDomain = null;
         private String cmpDomain = null;
-        private String msgDomain = null;
-        private String cmpOrign = null;
-        private String href = null;
+        private EncodedAttribute msgDomain = null;
+        private EncodedAttribute cmpOrign = null;
+        private EncodedAttribute href = null;
         private JSONObject targetingParams = new JSONObject();
-        private String targetingParamsString = null;
+        private EncodedAttribute targetingParamsString = null;
         private DebugLevel debugLevel = DebugLevel.OFF;
 
         public AccountIdStep setActivity(Activity a) {
@@ -285,29 +306,20 @@ public class ConsentLib {
             return this;
         }
 
-        private String encode(String attrName, String attrValue) throws ConsentLibException.BuildException {
-            try {
-                return URLEncoder.encode(attrValue, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new ConsentLibException()
-                        .new BuildException("Unable to encode "+attrName+", with the value: "+attrValue);
-            }
+        private void setCmpOrign() throws ConsentLibException {
+            cmpOrign = new EncodedAttribute("cmpOrigin", "//" + cmpDomain);
         }
 
-        private void setCmpOrign() throws ConsentLibException.BuildException {
-            cmpOrign = encode("cmpOrigin", "//" + cmpDomain);
+        private void setMsgDomain() throws ConsentLibException {
+             msgDomain = new EncodedAttribute("mmsDomain", "//" + mmsDomain);
         }
 
-        private void setMsgDomain() throws ConsentLibException.BuildException {
-             msgDomain = encode("mmsDomain", mmsDomain);
+        private void setTargetingParamsString() throws ConsentLibException {
+            targetingParamsString = new EncodedAttribute("targetingParams", targetingParams.toString());
         }
 
-        private void setTargetingParamsString() throws ConsentLibException.BuildException {
-            targetingParamsString = encode("targetingParams", targetingParams.toString());
-        }
-
-        private void setHref() throws ConsentLibException.BuildException {
-            href = encode("href", "http://" + siteName + "/" + page);
+        private void setHref() throws ConsentLibException {
+            href = new EncodedAttribute("href", "http://" + siteName + "/" + page);
         }
 
         private void isRequired(String attrName, Object value) throws ConsentLibException.BuildException {
@@ -347,12 +359,16 @@ public class ConsentLib {
         }
 
         public ConsentLib build() throws ConsentLibException.BuildException {
-            setDefaults();
-            setCmpOrign();
-            setMsgDomain();
-            setTargetingParamsString();
-            setHref();
-            validate();
+            try {
+                setDefaults();
+                setCmpOrign();
+                setMsgDomain();
+                setTargetingParamsString();
+                setHref();
+                validate();
+            } catch (ConsentLibException e) {
+                throw new ConsentLibException().new BuildException(e.getMessage());
+            }
 
             return new ConsentLib(this);
         }
@@ -521,15 +537,15 @@ public class ConsentLib {
         onMessageChoiceSelect = b.onMessageChoiceSelect;
         onInteractionComplete = b.onInteractionComplete;
         isStage = b.isStage;
-        targetingParamsString = b.targetingParamsString;
+        encodedTargetingParams = b.targetingParamsString;
         debugLevel = b.debugLevel;
         inAppMessagingPageUrl = b.inAppMessagingPageUrl;
         mmsDomain = b.mmsDomain;
         cmpDomain = b.cmpDomain;
         viewGroup = b.viewGroup;
-        cmpOrigin = b.cmpOrign;
-        msgDomain = b.msgDomain;
-        href = b.href;
+        encodedCmpOrigin = b.cmpOrign;
+        encodedMsgDomain = b.msgDomain;
+        encodedHref = b.href;
 
 
         // read consent from/store consent to default shared preferences
@@ -541,7 +557,7 @@ public class ConsentLib {
     }
 
     private String getSiteIdUrl() {
-        return "http://" + mmsDomain + "/get_site_data?account_id=" + Integer.toString(accountId) + "&href=" + href;
+        return "http://" + mmsDomain + "/get_site_data?account_id=" + Integer.toString(accountId) + "&href=" + encodedHref;
     }
 
     private String inAppMessageRequest() {
@@ -549,10 +565,10 @@ public class ConsentLib {
         params.add("_sp_accountId=" + String.valueOf(accountId));
         params.add("_sp_cmp_inApp=true");
         params.add("_sp_writeFirstPartyCookies=true");
-        params.add("_sp_siteHref=" + href);
-        params.add("_sp_msg_domain=" + msgDomain);
-        params.add("_sp_cmp_origin=" + cmpOrigin);
-        params.add("_sp_msg_targetingParams=" + targetingParamsString);
+        params.add("_sp_siteHref=" + encodedHref);
+        params.add("_sp_msg_domain=" + encodedMsgDomain);
+        params.add("_sp_cmp_origin=" + encodedCmpOrigin);
+        params.add("_sp_msg_targetingParams=" + encodedTargetingParams);
         params.add("_sp_debug_level=" + debugLevel.name());
         params.add("_sp_msg_stageCampaign=" + isStage);
 
