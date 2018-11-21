@@ -81,31 +81,35 @@ public class MainActivity extends AppCompatActivity {
                             Log.i(TAG, "IABConsent_ParsedPurposeConsents in shared preferences: " + sharedPref.getString(ConsentLib.IAB_CONSENT_PARSED_PURPOSE_CONSENTS, null));
                             Log.i(TAG, "IABConsent_ParsedVendorConsents in shared preferences: " + sharedPref.getString(ConsentLib.IAB_CONSENT_PARSED_VENDOR_CONSENTS, null));
 
-                            c.getCustomVendorConsents(
-                                    new String[]{"5bc76807196d3c5730cbab05", "5bc768d8196d3c5730cbab06"},
-                                    new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
-                                            Log.i(TAG, "custom vendor consent 1: " + ((boolean[]) result)[0]);
-                                            Log.i(TAG, "custom vendor consent 2: " + ((boolean[]) result)[1]);
-                                        }
-                                    });
-
-                            c.getPurposeConsents(
-                                    new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
-                                            ConsentLib.PurposeConsent[] results = (ConsentLib.PurposeConsent[])result;
-                                            for (ConsentLib.PurposeConsent purpose : results) {
-                                                Log.i(TAG, "Consented to purpose: " + purpose.name);
+                            try {
+                                c.getCustomVendorConsents(
+                                        new String[]{"5bc76807196d3c5730cbab05", "5bc768d8196d3c5730cbab06"},
+                                        new ConsentLib.OnLoadComplete() {
+                                            public void onLoadCompleted(Object result) {
+                                                Log.i(TAG, "custom vendor consent 1: " + ((boolean[]) result)[0]);
+                                                Log.i(TAG, "custom vendor consent 2: " + ((boolean[]) result)[1]);
                                             }
-                                        }
-                                    });
-                            c.getPurposeConsent(
-                                    "5bc4ac5c6fdabb0010940ab1",
-                                    new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
-                                            Log.i(TAG, "Consented to Measurement purpose: " + ((Boolean) result).toString());
-                                        }
-                                    });
+                                        });
+
+                                c.getPurposeConsents(
+                                        new ConsentLib.OnLoadComplete() {
+                                            public void onLoadCompleted(Object result) {
+                                                ConsentLib.PurposeConsent[] results = (ConsentLib.PurposeConsent[]) result;
+                                                for (ConsentLib.PurposeConsent purpose : results) {
+                                                    Log.i(TAG, "Consented to purpose: " + purpose.name);
+                                                }
+                                            }
+                                        });
+                                c.getPurposeConsent(
+                                        "5bc4ac5c6fdabb0010940ab1",
+                                        new ConsentLib.OnLoadComplete() {
+                                            public void onLoadCompleted(Object result) {
+                                                Log.i(TAG, "Consented to Measurement purpose: " + ((Boolean) result).toString());
+                                            }
+                                        });
+                            } catch (ConsentLibException e) {
+                                e.printStackTrace();
+                            }
                         }
                     })
                     // generate ConsentLib at this point modifying builder will not do anything
