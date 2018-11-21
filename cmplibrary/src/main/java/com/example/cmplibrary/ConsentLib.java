@@ -368,57 +368,43 @@ public class ConsentLib {
     }
 
 
-    class LoadTask extends AsyncTask<String, Void, String> {
+    class LoadTask extends AsyncTask<String, Void, Object> {
         private final OnLoadComplete listener;
-        private String urlToLoad;
 
         public LoadTask(OnLoadComplete listener) {
             this.listener = listener;
         }
 
-        protected String doInBackground(String... urlString) {
-            URL url;
-            this.urlToLoad = urlString[0];
-            try {
-                url = new URL(urlString[0]);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                return null;
-            }
+        protected Object doInBackground(String... urlString) {
+            Object result = null;
+            HttpURLConnection urlConnection = null;
 
-            HttpURLConnection urlConnection;
             try {
+                URL url = new URL(urlString[0]);
+                urlConnection = null;
                 urlConnection = (HttpURLConnection) url.openConnection();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-
-            try {
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                try {
-                    ByteArrayOutputStream bo = new ByteArrayOutputStream();
-                    int i = in.read();
-                    while (i != -1) {
-                        bo.write(i);
-                        i = in.read();
-                    }
-                    return bo.toString();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
+                InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                int inputData = inputStream.read();
+                while (inputData != -1) {
+                    outputStream.write(inputData);
+                    inputData = inputStream.read();
                 }
+                result = outputStream.toString();
             } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+                result = e;
             } finally {
                 urlConnection.disconnect();
+                return result;
             }
         }
 
-        protected void onPostExecute(String result) throws ConsentLibException.ApiException {
-            //Log.i(TAG, "Successfully loaded " + this.urlToLoad + ". result: " + result);
-            listener.onLoadCompleted(result);
+        protected void onPostExecute(Object result) {
+            try {
+                listener.onLoadCompleted(result);
+            } catch (ConsentLibException.ApiException e) {
+                e.printStackTrace();
+            }
         }
     }
 
