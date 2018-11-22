@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -38,17 +37,69 @@ import com.iab.gdpr.consent.VendorConsent;
 import com.iab.gdpr.consent.VendorConsentDecoder;
 
 /**
- * Created by dmitrirabinowitz on 8/15/18.
+ * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
+ * It offers methods to get custom vendors consents as well as IAB consent purposes.
+ * <pre>{@code
+ *      ConsentLib cLib = ConsentLib.newBuilder()
+ *                     .setActivity(this)
+ *                     .setAccountId(YOUR_ACCOUNT_ID)
+ *                     .setSiteName("A_SITE_NAME")
+ *                     .setOnInteractionComplete(new ConsentLib.Callback() {
+ *                         public void run(ConsentLib c) {
+ *                                 c.getCustomVendorConsents(
+ *                                         new String[]{"VENDOR_ID"},
+ *                                         new ConsentLib.OnLoadComplete() {
+ *                                             public void onLoadCompleted(Object result) {
+ *                                                 Log.i(TAG, "custom vendor consent 1: " + ((boolean[]) result)[0]);
+ *                                             }
+ *                                         });
+ *                                 c.getPurposeConsents(
+ *                                         new ConsentLib.OnLoadComplete() {
+ *                                             public void onLoadCompleted(Object result) {
+ *                                                 ConsentLib.PurposeConsent[] results = (ConsentLib.PurposeConsent[]) result;
+ *                                                 for (ConsentLib.PurposeConsent purpose : results) {
+ *                                                     Log.i(TAG, "Consented to purpose: " + purpose.name);
+ *                                                 }
+ *                                             }
+ *                                         });
+ *                                 c.getPurposeConsent(
+ *                                         "PURPOSE_ID",
+ *                                         new ConsentLib.OnLoadComplete() {
+ *                                             public void onLoadCompleted(Object result) {
+ *                                                 Log.i(TAG, "Consented to PURPOSE: " + ((Boolean) result).toString());
+ *                                             }
+ *                                         });
+ *                         }
+ *                     })
+ *                     .build();
+ *                 cLib.run();
+ * }
+ * </pre>
  */
-
 public class ConsentLib {
-    ////
-    //// Public
-    ////
+    /**
+     * If the user has consent data stored, reading for this key in the shared preferences will return "1"
+     */
     public static final String IAB_CONSENT_CMP_PRESENT = "IABConsent_CMPPresent";
+
+    /**
+     * If the user is subject to GDPR, reading for this key in the shared preferences will return "1" otherwise "0"
+     */
     public static final String IAB_CONSENT_SUBJECT_TO_GDPR = "IABConsent_SubjectToGDPR";
+
+    /**
+     * They key used to store the IAB Consent string for the user in the shared preferences
+     */
     public static final String IAB_CONSENT_CONSENT_STRING = "IABConsent_ConsentString";
+
+    /**
+     * They key used to read and write the parsed IAB Purposes consented by the user in the shared preferences
+     */
     public static final String IAB_CONSENT_PARSED_PURPOSE_CONSENTS = "IABConsent_ParsedPurposeConsents";
+
+    /**
+     * They key used to read and write the parsed IAB Vendor consented by the user in the shared preferences
+     */
     public static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
 
     private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.cmp.sp-stage.net/";
@@ -66,19 +117,21 @@ public class ConsentLib {
         ERROR,
         OFF
     }
+
     // visible for grabbing consent from shared preferences
     public static final String EU_CONSENT_KEY = "euconsent";
     public static final String CONSENT_UUID_KEY = "consentUUID";
     public static final int MAX_PURPOSE_ID = 24;
 
+    /**
+     * After the user has chosen an option in the WebView, this attribute will contain an integer
+     * indicating what was that choice.
+     */
     public Integer choiceType = null;
+
     public String euconsent;
-    public JSONObject[] customConsent = null;
     public String consentUUID;
 
-    ////
-    //// Private
-    ////
     private static final String TAG = "ConsentLib";
 
     private static final String SP_PREFIX = "_sp_";
@@ -131,47 +184,130 @@ public class ConsentLib {
         public String toString() { return getValue(); }
     }
 
-    ////
-    //// Interfaces
-    ////
     public interface Callback {
         void run(ConsentLib c);
     }
 
-    /*
-     * Use step pattern to enforce ConsentLib is built with required parameters
-     * https://www.javacodegeeks.com/2013/05/building-smart-builders.html
+    /**
+     * First step in building ConsentLib
      */
     public interface ActivityStep {
+        /**
+         *  Sets the activity in which the consent WebView will be loaded into.
+         *  This method has to be called first, right after newBuilder()
+         * @param android.app.Activity a
+         * @return ConsentLib.AccountIdStep
+         */
         AccountIdStep setActivity(Activity a);
     }
 
+    /**
+     * Second step in building ConsentLib
+     */
     public interface AccountIdStep {
+        /**
+         *  Sets the account id that will be used to communicate with SourcePoint.
+         *  Your id can be found in the Publisher's portal -> Account.
+         *  This method has to be called right after setActivity
+         * @param int id
+         * @return SiteNameStep - the next build step
+         * @see SiteNameStep
+         */
         SiteNameStep setAccountId(int id);
     }
 
+    /**
+     * Third step in building ConsentLib
+     */
     public interface SiteNameStep {
+        /**
+         *  Sets the site name used to retrieve campaigns, scenarios, etc, from SourcePoint.
+         *  This method has to be called right after setAccountId
+         * @param String s
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         BuildStep setSiteName(String s);
     }
+
 
     public interface OnLoadComplete {
         void onLoadCompleted(Object result) throws ConsentLibException.ApiException;
     }
 
-    /*
-     * Set all optional parameters here and build
+    /**
+     * Optional steps in building ConsentLib
      */
     public interface BuildStep {
+        /**
+         *  <b>Optional</b> Sets the page name in which the WebView was shown. Used for logging only.
+         * @param String p
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         BuildStep setPage(String s);
 
+        /**
+         *  <b>Optional</b> Sets the view group in which WebView will will be rendered into.
+         *  If it's not called or called with null, the MainView will be used instead.
+         *  In case the main view is not a ViewGroup, a BuildException will be thrown during
+         *  when build() is called.
+         * @param String p
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         * @see ConsentLibException.BuildException
+         * @see build
+         */
         BuildStep setViewGroup(ViewGroup v);
 
+        // TODO: add what are the possible choices returned to the Callback
+        /**
+         *  <b>Optional</b> Sets the Callback to be called when the user selects an option on the WebView.
+         *  The selected choice will be available in the instance variable ConsentLib.choiceType
+         * @param ConsentLib.Callback c
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         BuildStep setOnMessageChoiceSelect(Callback c);
 
+        /**
+         *  <b>Optional</b> Sets the Callback to be called when the user finishes interacting with the WebView
+         *  either by closing it, canceling or accepting the terms.
+         *  At this point, the following keys will available populated in the sharedStorage:
+         *  <ul>
+         *      <li>{@link ConsentLib#EU_CONSENT_KEY}</li>
+         *      <li>{@link ConsentLib#CONSENT_UUID_KEY}</li>
+         *      <li>{@link ConsentLib#IAB_CONSENT_SUBJECT_TO_GDPR}</li>
+         *      <li>{@link ConsentLib#IAB_CONSENT_CONSENT_STRING}</li>
+         *      <li>{@link ConsentLib#IAB_CONSENT_PARSED_PURPOSE_CONSENTS}</li>
+         *      <li>{@link ConsentLib#IAB_CONSENT_PARSED_VENDOR_CONSENTS}</li>
+         *  </ul>
+         *  Also at this point, the methods {@link ConsentLib#getCustomVendorConsents},
+         *  {@link ConsentLib#getPurposeConsents} and {@link ConsentLib#getPurposeConsent}
+         *  will also be able to be called from inside the callback.
+         * @param ConsentLib.Callback c
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         BuildStep setOnInteractionComplete(Callback c);
 
+        /**
+         * <b>Optional</b> True for <i>staging</i> campaigns or False for <i>production</i>
+         * campaigns. <b>Default:</b> false
+         * @param boolean st
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         BuildStep setStage(boolean st);
 
+        /**
+         * <b>Optional</b> This parameter refers to SourcePoint's environment itself. True for staging
+         * or false for production.
+         * <b>Default:</b> false
+         * @param boolean st
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         BuildStep setInternalStage(boolean st);
 
         BuildStep setInAppMessagePageUrl(String pageUrl);
@@ -184,15 +320,25 @@ public class ConsentLib {
 
         BuildStep setTargetingParam(String key, String val) throws ConsentLibException.BuildException ;
 
+        /**
+         * <b>Optional</b> Sets the DEBUG level.
+         * <i>(Not implemented yet)</i>
+         * <b>Default</b>{@link DebugLevel#DEBUG}
+         * @param DebugLevel l
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         BuildStep setDebugLevel(DebugLevel l);
 
+        /**
+         * Run internal tasks and build the ConsentLib. This method will validate the
+         * data coming from the previous BuildSteps and throw {@link ConsentLibException.BuildException}
+         * in case something goes wrong.
+         * @return ConsentLib
+         * @throws ConsentLibException.BuildException
+         */
         ConsentLib build() throws ConsentLibException.BuildException;
     }
-
-
-    ////
-    //// Inner classes
-    ////
 
     private static class Builder implements ActivityStep, AccountIdStep, SiteNameStep, BuildStep {
         private Activity activity;
@@ -215,51 +361,136 @@ public class ConsentLib {
         private EncodedAttribute targetingParamsString = null;
         private DebugLevel debugLevel = DebugLevel.OFF;
 
+        /**
+         *  Sets the activity in which ConsentLib will get its context from.
+         *  This method has to be called first, right after newBuilder()
+         * @param android.app.Activity a
+         * @return AccountIdStep - the next build step
+         * @see AccountIdStep
+         */
         public AccountIdStep setActivity(Activity a) {
             activity = a;
             return this;
         }
 
+        /**
+         *  Sets the account id that will be used to communicate with SourcePoint.
+         *  Your id can be found in the Publisher's portal -> Account.
+         *  This method has to be called right after setActivity
+         * @param int id
+         * @return SiteNameStep - the next build step
+         * @see SiteNameStep
+         */
         public SiteNameStep setAccountId(int id) {
             accountId = id;
             return this;
         }
 
+        /**
+         *  Sets the site name used to retrieve campaigns, scenarios, etc, from SourcePoint.
+         *  This method has to be called right after setAccountId
+         * @param String s
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         public BuildStep setSiteName(String s) {
             siteName = s;
             return this;
         }
 
+        /**
+         *  <b>Optional</b> Sets the page name in which the WebView was shown. Used for logging only.
+         * @param String p
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         public BuildStep setPage(String p) {
             page = p;
             return this;
         }
 
+        /**
+         *  <b>Optional</b> Sets the view group in which WebView will will be rendered into.
+         *  If it's not called or called with null, the MainView will be used instead.
+         *  In case the main view is not a ViewGroup, a BuildException will be thrown during
+         *  when build() is called.
+         * @param String p
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         public BuildStep setViewGroup(ViewGroup v) {
             viewGroup = v;
             return this;
         }
 
+        // TODO: add what are the possible choices returned to the Callback
+        /**
+         *  <b>Optional</b> Sets the Callback to be called when the user selects an option on the WebView.
+         *  The selected choice will be available in the instance variable ConsentLib.choiceType
+         * @param ConsentLib.Callback c
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         public BuildStep setOnMessageChoiceSelect(Callback c) {
             onMessageChoiceSelect = c;
             return this;
         }
 
+        /**
+         *  <b>Optional</b> Sets the Callback to be called when the user finishes interacting with the WebView
+         *  either by closing it, canceling or accepting the terms.
+         *  At this point, the following keys will available populated in the sharedStorage:
+         *  <ul>
+         *      <li>{@link ConsentLib#EU_CONSENT_KEY}</li>
+         *      <li>{@link ConsentLib#CONSENT_UUID_KEY}</li>
+         *      <li>{@link ConsentLib#IAB_CONSENT_SUBJECT_TO_GDPR}</li>
+         *      <li>{@link ConsentLib#IAB_CONSENT_CONSENT_STRING}</li>
+         *      <li>{@link ConsentLib#IAB_CONSENT_PARSED_PURPOSE_CONSENTS}</li>
+         *      <li>{@link ConsentLib#IAB_CONSENT_PARSED_VENDOR_CONSENTS}</li>
+         *  </ul>
+         *  Also at this point, the methods {@link ConsentLib#getCustomVendorConsents},
+         *  {@link ConsentLib#getPurposeConsents} and {@link ConsentLib#getPurposeConsent}
+         *  will also be able to be called from inside the callback.
+         * @param ConsentLib.Callback c
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         public BuildStep setOnInteractionComplete(Callback c) {
             onInteractionComplete = c;
             return this;
         }
 
+        /**
+         * <b>Optional</b> True for <i>staging</i> campaigns or False for <i>production</i>
+         * campaigns. <b>Default:</b> false
+         * @param boolean st
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         public BuildStep setStage(boolean st) {
             isStage = st;
             return this;
         }
 
+        /**
+         * <b>Optional</b> This parameter refers to SourcePoint's environment itself. True for staging
+         * or false for production. <b>Default:</b> false
+         * @param boolean st
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         public BuildStep setInternalStage(boolean st) {
             isInternalStage = st;
             return this;
         }
 
+        /**
+         * <b>Optional</b> This parameter refers to SourcePoint's environment itself. True for staging
+         * or false for production. <b>Default:</b> false
+         * @param boolean st
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         public BuildStep setInAppMessagePageUrl(String pageUrl) {
             inAppMessagingPageUrl = pageUrl;
             return this;
@@ -275,6 +506,7 @@ public class ConsentLib {
             return this;
         }
 
+        // TODO: document these.
         public BuildStep setTargetingParam(String key, Integer val)
                 throws ConsentLibException.BuildException  {
             return setTargetingParam(key, (Object) val);
@@ -295,6 +527,14 @@ public class ConsentLib {
             return this;
         }
 
+        /**
+         * <b>Optional</b> Sets the DEBUG level.
+         * <i>(Not implemented yet)</i>
+         * <b>Default</b>{@link DebugLevel#DEBUG}
+         * @param DebugLevel l
+         * @return BuildStep - the next build step
+         * @see BuildStep
+         */
         public BuildStep setDebugLevel(DebugLevel l) {
             debugLevel = l;
             return this;
@@ -352,6 +592,13 @@ public class ConsentLib {
             }
         }
 
+        /**
+         * Run internal tasks and build the ConsentLib. This method will validate the
+         * data coming from the previous BuildSteps and throw {@link ConsentLibException.BuildException}
+         * in case something goes wrong.
+         * @return ConsentLib
+         * @throws ConsentLibException.BuildException
+         */
         public ConsentLib build() throws ConsentLibException.BuildException {
             try {
                 setDefaults();
@@ -367,7 +614,6 @@ public class ConsentLib {
             return new ConsentLib(this);
         }
     }
-
 
     class LoadTask extends AsyncTask<String, Void, Object> {
         private final OnLoadComplete listener;
@@ -476,7 +722,9 @@ public class ConsentLib {
         }
     }
 
-
+    /**
+     * Simple encapsulating class for purpose consents. Contains Purpose Id and Name as attributes;
+     */
     public class PurposeConsent {
         public final String name;
         public final String id;
@@ -486,17 +734,13 @@ public class ConsentLib {
         }
     }
 
-    ////
-    //// Static functons
-    ////
-
+    /**
+     *
+     * @return a new instance of ConsentLib.Builder
+     */
     public static ActivityStep newBuilder() {
         return new Builder();
     }
-
-    ////
-    //// Member Functions
-    ////
 
     private void load(String urlString, OnLoadComplete callback) {
         new LoadTask(callback).execute(urlString);
@@ -559,6 +803,17 @@ public class ConsentLib {
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
+    /**
+     * Communicates with SourcePoint to load the message. It all happens in the background and the WebView
+     * will only show after the message is ready to be displayed (received data from SourcePoint).
+     * The Following keys should will be available in the shared preferences storage after this method
+     * is called:
+     * <ul>
+     *     <li>{@link ConsentLib#IAB_CONSENT_CMP_PRESENT}</li>
+     *     <li>{@link ConsentLib#IAB_CONSENT_SUBJECT_TO_GDPR}</li>
+     * </ul>
+     * @throws ConsentLibException.NoInternetConnectionException
+     */
     public void run() throws ConsentLibException.NoInternetConnectionException {
         if(!isThereInternetConnection()) {
             throw new ConsentLibException().new NoInternetConnectionException();
@@ -689,6 +944,13 @@ public class ConsentLib {
         );
     }
 
+    /**
+     * This method receives a String indicating the custom vendor id and a callback that will be called
+     * with <i>true</i> or <i>false</i> indicating if the user has given consent or not to that vendor.
+     * @param customVendorId
+     * @param callback
+     * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
+     */
     public void getCustomVendorConsent(final String customVendorId, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         getCustomVendorConsents(new String[]{customVendorId}, new OnLoadComplete() {
             @Override
@@ -698,6 +960,16 @@ public class ConsentLib {
         });
     }
 
+    /**
+     * This method receives an Array of Strings representing the custom vendor ids you want to get
+     * the consents for and a callback.<br/>
+     * The callback will be called with an Array of booleans once the data is ready. If the element
+     * <i>i</i> of this array is <i>true</i> it means the user has consented to the vendor index <i>i</i>
+     * from the customVendorIds parameter. Otherwise it will be <i>false</i>.
+     * @param customVendorIds
+     * @param callback
+     * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
+     */
     public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         boolean[] storedResults = new boolean[customVendorIds.length];
         // read results from local storage if present first
@@ -736,6 +1008,14 @@ public class ConsentLib {
 
     }
 
+    /**
+     * This method receives a String indicating the id of a purpose and a callback that will be called
+     * with <i>true</i> or <i>false</i> indicating if the user has given consent or not to that purpose.
+     * @param id
+     * @param callback
+     * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
+     * @see ConsentLib#getPurposeConsents(OnLoadComplete)
+     */
     public void getPurposeConsent(final String id, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         final String storedPurposeConsent = sharedPref.getString(CUSTOM_PURPOSE_PREFIX + id, null);
         if (storedPurposeConsent != null) {
@@ -753,6 +1033,11 @@ public class ConsentLib {
         }
     }
 
+    /**
+     * This method receives a callback which is called with an Array of all the purposes ({@link PurposeConsent}) the user has given consent for.
+     * @param callback
+     * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
+     */
     public void getPurposeConsents(final OnLoadComplete callback) throws ConsentLibException.ApiException {
         String storedPurposeConsentsJson = sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, null);
         if (storedPurposeConsentsJson != null) {
