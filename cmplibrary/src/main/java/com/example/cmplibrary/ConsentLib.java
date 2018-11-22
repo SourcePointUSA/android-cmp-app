@@ -1,8 +1,11 @@
 package com.example.cmplibrary;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -465,7 +468,11 @@ public class ConsentLib {
 
         // called when a choice is selected on the message
         @JavascriptInterface
-        public void onMessageChoiceSelect(int choiceType) {
+        public void onMessageChoiceSelect(int choiceType) throws ConsentLibException.NoInternetConnectionException {
+            if(!ConsentLib.this.isThereInternetConnection()) {
+                throw new ConsentLibException().new NoInternetConnectionException();
+            }
+
             ConsentLib.this.choiceType = choiceType;
 
             if (ConsentLib.this.onMessageChoiceSelect != null) {
@@ -575,7 +582,19 @@ public class ConsentLib {
         return inAppMessagingPageUrl + "?" + TextUtils.join("&", params);
     }
 
-    public void run() {
+    private boolean isThereInternetConnection() {
+        ConnectivityManager manager = (ConnectivityManager)activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(manager == null) { return false; }
+
+        NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
+    public void run() throws ConsentLibException.NoInternetConnectionException {
+        if(!isThereInternetConnection()) {
+            throw new ConsentLibException().new NoInternetConnectionException();
+        }
+
         cm = android.webkit.CookieManager.getInstance();
         final boolean acceptCookie = cm.acceptCookie();
         cm.setAcceptCookie(true);
@@ -732,7 +751,7 @@ public class ConsentLib {
 
         loadAndStoreCustomVendorAndPurposeConsents(customVendorIdsToRequest.toArray(new String[0]), new OnLoadComplete() {
             @Override
-            public void onLoadCompleted(Object _) {
+            public void onLoadCompleted(Object _result) {
                 boolean[] results = finalStoredResults;
                 for (int i = 0; i < customVendorIds.length; i++) {
                     String customVendorId = customVendorIds[i];
