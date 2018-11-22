@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -70,12 +71,10 @@ public class ConsentLib {
     public static final String CONSENT_UUID_KEY = "consentUUID";
     public static final int MAX_PURPOSE_ID = 24;
 
-
-    public String msgJSON = null;
     public Integer choiceType = null;
-    public String euconsent = null;
+    public String euconsent;
     public JSONObject[] customConsent = null;
-    public String consentUUID = null;
+    public String consentUUID;
 
     ////
     //// Private
@@ -93,7 +92,6 @@ public class ConsentLib {
     private final String siteName;
     private final int accountId;
     private final ViewGroup viewGroup;
-    private final Callback onReceiveMessageData;
     private final Callback onMessageChoiceSelect;
     private final Callback onInteractionComplete;
     private final boolean isStage;
@@ -157,7 +155,7 @@ public class ConsentLib {
     }
 
     public interface OnLoadComplete {
-        void onLoadCompleted(Object result);
+        void onLoadCompleted(Object result) throws ConsentLibException.ApiException;
     }
 
     /*
@@ -167,8 +165,6 @@ public class ConsentLib {
         BuildStep setPage(String s);
 
         BuildStep setViewGroup(ViewGroup v);
-
-        BuildStep setOnReceiveMessageData(Callback c);
 
         BuildStep setOnMessageChoiceSelect(Callback c);
 
@@ -204,9 +200,9 @@ public class ConsentLib {
         private String siteName;
         private String page = "";
         private ViewGroup viewGroup = null;
-        private Callback onReceiveMessageData = null;
-        private Callback onMessageChoiceSelect = null;
-        private Callback onInteractionComplete = null;
+        private final Callback noOpCallback = new Callback() { @Override public void run(ConsentLib c) { } };
+        private Callback onMessageChoiceSelect = noOpCallback;
+        private Callback onInteractionComplete = noOpCallback;
         private boolean isStage = false;
         private boolean isInternalStage = false;
         private String inAppMessagingPageUrl = null;
@@ -241,11 +237,6 @@ public class ConsentLib {
 
         public BuildStep setViewGroup(ViewGroup v) {
             viewGroup = v;
-            return this;
-        }
-
-        public BuildStep setOnReceiveMessageData(Callback c) {
-            onReceiveMessageData = c;
             return this;
         }
 
@@ -378,67 +369,50 @@ public class ConsentLib {
     }
 
 
-    class LoadTask extends AsyncTask<String, Void, String> {
-        private OnLoadComplete listener;
-        private String urlToLoad;
+    class LoadTask extends AsyncTask<String, Void, Object> {
+        private final OnLoadComplete listener;
 
         public LoadTask(OnLoadComplete listener) {
             this.listener = listener;
         }
 
-        protected String doInBackground(String... urlString) {
-            URL url;
-            this.urlToLoad = urlString[0];
-            try {
-                url = new URL(urlString[0]);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                return null;
-            }
+        protected Object doInBackground(String... urlString) {
+            Object result = null;
+            HttpURLConnection urlConnection = null;
 
-            HttpURLConnection urlConnection;
             try {
+                URL url = new URL(urlString[0]);
+                urlConnection = null;
                 urlConnection = (HttpURLConnection) url.openConnection();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-
-            try {
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                try {
-                    ByteArrayOutputStream bo = new ByteArrayOutputStream();
-                    int i = in.read();
-                    while (i != -1) {
-                        bo.write(i);
-                        i = in.read();
-                    }
-                    return bo.toString();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
+                InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                int inputData = inputStream.read();
+                while (inputData != -1) {
+                    outputStream.write(inputData);
+                    inputData = inputStream.read();
                 }
+                result = outputStream.toString();
             } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+                result = e;
             } finally {
                 urlConnection.disconnect();
+                return result;
             }
         }
 
-        protected void onPostExecute(String result) {
-            //Log.i(TAG, "Successfully loaded " + this.urlToLoad + ". result: " + result);
-            listener.onLoadCompleted(result);
+        protected void onPostExecute(Object result) {
+            try {
+                listener.onLoadCompleted(result);
+            } catch (ConsentLibException.ApiException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private class MessageInterface {
-
-        // called when message loads
+        // called when message loads, brings the WebView to the front when the message is ready
         @JavascriptInterface
-        public void onReceiveMessageData(final boolean willShowMessage, String msgJSON) {
-            ConsentLib.this.msgJSON = msgJSON;
-
+        public void onReceiveMessageData(final boolean willShowMessage, String _msgJSON) {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -449,11 +423,6 @@ public class ConsentLib {
                         android.webkit.CookieSyncManager.getInstance().sync();
                     }
 
-                    if (ConsentLib.this.onReceiveMessageData != null) {
-                        ConsentLib.this.onReceiveMessageData.run(ConsentLib.this);
-                    }
-
-                    // show web view once we confirm the message is ready to display
                     if (willShowMessage) {
                         webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
                         webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -474,10 +443,7 @@ public class ConsentLib {
             }
 
             ConsentLib.this.choiceType = choiceType;
-
-            if (ConsentLib.this.onMessageChoiceSelect != null) {
-                ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this);
-            }
+            ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this);
         }
 
         // called when interaction with message is complete
@@ -512,8 +478,8 @@ public class ConsentLib {
 
 
     public class PurposeConsent {
-        public String name;
-        public String id;
+        public final String name;
+        public final String id;
         public PurposeConsent(String id, String name) {
             this.name = name;
             this.id = id;
@@ -540,7 +506,6 @@ public class ConsentLib {
         activity = b.activity;
         siteName = b.siteName;
         accountId = b.accountId;
-        onReceiveMessageData = b.onReceiveMessageData;
         onMessageChoiceSelect = b.onMessageChoiceSelect;
         onInteractionComplete = b.onInteractionComplete;
         isStage = b.isStage;
@@ -565,6 +530,10 @@ public class ConsentLib {
 
     private String getSiteIdUrl() {
         return "http://" + mmsDomain + "/get_site_data?account_id=" + Integer.toString(accountId) + "&href=" + encodedHref;
+    }
+
+    private String getGDPRUrl() {
+        return "https://" + cmpDomain + "/consent/v2/gdpr-status";
     }
 
     private String inAppMessageRequest() {
@@ -645,20 +614,16 @@ public class ConsentLib {
     }
 
     private void setSubjectToGDPR() {
-        String currentVal = sharedPref.getString(IAB_CONSENT_SUBJECT_TO_GDPR, null);
-        if (currentVal != null) {
-            return;
-        }
-        String url = "https://" + cmpDomain + "/consent/v2/gdpr-status";
+        if (sharedPref.getString(IAB_CONSENT_SUBJECT_TO_GDPR, null) != null) { return; }
 
-        load(url, new OnLoadComplete() {
+        load(getGDPRUrl(), new OnLoadComplete() {
             @Override
-            public void onLoadCompleted(Object result) {
+            public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
                 try {
-                    String gdprApplies= new JSONObject((String) result).getString("gdprApplies");
+                    String gdprApplies = new JSONObject((String) result).getString("gdprApplies");
                     setSharedPreference(IAB_CONSENT_SUBJECT_TO_GDPR, gdprApplies.equals("true") ? "1" : "0");
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    throw new ConsentLibException().new ApiException("Failed to get GDPR status. Response from CMP Domain ("+cmpDomain+"):"+result);
                 }
             }
         });
@@ -688,7 +653,7 @@ public class ConsentLib {
 
     // get site id corresponding to account id and site name. Read from local storage if present.
     // Write to local storage after getting response.
-    private void getSiteId(final OnLoadComplete callback) {
+    private void getSiteId(final OnLoadComplete callback) throws ConsentLibException.ApiException {
         final String siteIdKey = SP_SITE_ID + "_" + Integer.toString(accountId) + "_" + siteName;
 
         String storedSiteId = sharedPref.getString(siteIdKey, null);
@@ -701,14 +666,18 @@ public class ConsentLib {
                 getSiteIdUrl(),
                 new OnLoadComplete() {
                     @Override
-                    public void onLoadCompleted(Object result) {
+                    public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
                         String siteId;
+                        if(result instanceof FileNotFoundException) {
+                            throw new ConsentLibException()
+                                    .new ApiException("404: Failed getting site_id from "+getSiteIdUrl()+" make sure the site name and account id are correct.");
+                        }
+
                         try {
                             siteId = new JSONObject((String) result).getString("site_id");
                         } catch (JSONException e) {
-                            e.printStackTrace();
-                            callback.onLoadCompleted(null);
-                            return;
+                            throw new ConsentLibException()
+                                    .new ApiException("Error parsing server response when getting site_id from "+getSiteIdUrl()+" got instead: "+result);
                         }
 
                         SharedPreferences.Editor editor = sharedPref.edit();
@@ -720,26 +689,27 @@ public class ConsentLib {
         );
     }
 
-    public void getCustomVendorConsent(final String customVendorId, final OnLoadComplete callback) {
+    public void getCustomVendorConsent(final String customVendorId, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         getCustomVendorConsents(new String[]{customVendorId}, new OnLoadComplete() {
             @Override
-            public void onLoadCompleted(Object result) {
+            public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
                 callback.onLoadCompleted(((String[]) result)[0]);
             }
         });
     }
 
-    public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) {
+    public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         boolean[] storedResults = new boolean[customVendorIds.length];
         // read results from local storage if present first
         List<String> customVendorIdsToRequest = new ArrayList<>();
+
         for (int i = 0; i < customVendorIds.length; i++) {
             String customVendorId = customVendorIds[i];
             String storedConsentData = sharedPref.getString(CUSTOM_VENDOR_PREFIX + customVendorId, null);
             if (storedConsentData == null) {
                 customVendorIdsToRequest.add(customVendorId);
             } else {
-                storedResults[i] = Boolean.getBoolean(storedConsentData);
+                storedResults[i] = Boolean.valueOf(storedConsentData);
             }
         }
         if (customVendorIdsToRequest.size() == 0) {
@@ -751,7 +721,7 @@ public class ConsentLib {
 
         loadAndStoreCustomVendorAndPurposeConsents(customVendorIdsToRequest.toArray(new String[0]), new OnLoadComplete() {
             @Override
-            public void onLoadCompleted(Object _result) {
+            public void onLoadCompleted(Object _result) throws ConsentLibException.ApiException {
                 boolean[] results = finalStoredResults;
                 for (int i = 0; i < customVendorIds.length; i++) {
                     String customVendorId = customVendorIds[i];
@@ -766,14 +736,14 @@ public class ConsentLib {
 
     }
 
-    public void getPurposeConsent(final String id, final OnLoadComplete callback) {
+    public void getPurposeConsent(final String id, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         final String storedPurposeConsent = sharedPref.getString(CUSTOM_PURPOSE_PREFIX + id, null);
         if (storedPurposeConsent != null) {
             callback.onLoadCompleted(storedPurposeConsent.equals("true"));
         } else {
             loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
                 @Override
-                public void onLoadCompleted(Object result) {
+                public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
                     String storedPurposeConsent = sharedPref.getString(CUSTOM_PURPOSE_PREFIX + id, null);
                     callback.onLoadCompleted(
                             storedPurposeConsent!= null && storedPurposeConsent.equals("true")
@@ -783,14 +753,14 @@ public class ConsentLib {
         }
     }
 
-    public void getPurposeConsents(final OnLoadComplete callback) {
+    public void getPurposeConsents(final OnLoadComplete callback) throws ConsentLibException.ApiException {
         String storedPurposeConsentsJson = sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, null);
         if (storedPurposeConsentsJson != null) {
             callback.onLoadCompleted(parsePurposeConsentJson(storedPurposeConsentsJson));
         } else {
             loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
                 @Override
-                public void onLoadCompleted(Object result) {
+                public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
                     callback.onLoadCompleted(
                             parsePurposeConsentJson(
                                     sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, null)
@@ -801,7 +771,7 @@ public class ConsentLib {
         }
     }
 
-    private PurposeConsent[] parsePurposeConsentJson(String json) {
+    private PurposeConsent[] parsePurposeConsentJson(String json) throws ConsentLibException.ApiException {
         try {
             JSONArray array = new JSONArray(json);
             PurposeConsent[] results = new PurposeConsent[array.length()];
@@ -814,47 +784,45 @@ public class ConsentLib {
             }
             return results;
         } catch (JSONException e) {
-            // Should handle error here
-            e.printStackTrace();
-            return null;
+            throw new ConsentLibException().new ApiException("Could not extract purpose consent '_id' and 'name' from: "+json);
         }
     }
 
-    private void loadAndStoreCustomVendorAndPurposeConsents(final String[] customVendorIdsToRequest, final OnLoadComplete callback) {
+    private String getConsentRequest(String siteId, String[] vendorIds) {
+        String consentParam = consentUUID == null ? "[CONSENT_UUID]" : consentUUID;
+        String euconsentParam = euconsent == null ? "[EUCONSENT]" : euconsent;
+        String customVendorIdString = URLEncoder.encode(TextUtils.join(",", vendorIds));
+
+        return "https://" + cmpDomain + "/consent/v2/" + siteId + "/custom-vendors?"+
+                "customVendorIds=" + customVendorIdString +
+                "&consentUUID=" + consentParam +
+                "&euconsent=" + euconsentParam;
+    }
+
+    private void loadAndStoreCustomVendorAndPurposeConsents(final String[] customVendorIdsToRequest, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         getSiteId(new OnLoadComplete() {
-
             @Override
-            public void onLoadCompleted(Object result) {
-                if (result == null) {
-                    callback.onLoadCompleted(null);
-                    return;
-                }
-                String siteId = (String) result;
+            public void onLoadCompleted(Object siteId) {
+                final String consentUrl = getConsentRequest(siteId.toString(), customVendorIdsToRequest);
 
-                String consentParam = consentUUID == null ? "[CONSENT_UUID]" : consentUUID;
-                String euconsentParam = euconsent == null ? "[EUCONSENT]" : euconsent;
-                String customVendorIdString = URLEncoder.encode(TextUtils.join(",", customVendorIdsToRequest));
-                String url = "https://" + cmpDomain + "/consent/v2/" + siteId +
-                        "/custom-vendors?customVendorIds=" + customVendorIdString +
-                        "&consentUUID=" + consentParam +
-                        "&euconsent=" + euconsentParam;
-                load(url, new OnLoadComplete() {
-
+                load(consentUrl, new OnLoadComplete() {
                     @Override
-                    public void onLoadCompleted(Object result) {
-                        String response = (String) result;
+                    public void onLoadCompleted(Object vendorsAndPurposes) throws ConsentLibException.ApiException {
+                        if(vendorsAndPurposes instanceof FileNotFoundException) {
+                            throw new ConsentLibException()
+                                    .new ApiException("404: could not find vendor consents and purposes from: "+consentUrl);
+                        }
+
 
                         JSONArray consentedCustomVendors;
                         JSONArray consentedCustomPurposes;
-
                         try {
-                            JSONObject consentedCustomData = new JSONObject(response);
+                            JSONObject consentedCustomData = new JSONObject(vendorsAndPurposes.toString());
                             consentedCustomVendors = consentedCustomData.getJSONArray("consentedVendors");
                             consentedCustomPurposes = consentedCustomData.getJSONArray("consentedPurposes");
                         } catch (JSONException e) {
-                            e.printStackTrace();
-                            callback.onLoadCompleted(null);
-                            return;
+                            throw new ConsentLibException()
+                                    .new ApiException("Error extracting consented vendors and purposes from server's response: "+vendorsAndPurposes);
                         }
 
                         SharedPreferences.Editor editor = sharedPref.edit();
@@ -864,7 +832,7 @@ public class ConsentLib {
                                 JSONObject consentedCustomVendor = consentedCustomVendors.getJSONObject(i);
                                 editor.putString(CUSTOM_VENDOR_PREFIX + consentedCustomVendor.get("_id"), Boolean.toString(true));
                             } catch (JSONException e) {
-                                e.printStackTrace();
+                                throw new ConsentLibException().new ApiException("Could not extract customVendors from: "+vendorsAndPurposes);
                             }
                         }
 
@@ -875,12 +843,12 @@ public class ConsentLib {
                                 editor.putString(
                                         CUSTOM_PURPOSE_PREFIX + consentedCustomPurpose.get("_id"), Boolean.toString(true));
                             } catch (JSONException e) {
-                                e.printStackTrace();
+                                throw new ConsentLibException().new ApiException("Error when parsing the customPurposes from: "+vendorsAndPurposes);
                             }
                         }
 
                         editor.commit();
-                        callback.onLoadCompleted(result);
+                        callback.onLoadCompleted(vendorsAndPurposes.toString());
                     }
                 });
             }
@@ -888,10 +856,7 @@ public class ConsentLib {
     }
 
     private void finish() {
-        if (onInteractionComplete != null) {
-            onInteractionComplete.run(this);
-        }
-
+        onInteractionComplete.run(this);
         viewGroup.removeView(webView);
     }
 }
