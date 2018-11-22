@@ -670,7 +670,7 @@ public class ConsentLib {
                         String siteId;
                         if(result instanceof FileNotFoundException) {
                             throw new ConsentLibException()
-                                    .new ApiException("404: Failed getting site_id from "+getSiteIdUrl()+" make sure the site name and account id correct.");
+                                    .new ApiException("404: Failed getting site_id from "+getSiteIdUrl()+" make sure the site name and account id are correct.");
                         }
 
                         try {
