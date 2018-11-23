@@ -166,4 +166,4 @@ public class MainActivity extends AppCompatActivity {
 ```
 ### Docs
 
-For the complete documentation, open `./index.html` in the browser.
+For the complete documentation, open `./docs/index.html` in the browser.
