@@ -611,7 +611,7 @@ public class ConsentLib {
         }
     }
 
-    class LoadTask extends AsyncTask<String, Void, Object> {
+    static class LoadTask extends AsyncTask<String, Void, Object> {
         private final OnLoadComplete listener;
 
         LoadTask(OnLoadComplete listener) {
