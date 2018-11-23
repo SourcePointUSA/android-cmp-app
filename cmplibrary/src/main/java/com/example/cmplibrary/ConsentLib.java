@@ -143,7 +143,7 @@ public class ConsentLib {
     private final static String CUSTOM_PURPOSE_PREFIX = SP_PREFIX + "_custom_purpose_consent_";
     private final static String CUSTOM_PURPOSE_CONSENTS_JSON = SP_PREFIX + "_custom_purpose_consents_json";
 
-    private final Activity activity;
+    private Activity activity;
     private final String siteName;
     private final int accountId;
     private final ViewGroup viewGroup;
@@ -604,6 +604,7 @@ public class ConsentLib {
                 setHref();
                 validate();
             } catch (ConsentLibException e) {
+                this.activity = null; // release reference to activity
                 throw new ConsentLibException().new BuildException(e.getMessage());
             }
 
@@ -1140,5 +1141,6 @@ public class ConsentLib {
     private void finish() {
         onInteractionComplete.run(this);
         viewGroup.removeView(webView);
+        this.activity = null; // release reference to activity
     }
 }
