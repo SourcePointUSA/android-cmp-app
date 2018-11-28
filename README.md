@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
                                                 }
                                             }
                                         });
+
                                 c.getPurposeConsent(
                                         "5bc4ac5c6fdabb0010940ab1",
                                         new ConsentLib.OnLoadComplete() {
@@ -144,6 +145,26 @@ public class MainActivity extends AppCompatActivity {
                                                 Log.i(TAG, "Consented to Measurement purpose: " + ((Boolean) result).toString());
                                             }
                                         });
+
+                                boolean[] IABVendorConsents = c.getIABVendorConsents(new int[]{81, 82});
+                                Log.i(
+                                        TAG,
+                                        String.format(
+                                                "Consented to IAB vendors: 81 -> %b, 82 -> %b",
+                                                IABVendorConsents[0],
+                                                IABVendorConsents[1]
+                                        )
+                                );
+
+                                boolean[] IABPurposeConsents = c.getIABPurposeConsents(new int[]{2, 3});
+                                Log.i(
+                                        TAG,
+                                        String.format(
+                                                "Consented to IAB purposes: 2 -> %b, 3 -> %b",
+                                                IABPurposeConsents[0],
+                                                IABPurposeConsents[1]
+                                        )
+                                );
                             } catch (ConsentLibException e) {
                                 e.printStackTrace();
                             }
