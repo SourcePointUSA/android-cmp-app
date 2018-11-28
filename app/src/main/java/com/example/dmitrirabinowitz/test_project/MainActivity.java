@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.i(TAG, "IABConsent_ParsedVendorConsents in shared preferences: " + sharedPref.getString(ConsentLib.IAB_CONSENT_PARSED_VENDOR_CONSENTS, null));
 
                             try {
+                                // Example usage of getting non-IAB vendor consent results for a list of vendors
                                 c.getCustomVendorConsents(
                                         new String[]{"5bc76807196d3c5730cbab05", "5bc768d8196d3c5730cbab06"},
                                         new ConsentLib.OnLoadComplete() {
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                         });
 
+                                // Example usage of getting all purpose consent results
                                 c.getPurposeConsents(
                                         new ConsentLib.OnLoadComplete() {
                                             public void onLoadCompleted(Object result) {
@@ -100,13 +102,37 @@ public class MainActivity extends AppCompatActivity {
                                                 }
                                             }
                                         });
+
+                                // Example usage of getting a single purpose consent results
                                 c.getPurposeConsent(
                                         "5bc4ac5c6fdabb0010940ab1",
                                         new ConsentLib.OnLoadComplete() {
                                             public void onLoadCompleted(Object result) {
-                                                Log.i(TAG, "Consented to Measurement purpose: " + ((Boolean) result).toString());
+                                                Log.i(TAG, "Consented to Measurement purpose: " + (result).toString());
                                             }
                                         });
+
+                                // Example usage of getting IAB vendor consent results for a list of vendors
+                                boolean[] IABVendorConsents = c.getIABVendorConsents(new int[]{81, 82});
+                                Log.i(
+                                        TAG,
+                                        String.format(
+                                                "Consented to IAB vendors: 81 -> %b, 82 -> %b",
+                                                IABVendorConsents[0],
+                                                IABVendorConsents[1]
+                                        )
+                                );
+
+                                // Example usage of getting IAB purpose consent results for a list of purposes
+                                boolean[] IABPurposeConsents = c.getIABPurposeConsents(new int[]{2, 3});
+                                Log.i(
+                                        TAG,
+                                        String.format(
+                                                "Consented to IAB purposes: 2 -> %b, 3 -> %b",
+                                                IABPurposeConsents[0],
+                                                IABPurposeConsents[1]
+                                        )
+                                );
                             } catch (ConsentLibException e) {
                                 e.printStackTrace();
                             }
@@ -115,9 +141,9 @@ public class MainActivity extends AppCompatActivity {
                     // generate ConsentLib at this point modifying builder will not do anything
                     .build();
 
-                // begins rendering of WebView in background until message is displayed at which point
-                // WebView will take over view of page
-                cLib.run();
+            // begins rendering of WebView in background until message is displayed at which point
+            // WebView will take over view of page
+            cLib.run();
 
             // Should set immediately
             Log.i(TAG, "IABConsent_CMPPresent in shared preferences: " + sharedPref.getString(ConsentLib.IAB_CONSENT_CMP_PRESENT, null));

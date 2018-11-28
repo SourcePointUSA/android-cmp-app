@@ -799,7 +799,9 @@ public class ConsentLib {
         params.add("_sp_debug_level=" + debugLevel.name());
         params.add("_sp_msg_stageCampaign=" + isStage);
 
-        return inAppMessagingPageUrl + "?" + TextUtils.join("&", params);
+        String url = inAppMessagingPageUrl + "?" + TextUtils.join("&", params);
+        Log.i(TAG, "cpm url: " + url);
+        return url;
     }
 
     private boolean hasLostInternetConnection() {
@@ -1052,6 +1054,57 @@ public class ConsentLib {
                 }
             });
         }
+    }
+
+    /**
+     * Given a list of IAB vendor IDs, returns a corresponding array of boolean each representing
+     * the consent was given or not to the requested vendor.
+     *
+     * @param vendorIds an array of standard IAB vendor IDs.
+     * @return an array with same size as vendorIds param representing the results in the same order.
+     * @throws ConsentLibException if the consent is not dialog completed or the
+     *         consent string is not present in SharedPreferences.
+     */
+    public boolean[] getIABVendorConsents(int[] vendorIds) throws ConsentLibException{
+        final VendorConsent vendorConsent = getParsedConsentString();
+        boolean[] results = new boolean[vendorIds.length];
+
+        for(int i = 0; i < vendorIds.length; i++) {
+            results[i] = vendorConsent.isVendorAllowed(vendorIds[i]);
+        }
+        return results;
+    }
+
+    /**
+     * Given a list of IAB Purpose IDs, returns a corresponding array of boolean each representing
+     * the consent was given or not to the requested purpose.
+     *
+     * @param purposeIds an array of standard IAB purpose IDs.
+     * @return an array with same size as purposeIds param representing the results in the same order.
+     * @throws ConsentLibException if the consent dialog is not completed or the
+     *         consent string is not present in SharedPreferences.
+     */
+    public boolean[] getIABPurposeConsents(int[] purposeIds) throws ConsentLibException{
+        final VendorConsent vendorConsent = getParsedConsentString();
+        boolean[] results = new boolean[purposeIds.length];
+
+        for(int i = 0; i < purposeIds.length; i++) {
+            results[i] = vendorConsent.isPurposeAllowed(purposeIds[i]);
+        }
+        return results;
+    }
+
+    private String getConsentStringFromPreferences() throws ConsentLibException{
+        final String euconsent = sharedPref.getString(IAB_CONSENT_CONSENT_STRING, null);
+        if (euconsent == null) {
+            throw new ConsentLibException("Could not find consent string in sharedUserPreferences.");
+        }
+        return euconsent;
+    }
+
+    private VendorConsent getParsedConsentString() throws ConsentLibException{
+        final String euconsent = getConsentStringFromPreferences();
+        return VendorConsentDecoder.fromBase64String(euconsent);
     }
 
     private PurposeConsent[] parsePurposeConsentJson(String json) throws ConsentLibException.ApiException {
