@@ -956,7 +956,7 @@ public class ConsentLib {
         getCustomVendorConsents(new String[]{customVendorId}, new OnLoadComplete() {
             @Override
             public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
-                callback.onLoadCompleted(((String[]) result)[0]);
+                callback.onLoadCompleted(((ArrayList) result).get(0));
             }
         });
     }
@@ -972,40 +972,17 @@ public class ConsentLib {
      * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
      */
     public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) throws ConsentLibException.ApiException {
-        boolean[] storedResults = new boolean[customVendorIds.length];
-        // read results from local storage if present first
-        List<String> customVendorIdsToRequest = new ArrayList<>();
-
-        for (int i = 0; i < customVendorIds.length; i++) {
-            String customVendorId = customVendorIds[i];
-            String storedConsentData = sharedPref.getString(CUSTOM_VENDOR_PREFIX + customVendorId, null);
-            if (storedConsentData == null) {
-                customVendorIdsToRequest.add(customVendorId);
-            } else {
-                storedResults[i] = Boolean.valueOf(storedConsentData);
-            }
-        }
-        if (customVendorIdsToRequest.size() == 0) {
-            callback.onLoadCompleted(storedResults);
-            return;
-        }
-
-        final boolean[] finalStoredResults = storedResults;
-
-        loadAndStoreCustomVendorAndPurposeConsents(customVendorIdsToRequest.toArray(new String[0]), new OnLoadComplete() {
+        loadAndStoreCustomVendorAndPurposeConsents(customVendorIds, new OnLoadComplete() {
             @Override
             public void onLoadCompleted(Object _result) throws ConsentLibException.ApiException {
-                for (int i = 0; i < customVendorIds.length; i++) {
-                    String customVendorId = customVendorIds[i];
-                    String storedConsentData = sharedPref.getString(CUSTOM_VENDOR_PREFIX + customVendorId, null);
-                    if (storedConsentData != null) {
-                        finalStoredResults[i] = storedConsentData.equals("true");
-                    }
+                ArrayList<Boolean> consents = new ArrayList<>();
+                for (String vendorId : customVendorIds) {
+                    String storedConsent = sharedPref.getString(CUSTOM_VENDOR_PREFIX + vendorId, "");
+                    consents.add(storedConsent.equals("true"));
                 }
-                callback.onLoadCompleted(finalStoredResults);
+                callback.onLoadCompleted(consents);
             }
         });
-
     }
 
     /**
@@ -1135,6 +1112,17 @@ public class ConsentLib {
                 "&euconsent=" + euconsentParam;
     }
 
+    /**
+     * When we receive data from the server, if a given custom vendor is no longer given consent
+     * to, its information won't be present in the payload. Therefore we have to first clear the
+     * preferences then set each vendor to true based on the response.
+     */
+    private void clearStoredVendorConsents(final String[] customVendorIds, SharedPreferences.Editor editor) {
+        for(String vendorId : customVendorIds){
+            editor.remove(CUSTOM_VENDOR_PREFIX + vendorId);
+        }
+    }
+
     private void loadAndStoreCustomVendorAndPurposeConsents(final String[] customVendorIdsToRequest, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         getSiteId(new OnLoadComplete() {
             @Override
@@ -1162,7 +1150,7 @@ public class ConsentLib {
                         }
 
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        // write results to local storage after reading from endpoint
+                        clearStoredVendorConsents(customVendorIdsToRequest, editor);
                         for (int i = 0; i < consentedCustomVendors.length(); i++) {
                             try {
                                 JSONObject consentedCustomVendor = consentedCustomVendors.getJSONObject(i);
