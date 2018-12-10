@@ -994,20 +994,19 @@ public class ConsentLib {
      * @see ConsentLib#getPurposeConsents(OnLoadComplete)
      */
     public void getPurposeConsent(final String id, final OnLoadComplete callback) throws ConsentLibException.ApiException {
-        final String storedPurposeConsent = sharedPref.getString(CUSTOM_PURPOSE_PREFIX + id, null);
-        if (storedPurposeConsent != null) {
-            callback.onLoadCompleted(storedPurposeConsent.equals("true"));
-        } else {
-            loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
-                @Override
-                public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
-                    String storedPurposeConsent = sharedPref.getString(CUSTOM_PURPOSE_PREFIX + id, null);
-                    callback.onLoadCompleted(
-                            storedPurposeConsent!= null && storedPurposeConsent.equals("true")
-                    );
+        getPurposeConsents(new OnLoadComplete() {
+            @Override
+            public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
+                boolean consented = false;
+                PurposeConsent[] consents = (PurposeConsent[]) result;
+                for(PurposeConsent consent : consents) {
+                    if(consent.id.equals(id)) {
+                        consented = true;
+                    }
                 }
-            });
-        }
+                callback.onLoadCompleted(consented);
+            }
+        });
     }
 
     /**
@@ -1016,21 +1015,14 @@ public class ConsentLib {
      * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
      */
     public void getPurposeConsents(final OnLoadComplete callback) throws ConsentLibException.ApiException {
-        String storedPurposeConsentsJson = sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, null);
-        if (storedPurposeConsentsJson != null) {
-            callback.onLoadCompleted(parsePurposeConsentJson(storedPurposeConsentsJson));
-        } else {
-            loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
+        loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
                 @Override
                 public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
-                    callback.onLoadCompleted(
-                            parsePurposeConsentJson(
-                                    sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, null)
-                            )
-                    );
-                }
-            });
-        }
+                callback.onLoadCompleted(
+                        parsePurposeConsentJson(sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, "[]"))
+                );
+            }
+        });
     }
 
     /**
@@ -1161,15 +1153,6 @@ public class ConsentLib {
                         }
 
                         editor.putString(CUSTOM_PURPOSE_CONSENTS_JSON, consentedCustomPurposes.toString());
-                        for (int i = 0; i < consentedCustomPurposes.length(); i++) {
-                            try {
-                                JSONObject consentedCustomPurpose = consentedCustomPurposes.getJSONObject(i);
-                                editor.putString(
-                                        CUSTOM_PURPOSE_PREFIX + consentedCustomPurpose.get("_id"), Boolean.toString(true));
-                            } catch (JSONException e) {
-                                throw new ConsentLibException().new ApiException("Error when parsing the customPurposes from: "+vendorsAndPurposes);
-                            }
-                        }
 
                         editor.commit();
                         callback.onLoadCompleted(vendorsAndPurposes.toString());

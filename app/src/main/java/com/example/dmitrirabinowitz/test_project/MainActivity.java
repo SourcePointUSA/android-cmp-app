@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
                             // Example usage of getting a single purpose consent results
                             c.getPurposeConsent(
-                                    "5c0e813175223430a50fe465", // Storage purpose
+                                    "5c0e813175223430a50fe465",
                                     new ConsentLib.OnLoadComplete() {
                                         public void onLoadCompleted(Object result) {
                                             Log.i(TAG, "Consented to My Custom Purpose: " + result.toString());
