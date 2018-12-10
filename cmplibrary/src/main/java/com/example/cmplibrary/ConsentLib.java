@@ -956,7 +956,7 @@ public class ConsentLib {
         getCustomVendorConsents(new String[]{customVendorId}, new OnLoadComplete() {
             @Override
             public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
-                callback.onLoadCompleted(((String[]) result)[0]);
+                callback.onLoadCompleted(((ArrayList) result).get(0));
             }
         });
     }
@@ -972,40 +972,17 @@ public class ConsentLib {
      * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
      */
     public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) throws ConsentLibException.ApiException {
-        boolean[] storedResults = new boolean[customVendorIds.length];
-        // read results from local storage if present first
-        List<String> customVendorIdsToRequest = new ArrayList<>();
-
-        for (int i = 0; i < customVendorIds.length; i++) {
-            String customVendorId = customVendorIds[i];
-            String storedConsentData = sharedPref.getString(CUSTOM_VENDOR_PREFIX + customVendorId, null);
-            if (storedConsentData == null) {
-                customVendorIdsToRequest.add(customVendorId);
-            } else {
-                storedResults[i] = Boolean.valueOf(storedConsentData);
-            }
-        }
-        if (customVendorIdsToRequest.size() == 0) {
-            callback.onLoadCompleted(storedResults);
-            return;
-        }
-
-        final boolean[] finalStoredResults = storedResults;
-
-        loadAndStoreCustomVendorAndPurposeConsents(customVendorIdsToRequest.toArray(new String[0]), new OnLoadComplete() {
+        loadAndStoreCustomVendorAndPurposeConsents(customVendorIds, new OnLoadComplete() {
             @Override
             public void onLoadCompleted(Object _result) throws ConsentLibException.ApiException {
-                for (int i = 0; i < customVendorIds.length; i++) {
-                    String customVendorId = customVendorIds[i];
-                    String storedConsentData = sharedPref.getString(CUSTOM_VENDOR_PREFIX + customVendorId, null);
-                    if (storedConsentData != null) {
-                        finalStoredResults[i] = storedConsentData.equals("true");
-                    }
+                ArrayList<Boolean> consents = new ArrayList<>();
+                for (String vendorId : customVendorIds) {
+                    String storedConsent = sharedPref.getString(CUSTOM_VENDOR_PREFIX + vendorId, "");
+                    consents.add(storedConsent.equals("true"));
                 }
-                callback.onLoadCompleted(finalStoredResults);
+                callback.onLoadCompleted(consents);
             }
         });
-
     }
 
     /**
@@ -1017,20 +994,19 @@ public class ConsentLib {
      * @see ConsentLib#getPurposeConsents(OnLoadComplete)
      */
     public void getPurposeConsent(final String id, final OnLoadComplete callback) throws ConsentLibException.ApiException {
-        final String storedPurposeConsent = sharedPref.getString(CUSTOM_PURPOSE_PREFIX + id, null);
-        if (storedPurposeConsent != null) {
-            callback.onLoadCompleted(storedPurposeConsent.equals("true"));
-        } else {
-            loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
-                @Override
-                public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
-                    String storedPurposeConsent = sharedPref.getString(CUSTOM_PURPOSE_PREFIX + id, null);
-                    callback.onLoadCompleted(
-                            storedPurposeConsent!= null && storedPurposeConsent.equals("true")
-                    );
+        getPurposeConsents(new OnLoadComplete() {
+            @Override
+            public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
+                boolean consented = false;
+                PurposeConsent[] consents = (PurposeConsent[]) result;
+                for(PurposeConsent consent : consents) {
+                    if(consent.id.equals(id)) {
+                        consented = true;
+                    }
                 }
-            });
-        }
+                callback.onLoadCompleted(consented);
+            }
+        });
     }
 
     /**
@@ -1039,21 +1015,14 @@ public class ConsentLib {
      * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
      */
     public void getPurposeConsents(final OnLoadComplete callback) throws ConsentLibException.ApiException {
-        String storedPurposeConsentsJson = sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, null);
-        if (storedPurposeConsentsJson != null) {
-            callback.onLoadCompleted(parsePurposeConsentJson(storedPurposeConsentsJson));
-        } else {
-            loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
+        loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
                 @Override
                 public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
-                    callback.onLoadCompleted(
-                            parsePurposeConsentJson(
-                                    sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, null)
-                            )
-                    );
-                }
-            });
-        }
+                callback.onLoadCompleted(
+                        parsePurposeConsentJson(sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, "[]"))
+                );
+            }
+        });
     }
 
     /**
@@ -1135,6 +1104,17 @@ public class ConsentLib {
                 "&euconsent=" + euconsentParam;
     }
 
+    /**
+     * When we receive data from the server, if a given custom vendor is no longer given consent
+     * to, its information won't be present in the payload. Therefore we have to first clear the
+     * preferences then set each vendor to true based on the response.
+     */
+    private void clearStoredVendorConsents(final String[] customVendorIds, SharedPreferences.Editor editor) {
+        for(String vendorId : customVendorIds){
+            editor.remove(CUSTOM_VENDOR_PREFIX + vendorId);
+        }
+    }
+
     private void loadAndStoreCustomVendorAndPurposeConsents(final String[] customVendorIdsToRequest, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         getSiteId(new OnLoadComplete() {
             @Override
@@ -1162,7 +1142,7 @@ public class ConsentLib {
                         }
 
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        // write results to local storage after reading from endpoint
+                        clearStoredVendorConsents(customVendorIdsToRequest, editor);
                         for (int i = 0; i < consentedCustomVendors.length(); i++) {
                             try {
                                 JSONObject consentedCustomVendor = consentedCustomVendors.getJSONObject(i);
@@ -1173,15 +1153,6 @@ public class ConsentLib {
                         }
 
                         editor.putString(CUSTOM_PURPOSE_CONSENTS_JSON, consentedCustomPurposes.toString());
-                        for (int i = 0; i < consentedCustomPurposes.length(); i++) {
-                            try {
-                                JSONObject consentedCustomPurpose = consentedCustomPurposes.getJSONObject(i);
-                                editor.putString(
-                                        CUSTOM_PURPOSE_PREFIX + consentedCustomPurpose.get("_id"), Boolean.toString(true));
-                            } catch (JSONException e) {
-                                throw new ConsentLibException().new ApiException("Error when parsing the customPurposes from: "+vendorsAndPurposes);
-                            }
-                        }
 
                         editor.commit();
                         callback.onLoadCompleted(vendorsAndPurposes.toString());
