@@ -112,11 +112,11 @@ public class MainActivity extends AppCompatActivity {
                                     });
 
                             // Example usage of getting IAB vendor consent results for a list of vendors
-                            boolean[] IABVendorConsents = c.getIABVendorConsents(new int[]{81, 82});
+                            boolean[] IABVendorConsents = c.getIABVendorConsents(new int[]{124 /* Teemo */, 125});
                             Log.i(
                                     TAG,
                                     String.format(
-                                            "Consented to IAB vendors: 81 -> %b, 82 -> %b",
+                                            "Consented to IAB vendors: 124 -> %b, 125 -> %b",
                                             IABVendorConsents[0],
                                             IABVendorConsents[1]
                                     )
@@ -135,13 +135,17 @@ public class MainActivity extends AppCompatActivity {
 
                             // Letting Teemo know about the Geolocation information collecting purpose consent
                             c.getPurposeConsent(
-                                "5be615043ee96200104334bb",
+                                "5bfc6e168e127a0cffaad306",
                                 new ConsentLib.OnLoadComplete() {
                                   public void onLoadCompleted(Object result) {
                                     GeolocStationConsent.setConsent(
                                         appContext,
                                         (Boolean) result
                                         );
+                                      Log.i(
+                                              TAG,
+                                              String.format("Geolocation consent passed to Teemo: %b", result)
+                                      );
                                   }
                                 });
                         } catch (ConsentLibException e) {
