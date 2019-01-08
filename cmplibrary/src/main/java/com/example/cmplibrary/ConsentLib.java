@@ -2,19 +2,23 @@ package com.example.cmplibrary;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.view.View;
@@ -853,6 +857,34 @@ public class ConsentLib {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl(inAppMessageRequest());
         webView.setWebViewClient(new WebViewClient());
+
+        webView.getSettings().setSupportMultipleWindows(true);
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, android.os.Message resultMsg)
+            {
+                WebView.HitTestResult result = view.getHitTestResult();
+                String data = result.getExtra();
+                Context context = view.getContext();
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(data));
+                context.startActivity(browserIntent);
+                return false;
+            }
+        });
+
+        webView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent event) {
+                WebView webView = (WebView) view;
+                if(event.getAction() == KeyEvent.ACTION_DOWN &&
+                    KeyEvent.KEYCODE_BACK == keyCode &&
+                    webView.canGoBack()) {
+                    webView.goBack();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         viewGroup.addView(webView);
 
