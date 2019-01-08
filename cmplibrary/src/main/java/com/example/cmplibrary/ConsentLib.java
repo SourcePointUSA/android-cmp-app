@@ -871,6 +871,21 @@ public class ConsentLib {
                 return false;
             }
         });
+
+        webView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent event) {
+                WebView webView = (WebView) view;
+                if(event.getAction() == KeyEvent.ACTION_DOWN &&
+                    KeyEvent.KEYCODE_BACK == keyCode &&
+                    webView.canGoBack()) {
+                    webView.goBack();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         viewGroup.addView(webView);
 
         // Set standard IAB IABConsent_CMPPresent
