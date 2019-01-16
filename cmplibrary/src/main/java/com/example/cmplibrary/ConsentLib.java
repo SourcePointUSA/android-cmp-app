@@ -832,6 +832,10 @@ public class ConsentLib {
             throw new ConsentLibException().new NoInternetConnectionException();
         }
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            CookieSyncManager.createInstance(activity);
+        }
+
         cm = android.webkit.CookieManager.getInstance();
         final boolean acceptCookie = cm.acceptCookie();
         cm.setAcceptCookie(true);
