@@ -1,4 +1,13 @@
+plugins {
+    id "com.jfrog.bintray" version "1.8.4"
+}
+
+
 apply plugin: 'com.android.library'
+//apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+version '1.4.1'
 
 android {
     compileSdkVersion 26
@@ -7,7 +16,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 13
-        versionName "1.5"
+        versionName "1.4.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -28,8 +37,121 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation("com.google.guava:guava:20.0")  {
+    implementation('com.google.guava:guava:20.0') {
         transitive = false
     }
     implementation files('libs/consent-string-sdk-java-3.0.0.jar')
+
 }
+
+
+
+
+//apply plugin: 'java'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+/*task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+*/
+artifacts {
+    //archives javadocJar
+    archives sourcesJar
+}
+
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id 'sinasourcepoint'
+            name "sina"
+            email "sina@sourcepoint.com"
+        }
+    }
+
+    scm {
+        url "https://github.com/SourcePointUSA/android-cmp-app"
+    }
+}
+
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            artifact("$buildDir/outputs/aar/cmplibrary-release.aar")
+            artifact sourcesJar
+            groupId 'com.example.cmplibrary'
+            artifactId 'cmplibrary-test'
+            version '1.4.1'
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                def root = asNode()
+                root.appendNode('description', 'mvp architecture for android')
+                root.appendNode('name', 'mvp-arch-android')
+                root.appendNode('url', 'https://github.com/linjonh/MvpArch')
+                root.children().last() + pomConfig
+                // Iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.implementation.allDependencies.each {
+                    // Ensure dependencies such as fileTree are not included.
+                    logger.log(LogLevel.ERROR,"allDependencies.each:====>"+it.toString()+"\n")
+
+                    if (it.name != 'unspecified') {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = 'sinasourcepoint'
+    key = 'f530e167410851f093faa6ad38625c4dacb6526c'
+    publications = ['MyPublication']
+    configurations = ['archives']
+    override = true
+    pkg {
+        repo = 'sourcepoint-test'
+        name = 'cmplibrary-test'
+        publish = true
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/SourcePointUSA/android-cmp-app'
+        dryRun = true
+        publicDownloadNumbers = true
+
+        version {
+            name = '1.4.1'
+            desc = 'SourcePoint CMP Lib 1.4.1'
+            released  = new Date()
+            vcsTag = '1.4.1'
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+                passphrase = "12345678"
+                //Optional. The passphrase for GPG signing'
+            }
+        }
+    }
+
+
+}
+
+
