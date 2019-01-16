@@ -1,3 +1,7 @@
+## 1.5 (January 16, 2018)
+
+* Fix a bug that that would crash apps built for Android API < 19
+
 ## 1.4 (January 08, 2018)
 
 * Open links with `target=_blank` in external browser
