@@ -1,4 +1,4 @@
-package com.example.cmplibrary;
+package com.sourcepoint.cmplibrary;
 
 public class ConsentLibException extends Exception {
     public ConsentLibException() { super(); }

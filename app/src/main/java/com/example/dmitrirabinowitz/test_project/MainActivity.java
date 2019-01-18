@@ -9,8 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.cmplibrary.ConsentLib;
-import com.example.cmplibrary.ConsentLibException;
+import com.sourcepoint.cmplibrary.ConsentLib;
+import com.sourcepoint.cmplibrary.ConsentLibException;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.example.cmplibrary;
+package com.sourcepoint.cmplibrary;
 
 import android.app.Activity;
 import android.content.Context;
