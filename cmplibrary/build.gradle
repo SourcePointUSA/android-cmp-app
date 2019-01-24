@@ -10,6 +10,9 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 version VERSION_NAME
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     compileSdkVersion 26
 
@@ -75,9 +78,9 @@ def pomConfig = {
     }
     developers {
         developer {
-            id 'sinasourcepoint'
-            name "sina"
-            email "sina@sourcepoint.com"
+            id properties.getProperty("bintray.user")
+            name "Sourcepoint"
+            email properties.getProperty("bintray.email")
         }
     }
 
@@ -121,8 +124,8 @@ publishing {
 }
 
 bintray {
-    user = 'sinasourcepoint'
-    key = 'f530e167410851f093faa6ad38625c4dacb6526c'
+    user =  properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
     publications = ['POM']
     configurations = ['archives']
     override = true
@@ -142,7 +145,7 @@ bintray {
             vcsTag = VERSION_NAME
             gpg {
                 sign = true //Determines whether to GPG sign the files. The default is false
-                passphrase = "12345678"
+                passphrase = properties.getProperty("bintray.gpg.password")
                 //Optional. The passphrase for GPG signing'
             }
         }
