@@ -2,7 +2,7 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-def VERSION_NAME = "1.5.1"
+def VERSION_NAME = "1.5.2"
 
 apply plugin: 'com.android.library'
 //apply plugin: 'maven'
@@ -92,8 +92,8 @@ publishing {
         POM(MavenPublication) {
             artifact("$buildDir/outputs/aar/cmplibrary-release.aar")
             artifact sourcesJar
-            groupId 'com.example.cmplibrary'
-            artifactId 'cmplibrary-test'
+            groupId 'com.sourcepoint.cmplibrary'
+            artifactId 'cmplibrary'
             version VERSION_NAME
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -127,8 +127,8 @@ bintray {
     configurations = ['archives']
     override = true
     pkg {
-        repo = 'sourcepoint-test'
-        name = 'cmplibrary-test'
+        repo = 'sourcepoint'
+        name = 'cmplibrary'
         publish = true
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/SourcePointUSA/android-cmp-app'
@@ -169,7 +169,7 @@ task copyPOMToZip(type: Copy) {
 task createZip(type: Zip) {
     from "$buildDir/zip"
     destinationDir = file("$buildDir")
-    archiveName = "sourcepoint-$VERSION_NAME" + ".zip"
+    archiveName = "cmplibrary-$VERSION_NAME" + ".zip"
 }
 
 task bundleZip << {
