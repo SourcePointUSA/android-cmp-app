@@ -2,12 +2,13 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
+def VERSION_NAME = "1.5.1"
 
 apply plugin: 'com.android.library'
 //apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
-version '1.3.1'
+version VERSION_NAME
 
 android {
     compileSdkVersion 26
@@ -16,7 +17,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 13
-        versionName "1.3.1"
+        versionName VERSION_NAME
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -43,11 +44,6 @@ dependencies {
     implementation files('libs/consent-string-sdk-java-3.0.0.jar')
 
 }
-
-
-
-
-//apply plugin: 'java'
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
@@ -93,12 +89,12 @@ def pomConfig = {
 
 publishing {
     publications {
-        MyPublication(MavenPublication) {
+        POM(MavenPublication) {
             artifact("$buildDir/outputs/aar/cmplibrary-release.aar")
             artifact sourcesJar
             groupId 'com.example.cmplibrary'
             artifactId 'cmplibrary-test'
-            version '1.3.1'
+            version VERSION_NAME
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
                 def root = asNode()
@@ -121,12 +117,13 @@ publishing {
             }
         }
     }
+
 }
 
 bintray {
     user = 'sinasourcepoint'
     key = 'f530e167410851f093faa6ad38625c4dacb6526c'
-    publications = ['MyPublication']
+    publications = ['POM']
     configurations = ['archives']
     override = true
     pkg {
@@ -139,10 +136,10 @@ bintray {
         publicDownloadNumbers = true
 
         version {
-            name = '1.3.1'
-            desc = 'SourcePoint CMP Lib 1.3.1'
+            name = VERSION_NAME
+            desc = 'SourcePoint CMP Lib'
             released  = new Date()
-            vcsTag = '1.3.1'
+            vcsTag = VERSION_NAME
             gpg {
                 sign = true //Determines whether to GPG sign the files. The default is false
                 passphrase = "12345678"
@@ -150,8 +147,36 @@ bintray {
             }
         }
     }
-
-
 }
 
+task copyAARToZip(type: Copy) {
+    from "$buildDir/outputs/aar/cmplibrary-release.aar"
+    into "$buildDir/zip/com/sourcepoint/cmplibrary/cmplibrary/$VERSION_NAME"
+    rename "cmplibrary-release.aar", "cmplibrary-$VERSION_NAME" + ".aar"
+}
 
+task copySourcesToZip(type: Copy) {
+    from "$buildDir/libs/cmplibrary-$VERSION_NAME-sources.jar"
+    into "$buildDir/zip/com/sourcepoint/cmplibrary/cmplibrary/$VERSION_NAME"
+}
+
+task copyPOMToZip(type: Copy) {
+    from "$buildDir/publications/POM/pom-default.xml"
+    into "$buildDir/zip/com/sourcepoint/cmplibrary/cmplibrary/$VERSION_NAME"
+    rename "pom-default.xml", "cmplibrary-$VERSION_NAME" + ".pom"
+}
+
+task createZip(type: Zip) {
+    from "$buildDir/zip"
+    destinationDir = file("$buildDir")
+    archiveName = "sourcepoint-$VERSION_NAME" + ".zip"
+}
+
+task bundleZip << {
+    tasks.sourcesJar.execute()
+    tasks.findByPath(":cmplibrary:generatePomFileForPOMPublication").execute()
+    tasks.copySourcesToZip.execute()
+    tasks.copyPOMToZip.execute()
+    tasks.copyAARToZip.execute()
+    tasks.createZip.execute()
+}
