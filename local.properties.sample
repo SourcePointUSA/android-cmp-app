@@ -1,0 +1,13 @@
+## This file must *NOT* be checked into Version Control Systems,
+# as it contains information specific to your local configuration.
+#
+# Location of the SDK. This is only used by Gradle.
+# For customization when using a Version Control System, please read the
+# header note.
+#Tue Sep 18 17:41:57 EDT 2018
+sdk.dir=/Users/sina/Library/Android/sdk
+
+bintray.user=sinasourcepoint
+bintray.email=sina@sourcepoint.com
+bintray.apikey=XXXXX //Go to your profile page on bintray homepage
+bintray.gpg.password=XXXXX
