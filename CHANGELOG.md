@@ -1,3 +1,7 @@
+## 1.5.3 (January 16, 2018)
+
+* Change IAB_CONSENT_SUBJECT_TO_GDPR to Boolean on user preferences
+
 ## 1.5 (January 16, 2018)
 
 * Fix a bug that that would crash apps built for Android API < 19
