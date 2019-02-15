@@ -84,7 +84,7 @@ import com.iab.gdpr.consent.VendorConsentDecoder;
  */
 public class ConsentLib {
     /**
-     * If the user has consent data stored, reading for this key in the shared preferences will return "1"
+     * If the user has consent data stored, reading for this key in the shared preferences will return true
      */
     public static final String IAB_CONSENT_CMP_PRESENT = "IABConsent_CMPPresent";
 
@@ -893,7 +893,7 @@ public class ConsentLib {
         viewGroup.addView(webView);
 
         // Set standard IAB IABConsent_CMPPresent
-        setSharedPreference(IAB_CONSENT_CMP_PRESENT, "1");
+        setSharedPreference(IAB_CONSENT_CMP_PRESENT, true);
 
         setSubjectToGDPR();
     }
@@ -901,6 +901,12 @@ public class ConsentLib {
     private void setSharedPreference(String key, String value) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(key, value);
+        editor.commit();
+    }
+
+    private void setSharedPreference(String key, Boolean value) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(key, value);
         editor.commit();
     }
 
