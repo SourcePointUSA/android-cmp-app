@@ -18,6 +18,8 @@ class SourcePointClient {
     private static final String DEFAULT_STAGING_MMS_URL = "https://mms.sp-stage.net";
     private static final String DEFAULT_MMS_URL = "https://mms.sp-prod.net";
 
+    private static final String DEFAULT_INTERNAL_CMP_URL = "https://cmp.sp-stage.net";
+    private static final String DEFAULT_CMP_URL = "https://sourcepoint.mgr.consensu.org";
 
     private static AsyncHttpClient http = new AsyncHttpClient();
 
@@ -86,6 +88,9 @@ class SourcePointClient {
         return staging ? DEFAULT_INTERNAL_CMP_URL : DEFAULT_CMP_URL;
     }
 
+    private String GDPRStatusUrl() {
+        return CMPUrl() + "/consent/v2/gdpr-status";
+    }
 
     public void getSiteID(ConsentLib.OnLoadComplete onLoadComplete) {
         String url = siteIdUrl();
@@ -94,6 +99,20 @@ class SourcePointClient {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     onLoadComplete.onSuccess(response.getString("site_id"));
+                } catch (JSONException e) {
+                    onFailure(statusCode, headers, e, response);
+                }
+            }
+        });
+    }
+
+    public void getGDPRStatus(ConsentLib.OnLoadComplete onLoadComplete) {
+        String url = GDPRStatusUrl();
+        http.get(url, new ResponseHandler(url, onLoadComplete) {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    onLoadComplete.onSuccess(response.getString("gdprApplies"));
                 } catch (JSONException e) {
                     onFailure(statusCode, headers, e, response);
                 }

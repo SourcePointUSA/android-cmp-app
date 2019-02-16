@@ -925,15 +925,10 @@ public class ConsentLib {
     private void setSubjectToGDPR() {
         if (sharedPref.getString(IAB_CONSENT_SUBJECT_TO_GDPR, null) != null) { return; }
 
-        load(getGDPRUrl(), new OnLoadComplete() {
+        sourcePoint.getGDPRStatus(new OnLoadComplete() {
             @Override
-            public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
-                try {
-                    String gdprApplies = new JSONObject((String) result).getString("gdprApplies");
-                    setSharedPreference(IAB_CONSENT_SUBJECT_TO_GDPR, gdprApplies.equals("true") ? "1" : "0");
-                } catch (JSONException e) {
-                    throw new ConsentLibException().new ApiException("Failed to get GDPR status. Response from CMP Domain ("+cmpDomain+"):"+result);
-                }
+            public void onSuccess(Object gdprApplies) {
+                setSharedPreference(IAB_CONSENT_SUBJECT_TO_GDPR, gdprApplies.equals("true") ? "1" : "0");
             }
         });
     }
