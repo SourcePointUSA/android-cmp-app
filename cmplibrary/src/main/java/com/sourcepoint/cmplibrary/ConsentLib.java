@@ -163,6 +163,8 @@ public class ConsentLib {
     private final DebugLevel debugLevel;
     private final EncodedAttribute encodedHref;
 
+    private final SourcePointClient sourcePoint;
+
     private final SharedPreferences sharedPref;
 
     private android.webkit.CookieManager cm;
@@ -348,7 +350,7 @@ public class ConsentLib {
          * @return ConsentLib
          * @throws ConsentLibException.BuildException - if any of the required data is missing or invalid
          */
-        ConsentLib build() throws ConsentLibException.BuildException;
+        ConsentLib build() throws ConsentLibException;
     }
 
     private static class Builder implements ActivityStep, AccountIdStep, SiteNameStep, BuildStep {
@@ -603,7 +605,7 @@ public class ConsentLib {
          * @return ConsentLib
          * @throws ConsentLibException.BuildException - if any of the required data is missing or invalid
          */
-        public ConsentLib build() throws ConsentLibException.BuildException {
+        public ConsentLib build() throws ConsentLibException {
             try {
                 setDefaults();
                 setCmpOrign();
@@ -765,7 +767,7 @@ public class ConsentLib {
         new LoadTask(callback).execute(urlString);
     }
 
-    private ConsentLib(Builder b) {
+    private ConsentLib(Builder b) throws ConsentLibException.ApiException {
         activity = b.activity;
         siteName = b.siteName;
         accountId = b.accountId;
@@ -789,6 +791,8 @@ public class ConsentLib {
 
         euconsent = sharedPref.getString(EU_CONSENT_KEY, null);
         consentUUID = sharedPref.getString(CONSENT_UUID_KEY, null);
+
+        sourcePoint = new SourcePointClient(Integer.toString(accountId), "https://"+siteName, false);
     }
 
     private String getSiteIdUrl() {
