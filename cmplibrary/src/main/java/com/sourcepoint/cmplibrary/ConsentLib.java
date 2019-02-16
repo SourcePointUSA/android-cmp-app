@@ -971,31 +971,15 @@ public class ConsentLib {
             return;
         }
 
-        load(
-                getSiteIdUrl(),
-                new OnLoadComplete() {
-                    @Override
-                    public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
-                        String siteId;
-                        if(result instanceof FileNotFoundException) {
-                            throw new ConsentLibException()
-                                    .new ApiException("404: Failed getting site_id from "+getSiteIdUrl()+" make sure the site name and account id are correct.");
-                        }
-
-                        try {
-                            siteId = new JSONObject((String) result).getString("site_id");
-                        } catch (JSONException e) {
-                            throw new ConsentLibException()
-                                    .new ApiException("Error parsing server response when getting site_id from "+getSiteIdUrl()+" got instead: "+result);
-                        }
-
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(siteIdKey, siteId);
-                        editor.commit();
-                        callback.onLoadCompleted(siteId);
-                    }
-                }
-        );
+        sourcePoint.getSiteID(new OnLoadComplete() {
+            @Override
+            public void onSuccess(Object siteID) {
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(siteIdKey, (String) siteID);
+                editor.commit();
+                callback.onSuccess(siteID);
+            }
+        });
     }
 
     /**
