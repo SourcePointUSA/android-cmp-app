@@ -120,13 +120,13 @@ extends java.lang.Object</pre>
                                  c.getCustomVendorConsents(
                                          new String[]{"VENDOR_ID"},
                                          new ConsentLib.OnLoadComplete() {
-                                             public void onLoadCompleted(Object result) {
+                                             public void onSuccess(Object result) {
                                                  Log.i(TAG, "custom vendor consent 1: " + ((boolean[]) result)[0]);
                                              }
                                          });
                                  c.getPurposeConsents(
                                          new ConsentLib.OnLoadComplete() {
-                                             public void onLoadCompleted(Object result) {
+                                             public void onSuccess(Object result) {
                                                  ConsentLib.PurposeConsent[] results = (ConsentLib.PurposeConsent[]) result;
                                                  for (ConsentLib.PurposeConsent purpose : results) {
                                                      Log.i(TAG, "Consented to purpose: " + purpose.name);
@@ -136,7 +136,7 @@ extends java.lang.Object</pre>
                                  c.getPurposeConsent(
                                          "PURPOSE_ID",
                                          new ConsentLib.OnLoadComplete() {
-                                             public void onLoadCompleted(Object result) {
+                                             public void onSuccess(Object result) {
                                                  Log.i(TAG, "Consented to PURPOSE: " + ((Boolean) result).toString());
                                              }
                                          });

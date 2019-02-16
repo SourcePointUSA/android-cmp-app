@@ -55,13 +55,13 @@ import com.iab.gdpr.consent.VendorConsentDecoder;
  *                                 c.getCustomVendorConsents(
  *                                         new String[]{"VENDOR_ID"},
  *                                         new ConsentLib.OnLoadComplete() {
- *                                             public void onLoadCompleted(Object result) {
+ *                                             public void onSuccess(Object result) {
  *                                                 Log.i(TAG, "custom vendor consent 1: " + ((boolean[]) result)[0]);
  *                                             }
  *                                         });
  *                                 c.getPurposeConsents(
  *                                         new ConsentLib.OnLoadComplete() {
- *                                             public void onLoadCompleted(Object result) {
+ *                                             public void onSuccess(Object result) {
  *                                                 ConsentLib.PurposeConsent[] results = (ConsentLib.PurposeConsent[]) result;
  *                                                 for (ConsentLib.PurposeConsent purpose : results) {
  *                                                     Log.i(TAG, "Consented to purpose: " + purpose.name);
@@ -71,7 +71,7 @@ import com.iab.gdpr.consent.VendorConsentDecoder;
  *                                 c.getPurposeConsent(
  *                                         "PURPOSE_ID",
  *                                         new ConsentLib.OnLoadComplete() {
- *                                             public void onLoadCompleted(Object result) {
+ *                                             public void onSuccess(Object result) {
  *                                                 Log.i(TAG, "Consented to PURPOSE: " + ((Boolean) result).toString());
  *                                             }
  *                                         });
@@ -237,7 +237,11 @@ public class ConsentLib {
 
 
     public interface OnLoadComplete {
-        void onLoadCompleted(Object result) throws ConsentLibException.ApiException;
+        void onSuccess(Object result);
+
+        default void onFailure(ConsentLibException exception) {
+            Log.d("ConsentLib", "default implementation of onFailure called with Exception: "+exception);
+        }
     }
 
     /**
@@ -618,13 +622,14 @@ public class ConsentLib {
 
     static class LoadTask extends AsyncTask<String, Void, Object> {
         private final OnLoadComplete listener;
+        private ConsentLibException.ApiException apiException;
 
         LoadTask(OnLoadComplete listener) {
             this.listener = listener;
         }
 
         protected Object doInBackground(String... urlString) {
-            Object result;
+            Object result = new Object();
             HttpURLConnection urlConnection = null;
 
             try {
@@ -640,7 +645,8 @@ public class ConsentLib {
                 }
                 result = outputStream.toString();
             } catch (IOException e) {
-                result = e;
+                cancel(true);
+                apiException = new ConsentLibException().new ApiException(e.getMessage());
             } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
@@ -650,11 +656,13 @@ public class ConsentLib {
         }
 
         protected void onPostExecute(Object result) {
-            try {
-                listener.onLoadCompleted(result);
-            } catch (ConsentLibException.ApiException e) {
-                e.printStackTrace();
-            }
+            listener.onSuccess(result);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            listener.onFailure(apiException);
         }
     }
 
@@ -955,7 +963,7 @@ public class ConsentLib {
 
         String storedSiteId = sharedPref.getString(siteIdKey, null);
         if (storedSiteId != null) {
-            callback.onLoadCompleted(storedSiteId);
+            callback.onSuccess(storedSiteId);
             return;
         }
 
@@ -997,8 +1005,8 @@ public class ConsentLib {
     public void getCustomVendorConsent(final String customVendorId, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         getCustomVendorConsents(new String[]{customVendorId}, new OnLoadComplete() {
             @Override
-            public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
-                callback.onLoadCompleted(((ArrayList) result).get(0));
+            public void onSuccess(Object result) {
+                callback.onSuccess(((ArrayList) result).get(0));
             }
         });
     }
@@ -1016,13 +1024,13 @@ public class ConsentLib {
     public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         loadAndStoreCustomVendorAndPurposeConsents(customVendorIds, new OnLoadComplete() {
             @Override
-            public void onLoadCompleted(Object _result) throws ConsentLibException.ApiException {
+            public void onSuccess(Object _result) {
                 ArrayList<Boolean> consents = new ArrayList<>();
                 for (String vendorId : customVendorIds) {
                     String storedConsent = sharedPref.getString(CUSTOM_VENDOR_PREFIX + vendorId, "");
                     consents.add(storedConsent.equals("true"));
                 }
-                callback.onLoadCompleted(consents);
+                callback.onSuccess(consents);
             }
         });
     }
@@ -1038,7 +1046,7 @@ public class ConsentLib {
     public void getPurposeConsent(final String id, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         getPurposeConsents(new OnLoadComplete() {
             @Override
-            public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
+            public void onSuccess(Object result) {
                 boolean consented = false;
                 PurposeConsent[] consents = (PurposeConsent[]) result;
                 for(PurposeConsent consent : consents) {
@@ -1046,7 +1054,7 @@ public class ConsentLib {
                         consented = true;
                     }
                 }
-                callback.onLoadCompleted(consented);
+                callback.onSuccess(consented);
             }
         });
     }
@@ -1059,8 +1067,8 @@ public class ConsentLib {
     public void getPurposeConsents(final OnLoadComplete callback) throws ConsentLibException.ApiException {
         loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
                 @Override
-                public void onLoadCompleted(Object result) throws ConsentLibException.ApiException {
-                callback.onLoadCompleted(
+                public void onSuccess(Object result) {
+                callback.onSuccess(
                         parsePurposeConsentJson(sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, "[]"))
                 );
             }
@@ -1118,7 +1126,8 @@ public class ConsentLib {
         return VendorConsentDecoder.fromBase64String(euconsent);
     }
 
-    private PurposeConsent[] parsePurposeConsentJson(String json) throws ConsentLibException.ApiException {
+    private PurposeConsent[] parsePurposeConsentJson(String json) {
+
         try {
             JSONArray array = new JSONArray(json);
             PurposeConsent[] results = new PurposeConsent[array.length()];
@@ -1131,7 +1140,8 @@ public class ConsentLib {
             }
             return results;
         } catch (JSONException e) {
-            throw new ConsentLibException().new ApiException("Could not extract purpose consent '_id' and 'name' from: "+json);
+            return new PurposeConsent[] {};
+//            throw new ConsentLibException().new ApiException("Could not extract purpose consent '_id' and 'name' from: "+json);
         }
     }
 
@@ -1160,15 +1170,15 @@ public class ConsentLib {
     private void loadAndStoreCustomVendorAndPurposeConsents(final String[] customVendorIdsToRequest, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         getSiteId(new OnLoadComplete() {
             @Override
-            public void onLoadCompleted(Object siteId) {
+            public void onSuccess(Object siteId) {
                 final String consentUrl = getConsentRequest(siteId.toString(), customVendorIdsToRequest);
 
                 load(consentUrl, new OnLoadComplete() {
                     @Override
-                    public void onLoadCompleted(Object vendorsAndPurposes) throws ConsentLibException.ApiException {
+                    public void onSuccess(Object vendorsAndPurposes) {
                         if(vendorsAndPurposes instanceof FileNotFoundException) {
-                            throw new ConsentLibException()
-                                    .new ApiException("404: could not find vendor consents and purposes from: "+consentUrl);
+//                            throw new ConsentLibException()
+//                                    .new ApiException("404: could not find vendor consents and purposes from: "+consentUrl);
                         }
 
 

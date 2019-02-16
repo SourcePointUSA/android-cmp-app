@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                             c.getCustomVendorConsents(
                                     new String[]{"5bf7f5c5461e09743fe190b3", "5b2adb86173375159f804c77"},
                                     new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
+                                        public void onSuccess(Object result) {
                                             Log.i(TAG, "Consented to non-IAB vendor 1: " + ((ArrayList) result).get(0));
                                             Log.i(TAG, "Consented to non-IAB vendor 2: " + ((ArrayList) result).get(1));
                                         }
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                             // Get the consent for a single non-IAB vendor
                             c.getCustomVendorConsent("5bf7f5c5461e09743fe190b3", // A.mob vendor id
                                     new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
+                                        public void onSuccess(Object result) {
                                             Log.i(TAG, "Consented to A.mob: " + result);
                                         }
                                     });
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                             // Example usage of getting all purpose consent results
                             c.getPurposeConsents(
                                     new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
+                                        public void onSuccess(Object result) {
                                             ConsentLib.PurposeConsent[] results = (ConsentLib.PurposeConsent[]) result;
                                             for (ConsentLib.PurposeConsent purpose : results) {
                                                 Log.i(TAG, "Consented to purpose: " + purpose.name);
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                             c.getPurposeConsent(
                                     "5c0e813175223430a50fe465",
                                     new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
+                                        public void onSuccess(Object result) {
                                             Log.i(TAG, "Consented to My Custom Purpose: " + result.toString());
                                         }
                                     });
