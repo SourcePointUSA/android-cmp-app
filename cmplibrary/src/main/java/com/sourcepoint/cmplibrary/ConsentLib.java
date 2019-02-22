@@ -29,7 +29,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -37,6 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import com.iab.gdpr.consent.VendorConsent;
@@ -62,8 +62,8 @@ import com.iab.gdpr.consent.VendorConsentDecoder;
  *                                 c.getPurposeConsents(
  *                                         new ConsentLib.OnLoadComplete() {
  *                                             public void onSuccess(Object result) {
- *                                                 ConsentLib.PurposeConsent[] results = (ConsentLib.PurposeConsent[]) result;
- *                                                 for (ConsentLib.PurposeConsent purpose : results) {
+ *                                                 ConsentLib.Consent[] results = (ConsentLib.Consent[]) result;
+ *                                                 for (ConsentLib.Consent purpose : results) {
  *                                                     Log.i(TAG, "Consented to purpose: " + purpose.name);
  *                                                 }
  *                                             }
@@ -295,7 +295,7 @@ public class ConsentLib {
          *      <li>{@link ConsentLib#IAB_CONSENT_PARSED_VENDOR_CONSENTS}</li>
          *  </ul>
          *  Also at this point, the methods {@link ConsentLib#getCustomVendorConsents},
-         *  {@link ConsentLib#getPurposeConsents} and {@link ConsentLib#getPurposeConsent}
+         *  {@link ConsentLib#getCustomPurposeConsents}
          *  will also be able to be called from inside the callback.
          * @param c - Callback to be called when the user finishes interacting with the WebView
          * @return BuildStep - the next build step
@@ -462,7 +462,7 @@ public class ConsentLib {
          *      <li>{@link ConsentLib#IAB_CONSENT_PARSED_VENDOR_CONSENTS}</li>
          *  </ul>
          *  Also at this point, the methods {@link ConsentLib#getCustomVendorConsents},
-         *  {@link ConsentLib#getPurposeConsents} and {@link ConsentLib#getPurposeConsent}
+         *  {@link ConsentLib#getCustomPurposeConsents}
          *  will also be able to be called from inside the callback.
          * @param c - Callback to be called when the user finishes interacting with the WebView
          * @return BuildStep - the next build step
@@ -742,16 +742,44 @@ public class ConsentLib {
     }
 
     /**
-     * Simple encapsulating class for purpose consents. Contains Purpose Id and Name as attributes;
+     * Simple encapsulating class for consents.
      */
-    public class PurposeConsent {
-        @SuppressWarnings("unused")
+    protected static abstract class Consent {
         public final String id;
         public final String name;
+        public final String type;
 
-        PurposeConsent(String id, String name) {
+        Consent(String id, String name, String type) {
             this.name = name;
             this.id = id;
+            this.type = type;
+        }
+
+        @Override
+        public boolean equals(Object otherConsent) {
+            return super.equals(((Consent) otherConsent).id);
+        }
+
+        public JSONObject toJSON() {
+            JSONObject json = new JSONObject();
+            try {
+                json.put("id", id).put("name", name).put("type", type);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return json;
+        }
+    }
+
+    public static class CustomPurposeConsent extends Consent {
+        CustomPurposeConsent(String id, String name) {
+            super(id, name, "CustomPurposeConsent");
+        }
+    }
+
+    public static class CustomVendorConsent extends Consent {
+        CustomVendorConsent(String id, String name) {
+            super(id, name, "CustomVendorConsent");
         }
     }
 
@@ -978,23 +1006,6 @@ public class ConsentLib {
     }
 
     /**
-     * This method receives a String indicating the custom vendor id and a callback that will be called
-     * with <i>true</i> or <i>false</i> indicating if the user has given consent or not to that vendor.
-     * @param customVendorId custom vendor id - currently needs to be provided by SourcePoint
-     * @param callback - callback that will be called with a boolean indicating if the user has given consent or not to that vendor.
-     * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
-     */
-    @SuppressWarnings("unused")
-    public void getCustomVendorConsent(final String customVendorId, final OnLoadComplete callback) throws ConsentLibException.ApiException {
-        getCustomVendorConsents(new String[]{customVendorId}, new OnLoadComplete() {
-            @Override
-            public void onSuccess(Object result) {
-                callback.onSuccess(((ArrayList) result).get(0));
-            }
-        });
-    }
-
-    /**
      * This method receives an Array of Strings representing the custom vendor ids you want to get
      * the consents for and a callback.<br/>
      * The callback will be called with an Array of booleans once the data is ready. If the element
@@ -1007,53 +1018,36 @@ public class ConsentLib {
     public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         loadAndStoreCustomVendorAndPurposeConsents(customVendorIds, new OnLoadComplete() {
             @Override
-            public void onSuccess(Object _result) {
-                ArrayList<Boolean> consents = new ArrayList<>();
-                for (String vendorId : customVendorIds) {
-                    String storedConsent = sharedPref.getString(CUSTOM_VENDOR_PREFIX + vendorId, "");
-                    consents.add(storedConsent.equals("true"));
-                }
-                callback.onSuccess(consents);
-            }
-        });
-    }
-
-    /**
-     * This method receives a String indicating the id of a purpose and a callback that will be called
-     * with <i>true</i> or <i>false</i> indicating if the user has given consent or not to that purpose.
-     * @param id the id of a purpose - needs to be provided by SourcePoint
-     * @param callback - called with a boolean indicating if the user has given consent to that purpose
-     * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
-     * @see ConsentLib#getPurposeConsents(OnLoadComplete)
-     */
-    public void getPurposeConsent(final String id, final OnLoadComplete callback) throws ConsentLibException.ApiException {
-        getPurposeConsents(new OnLoadComplete() {
-            @Override
             public void onSuccess(Object result) {
-                boolean consented = false;
-                PurposeConsent[] consents = (PurposeConsent[]) result;
-                for(PurposeConsent consent : consents) {
-                    if(consent.id.equals(id)) {
-                        consented = true;
+                HashSet<Consent> consents = (HashSet<Consent>) result;
+                HashSet<CustomVendorConsent> vendorConsents = new HashSet<>();
+                for (Consent consent : consents) {
+                    if(consent instanceof CustomVendorConsent) {
+                        vendorConsents.add((CustomVendorConsent) consent);
                     }
                 }
-                callback.onSuccess(consented);
+                callback.onSuccess(vendorConsents);
             }
         });
     }
 
     /**
-     * This method receives a callback which is called with an Array of all the purposes ({@link PurposeConsent}) the user has given consent for.
-     * @param callback called with an array of {@link PurposeConsent}
+     * This method receives a callback which is called with an Array of all the purposes ({@link Consent}) the user has given consent for.
+     * @param callback called with an array of {@link Consent}
      * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
      */
-    public void getPurposeConsents(final OnLoadComplete callback) throws ConsentLibException.ApiException {
+    public void getCustomPurposeConsents(final OnLoadComplete callback) throws ConsentLibException.ApiException {
         loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
-                @Override
-                public void onSuccess(Object result) {
-                callback.onSuccess(
-                        parsePurposeConsentJson(sharedPref.getString(CUSTOM_PURPOSE_CONSENTS_JSON, "[]"))
-                );
+            @Override
+            public void onSuccess(Object result) {
+                HashSet<Consent> consents = (HashSet<Consent>) result;
+                HashSet<CustomPurposeConsent> purposeConsents = new HashSet<>();
+                for (Consent consent : consents) {
+                    if(consent instanceof CustomPurposeConsent) {
+                        purposeConsents.add((CustomPurposeConsent) consent);
+                    }
+                }
+                callback.onSuccess(purposeConsents);
             }
         });
     }
@@ -1109,21 +1103,21 @@ public class ConsentLib {
         return VendorConsentDecoder.fromBase64String(euconsent);
     }
 
-    private PurposeConsent[] parsePurposeConsentJson(String json) {
+    private Consent[] parsePurposeConsentJson(String json) {
 
         try {
             JSONArray array = new JSONArray(json);
-            PurposeConsent[] results = new PurposeConsent[array.length()];
+            Consent[] results = new Consent[array.length()];
             for (int i = 0; i < array.length(); i++) {
                 JSONObject consentJson = array.getJSONObject(i);
-                results[i] = new PurposeConsent(
+                results[i] = new CustomPurposeConsent(
                         consentJson.getString("_id"),
                         consentJson.getString("name")
                 );
             }
             return results;
         } catch (JSONException e) {
-            return new PurposeConsent[] {};
+            return new Consent[] {};
 //            throw new ConsentLibException().new ApiException("Could not extract purpose consent '_id' and 'name' from: "+json);
         }
     }
@@ -1150,49 +1144,27 @@ public class ConsentLib {
         }
     }
 
-    private void loadAndStoreCustomVendorAndPurposeConsents(final String[] customVendorIdsToRequest, final OnLoadComplete callback) throws ConsentLibException.ApiException {
+    private void loadAndStoreCustomVendorAndPurposeConsents(final String[] vendorIds, final OnLoadComplete callback) throws ConsentLibException.ApiException {
         getSiteId(new OnLoadComplete() {
             @Override
             public void onSuccess(Object siteId) {
-                final String consentUrl = getConsentRequest(siteId.toString(), customVendorIdsToRequest);
-
-                load(consentUrl, new OnLoadComplete() {
+                sourcePoint.getCustomConsents(consentUUID, euconsent, (String) siteId, vendorIds, new OnLoadComplete() {
                     @Override
-                    public void onSuccess(Object vendorsAndPurposes) {
-                        if(vendorsAndPurposes instanceof FileNotFoundException) {
-//                            throw new ConsentLibException()
-//                                    .new ApiException("404: could not find vendor consents and purposes from: "+consentUrl);
-                        }
-
-
-                        JSONArray consentedCustomVendors;
-                        JSONArray consentedCustomPurposes;
-                        try {
-                            JSONObject consentedCustomData = new JSONObject(vendorsAndPurposes.toString());
-                            consentedCustomVendors = consentedCustomData.getJSONArray("consentedVendors");
-                            consentedCustomPurposes = consentedCustomData.getJSONArray("consentedPurposes");
-                        } catch (JSONException e) {
-                            throw new ConsentLibException()
-                                    .new ApiException("Error extracting consented vendors and purposes from server's response: "+vendorsAndPurposes);
-                        }
-
+                    public void onSuccess(Object result) {
+                        HashSet<Consent> consents = (HashSet<Consent>) result;
+                        HashSet<String> consentStrings = new HashSet<>();
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        clearStoredVendorConsents(customVendorIdsToRequest, editor);
-                        for (int i = 0; i < consentedCustomVendors.length(); i++) {
-                            try {
-                                JSONObject consentedCustomVendor = consentedCustomVendors.getJSONObject(i);
-                                editor.putString(CUSTOM_VENDOR_PREFIX + consentedCustomVendor.get("_id"), Boolean.toString(true));
-                            } catch (JSONException e) {
-                                throw new ConsentLibException().new ApiException("Could not extract customVendors from: "+vendorsAndPurposes);
-                            }
+                        clearStoredVendorConsents(vendorIds, editor);
+                        for(Consent consent : consents) {
+                            consentStrings.add(consent.toJSON().toString());
                         }
-
-                        editor.putString(CUSTOM_PURPOSE_CONSENTS_JSON, consentedCustomPurposes.toString());
-
+                        // TODO: change this CONSTANT
+                        editor.putStringSet("CUSTOM_CONSENTS", consentStrings);
                         editor.commit();
-                        callback.onLoadCompleted(vendorsAndPurposes.toString());
+                        callback.onSuccess(consents);
                     }
                 });
+
             }
         });
     }
