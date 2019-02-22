@@ -1,14 +1,17 @@
 package com.sourcepoint.cmplibrary;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.loopj.android.http.*;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashSet;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -92,6 +95,17 @@ class SourcePointClient {
         return CMPUrl() + "/consent/v2/gdpr-status";
     }
 
+    private String customConsentsUrl(String consentUUID, String euConsent, String siteId, String[] vendorIds) {
+        String consentParam = consentUUID == null ? "[CONSENT_UUID]" : consentUUID;
+        String euconsentParam = euConsent == null ? "[EUCONSENT]" : euConsent;
+        String customVendorIdString = URLEncoder.encode(TextUtils.join(",", vendorIds));
+
+        return CMPUrl() + "/consent/v2/" + siteId + "/custom-vendors?"+
+                "customVendorIds=" + customVendorIdString +
+                "&consentUUID=" + consentParam +
+                "&euconsent=" + euconsentParam;
+    }
+
     public void getSiteID(ConsentLib.OnLoadComplete onLoadComplete) {
         String url = siteIdUrl();
         http.get(url, new ResponseHandler(url, onLoadComplete) {
@@ -113,6 +127,49 @@ class SourcePointClient {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     onLoadComplete.onSuccess(response.getString("gdprApplies"));
+                } catch (JSONException e) {
+                    onFailure(statusCode, headers, e, response);
+                }
+            }
+        });
+    }
+
+    private HashSet<ConsentLib.Consent> getConsentFromResponse(JSONObject response, String type) throws JSONException {
+        JSONArray consentsJSON = response.getJSONArray(type);
+        HashSet<ConsentLib.Consent> consents = new HashSet<>();
+        for (int i = 0; i < consentsJSON.length(); i++) {
+            switch (type) {
+                case "consentedVendors": {
+                    consents.add(new ConsentLib.CustomVendorConsent(
+                            consentsJSON.getJSONObject(i).getString("_id"),
+                            consentsJSON.getJSONObject(i).getString("name")
+                    ));
+                    break;
+                }
+                case "consentedPurposes": {
+                    consents.add(new ConsentLib.CustomPurposeConsent(
+                            consentsJSON.getJSONObject(i).getString("_id"),
+                            consentsJSON.getJSONObject(i).getString("name")
+                    ));
+                    break;
+                }
+            }
+        }
+        return consents;
+    }
+
+    public void getCustomConsents(String consentUUID, String euConsent, String siteId, String[] vendorIds, ConsentLib.OnLoadComplete onLoadComplete) {
+        String url = customConsentsUrl(consentUUID, euConsent, siteId, vendorIds);
+        http.get(url, new ResponseHandler(url, onLoadComplete) {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                HashSet<ConsentLib.Consent> consents = new HashSet<>();
+
+                try {
+                    consents.addAll(getConsentFromResponse(response, "consentedVendors"));
+                    consents.addAll(getConsentFromResponse(response, "consentedPurposes"));
+
+                    onLoadComplete.onSuccess(consents);
                 } catch (JSONException e) {
                     onFailure(statusCode, headers, e, response);
                 }
