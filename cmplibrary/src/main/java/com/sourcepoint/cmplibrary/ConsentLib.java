@@ -10,7 +10,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
@@ -22,14 +21,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.view.View;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import com.iab.gdpr.consent.VendorConsent;
 import com.iab.gdpr.consent.VendorConsentDecoder;
@@ -38,39 +33,7 @@ import com.iab.gdpr.consent.VendorConsentDecoder;
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
  * It offers methods to get custom vendors consents as well as IAB consent purposes.
  * <pre>{@code
- *      ConsentLib cLib = ConsentLib.newBuilder()
- *                     .setActivity(this)
- *                     .setAccountId(YOUR_ACCOUNT_ID)
- *                     .setSiteName("A_SITE_NAME")
- *                     .setOnInteractionComplete(new ConsentLib.Callback() {
- *                         public void run(ConsentLib c) {
- *                                 c.getCustomVendorConsents(
- *                                         new String[]{"VENDOR_ID"},
- *                                         new ConsentLib.OnLoadComplete() {
- *                                             public void onSuccess(Object result) {
- *                                                 Log.i(TAG, "custom vendor consent 1: " + ((boolean[]) result)[0]);
- *                                             }
- *                                         });
- *                                 c.getPurposeConsents(
- *                                         new ConsentLib.OnLoadComplete() {
- *                                             public void onSuccess(Object result) {
- *                                                 ConsentLib.Consent[] results = (ConsentLib.Consent[]) result;
- *                                                 for (ConsentLib.Consent purpose : results) {
- *                                                     Log.i(TAG, "Consented to purpose: " + purpose.name);
- *                                                 }
- *                                             }
- *                                         });
- *                                 c.getPurposeConsent(
- *                                         "PURPOSE_ID",
- *                                         new ConsentLib.OnLoadComplete() {
- *                                             public void onSuccess(Object result) {
- *                                                 Log.i(TAG, "Consented to PURPOSE: " + ((Boolean) result).toString());
- *                                             }
- *                                         });
- *                         }
- *                     })
- *                     .build();
- *                 cLib.run();
+ *
  * }
  * </pre>
  */
@@ -100,13 +63,6 @@ public class ConsentLib {
      */
     public static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
 
-    private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.cmp.sp-stage.net/";
-    private static final String DEFAULT_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.sourcepoint.mgr.consensu.org/";
-    private static final String DEFAULT_INTERNAL_MMS_DOMAIN = "mms.sp-stage.net";
-    private static final String DEFAULT_MMS_DOMAIN = "mms.sp-prod.net";
-    private static final String DEFAULT_INTERNAL_CMP_DOMAIN = "cmp.sp-stage.net";
-    private static final String DEFAULT_CMP_DOMAIN = "sourcepoint.mgr.consensu.org";
-
     public enum DebugLevel {
         DEBUG,
 //        INFO,
@@ -135,9 +91,7 @@ public class ConsentLib {
     private static final String SP_PREFIX = "_sp_";
     private static final String SP_SITE_ID = SP_PREFIX + "site_id";
 
-    private final static String CUSTOM_VENDOR_PREFIX = SP_PREFIX + "_custom_vendor_consent_";
-    private final static String CUSTOM_PURPOSE_PREFIX = SP_PREFIX + "_custom_purpose_consent_";
-    private final static String CUSTOM_PURPOSE_CONSENTS_JSON = SP_PREFIX + "_custom_purpose_consents_json";
+    private final static String CUSTOM_CONSENTS_KEY = SP_PREFIX + "_custom_consents";
 
     private Activity activity;
     private final String siteName;
@@ -145,12 +99,6 @@ public class ConsentLib {
     private final ViewGroup viewGroup;
     private final Callback onMessageChoiceSelect;
     private final Callback onInteractionComplete;
-    private final boolean isStage;
-    private final String inAppMessagingPageUrl;
-    private final String mmsDomain;
-    private final String cmpDomain;
-    private final DebugLevel debugLevel;
-    private final EncodedAttribute encodedHref;
     private final EncodedParam encodedTargetingParams;
     private final EncodedParam encodedDebugLevel;
 
@@ -206,7 +154,6 @@ public class ConsentLib {
          */
         BuildStep setSiteName(String s);
     }
-
 
     public interface OnLoadComplete {
         void onSuccess(Object result);
@@ -332,11 +279,8 @@ public class ConsentLib {
         private final Callback noOpCallback = new Callback() { @Override public void run(ConsentLib c) { } };
         private Callback onMessageChoiceSelect = noOpCallback;
         private Callback onInteractionComplete = noOpCallback;
-        private boolean isStage = false;
-        private boolean isInternalStage = false;
-        private String inAppMessagingPageUrl = null;
-        private String mmsDomain = null;
-        private String cmpDomain = null;
+        private boolean staging, stagingCampaign = false;
+        private String mmsDomain, cmpDomain, msgDomain = null;
         private final JSONObject targetingParams = new JSONObject();
         private EncodedParam targetingParamsString = null;
         private DebugLevel debugLevel = DebugLevel.OFF;
@@ -448,7 +392,7 @@ public class ConsentLib {
          * @see BuildStep
          */
         public BuildStep setStage(boolean st) {
-            isStage = st;
+            stagingCampaign = st;
             return this;
         }
 
@@ -460,12 +404,12 @@ public class ConsentLib {
          * @see BuildStep
          */
         public BuildStep setInternalStage(boolean st) {
-            isInternalStage = st;
+            staging = st;
             return this;
         }
 
-        public BuildStep setInAppMessagePageUrl(String pageUrl) {
-            inAppMessagingPageUrl = pageUrl;
+        public BuildStep setInAppMessagePageUrl(String inAppMessageUrl) {
+            msgDomain = inAppMessageUrl;
             return this;
         }
 
@@ -513,20 +457,8 @@ public class ConsentLib {
             return this;
         }
 
-        private void setCmpOrign() throws ConsentLibException {
-            cmpOrign = new EncodedAttribute("cmpOrigin", "//" + cmpDomain);
-        }
-
-        private void setMsgDomain() throws ConsentLibException {
-             msgDomain = new EncodedAttribute("mmsDomain", "//" + mmsDomain);
-        }
-
         private void setTargetingParamsString() throws ConsentLibException {
-            targetingParamsString = new EncodedAttribute("targetingParams", targetingParams.toString());
-        }
-
-        private void setHref() throws ConsentLibException {
-            href = new EncodedAttribute("href", "http://" + siteName + "/" + page);
+            targetingParamsString = new EncodedParam("targetingParams", targetingParams.toString());
         }
 
         private void isRequired(String attrName, Object value) throws ConsentLibException.BuildException {
@@ -540,20 +472,6 @@ public class ConsentLib {
         }
 
         private void setDefaults () throws ConsentLibException.BuildException {
-            if (inAppMessagingPageUrl == null) {
-                inAppMessagingPageUrl = isInternalStage ?
-                        DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL :
-                        DEFAULT_IN_APP_MESSAGING_PAGE_URL;
-            }
-
-            if (mmsDomain == null) {
-                mmsDomain = isInternalStage ? DEFAULT_INTERNAL_MMS_DOMAIN : DEFAULT_MMS_DOMAIN;
-            }
-
-            if (cmpDomain == null) {
-                cmpDomain = isInternalStage ? DEFAULT_INTERNAL_CMP_DOMAIN : DEFAULT_CMP_DOMAIN;
-            }
-
             if (viewGroup == null) {
                 // render on top level activity view if no viewGroup specified
                 View view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
@@ -575,10 +493,7 @@ public class ConsentLib {
         public ConsentLib build() throws ConsentLibException {
             try {
                 setDefaults();
-                setCmpOrign();
-                setMsgDomain();
                 setTargetingParamsString();
-                setHref();
                 validate();
             } catch (ConsentLibException e) {
                 this.activity = null; // release reference to activity
@@ -718,17 +633,16 @@ public class ConsentLib {
         accountId = b.accountId;
         onMessageChoiceSelect = b.onMessageChoiceSelect;
         onInteractionComplete = b.onInteractionComplete;
-        isStage = b.isStage;
         encodedTargetingParams = b.targetingParamsString;
-        debugLevel = b.debugLevel;
-        inAppMessagingPageUrl = b.inAppMessagingPageUrl;
-        mmsDomain = b.mmsDomain;
-        cmpDomain = b.cmpDomain;
+        encodedDebugLevel = new EncodedParam("debugLevel", b.debugLevel.name());
         viewGroup = b.viewGroup;
-        encodedCmpOrigin = b.cmpOrign;
-        encodedMsgDomain = b.msgDomain;
-        encodedHref = b.href;
 
+        sourcePoint = new SourcePointClientBuilder(b.accountId, b.siteName+"/"+b.page, b.staging)
+                .setStagingCampaign(b.stagingCampaign)
+                .setCmpDomain(b.cmpDomain)
+                .setMessageDomain(b.msgDomain)
+                .setMmsDomain(b.mmsDomain)
+                .build();
 
         // read consent from/store consent to default shared preferences
         // per gdpr framework: https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/852cf086fdac6d89097fdec7c948e14a2121ca0e/In-App%20Reference/Android/app/src/main/java/com/smaato/soma/cmpconsenttooldemoapp/cmpconsenttool/storage/CMPStorage.java
@@ -736,33 +650,6 @@ public class ConsentLib {
 
         euconsent = sharedPref.getString(EU_CONSENT_KEY, null);
         consentUUID = sharedPref.getString(CONSENT_UUID_KEY, null);
-
-        sourcePoint = new SourcePointClient(Integer.toString(accountId), "https://"+siteName, false);
-    }
-
-    private String getSiteIdUrl() {
-        return "http://" + mmsDomain + "/get_site_data?account_id=" + Integer.toString(accountId) + "&href=" + encodedHref;
-    }
-
-    private String getGDPRUrl() {
-        return "https://" + cmpDomain + "/consent/v2/gdpr-status";
-    }
-
-    private String inAppMessageRequest() {
-        List<String> params = new ArrayList<>();
-        params.add("_sp_accountId=" + String.valueOf(accountId));
-        params.add("_sp_cmp_inApp=true");
-        params.add("_sp_writeFirstPartyCookies=true");
-        params.add("_sp_siteHref=" + encodedHref);
-        params.add("_sp_msg_domain=" + encodedMsgDomain);
-        params.add("_sp_cmp_origin=" + encodedCmpOrigin);
-        params.add("_sp_msg_targetingParams=" + encodedTargetingParams);
-        params.add("_sp_debug_level=" + debugLevel.name());
-        params.add("_sp_msg_stageCampaign=" + isStage);
-
-        String url = inAppMessagingPageUrl + "?" + TextUtils.join("&", params);
-        Log.i(TAG, "cpm url: " + url);
-        return url;
     }
 
     private boolean hasLostInternetConnection() {
@@ -816,14 +703,13 @@ public class ConsentLib {
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.addJavascriptInterface(new MessageInterface(), "JSReceiver");
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl(inAppMessageRequest());
+        webView.loadUrl(sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel));
         webView.setWebViewClient(new WebViewClient());
 
         webView.getSettings().setSupportMultipleWindows(true);
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
-            public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, android.os.Message resultMsg)
-            {
+            public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, android.os.Message resultMsg) {
                 WebView.HitTestResult result = view.getHitTestResult();
                 String data = result.getExtra();
                 Context context = view.getContext();
@@ -902,7 +788,7 @@ public class ConsentLib {
 
     // get site id corresponding to account id and site name. Read from local storage if present.
     // Write to local storage after getting response.
-    private void getSiteId(final OnLoadComplete callback) throws ConsentLibException.ApiException {
+    private void getSiteId(final OnLoadComplete callback) {
         final String siteIdKey = SP_SITE_ID + "_" + Integer.toString(accountId) + "_" + siteName;
 
         String storedSiteId = sharedPref.getString(siteIdKey, null);
@@ -997,7 +883,7 @@ public class ConsentLib {
      * @throws ConsentLibException if the consent dialog is not completed or the
      *         consent string is not present in SharedPreferences.
      */
-    public boolean[] getIABPurposeConsents(int[] purposeIds) throws ConsentLibException{
+    public boolean[] getIABPurposeConsents(int[] purposeIds) throws ConsentLibException {
         final VendorConsent vendorConsent = getParsedConsentString();
         boolean[] results = new boolean[purposeIds.length];
 
@@ -1007,7 +893,7 @@ public class ConsentLib {
         return results;
     }
 
-    private String getConsentStringFromPreferences() throws ConsentLibException{
+    private String getConsentStringFromPreferences() throws ConsentLibException {
         final String euconsent = sharedPref.getString(IAB_CONSENT_CONSENT_STRING, null);
         if (euconsent == null) {
             throw new ConsentLibException("Could not find consent string in sharedUserPreferences.");
@@ -1015,39 +901,9 @@ public class ConsentLib {
         return euconsent;
     }
 
-    private VendorConsent getParsedConsentString() throws ConsentLibException{
+    private VendorConsent getParsedConsentString() throws ConsentLibException {
         final String euconsent = getConsentStringFromPreferences();
         return VendorConsentDecoder.fromBase64String(euconsent);
-    }
-
-    private Consent[] parsePurposeConsentJson(String json) {
-
-        try {
-            JSONArray array = new JSONArray(json);
-            Consent[] results = new Consent[array.length()];
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject consentJson = array.getJSONObject(i);
-                results[i] = new CustomPurposeConsent(
-                        consentJson.getString("_id"),
-                        consentJson.getString("name")
-                );
-            }
-            return results;
-        } catch (JSONException e) {
-            return new Consent[] {};
-//            throw new ConsentLibException().new ApiException("Could not extract purpose consent '_id' and 'name' from: "+json);
-        }
-    }
-
-    private String getConsentRequest(String siteId, String[] vendorIds) {
-        String consentParam = consentUUID == null ? "[CONSENT_UUID]" : consentUUID;
-        String euconsentParam = euconsent == null ? "[EUCONSENT]" : euconsent;
-        String customVendorIdString = URLEncoder.encode(TextUtils.join(",", vendorIds));
-
-        return "https://" + cmpDomain + "/consent/v2/" + siteId + "/custom-vendors?"+
-                "customVendorIds=" + customVendorIdString +
-                "&consentUUID=" + consentParam +
-                "&euconsent=" + euconsentParam;
     }
 
     /**
@@ -1057,7 +913,7 @@ public class ConsentLib {
      */
     private void clearStoredVendorConsents(final String[] customVendorIds, SharedPreferences.Editor editor) {
         for(String vendorId : customVendorIds){
-            editor.remove(CUSTOM_VENDOR_PREFIX + vendorId);
+            editor.remove(CUSTOM_CONSENTS_KEY + vendorId);
         }
     }
 
@@ -1075,8 +931,7 @@ public class ConsentLib {
                         for(Consent consent : consents) {
                             consentStrings.add(consent.toJSON().toString());
                         }
-                        // TODO: change this CONSTANT
-                        editor.putStringSet("CUSTOM_CONSENTS", consentStrings);
+                        editor.putStringSet(CUSTOM_CONSENTS_KEY, consentStrings);
                         editor.commit();
                         callback.onSuccess(consents);
                     }

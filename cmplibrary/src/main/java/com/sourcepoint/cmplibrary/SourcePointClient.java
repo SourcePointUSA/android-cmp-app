@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashSet;
 
@@ -17,16 +18,11 @@ import cz.msebera.android.httpclient.Header;
 class SourcePointClient {
     private static final String LOG_TAG = "SOURCE_POINT_CLIENT";
 
-    private static final String DEFAULT_STAGING_MMS_URL = "https://mms.sp-stage.net";
-    private static final String DEFAULT_MMS_URL = "https://mms.sp-prod.net";
-
-    private static final String DEFAULT_INTERNAL_CMP_URL = "https://cmp.sp-stage.net";
-    private static final String DEFAULT_CMP_URL = "https://sourcepoint.mgr.consensu.org";
-
     private static AsyncHttpClient http = new AsyncHttpClient();
 
-    private EncodedParam accountId, site;
-    private Boolean staging;
+    private URL mmsUrl, cmpUrl, messageUrl;
+    private EncodedParam accountId, site, encodedCmpOrigin, encodedMsgDomain;
+    private Boolean stagingCampaign;
 
     private class ResponseHandler extends JsonHttpResponseHandler {
         ConsentLib.OnLoadComplete onLoadComplete;
@@ -50,27 +46,30 @@ class SourcePointClient {
         }
     }
 
-//    TODO: take page into account when building the site url
-//    TODO: take custom domains into account (CMP, MMS, InAppMessaging)
-
-    SourcePointClient(String accountID, String site, Boolean staging) throws ConsentLibException.ApiException {
-        this.staging = staging;
-        this.accountId = new EncodedParam("AccountID", accountID);
-        this.site = new EncodedParam("SiteName", site);
+    SourcePointClient(
+            EncodedParam accountID,
+            EncodedParam site,
+            boolean stagingCampaign,
+            URL mmsUrl,
+            URL cmpUrl,
+            URL messageUrl
+    ) throws ConsentLibException.BuildException {
+        this.stagingCampaign = stagingCampaign;
+        this.accountId = accountID;
+        this.site = site;
+        this.mmsUrl = mmsUrl;
+        this.cmpUrl = cmpUrl;
+        this.messageUrl = messageUrl;
+        this.encodedCmpOrigin = new EncodedParam("cmpUrl", cmpUrl.getHost());
+        this.encodedMsgDomain = new EncodedParam("msgDomain", mmsUrl.getHost());
     }
 
     private String siteIdUrl() {
-        return (staging?DEFAULT_STAGING_MMS_URL:DEFAULT_MMS_URL)+"/get_site_data?"
-                +"account_id="+accountId
-                +"&href="+site;
-    }
-
-    private String CMPUrl() {
-        return staging ? DEFAULT_INTERNAL_CMP_URL : DEFAULT_CMP_URL;
+        return mmsUrl +"/get_site_data?"+"account_id="+accountId+"&href="+site;
     }
 
     private String GDPRStatusUrl() {
-        return CMPUrl() + "/consent/v2/gdpr-status";
+        return cmpUrl + "/consent/v2/gdpr-status";
     }
 
     private String customConsentsUrl(String consentUUID, String euConsent, String siteId, String[] vendorIds) {
@@ -78,13 +77,30 @@ class SourcePointClient {
         String euconsentParam = euConsent == null ? "[EUCONSENT]" : euConsent;
         String customVendorIdString = URLEncoder.encode(TextUtils.join(",", vendorIds));
 
-        return CMPUrl() + "/consent/v2/" + siteId + "/custom-vendors?"+
+        return cmpUrl + "/consent/v2/" + siteId + "/custom-vendors?"+
                 "customVendorIds=" + customVendorIdString +
                 "&consentUUID=" + consentParam +
                 "&euconsent=" + euconsentParam;
     }
 
-    public void getSiteID(ConsentLib.OnLoadComplete onLoadComplete) {
+    String messageUrl(EncodedParam targetingParams, EncodedParam debugLevel) {
+        HashSet<String> params = new HashSet<>();
+        params.add("_sp_accountId=" + String.valueOf(accountId));
+        params.add("_sp_cmp_inApp=true");
+        params.add("_sp_writeFirstPartyCookies=true");
+        params.add("_sp_siteHref=" + site);
+        params.add("_sp_msg_domain=" + encodedMsgDomain);
+        params.add("_sp_cmp_origin=" + encodedCmpOrigin);
+        params.add("_sp_msg_targetingParams=" + targetingParams);
+        params.add("_sp_debug_level=" + debugLevel);
+        params.add("_sp_msg_stageCampaign=" + stagingCampaign);
+
+        String url = messageUrl + "?" + TextUtils.join("&", params);
+        Log.i(LOG_TAG, "cpm url: " + url);
+        return url;
+    }
+
+    void getSiteID(ConsentLib.OnLoadComplete onLoadComplete) {
         String url = siteIdUrl();
         http.get(url, new ResponseHandler(url, onLoadComplete) {
             @Override
@@ -98,7 +114,7 @@ class SourcePointClient {
         });
     }
 
-    public void getGDPRStatus(ConsentLib.OnLoadComplete onLoadComplete) {
+    void getGDPRStatus(ConsentLib.OnLoadComplete onLoadComplete) {
         String url = GDPRStatusUrl();
         http.get(url, new ResponseHandler(url, onLoadComplete) {
             @Override
@@ -136,7 +152,7 @@ class SourcePointClient {
         return consents;
     }
 
-    public void getCustomConsents(String consentUUID, String euConsent, String siteId, String[] vendorIds, ConsentLib.OnLoadComplete onLoadComplete) {
+    void getCustomConsents(String consentUUID, String euConsent, String siteId, String[] vendorIds, ConsentLib.OnLoadComplete onLoadComplete) {
         String url = customConsentsUrl(consentUUID, euConsent, siteId, vendorIds);
         http.get(url, new ResponseHandler(url, onLoadComplete) {
             @Override
