@@ -438,8 +438,8 @@ public class ConsentLib {
             try {
                 this.targetingParams.put(key, val);
             } catch (JSONException e) {
-                throw new ConsentLibException()
-                        .new BuildException("error parsing targeting param, key: "+key+" value: "+val);
+                throw new ConsentLibException
+                        .BuildException("error parsing targeting param, key: "+key+" value: "+val);
             }
             return this;
         }
@@ -462,7 +462,7 @@ public class ConsentLib {
         }
 
         private void isRequired(String attrName, Object value) throws ConsentLibException.BuildException {
-            if(value == null) { throw new ConsentLibException().new BuildException(attrName + " is missing"); }
+            if(value == null) { throw new ConsentLibException.BuildException(attrName + " is missing"); }
         }
 
         private void validate() throws ConsentLibException.BuildException {
@@ -478,7 +478,7 @@ public class ConsentLib {
                 if (view instanceof ViewGroup) {
                     viewGroup = (ViewGroup) view;
                 } else {
-                    throw new ConsentLibException().new BuildException("Current window is not a ViewGroup, can't render WebView");
+                    throw new ConsentLibException.BuildException("Current window is not a ViewGroup, can't render WebView");
                 }
             }
         }
@@ -497,7 +497,7 @@ public class ConsentLib {
                 validate();
             } catch (ConsentLibException e) {
                 this.activity = null; // release reference to activity
-                throw new ConsentLibException().new BuildException(e.getMessage());
+                throw new ConsentLibException.BuildException(e.getMessage());
             }
 
             return new ConsentLib(this);
@@ -540,7 +540,7 @@ public class ConsentLib {
         @JavascriptInterface
         public void onMessageChoiceSelect(int choiceType) throws ConsentLibException.NoInternetConnectionException {
             if(ConsentLib.this.hasLostInternetConnection()) {
-                throw new ConsentLibException().new NoInternetConnectionException();
+                throw new ConsentLibException.NoInternetConnectionException();
             }
 
             ConsentLib.this.choiceType = choiceType;
@@ -627,7 +627,7 @@ public class ConsentLib {
         return new Builder();
     }
 
-    private ConsentLib(Builder b) throws ConsentLibException.ApiException {
+    private ConsentLib(Builder b) throws ConsentLibException.BuildException {
         activity = b.activity;
         siteName = b.siteName;
         accountId = b.accountId;
@@ -673,7 +673,7 @@ public class ConsentLib {
      */
     public void run() throws ConsentLibException.NoInternetConnectionException {
         if(hasLostInternetConnection()) {
-            throw new ConsentLibException().new NoInternetConnectionException();
+            throw new ConsentLibException.NoInternetConnectionException();
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -760,6 +760,11 @@ public class ConsentLib {
             @Override
             public void onSuccess(Object gdprApplies) {
                 setSharedPreference(IAB_CONSENT_SUBJECT_TO_GDPR, gdprApplies.equals("true") ? "1" : "0");
+            }
+
+            @Override
+            public void onFailure(ConsentLibException exception) {
+                Log.d(TAG, "onFailure: "+exception);
             }
         });
     }
