@@ -27,7 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -149,12 +148,11 @@ public class ConsentLib {
     private final boolean isStage;
     private final String inAppMessagingPageUrl;
     private final String mmsDomain;
-    private final EncodedAttribute encodedMsgDomain;
     private final String cmpDomain;
-    private final EncodedAttribute encodedCmpOrigin;
-    private final EncodedAttribute encodedTargetingParams;
     private final DebugLevel debugLevel;
     private final EncodedAttribute encodedHref;
+    private final EncodedParam encodedTargetingParams;
+    private final EncodedParam encodedDebugLevel;
 
     private final SourcePointClient sourcePoint;
 
@@ -163,27 +161,6 @@ public class ConsentLib {
     private android.webkit.CookieManager cm;
 
     private WebView webView;
-
-    private static class EncodedAttribute {
-        private String value;
-
-        EncodedAttribute(String name, String value) throws ConsentLibException {
-            this.value = encode(name, value);
-        }
-
-        private String encode(String attrName, String attrValue) throws ConsentLibException {
-            try {
-                return URLEncoder.encode(attrValue, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new ConsentLibException("Unable to encode "+attrName+", with the value: "+attrValue);
-            }
-        }
-
-        String getValue() { return value; }
-
-        @Override
-        public String toString() { return getValue(); }
-    }
 
     public interface Callback {
         void run(ConsentLib c);
@@ -360,11 +337,8 @@ public class ConsentLib {
         private String inAppMessagingPageUrl = null;
         private String mmsDomain = null;
         private String cmpDomain = null;
-        private EncodedAttribute msgDomain = null;
-        private EncodedAttribute cmpOrign = null;
-        private EncodedAttribute href = null;
         private final JSONObject targetingParams = new JSONObject();
-        private EncodedAttribute targetingParamsString = null;
+        private EncodedParam targetingParamsString = null;
         private DebugLevel debugLevel = DebugLevel.OFF;
 
         /**

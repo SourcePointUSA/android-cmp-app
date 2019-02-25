@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashSet;
 
@@ -49,27 +48,6 @@ class SourcePointClient {
             Log.d(LOG_TAG, "Failed to load resource "+url);
             onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
         }
-    }
-
-    private static class EncodedParam {
-        private String value;
-
-        EncodedParam(String name, String value) throws ConsentLibException.ApiException {
-            this.value = encode(name, value);
-        }
-
-        private String encode(String attrName, String attrValue) throws ConsentLibException.ApiException {
-            try {
-                return URLEncoder.encode(attrValue, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new ConsentLibException().new ApiException("Unable to encode "+attrName+", with the value: "+attrValue+" when instantiating SourcePointClient");
-            }
-        }
-
-        String getValue() { return value; }
-
-        @Override
-        public String toString() { return getValue(); }
     }
 
 //    TODO: take page into account when building the site url
