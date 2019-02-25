@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,12 +26,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -622,52 +615,6 @@ public class ConsentLib {
         }
     }
 
-    static class LoadTask extends AsyncTask<String, Void, Object> {
-        private final OnLoadComplete listener;
-        private ConsentLibException.ApiException apiException;
-
-        LoadTask(OnLoadComplete listener) {
-            this.listener = listener;
-        }
-
-        protected Object doInBackground(String... urlString) {
-            Object result = new Object();
-            HttpURLConnection urlConnection = null;
-
-            try {
-                URL url = new URL(urlString[0]);
-                urlConnection = null;
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                int inputData = inputStream.read();
-                while (inputData != -1) {
-                    outputStream.write(inputData);
-                    inputData = inputStream.read();
-                }
-                result = outputStream.toString();
-            } catch (IOException e) {
-                cancel(true);
-                apiException = new ConsentLibException().new ApiException(e.getMessage());
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-            return result;
-        }
-
-        protected void onPostExecute(Object result) {
-            listener.onSuccess(result);
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            listener.onFailure(apiException);
-        }
-    }
-
     private void flushOrSyncCookies() {
         // forces the cookies sync between RAM and local storage
         // https://developer.android.com/reference/android/webkit/CookieSyncManager
@@ -789,10 +736,6 @@ public class ConsentLib {
      */
     public static ActivityStep newBuilder() {
         return new Builder();
-    }
-
-    private void load(String urlString, OnLoadComplete callback) {
-        new LoadTask(callback).execute(urlString);
     }
 
     private ConsentLib(Builder b) throws ConsentLibException.ApiException {
