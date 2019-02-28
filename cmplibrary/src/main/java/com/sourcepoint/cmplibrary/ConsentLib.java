@@ -194,48 +194,6 @@ public class ConsentLib {
     }
 
     /**
-     * Simple encapsulating class for consents.
-     */
-    protected static abstract class Consent {
-        public final String id;
-        public final String name;
-        public final String type;
-
-        Consent(String id, String name, String type) {
-            this.name = name;
-            this.id = id;
-            this.type = type;
-        }
-
-        @Override
-        public boolean equals(Object otherConsent) {
-            return super.equals(((Consent) otherConsent).id);
-        }
-
-        public JSONObject toJSON() {
-            JSONObject json = new JSONObject();
-            try {
-                json.put("id", id).put("name", name).put("type", type);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return json;
-        }
-    }
-
-    public static class CustomPurposeConsent extends Consent {
-        CustomPurposeConsent(String id, String name) {
-            super(id, name, "CustomPurposeConsent");
-        }
-    }
-
-    public static class CustomVendorConsent extends Consent {
-        CustomVendorConsent(String id, String name) {
-            super(id, name, "CustomVendorConsent");
-        }
-    }
-
-    /**
      *
      * @return a new instance of ConsentLib.Builder
      */

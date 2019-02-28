@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.sourcepoint.cmplibrary.ConsentLib;
+import com.sourcepoint.cmplibrary.CustomVendorConsent;
+import com.sourcepoint.cmplibrary.CustomPurposeConsent;
 import com.sourcepoint.cmplibrary.ConsentLibException;
 
 import java.util.HashSet;
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
                 // optional, used for running stage campaigns
                 .setStage(false)
                 // optional, set custom targeting parameters value can be String and Integer
-                .setTargetingParam("CMP", "true")
+                .setTargetingParam("CMP", showPM.toString())
                 // optional, callback triggered when message choice is selected when called choice
                 // type will be available as Integer at cLib.choiceType
                 .setOnMessageChoiceSelect(new ConsentLib.Callback() {
@@ -53,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
                                     new String[]{"5bf7f5c5461e09743fe190b3", "5b2adb86173375159f804c77"},
                                     new ConsentLib.OnLoadComplete() {
                                         public void onSuccess(Object result) {
-                                            HashSet<ConsentLib.CustomVendorConsent> consents = (HashSet) result;
-                                            for (ConsentLib.CustomVendorConsent consent : consents) {
+                                            HashSet<CustomVendorConsent> consents = (HashSet) result;
+                                            for (CustomVendorConsent consent : consents) {
                                                 if (consent.id.equals("5bf7f5c5461e09743fe190b3")) {
                                                     Log.i(TAG, "Consented to non-IAB vendor 1: "+consent.name);
                                                 }
@@ -68,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
                             // Example usage of getting all purpose consent results
                             c.getCustomPurposeConsents(new ConsentLib.OnLoadComplete() {
                                 public void onSuccess(Object result) {
-                                    HashSet<ConsentLib.CustomPurposeConsent> consents = (HashSet) result;
-                                    for (ConsentLib.CustomPurposeConsent consent : consents) {
+                                    HashSet<CustomPurposeConsent> consents = (HashSet) result;
+                                    for (CustomPurposeConsent consent : consents) {
                                         Log.i(TAG, "Consented to purpose: " + consent.name);
                                     }
                                 }

@@ -128,20 +128,20 @@ class SourcePointClient {
         });
     }
 
-    private HashSet<ConsentLib.Consent> getConsentFromResponse(JSONObject response, String type) throws JSONException {
+    private HashSet<Consent> getConsentFromResponse(JSONObject response, String type) throws JSONException {
         JSONArray consentsJSON = response.getJSONArray(type);
-        HashSet<ConsentLib.Consent> consents = new HashSet<>();
+        HashSet<Consent> consents = new HashSet<>();
         for (int i = 0; i < consentsJSON.length(); i++) {
             switch (type) {
                 case "consentedVendors": {
-                    consents.add(new ConsentLib.CustomVendorConsent(
+                    consents.add(new CustomVendorConsent(
                             consentsJSON.getJSONObject(i).getString("_id"),
                             consentsJSON.getJSONObject(i).getString("name")
                     ));
                     break;
                 }
                 case "consentedPurposes": {
-                    consents.add(new ConsentLib.CustomPurposeConsent(
+                    consents.add(new CustomPurposeConsent(
                             consentsJSON.getJSONObject(i).getString("_id"),
                             consentsJSON.getJSONObject(i).getString("name")
                     ));
@@ -157,7 +157,7 @@ class SourcePointClient {
         http.get(url, new ResponseHandler(url, onLoadComplete) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                HashSet<ConsentLib.Consent> consents = new HashSet<>();
+                HashSet<Consent> consents = new HashSet<>();
 
                 try {
                     consents.addAll(getConsentFromResponse(response, "consentedVendors"));
