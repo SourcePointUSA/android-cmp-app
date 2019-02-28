@@ -20,15 +20,10 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPref;
 
-    private ConsentLib buildConsentLib(Activity activity) throws ConsentLibException {
-        return ConsentLib.newBuilder()
-                .setActivity(activity)
-                // required, must be set second used to find account
-                .setAccountId(22)
-                // required, must be set third used to find scenario
-                .setSiteName("mobile.demo")
+    private ConsentLib buildConsentLib(Activity activity, Boolean showPM) throws ConsentLibException {
+        return ConsentLib.newBuilder(22, "mobile.demo", activity)
                 // optional, used for running stage campaigns
-                .setStage(true)
+                .setStage(false)
                 // optional, set custom targeting parameters value can be String and Integer
                 .setTargetingParam("CMP", "true")
                 // optional, callback triggered when message choice is selected when called choice
@@ -113,13 +108,13 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             // build the consent lib and run it on app start
-            buildConsentLib(activity).run();
+            buildConsentLib(activity, false).run();
 
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View _v) {
                     try{
                         // build the consent lib and run it on button click
-                        buildConsentLib(activity).run();
+                        buildConsentLib(activity, true).run();
                     }
                     catch (Exception e) { e.printStackTrace(); }
                 }
