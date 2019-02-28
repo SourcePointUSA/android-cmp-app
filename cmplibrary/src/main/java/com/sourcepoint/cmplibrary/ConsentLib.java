@@ -60,6 +60,10 @@ public class ConsentLib {
      */
     public static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
 
+    // visible for grabbing consent from shared preferences
+    public static final String EU_CONSENT_KEY = "euconsent";
+    public static final String CONSENT_UUID_KEY = "consentUUID";
+
     public enum DebugLevel {
         DEBUG,
 //        INFO,
@@ -69,9 +73,8 @@ public class ConsentLib {
         OFF
     }
 
-    // visible for grabbing consent from shared preferences
-    public static final String EU_CONSENT_KEY = "euconsent";
-    public static final String CONSENT_UUID_KEY = "consentUUID";
+    public String euconsent, consentUUID;
+
     private static final int MAX_PURPOSE_ID = 24;
 
     /**
@@ -80,14 +83,9 @@ public class ConsentLib {
      */
     public Integer choiceType = null;
 
-    public String euconsent;
-    public String consentUUID;
-
     private static final String TAG = "ConsentLib";
-
     private static final String SP_PREFIX = "_sp_";
     private static final String SP_SITE_ID = SP_PREFIX + "site_id";
-
     private final static String CUSTOM_CONSENTS_KEY = SP_PREFIX + "_custom_consents";
 
     private Activity activity;
@@ -395,9 +393,8 @@ public class ConsentLib {
      * from the customVendorIds parameter. Otherwise it will be <i>false</i>.
      * @param customVendorIds an array of vendor ids - currently needs to be provided by SourcePoint
      * @param callback - callback that will be called with an array of boolean indicating if the user has given consent or not to those vendors.
-     * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
      */
-    public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) throws ConsentLibException.ApiException {
+    public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) {
         loadAndStoreCustomVendorAndPurposeConsents(customVendorIds, new OnLoadComplete() {
             @Override
             public void onSuccess(Object result) {
@@ -416,9 +413,8 @@ public class ConsentLib {
     /**
      * This method receives a callback which is called with an Array of all the purposes ({@link Consent}) the user has given consent for.
      * @param callback called with an array of {@link Consent}
-     * @throws ConsentLibException.ApiException will be throw in case something goes wrong when communicating with SourcePoint
      */
-    public void getCustomPurposeConsents(final OnLoadComplete callback) throws ConsentLibException.ApiException {
+    public void getCustomPurposeConsents(final OnLoadComplete callback) {
         loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
             @Override
             public void onSuccess(Object result) {
@@ -496,7 +492,7 @@ public class ConsentLib {
         }
     }
 
-    private void loadAndStoreCustomVendorAndPurposeConsents(final String[] vendorIds, final OnLoadComplete callback) throws ConsentLibException.ApiException {
+    private void loadAndStoreCustomVendorAndPurposeConsents(final String[] vendorIds, final OnLoadComplete callback) {
         getSiteId(new OnLoadComplete() {
             @Override
             public void onSuccess(Object siteId) {

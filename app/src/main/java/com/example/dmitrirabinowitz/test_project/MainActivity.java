@@ -17,7 +17,6 @@ import com.sourcepoint.cmplibrary.ConsentLibException;
 import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final String TAG = "MainActivity";
 
     private SharedPreferences sharedPref;
