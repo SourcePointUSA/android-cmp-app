@@ -35,13 +35,13 @@ class SourcePointClient {
 
         @Override
         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-            Log.d(LOG_TAG, "Failed to load resource "+url);
+            Log.d(LOG_TAG, "Failed to load resource "+url+" due to "+statusCode+": "+errorResponse);
             onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
         }
 
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-            Log.d(LOG_TAG, "Failed to load resource "+url);
+            Log.d(LOG_TAG, "Failed to load resource "+url+" due to "+statusCode+": "+responseString);
             onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
         }
     }

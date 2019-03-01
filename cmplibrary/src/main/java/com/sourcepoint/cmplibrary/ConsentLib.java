@@ -336,7 +336,7 @@ public class ConsentLib {
 
             @Override
             public void onFailure(ConsentLibException exception) {
-                Log.d(TAG, "onFailure: "+exception);
+                Log.d(TAG, "Failed setting the preference IAB_CONSENT_SUBJECT_TO_GDPR");
             }
         });
     }
@@ -362,9 +362,7 @@ public class ConsentLib {
         Log.i(TAG,"allowedVendors: " + new String(allowedVendors));
         setSharedPreference(IAB_CONSENT_PARSED_VENDOR_CONSENTS, new String(allowedVendors));
     }
-
-    // get site id corresponding to account id and site name. Read from local storage if present.
-    // Write to local storage after getting response.
+    
     private void getSiteId(final OnLoadComplete callback) {
         final String siteIdKey = SP_SITE_ID + "_" + Integer.toString(accountId) + "_" + siteName;
 
@@ -381,6 +379,12 @@ public class ConsentLib {
                 editor.putString(siteIdKey, (String) siteID);
                 editor.commit();
                 callback.onSuccess(siteID);
+            }
+
+            @Override
+            public void onFailure(ConsentLibException exception) {
+                Log.d(TAG, "Error setting "+siteIdKey+" to the preferences.");
+                callback.onFailure(exception);
             }
         });
     }
@@ -407,6 +411,12 @@ public class ConsentLib {
                 }
                 callback.onSuccess(vendorConsents);
             }
+
+            @Override
+            public void onFailure(ConsentLibException exception) {
+                Log.d(TAG, "Failed getting custom vendor consents.");
+                callback.onFailure(exception);
+            }
         });
     }
 
@@ -426,6 +436,12 @@ public class ConsentLib {
                     }
                 }
                 callback.onSuccess(purposeConsents);
+            }
+
+            @Override
+            public void onFailure(ConsentLibException exception) {
+                Log.d(TAG, "Failed getting custom purpose consents.");
+                callback.onFailure(exception);
             }
         });
     }
@@ -510,8 +526,17 @@ public class ConsentLib {
                         editor.commit();
                         callback.onSuccess(consents);
                     }
-                });
 
+                    @Override
+                    public void onFailure(ConsentLibException exception) {
+                        callback.onFailure(exception);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(ConsentLibException exception) {
+                callback.onFailure(exception);
             }
         });
     }

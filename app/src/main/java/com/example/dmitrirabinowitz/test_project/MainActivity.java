@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                             c.getCustomVendorConsents(
                                     new String[]{"5bf7f5c5461e09743fe190b3", "5b2adb86173375159f804c77"},
                                     new ConsentLib.OnLoadComplete() {
+                                        @Override
                                         public void onSuccess(Object result) {
                                             HashSet<CustomVendorConsent> consents = (HashSet) result;
                                             for (CustomVendorConsent consent : consents) {
@@ -63,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
                                                     Log.i(TAG, "Consented to non-IAB vendor 2: "+consent.name);
                                                 }
                                             }
+                                        }
+                                        @Override
+                                        public void onFailure(ConsentLibException exception) {
+                                            Log.d(TAG, "Something went wrong :( " + exception);
                                         }
                                     });
 
