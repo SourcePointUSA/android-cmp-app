@@ -2,7 +2,7 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-def VERSION_NAME = "1.5.3"
+def VERSION_NAME = "2.0.0"
 
 apply plugin: 'com.android.library'
 //apply plugin: 'maven'
@@ -19,7 +19,7 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 15
+        versionCode 20
         versionName VERSION_NAME
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
