@@ -10,27 +10,23 @@ import android.view.View;
 import android.widget.Button;
 
 import com.sourcepoint.cmplibrary.ConsentLib;
+import com.sourcepoint.cmplibrary.CustomVendorConsent;
+import com.sourcepoint.cmplibrary.CustomPurposeConsent;
 import com.sourcepoint.cmplibrary.ConsentLibException;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final String TAG = "MainActivity";
 
     private SharedPreferences sharedPref;
 
-    private ConsentLib buildConsentLib(Activity activity) throws ConsentLibException {
-        return ConsentLib.newBuilder()
-                .setActivity(activity)
-                // required, must be set second used to find account
-                .setAccountId(22)
-                // required, must be set third used to find scenario
-                .setSiteName("mobile.demo")
+    private ConsentLib buildConsentLib(Activity activity, Boolean showPM) throws ConsentLibException {
+        return ConsentLib.newBuilder(22, "mobile.demo", activity)
                 // optional, used for running stage campaigns
-                .setStage(true)
+                .setStage(false)
                 // optional, set custom targeting parameters value can be String and Integer
-                .setTargetingParam("CMP", "true")
+                .setTargetingParam("CMP", showPM.toString())
                 // optional, callback triggered when message choice is selected when called choice
                 // type will be available as Integer at cLib.choiceType
                 .setOnMessageChoiceSelect(new ConsentLib.Callback() {
@@ -57,60 +53,47 @@ public class MainActivity extends AppCompatActivity {
                             c.getCustomVendorConsents(
                                     new String[]{"5bf7f5c5461e09743fe190b3", "5b2adb86173375159f804c77"},
                                     new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
-                                            Log.i(TAG, "Consented to non-IAB vendor 1: " + ((ArrayList) result).get(0));
-                                            Log.i(TAG, "Consented to non-IAB vendor 2: " + ((ArrayList) result).get(1));
+                                        @Override
+                                        public void onSuccess(Object result) {
+                                            HashSet<CustomVendorConsent> consents = (HashSet) result;
+                                            for (CustomVendorConsent consent : consents) {
+                                                if (consent.id.equals("5bf7f5c5461e09743fe190b3")) {
+                                                    Log.i(TAG, "Consented to non-IAB vendor 1: "+consent.name);
+                                                }
+                                                if (consent.id.equals("5b2adb86173375159f804c77")) {
+                                                    Log.i(TAG, "Consented to non-IAB vendor 2: "+consent.name);
+                                                }
+                                            }
                                         }
-                                    });
-                            // Get the consent for a single non-IAB vendor
-                            c.getCustomVendorConsent("5bf7f5c5461e09743fe190b3", // A.mob vendor id
-                                    new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
-                                            Log.i(TAG, "Consented to A.mob: " + result);
+                                        @Override
+                                        public void onFailure(ConsentLibException exception) {
+                                            Log.d(TAG, "Something went wrong :( " + exception);
                                         }
                                     });
 
                             // Example usage of getting all purpose consent results
-                            c.getPurposeConsents(
-                                    new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
-                                            ConsentLib.PurposeConsent[] results = (ConsentLib.PurposeConsent[]) result;
-                                            for (ConsentLib.PurposeConsent purpose : results) {
-                                                Log.i(TAG, "Consented to purpose: " + purpose.name);
-                                            }
-                                        }
-                                    });
-
-                            // Example usage of getting a single purpose consent results
-                            c.getPurposeConsent(
-                                    "5c0e813175223430a50fe465",
-                                    new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
-                                            Log.i(TAG, "Consented to My Custom Purpose: " + result.toString());
-                                        }
-                                    });
+                            c.getCustomPurposeConsents(new ConsentLib.OnLoadComplete() {
+                                public void onSuccess(Object result) {
+                                    HashSet<CustomPurposeConsent> consents = (HashSet) result;
+                                    for (CustomPurposeConsent consent : consents) {
+                                        Log.i(TAG, "Consented to purpose: " + consent.name);
+                                    }
+                                }
+                            });
 
                             // Example usage of getting IAB vendor consent results for a list of vendors
                             boolean[] IABVendorConsents = c.getIABVendorConsents(new int[]{81, 82});
-                            Log.i(
-                                    TAG,
-                                    String.format(
-                                            "Consented to IAB vendors: 81 -> %b, 82 -> %b",
-                                            IABVendorConsents[0],
-                                            IABVendorConsents[1]
-                                    )
-                            );
+                            Log.i(TAG, String.format("Consented to IAB vendors: 81 -> %b, 82 -> %b",
+                                IABVendorConsents[0],
+                                IABVendorConsents[1]
+                            ));
 
                             // Example usage of getting IAB purpose consent results for a list of purposes
                             boolean[] IABPurposeConsents = c.getIABPurposeConsents(new int[]{2, 3});
-                            Log.i(
-                                    TAG,
-                                    String.format(
-                                            "Consented to IAB purposes: 2 -> %b, 3 -> %b",
-                                            IABPurposeConsents[0],
-                                            IABPurposeConsents[1]
-                                    )
-                            );
+                            Log.i(TAG, String.format("Consented to IAB purposes: 2 -> %b, 3 -> %b",
+                                IABPurposeConsents[0],
+                                IABPurposeConsents[1]
+                            ));
 
                         } catch (ConsentLibException e) {
                             e.printStackTrace();
@@ -131,13 +114,13 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             // build the consent lib and run it on app start
-            buildConsentLib(activity).run();
+            buildConsentLib(activity, false).run();
 
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View _v) {
                     try{
                         // build the consent lib and run it on button click
-                        buildConsentLib(activity).run();
+                        buildConsentLib(activity, true).run();
                     }
                     catch (Exception e) { e.printStackTrace(); }
                 }

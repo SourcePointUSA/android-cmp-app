@@ -4,18 +4,18 @@ Table of Contents
    * [Usage](#usage)
    * [Docs](#docs)
    * [Development](#development)
-      * [How to build the cmplibrary module from source](#how-to-build-the-cmplibrary-module-from-source)
-      * [How to import the master version of cmplibrary into existing an Android app project for development](#how-to-import-the-master-version-of-cmplibrary-into-existing-an-android-app-project-for-development)
+      * [How to build the `cmplibrary` module from source](#how-to-build-the-cmplibrary-module-from-source)
+      * [How to import the master version of `cmplibrary` into existing an Android app project for development](#how-to-import-the-master-version-of-cmplibrary-into-existing-an-android-app-project-for-development)
       * [How to publish a new version into JCenter](#how-to-publish-a-new-version-into-jcenter)
 
 # Setup
-To use cmplibrary in your app, include `com.sourcepoint.cmplibrary:cmplibrary:1.x.y` as a dependency to your project's build.gradle.
+To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle.
 
 For example:
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:1.5.1'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:2.0.0'
 }
 
 ```
@@ -31,16 +31,11 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPref;
 
     private ConsentLib buildConsentLib(Activity activity) throws ConsentLibException {
-        return ConsentLib.newBuilder()
-                .setActivity(activity)
-                // required, must be set second used to find account
-                .setAccountId(22)
-                // required, must be set third used to find scenario
-                .setSiteName("mobile.demo")
+        ConsentLib.newBuilder(22, "mobile.demo", activity)
                 // optional, used for running stage campaigns
-                .setStage(true)
+                .setStage(false)
                 // optional, set custom targeting parameters value can be String and Integer
-                .setTargetingParam("CMP", "true")
+                .setTargetingParam("CMP", showPM.toString())
                 // optional, callback triggered when message choice is selected when called choice
                 // type will be available as Integer at cLib.choiceType
                 .setOnMessageChoiceSelect(new ConsentLib.Callback() {
@@ -67,60 +62,47 @@ public class MainActivity extends AppCompatActivity {
                             c.getCustomVendorConsents(
                                     new String[]{"5bf7f5c5461e09743fe190b3", "5b2adb86173375159f804c77"},
                                     new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
-                                            Log.i(TAG, "Consented to non-IAB vendor 1: " + ((ArrayList) result).get(0));
-                                            Log.i(TAG, "Consented to non-IAB vendor 2: " + ((ArrayList) result).get(1));
+                                        @Override
+                                        public void onSuccess(Object result) {
+                                            HashSet<CustomVendorConsent> consents = (HashSet) result;
+                                            for (CustomVendorConsent consent : consents) {
+                                                if (consent.id.equals("5bf7f5c5461e09743fe190b3")) {
+                                                    Log.i(TAG, "Consented to non-IAB vendor 1: "+consent.name);
+                                                }
+                                                if (consent.id.equals("5b2adb86173375159f804c77")) {
+                                                    Log.i(TAG, "Consented to non-IAB vendor 2: "+consent.name);
+                                                }
+                                            }
                                         }
-                                    });
-                            // Get the consent for a single non-IAB vendor
-                            c.getCustomVendorConsent("5bf7f5c5461e09743fe190b3", // A.mob vendor id
-                                    new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
-                                            Log.i(TAG, "Consented to A.mob: " + result);
+                                        @Override
+                                        public void onFailure(ConsentLibException exception) {
+                                            Log.d(TAG, "Something went wrong :( " + exception);
                                         }
                                     });
 
                             // Example usage of getting all purpose consent results
-                            c.getPurposeConsents(
-                                    new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
-                                            ConsentLib.PurposeConsent[] results = (ConsentLib.PurposeConsent[]) result;
-                                            for (ConsentLib.PurposeConsent purpose : results) {
-                                                Log.i(TAG, "Consented to purpose: " + purpose.name);
-                                            }
-                                        }
-                                    });
-
-                            // Example usage of getting a single purpose consent results
-                            c.getPurposeConsent(
-                                    "5c0e813175223430a50fe465", // Storage purpose
-                                    new ConsentLib.OnLoadComplete() {
-                                        public void onLoadCompleted(Object result) {
-                                            Log.i(TAG, "Consented to My Custom Purpose: " + result.toString());
-                                        }
-                                    });
+                            c.getCustomPurposeConsents(new ConsentLib.OnLoadComplete() {
+                                public void onSuccess(Object result) {
+                                    HashSet<CustomPurposeConsent> consents = (HashSet) result;
+                                    for (CustomPurposeConsent consent : consents) {
+                                        Log.i(TAG, "Consented to purpose: " + consent.name);
+                                    }
+                                }
+                            });
 
                             // Example usage of getting IAB vendor consent results for a list of vendors
                             boolean[] IABVendorConsents = c.getIABVendorConsents(new int[]{81, 82});
-                            Log.i(
-                                    TAG,
-                                    String.format(
-                                            "Consented to IAB vendors: 81 -> %b, 82 -> %b",
-                                            IABVendorConsents[0],
-                                            IABVendorConsents[1]
-                                    )
-                            );
+                            Log.i(TAG, String.format("Consented to IAB vendors: 81 -> %b, 82 -> %b",
+                                IABVendorConsents[0],
+                                IABVendorConsents[1]
+                            ));
 
                             // Example usage of getting IAB purpose consent results for a list of purposes
                             boolean[] IABPurposeConsents = c.getIABPurposeConsents(new int[]{2, 3});
-                            Log.i(
-                                    TAG,
-                                    String.format(
-                                            "Consented to IAB purposes: 2 -> %b, 3 -> %b",
-                                            IABPurposeConsents[0],
-                                            IABPurposeConsents[1]
-                                    )
-                            );
+                            Log.i(TAG, String.format("Consented to IAB purposes: 2 -> %b, 3 -> %b",
+                                IABPurposeConsents[0],
+                                IABPurposeConsents[1]
+                            ));
 
                         } catch (ConsentLibException e) {
                             e.printStackTrace();
@@ -162,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 For the complete documentation, open `./docs/index.html` in the browser.
 
 # Development
-## How to build the cmplibrary module from source
+## How to build the `cmplibrary` module from source
 Note: skip this step and jump to next section if you already have the compiled the compiled `cmplibrary-release.aar` binary.
 
 * Clone and open `android-cmp-app` project in Android Studio
@@ -173,7 +155,7 @@ Note: skip this step and jump to next section if you already have the compiled t
 * Run the assemble task by selecting `android-cmp-app:cmplibrary [assemble]` (should be already selected) and clicking the build icon (or selecting Build > Make Project) from the menus.
 * The release version of the compiled binary should be under `cmplibrary/build/outputs/aar/cmplibrary-release.aar` directory. Copy this file and import it to your project using the steps below.
 
-## How to import the master version of cmplibrary into existing an Android app project for development
+## How to import the master version of `cmplibrary` into existing an Android app project for development
 
 * Open your existing Android project in Android Studio and select the File > New > New Module menu item.
 * Scroll down and select `Import .JAR/.AAR Package` and click next.
@@ -208,15 +190,14 @@ include ':app', ':cmplibrary-release'
 ```
 
 ## How to publish a new version into JCenter
-- Make sure you have bumped up the library version in `cmplibrary/build.gradle` but changing the line `def VERSION_NAME = 1.x.y`
-- Open Gradle menu from right hand side menu in Android Studio 
+- Make sure you have bumped up the library version in `cmplibrary/build.gradle` but changing the line `def VERSION_NAME = x.y.z`
+- Open Gradle menu from right hand side menu in Android Studio
 - Run the following three tasks in order from the list of tasks under `cmplibrary` by double clicking on each:
   - `build:clean`
   - `build:assembleRelease`
   - `other:bundleZip`
-  
-- If everything goes fine, you should have a `cmplibrary-1.x.y` file in `cmplibrary/build` folder.
-- At this time, you have to create a new version manually with the same version name you chose above in bintray.
-- Select the version you just created and click on "Upload Files", select the generated `cmplibrary-1.x.y` file and once appeared in the files list, check `Explode this archive` and click on Save Changes.
-- Now you need to push the new version to JCenter: go to the version page in Bintray, you will see a notice in the page "Notice: You have 3 unpublished item(s) for this version (expiring in 6 days and 22 hours) ", click on "Publish" in front of the notice. It will take few hours before your request to publish to JCenter will be approved.
 
+- If everything goes fine, you should have a `cmplibrary-x.y.z` file in `cmplibrary/build` folder.
+- At this time, you have to create a new version manually with the same version name you chose above in BinTray.
+- Select the version you just created and click on "Upload Files", select the generated `cmplibrary-x.y.z` file and once appeared in the files list, check `Explode this archive` and click on Save Changes.
+- Now you need to push the new version to JCenter: go to the version page in BinTray, you will see a notice in the page "Notice: You have 3 unpublished item(s) for this version (expiring in 6 days and 22 hours) ", click on "Publish" in front of the notice. It will take few hours before your request to publish to JCenter will be approved.
