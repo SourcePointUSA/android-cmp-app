@@ -15,7 +15,7 @@ For example:
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:2.0.0'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:2.0.1'
 }
 
 ```
