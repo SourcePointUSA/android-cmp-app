@@ -1,3 +1,7 @@
+## 2.0.1 (March 4, 2019)
+* [Enable D8 for dexing](https://android-developers.googleblog.com/2018/04/android-studio-switching-to-d8-dexer.html)
+* Update dependencies
+
 ## 2.0.0 (March 1, 2019)
 Look at that, we barely released version 1.x and we're already launching v2.0 🎉
 
