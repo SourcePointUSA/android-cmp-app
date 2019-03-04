@@ -48,8 +48,8 @@ dependencies {
     implementation('com.google.guava:guava:20.0') {
         transitive = false
     }
-    implementation files('libs/consent-string-sdk-java-3.0.0.jar')
     compile 'com.loopj.android:android-async-http:1.4.9'
+    implementation 'com.conversantmedia.gdpr:consent-string-sdk-java:3.0.2'
 }
 
 task sourcesJar(type: Jar) {
