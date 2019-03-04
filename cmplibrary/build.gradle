@@ -45,11 +45,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation('com.google.guava:guava:20.0') {
-        transitive = false
-    }
-    compile 'com.loopj.android:android-async-http:1.4.9'
+    api 'com.google.guava:guava:27.0.1-android'
     implementation 'com.conversantmedia.gdpr:consent-string-sdk-java:3.0.2'
+    implementation 'com.loopj.android:android-async-http:1.4.9'
 }
 
 task sourcesJar(type: Jar) {
