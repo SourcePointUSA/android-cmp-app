@@ -23,8 +23,8 @@ import android.view.View;
 
 import java.util.HashSet;
 
-import com.iab.gdpr.consent.VendorConsent;
-import com.iab.gdpr.consent.VendorConsentDecoder;
+import com.iab.gdpr_android.consent.VendorConsent;
+import com.iab.gdpr_android.consent.VendorConsentDecoder;
 
 /**
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.

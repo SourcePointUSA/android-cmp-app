@@ -10,8 +10,8 @@ class SourcePointClientBuilder {
     private static final String DEFAULT_INTERNAL_CMP_URL = "https://cmp.sp-stage.net";
     private static final String DEFAULT_CMP_URL = "https://sourcepoint.mgr.consensu.org";
 
-    private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.cmp.sp-stage.net/";
-    private static final String DEFAULT_IN_APP_MESSAGING_PAGE_URL = "http://in-app-messaging.pm.sourcepoint.mgr.consensu.org/";
+    private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL = "https://in-app-messaging.pm.cmp.sp-stage.net/";
+    private static final String DEFAULT_IN_APP_MESSAGING_PAGE_URL = "https://in-app-messaging.pm.sourcepoint.mgr.consensu.org/";
 
     private EncodedParam site, accountId;
     private boolean staging, stagingCampaign;
