@@ -1,40 +1,52 @@
 package com.sourcepoint.cmplibrary;
 
+import android.os.Build;
+import android.util.Log;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
 class SourcePointClientBuilder {
-    private static final String DEFAULT_STAGING_MMS_URL = "https://mms.sp-stage.net";
-    private static final String DEFAULT_MMS_URL = "https://mms.sp-prod.net";
+    private static final String TAG = "SP_ClientBuilder";
+    private static final String DEFAULT_STAGING_MMS_DOMAIN = "mms.sp-stage.net";
+    private static final String DEFAULT_MMS_DOMAIN = "mms.sp-prod.net";
 
-    private static final String DEFAULT_INTERNAL_CMP_URL = "https://cmp.sp-stage.net";
-    private static final String DEFAULT_CMP_URL = "https://sourcepoint.mgr.consensu.org";
+    private static final String DEFAULT_INTERNAL_CMP_DOMAIN = "cmp.sp-stage.net";
+    private static final String DEFAULT_CMP_DOMAIN = "sourcepoint.mgr.consensu.org";
 
-    private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL = "https://in-app-messaging.pm.cmp.sp-stage.net/";
-    private static final String DEFAULT_IN_APP_MESSAGING_PAGE_URL = "https://in-app-messaging.pm.sourcepoint.mgr.consensu.org/";
+    private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.cmp.sp-stage.net/";
+    private static final String DEFAULT_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.sourcepoint.mgr.consensu.org/";
 
     private EncodedParam site, accountId;
     private boolean staging, stagingCampaign;
 
-    private String mmsDomain, cmpDomain, messageDomain = null;
+    private String mmsDomain, cmpDomain, messageDomain;
 
     SourcePointClientBuilder(Integer accountId, String siteName, boolean staging) throws ConsentLibException.BuildException {
         this.accountId = new EncodedParam("AccountId", accountId.toString());
-        this.site = new EncodedParam("SiteName", "https://"+siteName);
+        this.site = new EncodedParam("SiteName", protocol()+"://"+siteName);
         this.staging = staging;
+    }
+
+    private String protocol() {
+       if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+           Log.d(TAG, "SDK <= "+Build.VERSION_CODES.LOLLIPOP+"found. Downgrading to HTTP.");
+           return "http";
+       }
+       return "https";
     }
 
     private void setDefaults () {
         if (messageDomain == null) {
             this.messageDomain= staging ?
-                    DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_URL :
-                    DEFAULT_IN_APP_MESSAGING_PAGE_URL;
+                    DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_DOMAIN :
+                    DEFAULT_IN_APP_MESSAGING_PAGE_DOMAIN;
         }
         if (mmsDomain == null) {
-            mmsDomain = staging ? DEFAULT_STAGING_MMS_URL : DEFAULT_MMS_URL;
+            mmsDomain = staging ? DEFAULT_STAGING_MMS_DOMAIN : DEFAULT_MMS_DOMAIN;
         }
         if (cmpDomain == null) {
-            cmpDomain = staging ? DEFAULT_INTERNAL_CMP_URL : DEFAULT_CMP_URL;
+            cmpDomain = staging ? DEFAULT_INTERNAL_CMP_DOMAIN : DEFAULT_CMP_DOMAIN;
         }
     }
 
@@ -65,9 +77,9 @@ class SourcePointClientBuilder {
                     accountId,
                     site,
                     stagingCampaign,
-                    new URL(mmsDomain),
-                    new URL(cmpDomain),
-                    new URL(messageDomain)
+                    new URL(protocol(), mmsDomain, ""),
+                    new URL(protocol(), cmpDomain, ""),
+                    new URL(protocol(), messageDomain, "")
             );
         } catch (MalformedURLException e) {
             throw new ConsentLibException.BuildException(e.getMessage());

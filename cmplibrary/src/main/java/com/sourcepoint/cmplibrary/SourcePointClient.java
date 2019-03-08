@@ -3,7 +3,9 @@ package com.sourcepoint.cmplibrary;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.loopj.android.http.*;
+import cz.msebera.android.httpclient.Header;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,8 +14,6 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashSet;
-
-import cz.msebera.android.httpclient.Header;
 
 class SourcePointClient {
     private static final String LOG_TAG = "SOURCE_POINT_CLIENT";
