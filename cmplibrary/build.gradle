@@ -2,10 +2,9 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-def VERSION_NAME = "2.0.1"
+def VERSION_NAME = "2.0.2"
 
 apply plugin: 'com.android.library'
-//apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 version VERSION_NAME
@@ -17,7 +16,7 @@ android {
     compileSdkVersion 26
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 26
         versionCode 20
         versionName VERSION_NAME
@@ -46,8 +45,13 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     api 'com.google.guava:guava:27.0.1-android'
-    implementation 'com.conversantmedia.gdpr:consent-string-sdk-java:3.0.2'
     implementation 'com.loopj.android:android-async-http:1.4.9'
+
+    // Unfortunately consent-string-sdk-java only supports Java 8 and above. That means API > 26
+    // The following is a port to android environment
+    // for more information check https://github.com/InteractiveAdvertisingBureau/Consent-String-SDK-Java/issues/21
+    compile 'com.iab.gdpr_android:gdpr_android:1.0.1'
+//    implementation 'com.conversantmedia.gdpr:consent-string-sdk-java:3.0.2'
 }
 
 task sourcesJar(type: Jar) {
