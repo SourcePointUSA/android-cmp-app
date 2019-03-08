@@ -95,9 +95,7 @@ class SourcePointClient {
         params.add("_sp_debug_level=" + debugLevel);
         params.add("_sp_msg_stageCampaign=" + stagingCampaign);
 
-        String url = messageUrl + "?" + TextUtils.join("&", params);
-        Log.i(LOG_TAG, "cpm url: " + url);
-        return url;
+        return messageUrl + "?" + TextUtils.join("&", params);
     }
 
     void getSiteID(ConsentLib.OnLoadComplete onLoadComplete) {

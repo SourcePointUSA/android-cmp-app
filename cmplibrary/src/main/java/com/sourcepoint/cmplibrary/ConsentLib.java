@@ -275,9 +275,6 @@ public class ConsentLib {
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.addJavascriptInterface(new MessageInterface(), "JSReceiver");
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl(sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel));
-        webView.setWebViewClient(new WebViewClient());
-
         webView.getSettings().setSupportMultipleWindows(true);
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -304,6 +301,11 @@ public class ConsentLib {
                 return false;
             }
         });
+
+        String messageUrl = sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel);
+        Log.d(TAG, "Loading Webview with: "+messageUrl);
+        Log.d(TAG, "User-Agent: "+webView.getSettings().getUserAgentString());
+        webView.loadUrl(messageUrl);
 
         viewGroup.addView(webView);
 
