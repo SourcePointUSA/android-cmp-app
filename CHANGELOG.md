@@ -1,3 +1,9 @@
+## 2.0.2 (March 8, 2019)
+* Fixed two bugs that would crash the app when using Android API < 21
+  * e9d74af- Moved away from `com.iab.gdpr` in favor of `com.iab.gdpr_android`
+  * 7842d25 - Downgrade to `HTTP` when Android API level < 21
+* Bump the `minSDK` to 19, due to an [issue](https://github.com/SourcePointUSA/android-cmp-app/issues/25) coming from our Javascript code. 
+
 ## 2.0.1 (March 4, 2019)
 * [Enable D8 for dexing](https://android-developers.googleblog.com/2018/04/android-studio-switching-to-d8-dexer.html)
 * Update dependencies
@@ -13,7 +19,7 @@ This is a major release that include several bug fixes and improved stability.
 
 * `setAccount`, `setActivity` and `setSiteName` were removed. Just pass the accountId, siteName and activity to `newBuilder` method instead.
 * Rename `getPurposeConsents` to `getCustomPurposeConsents`
-* Rename `onLoadCompleted` to `onSucess`
+* Rename `onLoadCompleted` to `onSuccess`
 * The methods `getCustomVendorConsent` and `getPurposeConsent` were deleted in favor of using only `getCustomVendorConsents` and `getCustomPurposeConsents` (notice the plural in the end of the method names).
 * `getCustomVendorConsents` no longer passes a `ArrayList<Boolean>`  but a `HashSet<CustomVendorConsent>`. This `HashSet` contains all custom vendor the user has given consent as instances of `CustomVendorConsent`. The `*Consent` classes have public `id` and `name` as attributes.
 
