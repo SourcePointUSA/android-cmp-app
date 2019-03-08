@@ -60,7 +60,7 @@ class SourcePointClient {
         this.mmsUrl = mmsUrl;
         this.cmpUrl = cmpUrl;
         this.messageUrl = messageUrl;
-        this.encodedCmpOrigin = new EncodedParam("cmpUrl", cmpUrl.getHost());
+        this.encodedCmpOrigin = new EncodedParam("cmpOrigin", "//"+cmpUrl.getHost());
         this.encodedMsgDomain = new EncodedParam("msgDomain", mmsUrl.getHost());
     }
 
