@@ -1,13 +1,11 @@
 package com.sourcepoint.cmplibrary;
 
 import android.os.Build;
-import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 class SourcePointClientBuilder {
-    private static final String TAG = "SP_ClientBuilder";
     private static final String DEFAULT_STAGING_MMS_DOMAIN = "mms.sp-stage.net";
     private static final String DEFAULT_MMS_DOMAIN = "mms.sp-prod.net";
 
@@ -28,12 +26,13 @@ class SourcePointClientBuilder {
         this.staging = staging;
     }
 
+    private boolean isSafeToHTTPS() {
+        // SSL Handshake fails on Android < Nougat
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+    }
+
     private String protocol() {
-       if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
-           Log.d(TAG, "SDK <= "+Build.VERSION_CODES.LOLLIPOP+"found. Downgrading to HTTP.");
-           return "http";
-       }
-       return "https";
+       return isSafeToHTTPS() ? "https" : "http";
     }
 
     private void setDefaults () {
