@@ -184,9 +184,9 @@ public class ConsentLibBuilder {
 
     /**
      * The Android 4.x Browser throws an exception when parsing SourcePoint's javascript.
-     * @return ConsentLibNoOP - until this bug is solved
+     * @return true if the API level is not supported
      */
-    public boolean isConsentLibNoOp() {
+    public boolean sdkNotSupported() {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT;
     }
 
@@ -195,11 +195,15 @@ public class ConsentLibBuilder {
      * data coming from the previous Builders and throw {@link ConsentLibException.BuildException}
      * in case something goes wrong.
      * @return ConsentLib | ConsentLibNoOp
-     * @see ConsentLibBuilder#isConsentLibNoOp()
      * @throws ConsentLibException.BuildException - if any of the required data is missing or invalid
      */
     public ConsentLib build() throws ConsentLibException {
-        if(isConsentLibNoOp()) { return new ConsentLibNoOP(this); }
+        if(sdkNotSupported()) {
+            throw new ConsentLibException.BuildException(
+                    "ConsentLib supports only API level 19 and above.\n"+
+                            "See https://github.com/SourcePointUSA/android-cmp-app/issues/25 for more information."
+            );
+        }
 
         try {
             setDefaults();
