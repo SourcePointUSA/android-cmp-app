@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary;
 
 import android.app.Activity;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -182,13 +183,24 @@ public class ConsentLibBuilder {
     }
 
     /**
+     * The Android 4.x Browser throws an exception when parsing SourcePoint's javascript.
+     * @return ConsentLibNoOP - until this bug is solved
+     */
+    public boolean isConsentLibNoOp() {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT;
+    }
+
+    /**
      * Run internal tasks and build the ConsentLib. This method will validate the
      * data coming from the previous Builders and throw {@link ConsentLibException.BuildException}
      * in case something goes wrong.
-     * @return ConsentLib
+     * @return ConsentLib | ConsentLibNoOp
+     * @see ConsentLibBuilder#isConsentLibNoOp()
      * @throws ConsentLibException.BuildException - if any of the required data is missing or invalid
      */
     public ConsentLib build() throws ConsentLibException {
+        if(isConsentLibNoOp()) { return new ConsentLibNoOP(this); }
+
         try {
             setDefaults();
             setTargetingParamsString();
