@@ -1,3 +1,8 @@
+## 2.0.3 (March 12, 2019)
+* Rolled minSdkVersion back to 16 in order to maintain backwards compatibility
+* Throw `BuildException` if API level < 19
+* Downgrade to HTTP when API Level < 24 in order to avoid SSL Handshake issue
+
 ## 2.0.2 (March 8, 2019)
 * Fixed two bugs that would crash the app when using Android API < 21
   * e9d74af- Moved away from `com.iab.gdpr` in favor of `com.iab.gdpr_android`

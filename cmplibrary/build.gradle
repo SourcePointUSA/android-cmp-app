@@ -2,7 +2,7 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-def VERSION_NAME = "2.0.2"
+def VERSION_NAME = "2.0.3"
 
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
@@ -16,13 +16,12 @@ android {
     compileSdkVersion 26
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 16
         targetSdkVersion 26
         versionCode 20
         versionName VERSION_NAME
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
