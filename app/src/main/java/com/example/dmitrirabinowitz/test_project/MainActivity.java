@@ -100,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 })
+                .setOnErrorOccurred(new ConsentLib.Callback() {
+                    @Override
+                    public void run(ConsentLib c) {
+                        Log.d(TAG, "Something went wrong: ", c.error);
+                    }
+                })
                 // generate ConsentLib at this point modifying builder will not do anything
                 .build();
     }
