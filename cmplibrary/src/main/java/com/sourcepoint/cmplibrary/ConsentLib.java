@@ -82,6 +82,8 @@ public class ConsentLib {
      */
     public Integer choiceType = null;
 
+    public ConsentLibException error = null;
+
     private static final String TAG = "ConsentLib";
     private static final String SP_PREFIX = "_sp_";
     private static final String SP_SITE_ID = SP_PREFIX + "site_id";
@@ -93,6 +95,7 @@ public class ConsentLib {
     private final ViewGroup viewGroup;
     private final Callback onMessageChoiceSelect;
     private final Callback onInteractionComplete;
+    private final Callback onErrorOccurred;
     private final EncodedParam encodedTargetingParams;
     private final EncodedParam encodedDebugLevel;
 
@@ -129,6 +132,21 @@ public class ConsentLib {
 
     @SuppressWarnings("unused")
     private class MessageInterface {
+        private void onErrorOccurred(final ConsentLibException error) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ConsentLib.this.error = error;
+                    ConsentLib.this.onErrorOccurred.run(ConsentLib.this);
+                    ConsentLib.this.finish();
+                }
+            });
+        }
+
+        private boolean isDefined(String string) {
+            return string != null && !string.equals("undefined");
+        }
+
         // called when message loads, brings the WebView to the front when the message is ready
         @JavascriptInterface
         public void onReceiveMessageData(final boolean willShowMessage, String _msgJSON) {
@@ -151,9 +169,9 @@ public class ConsentLib {
 
         // called when a choice is selected on the message
         @JavascriptInterface
-        public void onMessageChoiceSelect(int choiceType) throws ConsentLibException.NoInternetConnectionException {
+        public void onMessageChoiceSelect(int choiceType) {
             if(ConsentLib.this.hasLostInternetConnection()) {
-                throw new ConsentLibException.NoInternetConnectionException();
+                onErrorOccurred(new ConsentLibException.NoInternetConnectionException());
             }
 
             ConsentLib.this.choiceType = choiceType;
@@ -165,21 +183,20 @@ public class ConsentLib {
         public void sendConsentData(final String euconsent, final String consentUUID) {
             SharedPreferences.Editor editor = sharedPref.edit();
 
-            if (euconsent != null) {
+            if (isDefined(euconsent)) {
                 ConsentLib.this.euconsent = euconsent;
                 editor.putString(EU_CONSENT_KEY, euconsent);
             }
 
-            if (consentUUID != null) {
+            if (isDefined(consentUUID)) {
                 ConsentLib.this.consentUUID = consentUUID;
                 editor.putString(CONSENT_UUID_KEY, consentUUID);
             }
 
-            if (euconsent != null || consentUUID != null) {
+            if (isDefined(euconsent) && isDefined(consentUUID)) {
                 editor.commit();
+                setIABVars(euconsent);
             }
-
-            setIABVars(euconsent);
 
             activity.runOnUiThread(new Runnable() {
                 @Override
@@ -187,6 +204,14 @@ public class ConsentLib {
                     ConsentLib.this.finish();
                 }
             });
+        }
+
+        @JavascriptInterface
+        public void onErrorOccurred(final String errorType) {
+            ConsentLibException error = ConsentLib.this.hasLostInternetConnection() ?
+                    new ConsentLibException.NoInternetConnectionException() :
+                    new ConsentLibException("Something went wrong in the javascript world.");
+            onErrorOccurred(error);
         }
     }
 
@@ -204,6 +229,7 @@ public class ConsentLib {
         accountId = b.accountId;
         onMessageChoiceSelect = b.onMessageChoiceSelect;
         onInteractionComplete = b.onInteractionComplete;
+        onErrorOccurred = b.onErrorOccurred;
         encodedTargetingParams = b.targetingParamsString;
         encodedDebugLevel = new EncodedParam("debugLevel", b.debugLevel.name());
         viewGroup = b.viewGroup;

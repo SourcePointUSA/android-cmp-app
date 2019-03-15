@@ -20,7 +20,7 @@ public class ConsentLibBuilder {
     String mmsDomain, cmpDomain, msgDomain = null;
     String page = "";
     ViewGroup viewGroup = null;
-    ConsentLib.Callback onMessageChoiceSelect, onInteractionComplete = noOpCallback;
+    ConsentLib.Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred = noOpCallback;
     boolean staging, stagingCampaign = false;
     EncodedParam targetingParamsString = null;
     ConsentLib.DebugLevel debugLevel = ConsentLib.DebugLevel.OFF;
@@ -90,6 +90,17 @@ public class ConsentLibBuilder {
      */
     public ConsentLibBuilder setOnInteractionComplete(ConsentLib.Callback c) {
         onInteractionComplete = c;
+        return this;
+    }
+
+    /**
+     *  <b>Optional</b> Sets a Callback to be called when something goes wrong in the WebView
+     * @param callback
+     * @return ConsentLibBuilder - the next build step
+     * @see ConsentLibBuilder
+     */
+    public ConsentLibBuilder setOnErrorOccurred(ConsentLib.Callback callback) {
+        onErrorOccurred = callback;
         return this;
     }
 
