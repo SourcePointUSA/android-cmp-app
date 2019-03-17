@@ -1,3 +1,7 @@
+## 2.1.0 (March 15, 2019)
+* Introduced `ConsentLib.onErrorOccurred` callback method.
+  * If something goes wrong inside the WebView, we'll assign a (hopefully) meaningful exception to `ConsentLib.error` and call `onErrorOccurred` so you'll be able to decide what to do next.
+
 ## 2.0.3 (March 12, 2019)
 * Rolled minSdkVersion back to 16 in order to maintain backwards compatibility
 * Throw `BuildException` if API level < 19
@@ -7,7 +11,7 @@
 * Fixed two bugs that would crash the app when using Android API < 21
   * e9d74af- Moved away from `com.iab.gdpr` in favor of `com.iab.gdpr_android`
   * 7842d25 - Downgrade to `HTTP` when Android API level < 21
-* Bump the `minSDK` to 19, due to an [issue](https://github.com/SourcePointUSA/android-cmp-app/issues/25) coming from our Javascript code. 
+* Bump the `minSDK` to 19, due to an [issue](https://github.com/SourcePointUSA/android-cmp-app/issues/25) coming from our Javascript code.
 
 ## 2.0.1 (March 4, 2019)
 * [Enable D8 for dexing](https://android-developers.googleblog.com/2018/04/android-studio-switching-to-d8-dexer.html)
