@@ -522,7 +522,13 @@ public class ConsentLib {
 
     private VendorConsent getParsedConsentString() throws ConsentLibException {
         final String euconsent = getConsentStringFromPreferences();
-        return VendorConsentDecoder.fromBase64String(euconsent);
+        VendorConsent parsedConsent;
+        try {
+            parsedConsent = VendorConsentDecoder.fromBase64String(euconsent);
+        } catch (Exception e) {
+            throw new ConsentLibException("Unable to parse raw string \""+euconsent+"\" into consent string.");
+        }
+        return parsedConsent;
     }
 
     /**
