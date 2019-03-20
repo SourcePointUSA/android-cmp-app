@@ -37,6 +37,7 @@ public class ConsentLib {
     /**
      * If the user has consent data stored, reading for this key in the shared preferences will return true
      */
+    @SuppressWarnings("WeakerAccess")
     public static final String IAB_CONSENT_CMP_PRESENT = "IABConsent_CMPPresent";
 
     /**
@@ -93,9 +94,7 @@ public class ConsentLib {
     private final String siteName;
     private final int accountId;
     private final ViewGroup viewGroup;
-    private final Callback onMessageChoiceSelect;
-    private final Callback onInteractionComplete;
-    private final Callback onErrorOccurred;
+    private final Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred, willShowMessage;
     private final EncodedParam encodedTargetingParams;
     private final EncodedParam encodedDebugLevel;
 
@@ -160,6 +159,7 @@ public class ConsentLib {
                         webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
                         webView.bringToFront();
                         webView.requestLayout();
+                        ConsentLib.this.willShowMessage.run(ConsentLib.this);
                     } else {
                         ConsentLib.this.finish();
                     }
@@ -230,6 +230,7 @@ public class ConsentLib {
         onMessageChoiceSelect = b.onMessageChoiceSelect;
         onInteractionComplete = b.onInteractionComplete;
         onErrorOccurred = b.onErrorOccurred;
+        willShowMessage = b.willShowMessage;
         encodedTargetingParams = b.targetingParamsString;
         encodedDebugLevel = new EncodedParam("debugLevel", b.debugLevel.name());
         viewGroup = b.viewGroup;
