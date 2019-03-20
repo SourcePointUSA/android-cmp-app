@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@SuppressWarnings("unused")
 public class ConsentLibBuilder {
     private final ConsentLib.Callback noOpCallback = new ConsentLib.Callback() {
         @Override public void run(ConsentLib c) { }
@@ -20,7 +21,7 @@ public class ConsentLibBuilder {
     String mmsDomain, cmpDomain, msgDomain = null;
     String page = "";
     ViewGroup viewGroup = null;
-    ConsentLib.Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred = noOpCallback;
+    ConsentLib.Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred, willShowMessage = noOpCallback;
     boolean staging, stagingCampaign = false;
     EncodedParam targetingParamsString = null;
     ConsentLib.DebugLevel debugLevel = ConsentLib.DebugLevel.OFF;
@@ -94,6 +95,16 @@ public class ConsentLibBuilder {
     }
 
     /**
+     * Called when the Dialog message is about to be shown
+     * @param callback
+     * @return ConsentLibBuilder
+     */
+    public ConsentLibBuilder setWillShowMessage(ConsentLib.Callback callback) {
+        willShowMessage = callback;
+        return this;
+    }
+
+    /**
      *  <b>Optional</b> Sets a Callback to be called when something goes wrong in the WebView
      * @param callback
      * @return ConsentLibBuilder - the next build step
@@ -143,7 +154,6 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    // TODO: document these.
     public ConsentLibBuilder setTargetingParam(String key, Integer val)
             throws ConsentLibException.BuildException  {
         return setTargetingParam(key, (Object) val);
@@ -197,6 +207,7 @@ public class ConsentLibBuilder {
      * The Android 4.x Browser throws an exception when parsing SourcePoint's javascript.
      * @return true if the API level is not supported
      */
+    @SuppressWarnings("WeakerAccess")
     public boolean sdkNotSupported() {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT;
     }
