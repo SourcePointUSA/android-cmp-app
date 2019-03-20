@@ -1,3 +1,7 @@
+## 2.1.1 (March 20, 2019)
+* Implemented the callback method `willShowMessage`
+* Re-throw an exception as `ConsentLibException` happening when the consent string could not be parsed
+
 ## 2.1.0 (March 15, 2019)
 * Introduced `ConsentLib.onErrorOccurred` callback method.
   * If something goes wrong inside the WebView, we'll assign a (hopefully) meaningful exception to `ConsentLib.error` and call `onErrorOccurred` so you'll be able to decide what to do next.

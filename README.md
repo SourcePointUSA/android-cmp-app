@@ -36,6 +36,12 @@ public class MainActivity extends AppCompatActivity {
                 .setStage(false)
                 // optional, set custom targeting parameters value can be String and Integer
                 .setTargetingParam("CMP", showPM.toString())
+                .setWillShowMessage(new ConsentLib.Callback() {
+                    @Override
+                    public void run(ConsentLib _c) {
+                        Log.i(TAG, "The message is about to be shown.");
+                    }
+                })
                 // optional, callback triggered when message choice is selected when called choice
                 // type will be available as Integer at cLib.choiceType
                 .setOnMessageChoiceSelect(new ConsentLib.Callback() {
