@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPref;
 
     private ConsentLib buildConsentLib(Activity activity, Boolean showPM) throws ConsentLibException {
-        return ConsentLib.newBuilder(22, "mobile.demo", activity)
+        return ConsentLib.newBuilder(22, "mobile.demo", activity.getApplicationContext())
                 // optional, used for running stage campaigns
                 .setStage(false)
                 // optional, set custom targeting parameters value can be String and Integer

@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,7 @@ public class ConsentLibBuilder {
     };
     private final JSONObject targetingParams = new JSONObject();
 
-    Activity activity;
+    Context context;
     int accountId;
     String siteName;
     String mmsDomain, cmpDomain, msgDomain = null;
@@ -26,10 +27,10 @@ public class ConsentLibBuilder {
     EncodedParam targetingParamsString = null;
     ConsentLib.DebugLevel debugLevel = ConsentLib.DebugLevel.OFF;
 
-    ConsentLibBuilder(Integer accountId, String siteName, Activity activity) {
+    ConsentLibBuilder(Integer accountId, String siteName, Context context) {
         this.accountId = accountId;
         this.siteName = siteName;
-        this.activity = activity;
+        this.context = context;
     }
 
     /**
@@ -191,17 +192,17 @@ public class ConsentLibBuilder {
         targetingParamsString = new EncodedParam("targetingParams", targetingParams.toString());
     }
 
-    private void setDefaults () throws ConsentLibException.BuildException {
-        if (viewGroup == null) {
-            // render on top level activity view if no viewGroup specified
-            View view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
-            if (view instanceof ViewGroup) {
-                viewGroup = (ViewGroup) view;
-            } else {
-                throw new ConsentLibException.BuildException("Current window is not a ViewGroup, can't render WebView");
-            }
-        }
-    }
+//    private void setDefaults () throws ConsentLibException.BuildException {
+//        if (viewGroup == null) {
+//            // render on top level context view if no viewGroup specified
+//            View view = context.getWindow().getDecorView().findViewById(android.R.id.content);
+//            if (view instanceof ViewGroup) {
+//                viewGroup = (ViewGroup) view;
+//            } else {
+//                throw new ConsentLibException.BuildException("Current window is not a ViewGroup, can't render WebView");
+//            }
+//        }
+//    }
 
     /**
      * The Android 4.x Browser throws an exception when parsing SourcePoint's javascript.
@@ -228,10 +229,10 @@ public class ConsentLibBuilder {
         }
 
         try {
-            setDefaults();
+//            setDefaults();
             setTargetingParamsString();
         } catch (ConsentLibException e) {
-            this.activity = null; // release reference to activity
+            this.context = null; // release reference to context
             throw new ConsentLibException.BuildException(e.getMessage());
         }
 
