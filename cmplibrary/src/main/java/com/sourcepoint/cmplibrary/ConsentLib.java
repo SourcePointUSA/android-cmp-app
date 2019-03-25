@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -73,6 +72,7 @@ public class ConsentLib {
         OFF
     }
 
+    @SuppressWarnings("WeakerAccess")
     public String euconsent, consentUUID;
 
     private static final int MAX_PURPOSE_ID = 24;
@@ -81,6 +81,7 @@ public class ConsentLib {
      * After the user has chosen an option in the WebView, this attribute will contain an integer
      * indicating what was that choice.
      */
+    @SuppressWarnings("WeakerAccess")
     public Integer choiceType = null;
 
     public ConsentLibException error = null;
@@ -97,6 +98,7 @@ public class ConsentLib {
     private final Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred, willShowMessage;
     private final EncodedParam encodedTargetingParams;
     private final EncodedParam encodedDebugLevel;
+    private final boolean weOwnTheView;
 
     private final SourcePointClient sourcePoint;
 
@@ -104,7 +106,8 @@ public class ConsentLib {
 
     private android.webkit.CookieManager cm;
 
-    private WebView webView;
+    @SuppressWarnings("WeakerAccess")
+    public WebView webView;
 
     public interface Callback {
         void run(ConsentLib c);
@@ -149,22 +152,13 @@ public class ConsentLib {
         // called when message loads, brings the WebView to the front when the message is ready
         @JavascriptInterface
         public void onReceiveMessageData(final boolean willShowMessage, String _msgJSON) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    flushOrSyncCookies();
-
-                    if (willShowMessage) {
-                        webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-                        webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-                        webView.bringToFront();
-                        webView.requestLayout();
-                        ConsentLib.this.willShowMessage.run(ConsentLib.this);
-                    } else {
-                        ConsentLib.this.finish();
-                    }
-                }
-            });
+            flushOrSyncCookies();
+            if (willShowMessage) {
+                displayWebViewIfNeeded();
+                ConsentLib.this.willShowMessage.run(ConsentLib.this);
+            } else {
+                ConsentLib.this.finish();
+            }
         }
 
         // called when a choice is selected on the message
@@ -235,6 +229,8 @@ public class ConsentLib {
         encodedDebugLevel = new EncodedParam("debugLevel", b.debugLevel.name());
         viewGroup = b.viewGroup;
 
+        weOwnTheView = viewGroup != null;
+
         sourcePoint = new SourcePointClientBuilder(b.accountId, b.siteName+"/"+b.page, b.staging)
                 .setStagingCampaign(b.stagingCampaign)
                 .setCmpDomain(b.cmpDomain)
@@ -251,7 +247,7 @@ public class ConsentLib {
     }
 
     private boolean hasLostInternetConnection() {
-        ConnectivityManager manager = (ConnectivityManager)activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager manager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         if(manager == null) { return true; }
 
         NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
@@ -297,8 +293,6 @@ public class ConsentLib {
         }
 
         // hide web view while it loads initially
-        webView.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
-        webView.setBackgroundColor(Color.TRANSPARENT);
         webView.addJavascriptInterface(new MessageInterface(), "JSReceiver");
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setSupportMultipleWindows(true);
@@ -332,8 +326,6 @@ public class ConsentLib {
         Log.d(TAG, "Loading Webview with: "+messageUrl);
         Log.d(TAG, "User-Agent: "+webView.getSettings().getUserAgentString());
         webView.loadUrl(messageUrl);
-
-        viewGroup.addView(webView);
 
         // Set standard IAB IABConsent_CMPPresent
         setSharedPreference(IAB_CONSENT_CMP_PRESENT, true);
@@ -575,9 +567,34 @@ public class ConsentLib {
         });
     }
 
+    private void displayWebViewIfNeeded() {
+        if(weOwnTheView) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    webView.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
+                    webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    viewGroup.addView(webView);
+                    webView.bringToFront();
+                    webView.requestLayout();
+                }
+            });
+        }
+    }
+
+    private void removeWebViewIfNeeded() {
+        if(weOwnTheView) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() { viewGroup.removeView(webView); }
+            });
+        }
+    }
+
     private void finish() {
+        removeWebViewIfNeeded();
         onInteractionComplete.run(this);
-        viewGroup.removeView(webView);
         this.activity = null; // release reference to activity
     }
 }
