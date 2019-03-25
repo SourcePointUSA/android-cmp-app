@@ -1,6 +1,7 @@
 package com.example.dmitrirabinowitz.test_project;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -29,8 +30,10 @@ public class MainActivity extends AppCompatActivity {
                 .setTargetingParam("CMP", showPM.toString())
                 .setWillShowMessage(new ConsentLib.Callback() {
                     @Override
-                    public void run(ConsentLib _c) {
-                        Log.i(TAG, "The message is about to be shown.");
+                    public void run(ConsentLib consentLib) {
+                        Intent intent = new Intent(activity, ConsentActivity.class);
+                        ConsentActivity.consentLib = consentLib;
+                        startActivity(intent);
                     }
                 })
                 // type will be available as Integer at cLib.choiceType
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 .setOnInteractionComplete(new ConsentLib.Callback() {
                     @Override
                     public void run(ConsentLib c) {
+
                         Log.i(TAG, "euconsent prop: " + c.euconsent);
                         Log.i(TAG, "consentUUID prop: " + c.consentUUID);
                         Log.i(TAG, "euconsent in shared preferences: " + sharedPref.getString(ConsentLib.EU_CONSENT_KEY, null));
@@ -54,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "IABConsent_ParsedVendorConsents in shared preferences: " + sharedPref.getString(ConsentLib.IAB_CONSENT_PARSED_VENDOR_CONSENTS, null));
 
                         try {
+                            ConsentActivity.instance.finish();
+                            ConsentActivity.instance = null;
                             // Get the consents for a collection of non-IAB vendors
                             c.getCustomVendorConsents(
                                     new String[]{"5bf7f5c5461e09743fe190b3", "5b2adb86173375159f804c77"},
