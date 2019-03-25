@@ -1,7 +1,8 @@
 ## 2.2.0 (March 25, 2019)
 * We changed the way the `WebView` is loaded. You know have two options: 
   1. If you don't mind us managing the view for you, make sure to call `setViewGroup` passing the `ViewGroup` in which the `WebView` should be attached to and we'll take care of everything for you.
-  2. If you need more control over views, simply don't call `setViewGroup`. You'll need to add/remove `ConsentLib#webView` to/from your view hierarchy by yourself. This will usually be done on `willShowMessage` and `onInteractionComplete`.   
+  2. If you need more control over views, simply don't call `setViewGroup`. You'll need to add/remove `ConsentLib#webView` to/from your view hierarchy by yourself. This will usually be done on `willShowMessage` and `onInteractionComplete`.
+* `messageWillShow` callback method was renamed to `onMessageReady`
 
 ## 2.1.1 (March 20, 2019)
 * Implemented the callback method `willShowMessage`
