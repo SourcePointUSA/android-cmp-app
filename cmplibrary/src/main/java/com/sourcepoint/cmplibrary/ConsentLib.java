@@ -84,6 +84,13 @@ public class ConsentLib {
     @SuppressWarnings("WeakerAccess")
     public Integer choiceType = null;
 
+    /**
+     * When the message is loaded we set this field to true if the message needs to be displayed and false otherwise.
+     * @see{ConsentLib.onMessageReady}
+     */
+    @SuppressWarnings("WeakerAccess")
+    public boolean willShowMessage;
+
     public ConsentLibException error = null;
 
     private static final String TAG = "ConsentLib";
@@ -153,6 +160,7 @@ public class ConsentLib {
         @JavascriptInterface
         public void onReceiveMessageData(final boolean willShowMessage, String _msgJSON) {
             flushOrSyncCookies();
+            ConsentLib.this.willShowMessage = willShowMessage;
             ConsentLib.this.onMessageReady.run(ConsentLib.this);
             if (willShowMessage) {
                 displayWebViewIfNeeded();

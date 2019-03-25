@@ -28,8 +28,11 @@ public class MainActivity extends AppCompatActivity {
                     .setTargetingParam("CMP", showPM.toString())
                     .setOnMessageReady(new ConsentLib.Callback() {
                         @Override
-                        public void run(ConsentLib _c) {
-                            Log.i(TAG, "The message is about to be shown.");
+                        public void run(ConsentLib consentLib) {
+                            if(consentLib.willShowMessage)
+                                Log.i(TAG, "The message is about to be shown.");
+                            else
+                                Log.i(TAG, "The message doesn't need to be shown");
                         }
                     })
                     .setOnInteractionComplete(new ConsentLib.Callback() {
