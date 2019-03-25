@@ -20,7 +20,7 @@ public class ConsentLibBuilder {
     String mmsDomain, cmpDomain, msgDomain = null;
     String page = "";
     ViewGroup viewGroup = null;
-    ConsentLib.Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred, willShowMessage = noOpCallback;
+    ConsentLib.Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred, willShowMessage;
     boolean staging, stagingCampaign = false;
     EncodedParam targetingParamsString = null;
     ConsentLib.DebugLevel debugLevel = ConsentLib.DebugLevel.OFF;
@@ -29,6 +29,7 @@ public class ConsentLibBuilder {
         this.accountId = accountId;
         this.siteName = siteName;
         this.activity = activity;
+        onMessageChoiceSelect = onInteractionComplete = onErrorOccurred = willShowMessage = noOpCallback;
     }
 
     /**
