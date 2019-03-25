@@ -26,10 +26,13 @@ public class MainActivity extends AppCompatActivity {
                     .setViewGroup(findViewById(android.R.id.content))
                     // optional, set custom targeting parameters value can be String and Integer
                     .setTargetingParam("CMP", showPM.toString())
-                    .setWillShowMessage(new ConsentLib.Callback() {
+                    .setOnMessageReady(new ConsentLib.Callback() {
                         @Override
-                        public void run(ConsentLib _c) {
-                            Log.i(TAG, "The message is about to be shown.");
+                        public void run(ConsentLib consentLib) {
+                            if(consentLib.willShowMessage)
+                                Log.i(TAG, "The message is about to be shown.");
+                            else
+                                Log.i(TAG, "The message doesn't need to be shown");
                         }
                     })
                     .setOnInteractionComplete(new ConsentLib.Callback() {
