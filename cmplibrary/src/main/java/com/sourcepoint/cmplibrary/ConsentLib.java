@@ -1,23 +1,10 @@
 package com.sourcepoint.cmplibrary;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.ViewGroup;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.view.View;
 
 import java.util.HashSet;
 
@@ -86,7 +73,6 @@ public class ConsentLib {
 
     /**
      * When the message is loaded we set this field to true if the message needs to be displayed and false otherwise.
-     * @see{ConsentLib.onMessageReady}
      */
     @SuppressWarnings("WeakerAccess")
     public boolean willShowMessage;
@@ -111,14 +97,10 @@ public class ConsentLib {
 
     private final SharedPreferences sharedPref;
 
-    private android.webkit.CookieManager cm;
-
     @SuppressWarnings("WeakerAccess")
-    public WebView webView;
+    public ConsentWebView webView;
 
-    public interface Callback {
-        void run(ConsentLib c);
-    }
+    public interface Callback {  void run(ConsentLib c); }
 
     public interface OnLoadComplete {
         void onSuccess(Object result);
@@ -126,94 +108,6 @@ public class ConsentLib {
         default void onFailure(ConsentLibException exception) {
             Log.d(TAG, "default implementation of onFailure, did you forget to override onFailure ?");
             exception.printStackTrace();
-        }
-    }
-
-    private void flushOrSyncCookies() {
-        // forces the cookies sync between RAM and local storage
-        // https://developer.android.com/reference/android/webkit/CookieSyncManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            CookieManager.getInstance().flush();
-        } else {
-            CookieSyncManager.getInstance().sync();
-        }
-    }
-
-    @SuppressWarnings("unused")
-    private class MessageInterface {
-        private void onErrorOccurred(final ConsentLibException error) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ConsentLib.this.error = error;
-                    ConsentLib.this.onErrorOccurred.run(ConsentLib.this);
-                    ConsentLib.this.finish();
-                }
-            });
-        }
-
-        private boolean isDefined(String string) {
-            return string != null && !string.equals("undefined");
-        }
-
-        // called when message loads, brings the WebView to the front when the message is ready
-        @JavascriptInterface
-        public void onReceiveMessageData(final boolean willShowMessage, String _msgJSON) {
-            flushOrSyncCookies();
-            ConsentLib.this.willShowMessage = willShowMessage;
-            ConsentLib.this.onMessageReady.run(ConsentLib.this);
-            if (willShowMessage) {
-                displayWebViewIfNeeded();
-            } else {
-                ConsentLib.this.finish();
-            }
-        }
-
-        // called when a choice is selected on the message
-        @JavascriptInterface
-        public void onMessageChoiceSelect(int choiceType) {
-            if(ConsentLib.this.hasLostInternetConnection()) {
-                onErrorOccurred(new ConsentLibException.NoInternetConnectionException());
-            }
-
-            ConsentLib.this.choiceType = choiceType;
-            ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this);
-        }
-
-        // called when interaction with message is complete
-        @JavascriptInterface
-        public void sendConsentData(final String euconsent, final String consentUUID) {
-            SharedPreferences.Editor editor = sharedPref.edit();
-
-            if (isDefined(euconsent)) {
-                ConsentLib.this.euconsent = euconsent;
-                editor.putString(EU_CONSENT_KEY, euconsent);
-            }
-
-            if (isDefined(consentUUID)) {
-                ConsentLib.this.consentUUID = consentUUID;
-                editor.putString(CONSENT_UUID_KEY, consentUUID);
-            }
-
-            if (isDefined(euconsent) && isDefined(consentUUID)) {
-                editor.commit();
-                setIABVars(euconsent);
-            }
-
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ConsentLib.this.finish();
-                }
-            });
-        }
-
-        @JavascriptInterface
-        public void onErrorOccurred(final String errorType) {
-            ConsentLibException error = ConsentLib.this.hasLostInternetConnection() ?
-                    new ConsentLibException.NoInternetConnectionException() :
-                    new ConsentLibException("Something went wrong in the javascript world.");
-            onErrorOccurred(error);
         }
     }
 
@@ -249,17 +143,51 @@ public class ConsentLib {
         // read consent from/store consent to default shared preferences
         // per gdpr framework: https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/852cf086fdac6d89097fdec7c948e14a2121ca0e/In-App%20Reference/Android/app/src/main/java/com/smaato/soma/cmpconsenttooldemoapp/cmpconsenttool/storage/CMPStorage.java
         sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
-
         euconsent = sharedPref.getString(EU_CONSENT_KEY, null);
         consentUUID = sharedPref.getString(CONSENT_UUID_KEY, null);
-    }
 
-    private boolean hasLostInternetConnection() {
-        ConnectivityManager manager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(manager == null) { return true; }
+        webView = new ConsentWebView(activity) {
+            private boolean isDefined(String s) { return s != null && !s.equals("undefined"); }
 
-        NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
-        return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
+            @Override
+            public void onMessageReady(boolean willShowMessage) {
+                ConsentLib.this.willShowMessage = willShowMessage;
+                ConsentLib.this.onMessageReady.run(ConsentLib.this);
+                if (willShowMessage) displayWebViewIfNeeded();
+                else ConsentLib.this.finish();
+            }
+
+            @Override
+            public void onErrorOccurred(ConsentLibException error) {
+                ConsentLib.this.error = error;
+                ConsentLib.this.onErrorOccurred.run(ConsentLib.this);
+                ConsentLib.this.finish();
+            }
+
+            @Override
+            public void onInteractionComplete(String euConsent, String consentUUID) {
+                SharedPreferences.Editor editor = sharedPref.edit();
+                if (isDefined(euConsent)) {
+                    ConsentLib.this.euconsent = euConsent;
+                    editor.putString(EU_CONSENT_KEY, euConsent);
+                }
+                if (isDefined(consentUUID)) {
+                    ConsentLib.this.consentUUID = consentUUID;
+                    editor.putString(CONSENT_UUID_KEY, consentUUID);
+                }
+                if (isDefined(euConsent) && isDefined(consentUUID)) {
+                    editor.commit();
+                    setIABVars(euConsent);
+                }
+                ConsentLib.this.finish();
+            }
+
+            @Override
+            public void onMessageChoiceSelect(int choiceType) {
+                ConsentLib.this.choiceType = choiceType;
+                ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this);
+            }
+        };
     }
 
     /**
@@ -274,70 +202,8 @@ public class ConsentLib {
      * @throws ConsentLibException.NoInternetConnectionException - thrown if the device has lost connection either prior or while interacting with ConsentLib
      */
     public void run() throws ConsentLibException.NoInternetConnectionException {
-        if(hasLostInternetConnection()) {
-            throw new ConsentLibException.NoInternetConnectionException();
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            CookieSyncManager.createInstance(activity);
-        }
-
-        cm = android.webkit.CookieManager.getInstance();
-        final boolean acceptCookie = cm.acceptCookie();
-        cm.setAcceptCookie(true);
-
-        webView = new WebView(activity) {
-            @Override
-            protected void onDetachedFromWindow() {
-                super.onDetachedFromWindow();
-                flushOrSyncCookies();
-                cm.setAcceptCookie(acceptCookie);
-            }
-        };
-
-        // allow third party cookies for loading mms and consent cookies
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            cm.setAcceptThirdPartyCookies(webView, true);
-        }
-
-        // hide web view while it loads initially
-        webView.addJavascriptInterface(new MessageInterface(), "JSReceiver");
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setSupportMultipleWindows(true);
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, android.os.Message resultMsg) {
-                WebView.HitTestResult result = view.getHitTestResult();
-                String data = result.getExtra();
-                Context context = view.getContext();
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(data));
-                context.startActivity(browserIntent);
-                return false;
-            }
-        });
-
-        webView.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int keyCode, KeyEvent event) {
-                WebView webView = (WebView) view;
-                if(event.getAction() == KeyEvent.ACTION_DOWN &&
-                    KeyEvent.KEYCODE_BACK == keyCode &&
-                    webView.canGoBack()) {
-                    webView.goBack();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        String messageUrl = sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel);
-        Log.d(TAG, "Loading Webview with: "+messageUrl);
-        Log.d(TAG, "User-Agent: "+webView.getSettings().getUserAgentString());
-        webView.loadUrl(messageUrl);
-
-        // Set standard IAB IABConsent_CMPPresent
+        webView.loadMessage(sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel));
         setSharedPreference(IAB_CONSENT_CMP_PRESENT, true);
-
         setSubjectToGDPR();
     }
 
@@ -429,6 +295,7 @@ public class ConsentLib {
     public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) {
         loadAndStoreCustomVendorAndPurposeConsents(customVendorIds, new OnLoadComplete() {
             @Override
+            @SuppressWarnings("unchecked")
             public void onSuccess(Object result) {
                 HashSet<Consent> consents = (HashSet<Consent>) result;
                 HashSet<CustomVendorConsent> vendorConsents = new HashSet<>();
@@ -455,6 +322,7 @@ public class ConsentLib {
     public void getCustomPurposeConsents(final OnLoadComplete callback) {
         loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
             @Override
+            @SuppressWarnings("unchecked")
             public void onSuccess(Object result) {
                 HashSet<Consent> consents = (HashSet<Consent>) result;
                 HashSet<CustomPurposeConsent> purposeConsents = new HashSet<>();
@@ -548,6 +416,7 @@ public class ConsentLib {
             public void onSuccess(Object siteId) {
                 sourcePoint.getCustomConsents(consentUUID, euconsent, (String) siteId, vendorIds, new OnLoadComplete() {
                     @Override
+                    @SuppressWarnings("unchecked")
                     public void onSuccess(Object result) {
                         HashSet<Consent> consents = (HashSet<Consent>) result;
                         HashSet<String> consentStrings = new HashSet<>();
@@ -580,12 +449,8 @@ public class ConsentLib {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    webView.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
-                    webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-                    webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    webView.display();
                     viewGroup.addView(webView);
-                    webView.bringToFront();
-                    webView.requestLayout();
                 }
             });
         }
