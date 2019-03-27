@@ -1,3 +1,7 @@
+## 2.2.1 (March 27, 2019)
+* Extracted away the `WebView` setup into `ConsentWebView`.
+* Fix a bug that'd prevent the `WebView` from loading the first time on Android > 19
+
 ## 2.2.0 (March 25, 2019)
 * We changed the way the `WebView` is loaded. You know have two options: 
   1. If you don't mind us managing the view for you, make sure to call `setViewGroup` passing the `ViewGroup` in which the `WebView` should be attached to and we'll take care of everything for you.
