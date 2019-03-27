@@ -123,9 +123,11 @@ abstract class ConsentWebView extends WebView {
     abstract public void onErrorOccurred(ConsentLibException error);
     abstract public void onInteractionComplete(String euConsent, String consentUUID);
     abstract public void onMessageChoiceSelect(int choiceType);
+
     public void loadMessage(String messageUrl) throws ConsentLibException.NoInternetConnectionException {
         if(hasLostInternetConnection()) throw new ConsentLibException.NoInternetConnectionException();
 
+        loadData("", "text/html", null);
         Log.d(TAG, "Loading Webview with: "+messageUrl);
         Log.d(TAG, "User-Agent: "+getSettings().getUserAgentString());
         loadUrl(messageUrl);
