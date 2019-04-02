@@ -1,3 +1,7 @@
+## 2.3.0 (April 2, 2019)
+* Fix an issue with `ConsentWebView` prevented the consent message from showing intermittently
+* Added timeout to `ConsentWebView`
+
 ## 2.2.1 (March 27, 2019)
 * Extracted away the `WebView` setup into `ConsentWebView`.
 * Fix a bug that'd prevent the `WebView` from loading the first time on Android > 19
