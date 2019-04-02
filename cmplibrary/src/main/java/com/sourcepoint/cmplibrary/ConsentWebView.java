@@ -25,7 +25,7 @@ import android.webkit.WebViewClient;
 
 import java.util.HashSet;
 
-abstract class ConsentWebView extends WebView {
+abstract public class ConsentWebView extends WebView {
     private static final String TAG = "ConsentWebView";
     @SuppressWarnings("unused")
     private class MessageInterface {
