@@ -146,7 +146,7 @@ public class ConsentLib {
         euconsent = sharedPref.getString(EU_CONSENT_KEY, null);
         consentUUID = sharedPref.getString(CONSENT_UUID_KEY, null);
 
-        webView = new ConsentWebView(activity) {
+        webView = new ConsentWebView(activity, 10000) {
             private boolean isDefined(String s) { return s != null && !s.equals("undefined"); }
 
             @Override
