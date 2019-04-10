@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,6 +18,8 @@ import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.RenderProcessGoneDetail;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -76,19 +79,21 @@ abstract public class ConsentWebView extends WebView {
     }
 
     private long timeoutMillisec;
-    private ConnectionPool connectionPool = new ConnectionPool();
+    private ConnectionPool connectionPool;
 
     public static long DEFAULT_TIMEOUT = 10000;
 
     public ConsentWebView(Context context, long timeoutMillisec) {
         super(context);
         this.timeoutMillisec = timeoutMillisec;
+        connectionPool = new ConnectionPool();
         setup();
     }
 
     public ConsentWebView(Context context) {
         super(context);
         this.timeoutMillisec = DEFAULT_TIMEOUT;
+         connectionPool = new ConnectionPool();
         setup();
     }
 
@@ -100,8 +105,14 @@ abstract public class ConsentWebView extends WebView {
             CookieManager.getInstance().setAcceptThirdPartyCookies(this, true);
         }
         CookieManager.getInstance().setAcceptCookie(true);
+        getSettings().setAppCacheEnabled(false);
+        getSettings().setBuiltInZoomControls(false);
+        getSettings().setSupportZoom(false);
+        getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        getSettings().setAllowFileAccess(true);
         getSettings().setJavaScriptEnabled(true);
         getSettings().setSupportMultipleWindows(true);
+        getSettings().setDomStorageEnabled(true);
         setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -135,6 +146,18 @@ abstract public class ConsentWebView extends WebView {
                 super.onReceivedError(view, errorCode, description, failingUrl);
                 Log.d(TAG, "onReceivedError: Error "+errorCode+": "+description);
             }
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                super.onReceivedSslError(view, handler, error);
+                Log.d(TAG, "onReceivedSslError: Error "+error);
+            }
+
+            @Override
+            public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
+                Log.e(TAG, "The WebView rendering process crashed!");
+                return false;
+            }
         });
         setWebChromeClient(new WebChromeClient() {
             @Override
@@ -161,6 +184,7 @@ abstract public class ConsentWebView extends WebView {
             }
         });
         addJavascriptInterface(new MessageInterface(), "JSReceiver");
+        resumeTimers();
     }
 
     boolean hasLostInternetConnection() {
