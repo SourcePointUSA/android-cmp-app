@@ -146,7 +146,11 @@ public class ConsentLib {
         euconsent = sharedPref.getString(EU_CONSENT_KEY, null);
         consentUUID = sharedPref.getString(CONSENT_UUID_KEY, null);
 
-        webView = new ConsentWebView(activity, 10000) {
+        webView = buildWebView();
+    }
+
+    private ConsentWebView buildWebView() {
+        return new ConsentWebView(activity, 10000) {
             private boolean isDefined(String s) { return s != null && !s.equals("undefined"); }
 
             @Override
@@ -202,6 +206,7 @@ public class ConsentLib {
      * @throws ConsentLibException.NoInternetConnectionException - thrown if the device has lost connection either prior or while interacting with ConsentLib
      */
     public void run() throws ConsentLibException.NoInternetConnectionException {
+        if(webView == null) { webView = buildWebView(); }
         webView.loadMessage(sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel));
         setSharedPreference(IAB_CONSENT_CMP_PRESENT, true);
         setSubjectToGDPR();
@@ -460,7 +465,7 @@ public class ConsentLib {
         if(weOwnTheView) {
             activity.runOnUiThread(new Runnable() {
                 @Override
-                public void run() { viewGroup.removeView(webView); }
+                public void run() { destroy(); }
             });
         }
     }
@@ -468,6 +473,16 @@ public class ConsentLib {
     private void finish() {
         removeWebViewIfNeeded();
         onInteractionComplete.run(this);
-        this.activity = null; // release reference to activity
+        activity = null; // release reference to activity
+    }
+
+    public void destroy() {
+        if(webView != null) {
+            if(viewGroup != null) {
+                viewGroup.removeView(webView);
+            }
+            webView.destroy();
+            webView = null;
+        }
     }
 }
