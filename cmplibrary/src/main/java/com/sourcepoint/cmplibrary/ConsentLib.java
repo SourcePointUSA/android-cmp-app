@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -88,10 +89,17 @@ public class ConsentLib {
     private final String siteName;
     private final int accountId;
     private final ViewGroup viewGroup;
-    private final Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred, onMessageReady;
+    private final Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred;
+    private Callback onMessageReady;
     private final EncodedParam encodedTargetingParams;
     private final EncodedParam encodedDebugLevel;
     private final boolean weOwnTheView;
+
+    //default time out changes
+    private boolean onMessageReadyCalled = false;
+    private long defaultMessageTimeOut;
+
+    private CountDownTimer mCountDownTimer = null;
 
     private final SourcePointClient sourcePoint;
 
@@ -132,6 +140,8 @@ public class ConsentLib {
         viewGroup = b.viewGroup;
 
         weOwnTheView = viewGroup != null;
+        // configurable time out
+        defaultMessageTimeOut = b.defaultMessageTimeOut;
 
         sourcePoint = new SourcePointClientBuilder(b.accountId, b.siteName+"/"+b.page, b.staging)
                 .setStagingCampaign(b.stagingCampaign)
@@ -155,6 +165,8 @@ public class ConsentLib {
 
             @Override
             public void onMessageReady(boolean willShowMessage) {
+                onMessageReadyCalled = true;
+                if (mCountDownTimer != null) mCountDownTimer.cancel();
                 ConsentLib.this.willShowMessage = willShowMessage;
                 ConsentLib.this.onMessageReady.run(ConsentLib.this);
                 if (willShowMessage) displayWebViewIfNeeded();
@@ -206,10 +218,27 @@ public class ConsentLib {
      * @throws ConsentLibException.NoInternetConnectionException - thrown if the device has lost connection either prior or while interacting with ConsentLib
      */
     public void run() throws ConsentLibException.NoInternetConnectionException {
+        onMessageReadyCalled = false;
         if(webView == null) { webView = buildWebView(); }
         webView.loadMessage(sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel));
+        mCountDownTimer = getTimer(defaultMessageTimeOut);
+        mCountDownTimer.start();
         setSharedPreference(IAB_CONSENT_CMP_PRESENT, true);
         setSubjectToGDPR();
+    }
+
+    private CountDownTimer getTimer(long defaultMessageTimeOut) {
+        return new CountDownTimer(defaultMessageTimeOut , defaultMessageTimeOut){
+            @Override
+            public void onTick(long millisUntilFinished) {     }
+            @Override
+            public void onFinish() {
+                if (!onMessageReadyCalled){
+                    onMessageReady = null;
+                    webView.onErrorOccurred(new ConsentLibException("a timeout has occurred when loading the message"));
+                }
+            }
+        };
     }
 
     private void setSharedPreference(String key, String value) {

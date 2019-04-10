@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
                 .setViewGroup(findViewById(android.R.id.content))
                 // optional, set custom targeting parameters value can be String and Integer
                 .setTargetingParam("CMP", showPM.toString())
+                //optional,  set message time out , default is 5 seconds
+                .setMessageTimeOut(5000)
                 .setOnMessageReady(new ConsentLib.Callback() {
                     @Override
                     public void run(ConsentLib consentLib) {
