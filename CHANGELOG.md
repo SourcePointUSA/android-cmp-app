@@ -1,3 +1,9 @@
+## 2.3.2 (April 10, 2019)
+* Fix an issue with `ConsentWebView` prevented the consent message from showing intermittently
+
+## 2.3.1 (April 10, 2019)
+* Add timeout for `onMessageReady`  
+
 ## 2.3.0 (April 2, 2019)
 * Fix an issue with `ConsentWebView` prevented the consent message from showing intermittently
 * Added timeout to `ConsentWebView`
