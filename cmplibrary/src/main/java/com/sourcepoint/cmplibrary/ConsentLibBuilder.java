@@ -24,6 +24,7 @@ public class ConsentLibBuilder {
     boolean staging, stagingCampaign = false;
     EncodedParam targetingParamsString = null;
     ConsentLib.DebugLevel debugLevel = ConsentLib.DebugLevel.OFF;
+    long defaultMessageTimeOut = 5000;
 
     ConsentLibBuilder(Integer accountId, String siteName, Activity activity) {
         this.accountId = accountId;
@@ -223,5 +224,10 @@ public class ConsentLibBuilder {
         }
 
         return new ConsentLib(this);
+    }
+
+    public ConsentLibBuilder setMessageTimeOut(long milliSecond){
+        this.defaultMessageTimeOut = milliSecond;
+        return this;
     }
 }
