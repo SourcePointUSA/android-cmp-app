@@ -491,7 +491,7 @@ public class ConsentLib {
     }
 
     private void removeWebViewIfNeeded() {
-        if(weOwnTheView) {
+        if(weOwnTheView && activity != null) {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() { destroy(); }
@@ -509,6 +509,9 @@ public class ConsentLib {
         if(webView != null) {
             if(viewGroup != null) {
                 viewGroup.removeView(webView);
+            }
+            if (mCountDownTimer != null){
+                mCountDownTimer.cancel();
             }
             webView.destroy();
             webView = null;
