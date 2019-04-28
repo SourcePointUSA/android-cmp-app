@@ -139,23 +139,28 @@ abstract public class ConsentWebView extends WebView {
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
                 Log.d(TAG, "onReceivedError: "+error.toString());
+                onErrorOccurred(new ConsentLibException.ApiException(error.toString()));
             }
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
                 Log.d(TAG, "onReceivedError: Error "+errorCode+": "+description);
+                onErrorOccurred(new ConsentLibException.ApiException(description));
             }
 
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                 super.onReceivedSslError(view, handler, error);
                 Log.d(TAG, "onReceivedSslError: Error "+error);
+                onErrorOccurred(new ConsentLibException.ApiException(error.toString()));
             }
 
             @Override
             public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
-                Log.e(TAG, "The WebView rendering process crashed!");
+                String message = "The WebView rendering process crashed!";
+                Log.e(TAG, message);
+                onErrorOccurred(new ConsentLibException(message));
                 return false;
             }
         });
