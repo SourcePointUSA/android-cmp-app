@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
                 // optional, set custom targeting parameters value can be String and Integer
                 .setTargetingParam("CMP", showPM.toString())
                 //optional,  set message time out , default is 5 seconds
-                .setMessageTimeOut(5000)
+                .setMessageTimeOut(15000)   
                 .setOnMessageReady(new ConsentLib.Callback() {
                     @Override
                     public void run(ConsentLib consentLib) {

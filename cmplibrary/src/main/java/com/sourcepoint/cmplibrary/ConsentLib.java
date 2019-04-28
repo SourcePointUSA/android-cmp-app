@@ -160,7 +160,7 @@ public class ConsentLib {
     }
 
     private ConsentWebView buildWebView() {
-        return new ConsentWebView(activity, 10000) {
+        return new ConsentWebView(activity, defaultMessageTimeOut) {
             private boolean isDefined(String s) { return s != null && !s.equals("undefined"); }
 
             @Override
@@ -228,7 +228,7 @@ public class ConsentLib {
     }
 
     private CountDownTimer getTimer(long defaultMessageTimeOut) {
-        return new CountDownTimer(defaultMessageTimeOut , defaultMessageTimeOut){
+        return new CountDownTimer(defaultMessageTimeOut, defaultMessageTimeOut) {
             @Override
             public void onTick(long millisUntilFinished) {     }
             @Override
