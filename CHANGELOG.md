@@ -1,5 +1,9 @@
+## 2.3.5 (April 17, 2019)
+* Make sure to call `ConsentLib.onErrorOccurred` when something goes wrong in the `ConsentWebView`
+
 ## 2.3.4 (April 17, 2019)
 * Fix an issue with `message timeout timer`, canceled timer before releasing `ConsentWebView`.
+
 ## 2.3.3 (April 12, 2019)
 * Add timeout for `onMessageReady`
 
