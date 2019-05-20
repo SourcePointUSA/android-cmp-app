@@ -93,7 +93,7 @@ public class ConsentLib {
     private Callback onMessageReady;
     private final EncodedParam encodedTargetingParams;
     private final EncodedParam encodedDebugLevel;
-    private final boolean weOwnTheView;
+    private final boolean weOwnTheView, newPM;
 
     //default time out changes
     private boolean onMessageReadyCalled = false;
@@ -138,6 +138,7 @@ public class ConsentLib {
         encodedTargetingParams = b.targetingParamsString;
         encodedDebugLevel = new EncodedParam("debugLevel", b.debugLevel.name());
         viewGroup = b.viewGroup;
+        newPM = b.newPM;
 
         weOwnTheView = viewGroup != null;
         // configurable time out
@@ -220,7 +221,7 @@ public class ConsentLib {
     public void run() throws ConsentLibException.NoInternetConnectionException {
         onMessageReadyCalled = false;
         if(webView == null) { webView = buildWebView(); }
-        webView.loadMessage(sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel));
+        webView.loadMessage(sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel, newPM));
         mCountDownTimer = getTimer(defaultMessageTimeOut);
         mCountDownTimer.start();
         setSharedPreference(IAB_CONSENT_CMP_PRESENT, true);
