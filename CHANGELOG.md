@@ -1,5 +1,5 @@
-## 2.3.5 (April 17, 2019)
-* Make sure to call `ConsentLib.onErrorOccurred` when something goes wrong in the `ConsentWebView`
+## 2.3.5 (May 20, 2019)
+* Implemented `ConsentLibBuilder.enableNewPM` when called with true will make possible for the user to switch between the "old" and "new" Privacy Manager.
 
 ## 2.3.4 (April 17, 2019)
 * Fix an issue with `message timeout timer`, canceled timer before releasing `ConsentWebView`.
