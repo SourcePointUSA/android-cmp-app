@@ -83,9 +83,10 @@ class SourcePointClient {
                 "&euconsent=" + euconsentParam;
     }
 
-    String messageUrl(EncodedParam targetingParams, EncodedParam debugLevel) {
+    String messageUrl(EncodedParam targetingParams, EncodedParam debugLevel, boolean newPM) {
         HashSet<String> params = new HashSet<>();
-        params.add("_sp_accountId=" + String.valueOf(accountId));
+        params.add("_sp_pmOrigin=" + (newPM ? "stage" : "production"));
+        params.add("_sp_accountId=" + accountId);
         params.add("_sp_cmp_inApp=true");
         params.add("_sp_writeFirstPartyCookies=true");
         params.add("_sp_siteHref=" + site);

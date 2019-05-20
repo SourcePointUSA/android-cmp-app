@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
                 .setStage(false) // optional, used for running stage campaigns
                 .setViewGroup(findViewById(android.R.id.content))
                 // optional, set custom targeting parameters value can be String and Integer
-                .setTargetingParam("CMP", showPM.toString())
+                .setTargetingParam("MyPrivacyManager", showPM.toString())
                 //optional,  set message time out , default is 5 seconds
                 .setMessageTimeOut(15000)   
                 .setOnMessageReady(new ConsentLib.Callback() {

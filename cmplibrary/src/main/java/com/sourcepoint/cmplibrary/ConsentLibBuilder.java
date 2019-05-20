@@ -17,11 +17,11 @@ public class ConsentLibBuilder {
     Activity activity;
     int accountId;
     String siteName;
-    String mmsDomain, cmpDomain, msgDomain = null;
+    String mmsDomain, cmpDomain, msgDomain;
     String page = "";
     ViewGroup viewGroup = null;
     ConsentLib.Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred, onMessageReady;
-    boolean staging, stagingCampaign = false;
+    boolean staging, stagingCampaign, newPM;
     EncodedParam targetingParamsString = null;
     ConsentLib.DebugLevel debugLevel = ConsentLib.DebugLevel.OFF;
     long defaultMessageTimeOut = 5000;
@@ -30,6 +30,8 @@ public class ConsentLibBuilder {
         this.accountId = accountId;
         this.siteName = siteName;
         this.activity = activity;
+        mmsDomain = cmpDomain = msgDomain = null;
+        staging = stagingCampaign = newPM = false;
         onMessageChoiceSelect = onInteractionComplete = onErrorOccurred = onMessageReady = noOpCallback;
     }
 
@@ -97,7 +99,7 @@ public class ConsentLibBuilder {
 
     /**
      * Called when the Dialog message is about to be shown
-     * @param callback
+     * @param callback to be called when the message is ready to be displayed
      * @return ConsentLibBuilder
      */
     public ConsentLibBuilder setOnMessageReady(ConsentLib.Callback callback) {
@@ -107,7 +109,7 @@ public class ConsentLibBuilder {
 
     /**
      *  <b>Optional</b> Sets a Callback to be called when something goes wrong in the WebView
-     * @param callback
+     * @param callback called when something wrong happens in the webview
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
@@ -137,6 +139,11 @@ public class ConsentLibBuilder {
      */
     public ConsentLibBuilder setInternalStage(boolean st) {
         staging = st;
+        return this;
+    }
+
+    public ConsentLibBuilder enableNewPM(boolean newPM) {
+        this.newPM = newPM;
         return this;
     }
 
