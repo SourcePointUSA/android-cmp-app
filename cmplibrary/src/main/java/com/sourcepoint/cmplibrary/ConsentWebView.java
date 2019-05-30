@@ -11,6 +11,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -97,6 +98,21 @@ abstract public class ConsentWebView extends WebView {
         setup();
     }
 
+    private boolean doesLinkContainImage(HitTestResult testResult) {
+        return testResult.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
+    }
+
+    private String getLinkUrl(HitTestResult testResult) {
+        if (doesLinkContainImage(testResult)) {
+            Handler handler = new Handler();
+            Message message = handler.obtainMessage();
+            requestFocusNodeHref(message);
+            return (String) message.getData().get("url");
+        }
+
+        return testResult.getExtra();
+    }
+
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     private void setup() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -167,11 +183,8 @@ abstract public class ConsentWebView extends WebView {
         setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, android.os.Message resultMsg) {
-                WebView.HitTestResult result = view.getHitTestResult();
-                String data = result.getExtra();
-                Context context = view.getContext();
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(data));
-                context.startActivity(browserIntent);
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.getHitTestResult())));
+                view.getContext().startActivity(browserIntent);
                 return false;
             }
         });
