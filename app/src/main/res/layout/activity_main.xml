@@ -5,8 +5,7 @@
     android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/ic_launcher"
-    tools:context="com.example.dmitrirabinowitz.test_project.MainActivity">
+    tools:context="com.sourcepoint.test_project.MainActivity">
 
     <Button
         android:id="@+id/review_consents"
