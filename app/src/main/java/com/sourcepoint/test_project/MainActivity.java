@@ -1,4 +1,4 @@
-package com.example.dmitrirabinowitz.test_project;
+package com.sourcepoint.test_project;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
