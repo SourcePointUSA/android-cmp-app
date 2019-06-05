@@ -116,8 +116,10 @@ abstract public class ConsentWebView extends WebView {
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     private void setup() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setWebContentsDebuggingEnabled(true);
-            enableSlowWholeDocumentDraw();
+            if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
+                setWebContentsDebuggingEnabled(true);
+                enableSlowWholeDocumentDraw();
+            }
             CookieManager.getInstance().setAcceptThirdPartyCookies(this, true);
         }
         CookieManager.getInstance().setAcceptCookie(true);
