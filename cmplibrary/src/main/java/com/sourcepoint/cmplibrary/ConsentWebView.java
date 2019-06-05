@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -14,7 +15,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -31,6 +31,7 @@ import java.util.HashSet;
 
 abstract public class ConsentWebView extends WebView {
     private static final String TAG = "ConsentWebView";
+
     @SuppressWarnings("unused")
     private class MessageInterface {
         // called when message loads, brings the WebView to the front when the message is ready
@@ -43,7 +44,7 @@ abstract public class ConsentWebView extends WebView {
         // called when a choice is selected on the message
         @JavascriptInterface
         public void onMessageChoiceSelect(int choiceType) {
-            if(ConsentWebView.this.hasLostInternetConnection()) {
+            if (ConsentWebView.this.hasLostInternetConnection()) {
                 ConsentWebView.this.onErrorOccurred(new ConsentLibException.NoInternetConnectionException());
             }
             ConsentWebView.this.onMessageChoiceSelect(choiceType);
@@ -69,14 +70,24 @@ abstract public class ConsentWebView extends WebView {
     private class ConnectionPool {
         private HashSet<String> connections;
         private static final String INITIAL_LOAD = "data:text/html,";
-        ConnectionPool() { connections = new HashSet<>(); }
+
+        ConnectionPool() {
+            connections = new HashSet<>();
+        }
+
         void add(String url) {
             // on API level < 21 the initial load is not recognized by the WebViewClient#onPageStarted callback
             if (url.equalsIgnoreCase(ConnectionPool.INITIAL_LOAD)) return;
             connections.add(url);
         }
-        void remove(String url) { connections.remove(url); }
-        boolean contains(String url) { return connections.contains(url); }
+
+        void remove(String url) {
+            connections.remove(url);
+        }
+
+        boolean contains(String url) {
+            return connections.contains(url);
+        }
     }
 
     private long timeoutMillisec;
@@ -94,7 +105,7 @@ abstract public class ConsentWebView extends WebView {
     public ConsentWebView(Context context) {
         super(context);
         this.timeoutMillisec = DEFAULT_TIMEOUT;
-         connectionPool = new ConnectionPool();
+        connectionPool = new ConnectionPool();
         setup();
     }
 
@@ -116,7 +127,7 @@ abstract public class ConsentWebView extends WebView {
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     private void setup() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
+            if (0 != (getContext().getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
                 setWebContentsDebuggingEnabled(true);
                 enableSlowWholeDocumentDraw();
             }
@@ -136,11 +147,9 @@ abstract public class ConsentWebView extends WebView {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 connectionPool.add(url);
-                Runnable run = new Runnable() {
-                    public void run() {
-                        if(connectionPool.contains(url))
-                            onErrorOccurred(new ConsentLibException.ApiException("TIMED OUT: "+url));
-                    }
+                Runnable run = () -> {
+                    if (connectionPool.contains(url))
+                        onErrorOccurred(new ConsentLibException.ApiException("TIMED OUT: " + url));
                 };
                 Handler myHandler = new Handler(Looper.myLooper());
                 myHandler.postDelayed(run, timeoutMillisec);
@@ -156,21 +165,21 @@ abstract public class ConsentWebView extends WebView {
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
-                Log.d(TAG, "onReceivedError: "+error.toString());
+                Log.d(TAG, "onReceivedError: " + error.toString());
                 onErrorOccurred(new ConsentLibException.ApiException(error.toString()));
             }
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
-                Log.d(TAG, "onReceivedError: Error "+errorCode+": "+description);
+                Log.d(TAG, "onReceivedError: Error " + errorCode + ": " + description);
                 onErrorOccurred(new ConsentLibException.ApiException(description));
             }
 
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                 super.onReceivedSslError(view, handler, error);
-                Log.d(TAG, "onReceivedSslError: Error "+error);
+                Log.d(TAG, "onReceivedSslError: Error " + error);
                 onErrorOccurred(new ConsentLibException.ApiException(error.toString()));
             }
 
@@ -190,18 +199,15 @@ abstract public class ConsentWebView extends WebView {
                 return false;
             }
         });
-        setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int keyCode, KeyEvent event) {
-                WebView webView = (WebView) view;
-                if(event.getAction() == KeyEvent.ACTION_DOWN &&
-                        KeyEvent.KEYCODE_BACK == keyCode &&
-                        webView.canGoBack()) {
-                    webView.goBack();
-                    return true;
-                }
-                return false;
+        setOnKeyListener((view, keyCode, event) -> {
+            WebView webView = (WebView) view;
+            if (event.getAction() == KeyEvent.ACTION_DOWN &&
+                    KeyEvent.KEYCODE_BACK == keyCode &&
+                    webView.canGoBack()) {
+                webView.goBack();
+                return true;
             }
+            return false;
         });
         addJavascriptInterface(new MessageInterface(), "JSReceiver");
         resumeTimers();
@@ -210,7 +216,9 @@ abstract public class ConsentWebView extends WebView {
     boolean hasLostInternetConnection() {
         ConnectivityManager manager = (ConnectivityManager) getContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(manager == null) { return true; }
+        if (manager == null) {
+            return true;
+        }
 
         NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
         return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
@@ -219,7 +227,8 @@ abstract public class ConsentWebView extends WebView {
     private void flushOrSyncCookies() {
         // forces the cookies sync between RAM and local storage
         // https://developer.android.com/reference/android/webkit/CookieSyncManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) CookieManager.getInstance().flush();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            CookieManager.getInstance().flush();
         else CookieSyncManager.getInstance().sync();
     }
 
@@ -230,18 +239,22 @@ abstract public class ConsentWebView extends WebView {
     }
 
     abstract public void onMessageReady(boolean willShowMessage);
+
     abstract public void onErrorOccurred(ConsentLibException error);
+
     abstract public void onInteractionComplete(String euConsent, String consentUUID);
+
     abstract public void onMessageChoiceSelect(int choiceType);
 
     public void loadMessage(String messageUrl) throws ConsentLibException.NoInternetConnectionException {
-        if(hasLostInternetConnection()) throw new ConsentLibException.NoInternetConnectionException();
+        if (hasLostInternetConnection())
+            throw new ConsentLibException.NoInternetConnectionException();
 
         // On API level >= 21, the JavascriptInterface is not injected on the page until the *second* page load
         // so we need to issue blank load with loadData
         loadData("", "text/html", null);
-        Log.d(TAG, "Loading Webview with: "+messageUrl);
-        Log.d(TAG, "User-Agent: "+getSettings().getUserAgentString());
+        Log.d(TAG, "Loading Webview with: " + messageUrl);
+        Log.d(TAG, "User-Agent: " + getSettings().getUserAgentString());
         loadUrl(messageUrl);
     }
 

@@ -1,3 +1,6 @@
+## 2.3.6 (June 5, 2019)
+* Implemented remove calls to `setWebContentsDebuggingEnabled(true);` `enableSlowWholeDocumentDraw();` in `ConsentWebView` when application is not debuggable (performance and security issues)
+
 ## 2.3.5 (May 20, 2019)
 * Implemented `ConsentLibBuilder.enableNewPM` when called with true will make possible for the user to switch between the "old" and "new" Privacy Manager.
 

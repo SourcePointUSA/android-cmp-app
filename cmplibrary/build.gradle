@@ -2,7 +2,7 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-def VERSION_NAME = "2.3.5"
+def VERSION_NAME = "2.3.6"
 
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
@@ -39,7 +39,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+//    implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -49,7 +49,7 @@ dependencies {
     // Unfortunately consent-string-sdk-java only supports Java 8 and above. That means API > 26
     // The following is a port to android environment
     // for more information check https://github.com/InteractiveAdvertisingBureau/Consent-String-SDK-Java/issues/21
-    compile 'com.iab.gdpr_android:gdpr_android:1.0.1'
+    api 'com.iab.gdpr_android:gdpr_android:1.0.1'
 //    implementation 'com.conversantmedia.gdpr:consent-string-sdk-java:3.0.2'
 }
 
@@ -180,11 +180,13 @@ task createZip(type: Zip) {
     archiveName = "cmplibrary-$VERSION_NAME" + ".zip"
 }
 
-task bundleZip << {
-    tasks.sourcesJar.execute()
-    tasks.findByPath(":cmplibrary:generatePomFileForPOMPublication").execute()
-    tasks.copySourcesToZip.execute()
-    tasks.copyPOMToZip.execute()
-    tasks.copyAARToZip.execute()
-    tasks.createZip.execute()
+task bundleZip {
+    doLast {
+        tasks.sourcesJar.execute()
+        tasks.findByPath(":cmplibrary:generatePomFileForPOMPublication").execute()
+        tasks.copySourcesToZip.execute()
+        tasks.copyPOMToZip.execute()
+        tasks.copyAARToZip.execute()
+        tasks.createZip.execute()
+    }
 }
