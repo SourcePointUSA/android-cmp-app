@@ -177,12 +177,9 @@ task createZip(type: Zip) {
 }
 
 task bundleZip {
-    doLast {
-        tasks.sourcesJar.execute()
-        tasks.findByPath(":cmplibrary:generatePomFileForPOMPublication").execute()
-        tasks.copySourcesToZip.execute()
-        tasks.copyPOMToZip.execute()
-        tasks.copyAARToZip.execute()
-        tasks.createZip.execute()
+    def tasks = [sourcesJar, generatePomFileForPOMPublication, copySourcesToZip, copyPOMToZip, copyAARToZip, createZip]
+    for (int i = 0; i < tasks.size() - 1; i++) {
+        tasks[i + 1].mustRunAfter(tasks[i])
     }
+    dependsOn(tasks)
 }
