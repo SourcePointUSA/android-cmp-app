@@ -23,6 +23,7 @@ public class ConsentLibBuilder {
     ConsentLib.Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred, onMessageReady;
     boolean staging, stagingCampaign, newPM;
     EncodedParam targetingParamsString = null;
+    EncodedParam authId = null;
     ConsentLib.DebugLevel debugLevel = ConsentLib.DebugLevel.OFF;
     long defaultMessageTimeOut = 5000;
 
@@ -159,6 +160,11 @@ public class ConsentLibBuilder {
 
     public ConsentLibBuilder setCmpDomain(String cmpDomain) {
         this.cmpDomain = cmpDomain;
+        return this;
+    }
+
+    public ConsentLibBuilder setAuthId(String authId) throws ConsentLibException.BuildException {
+        this.authId = new EncodedParam("authId", authId);
         return this;
     }
 
