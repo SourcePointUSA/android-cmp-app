@@ -64,6 +64,11 @@ abstract public class ConsentWebView extends WebView {
                     new ConsentLibException("Something went wrong in the javascript world.");
             ConsentWebView.this.onErrorOccurred(error);
         }
+
+        @JavascriptInterface
+        public void onPrivacyManagerChoiceSelect(String _data) {
+            // no op
+        }
     }
 
     // A simple mechanism to keep track of the urls being loaded by the WebView
