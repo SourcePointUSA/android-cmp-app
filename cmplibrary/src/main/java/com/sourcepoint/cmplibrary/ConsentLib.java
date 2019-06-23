@@ -165,13 +165,13 @@ public class ConsentLib {
             private boolean isDefined(String s) { return s != null && !s.equals("undefined"); }
 
             @Override
-            public void onMessageReady(boolean willShowMessage) {
+            public void onMessageReady(boolean willShowMessage, String consentUUID, String euconsent) {
                 onMessageReadyCalled = true;
                 if (mCountDownTimer != null) mCountDownTimer.cancel();
                 ConsentLib.this.willShowMessage = willShowMessage;
                 ConsentLib.this.onMessageReady.run(ConsentLib.this);
                 if (willShowMessage) displayWebViewIfNeeded();
-                else ConsentLib.this.finish();
+                else onInteractionComplete(euconsent, consentUUID);
             }
 
             @Override
@@ -492,18 +492,18 @@ public class ConsentLib {
     }
 
     private void removeWebViewIfNeeded() {
-        if(weOwnTheView && activity != null) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() { destroy(); }
-            });
-        }
+        if(weOwnTheView && activity != null) destroy();
     }
 
     private void finish() {
-        removeWebViewIfNeeded();
-        onInteractionComplete.run(this);
-        activity = null; // release reference to activity
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                removeWebViewIfNeeded();
+                onInteractionComplete.run(ConsentLib.this);
+                activity = null; // release reference to activity
+            }
+        });
     }
 
     public void destroy() {
