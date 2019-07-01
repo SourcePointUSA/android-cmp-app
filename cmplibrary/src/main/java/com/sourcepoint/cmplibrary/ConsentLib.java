@@ -496,14 +496,16 @@ public class ConsentLib {
     }
 
     private void finish() {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                removeWebViewIfNeeded();
-                onInteractionComplete.run(ConsentLib.this);
-                activity = null; // release reference to activity
-            }
-        });
+        if(activity != null) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    removeWebViewIfNeeded();
+                    onInteractionComplete.run(ConsentLib.this);
+                    activity = null; // release reference to activity
+                }
+            });
+        }
     }
 
     public void destroy() {
