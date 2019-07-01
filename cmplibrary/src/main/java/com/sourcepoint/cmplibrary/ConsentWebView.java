@@ -259,7 +259,7 @@ abstract public class ConsentWebView extends WebView {
     }
 
     abstract public void onMessageReady(boolean willShowMessage, String consentUUID, String euconsent);
-    
+
     abstract public void onErrorOccurred(ConsentLibException error);
 
     abstract public void onInteractionComplete(String euConsent, String consentUUID);
