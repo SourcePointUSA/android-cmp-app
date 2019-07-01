@@ -25,7 +25,7 @@ public class ConsentLibBuilder {
     EncodedParam targetingParamsString = null;
     EncodedParam authId = null;
     ConsentLib.DebugLevel debugLevel = ConsentLib.DebugLevel.OFF;
-    long defaultMessageTimeOut = 5000;
+    long defaultMessageTimeOut = 10000;
 
     ConsentLibBuilder(Integer accountId, String siteName, Activity activity) {
         this.accountId = accountId;
