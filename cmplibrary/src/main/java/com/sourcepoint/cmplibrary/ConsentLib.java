@@ -91,8 +91,7 @@ public class ConsentLib {
     private final ViewGroup viewGroup;
     private final Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred;
     private Callback onMessageReady;
-    private final EncodedParam encodedTargetingParams;
-    private final EncodedParam encodedDebugLevel;
+    private final EncodedParam encodedTargetingParams, encodedDebugLevel, encodedAuthId;
     private final boolean weOwnTheView, newPM;
 
     //default time out changes
@@ -131,6 +130,7 @@ public class ConsentLib {
         activity = b.activity;
         siteName = b.siteName;
         accountId = b.accountId;
+        encodedAuthId = b.authId;
         onMessageChoiceSelect = b.onMessageChoiceSelect;
         onInteractionComplete = b.onInteractionComplete;
         onErrorOccurred = b.onErrorOccurred;
@@ -165,13 +165,13 @@ public class ConsentLib {
             private boolean isDefined(String s) { return s != null && !s.equals("undefined"); }
 
             @Override
-            public void onMessageReady(boolean willShowMessage) {
+            public void onMessageReady(boolean willShowMessage, String consentUUID, String euconsent) {
                 onMessageReadyCalled = true;
                 if (mCountDownTimer != null) mCountDownTimer.cancel();
                 ConsentLib.this.willShowMessage = willShowMessage;
                 ConsentLib.this.onMessageReady.run(ConsentLib.this);
                 if (willShowMessage) displayWebViewIfNeeded();
-                else ConsentLib.this.finish();
+                else onInteractionComplete(euconsent, consentUUID);
             }
 
             @Override
@@ -221,7 +221,7 @@ public class ConsentLib {
     public void run() throws ConsentLibException.NoInternetConnectionException {
         onMessageReadyCalled = false;
         if(webView == null) { webView = buildWebView(); }
-        webView.loadMessage(sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel, newPM));
+        webView.loadMessage(sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel, newPM, encodedAuthId));
         mCountDownTimer = getTimer(defaultMessageTimeOut);
         mCountDownTimer.start();
         setSharedPreference(IAB_CONSENT_CMP_PRESENT, true);
@@ -492,18 +492,20 @@ public class ConsentLib {
     }
 
     private void removeWebViewIfNeeded() {
-        if(weOwnTheView && activity != null) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() { destroy(); }
-            });
-        }
+        if(weOwnTheView && activity != null) destroy();
     }
 
     private void finish() {
-        removeWebViewIfNeeded();
-        onInteractionComplete.run(this);
-        activity = null; // release reference to activity
+        if(activity != null) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    removeWebViewIfNeeded();
+                    onInteractionComplete.run(ConsentLib.this);
+                    activity = null; // release reference to activity
+                }
+            });
+        }
     }
 
     public void destroy() {

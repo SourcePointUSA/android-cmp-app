@@ -83,7 +83,7 @@ class SourcePointClient {
                 "&euconsent=" + euconsentParam;
     }
 
-    String messageUrl(EncodedParam targetingParams, EncodedParam debugLevel, boolean newPM) {
+    String messageUrl(EncodedParam targetingParams, EncodedParam debugLevel, boolean newPM, EncodedParam authId) {
         HashSet<String> params = new HashSet<>();
         params.add("_sp_pmOrigin=" + (newPM ? "stage" : "production"));
         params.add("_sp_accountId=" + accountId);
@@ -95,6 +95,9 @@ class SourcePointClient {
         params.add("_sp_msg_targetingParams=" + targetingParams);
         params.add("_sp_debug_level=" + debugLevel);
         params.add("_sp_msg_stageCampaign=" + stagingCampaign);
+        if(authId != null) {
+            params.add("_sp_authId="+authId);
+        }
 
         return messageUrl + "?" + TextUtils.join("&", params);
     }

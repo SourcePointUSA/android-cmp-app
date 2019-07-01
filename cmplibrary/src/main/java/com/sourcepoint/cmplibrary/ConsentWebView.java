@@ -27,6 +27,9 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashSet;
 
 abstract public class ConsentWebView extends WebView {
@@ -36,9 +39,21 @@ abstract public class ConsentWebView extends WebView {
     private class MessageInterface {
         // called when message loads, brings the WebView to the front when the message is ready
         @JavascriptInterface
-        public void onReceiveMessageData(boolean willShowMessage, String _msgJSON) {
+        public void onReceiveMessageData(String data) {
             ConsentWebView.this.flushOrSyncCookies();
-            ConsentWebView.this.onMessageReady(willShowMessage);
+            boolean willShowMessage = false;
+            String consentUUID = "";
+            String euconsent = "";
+            try {
+                JSONObject jsonData = new JSONObject(data);
+                willShowMessage = jsonData.getBoolean("shouldShowMessage");
+                consentUUID = jsonData.getString("consentUUID");
+                euconsent = jsonData.getString("euconsent");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            ConsentWebView.this.onMessageReady(willShowMessage, consentUUID, euconsent);
         }
 
         // called when a choice is selected on the message
@@ -63,6 +78,11 @@ abstract public class ConsentWebView extends WebView {
                     new ConsentLibException.NoInternetConnectionException() :
                     new ConsentLibException("Something went wrong in the javascript world.");
             ConsentWebView.this.onErrorOccurred(error);
+        }
+
+        @JavascriptInterface
+        public void onPrivacyManagerChoiceSelect(String _data) {
+            // no op
         }
     }
 
@@ -238,7 +258,7 @@ abstract public class ConsentWebView extends WebView {
         flushOrSyncCookies();
     }
 
-    abstract public void onMessageReady(boolean willShowMessage);
+    abstract public void onMessageReady(boolean willShowMessage, String consentUUID, String euconsent);
 
     abstract public void onErrorOccurred(ConsentLibException error);
 

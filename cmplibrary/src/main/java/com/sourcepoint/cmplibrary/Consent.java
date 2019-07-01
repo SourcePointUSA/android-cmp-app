@@ -6,7 +6,7 @@ import org.json.JSONObject;
 /**
  * Simple encapsulating class for consents.
  */
-abstract class Consent {
+abstract public class Consent {
     public final String id;
     public final String name;
     private final String type;

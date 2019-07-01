@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AuthExample</string>
+    <string name="action_privacy_settings">Privacy Settings</string>
+</resources>
