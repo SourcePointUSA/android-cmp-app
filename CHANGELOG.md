@@ -1,3 +1,10 @@
+## 2.4.1 (July 4, 2019)
+* Fixed an issue that would cause the host application to crash. (Cheers to Pauland @mypplication for the pull request)
+
+## 2.4.0 (July 1, 2019)
+* Implemented the Identity feature. If you have a "logged-in user" just call `ConsentLibBuilder.setAuthId(String)` passing a unique token that identifies that user and, if the user has consent data
+stored in our server, we'll load it instead of a new profile.
+
 ## 2.3.6 (June 5, 2019)
 * Implemented remove calls to `setWebContentsDebuggingEnabled(true);` `enableSlowWholeDocumentDraw();` in `ConsentWebView` when application is not debuggable (performance and security issues)
 
