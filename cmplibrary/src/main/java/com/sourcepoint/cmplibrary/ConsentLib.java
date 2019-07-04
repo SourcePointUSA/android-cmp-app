@@ -30,37 +30,35 @@ public class ConsentLib {
     /**
      * If the user is subject to GDPR, reading for this key in the shared preferences will return "1" otherwise "0"
      */
+    @SuppressWarnings("WeakerAccess")
     public static final String IAB_CONSENT_SUBJECT_TO_GDPR = "IABConsent_SubjectToGDPR";
 
     /**
      * They key used to store the IAB Consent string for the user in the shared preferences
      */
+    @SuppressWarnings("WeakerAccess")
     public static final String IAB_CONSENT_CONSENT_STRING = "IABConsent_ConsentString";
 
     /**
      * They key used to read and write the parsed IAB Purposes consented by the user in the shared preferences
      */
+    @SuppressWarnings("WeakerAccess")
     public static final String IAB_CONSENT_PARSED_PURPOSE_CONSENTS = "IABConsent_ParsedPurposeConsents";
 
     /**
      * They key used to read and write the parsed IAB Vendor consented by the user in the shared preferences
      */
+    @SuppressWarnings("WeakerAccess")
     public static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
 
-    // visible for grabbing consent from shared preferences
+    @SuppressWarnings("WeakerAccess")
     public static final String EU_CONSENT_KEY = "euconsent";
-    public static final String CONSENT_UUID_KEY = "consentUUID";
-
-    public enum DebugLevel {
-        DEBUG,
-//        INFO,
-//        TIME,
-//        WARN,
-//        ERROR,
-        OFF
-    }
 
     @SuppressWarnings("WeakerAccess")
+    public static final String CONSENT_UUID_KEY = "consentUUID";
+
+    public enum DebugLevel { DEBUG, OFF }
+
     public String euconsent, consentUUID;
 
     private static final int MAX_PURPOSE_ID = 24;
@@ -75,7 +73,6 @@ public class ConsentLib {
     /**
      * When the message is loaded we set this field to true if the message needs to be displayed and false otherwise.
      */
-    @SuppressWarnings("WeakerAccess")
     public boolean willShowMessage;
 
     public ConsentLibException error = null;
@@ -293,7 +290,7 @@ public class ConsentLib {
     }
     
     private void getSiteId(final OnLoadComplete callback) {
-        final String siteIdKey = SP_SITE_ID + "_" + Integer.toString(accountId) + "_" + siteName;
+        final String siteIdKey = SP_SITE_ID + "_" + accountId + "_" + siteName;
 
         String storedSiteId = sharedPref.getString(siteIdKey, null);
         if (storedSiteId != null) {
@@ -445,6 +442,12 @@ public class ConsentLib {
         }
     }
 
+    private void runOnLiveActivityUIThread(Runnable uiRunnable) {
+        if(activity != null && !activity.isFinishing()) {
+            activity.runOnUiThread(uiRunnable);
+        }
+    }
+
     private void loadAndStoreCustomVendorAndPurposeConsents(final String[] vendorIds, final OnLoadComplete callback) {
         getSiteId(new OnLoadComplete() {
             @Override
@@ -481,7 +484,7 @@ public class ConsentLib {
 
     private void displayWebViewIfNeeded() {
         if(weOwnTheView) {
-            activity.runOnUiThread(new Runnable() {
+            runOnLiveActivityUIThread(new Runnable() {
                 @Override
                 public void run() {
                     webView.display();
@@ -496,16 +499,14 @@ public class ConsentLib {
     }
 
     private void finish() {
-        if(activity != null) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    removeWebViewIfNeeded();
-                    onInteractionComplete.run(ConsentLib.this);
-                    activity = null; // release reference to activity
-                }
-            });
-        }
+        runOnLiveActivityUIThread(new Runnable() {
+            @Override
+            public void run() {
+                removeWebViewIfNeeded();
+                onInteractionComplete.run(ConsentLib.this);
+                activity = null; // release reference to activity
+            }
+        });
     }
 
     public void destroy() {
