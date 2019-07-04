@@ -445,6 +445,12 @@ public class ConsentLib {
         }
     }
 
+    private void runOnLiveActivityUIThread(Runnable uiRunnable) {
+        if(activity != null && !activity.isFinishing()) {
+            activity.runOnUiThread(uiRunnable);
+        }
+    }
+
     private void loadAndStoreCustomVendorAndPurposeConsents(final String[] vendorIds, final OnLoadComplete callback) {
         getSiteId(new OnLoadComplete() {
             @Override
@@ -481,7 +487,7 @@ public class ConsentLib {
 
     private void displayWebViewIfNeeded() {
         if(weOwnTheView) {
-            activity.runOnUiThread(new Runnable() {
+            runOnLiveActivityUIThread(new Runnable() {
                 @Override
                 public void run() {
                     webView.display();
@@ -496,16 +502,14 @@ public class ConsentLib {
     }
 
     private void finish() {
-        if(activity != null) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    removeWebViewIfNeeded();
-                    onInteractionComplete.run(ConsentLib.this);
-                    activity = null; // release reference to activity
-                }
-            });
-        }
+        runOnLiveActivityUIThread(new Runnable() {
+            @Override
+            public void run() {
+                removeWebViewIfNeeded();
+                onInteractionComplete.run(ConsentLib.this);
+                activity = null; // release reference to activity
+            }
+        });
     }
 
     public void destroy() {
