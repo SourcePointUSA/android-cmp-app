@@ -9,9 +9,6 @@ import org.json.JSONObject;
 
 @SuppressWarnings("unused")
 public class ConsentLibBuilder {
-    private final ConsentLib.Callback noOpCallback = new ConsentLib.Callback() {
-        @Override public void run(ConsentLib c) { }
-    };
     private final JSONObject targetingParams = new JSONObject();
 
     Activity activity;
@@ -33,6 +30,11 @@ public class ConsentLibBuilder {
         this.activity = activity;
         mmsDomain = cmpDomain = msgDomain = null;
         staging = stagingCampaign = newPM = false;
+        ConsentLib.Callback noOpCallback = new ConsentLib.Callback() {
+            @Override
+            public void run(ConsentLib c) {
+            }
+        };
         onMessageChoiceSelect = onInteractionComplete = onErrorOccurred = onMessageReady = noOpCallback;
     }
 
