@@ -1,3 +1,6 @@
+## 2.4.2 (July 9, 2019)
+* Fixed an issue that would cause the host application to crash with a `NullPointerException`.
+
 ## 2.4.1 (July 4, 2019)
 * Fixed an issue that would cause the host application to crash. (Cheers to Pauland @mypplication for the pull request)
 
