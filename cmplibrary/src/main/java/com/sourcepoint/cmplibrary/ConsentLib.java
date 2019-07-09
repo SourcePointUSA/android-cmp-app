@@ -487,8 +487,10 @@ public class ConsentLib {
             runOnLiveActivityUIThread(new Runnable() {
                 @Override
                 public void run() {
-                    webView.display();
-                    viewGroup.addView(webView);
+                    if(webView != null) {
+                        webView.display();
+                        viewGroup.addView(webView);
+                    }
                 }
             });
         }
@@ -510,12 +512,10 @@ public class ConsentLib {
     }
 
     public void destroy() {
+        if (mCountDownTimer != null) mCountDownTimer.cancel();
         if(webView != null) {
             if(viewGroup != null) {
                 viewGroup.removeView(webView);
-            }
-            if (mCountDownTimer != null){
-                mCountDownTimer.cancel();
             }
             webView.destroy();
             webView = null;
