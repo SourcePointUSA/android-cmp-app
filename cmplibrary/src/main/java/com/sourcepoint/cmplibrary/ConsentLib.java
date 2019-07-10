@@ -59,6 +59,11 @@ public class ConsentLib {
 
     public enum DebugLevel { DEBUG, OFF }
 
+    public enum MESSAGE_OPTIONS {
+        SHOW_PRIVACY_MANAGER,
+        UNKNOWN
+    }
+
     public String euconsent, consentUUID;
 
     private static final int MAX_PURPOSE_ID = 24;
@@ -68,7 +73,7 @@ public class ConsentLib {
      * indicating what was that choice.
      */
     @SuppressWarnings("WeakerAccess")
-    public Integer choiceType = null;
+    public MESSAGE_OPTIONS choiceType = null;
 
     /**
      * When the message is loaded we set this field to true if the message needs to be displayed and false otherwise.
@@ -166,7 +171,7 @@ public class ConsentLib {
                 onMessageReadyCalled = true;
                 if (mCountDownTimer != null) mCountDownTimer.cancel();
                 ConsentLib.this.willShowMessage = willShowMessage;
-                ConsentLib.this.onMessageReady.run(ConsentLib.this);
+                runOnLiveActivityUIThread(() -> ConsentLib.this.onMessageReady.run(ConsentLib.this));
                 if (willShowMessage) displayWebViewIfNeeded();
                 else onInteractionComplete(euconsent, consentUUID);
             }
@@ -174,7 +179,7 @@ public class ConsentLib {
             @Override
             public void onErrorOccurred(ConsentLibException error) {
                 ConsentLib.this.error = error;
-                ConsentLib.this.onErrorOccurred.run(ConsentLib.this);
+                runOnLiveActivityUIThread(() -> ConsentLib.this.onErrorOccurred.run(ConsentLib.this));
                 ConsentLib.this.finish();
             }
 
@@ -198,8 +203,15 @@ public class ConsentLib {
 
             @Override
             public void onMessageChoiceSelect(int choiceType) {
-                ConsentLib.this.choiceType = choiceType;
-                ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this);
+                switch (choiceType) {
+                    case 12:
+                        ConsentLib.this.choiceType = MESSAGE_OPTIONS.SHOW_PRIVACY_MANAGER;
+                        break;
+                    default:
+                        ConsentLib.this.choiceType = MESSAGE_OPTIONS.UNKNOWN;
+                        break;
+                }
+                runOnLiveActivityUIThread(() -> ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this));
             }
         };
     }
@@ -484,13 +496,10 @@ public class ConsentLib {
 
     private void displayWebViewIfNeeded() {
         if(weOwnTheView) {
-            runOnLiveActivityUIThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(webView != null) {
-                        webView.display();
-                        viewGroup.addView(webView);
-                    }
+            runOnLiveActivityUIThread(() -> {
+                if(webView != null) {
+                    webView.display();
+                    viewGroup.addView(webView);
                 }
             });
         }
@@ -501,13 +510,10 @@ public class ConsentLib {
     }
 
     private void finish() {
-        runOnLiveActivityUIThread(new Runnable() {
-            @Override
-            public void run() {
-                removeWebViewIfNeeded();
-                onInteractionComplete.run(ConsentLib.this);
-                activity = null; // release reference to activity
-            }
+        runOnLiveActivityUIThread(() -> {
+            removeWebViewIfNeeded();
+            onInteractionComplete.run(ConsentLib.this);
+            activity = null; // release reference to activity
         });
     }
 
