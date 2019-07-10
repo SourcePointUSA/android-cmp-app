@@ -1,3 +1,6 @@
+## 2.4.3 (July 10, 2019)
+* implemented `ConsentLib.MESSAGE_OPTIONS` enum
+
 ## 2.4.2 (July 9, 2019)
 * Fixed an issue that would cause the host application to crash with a `NullPointerException`.
 
