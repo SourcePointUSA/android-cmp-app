@@ -164,7 +164,7 @@ public class ConsentLib {
 
     private ConsentWebView buildWebView() {
         return new ConsentWebView(activity, defaultMessageTimeOut) {
-            private boolean isDefined(String s) { return s != null && !s.equals("undefined"); }
+            private boolean isDefined(String s) { return s != null && !s.equals("undefined") && !s.isEmpty(); }
 
             @Override
             public void onMessageReady(boolean willShowMessage, String consentUUID, String euconsent) {
