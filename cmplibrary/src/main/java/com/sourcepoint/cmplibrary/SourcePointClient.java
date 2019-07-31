@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary;
 import android.text.TextUtils;
 import android.util.Log;
 
-import cz.msebera.android.httpclient.Header;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -14,6 +13,8 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashSet;
+
+import cz.msebera.android.httpclient.Header;
 
 class SourcePointClient {
     private static final String LOG_TAG = "SOURCE_POINT_CLIENT";
@@ -35,13 +36,13 @@ class SourcePointClient {
 
         @Override
         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-            Log.d(LOG_TAG, "Failed to load resource "+url+" due to "+statusCode+": "+errorResponse);
+            Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
             onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
         }
 
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-            Log.d(LOG_TAG, "Failed to load resource "+url+" due to "+statusCode+": "+responseString);
+            Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
             onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
         }
     }
@@ -60,12 +61,12 @@ class SourcePointClient {
         this.mmsUrl = mmsUrl;
         this.cmpUrl = cmpUrl;
         this.messageUrl = messageUrl;
-        this.encodedCmpOrigin = new EncodedParam("cmpOrigin", "//"+cmpUrl.getHost());
+        this.encodedCmpOrigin = new EncodedParam("cmpOrigin", "//" + cmpUrl.getHost());
         this.encodedMsgDomain = new EncodedParam("msgDomain", mmsUrl.getHost());
     }
 
     private String siteIdUrl() {
-        return mmsUrl +"/get_site_data?"+"account_id="+accountId+"&href="+site;
+        return mmsUrl + "/get_site_data?" + "account_id=" + accountId + "&href=" + site;
     }
 
     private String GDPRStatusUrl() {
@@ -77,7 +78,7 @@ class SourcePointClient {
         String euconsentParam = euConsent == null ? "[EUCONSENT]" : euConsent;
         String customVendorIdString = URLEncoder.encode(TextUtils.join(",", vendorIds));
 
-        return cmpUrl + "/consent/v2/" + siteId + "/custom-vendors?"+
+        return cmpUrl + "/consent/v2/" + siteId + "/custom-vendors?" +
                 "customVendorIds=" + customVendorIdString +
                 "&consentUUID=" + consentParam +
                 "&euconsent=" + euconsentParam;
@@ -95,8 +96,8 @@ class SourcePointClient {
         params.add("_sp_msg_targetingParams=" + targetingParams);
         params.add("_sp_debug_level=" + debugLevel);
         params.add("_sp_msg_stageCampaign=" + stagingCampaign);
-        if(authId != null) {
-            params.add("_sp_authId="+authId);
+        if (authId != null) {
+            params.add("_sp_authId=" + authId);
         }
 
         return messageUrl + "?" + TextUtils.join("&", params);
@@ -113,6 +114,19 @@ class SourcePointClient {
                     onFailure(statusCode, headers, e, response);
                 }
             }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
+                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
+                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+            }
         });
     }
 
@@ -126,6 +140,19 @@ class SourcePointClient {
                 } catch (JSONException e) {
                     onFailure(statusCode, headers, e, response);
                 }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
+                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
+                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
             }
         });
     }
@@ -169,6 +196,19 @@ class SourcePointClient {
                 } catch (JSONException e) {
                     onFailure(statusCode, headers, e, response);
                 }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
+                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
+                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
             }
         });
     }
