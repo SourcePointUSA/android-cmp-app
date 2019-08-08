@@ -42,6 +42,16 @@ dependencies {
     api 'com.google.guava:guava:27.0.1-android'
     implementation 'com.loopj.android:android-async-http:1.4.9'
 
+    //junit
+    testImplementation 'junit:junit:4.12'
+    //  Mockito framework
+    testImplementation 'org.mockito:mockito-core:2.19.0'
+
+    testImplementation 'org.robolectric:robolectric:4.2.1'
+
+    //json jar
+    testImplementation 'org.json:json:20140107'
+
     // Unfortunately consent-string-sdk-java only supports Java 8 and above. That means API > 26
     // The following is a port to android environment
     // for more information check https://github.com/InteractiveAdvertisingBureau/Consent-String-SDK-Java/issues/21
