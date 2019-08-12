@@ -10,63 +10,45 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class SourcePointClientBuilderTest {
-    SourcePointClientBuilder sourcePointClientBuilder;
+    private SourcePointClientBuilder sourcePointClientBuilder;
 
     @Before
     public void setUp() throws ConsentLibException {
         sourcePointClientBuilder = new SourcePointClientBuilder(808, "siteName", true);//mock(SourcePointClientBuilder.class);
     }
 
+    private Field getDeclareFieldAccess(String fieldName) throws Exception{
+        Field member = SourcePointClientBuilder.class.getDeclaredField(fieldName);
+        member.setAccessible(true);
+        return member;
+    }
+
 
     @Test
     public void setMmsDomain() throws Exception{
         sourcePointClientBuilder.setMmsDomain("mmsDomain");
-        Field member = null;
-
-        member = SourcePointClientBuilder.class.getDeclaredField("mmsDomain");
-
-        member.setAccessible(true);
-        SourcePointClientBuilder sourcePointClientBuilder1 = sourcePointClientBuilder;
-
-        assertEquals("mmsDomain", member.get(sourcePointClientBuilder1).toString());
+        Field localMember = getDeclareFieldAccess("mmsDomain");
+        assertEquals("mmsDomain", localMember.get(sourcePointClientBuilder).toString());
     }
 
     @Test
     public void setCmpDomain() throws Exception{
         sourcePointClientBuilder.setCmpDomain("cmpDomain");
-        Field member = null;
-
-        member = SourcePointClientBuilder.class.getDeclaredField("cmpDomain");
-
-        member.setAccessible(true);
-        SourcePointClientBuilder sourcePointClientBuilder1 = sourcePointClientBuilder;
-
-        assertEquals("cmpDomain", member.get(sourcePointClientBuilder1).toString());
+        Field localMember = getDeclareFieldAccess("cmpDomain");
+        assertEquals("cmpDomain", localMember.get(sourcePointClientBuilder).toString());
     }
 
     @Test
     public void setMessageDomain() throws Exception {
         sourcePointClientBuilder.setMessageDomain("messageDomain");
-        Field member = null;
-
-        member = SourcePointClientBuilder.class.getDeclaredField("messageDomain");
-
-        member.setAccessible(true);
-        SourcePointClientBuilder sourcePointClientBuilder1 = sourcePointClientBuilder;
-
-        assertEquals("messageDomain", member.get(sourcePointClientBuilder1).toString());
+        Field localMember = getDeclareFieldAccess("messageDomain");
+        assertEquals("messageDomain", localMember.get(sourcePointClientBuilder).toString());
     }
 
     @Test
     public void setStagingCampaign() throws Exception {
         sourcePointClientBuilder.setStagingCampaign(true);
-        Field member = null;
-
-        member = SourcePointClientBuilder.class.getDeclaredField("stagingCampaign");
-
-        member.setAccessible(true);
-        SourcePointClientBuilder sourcePointClientBuilder1 = sourcePointClientBuilder;
-
-        assertEquals(true, member.get(sourcePointClientBuilder1));
+        Field localMember = getDeclareFieldAccess("stagingCampaign");
+        assertEquals(true, localMember.get(sourcePointClientBuilder));
     }
 }

@@ -19,8 +19,8 @@ import static org.mockito.Mockito.mock;
 public class ConsentLibBuilderTest {
 
 
-    ConsentLibBuilder consentLibBuilder;
-    ConsentLib.Callback callback;
+    private ConsentLibBuilder consentLibBuilder;
+    private ConsentLib.Callback callback;
 
     @Before
     public void initConsentLibBuilder() {
@@ -31,6 +31,12 @@ public class ConsentLibBuilderTest {
 
             }
         };
+    }
+
+    public Field getDeclaredFieldAccess(String fieldName) throws Exception{
+        Field member = ConsentLibBuilder.class.getDeclaredField(fieldName);
+        member.setAccessible(true);
+        return member;
     }
 
     @Test(expected = ConsentLibException.class)
@@ -122,25 +128,20 @@ public class ConsentLibBuilderTest {
     public void testSetTargetingParamString() throws Exception {
         String key = "key";
         String stringValue = "stringValue";
-        int intValue = 2;
-        Object objValue = "objValue";
         EncodedParam targetingParamsString;
         consentLibBuilder.setTargetingParam(key, stringValue);
 
-        Field member = ConsentLibBuilder.class.getDeclaredField("targetingParams");
-        member.setAccessible(true);
-
+        Field localMember = getDeclaredFieldAccess("targetingParams");
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(key, stringValue);
 
-        assertEquals(jsonObject.toString() , member.get(consentLibBuilder).toString());
+        assertEquals(jsonObject.toString() , localMember.get(consentLibBuilder).toString());
 
         targetingParamsString = new EncodedParam("targetingParams", jsonObject.toString());
         Method method = ConsentLibBuilder.class.getDeclaredMethod("setTargetingParamsString");
         method.setAccessible(true);
         method.invoke(consentLibBuilder);
-        //consentLibBuilder.setTargetingParamsString(targetingParamsString);
         assertEquals(targetingParamsString.toString(), consentLibBuilder.targetingParamsString.toString());
 
     }
@@ -152,13 +153,12 @@ public class ConsentLibBuilderTest {
         int intValue = 2;
         consentLibBuilder.setTargetingParam(key, intValue);
 
-        Field member = ConsentLibBuilder.class.getDeclaredField("targetingParams");
-        member.setAccessible(true);
+        Field localMember = getDeclaredFieldAccess("targetingParams");
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(key, intValue);
 
-        assertEquals(jsonObject.toString() , member.get(consentLibBuilder).toString());
+        assertEquals(jsonObject.toString() , localMember.get(consentLibBuilder).toString());
     }
 
     @Test
@@ -168,13 +168,12 @@ public class ConsentLibBuilderTest {
         String stringValue = "stringValue";
         consentLibBuilder.setTargetingParam(key, stringValue);
 
-        Field member = ConsentLibBuilder.class.getDeclaredField("targetingParams");
-        member.setAccessible(true);
+        Field localMember = getDeclaredFieldAccess("targetingParams");
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(key, stringValue);
 
-        assertEquals(jsonObject.toString() , member.get(consentLibBuilder).toString());
+        assertEquals(jsonObject.toString() , localMember.get(consentLibBuilder).toString());
     }
 
     @Test
