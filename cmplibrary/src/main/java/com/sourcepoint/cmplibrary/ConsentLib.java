@@ -264,7 +264,6 @@ public class ConsentLib {
     }
 
     private void setSubjectToGDPR() {
-        if (sharedPref.getString(IAB_CONSENT_SUBJECT_TO_GDPR, null) != null) { return; }
 
         sourcePoint.getGDPRStatus(new OnLoadComplete() {
             @Override
