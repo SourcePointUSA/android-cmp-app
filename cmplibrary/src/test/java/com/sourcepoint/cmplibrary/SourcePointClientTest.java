@@ -5,6 +5,7 @@ import com.loopj.android.http.ResponseHandlerInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +56,6 @@ public class SourcePointClientTest {
                 SourcePointClient.ResponseHandler listener = (SourcePointClient.ResponseHandler) invocation.getArguments()[1];
 
                 if (onSuccess) {
-                    String stringToParse = "{\"site_id\":\"http://google.com\"}";
                     try {
                         jsonObject = new JSONObject(response);
                     } catch (JSONException err) {
@@ -83,7 +83,6 @@ public class SourcePointClientTest {
 
         verify(onLoadComplete, times(1)).onSuccess(eq("http://google.com"));
         verify(onLoadComplete, never()).onFailure(any(ConsentLibException.class));
-        reset(onLoadComplete);
     }
 
     @Test
@@ -95,7 +94,7 @@ public class SourcePointClientTest {
 
         verify(onLoadComplete, never()).onSuccess(any());
         verify(onLoadComplete, times(1)).onFailure(any(ConsentLibException.class));
-        reset(onLoadComplete);
+        //reset(onLoadComplete);
     }
 
 
@@ -109,7 +108,6 @@ public class SourcePointClientTest {
 
         verify(onLoadComplete, times(1)).onSuccess(eq("http://google.com"));
         verify(onLoadComplete, never()).onFailure(any(ConsentLibException.class));
-        reset(onLoadComplete);
     }
 
     @Test
@@ -121,7 +119,6 @@ public class SourcePointClientTest {
 
         verify(onLoadComplete, never()).onSuccess(any());
         verify(onLoadComplete, times(1)).onFailure(any(ConsentLibException.class));
-        reset(onLoadComplete);
     }
 
     @Test
@@ -136,7 +133,6 @@ public class SourcePointClientTest {
 
         verify(onLoadComplete, times(1)).onSuccess(captor.capture());
         verify(onLoadComplete, never()).onFailure(any(ConsentLibException.class));
-        reset(onLoadComplete);
     }
 
     @Test
@@ -149,6 +145,10 @@ public class SourcePointClientTest {
 
         verify(onLoadComplete, never()).onSuccess(any());
         verify(onLoadComplete, times(1)).onFailure(any(ConsentLibException.class));
+    }
+
+    @After
+    public void resetOnLoadComplete(){
         reset(onLoadComplete);
     }
 }
