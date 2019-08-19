@@ -24,13 +24,8 @@ public class ConsentLibBuilderTest {
 
     @Before
     public void initConsentLibBuilder() {
-        consentLibBuilder = new ConsentLibBuilder(808, "cybage.com", mock(Activity.class));
-        callback = new ConsentLib.Callback() {
-            @Override
-            public void run(ConsentLib c) {
-
-            }
-        };
+        consentLibBuilder = new ConsentLibBuilder(123, "example.com", mock(Activity.class));
+        callback = c -> {  };
     }
 
     public Field getDeclaredFieldAccess(String fieldName) throws Exception{
@@ -40,95 +35,94 @@ public class ConsentLibBuilderTest {
     }
 
     @Test(expected = ConsentLibException.class)
-    public void testBuild() throws ConsentLibException {
+    public void build() throws ConsentLibException {
         ConsentLib consentLib = mock(ConsentLib.class);
         assertEquals(consentLib, consentLibBuilder.build());
     }
 
     @Test
-    public void testSetMessageTimeout() {
+    public void setMessageTimeout() {
         consentLibBuilder.setMessageTimeOut(20000);
         assertEquals(20000, consentLibBuilder.defaultMessageTimeOut);
     }
 
     @Test
-    public void testSetPage() {
+    public void setPage() {
         String page = "page";
         consentLibBuilder.setPage(page);
         assertEquals(page, consentLibBuilder.page);
     }
 
     @Test
-    public void testSetViewGroup() {
+    public void setViewGroup() {
         ViewGroup v = mock(ViewGroup.class);
         consentLibBuilder.setViewGroup(v);
         assertEquals(v, consentLibBuilder.viewGroup);
     }
 
     @Test
-    public void testSetOnMessageChoiceSelect() {
+    public void setOnMessageChoiceSelect() {
         consentLibBuilder.setOnMessageChoiceSelect(callback);
         assertEquals(callback, consentLibBuilder.onMessageChoiceSelect);
     }
 
     @Test
-    public void testSetOnInteractionComplete() {
+    public void setOnInteractionComplete() {
         consentLibBuilder.setOnInteractionComplete(callback);
         assertEquals(callback, consentLibBuilder.onInteractionComplete);
     }
 
     @Test
-    public void testSetOnMessageReady() {
+    public void setOnMessageReady() {
         consentLibBuilder.setOnMessageReady(callback);
         assertEquals(callback, consentLibBuilder.onMessageReady);
     }
 
     @Test
-    public void testSetOnErrorOccurred() {
+    public void setOnErrorOccurred() {
         consentLibBuilder.setOnErrorOccurred(callback);
         assertEquals(callback, consentLibBuilder.onErrorOccurred);
     }
 
     @Test
-    public void testSetStage() {
+    public void setStage() {
         boolean stage = true;
         consentLibBuilder.setStage(stage);
         assertEquals(stage, consentLibBuilder.stagingCampaign);
     }
 
     @Test
-    public void testSetInternalStage() {
+    public void setInternalStage() {
         boolean stage = true;
         consentLibBuilder.setInternalStage(stage);
         assertEquals(stage, consentLibBuilder.staging);
     }
 
     @Test
-    public void testSetInAppMessagePageUrl() {
+    public void setInAppMessagePageUrl() {
         String inAppMessageUrl = "inAppMessageUrl";
         consentLibBuilder.setInAppMessagePageUrl(inAppMessageUrl);
         assertEquals(inAppMessageUrl, consentLibBuilder.msgDomain);
     }
 
     @Test
-    public void testSetMmsDomain() {
+    public void setMmsDomain() {
         String mmsDomain = "mmsDomain";
         consentLibBuilder.setMmsDomain(mmsDomain);
         assertEquals(mmsDomain, consentLibBuilder.mmsDomain);
     }
 
     @Test
-    public void testSetCmpDomain() {
+    public void setCmpDomain() {
         String cmpDomain = "cmpDomain";
         consentLibBuilder.setCmpDomain(cmpDomain);
         assertEquals(cmpDomain, consentLibBuilder.cmpDomain);
     }
 
     @Test
-    public void testSetTargetingParamString() throws Exception {
+    public void setTargetingParamString() throws Exception {
         String key = "key";
         String stringValue = "stringValue";
-        EncodedParam targetingParamsString;
         consentLibBuilder.setTargetingParam(key, stringValue);
 
         Field localMember = getDeclaredFieldAccess("targetingParams");
@@ -138,16 +132,28 @@ public class ConsentLibBuilderTest {
 
         assertEquals(jsonObject.toString() , localMember.get(consentLibBuilder).toString());
 
-        targetingParamsString = new EncodedParam("targetingParams", jsonObject.toString());
-        Method method = ConsentLibBuilder.class.getDeclaredMethod("setTargetingParamsString");
-        method.setAccessible(true);
-        method.invoke(consentLibBuilder);
-        assertEquals(targetingParamsString.toString(), consentLibBuilder.targetingParamsString.toString());
-
     }
 
     @Test
-    public void testSetTargetingParamIntValue() throws Exception{
+    public void targetingParamStringIsEncoded() throws Exception {
+        String key = "key";
+        String stringValue = "stringValue";
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(key, stringValue);
+        consentLibBuilder.setTargetingParam(key, stringValue);
+
+        EncodedParam targetingParamsString = new EncodedParam("targetingParams", jsonObject.toString());
+
+        Method method = ConsentLibBuilder.class.getDeclaredMethod("setTargetingParamsString");
+        method.setAccessible(true);
+        method.invoke(consentLibBuilder);
+
+        assertEquals(targetingParamsString.toString(), consentLibBuilder.targetingParamsString.toString());
+    }
+
+    @Test
+    public void setTargetingParamIntValue() throws Exception{
 
         String key = "key";
         int intValue = 2;
@@ -162,7 +168,7 @@ public class ConsentLibBuilderTest {
     }
 
     @Test
-    public void testSetTargetingParamStringValue() throws Exception{
+    public void setTargetingParamStringValue() throws Exception{
 
         String key = "key";
         String stringValue = "stringValue";
@@ -177,7 +183,7 @@ public class ConsentLibBuilderTest {
     }
 
     @Test
-    public void testSetDebugLevel(){
+    public void setDebugLevel(){
         consentLibBuilder.setDebugLevel(ConsentLib.DebugLevel.DEBUG);
         assertEquals(ConsentLib.DebugLevel.DEBUG , consentLibBuilder.debugLevel);
     }

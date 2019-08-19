@@ -14,7 +14,7 @@ public class SourcePointClientBuilderTest {
 
     @Before
     public void setUp() throws ConsentLibException {
-        sourcePointClientBuilder = new SourcePointClientBuilder(808, "siteName", true);//mock(SourcePointClientBuilder.class);
+        sourcePointClientBuilder = new SourcePointClientBuilder(123, "example.com", true);//mock(SourcePointClientBuilder.class);
     }
 
     private Field getDeclareFieldAccess(String fieldName) throws Exception{

@@ -13,7 +13,7 @@ import static org.mockito.Mockito.mock;
 public class EncodedParamTest {
 
     @Test
-    public void testEncodeParam() throws Exception{
+    public void EncodeParam() throws Exception{
         String attrName = "attrName";
         String attrValue = "attrValue";
         String encodeValue = "UTF-8";
@@ -32,7 +32,7 @@ public class EncodedParamTest {
     }
 
     @Test
-    public void testEncode() throws Exception{
+    public void Encode() throws Exception{
         String attrName = "attrName";
         String attrValue = "attrValue";
         String encodeValue = "UTF-8";
