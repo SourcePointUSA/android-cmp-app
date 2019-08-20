@@ -1,3 +1,8 @@
+## 2.4.4 (Aug 20, 2019)
+* implemented gdpr_status_check on every SDK initialization.
+* implemented onFailure callbacks for api calls.
+* Added isEmpty check on "euconsent" string. 
+
 ## 2.4.3 (July 10, 2019)
 * implemented `ConsentLib.MESSAGE_OPTIONS` enum
 
