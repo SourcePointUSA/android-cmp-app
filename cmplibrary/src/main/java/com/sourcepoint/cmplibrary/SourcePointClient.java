@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -25,7 +26,7 @@ class SourcePointClient {
     private EncodedParam accountId, site, encodedCmpOrigin, encodedMsgDomain;
     private Boolean stagingCampaign;
 
-    private class ResponseHandler extends JsonHttpResponseHandler {
+    class ResponseHandler extends JsonHttpResponseHandler {
         ConsentLib.OnLoadComplete onLoadComplete;
         String url;
 
@@ -101,6 +102,11 @@ class SourcePointClient {
         }
 
         return messageUrl + "?" + TextUtils.join("&", params);
+    }
+
+    @VisibleForTesting
+    void setHttpDummy(AsyncHttpClient httpClient) {
+        http = httpClient;
     }
 
     void getSiteID(ConsentLib.OnLoadComplete onLoadComplete) {
