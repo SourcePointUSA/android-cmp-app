@@ -12,24 +12,27 @@ public class ConsentLibBuilder {
     private final JSONObject targetingParams = new JSONObject();
 
     Activity activity;
-    int accountId;
+    int accountId, siteId ;
     String siteName;
     String mmsDomain, cmpDomain, msgDomain;
     String page = "";
     ViewGroup viewGroup = null;
     ConsentLib.Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred, onMessageReady;
-    boolean staging, stagingCampaign, newPM;
+    boolean staging, stagingCampaign, newPM , isShowPM;
     EncodedParam targetingParamsString = null;
     EncodedParam authId = null;
+    String pmId = "";
     ConsentLib.DebugLevel debugLevel = ConsentLib.DebugLevel.OFF;
     long defaultMessageTimeOut = 10000;
 
-    ConsentLibBuilder(Integer accountId, String siteName, Activity activity) {
+    ConsentLibBuilder(Integer accountId, String siteName,Integer siteId ,String pmId ,Activity activity) {
         this.accountId = accountId;
+        this.siteId =siteId;
         this.siteName = siteName;
+        this.pmId = pmId;
         this.activity = activity;
         mmsDomain = cmpDomain = msgDomain = null;
-        staging = stagingCampaign = newPM = false;
+        staging = stagingCampaign = newPM = isShowPM =false;
         ConsentLib.Callback noOpCallback = new ConsentLib.Callback() {
             @Override
             public void run(ConsentLib c) {
@@ -167,6 +170,11 @@ public class ConsentLibBuilder {
 
     public ConsentLibBuilder setAuthId(String authId) throws ConsentLibException.BuildException {
         this.authId = new EncodedParam("authId", authId);
+        return this;
+    }
+
+    public ConsentLibBuilder setShowPM(boolean isUserTriggered){
+        this.isShowPM = isUserTriggered;
         return this;
     }
 
