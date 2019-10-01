@@ -91,7 +91,7 @@ public class ConsentLib {
     private final String siteName;
     private final int accountId, siteId;
     private final ViewGroup viewGroup;
-    private final Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred;
+    private final Callback onMessageChoiceSelect, onConsentReady, onErrorOccurred;
     private Callback onMessageReady;
     private final EncodedParam encodedTargetingParams, encodedDebugLevel, encodedAuthId, encodedPMId;
     private final boolean weOwnTheView, newPM, isShowPM;
@@ -138,7 +138,7 @@ public class ConsentLib {
         isShowPM = b.isShowPM;
         encodedAuthId = b.authId;
         onMessageChoiceSelect = b.onMessageChoiceSelect;
-        onInteractionComplete = b.onInteractionComplete;
+        onConsentReady = b.onInteractionComplete;
         onErrorOccurred = b.onErrorOccurred;
         onMessageReady = b.onMessageReady;
         encodedTargetingParams = b.targetingParamsString;
@@ -178,10 +178,11 @@ public class ConsentLib {
                 onMessageReadyCalled = true;
                 Log.d("msgReady", "called");
                 if (mCountDownTimer != null) mCountDownTimer.cancel();
-                ConsentLib.this.willShowMessage = true;
+                //ConsentLib.this.willShowMessage = true;
                 runOnLiveActivityUIThread(() -> ConsentLib.this.onMessageReady.run(ConsentLib.this));
-                if (ConsentLib.this.willShowMessage || isShowPM) displayWebViewIfNeeded();
-                else onInteractionComplete(euconsent, consentUUID);
+                //if (ConsentLib.this.willShowMessage || isShowPM)
+                displayWebViewIfNeeded();
+               // else onConsentReady(euconsent, consentUUID);
             }
 
             @Override
@@ -192,7 +193,7 @@ public class ConsentLib {
             }
 
             @Override
-            public void onInteractionComplete(String euConsent, String consentUUID) {
+            public void onConsentReady(String euConsent, String consentUUID) {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 if (isDefined(euConsent)) {
                     ConsentLib.this.euconsent = euConsent;
@@ -242,6 +243,7 @@ public class ConsentLib {
         onMessageReadyCalled = false;
         if(webView == null) { webView = buildWebView(); }
         webView.loadMessage(sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel, newPM, encodedAuthId ,encodedPMId));
+        //webView.loadMessage("https://in-app-messaging-v2.pm.sourcepoint.mgr.consensu.org/?_sp_siteId=4601&_sp_showPM=false&_sp_PMId=5cacf9b2557d160781a25c6a&_sp_accountId=808&_sp_runMessaging=true&_sp_env=public&_sp_siteHref=https://sourcepointnewscript.com&_sp_targetingParams=%7B%7D");
         mCountDownTimer = getTimer(defaultMessageTimeOut);
         mCountDownTimer.start();
         setSharedPreference(IAB_CONSENT_CMP_PRESENT, true);
@@ -496,7 +498,7 @@ public class ConsentLib {
     private void finish() {
         runOnLiveActivityUIThread(() -> {
             removeWebViewIfNeeded();
-            onInteractionComplete.run(ConsentLib.this);
+            onConsentReady.run(ConsentLib.this);
             activity = null; // release reference to activity
         });
     }

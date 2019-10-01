@@ -27,9 +27,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashSet;
 
 abstract public class ConsentWebView extends WebView {
@@ -72,7 +69,7 @@ abstract public class ConsentWebView extends WebView {
         public void onConsentReady(String consentUUID, String euConsent) {
             Log.d("onConsentReady", "called");
             ConsentWebView.this.flushOrSyncCookies();
-            ConsentWebView.this.onInteractionComplete(euConsent, consentUUID);
+            ConsentWebView.this.onConsentReady(euConsent, consentUUID);
         }
 
         //called when privacy manager cancel button is tapped
@@ -98,6 +95,11 @@ abstract public class ConsentWebView extends WebView {
                     new ConsentLibException.NoInternetConnectionException() :
                     new ConsentLibException("Something went wrong in the javascript world.");
             ConsentWebView.this.onErrorOccurred(error);
+        }
+        // xhr logger
+        @JavascriptInterface
+        public void xhrLog(String response){
+            Log.d("xhrLog" , response);
         }
 
     }
@@ -280,7 +282,7 @@ abstract public class ConsentWebView extends WebView {
 
     abstract public void onErrorOccurred(ConsentLibException error);
 
-    abstract public void onInteractionComplete(String euConsent, String consentUUID);
+    abstract public void onConsentReady(String euConsent, String consentUUID);
 
     abstract public void onMessageChoiceSelect(int choiceType);
 

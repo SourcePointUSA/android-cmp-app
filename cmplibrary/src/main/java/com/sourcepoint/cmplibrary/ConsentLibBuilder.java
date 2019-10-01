@@ -98,7 +98,7 @@ public class ConsentLibBuilder {
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnInteractionComplete(ConsentLib.Callback c) {
+    public ConsentLibBuilder setOnConsentReady(ConsentLib.Callback c) {
         onInteractionComplete = c;
         return this;
     }

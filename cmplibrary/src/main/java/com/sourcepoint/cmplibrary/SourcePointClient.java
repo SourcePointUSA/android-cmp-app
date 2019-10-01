@@ -95,7 +95,7 @@ class SourcePointClient {
         params.add("_sp_accountId=" + accountId);
         params.add("_sp_siteId=" + siteId);
         //params.add("_sp_cmp_inApp=true");
-        params.add("_sp_writeFirstPartyCookies=true");
+        //params.add("_sp_writeFirstPartyCookies=true");
         params.add("_sp_siteHref=" + site);
         params.add("_sp_mms_domain=" + encodedMsgDomain);
         params.add("_sp_cmp_origin=" + encodedCmpOrigin);

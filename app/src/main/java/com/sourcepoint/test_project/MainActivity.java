@@ -18,22 +18,15 @@ public class MainActivity extends AppCompatActivity {
 
     private ConsentLib buildAndRunConsentLib(Boolean showPM) throws ConsentLibException {
         return ConsentLib.newBuilder(808, "sourcepointnewscript.com", 4601,"5cacf9b2557d160781a25c6a",this)
+       // return ConsentLib.newBuilder(22, "suryakant.com", 2372,"5cacf9b2557d160781a25c6a",this)
                 .setViewGroup(findViewById(android.R.id.content))
                 // optional, set custom targeting parameters value can be String and Integer
                 .setTargetingParam("MyPrivacyManager", showPM.toString())
                 //optional,  set message time out , default is 5 seconds
                 .setMessageTimeOut(30000)
                 .setShowPM(showPM)
-                .setOnMessageReady(new ConsentLib.Callback() {
-                    @Override
-                    public void run(ConsentLib consentLib) {
-                        if(consentLib.willShowMessage)
-                            Log.i(TAG, "The message is about to be shown.");
-                        else
-                            Log.i(TAG, "The message doesn't need to be shown");
-                    }
-                })
-                .setOnInteractionComplete(c -> {
+                .setOnMessageReady(consentLib -> Log.i(TAG, "The message is about to be shown."))
+                .setOnConsentReady(c -> {
                     Log.d("msgInteraction", "called");
                     try {
                         c.getCustomVendorConsents(new String[]{}, result -> {
