@@ -138,7 +138,7 @@ public class ConsentLib {
         isShowPM = b.isShowPM;
         encodedAuthId = b.authId;
         onMessageChoiceSelect = b.onMessageChoiceSelect;
-        onConsentReady = b.onInteractionComplete;
+        onConsentReady = b.onConsentReady;
         onErrorOccurred = b.onErrorOccurred;
         onMessageReady = b.onMessageReady;
         encodedTargetingParams = b.targetingParamsString;
@@ -178,11 +178,8 @@ public class ConsentLib {
                 onMessageReadyCalled = true;
                 Log.d("msgReady", "called");
                 if (mCountDownTimer != null) mCountDownTimer.cancel();
-                //ConsentLib.this.willShowMessage = true;
                 runOnLiveActivityUIThread(() -> ConsentLib.this.onMessageReady.run(ConsentLib.this));
-                //if (ConsentLib.this.willShowMessage || isShowPM)
                 displayWebViewIfNeeded();
-               // else onConsentReady(euconsent, consentUUID);
             }
 
             @Override
@@ -243,7 +240,6 @@ public class ConsentLib {
         onMessageReadyCalled = false;
         if(webView == null) { webView = buildWebView(); }
         webView.loadMessage(sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel, newPM, encodedAuthId ,encodedPMId));
-        //webView.loadMessage("https://in-app-messaging-v2.pm.sourcepoint.mgr.consensu.org/?_sp_siteId=4601&_sp_showPM=false&_sp_PMId=5cacf9b2557d160781a25c6a&_sp_accountId=808&_sp_runMessaging=true&_sp_env=public&_sp_siteHref=https://sourcepointnewscript.com&_sp_targetingParams=%7B%7D");
         mCountDownTimer = getTimer(defaultMessageTimeOut);
         mCountDownTimer.start();
         setSharedPreference(IAB_CONSENT_CMP_PRESENT, true);

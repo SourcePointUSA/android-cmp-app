@@ -17,7 +17,7 @@ public class ConsentLibBuilder {
     String mmsDomain, cmpDomain, msgDomain;
     String page = "";
     ViewGroup viewGroup = null;
-    ConsentLib.Callback onMessageChoiceSelect, onInteractionComplete, onErrorOccurred, onMessageReady;
+    ConsentLib.Callback onMessageChoiceSelect, onConsentReady, onErrorOccurred, onMessageReady;
     boolean staging, stagingCampaign, newPM , isShowPM;
     EncodedParam targetingParamsString = null;
     EncodedParam authId = null;
@@ -38,7 +38,7 @@ public class ConsentLibBuilder {
             public void run(ConsentLib c) {
             }
         };
-        onMessageChoiceSelect = onInteractionComplete = onErrorOccurred = onMessageReady = noOpCallback;
+        onMessageChoiceSelect = onConsentReady = onErrorOccurred = onMessageReady = noOpCallback;
     }
 
     /**
@@ -99,7 +99,7 @@ public class ConsentLibBuilder {
      * @see ConsentLibBuilder
      */
     public ConsentLibBuilder setOnConsentReady(ConsentLib.Callback c) {
-        onInteractionComplete = c;
+        onConsentReady = c;
         return this;
     }
 
