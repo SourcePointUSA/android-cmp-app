@@ -13,8 +13,8 @@ class SourcePointClientBuilder {
     private static final String DEFAULT_CMP_DOMAIN = "sourcepoint.mgr.consensu.org";
 
     private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.cmp.sp-stage.net/v2.0.html";
-    //private static final String DEFAULT_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.sourcepoint.mgr.consensu.org/v2.0.html";
-    private static final String DEFAULT_IN_APP_MESSAGING_PAGE_DOMAIN  = "in-app-messaging-v2.pm.sourcepoint.mgr.consensu.org/" ;
+    private static final String DEFAULT_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.sourcepoint.mgr.consensu.org/v3/index.html";
+
 
 
 
