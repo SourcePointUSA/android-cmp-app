@@ -1,7 +1,5 @@
 package com.sourcepoint.cmplibrary;
 
-import android.os.Build;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -14,9 +12,6 @@ class SourcePointClientBuilder {
 
     private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.cmp.sp-stage.net/v2.0.html";
     private static final String DEFAULT_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.sourcepoint.mgr.consensu.org/v3/index.html";
-
-
-
 
     private EncodedParam site, accountId ,siteId;
     private boolean staging, stagingCampaign, isShowPM;

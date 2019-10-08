@@ -75,11 +75,6 @@ public class ConsentLib {
     @SuppressWarnings("WeakerAccess")
     public MESSAGE_OPTIONS choiceType = null;
 
-    /**
-     * When the message is loaded we set this field to true if the message needs to be displayed and false otherwise.
-     */
-    public boolean willShowMessage;
-
     public ConsentLibException error = null;
 
     private static final String TAG = "ConsentLib";
@@ -93,8 +88,8 @@ public class ConsentLib {
     private final ViewGroup viewGroup;
     private final Callback onMessageChoiceSelect, onConsentReady, onErrorOccurred;
     private Callback onMessageReady;
-    private final EncodedParam encodedTargetingParams, encodedDebugLevel, encodedAuthId, encodedPMId;
-    private final boolean weOwnTheView, newPM, isShowPM;
+    private final EncodedParam encodedTargetingParams, encodedAuthId, encodedPMId;
+    private final boolean weOwnTheView, isShowPM;
 
     //default time out changes
     private boolean onMessageReadyCalled = false;
@@ -142,9 +137,7 @@ public class ConsentLib {
         onErrorOccurred = b.onErrorOccurred;
         onMessageReady = b.onMessageReady;
         encodedTargetingParams = b.targetingParamsString;
-        encodedDebugLevel = new EncodedParam("debugLevel", b.debugLevel.name());
         viewGroup = b.viewGroup;
-        newPM = b.newPM;
 
         weOwnTheView = viewGroup != null;
         // configurable time out
@@ -209,8 +202,8 @@ public class ConsentLib {
             }
 
             @Override
-            public void onMessageChoiceSelect(int choiceType) {
-                Log.d(TAG, "onMessageChoiceSelect: " + choiceType);
+            public void onMessageChoiceSelect(int choiceId, int choiceType) {
+                Log.d(TAG, "onMessageChoiceSelect: choiceId:" + choiceId + "choiceType: " + choiceType);
                 switch (choiceType) {
                     case 12:
                         ConsentLib.this.choiceType = MESSAGE_OPTIONS.SHOW_PRIVACY_MANAGER;
@@ -239,7 +232,7 @@ public class ConsentLib {
     public void run() throws ConsentLibException.NoInternetConnectionException {
         onMessageReadyCalled = false;
         if(webView == null) { webView = buildWebView(); }
-        webView.loadMessage(sourcePoint.messageUrl(encodedTargetingParams, encodedDebugLevel, newPM, encodedAuthId ,encodedPMId));
+        webView.loadMessage(sourcePoint.messageUrl(encodedTargetingParams, encodedAuthId ,encodedPMId));
         mCountDownTimer = getTimer(defaultMessageTimeOut);
         mCountDownTimer.start();
         setSharedPreference(IAB_CONSENT_CMP_PRESENT, true);
@@ -379,6 +372,7 @@ public class ConsentLib {
      * @throws ConsentLibException if the consent is not dialog completed or the
      *                             consent string is not present in SharedPreferences.
      */
+    @SuppressWarnings("unused")
     public boolean[] getIABVendorConsents(int[] vendorIds) throws ConsentLibException {
         final VendorConsent vendorConsent = getParsedConsentString();
         boolean[] results = new boolean[vendorIds.length];
@@ -398,6 +392,7 @@ public class ConsentLib {
      * @throws ConsentLibException if the consent dialog is not completed or the
      *                             consent string is not present in SharedPreferences.
      */
+    @SuppressWarnings("unused")
     public boolean[] getIABPurposeConsents(int[] purposeIds) throws ConsentLibException {
         final VendorConsent vendorConsent = getParsedConsentString();
         boolean[] results = new boolean[purposeIds.length];
