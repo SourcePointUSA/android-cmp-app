@@ -20,18 +20,9 @@ class SourcePointClientBuilder {
 
     SourcePointClientBuilder(Integer accountId, String siteName,Integer siteId,boolean staging) throws ConsentLibException.BuildException {
         this.accountId = new EncodedParam("AccountId", accountId.toString());
-        this.site = new EncodedParam("SiteName", protocol()+"://"+siteName);
+        this.site = new EncodedParam("SiteName", "https://"+siteName);
         this.siteId = new EncodedParam("siteId", siteId.toString());
         this.staging = staging;
-    }
-
-    private boolean isSafeToHTTPS() {
-        // SSL Handshake fails on Android < Nougat
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
-    }
-
-    private String protocol() {
-       return isSafeToHTTPS() ? "https" : "http";
     }
 
     private void setDefaults () {
@@ -82,9 +73,9 @@ class SourcePointClientBuilder {
                     siteId,
                     stagingCampaign,
                     isShowPM,
-                    new URL(protocol(), mmsDomain, ""),
-                    new URL(protocol(), cmpDomain, ""),
-                    new URL(protocol(), messageDomain, "")
+                    new URL("https", mmsDomain, ""),
+                    new URL("https", cmpDomain, ""),
+                    new URL("https", messageDomain, "")
             );
         } catch (MalformedURLException e) {
             throw new ConsentLibException.BuildException(e.getMessage());
