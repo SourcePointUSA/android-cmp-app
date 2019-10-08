@@ -45,12 +45,12 @@ abstract public class ConsentWebView extends WebView {
 
         // called when a choice is selected on the message
         @JavascriptInterface
-        public void onMessageChoiceSelect(int choiceType) {
+        public void onMessageChoiceSelect(int choiceId, int choiceType) {
             Log.d("onMessageChoiceSelect", "called");
             if (ConsentWebView.this.hasLostInternetConnection()) {
                 ConsentWebView.this.onErrorOccurred(new ConsentLibException.NoInternetConnectionException());
             }
-            ConsentWebView.this.onMessageChoiceSelect(choiceType);
+            ConsentWebView.this.onMessageChoiceSelect(choiceId, choiceType);
         }
 
         //called when user takes action on privacy manager
@@ -284,7 +284,7 @@ abstract public class ConsentWebView extends WebView {
 
     abstract public void onConsentReady(String euConsent, String consentUUID);
 
-    abstract public void onMessageChoiceSelect(int choiceType);
+    abstract public void onMessageChoiceSelect(int choiceType, int choiceId);
 
     public void loadMessage(String messageUrl) throws ConsentLibException.NoInternetConnectionException {
         if (hasLostInternetConnection())
