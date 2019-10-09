@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.SiteDetailsActivity">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_parentStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_parentEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_parentTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.02" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_parentBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.98" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilAccountID"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/account_id"
+        android:fontFamily="@font/roboto_condensed_regular"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_20"
+        app:hintTextAppearance="@style/TextLabel"
+        app:layout_constraintEnd_toEndOf="@id/gl_parentEnd"
+        app:layout_constraintStart_toEndOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toTopOf="@id/gl_parentTop">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tvAccountID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:fontFamily="@font/roboto_condensed_regular"
+            android:focusableInTouchMode="false"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:longClickable="false"
+            android:textSize="@dimen/text_size_20" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilSiteName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/site_name"
+        android:fontFamily="@font/roboto_condensed_regular"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_20"
+        app:hintTextAppearance="@style/TextLabel"
+        app:layout_constraintEnd_toEndOf="@id/gl_parentEnd"
+        app:layout_constraintStart_toEndOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toBottomOf="@+id/tilAccountID">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tvSiteName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:fontFamily="@font/roboto_condensed_regular"
+            android:focusableInTouchMode="false"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:longClickable="false"
+            android:textSize="@dimen/text_size_20" />
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tv_stagingCampaignText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/staging_campaign"
+        android:fontFamily="@font/roboto_condensed_regular"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_20"
+        app:layout_constraintBottom_toBottomOf="@+id/toggleStaging"
+        app:layout_constraintStart_toStartOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toTopOf="@+id/toggleStaging" />
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/toggleStaging"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:padding="@dimen/margin_10"
+        android:theme="@style/switch.Theme"
+        app:layout_constraintEnd_toStartOf="@+id/gl_parentEnd"
+        app:layout_constraintStart_toEndOf="@+id/tv_stagingCampaignText"
+        app:layout_constraintTop_toBottomOf="@+id/tilSiteName" />
+
+    <TextView
+        android:id="@+id/tv_targetingParamsList"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/targeting_params_list"
+        android:fontFamily="@font/roboto_condensed_regular"
+        android:textColor="@color/light_green"
+        android:textSize="@dimen/text_size_20"
+        app:layout_constraintEnd_toEndOf="@+id/gl_parentEnd"
+        app:layout_constraintStart_toStartOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toBottomOf="@+id/toggleStaging" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/targetingParamsRecycleView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:dividerHeight="10dp"
+        android:outlineProvider="bounds"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/gl_parentBottom"
+        app:layout_constraintEnd_toEndOf="@+id/gl_parentEnd"
+        app:layout_constraintStart_toStartOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toBottomOf="@id/tv_targetingParamsList" />
+
+    <TextView
+        android:id="@+id/dividerLine"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="@+id/gl_parentEnd"
+        app:layout_constraintStart_toStartOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toBottomOf="@+id/tv_targetingParamsList" />
+
+    <TextView
+        android:id="@+id/tv_noTargetingParams"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/no_targeting_params_added"
+        android:fontFamily="@font/roboto_condensed_regular"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_20"
+        app:layout_constraintBottom_toTopOf="@+id/gl_parentBottom"
+        app:layout_constraintEnd_toEndOf="@+id/gl_parentEnd"
+        app:layout_constraintStart_toStartOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toBottomOf="@+id/dividerLine" />
+</android.support.constraint.ConstraintLayout>

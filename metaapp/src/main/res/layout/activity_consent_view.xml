@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentLayout">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_parentStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_parentEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_parentTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.02" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_parentBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.98" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilConsentUUID"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_medium"
+        android:hint="@string/consentuuid"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_20"
+        app:hintTextAppearance="@style/TextLabel"
+        app:layout_constraintEnd_toEndOf="@id/gl_parentEnd"
+        app:layout_constraintStart_toEndOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toTopOf="@id/gl_parentTop">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tvConsentUUID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:fontFamily="@font/roboto_medium"
+            android:imeOptions="actionNext"
+            android:inputType="textMultiLine"
+            android:longClickable="false"
+            android:maxLines="2"
+            android:text="@string/consentuuid_not_available"
+            android:textSize="@dimen/text_size_20" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilEUConsent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_medium"
+        android:hint="@string/euconsent"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_20"
+        app:hintTextAppearance="@style/TextLabel"
+        app:layout_constraintEnd_toEndOf="@id/gl_parentEnd"
+        app:layout_constraintStart_toEndOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toBottomOf="@+id/tilConsentUUID">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tvEUConsent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:ellipsize="end"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:fontFamily="@font/roboto_medium"
+            android:imeOptions="actionNext"
+            android:inputType="textMultiLine"
+            android:longClickable="false"
+            android:maxLines="4"
+            android:text="@string/euconsent_not_available"
+            android:textSize="@dimen/text_size_20" />
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tv_vendorAndPurposeConsentList"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/vendor_and_purpose_consents_list"
+        android:textColor="@color/light_green"
+        android:textSize="@dimen/text_size_20"
+        app:layout_constraintEnd_toEndOf="@+id/gl_parentEnd"
+        app:layout_constraintStart_toStartOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toBottomOf="@+id/tilEUConsent" />
+
+    <TextView
+        android:id="@+id/dividerLine"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_vendorAndPurposeConsentList"
+        app:layout_constraintStart_toStartOf="@+id/gl_parentStart"
+        app:layout_constraintEnd_toEndOf="@+id/gl_parentEnd"
+        android:background="@android:color/darker_gray"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/consentRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:dividerHeight="10dp"
+        android:outlineProvider="bounds"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/gl_parentBottom"
+        app:layout_constraintEnd_toEndOf="@+id/gl_parentEnd"
+        app:layout_constraintStart_toStartOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toBottomOf="@+id/dividerLine" />
+
+    <TextView
+        android:id="@+id/tv_consentsNotAvailable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/vendor_and_purpose_consents_not_available"
+        android:textSize="@dimen/text_size_20"
+        android:fontFamily="@font/roboto_condensed_regular"
+        android:textColor="@android:color/black"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/gl_parentBottom"
+        app:layout_constraintEnd_toEndOf="@+id/gl_parentEnd"
+        app:layout_constraintStart_toStartOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toBottomOf="@+id/dividerLine" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_parentStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.00" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_parentEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_parentTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_parentBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95" />
+
+    
+    <TextView
+        android:id="@+id/tv_targetingParam"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_20"
+        android:fontFamily="@font/roboto_condensed_regular"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toEndOf="@+id/gl_parentStart"
+        app:layout_constraintTop_toBottomOf="@+id/gl_parentTop"
+        app:layout_constraintBottom_toBottomOf="@+id/gl_parentBottom"
+        />
+
+    <TextView
+        android:id="@+id/btn_deleteParam"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:drawableStart="@mipmap/cancel"
+        android:textSize="@dimen/text_size_20"
+        app:layout_constraintTop_toTopOf="@+id/tv_targetingParam"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_targetingParam"
+        app:layout_constraintEnd_toStartOf="@+id/gl_parentEnd"
+        />
+
+</android.support.constraint.ConstraintLayout>
