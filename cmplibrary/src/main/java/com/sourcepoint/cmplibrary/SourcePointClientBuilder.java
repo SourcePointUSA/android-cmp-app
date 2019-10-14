@@ -1,7 +1,5 @@
 package com.sourcepoint.cmplibrary;
 
-import android.os.Build;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -13,26 +11,18 @@ class SourcePointClientBuilder {
     private static final String DEFAULT_CMP_DOMAIN = "sourcepoint.mgr.consensu.org";
 
     private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.cmp.sp-stage.net/v2.0.html";
-    private static final String DEFAULT_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.sourcepoint.mgr.consensu.org/v2.0.html";
+    private static final String DEFAULT_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.sourcepoint.mgr.consensu.org/v3/index.html";
 
-    private EncodedParam site, accountId;
-    private boolean staging, stagingCampaign;
+    private EncodedParam site, accountId ,siteId;
+    private boolean staging, stagingCampaign, isShowPM;
 
     private String mmsDomain, cmpDomain, messageDomain;
 
-    SourcePointClientBuilder(Integer accountId, String siteName, boolean staging) throws ConsentLibException.BuildException {
+    SourcePointClientBuilder(Integer accountId, String siteName,Integer siteId,boolean staging) throws ConsentLibException.BuildException {
         this.accountId = new EncodedParam("AccountId", accountId.toString());
-        this.site = new EncodedParam("SiteName", protocol()+"://"+siteName);
+        this.site = new EncodedParam("SiteName", "https://"+siteName);
+        this.siteId = new EncodedParam("siteId", siteId.toString());
         this.staging = staging;
-    }
-
-    private boolean isSafeToHTTPS() {
-        // SSL Handshake fails on Android < Nougat
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
-    }
-
-    private String protocol() {
-       return isSafeToHTTPS() ? "https" : "http";
     }
 
     private void setDefaults () {
@@ -69,16 +59,23 @@ class SourcePointClientBuilder {
         return this;
     }
 
+    SourcePointClientBuilder setShowPM(boolean isShowPM){
+        this.isShowPM = isShowPM;
+        return this;
+    }
+
     SourcePointClient build() throws ConsentLibException.BuildException {
         setDefaults();
         try {
             return new SourcePointClient(
                     accountId,
                     site,
+                    siteId,
                     stagingCampaign,
-                    new URL(protocol(), mmsDomain, ""),
-                    new URL(protocol(), cmpDomain, ""),
-                    new URL(protocol(), messageDomain, "")
+                    isShowPM,
+                    new URL("https", mmsDomain, ""),
+                    new URL("https", cmpDomain, ""),
+                    new URL("https", messageDomain, "")
             );
         } catch (MalformedURLException e) {
             throw new ConsentLibException.BuildException(e.getMessage());
