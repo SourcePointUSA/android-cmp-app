@@ -23,8 +23,8 @@ class SourcePointClient {
     private static AsyncHttpClient http = new AsyncHttpClient();
 
     private URL mmsUrl, cmpUrl, messageUrl;
-    private EncodedParam accountId, site, encodedCmpOrigin, encodedMsgDomain;
-    private Boolean stagingCampaign;
+    private EncodedParam accountId, site, siteId;
+    private Boolean stagingCampaign, isShowPM;
 
     class ResponseHandler extends JsonHttpResponseHandler {
         ConsentLib.OnLoadComplete onLoadComplete;
@@ -51,23 +51,21 @@ class SourcePointClient {
     SourcePointClient(
             EncodedParam accountID,
             EncodedParam site,
+            EncodedParam siteId,
             boolean stagingCampaign,
+            boolean isShowPM,
             URL mmsUrl,
             URL cmpUrl,
             URL messageUrl
-    ) throws ConsentLibException.BuildException {
+    ) {
         this.stagingCampaign = stagingCampaign;
+        this.isShowPM = isShowPM;
         this.accountId = accountID;
+        this.siteId = siteId;
         this.site = site;
         this.mmsUrl = mmsUrl;
         this.cmpUrl = cmpUrl;
         this.messageUrl = messageUrl;
-        this.encodedCmpOrigin = new EncodedParam("cmpOrigin", "//" + cmpUrl.getHost());
-        this.encodedMsgDomain = new EncodedParam("msgDomain", mmsUrl.getHost());
-    }
-
-    private String siteIdUrl() {
-        return mmsUrl + "/get_site_data?" + "account_id=" + accountId + "&href=" + site;
     }
 
     private String GDPRStatusUrl() {
@@ -85,18 +83,19 @@ class SourcePointClient {
                 "&euconsent=" + euconsentParam;
     }
 
-    String messageUrl(EncodedParam targetingParams, EncodedParam debugLevel, boolean newPM, EncodedParam authId) {
+    String messageUrl(EncodedParam targetingParams, EncodedParam authId, EncodedParam pmId) {
         HashSet<String> params = new HashSet<>();
-        params.add("_sp_pmOrigin=" + (newPM ? "stage" : "production"));
         params.add("_sp_accountId=" + accountId);
-        params.add("_sp_cmp_inApp=true");
-        params.add("_sp_writeFirstPartyCookies=true");
+        params.add("_sp_siteId=" + siteId);
         params.add("_sp_siteHref=" + site);
-        params.add("_sp_msg_domain=" + encodedMsgDomain);
-        params.add("_sp_cmp_origin=" + encodedCmpOrigin);
-        params.add("_sp_msg_targetingParams=" + targetingParams);
-        params.add("_sp_debug_level=" + debugLevel);
-        params.add("_sp_msg_stageCampaign=" + stagingCampaign);
+        params.add("_sp_mms_Domain=" + mmsUrl);
+        params.add("_sp_cmp_origin=" + cmpUrl);
+        params.add("_sp_targetingParams=" + targetingParams);
+        params.add("_sp_env=" + (stagingCampaign ? "stage" : "public"));
+        params.add("_sp_PMId=" + pmId);
+        params.add("_sp_runMessaging=" + (!isShowPM));
+        params.add("_sp_showPM=" + isShowPM);
+
         if (authId != null) {
             params.add("_sp_authId=" + authId);
         }
@@ -107,33 +106,6 @@ class SourcePointClient {
     @VisibleForTesting
     void setHttpDummy(AsyncHttpClient httpClient) {
         http = httpClient;
-    }
-
-    void getSiteID(ConsentLib.OnLoadComplete onLoadComplete) {
-        String url = siteIdUrl();
-        http.get(url, new ResponseHandler(url, onLoadComplete) {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    onLoadComplete.onSuccess(response.getString("site_id"));
-                } catch (JSONException e) {
-                    onFailure(statusCode, headers, e, response);
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-            }
-        });
     }
 
     void getGDPRStatus(ConsentLib.OnLoadComplete onLoadComplete) {
