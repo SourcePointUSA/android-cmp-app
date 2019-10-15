@@ -5,12 +5,12 @@ import java.net.URL;
 
 class SourcePointClientBuilder {
     private static final String DEFAULT_STAGING_MMS_DOMAIN = "mms.sp-stage.net";
-    private static final String DEFAULT_MMS_DOMAIN = "mms.sp-prod.net";
+    private static final String DEFAULT_MMS_DOMAIN = "message.sp-prod.net";
 
     private static final String DEFAULT_INTERNAL_CMP_DOMAIN = "cmp.sp-stage.net";
     private static final String DEFAULT_CMP_DOMAIN = "sourcepoint.mgr.consensu.org";
 
-    private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.cmp.sp-stage.net/v2.0.html";
+    private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.cmp.sp-stage.net/v3/staging.html";
     private static final String DEFAULT_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.sourcepoint.mgr.consensu.org/v3/index.html";
 
     private EncodedParam site, accountId ,siteId;
