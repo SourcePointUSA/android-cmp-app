@@ -312,11 +312,10 @@ public class ConsentLib {
      * <i>i</i> of this array is <i>true</i> it means the user has consented to the vendor index <i>i</i>
      * from the customVendorIds parameter. Otherwise it will be <i>false</i>.
      *
-     * @param customVendorIds an array of vendor ids - currently needs to be provided by SourcePoint
      * @param callback        - callback that will be called with an array of boolean indicating if the user has given consent or not to those vendors.
      */
-    public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) {
-        loadAndStoreCustomVendorAndPurposeConsents(customVendorIds, new OnLoadComplete() {
+    public void getCustomVendorConsents(final OnLoadComplete callback) {
+        loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
             @Override
             @SuppressWarnings("unchecked")
             public void onSuccess(Object result) {
