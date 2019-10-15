@@ -20,7 +20,7 @@ In order to support the Plug & Play Privacy Manager, we needed to add extra para
 * `siteId`: a `Number` representing the property id - available on the dashboard
 * `privacyManagerId`: a `String` representing the id of the Privacy Manager you wish to show - available on the dashboard
 
-Additionally, a new method was introduced on `ConsentLibBuilder` -> `ConsentLibBuilder.setStage(Boolean showPM)`. When set to true, we'll load the Privacy Manager (that one screen with the toggles) rather than "asking" the scenario for a consent message.
+Additionally, a new method was introduced on `ConsentLibBuilder` -> `ConsentLibBuilder.showPM(Boolean showPM)`. When set to true, we'll load the Privacy Manager (that one screen with the toggles) rather than "asking" the scenario for a consent message.
 
 ### Other improvements
 * Reduced the amount of network calls
