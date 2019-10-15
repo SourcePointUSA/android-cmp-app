@@ -24,7 +24,7 @@ public class ConsentLibBuilderTest {
 
     @Before
     public void initConsentLibBuilder() {
-        consentLibBuilder = new ConsentLibBuilder(123, "example.com", mock(Activity.class));
+        consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", mock(Activity.class));
         callback = c -> {  };
     }
 
@@ -68,8 +68,8 @@ public class ConsentLibBuilderTest {
 
     @Test
     public void setOnInteractionComplete() {
-        consentLibBuilder.setOnInteractionComplete(callback);
-        assertEquals(callback, consentLibBuilder.onInteractionComplete);
+        consentLibBuilder.setOnMessageReady(callback);
+        assertEquals(callback, consentLibBuilder.onMessageReady);
     }
 
     @Test
