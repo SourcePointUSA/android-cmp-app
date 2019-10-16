@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.sourcepoint.cmplibrary.ConsentLib;
 import com.sourcepoint.cmplibrary.ConsentLibException;
-import com.sourcepoint.cmplibrary.CustomPurposeConsent;
+import com.sourcepoint.cmplibrary.CustomVendorConsent;
 
 import java.util.HashSet;
 
@@ -19,16 +19,13 @@ public class MainActivity extends AppCompatActivity {
         return ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
                 .setStage(true)
                 .setViewGroup(findViewById(android.R.id.content))
-                .setMessageTimeOut(60000)
                 .setShowPM(showPM)
-                .setOnMessageReady(_c -> Log.i(TAG, "onMessageReady"))
-                .setOnConsentReady(consentLib -> {
-                    consentLib.getCustomPurposeConsents(results -> {
-                        HashSet<CustomPurposeConsent> consents = (HashSet) results;
-                        for(CustomPurposeConsent consent : consents)
-                            Log.i(TAG, "Consented to: "+consent);
-                    });
-                })
+                .setOnMessageReady(consentLib -> Log.i(TAG, "onMessageReady"))
+                .setOnConsentReady(consentLib -> consentLib.getCustomVendorConsents(results -> {
+                    HashSet<CustomVendorConsent> consents = (HashSet) results;
+                    for(CustomVendorConsent consent : consents)
+                        Log.i(TAG, "Consented to: "+consent);
+                }))
                 .setOnErrorOccurred(c -> Log.i(TAG, "Something went wrong: ", c.error))
                 .build();
     }

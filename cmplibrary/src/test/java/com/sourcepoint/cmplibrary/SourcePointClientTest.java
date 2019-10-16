@@ -43,11 +43,11 @@ public class SourcePointClientTest {
         http = mock(AsyncHttpClient.class);
         onLoadComplete = mock(ConsentLib.OnLoadComplete.class);
 
-        sourcePointClient = new SourcePointClientBuilder(123, "example.com", true).build();
+        sourcePointClient = new SourcePointClientBuilder(123, "example.com", 321, true).build();
         sourcePointClient.setHttpDummy(http);
     }
 
-    JSONObject jsonObject = null;
+    private JSONObject jsonObject = null;
 
     private void doAPICallWithAnswer(final boolean onSuccess , String response) {
         doAnswer(new Answer() {
@@ -73,30 +73,6 @@ public class SourcePointClientTest {
             }
         }).when(http).get(anyString(), any(ResponseHandlerInterface.class));
     }
-
-    @Test
-    public void getSiteIDSuccess() {
-        String response = "{\"site_id\":\"http://google.com\"}";
-        doAPICallWithAnswer(true,response);
-
-        sourcePointClient.getSiteID(onLoadComplete);
-
-        verify(onLoadComplete, times(1)).onSuccess(eq("http://google.com"));
-        verify(onLoadComplete, never()).onFailure(any(ConsentLibException.class));
-    }
-
-    @Test
-    public void getSiteIDFailure(){
-        String response = "{\"site_id\":\"http://google.com\"}";
-        doAPICallWithAnswer(false,response);
-
-        sourcePointClient.getSiteID(onLoadComplete);
-
-        verify(onLoadComplete, never()).onSuccess(any());
-        verify(onLoadComplete, times(1)).onFailure(any(ConsentLibException.class));
-    }
-
-
 
     @Test
     public void getGDPRStatusSuccess() {

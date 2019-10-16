@@ -195,7 +195,7 @@ public class ConsentLib {
                     Log.d("Consnet UUID = ", consentUUID);
                 }
                 if (isDefined(euConsent) && isDefined(consentUUID)) {
-                    editor.commit();
+                    editor.apply();
                     setIABVars(euConsent);
                 }
                 ConsentLib.this.finish();
@@ -204,6 +204,7 @@ public class ConsentLib {
             @Override
             public void onMessageChoiceSelect(int choiceId, int choiceType) {
                 Log.d(TAG, "onMessageChoiceSelect: choiceId:" + choiceId + "choiceType: " + choiceType);
+                //noinspection SwitchStatementWithTooFewBranches
                 switch (choiceType) {
                     case 12:
                         ConsentLib.this.choiceType = MESSAGE_OPTIONS.SHOW_PRIVACY_MANAGER;
@@ -256,13 +257,15 @@ public class ConsentLib {
     private void setSharedPreference(String key, String value) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(key, value);
-        editor.commit();
+        editor.apply();
     }
 
+
+    @SuppressWarnings("SameParameterValue")
     private void setSharedPreference(String key, Boolean value) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     private void setSubjectToGDPR() {
@@ -309,11 +312,10 @@ public class ConsentLib {
      * <i>i</i> of this array is <i>true</i> it means the user has consented to the vendor index <i>i</i>
      * from the customVendorIds parameter. Otherwise it will be <i>false</i>.
      *
-     * @param customVendorIds an array of vendor ids - currently needs to be provided by SourcePoint
      * @param callback        - callback that will be called with an array of boolean indicating if the user has given consent or not to those vendors.
      */
-    public void getCustomVendorConsents(final String[] customVendorIds, final OnLoadComplete callback) {
-        loadAndStoreCustomVendorAndPurposeConsents(customVendorIds, new OnLoadComplete() {
+    public void getCustomVendorConsents(final OnLoadComplete callback) {
+        loadAndStoreCustomVendorAndPurposeConsents(new String[0], new OnLoadComplete() {
             @Override
             @SuppressWarnings("unchecked")
             public void onSuccess(Object result) {
@@ -443,8 +445,8 @@ public class ConsentLib {
         final String siteIdKey = SP_SITE_ID + "_" + accountId + "_" + siteName;
         String siteID = Integer.toString(siteId);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(siteIdKey, (String) siteID);
-        editor.commit();
+        editor.putString(siteIdKey, siteID);
+        editor.apply();
         sourcePoint.getCustomConsents(consentUUID, euconsent, siteID, vendorIds, new OnLoadComplete() {
             @Override
             @SuppressWarnings("unchecked")
@@ -457,7 +459,7 @@ public class ConsentLib {
                     consentStrings.add(consent.toJSON().toString());
                 }
                 editor.putStringSet(CUSTOM_CONSENTS_KEY, consentStrings);
-                editor.commit();
+                editor.apply();
                 callback.onSuccess(consents);
             }
 

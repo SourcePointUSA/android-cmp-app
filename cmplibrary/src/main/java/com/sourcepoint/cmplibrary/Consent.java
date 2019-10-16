@@ -18,6 +18,11 @@ abstract public class Consent {
     }
 
     @Override
+    public String toString() {
+        return name + "("+id+")";
+    }
+
+    @Override
     public boolean equals(Object otherConsent) {
         if (getClass() != otherConsent.getClass()) { return false; }
         return super.equals(((Consent) otherConsent).id);
