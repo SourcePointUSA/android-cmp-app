@@ -23,8 +23,8 @@ public interface WebsiteListDao {
     long insert(Website website);
 
 
-    @Query("UPDATE websites SET accountId= :accountID, name= :siteName, staging= :isStaging, authId= :authId WHERE id= :id ")
-    int update(int accountID, String siteName, boolean isStaging, String authId, long id);
+    @Query("UPDATE websites SET accountId= :accountID, siteId= :siteID ,name= :siteName, pmId= :pmID ,staging= :isStaging, showPM= :isShowPM , authId= :authId WHERE id= :id ")
+    int update(int accountID, int siteID, String siteName, String pmID, boolean isStaging, boolean isShowPM, String authId, long id);
 
     @Query("SELECT * FROM websites WHERE id= :ID")
     LiveData<Website> getWebsiteByID(long ID);
@@ -44,18 +44,24 @@ public interface WebsiteListDao {
            "AND\n" +
            "valueList = :valueList " +
            "AND accountId= :accountID " +
+           "AND siteId= :siteID " +
            "AND name= :siteName " +
+           "AND pmId= :pmID " +
            "AND authId= :authId " +
-            "AND staging= :isStaging" )
-   List<TargetingParameterList> getWebsiteWithDetails(int accountID, String siteName, boolean isStaging, String authId, String keyList, String valueList);
+           "AND staging= :isStaging " +
+           "AND showPM= :isShowPM ")
+   List<TargetingParameterList> getWebsiteWithDetails(int accountID, int siteID, String siteName, String pmID, boolean isStaging, boolean isShowPM, String authId, String keyList, String valueList);
 
     @Query( "SELECT count(*) FROM 'websites' as W LEFT JOIN 'targeting_param' as TP on W.id=TP.refID WHERE " +
             "W.accountId= :accountID " +
+            "AND W.siteId= :siteID " +
             "AND W.name= :siteName " +
+            "AND W.pmId= :pmID " +
             "AND W.staging= :isStaging " +
+            "AND W.showPM= :isShowPM " +
             "AND W.authId= :authId " +
             "AND TP.id  IS NULL")
-   int getWebsiteWithDetails(int accountID, String siteName, boolean isStaging, String authId);
+   int getWebsiteWithDetails(int accountID, int siteID, String siteName, String pmID, boolean isStaging, boolean isShowPM, String authId);
 
     @Query("DELETE FROM websites WHERE id= :id")
     int deleteWebsite(long id);

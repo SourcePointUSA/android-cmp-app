@@ -16,7 +16,7 @@ import com.sourcepointmeta.app.database.dao.WebsiteListDao;
 import com.sourcepointmeta.app.database.entity.TargetingParam;
 import com.sourcepointmeta.app.database.entity.Website;
 
-@Database(entities = {Website.class, TargetingParam.class}, version = 3, exportSchema = false)
+@Database(entities = {Website.class, TargetingParam.class}, version = 4, exportSchema = false)
 public abstract class AppDataBase extends RoomDatabase {
 
     private static AppDataBase sInstance;
@@ -57,6 +57,7 @@ public abstract class AppDataBase extends RoomDatabase {
                     }
                 }).addMigrations(MIGRATION_1_2)
                 .addMigrations(MIGRATION_2_3)
+                .addMigrations(MIGRATION_3_4)
                 .build();
     }
 
@@ -89,6 +90,24 @@ public abstract class AppDataBase extends RoomDatabase {
             database.execSQL("DROP TABLE websites");
             // Change the table name to the correct one
             database.execSQL("ALTER TABLE websites_new RENAME TO websites");
+        }
+    };
+
+    private static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            // Create the new table
+            database.execSQL(
+                    "CREATE TABLE websites_new (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `accountId` INTEGER NOT NULL, `siteId` INTEGER NOT NULL, `name` TEXT, `pmId` TEXT, `staging` INTEGER NOT NULL, `showPM` INTEGER NOT NULL,`authId` TEXT)");
+            // Copy the data
+            /*database.execSQL(
+                    "INSERT INTO websites_new (id, accountId, name ,staging) SELECT id, accountId, name,staging  FROM websites");*/
+            // Remove the old table
+            database.execSQL("DROP TABLE websites");
+            // Change the table name to the correct one
+            database.execSQL("ALTER TABLE websites_new RENAME TO websites");
+            // delete old targetting param details from databse
+            database.execSQL("DELETE  FROM targeting_param");
         }
     };
 

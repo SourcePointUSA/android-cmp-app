@@ -6,6 +6,8 @@
     <string name="account_id_placeholder">Enter account id here</string>
     <string name="site_name_placeholder">Enter site name here</string>
     <string name="site_name">Site Name</string>
+    <string name="site_id">Site Id</string>
+    <string name="pm_id">Privacy Manager Id</string>
     <string name="staging_campaign">Staging Campaign:</string>
     <string name="save">Save</string>
     <string name="add_website">Add Website</string>
@@ -20,7 +22,7 @@
     <string name="please_press_at_top_right_corner_to_add_sites">Please tap on  +  to add new site</string>
     <string name="alert">Alert</string>
     <string name="ok">OK</string>
-    <string name="empty_accountid_sitename_message">Please enter Account ID/Site Name</string>
+    <string name="empty_accountid_sitename_message">Please enter Account ID, Site ID, Site Name, Privacy Manager ID</string>
     <string name="targeting_params">Targeting Parameter</string>
     <string name="key">Key</string>
     <string name="value">Value</string>
@@ -46,4 +48,5 @@
     <string name="no_message_matching_scenario">There is no message matching the scenario based on the site info and device local data. Consider reviewing the site info or clearing the cookies. If that was intended, just ignore this message.</string>
     <string name="site_details_exists">Site details already exists.</string>
     <string name="authId">AuthId</string>
+    <string name="show_pm">Show PM</string>
 </resources>
