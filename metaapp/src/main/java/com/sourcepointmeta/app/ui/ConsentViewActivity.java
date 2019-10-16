@@ -122,7 +122,6 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                         // Get the consents for a collection of non-IAB vendors
 
                         c.getCustomVendorConsents(
-                                new String[]{},
                                 new ConsentLib.OnLoadComplete() {
                                     @Override
                                     public void onSuccess(Object result) {
