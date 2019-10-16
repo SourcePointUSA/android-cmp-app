@@ -2,7 +2,7 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-def VERSION_NAME = "2.4.4"
+def VERSION_NAME = "3.0.0"
 
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
@@ -13,12 +13,14 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
+
+    testOptions.unitTests.includeAndroidResources = true
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 243
+        targetSdkVersion 28
+        versionCode 300
         versionName VERSION_NAME
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

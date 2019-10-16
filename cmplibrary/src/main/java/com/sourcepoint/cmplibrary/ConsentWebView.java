@@ -27,9 +27,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashSet;
 
 abstract public class ConsentWebView extends WebView {
@@ -37,41 +34,61 @@ abstract public class ConsentWebView extends WebView {
 
     @SuppressWarnings("unused")
     private class MessageInterface {
-        // called when message loads, brings the WebView to the front when the message is ready
-        @JavascriptInterface
-        public void onReceiveMessageData(String data) {
-            ConsentWebView.this.flushOrSyncCookies();
-            boolean willShowMessage = false;
-            String consentUUID = "";
-            String euconsent = "";
-            try {
-                JSONObject jsonData = new JSONObject(data);
-                willShowMessage = jsonData.getBoolean("shouldShowMessage");
-                consentUUID = jsonData.getString("consentUUID");
-                euconsent = jsonData.getString("euconsent");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
-            ConsentWebView.this.onMessageReady(willShowMessage, consentUUID, euconsent);
+        // called when message is about to be shown
+        @JavascriptInterface
+        public void onMessageReady() {
+            Log.d("onMessageReady", "called");
+            ConsentWebView.this.flushOrSyncCookies();
+            ConsentWebView.this.onMessageReady();
         }
 
         // called when a choice is selected on the message
         @JavascriptInterface
-        public void onMessageChoiceSelect(int choiceType) {
+        public void onMessageChoiceSelect(int choiceId, int choiceType) {
+            Log.d("onMessageChoiceSelect", "called");
             if (ConsentWebView.this.hasLostInternetConnection()) {
                 ConsentWebView.this.onErrorOccurred(new ConsentLibException.NoInternetConnectionException());
             }
-            ConsentWebView.this.onMessageChoiceSelect(choiceType);
+            ConsentWebView.this.onMessageChoiceSelect(choiceId, choiceType);
+        }
+
+        //called when user takes action on privacy manager
+        @JavascriptInterface
+        public void onPrivacyManagerAction(String pmData) {
+            Log.d("onPrivacyManagerAction", "called");
+        }
+
+        @JavascriptInterface
+        public void onMessageChoiceError(String errorType) {
+            Log.d("onMessageChoiceError", "called");
         }
 
         // called when interaction with message is complete
         @JavascriptInterface
-        public void sendConsentData(String euconsent, String consentUUID) {
+        public void onConsentReady(String consentUUID, String euConsent) {
+            Log.d("onConsentReady", "called");
             ConsentWebView.this.flushOrSyncCookies();
-            ConsentWebView.this.onInteractionComplete(euconsent, consentUUID);
+            ConsentWebView.this.onConsentReady(euConsent, consentUUID);
         }
 
+        //called when privacy manager cancel button is tapped
+        @JavascriptInterface
+        public void onPMCancel() {
+            Log.d("onPMCancel", "called");
+        }
+
+        // called when message or pm need to shown
+        @JavascriptInterface
+        public void onSPPMObjectReady() {
+            Log.d("onSPPMObjectReady", "called");
+            if (isShowPM) {
+                ConsentWebView.this.flushOrSyncCookies();
+                ConsentWebView.this.onMessageReady();
+            }
+        }
+
+        //called when an error is occured while loading web-view
         @JavascriptInterface
         public void onErrorOccurred(String errorType) {
             ConsentLibException error = ConsentWebView.this.hasLostInternetConnection() ?
@@ -79,11 +96,12 @@ abstract public class ConsentWebView extends WebView {
                     new ConsentLibException("Something went wrong in the javascript world.");
             ConsentWebView.this.onErrorOccurred(error);
         }
-
+        // xhr logger
         @JavascriptInterface
-        public void onPrivacyManagerChoiceSelect(String _data) {
-            // no op
+        public void xhrLog(String response){
+            Log.d("xhrLog" , response);
         }
+
     }
 
     // A simple mechanism to keep track of the urls being loaded by the WebView
@@ -112,13 +130,15 @@ abstract public class ConsentWebView extends WebView {
 
     private long timeoutMillisec;
     private ConnectionPool connectionPool;
+    private boolean isShowPM = false;
 
     public static long DEFAULT_TIMEOUT = 10000;
 
-    public ConsentWebView(Context context, long timeoutMillisec) {
+    public ConsentWebView(Context context, long timeoutMillisec, boolean isShowPM) {
         super(context);
         this.timeoutMillisec = timeoutMillisec;
         connectionPool = new ConnectionPool();
+        this.isShowPM = isShowPM;
         setup();
     }
 
@@ -258,13 +278,13 @@ abstract public class ConsentWebView extends WebView {
         flushOrSyncCookies();
     }
 
-    abstract public void onMessageReady(boolean willShowMessage, String consentUUID, String euconsent);
+    abstract public void onMessageReady();
 
     abstract public void onErrorOccurred(ConsentLibException error);
 
-    abstract public void onInteractionComplete(String euConsent, String consentUUID);
+    abstract public void onConsentReady(String euConsent, String consentUUID);
 
-    abstract public void onMessageChoiceSelect(int choiceType);
+    abstract public void onMessageChoiceSelect(int choiceType, int choiceId);
 
     public void loadMessage(String messageUrl) throws ConsentLibException.NoInternetConnectionException {
         if (hasLostInternetConnection())

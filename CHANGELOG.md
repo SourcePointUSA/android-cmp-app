@@ -1,3 +1,33 @@
+## 3.0.0 (October, 15, 2019)
+Oh wow, time flies when we're having fun huh? This is a major release and, with major releases comes major ~~responsibilities~~ changes.
+
+### New Message script
+Our Web Team worked pretty hard to slim down our consent message platform and improve its performance. In this release we make use of the new message script.
+
+**It's important to notice, SDK version 3 onwards will only be compatible with messages built using the new message builder.**
+
+### Consent message lifecycle
+* `onMessageReady` is now called only when there's a consent message to be shown rather than being always called but with a boolean flag (`willShowMessage`) indicating if the message is going to show or not.
+* Renamed `onInteractionComplete` to `onConsentReady` to better reflect the meaning of that callback.
+
+### Plug & Play Privacy Manager
+Prior to this release, there was no way to show the Privacy Manager programmatically, without relying on setting up a tricky scenario on our Dashboard.
+
+We've changed that (keep reading).
+
+### Constructor and Builder changes
+In order to support the Plug & Play Privacy Manager, we needed to add extra parameters to `ConsentLib`'s constructor. The additional parameters are:
+* `siteId`: a `Number` representing the property id - available on the dashboard
+* `privacyManagerId`: a `String` representing the id of the Privacy Manager you wish to show - available on the dashboard
+
+Additionally, a new method was introduced on `ConsentLibBuilder` -> `ConsentLibBuilder.setShowPM(Boolean showPM)`. When set to true, we'll load the Privacy Manager (that one screen with the toggles) rather than "asking" the scenario for a consent message.
+
+### Other improvements
+* Reduced the amount of network calls
+* Improved our timeout mechanism
+* Simplified the Javascript Interface
+* Forced `https` everywhere
+
 ## 2.4.4 (Aug 20, 2019)
 * implemented gdpr_status_check on every SDK initialization.
 * implemented onFailure callbacks for api calls.

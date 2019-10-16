@@ -6,15 +6,13 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class SourcePointClientBuilderTest {
     private SourcePointClientBuilder sourcePointClientBuilder;
 
     @Before
     public void setUp() throws ConsentLibException {
-        sourcePointClientBuilder = new SourcePointClientBuilder(123, "example.com", true);//mock(SourcePointClientBuilder.class);
+        sourcePointClientBuilder = new SourcePointClientBuilder(123, "example.com", 321, true);
     }
 
     private Field getDeclareFieldAccess(String fieldName) throws Exception{

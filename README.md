@@ -11,11 +11,21 @@ Table of Contents
 # Setup
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle.
 
-For example:
+:heavy_exclamation_mark: **IMPORTANT** if you're not yet using the new message builder, make sure to use pod version < 3.
 ```
 ...
 dependencies {
     implementation 'com.sourcepoint.cmplibrary:cmplibrary:2.4.3'
+}
+```
+
+The README for the older version can be found [here](https://github.com/SourcePointUSA/android-cmp-app/blob/aa51fcc0f6bc475e734c6846b3b60abb487732f9/README.md).
+
+For consent messages built using the message builder V2, it's safe to use SDK > 3
+```
+...
+dependencies {
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:3.0.0'
 }
 
 ```
@@ -30,70 +40,17 @@ public class MainActivity extends AppCompatActivity {
     private ConsentLib consentLib;
 
     private ConsentLib buildAndRunConsentLib(Boolean showPM) throws ConsentLibException {
-        return ConsentLib.newBuilder(22, "mobile.demo", this)
+        return ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
+                .setStage(true)
                 .setViewGroup(findViewById(android.R.id.content))
-                // optional, set custom targeting parameters value can be String and Integer
-                .setTargetingParam("MyPrivacyManager", showPM.toString())
-                //optional,  set message time out , default is 5 seconds
-                .setMessageTimeOut(15000)   
-                .setOnMessageReady(new ConsentLib.Callback() {
-                    @Override
-                    public void run(ConsentLib consentLib) {
-                        if(consentLib.willShowMessage)
-                            Log.i(TAG, "The message is about to be shown.");
-                        else
-                            Log.i(TAG, "The message doesn't need to be shown");
-                    }
-                })
-                .setOnInteractionComplete(new ConsentLib.Callback() {
-                    @Override
-                    public void run(ConsentLib c) {
-                        try {
-                            c.getCustomVendorConsents(new String[]{}, new ConsentLib.OnLoadComplete() {
-                                @Override
-                                public void onSuccess(Object result) {
-                                    HashSet<CustomVendorConsent> consents = (HashSet) result;
-                                    String myImportantVendorId = "5bf7f5c5461e09743fe190b3";
-                                    for (CustomVendorConsent consent : consents)
-                                        if (consent.id.equals(myImportantVendorId))
-                                            Log.i(TAG, "Consented to My Important Vendor: " + consent.name);
-                                }
-                            });
-
-                            c.getCustomPurposeConsents(new ConsentLib.OnLoadComplete() {
-                                public void onSuccess(Object result) {
-                                    HashSet<CustomPurposeConsent> consents = (HashSet) result;
-                                    for (CustomPurposeConsent consent : consents)
-                                        Log.i(TAG, "Consented to purpose: " + consent.name);
-                                }
-                            });
-
-                            // Example usage of getting IAB vendor consent results for a list of vendors
-                            boolean[] IABVendorConsents = c.getIABVendorConsents(new int[]{81, 82});
-                            Log.i(TAG, String.format("Consented to IAB vendors: 81 -> %b, 82 -> %b",
-                                    IABVendorConsents[0],
-                                    IABVendorConsents[1]
-                            ));
-
-                            // Example usage of getting IAB purpose consent results for a list of purposes
-                            boolean[] IABPurposeConsents = c.getIABPurposeConsents(new int[]{2, 3});
-                            Log.i(TAG, String.format("Consented to IAB purposes: 2 -> %b, 3 -> %b",
-                                    IABPurposeConsents[0],
-                                    IABPurposeConsents[1]
-                            ));
-
-                        } catch (ConsentLibException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                })
-                .setOnErrorOccurred(new ConsentLib.Callback() {
-                    @Override
-                    public void run(ConsentLib c) {
-                        Log.d(TAG, "Something went wrong: ", c.error);
-                    }
-                })
-                // generate ConsentLib at this point modifying builder will not do anything
+                .setShowPM(showPM)
+                .setOnMessageReady(consentLib -> Log.i(TAG, "onMessageReady"))
+                .setOnConsentReady(consentLib -> consentLib.getCustomVendorConsents(results -> {
+                    HashSet<CustomVendorConsent> consents = (HashSet) results;
+                    for(CustomVendorConsent consent : consents)
+                        Log.i(TAG, "Consented to: "+consent);
+                }))
+                .setOnErrorOccurred(c -> Log.i(TAG, "Something went wrong: ", c.error))
                 .build();
     }
 
@@ -112,14 +69,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.review_consents).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View _v) {
-                try {
-                    consentLib = buildAndRunConsentLib(true);
-                    consentLib.run();
-                } catch (ConsentLibException e) {
-                    e.printStackTrace();
-                }
+        findViewById(R.id.review_consents).setOnClickListener(_v -> {
+            try {
+                consentLib = buildAndRunConsentLib(true);
+                consentLib.run();
+            } catch (ConsentLibException e) {
+                e.printStackTrace();
             }
         });
     }
