@@ -88,11 +88,11 @@ public class WebsiteListRepositoryTest {
         Website website = StaticTestData.WEBSITES.get(0);
         website.setId(1);
 
-        websiteListDao.update(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId(), website.getId());
-        verify(websiteListDao).update(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId(), website.getId());
+        websiteListDao.update(website.getAccountID(),website.getSiteID() ,website.getName(), website.getPmID() ,website.isStaging(), website.isShowPM(),website.getAuthId(), website.getId());
+        verify(websiteListDao).update(website.getAccountID(), website.getSiteID(), website.getName(), website.getPmID(), website.isStaging(),website.isShowPM(), website.getAuthId(), website.getId());
 
-        when(websiteListDao.update(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId(), website.getId())).thenReturn(1);
-        assertEquals(1, websiteListDao.update(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId(), website.getId()));
+        when(websiteListDao.update(website.getAccountID(),website.getSiteID() ,website.getName(), website.getPmID(),website.isStaging(), website.isShowPM(),website.getAuthId(), website.getId())).thenReturn(1);
+        assertEquals(1, websiteListDao.update(website.getAccountID(), website.getSiteID(), website.getName(), website.getPmID(), website.isStaging(), website.isShowPM(),website.getAuthId(), website.getId()));
     }
 
     @Test
@@ -129,13 +129,13 @@ public class WebsiteListRepositoryTest {
         }
 
         if (keyList.isEmpty()){
-            when(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId())).thenReturn(1);
+            when(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getSiteID(),website.getName(), website.getPmID() ,website.isStaging(), website.isShowPM() ,website.getAuthId())).thenReturn(1);
         }else {
             TargetingParameterList targetingParameterList = new TargetingParameterList();
             targetingParameterList.setKeyList(keyList);
             targetingParameterList.setValueList(valueList);
             List<TargetingParameterList> targetingParameterLists = Arrays.asList(targetingParameterList);
-            when(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId(),
+            when(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getSiteID(),website.getName(), website.getPmID(),website.isStaging(), website.isShowPM() ,website.getAuthId(),
                     keyList, valueList)).thenReturn(targetingParameterLists);
         }
 
@@ -155,7 +155,7 @@ public class WebsiteListRepositoryTest {
 
         Website website = StaticTestData.WEBSITES.get(2);
         Observer<Integer> observer = mock(Observer.class);
-        doReturn(1).when(websiteListDao).getWebsiteWithDetails(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId());
+        doReturn(1).when(websiteListDao).getWebsiteWithDetails(website.getAccountID(), website.getSiteID(),website.getName(), website.getPmID() ,website.isStaging(), website.isShowPM(),website.getAuthId());
 
 
         MutableLiveData<Integer> listSize = (MutableLiveData<Integer>) websiteListRepository.getWebsiteWithDetails(website);

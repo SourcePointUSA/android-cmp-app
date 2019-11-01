@@ -86,16 +86,16 @@ public class NewWebsiteViewModelTest {
         }
 
         if (keyList.isEmpty()){
-            when(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId())).thenReturn(1);
-            size.postValue(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getName(), website.isStaging(),website.getAuthId()));
+            when(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getSiteID() ,website.getName(), website.getPmID(), website.isStaging(), website.isShowPM(), website.getAuthId())).thenReturn(1);
+            size.postValue(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getSiteID() ,website.getName(), website.getPmID() ,website.isStaging(), website.isShowPM(),website.getAuthId()));
         }else {
             TargetingParameterList targetingParameterList = new TargetingParameterList();
             targetingParameterList.setKeyList(keyList);
             targetingParameterList.setValueList(valueList);
             List<TargetingParameterList> targetingParameterLists = Arrays.asList(targetingParameterList);
-            when(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId(),
+            when(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getSiteID(), website.getName(), website.getPmID(),website.isStaging(), website.isShowPM(), website.getAuthId(),
                     keyList, valueList)).thenReturn(targetingParameterLists);
-            size.postValue(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId(),
+            size.postValue(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getSiteID(), website.getName(), website.getPmID(), website.isStaging(), website.isShowPM(), website.getAuthId(),
                     keyList, valueList).size());
 
         }
@@ -119,8 +119,8 @@ public class NewWebsiteViewModelTest {
 
         Website website = StaticTestData.WEBSITES.get(2);
         Observer<Integer> observer = mock(Observer.class);
-        doReturn(1).when(websiteListDao).getWebsiteWithDetails(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId());
-        size.postValue(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId()));
+        doReturn(1).when(websiteListDao).getWebsiteWithDetails(website.getAccountID(), website.getSiteID(), website.getName(), website.getPmID(), website.isStaging(), website.isStaging(), website.getAuthId());
+        size.postValue(websiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getSiteID(),website.getName(), website.getPmID(), website.isStaging(), website.isShowPM(), website.getAuthId()));
         when(websiteListRepository.getWebsiteWithDetails(website)).thenReturn(size);
 
         MutableLiveData<Integer> listSize = (MutableLiveData<Integer>) viewModel.getWebsiteWithDetails(website);
