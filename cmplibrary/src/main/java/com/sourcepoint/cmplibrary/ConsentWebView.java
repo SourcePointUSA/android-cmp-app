@@ -61,6 +61,7 @@ abstract public class ConsentWebView extends WebView {
 
         @JavascriptInterface
         public void onMessageChoiceError(String errorType) {
+            onErrorOccurred(errorType);
             Log.d("onMessageChoiceError", "called");
         }
 
