@@ -22,41 +22,18 @@ abstract class ConsentManager {
     }
 
     private ConsentLibBuilder getConsentLib(Boolean pm) {
-        try {
-            return ConsentLib
-                    .newBuilder(22, "mobile.demo", activity)
-                    .setViewGroup(activity.findViewById(android.R.id.content))
-                    .setTargetingParam("MyPrivacyManager", pm.toString())
-                    .setMessageTimeOut(30000)
-                    .setOnInteractionComplete(new ConsentLib.Callback() {
-                        @Override
-                        public void run(ConsentLib c) {
-                            c.getCustomVendorConsents(new String[]{}, new ConsentLib.OnLoadComplete() {
-                                @Override
-                                public void onSuccess(Object result) {
-                                    Log.d(TAG, "Interaction complete");
-                                    HashSet<Consent> consents = (HashSet) result;
-                                    onConsentsReady(consents, c.consentUUID, c.euconsent);
-                                }
-                            });
-                        }
-                    })
-                    .setOnMessageReady(new ConsentLib.Callback() {
-                        @Override
-                        public void run(ConsentLib c) {
-                            Log.d(TAG, "Message Ready");
-                        }
-                    })
-                    .setOnErrorOccurred(new ConsentLib.Callback() {
-                        @Override
-                        public void run(ConsentLib c) {
-                            Log.d(TAG, "Error Occurred: "+c.error);
-                        }
-                    });
-        } catch (ConsentLibException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",activity)
+            .setStage(true)
+            .setViewGroup(activity.findViewById(android.R.id.content))
+            .setShowPM(pm)
+            .setMessageTimeOut(30000)
+            .setOnConsentReady(consentLib -> consentLib.getCustomVendorConsents(results -> {
+                Log.d(TAG, "Interaction complete");
+                HashSet<Consent> consents = (HashSet) results;
+                onConsentsReady(consents, consentLib.consentUUID, consentLib.euconsent);
+            }))
+            .setOnMessageReady(_c -> Log.d(TAG, "Message Ready"))
+            .setOnErrorOccurred(c -> Log.d(TAG, "Error Occurred: "+c.error));
     }
 
     void loadMessage(Boolean pm) {

@@ -15,11 +15,7 @@ android {
     }
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-           /* def buildType = variant.variantData.variantConfiguration.buildType.name
-            def appName = project.APP_NAME
-            def versionName = variant.versionName
-            outputFileName = appName + "-" + buildType + "-" + versionName + ".apk"*/
-            outputFileName = project.APP_NAME+ ".apk"
+            outputFileName = project.name+ ".apk"
         }
     }
     buildTypes {
