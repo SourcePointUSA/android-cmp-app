@@ -102,7 +102,7 @@ public class WebsiteListRepository {
         MutableLiveData<Integer> websiteID = new MutableLiveData<>();
         mAppExecutors.diskIO().execute(() -> {
             Log.d(TAG, website.getName() + " " + website.getAccountID() + " " + website.isStaging() + " " + website.getId());
-            int websiteId = mWebsiteListDao.update(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId(),website.getId());
+            int websiteId = mWebsiteListDao.update(website.getAccountID(), website.getSiteID(), website.getName(), website.getPmID() ,website.isStaging(), website.isShowPM(), website.getAuthId(),website.getId());
             websiteID.postValue(websiteId);
             List<TargetingParam> listOfParams = new ArrayList<>();
             List<TargetingParam> targetingParamList = website.getTargetingParamList();
@@ -164,11 +164,11 @@ public class WebsiteListRepository {
             }
 
             if (keyList.isEmpty()){
-                int siteCount = mWebsiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getName(), website.isStaging(), website.getAuthId());
+                int siteCount = mWebsiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getSiteID(), website.getName(), website.getPmID(), website.isStaging(), website.isShowPM() ,website.getAuthId());
                 listSize.postValue(siteCount);
             }else {
 
-            List<TargetingParameterList> paramList = mWebsiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getName(), website.isStaging(),
+            List<TargetingParameterList> paramList = mWebsiteListDao.getWebsiteWithDetails(website.getAccountID(), website.getSiteID(), website.getName(), website.getPmID(), website.isStaging(), website.isShowPM(),
                     website.getAuthId() ,keyList, valueList);
             listSize.postValue(paramList.size());
             }

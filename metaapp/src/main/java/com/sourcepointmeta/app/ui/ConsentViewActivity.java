@@ -54,7 +54,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private ProgressDialog mProgressDialog;
     private AlertDialog mAlertDialog;
     private boolean isShow = false;
-    private boolean onInteractionCompleteCalled = false;
+    private boolean onConsentReadyCalled = false;
     private boolean isShowOnceOrError = false;
     private boolean isVendorSuccess = false, isVendorFailure = false;
     private boolean isPurposeSuccess = false, isPurposeFailure = false;
@@ -78,9 +78,10 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private ConsentLib buildConsentLib(Website website, Activity activity) throws ConsentLibException {
 
 
-        ConsentLibBuilder consentLibBuilder = ConsentLib.newBuilder(website.getAccountID(), website.getName(), activity)
+        ConsentLibBuilder consentLibBuilder = ConsentLib.newBuilder(website.getAccountID(), website.getName(), website.getSiteID(),website.getPmID(),activity)
                 // optional, used for running stage campaigns
                 .setStage(website.isStaging())
+                .setShowPM(website.isShowPM())
                 .setViewGroup(findViewById(android.R.id.content))
                 //optional message timeout default timeout is 5 seconds
                 .setMessageTimeOut(15000)
@@ -89,15 +90,11 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                     public void run(ConsentLib _c) {
                         hideProgressBar();
                         Log.d(TAG, "OnMessageReady");
-                        if (_c.willShowMessage) {
-                            isShow = true;
-                            saveToDatabase();
 
-                            Log.i(TAG, "The message is about to be shown.");
-                        } else {
-                            isShow = false;
-                            Log.i(TAG, "The message doesn't need to be shown.");
-                        }
+                        isShow = true;
+                        saveToDatabase();
+                        Log.i(TAG, "The message is about to be shown.");
+
                     }
                 })
                 // optional, callback triggered when message choice is selected when called choice
@@ -110,7 +107,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                     }
                 })
                 // optional, callback triggered when consent data is captured when called
-                .setOnInteractionComplete(new ConsentLib.Callback() {
+                .setOnConsentReady(new ConsentLib.Callback() {
                     @Override
                     public void run(ConsentLib c) {
                         runOnUiThread(new Runnable() {
@@ -120,12 +117,11 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                                 showProgressBar();
                             }
                         });
-                        onInteractionCompleteCalled = true;
+                        onConsentReadyCalled = true;
                         Log.d(TAG, "setOnInteractionComplete");
                         // Get the consents for a collection of non-IAB vendors
 
                         c.getCustomVendorConsents(
-                                new String[]{},
                                 new ConsentLib.OnLoadComplete() {
                                     @Override
                                     public void onSuccess(Object result) {
@@ -226,7 +222,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (!isShow && onInteractionCompleteCalled) {
+                                if (!isShow && onConsentReadyCalled) {
                                     isShowOnceOrError = true;
                                 }
                             }
@@ -576,7 +572,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     }
 
     private void resetFlag() {
-        isShow = onInteractionCompleteCalled = isShowOnceOrError = isVendorSuccess = isVendorFailure = isPurposeSuccess = isPurposeFailure = false;
+        isShow = onConsentReadyCalled = isShowOnceOrError = isVendorSuccess = isVendorFailure = isPurposeSuccess = isPurposeFailure = false;
         mConsentList.clear();
         mVendorConsents.clear();
         mPurposeConsents.clear();

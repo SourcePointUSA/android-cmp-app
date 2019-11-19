@@ -67,8 +67,8 @@ public class ConsentViewViewModelTest {
         Website website = StaticTestData.WEBSITES.get(0);
         website.setId(1);
 
-        when(websiteListDao.update(website.getAccountID() , website.getName(), website.isStaging(), website.getAuthId(), website.getId())).thenReturn(1);
-        websiteID.postValue(websiteListDao.update(website.getAccountID() , website.getName(), website.isStaging(), website.getAuthId(), website.getId()));
+        when(websiteListDao.update(website.getAccountID(), website.getSiteID(), website.getName(), website.getPmID(), website.isStaging(), website.isShowPM(), website.getAuthId(), website.getId())).thenReturn(1);
+        websiteID.postValue(websiteListDao.update(website.getAccountID() , website.getSiteID(), website.getName(), website.getPmID(), website.isStaging(), website.isShowPM(), website.getAuthId(), website.getId()));
         doReturn(websiteID).when(websiteListRepository).updateWebsite(website);
 
 

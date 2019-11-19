@@ -45,11 +45,11 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
 
     private final String TAG = "NewWebsiteActivity";
     private ProgressDialog mProgressDialog;
-    private TextInputEditText mAccountIdET, mSiteNameET, mAuthIdET, mKeyET, mValueET;
+    private TextInputEditText mAccountIdET,mSiteIdET, mSiteNameET,mPMIdET ,mAuthIdET, mKeyET, mValueET ;
 
     private TextView mAddParamBtn;
 
-    private SwitchCompat mStagingSwitch;
+    private SwitchCompat mStagingSwitch , mShowPMSwitch;
     private TextView mTitle;
     private AlertDialog mAlertDialog;
     private TargetingParamsAdapter mTargetingParamsAdapter;
@@ -71,11 +71,16 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
 
     private void setupUI() {
         mAccountIdET = findViewById(R.id.etAccountID);
+        mSiteIdET = findViewById(R.id.etSiteId);
         mSiteNameET = findViewById(R.id.etSiteName);
-        mStagingSwitch = findViewById(R.id.toggleStaging);
-        mStagingSwitch.setChecked(false);
-
+        mPMIdET = findViewById(R.id.etPMId);
         mAuthIdET = findViewById(R.id.etAuthID);
+        mStagingSwitch = findViewById(R.id.toggleStaging);
+        mShowPMSwitch = findViewById(R.id.toggleShowPM);
+        mStagingSwitch.setChecked(false);
+        mShowPMSwitch.setChecked(false);
+
+
 
         mKeyET = findViewById(R.id.etKey);
         mValueET = findViewById(R.id.etValue);
@@ -108,8 +113,11 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
 
             if (website != null) {
                 mAccountIdET.setText(String.valueOf(website.getAccountID()));
+                mSiteIdET.setText(String.valueOf(website.getSiteID()));
                 mSiteNameET.setText(website.getName());
+                mPMIdET.setText(website.getPmID());
                 mStagingSwitch.setChecked(website.isStaging());
+                mShowPMSwitch.setChecked(website.isShowPM());
                 if (!TextUtils.isEmpty(website.getAuthId())){
                     mAuthIdET.setText(website.getAuthId());
                 }
@@ -145,7 +153,19 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
                 hideSoftKeyboard(v, hasFocus);
             }
         });
+        mSiteIdET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                hideSoftKeyboard(v, hasFocus);
+            }
+        });
         mSiteNameET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                hideSoftKeyboard(v, hasFocus);
+            }
+        });
+        mPMIdET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 hideSoftKeyboard(v, hasFocus);
@@ -255,18 +275,28 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
     private Website getFormData() {
 
         String accountID = mAccountIdET.getText().toString().trim();
+        String siteID = mSiteIdET.getText().toString().trim();
         String siteName = mSiteNameET.getText().toString().trim();
+        String pmID = mPMIdET.getText().toString().trim();
         String authId = mAuthIdET.getText().toString().trim();
         boolean isStaging = mStagingSwitch.isChecked();
+        boolean isShowPm = mShowPMSwitch.isChecked();
         if (TextUtils.isEmpty(accountID)) {
             return null;
         }
         if (TextUtils.isEmpty(siteName)) {
             return null;
         }
+        if (TextUtils.isEmpty(siteID)) {
+            return null;
+        }
+        if (TextUtils.isEmpty(pmID)) {
+            return null;
+        }
         int account = Integer.parseInt(accountID);
+        int site_id = Integer.parseInt(siteID);
 
-        return new Website(account, siteName, isStaging,authId ,mTargetingParamList);
+        return new Website(account, site_id, siteName, pmID, isStaging, isShowPm, authId ,mTargetingParamList);
     }
 
     private void loadWebsiteWithInput() {

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import java.util.HashSet;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.iab.gdpr_android.consent.VendorConsent;
 import com.iab.gdpr_android.consent.VendorConsentDecoder;
 
@@ -178,6 +179,7 @@ public class ConsentLib {
             @Override
             public void onErrorOccurred(ConsentLibException error) {
                 ConsentLib.this.error = error;
+                clearAllConsentData();
                 runOnLiveActivityUIThread(() -> ConsentLib.this.onErrorOccurred.run(ConsentLib.this));
                 ConsentLib.this.finish();
             }
@@ -266,6 +268,19 @@ public class ConsentLib {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(key, value);
         editor.apply();
+    }
+    /*call this method to clear sharedPreferences from app onError*/
+    public void clearAllConsentData(){
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove(IAB_CONSENT_CMP_PRESENT);
+        editor.remove(IAB_CONSENT_CONSENT_STRING);
+        editor.remove(IAB_CONSENT_PARSED_PURPOSE_CONSENTS);
+        editor.remove(IAB_CONSENT_PARSED_VENDOR_CONSENTS);
+        editor.remove(IAB_CONSENT_SUBJECT_TO_GDPR);
+        editor.remove(CONSENT_UUID_KEY);
+        editor.remove(EU_CONSENT_KEY);
+        editor.remove(CUSTOM_CONSENTS_KEY);
+        editor.commit();
     }
 
     private void setSubjectToGDPR() {

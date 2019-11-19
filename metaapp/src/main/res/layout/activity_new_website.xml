@@ -40,6 +40,27 @@
                 android:textSize="@dimen/text_size_20" />
         </android.support.design.widget.TextInputLayout>
 
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilSiteId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_5"
+            android:fontFamily="@font/roboto_medium"
+            android:hint="@string/site_id"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_size_20"
+            app:hintTextAppearance="@style/TextLabel">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/etSiteId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:textSize="@dimen/text_size_20" />
+
+        </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/tilSiteName"
@@ -61,6 +82,50 @@
                 android:inputType="text"
                 android:textSize="@dimen/text_size_20" />
 
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilPMId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_5"
+            android:fontFamily="@font/roboto_medium"
+            android:hint="@string/pm_id"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_size_20"
+            app:hintTextAppearance="@style/TextLabel">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/etPMId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:textSize="@dimen/text_size_20" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilAuthID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_5"
+            android:fontFamily="@font/roboto_medium"
+            android:hint="@string/authId"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_size_20"
+            app:hintTextAppearance="@style/TextLabel">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/etAuthID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:longClickable="false"
+                android:textSize="@dimen/text_size_20" />
         </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
@@ -86,34 +151,36 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/margin_10"
                 android:layout_weight="0.3"
-                android:theme="@style/switch.Theme"
-                app:layout_constraintEnd_toEndOf="@+id/gl_parentEnd"
-                app:layout_constraintStart_toStartOf="@id/gl_divider"
-                app:layout_constraintTop_toBottomOf="@+id/tilSiteName" />
-
+                android:theme="@style/switch.Theme" />
 
         </LinearLayout>
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/tilAuthID"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_5"
-            android:fontFamily="@font/roboto_medium"
-            android:hint="@string/authId"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_20"
-            app:hintTextAppearance="@style/TextLabel">
+            android:layout_marginTop="@dimen/margin_10"
+            android:orientation="horizontal"
+            android:weightSum="1">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/etAuthID"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_showPM"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.7"
                 android:fontFamily="@font/roboto_medium"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:longClickable="false"
+                android:text="@string/show_pm"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/text_size_20" />
-        </android.support.design.widget.TextInputLayout>
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/toggleShowPM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_10"
+                android:layout_weight="0.3"
+                android:theme="@style/switch.Theme"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_targetingParams"
@@ -181,9 +248,7 @@
             android:gravity="end"
             android:text="@string/btn_add_params"
             android:textColor="@color/light_green"
-            android:textSize="@dimen/text_size_20"
-            app:layout_constraintEnd_toEndOf="@+id/gl_parentEnd"
-            app:layout_constraintTop_toBottomOf="@id/tilValue" />
+            android:textSize="@dimen/text_size_20"/>
 
 
         <TextView

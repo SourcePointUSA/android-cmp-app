@@ -24,11 +24,20 @@ public class Website implements Parcelable {
     @ColumnInfo( name = "accountId")
     private int accountID;
 
+    @ColumnInfo( name = "siteId")
+    private int siteID;
+
     @ColumnInfo( name = "name")
     private String name;
 
+    @ColumnInfo( name = "pmId")
+    private String pmID;
+
     @ColumnInfo ( name = "staging")
     private boolean isStaging;
+
+    @ColumnInfo( name = "showPM")
+    private boolean isShowPM;
 
     @ColumnInfo (name = "authId")
     private String authId;
@@ -39,18 +48,24 @@ public class Website implements Parcelable {
     private List<TargetingParam> targetingParamList;
 
 
-    public Website(int accountID , String name , boolean isStaging , String authId) {
+    public Website(int accountID, int siteID, String name, String pmID, boolean isStaging,boolean isShowPM, String authId) {
         this.accountID = accountID;
+        this.siteID = siteID;
         this.name = name;
+        this.pmID = pmID;
         this.isStaging = isStaging;
+        this.isShowPM = isShowPM;
         this.authId = authId;
     }
 
     @Ignore
-    public Website(int accountID , String name , boolean isStaging,String authId, List<TargetingParam> targetingParamList) {
+    public Website(int accountID, int siteID, String name, String pmID, boolean isStaging,boolean isShowPM, String authId, List<TargetingParam> targetingParamList) {
         this.accountID = accountID;
+        this.siteID = siteID;
         this.name = name;
+        this.pmID = pmID;
         this.isStaging = isStaging;
+        this.isShowPM = isShowPM;
         this.authId = authId;
         this.targetingParamList = targetingParamList;
     }
@@ -91,6 +106,30 @@ public class Website implements Parcelable {
         this.accountID = accountID;
     }
 
+    public int getSiteID() {
+        return siteID;
+    }
+
+    public void setSiteID(int siteID) {
+        this.siteID = siteID;
+    }
+
+    public String getPmID() {
+        return pmID;
+    }
+
+    public void setPmID(String pmID) {
+        this.pmID = pmID;
+    }
+
+    public boolean isShowPM() {
+        return isShowPM;
+    }
+
+    public void setShowPM(boolean showPM) {
+        isShowPM = showPM;
+    }
+
     public boolean isStaging() {
         return isStaging;
     }
@@ -122,8 +161,11 @@ public class Website implements Parcelable {
 
     public Website(Parcel in){
         this.accountID = in.readInt();
+        this.siteID = in.readInt();
         this.name = in.readString();
+        this.pmID = in.readString();
         this.isStaging = in.readByte() !=0;
+        this.isShowPM = in.readByte() !=0;
         this.authId = in.readString();
         this.targetingParamList = (List<TargetingParam>) in.createTypedArrayList(TargetingParam.CREATOR);
     }
@@ -131,8 +173,11 @@ public class Website implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.accountID);
+        dest.writeInt(this.siteID);
         dest.writeString(this.name);
+        dest.writeString(this.pmID);
         dest.writeByte((byte)(isStaging?1:0));
+        dest.writeByte((byte)(isShowPM?1:0));
         dest.writeString(this.authId);
         dest.writeTypedList(this.targetingParamList);
     }
