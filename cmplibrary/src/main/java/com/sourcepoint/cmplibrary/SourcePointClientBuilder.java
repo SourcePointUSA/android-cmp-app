@@ -13,15 +13,15 @@ class SourcePointClientBuilder {
     private static final String DEFAULT_INTERNAL_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.cmp.sp-stage.net/v3/staging.html";
     private static final String DEFAULT_IN_APP_MESSAGING_PAGE_DOMAIN = "in-app-messaging.pm.sourcepoint.mgr.consensu.org/v3/index.html";
 
-    private EncodedParam site, accountId ,siteId;
+    private EncodedParam property, accountId , propertyId;
     private boolean staging, stagingCampaign, isShowPM;
 
     private String mmsDomain, cmpDomain, messageDomain;
 
-    SourcePointClientBuilder(Integer accountId, String siteName,Integer siteId,boolean staging) throws ConsentLibException.BuildException {
+    SourcePointClientBuilder(Integer accountId, String property, Integer propertyId, boolean staging) throws ConsentLibException.BuildException {
         this.accountId = new EncodedParam("AccountId", accountId.toString());
-        this.site = new EncodedParam("SiteName", "https://"+siteName);
-        this.siteId = new EncodedParam("siteId", siteId.toString());
+        this.property = new EncodedParam("property", "https://"+property);
+        this.propertyId = new EncodedParam("propertyId", propertyId.toString());
         this.staging = staging;
     }
 
@@ -69,8 +69,8 @@ class SourcePointClientBuilder {
         try {
             return new SourcePointClient(
                     accountId,
-                    site,
-                    siteId,
+                    property,
+                    propertyId,
                     stagingCampaign,
                     isShowPM,
                     new URL("https", mmsDomain, ""),

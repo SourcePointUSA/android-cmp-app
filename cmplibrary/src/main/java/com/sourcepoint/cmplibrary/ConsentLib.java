@@ -7,11 +7,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ViewGroup;
 
-import java.util.HashSet;
-
-import com.google.common.annotations.VisibleForTesting;
 import com.iab.gdpr_android.consent.VendorConsent;
 import com.iab.gdpr_android.consent.VendorConsentDecoder;
+
+import java.util.HashSet;
 
 /**
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
@@ -80,12 +79,12 @@ public class ConsentLib {
 
     private static final String TAG = "ConsentLib";
     private static final String SP_PREFIX = "_sp_";
-    private static final String SP_SITE_ID = SP_PREFIX + "site_id";
+    private static final String SP_PROPERTY_ID = SP_PREFIX + "site_id";
     private final static String CUSTOM_CONSENTS_KEY = SP_PREFIX + "_custom_consents";
 
     private Activity activity;
-    private final String siteName;
-    private final int accountId, siteId;
+    private final String property;
+    private final int accountId, propertyId;
     private final ViewGroup viewGroup;
     private final Callback onMessageChoiceSelect, onConsentReady, onErrorOccurred;
     private Callback onMessageReady;
@@ -121,15 +120,15 @@ public class ConsentLib {
     /**
      * @return a new instance of ConsentLib.Builder
      */
-    public static ConsentLibBuilder newBuilder(Integer accountId, String siteName, Integer siteId,String pmId ,Activity activity) {
-        return new ConsentLibBuilder(accountId, siteName, siteId, pmId, activity);
+    public static ConsentLibBuilder newBuilder(Integer accountId, String property, Integer propertyId,String pmId ,Activity activity) {
+        return new ConsentLibBuilder(accountId, property, propertyId, pmId, activity);
     }
 
     ConsentLib(ConsentLibBuilder b) throws ConsentLibException.BuildException {
         activity = b.activity;
-        siteName = b.siteName;
+        property = b.property;
         accountId = b.accountId;
-        siteId = b.siteId;
+        propertyId = b.propertyId;
         encodedPMId = new EncodedParam("_sp_PMId",b.pmId);
         isShowPM = b.isShowPM;
         encodedAuthId = b.authId;
@@ -144,7 +143,7 @@ public class ConsentLib {
         // configurable time out
         defaultMessageTimeOut = b.defaultMessageTimeOut;
 
-        sourcePoint = new SourcePointClientBuilder(b.accountId, b.siteName + "/" + b.page, siteId, b.staging)
+        sourcePoint = new SourcePointClientBuilder(b.accountId, b.property + "/" + b.page, propertyId, b.staging)
                 .setStagingCampaign(b.stagingCampaign)
                 .setShowPM(b.isShowPM)
                 .setCmpDomain(b.cmpDomain)
@@ -457,12 +456,12 @@ public class ConsentLib {
     }
 
     private void loadAndStoreCustomVendorAndPurposeConsents(final String[] vendorIds, final OnLoadComplete callback) {
-        final String siteIdKey = SP_SITE_ID + "_" + accountId + "_" + siteName;
-        String siteID = Integer.toString(siteId);
+        final String propertyIdKey = SP_PROPERTY_ID + "_" + accountId + "_" + property;
+        String propertyId = Integer.toString(this.propertyId);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(siteIdKey, siteID);
+        editor.putString(propertyIdKey, propertyId);
         editor.apply();
-        sourcePoint.getCustomConsents(consentUUID, euconsent, siteID, vendorIds, new OnLoadComplete() {
+        sourcePoint.getCustomConsents(consentUUID, euconsent, propertyId, vendorIds, new OnLoadComplete() {
             @Override
             @SuppressWarnings("unchecked")
             public void onSuccess(Object result) {

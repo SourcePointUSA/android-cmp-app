@@ -1,1 +1,1 @@
-include ':app', ':cmplibrary', ':authexample', ':metaapp'
+include ':app', ':cmplibrary', ':authexample', ':metaapp', ':kotlin_sdk:app' , ':kotlin_sdk:cmplibrary'
