@@ -101,8 +101,8 @@ public class SourcePointClientTest {
         String response = "{\"consentedPurposes\":[{\"_id\":\"5d287f273e5ba6241423f58d\",\"name\":\"Personalisation\"},{\"_id\":\"5d287f273e5ba6241423f58e\",\"name\":\"Essential Cookies\"}],\"consentedVendors\":[{\"_id\":\"5b07836aecb3fe2955eba270\",\"name\":\"Google Ad Manager\",\"vendorType\":\"CUSTOM\"}]}";
         doAPICallWithAnswer(true , response);
 
-        String[] anyString = {"consnetUUID", "euConsent", "propertyId"};
-        sourcePointClient.getCustomConsents("consentUUID", "euConsent", "propertyId", anyString, onLoadComplete);
+        String[] anyString = {"consnetUUID", "euConsent", "siteId"};
+        sourcePointClient.getCustomConsents("consentUUID", "euConsent", "siteId", anyString, onLoadComplete);
 
         ArgumentCaptor<HashSet<Consent>> captor = ArgumentCaptor.forClass(HashSet.class);
 
@@ -115,8 +115,8 @@ public class SourcePointClientTest {
         String response = "{\"consentedPurposes\":[{\"_id\":\"5d287f273e5ba6241423f58d\",\"name\":\"Personalisation\"},{\"_id\":\"5d287f273e5ba6241423f58e\",\"name\":\"Essential Cookies\"}],\"consentedVendors\":[{\"_id\":\"5b07836aecb3fe2955eba270\",\"name\":\"Google Ad Manager\",\"vendorType\":\"CUSTOM\"}]}";
         doAPICallWithAnswer(false ,response);
 
-        String[] anyString = {"consnetUUID", "euConsent", "propertyId"};
-        sourcePointClient.getCustomConsents("consentUUID", "euConsent", "propertyId", anyString, onLoadComplete);
+        String[] anyString = {"consnetUUID", "euConsent", "siteId"};
+        sourcePointClient.getCustomConsents("consentUUID", "euConsent", "siteId", anyString, onLoadComplete);
 
         verify(onLoadComplete, never()).onSuccess(any());
         verify(onLoadComplete, times(1)).onFailure(any(ConsentLibException.class));

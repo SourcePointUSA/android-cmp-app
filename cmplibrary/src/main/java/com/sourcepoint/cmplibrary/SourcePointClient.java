@@ -23,7 +23,7 @@ class SourcePointClient {
     private static AsyncHttpClient http = new AsyncHttpClient();
 
     private URL mmsUrl, cmpUrl, messageUrl;
-    private EncodedParam accountId, property, propertyId;
+    private EncodedParam accountId, site, siteId;
     private Boolean stagingCampaign, isShowPM;
 
     class ResponseHandler extends JsonHttpResponseHandler {
@@ -50,8 +50,8 @@ class SourcePointClient {
 
     SourcePointClient(
             EncodedParam accountID,
-            EncodedParam property,
-            EncodedParam propertyId,
+            EncodedParam site,
+            EncodedParam siteId,
             boolean stagingCampaign,
             boolean isShowPM,
             URL mmsUrl,
@@ -61,8 +61,8 @@ class SourcePointClient {
         this.stagingCampaign = stagingCampaign;
         this.isShowPM = isShowPM;
         this.accountId = accountID;
-        this.propertyId = propertyId;
-        this.property = property;
+        this.siteId = siteId;
+        this.site = site;
         this.mmsUrl = mmsUrl;
         this.cmpUrl = cmpUrl;
         this.messageUrl = messageUrl;
@@ -72,12 +72,12 @@ class SourcePointClient {
         return cmpUrl + "/consent/v2/gdpr-status";
     }
 
-    private String customConsentsUrl(String consentUUID, String euConsent, String propertyId, String[] vendorIds) {
+    private String customConsentsUrl(String consentUUID, String euConsent, String siteId, String[] vendorIds) {
         String consentParam = consentUUID == null ? "[CONSENT_UUID]" : consentUUID;
         String euconsentParam = euConsent == null ? "[EUCONSENT]" : euConsent;
         String customVendorIdString = URLEncoder.encode(TextUtils.join(",", vendorIds));
 
-        return cmpUrl + "/consent/v2/" + propertyId + "/custom-vendors?" +
+        return cmpUrl + "/consent/v2/" + siteId + "/custom-vendors?" +
                 "customVendorIds=" + customVendorIdString +
                 "&consentUUID=" + consentParam +
                 "&euconsent=" + euconsentParam;
@@ -86,8 +86,8 @@ class SourcePointClient {
     String messageUrl(EncodedParam targetingParams, EncodedParam authId, EncodedParam pmId) {
         HashSet<String> params = new HashSet<>();
         params.add("_sp_accountId=" + accountId);
-        params.add("_sp_siteId=" + propertyId);
-        params.add("_sp_siteHref=" + property);
+        params.add("_sp_siteId=" + siteId);
+        params.add("_sp_siteHref=" + site);
         params.add("_sp_mms_Domain=" + mmsUrl);
         params.add("_sp_cmp_origin=" + cmpUrl);
         params.add("_sp_targetingParams=" + targetingParams);
@@ -159,8 +159,8 @@ class SourcePointClient {
         return consents;
     }
 
-    void getCustomConsents(String consentUUID, String euConsent, String propertyId, String[] vendorIds, ConsentLib.OnLoadComplete onLoadComplete) {
-        String url = customConsentsUrl(consentUUID, euConsent, propertyId, vendorIds);
+    void getCustomConsents(String consentUUID, String euConsent, String siteId, String[] vendorIds, ConsentLib.OnLoadComplete onLoadComplete) {
+        String url = customConsentsUrl(consentUUID, euConsent, siteId, vendorIds);
         http.get(url, new ResponseHandler(url, onLoadComplete) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

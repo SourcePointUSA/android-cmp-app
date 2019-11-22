@@ -2,16 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CMPLibrary.iml" filepath="$PROJECT_DIR$/CMPLibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/CMPLibrary-app.iml" filepath="$PROJECT_DIR$/app/CMPLibrary-app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/cmplibrary/CMPLibrary-cmplibrary.iml" filepath="$PROJECT_DIR$/cmplibrary/CMPLibrary-cmplibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-cmp-app.iml" filepath="$PROJECT_DIR$/android-cmp-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/authexample/authexample.iml" filepath="$PROJECT_DIR$/authexample/authexample.iml" />
       <module fileurl="file://$PROJECT_DIR$/cmplibrary/cmplibrary.iml" filepath="$PROJECT_DIR$/cmplibrary/cmplibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin_sdk/kotlin_sdk.iml" filepath="$PROJECT_DIR$/kotlin_sdk/kotlin_sdk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin_sdk/app/kotlin_sdk-app.iml" filepath="$PROJECT_DIR$/kotlin_sdk/app/kotlin_sdk-app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin_sdk/cmplibrary/kotlin_sdk-cmplibrary.iml" filepath="$PROJECT_DIR$/kotlin_sdk/cmplibrary/kotlin_sdk-cmplibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/metaapp/metaapp.iml" filepath="$PROJECT_DIR$/metaapp/metaapp.iml" />
     </modules>
   </component>

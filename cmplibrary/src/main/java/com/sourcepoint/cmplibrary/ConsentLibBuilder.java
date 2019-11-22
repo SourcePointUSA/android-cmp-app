@@ -12,8 +12,8 @@ public class ConsentLibBuilder {
     private final JSONObject targetingParams = new JSONObject();
 
     Activity activity;
-    int accountId, propertyId;
-    String property;
+    int accountId, siteId ;
+    String siteName;
     String mmsDomain, cmpDomain, msgDomain;
     String page = "";
     ViewGroup viewGroup = null;
@@ -25,10 +25,10 @@ public class ConsentLibBuilder {
     ConsentLib.DebugLevel debugLevel = ConsentLib.DebugLevel.OFF;
     long defaultMessageTimeOut = 10000;
 
-    ConsentLibBuilder(Integer accountId, String property, Integer propertyId, String pmId , Activity activity) {
+    ConsentLibBuilder(Integer accountId, String siteName,Integer siteId ,String pmId ,Activity activity) {
         this.accountId = accountId;
-        this.propertyId = propertyId;
-        this.property = property;
+        this.siteId =siteId;
+        this.siteName = siteName;
         this.pmId = pmId;
         this.activity = activity;
         mmsDomain = cmpDomain = msgDomain = null;

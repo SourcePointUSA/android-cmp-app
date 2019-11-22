@@ -17,7 +17,7 @@ We've changed that (keep reading).
 
 ### Constructor and Builder changes
 In order to support the Plug & Play Privacy Manager, we needed to add extra parameters to `ConsentLib`'s constructor. The additional parameters are:
-* `propertyId`: a `Number` representing the property id - available on the dashboard
+* `siteId`: a `Number` representing the property id - available on the dashboard
 * `privacyManagerId`: a `String` representing the id of the Privacy Manager you wish to show - available on the dashboard
 
 Additionally, a new method was introduced on `ConsentLibBuilder` -> `ConsentLibBuilder.setShowPM(Boolean showPM)`. When set to true, we'll load the Privacy Manager (that one screen with the toggles) rather than "asking" the scenario for a consent message.
@@ -112,7 +112,7 @@ This is a major release that include several bug fixes and improved stability.
 
 ### Migration Guide
 
-* `setAccount`, `setActivity` and `setSiteName` were removed. Just pass the accountId, property and activity to `newBuilder` method instead.
+* `setAccount`, `setActivity` and `setSiteName` were removed. Just pass the accountId, siteName and activity to `newBuilder` method instead.
 * Rename `getPurposeConsents` to `getCustomPurposeConsents`
 * Rename `onLoadCompleted` to `onSuccess`
 * The methods `getCustomVendorConsent` and `getPurposeConsent` were deleted in favor of using only `getCustomVendorConsents` and `getCustomPurposeConsents` (notice the plural in the end of the method names).
