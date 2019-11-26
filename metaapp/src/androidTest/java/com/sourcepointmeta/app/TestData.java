@@ -1,15 +1,15 @@
 package com.sourcepointmeta.app;
 
-import com.sourcepointmeta.app.database.entity.Website;
+import com.sourcepointmeta.app.database.entity.Property;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class TestData {
 
-    private static final Website WEBSITE_ENTITY = new Website(22,"mobile.demo",false);
-    private static final Website WEBSITE_ENTITY2 = new Website(808,"AndroidTesting",false);
+    private static final Property PROPERTY_ENTITY = new Property(22,2372,"mobile.demo","privacyManagerId",false,false,"authId");
+    private static final Property PROPERTY_ENTITY_2 = new Property(808,2372,"AndroidTesting","privacyManagerID",false,false,"authId");
 
-    public static final List<Website> WEBSITES = Arrays.asList(WEBSITE_ENTITY, WEBSITE_ENTITY2);
+    public static final List<Property> PROPERTIES = Arrays.asList(PROPERTY_ENTITY, PROPERTY_ENTITY_2);
 
 }

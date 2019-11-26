@@ -34,10 +34,10 @@ import com.sourcepointmeta.app.R;
 import com.sourcepointmeta.app.SourcepointApp;
 import com.sourcepointmeta.app.adapters.ConsentListRecyclerView;
 import com.sourcepointmeta.app.common.Constants;
+import com.sourcepointmeta.app.database.entity.Property;
 import com.sourcepointmeta.app.database.entity.TargetingParam;
-import com.sourcepointmeta.app.database.entity.Website;
 import com.sourcepointmeta.app.models.Consents;
-import com.sourcepointmeta.app.repository.WebsiteListRepository;
+import com.sourcepointmeta.app.repository.PropertyListRepository;
 import com.sourcepointmeta.app.utility.Util;
 import com.sourcepointmeta.app.viewmodel.ConsentViewViewModel;
 import com.sourcepointmeta.app.viewmodel.ViewModelUtils;
@@ -58,8 +58,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private boolean isShowOnceOrError = false;
     private boolean isVendorSuccess = false, isVendorFailure = false;
     private boolean isPurposeSuccess = false, isPurposeFailure = false;
-    private boolean isSiteSaved = false;
-    private boolean isCookiesCleared = false;
+    private boolean isPropertySaved = false;
 
     private List<Consents> mVendorConsents = new ArrayList<>();
     private List<Consents> mPurposeConsents = new ArrayList<>();
@@ -75,13 +74,13 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private SharedPreferences preferences;
     private ConstraintLayout mConstraintLayout;
 
-    private ConsentLib buildConsentLib(Website website, Activity activity) throws ConsentLibException {
+    private ConsentLib buildConsentLib(Property property, Activity activity) throws ConsentLibException {
 
 
-        ConsentLibBuilder consentLibBuilder = ConsentLib.newBuilder(website.getAccountID(), website.getName(), website.getSiteID(),website.getPmID(),activity)
+        ConsentLibBuilder consentLibBuilder = ConsentLib.newBuilder(property.getAccountID(), property.getProperty(), property.getPropertyID(),property.getPmID(),activity)
                 // optional, used for running stage campaigns
-                .setStage(website.isStaging())
-                .setShowPM(website.isShowPM())
+                .setStage(property.isStaging())
+                .setShowPM(property.isShowPM())
                 .setViewGroup(findViewById(android.R.id.content))
                 //optional message timeout default timeout is 5 seconds
                 .setMessageTimeOut(15000)
@@ -142,7 +141,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                                             public void run() {
                                                 mVendorConsents = vendorConsents;
                                                 isVendorSuccess = true;
-                                                showSiteDebugInfo();
+                                                showPropertyDebugInfo();
                                             }
                                         });
                                     }
@@ -153,7 +152,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                                         if (!TextUtils.isEmpty(exception.getMessage())) {
                                             if (exception.getMessage().equalsIgnoreCase("Bad Request")) {
                                                 mError = "Bad Request";
-                                                showAlertDialog("Could not find a site " + website.getName() + " for the account id " + website.getAccountID(), false);
+                                                showAlertDialog("Could not find a property " + property.getProperty() + " for the account id " + property.getAccountID(), false);
                                             } else {
                                                 mError = exception.getMessage();
                                                 showAlertDialog(exception.getMessage(), false);
@@ -166,7 +165,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                                             @Override
                                             public void run() {
                                                 isVendorFailure = true;
-                                                showSiteDebugInfo();
+                                                showPropertyDebugInfo();
                                             }
                                         });
                                     }
@@ -191,7 +190,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                                     public void run() {
                                         mPurposeConsents = purposeConsents;
                                         isPurposeSuccess = true;
-                                        showSiteDebugInfo();
+                                        showPropertyDebugInfo();
                                     }
                                 });
                             }
@@ -202,7 +201,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                                 if (!TextUtils.isEmpty(exception.getMessage())) {
                                     if (exception.getMessage().equalsIgnoreCase("Bad Request")) {
                                         mError = "Bad Request";
-                                        showAlertDialog("Could not find a site " + website.getName() + " for the account id " + website.getAccountID(), false);
+                                        showAlertDialog("Could not find a property " + property.getProperty() + " for the account id " + property.getAccountID(), false);
                                     } else {
                                         mError = exception.getMessage();
                                         showAlertDialog(exception.getMessage(), false);
@@ -214,7 +213,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                                     @Override
                                     public void run() {
                                         isPurposeFailure = true;
-                                        showSiteDebugInfo();
+                                        showPropertyDebugInfo();
                                     }
                                 });
                             }
@@ -240,17 +239,17 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                 });
 
         //get and set targeting param
-        List<TargetingParam> list = website.getTargetingParamList();//getTargetingParamList(website);
+        List<TargetingParam> list = property.getTargetingParamList();//getTargetingParamList(property);
         for (TargetingParam tps : list) {
             consentLibBuilder.setTargetingParam(tps.getKey(), tps.getValue());
             Log.d(TAG, "" + tps.getKey() + " " + tps.getValue());
         }
 
-        if (!TextUtils.isEmpty(website.getAuthId())){
-            consentLibBuilder.setAuthId(website.getAuthId());
-            Log.d(TAG,"AuthID : " + website.getAuthId() );
+        if (!TextUtils.isEmpty(property.getAuthId())){
+            consentLibBuilder.setAuthId(property.getAuthId());
+            Log.d(TAG,"AuthID : " + property.getAuthId() );
         }else {
-            Log.d(TAG,"AuthID Not available : " + website.getAuthId() );
+            Log.d(TAG,"AuthID Not available : " + property.getAuthId() );
         }
         // generate ConsentLib at this point modifying builder will not do anything
         return consentLibBuilder.build();
@@ -286,11 +285,11 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
 
 
         Bundle data = getIntent().getExtras();
-        Website website = data.getParcelable(Constants.WEBSITE);
+        Property property = data.getParcelable(Constants.PROPERTY);
 
 
         try {
-            mConsentLib = buildConsentLib(website, this);
+            mConsentLib = buildConsentLib(property, this);
             if (Util.isNetworkAvailable(this)) {
                 showProgressBar();
                 mConsentLib.run();
@@ -314,8 +313,8 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
 
     @Override
     ViewModel getViewModel() {
-        WebsiteListRepository websiteListRepository = ((SourcepointApp) getApplication()).getWebsiteListRepository();
-        return new ConsentViewViewModel(websiteListRepository);
+        PropertyListRepository propertyListRepository = ((SourcepointApp) getApplication()).getPropertyListRepository();
+        return new ConsentViewViewModel(propertyListRepository);
     }
 
     @Override
@@ -325,12 +324,12 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(viewModel.getClass());
     }
 
-    private void addWebsite(Website website) {
-        viewModel.addWebsite(website);
+    private void addProperty(Property property) {
+        viewModel.addProperty(property);
     }
 
-    private void updateWebsite(Website website) {
-        viewModel.updateWebsite(website);
+    private void updateProperty(Property property) {
+        viewModel.updateProperty(property);
     }
 
     private void showProgressBar() {
@@ -371,7 +370,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     }
 
     // method to show alert/error dialog
-    private void showAlertDialog(String message, boolean isSiteList) {
+    private void showAlertDialog(String message, boolean isPropertyList) {
         hideProgressBar();
         if (!isDestroyed()) {
             if (mAlertDialog == null) {
@@ -383,8 +382,8 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            if (!isSiteList) {
-                                                if (isSiteSaved) {
+                                            if (!isPropertyList) {
+                                                if (isPropertySaved) {
                                                     onBackPressed();
                                                 } else {
                                                     ConsentViewActivity.this.finish();
@@ -407,7 +406,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(ConsentViewActivity.this, WebsiteListActivity.class);
+        Intent intent = new Intent(ConsentViewActivity.this, PropertyListActivity.class);
         startActivity(intent);
         ConsentViewActivity.this.finish();
     }
@@ -437,7 +436,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private void showActionBar() {
         getSupportActionBar().show();
         mConstraintLayout.setVisibility(View.VISIBLE);
-        mTitle.setText(getResources().getString(R.string.site_info_screen_title));
+        mTitle.setText(getResources().getString(R.string.property_info_screen_title));
     }
 
     // method to show consent UUID and EUConsent
@@ -450,8 +449,8 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
         }
     }
 
-    // show debug info of site
-    private void showSiteDebugInfo() {
+    // show debug info of property
+    private void showPropertyDebugInfo() {
 
         if (isPurposeSuccess && isVendorSuccess) {
             if (isShowOnceOrError) {
@@ -465,22 +464,22 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
 
     }
 
-    // method to update or add site to database
+    // method to update or add property to database
     private void saveToDatabase() {
         Bundle bundle = getIntent().getExtras();
-        Website website;
-        if (bundle != null && !isSiteSaved) {
-            website = bundle.getParcelable(Constants.WEBSITE);
+        Property property;
+        if (bundle != null && !isPropertySaved) {
+            property = bundle.getParcelable(Constants.PROPERTY);
             if (bundle.containsKey("Update")) {
-                if (website != null && bundle.getString("Update") != null)
-                    website.setId(Integer.parseInt(bundle.getString("Update")));
-                updateWebsite(website);
-                isSiteSaved = true;
+                if (property != null && bundle.getString("Update") != null)
+                    property.setId(Integer.parseInt(bundle.getString("Update")));
+                updateProperty(property);
+                isPropertySaved = true;
             } else if (bundle.containsKey("Add")) {
-                addWebsite(website);
-                isSiteSaved = true;
+                addProperty(property);
+                isPropertySaved = true;
             } else {
-                Log.d(TAG, "No need to add or update as its from sitelist");
+                Log.d(TAG, "No need to add or update as its from propertyList");
             }
         } else {
             Log.d(TAG, "Data not present to update or add");
@@ -488,21 +487,21 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
 
     }
 
-    private void showAlertDialogForShowMessageOnce(String message, boolean isSiteList) {
+    private void showAlertDialogForShowMessageOnce(String message, boolean isPropertyList) {
         hideProgressBar();
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(ConsentViewActivity.this)
                 .setMessage(message)
                 .setCancelable(false)
                 .setPositiveButton("Clear Cookies", (dialog, which) -> {
                     dialog.cancel();
-                    showAlertDialogForCookiesCleared(isSiteList);
+                    showAlertDialogForCookiesCleared(isPropertyList);
                 })
-                .setNegativeButton("Show Site Info", (dialog, which) -> {
+                .setNegativeButton("Show property Info", (dialog, which) -> {
                     dialog.cancel();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (!isSiteList) {
+                            if (!isPropertyList) {
                                 ConsentViewActivity.this.finish();
                             } else {
                                 setConsents();
@@ -514,7 +513,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
         mAlertDialog.show();
     }
 
-    private void showAlertDialogForCookiesCleared(boolean isSiteList) {
+    private void showAlertDialogForCookiesCleared(boolean isPropertyList) {
         SpannableString cookieConfirmation = new SpannableString(getResources().getString(R.string.cookie_confirmation_message));
         cookieConfirmation.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 12, 21, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         cookieConfirmation.setSpan(new RelativeSizeSpan(1.2f), 12, 21, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -525,7 +524,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.clear();
                     editor.commit();
-                    clearCookies(isSiteList);
+                    clearCookies(isPropertyList);
 
                 })
                 .setNegativeButton("NO", (dialog, which) -> {
@@ -533,7 +532,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (!isSiteList) {
+                            if (!isPropertyList) {
                                 ConsentViewActivity.this.finish();
                             } else {
                                 setConsents();
@@ -545,17 +544,16 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
         mAlertDialog.show();
     }
 
-    private void clearCookies(boolean isSiteList) {
+    private void clearCookies(boolean isPropertyList) {
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeAllCookies(value -> {
             Log.d(TAG, "Cookies cleared : " + value.toString());
-            isCookiesCleared = value;
             if (value) {
                 resetFlag();
                 Bundle data = getIntent().getExtras();
-                Website website = data.getParcelable(Constants.WEBSITE);
+                Property property = data.getParcelable(Constants.PROPERTY);
                 try {
-                    mConsentLib = buildConsentLib(website, this);
+                    mConsentLib = buildConsentLib(property, this);
                     if (Util.isNetworkAvailable(this)) {
                         showProgressBar();
                         mConsentLib.run();
@@ -565,7 +563,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                     e.printStackTrace();
                 }
             } else {
-                showAlertDialog(getString(R.string.unable_to_clear_cookies), isSiteList);
+                showAlertDialog(getString(R.string.unable_to_clear_cookies), isPropertyList);
             }
         });
 

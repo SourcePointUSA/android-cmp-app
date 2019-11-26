@@ -30,10 +30,10 @@ import com.sourcepointmeta.app.SourcepointApp;
 import com.sourcepointmeta.app.adapters.TargetingParamsAdapter;
 import com.sourcepointmeta.app.common.Constants;
 import com.sourcepointmeta.app.database.entity.TargetingParam;
-import com.sourcepointmeta.app.database.entity.Website;
+import com.sourcepointmeta.app.database.entity.Property;
 import com.sourcepointmeta.app.listeners.RecyclerViewClickListener;
-import com.sourcepointmeta.app.repository.WebsiteListRepository;
-import com.sourcepointmeta.app.viewmodel.NewWebsiteViewModel;
+import com.sourcepointmeta.app.repository.PropertyListRepository;
+import com.sourcepointmeta.app.viewmodel.NewPropertyViewModel;
 import com.sourcepointmeta.app.viewmodel.ViewModelUtils;
 
 import java.util.ArrayList;
@@ -41,11 +41,11 @@ import java.util.List;
 
 import static android.support.v7.widget.RecyclerView.VERTICAL;
 
-public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
+public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
 
-    private final String TAG = "NewWebsiteActivity";
+    private final String TAG = "NewPropertyActivity";
     private ProgressDialog mProgressDialog;
-    private TextInputEditText mAccountIdET,mSiteIdET, mSiteNameET,mPMIdET ,mAuthIdET, mKeyET, mValueET ;
+    private TextInputEditText mAccountIdET, mPropertyIdET, mPropertyNameET,mPMIdET ,mAuthIdET, mKeyET, mValueET ;
 
     private TextView mAddParamBtn;
 
@@ -59,7 +59,7 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_website);
+        setContentView(R.layout.activity_new_property);
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.tool_bar);
@@ -71,8 +71,8 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
 
     private void setupUI() {
         mAccountIdET = findViewById(R.id.etAccountID);
-        mSiteIdET = findViewById(R.id.etSiteId);
-        mSiteNameET = findViewById(R.id.etSiteName);
+        mPropertyIdET = findViewById(R.id.etPropertyId);
+        mPropertyNameET = findViewById(R.id.etPropertyName);
         mPMIdET = findViewById(R.id.etPMId);
         mAuthIdET = findViewById(R.id.etAuthID);
         mStagingSwitch = findViewById(R.id.toggleStaging);
@@ -99,7 +99,7 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
         tpRecyclerView.setNestedScrollingEnabled(false);
 
         RecyclerViewClickListener listener = getRecyclerViewClickListener();
-        mTargetingParamsAdapter = new TargetingParamsAdapter(listener, false);
+        mTargetingParamsAdapter = new TargetingParamsAdapter(listener);
         mTargetingParamsAdapter.setmTargetingParamsList(mTargetingParamList);
         tpRecyclerView.setAdapter(mTargetingParamsAdapter);
         mTargetingParamsAdapter.notifyDataSetChanged();
@@ -109,28 +109,28 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
 
         Bundle data = getIntent().getExtras();
         if (data != null) {
-            Website website = data.getParcelable(Constants.WEBSITE);
+            Property property = data.getParcelable(Constants.PROPERTY);
 
-            if (website != null) {
-                mAccountIdET.setText(String.valueOf(website.getAccountID()));
-                mSiteIdET.setText(String.valueOf(website.getSiteID()));
-                mSiteNameET.setText(website.getName());
-                mPMIdET.setText(website.getPmID());
-                mStagingSwitch.setChecked(website.isStaging());
-                mShowPMSwitch.setChecked(website.isShowPM());
-                if (!TextUtils.isEmpty(website.getAuthId())){
-                    mAuthIdET.setText(website.getAuthId());
+            if (property != null) {
+                mAccountIdET.setText(String.valueOf(property.getAccountID()));
+                mPropertyIdET.setText(String.valueOf(property.getPropertyID()));
+                mPropertyNameET.setText(property.getProperty());
+                mPMIdET.setText(property.getPmID());
+                mStagingSwitch.setChecked(property.isStaging());
+                mShowPMSwitch.setChecked(property.isShowPM());
+                if (!TextUtils.isEmpty(property.getAuthId())){
+                    mAuthIdET.setText(property.getAuthId());
                 }
-                mTargetingParamList = website.getTargetingParamList();
+                mTargetingParamList = property.getTargetingParamList();
                 mTargetingParamsAdapter.setmTargetingParamsList(mTargetingParamList);
                 if (mTargetingParamList.size() != 0)
                     mAddParamMessage.setVisibility(View.GONE);
                 mTargetingParamsAdapter.notifyDataSetChanged();
 
-                mTitle.setText(R.string.edit_website_title);
+                mTitle.setText(R.string.edit_property_title);
             }
         } else {
-            mTitle.setText(R.string.new_website_title);
+            mTitle.setText(R.string.new_property_title);
         }
 
         mValueET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -153,13 +153,13 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
                 hideSoftKeyboard(v, hasFocus);
             }
         });
-        mSiteIdET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mPropertyIdET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 hideSoftKeyboard(v, hasFocus);
             }
         });
-        mSiteNameET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mPropertyNameET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 hideSoftKeyboard(v, hasFocus);
@@ -200,15 +200,15 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
 
     @Override
     ViewModel getViewModel() {
-        WebsiteListRepository websiteListRepository = ((SourcepointApp) getApplication()).getWebsiteListRepository();
-        return new NewWebsiteViewModel(websiteListRepository);
+        PropertyListRepository propertyListRepository = ((SourcepointApp) getApplication()).getPropertyListRepository();
+        return new NewPropertyViewModel(propertyListRepository);
     }
 
     private void showProgressBar() {
 
         if (mProgressDialog == null) {
 
-            mProgressDialog = new ProgressDialog(NewWebsiteActivity.this);
+            mProgressDialog = new ProgressDialog(NewPropertyActivity.this);
             mProgressDialog.setMessage("Please wait...");
             mProgressDialog.setCancelable(false);
             mProgressDialog.setIndeterminate(true);
@@ -237,7 +237,7 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
 
     private void showAlertDialog(String message) {
         if (!(mAlertDialog != null && mAlertDialog.isShowing())) {
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(NewWebsiteActivity.this)
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(NewPropertyActivity.this)
                     .setMessage(message)
                     .setCancelable(false)
                     .setPositiveButton("OK", (dialog, which) -> dialog.cancel()
@@ -249,7 +249,7 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.new_website, menu);
+        getMenuInflater().inflate(R.menu.new_property, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -258,8 +258,8 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
         hideSoftKeyboard();
 
         switch (item.getItemId()) {
-            case R.id.action_saveWebsite:
-                loadWebsiteWithInput();
+            case R.id.action_saveProperty:
+                loadPropertyWithInput();
                 break;
             case android.R.id.home:
                 this.finish();
@@ -272,11 +272,11 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
     }
 
     // validate user data input
-    private Website getFormData() {
+    private Property getFormData() {
 
         String accountID = mAccountIdET.getText().toString().trim();
-        String siteID = mSiteIdET.getText().toString().trim();
-        String siteName = mSiteNameET.getText().toString().trim();
+        String PropertyID = mPropertyIdET.getText().toString().trim();
+        String propertyName = mPropertyNameET.getText().toString().trim();
         String pmID = mPMIdET.getText().toString().trim();
         String authId = mAuthIdET.getText().toString().trim();
         boolean isStaging = mStagingSwitch.isChecked();
@@ -284,35 +284,35 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
         if (TextUtils.isEmpty(accountID)) {
             return null;
         }
-        if (TextUtils.isEmpty(siteName)) {
+        if (TextUtils.isEmpty(propertyName)) {
             return null;
         }
-        if (TextUtils.isEmpty(siteID)) {
+        if (TextUtils.isEmpty(PropertyID)) {
             return null;
         }
         if (TextUtils.isEmpty(pmID)) {
             return null;
         }
         int account = Integer.parseInt(accountID);
-        int site_id = Integer.parseInt(siteID);
+        int property_id = Integer.parseInt(PropertyID);
 
-        return new Website(account, site_id, siteName, pmID, isStaging, isShowPm, authId ,mTargetingParamList);
+        return new Property(account, property_id, propertyName, pmID, isStaging, isShowPm, authId ,mTargetingParamList);
     }
 
-    private void loadWebsiteWithInput() {
+    private void loadPropertyWithInput() {
 
-        Website website = getFormData();
-        if (website == null) {
-            showAlertDialog(getString(R.string.empty_accountid_sitename_message));
+        Property property = getFormData();
+        if (property == null) {
+            showAlertDialog(getString(R.string.empty_accountid_propertyname_message));
         } else {
             showProgressBar();
-            LiveData<Integer> listSize = viewModel.getWebsiteWithDetails(website);
+            LiveData<Integer> listSize = viewModel.getPropertyWithDetails(property);
             listSize.observe(this, size -> {
                 if (size > 0) {
-                    showAlertDialog(getResources().getString(R.string.site_details_exists));
+                    showAlertDialog(getResources().getString(R.string.property_details_exists));
                     hideProgressBar();
                 } else {
-                    startConsentViewActivity(website);
+                    startConsentViewActivity(property);
                 }
                 listSize.removeObservers(this);
             });
@@ -373,11 +373,11 @@ public class NewWebsiteActivity extends BaseActivity<NewWebsiteViewModel> {
         }
     }
 
-    private void startConsentViewActivity(Website website) {
+    private void startConsentViewActivity(Property property) {
 
-        Intent intent = new Intent(NewWebsiteActivity.this, ConsentViewActivity.class);
-        intent.putExtra(Constants.WEBSITE, website);
-        Log.d(TAG, "" + website.getId());
+        Intent intent = new Intent(NewPropertyActivity.this, ConsentViewActivity.class);
+        intent.putExtra(Constants.PROPERTY, property);
+        Log.d(TAG, "" + property.getId());
         Bundle bundle = getIntent().getExtras();
         if (bundle != null && bundle.containsKey(Constants.UPDATE)) {
             intent.putExtra(Constants.UPDATE, bundle.getString(Constants.UPDATE));

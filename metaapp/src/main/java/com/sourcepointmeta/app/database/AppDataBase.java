@@ -11,12 +11,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.sourcepointmeta.app.AppExecutors;
+import com.sourcepointmeta.app.database.dao.PropertyListDao;
 import com.sourcepointmeta.app.database.dao.TargetingParamDao;
-import com.sourcepointmeta.app.database.dao.WebsiteListDao;
+import com.sourcepointmeta.app.database.entity.Property;
 import com.sourcepointmeta.app.database.entity.TargetingParam;
-import com.sourcepointmeta.app.database.entity.Website;
 
-@Database(entities = {Website.class, TargetingParam.class}, version = 4, exportSchema = false)
+@Database(entities = {Property.class, TargetingParam.class}, version = 5, exportSchema = false)
 public abstract class AppDataBase extends RoomDatabase {
 
     private static AppDataBase sInstance;
@@ -58,6 +58,7 @@ public abstract class AppDataBase extends RoomDatabase {
                 }).addMigrations(MIGRATION_1_2)
                 .addMigrations(MIGRATION_2_3)
                 .addMigrations(MIGRATION_3_4)
+                .addMigrations(MIGRATION_4_5)
                 .build();
     }
 
@@ -99,15 +100,40 @@ public abstract class AppDataBase extends RoomDatabase {
             // Create the new table
             database.execSQL(
                     "CREATE TABLE websites_new (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `accountId` INTEGER NOT NULL, `siteId` INTEGER NOT NULL, `name` TEXT, `pmId` TEXT, `staging` INTEGER NOT NULL, `showPM` INTEGER NOT NULL,`authId` TEXT)");
-            // Copy the data
-            /*database.execSQL(
-                    "INSERT INTO websites_new (id, accountId, name ,staging) SELECT id, accountId, name,staging  FROM websites");*/
+
             // Remove the old table
             database.execSQL("DROP TABLE websites");
             // Change the table name to the correct one
             database.execSQL("ALTER TABLE websites_new RENAME TO websites");
             // delete old targetting param details from databse
             database.execSQL("DELETE  FROM targeting_param");
+        }
+    };
+
+    private static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            // Create the new table
+            database.execSQL(
+                    "CREATE TABLE property (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `accountId` INTEGER NOT NULL, `propertyId` INTEGER NOT NULL, `property` TEXT, `pmId` TEXT, `staging` INTEGER NOT NULL, `showPM` INTEGER NOT NULL,`authId` TEXT)");
+            //copy the data
+            database.execSQL(
+                    "INSERT INTO property (id, accountId, propertyId, property, pmId, staging, showPM, authId) SELECT id, accountId, siteId, name, pmId, staging, showPM, authId  FROM websites");
+
+            // Remove the old table
+            database.execSQL("DROP TABLE websites");
+            // craete targeting params duplicate
+            database.execSQL(
+                    "CREATE TABLE targeting_param_new (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `mKey` TEXT , `mValue` TEXT , `refID` INTEGER NOT NULL  ,FOREIGN KEY (refID)  REFERENCES property (id) ON DELETE CASCADE ON UPDATE CASCADE ) " );
+            database.execSQL("CREATE UNIQUE INDEX `index_targeting_param_mKey_refID_new` ON `targeting_param_new` (mKey, refID)");
+            //copy data from targeting param
+            database.execSQL(
+                    "INSERT INTO targeting_param_new (id, mKey, mValue, refID) SELECT id, mKey ,mValue, refID  FROM targeting_param  ");
+            // drop table targetting param
+            database.execSQL("DROP TABLE targeting_param");
+            // Change the table name to the targetting param
+            database.execSQL("ALTER TABLE targeting_param_new RENAME TO targeting_param");
+
         }
     };
 
@@ -129,7 +155,7 @@ public abstract class AppDataBase extends RoomDatabase {
         return mIsDatabaseCreated;
     }
 
-    public abstract WebsiteListDao websiteListDao();
+    public abstract PropertyListDao propertyListDao();
 
     public abstract TargetingParamDao targetingParamDao();
 
