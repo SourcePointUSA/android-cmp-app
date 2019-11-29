@@ -95,6 +95,7 @@ public class ConsentLib {
     private final EncodedParam encodedTargetingParams, encodedAuthId, encodedPMId;
     private final boolean weOwnTheView, isShowPM;
     private String campaign ;
+    private boolean isDisableRollBar = false;
 
     //default time out changes
     private boolean onMessageReadyCalled = false;
@@ -144,6 +145,7 @@ public class ConsentLib {
         encodedTargetingParams = b.targetingParamsString;
         viewGroup = b.viewGroup;
         campaign = b.stagingCampaign?"stage":"public";
+        isDisableRollBar = b.isDisableRollBar;
 
         weOwnTheView = viewGroup != null;
         // configurable time out
@@ -227,16 +229,20 @@ public class ConsentLib {
     }
    /*a method to log error with details in rollBar analytics about error occurred*/
     private void rollBarAnalytics(ConsentLibException error){
-        Rollbar.init(activity,"0e274866ba4d4cff879ff415a224d9e8","production");
-        Rollbar rollbar = Rollbar.instance();
-        HashMap<String,Object> propertyMap = new HashMap<>();
-        propertyMap.put("SDK_VERSION",BuildConfig.VERSION_NAME);
-        propertyMap.put("accountId" ,String.valueOf(accountId));
-        propertyMap.put("propertyId",String.valueOf(propertyId));
-        propertyMap.put("campaign",campaign);
-        propertyMap.put("showPM",String.valueOf(isShowPM));
-        propertyMap.put("defaultMessageTimeOut",String.valueOf(defaultMessageTimeOut));
-        rollbar.critical(error,propertyMap);
+        if (!isDisableRollBar){
+            Rollbar.init(activity,"0e274866ba4d4cff879ff415a224d9e8","production");
+            Rollbar rollbar = Rollbar.instance();
+            HashMap<String,Object> propertyMap = new HashMap<>();
+            propertyMap.put("SDK_VERSION",BuildConfig.VERSION_NAME);
+            propertyMap.put("accountId" ,String.valueOf(accountId));
+            propertyMap.put("propertyId",String.valueOf(propertyId));
+            propertyMap.put("campaign",campaign);
+            propertyMap.put("showPM",String.valueOf(isShowPM));
+            propertyMap.put("defaultMessageTimeOut",String.valueOf(defaultMessageTimeOut));
+            rollbar.critical(error,propertyMap);
+        }else {
+            Log.d(TAG , "RollBar is disabled by client application");
+        }
     }
 
     /**
