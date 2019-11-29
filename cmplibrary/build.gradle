@@ -40,6 +40,10 @@ android {
 }
 
 dependencies {
+    /*RollBar analytics toll dependency*/
+    implementation 'com.rollbar:rollbar-java:1.+'
+    implementation 'com.rollbar:rollbar-android:1.+@aar'
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api 'com.google.guava:guava:27.0.1-android'
     implementation 'com.loopj.android:android-async-http:1.4.9'
