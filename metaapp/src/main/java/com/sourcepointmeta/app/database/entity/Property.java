@@ -4,7 +4,6 @@ package com.sourcepointmeta.app.database.entity;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.os.Parcel;
@@ -14,8 +13,8 @@ import com.sourcepointmeta.app.database.ListTypeConverter;
 
 import java.util.List;
 
-@Entity (tableName = "websites" )
-public class Website implements Parcelable {
+@Entity (tableName = "property" )
+public class Property implements Parcelable {
 
 
     @PrimaryKey(autoGenerate = true)
@@ -24,11 +23,11 @@ public class Website implements Parcelable {
     @ColumnInfo( name = "accountId")
     private int accountID;
 
-    @ColumnInfo( name = "siteId")
-    private int siteID;
+    @ColumnInfo( name = "propertyId")
+    private int propertyID;
 
-    @ColumnInfo( name = "name")
-    private String name;
+    @ColumnInfo( name = "property")
+    private String property;
 
     @ColumnInfo( name = "pmId")
     private String pmID;
@@ -48,10 +47,10 @@ public class Website implements Parcelable {
     private List<TargetingParam> targetingParamList;
 
 
-    public Website(int accountID, int siteID, String name, String pmID, boolean isStaging,boolean isShowPM, String authId) {
+    public Property(int accountID, int propertyID, String property, String pmID, boolean isStaging, boolean isShowPM, String authId) {
         this.accountID = accountID;
-        this.siteID = siteID;
-        this.name = name;
+        this.propertyID = propertyID;
+        this.property = property;
         this.pmID = pmID;
         this.isStaging = isStaging;
         this.isShowPM = isShowPM;
@@ -59,10 +58,10 @@ public class Website implements Parcelable {
     }
 
     @Ignore
-    public Website(int accountID, int siteID, String name, String pmID, boolean isStaging,boolean isShowPM, String authId, List<TargetingParam> targetingParamList) {
+    public Property(int accountID, int propertyID, String property, String pmID, boolean isStaging, boolean isShowPM, String authId, List<TargetingParam> targetingParamList) {
         this.accountID = accountID;
-        this.siteID = siteID;
-        this.name = name;
+        this.propertyID = propertyID;
+        this.property = property;
         this.pmID = pmID;
         this.isStaging = isStaging;
         this.isShowPM = isShowPM;
@@ -71,22 +70,22 @@ public class Website implements Parcelable {
     }
 
     public static final Creator CREATOR = new Creator(){
-        public Website createFromParcel(Parcel in) {
-            return new Website(in);
+        public Property createFromParcel(Parcel in) {
+            return new Property(in);
         }
 
-        public Website[] newArray(int size) {
-            return new Website[size];
+        public Property[] newArray(int size) {
+            return new Property[size];
         }
     };
 
 
-    public String getName() {
-        return name;
+    public String getProperty() {
+        return property;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProperty(String property) {
+        this.property = property;
     }
 
 
@@ -106,12 +105,12 @@ public class Website implements Parcelable {
         this.accountID = accountID;
     }
 
-    public int getSiteID() {
-        return siteID;
+    public int getPropertyID() {
+        return propertyID;
     }
 
-    public void setSiteID(int siteID) {
-        this.siteID = siteID;
+    public void setPropertyID(int propertyID) {
+        this.propertyID = propertyID;
     }
 
     public String getPmID() {
@@ -159,10 +158,10 @@ public class Website implements Parcelable {
         return 0;
     }
 
-    public Website(Parcel in){
+    public Property(Parcel in){
         this.accountID = in.readInt();
-        this.siteID = in.readInt();
-        this.name = in.readString();
+        this.propertyID = in.readInt();
+        this.property = in.readString();
         this.pmID = in.readString();
         this.isStaging = in.readByte() !=0;
         this.isShowPM = in.readByte() !=0;
@@ -173,8 +172,8 @@ public class Website implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.accountID);
-        dest.writeInt(this.siteID);
-        dest.writeString(this.name);
+        dest.writeInt(this.propertyID);
+        dest.writeString(this.property);
         dest.writeString(this.pmID);
         dest.writeByte((byte)(isStaging?1:0));
         dest.writeByte((byte)(isShowPM?1:0));

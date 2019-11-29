@@ -15,66 +15,64 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ConsentViewViewModelTest {
+public class PropertyListViewModelTest {
 
     private final PropertyListDao propertyListDao = mock(PropertyListDao.class);
     private final TargetingParamDao targetingParamDao = mock(TargetingParamDao.class);
     private PropertyListRepository propertyListRepository;
-    private ConsentViewViewModel viewModel ;
+    private PropertyListViewModel viewModel ;
 
     @Before
     public void getViewModel(){
-
         AppDataBase appDataBase = mock(AppDataBase.class);
         when(appDataBase.propertyListDao()).thenReturn(propertyListDao);
         when(appDataBase.targetingParamDao()).thenReturn(targetingParamDao);
         propertyListRepository = mock(PropertyListRepository.class);
-
-        viewModel =  new ConsentViewViewModel(propertyListRepository);
-
+        viewModel =  new PropertyListViewModel(propertyListRepository);
     }
 
     @Rule
     public InstantTaskExecutorRule instantExecutorRule = new InstantTaskExecutorRule();
 
     @Test
-    public void addProperty() {
-        MutableLiveData<Long> propertyID = new MutableLiveData<>();
+    public void showWebsiteList(){
 
-        Property property = StaticTestData.PROPERTIES.get(0);
-        property.setId(1);
-        long id = 1;
+        MutableLiveData<List<Property>> dbData = new MutableLiveData<>();
+        List<Property> propertyList = StaticTestData.PROPERTIES;
 
-        when(propertyListDao.insert(property)).thenReturn(id);
-        propertyID.postValue(propertyListDao.insert(property));
-        doReturn(propertyID).when(propertyListRepository).addProperty(property);
+        when(propertyListDao.getAllProperties()).thenReturn(propertyList);
+        dbData.setValue(propertyList);
 
-        Observer<Long> observer = mock(Observer.class);
-        viewModel.addProperty(property).observeForever(observer);
+        doReturn(dbData).when(propertyListRepository).showPropertyList();
 
-        verify(observer).onChanged(id);
+        Observer<List<Property>> observer = mock(Observer.class);
+        viewModel.getPropertyListLiveData().observeForever(observer);
+        verify(observer).onChanged(propertyList);
     }
 
     @Test
-    public void updateProperty() {
-
-        MutableLiveData<Integer> propertyID = new MutableLiveData<>();
+    public void deleteWebsiteTest(){
+        MutableLiveData<Integer> websiteID = new MutableLiveData<>();
         Property property = StaticTestData.PROPERTIES.get(0);
         property.setId(1);
 
-        when(propertyListDao.update(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isShowPM(), property.getAuthId(), property.getId())).thenReturn(1);
-        propertyID.postValue(propertyListDao.update(property.getAccountID() , property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isShowPM(), property.getAuthId(), property.getId()));
-        doReturn(propertyID).when(propertyListRepository).updateProperty(property);
+        when(propertyListDao.deleteProperty(property.getId())).thenReturn(1);
+        websiteID.postValue(propertyListDao.deleteProperty(property.getId()));
+        doReturn(websiteID).when(propertyListRepository).deleteProperty(property);
 
 
         Observer<Integer> observer = mock(Observer.class);
-        viewModel.updateProperty(property).observeForever(observer);
+        viewModel.deleteProperty(property).observeForever(observer);
 
         verify(observer).onChanged(1);
+
     }
+
 }

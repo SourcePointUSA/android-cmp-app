@@ -2,27 +2,26 @@ package com.sourcepointmeta.app.viewmodel;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.util.Log;
 
-import com.sourcepointmeta.app.database.entity.Website;
-import com.sourcepointmeta.app.repository.WebsiteListRepository;
+import com.sourcepointmeta.app.database.entity.Property;
+import com.sourcepointmeta.app.repository.PropertyListRepository;
 
 public class ConsentViewViewModel extends ViewModel {
 
-    private final WebsiteListRepository mWebsiteListRepository;
+    private final PropertyListRepository mPropertyListRepository;
     private final String TAG = "ConsentViewViewModel";
 
-    public ConsentViewViewModel(WebsiteListRepository repository) {
-        mWebsiteListRepository = repository;
+    public ConsentViewViewModel(PropertyListRepository repository) {
+        mPropertyListRepository = repository;
     }
 
-    public MutableLiveData<Long> addWebsite(Website website) {
-        return mWebsiteListRepository.addWebsite(website);
+    public MutableLiveData<Long> addProperty(Property property) {
+        return mPropertyListRepository.addProperty(property);
 
     }
 
-    public MutableLiveData<Integer> updateWebsite(Website website){
-        return mWebsiteListRepository.updateWebsite(website);
+    public MutableLiveData<Integer> updateProperty(Property property){
+        return mPropertyListRepository.updateProperty(property);
     }
 
 }

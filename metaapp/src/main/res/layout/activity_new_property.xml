@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".ui.NewWebsiteActivity">
+    tools:context=".ui.NewPropertyActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -46,13 +46,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_5"
             android:fontFamily="@font/roboto_medium"
-            android:hint="@string/site_id"
+            android:hint="@string/property_id"
             android:textColor="@android:color/black"
             android:textSize="@dimen/text_size_20"
             app:hintTextAppearance="@style/TextLabel">
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/etSiteId"
+                android:id="@+id/etPropertyId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_medium"
@@ -68,13 +68,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_5"
             android:fontFamily="@font/roboto_medium"
-            android:hint="@string/site_name"
+            android:hint="@string/property_name"
             android:textColor="@android:color/black"
             android:textSize="@dimen/text_size_20"
             app:hintTextAppearance="@style/TextLabel">
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/etSiteName"
+                android:id="@+id/etPropertyName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_medium"

@@ -10,7 +10,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, WebsiteListActivity.class);
+        Intent intent = new Intent(this, PropertyListActivity.class);
         startActivity(intent);
         finish();
     }

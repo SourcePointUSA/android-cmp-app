@@ -11,7 +11,7 @@ import android.os.Parcelable;
 
 @Entity(tableName = "targeting_param",
         indices = {@Index(value = {"mKey", "refID"}, unique = true)},
-        foreignKeys = {@ForeignKey(entity = Website.class,
+        foreignKeys = {@ForeignKey(entity = Property.class,
                 parentColumns = "id",
                 childColumns = "refID",
                 onDelete = ForeignKey.CASCADE,
