@@ -18,7 +18,7 @@ public class ConsentLibBuilder {
     String page = "";
     ViewGroup viewGroup = null;
     ConsentLib.Callback onMessageChoiceSelect, onConsentReady, onErrorOccurred, onMessageReady;
-    boolean staging, stagingCampaign, newPM , isShowPM;
+    boolean staging, stagingCampaign, newPM , isShowPM, shouldCleanConsentOnError;
     EncodedParam targetingParamsString = null;
     EncodedParam authId = null;
     String pmId = "";
@@ -133,6 +133,11 @@ public class ConsentLibBuilder {
      */
     public ConsentLibBuilder setStage(boolean st) {
         stagingCampaign = st;
+        return this;
+    }
+
+    public ConsentLibBuilder setShouldCleanConsentOnError(Boolean shouldCleanConsentOnError) {
+        this.shouldCleanConsentOnError = shouldCleanConsentOnError;
         return this;
     }
 

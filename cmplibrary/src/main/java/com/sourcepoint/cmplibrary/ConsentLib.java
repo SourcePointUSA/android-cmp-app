@@ -13,6 +13,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.iab.gdpr_android.consent.VendorConsent;
 import com.iab.gdpr_android.consent.VendorConsentDecoder;
 
+import static java.lang.Boolean.TRUE;
+
 /**
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
  * It offers methods to get custom vendors consents as well as IAB consent purposes.
@@ -69,6 +71,8 @@ public class ConsentLib {
 
     private static final int MAX_PURPOSE_ID = 24;
 
+    private Boolean shouldCleanConsentOnError = TRUE;
+
     /**
      * After the user has chosen an option in the WebView, this attribute will contain an integer
      * indicating what was that choice.
@@ -118,6 +122,10 @@ public class ConsentLib {
         }
     }
 
+    public void setShouldCleanConsentOnError(Boolean shouldCleanConsentOnError) {
+        this.shouldCleanConsentOnError = shouldCleanConsentOnError;
+    }
+
     /**
      * @return a new instance of ConsentLib.Builder
      */
@@ -139,6 +147,7 @@ public class ConsentLib {
         onMessageReady = b.onMessageReady;
         encodedTargetingParams = b.targetingParamsString;
         viewGroup = b.viewGroup;
+        shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
         weOwnTheView = viewGroup != null;
         // configurable time out
@@ -179,7 +188,9 @@ public class ConsentLib {
             @Override
             public void onErrorOccurred(ConsentLibException error) {
                 ConsentLib.this.error = error;
-                clearAllConsentData();
+                if(shouldCleanConsentOnError) {
+                    clearAllConsentData();
+                }
                 runOnLiveActivityUIThread(() -> ConsentLib.this.onErrorOccurred.run(ConsentLib.this));
                 ConsentLib.this.finish();
             }
