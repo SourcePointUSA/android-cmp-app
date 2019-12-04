@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static java.lang.Boolean.TRUE;
-
 @SuppressWarnings("unused")
 public class ConsentLibBuilder {
     private final JSONObject targetingParams = new JSONObject();

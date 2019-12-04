@@ -7,13 +7,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ViewGroup;
 
-import java.util.HashSet;
-
-import com.google.common.annotations.VisibleForTesting;
 import com.iab.gdpr_android.consent.VendorConsent;
 import com.iab.gdpr_android.consent.VendorConsentDecoder;
 
-import static java.lang.Boolean.TRUE;
+import java.util.HashSet;
 
 /**
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
