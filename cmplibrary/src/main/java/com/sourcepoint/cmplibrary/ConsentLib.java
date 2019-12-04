@@ -71,7 +71,7 @@ public class ConsentLib {
 
     private static final int MAX_PURPOSE_ID = 24;
 
-    private Boolean shouldCleanConsentOnError = TRUE;
+    private Boolean shouldCleanConsentOnError;
 
     /**
      * After the user has chosen an option in the WebView, this attribute will contain an integer
@@ -120,10 +120,6 @@ public class ConsentLib {
             Log.d(TAG, "default implementation of onFailure, did you forget to override onFailure ?");
             exception.printStackTrace();
         }
-    }
-
-    public void setShouldCleanConsentOnError(Boolean shouldCleanConsentOnError) {
-        this.shouldCleanConsentOnError = shouldCleanConsentOnError;
     }
 
     /**

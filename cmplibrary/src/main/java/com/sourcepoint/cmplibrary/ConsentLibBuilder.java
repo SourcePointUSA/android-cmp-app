@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static java.lang.Boolean.TRUE;
+
 @SuppressWarnings("unused")
 public class ConsentLibBuilder {
     private final JSONObject targetingParams = new JSONObject();
@@ -32,7 +34,8 @@ public class ConsentLibBuilder {
         this.pmId = pmId;
         this.activity = activity;
         mmsDomain = cmpDomain = msgDomain = null;
-        staging = stagingCampaign = newPM = isShowPM =false;
+        staging = stagingCampaign = newPM = isShowPM = false;
+        shouldCleanConsentOnError = true;
         ConsentLib.Callback noOpCallback = new ConsentLib.Callback() {
             @Override
             public void run(ConsentLib c) {
