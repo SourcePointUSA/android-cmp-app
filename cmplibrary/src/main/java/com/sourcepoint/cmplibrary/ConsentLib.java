@@ -7,10 +7,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ViewGroup;
 
-import java.util.HashSet;
-
 import com.iab.gdpr_android.consent.VendorConsent;
 import com.iab.gdpr_android.consent.VendorConsentDecoder;
+
+import java.util.HashSet;
 
 /**
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
@@ -67,6 +67,8 @@ public class ConsentLib {
     public String euconsent, consentUUID;
 
     private static final int MAX_PURPOSE_ID = 24;
+
+    private Boolean shouldCleanConsentOnError;
 
     /**
      * After the user has chosen an option in the WebView, this attribute will contain an integer
@@ -138,6 +140,7 @@ public class ConsentLib {
         onMessageReady = b.onMessageReady;
         encodedTargetingParams = b.targetingParamsString;
         viewGroup = b.viewGroup;
+        shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
         weOwnTheView = viewGroup != null;
         // configurable time out
@@ -178,7 +181,9 @@ public class ConsentLib {
             @Override
             public void onErrorOccurred(ConsentLibException error) {
                 ConsentLib.this.error = error;
-                clearAllConsentData();
+                if(shouldCleanConsentOnError) {
+                    clearAllConsentData();
+                }
                 runOnLiveActivityUIThread(() -> ConsentLib.this.onErrorOccurred.run(ConsentLib.this));
                 ConsentLib.this.finish();
             }
