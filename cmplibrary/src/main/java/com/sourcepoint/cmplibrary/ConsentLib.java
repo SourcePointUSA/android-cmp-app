@@ -6,9 +6,12 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ViewGroup;
+import com.rollbar.android.Rollbar;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
+import com.example.cmplibrary.BuildConfig;
 import com.iab.gdpr_android.consent.VendorConsent;
 import com.iab.gdpr_android.consent.VendorConsentDecoder;
 
@@ -90,6 +93,8 @@ public class ConsentLib {
     private Callback onMessageReady;
     private final EncodedParam encodedTargetingParams, encodedAuthId, encodedPMId;
     private final boolean weOwnTheView, isShowPM;
+    private String campaign ;
+    private boolean isDisableRollBar = false;
 
     //default time out changes
     private boolean onMessageReadyCalled = false;
@@ -138,6 +143,8 @@ public class ConsentLib {
         onMessageReady = b.onMessageReady;
         encodedTargetingParams = b.targetingParamsString;
         viewGroup = b.viewGroup;
+        campaign = b.stagingCampaign?"stage":"public";
+        isDisableRollBar = b.isDisableRollBar;
 
         weOwnTheView = viewGroup != null;
         // configurable time out
@@ -178,6 +185,7 @@ public class ConsentLib {
             @Override
             public void onErrorOccurred(ConsentLibException error) {
                 ConsentLib.this.error = error;
+                rollBarAnalytics(error);
                 clearAllConsentData();
                 runOnLiveActivityUIThread(() -> ConsentLib.this.onErrorOccurred.run(ConsentLib.this));
                 ConsentLib.this.finish();
@@ -253,6 +261,24 @@ public class ConsentLib {
                 }
             }
         };
+    }
+
+    /*a method to log error with details in rollBar analytics about error occurred*/
+    private void rollBarAnalytics(ConsentLibException error){
+        if (!isDisableRollBar){
+            Rollbar.init(activity,"0e274866ba4d4cff879ff415a224d9e8","production");
+            Rollbar rollbar = Rollbar.instance();
+            HashMap<String,Object> propertyMap = new HashMap<>();
+            propertyMap.put("SDK_VERSION", BuildConfig.VERSION_NAME);
+            propertyMap.put("accountId" ,String.valueOf(accountId));
+            propertyMap.put("propertyId",String.valueOf(propertyId));
+            propertyMap.put("campaign",campaign);
+            propertyMap.put("showPM",String.valueOf(isShowPM));
+            propertyMap.put("defaultMessageTimeOut",String.valueOf(defaultMessageTimeOut));
+            rollbar.critical(error,propertyMap);
+        }else {
+            Log.d(TAG , "RollBar is disabled by client application");
+        }
     }
 
     private void setSharedPreference(String key, String value) {

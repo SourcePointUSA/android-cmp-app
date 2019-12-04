@@ -3,4 +3,8 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <application>
+        <meta-data android:name="com.rollbar.android.ACCESS_TOKEN"
+            android:value="0e274866ba4d4cff879ff415a224d9e8" />
+    </application>
 </manifest>

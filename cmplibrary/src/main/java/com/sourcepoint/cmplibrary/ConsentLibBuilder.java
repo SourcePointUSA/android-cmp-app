@@ -19,6 +19,7 @@ public class ConsentLibBuilder {
     ViewGroup viewGroup = null;
     ConsentLib.Callback onMessageChoiceSelect, onConsentReady, onErrorOccurred, onMessageReady;
     boolean staging, stagingCampaign, newPM , isShowPM;
+    boolean isDisableRollBar = false;
     EncodedParam targetingParamsString = null;
     EncodedParam authId = null;
     String pmId = "";
@@ -175,6 +176,12 @@ public class ConsentLibBuilder {
 
     public ConsentLibBuilder setShowPM(boolean isUserTriggered){
         this.isShowPM = isUserTriggered;
+        return this;
+    }
+
+
+    public ConsentLibBuilder setDisableRollBar(boolean isDisableRollBar){
+        this.isDisableRollBar = isDisableRollBar;
         return this;
     }
 

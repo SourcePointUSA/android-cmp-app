@@ -60,6 +60,10 @@ dependencies {
     api 'com.iab.gdpr_android:gdpr_android:1.0.1'
     androidTestImplementation 'junit:junit:4.12'
 //    implementation 'com.conversantmedia.gdpr:consent-string-sdk-java:3.0.2'
+
+    /*RollBar analytics toll dependency*/
+    implementation 'com.rollbar:rollbar-java:1.+'
+    implementation 'com.rollbar:rollbar-android:1.+@aar'
 }
 
 task sourcesJar(type: Jar) {
