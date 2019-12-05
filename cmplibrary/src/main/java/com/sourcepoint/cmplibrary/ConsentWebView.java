@@ -27,6 +27,8 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import org.json.JSONObject;
+
 import java.util.HashSet;
 
 abstract public class ConsentWebView extends WebView {
@@ -34,6 +36,12 @@ abstract public class ConsentWebView extends WebView {
 
     @SuppressWarnings("unused")
     private class MessageInterface {
+
+
+        @JavascriptInterface
+        public void onEvent(String actionType){
+            Log.i("JS", actionType);
+        }
 
         // called when message is about to be shown
         @JavascriptInterface
@@ -201,6 +209,9 @@ abstract public class ConsentWebView extends WebView {
                 super.onPageFinished(view, url);
                 flushOrSyncCookies();
                 connectionPool.remove(url);
+                //view.loadUrl("javascript:" + "addEventListener('message', Android.onEvent('oie'))");
+                view.loadUrl("javascript:" + "addEventListener('message', e => Android.onEvent(e.data.actions[0]?e.data.actions[0].data.type:'showMsg'))");
+
             }
 
             @Override
@@ -250,7 +261,7 @@ abstract public class ConsentWebView extends WebView {
             }
             return false;
         });
-        addJavascriptInterface(new MessageInterface(), "JSReceiver");
+        addJavascriptInterface(new MessageInterface(), "Android");
         resumeTimers();
     }
 

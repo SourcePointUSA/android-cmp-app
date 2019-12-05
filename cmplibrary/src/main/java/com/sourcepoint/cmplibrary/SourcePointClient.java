@@ -100,7 +100,7 @@ class SourcePointClient {
             params.add("_sp_authId=" + authId);
         }
 
-        return messageUrl + "?" + TextUtils.join("&", params);
+        return "https://notice.sp-prod.net/?message_id=66281";
     }
 
     @VisibleForTesting
