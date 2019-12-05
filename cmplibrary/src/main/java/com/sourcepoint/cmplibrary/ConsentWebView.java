@@ -34,13 +34,22 @@ import java.util.HashSet;
 abstract public class ConsentWebView extends WebView {
     private static final String TAG = "ConsentWebView";
 
+    private String getJSInjection(){
+        return "addEventListener('message', e => {\n" +
+                "    const { data } = e;\n" +
+                "    Android.onEvent(JSON.stringify(e.data, null, 2));\n" +
+                "    if(data.name === \"sp.showMessage\") Android.onMessageReady();\n" +
+                "    if(data.actions) Android.onMessageChoiceSelect(data.actions[0].data.choice_id, data.actions[0].data.type);\n" +
+                "});";
+    }
+
     @SuppressWarnings("unused")
     private class MessageInterface {
 
 
         @JavascriptInterface
-        public void onEvent(String actionType){
-            Log.i("JS", actionType);
+        public void onEvent(String data){
+            Log.i("JS", data);
         }
 
         // called when message is about to be shown
@@ -210,7 +219,7 @@ abstract public class ConsentWebView extends WebView {
                 flushOrSyncCookies();
                 connectionPool.remove(url);
                 //view.loadUrl("javascript:" + "addEventListener('message', Android.onEvent('oie'))");
-                view.loadUrl("javascript:" + "addEventListener('message', e => Android.onEvent(e.data.actions[0]?e.data.actions[0].data.type:'showMsg'))");
+                view.loadUrl("javascript:" + getJSInjection());
 
             }
 

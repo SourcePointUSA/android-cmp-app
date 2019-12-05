@@ -215,6 +215,7 @@ public class ConsentLib {
                         break;
                 }
                 runOnLiveActivityUIThread(() -> ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this));
+                onConsentReady("", "");
             }
         };
     }
