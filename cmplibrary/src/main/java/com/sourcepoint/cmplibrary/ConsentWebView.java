@@ -34,6 +34,8 @@ import java.util.HashSet;
 abstract public class ConsentWebView extends WebView {
     private static final String TAG = "ConsentWebView";
 
+
+    // TODO: pass this script to a .js file and return it as a string in this method
     private String getJSInjection(){
         return "addEventListener('message', e => {\n" +
                 "    const { data } = e;\n" +

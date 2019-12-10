@@ -83,6 +83,7 @@ class SourcePointClient {
                 "&euconsent=" + euconsentParam;
     }
 
+    //TODO: get url from endpoint
     String messageUrl(EncodedParam targetingParams, EncodedParam authId, EncodedParam pmId) {
         HashSet<String> params = new HashSet<>();
         params.add("_sp_accountId=" + accountId);
