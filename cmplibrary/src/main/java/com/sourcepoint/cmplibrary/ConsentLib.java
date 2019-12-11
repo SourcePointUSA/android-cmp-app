@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.iab.gdpr_android.consent.VendorConsent;
 import com.iab.gdpr_android.consent.VendorConsentDecoder;
 
+import java.io.Serializable;
 import java.util.HashSet;
 
 /**
@@ -20,7 +21,7 @@ import java.util.HashSet;
  * }
  * </pre>
  */
-public class ConsentLib {
+public class ConsentLib implements Serializable { /*made this serializable to store in bundle object*/
     /**
      * If the user has consent data stored, reading for this key in the shared preferences will return true
      */
@@ -523,6 +524,7 @@ public class ConsentLib {
             }
             webView.destroy();
             webView = null;
+            activity = null;
         }
     }
 }
