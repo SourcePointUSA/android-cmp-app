@@ -63,7 +63,7 @@ public class ConsentLibBuilderTest {
     @Test
     public void setOnMessageChoiceSelect() {
         consentLibBuilder.setOnMessageChoiceSelect(callback);
-        assertEquals(callback, consentLibBuilder.onMessageChoiceSelect);
+        assertEquals(callback, consentLibBuilder.onAction);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class ConsentLibBuilderTest {
     @Test
     public void setOnErrorOccurred() {
         consentLibBuilder.setOnErrorOccurred(callback);
-        assertEquals(callback, consentLibBuilder.onErrorOccurred);
+        assertEquals(callback, consentLibBuilder.onError);
     }
 
     @Test

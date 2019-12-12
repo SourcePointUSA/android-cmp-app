@@ -37,21 +37,67 @@ abstract public class ConsentWebView extends WebView {
 
     // TODO: pass this script to a .js file and return it as a string in this method
     private String getJSInjection(){
-        return "addEventListener('message', e => {\n" +
-                "    const { data } = e;\n" +
-                "    Android.onEvent(JSON.stringify(e.data, null, 2));\n" +
-                "    if(data.name === \"sp.showMessage\") Android.onMessageReady();\n" +
-                "    if(data.actions) Android.onMessageChoiceSelect(data.actions[0].data.choice_id, data.actions[0].data.type);\n" +
-                "});";
+        return "addEventListener('message', handleEvent);\n" +
+                "function handleEvent(event) {\n" +
+                "    try {\n" +
+                "        SDK.log(JSON.stringify(event.data, null, 2));\n" +
+                "        const data = eventData(event);\n" +
+                "        SDK.log(JSON.stringify(data, null, 2));\n" +
+                "        if (data.name === 'sp.showMessage') SDK.onMessageReady();\n" +
+                "        else if(data.action){\n" +
+                "            SDK.onAction(data.action.choice_id, data.action.type);\n" +
+                "        }\n" +
+                "    } catch (err) {\n" +
+                "        SDK.log(err.stack);\n" +
+                "    };\n" +
+                "};\n" +
+                "\n" +
+                "function eventData(event) {\n" +
+                "    return isFromPM(event) ? dataFromPM(event) : dataFromMessage(event);\n" +
+                "};\n" +
+                "\n" +
+                "function isFromPM(event) {\n" +
+                "    return !!event.data.action;\n" +
+                "};\n" +
+                "\n" +
+                "function dataFromMessage(msgEvent) {\n" +
+                "    return {\n" +
+                "        name: msgEvent.data.name,\n" +
+                "        action: msgEvent.data.actions.length ? msgEvent.data.actions[0].data : null\n" +
+                "    };\n" +
+                "};\n" +
+                "\n" +
+                "function dataFromPM(pmEvent) {\n" +
+                "    const name = pmEvent.data.action;\n" +
+                "    return {\n" +
+                "        name,\n" +
+                "        action: pmActions[name]\n" +
+                "    };\n" +
+                "};\n" +
+                "\n" +
+                "var pmActions = {\n" +
+                "    \"sp.pmComplete\": {\n" +
+                "        choice_id: 99,\n" +
+                "        type: 99\n" +
+                "    },\n" +
+                "    \"sp.cancel\": {\n" +
+                "        choice_id: 98,\n" +
+                "        type: 98\n" +
+                "    }\n" +
+                "};";
     }
 
     @SuppressWarnings("unused")
     private class MessageInterface {
 
+        @JavascriptInterface
+        public void log(String tag, String msg){
+            Log.i(tag, msg);
+        }
 
         @JavascriptInterface
-        public void onEvent(String data){
-            Log.i("JS", data);
+        public void log(String msg){
+            Log.i("JS", msg);
         }
 
         // called when message is about to be shown
@@ -64,12 +110,12 @@ abstract public class ConsentWebView extends WebView {
 
         // called when a choice is selected on the message
         @JavascriptInterface
-        public void onMessageChoiceSelect(int choiceId, int choiceType) {
-            Log.d("onMessageChoiceSelect", "called");
+        public void onAction(int choiceId, int choiceType) {
+            Log.d("onAction", "called");
             if (ConsentWebView.this.hasLostInternetConnection()) {
-                ConsentWebView.this.onErrorOccurred(new ConsentLibException.NoInternetConnectionException());
+                ConsentWebView.this.onError(new ConsentLibException.NoInternetConnectionException());
             }
-            ConsentWebView.this.onMessageChoiceSelect(choiceId, choiceType);
+            ConsentWebView.this.onAction(choiceId, choiceType);
         }
 
         //called when user takes action on privacy manager
@@ -80,7 +126,7 @@ abstract public class ConsentWebView extends WebView {
 
         @JavascriptInterface
         public void onMessageChoiceError(String errorType) {
-            onErrorOccurred(errorType);
+            onError(errorType);
             Log.d("onMessageChoiceError", "called");
         }
 
@@ -110,11 +156,11 @@ abstract public class ConsentWebView extends WebView {
 
         //called when an error is occured while loading web-view
         @JavascriptInterface
-        public void onErrorOccurred(String errorType) {
+        public void onError(String errorType) {
             ConsentLibException error = ConsentWebView.this.hasLostInternetConnection() ?
                     new ConsentLibException.NoInternetConnectionException() :
                     new ConsentLibException("Something went wrong in the javascript world.");
-            ConsentWebView.this.onErrorOccurred(error);
+            ConsentWebView.this.onError(error);
         }
         // xhr logger
         @JavascriptInterface
@@ -209,7 +255,7 @@ abstract public class ConsentWebView extends WebView {
                 connectionPool.add(url);
                 Runnable run = () -> {
                     if (connectionPool.contains(url))
-                        onErrorOccurred(new ConsentLibException.ApiException("TIMED OUT: " + url));
+                        onError(new ConsentLibException.ApiException("TIMED OUT: " + url));
                 };
                 Handler myHandler = new Handler(Looper.myLooper());
                 myHandler.postDelayed(run, timeoutMillisec);
@@ -220,7 +266,7 @@ abstract public class ConsentWebView extends WebView {
                 super.onPageFinished(view, url);
                 flushOrSyncCookies();
                 connectionPool.remove(url);
-                //view.loadUrl("javascript:" + "addEventListener('message', Android.onEvent('oie'))");
+                //view.loadUrl("javascript:" + "addEventListener('message', SDK.onEvent('oie'))");
                 view.loadUrl("javascript:" + getJSInjection());
 
             }
@@ -229,28 +275,28 @@ abstract public class ConsentWebView extends WebView {
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
                 Log.d(TAG, "onReceivedError: " + error.toString());
-                onErrorOccurred(new ConsentLibException.ApiException(error.toString()));
+                onError(new ConsentLibException.ApiException(error.toString()));
             }
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
                 Log.d(TAG, "onReceivedError: Error " + errorCode + ": " + description);
-                onErrorOccurred(new ConsentLibException.ApiException(description));
+                onError(new ConsentLibException.ApiException(description));
             }
 
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                 super.onReceivedSslError(view, handler, error);
                 Log.d(TAG, "onReceivedSslError: Error " + error);
-                onErrorOccurred(new ConsentLibException.ApiException(error.toString()));
+                onError(new ConsentLibException.ApiException(error.toString()));
             }
 
             @Override
             public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
                 String message = "The WebView rendering process crashed!";
                 Log.e(TAG, message);
-                onErrorOccurred(new ConsentLibException(message));
+                onError(new ConsentLibException(message));
                 return false;
             }
         });
@@ -272,7 +318,7 @@ abstract public class ConsentWebView extends WebView {
             }
             return false;
         });
-        addJavascriptInterface(new MessageInterface(), "Android");
+        addJavascriptInterface(new MessageInterface(), "SDK");
         resumeTimers();
     }
 
@@ -303,11 +349,11 @@ abstract public class ConsentWebView extends WebView {
 
     abstract public void onMessageReady();
 
-    abstract public void onErrorOccurred(ConsentLibException error);
+    abstract public void onError(ConsentLibException error);
 
     abstract public void onConsentReady(String euConsent, String consentUUID);
 
-    abstract public void onMessageChoiceSelect(int choiceType, int choiceId);
+    abstract public void onAction(int choiceType, int choiceId);
 
     public void loadMessage(String messageUrl) throws ConsentLibException.NoInternetConnectionException {
         if (hasLostInternetConnection())

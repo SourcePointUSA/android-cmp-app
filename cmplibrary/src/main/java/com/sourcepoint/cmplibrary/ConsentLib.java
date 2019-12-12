@@ -86,7 +86,7 @@ public class ConsentLib {
     private final String property;
     private final int accountId, propertyId;
     private final ViewGroup viewGroup;
-    private final Callback onMessageChoiceSelect, onConsentReady, onErrorOccurred;
+    private final Callback onAction, onConsentReady, onError;
     private Callback onMessageReady;
     private final EncodedParam encodedTargetingParams, encodedAuthId, encodedPMId;
     private final boolean weOwnTheView, isShowPM;
@@ -117,6 +117,15 @@ public class ConsentLib {
         }
     }
 
+    public class ActionTypes {
+        public static final int SHOW_PM = 12;
+        public static final int MSG_REJECT = 13;
+        public static final int MSG_ACCEPT = 11;
+        public static final int MSG_CLOSE = 15;
+        public static final int PM_COMPLETE = 99;
+        public static final int PM_CANCEL = 98;
+    }
+
     /**
      * @return a new instance of ConsentLib.Builder
      */
@@ -132,9 +141,9 @@ public class ConsentLib {
         encodedPMId = new EncodedParam("_sp_PMId",b.pmId);
         isShowPM = b.isShowPM;
         encodedAuthId = b.authId;
-        onMessageChoiceSelect = b.onMessageChoiceSelect;
+        onAction = b.onAction;
         onConsentReady = b.onConsentReady;
-        onErrorOccurred = b.onErrorOccurred;
+        onError = b.onError;
         onMessageReady = b.onMessageReady;
         encodedTargetingParams = b.targetingParamsString;
         viewGroup = b.viewGroup;
@@ -176,10 +185,10 @@ public class ConsentLib {
             }
 
             @Override
-            public void onErrorOccurred(ConsentLibException error) {
+            public void onError(ConsentLibException error) {
                 ConsentLib.this.error = error;
                 clearAllConsentData();
-                runOnLiveActivityUIThread(() -> ConsentLib.this.onErrorOccurred.run(ConsentLib.this));
+                runOnLiveActivityUIThread(() -> ConsentLib.this.onError.run(ConsentLib.this));
                 ConsentLib.this.finish();
             }
 
@@ -193,7 +202,7 @@ public class ConsentLib {
                 if (isDefined(consentUUID)) {
                     ConsentLib.this.consentUUID = consentUUID;
                     editor.putString(CONSENT_UUID_KEY, consentUUID);
-                    Log.d("Consnet UUID = ", consentUUID);
+                    Log.d("Consent UUID = ", consentUUID);
                 }
                 if (isDefined(euConsent) && isDefined(consentUUID)) {
                     editor.apply();
@@ -203,21 +212,92 @@ public class ConsentLib {
             }
 
             @Override
-            public void onMessageChoiceSelect(int choiceId, int choiceType) {
-                Log.d(TAG, "onMessageChoiceSelect: choiceId:" + choiceId + "choiceType: " + choiceType);
+            public void onAction(int choiceId, int choiceType) {
+                Log.d(TAG, "onAction: choiceId:" + choiceId + "choiceType: " + choiceType);
                 //noinspection SwitchStatementWithTooFewBranches
                 switch (choiceType) {
-                    case 12:
+                    case ActionTypes.SHOW_PM:
                         ConsentLib.this.choiceType = MESSAGE_OPTIONS.SHOW_PRIVACY_MANAGER;
+                        onShowPm();
+                        break;
+                    case ActionTypes.MSG_ACCEPT:
+                        onMsgAccepted();
+                        break;
+                    case ActionTypes.MSG_CLOSE:
+                        onMsgClosed();
+                        break;
+                    case ActionTypes.MSG_REJECT:
+                        onMsgRejected();
+                        break;
+                    case ActionTypes.PM_CANCEL:
+                        onPmCanceled();
+                        break;
+                    case ActionTypes.PM_COMPLETE:
+                        onPmCompleted();
                         break;
                     default:
                         ConsentLib.this.choiceType = MESSAGE_OPTIONS.UNKNOWN;
                         break;
                 }
-                runOnLiveActivityUIThread(() -> ConsentLib.this.onMessageChoiceSelect.run(ConsentLib.this));
-                onConsentReady("", "");
+//                runOnLiveActivityUIThread(() -> ConsentLib.this.onAction.run(ConsentLib.this));
+//                onConsentReady("", "");
             }
         };
+    }
+
+    private void onMsgAccepted(){
+        ConsentLib.this.finish();
+    }
+
+    private void onMsgClosed(){
+        ConsentLib.this.finish();
+    }
+
+    private void onMsgRejected(){
+        ConsentLib.this.finish();
+    }
+
+    private void onPmCanceled(){
+        ConsentLib.this.finish();
+    }
+
+    private void onPmCompleted(){
+        //saveConsent(sourcePoint);
+        ConsentLib.this.finish();
+    }
+
+    private void onShowPm(){
+        loadPm();
+    }
+
+    private void loadPm(){
+        webView.post(new Runnable() {
+            @Override
+            public void run() {
+                webView.loadUrl(sourcePoint.pmUrl());
+            }
+        });
+    }
+
+    private boolean isDefined(String s) {
+        return s != null && !s.equals("undefined") && !s.isEmpty();
+    }
+
+    private void saveConsent(String euConsent, String consentUUID){
+        SharedPreferences.Editor editor = sharedPref.edit();
+        if (isDefined(euConsent)) {
+            ConsentLib.this.euconsent = euConsent;
+            editor.putString(EU_CONSENT_KEY, euConsent);
+        }
+        if (isDefined(consentUUID)) {
+            ConsentLib.this.consentUUID = consentUUID;
+            editor.putString(CONSENT_UUID_KEY, consentUUID);
+            Log.d("Consnet UUID = ", consentUUID);
+        }
+        if (isDefined(euConsent) && isDefined(consentUUID)) {
+            editor.apply();
+            setIABVars(euConsent);
+        }
     }
 
     /**
@@ -250,7 +330,7 @@ public class ConsentLib {
             public void onFinish() {
                 if (!onMessageReadyCalled) {
                     onMessageReady = null;
-                    webView.onErrorOccurred(new ConsentLibException("a timeout has occurred when loading the message"));
+                    webView.onError(new ConsentLibException("a timeout has occurred when loading the message"));
                 }
             }
         };
@@ -269,6 +349,7 @@ public class ConsentLib {
         editor.putBoolean(key, value);
         editor.apply();
     }
+
     /*call this method to clear sharedPreferences from app onError*/
     public void clearAllConsentData(){
         SharedPreferences.Editor editor = sharedPref.edit();

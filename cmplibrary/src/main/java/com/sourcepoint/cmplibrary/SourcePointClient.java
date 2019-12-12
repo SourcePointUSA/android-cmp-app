@@ -84,7 +84,7 @@ class SourcePointClient {
     }
 
     //TODO: get url from endpoint
-    String messageUrl(EncodedParam targetingParams, EncodedParam authId, EncodedParam pmId) {
+    public String messageUrl(EncodedParam targetingParams, EncodedParam authId, EncodedParam pmId) {
         HashSet<String> params = new HashSet<>();
         params.add("_sp_accountId=" + accountId);
         params.add("_sp_siteId=" + propertyId);
@@ -102,6 +102,10 @@ class SourcePointClient {
         }
 
         return "https://notice.sp-prod.net/?message_id=66281";
+    }
+
+    public String pmUrl(){
+        return "https://pm.sourcepoint.mgr.consensu.org/?privacy_manager_id=5c0e81b7d74b3c30c6852301&site_id=2372&consent_origin=https://sourcepoint.mgr.consensu.org&consentUUID=ea448bec-1a6c-43f0-8d28-0ad88f6f7fe5&requestUUID=5107239d-99e2-4ef7-8d4a-d12c90858d13";
     }
 
     @VisibleForTesting
