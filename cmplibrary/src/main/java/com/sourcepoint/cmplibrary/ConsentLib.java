@@ -126,7 +126,7 @@ public class ConsentLib {
         public static final int SHOW_PM = 12;
         public static final int MSG_REJECT = 13;
         public static final int MSG_ACCEPT = 11;
-        public static final int MSG_CLOSE = 15;
+        public static final int MSG_DISMISS = 15;
         public static final int PM_COMPLETE = 99;
         public static final int PM_CANCEL = 98;
     }
@@ -231,7 +231,7 @@ public class ConsentLib {
                     case ActionTypes.MSG_ACCEPT:
                         onMsgAccepted();
                         break;
-                    case ActionTypes.MSG_CLOSE:
+                    case ActionTypes.MSG_DISMISS:
                         onMsgClosed();
                         break;
                     case ActionTypes.MSG_REJECT:
@@ -277,13 +277,7 @@ public class ConsentLib {
     }
 
     private void onShowPm(){
-        webView.post(new Runnable() {
-            @Override
-            public void run() {
-                webView.loadUrl(sourcePoint.pmUrl());
-
-            }
-        });
+        webView.loadPM();
     }
 
     private boolean isDefined(String s) {
@@ -328,12 +322,12 @@ public class ConsentLib {
 
     private void renderMessage() throws ConsentLibException.NoInternetConnectionException {
         if(webView == null) { webView = buildWebView(); }
-        sourcePoint.getMessageParams(new OnLoadComplete() {
+        sourcePoint.getMessage(new OnLoadComplete() {
             @Override
             public void onSuccess(Object result) {
                 try{
                     String  msgUrl = ((JSONObject) result).getString("url");
-                    webView.loadUrlWithException(msgUrl);
+                    webView.loadConsentMsgFromUrl(msgUrl);
                     mCountDownTimer = getTimer(defaultMessageTimeOut);
                     mCountDownTimer.start();
                 }

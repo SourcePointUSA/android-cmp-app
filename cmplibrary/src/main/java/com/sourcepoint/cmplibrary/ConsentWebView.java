@@ -32,21 +32,24 @@ import java.util.HashSet;
 abstract public class ConsentWebView extends WebView {
     private static final String TAG = "ConsentWebView";
 
+    private static final String pmBaseUrl = "https://pm.sourcepoint.mgr.consensu.org/?privacy_manager_id=5c0e81b7d74b3c30c6852301&site_id=2372&consent_origin=https://sourcepoint.mgr.consensu.org&consentUUID=ea448bec-1a6c-43f0-8d28-0ad88f6f7fe5&requestUUID=5107239d-99e2-4ef7-8d4a-d12c90858d13";
+
+
 
     // TODO: pass this script to a .js file and return it as a string in this method
     private String getJSInjection(){
         return "addEventListener('message', handleEvent);\n" +
                 "function handleEvent(event) {\n" +
                 "    try {\n" +
-                "        SDK.log(JSON.stringify(event.data, null, 2));\n" +
+                "        JSReceiver.log(JSON.stringify(event.data, null, 2));\n" +
                 "        const data = eventData(event);\n" +
-                "        SDK.log(JSON.stringify(data, null, 2));\n" +
-                "        if (data.name === 'sp.showMessage') SDK.onMessageReady();\n" +
+                "        JSReceiver.log(JSON.stringify(data, null, 2));\n" +
+                "        if (data.name === 'sp.showMessage') JSReceiver.onMessageReady();\n" +
                 "        else if(data.action){\n" +
-                "            SDK.onAction(data.action.choice_id, data.action.type);\n" +
+                "            JSReceiver.onAction(data.action.choice_id, data.action.type);\n" +
                 "        }\n" +
                 "    } catch (err) {\n" +
-                "        SDK.log(err.stack);\n" +
+                "        JSReceiver.log(err.stack);\n" +
                 "    };\n" +
                 "};\n" +
                 "\n" +
@@ -316,7 +319,7 @@ abstract public class ConsentWebView extends WebView {
             }
             return false;
         });
-        addJavascriptInterface(new MessageInterface(), "SDK");
+        addJavascriptInterface(new MessageInterface(), "JSReceiver");
         resumeTimers();
     }
 
@@ -353,7 +356,7 @@ abstract public class ConsentWebView extends WebView {
 
     abstract public void onAction(int choiceType, int choiceId);
 
-    public void loadUrlWithException(String url) throws ConsentLibException.NoInternetConnectionException {
+    public void loadConsentMsgFromUrl(String url) throws ConsentLibException.NoInternetConnectionException {
         if (hasLostInternetConnection())
             throw new ConsentLibException.NoInternetConnectionException();
 
@@ -364,6 +367,17 @@ abstract public class ConsentWebView extends WebView {
         Log.d(TAG, "User-Agent: " + getSettings().getUserAgentString());
         loadUrl(url);
     }
+
+    public void loadPM(){
+        post(new Runnable() {
+            @Override
+            public void run() {
+                loadUrl(pmBaseUrl);
+            }
+        });
+    }
+
+
 
     public void display() {
         setLayoutParams(new ViewGroup.LayoutParams(0, 0));

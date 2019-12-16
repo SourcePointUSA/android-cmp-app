@@ -22,6 +22,8 @@ class SourcePointClient {
 
     private static AsyncHttpClient http = new AsyncHttpClient();
 
+    private static final String baseMsgUrl = "https://fake-wrapper-api.herokuapp.com/message";
+
     private URL mmsUrl, cmpUrl, messageUrl;
     private EncodedParam accountId, property, propertyId;
     private Boolean stagingCampaign, isShowPM;
@@ -89,12 +91,8 @@ class SourcePointClient {
     }
 
     //TODO: make constant for base adress and extract url from user params
-    private String messageUrl() {
-        return "https://fake-wrapper-api.herokuapp.com/message";
-    }
-
-    public String pmUrl(){
-        return "https://pm.sourcepoint.mgr.consensu.org/?privacy_manager_id=5c0e81b7d74b3c30c6852301&site_id=2372&consent_origin=https://sourcepoint.mgr.consensu.org&consentUUID=ea448bec-1a6c-43f0-8d28-0ad88f6f7fe5&requestUUID=5107239d-99e2-4ef7-8d4a-d12c90858d13";
+    private String messageUrl(String propertyId, String accountId, String propertyHref) {
+        return baseMsgUrl;
     }
 
     @VisibleForTesting
@@ -103,8 +101,9 @@ class SourcePointClient {
     }
 
 
-    void getMessageParams(ConsentLib.OnLoadComplete onLoadComplete) {
-        String url = messageUrl();
+    void getMessage(ConsentLib.OnLoadComplete onLoadComplete) {
+        //TODO inject real params to messageUrl
+        String url = messageUrl("", "", "");
         http.get(url, new ResponseHandler(url, onLoadComplete) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
