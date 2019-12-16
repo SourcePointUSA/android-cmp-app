@@ -18,7 +18,8 @@ public class ConsentLibBuilder {
     String page = "";
     ViewGroup viewGroup = null;
     ConsentLib.Callback onAction, onConsentReady, onError, onMessageReady;
-    boolean staging, stagingCampaign, newPM , isShowPM;
+    boolean staging, stagingCampaign, newPM , isShowPM, shouldCleanConsentOnError;
+
     EncodedParam targetingParamsString = null;
     EncodedParam authId = null;
     String pmId = "";
@@ -32,7 +33,8 @@ public class ConsentLibBuilder {
         this.pmId = pmId;
         this.activity = activity;
         mmsDomain = cmpDomain = msgDomain = null;
-        staging = stagingCampaign = newPM = isShowPM =false;
+        staging = stagingCampaign = newPM = isShowPM = false;
+        shouldCleanConsentOnError = true;
         ConsentLib.Callback noOpCallback = new ConsentLib.Callback() {
             @Override
             public void run(ConsentLib c) {
@@ -133,6 +135,11 @@ public class ConsentLibBuilder {
      */
     public ConsentLibBuilder setStage(boolean st) {
         stagingCampaign = st;
+        return this;
+    }
+
+    public ConsentLibBuilder setShouldCleanConsentOnError(Boolean shouldCleanConsentOnError) {
+        this.shouldCleanConsentOnError = shouldCleanConsentOnError;
         return this;
     }
 
