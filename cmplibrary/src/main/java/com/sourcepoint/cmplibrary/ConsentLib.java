@@ -12,6 +12,9 @@ import java.util.HashSet;
 import com.iab.gdpr_android.consent.VendorConsent;
 import com.iab.gdpr_android.consent.VendorConsentDecoder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
  * It offers methods to get custom vendors consents as well as IAB consent purposes.
@@ -246,6 +249,7 @@ public class ConsentLib {
     }
 
     private void onMsgAccepted(){
+        //TODO acceptAll()
         ConsentLib.this.finish();
     }
 
@@ -254,6 +258,7 @@ public class ConsentLib {
     }
 
     private void onMsgRejected(){
+        //TODO rejectAll()
         ConsentLib.this.finish();
     }
 
@@ -267,14 +272,11 @@ public class ConsentLib {
     }
 
     private void onShowPm(){
-        loadPm();
-    }
-
-    private void loadPm(){
         webView.post(new Runnable() {
             @Override
             public void run() {
                 webView.loadUrl(sourcePoint.pmUrl());
+
             }
         });
     }
@@ -314,12 +316,36 @@ public class ConsentLib {
      */
     public void run() throws ConsentLibException.NoInternetConnectionException {
         onMessageReadyCalled = false;
-        if(webView == null) { webView = buildWebView(); }
-        webView.loadMessage(sourcePoint.messageUrl(encodedTargetingParams, encodedAuthId ,encodedPMId));
-        mCountDownTimer = getTimer(defaultMessageTimeOut);
-        mCountDownTimer.start();
+        renderMessage();
         setSharedPreference(IAB_CONSENT_CMP_PRESENT, true);
         setSubjectToGDPR();
+    }
+
+    private void renderMessage() throws ConsentLibException.NoInternetConnectionException {
+        if(webView == null) { webView = buildWebView(); }
+        sourcePoint.getMessageParams(new OnLoadComplete() {
+            @Override
+            public void onSuccess(Object result) {
+                try{
+                    String  msgUrl = ((JSONObject) result).getString("url");
+                    webView.loadUrlWithException(msgUrl);
+                    mCountDownTimer = getTimer(defaultMessageTimeOut);
+                    mCountDownTimer.start();
+                }
+                //TODO call onFailure callbacks / throw consentlibException
+                catch(JSONException e){
+                    Log.d(TAG, "Failed reading message response params.");
+                }
+                catch(ConsentLibException e){
+                    Log.d(TAG, "Sorry, no internet connection");
+                }
+            }
+
+            @Override
+            public void onFailure(ConsentLibException exception) {
+                Log.d(TAG, "Failed getting message response params.");
+            }
+        });
     }
 
     private CountDownTimer getTimer(long defaultMessageTimeOut) {

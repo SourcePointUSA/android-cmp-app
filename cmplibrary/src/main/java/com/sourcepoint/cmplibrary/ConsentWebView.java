@@ -27,8 +27,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import org.json.JSONObject;
-
 import java.util.HashSet;
 
 abstract public class ConsentWebView extends WebView {
@@ -355,16 +353,16 @@ abstract public class ConsentWebView extends WebView {
 
     abstract public void onAction(int choiceType, int choiceId);
 
-    public void loadMessage(String messageUrl) throws ConsentLibException.NoInternetConnectionException {
+    public void loadUrlWithException(String url) throws ConsentLibException.NoInternetConnectionException {
         if (hasLostInternetConnection())
             throw new ConsentLibException.NoInternetConnectionException();
 
         // On API level >= 21, the JavascriptInterface is not injected on the page until the *second* page load
         // so we need to issue blank load with loadData
         loadData("", "text/html", null);
-        Log.d(TAG, "Loading Webview with: " + messageUrl);
+        Log.d(TAG, "Loading Webview with: " + url);
         Log.d(TAG, "User-Agent: " + getSettings().getUserAgentString());
-        loadUrl(messageUrl);
+        loadUrl(url);
     }
 
     public void display() {

@@ -27,6 +27,7 @@ class SourcePointClient {
     private Boolean stagingCampaign, isShowPM;
 
     class ResponseHandler extends JsonHttpResponseHandler {
+        //TODO: decouple from consentLib -> interface OnloadComplete should be in a separate file out of consentLib class
         ConsentLib.OnLoadComplete onLoadComplete;
         String url;
 
@@ -46,6 +47,10 @@ class SourcePointClient {
             Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
             onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
         }
+    }
+
+    class MessageResponseHandler extends JsonHttpResponseHandler {
+
     }
 
     SourcePointClient(
@@ -83,25 +88,9 @@ class SourcePointClient {
                 "&euconsent=" + euconsentParam;
     }
 
-    //TODO: get url from endpoint
-    public String messageUrl(EncodedParam targetingParams, EncodedParam authId, EncodedParam pmId) {
-        HashSet<String> params = new HashSet<>();
-        params.add("_sp_accountId=" + accountId);
-        params.add("_sp_siteId=" + propertyId);
-        params.add("_sp_siteHref=" + property);
-        params.add("_sp_mms_Domain=" + mmsUrl);
-        params.add("_sp_cmp_origin=" + cmpUrl);
-        params.add("_sp_targetingParams=" + targetingParams);
-        params.add("_sp_env=" + (stagingCampaign ? "stage" : "public"));
-        params.add("_sp_PMId=" + pmId);
-        params.add("_sp_runMessaging=" + (!isShowPM));
-        params.add("_sp_showPM=" + isShowPM);
-
-        if (authId != null) {
-            params.add("_sp_authId=" + authId);
-        }
-
-        return "https://notice.sp-prod.net/?message_id=66281";
+    //TODO: make constant for base adress and extract url from user params
+    private String messageUrl() {
+        return "https://fake-wrapper-api.herokuapp.com/message";
     }
 
     public String pmUrl(){
@@ -112,6 +101,32 @@ class SourcePointClient {
     void setHttpDummy(AsyncHttpClient httpClient) {
         http = httpClient;
     }
+
+
+    void getMessageParams(ConsentLib.OnLoadComplete onLoadComplete) {
+        String url = messageUrl();
+        http.get(url, new ResponseHandler(url, onLoadComplete) {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                onLoadComplete.onSuccess(response);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
+                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
+                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+            }
+        });
+    }
+
+
 
     void getGDPRStatus(ConsentLib.OnLoadComplete onLoadComplete) {
         String url = GDPRStatusUrl();
