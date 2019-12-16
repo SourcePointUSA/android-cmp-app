@@ -497,6 +497,9 @@ public class ConsentLib {
         if(weOwnTheView) {
             runOnLiveActivityUIThread(() -> {
                 if(webView != null) {
+                    if (webView.getParent() != null) {
+                        ((ViewGroup) webView.getParent()).removeView(webView); // <- fixed after version 2.4.4
+                    }
                     webView.display();
                     viewGroup.addView(webView);
                 }
@@ -524,6 +527,7 @@ public class ConsentLib {
             }
             webView.destroy();
             webView = null;
+            activity = null; // release reference to activity // <- fixed after version 2.4.4
         }
     }
 }
