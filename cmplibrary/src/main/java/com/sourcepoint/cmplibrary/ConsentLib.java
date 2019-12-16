@@ -315,6 +315,8 @@ public class ConsentLib {
      */
     public void run() throws ConsentLibException.NoInternetConnectionException {
         onMessageReadyCalled = false;
+        mCountDownTimer = getTimer(defaultMessageTimeOut);
+        mCountDownTimer.start();
         renderMessage();
         setSharedPreference(IAB_CONSENT_CMP_PRESENT, true);
         setSubjectToGDPR();
@@ -328,8 +330,6 @@ public class ConsentLib {
                 try{
                     String  msgUrl = ((JSONObject) result).getString("url");
                     webView.loadConsentMsgFromUrl(msgUrl);
-                    mCountDownTimer = getTimer(defaultMessageTimeOut);
-                    mCountDownTimer.start();
                 }
                 //TODO call onFailure callbacks / throw consentlibException
                 catch(JSONException e){
