@@ -90,7 +90,7 @@ class SourcePointClient {
                 "&euconsent=" + euconsentParam;
     }
 
-    //TODO: make constant for base adress and extract url from user params
+    //TODO: extract url from user params
     private String messageUrl(String propertyId, String accountId, String propertyHref) {
         return baseMsgUrl;
     }
