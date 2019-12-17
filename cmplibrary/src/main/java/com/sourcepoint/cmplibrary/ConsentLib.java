@@ -255,6 +255,7 @@ public class ConsentLib {
 
     private void onMsgAccepted(){
         //TODO acceptAll()
+        sendConsent();
         ConsentLib.this.finish();
     }
 
@@ -264,6 +265,7 @@ public class ConsentLib {
 
     private void onMsgRejected(){
         //TODO rejectAll()
+        sendConsent();
         ConsentLib.this.finish();
     }
 
@@ -273,6 +275,7 @@ public class ConsentLib {
 
     private void onPmCompleted(){
         //saveConsent(sourcePoint);
+        sendConsent();
         ConsentLib.this.finish();
     }
 
@@ -328,7 +331,9 @@ public class ConsentLib {
             @Override
             public void onSuccess(Object result) {
                 try{
-                    String  msgUrl = ((JSONObject) result).getString("url");
+                    JSONObject jsonResult = (JSONObject) result;
+                    String  msgUrl = jsonResult.getString("url");
+                    consentUUID = jsonResult.getString("uuid");
                     webView.loadConsentMsgFromUrl(msgUrl);
                 }
                 //TODO call onFailure callbacks / throw consentlibException
@@ -337,6 +342,32 @@ public class ConsentLib {
                 }
                 catch(ConsentLibException e){
                     Log.d(TAG, "Sorry, no internet connection");
+                }
+            }
+
+            @Override
+            public void onFailure(ConsentLibException exception) {
+                Log.d(TAG, "Failed getting message response params.");
+            }
+        });
+    }
+
+    private void sendConsent() {
+        sourcePoint.sendConsent(new OnLoadComplete() {
+            @Override
+            public void onSuccess(Object result) {
+                try{
+                    JSONObject jsonResult = (JSONObject) result;
+                    euconsent = jsonResult.getString("euconsent");
+                    consentUUID = jsonResult.getString("uuid");
+                    saveConsent(euconsent, consentUUID);
+                }
+                //TODO call onFailure callbacks / throw consentlibException
+                catch(JSONException e){
+                    Log.d(TAG, "Failed reading message response params.");
+                }
+                catch(Exception e){
+                    Log.d(TAG, "Sorry, something went wrong");
                 }
             }
 

@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.common.annotations.VisibleForTesting;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +24,8 @@ class SourcePointClient {
     private static AsyncHttpClient http = new AsyncHttpClient();
 
     private static final String baseMsgUrl = "https://fake-wrapper-api.herokuapp.com/message";
+
+    private static final String baseSendConsentUrl = "http://fake-wrapper-api.herokuapp.com/action/type";
 
     private URL mmsUrl, cmpUrl, messageUrl;
     private EncodedParam accountId, property, propertyId;
@@ -105,6 +108,31 @@ class SourcePointClient {
         //TODO inject real params to messageUrl
         String url = messageUrl("", "", "");
         http.get(url, new ResponseHandler(url, onLoadComplete) {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                onLoadComplete.onSuccess(response);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
+                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
+                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+            }
+        });
+    }
+
+    void sendConsent(ConsentLib.OnLoadComplete onLoadComplete) {
+        String url = baseSendConsentUrl;
+        //TODO include params
+        RequestParams params = new RequestParams();
+        http.post(url, params,  new ResponseHandler(url, onLoadComplete) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 onLoadComplete.onSuccess(response);
