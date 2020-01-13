@@ -25,7 +25,6 @@ import android.view.View;
 import android.webkit.CookieManager;
 import android.widget.TextView;
 
-import com.sourcepoint.cmplibrary.ConsentLib;
 import com.sourcepoint.cmplibrary.ConsentLibBuilder;
 import com.sourcepoint.cmplibrary.ConsentLibException;
 import com.sourcepoint.cmplibrary.CustomPurposeConsent;
@@ -85,7 +84,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                 .setViewGroup(findViewById(android.R.id.content))
                 //optional message timeout default timeout is 5 seconds
                 .setMessageTimeOut(15000)
-                .setOnMessageReady(new ConsentLib.Callback() {
+                .setConsentUIReady(new ConsentLib.Callback() {
                     @Override
                     public void run(ConsentLib _c) {
                         hideProgressBar();

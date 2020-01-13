@@ -17,12 +17,13 @@ public class ConsentLibBuilder {
     String mmsDomain, cmpDomain, msgDomain;
     String page = "";
     ViewGroup viewGroup = null;
-    ConsentLib.Callback onMessageChoiceSelect, onConsentReady, onErrorOccurred, onMessageReady;
+    GDPRConsentLib.Callback onAction, onConsentReady, onError, onMessageReady;
     boolean staging, stagingCampaign, newPM , isShowPM, shouldCleanConsentOnError;
+
     EncodedParam targetingParamsString = null;
     EncodedParam authId = null;
     String pmId = "";
-    ConsentLib.DebugLevel debugLevel = ConsentLib.DebugLevel.OFF;
+    GDPRConsentLib.DebugLevel debugLevel = GDPRConsentLib.DebugLevel.OFF;
     long defaultMessageTimeOut = 10000;
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity) {
@@ -34,12 +35,12 @@ public class ConsentLibBuilder {
         mmsDomain = cmpDomain = msgDomain = null;
         staging = stagingCampaign = newPM = isShowPM = false;
         shouldCleanConsentOnError = true;
-        ConsentLib.Callback noOpCallback = new ConsentLib.Callback() {
+        GDPRConsentLib.Callback noOpCallback = new GDPRConsentLib.Callback() {
             @Override
-            public void run(ConsentLib c) {
+            public void run(GDPRConsentLib c) {
             }
         };
-        onMessageChoiceSelect = onConsentReady = onErrorOccurred = onMessageReady = noOpCallback;
+        onAction = onConsentReady = onError = onMessageReady = noOpCallback;
     }
 
     /**
@@ -70,13 +71,13 @@ public class ConsentLibBuilder {
     // TODO: add what are the possible choices returned to the Callback
     /**
      *  <b>Optional</b> Sets the Callback to be called when the user selects an option on the WebView.
-     *  The selected choice will be available in the instance variable ConsentLib.choiceType
+     *  The selected choice will be available in the instance variable GDPRConsentLib.choiceType
      * @param c - a callback that will be called when the user selects an option on the WebView
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnMessageChoiceSelect(ConsentLib.Callback c) {
-        onMessageChoiceSelect = c;
+    public ConsentLibBuilder setOnMessageChoiceSelect(GDPRConsentLib.Callback c) {
+        onAction = c;
         return this;
     }
 
@@ -85,21 +86,13 @@ public class ConsentLibBuilder {
      *  either by closing it, canceling or accepting the terms.
      *  At this point, the following keys will available populated in the sharedStorage:
      *  <ul>
-     *      <li>{@link ConsentLib#EU_CONSENT_KEY}</li>
-     *      <li>{@link ConsentLib#CONSENT_UUID_KEY}</li>
-     *      <li>{@link ConsentLib#IAB_CONSENT_SUBJECT_TO_GDPR}</li>
-     *      <li>{@link ConsentLib#IAB_CONSENT_CONSENT_STRING}</li>
-     *      <li>{@link ConsentLib#IAB_CONSENT_PARSED_PURPOSE_CONSENTS}</li>
-     *      <li>{@link ConsentLib#IAB_CONSENT_PARSED_VENDOR_CONSENTS}</li>
+     *      <li>{@link GDPRConsentLib#CONSENT_UUID_KEY}</li>
      *  </ul>
-     *  Also at this point, the methods {@link ConsentLib#getCustomVendorConsents},
-     *  {@link ConsentLib#getCustomPurposeConsents}
-     *  will also be able to be called from inside the callback.
      * @param c - Callback to be called when the user finishes interacting with the WebView
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnConsentReady(ConsentLib.Callback c) {
+    public ConsentLibBuilder setOnConsentReady(GDPRConsentLib.Callback c) {
         onConsentReady = c;
         return this;
     }
@@ -109,7 +102,7 @@ public class ConsentLibBuilder {
      * @param callback to be called when the message is ready to be displayed
      * @return ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnMessageReady(ConsentLib.Callback callback) {
+    public ConsentLibBuilder setOnMessageReady(GDPRConsentLib.Callback callback) {
         onMessageReady = callback;
         return this;
     }
@@ -120,8 +113,8 @@ public class ConsentLibBuilder {
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnErrorOccurred(ConsentLib.Callback callback) {
-        onErrorOccurred = callback;
+    public ConsentLibBuilder setOnErrorOccurred(GDPRConsentLib.Callback callback) {
+        onError = callback;
         return this;
     }
 
@@ -207,12 +200,12 @@ public class ConsentLibBuilder {
     /**
      * <b>Optional</b> Sets the DEBUG level.
      * <i>(Not implemented yet)</i>
-     * <b>Default</b>{@link ConsentLib.DebugLevel#DEBUG}
-     * @param l - one of the values of {@link ConsentLib.DebugLevel#DEBUG}
+     * <b>Default</b>{@link GDPRConsentLib.DebugLevel#DEBUG}
+     * @param l - one of the values of {@link GDPRConsentLib.DebugLevel#DEBUG}
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
-    public ConsentLibBuilder setDebugLevel(ConsentLib.DebugLevel l) {
+    public ConsentLibBuilder setDebugLevel(GDPRConsentLib.DebugLevel l) {
         debugLevel = l;
         return this;
     }
@@ -231,16 +224,16 @@ public class ConsentLibBuilder {
     }
 
     /**
-     * Run internal tasks and build the ConsentLib. This method will validate the
+     * Run internal tasks and build the GDPRConsentLib. This method will validate the
      * data coming from the previous Builders and throw {@link ConsentLibException.BuildException}
      * in case something goes wrong.
-     * @return ConsentLib | ConsentLibNoOp
+     * @return GDPRConsentLib | ConsentLibNoOp
      * @throws ConsentLibException.BuildException - if any of the required data is missing or invalid
      */
-    public ConsentLib build() throws ConsentLibException {
+    public GDPRConsentLib build() throws ConsentLibException {
         if(sdkNotSupported()) {
             throw new ConsentLibException.BuildException(
-                    "ConsentLib supports only API level 19 and above.\n"+
+                    "GDPRConsentLib supports only API level 19 and above.\n"+
                             "See https://github.com/SourcePointUSA/android-cmp-app/issues/25 for more information."
             );
         }
@@ -252,7 +245,7 @@ public class ConsentLibBuilder {
             throw new ConsentLibException.BuildException(e.getMessage());
         }
 
-        return new ConsentLib(this);
+        return new GDPRConsentLib(this);
     }
 
     public ConsentLibBuilder setMessageTimeOut(long milliSecond){
