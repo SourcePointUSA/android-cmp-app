@@ -67,7 +67,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
 
-        consentManager.loadMessage(false, userName);
+        //consentManager.loadMessage(false, userName);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_privacy_settings) {
             Log.d("App", "onOptionsItemSelected: " + item.getItemId());
-            consentManager.loadMessage(true, userName);
+            //consentManager.loadMessage(true, userName);
             return true;
         }
 

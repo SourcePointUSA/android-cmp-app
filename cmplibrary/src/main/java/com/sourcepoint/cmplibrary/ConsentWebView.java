@@ -35,9 +35,6 @@ import java.util.HashSet;
 abstract public class ConsentWebView extends WebView {
     private static final String TAG = "ConsentWebView";
 
-    private static final String pmBaseUrl = "https://ccpa-inapp-pm.sp-prod.net/?privacy_manager_id=5df10416fb59af14237b09c8&site_id=5739&ccpa_origin=https://ccpa-service.sp-prod.net&";
-
-
 
     // TODO: pass this script to a .js file and return it as a string in this method
     private String getJSInjection(){
@@ -86,8 +83,8 @@ abstract public class ConsentWebView extends WebView {
                 "\n" +
                 "function userConsents(payload){\n" +
                 "    return {\n" +
-                "        rejectedVendors: payload.consents.vendors.rejected,\n" +
-                "        rejectedCategories: payload.consents.categories.rejected\n" +
+                "        acceptedVendors: payload.consents.vendors.accepted,\n" +
+                "        acceptedCategories: payload.consents.categories.accepted\n" +
                 "    }\n" +
                 "}";
     }
@@ -350,10 +347,6 @@ abstract public class ConsentWebView extends WebView {
         Log.d(TAG, "Loading Webview with: " + url);
         Log.d(TAG, "User-Agent: " + getSettings().getUserAgentString());
         loadUrl(url);
-    }
-
-    private String pmUrl() {
-        return pmBaseUrl;
     }
 
     public boolean goBackIfPossible() {

@@ -167,7 +167,7 @@ public class Website implements Parcelable {
         this.isStaging = in.readByte() !=0;
         this.isShowPM = in.readByte() !=0;
         this.authId = in.readString();
-        this.targetingParamList = (List<TargetingParam>) in.createTypedArrayList(TargetingParam.CREATOR);
+        //this.targetingParamList = (List<TargetingParam>) in.createTypedArrayList(TargetingParam.CREATOR);
     }
     @Ignore
     @Override
@@ -179,6 +179,6 @@ public class Website implements Parcelable {
         dest.writeByte((byte)(isStaging?1:0));
         dest.writeByte((byte)(isShowPM?1:0));
         dest.writeString(this.authId);
-        dest.writeTypedList(this.targetingParamList);
+        //dest.writeTypedList(this.targetingParamList);
     }
 }

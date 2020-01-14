@@ -32,9 +32,9 @@ public class GDPRConsentLib {
     public static final String META_DATA_KEY = "metaData";
     private final String pmId;
 
-    private final String PM_BASE_URL = "https://ccpa-inapp-pm.sp-prod.net";
+    private final String PM_BASE_URL = "https://gdpr-inapp-pm.sp-prod.net";
 
-    private final String CCPA_ORIGIN = "https://ccpa-service.sp-prod.net";
+    private final String GDPR_ORIGIN = "https://gdpr-service.sp-prod.net";
 
 
     private String metaData;
@@ -338,8 +338,8 @@ public class GDPRConsentLib {
         HashSet<String> params = new HashSet<>();
         params.add("privacy_manager_id=" + pmId);
         params.add("site_id=" + propertyId);
-        params.add("ccpa_origin=" + CCPA_ORIGIN);
-        if(consentUUID != null) params.add("ccpaUUID=" + consentUUID);
+        params.add("gdpr_origin=" + GDPR_ORIGIN);
+        if(consentUUID != null) params.add("gdprUUID=" + consentUUID);
 
         return PM_BASE_URL + "?" + TextUtils.join("&", params);
     }

@@ -78,13 +78,13 @@ public class LoginActivity extends AppCompatActivity {
 
         consentListView.setAdapter(consentListViewAdapter);
 
-        consentManager.loadMessage(false);
+        //consentManager.loadMessage(false);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        consentManager.loadMessage(false);
+        //consentManager.loadMessage(false);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_privacy_settings) {
             Log.d("App", "onOptionsItemSelected: " + item.getItemId());
-            consentManager.loadMessage(true);
+            //consentManager.loadMessage(true);
             return true;
         }
 
