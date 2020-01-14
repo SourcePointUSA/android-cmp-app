@@ -68,13 +68,13 @@ public class ConsentLibBuilderTest {
 
     @Test
     public void setOnInteractionComplete() {
-        consentLibBuilder.setOnMessageReady(callback);
+        consentLibBuilder.setConsentUIReady(callback);
         assertEquals(callback, consentLibBuilder.onMessageReady);
     }
 
     @Test
     public void setOnMessageReady() {
-        consentLibBuilder.setOnMessageReady(callback);
+        consentLibBuilder.setConsentUIReady(callback);
         assertEquals(callback, consentLibBuilder.onMessageReady);
     }
 

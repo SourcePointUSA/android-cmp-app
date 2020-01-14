@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.sourcepoint.cmplibrary.Consent;
-import com.sourcepoint.cmplibrary.ConsentLib;
 import com.sourcepoint.cmplibrary.ConsentLibBuilder;
 import com.sourcepoint.cmplibrary.ConsentLibException;
 
@@ -32,7 +31,7 @@ abstract class ConsentManager {
                 HashSet<Consent> consents = (HashSet) results;
                 onConsentsReady(consents, consentLib.consentUUID, consentLib.euconsent);
             }))
-            .setOnMessageReady(_c -> Log.d(TAG, "Message Ready"))
+            .setConsentUIReady(_c -> Log.d(TAG, "Message Ready"))
             .setOnErrorOccurred(c -> Log.d(TAG, "Error Occurred: "+c.error));
     }
 

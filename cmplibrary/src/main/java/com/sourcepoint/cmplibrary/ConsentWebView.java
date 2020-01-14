@@ -27,12 +27,15 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashSet;
 
 abstract public class ConsentWebView extends WebView {
     private static final String TAG = "ConsentWebView";
 
-    private static final String pmBaseUrl = "https://pm.sourcepoint.mgr.consensu.org/?privacy_manager_id=5c0e81b7d74b3c30c6852301&site_id=2372&consent_origin=https://sourcepoint.mgr.consensu.org&consentUUID=ea448bec-1a6c-43f0-8d28-0ad88f6f7fe5&requestUUID=5107239d-99e2-4ef7-8d4a-d12c90858d13";
+    private static final String pmBaseUrl = "https://ccpa-inapp-pm.sp-prod.net/?privacy_manager_id=5df10416fb59af14237b09c8&site_id=5739&ccpa_origin=https://ccpa-service.sp-prod.net&";
 
 
 
@@ -42,11 +45,15 @@ abstract public class ConsentWebView extends WebView {
                 "function handleEvent(event) {\n" +
                 "    try {\n" +
                 "        JSReceiver.log(JSON.stringify(event.data, null, 2));\n" +
+                "        if (event.data.name === 'sp.showMessage') {\n" +
+                "            JSReceiver.onMessageReady();\n" +
+                "            return;\n" +
+                "        }\n" +
                 "        const data = eventData(event);\n" +
                 "        JSReceiver.log(JSON.stringify(data, null, 2));\n" +
-                "        if (data.name === 'sp.showMessage') JSReceiver.onMessageReady();\n" +
-                "        else if(data.action){\n" +
-                "            JSReceiver.onAction(data.action.choice_id, data.action.type);\n" +
+                "        if(data.type) {\n" +
+                "            if(data.type === 1) JSReceiver.onSavePM(JSON.stringify(data.payload));\n" +
+                "            else JSReceiver.onAction(data.type);\n" +
                 "        }\n" +
                 "    } catch (err) {\n" +
                 "        JSReceiver.log(err.stack);\n" +
@@ -58,34 +65,31 @@ abstract public class ConsentWebView extends WebView {
                 "};\n" +
                 "\n" +
                 "function isFromPM(event) {\n" +
-                "    return !!event.data.action;\n" +
+                "    return !!event.data.payload;\n" +
                 "};\n" +
                 "\n" +
                 "function dataFromMessage(msgEvent) {\n" +
                 "    return {\n" +
                 "        name: msgEvent.data.name,\n" +
-                "        action: msgEvent.data.actions.length ? msgEvent.data.actions[0].data : null\n" +
+                "        type: msgEvent.data.actions.length ? msgEvent.data.actions[0].data.type : null\n" +
                 "    };\n" +
                 "};\n" +
                 "\n" +
                 "function dataFromPM(pmEvent) {\n" +
-                "    const name = pmEvent.data.action;\n" +
-                "    return {\n" +
-                "        name,\n" +
-                "        action: pmActions[name]\n" +
+                "    const data = {\n" +
+                "        name: pmEvent.data.name,\n" +
+                "        type: pmEvent.data ? pmEvent.data.payload.actionType : null,\n" +
                 "    };\n" +
+                "    if(data.type === 1) data.payload = userConsents(pmEvent.data.payload);\n" +
+                "    return data;\n" +
                 "};\n" +
                 "\n" +
-                "var pmActions = {\n" +
-                "    \"sp.pmComplete\": {\n" +
-                "        choice_id: 99,\n" +
-                "        type: 99\n" +
-                "    },\n" +
-                "    \"sp.cancel\": {\n" +
-                "        choice_id: 98,\n" +
-                "        type: 98\n" +
+                "function userConsents(payload){\n" +
+                "    return {\n" +
+                "        rejectedVendors: payload.consents.vendors.rejected,\n" +
+                "        rejectedCategories: payload.consents.categories.rejected\n" +
                 "    }\n" +
-                "};";
+                "}";
     }
 
     @SuppressWarnings("unused")
@@ -111,48 +115,28 @@ abstract public class ConsentWebView extends WebView {
 
         // called when a choice is selected on the message
         @JavascriptInterface
-        public void onAction(int choiceId, int choiceType) {
+        public void onAction(int choiceType) {
             Log.d("onAction", "called");
             if (ConsentWebView.this.hasLostInternetConnection()) {
                 ConsentWebView.this.onError(new ConsentLibException.NoInternetConnectionException());
             }
-            ConsentWebView.this.onAction(choiceId, choiceType);
+            ConsentWebView.this.onAction(choiceType);
         }
 
-        //called when user takes action on privacy manager
+        // called when a choice is selected on the message
         @JavascriptInterface
-        public void onPrivacyManagerAction(String pmData) {
-            Log.d("onPrivacyManagerAction", "called");
-        }
-
-        @JavascriptInterface
-        public void onMessageChoiceError(String errorType) {
-            onError(errorType);
-            Log.d("onMessageChoiceError", "called");
-        }
-
-        // called when interaction with message is complete
-        @JavascriptInterface
-        public void onConsentReady(String consentUUID, String euConsent) {
-            Log.d("onConsentReady", "called");
-            ConsentWebView.this.flushOrSyncCookies();
-            ConsentWebView.this.onConsentReady(euConsent, consentUUID);
-        }
-
-        //called when privacy manager cancel button is tapped
-        @JavascriptInterface
-        public void onPMCancel() {
-            Log.d("onPMCancel", "called");
-        }
-
-        // called when message or pm need to shown
-        @JavascriptInterface
-        public void onSPPMObjectReady() {
-            Log.d("onSPPMObjectReady", "called");
-            if (isShowPM) {
-                ConsentWebView.this.flushOrSyncCookies();
-                ConsentWebView.this.onMessageReady();
+        public void onSavePM(String payloadStr) throws JSONException {
+            Log.d("onSavePM", "called");
+            if (ConsentWebView.this.hasLostInternetConnection()) {
+                ConsentWebView.this.onError(new ConsentLibException.NoInternetConnectionException());
             }
+            JSONObject payloadJson = new JSONObject(payloadStr);
+            ConsentWebView.this.onSavePM(
+                    new UserConsent(
+                            payloadJson.getJSONArray("rejectedVendors"),
+                            payloadJson.getJSONArray("rejectedCategories")
+                    )
+            );
         }
 
         //called when an error is occured while loading web-view
@@ -269,7 +253,6 @@ abstract public class ConsentWebView extends WebView {
                 connectionPool.remove(url);
                 //view.loadUrl("javascript:" + "addEventListener('message', SDK.onEvent('oie'))");
                 view.loadUrl("javascript:" + getJSInjection());
-
             }
 
             @Override
@@ -352,9 +335,10 @@ abstract public class ConsentWebView extends WebView {
 
     abstract public void onError(ConsentLibException error);
 
-    abstract public void onConsentReady(String euConsent, String consentUUID);
+    abstract public void onAction(int choiceType);
 
-    abstract public void onAction(int choiceType, int choiceId);
+    abstract public void onSavePM(UserConsent userConsent);
+
 
     public void loadConsentMsgFromUrl(String url) throws ConsentLibException.NoInternetConnectionException {
         if (hasLostInternetConnection())
@@ -368,13 +352,18 @@ abstract public class ConsentWebView extends WebView {
         loadUrl(url);
     }
 
-    public void loadPM(){
+    private String pmUrl() {
+        return pmBaseUrl;
+    }
+
+    public boolean goBackIfPossible() {
         post(new Runnable() {
             @Override
             public void run() {
-                loadUrl(pmBaseUrl);
+                if (canGoBack()) goBack();
             }
         });
+        return canGoBack();
     }
 
 
