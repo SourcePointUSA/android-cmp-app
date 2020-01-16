@@ -28,14 +28,14 @@ class SourcePointClient {
 
     private static final String baseCmpUrl = "https://sourcepoint.mgr.consensu.org";
 
-    private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/ccpa/message-url";
+    private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/gdpr/message-url";
 
-    private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/ccpa/consent";
+    private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/gdpr/consent";
 
     private int accountId;
     private String property;
     private int propertyId;
-    private Boolean isStagingCampaign;
+    private Boolean isStagingCampaign, isStaging;
     private String requestUUID = "";
 
     private String getRequestUUID(){
@@ -74,9 +74,11 @@ class SourcePointClient {
             int accountID,
             String property,
             int propertyId,
-            boolean isStagingCampaign
+            boolean isStagingCampaign,
+            boolean isStaging
     ) {
         this.isStagingCampaign = isStagingCampaign;
+        this.isStaging = isStaging;
         this.accountId = accountID;
         this.propertyId = propertyId;
         this.property = property;
@@ -118,10 +120,10 @@ class SourcePointClient {
         });
     }
 
-    void getMessage(String consentUUID, String meta, GDPRConsentLib.OnLoadComplete onLoadComplete) {
+    void getMessage(String consentUUID, String meta, GDPRConsentLib.OnLoadComplete onLoadComplete) throws JSONException, UnsupportedEncodingException {
         //TODO inject real params to messageUrl
-        String url = messageUrl(consentUUID, meta);
-        http.get(url, new ResponseHandler(url, onLoadComplete) {
+        String url = messageUrl();
+        http.post(null, url, new StringEntity(messageParams(consentUUID, meta).toString()), "application/json", new ResponseHandler(url, onLoadComplete) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 onLoadComplete.onSuccess(response);
@@ -141,19 +143,22 @@ class SourcePointClient {
         });
     }
 
-    private String messageUrl(String consentUUID, String meta) {
+    private String messageUrl() {
         HashSet<String> params = new HashSet<>();
-        params.add("propertyId=" + propertyId);
-        params.add("accountId=" + accountId);
-        params.add("propertyHref=http://" + property);
-        params.add("requestUUID=" + requestUUID);
-        params.add("alwaysDisplayDNS=" + "false");
-        if(consentUUID != null) {
-            params.add("uuid=" + consentUUID);
-            // cannot send meta without uuid for some mysterious reason
-            if(meta != null) params.add("meta=" + meta);
-        }
+        params.add("stage=" + (isStaging ? "stage" : "prod"));
         return baseMsgUrl + "?" + TextUtils.join("&", params);
+    }
+
+    private JSONObject messageParams(String consentUUID, String meta) throws JSONException {
+        JSONObject params = new JSONObject();
+        params.put("accountId", accountId);
+        params.put("propertyId", propertyId);
+        params.put("requestUUID", requestUUID);
+        params.put("uuid", consentUUID);
+        params.put("meta", meta);
+        params.put("propertyHref", "https://" + property);
+        params.put("campaignEnv", isStagingCampaign ? "stage" : "public");
+        return params;
     }
 
     private String consentUrl(){

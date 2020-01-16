@@ -77,7 +77,7 @@ public class ConsentViewActivity {
 //
 //        ConsentLibBuilder consentLibBuilder = ConsentLib.newBuilder(website.getAccountID(), website.getName(), website.getSiteID(),website.getPmID(),activity)
 //                // optional, used for running stage campaigns
-//                .setStage(website.isStaging())
+//                .setStagingCampaign(website.isStaging())
 //                .setShowPM(website.isShowPM())
 //                .setViewGroup(findViewById(android.R.id.content))
 //                //optional message timeout default timeout is 5 seconds

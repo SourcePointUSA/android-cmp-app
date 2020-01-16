@@ -1,7 +1,9 @@
 package com.sourcepoint.cmplibrary;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.view.ViewGroup;
 
 import org.json.JSONException;
@@ -26,6 +28,9 @@ public class ConsentLibBuilder {
     GDPRConsentLib.DebugLevel debugLevel = GDPRConsentLib.DebugLevel.OFF;
     long defaultMessageTimeOut = 10000;
 
+    StoreClient storeClient;
+
+
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity) {
         this.accountId = accountId;
         this.propertyId =propertyId;
@@ -41,6 +46,7 @@ public class ConsentLibBuilder {
             }
         };
         onAction = onConsentReady = onError = onMessageReady = noOpCallback;
+        storeClient = new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
     }
 
     /**
@@ -125,7 +131,7 @@ public class ConsentLibBuilder {
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
-    public ConsentLibBuilder setStage(boolean st) {
+    public ConsentLibBuilder setStagingCampaign(boolean st) {
         stagingCampaign = st;
         return this;
     }
@@ -196,6 +202,8 @@ public class ConsentLibBuilder {
         }
         return this;
     }
+
+
 
     /**
      * <b>Optional</b> Sets the DEBUG level.

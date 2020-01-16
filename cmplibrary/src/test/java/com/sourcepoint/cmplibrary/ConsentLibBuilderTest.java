@@ -87,7 +87,7 @@ public class ConsentLibBuilderTest {
     @Test
     public void setStage() {
         boolean stage = true;
-        consentLibBuilder.setStage(stage);
+        consentLibBuilder.setStagingCampaign(stage);
         assertEquals(stage, consentLibBuilder.stagingCampaign);
     }
 

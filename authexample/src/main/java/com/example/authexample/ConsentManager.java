@@ -22,7 +22,7 @@ abstract class ConsentManager {
 
 //    private ConsentLibBuilder getConsentLib(Boolean pm) {
 //        return ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",activity)
-//            .setStage(true)
+//            .setStagingCampaign(true)
 //            .setViewGroup(activity.findViewById(android.R.id.content))
 //            .setShowPM(pm)
 //            .setMessageTimeOut(30000)

@@ -106,7 +106,6 @@ abstract public class ConsentWebView extends WebView {
         @JavascriptInterface
         public void onMessageReady() {
             Log.d("onMessageReady", "called");
-            ConsentWebView.this.flushOrSyncCookies();
             ConsentWebView.this.onMessageReady();
         }
 
@@ -122,18 +121,13 @@ abstract public class ConsentWebView extends WebView {
 
         // called when a choice is selected on the message
         @JavascriptInterface
-        public void onSavePM(String payloadStr) throws JSONException {
+        public void onSavePM(String payloadStr) throws JSONException, ConsentLibException {
             Log.d("onSavePM", "called");
             if (ConsentWebView.this.hasLostInternetConnection()) {
                 ConsentWebView.this.onError(new ConsentLibException.NoInternetConnectionException());
             }
             JSONObject payloadJson = new JSONObject(payloadStr);
-            ConsentWebView.this.onSavePM(
-                    new UserConsent(
-                            payloadJson.getJSONArray("rejectedVendors"),
-                            payloadJson.getJSONArray("rejectedCategories")
-                    )
-            );
+            ConsentWebView.this.onSavePM(new UserConsent(payloadJson));
         }
 
         //called when an error is occured while loading web-view
@@ -219,9 +213,8 @@ abstract public class ConsentWebView extends WebView {
                 setWebContentsDebuggingEnabled(true);
                 enableSlowWholeDocumentDraw();
             }
-            CookieManager.getInstance().setAcceptThirdPartyCookies(this, true);
         }
-        CookieManager.getInstance().setAcceptCookie(true);
+        CookieManager.getInstance().setAcceptCookie(false);
         getSettings().setAppCacheEnabled(false);
         getSettings().setBuiltInZoomControls(false);
         getSettings().setSupportZoom(false);
@@ -246,7 +239,6 @@ abstract public class ConsentWebView extends WebView {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                flushOrSyncCookies();
                 connectionPool.remove(url);
                 //view.loadUrl("javascript:" + "addEventListener('message', SDK.onEvent('oie'))");
                 view.loadUrl("javascript:" + getJSInjection());
@@ -314,20 +306,6 @@ abstract public class ConsentWebView extends WebView {
         return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
     }
 
-    private void flushOrSyncCookies() {
-        // forces the cookies sync between RAM and local storage
-        // https://developer.android.com/reference/android/webkit/CookieSyncManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            CookieManager.getInstance().flush();
-        else CookieSyncManager.getInstance().sync();
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        flushOrSyncCookies();
-    }
-
     abstract public void onMessageReady();
 
     abstract public void onError(ConsentLibException error);
@@ -347,16 +325,6 @@ abstract public class ConsentWebView extends WebView {
         Log.d(TAG, "Loading Webview with: " + url);
         Log.d(TAG, "User-Agent: " + getSettings().getUserAgentString());
         loadUrl(url);
-    }
-
-    public boolean goBackIfPossible() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                if (canGoBack()) goBack();
-            }
-        });
-        return canGoBack();
     }
 
 
