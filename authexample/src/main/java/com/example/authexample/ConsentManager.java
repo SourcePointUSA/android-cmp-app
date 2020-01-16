@@ -32,7 +32,7 @@ abstract class ConsentManager {
 //                onConsentsReady(consents, consentLib.consentUUID, consentLib.euconsent);
 //            }))
 //            .setConsentUIReady(_c -> Log.d(TAG, "Message Ready"))
-//            .setOnErrorOccurred(c -> Log.d(TAG, "Error Occurred: "+c.error));
+//            .setOnError(c -> Log.d(TAG, "Error Occurred: "+c.error));
 //    }
 //
 //    void loadMessage(Boolean pm) {

@@ -43,7 +43,7 @@ abstract public class ConsentWebView extends WebView {
                 "    try {\n" +
                 "        JSReceiver.log(JSON.stringify(event.data, null, 2));\n" +
                 "        if (event.data.name === 'sp.showMessage') {\n" +
-                "            JSReceiver.onMessageReady();\n" +
+                "            JSReceiver.onConsentUIReady();\n" +
                 "            return;\n" +
                 "        }\n" +
                 "        const data = eventData(event);\n" +
@@ -104,8 +104,8 @@ abstract public class ConsentWebView extends WebView {
 
         // called when message is about to be shown
         @JavascriptInterface
-        public void onMessageReady() {
-            Log.d("onMessageReady", "called");
+        public void onConsentUIReady() {
+            Log.d("onConsentUIReady", "called");
             ConsentWebView.this.onMessageReady();
         }
 

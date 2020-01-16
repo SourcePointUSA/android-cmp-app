@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.ViewGroup;
 
 
+import com.iab.gdpr_android.consent.VendorConsent;
+import com.iab.gdpr_android.consent.VendorConsentDecoder;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,6 +26,7 @@ import java.util.HashSet;
  */
 public class GDPRConsentLib {
 
+    private static final int MAX_PURPOSE_ID = 24;
     private final String pmId;
 
     private final String PM_BASE_URL = "https://gdpr-inapp-pm.sp-prod.net";
@@ -62,7 +66,7 @@ public class GDPRConsentLib {
     private final int accountId, propertyId;
     private final ViewGroup viewGroup;
     private final Callback onAction, onConsentReady, onError;
-    private Callback onMessageReady;
+    private Callback onConsentUIReady, onConsentUIFinished;
     private final EncodedParam encodedTargetingParams, encodedAuthId, encodedPMId;
     private final boolean weOwnTheView, isShowPM, isStage;
 
@@ -120,7 +124,8 @@ public class GDPRConsentLib {
         onAction = b.onAction;
         onConsentReady = b.onConsentReady;
         onError = b.onError;
-        onMessageReady = b.onMessageReady;
+        onConsentUIReady = b.onConsentUIReady;
+        onConsentUIFinished = b.onConsentUIFinished;
         encodedTargetingParams = b.targetingParamsString;
         viewGroup = b.viewGroup;
         isStage = b.staging;
@@ -140,6 +145,8 @@ public class GDPRConsentLib {
 
         consentUUID = storeClient.getConsentUUID();
 
+        setSubjectToGDPR();
+
         Log.i("***uuid - init", consentUUID != null ? consentUUID : "no_consent");
 
     }
@@ -152,7 +159,7 @@ public class GDPRConsentLib {
                 onMessageReadyCalled = true;
                 Log.d("msgReady", "called");
                 if (mCountDownTimer != null) mCountDownTimer.cancel();
-                runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onMessageReady.run(GDPRConsentLib.this));
+                runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(GDPRConsentLib.this));
                 displayWebViewIfNeeded();
             }
 
@@ -216,13 +223,13 @@ public class GDPRConsentLib {
             @Override
             public void run() {
                 if (webView.canGoBack()) webView.goBack();
-                else consentReady();
+                else consentFinished();
             }
         });
     }
 
     private void onDismiss(){
-        consentReady();
+        consentFinished();
     }
 
     private void onMsgRejected() throws UnsupportedEncodingException, JSONException {
@@ -276,7 +283,7 @@ public class GDPRConsentLib {
                     if(jsonResult.has("url")){
                         webView.loadConsentMsgFromUrl(jsonResult.getString("url"));
                     }else{
-                        consentReady();
+                        consentFinished();
                     }
                 }
                 //TODO call onFailure callbacks / throw consentlibException
@@ -320,7 +327,7 @@ public class GDPRConsentLib {
                     euConsent = jsonUserConsent.getString("euconsent");
                     consentUUID = jsonResult.getString("uuid");
                     metaData = jsonResult.getString("meta");
-                    consentReady();
+                    consentFinished();
                 }
                 //TODO call onFailure callbacks / throw consentlibException
                 catch(JSONException e){
@@ -345,7 +352,7 @@ public class GDPRConsentLib {
             @Override
             public void onFinish() {
                 if (!onMessageReadyCalled) {
-                    onMessageReady = null;
+                    onConsentUIReady = null;
                     webView.onError(new ConsentLibException("a timeout has occurred when loading the message"));
                 }
             }
@@ -386,6 +393,42 @@ public class GDPRConsentLib {
         if (weOwnTheView && activity != null) destroy();
     }
 
+    private void setSubjectToGDPR() {
+
+        sourcePoint.getGDPRStatus(new OnLoadComplete() {
+            @Override
+            public void onSuccess(Object gdprApplies) {
+                isSubjectToGdpr = gdprApplies.equals("true");
+            }
+
+            @Override
+            public void onFailure(ConsentLibException exception) {
+                Log.d(TAG, "Failed setting the preference IAB_CONSENT_SUBJECT_TO_GDPR");
+            }
+        });
+    }
+
+    private void setIABVars() {
+
+        final VendorConsent vendorConsent = VendorConsentDecoder.fromBase64String(euConsent);
+
+        // Construct and save parsed purposes string
+        char[] allowedPurposes = new char[MAX_PURPOSE_ID];
+        for (int i = 0; i < MAX_PURPOSE_ID; i++) {
+            allowedPurposes[i] = vendorConsent.isPurposeAllowed(i + 1) ? '1' : '0';
+        }
+        Log.i(TAG, "allowedPurposes: " + new String(allowedPurposes));
+        storeClient.setIabConsentParsedPurposeConsents(new String(allowedPurposes));
+
+
+        // Construct and save parsed vendors string
+        char[] allowedVendors = new char[vendorConsent.getMaxVendorId()];
+        for (int i = 0; i < allowedVendors.length; i++) {
+            allowedVendors[i] = vendorConsent.isVendorAllowed(i + 1) ? '1' : '0';
+        }
+        Log.i(TAG, "allowedVendors: " + new String(allowedVendors));
+        storeClient.setIabConsentParsedVendorConsents(new String(allowedVendors));
+    }
 
     private void storeData(){
         Log.i("***uuid - stored", consentUUID);
@@ -394,14 +437,14 @@ public class GDPRConsentLib {
         storeClient.setIabConsentCmpPresent(true);
         storeClient.setIabConsentConsentString(euConsent);
         storeClient.setMetaData(metaData);
-        storeClient.setIabConsentParsedPurposeConsents("");
-        storeClient.setIabConsentParsedVendorConsents("");
+        setIABVars();
         storeClient.commit();
     }
 
-    private void consentReady() {
+    private void consentFinished() {
         storeData();
         //Log.i("uuid", consentUUID);
+        runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(GDPRConsentLib.this));
         runOnLiveActivityUIThread(() -> {
             removeWebViewIfNeeded();
             if(userConsent != null) onConsentReady.run(GDPRConsentLib.this);

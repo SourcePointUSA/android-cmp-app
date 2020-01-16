@@ -226,11 +226,11 @@ public class ConsentViewActivity {
 //                        });
 //                    }
 //                })
-//                .setOnErrorOccurred(new ConsentLib.Callback() {
+//                .setOnError(new ConsentLib.Callback() {
 //                    @Override
 //                    public void run(ConsentLib c) {
 //                        hideProgressBar();
-//                        Log.d(TAG, "setOnErrorOccurred");
+//                        Log.d(TAG, "setOnError");
 //                        showAlertDialog("" + c.error.getMessage(), false);
 //                        Log.d(TAG, "Something went wrong: ", c.error);
 //                    }

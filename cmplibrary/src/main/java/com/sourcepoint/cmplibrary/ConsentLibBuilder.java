@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ public class ConsentLibBuilder {
     String mmsDomain, cmpDomain, msgDomain;
     String page = "";
     ViewGroup viewGroup = null;
-    GDPRConsentLib.Callback onAction, onConsentReady, onError, onMessageReady;
+    GDPRConsentLib.Callback onAction, onConsentReady, onError, onConsentUIReady, onConsentUIFinished;
     boolean staging, stagingCampaign, newPM , isShowPM, shouldCleanConsentOnError;
 
     EncodedParam targetingParamsString = null;
@@ -45,7 +44,7 @@ public class ConsentLibBuilder {
             public void run(GDPRConsentLib c) {
             }
         };
-        onAction = onConsentReady = onError = onMessageReady = noOpCallback;
+        onAction = onConsentReady = onError = onConsentUIReady = onConsentUIFinished = noOpCallback;
         storeClient = new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
     }
 
@@ -108,8 +107,18 @@ public class ConsentLibBuilder {
      * @param callback to be called when the message is ready to be displayed
      * @return ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnMessageReady(GDPRConsentLib.Callback callback) {
-        onMessageReady = callback;
+    public ConsentLibBuilder setOnConsentUIReady(GDPRConsentLib.Callback callback) {
+        onConsentUIReady = callback;
+        return this;
+    }
+
+    /**
+     * Called when the Dialog message is about to disapear
+     * @param callback to be called when the message is ready to disapear
+     * @return ConsentLibBuilder
+     */
+    public ConsentLibBuilder setOnConsentUIFinished(GDPRConsentLib.Callback callback) {
+        onConsentUIFinished = callback;
         return this;
     }
 
@@ -119,7 +128,7 @@ public class ConsentLibBuilder {
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnErrorOccurred(GDPRConsentLib.Callback callback) {
+    public ConsentLibBuilder setOnError(GDPRConsentLib.Callback callback) {
         onError = callback;
         return this;
     }
