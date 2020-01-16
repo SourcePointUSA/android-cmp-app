@@ -21,7 +21,9 @@ public class ConsentLibBuilder {
     GDPRConsentLib.Callback onAction, onConsentReady, onError, onConsentUIReady, onConsentUIFinished;
     boolean staging, stagingCampaign, newPM , isShowPM, shouldCleanConsentOnError;
 
-    EncodedParam targetingParamsString = null;
+    SourcePointClient sourcePointClient;
+
+    String targetingParamsString = null;
     EncodedParam authId = null;
     String pmId = "";
     GDPRConsentLib.DebugLevel debugLevel = GDPRConsentLib.DebugLevel.OFF;
@@ -227,8 +229,12 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    private void setTargetingParamsString() throws ConsentLibException {
-        targetingParamsString = new EncodedParam("targetingParams", targetingParams.toString());
+    private void setTargetingParamsString() {
+        targetingParamsString = targetingParams.toString();
+    }
+
+    private void setSourcePointClient(){
+        sourcePointClient = new SourcePointClient(accountId, property + "/" + page, propertyId, stagingCampaign, staging, targetingParamsString);
     }
 
     /**
@@ -254,14 +260,8 @@ public class ConsentLibBuilder {
                             "See https://github.com/SourcePointUSA/android-cmp-app/issues/25 for more information."
             );
         }
-
-        try {
-            setTargetingParamsString();
-        } catch (ConsentLibException e) {
-            this.activity = null; // release reference to activity
-            throw new ConsentLibException.BuildException(e.getMessage());
-        }
-
+        setTargetingParamsString();
+        setSourcePointClient();
         return new GDPRConsentLib(this);
     }
 

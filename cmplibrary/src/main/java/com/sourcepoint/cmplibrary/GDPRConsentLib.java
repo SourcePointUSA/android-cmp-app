@@ -67,8 +67,7 @@ public class GDPRConsentLib {
     private final ViewGroup viewGroup;
     private final Callback onAction, onConsentReady, onError;
     private Callback onConsentUIReady, onConsentUIFinished;
-    private final EncodedParam encodedTargetingParams, encodedAuthId, encodedPMId;
-    private final boolean weOwnTheView, isShowPM, isStage;
+    private final boolean weOwnTheView, shouldCleanConsentOnError;
 
     //default time out changes
     private boolean onMessageReadyCalled = false;
@@ -117,24 +116,21 @@ public class GDPRConsentLib {
         property = b.property;
         accountId = b.accountId;
         propertyId = b.propertyId;
-        encodedPMId = new EncodedParam("_sp_PMId",b.pmId);
         pmId = b.pmId;
-        isShowPM = b.isShowPM;
-        encodedAuthId = b.authId;
         onAction = b.onAction;
         onConsentReady = b.onConsentReady;
         onError = b.onError;
         onConsentUIReady = b.onConsentUIReady;
         onConsentUIFinished = b.onConsentUIFinished;
-        encodedTargetingParams = b.targetingParamsString;
         viewGroup = b.viewGroup;
-        isStage = b.staging;
+        shouldCleanConsentOnError = b.shouldCleanConsentOnError;
+
 
         weOwnTheView = viewGroup != null;
         // configurable time out
         defaultMessageTimeOut = b.defaultMessageTimeOut;
 
-        sourcePoint = new SourcePointClient(b.accountId, b.property + "/" + b.page, propertyId, b.stagingCampaign, b.staging);
+        sourcePoint = b.sourcePointClient;
 
         webView = buildWebView();
         storeClient = b.storeClient;
@@ -147,12 +143,10 @@ public class GDPRConsentLib {
 
         setSubjectToGDPR();
 
-        Log.i("***uuid - init", consentUUID != null ? consentUUID : "no_consent");
-
     }
 
     private ConsentWebView buildWebView() {
-        return new ConsentWebView(activity, defaultMessageTimeOut, isShowPM) {
+        return new ConsentWebView(activity, defaultMessageTimeOut) {
 
             @Override
             public void onMessageReady() {
@@ -165,6 +159,11 @@ public class GDPRConsentLib {
 
             @Override
             public void onError(ConsentLibException error) {
+                if(shouldCleanConsentOnError) {
+                    storeClient.clear();
+                    storeClient.deleteIABConsentData();
+                    storeClient.commit();
+                }
                 GDPRConsentLib.this.error = error;
                 runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onError.run(GDPRConsentLib.this));
             }
@@ -431,7 +430,6 @@ public class GDPRConsentLib {
     }
 
     private void storeData(){
-        Log.i("***uuid - stored", consentUUID);
         storeClient.setConsentSubjectToGDPr(isSubjectToGdpr);
         storeClient.setConsentUuid(consentUUID);
         storeClient.setIabConsentCmpPresent(true);

@@ -2,6 +2,8 @@ package com.sourcepoint.cmplibrary;
 
 import android.content.SharedPreferences;
 
+import java.util.UUID;
+
 public class StoreClient {
     /**
      * If the user has consent data stored, reading for this key in the shared preferences will return true
@@ -32,6 +34,8 @@ public class StoreClient {
 
     private static final String META_DATA_KEY = "metaData";
 
+    private static final String EU_CONSENT__KEY = "euconsent";
+
     private SharedPreferences.Editor editor;
 
     private SharedPreferences pref;
@@ -51,6 +55,7 @@ public class StoreClient {
 
     public void setIabConsentConsentString(String consentConsentString){
         editor.putString(IAB_CONSENT_CONSENT_STRING, consentConsentString);
+        editor.putString(EU_CONSENT__KEY, consentConsentString);
     }
 
     public void setIabConsentParsedPurposeConsents(String consentParsedPurposeConsents){
@@ -82,10 +87,18 @@ public class StoreClient {
     }
 
     public String getConsentUUID() {
-        return pref.getString(CONSENT_UUID_KEY, null);
+        return pref.getString(CONSENT_UUID_KEY, UUID.randomUUID().toString());
     }
 
     public String getConsentString() {
         return pref.getString(IAB_CONSENT_CONSENT_STRING, null);
+    }
+
+    public void deleteIABConsentData(){
+        editor.remove(IAB_CONSENT_CONSENT_STRING);
+        editor.remove(IAB_CONSENT_PARSED_VENDOR_CONSENTS);
+        editor.remove(IAB_CONSENT_PARSED_PURPOSE_CONSENTS);
+        editor.remove(IAB_CONSENT_CMP_PRESENT);
+        editor.remove(IAB_CONSENT_SUBJECT_TO_GDPR);
     }
 }

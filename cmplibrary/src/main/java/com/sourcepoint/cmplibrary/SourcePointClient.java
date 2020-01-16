@@ -37,6 +37,7 @@ class SourcePointClient {
     private int propertyId;
     private Boolean isStagingCampaign, isStaging;
     private String requestUUID = "";
+    private String targetingParams;
 
     private String getRequestUUID(){
         if(!requestUUID.isEmpty()) return requestUUID;
@@ -75,13 +76,15 @@ class SourcePointClient {
             String property,
             int propertyId,
             boolean isStagingCampaign,
-            boolean isStaging
+            boolean isStaging,
+            String targetingParams
     ) {
         this.isStagingCampaign = isStagingCampaign;
         this.isStaging = isStaging;
         this.accountId = accountID;
         this.propertyId = propertyId;
         this.property = property;
+        this.targetingParams = targetingParams;
     }
 
     private String GDPRStatusUrl() {
@@ -158,6 +161,7 @@ class SourcePointClient {
         params.put("meta", meta);
         params.put("propertyHref", "https://" + property);
         params.put("campaignEnv", isStagingCampaign ? "stage" : "public");
+        params.put("targetingParams", targetingParams);
         return params;
     }
 

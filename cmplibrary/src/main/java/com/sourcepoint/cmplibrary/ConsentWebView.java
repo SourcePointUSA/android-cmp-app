@@ -172,15 +172,13 @@ abstract public class ConsentWebView extends WebView {
 
     private long timeoutMillisec;
     private ConnectionPool connectionPool;
-    private boolean isShowPM = false;
 
     public static long DEFAULT_TIMEOUT = 10000;
 
-    public ConsentWebView(Context context, long timeoutMillisec, boolean isShowPM) {
+    public ConsentWebView(Context context, long timeoutMillisec) {
         super(context);
         this.timeoutMillisec = timeoutMillisec;
         connectionPool = new ConnectionPool();
-        this.isShowPM = isShowPM;
         setup();
     }
 
