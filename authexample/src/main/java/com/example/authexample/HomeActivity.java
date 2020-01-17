@@ -12,7 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.sourcepoint.cmplibrary.Consent;
+import com.sourcepoint.gdpr_cmplibrary.Consent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -67,7 +67,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
 
-        consentManager.loadMessage(false, userName);
+        //consentManager.loadMessage(false, userName);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_privacy_settings) {
             Log.d("App", "onOptionsItemSelected: " + item.getItemId());
-            consentManager.loadMessage(true, userName);
+            //consentManager.loadMessage(true, userName);
             return true;
         }
 

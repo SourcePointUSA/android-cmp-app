@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary;
+package com.sourcepoint.gdpr_cmplibrary;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -14,7 +14,7 @@ class EncodedParam {
         try {
             return URLEncoder.encode(attrValue, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new ConsentLibException.BuildException("Unable to encode "+attrName+", with the value: "+attrValue+" when instantiating SourcePointClient");
+            throw new ConsentLibException.BuildException(e, "Unable to encode "+attrName+", with the value: "+attrValue+" when instantiating SourcePointClient");
         }
     }
 
