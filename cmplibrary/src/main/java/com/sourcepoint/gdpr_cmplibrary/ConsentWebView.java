@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary;
+package com.sourcepoint.gdpr_cmplibrary;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -17,7 +17,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.RenderProcessGoneDetail;
 import android.webkit.SslErrorHandler;
@@ -127,7 +126,7 @@ abstract public class ConsentWebView extends WebView {
                 ConsentWebView.this.onError(new ConsentLibException.NoInternetConnectionException());
             }
             JSONObject payloadJson = new JSONObject(payloadStr);
-            ConsentWebView.this.onSavePM(new UserConsent(payloadJson));
+            ConsentWebView.this.onSavePM(new GDPRUserConsent(payloadJson));
         }
 
         //called when an error is occured while loading web-view
@@ -310,7 +309,7 @@ abstract public class ConsentWebView extends WebView {
 
     abstract public void onAction(int choiceType);
 
-    abstract public void onSavePM(UserConsent userConsent);
+    abstract public void onSavePM(GDPRUserConsent GDPRUserConsent);
 
 
     public void loadConsentMsgFromUrl(String url) throws ConsentLibException.NoInternetConnectionException {

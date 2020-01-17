@@ -16,7 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.sourcepoint.cmplibrary.Consent;
+import com.sourcepoint.gdpr_cmplibrary.Consent;
 
 import java.util.ArrayList;
 import java.util.Arrays;

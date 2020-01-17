@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary;
+package com.sourcepoint.gdpr_cmplibrary;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -6,15 +6,12 @@ import android.util.Log;
 import com.google.common.annotations.VisibleForTesting;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -37,7 +34,7 @@ class SourcePointClient {
     private int propertyId;
     private Boolean isStagingCampaign, isStaging;
     private String requestUUID = "";
-    private String targetingParams;
+    private String targetingParams, authId;
 
     private String getRequestUUID(){
         if(!requestUUID.isEmpty()) return requestUUID;
@@ -77,7 +74,8 @@ class SourcePointClient {
             int propertyId,
             boolean isStagingCampaign,
             boolean isStaging,
-            String targetingParams
+            String targetingParams,
+            String authId
     ) {
         this.isStagingCampaign = isStagingCampaign;
         this.isStaging = isStaging;
@@ -85,6 +83,7 @@ class SourcePointClient {
         this.propertyId = propertyId;
         this.property = property;
         this.targetingParams = targetingParams;
+        this.authId = authId;
     }
 
     private String GDPRStatusUrl() {
@@ -169,6 +168,8 @@ class SourcePointClient {
             params.put("propertyHref", "https://" + property);
             params.put("campaignEnv", isStagingCampaign ? "stage" : "public");
             params.put("targetingParams", targetingParams);
+            params.put("authId", authId);
+            params.put("resolved", false);
             return params;
         } catch (JSONException e) {
             e.printStackTrace();

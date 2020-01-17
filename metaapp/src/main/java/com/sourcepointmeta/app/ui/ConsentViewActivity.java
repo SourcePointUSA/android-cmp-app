@@ -1,50 +1,5 @@
 package com.sourcepointmeta.app.ui;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.text.style.RelativeSizeSpan;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.webkit.CookieManager;
-import android.widget.TextView;
-
-import com.sourcepoint.cmplibrary.ConsentLibBuilder;
-import com.sourcepoint.cmplibrary.ConsentLibException;
-import com.sourcepointmeta.app.R;
-import com.sourcepointmeta.app.SourcepointApp;
-import com.sourcepointmeta.app.adapters.ConsentListRecyclerView;
-import com.sourcepointmeta.app.common.Constants;
-import com.sourcepointmeta.app.database.entity.TargetingParam;
-import com.sourcepointmeta.app.database.entity.Website;
-import com.sourcepointmeta.app.models.Consents;
-import com.sourcepointmeta.app.repository.WebsiteListRepository;
-import com.sourcepointmeta.app.utility.Util;
-import com.sourcepointmeta.app.viewmodel.ConsentViewViewModel;
-import com.sourcepointmeta.app.viewmodel.ViewModelUtils;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
-import static android.support.v7.widget.RecyclerView.VERTICAL;
-
 public class ConsentViewActivity {
 
 //    private final String TAG = "ConsentViewActivity";

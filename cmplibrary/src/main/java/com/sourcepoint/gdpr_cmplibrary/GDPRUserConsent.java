@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary;
+package com.sourcepoint.gdpr_cmplibrary;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -6,19 +6,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class UserConsent {
+public class GDPRUserConsent {
 
     public ArrayList<String> acceptedVendors = new ArrayList();
     public ArrayList<String> acceptedCategories = new ArrayList();
     public JSONObject jsonConsents = new JSONObject();
 
-    public UserConsent(JSONArray acceptedVendors, JSONArray acceptedCategories) throws JSONException {
+    public GDPRUserConsent(JSONArray acceptedVendors, JSONArray acceptedCategories) throws JSONException {
         this.acceptedVendors = json2StrArr(acceptedVendors);
         this.acceptedCategories = json2StrArr(acceptedCategories);
         setJsonConsents();
     }
 
-    public UserConsent(JSONObject jConsent) throws JSONException, ConsentLibException {
+    public GDPRUserConsent(JSONObject jConsent) throws JSONException, ConsentLibException {
         this.acceptedVendors = json2StrArr(jConsent.getJSONArray("acceptedVendors"));
         this.acceptedCategories = json2StrArr(jConsent.getJSONArray("acceptedCategories"));
         setJsonConsents();

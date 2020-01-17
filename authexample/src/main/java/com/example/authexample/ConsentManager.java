@@ -1,11 +1,8 @@
 package com.example.authexample;
 
 import android.app.Activity;
-import android.util.Log;
 
-import com.sourcepoint.cmplibrary.Consent;
-import com.sourcepoint.cmplibrary.ConsentLibBuilder;
-import com.sourcepoint.cmplibrary.ConsentLibException;
+import com.sourcepoint.gdpr_cmplibrary.Consent;
 
 import java.util.HashSet;
 

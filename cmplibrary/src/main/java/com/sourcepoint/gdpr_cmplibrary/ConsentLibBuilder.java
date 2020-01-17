@@ -1,7 +1,6 @@
-package com.sourcepoint.cmplibrary;
+package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.ViewGroup;
 
@@ -24,7 +23,7 @@ public class ConsentLibBuilder {
     SourcePointClient sourcePointClient;
 
     String targetingParamsString = null;
-    EncodedParam authId = null;
+    String authId = null;
     String pmId = "";
     GDPRConsentLib.DebugLevel debugLevel = GDPRConsentLib.DebugLevel.OFF;
     long defaultMessageTimeOut = 10000;
@@ -135,8 +134,8 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    public ConsentLibBuilder setAuthId(String authId) throws ConsentLibException.BuildException {
-        this.authId = new EncodedParam("authId", authId);
+    public ConsentLibBuilder setAuthId(String authId) {
+        this.authId = authId;
         return this;
     }
 
@@ -180,7 +179,7 @@ public class ConsentLibBuilder {
     }
 
     private void setSourcePointClient(){
-        sourcePointClient = new SourcePointClient(accountId, property + "/" + page, propertyId, stagingCampaign, staging, targetingParamsString);
+        sourcePointClient = new SourcePointClient(accountId, property + "/" + page, propertyId, stagingCampaign, staging, targetingParamsString, authId);
     }
 
     /**

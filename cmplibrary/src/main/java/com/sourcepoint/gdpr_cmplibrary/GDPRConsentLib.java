@@ -1,10 +1,9 @@
-package com.sourcepoint.cmplibrary;
+package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ViewGroup;
 
 
 import com.iab.gdpr_android.consent.VendorConsent;
@@ -56,7 +55,7 @@ public class GDPRConsentLib {
 
     public ConsentLibException error = null;
 
-    public UserConsent userConsent;
+    public GDPRUserConsent userConsent;
 
     private static final String TAG = "GDPRConsentLib";
 
@@ -166,7 +165,7 @@ public class GDPRConsentLib {
             }
 
             @Override
-            public void onSavePM(UserConsent u) {
+            public void onSavePM(GDPRUserConsent u) {
                 GDPRConsentLib.this.userConsent = u;
                 sendConsent(ActionTypes.PM_COMPLETE);
             }
@@ -273,7 +272,7 @@ public class GDPRConsentLib {
                     JSONObject jsonResult = (JSONObject) result;
                     consentUUID = jsonResult.getString("uuid");
                     metaData = jsonResult.getString("meta");
-                    userConsent = new  UserConsent(jsonResult.getJSONObject("userConsent"));
+                    userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
                     if(jsonResult.has("url")){
                         webView.loadConsentMsgFromUrl(jsonResult.getString("url"));
                     }else{
@@ -321,7 +320,7 @@ public class GDPRConsentLib {
                     try{
                         JSONObject jsonResult = (JSONObject) result;
                         JSONObject jsonUserConsent = jsonResult.getJSONObject("userConsent");
-                        userConsent = new UserConsent(jsonUserConsent);
+                        userConsent = new GDPRUserConsent(jsonUserConsent);
                         euConsent = jsonUserConsent.getString("euconsent");
                         consentUUID = jsonResult.getString("uuid");
                         metaData = jsonResult.getString("meta");

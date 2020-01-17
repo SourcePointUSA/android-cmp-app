@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary;
+package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
 import android.view.ViewGroup;

@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary;
+package com.sourcepoint.gdpr_cmplibrary;
 
 public class ConsentLibException extends Exception {
 
