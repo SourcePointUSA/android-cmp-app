@@ -2,7 +2,6 @@ Table of Contents
 =================
    * [Setup](#setup)
    * [Usage](#usage)
-   * [Docs](#docs)
    * [Development](#development)
       * [How to build the `cmplibrary` module from source](#how-to-build-the-cmplibrary-module-from-source)
       * [How to import the master version of `cmplibrary` into existing an Android app project for development](#how-to-import-the-master-version-of-cmplibrary-into-existing-an-android-app-project-for-development)
@@ -86,8 +85,19 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 ```
-# Docs
-For the complete documentation, open `./docs/index.html` in the browser.
+
+## Authenticated Consent
+
+In order to use the authenticated consent all you need to do is calling `.setAuthId(String)` in the instance of `ConsentLibBuilder`. Example: 
+
+```java
+ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
+    // calling other .set methods
+    .setAuthId("JohnDoe")
+    .build();
+```
+
+This way, if we already have consent for that token (`"JohDoe"`) we'll bring the consent profile from the server, overwriting whatever was stored in the device.
 
 # Development
 ## How to build the `cmplibrary` module from source
