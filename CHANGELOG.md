@@ -90,8 +90,8 @@ stored in our server, we'll load it instead of a new profile.
 * Re-throw an exception as `ConsentLibException` happening when the consent string could not be parsed
 
 ## 2.1.0 (March 15, 2019)
-* Introduced `ConsentLib.onErrorOccurred` callback method.
-  * If something goes wrong inside the WebView, we'll assign a (hopefully) meaningful exception to `ConsentLib.error` and call `onErrorOccurred` so you'll be able to decide what to do next.
+* Introduced `ConsentLib.onError` callback method.
+  * If something goes wrong inside the WebView, we'll assign a (hopefully) meaningful exception to `ConsentLib.error` and call `onError` so you'll be able to decide what to do next.
 
 ## 2.0.3 (March 12, 2019)
 * Rolled minSdkVersion back to 16 in order to maintain backwards compatibility

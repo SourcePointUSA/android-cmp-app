@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary;
+package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
 import android.view.ViewGroup;
@@ -63,31 +63,31 @@ public class ConsentLibBuilderTest {
     @Test
     public void setOnMessageChoiceSelect() {
         consentLibBuilder.setOnMessageChoiceSelect(callback);
-        assertEquals(callback, consentLibBuilder.onMessageChoiceSelect);
+        assertEquals(callback, consentLibBuilder.onAction);
     }
 
     @Test
     public void setOnInteractionComplete() {
-        consentLibBuilder.setOnMessageReady(callback);
-        assertEquals(callback, consentLibBuilder.onMessageReady);
+        consentLibBuilder.setConsentUIReady(callback);
+        assertEquals(callback, consentLibBuilder.onConsentUIReady);
     }
 
     @Test
     public void setOnMessageReady() {
-        consentLibBuilder.setOnMessageReady(callback);
-        assertEquals(callback, consentLibBuilder.onMessageReady);
+        consentLibBuilder.setConsentUIReady(callback);
+        assertEquals(callback, consentLibBuilder.onConsentUIReady);
     }
 
     @Test
     public void setOnErrorOccurred() {
-        consentLibBuilder.setOnErrorOccurred(callback);
-        assertEquals(callback, consentLibBuilder.onErrorOccurred);
+        consentLibBuilder.setOnError(callback);
+        assertEquals(callback, consentLibBuilder.onError);
     }
 
     @Test
     public void setStage() {
         boolean stage = true;
-        consentLibBuilder.setStage(stage);
+        consentLibBuilder.setStagingCampaign(stage);
         assertEquals(stage, consentLibBuilder.stagingCampaign);
     }
 
