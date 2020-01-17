@@ -123,27 +123,32 @@ class SourcePointClient {
         });
     }
 
-    void getMessage(String consentUUID, String meta, GDPRConsentLib.OnLoadComplete onLoadComplete) throws JSONException, UnsupportedEncodingException {
+    void getMessage(String consentUUID, String meta, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
         //TODO inject real params to messageUrl
         String url = messageUrl();
-        http.post(null, url, new StringEntity(messageParams(consentUUID, meta).toString()), "application/json", new ResponseHandler(url, onLoadComplete) {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                onLoadComplete.onSuccess(response);
-            }
+        try {
+            http.post(null, url, new StringEntity(messageParams(consentUUID, meta).toString()), "application/json", new ResponseHandler(url, onLoadComplete) {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    onLoadComplete.onSuccess(response);
+                }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-            }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
+                    onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+                }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-            }
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
+                    onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+                }
+            });
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new ConsentLibException(e, "Error trying to stringify bodyJson on getMessage in sourcePointClient.");
+        }
     }
 
     private String messageUrl() {
@@ -152,17 +157,23 @@ class SourcePointClient {
         return baseMsgUrl + "?" + TextUtils.join("&", params);
     }
 
-    private JSONObject messageParams(String consentUUID, String meta) throws JSONException {
-        JSONObject params = new JSONObject();
-        params.put("accountId", accountId);
-        params.put("propertyId", propertyId);
-        params.put("requestUUID", requestUUID);
-        params.put("uuid", consentUUID);
-        params.put("meta", meta);
-        params.put("propertyHref", "https://" + property);
-        params.put("campaignEnv", isStagingCampaign ? "stage" : "public");
-        params.put("targetingParams", targetingParams);
-        return params;
+    private JSONObject messageParams(String consentUUID, String meta) throws ConsentLibException {
+
+        try {
+            JSONObject params = new JSONObject();
+            params.put("accountId", accountId);
+            params.put("propertyId", propertyId);
+            params.put("requestUUID", requestUUID);
+            params.put("uuid", consentUUID);
+            params.put("meta", meta);
+            params.put("propertyHref", "https://" + property);
+            params.put("campaignEnv", isStagingCampaign ? "stage" : "public");
+            params.put("targetingParams", targetingParams);
+            return params;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new ConsentLibException(e, "Error bulding message bodyJson in sourcePointClient");
+        }
     }
 
     private String consentUrl(){
@@ -170,10 +181,19 @@ class SourcePointClient {
     }
 
 
-    void sendConsent(JSONObject params, GDPRConsentLib.OnLoadComplete onLoadComplete) throws UnsupportedEncodingException, JSONException {
+    void sendConsent(JSONObject params, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
         String url = consentUrl();
-        params.put("requestUUID", getRequestUUID());
-        StringEntity entity = new StringEntity(params.toString());
+        try {
+            params.put("requestUUID", getRequestUUID());
+        } catch (JSONException e) {
+            throw new ConsentLibException(e, "Error adding param requestUUID to sendConsentBody.");
+        }
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(params.toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new ConsentLibException(e, "Error stringifing params for sending consent.");
+        }
         http.post(null, url, entity, "application/json",  new ResponseHandler(url, onLoadComplete) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

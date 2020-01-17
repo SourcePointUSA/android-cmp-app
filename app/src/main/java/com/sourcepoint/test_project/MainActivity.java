@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
+import com.sourcepoint.cmplibrary.Consent;
 import com.sourcepoint.cmplibrary.GDPRConsentLib;
 import com.sourcepoint.cmplibrary.ConsentLibException;
 import com.sourcepoint.cmplibrary.UserConsent;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             mainViewGroup.removeView(webView);
     }
 
-    private GDPRConsentLib buildGDPRConsentLib() throws ConsentLibException {
+    private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
                 .setStagingCampaign(true)
                 .setOnConsentUIReady(consentLib -> {
@@ -52,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .setOnError(consentLib -> {
-                    Log.i(TAG, "Something went wrong: ", consentLib.error);
+                    Log.e(TAG, "Something went wrong: ", consentLib.error);
+                    Log.i(TAG, "ConsentLibErrorMessage: " + consentLib.error.consentLibErrorMessage);
                     removeWebView(consentLib.webView);
                 })
                 .build();
@@ -61,14 +63,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        try {
-            gdprConsentLib = buildGDPRConsentLib();
-            gdprConsentLib.run();
-        } catch (ConsentLibException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        gdprConsentLib = buildGDPRConsentLib();
+        gdprConsentLib.run();
     }
 
     @Override
@@ -77,14 +73,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
         findViewById(R.id.review_consents).setOnClickListener(_v -> {
-            try {
-                gdprConsentLib = buildGDPRConsentLib();
-                gdprConsentLib.showPm();
-            } catch (ConsentLibException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            gdprConsentLib = buildGDPRConsentLib();
+            gdprConsentLib.showPm();
+
         });
     }
 

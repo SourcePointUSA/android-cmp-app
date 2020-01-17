@@ -238,28 +238,14 @@ public class ConsentLibBuilder {
     }
 
     /**
-     * The Android 4.x Browser throws an exception when parsing SourcePoint's javascript.
-     * @return true if the API level is not supported
-     */
-    @SuppressWarnings("WeakerAccess")
-    public boolean sdkNotSupported() {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT;
-    }
-
-    /**
      * Run internal tasks and build the GDPRConsentLib. This method will validate the
      * data coming from the previous Builders and throw {@link ConsentLibException.BuildException}
      * in case something goes wrong.
      * @return GDPRConsentLib | ConsentLibNoOp
      * @throws ConsentLibException.BuildException - if any of the required data is missing or invalid
      */
-    public GDPRConsentLib build() throws ConsentLibException {
-        if(sdkNotSupported()) {
-            throw new ConsentLibException.BuildException(
-                    "GDPRConsentLib supports only API level 19 and above.\n"+
-                            "See https://github.com/SourcePointUSA/android-cmp-app/issues/25 for more information."
-            );
-        }
+    public GDPRConsentLib build() {
+
         setTargetingParamsString();
         setSourcePointClient();
         return new GDPRConsentLib(this);

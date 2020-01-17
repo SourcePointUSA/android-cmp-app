@@ -111,7 +111,7 @@ public class GDPRConsentLib {
         return new ConsentLibBuilder(accountId, property, propertyId, pmId, activity);
     }
 
-    GDPRConsentLib(ConsentLibBuilder b) throws ConsentLibException.BuildException {
+    GDPRConsentLib(ConsentLibBuilder b) {
         activity = b.activity;
         property = b.property;
         accountId = b.accountId;
@@ -173,13 +173,7 @@ public class GDPRConsentLib {
             @Override
             public void onSavePM(UserConsent u) {
                 GDPRConsentLib.this.userConsent = u;
-                try {
-                    sendConsent(ActionTypes.PM_COMPLETE);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                sendConsent(ActionTypes.PM_COMPLETE);
             }
 
             @Override
@@ -206,16 +200,15 @@ public class GDPRConsentLib {
                             GDPRConsentLib.this.choiceType = MESSAGE_OPTIONS.UNKNOWN;
                             break;
                     }
-                }catch (UnsupportedEncodingException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    callOnError(new ConsentLibException(e, "Unexpected error when calling onAction."));
                 }
             }
         };
     }
 
-    private void onMsgAccepted() throws UnsupportedEncodingException, JSONException {
+    private void onMsgAccepted() {
         sendConsent(ActionTypes.MSG_ACCEPT);
     }
 
@@ -233,7 +226,7 @@ public class GDPRConsentLib {
         consentFinished();
     }
 
-    private void onMsgRejected() throws UnsupportedEncodingException, JSONException {
+    private void onMsgRejected() {
         sendConsent(ActionTypes.MSG_REJECT);
     }
 
@@ -254,24 +247,29 @@ public class GDPRConsentLib {
      *
      * @throws ConsentLibException.NoInternetConnectionException - thrown if the device has lost connection either prior or while interacting with GDPRConsentLib
      */
-    public void run() throws ConsentLibException.NoInternetConnectionException {
-        onMessageReadyCalled = false;
-        mCountDownTimer = getTimer(defaultMessageTimeOut);
-        mCountDownTimer.start();
+    public void run() {
         try {
+
+            onMessageReadyCalled = false;
+            mCountDownTimer = getTimer(defaultMessageTimeOut);
+            mCountDownTimer.start();
             renderMsgAndSaveConsent();
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+            callOnError(new ConsentLibException(e, "Unexpected error on consentLib.run()"));
         }
     }
 
     public void showPm() {
-        webView.loadUrl(pmUrl());
+        try {
+            webView.loadUrl(pmUrl());
+        } catch (Exception e) {
+            e.printStackTrace();
+            callOnError(new ConsentLibException(e, "Error trying to load pm URL."));
+        }
     }
 
-    private void renderMsgAndSaveConsent() throws UnsupportedEncodingException, JSONException {
+    private void renderMsgAndSaveConsent() throws ConsentLibException {
         if(webView == null) { webView = buildWebView(); }
         sourcePoint.getMessage(consentUUID, metaData, new OnLoadComplete() {
             @Override
@@ -287,63 +285,70 @@ public class GDPRConsentLib {
                         consentFinished();
                     }
                 }
-                //TODO call onFailure callbacks / throw consentlibException
-                catch(JSONException e){
-                    Log.d(TAG, "Failed reading message response params.");
-                }
-                catch(ConsentLibException e){
-                    Log.d(TAG, "Sorry, no internet connection");
+                catch (Exception e) {
+                    e.printStackTrace();
+                    callOnError(new ConsentLibException(e, "Error trying to parse response from getConsents."));
                 }
             }
 
             @Override
             public void onFailure(ConsentLibException exception) {
-                Log.d(TAG, "Failed getting message response params.");
+                exception.printStackTrace();
+                callOnError(exception);
             }
         });
     }
 
-    private JSONObject paramsToSendConsent(int actionType) throws JSONException {
-        JSONObject params = new JSONObject();
+    private JSONObject paramsToSendConsent(int actionType) throws ConsentLibException {
+        try{
 
-        params.put("consents", userConsent != null ? userConsent.jsonConsents : null);
-        params.put("accountId", accountId);
-        params.put("propertyId", propertyId);
-        params.put("privacyManagerId", pmId);
-        params.put("uuid", consentUUID);
-        params.put("meta", metaData);
-        params.put("actionType", actionType);
-        params.put("requestFromPM", true);
-        return params;
+            JSONObject params = new JSONObject();
+
+            params.put("consents", userConsent != null ? userConsent.jsonConsents : null);
+            params.put("accountId", accountId);
+            params.put("propertyId", propertyId);
+            params.put("privacyManagerId", pmId);
+            params.put("uuid", consentUUID);
+            params.put("meta", metaData);
+            params.put("actionType", actionType);
+            params.put("requestFromPM", true);
+            return params;
+        } catch(JSONException e){
+            throw new ConsentLibException(e, "Error trying to build body to send consents.");
+        }
     }
 
-    private void sendConsent(int actionType) throws JSONException, UnsupportedEncodingException {
-        sourcePoint.sendConsent(paramsToSendConsent(actionType), new OnLoadComplete() {
-            @Override
-            public void onSuccess(Object result) {
-                try{
-                    JSONObject jsonResult = (JSONObject) result;
-                    JSONObject jsonUserConsent = jsonResult.getJSONObject("userConsent");
-                    userConsent = new UserConsent(jsonUserConsent);
-                    euConsent = jsonUserConsent.getString("euconsent");
-                    consentUUID = jsonResult.getString("uuid");
-                    metaData = jsonResult.getString("meta");
-                    consentFinished();
+    private void sendConsent(int actionType) {
+        try {
+            sourcePoint.sendConsent(paramsToSendConsent(actionType), new OnLoadComplete() {
+                @Override
+                public void onSuccess(Object result) {
+                    try{
+                        JSONObject jsonResult = (JSONObject) result;
+                        JSONObject jsonUserConsent = jsonResult.getJSONObject("userConsent");
+                        userConsent = new UserConsent(jsonUserConsent);
+                        euConsent = jsonUserConsent.getString("euconsent");
+                        consentUUID = jsonResult.getString("uuid");
+                        metaData = jsonResult.getString("meta");
+                        consentFinished();
+                    }
+                    catch(Exception e){
+                        Log.d(TAG, "Sorry, something went wrong");
+                        e.printStackTrace();
+                        callOnError(new ConsentLibException(e, "Error trying to parse response from sendConsents."));
+                    }
                 }
-                //TODO call onFailure callbacks / throw consentlibException
-                catch(JSONException e){
-                    Log.d(TAG, "Failed reading message response params.");
-                }
-                catch(Exception e){
-                    Log.d(TAG, "Sorry, something went wrong");
-                }
-            }
 
-            @Override
-            public void onFailure(ConsentLibException exception) {
-                Log.d(TAG, "Failed getting message response params.");
-            }
-        });
+                @Override
+                public void onFailure(ConsentLibException exception) {
+                    Log.d(TAG, "Failed getting message response params.");
+                    exception.printStackTrace();
+                    callOnError(exception);
+                }
+            });
+        } catch (ConsentLibException e) {
+            e.printStackTrace();
+        }
     }
 
     private CountDownTimer getTimer(long defaultMessageTimeOut) {
@@ -431,6 +436,11 @@ public class GDPRConsentLib {
         }
         Log.i(TAG, "allowedVendors: " + new String(allowedVendors));
         storeClient.setIabConsentParsedVendorConsents(new String(allowedVendors));
+    }
+
+    private void callOnError(ConsentLibException e){
+        this.error = e;
+        runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onError.run(GDPRConsentLib.this));
     }
 
     private void storeData(){
