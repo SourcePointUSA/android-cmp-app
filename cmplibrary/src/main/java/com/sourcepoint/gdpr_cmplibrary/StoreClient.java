@@ -52,31 +52,39 @@ public class StoreClient {
 
     public void setConsentSubjectToGDPr(Boolean consentSubjectToGDPR){
         editor.putString(IAB_CONSENT_SUBJECT_TO_GDPR, consentSubjectToGDPR != null ? (consentSubjectToGDPR ? "1" : "0") : null);
+        editor.commit();
     }
 
     public void setIabConsentCmpPresent(Boolean iabConsentCmpPresent){
         editor.putBoolean(IAB_CONSENT_CMP_PRESENT, iabConsentCmpPresent);
+        editor.commit();
     }
 
     public void setIabConsentConsentString(String consentConsentString){
         editor.putString(IAB_CONSENT_CONSENT_STRING, consentConsentString);
         editor.putString(EU_CONSENT__KEY, consentConsentString);
+        editor.commit();
     }
 
     public void setIabConsentParsedPurposeConsents(String consentParsedPurposeConsents){
         editor.putString(IAB_CONSENT_PARSED_PURPOSE_CONSENTS, consentParsedPurposeConsents);
+        editor.commit();
     }
 
     public void setIabConsentParsedVendorConsents(String consentParsedVendorConsents){
         editor.putString(IAB_CONSENT_PARSED_VENDOR_CONSENTS, consentParsedVendorConsents);
+        editor.commit();
     }
 
     public void setConsentUuid(String consentUuid){
         editor.putString(CONSENT_UUID_KEY, consentUuid);
+        editor.putString(IAB_CONSENT_CONSENT_STRING, consentUuid);
+        editor.commit();
     }
 
     public void setMetaData(String  metaData){
         editor.putString(META_DATA_KEY, metaData);
+        editor.commit();
     }
 
     public void commit(){
@@ -105,5 +113,6 @@ public class StoreClient {
         editor.remove(IAB_CONSENT_PARSED_PURPOSE_CONSENTS);
         editor.remove(IAB_CONSENT_CMP_PRESENT);
         editor.remove(IAB_CONSENT_SUBJECT_TO_GDPR);
+        editor.commit();
     }
 }

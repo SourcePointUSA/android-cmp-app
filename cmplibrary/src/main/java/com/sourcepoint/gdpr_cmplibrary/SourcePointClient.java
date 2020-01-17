@@ -169,7 +169,6 @@ class SourcePointClient {
             params.put("campaignEnv", isStagingCampaign ? "stage" : "public");
             params.put("targetingParams", targetingParams);
             params.put("authId", authId);
-            params.put("resolved", false);
             return params;
         } catch (JSONException e) {
             e.printStackTrace();

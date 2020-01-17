@@ -6,9 +6,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-import com.sourcepoint.cmplibrary.CCPAConsentLib;
-import com.sourcepoint.cmplibrary.ConsentLibException;
-import com.sourcepoint.cmplibrary.UserConsent;
+
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 
@@ -31,36 +29,6 @@ public class MainActivity extends AppCompatActivity {
             mainViewGroup.removeView(webView);
 
     }
-
-    private CCPAConsentLib ccpaConsentLib;
-
-    private CCPAConsentLib buildAndRunConsentLib(Boolean showPM) throws com.sourcepoint.cmplibrary.ConsentLibException {
-            return CCPAConsentLib.newBuilder(22, "ccpa.mobile.demo", 6099,"5df9105bcf42027ce707bb43",this)
-                    //.setViewGroup(findViewById(android.R.id.content))
-                    .setOnMessageReady(consentLib -> {
-                        Log.i(TAG, "onMessageReady");
-                        showMessageWebView(consentLib.webView);
-                    })
-                    .setOnConsentReady(consentLib -> {
-                        removeWebView(consentLib.webView);
-                        Log.i(TAG, "onConsentReady");
-                        UserConsent consent = consentLib.userConsent;
-                        if(consent.status == UserConsent.ConsentStatus.rejectedNone){
-                            Log.i(TAG, "There are no rejected vendors/purposes.");
-                        } else if(consent.status == UserConsent.ConsentStatus.rejectedAll){
-                            Log.i(TAG, "All vendors/purposes were rejected.");
-                        } else {
-                            for (String vendorId : consent.rejectedVendors) {
-                                Log.i(TAG, "The vendor " + vendorId + " was rejected.");
-                            }
-                            for (String purposeId : consent.rejectedCategories) {
-                                Log.i(TAG, "The category " + purposeId + " was rejected.");
-                            }
-                        }
-                    })
-                    .setOnErrorOccurred(c -> Log.i(TAG, "Something went wrong: ", c.error))
-                    .build();
-        }
 
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
@@ -97,12 +65,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         gdprConsentLib = buildGDPRConsentLib();
         gdprConsentLib.run();
-//        try {
-//            ccpaConsentLib = buildAndRunConsentLib(false);
-//            ccpaConsentLib.run();
-//        } catch (ConsentLibException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override
@@ -113,12 +75,6 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.review_consents).setOnClickListener(_v -> {
             gdprConsentLib = buildGDPRConsentLib();
             gdprConsentLib.showPm();
-//            try {
-//                ccpaConsentLib = buildAndRunConsentLib(true);
-//                ccpaConsentLib.showPm();
-//            } catch (ConsentLibException e) {
-//                e.printStackTrace();
-//            }
 
         });
     }

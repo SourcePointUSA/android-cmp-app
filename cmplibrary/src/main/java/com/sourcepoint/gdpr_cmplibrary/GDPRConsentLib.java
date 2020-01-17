@@ -275,7 +275,7 @@ public class GDPRConsentLib {
                     userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
                     if(jsonResult.has("url")){
                         webView.loadConsentMsgFromUrl(jsonResult.getString("url"));
-                    }else{
+                    } else{
                         consentFinished();
                     }
                 }
