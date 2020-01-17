@@ -13,7 +13,6 @@ import com.iab.gdpr_android.consent.VendorConsentDecoder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 
 /**
@@ -64,10 +63,9 @@ public class GDPRConsentLib {
     private Activity activity;
     private final String property;
     private final int accountId, propertyId;
-    private final ViewGroup viewGroup;
     private final Callback onAction, onConsentReady, onError;
     private Callback onConsentUIReady, onConsentUIFinished;
-    private final boolean weOwnTheView, shouldCleanConsentOnError;
+    private final boolean shouldCleanConsentOnError;
 
     //default time out changes
     private boolean onMessageReadyCalled = false;
@@ -122,11 +120,9 @@ public class GDPRConsentLib {
         onError = b.onError;
         onConsentUIReady = b.onConsentUIReady;
         onConsentUIFinished = b.onConsentUIFinished;
-        viewGroup = b.viewGroup;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
 
-        weOwnTheView = viewGroup != null;
         // configurable time out
         defaultMessageTimeOut = b.defaultMessageTimeOut;
 
@@ -151,12 +147,11 @@ public class GDPRConsentLib {
             @Override
             public void onMessageReady() {
                 Log.d("msgReady", "called");
-                if (mCountDownTimer != null) mCountDownTimer.cancel();
+                cancelCounter();
                 if(!onMessageReadyCalled) {
                     runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(GDPRConsentLib.this));
                     onMessageReadyCalled = true;
                 }
-                displayWebViewIfNeeded();
             }
 
             @Override
@@ -202,7 +197,7 @@ public class GDPRConsentLib {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    callOnError(new ConsentLibException(e, "Unexpected error when calling onAction."));
+                    GDPRConsentLib.this.onError(new ConsentLibException(e, "Unexpected error when calling onAction."));
                 }
             }
         };
@@ -256,7 +251,7 @@ public class GDPRConsentLib {
             renderMsgAndSaveConsent();
         } catch (Exception e) {
             e.printStackTrace();
-            callOnError(new ConsentLibException(e, "Unexpected error on consentLib.run()"));
+            onError(new ConsentLibException(e, "Unexpected error on consentLib.run()"));
         }
     }
 
@@ -265,7 +260,7 @@ public class GDPRConsentLib {
             webView.loadUrl(pmUrl());
         } catch (Exception e) {
             e.printStackTrace();
-            callOnError(new ConsentLibException(e, "Error trying to load pm URL."));
+            onError(new ConsentLibException(e, "Error trying to load pm URL."));
         }
     }
 
@@ -287,14 +282,14 @@ public class GDPRConsentLib {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    callOnError(new ConsentLibException(e, "Error trying to parse response from getConsents."));
+                    onError(new ConsentLibException(e, "Error trying to parse response from getConsents."));
                 }
             }
 
             @Override
             public void onFailure(ConsentLibException exception) {
                 exception.printStackTrace();
-                callOnError(exception);
+                onError(exception);
             }
         });
     }
@@ -335,7 +330,7 @@ public class GDPRConsentLib {
                     catch(Exception e){
                         Log.d(TAG, "Sorry, something went wrong");
                         e.printStackTrace();
-                        callOnError(new ConsentLibException(e, "Error trying to parse response from sendConsents."));
+                        onError(new ConsentLibException(e, "Error trying to parse response from sendConsents."));
                     }
                 }
 
@@ -343,7 +338,7 @@ public class GDPRConsentLib {
                 public void onFailure(ConsentLibException exception) {
                     Log.d(TAG, "Failed getting message response params.");
                     exception.printStackTrace();
-                    callOnError(exception);
+                    onError(exception);
                 }
             });
         } catch (ConsentLibException e) {
@@ -379,24 +374,6 @@ public class GDPRConsentLib {
         if (activity != null && !activity.isFinishing()) {
             activity.runOnUiThread(uiRunnable);
         }
-    }
-
-    private void displayWebViewIfNeeded() {
-        if (weOwnTheView) {
-            runOnLiveActivityUIThread(() -> {
-                if (webView != null) {
-                    if (webView.getParent() != null) {
-                        ((ViewGroup) webView.getParent()).removeView(webView);
-                    }
-                    webView.display();
-                    viewGroup.addView(webView);
-                }
-            });
-        }
-    }
-
-    private void removeWebViewIfNeeded() {
-        if (weOwnTheView && activity != null) destroy();
     }
 
     private void setSubjectToGDPR() {
@@ -438,8 +415,9 @@ public class GDPRConsentLib {
         storeClient.setIabConsentParsedVendorConsents(new String(allowedVendors));
     }
 
-    private void callOnError(ConsentLibException e){
+    private void onError(ConsentLibException e){
         this.error = e;
+        cancelCounter();
         runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onError.run(GDPRConsentLib.this));
     }
 
@@ -453,24 +431,16 @@ public class GDPRConsentLib {
         storeClient.commit();
     }
 
+    private void cancelCounter(){
+        if (mCountDownTimer != null) mCountDownTimer.cancel();
+    }
+
     private void consentFinished() {
         storeData();
         runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(GDPRConsentLib.this));
         runOnLiveActivityUIThread(() -> {
-            removeWebViewIfNeeded();
             if(userConsent != null) onConsentReady.run(GDPRConsentLib.this);
             activity = null; // release reference to activity
         });
-    }
-
-    public void destroy() {
-        if (mCountDownTimer != null) mCountDownTimer.cancel();
-        if (webView != null) {
-            if (viewGroup != null) {
-                viewGroup.removeView(webView);
-            }
-            webView.destroy();
-            webView = null;
-        }
     }
 }

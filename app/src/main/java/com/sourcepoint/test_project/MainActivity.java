@@ -6,9 +6,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-import com.sourcepoint.cmplibrary.Consent;
 import com.sourcepoint.cmplibrary.GDPRConsentLib;
-import com.sourcepoint.cmplibrary.ConsentLibException;
 import com.sourcepoint.cmplibrary.UserConsent;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
                     showMessageWebView(consentLib.webView);
                     Log.i(TAG, "onConsentUIReady");
                 })
-                //.setViewGroup(findViewById(android.R.id.content))
                 .setOnConsentUIFinished(consentLib -> {
                     removeWebView(consentLib.webView);
                     Log.i(TAG, "onConsentUIFinished");
@@ -77,11 +74,5 @@ public class MainActivity extends AppCompatActivity {
             gdprConsentLib.showPm();
 
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(gdprConsentLib != null ) { gdprConsentLib.destroy(); }
     }
 }

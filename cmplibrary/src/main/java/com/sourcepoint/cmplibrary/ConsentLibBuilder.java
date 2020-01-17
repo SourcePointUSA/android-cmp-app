@@ -19,7 +19,7 @@ public class ConsentLibBuilder {
     String page = "";
     ViewGroup viewGroup = null;
     GDPRConsentLib.Callback onAction, onConsentReady, onError, onConsentUIReady, onConsentUIFinished;
-    boolean staging, stagingCampaign, newPM , isShowPM, shouldCleanConsentOnError;
+    boolean staging, stagingCampaign, shouldCleanConsentOnError;
 
     SourcePointClient sourcePointClient;
 
@@ -39,7 +39,7 @@ public class ConsentLibBuilder {
         this.pmId = pmId;
         this.activity = activity;
         mmsDomain = cmpDomain = msgDomain = null;
-        staging = stagingCampaign = newPM = isShowPM = false;
+        staging = stagingCampaign = false;
         shouldCleanConsentOnError = true;
         GDPRConsentLib.Callback noOpCallback = new GDPRConsentLib.Callback() {
             @Override
@@ -48,31 +48,6 @@ public class ConsentLibBuilder {
         };
         onAction = onConsentReady = onError = onConsentUIReady = onConsentUIFinished = noOpCallback;
         storeClient = new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
-    }
-
-    /**
-     *  <b>Optional</b> Sets the page name in which the WebView was shown. Used for logging only.
-     * @param p - a string representing page, e.g "/home"
-     * @return ConsentLibBuilder - the next build step
-     * @see ConsentLibBuilder
-     */
-    public ConsentLibBuilder setPage(String p) {
-        page = p;
-        return this;
-    }
-
-    /**
-     *  <b>Optional</b> Sets the view group in which WebView will will be rendered into.
-     *  If it's not called or called with null, the MainView will be used instead.
-     *  In case the main view is not a ViewGroup, a BuildException will be thrown during
-     *  when build() is called.
-     * @param v - the view group
-     * @return ConsentLibBuilder - the next build step
-     * @see ConsentLibBuilder
-     */
-    public ConsentLibBuilder setViewGroup(ViewGroup v) {
-        viewGroup = v;
-        return this;
     }
 
     // TODO: add what are the possible choices returned to the Callback
@@ -91,10 +66,6 @@ public class ConsentLibBuilder {
     /**
      *  <b>Optional</b> Sets the Callback to be called when the user finishes interacting with the WebView
      *  either by closing it, canceling or accepting the terms.
-     *  At this point, the following keys will available populated in the sharedStorage:
-     *  <ul>
-     *      <li>{@link GDPRConsentLib#CONSENT_UUID_KEY}</li>
-     *  </ul>
      * @param c - Callback to be called when the user finishes interacting with the WebView
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
@@ -164,33 +135,8 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    public ConsentLibBuilder enableNewPM(boolean newPM) {
-        this.newPM = newPM;
-        return this;
-    }
-
-    public ConsentLibBuilder setInAppMessagePageUrl(String inAppMessageUrl) {
-        msgDomain = inAppMessageUrl;
-        return this;
-    }
-
-    public ConsentLibBuilder setMmsDomain(String mmsDomain) {
-        this.mmsDomain = mmsDomain;
-        return this;
-    }
-
-    public ConsentLibBuilder setCmpDomain(String cmpDomain) {
-        this.cmpDomain = cmpDomain;
-        return this;
-    }
-
     public ConsentLibBuilder setAuthId(String authId) throws ConsentLibException.BuildException {
         this.authId = new EncodedParam("authId", authId);
-        return this;
-    }
-
-    public ConsentLibBuilder setShowPM(boolean isUserTriggered){
-        this.isShowPM = isUserTriggered;
         return this;
     }
 
