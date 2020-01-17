@@ -40,6 +40,11 @@ public class StoreClient {
 
     private SharedPreferences pref;
 
+    public static final String DEFAULT_EMPTY_CONSENT_STRING = null;
+
+    public static final String DEFAULT_META_DATA = "{}";
+
+
     StoreClient(SharedPreferences pref){
         this.editor = pref.edit();
         this.pref = pref;
@@ -83,7 +88,7 @@ public class StoreClient {
     }
 
     public String getMetaData() {
-        return pref.getString(META_DATA_KEY, "{}");
+        return pref.getString(META_DATA_KEY, DEFAULT_META_DATA);
     }
 
     public String getConsentUUID() {
@@ -91,7 +96,7 @@ public class StoreClient {
     }
 
     public String getConsentString() {
-        return pref.getString(IAB_CONSENT_CONSENT_STRING, null);
+        return pref.getString(IAB_CONSENT_CONSENT_STRING, DEFAULT_EMPTY_CONSENT_STRING);
     }
 
     public void deleteIABConsentData(){

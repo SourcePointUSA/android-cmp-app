@@ -411,7 +411,7 @@ public class GDPRConsentLib {
 
     private void setIABVars() {
 
-        if(euConsent == null || euConsent == "") return;
+        if(euConsent == storeClient.DEFAULT_EMPTY_CONSENT_STRING) return;
 
         final VendorConsent vendorConsent = VendorConsentDecoder.fromBase64String(euConsent);
 
@@ -445,7 +445,6 @@ public class GDPRConsentLib {
 
     private void consentFinished() {
         storeData();
-        //Log.i("uuid", consentUUID);
         runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(GDPRConsentLib.this));
         runOnLiveActivityUIThread(() -> {
             removeWebViewIfNeeded();
