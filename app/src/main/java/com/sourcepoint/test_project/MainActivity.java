@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
                     showMessageWebView(consentLib.webView);
                     Log.i(TAG, "onConsentUIReady");
                 })
+                //.setViewGroup(findViewById(android.R.id.content))
                 .setOnConsentUIFinished(consentLib -> {
                     removeWebView(consentLib.webView);
                     Log.i(TAG, "onConsentUIFinished");

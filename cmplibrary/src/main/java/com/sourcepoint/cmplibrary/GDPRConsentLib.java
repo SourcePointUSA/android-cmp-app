@@ -150,10 +150,12 @@ public class GDPRConsentLib {
 
             @Override
             public void onMessageReady() {
-                onMessageReadyCalled = true;
                 Log.d("msgReady", "called");
                 if (mCountDownTimer != null) mCountDownTimer.cancel();
-                runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(GDPRConsentLib.this));
+                if(!onMessageReadyCalled) {
+                    runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(GDPRConsentLib.this));
+                    onMessageReadyCalled = true;
+                }
                 displayWebViewIfNeeded();
             }
 
@@ -408,6 +410,8 @@ public class GDPRConsentLib {
     }
 
     private void setIABVars() {
+
+        if(euConsent == null || euConsent == "") return;
 
         final VendorConsent vendorConsent = VendorConsentDecoder.fromBase64String(euConsent);
 
