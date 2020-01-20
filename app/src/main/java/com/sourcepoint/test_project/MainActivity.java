@@ -31,13 +31,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private GDPRConsentLib buildGDPRConsentLib() {
-        String  uuid = PreferenceManager.getDefaultSharedPreferences(this).getString("sp.gdpr.consentUUID", "no uuid present");
-        Log.i("GDPR_UUID", "From sharedPref: " + uuid);
-
-        String  metaData = PreferenceManager.getDefaultSharedPreferences(this).getString("sp.gdpr.consentUUID", "no uuid present");
-        Log.i("GDPR_UUID", "MetaData From sharedPref: " + metaData);
-
-
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
                 .setStagingCampaign(true)
                 .setOnConsentUIReady(consentLib -> {
