@@ -135,7 +135,7 @@ public class GDPRConsentLib {
         public static final int PM_DISMMISS = 2;
     }
 
-    //private StoreClient storeClient;
+    private StoreClient storeClient;
 
     /**
      * @return a new instance of GDPRConsentLib.Builder
@@ -164,7 +164,7 @@ public class GDPRConsentLib {
         sourcePoint = b.sourcePointClient;
 
         webView = buildWebView();
-        //storeClient = b.storeClient;
+        storeClient = b.storeClient;
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
 
@@ -199,13 +199,7 @@ public class GDPRConsentLib {
 
             @Override
             public void onError(ConsentLibException error) {
-                if(shouldCleanConsentOnError) {
-//                    storeClient.clear();
-//                    storeClient.deleteIABConsentData();
-//                    storeClient.commit();
-                }
-                GDPRConsentLib.this.error = error;
-                runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onError.run(GDPRConsentLib.this));
+                GDPRConsentLib.this.onError(error);
             }
 
             @Override
@@ -287,7 +281,7 @@ public class GDPRConsentLib {
      */
     public void run() {
         try {
-
+            //throw new ConsentLibException();
             onMessageReadyCalled = false;
             mCountDownTimer = getTimer(defaultMessageTimeOut);
             mCountDownTimer.start();
@@ -300,7 +294,7 @@ public class GDPRConsentLib {
 
     public void showPm() {
         try {
-            webView.loadUrl(pmUrl());
+            webView.loadConsentMsgFromUrl(pmUrl());
         } catch (Exception e) {
             e.printStackTrace();
             onError(new ConsentLibException(e, "Error trying to load pm URL."));
@@ -322,6 +316,7 @@ public class GDPRConsentLib {
                     if(jsonResult.has("url")){
                         webView.loadConsentMsgFromUrl(jsonResult.getString("url"));
                     } else{
+                        cancelCounter();
                         consentFinished();
                     }
                 }
@@ -451,7 +446,7 @@ public class GDPRConsentLib {
             allowedPurposes[i] = vendorConsent.isPurposeAllowed(i + 1) ? '1' : '0';
         }
         Log.i(TAG, "allowedPurposes: " + new String(allowedPurposes));
-        //storeClient.setIabConsentParsedPurposeConsents(new String(allowedPurposes));
+        storeClient.setIabConsentParsedPurposeConsents(new String(allowedPurposes));
 
 
         // Construct and save parsed vendors string
@@ -460,11 +455,14 @@ public class GDPRConsentLib {
             allowedVendors[i] = vendorConsent.isVendorAllowed(i + 1) ? '1' : '0';
         }
         Log.i(TAG, "allowedVendors: " + new String(allowedVendors));
-        //storeClient.setIabConsentParsedVendorConsents(new String(allowedVendors));
+        storeClient.setIabConsentParsedVendorConsents(new String(allowedVendors));
     }
 
     private void onError(ConsentLibException e){
         this.error = e;
+        if(shouldCleanConsentOnError) {
+            storeClient.deleteIABConsentData();
+        }
         cancelCounter();
         runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onError.run(GDPRConsentLib.this));
     }

@@ -30,7 +30,7 @@ public class StoreClient {
      */
     private static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
 
-    private static final String CONSENT_UUID_KEY = "consentUUID";
+    private static final String CONSENT_UUID_KEY = "sp.gdpr.consentUUID";
 
     private static final String META_DATA_KEY = "sp.gdpr.metaData";
 

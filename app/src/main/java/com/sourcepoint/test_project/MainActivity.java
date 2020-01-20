@@ -15,7 +15,6 @@ import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private GDPRConsentLib gdprConsentLib;
     private ViewGroup mainViewGroup;
 
     private void showMessageWebView(WebView webView) {
@@ -34,6 +33,11 @@ public class MainActivity extends AppCompatActivity {
     private GDPRConsentLib buildGDPRConsentLib() {
         String  uuid = PreferenceManager.getDefaultSharedPreferences(this).getString("sp.gdpr.consentUUID", "no uuid present");
         Log.i("GDPR_UUID", "From sharedPref: " + uuid);
+
+        String  metaData = PreferenceManager.getDefaultSharedPreferences(this).getString("sp.gdpr.consentUUID", "no uuid present");
+        Log.i("GDPR_UUID", "MetaData From sharedPref: " + metaData);
+
+
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
                 .setStagingCampaign(true)
                 .setOnConsentUIReady(consentLib -> {
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
         findViewById(R.id.review_consents).setOnClickListener(_v -> {
-            buildGDPRConsentLib().run();
+            buildGDPRConsentLib().showPm();
         });
     }
 }
