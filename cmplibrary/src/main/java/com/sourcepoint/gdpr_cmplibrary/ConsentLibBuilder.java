@@ -26,7 +26,7 @@ public class ConsentLibBuilder {
     String authId = null;
     String pmId = "";
     GDPRConsentLib.DebugLevel debugLevel = GDPRConsentLib.DebugLevel.OFF;
-    long defaultMessageTimeOut = 1000;
+    long defaultMessageTimeOut = 10000;
 
     StoreClient storeClient;
 
