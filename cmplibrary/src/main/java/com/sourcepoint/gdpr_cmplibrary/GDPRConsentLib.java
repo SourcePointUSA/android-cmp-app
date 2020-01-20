@@ -1,12 +1,9 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.CountDownTimer;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-
 
 import com.iab.gdpr_android.consent.VendorConsent;
 import com.iab.gdpr_android.consent.VendorConsentDecoder;
@@ -15,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashSet;
-import java.util.UUID;
 
 import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_CONSENT_STRING;
 
