@@ -32,12 +32,10 @@ public class MainActivity extends AppCompatActivity {
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
                 .setStagingCampaign(true)
                 .setOnConsentUIReady(consentLib -> {
-                    Log.i("GDPR_UUID", "On intit gdpr_uuid: " + consentLib.consentUUID);
                     showMessageWebView(consentLib.webView);
                     Log.i(TAG, "onConsentUIReady");
                 })
                 .setOnConsentUIFinished(consentLib -> {
-                    Log.i("GDPR_UUID", "On finish gdpr_uuid: " + consentLib.consentUUID);
                     removeWebView(consentLib.webView);
                     Log.i(TAG, "onConsentUIFinished");
                 })
