@@ -32,9 +32,9 @@ public class StoreClient {
 
     private static final String CONSENT_UUID_KEY = "consentUUID";
 
-    private static final String META_DATA_KEY = "metaData";
+    private static final String META_DATA_KEY = "sp.gdpr.metaData";
 
-    private static final String EU_CONSENT__KEY = "euconsent";
+    private static final String EU_CONSENT__KEY = "sp.gdpr.euconsent";
 
     private SharedPreferences.Editor editor;
 

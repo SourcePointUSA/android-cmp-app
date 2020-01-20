@@ -1,5 +1,7 @@
 package com.sourcepoint.test_project;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,18 +29,20 @@ public class MainActivity extends AppCompatActivity {
     private void removeWebView(WebView webView) {
         if(webView.getParent() != null)
             mainViewGroup.removeView(webView);
-
     }
 
     private GDPRConsentLib buildGDPRConsentLib() {
+        String  uuid = PreferenceManager.getDefaultSharedPreferences(this).getString("sp.gdpr.consentUUID", "no uuid present");
+        Log.i("GDPR_UUID", "From sharedPref: " + uuid);
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
                 .setStagingCampaign(true)
-                .setAuthId("gdpr-test")
                 .setOnConsentUIReady(consentLib -> {
+                    Log.i("GDPR_UUID", "On intit gdpr_uuid: " + consentLib.consentUUID);
                     showMessageWebView(consentLib.webView);
                     Log.i(TAG, "onConsentUIReady");
                 })
                 .setOnConsentUIFinished(consentLib -> {
+                    Log.i("GDPR_UUID", "On finish gdpr_uuid: " + consentLib.consentUUID);
                     removeWebView(consentLib.webView);
                     Log.i(TAG, "onConsentUIFinished");
                 })
@@ -63,8 +67,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        gdprConsentLib = buildGDPRConsentLib();
-        gdprConsentLib.run();
+        buildGDPRConsentLib().run();
     }
 
     @Override
@@ -73,9 +76,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
         findViewById(R.id.review_consents).setOnClickListener(_v -> {
-            gdprConsentLib = buildGDPRConsentLib();
-            gdprConsentLib.showPm();
-
+            buildGDPRConsentLib().run();
         });
     }
 }

@@ -1,7 +1,9 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,6 +15,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashSet;
+import java.util.UUID;
+
+import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_CONSENT_STRING;
 
 /**
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
@@ -31,8 +36,39 @@ public class GDPRConsentLib {
 
     private final String GDPR_ORIGIN = "https://gdpr-service.sp-prod.net";
 
-    private String metaData;
+    /**
+     * If the user has consent data stored, reading for this key in the shared preferences will return true
+     */
+    private static final String IAB_CONSENT_CMP_PRESENT = "IABConsent_CMPPresent";
 
+    /**
+     * If the user is subject to GDPR, reading for this key in the shared preferences will return "1" otherwise "0"
+     */
+    private static final String IAB_CONSENT_SUBJECT_TO_GDPR = "IABConsent_SubjectToGDPR";
+
+    /**
+     * They key used to store the IAB Consent string for the user in the shared preferences
+     */
+    private static final String IAB_CONSENT_CONSENT_STRING = "IABConsent_ConsentString";
+
+    /**
+     * They key used to read and write the parsed IAB Purposes consented by the user in the shared preferences
+     */
+    private static final String IAB_CONSENT_PARSED_PURPOSE_CONSENTS = "IABConsent_ParsedPurposeConsents";
+
+    /**
+     * They key used to read and write the parsed IAB Vendor consented by the user in the shared preferences
+     */
+    private static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
+
+    private static final String CONSENT_UUID_KEY = "sp.gdpr.consentUUID";
+
+    private static final String META_DATA_KEY = "sp.gdpr.metaData";
+
+
+    private final SharedPreferences sharedPref;
+
+    private String metaData;
     private String euConsent;
 
     public enum DebugLevel {DEBUG, OFF}
@@ -99,7 +135,7 @@ public class GDPRConsentLib {
         public static final int PM_DISMMISS = 2;
     }
 
-    private StoreClient storeClient;
+    //private StoreClient storeClient;
 
     /**
      * @return a new instance of GDPRConsentLib.Builder
@@ -128,13 +164,21 @@ public class GDPRConsentLib {
         sourcePoint = b.sourcePointClient;
 
         webView = buildWebView();
-        storeClient = b.storeClient;
+        //storeClient = b.storeClient;
 
-        euConsent = storeClient.getConsentString();
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
 
-        metaData = storeClient.getMetaData();
+        consentUUID = sharedPref.getString(CONSENT_UUID_KEY, UUID.randomUUID().toString());
 
-        consentUUID = storeClient.getConsentUUID();
+        Log.i("GDPR_UUID", "From consentLib pref: " + consentUUID);
+
+        metaData = sharedPref.getString(IAB_CONSENT_CONSENT_STRING, "{}");
+
+        //euConsent = storeClient.getConsentString();
+
+        //metaData = storeClient.getMetaData();
+
+        //consentUUID = storeClient.getConsentUUID();
 
         setSubjectToGDPR();
 
@@ -156,9 +200,9 @@ public class GDPRConsentLib {
             @Override
             public void onError(ConsentLibException error) {
                 if(shouldCleanConsentOnError) {
-                    storeClient.clear();
-                    storeClient.deleteIABConsentData();
-                    storeClient.commit();
+//                    storeClient.clear();
+//                    storeClient.deleteIABConsentData();
+//                    storeClient.commit();
                 }
                 GDPRConsentLib.this.error = error;
                 runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onError.run(GDPRConsentLib.this));
@@ -270,7 +314,9 @@ public class GDPRConsentLib {
             public void onSuccess(Object result) {
                 try{
                     JSONObject jsonResult = (JSONObject) result;
+                    Log.i("GDPR_UUID", "Before getMessage response: " + consentUUID);
                     consentUUID = jsonResult.getString("uuid");
+                    Log.i("GDPR_UUID", "After getMessage response: " + consentUUID);
                     metaData = jsonResult.getString("meta");
                     userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
                     if(jsonResult.has("url")){
@@ -295,6 +341,8 @@ public class GDPRConsentLib {
 
     private JSONObject paramsToSendConsent(int actionType) throws ConsentLibException {
         try{
+
+            Log.i("GDPR_UUID", "From sendConsentBody: " + consentUUID);
 
             JSONObject params = new JSONObject();
 
@@ -324,6 +372,7 @@ public class GDPRConsentLib {
                         euConsent = jsonUserConsent.getString("euconsent");
                         consentUUID = jsonResult.getString("uuid");
                         metaData = jsonResult.getString("meta");
+                        Log.i("GDPR_UUID", "From sendConsentReponse: " + consentUUID);
                         consentFinished();
                     }
                     catch(Exception e){
@@ -392,7 +441,7 @@ public class GDPRConsentLib {
 
     private void setIABVars() {
 
-        if(euConsent == storeClient.DEFAULT_EMPTY_CONSENT_STRING) return;
+        if(euConsent == DEFAULT_EMPTY_CONSENT_STRING) return;
 
         final VendorConsent vendorConsent = VendorConsentDecoder.fromBase64String(euConsent);
 
@@ -402,7 +451,7 @@ public class GDPRConsentLib {
             allowedPurposes[i] = vendorConsent.isPurposeAllowed(i + 1) ? '1' : '0';
         }
         Log.i(TAG, "allowedPurposes: " + new String(allowedPurposes));
-        storeClient.setIabConsentParsedPurposeConsents(new String(allowedPurposes));
+        //storeClient.setIabConsentParsedPurposeConsents(new String(allowedPurposes));
 
 
         // Construct and save parsed vendors string
@@ -411,7 +460,7 @@ public class GDPRConsentLib {
             allowedVendors[i] = vendorConsent.isVendorAllowed(i + 1) ? '1' : '0';
         }
         Log.i(TAG, "allowedVendors: " + new String(allowedVendors));
-        storeClient.setIabConsentParsedVendorConsents(new String(allowedVendors));
+        //storeClient.setIabConsentParsedVendorConsents(new String(allowedVendors));
     }
 
     private void onError(ConsentLibException e){
@@ -421,13 +470,17 @@ public class GDPRConsentLib {
     }
 
     private void storeData(){
-        storeClient.setConsentSubjectToGDPr(isSubjectToGdpr);
-        storeClient.setConsentUuid(consentUUID);
-        storeClient.setIabConsentCmpPresent(true);
-        storeClient.setIabConsentConsentString(euConsent);
-        storeClient.setMetaData(metaData);
-        setIABVars();
-        storeClient.commit();
+//        storeClient.setConsentSubjectToGDPr(isSubjectToGdpr);
+//        storeClient.setConsentUuid(consentUUID);
+//        storeClient.setIabConsentCmpPresent(true);
+//        storeClient.setIabConsentConsentString(euConsent);
+//        storeClient.setMetaData(metaData);
+//        setIABVars();
+//        storeClient.commit();
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(CONSENT_UUID_KEY, consentUUID);
+        editor.putString(META_DATA_KEY, metaData);
+        editor.commit();
     }
 
     private void cancelCounter(){
