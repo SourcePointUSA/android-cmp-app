@@ -87,12 +87,8 @@ public class StoreClient {
         editor.commit();
     }
 
-    public void commit(){
-        editor.commit();
-    }
-
-    public void clear(){
-        editor.clear();
+    public void apply(){
+        editor.apply();
     }
 
     public String getMetaData() {
@@ -104,7 +100,7 @@ public class StoreClient {
     }
 
     public String getConsentString() {
-        return pref.getString(IAB_CONSENT_CONSENT_STRING, DEFAULT_EMPTY_CONSENT_STRING);
+        return pref.getString(EU_CONSENT__KEY, DEFAULT_EMPTY_CONSENT_STRING);
     }
 
     public void deleteIABConsentData(){
