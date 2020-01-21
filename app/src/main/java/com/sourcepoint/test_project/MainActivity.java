@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
                     removeWebView(consentLib.webView);
                     Log.i(TAG, "onConsentUIFinished");
                 })
+                .setTargetingParam("aqui_eh", "favela")
                 .setOnConsentReady(consentLib -> {
                     Log.i(TAG, "onConsentReady");
                     GDPRUserConsent consent = consentLib.userConsent;
