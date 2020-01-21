@@ -13,7 +13,6 @@ import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private GDPRConsentLib gdprConsentLib;
     private ViewGroup mainViewGroup;
 
     private void showMessageWebView(WebView webView) {
@@ -63,8 +62,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        gdprConsentLib = buildGDPRConsentLib();
-        gdprConsentLib.run();
+        buildGDPRConsentLib().run();
     }
 
     @Override
@@ -73,9 +71,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
         findViewById(R.id.review_consents).setOnClickListener(_v -> {
-            gdprConsentLib = buildGDPRConsentLib();
-            gdprConsentLib.showPm();
-
+            buildGDPRConsentLib().showPm();
         });
     }
 }
