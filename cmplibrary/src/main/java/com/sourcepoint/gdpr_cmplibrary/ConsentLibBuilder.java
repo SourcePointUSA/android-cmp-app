@@ -2,6 +2,7 @@ package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import org.json.JSONException;
@@ -10,6 +11,8 @@ import org.json.JSONObject;
 @SuppressWarnings("unused")
 public class ConsentLibBuilder {
     private final JSONObject targetingParams = new JSONObject();
+
+    private final String TAG = this.getClass().getName();
 
     Activity activity;
     int accountId, propertyId ;
@@ -139,22 +142,19 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    public ConsentLibBuilder setTargetingParam(String key, Integer val)
-            throws ConsentLibException.BuildException  {
+    public ConsentLibBuilder setTargetingParam(String key, Integer val)  {
         return setTargetingParam(key, (Object) val);
     }
 
-    public ConsentLibBuilder setTargetingParam(String key, String val)
-            throws ConsentLibException.BuildException {
+    public ConsentLibBuilder setTargetingParam(String key, String val) {
         return setTargetingParam(key, (Object) val);
     }
 
-    private ConsentLibBuilder setTargetingParam(String key, Object val) throws ConsentLibException.BuildException {
+    private ConsentLibBuilder setTargetingParam(String key, Object val) {
         try {
             this.targetingParams.put(key, val);
         } catch (JSONException e) {
-            throw new ConsentLibException
-                    .BuildException("error parsing targeting param, key: "+key+" value: "+val);
+            Log.e(TAG, "Error trying to parse targetting param: [" + key + ", " + val + "]", e);
         }
         return this;
     }

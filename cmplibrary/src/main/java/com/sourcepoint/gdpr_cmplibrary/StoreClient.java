@@ -30,11 +30,11 @@ public class StoreClient {
      */
     private static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
 
-    private static final String CONSENT_UUID_KEY = "consentUUID";
+    private static final String CONSENT_UUID_KEY = "sp.gdpr.consentUUID";
 
-    private static final String META_DATA_KEY = "metaData";
+    private static final String META_DATA_KEY = "sp.gdpr.metaData";
 
-    private static final String EU_CONSENT__KEY = "euconsent";
+    private static final String EU_CONSENT__KEY = "sp.gdpr.euconsent";
 
     private SharedPreferences.Editor editor;
 
@@ -87,12 +87,8 @@ public class StoreClient {
         editor.commit();
     }
 
-    public void commit(){
-        editor.commit();
-    }
-
-    public void clear(){
-        editor.clear();
+    public void apply(){
+        editor.apply();
     }
 
     public String getMetaData() {
@@ -104,7 +100,7 @@ public class StoreClient {
     }
 
     public String getConsentString() {
-        return pref.getString(IAB_CONSENT_CONSENT_STRING, DEFAULT_EMPTY_CONSENT_STRING);
+        return pref.getString(EU_CONSENT__KEY, DEFAULT_EMPTY_CONSENT_STRING);
     }
 
     public void deleteIABConsentData(){

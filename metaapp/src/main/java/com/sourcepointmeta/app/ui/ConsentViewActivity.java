@@ -476,7 +476,7 @@ public class ConsentViewActivity {
 //                .setPositiveButton("YES", (dialog, which) -> {
 //                    SharedPreferences.Editor editor = preferences.edit();
 //                    editor.clear();
-//                    editor.commit();
+//                    editor.apply();
 //                    clearCookies(isSiteList);
 //
 //                })
