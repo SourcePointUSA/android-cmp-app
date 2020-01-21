@@ -13,7 +13,6 @@ import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private GDPRConsentLib gdprConsentLib;
     private ViewGroup mainViewGroup;
 
     private void showMessageWebView(WebView webView) {
@@ -27,13 +26,11 @@ public class MainActivity extends AppCompatActivity {
     private void removeWebView(WebView webView) {
         if(webView.getParent() != null)
             mainViewGroup.removeView(webView);
-
     }
 
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
                 .setStagingCampaign(true)
-                .setAuthId("gdpr-test")
                 .setOnConsentUIReady(consentLib -> {
                     showMessageWebView(consentLib.webView);
                     Log.i(TAG, "onConsentUIReady");
@@ -42,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
                     removeWebView(consentLib.webView);
                     Log.i(TAG, "onConsentUIFinished");
                 })
+                .setTargetingParam("aqui_eh", "favela")
                 .setOnConsentReady(consentLib -> {
                     Log.i(TAG, "onConsentReady");
                     GDPRUserConsent consent = consentLib.userConsent;
@@ -63,8 +61,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        gdprConsentLib = buildGDPRConsentLib();
-        gdprConsentLib.run();
+        buildGDPRConsentLib().run();
     }
 
     @Override
@@ -73,9 +70,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
         findViewById(R.id.review_consents).setOnClickListener(_v -> {
-            gdprConsentLib = buildGDPRConsentLib();
-            gdprConsentLib.showPm();
-
+            buildGDPRConsentLib().showPm();
         });
     }
 }
