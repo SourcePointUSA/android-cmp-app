@@ -1,4 +1,7 @@
-## 4.0.1 (January, 17, 2020)
+## 4.0.2 (January, 23, 2020)
+* AndroidManifest updated - solved issue integrating with remote CCPA dependency.
+
+## 4.0.1 (January, 21, 2020)
 * Fixed unexpected behavior on error from webview - sheredPreferences data was beeing deleted.
 
 ## 4.0.0 (January, 17, 2020)
