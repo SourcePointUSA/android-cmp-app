@@ -78,7 +78,6 @@ public class StoreClient {
 
     public void setConsentUuid(String consentUuid){
         editor.putString(CONSENT_UUID_KEY, consentUuid);
-        editor.putString(IAB_CONSENT_CONSENT_STRING, consentUuid);
         editor.commit();
     }
 

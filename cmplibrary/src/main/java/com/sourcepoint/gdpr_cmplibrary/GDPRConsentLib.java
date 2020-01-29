@@ -427,7 +427,6 @@ public class GDPRConsentLib {
         storeClient.setIabConsentCmpPresent(true);
         storeClient.setIabConsentConsentString(euConsent);
         storeClient.setMetaData(metaData);
-        storeClient.setConsentUuid(consentUUID);
         setIABVars();
         storeClient.apply();
     }
