@@ -1,5 +1,6 @@
 package com.sourcepoint.test_project;
 
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +13,7 @@ import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "**MainActivity";
 
     private ViewGroup mainViewGroup;
 
@@ -95,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        buildCCPAConsentLib().run();
+        Log.i(TAG, PreferenceManager.getDefaultSharedPreferences(this).getString("IABConsent_ConsentString", "no consentString"));
+        //buildCCPAConsentLib().run();
         buildGDPRConsentLib().run();
     }
 
@@ -105,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
         findViewById(R.id.review_consents).setOnClickListener(_v -> {
-            buildCCPAConsentLib().showPm();
+            //buildCCPAConsentLib().showPm();
             buildGDPRConsentLib().showPm();
         });
     }
