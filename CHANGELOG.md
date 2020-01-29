@@ -1,3 +1,6 @@
+## 4.0.2 (January, 29, 2020)
+* Fix iabConsentString saved with consentUUID value
+
 ## 4.0.2 (January, 23, 2020)
 * AndroidManifest updated - solved issue integrating with remote CCPA dependency.
 
