@@ -3,8 +3,11 @@ package com.sourcepoint.gdpr_cmplibrary;
 import android.app.Activity;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 
+import com.example.gdpr_cmplibrary.R;
 import com.iab.gdpr_android.consent.VendorConsent;
 import com.iab.gdpr_android.consent.VendorConsentDecoder;
 
@@ -70,12 +73,16 @@ public class GDPRConsentLib {
     private boolean onMessageReadyCalled = false;
     private long defaultMessageTimeOut;
 
+    public boolean isNative = false;
+
     private CountDownTimer mCountDownTimer = null;
 
     private final SourcePointClient sourcePoint;
 
     @SuppressWarnings("WeakerAccess")
     public ConsentWebView webView;
+
+    public NativeMessage nativeView;
 
     public interface Callback {
         void run(GDPRConsentLib c);
@@ -196,11 +203,34 @@ public class GDPRConsentLib {
         };
     }
 
-    private void onMsgAccepted() {
+    public void setNativeCallBacks() {
+        nativeView.findViewById(com.example.gdpr_cmplibrary.R.id.AcceptAll).setOnClickListener(_v -> {
+            onMsgAccepted();
+        });
+
+        nativeView.findViewById(com.example.gdpr_cmplibrary.R.id.RejectAll).setOnClickListener(_v -> {
+            onMsgRejected();
+        });
+
+        nativeView.findViewById(com.example.gdpr_cmplibrary.R.id.ShowOption).setOnClickListener(_v -> {
+            onShowPm();
+        });
+
+        nativeView.findViewById(com.example.gdpr_cmplibrary.R.id.Cancel).setOnClickListener(_v -> {
+            onDismiss();
+        });
+    }
+
+    private void setNativeMessageView(){
+        nativeView =  new NativeMessage(activity);
+        nativeView.setCallBacks(this);
+    }
+
+    public void onMsgAccepted() {
         sendConsent(ActionTypes.MSG_ACCEPT);
     }
 
-    private  void onPmDismiss(){
+    protected  void onPmDismiss(){
         webView.post(new Runnable() {
             @Override
             public void run() {
@@ -210,15 +240,15 @@ public class GDPRConsentLib {
         });
     }
 
-    private void onDismiss(){
+    public void onDismiss(){
         consentFinished();
     }
 
-    private void onMsgRejected() {
+    public void onMsgRejected() {
         sendConsent(ActionTypes.MSG_REJECT);
     }
 
-    private void onShowPm(){
+    public void onShowPm(){
         webView.post(new Runnable() {
             @Override
             public void run() {
@@ -256,8 +286,17 @@ public class GDPRConsentLib {
         }
     }
 
+    public void runNative() {
+        try {
+            isNative = true;
+            renderMsgAndSaveConsent();
+        } catch (Exception e) {
+            e.printStackTrace();
+            onError(new ConsentLibException(e, "Error trying to load pm URL."));
+        }
+    }
+
     private void renderMsgAndSaveConsent() throws ConsentLibException {
-        if(webView == null) { webView = buildWebView(); }
         sourcePoint.getMessage(consentUUID, metaData, new OnLoadComplete() {
             @Override
             public void onSuccess(Object result) {
@@ -266,11 +305,22 @@ public class GDPRConsentLib {
                     consentUUID = jsonResult.getString("uuid");
                     metaData = jsonResult.getString("meta");
                     userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
-                    if(jsonResult.has("url")){
-                        webView.loadConsentMsgFromUrl(jsonResult.getString("url"));
-                    } else{
+                    if(isNative){
+                        setNativeMessageView();
+                        Log.d("msgReady", "called");
                         cancelCounter();
-                        consentFinished();
+                        if(!onMessageReadyCalled) {
+                            runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(GDPRConsentLib.this));
+                            onMessageReadyCalled = true;
+                        }
+                    } else {
+                        if(jsonResult.has("url")) {
+                            webView = buildWebView();
+                            webView.loadConsentMsgFromUrl(jsonResult.getString("url"));
+                        } else {
+                            cancelCounter();
+                            consentFinished();
+                        }
                     }
                 }
                 catch (Exception e) {

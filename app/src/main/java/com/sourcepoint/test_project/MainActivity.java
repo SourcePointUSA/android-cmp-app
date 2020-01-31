@@ -3,8 +3,8 @@ package com.sourcepoint.test_project;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 
 import com.sourcepoint.ccpa_cmplibrary.CCPAConsentLib;
 import com.sourcepoint.ccpa_cmplibrary.UserConsent;
@@ -12,32 +12,62 @@ import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "**MainActivity";
 
     private ViewGroup mainViewGroup;
 
-    private void showMessageWebView(WebView webView) {
-        webView.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
-        webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-        webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        webView.bringToFront();
-        webView.requestLayout();
-        mainViewGroup.addView(webView);
+    private void showMessage(View view) {
+        if(view.getParent() == null){
+            view.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
+            view.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+            view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+            view.bringToFront();
+            view.requestLayout();
+            mainViewGroup.addView(view);
+
+        }
+
     }
-    private void removeWebView(WebView webView) {
-        if(webView.getParent() != null)
-            mainViewGroup.removeView(webView);
+    private void removeWebView(View view) {
+        if(view.getParent() != null)
+            mainViewGroup.removeView(view);
     }
+
+    public void setCallBacks(GDPRConsentLib consentLib) {
+        this.findViewById(R.id.AcceptAll).setOnClickListener(_v -> {
+            consentLib.onMsgAccepted();
+        });
+
+        this.findViewById(R.id.RejectAll).setOnClickListener(_v -> {
+            consentLib.onMsgRejected();
+        });
+
+        this.findViewById(R.id.ShowOption).setOnClickListener(_v -> {
+            consentLib.onShowPm();
+        });
+
+        this.findViewById(R.id.Cancel).setOnClickListener(_v -> {
+            consentLib.onDismiss();
+        });
+    }
+
+    private void setNativeMessageView(GDPRConsentLib c){
+        setCallBacks(c);
+    }
+
+
 
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
                 .setStagingCampaign(true)
                 .setOnConsentUIReady(consentLib -> {
-                    showMessageWebView(consentLib.webView);
+                    showMessage(consentLib.isNative ? consentLib.nativeView : consentLib.webView);
                     Log.i(TAG, "onConsentUIReady");
+                    //setCallBacks(consentLib);
+                    //showMessage(getLayoutInflater().inflate(R.layout.sample_native_message, null));
                 })
                 .setOnConsentUIFinished(consentLib -> {
-                    removeWebView(consentLib.webView);
+                    removeWebView(consentLib.isNative ? consentLib.nativeView : consentLib.webView);
                     Log.i(TAG, "onConsentUIFinished");
                 })
                 .setOnConsentReady(consentLib -> {
@@ -61,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
     private CCPAConsentLib buildCCPAConsentLib() {
         return CCPAConsentLib.newBuilder(22, "ccpa.mobile.demo", 6099,"5df9105bcf42027ce707bb43",this)
 //                .setStagingCampaign(true)
-                .setTargetingParam("params", "true")
+                //.setTargetingParam("params", "true")
                 .setOnConsentUIReady(consentLib -> {
-                    showMessageWebView(consentLib.webView);
+
                     Log.i(TAG, "onConsentUIReady");
                 })
                 .setOnConsentUIFinished(consentLib -> {
@@ -95,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        buildCCPAConsentLib().run();
-        buildGDPRConsentLib().run();
+        //buildCCPAConsentLib().run();
+        buildGDPRConsentLib().runNative();
     }
 
     @Override
@@ -105,8 +135,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
         findViewById(R.id.review_consents).setOnClickListener(_v -> {
-            buildCCPAConsentLib().showPm();
-            buildGDPRConsentLib().showPm();
+            //buildCCPAConsentLib().showPm();
+            buildGDPRConsentLib().runNative();
         });
     }
 }
