@@ -312,7 +312,7 @@ abstract public class ConsentWebView extends WebView {
     abstract public void onSavePM(GDPRUserConsent GDPRUserConsent);
 
 
-    public void loadConsentMsgFromUrl(String url) throws ConsentLibException.NoInternetConnectionException {
+    public void loadConsentUIFromUrl(String url) throws ConsentLibException.NoInternetConnectionException {
         if (hasLostInternetConnection())
             throw new ConsentLibException.NoInternetConnectionException();
 

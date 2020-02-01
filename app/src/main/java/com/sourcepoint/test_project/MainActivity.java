@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.sourcepoint.ccpa_cmplibrary.CCPAConsentLib;
 import com.sourcepoint.ccpa_cmplibrary.UserConsent;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
-import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
+import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
@@ -42,12 +42,12 @@ public class MainActivity extends AppCompatActivity {
             consentLib.onMsgRejected();
         });
 
-        this.findViewById(R.id.ShowOption).setOnClickListener(_v -> {
-            consentLib.onShowPm();
+        this.findViewById(R.id.ShowOptions).setOnClickListener(_v -> {
+            consentLib.onMsgShowOptions();
         });
 
         this.findViewById(R.id.Cancel).setOnClickListener(_v -> {
-            consentLib.onDismiss();
+            consentLib.onMsgCancel();
         });
     }
 
@@ -59,20 +59,17 @@ public class MainActivity extends AppCompatActivity {
 
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
-                .setStagingCampaign(true)
-                .setOnConsentUIReady(consentLib -> {
-                    showMessage(consentLib.isNative ? consentLib.nativeView : consentLib.webView);
+                .setStagingCampaign(false)
+                .setOnConsentUIReady(view -> {
+                    showMessage(view);
                     Log.i(TAG, "onConsentUIReady");
-                    //setCallBacks(consentLib);
-                    //showMessage(getLayoutInflater().inflate(R.layout.sample_native_message, null));
                 })
-                .setOnConsentUIFinished(consentLib -> {
-                    removeWebView(consentLib.isNative ? consentLib.nativeView : consentLib.webView);
+                .setOnConsentUIFinished(view -> {
+                    removeWebView(view);
                     Log.i(TAG, "onConsentUIFinished");
                 })
-                .setOnConsentReady(consentLib -> {
+                .setOnConsentReady(consent -> {
                     Log.i(TAG, "onConsentReady");
-                    GDPRUserConsent consent = consentLib.userConsent;
                     for (String vendorId : consent.acceptedVendors) {
                         Log.i(TAG, "The vendor " + vendorId + " was accepted.");
                     }
@@ -80,10 +77,9 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "The category " + purposeId + " was accepted.");
                     }
                 })
-                .setOnError(consentLib -> {
-                    Log.e(TAG, "Something went wrong: ", consentLib.error);
-                    Log.i(TAG, "ConsentLibErrorMessage: " + consentLib.error.consentLibErrorMessage);
-                    removeWebView(consentLib.webView);
+                .setOnError(error -> {
+                    Log.e(TAG, "Something went wrong: ", error);
+                    Log.i(TAG, "ConsentLibErrorMessage: " + error.consentLibErrorMessage);
                 })
                 .build();
     }
@@ -125,8 +121,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i(TAG, "calling runNative() ... ");
         //buildCCPAConsentLib().run();
-        buildGDPRConsentLib().runNative();
+        buildGDPRConsentLib().run(new NativeMessage(this));
+        //buildGDPRConsentLib().runNative();
     }
 
     @Override
@@ -136,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         mainViewGroup = findViewById(android.R.id.content);
         findViewById(R.id.review_consents).setOnClickListener(_v -> {
             //buildCCPAConsentLib().showPm();
-            buildGDPRConsentLib().runNative();
+            buildGDPRConsentLib().showPm();
         });
     }
 }

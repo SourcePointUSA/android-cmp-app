@@ -5,4 +5,6 @@
     <string name="welcome_abord">Welcome abord !</string>
     <string name="hello_stranger">Hello Stranger</string>
     <string name="show_opitions">Show opitions</string>
+    <string name="MsgBody" />
+    <string name="x">X</string>
 </resources>

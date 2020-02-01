@@ -26,6 +26,9 @@ class SourcePointClient {
     private static final String baseCmpUrl = "https://sourcepoint.mgr.consensu.org";
 
     private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/gdpr/message-url";
+    private static final String baseNativeMsgUrl = "https://fake-wrapper-api.herokuapp.com/gdpr/native-message";
+
+
 
     private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/gdpr/consent";
 
@@ -122,9 +125,9 @@ class SourcePointClient {
         });
     }
 
-    void getMessage(String consentUUID, String meta, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
-        //TODO inject real params to messageUrl
-        String url = messageUrl();
+    void getMessage(boolean isNative, String consentUUID, String meta, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
+        String url = messageUrl(isNative);
+        Log.d(LOG_TAG, "Getting message from: " + url);
         try {
             http.post(null, url, new StringEntity(messageParams(consentUUID, meta).toString()), "application/json", new ResponseHandler(url, onLoadComplete) {
                 @Override
@@ -150,10 +153,8 @@ class SourcePointClient {
         }
     }
 
-    private String messageUrl() {
-        HashSet<String> params = new HashSet<>();
-        params.add("stage=" + (isStaging ? "stage" : "prod"));
-        return baseMsgUrl + "?" + TextUtils.join("&", params);
+    private String messageUrl(boolean isNative) {
+        return isNative ? baseNativeMsgUrl : baseMsgUrl;
     }
 
     private JSONObject messageParams(String consentUUID, String meta) throws ConsentLibException {
@@ -162,7 +163,7 @@ class SourcePointClient {
             JSONObject params = new JSONObject();
             params.put("accountId", accountId);
             params.put("propertyId", propertyId);
-            params.put("requestUUID", requestUUID);
+            params.put("requestUUID", getRequestUUID());
             params.put("uuid", consentUUID);
             params.put("meta", meta);
             params.put("propertyHref", "https://" + property);
