@@ -1,6 +1,5 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
-import android.app.NativeActivity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -11,17 +10,17 @@ import android.widget.TextView;
 import com.example.gdpr_cmplibrary.R;
 
 /**
- * TODO: document your custom view class.
+ * TODO: document NativeMessage view class.
  */
 public class NativeMessage extends RelativeLayout {
 
-    public Button cancel;
-    public Button acceptAll;
-    public Button rejectAll;
-    public Button showOptions;
+    private ActionButton cancel;
+    private ActionButton acceptAll;
+    private ActionButton rejectAll;
+    private ActionButton showOptions;
 
-    public TextView body;
-    public TextView title;
+    private TextView body;
+    private TextView title;
 
     public NativeMessage(Context context) {
         super(context);
@@ -40,48 +39,43 @@ public class NativeMessage extends RelativeLayout {
 
     public void init(){
         inflate(getContext(), R.layout.sample_native_message, this);
-        acceptAll = findViewById(R.id.AcceptAll);
-        acceptAll.setVisibility(View.INVISIBLE);
-        rejectAll = findViewById(R.id.RejectAll);
-        rejectAll.setVisibility(View.INVISIBLE);
-        showOptions = findViewById(R.id.ShowOptions);
-        showOptions.setVisibility(View.INVISIBLE);
-        cancel = findViewById(R.id.Cancel);
-        cancel.setVisibility(View.INVISIBLE);
-        title = findViewById(R.id.Title);
-        title.setVisibility(View.INVISIBLE);
-        body = findViewById(R.id.MsgBody);
-        body.setVisibility(View.INVISIBLE);
+        setAcceptAll(findViewById(R.id.AcceptAll));
+        setRejectAll(findViewById(R.id.RejectAll));
+        setShowOptions(findViewById(R.id.ShowOptions));
+        setCancel(findViewById(R.id.Cancel));
+        setTitle(findViewById(R.id.Title));
+        setBody(findViewById(R.id.MsgBody));
+    }
+
+    public void setOnclickAction(ActionButton actionButton, GDPRConsentLib consentLib){
+        actionButton.button.setOnClickListener(_v -> consentLib.onAction(actionButton.choiceType, actionButton.choiceId));
     }
 
     public void setCallBacks(GDPRConsentLib consentLib) {
-        acceptAll.setOnClickListener(_v -> consentLib.onMsgAccepted());
-
-        rejectAll.setOnClickListener(_v -> consentLib.onMsgRejected());
-
-        showOptions.setOnClickListener(_v -> consentLib.onMsgShowOptions());
-
-        cancel.setOnClickListener(_v -> consentLib.onMsgCancel());
+        setOnclickAction(getAcceptAll(), consentLib);
+        setOnclickAction(getRejectAll(), consentLib);
+        setOnclickAction(getShowOptions(), consentLib);
+        setOnclickAction(getCancel(), consentLib);
     }
 
     public void setAttributes(NativeMessageAttrs attrs){
-        setChildAttributes(title, attrs.title);
-        setChildAttributes(body, attrs.body);
+        setChildAttributes(getTitle(), attrs.title);
+        setChildAttributes(getBody(), attrs.body);
         for(NativeMessageAttrs.Action action: attrs.actions){
-            setChildAttributes(findButton(action.choiceType), action);
+            setChildAttributes(findActionButton(action.choiceType), action);
         }
     }
 
-    public Button findButton(int choiceType){
+    public ActionButton findActionButton(int choiceType){
         switch (choiceType) {
             case GDPRConsentLib.ActionTypes.MSG_SHOW_OPTIONS:
-                return showOptions;
+                return getShowOptions();
             case GDPRConsentLib.ActionTypes.MSG_ACCEPT:
-                return acceptAll;
+                return getAcceptAll();
             case GDPRConsentLib.ActionTypes.MSG_CANCEL:
-                return cancel;
+                return getCancel();
             case GDPRConsentLib.ActionTypes.MSG_REJECT:
-                return rejectAll;
+                return getRejectAll();
             default:
                 return null;
         }
@@ -93,5 +87,81 @@ public class NativeMessage extends RelativeLayout {
         v.setTextColor(attr.style.color);
         //v.setTextSize(attr.style.fontSize * getResources().getDisplayMetrics().scaledDensity);
         v.setBackgroundColor(attr.style.backgroundColor);
+    }
+
+    public void setChildAttributes(ActionButton v, NativeMessageAttrs.Action attr){
+        setChildAttributes(v.button, attr);
+        v.choiceId = attr.choiceId;
+        v.choiceType = attr.choiceType;
+    }
+
+    public ActionButton getCancel() {
+        return cancel;
+    }
+
+    public void setCancel(Button cancel) {
+        this.cancel = new ActionButton(cancel);
+        this.cancel.button.setVisibility(View.INVISIBLE);
+
+    }
+
+    public ActionButton getAcceptAll() {
+        return acceptAll;
+    }
+
+    public void setAcceptAll(Button acceptAll) {
+        this.acceptAll = new ActionButton(acceptAll);
+        this.acceptAll.button.setVisibility(View.INVISIBLE);
+    }
+
+    public ActionButton getRejectAll() {
+        return rejectAll;
+    }
+
+    public void setRejectAll(Button rejectAll) {
+        this.rejectAll = new ActionButton(rejectAll);
+        this.rejectAll.button.setVisibility(View.INVISIBLE);
+
+    }
+
+    public ActionButton getShowOptions() {
+        return showOptions;
+    }
+
+    public void setShowOptions(Button showOptions) {
+        this.showOptions = new ActionButton(showOptions);
+        this.showOptions.button.setVisibility(View.INVISIBLE);
+
+    }
+
+    public TextView getBody() {
+        return body;
+    }
+
+    public void setBody(TextView body) {
+        this.body = body;
+        this.body.setVisibility(View.INVISIBLE);
+
+    }
+
+    public TextView getTitle() {
+        return title;
+    }
+
+    public void setTitle(TextView title) {
+        this.title = title;
+        this.title.setVisibility(View.INVISIBLE);
+
+    }
+
+    public class ActionButton {
+
+        public ActionButton(Button b){
+            button = b;
+        }
+
+        Button button;
+        int choiceType;
+        int choiceId;
     }
 }

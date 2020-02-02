@@ -191,32 +191,36 @@ public class GDPRConsentLib {
 
             @Override
             public void onAction(int choiceType) {
-                try{
-                    Log.d(TAG, "onAction:  " +  choiceType  + " + choiceType");
-                    switch (choiceType) {
-                        case ActionTypes.MSG_SHOW_OPTIONS:
-                            onMsgShowOptions();
-                            break;
-                        case ActionTypes.MSG_ACCEPT:
-                            onMsgAccepted();
-                            break;
-                        case ActionTypes.MSG_CANCEL:
-                            onMsgCancel();
-                            break;
-                        case ActionTypes.MSG_REJECT:
-                            onMsgRejected();
-                            break;
-                        case ActionTypes.PM_DISMMISS:
-                            onPmDismiss();
-                        default:
-                            break;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    GDPRConsentLib.this.onErrorTask(new ConsentLibException(e, "Unexpected error when calling onAction."));
-                }
+                GDPRConsentLib.this.onAction(choiceType, 0);
             }
         };
+    }
+
+    public void onAction(int choiceType, int choiceId) {
+        try{
+            Log.d(TAG, "onAction:  " +  choiceType  + " + choiceType");
+            switch (choiceType) {
+                case ActionTypes.MSG_SHOW_OPTIONS:
+                    onMsgShowOptions();
+                    break;
+                case ActionTypes.MSG_ACCEPT:
+                    onMsgAccepted();
+                    break;
+                case ActionTypes.MSG_CANCEL:
+                    onMsgCancel();
+                    break;
+                case ActionTypes.MSG_REJECT:
+                    onMsgRejected();
+                    break;
+                case ActionTypes.PM_DISMMISS:
+                    onPmDismiss();
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            GDPRConsentLib.this.onErrorTask(new ConsentLibException(e, "Unexpected error when calling onAction."));
+        }
     }
 
     private void setNativeMessageView(JSONObject msgJson) throws ConsentLibException {

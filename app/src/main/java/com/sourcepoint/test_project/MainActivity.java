@@ -10,6 +10,7 @@ import com.sourcepoint.ccpa_cmplibrary.CCPAConsentLib;
 import com.sourcepoint.ccpa_cmplibrary.UserConsent;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
+import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
@@ -84,47 +85,26 @@ public class MainActivity extends AppCompatActivity {
                 .build();
     }
 
-    private CCPAConsentLib buildCCPAConsentLib() {
-        return CCPAConsentLib.newBuilder(22, "ccpa.mobile.demo", 6099,"5df9105bcf42027ce707bb43",this)
-//                .setStagingCampaign(true)
-                //.setTargetingParam("params", "true")
-                .setOnConsentUIReady(consentLib -> {
-
-                    Log.i(TAG, "onConsentUIReady");
-                })
-                .setOnConsentUIFinished(consentLib -> {
-                    removeWebView(consentLib.webView);
-                    Log.i(TAG, "onConsentUIFinished");
-                })
-                .setOnConsentReady(consentLib -> {
-                    Log.i(TAG, "onConsentReady");
-                    UserConsent consent = consentLib.userConsent;
-                    if(consent.status == UserConsent.ConsentStatus.rejectedNone){
-                        Log.i(TAG, "There are no rejected vendors/purposes.");
-                    } else if(consent.status == UserConsent.ConsentStatus.rejectedAll){
-                        Log.i(TAG, "All vendors/purposes were rejected.");
-                    } else {
-                        for (String vendorId : consent.rejectedVendors) {
-                            Log.i(TAG, "The vendor " + vendorId + " was rejected.");
-                        }
-                        for (String purposeId : consent.rejectedCategories) {
-                            Log.i(TAG, "The category " + purposeId + " was rejected.");
-                        }
-                    }
-                })
-                .setOnError(consentLib -> {
-                    Log.e(TAG, "Something went wrong: ", consentLib.error);
-                })
-                .build();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "calling runNative() ... ");
-        //buildCCPAConsentLib().run();
-        buildGDPRConsentLib().run(new NativeMessage(this));
-        //buildGDPRConsentLib().runNative();
+        buildGDPRConsentLib().run(new NativeMessage(this){
+            @Override
+            public void init(){
+                super.init();
+                // When using a customized layout one can completely override the init method
+                // not calling super.init() and inflating the native view with the chosen layout instead.
+                // In this case its important to set all the default child view using the setters methods
+                // like its done in the super.init()
+            }
+            @Override
+            public void setAttributes(NativeMessageAttrs attrs){
+                super.setAttributes(attrs);
+                //Here one can extend this method in order to set customized attributes other then the ones
+                //already set in the super.setAttributes. Not need to completely override this method.
+            }
+        });
     }
 
     @Override
@@ -133,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
         findViewById(R.id.review_consents).setOnClickListener(_v -> {
-            //buildCCPAConsentLib().showPm();
             buildGDPRConsentLib().showPm();
         });
     }
