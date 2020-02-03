@@ -7,7 +7,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getHashMap;
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getInt;
