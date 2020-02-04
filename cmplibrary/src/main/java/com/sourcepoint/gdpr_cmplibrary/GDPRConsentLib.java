@@ -224,7 +224,6 @@ public class GDPRConsentLib {
     }
 
     private void setNativeMessageView(JSONObject msgJson) throws ConsentLibException {
-        if(nativeView == null) nativeView = new NativeMessage(activity);
         nativeView.setCallBacks(this);
         nativeView.setAttributes(new NativeMessageAttrs(msgJson));
     }
