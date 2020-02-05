@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewGroup mainViewGroup;
 
-    private void showMessage(View view) {
+    private void showView(View view) {
         if(view.getParent() == null){
             view.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
             view.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    private void removeWebView(View view) {
+    private void removeView(View view) {
         if(view.getParent() != null)
             mainViewGroup.removeView(view);
     }
@@ -61,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
                 .setStagingCampaign(false)
                 .setTargetingParam("native", "true")
                 .setOnConsentUIReady(view -> {
-                    showMessage(view);
+                    showView(view);
                     Log.i(TAG, "onConsentUIReady");
                 })
                 .setOnConsentUIFinished(view -> {
-                    removeWebView(view);
+                    removeView(view);
                     Log.i(TAG, "onConsentUIFinished");
                 })
                 .setOnConsentReady(consent -> {
