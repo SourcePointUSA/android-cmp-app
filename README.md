@@ -24,7 +24,7 @@ For consent messages built using the message builder V2, it's safe to use SDK > 
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:4.0.3'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:4.1.0'
 }
 
 ```
@@ -34,40 +34,42 @@ dependencies {
 
 ```java
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "**MainActivity";
 
-    private GDPRConsentLib gdprConsentLib;
     private ViewGroup mainViewGroup;
 
-    private void showMessageWebView(WebView webView) {
-        webView.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
-        webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-        webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        webView.bringToFront();
-        webView.requestLayout();
-        mainViewGroup.addView(webView);
-    }
-    private void removeWebView(WebView webView) {
-        if(webView.getParent() != null)
-            mainViewGroup.removeView(webView);
+    private void showMessage(View view) {
+        if(view.getParent() == null){
+            view.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
+            view.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+            view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+            view.bringToFront();
+            view.requestLayout();
+            mainViewGroup.addView(view);
+
+        }
 
     }
+    private void removeWebView(View view) {
+        if(view.getParent() != null)
+            mainViewGroup.removeView(view);
+    }
+
 
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
-                .setStagingCampaign(true)
-                .setAuthId("gdpr-test")
-                .setOnConsentUIReady(consentLib -> {
-                    showMessageWebView(consentLib.webView);
+                .setStagingCampaign(false)
+                .setTargetingParam("native", "true")
+                .setOnConsentUIReady(view -> {
+                    showMessage(view);
                     Log.i(TAG, "onConsentUIReady");
                 })
-                .setOnConsentUIFinished(consentLib -> {
-                    removeWebView(consentLib.webView);
+                .setOnConsentUIFinished(view -> {
+                    removeWebView(view);
                     Log.i(TAG, "onConsentUIFinished");
                 })
-                .setOnConsentReady(consentLib -> {
+                .setOnConsentReady(consent -> {
                     Log.i(TAG, "onConsentReady");
-                    GDPRUserConsent consent = consentLib.userConsent;
                     for (String vendorId : consent.acceptedVendors) {
                         Log.i(TAG, "The vendor " + vendorId + " was accepted.");
                     }
@@ -75,19 +77,37 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "The category " + purposeId + " was accepted.");
                     }
                 })
-                .setOnError(consentLib -> {
-                    Log.e(TAG, "Something went wrong: ", consentLib.error);
-                    Log.i(TAG, "ConsentLibErrorMessage: " + consentLib.error.consentLibErrorMessage);
-                    removeWebView(consentLib.webView);
+                .setOnError(error -> {
+                    Log.e(TAG, "Something went wrong: ", error);
+                    Log.i(TAG, "ConsentLibErrorMessage: " + error.consentLibErrorMessage);
                 })
                 .build();
+    }
+
+    private NativeMessage buildNativeMessage(){
+        return new NativeMessage(this){
+            @Override
+            public void init(){
+                super.init();
+                // When using a customized layout one can completely override the init method
+                // not calling super.init() and inflating the native view with the chosen layout instead.
+                // In this case its important to set all the default child views using the setter methods
+                // like its done in the super.init()
+            }
+            @Override
+            public void setAttributes(NativeMessageAttrs attrs){
+                super.setAttributes(attrs);
+                //Here one can extend this method in order to set customized attributes other then the ones
+                //already set in the super.setAttributes. No need to completely override this method.
+            }
+        };
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        gdprConsentLib = buildGDPRConsentLib();
-        gdprConsentLib.run();
+        buildGDPRConsentLib().run(buildNativeMessage());
+        //buildGDPRConsentLib().run() can be called (with no arg) in order to work with the webview based message
     }
 
     @Override
@@ -95,11 +115,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
-        findViewById(R.id.review_consents).setOnClickListener(_v -> {
-            gdprConsentLib = buildGDPRConsentLib();
-            gdprConsentLib.showPm();
-
-        });
+        findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
     }
 }
 ```
