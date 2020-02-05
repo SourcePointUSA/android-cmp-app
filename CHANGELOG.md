@@ -1,5 +1,8 @@
 ## 4.1.0 (February, 05, 2020)
-Here we finished a major improvement to the DSK: no need for a webview based message anymore! One can now build it's own native message layout extending it from our NativeMessage class. It also allows for style and content customization via our message builder. The basic usage is intended to be very much straight forward and it is exemplified in the updated readme file.
+Here we finished a major improvement to the DSK: no need for a webview based message anymore! 
+One can now build it's own native message layout extending it from our NativeMessage class. 
+It also allows for style and content customization via our message builder. 
+The basic usage is intended to be very much straight forward and it is exemplified in the updated readme file.
 
 * Full native message implementation
 
