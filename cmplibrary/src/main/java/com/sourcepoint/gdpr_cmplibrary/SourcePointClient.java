@@ -26,7 +26,7 @@ class SourcePointClient {
     private static final String baseCmpUrl = "https://sourcepoint.mgr.consensu.org";
 
     private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/gdpr/message-url";
-    private static final String baseNativeMsgUrl = "https://fake-wrapper-api.herokuapp.com/gdpr/native-message";
+    private static final String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/gdpr/native-message";
 
 
 

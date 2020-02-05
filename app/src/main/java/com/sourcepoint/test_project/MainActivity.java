@@ -1,14 +1,11 @@
 package com.sourcepoint.test_project;
 
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sourcepoint.ccpa_cmplibrary.CCPAConsentLib;
-import com.sourcepoint.ccpa_cmplibrary.UserConsent;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
@@ -35,28 +32,11 @@ public class MainActivity extends AppCompatActivity {
             mainViewGroup.removeView(view);
     }
 
-    public void setCallBacks(GDPRConsentLib consentLib) {
-        this.findViewById(R.id.AcceptAll).setOnClickListener(_v -> {
-            consentLib.onMsgAccepted();
-        });
-
-        this.findViewById(R.id.RejectAll).setOnClickListener(_v -> {
-            consentLib.onMsgRejected();
-        });
-
-        this.findViewById(R.id.ShowOptions).setOnClickListener(_v -> {
-            consentLib.onMsgShowOptions();
-        });
-
-        this.findViewById(R.id.Cancel).setOnClickListener(_v -> {
-            consentLib.onMsgCancel();
-        });
-    }
-
 
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
                 .setStagingCampaign(false)
+                .setTargetingParam("native", "true")
                 .setOnConsentUIReady(view -> {
                     showMessage(view);
                     Log.i(TAG, "onConsentUIReady");
@@ -104,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         buildGDPRConsentLib().run(buildNativeMessage());
+        //buildGDPRConsentLib().run() can be called (with no arg) in order to work with the webview based message
     }
 
     @Override
