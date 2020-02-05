@@ -20,7 +20,10 @@ public class ConsentLibBuilder {
     String mmsDomain, cmpDomain, msgDomain;
     String page = "";
     ViewGroup viewGroup = null;
-    GDPRConsentLib.Callback onAction, onConsentReady, onError, onConsentUIReady, onConsentUIFinished;
+    protected GDPRConsentLib.OnConsentUIReadyCallback onConsentUIReady;
+    protected GDPRConsentLib.OnConsentUIFinishedCallback onConsentUIFinished;
+    protected GDPRConsentLib.OnConsentReadyCallback onConsentReady;
+    protected GDPRConsentLib.OnErrorCallback onError;
     boolean staging, stagingCampaign, shouldCleanConsentOnError;
 
     SourcePointClient sourcePointClient;
@@ -43,37 +46,18 @@ public class ConsentLibBuilder {
         mmsDomain = cmpDomain = msgDomain = null;
         staging = stagingCampaign = false;
         shouldCleanConsentOnError = true;
-        GDPRConsentLib.Callback noOpCallback = new GDPRConsentLib.Callback() {
-            @Override
-            public void run(GDPRConsentLib c) {
-            }
-        };
-        onAction = onConsentReady = onError = onConsentUIReady = onConsentUIFinished = noOpCallback;
         storeClient = new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
-    }
-
-    // TODO: add what are the possible choices returned to the Callback
-    /**
-     *  <b>Optional</b> Sets the Callback to be called when the user selects an option on the WebView.
-     *  The selected choice will be available in the instance variable GDPRConsentLib.choiceType
-     * @param c - a callback that will be called when the user selects an option on the WebView
-     * @return ConsentLibBuilder - the next build step
-     * @see ConsentLibBuilder
-     */
-    public ConsentLibBuilder setOnMessageChoiceSelect(GDPRConsentLib.Callback c) {
-        onAction = c;
-        return this;
     }
 
     /**
      *  <b>Optional</b> Sets the Callback to be called when the user finishes interacting with the WebView
      *  either by closing it, canceling or accepting the terms.
-     * @param c - Callback to be called when the user finishes interacting with the WebView
+     * @param callback - Callback to be called when the user finishes interacting with the WebView
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnConsentReady(GDPRConsentLib.Callback c) {
-        onConsentReady = c;
+    public ConsentLibBuilder setOnConsentReady( GDPRConsentLib.OnConsentReadyCallback callback) {
+        onConsentReady = callback;
         return this;
     }
 
@@ -82,7 +66,7 @@ public class ConsentLibBuilder {
      * @param callback to be called when the message is ready to be displayed
      * @return ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnConsentUIReady(GDPRConsentLib.Callback callback) {
+    public ConsentLibBuilder setOnConsentUIReady(GDPRConsentLib.OnConsentUIReadyCallback callback) {
         onConsentUIReady = callback;
         return this;
     }
@@ -92,7 +76,7 @@ public class ConsentLibBuilder {
      * @param callback to be called when the message is ready to disapear
      * @return ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnConsentUIFinished(GDPRConsentLib.Callback callback) {
+    public ConsentLibBuilder setOnConsentUIFinished(GDPRConsentLib.OnConsentUIFinishedCallback callback) {
         onConsentUIFinished = callback;
         return this;
     }
@@ -103,7 +87,7 @@ public class ConsentLibBuilder {
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnError(GDPRConsentLib.Callback callback) {
+    public ConsentLibBuilder setOnError(GDPRConsentLib.OnErrorCallback callback) {
         onError = callback;
         return this;
     }

@@ -1,49 +1,52 @@
 package com.sourcepoint.test_project;
 
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 
-import com.sourcepoint.ccpa_cmplibrary.CCPAConsentLib;
-import com.sourcepoint.ccpa_cmplibrary.UserConsent;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
-import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
+import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
+import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
 
     private ViewGroup mainViewGroup;
 
-    private void showMessageWebView(WebView webView) {
-        webView.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
-        webView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-        webView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        webView.bringToFront();
-        webView.requestLayout();
-        mainViewGroup.addView(webView);
+    private void showMessage(View view) {
+        if(view.getParent() == null){
+            view.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
+            view.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+            view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+            view.bringToFront();
+            view.requestLayout();
+            mainViewGroup.addView(view);
+
+        }
+
     }
-    private void removeWebView(WebView webView) {
-        if(webView.getParent() != null)
-            mainViewGroup.removeView(webView);
+    private void removeWebView(View view) {
+        if(view.getParent() != null)
+            mainViewGroup.removeView(view);
     }
+
 
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
-                .setStagingCampaign(true)
-                .setOnConsentUIReady(consentLib -> {
-                    showMessageWebView(consentLib.webView);
+                .setStagingCampaign(false)
+                .setTargetingParam("native", "true")
+                .setOnConsentUIReady(view -> {
+                    showMessage(view);
                     Log.i(TAG, "onConsentUIReady");
                 })
-                .setOnConsentUIFinished(consentLib -> {
-                    removeWebView(consentLib.webView);
+                .setOnConsentUIFinished(view -> {
+                    removeWebView(view);
                     Log.i(TAG, "onConsentUIFinished");
                 })
-                .setOnConsentReady(consentLib -> {
+                .setOnConsentReady(consent -> {
                     Log.i(TAG, "onConsentReady");
-                    GDPRUserConsent consent = consentLib.userConsent;
                     for (String vendorId : consent.acceptedVendors) {
                         Log.i(TAG, "The vendor " + vendorId + " was accepted.");
                     }
@@ -51,54 +54,37 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "The category " + purposeId + " was accepted.");
                     }
                 })
-                .setOnError(consentLib -> {
-                    Log.e(TAG, "Something went wrong: ", consentLib.error);
-                    Log.i(TAG, "ConsentLibErrorMessage: " + consentLib.error.consentLibErrorMessage);
-                    removeWebView(consentLib.webView);
+                .setOnError(error -> {
+                    Log.e(TAG, "Something went wrong: ", error);
+                    Log.i(TAG, "ConsentLibErrorMessage: " + error.consentLibErrorMessage);
                 })
                 .build();
     }
 
-    private CCPAConsentLib buildCCPAConsentLib() {
-        return CCPAConsentLib.newBuilder(22, "ccpa.mobile.demo", 6099,"5df9105bcf42027ce707bb43",this)
-//                .setStagingCampaign(true)
-                .setTargetingParam("params", "true")
-                .setOnConsentUIReady(consentLib -> {
-                    showMessageWebView(consentLib.webView);
-                    Log.i(TAG, "onConsentUIReady");
-                })
-                .setOnConsentUIFinished(consentLib -> {
-                    removeWebView(consentLib.webView);
-                    Log.i(TAG, "onConsentUIFinished");
-                })
-                .setOnConsentReady(consentLib -> {
-                    Log.i(TAG, "onConsentReady");
-                    UserConsent consent = consentLib.userConsent;
-                    if(consent.status == UserConsent.ConsentStatus.rejectedNone){
-                        Log.i(TAG, "There are no rejected vendors/purposes.");
-                    } else if(consent.status == UserConsent.ConsentStatus.rejectedAll){
-                        Log.i(TAG, "All vendors/purposes were rejected.");
-                    } else {
-                        for (String vendorId : consent.rejectedVendors) {
-                            Log.i(TAG, "The vendor " + vendorId + " was rejected.");
-                        }
-                        for (String purposeId : consent.rejectedCategories) {
-                            Log.i(TAG, "The category " + purposeId + " was rejected.");
-                        }
-                    }
-                })
-                .setOnError(consentLib -> {
-                    Log.e(TAG, "Something went wrong: ", consentLib.error);
-                })
-                .build();
+    private NativeMessage buildNativeMessage(){
+        return new NativeMessage(this){
+            @Override
+            public void init(){
+                super.init();
+                // When using a customized layout one can completely override the init method
+                // not calling super.init() and inflating the native view with the chosen layout instead.
+                // In this case its important to set all the default child views using the setter methods
+                // like its done in the super.init()
+            }
+            @Override
+            public void setAttributes(NativeMessageAttrs attrs){
+                super.setAttributes(attrs);
+                //Here one can extend this method in order to set customized attributes other then the ones
+                //already set in the super.setAttributes. No need to completely override this method.
+            }
+        };
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, PreferenceManager.getDefaultSharedPreferences(this).getString("IABConsent_ConsentString", "no consentString"));
-        //buildCCPAConsentLib().run();
-        buildGDPRConsentLib().run();
+        buildGDPRConsentLib().run(buildNativeMessage());
+        //buildGDPRConsentLib().run() can be called (with no arg) in order to work with the webview based message
     }
 
     @Override
@@ -106,9 +92,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
-        findViewById(R.id.review_consents).setOnClickListener(_v -> {
-            //buildCCPAConsentLib().showPm();
-            buildGDPRConsentLib().showPm();
-        });
+        findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
     }
 }

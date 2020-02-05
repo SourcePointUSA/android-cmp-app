@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
-        loginButton = findViewById(R.id.button);
+        loginButton = findViewById(R.id.AcceptAll);
         userNameInput = findViewById(R.id.userNameInput);
         consentListView = findViewById(R.id.consentListView);
         toolbar = findViewById(R.id.my_toolbar);
