@@ -118,7 +118,7 @@ public class GDPRConsentLib {
         public static final int MSG_ACCEPT = 11;
         public static final int MSG_CANCEL = 15;
         public static final int PM_COMPLETE = 1;
-        public static final int PM_DISMMISS = 2;
+        public static final int PM_DISMISS = 2;
     }
 
     private StoreClient storeClient;
@@ -215,7 +215,7 @@ public class GDPRConsentLib {
                 case ActionTypes.MSG_REJECT:
                     onMsgRejected();
                     break;
-                case ActionTypes.PM_DISMMISS:
+                case ActionTypes.PM_DISMISS:
                     onPmDismiss();
                 default:
                     break;
