@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashSet;
-import java.util.List;
 
 import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_CONSENT_STRING;
 
@@ -39,10 +38,6 @@ public class GDPRConsentLib {
 
     public enum DebugLevel {DEBUG, OFF}
 
-    public enum MESSAGE_OPTIONS {
-        SHOW_PRIVACY_MANAGER,
-        UNKNOWN
-    }
 
     public Boolean isSubjectToGdpr = null;
 
@@ -53,8 +48,6 @@ public class GDPRConsentLib {
     public GDPRUserConsent userConsent;
 
     private static final String TAG = "GDPRConsentLib";
-
-    private List<View> viewStack;
 
     private Activity activity;
     private final String property;
@@ -149,7 +142,6 @@ public class GDPRConsentLib {
         onConsentUIFinished = b.onConsentUIFinished;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
-
         // configurable time out
         defaultMessageTimeOut = b.defaultMessageTimeOut;
 
@@ -157,13 +149,22 @@ public class GDPRConsentLib {
 
         storeClient = b.storeClient;
 
+        setConsentData(b.authId);
+
+        setSubjectToGDPR();
+
+    }
+
+    private void setConsentData(String newAuthId){
+        if(!newAuthId.equals(storeClient.getAuthId())) storeClient.clearAllData();
+
         euConsent = storeClient.getConsentString();
 
         metaData = storeClient.getMetaData();
 
         consentUUID = storeClient.getConsentUUID();
 
-        setSubjectToGDPR();
+        storeClient.setAuthId(newAuthId);
 
     }
 
@@ -490,7 +491,7 @@ public class GDPRConsentLib {
     private void onErrorTask(ConsentLibException e){
         this.error = e;
         if(shouldCleanConsentOnError) {
-            storeClient.deleteIABConsentData();
+            storeClient.clearIABConsentData();
         }
         cancelCounter();
         closeCurrentMessageView();
