@@ -117,7 +117,7 @@ public class StoreClient {
 
     public void clearAllData(){
         clearInternalData();
-        clearInternalData();
+        clearIABConsentData();
     }
 
     public void clearInternalData(){
