@@ -156,6 +156,8 @@ public class GDPRConsentLib {
     }
 
     private void setConsentData(String newAuthId){
+        if(newAuthId == null) newAuthId = storeClient.DEFAULT_AUTH_ID;
+
         if(!newAuthId.equals(storeClient.getAuthId())) storeClient.clearAllData();
 
         euConsent = storeClient.getConsentString();

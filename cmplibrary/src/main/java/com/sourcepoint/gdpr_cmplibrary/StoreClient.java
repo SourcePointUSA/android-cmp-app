@@ -8,35 +8,35 @@ public class StoreClient {
     /**
      * If the user has consent data stored, reading for this key in the shared preferences will return true
      */
-    private static final String IAB_CONSENT_CMP_PRESENT = "IABConsent_CMPPresent";
+    public static final String IAB_CONSENT_CMP_PRESENT = "IABConsent_CMPPresent";
 
     /**
      * If the user is subject to GDPR, reading for this key in the shared preferences will return "1" otherwise "0"
      */
-    private static final String IAB_CONSENT_SUBJECT_TO_GDPR = "IABConsent_SubjectToGDPR";
+    public static final String IAB_CONSENT_SUBJECT_TO_GDPR = "IABConsent_SubjectToGDPR";
 
     /**
      * They key used to store the IAB Consent string for the user in the shared preferences
      */
-    private static final String IAB_CONSENT_CONSENT_STRING = "IABConsent_ConsentString";
+    public static final String IAB_CONSENT_CONSENT_STRING = "IABConsent_ConsentString";
 
     /**
      * They key used to read and write the parsed IAB Purposes consented by the user in the shared preferences
      */
-    private static final String IAB_CONSENT_PARSED_PURPOSE_CONSENTS = "IABConsent_ParsedPurposeConsents";
+    public static final String IAB_CONSENT_PARSED_PURPOSE_CONSENTS = "IABConsent_ParsedPurposeConsents";
 
     /**
      * They key used to read and write the parsed IAB Vendor consented by the user in the shared preferences
      */
-    private static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
+    public static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
 
-    private static final String CONSENT_UUID_KEY = "sp.gdpr.consentUUID";
+    public static final String CONSENT_UUID_KEY = "sp.gdpr.consentUUID";
 
-    private static final String META_DATA_KEY = "sp.gdpr.metaData";
+    public static final String META_DATA_KEY = "sp.gdpr.metaData";
 
-    private static final String EU_CONSENT__KEY = "sp.gdpr.euconsent";
+    public static final String EU_CONSENT__KEY = "sp.gdpr.euconsent";
 
-    private static final String AUTH_ID_KEY = "sp.gdpr.authId";
+    public static final String AUTH_ID_KEY = "sp.gdpr.authId";
 
     private SharedPreferences.Editor editor;
 
@@ -46,7 +46,7 @@ public class StoreClient {
 
     public static final String DEFAULT_META_DATA = "{}";
 
-    public static final String DEFAULT_AUTH_ID = null;
+    public static final String DEFAULT_AUTH_ID = "";
 
 
     StoreClient(SharedPreferences pref){
