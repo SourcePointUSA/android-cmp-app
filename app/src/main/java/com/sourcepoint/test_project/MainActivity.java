@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
             view.bringToFront();
             view.requestLayout();
             mainViewGroup.addView(view);
-
         }
 
     }

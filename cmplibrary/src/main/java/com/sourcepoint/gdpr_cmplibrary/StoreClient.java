@@ -36,6 +36,8 @@ public class StoreClient {
 
     private static final String EU_CONSENT__KEY = "sp.gdpr.euconsent";
 
+    private static final String AUTH_ID_KEY = "sp.gdpr.authId";
+
     private SharedPreferences.Editor editor;
 
     private SharedPreferences pref;
@@ -43,6 +45,8 @@ public class StoreClient {
     public static final String DEFAULT_EMPTY_CONSENT_STRING = null;
 
     public static final String DEFAULT_META_DATA = "{}";
+
+    public static final String DEFAULT_AUTH_ID = null;
 
 
     StoreClient(SharedPreferences pref){
@@ -86,6 +90,11 @@ public class StoreClient {
         editor.commit();
     }
 
+    public void setAuthId(String authId){
+        editor.putString(AUTH_ID_KEY, authId);
+        editor.commit();
+    }
+
     public void apply(){
         editor.apply();
     }
@@ -102,7 +111,26 @@ public class StoreClient {
         return pref.getString(EU_CONSENT__KEY, DEFAULT_EMPTY_CONSENT_STRING);
     }
 
-    public void deleteIABConsentData(){
+    public String getAuthId() {
+        return pref.getString(AUTH_ID_KEY, DEFAULT_AUTH_ID);
+    }
+
+    public void clearAllData(){
+        clearInternalData();
+        clearIABConsentData();
+    }
+
+    public void clearInternalData(){
+        editor.remove(CONSENT_UUID_KEY);
+        editor.remove(META_DATA_KEY);
+        editor.remove(EU_CONSENT__KEY);
+        editor.remove(AUTH_ID_KEY);
+        editor.commit();
+    }
+
+
+
+    public void clearIABConsentData(){
         editor.remove(IAB_CONSENT_CONSENT_STRING);
         editor.remove(IAB_CONSENT_PARSED_VENDOR_CONSENTS);
         editor.remove(IAB_CONSENT_PARSED_PURPOSE_CONSENTS);
