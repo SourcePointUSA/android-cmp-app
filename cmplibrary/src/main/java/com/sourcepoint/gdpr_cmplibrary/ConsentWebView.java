@@ -26,67 +26,20 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.example.gdpr_cmplibrary.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 
 abstract public class ConsentWebView extends WebView {
+
     private static final String TAG = "ConsentWebView";
-
-
-    // TODO: pass this script to a .js file and return it as a string in this method
-    private String getJSInjection(){
-        return "addEventListener('message', handleEvent);\n" +
-                "function handleEvent(event) {\n" +
-                "    try {\n" +
-                "        JSReceiver.log(JSON.stringify(event.data, null, 2));\n" +
-                "        if (event.data.name === 'sp.showMessage') {\n" +
-                "            JSReceiver.onConsentUIReady();\n" +
-                "            return;\n" +
-                "        }\n" +
-                "        const data = eventData(event);\n" +
-                "        JSReceiver.log(JSON.stringify(data, null, 2));\n" +
-                "        if(data.type) {\n" +
-                "            if(data.type === 1) JSReceiver.onSavePM(JSON.stringify(data.payload));\n" +
-                "            else JSReceiver.onAction(data.type);\n" +
-                "        }\n" +
-                "    } catch (err) {\n" +
-                "        JSReceiver.log(err.stack);\n" +
-                "    };\n" +
-                "};\n" +
-                "\n" +
-                "function eventData(event) {\n" +
-                "    return isFromPM(event) ? dataFromPM(event) : dataFromMessage(event);\n" +
-                "};\n" +
-                "\n" +
-                "function isFromPM(event) {\n" +
-                "    return !!event.data.payload;\n" +
-                "};\n" +
-                "\n" +
-                "function dataFromMessage(msgEvent) {\n" +
-                "    return {\n" +
-                "        name: msgEvent.data.name,\n" +
-                "        type: msgEvent.data.actions.length ? msgEvent.data.actions[0].data.type : null\n" +
-                "    };\n" +
-                "};\n" +
-                "\n" +
-                "function dataFromPM(pmEvent) {\n" +
-                "    const data = {\n" +
-                "        name: pmEvent.data.name,\n" +
-                "        type: pmEvent.data ? pmEvent.data.payload.actionType : null,\n" +
-                "    };\n" +
-                "    if(data.type === 1) data.payload = userConsents(pmEvent.data.payload);\n" +
-                "    return data;\n" +
-                "};\n" +
-                "\n" +
-                "function userConsents(payload){\n" +
-                "    return {\n" +
-                "        acceptedVendors: payload.consents.vendors.accepted,\n" +
-                "        acceptedCategories: payload.consents.categories.accepted\n" +
-                "    }\n" +
-                "}";
-    }
 
     @SuppressWarnings("unused")
     private class MessageInterface {
@@ -238,7 +191,11 @@ abstract public class ConsentWebView extends WebView {
                 super.onPageFinished(view, url);
                 connectionPool.remove(url);
                 //view.loadUrl("javascript:" + "addEventListener('message', SDK.onEvent('oie'))");
-                view.loadUrl("javascript:" + getJSInjection());
+                try {
+                    view.loadUrl("javascript:" + getFileContent(getResources().openRawResource(R.raw.js_receiver)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -324,7 +281,17 @@ abstract public class ConsentWebView extends WebView {
         loadUrl(url);
     }
 
+    private String getFileContent(InputStream is) throws IOException {
 
+        BufferedReader br = new BufferedReader( new InputStreamReader(is, "UTF-8" ));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while(( line = br.readLine()) != null ) {
+            sb.append( line );
+            sb.append( '\n' );
+        }
+        return sb.toString();
+    }
 
     public void display() {
         setLayoutParams(new ViewGroup.LayoutParams(0, 0));
