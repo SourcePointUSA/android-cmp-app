@@ -156,9 +156,8 @@ public class GDPRConsentLib {
     }
 
     private void setConsentData(String newAuthId){
-        if(newAuthId == null) newAuthId = storeClient.DEFAULT_AUTH_ID;
 
-        if(!newAuthId.equals(storeClient.getAuthId())) storeClient.clearAllData();
+        if(hasAuthIdChanged(newAuthId)) storeClient.clearAllData();
 
         euConsent = storeClient.getConsentString();
 
@@ -167,7 +166,13 @@ public class GDPRConsentLib {
         consentUUID = storeClient.getConsentUUID();
 
         storeClient.setAuthId(newAuthId);
+    }
 
+    private boolean hasAuthIdChanged(String newAuthId){
+        String storedAuthId = storeClient.getAuthId();
+        if(newAuthId == null && storedAuthId == null) return false;
+        else if (newAuthId != null && newAuthId.equals(storeClient.getAuthId())) return false;
+        return true;
     }
 
     private ConsentWebView buildWebView() {
