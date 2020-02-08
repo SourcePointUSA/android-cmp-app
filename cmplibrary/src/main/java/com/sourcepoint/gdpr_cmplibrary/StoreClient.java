@@ -46,7 +46,7 @@ public class StoreClient {
 
     public static final String DEFAULT_META_DATA = "{}";
 
-    public static final String DEFAULT_AUTH_ID = "";
+    public static final String DEFAULT_AUTH_ID = null;
 
 
     StoreClient(SharedPreferences pref){
