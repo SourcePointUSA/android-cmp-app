@@ -1,6 +1,7 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_CONSENT_STRING;
 
@@ -156,9 +158,8 @@ public class GDPRConsentLib {
     }
 
     private void setConsentData(String newAuthId){
-        if(newAuthId == null) newAuthId = storeClient.DEFAULT_AUTH_ID;
 
-        if(!newAuthId.equals(storeClient.getAuthId())) storeClient.clearAllData();
+        if(hasAuthIdChanged(newAuthId)) storeClient.clearAllData();
 
         euConsent = storeClient.getConsentString();
 
@@ -167,7 +168,17 @@ public class GDPRConsentLib {
         consentUUID = storeClient.getConsentUUID();
 
         storeClient.setAuthId(newAuthId);
+    }
 
+    private boolean hasAuthIdChanged(String newAuthId){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return !Objects.equals(newAuthId, storeClient.getAuthId());
+        }
+        //TODO: remove this code when we migrate to api > 19
+        String storedAuthId = storeClient.getAuthId();
+        if(newAuthId == null && storedAuthId == null) return false;
+        else if (newAuthId != null && newAuthId.equals(storeClient.getAuthId())) return false;
+        return true;
     }
 
     private ConsentWebView buildWebView() {
