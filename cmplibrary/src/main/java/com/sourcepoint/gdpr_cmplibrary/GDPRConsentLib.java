@@ -374,12 +374,13 @@ public class GDPRConsentLib {
             params.put("consents", userConsent != null ? userConsent.jsonConsents : null);
             params.put("accountId", accountId);
             params.put("propertyId", propertyId);
+            params.put("propertyHref", "https://" + property);
             params.put("privacyManagerId", pmId);
             params.put("uuid", consentUUID);
             params.put("meta", metaData);
             params.put("actionType", actionType);
             params.put("requestFromPM", choiceId == null);
-            params.put("choiceId", choiceId);
+            params.put("choiceId", choiceId != null ? Integer.toString(choiceId) : null);
             return params;
         } catch(JSONException e){
             throw new ConsentLibException(e, "Error trying to build body to send consents.");

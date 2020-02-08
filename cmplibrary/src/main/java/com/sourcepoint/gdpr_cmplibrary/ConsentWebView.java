@@ -63,8 +63,8 @@ abstract public class ConsentWebView extends WebView {
 
         // called when a choice is selected on the message
         @JavascriptInterface
-        public void onAction(int choiceType, Integer choiceId) {
-            ConsentWebView.this.onAction(choiceType, choiceId);
+        public void onAction(int choiceType, String choiceId) {
+            ConsentWebView.this.onAction(choiceType, choiceId != null ? Integer.parseInt(choiceId) : null);
         }
 
         // called when a choice is selected on the message

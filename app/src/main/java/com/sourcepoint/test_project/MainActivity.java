@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
                 .setStagingCampaign(false)
 //                .setAuthId("")
-                //.setTargetingParam("native", "true")
+//                .setTargetingParam("native", "true")
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "init");
+        //buildGDPRConsentLib().run(buildNativeMessage());
         buildGDPRConsentLib().run();
         //buildGDPRConsentLib().run() can be called (with no arg) in order to work with the webview based message
     }
