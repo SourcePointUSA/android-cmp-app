@@ -37,7 +37,7 @@ Our Web Team worked pretty hard to slim down our consent message platform and im
 **It's important to notice, SDK version 3 onwards will only be compatible with messages built using the new message builder.**
 
 ### Consent message lifecycle
-* `onMessageReady` is now called only when there's a consent message to be shown rather than being always called but with a boolean flag (`willShowMessage`) indicating if the message is going to show or not.
+* `onConsentUIReady` is now called only when there's a consent message to be shown rather than being always called but with a boolean flag (`willShowMessage`) indicating if the message is going to show or not.
 * Renamed `onInteractionComplete` to `onConsentReady` to better reflect the meaning of that callback.
 
 ### Plug & Play Privacy Manager
@@ -86,13 +86,13 @@ stored in our server, we'll load it instead of a new profile.
 * Fix an issue with `message timeout timer`, canceled timer before releasing `ConsentWebView`.
 
 ## 2.3.3 (April 12, 2019)
-* Add timeout for `onMessageReady`
+* Add timeout for `onConsentUIReady`
 
 ## 2.3.2 (April 10, 2019)
 * Fix an issue with `ConsentWebView` prevented the consent message from showing intermittently
 
 ## 2.3.1 (April 10, 2019)
-* Add timeout for `onMessageReady`  
+* Add timeout for `onConsentUIReady`  
 
 ## 2.3.0 (April 2, 2019)
 * Fix an issue with `ConsentWebView` prevented the consent message from showing intermittently
@@ -106,8 +106,8 @@ stored in our server, we'll load it instead of a new profile.
 * We changed the way the `WebView` is loaded. You know have two options: 
   1. If you don't mind us managing the view for you, make sure to call `setViewGroup` passing the `ViewGroup` in which the `WebView` should be attached to and we'll take care of everything for you.
   2. If you need more control over views, simply don't call `setViewGroup`. You'll need to add/remove `ConsentLib#webView` to/from your view hierarchy by yourself. This will usually be done on `willShowMessage` and `onConsentReady`.
-* `messageWillShow` callback method was renamed to `onMessageReady`
-* The callback `onMessageReady` even if the message doesn't need to be displayed.
+* `messageWillShow` callback method was renamed to `onConsentUIReady`
+* The callback `onConsentUIReady` even if the message doesn't need to be displayed.
 * Introduced the field boolean `willShowMessage`. This field is set to true when the message is ready and it needs to be shown.
 
 ## 2.1.1 (March 20, 2019)

@@ -10,7 +10,7 @@ function handleEvent(event) {
         JSReceiver.log(JSON.stringify(data, null, 2));
         if(data.type) {
             if(data.type === 1) JSReceiver.onSavePM(JSON.stringify(data.payload));
-            else JSReceiver.onAction(data.type);
+            else JSReceiver.onAction(data.type, data.choiceId);
         }
     } catch (err) {
         JSReceiver.log(err.stack);
@@ -28,7 +28,8 @@ function isFromPM(event) {
 function dataFromMessage(msgEvent) {
     return {
         name: msgEvent.data.name,
-        type: msgEvent.data.actions.length ? msgEvent.data.actions[0].data.type : null
+        type: msgEvent.data.actions.length ? msgEvent.data.actions[0].data.type : null,
+        choiceId: msgEvent.data.actions.length ? msgEvent.data.actions[0].data.choice_id : null
     };
 };
 
@@ -36,6 +37,7 @@ function dataFromPM(pmEvent) {
     const data = {
         name: pmEvent.data.name,
         type: pmEvent.data ? pmEvent.data.payload.actionType : null,
+        choiceId: null
     };
     if(data.type === 1) data.payload = userConsents(pmEvent.data.payload);
     return data;

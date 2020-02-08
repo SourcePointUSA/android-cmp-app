@@ -15,7 +15,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.RenderProcessGoneDetail;
@@ -42,7 +41,9 @@ abstract public class ConsentWebView extends WebView {
     private static final String TAG = "ConsentWebView";
 
     @SuppressWarnings("unused")
-    private class MessageInterface {
+    private class JSReceiverInterface {
+
+        private static final String TAG = "JSReceiverInterface";
 
         @JavascriptInterface
         public void log(String tag, String msg){
@@ -51,49 +52,31 @@ abstract public class ConsentWebView extends WebView {
 
         @JavascriptInterface
         public void log(String msg){
-            Log.i("JS", msg);
+            Log.i(TAG, msg);
         }
 
         // called when message is about to be shown
         @JavascriptInterface
         public void onConsentUIReady() {
-            Log.d("onConsentUIReady", "called");
-            ConsentWebView.this.onMessageReady();
+            ConsentWebView.this.onConsentUIReady();
         }
 
         // called when a choice is selected on the message
         @JavascriptInterface
-        public void onAction(int choiceType) {
-            Log.d("onAction", "called");
-            if (ConsentWebView.this.hasLostInternetConnection()) {
-                ConsentWebView.this.onError(new ConsentLibException.NoInternetConnectionException());
-            }
-            ConsentWebView.this.onAction(choiceType);
+        public void onAction(int choiceType, Integer choiceId) {
+            ConsentWebView.this.onAction(choiceType, choiceId);
         }
 
         // called when a choice is selected on the message
         @JavascriptInterface
         public void onSavePM(String payloadStr) throws JSONException, ConsentLibException {
-            Log.d("onSavePM", "called");
-            if (ConsentWebView.this.hasLostInternetConnection()) {
-                ConsentWebView.this.onError(new ConsentLibException.NoInternetConnectionException());
-            }
             JSONObject payloadJson = new JSONObject(payloadStr);
             ConsentWebView.this.onSavePM(new GDPRUserConsent(payloadJson));
         }
 
-        //called when an error is occured while loading web-view
         @JavascriptInterface
-        public void onError(String errorType) {
-            ConsentLibException error = ConsentWebView.this.hasLostInternetConnection() ?
-                    new ConsentLibException.NoInternetConnectionException() :
-                    new ConsentLibException("Something went wrong in the javascript world.");
-            ConsentWebView.this.onError(error);
-        }
-        // xhr logger
-        @JavascriptInterface
-        public void xhrLog(String response){
-            Log.d("xhrLog" , response);
+        public void onError(String errorMessage) {
+            ConsentWebView.this.onError(new ConsentLibException("errorMessage"));
         }
 
     }
@@ -194,7 +177,7 @@ abstract public class ConsentWebView extends WebView {
                 try {
                     view.loadUrl("javascript:" + getFileContent(getResources().openRawResource(R.raw.js_receiver)));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    ConsentWebView.this.onError(new ConsentLibException(e, "Unable to load jsReceiver into ConasentLibWebview."));
                 }
             }
 
@@ -245,7 +228,7 @@ abstract public class ConsentWebView extends WebView {
             }
             return false;
         });
-        addJavascriptInterface(new MessageInterface(), "JSReceiver");
+        addJavascriptInterface(new JSReceiverInterface(), "JSReceiver");
         resumeTimers();
     }
 
@@ -260,22 +243,18 @@ abstract public class ConsentWebView extends WebView {
         return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
     }
 
-    abstract public void onMessageReady();
+    abstract public void onConsentUIReady();
 
     abstract public void onError(ConsentLibException error);
 
-    abstract public void onAction(int choiceType);
+    abstract public void onAction(int choiceType, Integer choiceId);
 
     abstract public void onSavePM(GDPRUserConsent GDPRUserConsent);
 
 
-    public void loadConsentUIFromUrl(String url) throws ConsentLibException.NoInternetConnectionException {
+    public void loadConsentUIFromUrl(String url) {
         if (hasLostInternetConnection())
-            throw new ConsentLibException.NoInternetConnectionException();
-
-        // On API level >= 21, the JavascriptInterface is not injected on the page until the *second* page load
-        // so we need to issue blank load with loadData
-        loadData("", "text/html", null);
+            ConsentWebView.this.onError(new ConsentLibException.NoInternetConnectionException());
         Log.d(TAG, "Loading Webview with: " + url);
         Log.d(TAG, "User-Agent: " + getSettings().getUserAgentString());
         loadUrl(url);
@@ -291,13 +270,5 @@ abstract public class ConsentWebView extends WebView {
             sb.append( '\n' );
         }
         return sb.toString();
-    }
-
-    public void display() {
-        setLayoutParams(new ViewGroup.LayoutParams(0, 0));
-        getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-        getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        bringToFront();
-        requestLayout();
     }
 }
