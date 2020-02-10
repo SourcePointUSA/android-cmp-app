@@ -43,6 +43,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api 'com.google.guava:guava:27.0.1-android'
     implementation 'com.loopj.android:android-async-http:1.4.9'
+    //implementation 'commons-io:commons-io:2.4'
+
 
     //junit
     testImplementation 'junit:junit:4.12'
@@ -53,6 +55,7 @@ dependencies {
 
     //json jar
     testImplementation 'org.json:json:20140107'
+
 
     // Unfortunately consent-string-sdk-java only supports Java 8 and above. That means API > 26
     // The following is a port to android environment
