@@ -284,9 +284,15 @@ public class GDPRConsentLib {
     }
 
     private void loadPm() {
-        if(webView == null) webView = buildWebView();
-        webView.loadConsentUIFromUrl(pmUrl());
+        loadConsentUI(pmUrl());
         isPmOn = true;
+    }
+
+    private void loadConsentUI(String url){
+        if(webView == null) webView = buildWebView();
+        mCountDownTimer = getTimer(defaultMessageTimeOut);
+        mCountDownTimer.start();
+        webView.loadConsentUIFromUrl(url);
     }
 
 
@@ -300,8 +306,6 @@ public class GDPRConsentLib {
     public void run() {
         try {
             onMessageReadyCalled = false;
-            mCountDownTimer = getTimer(defaultMessageTimeOut);
-            mCountDownTimer.start();
             renderMsgAndSaveConsent();
         } catch (Exception e) {
             e.printStackTrace();
@@ -332,15 +336,14 @@ public class GDPRConsentLib {
                     JSONObject jsonResult = (JSONObject) result;
                     consentUUID = jsonResult.getString("uuid");
                     metaData = jsonResult.getString("meta");
-                    userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
                     if(jsonResult.has("msgJSON") && !jsonResult.isNull("msgJSON")) {
                         setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
                         showView(nativeView);
                     } else if(jsonResult.has("url") && !jsonResult.isNull("url")){
-                        webView = buildWebView();
-                        webView.loadConsentUIFromUrl(jsonResult.getString("url"));
+                        loadConsentUI(jsonResult.getString("url"));
                     } else {
-                        cancelCounter();
+                        userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
+                        euConsent = userConsent.consentString;
                         consentFinished();
                     }
                 }
@@ -386,6 +389,7 @@ public class GDPRConsentLib {
 
             JSONObject params = new JSONObject();
 
+            //TODO: get rid of jsonConsents, decouple the pm consents json from the userConsents obj
             params.put("consents", userConsent != null ? userConsent.jsonConsents : null);
             params.put("accountId", accountId);
             params.put("propertyId", propertyId);
