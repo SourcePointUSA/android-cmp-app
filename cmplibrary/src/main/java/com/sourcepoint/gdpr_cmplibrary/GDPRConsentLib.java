@@ -157,9 +157,13 @@ public class GDPRConsentLib {
 
     }
 
+    public void clearAllData(){
+        storeClient.clearAllData();
+    }
+
     private void setConsentData(String newAuthId){
 
-        if(hasAuthIdChanged(newAuthId)) storeClient.clearAllData();
+        if(didAuthIdChange(newAuthId)) clearAllData();
 
         euConsent = storeClient.getConsentString();
 
@@ -170,7 +174,7 @@ public class GDPRConsentLib {
         storeClient.setAuthId(newAuthId);
     }
 
-    private boolean hasAuthIdChanged(String newAuthId){
+    private boolean didAuthIdChange(String newAuthId){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             return !Objects.equals(newAuthId, storeClient.getAuthId());
         }
