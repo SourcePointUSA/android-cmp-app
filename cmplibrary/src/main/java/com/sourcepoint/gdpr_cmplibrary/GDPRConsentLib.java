@@ -330,7 +330,6 @@ public class GDPRConsentLib {
             isNative = true;
             renderMsgAndSaveConsent();
         } catch (Exception e) {
-            e.printStackTrace();
             onErrorTask(new ConsentLibException(e, "Error trying to load pm URL."));
         }
     }
