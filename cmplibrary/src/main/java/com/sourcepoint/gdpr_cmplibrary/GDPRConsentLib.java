@@ -265,7 +265,6 @@ public class GDPRConsentLib {
     }
 
     public void onMsgCancel(Integer choiceId){
-
         closeCurrentMessageView();
         consentFinished();
     }
@@ -276,17 +275,31 @@ public class GDPRConsentLib {
     }
 
     public void onMsgShowOptions(){
-        try{
-            loadPm();
-        } catch(Exception e){
-            onErrorTask(new ConsentLibException(e, "Unexpexted error trying to show PM"));
-        }
+        loadPm();
     }
 
     private void loadPm() {
-        if(webView == null) webView = buildWebView();
-        webView.loadConsentUIFromUrl(pmUrl());
+        loadConsentUI(pmUrl());
         isPmOn = true;
+    }
+
+    private void loadConsentUI(String url){
+        mCountDownTimer = getTimer(defaultMessageTimeOut);
+        mCountDownTimer.start();
+        if(webView == null) {
+            webView = buildWebView();
+            webView.loadConsentUIFromUrl(url);
+        } else if(!isNative) {
+            webView.post(new Runnable() {
+                @Override
+                public void run() {
+                    webView.loadConsentUIFromUrl(url);
+                }
+            });
+        } else {
+            showView(webView);
+            cancelCounter();
+        }
     }
 
 
@@ -300,8 +313,6 @@ public class GDPRConsentLib {
     public void run() {
         try {
             onMessageReadyCalled = false;
-            mCountDownTimer = getTimer(defaultMessageTimeOut);
-            mCountDownTimer.start();
             renderMsgAndSaveConsent();
         } catch (Exception e) {
             e.printStackTrace();
@@ -319,7 +330,6 @@ public class GDPRConsentLib {
             isNative = true;
             renderMsgAndSaveConsent();
         } catch (Exception e) {
-            e.printStackTrace();
             onErrorTask(new ConsentLibException(e, "Error trying to load pm URL."));
         }
     }
@@ -332,15 +342,14 @@ public class GDPRConsentLib {
                     JSONObject jsonResult = (JSONObject) result;
                     consentUUID = jsonResult.getString("uuid");
                     metaData = jsonResult.getString("meta");
-                    userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
                     if(jsonResult.has("msgJSON") && !jsonResult.isNull("msgJSON")) {
                         setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
                         showView(nativeView);
                     } else if(jsonResult.has("url") && !jsonResult.isNull("url")){
-                        webView = buildWebView();
-                        webView.loadConsentUIFromUrl(jsonResult.getString("url"));
+                        loadConsentUI(jsonResult.getString("url"));
                     } else {
-                        cancelCounter();
+                        userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
+                        euConsent = userConsent.consentString;
                         consentFinished();
                     }
                 }
@@ -386,6 +395,7 @@ public class GDPRConsentLib {
 
             JSONObject params = new JSONObject();
 
+            //TODO: get rid of jsonConsents, decouple the pm consents json from the userConsents obj
             params.put("consents", userConsent != null ? userConsent.jsonConsents : null);
             params.put("accountId", accountId);
             params.put("propertyId", propertyId);

@@ -1,5 +1,7 @@
 package com.sourcepoint.test_project;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
                 .setStagingCampaign(false)
-                //.setTargetingParam("native", "true")
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
@@ -83,9 +84,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "init");
-        //buildGDPRConsentLib().run(buildNativeMessage());
         buildGDPRConsentLib().run();
-        //buildGDPRConsentLib().run() can be called (with no arg) in order to work with the webview based message
     }
 
     @Override
