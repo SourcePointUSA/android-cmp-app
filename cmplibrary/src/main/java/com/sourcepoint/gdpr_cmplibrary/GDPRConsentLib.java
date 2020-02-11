@@ -289,10 +289,21 @@ public class GDPRConsentLib {
     }
 
     private void loadConsentUI(String url){
-        if(webView == null) webView = buildWebView();
-        mCountDownTimer = getTimer(defaultMessageTimeOut);
-        mCountDownTimer.start();
-        webView.loadConsentUIFromUrl(url);
+//        mCountDownTimer = getTimer(defaultMessageTimeOut);
+//        mCountDownTimer.start();
+        if(webView == null) {
+            webView = buildWebView();
+            webView.loadConsentUIFromUrl(url);
+        } else if(!isNative) {
+            webView.post(new Runnable() {
+                @Override
+                public void run() {
+                    webView.loadConsentUIFromUrl(url);
+                }
+            });
+        } else {
+            showView(webView);
+        }
     }
 
 

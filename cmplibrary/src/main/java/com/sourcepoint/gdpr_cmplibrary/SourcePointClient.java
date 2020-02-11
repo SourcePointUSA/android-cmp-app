@@ -132,6 +132,7 @@ class SourcePointClient {
             http.post(null, url, new StringEntity(messageParams(consentUUID, meta).toString()), "application/json", new ResponseHandler(url, onLoadComplete) {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    Log.i(LOG_TAG, response.toString());
                     onLoadComplete.onSuccess(response);
                 }
 
@@ -170,6 +171,7 @@ class SourcePointClient {
             params.put("campaignEnv", isStagingCampaign ? "stage" : "public");
             params.put("targetingParams", targetingParams);
             params.put("authId", authId);
+            Log.i(LOG_TAG, params.toString());
             return params;
         } catch (JSONException e) {
             e.printStackTrace();
