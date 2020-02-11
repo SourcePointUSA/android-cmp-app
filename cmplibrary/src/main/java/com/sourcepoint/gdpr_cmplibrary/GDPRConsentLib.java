@@ -265,7 +265,6 @@ public class GDPRConsentLib {
     }
 
     public void onMsgCancel(Integer choiceId){
-
         closeCurrentMessageView();
         consentFinished();
     }
@@ -276,11 +275,7 @@ public class GDPRConsentLib {
     }
 
     public void onMsgShowOptions(){
-        try{
-            loadPm();
-        } catch(Exception e){
-            onErrorTask(new ConsentLibException(e, "Unexpexted error trying to show PM"));
-        }
+        loadPm();
     }
 
     private void loadPm() {
