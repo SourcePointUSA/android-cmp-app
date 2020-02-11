@@ -46,9 +46,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.i(TAG, "onConsentUIFinished");
                 })
                 .setOnConsentReady(consent -> {
-                    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
                     Log.i(TAG, "onConsentReady");
-                    Log.i(TAG, pref.getString("IABConsent_ConsentString", "<empty>"));
                     for (String vendorId : consent.acceptedVendors) {
                         Log.i(TAG, "The vendor " + vendorId + " was accepted.");
                     }
