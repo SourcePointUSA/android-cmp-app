@@ -17,11 +17,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 
 @RunWith(AndroidJUnit4.class)
-public class WebsiteListActivityTest {
+public class PropertyListActivityTest {
 
     @Rule
-    public ActivityTestRule<WebsiteListActivity> mActivityRule = new ActivityTestRule<WebsiteListActivity>(
-            WebsiteListActivity.class);
+    public ActivityTestRule<PropertyListActivity> mActivityRule = new ActivityTestRule<PropertyListActivity>(
+            PropertyListActivity.class);
 
 
 
@@ -33,6 +33,6 @@ public class WebsiteListActivityTest {
 
     @Test
     public void TestRecyclerViewItemClick() {
-        onView(withId(R.id.websiteListRecycleView)).check(matches((isDisplayed())));
+        onView(withId(R.id.propertyListRecycleView)).check(matches((isDisplayed())));
     }
 }

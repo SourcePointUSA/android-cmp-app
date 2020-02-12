@@ -5,11 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.sourcepointmeta.app.R;
-import com.sourcepointmeta.app.SourcepointApp;
 import com.sourcepointmeta.app.database.entity.TargetingParam;
 import com.sourcepointmeta.app.listeners.RecyclerViewClickListener;
 
@@ -18,13 +16,11 @@ import java.util.List;
 public class TargetingParamsAdapter extends RecyclerView.Adapter<TargetingParamsAdapter.TargetingParamsViewHolder> {
 
     private List<TargetingParam> mTargetingParamsList;
-    private boolean isSiteDetails;
     private RecyclerViewClickListener mListener;
 
 
-    public TargetingParamsAdapter(RecyclerViewClickListener listener, boolean isSiteDetails) {
+    public TargetingParamsAdapter(RecyclerViewClickListener listener) {
         this.mListener = listener;
-        this.isSiteDetails = isSiteDetails;
     }
 
     public void setmTargetingParamsList(List<TargetingParam> targetingParamsList) {
@@ -37,7 +33,7 @@ public class TargetingParamsAdapter extends RecyclerView.Adapter<TargetingParams
     public TargetingParamsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.targeting_param_row, parent, false);
-        return new TargetingParamsViewHolder(view, mListener ,isSiteDetails);
+        return new TargetingParamsViewHolder(view, mListener);
     }
 
     @Override
@@ -60,12 +56,10 @@ public class TargetingParamsAdapter extends RecyclerView.Adapter<TargetingParams
         private RecyclerViewClickListener mListener;
         private boolean isDetails;
 
-        TargetingParamsViewHolder(View itemView, RecyclerViewClickListener listener, boolean isSiteDetails) {
+        TargetingParamsViewHolder(View itemView, RecyclerViewClickListener listener) {
             super(itemView);
 
             mListener = listener;
-            isDetails = isSiteDetails;
-
             tvKey = itemView.findViewById(R.id.tv_targetingParam);
             btnDelete = itemView.findViewById(R.id.btn_deleteParam);
         }

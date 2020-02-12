@@ -1,11 +1,9 @@
 package com.sourcepointmeta.app;
 
 import android.app.Application;
-import android.content.Context;
-import android.graphics.Typeface;
 
 import com.sourcepointmeta.app.database.AppDataBase;
-import com.sourcepointmeta.app.repository.WebsiteListRepository;
+import com.sourcepointmeta.app.repository.PropertyListRepository;
 
 public class SourcepointApp extends Application {
 
@@ -23,7 +21,7 @@ public class SourcepointApp extends Application {
     }
 
 
-    public WebsiteListRepository getWebsiteListRepository() {
-        return WebsiteListRepository.getInstance(getDatabase().websiteListDao(), mAppExecutors, getDatabase().targetingParamDao());
+    public PropertyListRepository getPropertyListRepository() {
+        return PropertyListRepository.getInstance(getDatabase().propertyListDao(), mAppExecutors, getDatabase().targetingParamDao());
     }
 }
