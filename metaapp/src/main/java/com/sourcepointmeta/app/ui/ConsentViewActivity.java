@@ -83,7 +83,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     }
 
     private void removeWebView(View view) {
-        if (view.getParent() != null)
+        if (view != null && view.getParent() != null)
             mMainViewGroup.removeView(view);
     }
 

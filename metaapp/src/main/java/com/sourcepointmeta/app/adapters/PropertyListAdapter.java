@@ -73,13 +73,13 @@ public class PropertyListAdapter extends RecyclerView.Adapter<PropertyListAdapte
         viewHolder.propertyCampaign.setText("Campaign : " + campaign);
 
         if (!TextUtils.isEmpty(authId)) {
-            viewHolder.propertyAuhtId.setText("AuthId : " + authId);
-            viewHolder.propertyAuhtId.setVisibility(View.VISIBLE);
+            viewHolder.propertyAuthId.setText("AuthId : " + authId);
+            viewHolder.propertyAuthId.setVisibility(View.VISIBLE);
         } else {
-            viewHolder.propertyAuhtId.setVisibility(View.GONE);
+            viewHolder.propertyAuthId.setVisibility(View.GONE);
         }
 
-        //implement swipe;isterner to get opened layout
+        //implement swipe listener to get opened layout
         viewHolder.swipeRevealLayout.setSwipeListener(new SwipeRevealLayout.SwipeListener() {
             @Override
             public void onClosed(SwipeRevealLayout view) {
@@ -121,7 +121,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<PropertyListAdapte
     // inner class to hold a reference to each item of RecyclerView
     public static class PropertyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private final TextView propertyNameTextView, propertyAccountID, propertyCampaign, propertyAuhtId, propertyTargetingParam;
+        private final TextView propertyNameTextView, propertyAccountID, propertyCampaign, propertyAuthId, propertyTargetingParam;
         private SwipeRevealLayout swipeRevealLayout;
         private View item_view;
         private TextView resetButton;
@@ -137,7 +137,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<PropertyListAdapte
             propertyNameTextView = itemView.findViewById(R.id.propertyNameTextView);
             propertyAccountID = itemView.findViewById(R.id.propertyAccountIDView);
             propertyCampaign = itemView.findViewById(R.id.propertyCampaignView);
-            propertyAuhtId = itemView.findViewById(R.id.propertyAuthIdView);
+            propertyAuthId = itemView.findViewById(R.id.propertyAuthIdView);
             propertyTargetingParam = itemView.findViewById(R.id.targetingParamView);
             swipeRevealLayout = itemView.findViewById(R.id.swipe_layout);
             item_view = itemView.findViewById(R.id.item_view);

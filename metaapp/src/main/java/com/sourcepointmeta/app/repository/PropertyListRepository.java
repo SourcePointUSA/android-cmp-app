@@ -55,8 +55,8 @@ public class PropertyListRepository {
     public LiveData<List<Property>> showPropertyList() {
         mAppExecutors.diskIO().execute(() -> {
             List<Property> properties = mPropertyListDao.getAllProperties();
-            for (Property proeprty : properties) {
-                proeprty.setTargetingParamList(mTargetingParamDao.getAllTargetingParam(proeprty.getId()));
+            for (Property property : properties) {
+                property.setTargetingParamList(mTargetingParamDao.getAllTargetingParam(property.getId()));
             }
             mWebListLiveData.postValue(properties);
         });

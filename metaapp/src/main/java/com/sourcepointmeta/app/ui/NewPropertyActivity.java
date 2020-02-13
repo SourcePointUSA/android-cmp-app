@@ -81,7 +81,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
     }
 
     private void removeWebView(View view) {
-        if (view.getParent() != null) {
+        if (view != null && view.getParent() != null) {
             messageVisible = false;
             invalidateOptionsMenu();
             mMainViewGroup.removeView(view);
