@@ -24,7 +24,7 @@ For consent messages built using the message builder V2, it's safe to use SDK > 
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:4.1.1'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:4.1.2'
 }
 
 ```
