@@ -25,12 +25,9 @@ class SourcePointClient {
 
     private static final String baseCmpUrl = "https://sourcepoint.mgr.consensu.org";
 
-    private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/gdpr/message-url";
-    private static final String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/gdpr/native-message";
-
-
-
-    private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/gdpr/consent";
+    private static final String baseMsgUrl = "https://fake-wrapper-api.herokuapp.com/tcfv2/v1/gdpr/message-url";
+    private static final String baseNativeMsgUrl = "https://fake-wrapper-api.herokuapp.com/tcfv2/v1/gdpr/native-message";
+    private static final String baseSendConsentUrl = "https://fake-wrapper-api.herokuapp.com/tcfv2/v1/gdpr/consent";
 
     private int accountId;
     private String property;
@@ -114,7 +111,6 @@ class SourcePointClient {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
                 onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-
             }
 
             @Override
