@@ -16,12 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.sourcepoint.gdpr_cmplibrary.Consent;
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -47,12 +45,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             void onConsentsReady(GDPRUserConsent consent) {
                 consentListViewData.clear();
-                consentListViewData.add("euconsent: "+ consent.consentString);
+                consentListViewData.add("euconsent: " + consent.consentString);
                 consentListViewAdapter.notifyDataSetChanged();
             }
         };
 
-        loginButton = findViewById(R.id.AcceptAll);
+        loginButton = findViewById(R.id.button);
         userNameInput = findViewById(R.id.userNameInput);
         consentListView = findViewById(R.id.consentListView);
         toolbar = findViewById(R.id.my_toolbar);
@@ -78,13 +76,13 @@ public class LoginActivity extends AppCompatActivity {
 
         consentListView.setAdapter(consentListViewAdapter);
 
-        //consentManager.loadMessage(false);
+        consentManager.loadMessage();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        //consentManager.loadMessage(false);
+        consentManager.loadMessage();
     }
 
     @Override
