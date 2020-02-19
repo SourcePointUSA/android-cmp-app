@@ -386,7 +386,7 @@ public class GDPRConsentLib {
     }
 
     private void closeView(View v){
-        runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
+        if(v != null) runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
     }
 
     private JSONObject paramsToSendConsent(int actionType, Integer choiceId) throws ConsentLibException {

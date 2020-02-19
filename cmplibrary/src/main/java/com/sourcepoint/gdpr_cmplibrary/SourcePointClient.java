@@ -25,9 +25,9 @@ class SourcePointClient {
 
     private static final String baseCmpUrl = "https://sourcepoint.mgr.consensu.org";
 
-    private static final String baseMsgUrl = "https://fake-wrapper-api.herokuapp.com/tcfv2/v1/gdpr/message-url";
+    private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/message-url?env=stage&inApp=true";
     private static final String baseNativeMsgUrl = "https://fake-wrapper-api.herokuapp.com/tcfv2/v1/gdpr/native-message";
-    private static final String baseSendConsentUrl = "https://fake-wrapper-api.herokuapp.com/tcfv2/v1/gdpr/consent";
+    private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/consent?env=stage&inApp=true";
 
     private int accountId;
     private String property;
