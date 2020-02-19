@@ -1,3 +1,11 @@
+## 4.1.2 (February, 14, 2020)
+* keep stored consentString when server does not return one
+* simplified webview settings -> no side effects on app cookies  
+
+## 4.1.1 (February, 11, 2020)
+* clearAllData() public method added to consentLib
+* fix privacy manager not opening from web message
+
 ## 4.1.0 (February, 05, 2020)
 Here we finished a major improvement to the SDK: behold the native message!
 You'll be able to build your own consent message using naive elements and layout, simply by extending it from our NativeMessage class. It also allows for style and content customisation via our good and trusted message builder. The basic usage is intended to be very much straight forward and it is exemplified in the updated README file.
