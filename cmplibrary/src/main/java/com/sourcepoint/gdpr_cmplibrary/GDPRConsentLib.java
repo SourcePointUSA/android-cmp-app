@@ -492,34 +492,10 @@ public class GDPRConsentLib {
         });
     }
 
-    private void setIABVars() {
-
-        if(euConsent == DEFAULT_EMPTY_CONSENT_STRING) return;
-
-        final VendorConsent vendorConsent = VendorConsentDecoder.fromBase64String(euConsent);
-
-        // Construct and save parsed purposes string
-        char[] allowedPurposes = new char[MAX_PURPOSE_ID];
-        for (int i = 0; i < MAX_PURPOSE_ID; i++) {
-            allowedPurposes[i] = vendorConsent.isPurposeAllowed(i + 1) ? '1' : '0';
-        }
-        Log.i(TAG, "allowedPurposes: " + new String(allowedPurposes));
-        storeClient.setIabConsentParsedPurposeConsents(new String(allowedPurposes));
-
-
-        // Construct and save parsed vendors string
-        char[] allowedVendors = new char[vendorConsent.getMaxVendorId()];
-        for (int i = 0; i < allowedVendors.length; i++) {
-            allowedVendors[i] = vendorConsent.isVendorAllowed(i + 1) ? '1' : '0';
-        }
-        Log.i(TAG, "allowedVendors: " + new String(allowedVendors));
-        storeClient.setIabConsentParsedVendorConsents(new String(allowedVendors));
-    }
-
     private void onErrorTask(ConsentLibException e){
         this.error = e;
         if(shouldCleanConsentOnError) {
-            storeClient.clearIABConsentData();
+            storeClient.clearConsentData();
         }
         cancelCounter();
         closeCurrentMessageView();
@@ -527,13 +503,10 @@ public class GDPRConsentLib {
     }
 
     private void storeData(){
-        storeClient.setConsentSubjectToGDPr(isSubjectToGdpr);
         storeClient.setConsentUuid(consentUUID);
-        storeClient.setIabConsentCmpPresent(true);
-        storeClient.setIabConsentConsentString(euConsent);
         storeClient.setMetaData(metaData);
-        setIABVars();
-        storeClient.apply();
+        storeClient.setTCData(userConsent.TCData);
+        storeClient.setConsentString(euConsent);
     }
 
     private void cancelCounter(){

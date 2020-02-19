@@ -100,8 +100,10 @@ public class StoreClient {
         editor.commit();
     }
 
-    public void apply(){
-        editor.apply();
+    public void setConsentString(String euconsent){
+        editor.putString(IAB_CONSENT_CONSENT_STRING, euconsent);
+        editor.putString(EU_CONSENT__KEY, euconsent);
+        editor.commit();
     }
 
     public String getMetaData() {

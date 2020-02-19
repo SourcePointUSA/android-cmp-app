@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(22, "a-demo-property", 7055,"5c0e81b7d74b3c30c6852301",this)
                 .setStagingCampaign(false)
-                .setAuthId("17-02-2020-0001")
+                //.setAuthId("17-02-2020-0001")
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
