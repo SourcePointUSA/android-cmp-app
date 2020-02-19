@@ -8,15 +8,14 @@ import android.view.ViewGroup;
 import com.sourcepoint.gdpr_cmplibrary.Consent;
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibBuilder;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
-
-import java.util.HashSet;
+import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 
 abstract class ConsentManager {
     private static final String TAG = "ConsentManager";
 
     private ConsentLibBuilder builder;
 
-    abstract void onConsentsReady(HashSet<Consent> consents, String consentUUID, String euconsent);
+    abstract void onConsentsReady(GDPRUserConsent consent);
 
     ConsentManager(Activity activity) {
         activity.setContentView(R.layout.activity_home);
@@ -54,6 +53,7 @@ abstract class ConsentManager {
                     Log.i(TAG, "onConsentUIFinished");
                 })
                 .setOnConsentReady(consent -> {
+                    onConsentsReady(consent);
                     Log.i(TAG, "onConsentReady");
                     Log.i(TAG, "consentString: " + (consent.consentString != null ? consent.consentString : "<empty>"));
                     for (String vendorId : consent.acceptedVendors) {

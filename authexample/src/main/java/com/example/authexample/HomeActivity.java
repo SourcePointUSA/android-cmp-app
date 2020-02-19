@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sourcepoint.gdpr_cmplibrary.Consent;
+import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -59,15 +61,13 @@ public class HomeActivity extends AppCompatActivity {
 
         consentManager = new ConsentManager(this) {
             @Override
-            void onConsentsReady(HashSet<Consent> consents, String consentUUID, String euconsent) {
+            void onConsentsReady(GDPRUserConsent consent) {
                 consentListViewData.clear();
-                consentListViewData.add("consentUUID: "+consentUUID);
-                consentListViewData.add("euconsent: "+euconsent);
+                consentListViewData.add("euconsent: " + consent.consentString);
                 consentListViewAdapter.notifyDataSetChanged();
             }
         };
-
-        //consentManager.loadMessage(false, userName);
+        consentManager.loadMessage(userName);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_privacy_settings) {
             Log.d("App", "onOptionsItemSelected: " + item.getItemId());
-            //consentManager.loadMessage(true, userName);
+            consentManager.loadMessage(userName);
             return true;
         }
 
