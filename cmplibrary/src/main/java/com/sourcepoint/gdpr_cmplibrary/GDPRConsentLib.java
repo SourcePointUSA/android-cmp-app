@@ -31,7 +31,7 @@ public class GDPRConsentLib {
     private static final int MAX_PURPOSE_ID = 24;
     private final String pmId;
 
-    private final String PM_BASE_URL = "https://gdpr-inapp-pm.sp-prod.net";
+    private final String PM_BASE_URL = "https://notice.sp-stage.net/privacy-manager/index.html";
 
     private final String GDPR_ORIGIN = "https://gdpr-service.sp-prod.net";
 
@@ -335,7 +335,7 @@ public class GDPRConsentLib {
     }
 
     private void renderMsgAndSaveConsent() throws ConsentLibException {
-        sourcePoint.getMessage(isNative, consentUUID, metaData, new OnLoadComplete() {
+        sourcePoint.getMessage(isNative, consentUUID, metaData, euConsent, new OnLoadComplete() {
             @Override
             public void onSuccess(Object result) {
                 try{
@@ -349,8 +349,6 @@ public class GDPRConsentLib {
                         loadConsentUI(jsonResult.getString("url"));
                     } else {
                         userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
-                        if(euConsent == null) euConsent = userConsent.consentString;
-                        else userConsent.consentString = euConsent;
                         consentFinished();
                     }
                 }
@@ -463,9 +461,7 @@ public class GDPRConsentLib {
 
     private String pmUrl(){
         HashSet<String> params = new HashSet<>();
-        params.add("privacy_manager_id=" + pmId);
-        params.add("site_id=" + propertyId);
-        params.add("gdpr_origin=" + GDPR_ORIGIN);
+        params.add("message_id=" + pmId);
         if(consentUUID != null) params.add("consentUUID=" + consentUUID);
 
         return PM_BASE_URL + "?" + TextUtils.join("&", params);

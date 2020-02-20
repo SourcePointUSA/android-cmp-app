@@ -49,7 +49,7 @@ public class StoreClient {
 
     private SharedPreferences pref;
 
-    public static final String DEFAULT_EMPTY_CONSENT_STRING = null;
+    public static final String DEFAULT_EMPTY_CONSENT_STRING = "";
 
     public static final String DEFAULT_META_DATA = "{}";
 

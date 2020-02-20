@@ -36,7 +36,7 @@ function dataFromMessage(msgEvent) {
 function dataFromPM(pmEvent) {
     const data = {
         name: pmEvent.data.name,
-        type: pmEvent.data ? pmEvent.data.payload.actionType : null,
+        type: pmEvent.data ? pmEvent.data.actionType : null,
         choiceId: null
     };
     if(data.type === 1) data.payload = userConsents(pmEvent.data.payload);
@@ -45,7 +45,7 @@ function dataFromPM(pmEvent) {
 
 function userConsents(payload){
     return {
-        acceptedVendors: payload.consents.vendors.accepted,    
-        acceptedCategories: payload.consents.categories.accepted    
+        acceptedVendors: payload.vendors.map(x => x._id),
+        acceptedCategories: payload.categories.map(x => x._id)
     };
 };

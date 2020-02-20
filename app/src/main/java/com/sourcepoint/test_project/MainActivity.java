@@ -34,9 +34,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private GDPRConsentLib buildGDPRConsentLib() {
-        return GDPRConsentLib.newBuilder(22, "sid.sourcepoint.com", 211,"3205",this)
+        return GDPRConsentLib.newBuilder(22, "tcfv2.mobile.demo", 484,"3789",this)
                 .setStagingCampaign(false)
                 //.setAuthId("17-02-2020-0001")
+                .setTargetingParam("message", "true")
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
@@ -47,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setOnConsentReady(consent -> {
                     Log.i(TAG, "onConsentReady");
-                    Log.i(TAG, "consentString: " + (consent.consentString != null ? consent.consentString : "<empty>"));
+                    Log.i(TAG, "consentString: " + consent.consentString);
+                    Log.i(TAG, consent.TCData.toString());
                     for (String vendorId : consent.acceptedVendors) {
                         Log.i(TAG, "The vendor " + vendorId + " was accepted.");
                     }

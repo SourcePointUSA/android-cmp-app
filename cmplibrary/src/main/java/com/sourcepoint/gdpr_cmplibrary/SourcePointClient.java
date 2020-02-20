@@ -121,11 +121,11 @@ class SourcePointClient {
         });
     }
 
-    void getMessage(boolean isNative, String consentUUID, String meta, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
+    void getMessage(boolean isNative, String consentUUID, String meta, String euconsent, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
         String url = messageUrl(isNative);
         Log.d(LOG_TAG, "Getting message from: " + url);
         try {
-            http.post(null, url, new StringEntity(messageParams(consentUUID, meta).toString()), "application/json", new ResponseHandler(url, onLoadComplete) {
+            http.post(null, url, new StringEntity(messageParams(consentUUID, meta, euconsent).toString()), "application/json", new ResponseHandler(url, onLoadComplete) {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     Log.i(LOG_TAG, response.toString());
@@ -154,11 +154,12 @@ class SourcePointClient {
         return isNative ? baseNativeMsgUrl : baseMsgUrl;
     }
 
-    private JSONObject messageParams(String consentUUID, String meta) throws ConsentLibException {
+    private JSONObject messageParams(String consentUUID, String meta, String euconsent) throws ConsentLibException {
 
         try {
             JSONObject params = new JSONObject();
             params.put("accountId", accountId);
+            params.put("euconsent", euconsent);
             params.put("propertyId", propertyId);
             params.put("requestUUID", getRequestUUID());
             params.put("uuid", consentUUID);
