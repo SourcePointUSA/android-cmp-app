@@ -349,7 +349,8 @@ public class GDPRConsentLib {
                         loadConsentUI(jsonResult.getString("url"));
                     } else {
                         userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
-                        euConsent = userConsent.consentString;
+                        if(euConsent == null) euConsent = userConsent.consentString;
+                        else userConsent.consentString = euConsent;
                         consentFinished();
                     }
                 }

@@ -1,3 +1,7 @@
+## 4.1.2 (February, 14, 2020)
+* keep stored consentString when server does not return one
+* simplified webview settings -> no side effects on app cookies  
+
 ## 4.1.1 (February, 11, 2020)
 * clearAllData() public method added to consentLib
 * fix privacy manager not opening from web message

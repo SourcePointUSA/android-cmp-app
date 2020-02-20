@@ -147,15 +147,7 @@ abstract public class ConsentWebView extends WebView {
                 enableSlowWholeDocumentDraw();
             }
         }
-        CookieManager.getInstance().setAcceptCookie(false);
-        getSettings().setAppCacheEnabled(false);
-        getSettings().setBuiltInZoomControls(false);
-        getSettings().setSupportZoom(false);
-        getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        getSettings().setAllowFileAccess(true);
         getSettings().setJavaScriptEnabled(true);
-        getSettings().setSupportMultipleWindows(true);
-        getSettings().setDomStorageEnabled(true);
         setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
