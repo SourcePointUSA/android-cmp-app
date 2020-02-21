@@ -28,12 +28,9 @@ import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_CONSENT_
  */
 public class GDPRConsentLib {
 
-    private static final int MAX_PURPOSE_ID = 24;
     private final String pmId;
 
-    private final String PM_BASE_URL = "https://notice.sp-stage.net/privacy-manager/index.html";
-
-    private final String GDPR_ORIGIN = "https://gdpr-service.sp-prod.net";
+    private final String PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager/index.html";
 
     private String metaData;
     private String euConsent;
@@ -152,8 +149,6 @@ public class GDPRConsentLib {
         storeClient = b.storeClient;
 
         setConsentData(b.authId);
-
-        setSubjectToGDPR();
 
     }
 
@@ -471,21 +466,6 @@ public class GDPRConsentLib {
         if (activity != null && !activity.isFinishing()) {
             activity.runOnUiThread(uiRunnable);
         }
-    }
-
-    private void setSubjectToGDPR() {
-
-        sourcePoint.getGDPRStatus(new OnLoadComplete() {
-            @Override
-            public void onSuccess(Object gdprApplies) {
-                isSubjectToGdpr = gdprApplies.equals("true");
-            }
-
-            @Override
-            public void onFailure(ConsentLibException exception) {
-                Log.d(TAG, "Failed setting the preference IAB_CONSENT_SUBJECT_TO_GDPR");
-            }
-        });
     }
 
     private void onErrorTask(ConsentLibException e){
