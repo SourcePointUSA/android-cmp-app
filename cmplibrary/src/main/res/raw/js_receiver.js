@@ -6,7 +6,7 @@ function handleEvent(event) {
             JSReceiver.onConsentUIReady();
             return;
         }
-        const data = eventData(event);
+        var data = eventData(event);
         JSReceiver.log(JSON.stringify(data, null, 2));
         if(data.type) {
             if(data.type === 1) JSReceiver.onSavePM(JSON.stringify(data.payload));
@@ -34,7 +34,7 @@ function dataFromMessage(msgEvent) {
 };
 
 function dataFromPM(pmEvent) {
-    const data = {
+    var data = {
         name: pmEvent.data.name,
         type: pmEvent.data ? pmEvent.data.actionType : null,
         choiceId: null
@@ -45,7 +45,7 @@ function dataFromPM(pmEvent) {
 
 function userConsents(payload){
     return {
-        acceptedVendors: payload.vendors.map(x => x._id),
-        acceptedCategories: payload.categories.map(x => x._id)
+        acceptedVendors: payload.vendors.map(function(x){return x._id}),
+        acceptedCategories: payload.categories.map(function(x){return x._id})
     };
 };
