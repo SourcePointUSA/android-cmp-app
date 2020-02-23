@@ -1,3 +1,6 @@
+## 5.0.0 (February, 23, 2020)
+* Added TCFV2 support
+
 ## 4.1.3 (February, 23, 2020)
 * fix app crashing when having no internet connection
 
