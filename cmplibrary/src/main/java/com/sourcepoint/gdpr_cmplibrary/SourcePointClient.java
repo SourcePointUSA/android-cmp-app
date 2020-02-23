@@ -23,14 +23,9 @@ class SourcePointClient {
 
     private static AsyncHttpClient http = new AsyncHttpClient();
 
-    private static final String baseCmpUrl = "https://sourcepoint.mgr.consensu.org";
-
-    private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/gdpr/message-url";
-    private static final String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/gdpr/native-message";
-
-
-
-    private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/gdpr/consent";
+    private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/message-url?inApp=true";
+    private static final String baseNativeMsgUrl = "https://fake-wrapper-api.herokuapp.com/tcfv2/v1/gdpr/native-message";
+    private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/consent?inApp=true";
 
     private int accountId;
     private String property;
@@ -89,47 +84,16 @@ class SourcePointClient {
         this.authId = authId;
     }
 
-    private String GDPRStatusUrl() {
-        return baseCmpUrl + "/consent/v2/gdpr-status";
-    }
-
     @VisibleForTesting
     void setHttpDummy(AsyncHttpClient httpClient) {
         http = httpClient;
     }
 
-    void getGDPRStatus(GDPRConsentLib.OnLoadComplete onLoadComplete) {
-        String url = GDPRStatusUrl();
-        http.get(url, new ResponseHandler(url, onLoadComplete) {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    onLoadComplete.onSuccess(response.getString("gdprApplies"));
-                } catch (JSONException e) {
-                    onFailure(statusCode, headers, e, response);
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-            }
-        });
-    }
-
-    void getMessage(boolean isNative, String consentUUID, String meta, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
+    void getMessage(boolean isNative, String consentUUID, String meta, String euconsent, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
         String url = messageUrl(isNative);
         Log.d(LOG_TAG, "Getting message from: " + url);
         try {
-            http.post(null, url, new StringEntity(messageParams(consentUUID, meta).toString()), "application/json", new ResponseHandler(url, onLoadComplete) {
+            http.post(null, url, new StringEntity(messageParams(consentUUID, meta, euconsent).toString()), "application/json", new ResponseHandler(url, onLoadComplete) {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     Log.i(LOG_TAG, response.toString());
@@ -158,11 +122,12 @@ class SourcePointClient {
         return isNative ? baseNativeMsgUrl : baseMsgUrl;
     }
 
-    private JSONObject messageParams(String consentUUID, String meta) throws ConsentLibException {
+    private JSONObject messageParams(String consentUUID, String meta, String euconsent) throws ConsentLibException {
 
         try {
             JSONObject params = new JSONObject();
             params.put("accountId", accountId);
+            params.put("euconsent", euconsent);
             params.put("propertyId", propertyId);
             params.put("requestUUID", getRequestUUID());
             params.put("uuid", consentUUID);
@@ -186,6 +151,7 @@ class SourcePointClient {
 
     void sendConsent(JSONObject params, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
         String url = consentUrl();
+        Log.d(LOG_TAG, "Sending consent to: " + url);
         try {
             params.put("requestUUID", getRequestUUID());
         } catch (JSONException e) {
@@ -193,6 +159,7 @@ class SourcePointClient {
         }
         StringEntity entity = null;
         try {
+            Log.i(LOG_TAG, params.toString());
             entity = new StringEntity(params.toString());
         } catch (UnsupportedEncodingException e) {
             throw new ConsentLibException(e, "Error stringifing params for sending consent.");
@@ -200,6 +167,7 @@ class SourcePointClient {
         http.post(null, url, entity, "application/json",  new ResponseHandler(url, onLoadComplete) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.i(LOG_TAG, response.toString());
                 onLoadComplete.onSuccess(response);
             }
 
