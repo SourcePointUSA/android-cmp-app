@@ -1,6 +1,9 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
@@ -147,7 +150,6 @@ public class GDPRConsentLib {
         sourcePoint = b.sourcePointClient;
 
         storeClient = b.storeClient;
-
         setConsentData(b.authId);
 
     }
@@ -178,6 +180,17 @@ public class GDPRConsentLib {
         if(newAuthId == null && storedAuthId == null) return false;
         else if (newAuthId != null && newAuthId.equals(storeClient.getAuthId())) return false;
         return true;
+    }
+
+    private boolean hasLostInternetConnection() {
+        ConnectivityManager manager = (ConnectivityManager) activity
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager == null) {
+            return true;
+        }
+
+        NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
+        return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
     }
 
     private ConsentWebView buildWebView() {
@@ -306,6 +319,10 @@ public class GDPRConsentLib {
      * @throws ConsentLibException.NoInternetConnectionException - thrown if the device has lost connection either prior or while interacting with GDPRConsentLib
      */
     public void run() {
+        if(hasLostInternetConnection()){
+            onErrorTask(new ConsentLibException("No internet connection"));
+            return;
+        }
         try {
             onMessageReadyCalled = false;
             renderMsgAndSaveConsent();
