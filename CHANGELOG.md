@@ -1,3 +1,9 @@
+## 5.0.0 (February, 23, 2020)
+* Added TCFV2 support
+
+## 4.1.3 (February, 23, 2020)
+* fix app crashing when having no internet connection
+
 ## 4.1.2 (February, 14, 2020)
 * keep stored consentString when server does not return one
 * simplified webview settings -> no side effects on app cookies  

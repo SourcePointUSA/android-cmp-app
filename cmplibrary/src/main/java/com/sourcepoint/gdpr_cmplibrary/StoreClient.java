@@ -1,10 +1,14 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 
+import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
 public class StoreClient {
+
     /**
      * If the user has consent data stored, reading for this key in the shared preferences will return true
      */
@@ -30,6 +34,9 @@ public class StoreClient {
      */
     public static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
 
+
+    public static final String TC_KEYS_KEY = "sp.gdpr.TCKeys";
+
     public static final String CONSENT_UUID_KEY = "sp.gdpr.consentUUID";
 
     public static final String META_DATA_KEY = "sp.gdpr.metaData";
@@ -42,42 +49,40 @@ public class StoreClient {
 
     private SharedPreferences pref;
 
-    public static final String DEFAULT_EMPTY_CONSENT_STRING = null;
+    public static final String DEFAULT_EMPTY_CONSENT_STRING = "";
 
     public static final String DEFAULT_META_DATA = "{}";
 
     public static final String DEFAULT_AUTH_ID = null;
 
+    public static final String TC_KEYS_DELIMITER = ";";
 
     StoreClient(SharedPreferences pref){
         this.editor = pref.edit();
         this.pref = pref;
     }
 
-    public void setConsentSubjectToGDPr(Boolean consentSubjectToGDPR){
-        editor.putString(IAB_CONSENT_SUBJECT_TO_GDPR, consentSubjectToGDPR != null ? (consentSubjectToGDPR ? "1" : "0") : null);
+    public void setTCData(HashMap<String, String> data){
+        for(String s : data.keySet()){
+            editor.putString(s, data.get(s));
+        }
+        editor.putString(TC_KEYS_KEY, dataSetToStr(data.keySet()));
         editor.commit();
     }
 
-    public void setIabConsentCmpPresent(Boolean iabConsentCmpPresent){
-        editor.putBoolean(IAB_CONSENT_CMP_PRESENT, iabConsentCmpPresent);
-        editor.commit();
-    }
-
-    public void setIabConsentConsentString(String consentConsentString){
-        editor.putString(IAB_CONSENT_CONSENT_STRING, consentConsentString);
-        editor.putString(EU_CONSENT__KEY, consentConsentString);
-        editor.commit();
-    }
-
-    public void setIabConsentParsedPurposeConsents(String consentParsedPurposeConsents){
-        editor.putString(IAB_CONSENT_PARSED_PURPOSE_CONSENTS, consentParsedPurposeConsents);
-        editor.commit();
-    }
-
-    public void setIabConsentParsedVendorConsents(String consentParsedVendorConsents){
-        editor.putString(IAB_CONSENT_PARSED_VENDOR_CONSENTS, consentParsedVendorConsents);
-        editor.commit();
+    private String dataSetToStr(Set<String> dataSet){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return String.join(TC_KEYS_DELIMITER, dataSet);
+        }
+        //TODO: remove this code when update min API to 26
+        else {
+            String result = "";
+            for (String s : dataSet){
+                result += s + TC_KEYS_DELIMITER;
+            }
+            if(result != "") result = result.substring(0, result.length() - 1);
+            return result;
+        }
     }
 
     public void setConsentUuid(String consentUuid){
@@ -95,8 +100,10 @@ public class StoreClient {
         editor.commit();
     }
 
-    public void apply(){
-        editor.apply();
+    public void setConsentString(String euconsent){
+        editor.putString(IAB_CONSENT_CONSENT_STRING, euconsent);
+        editor.putString(EU_CONSENT__KEY, euconsent);
+        editor.commit();
     }
 
     public String getMetaData() {
@@ -117,7 +124,7 @@ public class StoreClient {
 
     public void clearAllData(){
         clearInternalData();
-        clearIABConsentData();
+        clearConsentData();
     }
 
     public void clearInternalData(){
@@ -129,13 +136,20 @@ public class StoreClient {
     }
 
 
-
-    public void clearIABConsentData(){
+    public void clearConsentData(){
+        clearTCData();
         editor.remove(IAB_CONSENT_CONSENT_STRING);
-        editor.remove(IAB_CONSENT_PARSED_VENDOR_CONSENTS);
-        editor.remove(IAB_CONSENT_PARSED_PURPOSE_CONSENTS);
-        editor.remove(IAB_CONSENT_CMP_PRESENT);
-        editor.remove(IAB_CONSENT_SUBJECT_TO_GDPR);
-        editor.commit();
+    }
+
+    private void clearTCData() {
+        for(String s : dataSetFromStore()){
+            editor.remove(s);
+        }
+        editor.remove(TC_KEYS_KEY);
+    }
+
+    private String[] dataSetFromStore(){
+        return pref.getString(TC_KEYS_KEY, "").split(TC_KEYS_DELIMITER);
+
     }
 }

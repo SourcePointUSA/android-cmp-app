@@ -1,6 +1,9 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
@@ -28,12 +31,9 @@ import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_CONSENT_
  */
 public class GDPRConsentLib {
 
-    private static final int MAX_PURPOSE_ID = 24;
     private final String pmId;
 
-    private final String PM_BASE_URL = "https://gdpr-inapp-pm.sp-prod.net";
-
-    private final String GDPR_ORIGIN = "https://gdpr-service.sp-prod.net";
+    private final String PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager/index.html";
 
     private String metaData;
     private String euConsent;
@@ -150,10 +150,7 @@ public class GDPRConsentLib {
         sourcePoint = b.sourcePointClient;
 
         storeClient = b.storeClient;
-
         setConsentData(b.authId);
-
-        setSubjectToGDPR();
 
     }
 
@@ -183,6 +180,17 @@ public class GDPRConsentLib {
         if(newAuthId == null && storedAuthId == null) return false;
         else if (newAuthId != null && newAuthId.equals(storeClient.getAuthId())) return false;
         return true;
+    }
+
+    private boolean hasLostInternetConnection() {
+        ConnectivityManager manager = (ConnectivityManager) activity
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager == null) {
+            return true;
+        }
+
+        NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
+        return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
     }
 
     private ConsentWebView buildWebView() {
@@ -311,6 +319,10 @@ public class GDPRConsentLib {
      * @throws ConsentLibException.NoInternetConnectionException - thrown if the device has lost connection either prior or while interacting with GDPRConsentLib
      */
     public void run() {
+        if(hasLostInternetConnection()){
+            onErrorTask(new ConsentLibException("No internet connection"));
+            return;
+        }
         try {
             onMessageReadyCalled = false;
             renderMsgAndSaveConsent();
@@ -335,7 +347,7 @@ public class GDPRConsentLib {
     }
 
     private void renderMsgAndSaveConsent() throws ConsentLibException {
-        sourcePoint.getMessage(isNative, consentUUID, metaData, new OnLoadComplete() {
+        sourcePoint.getMessage(isNative, consentUUID, metaData, euConsent, new OnLoadComplete() {
             @Override
             public void onSuccess(Object result) {
                 try{
@@ -349,8 +361,6 @@ public class GDPRConsentLib {
                         loadConsentUI(jsonResult.getString("url"));
                     } else {
                         userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
-                        if(euConsent == null) euConsent = userConsent.consentString;
-                        else userConsent.consentString = euConsent;
                         consentFinished();
                     }
                 }
@@ -386,7 +396,7 @@ public class GDPRConsentLib {
     }
 
     private void closeView(View v){
-        runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
+        if(v != null) runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
     }
 
     private JSONObject paramsToSendConsent(int actionType, Integer choiceId) throws ConsentLibException {
@@ -463,9 +473,7 @@ public class GDPRConsentLib {
 
     private String pmUrl(){
         HashSet<String> params = new HashSet<>();
-        params.add("privacy_manager_id=" + pmId);
-        params.add("site_id=" + propertyId);
-        params.add("gdpr_origin=" + GDPR_ORIGIN);
+        params.add("message_id=" + pmId);
         if(consentUUID != null) params.add("consentUUID=" + consentUUID);
 
         return PM_BASE_URL + "?" + TextUtils.join("&", params);
@@ -477,49 +485,10 @@ public class GDPRConsentLib {
         }
     }
 
-    private void setSubjectToGDPR() {
-
-        sourcePoint.getGDPRStatus(new OnLoadComplete() {
-            @Override
-            public void onSuccess(Object gdprApplies) {
-                isSubjectToGdpr = gdprApplies.equals("true");
-            }
-
-            @Override
-            public void onFailure(ConsentLibException exception) {
-                Log.d(TAG, "Failed setting the preference IAB_CONSENT_SUBJECT_TO_GDPR");
-            }
-        });
-    }
-
-    private void setIABVars() {
-
-        if(euConsent == DEFAULT_EMPTY_CONSENT_STRING) return;
-
-        final VendorConsent vendorConsent = VendorConsentDecoder.fromBase64String(euConsent);
-
-        // Construct and save parsed purposes string
-        char[] allowedPurposes = new char[MAX_PURPOSE_ID];
-        for (int i = 0; i < MAX_PURPOSE_ID; i++) {
-            allowedPurposes[i] = vendorConsent.isPurposeAllowed(i + 1) ? '1' : '0';
-        }
-        Log.i(TAG, "allowedPurposes: " + new String(allowedPurposes));
-        storeClient.setIabConsentParsedPurposeConsents(new String(allowedPurposes));
-
-
-        // Construct and save parsed vendors string
-        char[] allowedVendors = new char[vendorConsent.getMaxVendorId()];
-        for (int i = 0; i < allowedVendors.length; i++) {
-            allowedVendors[i] = vendorConsent.isVendorAllowed(i + 1) ? '1' : '0';
-        }
-        Log.i(TAG, "allowedVendors: " + new String(allowedVendors));
-        storeClient.setIabConsentParsedVendorConsents(new String(allowedVendors));
-    }
-
     private void onErrorTask(ConsentLibException e){
         this.error = e;
         if(shouldCleanConsentOnError) {
-            storeClient.clearIABConsentData();
+            storeClient.clearConsentData();
         }
         cancelCounter();
         closeCurrentMessageView();
@@ -527,13 +496,10 @@ public class GDPRConsentLib {
     }
 
     private void storeData(){
-        storeClient.setConsentSubjectToGDPr(isSubjectToGdpr);
         storeClient.setConsentUuid(consentUUID);
-        storeClient.setIabConsentCmpPresent(true);
-        storeClient.setIabConsentConsentString(euConsent);
         storeClient.setMetaData(metaData);
-        setIABVars();
-        storeClient.apply();
+        storeClient.setTCData(userConsent.TCData);
+        storeClient.setConsentString(euConsent);
     }
 
     private void cancelCounter(){
