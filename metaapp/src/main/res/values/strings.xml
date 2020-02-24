@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SourcepointMeta</string>
+    <string name="app_name">GDPR-MetaApp</string>
 
     <string name="account_id">Account ID</string>
     <string name="account_id_placeholder">Enter account id here</string>

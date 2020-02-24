@@ -77,6 +77,9 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
         view.requestLayout();
         messageVisible = true;
         invalidateOptionsMenu();
+        if (view != null && view.getParent() != null) {
+            mMainViewGroup.removeView(view);
+        }
         mMainViewGroup.addView(view);
     }
 
@@ -122,7 +125,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                 .setOnError(error -> {
                     hideProgressBar();
                     Log.d(TAG, "setOnError");
-                    showAlertDialog("" + error.getMessage());
+                    showAlertDialog("" + error.consentLibErrorMessage);
                     Log.d(TAG, "Something went wrong: ", error);
                 });
 

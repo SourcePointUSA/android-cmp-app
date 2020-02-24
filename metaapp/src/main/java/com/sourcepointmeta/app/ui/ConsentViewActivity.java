@@ -72,6 +72,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
 
     private CountDownTimer mCountDownTimer = null;
     private boolean isPMLoaded = false;
+    private boolean isError = false;
 
     private void showMessageWebView(View view) {
         view.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
@@ -79,6 +80,8 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
         view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
         view.bringToFront();
         view.requestLayout();
+        if (view != null && view.getParent() != null)
+            mMainViewGroup.removeView(view);
         mMainViewGroup.addView(view);
     }
 
@@ -90,7 +93,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private GDPRConsentLib buildConsentLib(Property property, Activity activity) {
         ConsentLibBuilder consentLibBuilder = GDPRConsentLib.newBuilder(property.getAccountID(), property.getProperty(), property.getPropertyID(), property.getPmID(), activity)
                 .setStagingCampaign(property.isStaging())
-                .setMessageTimeOut(15000)
+                //.setMessageTimeOut(15000)
                 .setOnConsentUIReady(view -> {
                             getSupportActionBar().hide();
                             isPMLoaded = true;
@@ -125,7 +128,8 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                 .setOnError(error -> {
                     hideProgressBar();
                     Log.d(TAG, "setOnError");
-                    showAlertDialog("" + error.getMessage());
+                    isError = true;
+                    showAlertDialog("" + error.consentLibErrorMessage);
                     Log.d(TAG, "Something went wrong: ", error);
                 });
 
@@ -364,7 +368,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
         hideProgressBar();
         showEUConsentAndConsentUUID();
         showActionBar();
-        if (!isNewProperty) {
+        if (!isNewProperty && !isError) {
             mConsentList.addAll(mVendorConsents);
             mConsentList.addAll(mPurposeConsents);
         }
@@ -467,6 +471,6 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     }
 
     private void resetFlag() {
-        isShow = onConsentReadyCalled = isShowOnceOrError = false;
+        isShow = onConsentReadyCalled = isShowOnceOrError = isError = false;
     }
 }
