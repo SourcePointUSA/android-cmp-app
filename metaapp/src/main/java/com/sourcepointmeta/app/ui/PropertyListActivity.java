@@ -65,6 +65,8 @@ public class PropertyListActivity extends BaseActivity<PropertyListViewModel> {
         //get recycler view item click listener
         RecyclerViewClickListener listener = getRecyclerViewClickListener();
         mPropertyListAdapter = new PropertyListAdapter(listener);
+
+        // set adapter to recycler view  
         mPropertyListRecyclerView.setAdapter(mPropertyListAdapter);
     }
 
