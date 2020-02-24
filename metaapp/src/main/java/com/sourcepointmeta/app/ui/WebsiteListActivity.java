@@ -37,6 +37,7 @@ import com.sourcepointmeta.app.viewmodel.WebsiteListViewModel;
 
 import java.util.List;
 
+// proerty list activity
 public class WebsiteListActivity extends BaseActivity<WebsiteListViewModel> {
 
     private final String TAG = "WebsiteListActivity";
