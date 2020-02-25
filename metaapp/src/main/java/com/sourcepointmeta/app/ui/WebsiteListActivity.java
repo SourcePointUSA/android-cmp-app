@@ -37,7 +37,6 @@ import com.sourcepointmeta.app.viewmodel.WebsiteListViewModel;
 
 import java.util.List;
 
-//Test PR --> property list screen
 public class WebsiteListActivity extends BaseActivity<WebsiteListViewModel> {
 
     private final String TAG = "WebsiteListActivity";
