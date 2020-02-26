@@ -20,11 +20,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 @RunWith(AndroidJUnit4.class)
-public class NewWebsiteActivityTest {
+public class NewPropertyActivityTest {
 
     @Rule
-    public ActivityTestRule<NewWebsiteActivity> mActivityRule = new ActivityTestRule<NewWebsiteActivity>(
-            NewWebsiteActivity.class);
+    public ActivityTestRule<NewPropertyActivity> mActivityRule = new ActivityTestRule<NewPropertyActivity>(
+            NewPropertyActivity.class);
 
     @Before
     public void init() {
@@ -40,16 +40,16 @@ public class NewWebsiteActivityTest {
 
     @Test
     public void TestEditTextSiteName() {
-        onView(withId(R.id.etSiteName)).check(matches((isDisplayed())));
+        onView(withId(R.id.etPropertyName)).check(matches((isDisplayed())));
 
-        onView(withId(R.id.etSiteName)).perform(clearText(),typeText("mobile.demo"));
+        onView(withId(R.id.etPropertyName)).perform(clearText(),typeText("mobile.demo"));
     }
 
     @Test
     public void TestStagingCampaignSwitch() {
         onView(withId(R.id.toggleStaging)).check(matches((isDisplayed())));
 
-        onView(withId(R.id.etSiteName)).perform(clearText(),click());
+        onView(withId(R.id.etPropertyName)).perform(clearText(),click());
     }
 
 }

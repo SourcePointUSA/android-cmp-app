@@ -5,15 +5,15 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.sourcepointmeta.app.LiveDataTestUtil;
-import com.sourcepointmeta.app.database.dao.WebsiteListDao;
-import com.sourcepointmeta.app.database.entity.Website;
+import com.sourcepointmeta.app.database.dao.PropertyListDao;
+import com.sourcepointmeta.app.database.entity.Property;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.sourcepointmeta.app.TestData.WEBSITES;
+import static com.sourcepointmeta.app.TestData.PROPERTIES;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -22,10 +22,10 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
-public class WebsiteListDaoTest {
+public class PropertyListDaoTest {
 
     private AppDataBase mDatabase;
-    private WebsiteListDao mWebsiteListDao;
+    private PropertyListDao mPropertyListDao;
 
     @Before
     public void initDb() throws Exception {
@@ -36,7 +36,7 @@ public class WebsiteListDaoTest {
                 // allowing main thread queries, just for testing
                 .allowMainThreadQueries()
                 .build();
-        mWebsiteListDao = mDatabase.websiteListDao();
+        mPropertyListDao = mDatabase.propertyListDao();
     }
 
     @After
@@ -46,30 +46,30 @@ public class WebsiteListDaoTest {
 
     @Test
     public void getWebsitesWhenNoWebsiteInserted() throws InterruptedException {
-        List<Website> websiteList = LiveDataTestUtil.getValue(mWebsiteListDao.getAllWebsites());
-        assertTrue(websiteList.isEmpty());
+        List<Property> propertyList = LiveDataTestUtil.getValue(mPropertyListDao.getProperties());
+        assertTrue(propertyList.isEmpty());
     }
 
     @Test
     public void getProductsAfterInserted() throws InterruptedException {
-        mWebsiteListDao.insert(WEBSITES.get(0));
-        mWebsiteListDao.insert(WEBSITES.get(1));
+        mPropertyListDao.insert(PROPERTIES.get(0));
+        mPropertyListDao.insert(PROPERTIES.get(1));
 
-        List<Website> websites = LiveDataTestUtil.getValue(mWebsiteListDao.getAllWebsites());
-        assertThat(websites.size(), is(WEBSITES.size()));
+        List<Property> properties = LiveDataTestUtil.getValue(mPropertyListDao.getProperties());
+        assertThat(properties.size(), is(PROPERTIES.size()));
     }
 
     @Test
     public void getUpdatedWebsiteID() throws InterruptedException {
-        mWebsiteListDao.insert(WEBSITES.get(0));
-        mWebsiteListDao.insert(WEBSITES.get(1));
+        mPropertyListDao.insert(PROPERTIES.get(0));
+        mPropertyListDao.insert(PROPERTIES.get(1));
 
-        List<Website> websites = LiveDataTestUtil.getValue(mWebsiteListDao.getAllWebsites());
-        Website website = LiveDataTestUtil.getValue(mWebsiteListDao.getWebsiteByID(websites.get(1).getId()));
+        List<Property> properties = LiveDataTestUtil.getValue(mPropertyListDao.getProperties());
+        Property property = LiveDataTestUtil.getValue(mPropertyListDao.getPropertyByID(properties.get(1).getId()));
 
-        assertThat(website.getId(), is(websites.get(1).getId()));
-        assertThat(website.getName(), is(websites.get(1).getName()));
-        assertThat(website.getAccountID(), is(websites.get(1).getAccountID()));
-        assertThat(website.isStaging(), is(websites.get(1).isStaging()));
+        assertThat(property.getId(), is(properties.get(1).getId()));
+        assertThat(property.getProperty(), is(properties.get(1).getProperty()));
+        assertThat(property.getAccountID(), is(properties.get(1).getAccountID()));
+        assertThat(property.isStaging(), is(properties.get(1).isStaging()));
     }
 }
