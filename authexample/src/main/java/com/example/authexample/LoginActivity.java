@@ -41,15 +41,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        consentManager = new ConsentManager(this) {
-            @Override
-            void onConsentsReady(GDPRUserConsent consent) {
-                consentListViewData.clear();
-                consentListViewData.add("euconsent: " + consent.consentString);
-                consentListViewAdapter.notifyDataSetChanged();
-            }
-        };
-
         loginButton = findViewById(R.id.button);
         userNameInput = findViewById(R.id.userNameInput);
         consentListView = findViewById(R.id.consentListView);
@@ -75,6 +66,15 @@ public class LoginActivity extends AppCompatActivity {
         );
 
         consentListView.setAdapter(consentListViewAdapter);
+
+        consentManager = new ConsentManager(this) {
+            @Override
+            void onConsentsReady(GDPRUserConsent consent) {
+                consentListViewData.clear();
+                consentListViewData.add("euconsent: " + consent.consentString);
+                consentListViewAdapter.notifyDataSetChanged();
+            }
+        };
 
         consentManager.loadMessage();
     }
