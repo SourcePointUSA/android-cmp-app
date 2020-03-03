@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -148,6 +149,7 @@ abstract public class ConsentWebView extends WebView {
             }
         }
         getSettings().setJavaScriptEnabled(true);
+        this.setBackgroundColor(Color.TRANSPARENT);
         setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {

@@ -2,6 +2,7 @@ package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -97,15 +98,6 @@ public class GDPRConsentLib {
 
     public interface OnErrorCallback {
         void run(ConsentLibException v);
-    }
-
-
-
-    public interface Callbacks {
-        void onConsentUIReady(View v);
-        void onConsentUIFinished(View v);
-        void onConsentReady(GDPRUserConsent u);
-        void onError(ConsentLibException e);
     }
 
     public interface OnLoadComplete {
