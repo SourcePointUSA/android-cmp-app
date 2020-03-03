@@ -65,6 +65,8 @@ public class LoginActivity extends AppCompatActivity {
                 consentListViewData
         );
 
+        //findViewById(R.id.action_privacy_settings).setOnClickListener(_v -> consentManager.loadPm());
+
         consentListView.setAdapter(consentListViewAdapter);
 
         consentManager = new ConsentManager(this) {

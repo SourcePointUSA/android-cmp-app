@@ -18,7 +18,7 @@ abstract class ConsentManager {
     abstract void onConsentsReady(GDPRUserConsent consent);
 
     ConsentManager(Activity activity) {
-        activity.setContentView(R.layout.activity_home);
+        //activity.setContentView(R.layout.activity_home);
         mainViewGroup = activity.findViewById(android.R.id.content);
         builder = getBuilder(activity);
     }
@@ -75,6 +75,10 @@ abstract class ConsentManager {
 
     void loadMessage(String authId) {
         builder.setAuthId(authId).build().run();
+    }
+
+    void loadPm() {
+        builder.build().showPm();
     }
 }
 
