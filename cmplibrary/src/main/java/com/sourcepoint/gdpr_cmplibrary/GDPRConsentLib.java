@@ -192,7 +192,7 @@ public class GDPRConsentLib {
     }
 
     private ConsentWebView buildWebView() {
-        return new ConsentWebView(activity, defaultMessageTimeOut) {
+        return new ConsentWebView(activity) {
 
             @Override
             public void onConsentUIReady() {
@@ -317,10 +317,6 @@ public class GDPRConsentLib {
      * @throws ConsentLibException.NoInternetConnectionException - thrown if the device has lost connection either prior or while interacting with GDPRConsentLib
      */
     public void run() {
-        if(hasLostInternetConnection()){
-            onErrorTask(new ConsentLibException("No internet connection"));
-            return;
-        }
         try {
             onMessageReadyCalled = false;
             renderMsgAndSaveConsent();
