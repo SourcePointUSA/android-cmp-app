@@ -1,3 +1,6 @@
+## 4.1.4 (February, 23, 2020)
+* fix web view transparency issue
+
 ## 4.1.3 (February, 23, 2020)
 * fix app crashing when having no internet connection
 
