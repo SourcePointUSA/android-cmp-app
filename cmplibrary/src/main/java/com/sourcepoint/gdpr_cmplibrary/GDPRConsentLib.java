@@ -2,6 +2,7 @@ package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -99,15 +100,6 @@ public class GDPRConsentLib {
         void run(ConsentLibException v);
     }
 
-
-
-    public interface Callbacks {
-        void onConsentUIReady(View v);
-        void onConsentUIFinished(View v);
-        void onConsentReady(GDPRUserConsent u);
-        void onError(ConsentLibException e);
-    }
-
     public interface OnLoadComplete {
         void onSuccess(Object result);
 
@@ -200,7 +192,7 @@ public class GDPRConsentLib {
     }
 
     private ConsentWebView buildWebView() {
-        return new ConsentWebView(activity, defaultMessageTimeOut) {
+        return new ConsentWebView(activity) {
 
             @Override
             public void onConsentUIReady() {
@@ -325,10 +317,6 @@ public class GDPRConsentLib {
      * @throws ConsentLibException.NoInternetConnectionException - thrown if the device has lost connection either prior or while interacting with GDPRConsentLib
      */
     public void run() {
-        if(hasLostInternetConnection()){
-            onErrorTask(new ConsentLibException("No internet connection"));
-            return;
-        }
         try {
             onMessageReadyCalled = false;
             renderMsgAndSaveConsent();
