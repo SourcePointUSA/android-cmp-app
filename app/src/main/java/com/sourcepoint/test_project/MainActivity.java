@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
                 })
+                .setTargetingParam("msg", "simple")
                 .setOnConsentUIFinished(view -> {
                     removeView(view);
                     Log.i(TAG, "onConsentUIFinished");
