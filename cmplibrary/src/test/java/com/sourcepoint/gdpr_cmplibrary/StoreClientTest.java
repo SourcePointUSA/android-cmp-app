@@ -60,18 +60,7 @@ public class StoreClientTest {
         editor.clear().commit();
         assertFalse(sharedPreferences.contains(AUTH_ID_KEY));
     }
-
-  /*  @Test
-    public void setConsentString() {
-        String euConsent = "euConsent";
-        storeClient.setConsentString(euConsent);
-        assertTrue(sharedPreferences.contains(EU_CONSENT__KEY));
-        assertTrue(sharedPreferences.contains(IAB_CONSENT_CONSENT_STRING));
-        editor.clear().commit();
-        assertFalse(sharedPreferences.contains(EU_CONSENT__KEY));
-        assertFalse(sharedPreferences.contains(IAB_CONSENT_CONSENT_STRING));
-    }*/
-
+    
     @Test
     public void getMetaData() {
         String metaData = "metaData";
@@ -89,15 +78,6 @@ public class StoreClientTest {
         editor.clear().commit();
         assertFalse(sharedPreferences.contains(CONSENT_UUID_KEY));
     }
-
-/*    @Test
-    public void getConsentString() {
-        String euConsent = "euConsent";
-        storeClient.setConsentString(euConsent);
-        assertEquals(euConsent,storeClient.getConsentString());
-        editor.clear().commit();
-        assertFalse(sharedPreferences.contains(EU_CONSENT__KEY));
-    }*/
 
     @Test
     public void getAuthId() {
@@ -126,10 +106,4 @@ public class StoreClientTest {
         assertFalse(sharedPreferences.contains(EU_CONSENT__KEY));
         assertFalse(sharedPreferences.contains(AUTH_ID_KEY));
     }
-
-   /* @Test
-    public void clearConsentData() {
-        storeClient.clearConsentData();
-        assertFalse(sharedPreferences.contains(IAB_CONSENT_CONSENT_STRING));
-    }*/
 }
