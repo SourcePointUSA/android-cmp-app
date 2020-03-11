@@ -49,6 +49,18 @@ public class ConsentLibBuilder {
         storeClient = new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
     }
 
+    protected   ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity, StoreClient client) {
+        this.accountId = accountId;
+        this.propertyId =propertyId;
+        this.property = property;
+        this.pmId = pmId;
+        this.activity = activity;
+        mmsDomain = cmpDomain = msgDomain = null;
+        staging = stagingCampaign = false;
+        shouldCleanConsentOnError = true;
+        storeClient = client;
+    }
+
     /**
      *  <b>Optional</b> Sets the Callback to be called when the user finishes interacting with the WebView
      *  either by closing it, canceling or accepting the terms.
