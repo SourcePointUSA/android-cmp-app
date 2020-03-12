@@ -26,7 +26,7 @@ public class TargetingParam implements Parcelable {
     private String mKey;
     @ColumnInfo(name = "mValue")
     private String mValue;
-    @ColumnInfo(name = "refID")
+    @ColumnInfo(name = "refID" ,index = true)
     private long refID;
 
     @Ignore
