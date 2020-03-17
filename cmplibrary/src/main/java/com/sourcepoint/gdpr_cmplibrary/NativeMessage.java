@@ -121,7 +121,6 @@ public class NativeMessage extends RelativeLayout {
     public void setRejectAll(Button rejectAll) {
         this.rejectAll = new ActionButton(rejectAll);
         this.rejectAll.button.setVisibility(View.INVISIBLE);
-
     }
 
     public ActionButton getShowOptions() {
@@ -141,7 +140,6 @@ public class NativeMessage extends RelativeLayout {
     public void setBody(TextView body) {
         this.body = body;
         this.body.setVisibility(View.INVISIBLE);
-
     }
 
     public TextView getTitle() {
