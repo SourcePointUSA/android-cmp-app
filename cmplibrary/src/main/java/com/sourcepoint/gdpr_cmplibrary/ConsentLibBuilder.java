@@ -39,7 +39,7 @@ public class ConsentLibBuilder {
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity) {
         this.accountId = accountId;
-        this.propertyId =propertyId;
+        this.propertyId = propertyId;
         this.property = property;
         this.pmId = pmId;
         this.activity = activity;
@@ -51,7 +51,7 @@ public class ConsentLibBuilder {
 
     protected   ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity, StoreClient client) {
         this.accountId = accountId;
-        this.propertyId =propertyId;
+        this.propertyId = propertyId;
         this.property = property;
         this.pmId = pmId;
         this.activity = activity;

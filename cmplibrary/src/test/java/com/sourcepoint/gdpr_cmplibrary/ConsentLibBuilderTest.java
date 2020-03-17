@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import org.bouncycastle.util.Store;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,9 +30,7 @@ public class ConsentLibBuilderTest {
 
     @Before
     public void initConsentLibBuilder() throws Exception {
-        StoreClient storeClient = new StoreClient(PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application.getApplicationContext()));
-
-        consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", mock(Activity.class), storeClient);
+        consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", mock(Activity.class), mock(StoreClient.class));
         onConsentUIReady = c -> {   };
         onConsentReady = c -> {   };
         onConsentUIFinished = c -> { };
