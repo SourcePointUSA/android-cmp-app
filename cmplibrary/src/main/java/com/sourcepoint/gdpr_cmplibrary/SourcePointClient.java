@@ -45,6 +45,11 @@ class SourcePointClient {
         return requestUUID;
     }
 
+    @VisibleForTesting
+    protected void setReuestedUUID(String requested_uuid) {
+        this.requestUUID = requested_uuid;
+    }
+
     class ResponseHandler extends JsonHttpResponseHandler {
         GDPRConsentLib.OnLoadComplete onLoadComplete;
         String url;

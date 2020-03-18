@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.iab.gdpr_android.consent.VendorConsent;
 import com.iab.gdpr_android.consent.VendorConsentDecoder;
 
@@ -391,7 +392,8 @@ public class GDPRConsentLib {
         closeView(getCurrentMessageView());
     }
 
-    private void closeView(View v){
+    @VisibleForTesting
+    protected void closeView(View v){
         if(v != null) runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
     }
 
@@ -419,7 +421,8 @@ public class GDPRConsentLib {
         }
     }
 
-    private void sendConsent(int actionType, Integer choiceId) {
+    @VisibleForTesting
+    protected void sendConsent(int actionType, Integer choiceId) {
         try {
             sourcePoint.sendConsent(paramsToSendConsent(actionType, choiceId), new OnLoadComplete() {
                 @Override
