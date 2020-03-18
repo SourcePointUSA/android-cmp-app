@@ -59,9 +59,11 @@ public class CustomJsonParser {
     static HashMap<String, String> getHashMap(JSONObject jCustomFields) throws ConsentLibException {
         HashMap<String, String> hMap = new HashMap<>();
         JSONArray names = jCustomFields.names();
-        for(int i = 0; i < names.length(); i++){
-            String name = getString(i, names);
-            hMap.put(name, getString(name, jCustomFields));
+        if (names != null){
+            for(int i = 0; i < names.length(); i++) {
+                String name = getString(i, names);
+                hMap.put(name, getString(name, jCustomFields));
+            }
         }
         return hMap;
     }
