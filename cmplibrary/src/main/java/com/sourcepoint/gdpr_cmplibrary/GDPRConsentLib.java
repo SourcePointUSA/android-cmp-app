@@ -280,8 +280,6 @@ public class GDPRConsentLib {
     }
 
     private void loadConsentUI(String url){
-        mCountDownTimer = getTimer(defaultMessageTimeOut);
-        mCountDownTimer.start();
         if(webView == null) {
             webView = buildWebView();
             webView.loadConsentUIFromUrl(url);
@@ -294,7 +292,6 @@ public class GDPRConsentLib {
             });
         } else {
             showView(webView);
-            cancelCounter();
         }
     }
 
@@ -443,19 +440,6 @@ public class GDPRConsentLib {
         }
     }
 
-    private CountDownTimer getTimer(long defaultMessageTimeOut) {
-        return new CountDownTimer(defaultMessageTimeOut, defaultMessageTimeOut) {
-            @Override
-            public void onTick(long millisUntilFinished) {     }
-            @Override
-            public void onFinish() {
-                if (!onMessageReadyCalled) {
-                    GDPRConsentLib.this.onErrorTask(new ConsentLibException("a timeout has occurred when loading the message"));
-                }
-                cancel();
-            }
-        };
-    }
 
     private String pmUrl(){
         HashSet<String> params = new HashSet<>();
