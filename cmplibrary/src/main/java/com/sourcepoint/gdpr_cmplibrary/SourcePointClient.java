@@ -24,7 +24,7 @@ class SourcePointClient {
     private static AsyncHttpClient http = new AsyncHttpClient();
 
     private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/message-url?inApp=true";
-    private static final String baseNativeMsgUrl = "https://fake-wrapper-api.herokuapp.com/tcfv2/v1/gdpr/native-message";
+    private static final String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/native-message?inApp=true";
     private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/consent?inApp=true";
 
     private int accountId;
