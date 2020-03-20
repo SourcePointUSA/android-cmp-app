@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.sourcepoint.gdpr_cmplibrary.Consent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
