@@ -2,8 +2,6 @@ package com.example.authexample;
 
 import android.app.Activity;
 
-import com.sourcepoint.gdpr_cmplibrary.Consent;
-
 import java.util.HashSet;
 
 abstract class ConsentManager {

@@ -39,7 +39,7 @@ public class ConsentLibBuilder {
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity) {
         this.accountId = accountId;
-        this.propertyId =propertyId;
+        this.propertyId = propertyId;
         this.property = property;
         this.pmId = pmId;
         this.activity = activity;
@@ -47,6 +47,18 @@ public class ConsentLibBuilder {
         staging = stagingCampaign = false;
         shouldCleanConsentOnError = true;
         storeClient = new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
+    }
+
+    protected   ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity, StoreClient client) {
+        this.accountId = accountId;
+        this.propertyId = propertyId;
+        this.property = property;
+        this.pmId = pmId;
+        this.activity = activity;
+        mmsDomain = cmpDomain = msgDomain = null;
+        staging = stagingCampaign = false;
+        shouldCleanConsentOnError = true;
+        storeClient = client;
     }
 
     /**
