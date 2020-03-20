@@ -84,11 +84,6 @@ class SourcePointClient {
         this.authId = authId;
     }
 
-    @VisibleForTesting
-    void setHttpDummy(AsyncHttpClient httpClient) {
-        http = httpClient;
-    }
-
     void getMessage(boolean isNative, String consentUUID, String meta, String euconsent, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
         String url = messageUrl(isNative);
         Log.d(LOG_TAG, "Getting message from: " + url);
