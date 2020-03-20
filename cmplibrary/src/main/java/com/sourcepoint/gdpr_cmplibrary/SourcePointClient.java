@@ -62,8 +62,9 @@ class SourcePointClient {
         }
     }
 
-    class MessageResponseHandler extends JsonHttpResponseHandler {
-
+    @VisibleForTesting
+    void setHttpDummy(AsyncHttpClient httpClient) {
+        http = httpClient;
     }
 
     SourcePointClient(
