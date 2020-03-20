@@ -10,16 +10,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.iab.gdpr_android.consent.VendorConsent;
-import com.iab.gdpr_android.consent.VendorConsentDecoder;
+import com.google.common.annotations.VisibleForTesting;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Objects;
-
-import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_CONSENT_STRING;
 
 /**
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
@@ -94,15 +91,6 @@ public class GDPRConsentLib {
 
     public interface OnErrorCallback {
         void run(ConsentLibException v);
-    }
-
-
-
-    public interface Callbacks {
-        void onConsentUIReady(View v);
-        void onConsentUIFinished(View v);
-        void onConsentReady(GDPRUserConsent u);
-        void onError(ConsentLibException e);
     }
 
     public interface OnLoadComplete {
@@ -194,7 +182,7 @@ public class GDPRConsentLib {
     }
 
     private ConsentWebView buildWebView() {
-        return new ConsentWebView(activity, defaultMessageTimeOut) {
+        return new ConsentWebView(activity) {
 
             @Override
             public void onConsentUIReady() {
@@ -319,10 +307,6 @@ public class GDPRConsentLib {
      * @throws ConsentLibException.NoInternetConnectionException - thrown if the device has lost connection either prior or while interacting with GDPRConsentLib
      */
     public void run() {
-        if(hasLostInternetConnection()){
-            onErrorTask(new ConsentLibException("No internet connection"));
-            return;
-        }
         try {
             onMessageReadyCalled = false;
             renderMsgAndSaveConsent();
@@ -395,7 +379,8 @@ public class GDPRConsentLib {
         closeView(getCurrentMessageView());
     }
 
-    private void closeView(View v){
+    @VisibleForTesting
+    protected void closeView(View v){
         if(v != null) runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
     }
 
@@ -423,7 +408,8 @@ public class GDPRConsentLib {
         }
     }
 
-    private void sendConsent(int actionType, Integer choiceId) {
+    @VisibleForTesting
+    protected void sendConsent(int actionType, Integer choiceId) {
         try {
             sourcePoint.sendConsent(paramsToSendConsent(actionType, choiceId), new OnLoadComplete() {
                 @Override
