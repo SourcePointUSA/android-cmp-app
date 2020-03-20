@@ -1,43 +1,52 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
-import android.view.ViewGroup;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
+import org.bouncycastle.util.Store;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class ConsentLibBuilderTest {
 
-
     private ConsentLibBuilder consentLibBuilder;
-    private ConsentLib.Callback callback;
+    private GDPRConsentLib.OnConsentUIReadyCallback onConsentUIReady;
+    private GDPRConsentLib.OnConsentReadyCallback onConsentReady;
+    private GDPRConsentLib.OnConsentUIFinishedCallback onConsentUIFinished;
+    private GDPRConsentLib.OnErrorCallback onError;
 
     @Before
-    public void initConsentLibBuilder() {
-        consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", mock(Activity.class));
-        callback = c -> {  };
+    public void initConsentLibBuilder() throws Exception {
+        consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", mock(Activity.class), mock(StoreClient.class));
+        onConsentUIReady = c -> {   };
+        onConsentReady = c -> {   };
+        onConsentUIFinished = c -> { };
+        onError = c ->{ };
     }
 
-    public Field getDeclaredFieldAccess(String fieldName) throws Exception{
+    public Field getDeclaredFieldAccess(String fieldName) throws Exception {
         Field member = ConsentLibBuilder.class.getDeclaredField(fieldName);
         member.setAccessible(true);
         return member;
     }
 
-    @Test(expected = ConsentLibException.class)
-    public void build() throws ConsentLibException {
-        ConsentLib consentLib = mock(ConsentLib.class);
-        assertEquals(consentLib, consentLibBuilder.build());
+    @Test
+    public void build() {
+        GDPRConsentLib consentLib = consentLibBuilder.build();
+        assertNotNull(consentLib);
     }
 
     @Test
@@ -47,41 +56,27 @@ public class ConsentLibBuilderTest {
     }
 
     @Test
-    public void setPage() {
-        String page = "page";
-        consentLibBuilder.setPage(page);
-        assertEquals(page, consentLibBuilder.page);
+    public void setOnConsentReady() {
+        consentLibBuilder.setOnConsentReady(onConsentReady);
+        assertEquals(onConsentReady, consentLibBuilder.onConsentReady);
     }
 
     @Test
-    public void setViewGroup() {
-        ViewGroup v = mock(ViewGroup.class);
-        consentLibBuilder.setViewGroup(v);
-        assertEquals(v, consentLibBuilder.viewGroup);
+    public void setOnConsentUIReady() {
+        consentLibBuilder.setOnConsentUIReady(onConsentUIReady);
+        assertEquals(onConsentUIReady, consentLibBuilder.onConsentUIReady);
     }
 
     @Test
-    public void setOnMessageChoiceSelect() {
-        consentLibBuilder.setOnMessageChoiceSelect(callback);
-        assertEquals(callback, consentLibBuilder.onAction);
+    public void setOnConsentUIFinished(){
+        consentLibBuilder.setOnConsentUIFinished(onConsentUIFinished);
+        assertEquals(onConsentUIFinished , consentLibBuilder.onConsentUIFinished);
     }
 
     @Test
-    public void setOnInteractionComplete() {
-        consentLibBuilder.setConsentUIReady(callback);
-        assertEquals(callback, consentLibBuilder.onConsentUIReady);
-    }
-
-    @Test
-    public void setOnMessageReady() {
-        consentLibBuilder.setConsentUIReady(callback);
-        assertEquals(callback, consentLibBuilder.onConsentUIReady);
-    }
-
-    @Test
-    public void setOnErrorOccurred() {
-        consentLibBuilder.setOnError(callback);
-        assertEquals(callback, consentLibBuilder.onError);
+    public void setOnError() {
+        consentLibBuilder.setOnError(onError);
+        assertEquals(onError, consentLibBuilder.onError);
     }
 
     @Test
@@ -99,24 +94,17 @@ public class ConsentLibBuilderTest {
     }
 
     @Test
-    public void setInAppMessagePageUrl() {
-        String inAppMessageUrl = "inAppMessageUrl";
-        consentLibBuilder.setInAppMessagePageUrl(inAppMessageUrl);
-        assertEquals(inAppMessageUrl, consentLibBuilder.msgDomain);
+    public void setShouldCleanConsentOnError() {
+        boolean shouldCleanConsentOnError = false;
+        consentLibBuilder.setShouldCleanConsentOnError(shouldCleanConsentOnError);
+        assertEquals(shouldCleanConsentOnError, consentLibBuilder.shouldCleanConsentOnError);
     }
 
     @Test
-    public void setMmsDomain() {
-        String mmsDomain = "mmsDomain";
-        consentLibBuilder.setMmsDomain(mmsDomain);
-        assertEquals(mmsDomain, consentLibBuilder.mmsDomain);
-    }
-
-    @Test
-    public void setCmpDomain() {
-        String cmpDomain = "cmpDomain";
-        consentLibBuilder.setCmpDomain(cmpDomain);
-        assertEquals(cmpDomain, consentLibBuilder.cmpDomain);
+    public void setAuthId() {
+        String authId = "authId";
+        consentLibBuilder.setAuthId(authId);
+        assertEquals(authId, consentLibBuilder.authId);
     }
 
     @Test
@@ -143,13 +131,11 @@ public class ConsentLibBuilderTest {
         jsonObject.put(key, stringValue);
         consentLibBuilder.setTargetingParam(key, stringValue);
 
-        EncodedParam targetingParamsString = new EncodedParam("targetingParams", jsonObject.toString());
-
         Method method = ConsentLibBuilder.class.getDeclaredMethod("setTargetingParamsString");
         method.setAccessible(true);
         method.invoke(consentLibBuilder);
 
-        assertEquals(targetingParamsString.toString(), consentLibBuilder.targetingParamsString.toString());
+        assertEquals(jsonObject.toString(), consentLibBuilder.targetingParamsString);
     }
 
     @Test
@@ -184,7 +170,7 @@ public class ConsentLibBuilderTest {
 
     @Test
     public void setDebugLevel(){
-        consentLibBuilder.setDebugLevel(ConsentLib.DebugLevel.DEBUG);
-        assertEquals(ConsentLib.DebugLevel.DEBUG , consentLibBuilder.debugLevel);
+        consentLibBuilder.setDebugLevel(GDPRConsentLib.DebugLevel.DEBUG);
+        assertEquals(GDPRConsentLib.DebugLevel.DEBUG , consentLibBuilder.debugLevel);
     }
 }
