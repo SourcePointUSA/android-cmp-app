@@ -35,9 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(22, "tcfv2.mobile.demo", 7094,"100699",this)
-                .setStagingCampaign(false)
-                //.setAuthId("17-02-2020-0001")
-                .setTargetingParam("message", "true")
+                .setTargetingParam("native", "true")
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
@@ -87,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "init");
-        buildGDPRConsentLib().run();
+        buildGDPRConsentLib().run(buildNativeMessage());
     }
 
     @Override
