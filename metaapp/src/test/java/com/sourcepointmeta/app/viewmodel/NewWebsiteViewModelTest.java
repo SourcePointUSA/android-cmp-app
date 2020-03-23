@@ -112,7 +112,7 @@ public class NewWebsiteViewModelTest {
 
     }
 
-    @Test
+    /*@Test
     public void testGetWebsiteWithDetails() {
 
         MutableLiveData<Integer> size = new MutableLiveData<>();
@@ -129,5 +129,5 @@ public class NewWebsiteViewModelTest {
         assertEquals(1,count);
         listSize.removeObserver(observer);
 
-    }
+    }*/
 }
