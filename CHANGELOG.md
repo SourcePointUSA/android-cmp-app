@@ -1,3 +1,7 @@
+## 4.1.4 (March, 09, 2020)
+* fix web view transparency issue
+* no time out configuration needed any more
+
 ## 5.0.0 (February, 23, 2020)
 * Added TCFV2 support
 
@@ -11,6 +15,7 @@
 ## 4.1.1 (February, 11, 2020)
 * clearAllData() public method added to consentLib
 * fix privacy manager not opening from web message
+* fix authId issues
 
 ## 4.1.0 (February, 05, 2020)
 Here we finished a major improvement to the SDK: behold the native message!
