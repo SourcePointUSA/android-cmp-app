@@ -468,7 +468,7 @@ public class GDPRConsentLib {
     private void storeData(){
         storeClient.setConsentUuid(consentUUID);
         storeClient.setMetaData(metaData);
-        storeClient.setTCData(userConsent.TCData);
+        if(userConsent != null) storeClient.setTCData(userConsent.TCData);
         storeClient.setConsentString(euConsent);
     }
 
