@@ -198,7 +198,7 @@ public class GDPRConsentLib {
             @Override
             public void onConsentUIReady() {
                 cancelCounter();
-                runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(this));
+                if(this.getParent() == null) showView(this);
             }
 
             @Override
