@@ -85,7 +85,7 @@ public class NativeMessage extends RelativeLayout {
         v.setVisibility(View.VISIBLE);
         v.setText(attr.text);
         v.setTextColor(attr.style.color);
-        //v.setTextSize(attr.style.fontSize * getResources().getDisplayMetrics().scaledDensity);
+        v.setTextSize(attr.style.fontSize);
         v.setBackgroundColor(attr.style.backgroundColor);
     }
 
