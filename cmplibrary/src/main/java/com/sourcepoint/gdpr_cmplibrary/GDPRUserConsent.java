@@ -17,6 +17,13 @@ public class GDPRUserConsent {
     public String consentString;
     public HashMap<String, String> TCData;
 
+    public GDPRUserConsent(){
+        acceptedVendors = new ArrayList<>();
+        acceptedCategories = new ArrayList<>();
+        consentString = "";
+        TCData = new HashMap();
+    }
+
     public GDPRUserConsent(JSONObject jConsent) throws JSONException, ConsentLibException {
         this.acceptedVendors = json2StrArr(jConsent.getJSONArray("acceptedVendors"));
         this.acceptedCategories = json2StrArr(jConsent.getJSONArray("acceptedCategories"));

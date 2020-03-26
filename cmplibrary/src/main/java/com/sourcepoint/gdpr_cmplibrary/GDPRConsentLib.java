@@ -44,7 +44,7 @@ public class GDPRConsentLib {
 
     public ConsentLibException error = null;
 
-    public GDPRUserConsent userConsent;
+    public GDPRUserConsent userConsent = new GDPRUserConsent();
 
     private static final String TAG = "GDPRConsentLib";
 
