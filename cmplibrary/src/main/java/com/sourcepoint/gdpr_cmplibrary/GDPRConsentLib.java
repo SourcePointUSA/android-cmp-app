@@ -44,7 +44,7 @@ public class GDPRConsentLib {
 
     public ConsentLibException error = null;
 
-    public GDPRUserConsent userConsent;
+    public GDPRUserConsent userConsent = new GDPRUserConsent();
 
     private static final String TAG = "GDPRConsentLib";
 
@@ -468,7 +468,7 @@ public class GDPRConsentLib {
     private void storeData(){
         storeClient.setConsentUuid(consentUUID);
         storeClient.setMetaData(metaData);
-        if(userConsent != null) storeClient.setTCData(userConsent.TCData);
+        storeClient.setTCData(userConsent.TCData);
         storeClient.setConsentString(euConsent);
     }
 
