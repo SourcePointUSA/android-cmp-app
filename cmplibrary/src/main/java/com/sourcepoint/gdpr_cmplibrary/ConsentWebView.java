@@ -2,14 +2,20 @@ package com.sourcepoint.gdpr_cmplibrary;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.webkit.JavascriptInterface;
 import android.webkit.RenderProcessGoneDetail;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
@@ -126,6 +132,24 @@ abstract public class ConsentWebView extends WebView {
                 return false;
             }
         });
+        setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, android.os.Message resultMsg) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.getHitTestResult())));
+                view.getContext().startActivity(browserIntent);
+                return false;
+            }
+        });
+        setOnKeyListener((view, keyCode, event) -> {
+            WebView webView = (WebView) view;
+            if (event.getAction() == KeyEvent.ACTION_DOWN &&
+                    KeyEvent.KEYCODE_BACK == keyCode &&
+                    webView.canGoBack()) {
+                webView.goBack();
+                return true;
+            }
+            return false;
+        });
         addJavascriptInterface(new JSReceiverInterface(), "JSReceiver");
     }
 
@@ -141,6 +165,20 @@ abstract public class ConsentWebView extends WebView {
         Log.d(TAG, "Loading Webview with: " + url);
         Log.d(TAG, "User-Agent: " + getSettings().getUserAgentString());
         loadUrl(url);
+    }
+
+    private boolean doesLinkContainImage(HitTestResult testResult) {
+        return testResult.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
+    }
+
+    private String getLinkUrl(HitTestResult testResult) {
+        if (doesLinkContainImage(testResult)) {
+            Handler handler = new Handler();
+            Message message = handler.obtainMessage();
+            requestFocusNodeHref(message);
+            return (String) message.getData().get("url");
+        }
+        return testResult.getExtra();
     }
 
 
