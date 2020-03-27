@@ -1,5 +1,23 @@
+## 4.1.5 (March, 09, 2020)
+* goBack action returns to consent message from page inside webview
+
+## 5.0.2 (March, 26, 2020)
+* support type changes in nativeMessageJSON
+
+## 5.0.1 (March, 23, 2020)
+* added support to [TCFv2](https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/TCFv2/IAB%20Tech%20Lab%20-%20CMP%20API%20v2.md#in-app-details) for native message
+* removed all warnings during build time
+* fix web view transparency issue
+* no time out configuration needed any more
+* fix app crashing when having no internet connection
+
+
 ## 4.1.4 (March, 09, 2020)
 * fix web view transparency issue
+* no time out configuration needed any more
+
+## 5.0.0 (February, 23, 2020)
+* Added TCFV2 support
 
 ## 4.1.3 (February, 23, 2020)
 * fix app crashing when having no internet connection
