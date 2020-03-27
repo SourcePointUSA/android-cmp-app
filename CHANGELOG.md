@@ -1,4 +1,7 @@
-## 5.0.2 (March, 26, 2020)
+## 4.1.5 (March, 27, 2020)
+* goBack action returns to consent message from page inside webview
+
+##5.0.2 (March, 26, 2020)
 * support type changes in nativeMessageJSON
 
 ## 5.0.1 (March, 23, 2020)
