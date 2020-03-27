@@ -34,10 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private GDPRConsentLib buildGDPRConsentLib() {
-        return GDPRConsentLib.newBuilder(22, "tcfv2.mobile.demo", 7094,"100699",this)
-                .setStagingCampaign(false)
-                //.setAuthId("17-02-2020-0001")
-                .setTargetingParam("message", "true")
+        return GDPRConsentLib.newBuilder(22, "tcfv2.mobile.webview", 7639,"122058",this)
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");

@@ -24,7 +24,7 @@ For consent messages built using the message builder V2, it's safe to use SDK > 
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:4.1.3'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.0.2'
 }
 
 ```
@@ -132,6 +132,21 @@ ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
 ```
 
 This way, if we already have consent for that token (`"JohDoe"`) we'll bring the consent profile from the server, overwriting whatever was stored in the device.
+
+
+## Setting a Targeting Param
+
+In order to set a targeting param all you need to do is calling `.setTargetingParam(key: string, value: string)
+` in the instance of `ConsentLibBuilder`. Example: 
+
+```java
+ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
+    // calling other .set methods
+    .setTargetingParam("language", "fr")
+    .build();
+```
+
+In this example a key/value pair "language":"fr" is passed to the sp scenario and can be useded, wiht the proper scenario setup, to show a french message instead of a english one.
 
 # Development
 ## How to build the `cmplibrary` module from source

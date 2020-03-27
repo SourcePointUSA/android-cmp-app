@@ -52,14 +52,9 @@ public class NativeMessageAttrs {
 
         Style(JSONObject styleJSON) throws ConsentLibException {
             fontFamily = getString("fontFamily", styleJSON);
-            fontSize = fontSizeFromPX(getString("fontSize", styleJSON));
+            fontSize = getInt("fontSize", styleJSON);
             color = Color.parseColor(getString("color", styleJSON));
             backgroundColor = Color.parseColor(getString("backgroundColor", styleJSON));
-
-        }
-
-        private int fontSizeFromPX(String px){
-            return Integer.parseInt(px.substring(0,px.length()-2));
         }
     }
 

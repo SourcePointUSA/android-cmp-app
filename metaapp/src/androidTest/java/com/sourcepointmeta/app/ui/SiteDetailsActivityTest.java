@@ -25,16 +25,16 @@ import static org.hamcrest.Matchers.not;
 @RunWith(AndroidJUnit4.class)
 public class SiteDetailsActivityTest {
 
-    @Rule
-    public ActivityTestRule<SiteDetailsActivity> mActivityRule = new ActivityTestRule<SiteDetailsActivity>(SiteDetailsActivity.class){
-        @Override
-        protected Intent getActivityIntent() {
-            Intent intent = new Intent(InstrumentationRegistry.getTargetContext(),SiteDetailsActivity.class);
-            Website website = new Website(22,"mobile.demo",false);
-            intent.putExtra("Website",website);
-            return intent;
-        }
-    };
+//    @Rule
+//    public ActivityTestRule<SiteDetailsActivity> mActivityRule = new ActivityTestRule<SiteDetailsActivity>(SiteDetailsActivity.class){
+//        @Override
+//        protected Intent getActivityIntent() {
+//            Intent intent = new Intent(InstrumentationRegistry.getTargetContext(),SiteDetailsActivity.class);
+//            Website website = new Website(22,"mobile.demo",false);
+//            intent.putExtra("Website",website);
+//            return intent;
+//        }
+//    };
 
     @Test
     public void TestSiteDetailsComponentDisplayed(){

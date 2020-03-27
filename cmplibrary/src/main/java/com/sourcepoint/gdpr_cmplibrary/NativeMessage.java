@@ -85,7 +85,7 @@ public class NativeMessage extends RelativeLayout {
         v.setVisibility(View.VISIBLE);
         v.setText(attr.text);
         v.setTextColor(attr.style.color);
-        //v.setTextSize(attr.style.fontSize * getResources().getDisplayMetrics().scaledDensity);
+        v.setTextSize(attr.style.fontSize);
         v.setBackgroundColor(attr.style.backgroundColor);
     }
 
@@ -121,7 +121,6 @@ public class NativeMessage extends RelativeLayout {
     public void setRejectAll(Button rejectAll) {
         this.rejectAll = new ActionButton(rejectAll);
         this.rejectAll.button.setVisibility(View.INVISIBLE);
-
     }
 
     public ActionButton getShowOptions() {
@@ -141,7 +140,6 @@ public class NativeMessage extends RelativeLayout {
     public void setBody(TextView body) {
         this.body = body;
         this.body.setVisibility(View.INVISIBLE);
-
     }
 
     public TextView getTitle() {
