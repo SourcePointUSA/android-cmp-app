@@ -22,6 +22,8 @@ public class StoreClientTest {
     private static final String AUTH_ID_KEY = "sp.gdpr.authId";
     private static final String EU_CONSENT__KEY = "sp.gdpr.euconsent";
     private static final String IAB_CONSENT_CONSENT_STRING = "IABConsent_ConsentString";
+    private static final String IAB_CONSENT_PARSED_VENDOR_CONSENTS = "IABConsent_ParsedVendorConsents";
+    private static final String IAB_CONSENT_PARSED_PURPOSE_CONSENTS = "IABConsent_ParsedPurposeConsents";
 
     @Before
     public void setUp() throws Exception {
@@ -105,5 +107,20 @@ public class StoreClientTest {
         assertFalse(sharedPreferences.contains(META_DATA_KEY));
         assertFalse(sharedPreferences.contains(EU_CONSENT__KEY));
         assertFalse(sharedPreferences.contains(AUTH_ID_KEY));
+    }
+    @Test
+    public void setIabConsentParsedVendorConsents(){
+        String iabParsedVendorConsent = "iabParsedVendorConsent";
+        storeClient.setIabConsentParsedVendorConsents(iabParsedVendorConsent);
+        assertTrue(sharedPreferences.contains(IAB_CONSENT_PARSED_VENDOR_CONSENTS));
+        editor.clear().commit();
+    }
+
+    @Test
+    public void setIabConsentParsedPurposeConsents(){
+        String iabParsedPurposeConsent = "iabParsedPurposeConsent";
+        storeClient.setIabConsentParsedPurposeConsents(iabParsedPurposeConsent);
+        assertTrue(sharedPreferences.contains(IAB_CONSENT_PARSED_PURPOSE_CONSENTS));
+        editor.clear().commit();
     }
 }
