@@ -23,9 +23,9 @@ class SourcePointClient {
 
     private static AsyncHttpClient http = new AsyncHttpClient();
 
-    private static final String baseCmpUrl = "https://sourcepoint.mgr.consensu.org";
+    protected static  String baseCmpUrl = "https://sourcepoint.mgr.consensu.org";
 
-    private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/gdpr/message-url";
+    protected static  String baseMsgUrl = "https://wrapper-api.sp-prod.net/gdpr/message-url";
     private static final String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/gdpr/native-message";
 
 
@@ -72,10 +72,10 @@ class SourcePointClient {
         }
     }
 
-    class MessageResponseHandler extends JsonHttpResponseHandler {
+   /* class MessageResponseHandler extends JsonHttpResponseHandler {
 
     }
-
+*/
     SourcePointClient(
             int accountID,
             String property,

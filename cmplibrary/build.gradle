@@ -53,6 +53,9 @@ dependencies {
 
     testImplementation 'org.robolectric:robolectric:4.2.1'
 
+    // mockwebserve
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.4.0")
+
     //json jar
     testImplementation 'org.json:json:20140107'
 
