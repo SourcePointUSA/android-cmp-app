@@ -42,7 +42,7 @@ public class GDPRConsentLibTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
     }
 
     @Test
