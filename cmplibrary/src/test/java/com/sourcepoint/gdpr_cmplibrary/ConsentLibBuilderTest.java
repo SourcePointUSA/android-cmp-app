@@ -29,7 +29,7 @@ public class ConsentLibBuilderTest {
     private GDPRConsentLib.OnErrorCallback onError;
 
     @Before
-    public void initConsentLibBuilder() throws Exception {
+    public void initConsentLibBuilder() {
         consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", mock(Activity.class), mock(StoreClient.class));
         onConsentUIReady = c -> {   };
         onConsentReady = c -> {   };

@@ -24,14 +24,14 @@ public class StoreClientTest {
     private static final String IAB_CONSENT_CONSENT_STRING = "IABConsent_ConsentString";
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application.getApplicationContext());
         storeClient = new StoreClient(sharedPreferences);
         editor = sharedPreferences.edit();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
     }
 
     @Test

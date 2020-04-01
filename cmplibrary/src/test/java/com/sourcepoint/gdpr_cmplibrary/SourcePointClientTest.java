@@ -58,7 +58,7 @@ public class SourcePointClientTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         http = mock(AsyncHttpClient.class);
         onLoadComplete = mock(GDPRConsentLib.OnLoadComplete.class);
         int accountId = 123;
@@ -200,7 +200,7 @@ public class SourcePointClientTest {
 
         GDPRConsentLib.OnLoadComplete callback = mock(GDPRConsentLib.OnLoadComplete.class);
 
-        sourcePointClientMock.baseMsgUrl = mockWebServer.url("/").toString();
+//        sourcePointClientMock.baseMsgUrl = mockWebServer.url("/").toString();
 
         sourcePointClientMock.setHttpDummy( new SyncHttpClient());
 
@@ -210,7 +210,7 @@ public class SourcePointClientTest {
         mockWebServer.enqueue(new MockResponse().setBody(response.toString()));
 
         try {
-            sourcePointClientMock.getMessage(false,consentUUID , euConsent,callback); // calling the method under test
+            sourcePointClientMock.getMessage(false, consentUUID , euConsent, meta,  callback); // calling the method under test
         } catch (ConsentLibException e) {
             assertNotNull(e);
             verify(callback).onFailure(e);
@@ -225,14 +225,14 @@ public class SourcePointClientTest {
 
         GDPRConsentLib.OnLoadComplete callback = mock(GDPRConsentLib.OnLoadComplete.class);
 
-        sourcePointClientMock.baseMsgUrl = mockWebServer.url("/").toString();
+        //sourcePointClientMock.baseMsgUrl = mockWebServer.url("/").toString();
 
         sourcePointClientMock.setHttpDummy( new SyncHttpClient());
 
         mockWebServer.enqueue(new MockResponse().setResponseCode(500).setBody("Server Error"));
 
         try {
-            sourcePointClientMock.getMessage(false,consentUUID , euConsent,callback); // calling the method under test
+            sourcePointClientMock.getMessage(false,consentUUID , euConsent, meta, callback); // calling the method under test
         } catch (ConsentLibException e) {
             assertNotNull(e);
             verify(callback).onFailure(e);
@@ -243,45 +243,11 @@ public class SourcePointClientTest {
     }
 
     @Test
-    public void getGDPRStatus_onSuccess() throws Exception {
-
-        GDPRConsentLib.OnLoadComplete callback = mock(GDPRConsentLib.OnLoadComplete.class);
-
-        sourcePointClientMock.baseMsgUrl = mockWebServer.url("/").toString();
-
-        sourcePointClientMock.setHttpDummy( new SyncHttpClient());
-
-        String response = "{\"messageUrl\":\"http://google.com\"}";
-        JSONObject jsonObject = new JSONObject(response);
-
-        mockWebServer.enqueue(new MockResponse().setBody(response.toString()));
-        sourcePointClientMock.getGDPRStatus(callback); // calling the method under test
-
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(callback ,times(1)).onSuccess(captor.capture()); // using verify of mockito
-    }
-
-    @Test
-    public void getGDPRStatus_onFailure() throws Exception {
-
-        GDPRConsentLib.OnLoadComplete callback = mock(GDPRConsentLib.OnLoadComplete.class);
-
-        sourcePointClientMock.baseCmpUrl = mockWebServer.url("/").toString();
-
-        sourcePointClientMock.setHttpDummy( new SyncHttpClient());
-        mockWebServer.enqueue(new MockResponse().setResponseCode(500).setBody("Server Error"));
-        sourcePointClientMock.getGDPRStatus(callback); // calling the method under test
-
-        ArgumentCaptor<ConsentLibException> captor = ArgumentCaptor.forClass(ConsentLibException.class);
-        verify(callback, times(1)).onFailure(captor.capture());
-    }
-
-    @Test
     public void sendConsent_onFailure() throws Exception {
 
         GDPRConsentLib.OnLoadComplete callback = mock(GDPRConsentLib.OnLoadComplete.class);
 
-        sourcePointClientMock.baseMsgUrl = mockWebServer.url("/").toString();
+        //sourcePointClientMock.baseMsgUrl = mockWebServer.url("/").toString();
 
         String response = "{\"messageUrl\":\"http://google.com\"}";
         JSONObject jsonObject = new JSONObject(response);

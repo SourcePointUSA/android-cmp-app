@@ -24,7 +24,7 @@ public class ConsentWebViewTest {
     private ConsentWebView spyView;
 
     @Before
-    public void setUp() throws Exception{
+    public void setUp() {
 
         ConsentWebView consentWebView = new ConsentWebView(RuntimeEnvironment.systemContext) {
             @Override
