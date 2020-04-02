@@ -1,6 +1,11 @@
 package com.sourcepointmeta.app.models;
 
-public class Consents  {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class Consents  implements Parcelable {
 
     private  String id;
     private  String name;
@@ -11,6 +16,24 @@ public class Consents  {
         this.id = id;
         this.type = type;
     }
+
+    protected Consents(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        type = in.readString();
+    }
+
+    public static final Creator<Consents> CREATOR = new Creator<Consents>() {
+        @Override
+        public Consents createFromParcel(Parcel in) {
+            return new Consents(in);
+        }
+
+        @Override
+        public Consents[] newArray(int size) {
+            return new Consents[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -34,5 +57,17 @@ public class Consents  {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(type);
     }
 }

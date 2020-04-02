@@ -50,7 +50,7 @@ public class ConsentListRecyclerView extends RecyclerView.Adapter<ConsentListRec
     }
 
      static class ConsentViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvConsentIDText, tvConsenID, tvConsentNameText, tvConsent;
+        private TextView tvConsentIDText, tvConsentID;
         private TextView tvConsentHeader;
         private Group consentGroup;
 
@@ -58,9 +58,7 @@ public class ConsentListRecyclerView extends RecyclerView.Adapter<ConsentListRec
             super(itemView);
 
             tvConsentIDText = itemView.findViewById(R.id.tv_consentIDText);
-            tvConsenID = itemView.findViewById(R.id.tv_consentID);
-            tvConsentNameText = itemView.findViewById(R.id.tv_consentNameText);
-            tvConsent = itemView.findViewById(R.id.tv_consentName);
+             tvConsentID = itemView.findViewById(R.id.tv_consentID);
             tvConsentHeader = itemView.findViewById(R.id.tv_consentHeader);
             consentGroup = itemView.findViewById(R.id.consentGroup);
 
@@ -75,8 +73,7 @@ public class ConsentListRecyclerView extends RecyclerView.Adapter<ConsentListRec
             }else {
                 consentGroup.setVisibility(View.VISIBLE);
                 tvConsentHeader.setVisibility(View.GONE);
-                tvConsenID.setText(consents.getId());
-                tvConsent.setText(consents.getName());
+                tvConsentID.setText(consents.getId());
             }
         }
 
