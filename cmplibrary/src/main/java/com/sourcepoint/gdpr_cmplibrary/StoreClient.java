@@ -5,7 +5,6 @@ import android.os.Build;
 
 import java.util.HashMap;
 import java.util.Set;
-import java.util.UUID;
 
 public class StoreClient {
 
@@ -91,7 +90,7 @@ public class StoreClient {
     }
 
     public String getConsentUUID() {
-        return pref.getString(CONSENT_UUID_KEY, UUID.randomUUID().toString());
+        return pref.getString(CONSENT_UUID_KEY, "");
     }
 
     public String getConsentString() {
@@ -130,6 +129,5 @@ public class StoreClient {
 
     private String[] dataSetFromStore(){
         return pref.getString(TC_KEYS_KEY, "").split(TC_KEYS_DELIMITER);
-
     }
 }
