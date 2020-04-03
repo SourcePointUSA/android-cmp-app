@@ -6,16 +6,18 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 @Entity(tableName = "targeting_param",
         indices = {@Index(value = {"mKey", "refID"}, unique = true)},
-        foreignKeys = {@ForeignKey(entity = Website.class,
+        foreignKeys = {@ForeignKey(entity = Property.class,
                 parentColumns = "id",
                 childColumns = "refID",
                 onDelete = ForeignKey.CASCADE,
-                onUpdate = ForeignKey.CASCADE)})
-
-public class TargetingParam {
+                onUpdate = ForeignKey.CASCADE)}
+)
+public class TargetingParam implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private long id;
@@ -24,7 +26,7 @@ public class TargetingParam {
     private String mKey;
     @ColumnInfo(name = "mValue")
     private String mValue;
-    @ColumnInfo(name = "refID")
+    @ColumnInfo(name = "refID" ,index = true)
     private long refID;
 
     @Ignore
@@ -79,4 +81,31 @@ public class TargetingParam {
         return super.equals(obj);
     }
 
+    public static final Creator CREATOR = new Creator() {
+        public TargetingParam createFromParcel(Parcel in) {
+            return new TargetingParam(in);
+        }
+
+        public TargetingParam[] newArray(int size) {
+            return new TargetingParam[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public TargetingParam(Parcel in) {
+        this.mKey = in.readString();
+        this.mValue = in.readString();
+        this.refID = in.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mKey);
+        dest.writeString(this.mValue);
+        dest.writeLong(refID);
+    }
 }

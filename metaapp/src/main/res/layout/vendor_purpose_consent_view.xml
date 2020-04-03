@@ -61,33 +61,10 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/roboto_condensed_regular"
         android:textColor="@android:color/black"
-        app:layout_constraintStart_toEndOf="@+id/tv_consentNameText"
+        app:layout_constraintStart_toEndOf="@+id/tv_consentIDText"
         app:layout_constraintTop_toTopOf="@+id/gl_parentTop"
         app:layout_constraintEnd_toStartOf="@+id/gl_parentEnd"/>
 
-    <TextView
-        android:id="@+id/tv_consentNameText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/roboto_medium"
-        android:text="@string/consent_name"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/text_size_18"
-        app:layout_constraintStart_toStartOf="@+id/gl_parentStart"
-        app:layout_constraintTop_toBottomOf="@+id/tv_consentID" />
-
-    <TextView
-        android:id="@+id/tv_consentName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_18"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/roboto_condensed_regular"
-        android:textColor="@android:color/black"
-        app:layout_constraintStart_toEndOf="@+id/tv_consentNameText"
-        app:layout_constraintTop_toBottomOf="@+id/tv_consentID"
-        app:layout_constraintEnd_toStartOf="@+id/gl_parentEnd"/>
 
     <TextView
         android:id="@+id/tv_consentHeader"
@@ -106,6 +83,6 @@
         android:id="@+id/consentGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="tv_consentName, tv_consentNameText, tv_consentID, tv_consentIDText"/>
+        app:constraint_referenced_ids=" tv_consentID, tv_consentIDText"/>
 
 </android.support.constraint.ConstraintLayout>

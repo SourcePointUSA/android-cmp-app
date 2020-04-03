@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.WebsiteListActivity">
+    tools:context=".ui.PropertyListActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/websiteListRecycleView"
+        android:id="@+id/propertyListRecycleView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/margin_10"
@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent" />
     <TextView
-        android:id="@+id/tvAddSiteMessage"
+        android:id="@+id/tvAddPropertyMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_20"
@@ -30,7 +30,7 @@
         android:layout_marginBottom="@dimen/margin_10"
         android:layout_marginEnd="@dimen/margin_10"
         android:layout_marginStart="@dimen/margin_10"
-        android:text="@string/please_press_at_top_right_corner_to_add_sites"
+        android:text="@string/please_press_at_top_right_corner_to_add_property"
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

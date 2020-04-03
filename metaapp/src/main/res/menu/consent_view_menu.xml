@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_addProperty"
+        android:id="@+id/action_showPM"
         app:showAsAction="always"
-        android:icon="@mipmap/icon_plus"
-        android:title="@string/add_property">
+
+        android:title="@string/show_pm_btn">
     </item>
 
 </menu>
