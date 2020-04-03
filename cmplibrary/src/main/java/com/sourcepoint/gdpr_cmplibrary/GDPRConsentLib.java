@@ -335,13 +335,14 @@ public class GDPRConsentLib {
                     JSONObject jsonResult = (JSONObject) result;
                     consentUUID = jsonResult.getString("uuid");
                     metaData = jsonResult.getString("meta");
+                    userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
+                    storeData();
                     if(jsonResult.has("msgJSON") && !jsonResult.isNull("msgJSON")) {
                         setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
                         showView(nativeView);
                     } else if(jsonResult.has("url") && !jsonResult.isNull("url")){
                         loadConsentUI(jsonResult.getString("url"));
                     } else {
-                        userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
                         consentFinished();
                     }
                 }
