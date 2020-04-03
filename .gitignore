@@ -9,3 +9,4 @@
 .idea/*
 app/local.properties
 app/gradle/wrapper
+app/src/main/res/raw/*.ignore.*

@@ -1,7 +1,5 @@
 package com.sourcepoint.test_project;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,10 +10,17 @@ import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Scanner;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
 
     private ViewGroup mainViewGroup;
+
+    private PropertyConfig config;
 
     private void showView(View view) {
         if(view.getParent() == null){
@@ -32,9 +37,19 @@ public class MainActivity extends AppCompatActivity {
             mainViewGroup.removeView(view);
     }
 
+    private PropertyConfig getConfig(int configResource){
+        PropertyConfig config = null;
+        try {
+            config = new PropertyConfig(new JSONObject(new Scanner(getResources().openRawResource(configResource)).useDelimiter("\\A").next()));
+        } catch (JSONException e) {
+            Log.e(TAG, "Unable to parse config file.", e);
+        }
+        return config;
+    }
 
+    // TODO: This method will throw null pointer exception if config file is not parsed correctly
     private GDPRConsentLib buildGDPRConsentLib() {
-        return GDPRConsentLib.newBuilder(22, "tcfv2.mobile.webview", 7639,"122058",this)
+        return GDPRConsentLib.newBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId,this)
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
@@ -92,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
+        config = getConfig(R.raw.mobile_demo);
         findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
     }
 }
