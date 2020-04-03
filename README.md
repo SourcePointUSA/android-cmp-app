@@ -10,21 +10,21 @@ Table of Contents
 # Setup
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle.
 
-:heavy_exclamation_mark: **IMPORTANT** if you're not yet using the new message builder, make sure to use pod version < 3.
+:heavy_exclamation_mark: **IMPORTANT** if you still haven't moved to TCFv2, use `v4.x`.
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:2.4.5'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:4.1.5'
 }
 ```
 
 The README for the older version can be found [here](https://github.com/SourcePointUSA/android-cmp-app/blob/aa51fcc0f6bc475e734c6846b3b60abb487732f9/README.md).
 
-For consent messages built using the message builder V2, it's safe to use SDK > 3
+The following documentation and code is suitable for properties supporting TCFv2
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.0.2'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.0.3'
 }
 
 ```
@@ -48,14 +48,14 @@ public class MainActivity extends AppCompatActivity {
             mainViewGroup.addView(view);
         }
     }
+
     private void removeView(View view) {
         if(view.getParent() != null)
             mainViewGroup.removeView(view);
     }
 
-
     private GDPRConsentLib buildGDPRConsentLib() {
-        return GDPRConsentLib.newBuilder(22, "tcfv2.mobile.webview", 7639,"122058",this)
+        return GDPRConsentLib.newBuilder(22, "tcfv2.mobile.webview", 7639, "122058", this)
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
