@@ -1,3 +1,6 @@
+## 5.0.3 (April, 03, 2020)
+* Storing IAB consent data earlier by persisting it at the very first http call #114
+
 ## 4.1.5 (March, 27, 2020)
 * goBack action returns to consent message from page inside webview
 
