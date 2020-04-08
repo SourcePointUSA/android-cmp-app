@@ -31,8 +31,18 @@ public class GDPRConsentLibTest {
     @Mock
     StoreClient storeClientMock;
 
+<<<<<<< HEAD
     @Mock
     SourcePointClient sourcePointClientMock;
+=======
+    @Before
+    public void setUp() throws Exception {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application.getApplicationContext());
+        StoreClient storeClient = new StoreClient(sharedPreferences);
+
+        ConsentLibBuilder consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", mock(Activity.class));
+        gdprConsentLib = consentLibBuilder.build();
+>>>>>>> Update GDPRConsentLibTest.java
 
     private ConsentLibBuilder builderMock(){
         ConsentLibBuilder consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", activityMock){
