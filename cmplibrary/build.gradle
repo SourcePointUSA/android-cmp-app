@@ -24,6 +24,7 @@ android {
         versionName VERSION_NAME
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -57,13 +58,8 @@ dependencies {
     testImplementation 'org.json:json:20140107'
 
 
-    // Unfortunately consent-string-sdk-java only supports Java 8 and above. That means API > 26
-    // The following is a port to android environment
-    // for more information check https://github.com/InteractiveAdvertisingBureau/Consent-String-SDK-Java/issues/21
-    api 'com.iab.gdpr_android:gdpr_android:1.0.1'
     androidTestImplementation 'junit:junit:4.12'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-//    implementation 'com.conversantmedia.gdpr:consent-string-sdk-java:3.0.2'
 }
 
 task sourcesJar(type: Jar) {
@@ -71,18 +67,7 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
 }
 
-/*task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-*/
 artifacts {
-    //archives javadocJar
     archives sourcesJar
 }
 
