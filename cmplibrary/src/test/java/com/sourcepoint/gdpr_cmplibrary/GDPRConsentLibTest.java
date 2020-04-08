@@ -35,7 +35,7 @@ public class GDPRConsentLibTest {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application.getApplicationContext());
         StoreClient storeClient = new StoreClient(sharedPreferences);
 
-        ConsentLibBuilder consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", mock(Activity.class), storeClient);
+        ConsentLibBuilder consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", mock(Activity.class));
         gdprConsentLib = consentLibBuilder.build();
 
     }
