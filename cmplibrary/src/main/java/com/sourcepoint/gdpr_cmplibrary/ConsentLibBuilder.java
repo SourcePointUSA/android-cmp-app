@@ -17,9 +17,6 @@ public class ConsentLibBuilder {
     Activity activity;
     int accountId, propertyId ;
     String property;
-    String mmsDomain, cmpDomain, msgDomain;
-    String page = "";
-    ViewGroup viewGroup = null;
     protected GDPRConsentLib.OnConsentUIReadyCallback onConsentUIReady;
     protected GDPRConsentLib.OnConsentUIFinishedCallback onConsentUIFinished;
     protected GDPRConsentLib.OnConsentReadyCallback onConsentReady;
@@ -38,27 +35,21 @@ public class ConsentLibBuilder {
 
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity) {
-        this.accountId = accountId;
-        this.propertyId = propertyId;
-        this.property = property;
-        this.pmId = pmId;
-        this.activity = activity;
-        mmsDomain = cmpDomain = msgDomain = null;
-        staging = stagingCampaign = false;
-        shouldCleanConsentOnError = true;
-        storeClient = new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
+        init(accountId, property, propertyId , pmId , activity);
     }
 
-    protected   ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity, StoreClient client) {
+    private void init(Integer accountId, String property, Integer propertyId , String pmId , Activity activity){
         this.accountId = accountId;
         this.propertyId = propertyId;
         this.property = property;
         this.pmId = pmId;
         this.activity = activity;
-        mmsDomain = cmpDomain = msgDomain = null;
         staging = stagingCampaign = false;
         shouldCleanConsentOnError = true;
-        storeClient = client;
+    }
+
+    protected void setStoreClient(){
+        storeClient = new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
     }
 
     /**
@@ -174,8 +165,8 @@ public class ConsentLibBuilder {
         targetingParamsString = targetingParams.toString();
     }
 
-    private void setSourcePointClient(){
-        sourcePointClient = new SourcePointClient(accountId, property + "/" + page, propertyId, stagingCampaign, staging, targetingParamsString, authId);
+    protected void setSourcePointClient(){
+        sourcePointClient = new SourcePointClient(accountId, property, propertyId, stagingCampaign, staging, targetingParamsString, authId);
     }
 
     /**
@@ -188,12 +179,17 @@ public class ConsentLibBuilder {
     public GDPRConsentLib build() {
 
         setTargetingParamsString();
+        setStoreClient();
         setSourcePointClient();
-        return new GDPRConsentLib(this);
+        return getConsetLib();
     }
 
     public ConsentLibBuilder setMessageTimeOut(long milliSecond){
         this.defaultMessageTimeOut = milliSecond;
         return this;
+    }
+
+    protected GDPRConsentLib getConsetLib(){
+        return new GDPRConsentLib(this);
     }
 }
