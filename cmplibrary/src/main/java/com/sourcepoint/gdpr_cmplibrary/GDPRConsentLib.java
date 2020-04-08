@@ -10,8 +10,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -377,7 +375,6 @@ public class GDPRConsentLib {
         closeView(getCurrentMessageView());
     }
 
-    @VisibleForTesting
     protected void closeView(View v){
         if(v != null) runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
     }
@@ -406,7 +403,6 @@ public class GDPRConsentLib {
         }
     }
 
-    @VisibleForTesting
     protected void sendConsent(int actionType, Integer choiceId) {
         try {
             sourcePoint.sendConsent(paramsToSendConsent(actionType, choiceId), new OnLoadComplete() {
