@@ -3,7 +3,6 @@ package com.sourcepoint.gdpr_cmplibrary;
 import android.app.Activity;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.ViewGroup;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +12,8 @@ public class ConsentLibBuilder {
     private final JSONObject targetingParams = new JSONObject();
 
     private final String TAG = this.getClass().getName();
+
+    public  static final long DEFAULT_MESSAGE_TIMEOUT = 10000;
 
     Activity activity;
     int accountId, propertyId ;
@@ -29,7 +30,7 @@ public class ConsentLibBuilder {
     String authId = null;
     String pmId = "";
     GDPRConsentLib.DebugLevel debugLevel = GDPRConsentLib.DebugLevel.OFF;
-    long defaultMessageTimeOut = 10000;
+    long messageTimeOut;
 
     StoreClient storeClient;
 
@@ -46,6 +47,7 @@ public class ConsentLibBuilder {
         this.activity = activity;
         staging = stagingCampaign = false;
         shouldCleanConsentOnError = true;
+        messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
     }
 
     protected void setStoreClient(){
@@ -185,7 +187,7 @@ public class ConsentLibBuilder {
     }
 
     public ConsentLibBuilder setMessageTimeOut(long milliSecond){
-        this.defaultMessageTimeOut = milliSecond;
+        this.messageTimeOut = milliSecond;
         return this;
     }
 
