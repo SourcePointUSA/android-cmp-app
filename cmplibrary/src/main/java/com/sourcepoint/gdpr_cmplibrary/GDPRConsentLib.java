@@ -131,7 +131,7 @@ public class GDPRConsentLib {
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
         // configurable time out
-        defaultMessageTimeOut = b.defaultMessageTimeOut;
+        defaultMessageTimeOut = b.messageTimeOut;
 
         sourcePoint = b.sourcePointClient;
 
