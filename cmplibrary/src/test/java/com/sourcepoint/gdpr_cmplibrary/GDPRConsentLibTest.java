@@ -21,6 +21,7 @@ import static org.mockito.Mockito.verify;
 public class GDPRConsentLibTest {
 
     private GDPRConsentLib gdprConsentLib;
+    private GDPRConsentLib spyLib = spy(gdprConsentLib);
     private SharedPreferences sharedPreferences;
 
     private static final String CONSENT_UUID_KEY = "sp.gdpr.consentUUID";
@@ -58,7 +59,7 @@ public class GDPRConsentLibTest {
     public void onAction_MSG_ACCEPT() {
         GDPRConsentLib spyLib = spy(gdprConsentLib);
 
-        spyLib.onAction(GDPRConsentLib.ActionTypes.MSG_ACCEPT , 1);
+        spyLib.onAction(ActionTypes.ACCEPT_ALL, 1);
 
         verify(spyLib, times(1)).onMsgAccepted(1);
 
@@ -67,18 +68,18 @@ public class GDPRConsentLibTest {
 
     @Test
     public void onAction_MSG_SHOW_OPTIONS() {
-        GDPRConsentLib spyLib = spy(gdprConsentLib);
+        spyLib = spy(gdprConsentLib);
 
-        spyLib.onAction(GDPRConsentLib.ActionTypes.MSG_SHOW_OPTIONS , 1);
+        spyLib.onAction(ActionTypes.SHOW_OPTIONS, 1);
 
         verify(spyLib, times(1)).onMsgShowOptions();
     }
 
     @Test
     public void onAction_MSG_CANCEL() {
-        GDPRConsentLib spyLib = spy(gdprConsentLib);
+        spyLib = spy(gdprConsentLib);
 
-        spyLib.onAction(GDPRConsentLib.ActionTypes.MSG_CANCEL , 1);
+        spyLib.onAction(ActionTypes.MSG_CANCEL , 1);
 
         verify(spyLib, times(1)).onMsgCancel(1);
     }
@@ -87,35 +88,31 @@ public class GDPRConsentLibTest {
     public void onAction_MSG_REJECT() {
         GDPRConsentLib spyLib = spy(gdprConsentLib);
 
-        spyLib.onAction(GDPRConsentLib.ActionTypes.MSG_REJECT , 1);
+        spyLib.onAction(ActionTypes.REJECT_ALL, 1);
 
         verify(spyLib, times(1)).onMsgRejected(1);
     }
 
     @Test
     public void onAction_PM_DISMISS() {
-        GDPRConsentLib spyLib = spy(gdprConsentLib);
-
-        spyLib.onAction(GDPRConsentLib.ActionTypes.PM_DISMISS , 1);
+        spyLib.onAction(ActionTypes.PM_DISMISS , 1);
 
         verify(spyLib, times(1)).onPmDismiss();
     }
 
     @Test
     public void onMsgAccepted() {
-        GDPRConsentLib spyLib = spy(gdprConsentLib);
         spyLib.onMsgAccepted(1);
         verify(spyLib,times(1)).closeAllViews();
-        verify(spyLib,times(1)).sendConsent(GDPRConsentLib.ActionTypes.MSG_ACCEPT , 1);
+        verify(spyLib,times(1)).sendConsent(ActionTypes.ACCEPT_ALL, 1);
 
     }
 
     @Test
     public void onMsgRejected() {
-        GDPRConsentLib spyLib = spy(gdprConsentLib);
         spyLib.onMsgRejected(1);
         verify(spyLib ,times(1)).closeAllViews();
-        verify(spyLib ,times(1)).sendConsent(GDPRConsentLib.ActionTypes.MSG_REJECT, 1);
+        verify(spyLib ,times(1)).sendConsent(ActionTypes.REJECT_ALL, 1);
     }
 
 

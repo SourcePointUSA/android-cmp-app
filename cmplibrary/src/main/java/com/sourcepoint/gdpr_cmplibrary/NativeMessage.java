@@ -68,13 +68,13 @@ public class NativeMessage extends RelativeLayout {
 
     public ActionButton findActionButton(int choiceType){
         switch (choiceType) {
-            case GDPRConsentLib.ActionTypes.MSG_SHOW_OPTIONS:
+            case ActionTypes.SHOW_OPTIONS:
                 return getShowOptions();
-            case GDPRConsentLib.ActionTypes.MSG_ACCEPT:
+            case ActionTypes.ACCEPT_ALL:
                 return getAcceptAll();
-            case GDPRConsentLib.ActionTypes.MSG_CANCEL:
+            case ActionTypes.MSG_CANCEL:
                 return getCancel();
-            case GDPRConsentLib.ActionTypes.MSG_REJECT:
+            case ActionTypes.REJECT_ALL:
                 return getRejectAll();
             default:
                 return null;

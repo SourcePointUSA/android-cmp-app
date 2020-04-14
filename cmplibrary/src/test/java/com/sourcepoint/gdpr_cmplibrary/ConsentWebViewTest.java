@@ -28,7 +28,7 @@ public class ConsentWebViewTest {
         consentWebView.onConsentUIReady();
         verify(consentWebView,times(1)).onConsentUIReady();
         verify(consentWebView, times(0)).onError(new ConsentLibException());
-        verify(consentWebView, times(0)).onAction(GDPRConsentLib.ActionTypes.MSG_ACCEPT,1);
+        verify(consentWebView, times(0)).onAction(ActionTypes.ACCEPT_ALL,1);
     }
 
     @Test
@@ -37,13 +37,13 @@ public class ConsentWebViewTest {
         consentWebView.onError(consentLibException);
         verify(consentWebView, times(1)).onError(consentLibException);
         verify(consentWebView,times(0)).onConsentUIReady();
-        verify(consentWebView, times(0)).onAction(GDPRConsentLib.ActionTypes.MSG_ACCEPT,1);
+        verify(consentWebView, times(0)).onAction(ActionTypes.ACCEPT_ALL,1);
     }
 
     @Test
     public void onAction(){
-        consentWebView.onAction(GDPRConsentLib.ActionTypes.MSG_ACCEPT,1);
-        verify(consentWebView, times(1)).onAction(GDPRConsentLib.ActionTypes.MSG_ACCEPT,1);
+        consentWebView.onAction(ActionTypes.ACCEPT_ALL,1);
+        verify(consentWebView, times(1)).onAction(ActionTypes.ACCEPT_ALL,1);
         verify(consentWebView,times(0)).onConsentUIReady();
         verify(consentWebView, times(0)).onError(new ConsentLibException());
     }
