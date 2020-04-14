@@ -25,9 +25,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(RobolectricTestRunner.class)
 public class GDPRConsentLibTest {
 
-    private GDPRConsentLib gdprConsentLib;
-    private GDPRConsentLib spyLib;
-    private SharedPreferences sharedPreferences;
     private GDPRConsentLib spyLib;
 
     @Mock
@@ -119,7 +116,6 @@ public class GDPRConsentLibTest {
     @Test
     public void onAction_PM_DISMISS() {
         spyLib.onAction(ActionTypes.PM_DISMISS , 1);
-
         verify(spyLib, times(1)).onPmDismiss();
     }
 
