@@ -8,35 +8,51 @@ import java.util.HashMap;
 
 public class CustomJsonParser {
 
-    static int getInt(String s, JSONObject j) throws ConsentLibException {
+    static boolean getBoolean(String key, JSONObject j) throws ConsentLibException {
         try {
-            return j.getInt(s);
+            return j.getBoolean(key);
         } catch (JSONException e) {
-            throw new ConsentLibException(e, s + " miising from mesasgeJSON");
+            throw new ConsentLibException(e, key + " missing from JSONObject");
         }
     }
 
-    static String getString(String s, JSONObject j) throws ConsentLibException {
+    static int getInt(String key, JSONObject j) throws ConsentLibException {
         try {
-            return j.getString(s);
+            return j.getInt(key);
         } catch (JSONException e) {
-            throw new ConsentLibException(e, s + " miising from mesasgeJSON");
+            throw new ConsentLibException(e, key + " missing from JSONObject");
         }
     }
 
-    static JSONObject getJson(String s, JSONObject j) throws ConsentLibException {
+    static String getString(String key, JSONObject j) throws ConsentLibException {
         try {
-            return j.getJSONObject(s);
+            return j.getString(key);
         } catch (JSONException e) {
-            throw new ConsentLibException(e, s + " miising from mesasgeJSON");
+            throw new ConsentLibException(e, key + " missing from JSONObject");
         }
     }
 
-    static JSONArray getJArray(String s, JSONObject j) throws ConsentLibException {
+    static JSONObject getJson(String key, JSONObject j) throws ConsentLibException {
         try {
-            return j.getJSONArray(s);
+            return j.getJSONObject(key);
         } catch (JSONException e) {
-            throw new ConsentLibException(e, s + " miising from mesasgeJSON");
+            throw new ConsentLibException(e, key + " missing from JSONObject");
+        }
+    }
+
+    static JSONObject getJson(String strJson) throws ConsentLibException {
+        try {
+            return new JSONObject(strJson);
+        } catch (JSONException e) {
+            throw new ConsentLibException(e, "Not possible to convert String to Json");
+        }
+    }
+
+    static JSONArray getJArray(String key, JSONObject j) throws ConsentLibException {
+        try {
+            return j.getJSONArray(key);
+        } catch (JSONException e) {
+            throw new ConsentLibException(e, key + " missing from JSONObject");
         }
     }
 
@@ -44,7 +60,7 @@ public class CustomJsonParser {
         try {
             return jArray.getJSONObject(i);
         } catch (JSONException e) {
-            throw new ConsentLibException(e, "Error tryng to get action obj from mesasgeJSON");
+            throw new ConsentLibException(e, "Error trying to get action obj from JSONObject");
         }
     }
 
@@ -52,7 +68,7 @@ public class CustomJsonParser {
         try {
             return jArray.getString(i);
         } catch (JSONException e) {
-            throw new ConsentLibException(e, "Error tryng to get action obj from mesasgeJSON");
+            throw new ConsentLibException(e, "Error trying to get action obj from JSONObject");
         }
     }
 
