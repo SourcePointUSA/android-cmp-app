@@ -31,6 +31,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getInt;
+import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getJson;
+import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getString;
+import static java.lang.Boolean.getBoolean;
+
 abstract public class ConsentWebView extends WebView {
 
     private static final String TAG = "ConsentWebView";
@@ -58,20 +63,21 @@ abstract public class ConsentWebView extends WebView {
 
         // called when a choice is selected on the message
         @JavascriptInterface
-        public void onAction(int choiceType, String choiceId) {
-            ConsentWebView.this.onAction(choiceType, choiceId != null ? Integer.parseInt(choiceId) : null);
-        }
-
-        // called when a choice is selected on the message
-        @JavascriptInterface
-        public void onSavePM(String payloadStr) throws JSONException, ConsentLibException {
-            JSONObject payloadJson = new JSONObject(payloadStr);
-            ConsentWebView.this.onSavePM(new GDPRUserConsent(payloadJson));
+        public void onAction(String actionData) {
+            try {
+                ConsentWebView.this.onAction(consentAction(getJson(actionData)));
+            } catch (ConsentLibException e) {
+                ConsentWebView.this.onError(e);
+            }
         }
 
         @JavascriptInterface
         public void onError(String errorMessage) {
-            ConsentWebView.this.onError(new ConsentLibException("errorMessage"));
+            ConsentWebView.this.onError(new ConsentLibException(errorMessage));
+        }
+
+        private ConsentAction consentAction(JSONObject actionFromJS) throws ConsentLibException {
+            return new ConsentAction(getInt("actionType", actionFromJS), getString("choiceId", actionFromJS), CustomJsonParser.getBoolean("requestFromPm", actionFromJS), getJson("saveAndExitVariables", actionFromJS));
         }
 
     }
@@ -149,9 +155,7 @@ abstract public class ConsentWebView extends WebView {
 
     abstract public void onError(ConsentLibException error);
 
-    abstract public void onAction(int choiceType, Integer choiceId);
-
-    abstract public void onSavePM(GDPRUserConsent GDPRUserConsent);
+    abstract public void onAction(ConsentAction action);
 
     public void loadConsentUIFromUrl(String url) {
         Log.d(TAG, "Loading Webview with: " + url);

@@ -14,14 +14,16 @@ public class ConsentActionTest {
     @Mock
     JSONObject pmSaveAndExitVariablesMock;
 
-    Integer choiceIdMock = 122;
+    String choiceIdMock = "122";
 
     int actionTypeMock = 1;
+
+    boolean requestFromPmMock = true;
 
     //ActionType validation is not being tested as this class does not have this responsibility
     @Test
     public void ConsentActionDefaults(){
-        ConsentAction consentAction = new ConsentAction(actionTypeMock, choiceIdMock, pmSaveAndExitVariablesMock);
+        ConsentAction consentAction = new ConsentAction(actionTypeMock, choiceIdMock, requestFromPmMock, pmSaveAndExitVariablesMock);
         assertEquals(consentAction.actionType, actionTypeMock);
         assertEquals(choiceIdMock, choiceIdMock);
         assertEquals(pmSaveAndExitVariablesMock, pmSaveAndExitVariablesMock);
@@ -29,9 +31,9 @@ public class ConsentActionTest {
 
     @Test
     public void ConsentActionNulls(){
-        ConsentAction consentAction = new ConsentAction(actionTypeMock, null, null);
+        ConsentAction consentAction = new ConsentAction(actionTypeMock, null, requestFromPmMock, null);
         assertEquals(consentAction.actionType, actionTypeMock);
         assertNull(consentAction.choiceId);
-        assertNull(consentAction.pmSaveAndExitVariables);
+        assertNull(consentAction.saveAndExitVariables);
     }
 }
