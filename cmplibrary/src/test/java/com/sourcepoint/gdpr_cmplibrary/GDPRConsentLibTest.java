@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 public class GDPRConsentLibTest {
 
     private GDPRConsentLib gdprConsentLib;
-    private GDPRConsentLib spyLib = spy(gdprConsentLib);
+    private GDPRConsentLib spyLib;
     private SharedPreferences sharedPreferences;
 
     private static final String CONSENT_UUID_KEY = "sp.gdpr.consentUUID";
@@ -38,7 +38,7 @@ public class GDPRConsentLibTest {
 
         ConsentLibBuilder consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", mock(Activity.class), storeClient);
         gdprConsentLib = consentLibBuilder.build();
-
+        spyLib = spy(gdprConsentLib);
     }
 
     @After
@@ -57,8 +57,6 @@ public class GDPRConsentLibTest {
 
     @Test
     public void onAction_MSG_ACCEPT() {
-        GDPRConsentLib spyLib = spy(gdprConsentLib);
-
         spyLib.onAction(ActionTypes.ACCEPT_ALL, 1);
 
         verify(spyLib, times(1)).onMsgAccepted(1);
@@ -68,8 +66,6 @@ public class GDPRConsentLibTest {
 
     @Test
     public void onAction_MSG_SHOW_OPTIONS() {
-        spyLib = spy(gdprConsentLib);
-
         spyLib.onAction(ActionTypes.SHOW_OPTIONS, 1);
 
         verify(spyLib, times(1)).onMsgShowOptions();
@@ -86,8 +82,6 @@ public class GDPRConsentLibTest {
 
     @Test
     public void onAction_MSG_REJECT() {
-        GDPRConsentLib spyLib = spy(gdprConsentLib);
-
         spyLib.onAction(ActionTypes.REJECT_ALL, 1);
 
         verify(spyLib, times(1)).onMsgRejected(1);
@@ -118,7 +112,6 @@ public class GDPRConsentLibTest {
 
     @Test
     public void closeAllViews() {
-        GDPRConsentLib spyLib = spy(gdprConsentLib);
         spyLib.closeAllViews();
         verify(spyLib ,times(1)).closeView(gdprConsentLib.webView);
     }
