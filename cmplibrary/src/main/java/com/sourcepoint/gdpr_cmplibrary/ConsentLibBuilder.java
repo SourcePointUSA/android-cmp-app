@@ -3,7 +3,6 @@ package com.sourcepoint.gdpr_cmplibrary;
 import android.app.Activity;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.ViewGroup;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,12 +13,11 @@ public class ConsentLibBuilder {
 
     private final String TAG = this.getClass().getName();
 
+    public  static final long DEFAULT_MESSAGE_TIMEOUT = 10000;
+
     Activity activity;
     int accountId, propertyId ;
     String property;
-    String mmsDomain, cmpDomain, msgDomain;
-    String page = "";
-    ViewGroup viewGroup = null;
     protected GDPRConsentLib.OnConsentUIReadyCallback onConsentUIReady;
     protected GDPRConsentLib.OnConsentUIFinishedCallback onConsentUIFinished;
     protected GDPRConsentLib.OnConsentReadyCallback onConsentReady;
@@ -32,33 +30,28 @@ public class ConsentLibBuilder {
     String authId = null;
     String pmId = "";
     GDPRConsentLib.DebugLevel debugLevel = GDPRConsentLib.DebugLevel.OFF;
-    long defaultMessageTimeOut = 10000;
+    long messageTimeOut;
 
     StoreClient storeClient;
 
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity) {
-        this.accountId = accountId;
-        this.propertyId = propertyId;
-        this.property = property;
-        this.pmId = pmId;
-        this.activity = activity;
-        mmsDomain = cmpDomain = msgDomain = null;
-        staging = stagingCampaign = false;
-        shouldCleanConsentOnError = true;
-        storeClient = new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
+        init(accountId, property, propertyId , pmId , activity);
     }
 
-    protected   ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity, StoreClient client) {
+    private void init(Integer accountId, String property, Integer propertyId , String pmId , Activity activity){
         this.accountId = accountId;
         this.propertyId = propertyId;
         this.property = property;
         this.pmId = pmId;
         this.activity = activity;
-        mmsDomain = cmpDomain = msgDomain = null;
         staging = stagingCampaign = false;
         shouldCleanConsentOnError = true;
-        storeClient = client;
+        messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
+    }
+
+    protected void setStoreClient(){
+        storeClient = new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
     }
 
     /**
@@ -174,8 +167,8 @@ public class ConsentLibBuilder {
         targetingParamsString = targetingParams.toString();
     }
 
-    private void setSourcePointClient(){
-        sourcePointClient = new SourcePointClient(accountId, property + "/" + page, propertyId, stagingCampaign, staging, targetingParamsString, authId);
+    protected void setSourcePointClient(){
+        sourcePointClient = new SourcePointClient(accountId, property, propertyId, stagingCampaign, staging, targetingParamsString, authId);
     }
 
     /**
@@ -188,12 +181,17 @@ public class ConsentLibBuilder {
     public GDPRConsentLib build() {
 
         setTargetingParamsString();
+        setStoreClient();
         setSourcePointClient();
-        return new GDPRConsentLib(this);
+        return getConsetLib();
     }
 
     public ConsentLibBuilder setMessageTimeOut(long milliSecond){
-        this.defaultMessageTimeOut = milliSecond;
+        this.messageTimeOut = milliSecond;
         return this;
+    }
+
+    protected GDPRConsentLib getConsetLib(){
+        return new GDPRConsentLib(this);
     }
 }

@@ -1,9 +1,7 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
-import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -12,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
 import java.util.UUID;
 
 import cz.msebera.android.httpclient.Header;
@@ -62,7 +59,6 @@ class SourcePointClient {
         }
     }
 
-    @VisibleForTesting
     void setHttpDummy(AsyncHttpClient httpClient) {
         http = httpClient;
     }

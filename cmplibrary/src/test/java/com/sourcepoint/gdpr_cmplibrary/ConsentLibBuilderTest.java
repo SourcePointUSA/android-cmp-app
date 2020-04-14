@@ -1,124 +1,197 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
-import org.bouncycastle.util.Store;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 public class ConsentLibBuilderTest {
 
-    private ConsentLibBuilder consentLibBuilder;
     private GDPRConsentLib.OnConsentUIReadyCallback onConsentUIReady;
     private GDPRConsentLib.OnConsentReadyCallback onConsentReady;
     private GDPRConsentLib.OnConsentUIFinishedCallback onConsentUIFinished;
     private GDPRConsentLib.OnErrorCallback onError;
 
-    @Before
-    public void initConsentLibBuilder() throws Exception {
-        consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", mock(Activity.class), mock(StoreClient.class));
-        onConsentUIReady = c -> {   };
-        onConsentReady = c -> {   };
-        onConsentUIFinished = c -> { };
-        onError = c ->{ };
+    class PropertyConfig {
+        private final int accountId;
+        private final String property           ;
+        private final int propertyId;
+        private final String pmId;
+
+        PropertyConfig(Integer accountId, String property, Integer propertyId , String pmId) {
+            this.accountId = accountId;
+            this.property = property;
+            this.propertyId = propertyId;
+            this.pmId = pmId;
+        }
     }
 
-    public Field getDeclaredFieldAccess(String fieldName) throws Exception {
+    private PropertyConfig defaultConfig = new PropertyConfig(22, "mobile.demo", 1234, "1234");
+
+    private ConsentLibBuilder spyBuilder(PropertyConfig config){
+        ConsentLibBuilder spy =  spy(new ConsentLibBuilder(config.accountId, config.property, config.propertyId, config.pmId, activityMock));
+        // mocking dependencies...
+        doReturn(consentLibMock).when(spy).getConsetLib();
+        doAnswer((i) -> spy.sourcePointClient = sourcePointClientMock).when(spy).setSourcePointClient();
+        doAnswer((i) -> spy.storeClient = storeClientMock).when(spy).setStoreClient();
+        return spy;
+    }
+
+    private final static String expectedEmptyTargetingParamsString = "{}";
+
+    @Mock
+    Activity activityMock;
+
+    @Mock
+    StoreClient storeClientMock;
+
+    @Mock
+    SourcePointClient sourcePointClientMock;
+
+    @Mock
+    GDPRConsentLib consentLibMock;
+
+    ConsentLibBuilder defaultBuilder;
+
+    @Before
+    public void initConsentLibBuilder() {
+        defaultBuilder = spyBuilder(defaultConfig);
+        doNothing().when(defaultBuilder).setStoreClient();
+        doNothing().when(defaultBuilder).setSourcePointClient();
+        doReturn(consentLibMock).when(defaultBuilder).getConsetLib();
+        onConsentUIReady = c -> {
+        };
+        onConsentReady = c -> {
+        };
+        onConsentUIFinished = c -> {
+        };
+        onError = c -> {
+        };
+
+    }
+
+    private Field getDeclaredFieldAccess(String fieldName) throws Exception {
         Field member = ConsentLibBuilder.class.getDeclaredField(fieldName);
         member.setAccessible(true);
         return member;
     }
 
     @Test
+    public void ConsentLibBuilder(){
+        ConsentLibBuilder builder = new ConsentLibBuilder(defaultConfig.accountId, defaultConfig.property, defaultConfig.propertyId, defaultConfig.pmId, activityMock);
+        assertEquals(builder.accountId, defaultConfig.accountId);
+        assertEquals(builder.propertyId, defaultConfig.propertyId);
+        assertEquals(builder.property, defaultConfig.property);
+        assertEquals(builder.pmId, defaultConfig.pmId);
+        assertEquals(builder.activity, activityMock);
+        assertFalse(builder.staging);
+        assertTrue(builder.shouldCleanConsentOnError);
+        assertEquals(builder.messageTimeOut, builder.DEFAULT_MESSAGE_TIMEOUT);
+    }
+
+    @Test
     public void build() {
-        GDPRConsentLib consentLib = consentLibBuilder.build();
-        assertNotNull(consentLib);
+        assertEquals(defaultBuilder.build(), consentLibMock);
+        assertEquals(defaultBuilder.storeClient, storeClientMock);
+        assertEquals(defaultBuilder.sourcePointClient, sourcePointClientMock);
+        assertEquals(defaultBuilder.targetingParamsString, expectedEmptyTargetingParamsString);
     }
 
     @Test
     public void setMessageTimeout() {
-        consentLibBuilder.setMessageTimeOut(20000);
-        assertEquals(20000, consentLibBuilder.defaultMessageTimeOut);
+        defaultBuilder.setMessageTimeOut(20000);
+        assertEquals(20000, defaultBuilder.messageTimeOut);
+        defaultBuilder.setMessageTimeOut(0);
+        assertEquals(0, defaultBuilder.messageTimeOut);
+        //TODO: validate timeout as positive int on setMessageTimeOut()
+        defaultBuilder.setMessageTimeOut(-1000);
+        assertEquals(-1000, defaultBuilder.messageTimeOut);
     }
 
     @Test
     public void setOnConsentReady() {
-        consentLibBuilder.setOnConsentReady(onConsentReady);
-        assertEquals(onConsentReady, consentLibBuilder.onConsentReady);
+        defaultBuilder.setOnConsentReady(onConsentReady);
+        assertEquals(onConsentReady, defaultBuilder.onConsentReady);
     }
 
     @Test
     public void setOnConsentUIReady() {
-        consentLibBuilder.setOnConsentUIReady(onConsentUIReady);
-        assertEquals(onConsentUIReady, consentLibBuilder.onConsentUIReady);
+        defaultBuilder.setOnConsentUIReady(onConsentUIReady);
+        assertEquals(onConsentUIReady, defaultBuilder.onConsentUIReady);
     }
 
     @Test
-    public void setOnConsentUIFinished(){
-        consentLibBuilder.setOnConsentUIFinished(onConsentUIFinished);
-        assertEquals(onConsentUIFinished , consentLibBuilder.onConsentUIFinished);
+    public void setOnConsentUIFinished() {
+        defaultBuilder.setOnConsentUIFinished(onConsentUIFinished);
+        assertEquals(onConsentUIFinished, defaultBuilder.onConsentUIFinished);
     }
 
     @Test
     public void setOnError() {
-        consentLibBuilder.setOnError(onError);
-        assertEquals(onError, consentLibBuilder.onError);
+        defaultBuilder.setOnError(onError);
+        assertEquals(onError, defaultBuilder.onError);
     }
 
     @Test
     public void setStage() {
         boolean stage = true;
-        consentLibBuilder.setStagingCampaign(stage);
-        assertEquals(stage, consentLibBuilder.stagingCampaign);
+        defaultBuilder.setStagingCampaign(stage);
+        assertEquals(stage, defaultBuilder.stagingCampaign);
     }
 
     @Test
     public void setInternalStage() {
         boolean stage = true;
-        consentLibBuilder.setInternalStage(stage);
-        assertEquals(stage, consentLibBuilder.staging);
+        defaultBuilder.setInternalStage(stage);
+        assertEquals(stage, defaultBuilder.staging);
     }
 
     @Test
     public void setShouldCleanConsentOnError() {
         boolean shouldCleanConsentOnError = false;
-        consentLibBuilder.setShouldCleanConsentOnError(shouldCleanConsentOnError);
-        assertEquals(shouldCleanConsentOnError, consentLibBuilder.shouldCleanConsentOnError);
+        defaultBuilder.setShouldCleanConsentOnError(shouldCleanConsentOnError);
+        assertEquals(shouldCleanConsentOnError, defaultBuilder.shouldCleanConsentOnError);
     }
 
     @Test
     public void setAuthId() {
         String authId = "authId";
-        consentLibBuilder.setAuthId(authId);
-        assertEquals(authId, consentLibBuilder.authId);
+        defaultBuilder.setAuthId(authId);
+        assertEquals(authId, defaultBuilder.authId);
     }
 
     @Test
     public void setTargetingParamString() throws Exception {
         String key = "key";
         String stringValue = "stringValue";
-        consentLibBuilder.setTargetingParam(key, stringValue);
+        defaultBuilder.setTargetingParam(key, stringValue);
 
         Field localMember = getDeclaredFieldAccess("targetingParams");
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(key, stringValue);
 
-        assertEquals(jsonObject.toString() , localMember.get(consentLibBuilder).toString());
+        assertEquals(jsonObject.toString(), localMember.get(defaultBuilder).toString());
 
     }
 
@@ -129,48 +202,48 @@ public class ConsentLibBuilderTest {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(key, stringValue);
-        consentLibBuilder.setTargetingParam(key, stringValue);
+        defaultBuilder.setTargetingParam(key, stringValue);
 
         Method method = ConsentLibBuilder.class.getDeclaredMethod("setTargetingParamsString");
         method.setAccessible(true);
-        method.invoke(consentLibBuilder);
+        method.invoke(defaultBuilder);
 
-        assertEquals(jsonObject.toString(), consentLibBuilder.targetingParamsString);
+        assertEquals(jsonObject.toString(), defaultBuilder.targetingParamsString);
     }
 
     @Test
-    public void setTargetingParamIntValue() throws Exception{
+    public void setTargetingParamIntValue() throws Exception {
 
         String key = "key";
         int intValue = 2;
-        consentLibBuilder.setTargetingParam(key, intValue);
+        defaultBuilder.setTargetingParam(key, intValue);
 
         Field localMember = getDeclaredFieldAccess("targetingParams");
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(key, intValue);
 
-        assertEquals(jsonObject.toString() , localMember.get(consentLibBuilder).toString());
+        assertEquals(jsonObject.toString(), localMember.get(defaultBuilder).toString());
     }
 
     @Test
-    public void setTargetingParamStringValue() throws Exception{
+    public void setTargetingParamStringValue() throws Exception {
 
         String key = "key";
         String stringValue = "stringValue";
-        consentLibBuilder.setTargetingParam(key, stringValue);
+        defaultBuilder.setTargetingParam(key, stringValue);
 
         Field localMember = getDeclaredFieldAccess("targetingParams");
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(key, stringValue);
 
-        assertEquals(jsonObject.toString() , localMember.get(consentLibBuilder).toString());
+        assertEquals(jsonObject.toString(), localMember.get(defaultBuilder).toString());
     }
 
     @Test
-    public void setDebugLevel(){
-        consentLibBuilder.setDebugLevel(GDPRConsentLib.DebugLevel.DEBUG);
-        assertEquals(GDPRConsentLib.DebugLevel.DEBUG , consentLibBuilder.debugLevel);
+    public void setDebugLevel() {
+        defaultBuilder.setDebugLevel(GDPRConsentLib.DebugLevel.DEBUG);
+        assertEquals(GDPRConsentLib.DebugLevel.DEBUG, defaultBuilder.debugLevel);
     }
 }
