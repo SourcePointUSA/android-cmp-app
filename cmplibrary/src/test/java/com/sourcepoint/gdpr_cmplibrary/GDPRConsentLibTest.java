@@ -25,6 +25,9 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(RobolectricTestRunner.class)
 public class GDPRConsentLibTest {
 
+    private GDPRConsentLib gdprConsentLib;
+    private GDPRConsentLib spyLib;
+    private SharedPreferences sharedPreferences;
     private GDPRConsentLib spyLib;
 
     @Mock
