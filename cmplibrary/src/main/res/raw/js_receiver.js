@@ -6,18 +6,13 @@ function handleEvent(event) {
             JSReceiver.onConsentUIReady();
             return;
         }
-        var data = eventData(event);
-        JSReceiver.log(JSON.stringify(data, null, 2));
-        if(data.type) {
-            if(data.type === 1) JSReceiver.onSavePM(JSON.stringify(data.payload));
-            else JSReceiver.onAction(data.type, data.choiceId);
-        }
+        JSReceiver.onAction(JSON.stringify(consentData(event), null, 2));
     } catch (err) {
         JSReceiver.log(err.stack);
     };
 };
 
-function eventData(event) {
+function consentData(event) {
     return isFromPM(event) ? dataFromPM(event) : dataFromMessage(event);
 };
 
@@ -28,24 +23,19 @@ function isFromPM(event) {
 function dataFromMessage(msgEvent) {
     return {
         name: msgEvent.data.name,
-        type: msgEvent.data.actions.length ? msgEvent.data.actions[0].data.type : null,
-        choiceId: msgEvent.data.actions.length ? msgEvent.data.actions[0].data.choice_id : null
+        actionType: msgEvent.data.actions.length ? msgEvent.data.actions[0].data.type : null,
+        choiceId: msgEvent.data.actions.length ? msgEvent.data.actions[0].data.choice_id : null,
+        requestFromPm: false,
+        saveAndExitVariables: {}
     };
 };
 
 function dataFromPM(pmEvent) {
-    var data = {
-        name: pmEvent.data.name,
-        type: pmEvent.data ? pmEvent.data.actionType : null,
-        choiceId: null
-    };
-    if(data.type === 1) data.payload = userConsents(pmEvent.data.payload);
-    return data;
-};
-
-function userConsents(payload){
     return {
-        acceptedVendors: payload.vendors.map(function(x){return x._id}),
-        acceptedCategories: payload.categories.map(function(x){return x._id})
+        name: pmEvent.data.name,
+        actionType: pmEvent.data ? pmEvent.data.actionType : null,
+        choiceId: null,
+        requestFromPm: true,
+        saveAndExitVariables: pmEvent.data.payload
     };
 };

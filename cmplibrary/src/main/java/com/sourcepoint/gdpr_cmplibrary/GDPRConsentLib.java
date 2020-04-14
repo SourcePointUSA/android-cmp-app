@@ -185,38 +185,24 @@ public class GDPRConsentLib {
             }
 
             @Override
-            public void onSavePM(GDPRUserConsent u) {
-                GDPRConsentLib.this.userConsent = u;
-                closeAllViews();
-                sendConsent(ActionTypes.SAVE_AND_EXIT, null);
-            }
-
-            @Override
-            public void onAction(int choiceType, Integer choiceId) {
-                GDPRConsentLib.this.onAction(choiceType, choiceId);
+            public void onAction(ConsentAction action) {
+                GDPRConsentLib.this.onAction(action);
             }
         };
     }
 
-    public void onAction(int choiceType, Integer choiceId) {
+    public void onAction(ConsentAction action) {
         try{
-            Log.d(TAG, "onAction:  " +  choiceType  + " + choiceType");
-            switch (choiceType) {
+            Log.d(TAG, "onAction:  " +  action.actionType  + " + actionType");
+            switch (action.actionType) {
                 case ActionTypes.SHOW_OPTIONS:
-                    onMsgShowOptions();
-                    break;
-                case ActionTypes.ACCEPT_ALL:
-                    onMsgAccepted(choiceId);
-                    break;
-                case ActionTypes.MSG_CANCEL:
-                    onMsgCancel(choiceId);
-                    break;
-                case ActionTypes.REJECT_ALL:
-                    onMsgRejected(choiceId);
+                    onShowOptions();
                     break;
                 case ActionTypes.PM_DISMISS:
                     onPmDismiss();
+                    break;
                 default:
+                    onDefaultAction(action);
                     break;
             }
         } catch (Exception e) {
@@ -229,12 +215,12 @@ public class GDPRConsentLib {
         nativeView.setAttributes(new NativeMessageAttrs(msgJson));
     }
 
-    public void onMsgAccepted(Integer choiceId) {
+    public void onDefaultAction(ConsentAction action) {
         closeAllViews();
-        sendConsent(ActionTypes.ACCEPT_ALL, choiceId);
+        sendConsent(action);
     }
 
-    protected  void onPmDismiss(){
+    protected void onPmDismiss(){
         isPmOn = false;
         webView.post(new Runnable() {
             @Override
@@ -249,17 +235,7 @@ public class GDPRConsentLib {
         return isNative ? nativeView : webView;
     }
 
-    public void onMsgCancel(Integer choiceId){
-        closeCurrentMessageView();
-        consentFinished();
-    }
-
-    public void onMsgRejected(Integer choiceId) {
-        closeAllViews();
-        sendConsent(ActionTypes.REJECT_ALL, choiceId);
-    }
-
-    public void onMsgShowOptions(){
+    public void onShowOptions(){
         loadPm();
     }
 
@@ -283,8 +259,6 @@ public class GDPRConsentLib {
             showView(webView);
         }
     }
-
-
 
     /**
      * Communicates with SourcePoint to load the message. It all happens in the background and the WebView
@@ -370,14 +344,12 @@ public class GDPRConsentLib {
         if(v != null) runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
     }
 
-    private JSONObject paramsToSendConsent(int actionType, Integer choiceId) throws ConsentLibException {
+    private JSONObject paramsToSendConsent(ConsentAction action) throws ConsentLibException {
         try{
 
             Log.i("GDPR_UUID", "From sendConsentBody: " + consentUUID);
 
             JSONObject params = new JSONObject();
-
-            //TODO: get rid of jsonConsents, decouple the pm consents json from the userConsents obj
             params.put("consents", userConsent != null ? userConsent.jsonConsents : null);
             params.put("accountId", accountId);
             params.put("propertyId", propertyId);
@@ -385,18 +357,19 @@ public class GDPRConsentLib {
             params.put("privacyManagerId", pmId);
             params.put("uuid", consentUUID);
             params.put("meta", metaData);
-            params.put("actionType", actionType);
-            params.put("requestFromPM", choiceId == null);
-            params.put("choiceId", choiceId != null ? Integer.toString(choiceId) : null);
+            params.put("actionType", action.actionType);
+            params.put("requestFromPM", action.requestFromPm);
+            params.put("choiceId", action.choiceId);
+            params.put("saveAndExitVariables", action.saveAndExitVariables);
             return params;
         } catch(JSONException e){
             throw new ConsentLibException(e, "Error trying to build body to send consents.");
         }
     }
 
-    protected void sendConsent(int actionType, Integer choiceId) {
+    protected void sendConsent(ConsentAction action) {
         try {
-            sourcePoint.sendConsent(paramsToSendConsent(actionType, choiceId), new OnLoadComplete() {
+            sourcePoint.sendConsent(paramsToSendConsent(action), new OnLoadComplete() {
                 @Override
                 public void onSuccess(Object result) {
                     try{
