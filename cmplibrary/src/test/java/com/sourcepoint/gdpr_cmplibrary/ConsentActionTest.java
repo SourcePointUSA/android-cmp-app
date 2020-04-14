@@ -16,51 +16,21 @@ public class ConsentActionTest {
 
     Integer choiceIdMock = 122;
 
+    int actionTypeMock = 1;
+
     @Test
-    public void acceptAll(){
-        ConsentAction acceptAll_NULL_NULL = new ConsentAction(ActionTypes.ACCEPT_ALL, null, null);
-        assertEquals(acceptAll_NULL_NULL.actionType, ActionTypes.ACCEPT_ALL);
-        assertNull(acceptAll_NULL_NULL.choiceId);
-        assertNull(acceptAll_NULL_NULL.pmSaveAndExitVariables);
-
-        ConsentAction acceptAll_X_NULL = new ConsentAction(ActionTypes.ACCEPT_ALL, choiceIdMock, null);
-        assertEquals(acceptAll_X_NULL.actionType, ActionTypes.ACCEPT_ALL);
-        assertEquals(java.util.Optional.ofNullable(acceptAll_X_NULL.choiceId), choiceIdMock);
-        assertNull(acceptAll_X_NULL.pmSaveAndExitVariables);
-
-        ConsentAction acceptAll_NULL_X = new ConsentAction(ActionTypes.ACCEPT_ALL, choiceIdMock, pmSaveAndExitVariablesMock);
-        assertEquals(acceptAll_NULL_X.actionType, ActionTypes.ACCEPT_ALL);
-        assertEquals(java.util.Optional.ofNullable(acceptAll_X_NULL.choiceId), choiceIdMock);
-        assertEquals(acceptAll_NULL_X.pmSaveAndExitVariables, pmSaveAndExitVariablesMock);
+    public void ConsentActionDefaults(){
+        ConsentAction consentAction = new ConsentAction(ActionTypes.ACCEPT_ALL, choiceIdMock, pmSaveAndExitVariablesMock);
+        assertEquals(consentAction.actionType, actionTypeMock);
+        assertEquals(java.util.Optional.ofNullable(consentAction.choiceId), choiceIdMock);
+        assertEquals(java.util.Optional.ofNullable(consentAction.pmSaveAndExitVariables), pmSaveAndExitVariablesMock);
     }
 
     @Test
-    public void rejectAll(){
-
-    }
-
-    @Test
-    public void showOptions(){
-
-    }
-
-    @Test
-    public void saveAndExit(){
-
-    }
-
-    @Test
-    public void msgCancel(){
-
-    }
-
-    @Test
-    public void pmDismiss(){
-
-    }
-
-    @Test
-    public void invalidActionType(){
-
+    public void ConsentActionNulls(){
+        ConsentAction consentAction = new ConsentAction(ActionTypes.ACCEPT_ALL, null, null);
+        assertEquals(consentAction.actionType, actionTypeMock);
+        assertNull(consentAction.choiceId);
+        assertNull(consentAction.pmSaveAndExitVariables);
     }
 }
