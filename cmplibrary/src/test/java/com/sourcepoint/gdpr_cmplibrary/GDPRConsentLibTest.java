@@ -84,8 +84,8 @@ public class GDPRConsentLibTest {
     }
 
     @Test
-    public void onAction_ACCEPT_ALL() {
-        spyLib.onAction(ActionTypes.ACCEPT_ALL , 1);
+    public void onAction_MSG_ACCEPT() {
+        spyLib.onAction(ActionTypes.ACCEPT_ALL, 1);
 
         verify(spyLib, times(1)).onMsgAccepted(1);
 
@@ -94,7 +94,7 @@ public class GDPRConsentLibTest {
 
     @Test
     public void onAction_MSG_SHOW_OPTIONS() {
-        spyLib.onAction(ActionTypes.SHOW_OPTIONS , 1);
+        spyLib.onAction(ActionTypes.SHOW_OPTIONS, 1);
 
         verify(spyLib, times(1)).onMsgShowOptions();
     }
@@ -108,7 +108,7 @@ public class GDPRConsentLibTest {
 
     @Test
     public void onAction_MSG_REJECT() {
-        spyLib.onAction(ActionTypes.ACCEPT_ALL , 1);
+        spyLib.onAction(ActionTypes.REJECT_ALL, 1);
 
         verify(spyLib, times(1)).onMsgRejected(1);
     }
@@ -124,7 +124,7 @@ public class GDPRConsentLibTest {
     public void onMsgAccepted() {
         spyLib.onMsgAccepted(1);
         verify(spyLib,times(1)).closeAllViews();
-        verify(spyLib,times(1)).sendConsent(ActionTypes.ACCEPT_ALL , 1);
+        verify(spyLib,times(1)).sendConsent(ActionTypes.ACCEPT_ALL, 1);
 
     }
 
