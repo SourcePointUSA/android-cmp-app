@@ -9,7 +9,7 @@ abstract class ConsentManager {
 
     private Activity activity;
 
-    abstract void onConsentsReady(HashSet<Consent> consents, String consentUUID, String euconsent);
+    abstract void onConsentsReady(String consentUUID, String euconsent);
 
     ConsentManager(Activity activity) {
         this.activity = activity;
