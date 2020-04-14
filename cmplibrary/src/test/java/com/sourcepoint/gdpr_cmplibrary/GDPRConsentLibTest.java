@@ -85,7 +85,7 @@ public class GDPRConsentLibTest {
 
     @Test
     public void onAction_MSG_ACCEPT() {
-        spyLib.onAction(GDPRConsentLib.ActionTypes.MSG_ACCEPT , 1);
+        spyLib.onAction(ActionTypes.ACCEPT_ALL , 1);
 
         verify(spyLib, times(1)).onMsgAccepted(1);
 
@@ -94,28 +94,28 @@ public class GDPRConsentLibTest {
 
     @Test
     public void onAction_MSG_SHOW_OPTIONS() {
-        spyLib.onAction(GDPRConsentLib.ActionTypes.MSG_SHOW_OPTIONS , 1);
+        spyLib.onAction(ActionTypes.SHOW_OPTIONS , 1);
 
         verify(spyLib, times(1)).onMsgShowOptions();
     }
 
     @Test
     public void onAction_MSG_CANCEL() {
-        spyLib.onAction(GDPRConsentLib.ActionTypes.MSG_CANCEL , 1);
+        spyLib.onAction(ActionTypes.MSG_CANCEL , 1);
 
         verify(spyLib, times(1)).onMsgCancel(1);
     }
 
     @Test
     public void onAction_MSG_REJECT() {
-        spyLib.onAction(GDPRConsentLib.ActionTypes.MSG_REJECT , 1);
+        spyLib.onAction(ActionTypes.REJECT_ALL , 1);
 
         verify(spyLib, times(1)).onMsgRejected(1);
     }
 
     @Test
     public void onAction_PM_DISMISS() {
-        spyLib.onAction(GDPRConsentLib.ActionTypes.PM_DISMISS , 1);
+        spyLib.onAction(ActionTypes.PM_DISMISS , 1);
 
         verify(spyLib, times(1)).onPmDismiss();
     }
@@ -124,7 +124,7 @@ public class GDPRConsentLibTest {
     public void onMsgAccepted() {
         spyLib.onMsgAccepted(1);
         verify(spyLib,times(1)).closeAllViews();
-        verify(spyLib,times(1)).sendConsent(GDPRConsentLib.ActionTypes.MSG_ACCEPT , 1);
+        verify(spyLib,times(1)).sendConsent(ActionTypes.ACCEPT_ALL , 1);
 
     }
 
@@ -132,7 +132,7 @@ public class GDPRConsentLibTest {
     public void onMsgRejected() {
         spyLib.onMsgRejected(1);
         verify(spyLib ,times(1)).closeAllViews();
-        verify(spyLib ,times(1)).sendConsent(GDPRConsentLib.ActionTypes.MSG_REJECT, 1);
+        verify(spyLib ,times(1)).sendConsent(ActionTypes.REJECT_ALL, 1);
     }
 
 
