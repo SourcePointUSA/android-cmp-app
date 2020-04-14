@@ -100,15 +100,6 @@ public class GDPRConsentLib {
         }
     }
 
-    public class ActionTypes {
-        public static final int MSG_SHOW_OPTIONS = 12;
-        public static final int MSG_REJECT = 13;
-        public static final int MSG_ACCEPT = 11;
-        public static final int MSG_CANCEL = 15;
-        public static final int PM_COMPLETE = 1;
-        public static final int PM_DISMISS = 2;
-    }
-
     private StoreClient storeClient;
 
     /**
@@ -197,7 +188,7 @@ public class GDPRConsentLib {
             public void onSavePM(GDPRUserConsent u) {
                 GDPRConsentLib.this.userConsent = u;
                 closeAllViews();
-                sendConsent(ActionTypes.PM_COMPLETE, null);
+                sendConsent(ActionTypes.SAVE_AND_EXIT, null);
             }
 
             @Override
@@ -211,16 +202,16 @@ public class GDPRConsentLib {
         try{
             Log.d(TAG, "onAction:  " +  choiceType  + " + choiceType");
             switch (choiceType) {
-                case ActionTypes.MSG_SHOW_OPTIONS:
+                case ActionTypes.SHOW_OPTIONS:
                     onMsgShowOptions();
                     break;
-                case ActionTypes.MSG_ACCEPT:
+                case ActionTypes.ACCEPT_ALL:
                     onMsgAccepted(choiceId);
                     break;
                 case ActionTypes.MSG_CANCEL:
                     onMsgCancel(choiceId);
                     break;
-                case ActionTypes.MSG_REJECT:
+                case ActionTypes.REJECT_ALL:
                     onMsgRejected(choiceId);
                     break;
                 case ActionTypes.PM_DISMISS:
@@ -240,7 +231,7 @@ public class GDPRConsentLib {
 
     public void onMsgAccepted(Integer choiceId) {
         closeAllViews();
-        sendConsent(ActionTypes.MSG_ACCEPT, choiceId);
+        sendConsent(ActionTypes.ACCEPT_ALL, choiceId);
     }
 
     protected  void onPmDismiss(){
@@ -265,7 +256,7 @@ public class GDPRConsentLib {
 
     public void onMsgRejected(Integer choiceId) {
         closeAllViews();
-        sendConsent(ActionTypes.MSG_REJECT, choiceId);
+        sendConsent(ActionTypes.REJECT_ALL, choiceId);
     }
 
     public void onMsgShowOptions(){
