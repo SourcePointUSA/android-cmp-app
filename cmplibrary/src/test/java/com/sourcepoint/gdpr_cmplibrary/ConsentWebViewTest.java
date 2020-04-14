@@ -1,89 +1,51 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 public class ConsentWebViewTest {
 
-    private ConsentWebView spyView;
+    private ConsentWebView consentWebView;
+
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception{
 
-        ConsentWebView consentWebView = new ConsentWebView(RuntimeEnvironment.systemContext) {
-            @Override
-            public void onConsentUIReady() {   }
+        consentWebView = mock(ConsentWebView.class, CALLS_REAL_METHODS);
 
-<<<<<<< HEAD
-            @Override
-            public void onError(ConsentLibException error) {  }
-=======
-        ConsentWebView consentWebView = new ConsentWebView(RuntimeEnvironment.systemContext) {
-            @Override
-            public void onConsentUIReady() {   }
-
-            @Override
-            public void onError(ConsentLibException error) {  }
-
-            @Override
-            public void onAction(int choiceType, Integer choiceId) {  }
-
-            @Override
-            public void onSavePM(GDPRUserConsent GDPRUserConsent) {   }
-        };
-
-        spyView = spy(consentWebView);
->>>>>>> update to v4
-
-            @Override
-            public void onAction(ConsentAction action) {  }
-        };
-        spyView = spy(consentWebView);
     }
 
     @Test
     public void onConsentUIReady(){
-        spyView.onConsentUIReady();
-        verify(spyView,times(1)).onConsentUIReady();
+        consentWebView.onConsentUIReady();
+        verify(consentWebView,times(1)).onConsentUIReady();
+        verify(consentWebView, times(0)).onError(new ConsentLibException());
+        verify(consentWebView, times(0)).onAction(ActionTypes.ACCEPT_ALL,1);
     }
 
     @Test
     public void onError(){
         ConsentLibException consentLibException = new ConsentLibException();
-        spyView.onError(consentLibException);
-        verify(spyView, times(1)).onError(consentLibException);
-<<<<<<< HEAD
-=======
+        consentWebView.onError(consentLibException);
+        verify(consentWebView, times(1)).onError(consentLibException);
+        verify(consentWebView,times(0)).onConsentUIReady();
+        verify(consentWebView, times(0)).onAction(ActionTypes.ACCEPT_ALL,1);
     }
 
     @Test
     public void onAction(){
-        spyView.onAction(GDPRConsentLib.ActionTypes.MSG_ACCEPT,1);
-        verify(spyView, times(1)).onAction(GDPRConsentLib.ActionTypes.MSG_ACCEPT,1);
-    }
-
-    @Test
-    public void onSavePM(){
-        GDPRUserConsent userConsent = mock(GDPRUserConsent.class);
-        spyView.onSavePM(userConsent);
-        verify(spyView, times(1)).onSavePM(userConsent);
->>>>>>> update to v4
+        consentWebView.onAction(ActionTypes.ACCEPT_ALL,1);
+        verify(consentWebView, times(1)).onAction(ActionTypes.ACCEPT_ALL,1);
+        verify(consentWebView,times(0)).onConsentUIReady();
+        verify(consentWebView, times(0)).onError(new ConsentLibException());
     }
 }
 
