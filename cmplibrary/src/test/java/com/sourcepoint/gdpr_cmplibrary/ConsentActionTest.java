@@ -18,17 +18,18 @@ public class ConsentActionTest {
 
     int actionTypeMock = 1;
 
+    //ActionType validation is not being tested as this class does not have this responsibility
     @Test
     public void ConsentActionDefaults(){
-        ConsentAction consentAction = new ConsentAction(ActionTypes.ACCEPT_ALL, choiceIdMock, pmSaveAndExitVariablesMock);
+        ConsentAction consentAction = new ConsentAction(actionTypeMock, choiceIdMock, pmSaveAndExitVariablesMock);
         assertEquals(consentAction.actionType, actionTypeMock);
-        assertEquals(java.util.Optional.ofNullable(consentAction.choiceId), choiceIdMock);
-        assertEquals(java.util.Optional.ofNullable(consentAction.pmSaveAndExitVariables), pmSaveAndExitVariablesMock);
+        assertEquals(choiceIdMock, choiceIdMock);
+        assertEquals(pmSaveAndExitVariablesMock, pmSaveAndExitVariablesMock);
     }
 
     @Test
     public void ConsentActionNulls(){
-        ConsentAction consentAction = new ConsentAction(ActionTypes.ACCEPT_ALL, null, null);
+        ConsentAction consentAction = new ConsentAction(actionTypeMock, null, null);
         assertEquals(consentAction.actionType, actionTypeMock);
         assertNull(consentAction.choiceId);
         assertNull(consentAction.pmSaveAndExitVariables);
