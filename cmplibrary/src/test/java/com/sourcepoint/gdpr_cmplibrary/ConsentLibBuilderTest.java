@@ -51,7 +51,7 @@ public class ConsentLibBuilderTest {
     private ConsentLibBuilder spyBuilder(PropertyConfig config){
         ConsentLibBuilder spy =  spy(new ConsentLibBuilder(config.accountId, config.property, config.propertyId, config.pmId, activityMock));
         // mocking dependencies...
-        when(spy.getConsetLib()).thenReturn(consentLibMock);
+        doReturn(consentLibMock).when(spy).getConsetLib();
         doAnswer((i) -> spy.sourcePointClient = sourcePointClientMock).when(spy).setSourcePointClient();
         doAnswer((i) -> spy.storeClient = storeClientMock).when(spy).setStoreClient();
         return spy;
