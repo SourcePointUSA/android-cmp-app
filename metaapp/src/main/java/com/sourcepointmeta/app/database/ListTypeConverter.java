@@ -2,8 +2,8 @@ package com.sourcepointmeta.app.database;
 
 import android.arch.persistence.room.TypeConverter;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sourcepointmeta.app.database.entity.TargetingParam;
 
 import java.lang.reflect.Type;
