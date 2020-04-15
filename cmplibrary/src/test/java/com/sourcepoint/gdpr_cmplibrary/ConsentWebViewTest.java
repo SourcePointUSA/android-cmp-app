@@ -1,10 +1,5 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,14 +29,9 @@ public class ConsentWebViewTest {
             public void onError(ConsentLibException error) {  }
 
             @Override
-            public void onAction(int choiceType, Integer choiceId) {  }
-
-            @Override
-            public void onSavePM(GDPRUserConsent GDPRUserConsent) {   }
+            public void onAction(ConsentAction action) {  }
         };
-
         spyView = spy(consentWebView);
-
     }
 
     @Test
@@ -55,19 +45,6 @@ public class ConsentWebViewTest {
         ConsentLibException consentLibException = new ConsentLibException();
         spyView.onError(consentLibException);
         verify(spyView, times(1)).onError(consentLibException);
-    }
-
-    @Test
-    public void onAction(){
-        spyView.onAction(GDPRConsentLib.ActionTypes.MSG_ACCEPT,1);
-        verify(spyView, times(1)).onAction(GDPRConsentLib.ActionTypes.MSG_ACCEPT,1);
-    }
-
-    @Test
-    public void onSavePM(){
-        GDPRUserConsent userConsent = mock(GDPRUserConsent.class);
-        spyView.onSavePM(userConsent);
-        verify(spyView, times(1)).onSavePM(userConsent);
     }
 }
 
