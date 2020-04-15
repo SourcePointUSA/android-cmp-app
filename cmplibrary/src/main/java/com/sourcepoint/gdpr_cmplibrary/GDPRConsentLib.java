@@ -128,10 +128,16 @@ public class GDPRConsentLib {
 
         storeClient = b.storeClient;
         setConsentData(b.authId);
+    }
 
+    private void resetDataFields(){
+        userConsent = new GDPRUserConsent();
+        metaData = storeClient.DEFAULT_META_DATA;
+        euConsent = storeClient.DEFAULT_EMPTY_CONSENT_STRING;
     }
 
     public void clearAllData(){
+        resetDataFields();
         storeClient.clearAllData();
     }
 
