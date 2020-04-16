@@ -1,6 +1,7 @@
-## 5.0.4 (April, 16, 2020)
+## 5.1.0 (April, 16, 2020)
 * specialFeatures and lgtInterests added to userConsent
 * fix pmSave&exit action flow
+* ConsentAction added 
 
 ## 5.0.3 (April, 03, 2020)
 * Storing IAB consent data earlier by persisting it at the very first http call #114
