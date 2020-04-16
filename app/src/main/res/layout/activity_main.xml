@@ -13,13 +13,26 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="148dp"
         android:layout_marginLeft="148dp"
-        android:layout_marginTop="231dp"
         android:layout_marginEnd="148dp"
         android:layout_marginRight="148dp"
-        android:layout_marginBottom="232dp"
-        android:text="Review Consents"
+        android:layout_marginBottom="50dp"
+        android:text="@string/review_consents"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.514"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.932" />
+
+    <ImageView
+        android:id="@+id/source_point_logo"
+        android:layout_width="512dp"
+        android:layout_height="508dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/source_point_logo"
+        android:contentDescription="@string/source_point_logo" />
+
 </android.support.constraint.ConstraintLayout>
