@@ -201,6 +201,9 @@ public class GDPRConsentLib {
                 case ActionTypes.PM_DISMISS:
                     onPmDismiss();
                     break;
+                case ActionTypes.MSG_CANCEL:
+                    onMsgCancel();
+                    break;
                 default:
                     onDefaultAction(action);
                     break;
@@ -218,6 +221,10 @@ public class GDPRConsentLib {
     public void onDefaultAction(ConsentAction action) {
         closeAllViews();
         sendConsent(action);
+    }
+
+    public void onMsgCancel(){
+        closeAllViews();
     }
 
     protected void onPmDismiss(){
