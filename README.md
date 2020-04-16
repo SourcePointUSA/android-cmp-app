@@ -24,7 +24,7 @@ The following documentation and code is suitable for properties supporting TCFv2
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.0.3'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.0.4'
 }
 
 ```
@@ -38,24 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewGroup mainViewGroup;
 
-    private void showView(View view) {
-        if(view.getParent() == null){
-            view.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
-            view.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-            view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-            view.bringToFront();
-            view.requestLayout();
-            mainViewGroup.addView(view);
-        }
-    }
-
-    private void removeView(View view) {
-        if(view.getParent() != null)
-            mainViewGroup.removeView(view);
-    }
+    private PropertyConfig config;
 
     private GDPRConsentLib buildGDPRConsentLib() {
-        return GDPRConsentLib.newBuilder(22, "tcfv2.mobile.webview", 7639, "122058", this)
+        return GDPRConsentLib.newBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId,this)
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
@@ -113,8 +99,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
+        config = getConfig(R.raw.mobile_demo_web);
         findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
     }
+    private void showView(View view) {
+        if(view.getParent() == null){
+            view.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
+            view.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+            view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+            view.bringToFront();
+            view.requestLayout();
+            mainViewGroup.addView(view);
+        }
+    }
+    private void removeView(View view) {
+        if(view.getParent() != null)
+            mainViewGroup.removeView(view);
+    }
+
+    private PropertyConfig getConfig(int configResource){
+        PropertyConfig config = null;
+        try {
+            config = new PropertyConfig(new JSONObject(new Scanner(getResources().openRawResource(configResource)).useDelimiter("\\A").next()));
+        } catch (JSONException e) {
+            Log.e(TAG, "Unable to parse config file.", e);
+        }
+        return config;
+    }
+
 }
 ```
 
