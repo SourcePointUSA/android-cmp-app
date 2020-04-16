@@ -2,7 +2,7 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-def VERSION_NAME = "5.0.3"
+def VERSION_NAME = "5.0.4"
 
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
