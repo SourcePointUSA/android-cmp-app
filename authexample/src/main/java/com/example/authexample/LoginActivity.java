@@ -52,6 +52,14 @@ public class LoginActivity extends AppCompatActivity {
                 consentListViewData.clear();
                 consentListViewData.add("consentUUID: "+consentUUID);
                 consentListViewData.add("euconsent: "+euconsent);
+                if(consent.acceptedCategories.size() >0 ){
+                    consentListViewData.add("Accepted Categories");
+                    consentListViewData.addAll(consent.acceptedCategories);
+                }
+                if(consent.acceptedVendors.size() >0 ){
+                    consentListViewData.add("Accepted Vendors");
+                    consentListViewData.addAll(consent.acceptedVendors);
+                }
                 consentListViewAdapter.notifyDataSetChanged();
             }
 
