@@ -2,12 +2,12 @@
 .gradle
 /local.properties
 .DS_Store
+/app/bin
 /build
-/app/build
 /captures
 .externalNativeBuild
 .idea
 .idea/*
 app/local.properties
 app/gradle/wrapper
-app/src/main/res/raw/_ignore*
+app/src/main/res/raw/ignore_*
