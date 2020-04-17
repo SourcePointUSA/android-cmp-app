@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -93,14 +94,19 @@ abstract public class ConsentWebView extends WebView {
         this.setBackgroundColor(Color.TRANSPARENT);
         setWebViewClient(new WebViewClient() {
             @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                //view.loadUrl("javascript:" + "addEventListener('message', SDK.onEvent('oie'))");
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
                 try {
                     view.loadUrl("javascript:" + getFileContent(getResources().openRawResource(R.raw.js_receiver)));
                 } catch (IOException e) {
                     ConsentWebView.this.onError(new ConsentLibException(e, "Unable to load jsReceiver into ConasentLibWebview."));
                 }
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                //view.loadUrl("javascript:" + "addEventListener('message', SDK.onEvent('oie'))");
             }
 
             @Override
