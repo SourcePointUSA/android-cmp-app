@@ -67,6 +67,12 @@ public class MainActivity extends AppCompatActivity {
                     for (String purposeId : consent.acceptedCategories) {
                         Log.i(TAG, "The category " + purposeId + " was accepted.");
                     }
+                    for (String purposeId : consent.legIntCategories) {
+                        Log.i(TAG, "The legIntCategory " + purposeId + " was accepted.");
+                    }
+                    for (String specialFeatureId : consent.specialFeatures) {
+                        Log.i(TAG, "The specialFeature " + specialFeatureId + " was accepted.");
+                    }
                 })
                 .setOnError(error -> {
                     Log.e(TAG, "Something went wrong: ", error);
