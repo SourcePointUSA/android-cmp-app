@@ -1,5 +1,7 @@
-## 5.1.0 (April, 16, 2020)
+## 5.1.1 (April, 19, 2020)
 * specialFeatures and lgtInterests added to userConsent
+
+## 5.1.0 (April, 16, 2020)
 * fix pmSave&exit action flow
 * ConsentAction added 
 
