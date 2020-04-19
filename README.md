@@ -24,7 +24,7 @@ The following documentation and code is suitable for properties supporting TCFv2
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.1.0'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.1.1'
 }
 
 ```
@@ -42,25 +42,31 @@ public class MainActivity extends AppCompatActivity {
 
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId,this)
-                .setOnConsentUIReady(view -> {
-                    showView(view);
-                    Log.i(TAG, "onConsentUIReady");
-                })
-                .setOnConsentUIFinished(view -> {
-                    removeView(view);
-                    Log.i(TAG, "onConsentUIFinished");
-                })
-                .setOnConsentReady(consent -> {
-                    Log.i(TAG, "onConsentReady");
-                    Log.i(TAG, "consentString: " + consent.consentString);
-                    Log.i(TAG, consent.TCData.toString());
-                    for (String vendorId : consent.acceptedVendors) {
-                        Log.i(TAG, "The vendor " + vendorId + " was accepted.");
-                    }
-                    for (String purposeId : consent.acceptedCategories) {
-                        Log.i(TAG, "The category " + purposeId + " was accepted.");
-                    }
-                })
+                        .setOnConsentUIReady(view -> {
+                            showView(view);
+                            Log.i(TAG, "onConsentUIReady");
+                        })
+                        .setOnConsentUIFinished(view -> {
+                            removeView(view);
+                            Log.i(TAG, "onConsentUIFinished");
+                        })
+                        .setOnConsentReady(consent -> {
+                            Log.i(TAG, "onConsentReady");
+                            Log.i(TAG, "consentString: " + consent.consentString);
+                            Log.i(TAG, consent.TCData.toString());
+                            for (String vendorId : consent.acceptedVendors) {
+                                Log.i(TAG, "The vendor " + vendorId + " was accepted.");
+                            }
+                            for (String purposeId : consent.acceptedCategories) {
+                                Log.i(TAG, "The category " + purposeId + " was accepted.");
+                            }
+                            for (String purposeId : consent.legIntCategories) {
+                                Log.i(TAG, "The legIntCategory " + purposeId + " was accepted.");
+                            }
+                            for (String specialFeatureId : consent.specialFeatures) {
+                                Log.i(TAG, "The specialFeature " + specialFeatureId + " was accepted.");
+                            }
+                        })
                 .setOnError(error -> {
                     Log.e(TAG, "Something went wrong: ", error);
                     Log.i(TAG, "ConsentLibErrorMessage: " + error.consentLibErrorMessage);
