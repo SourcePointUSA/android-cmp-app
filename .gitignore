@@ -3,6 +3,7 @@
 /local.properties
 .DS_Store
 /app/bin
+/app/release
 /build
 /captures
 .externalNativeBuild
