@@ -1,4 +1,4 @@
-package com.sourcepoint.test_project;
+package com.sourcepoint.example_app;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
