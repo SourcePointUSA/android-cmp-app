@@ -7,8 +7,7 @@
 /build
 /captures
 .externalNativeBuild
-.idea
-.idea/*
+.idea/
 app/local.properties
 app/gradle/wrapper
 app/src/main/res/raw/ignore_*
