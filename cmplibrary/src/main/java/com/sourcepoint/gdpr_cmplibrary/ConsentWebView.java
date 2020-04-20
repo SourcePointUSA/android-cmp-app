@@ -97,9 +97,14 @@ abstract public class ConsentWebView extends WebView {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 try {
-                    view.loadUrl("javascript:" + getFileContent(getResources().openRawResource(R.raw.js_receiver)));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        view.evaluateJavascript(getFileContent(getResources().openRawResource(R.raw.js_receiver)),null);
+                    }else
+                    {
+                        view.loadUrl("javascript:" + getFileContent(getResources().openRawResource(R.raw.js_receiver)));
+                    }
                 } catch (IOException e) {
-                    ConsentWebView.this.onError(new ConsentLibException(e, "Unable to load jsReceiver into ConasentLibWebview."));
+                    ConsentWebView.this.onError(new ConsentLibException(e, "Unable to load jsReceiver into ConsentLibWebview."));
                 }
             }
 
