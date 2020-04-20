@@ -104,12 +104,6 @@ abstract public class ConsentWebView extends WebView {
             }
 
             @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                //view.loadUrl("javascript:" + "addEventListener('message', SDK.onEvent('oie'))");
-            }
-
-            @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
                 Log.d(TAG, "onReceivedError: " + error.toString());
