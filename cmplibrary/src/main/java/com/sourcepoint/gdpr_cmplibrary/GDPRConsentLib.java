@@ -290,9 +290,11 @@ public class GDPRConsentLib {
 
     private void loadConsentUI(String url){
         mCountDownTimer.start();
+        // warning: ninja code ahead!
         if(webView == null) {
             webView = buildWebView();
             webView.loadConsentUIFromUrl(url);
+        //post(Runnable) must be called if loadUrl(String) was already called on the same instance
         } else if(!isNative) {
             webView.post(new Runnable() {
                 @Override
@@ -300,6 +302,7 @@ public class GDPRConsentLib {
                     webView.loadConsentUIFromUrl(url);
                 }
             });
+        //this is for the rare case of loading the pm for a second time from a native message...
         } else {
             showView(webView);
         }
@@ -372,7 +375,9 @@ public class GDPRConsentLib {
 
     private void showView(View view){
         cancelCounter();
-        runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
+        if(view.getParent() == null){
+            runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
+        }
     }
 
     public void closeAllViews(){
