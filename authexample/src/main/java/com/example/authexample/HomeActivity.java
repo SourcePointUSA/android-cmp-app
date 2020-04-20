@@ -58,7 +58,7 @@ public class HomeActivity extends AppCompatActivity {
 
         consentManager = new ConsentManager(this) {
             @Override
-            void onConsentsReady(HashSet<Consent> consents, String consentUUID, String euconsent) {
+            void onConsentsReady(String consentUUID, String euconsent) {
                 consentListViewData.clear();
                 consentListViewData.add("consentUUID: "+consentUUID);
                 consentListViewData.add("euconsent: "+euconsent);
