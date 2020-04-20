@@ -45,11 +45,11 @@ public class GDPRConsentLib {
     public enum DebugLevel {DEBUG, OFF}
 
 
-    public Boolean isSubjectToGdpr = null;
+    public Boolean isSubjectToGdpr;
 
     public String consentUUID;
 
-    public ConsentLibException error = null;
+    public ConsentLibException error;
 
     public GDPRUserConsent userConsent;
 
@@ -70,7 +70,7 @@ public class GDPRConsentLib {
 
     public boolean isNative, isPmOn = false;
 
-    private CountDownTimer mCountDownTimer = null;
+    private CountDownTimer mCountDownTimer;
 
     private final SourcePointClient sourcePoint;
 
@@ -139,6 +139,8 @@ public class GDPRConsentLib {
         onConsentUIFinished = b.onConsentUIFinished;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
+        mCountDownTimer = getTimer(defaultMessageTimeOut);
+
         // configurable time out
         defaultMessageTimeOut = b.defaultMessageTimeOut;
 
@@ -196,8 +198,7 @@ public class GDPRConsentLib {
 
             @Override
             public void onConsentUIReady() {
-                cancelCounter();
-                runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(this));
+                GDPRConsentLib.this.showView(this);
             }
 
             @Override
@@ -285,12 +286,11 @@ public class GDPRConsentLib {
     }
 
     private void loadPm() {
-        loadConsentUI(pmUrl());
         isPmOn = true;
+        loadConsentUI(pmUrl());
     }
 
     private void loadConsentUI(String url){
-        mCountDownTimer = getTimer(defaultMessageTimeOut);
         mCountDownTimer.start();
         if(webView == null) {
             webView = buildWebView();
@@ -304,7 +304,6 @@ public class GDPRConsentLib {
             });
         } else {
             showView(webView);
-            cancelCounter();
         }
     }
 
@@ -375,6 +374,7 @@ public class GDPRConsentLib {
     }
 
     private void showView(View view){
+        cancelCounter();
         runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
     }
 
