@@ -45,11 +45,11 @@ public class GDPRConsentLib {
     public enum DebugLevel {DEBUG, OFF}
 
 
-    public Boolean isSubjectToGdpr;
+    public Boolean isSubjectToGdpr = null;
 
     public String consentUUID;
 
-    public ConsentLibException error;
+    public ConsentLibException error = null;
 
     public GDPRUserConsent userConsent;
 
@@ -64,8 +64,6 @@ public class GDPRConsentLib {
     private final OnErrorCallback onError;
     private final boolean shouldCleanConsentOnError;
 
-    //default time out changes
-    private boolean onMessageReadyCalled = false;
     private long defaultMessageTimeOut;
 
     public boolean isNative, isPmOn = false;
@@ -317,7 +315,6 @@ public class GDPRConsentLib {
      */
     public void run() {
         try {
-            onMessageReadyCalled = false;
             renderMsgAndSaveConsent();
         } catch (Exception e) {
             e.printStackTrace();
@@ -461,9 +458,7 @@ public class GDPRConsentLib {
             public void onTick(long millisUntilFinished) {     }
             @Override
             public void onFinish() {
-                if (!onMessageReadyCalled) {
-                    GDPRConsentLib.this.onErrorTask(new ConsentLibException("a timeout has occurred when loading the message"));
-                }
+                GDPRConsentLib.this.onErrorTask(new ConsentLibException("a timeout has occurred when loading the message"));
                 cancel();
             }
         };
