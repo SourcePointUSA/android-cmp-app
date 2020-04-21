@@ -1,49 +1,93 @@
 package com.example.authexample;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.View;
+
+import com.sourcepoint.gdpr_cmplibrary.ConsentLibBuilder;
+import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
+import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashSet;
+import java.util.Scanner;
 
 abstract class ConsentManager {
     private static final String TAG = "ConsentManager";
 
     private Activity activity;
 
-    abstract void onConsentsReady(String consentUUID, String euconsent);
+    private SharedPreferences sharedPreferences ;
+    abstract void onConsentsReady(GDPRUserConsent consent ,String consentUUID, String euconsent);
+
+    abstract void showView(View view);
+
+    abstract void removeView(View view);
 
     ConsentManager(Activity activity) {
         this.activity = activity;
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
     }
 
-//    private ConsentLibBuilder getConsentLib(Boolean pm) {
-//        return ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",activity)
-//            .setStagingCampaign(true)
-//            .setViewGroup(activity.findViewById(android.R.id.content))
-//            .setShowPM(pm)
-//            .setMessageTimeOut(30000)
-//            .setOnConsentReady(consentLib -> consentLib.getCustomVendorConsents(results -> {
-//                Log.d(TAG, "Interaction complete");
-//                HashSet<Consent> consents = (HashSet) results;
-//                onConsentsReady(consents, consentLib.consentUUID, consentLib.euconsent);
-//            }))
-//            .setConsentUIReady(_c -> Log.d(TAG, "Message Ready"))
-//            .setOnError(c -> Log.d(TAG, "Error Occurred: "+c.error));
-//    }
-//
-//    void loadMessage(Boolean pm) {
-//        try {
-//            getConsentLib(pm).build().run();
-//        } catch (ConsentLibException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    void loadMessage(boolean pm, String authId) {
-//        try {
-//            getConsentLib(pm).setAuthId(authId).build().run();
-//        } catch (ConsentLibException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private ConsentLibBuilder buildGDPRConsentLib(PropertyConfig config) {
+        return GDPRConsentLib.newBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId, activity)
+                .setOnConsentUIReady(view -> {
+                    showView(view);
+                    Log.i(TAG, "onConsentUIReady");
+                })
+                .setOnConsentUIFinished(view -> {
+                    removeView(view);
+                    Log.i(TAG, "onConsentUIFinished");
+                })
+                .setOnConsentReady(consent -> {
+                    Log.i(TAG, "onConsentReady");
+                    Log.i(TAG, "consentString: " + consent.consentString);
+                    Log.i(TAG, consent.TCData.toString());
+                    for (String vendorId : consent.acceptedVendors) {
+                        Log.i(TAG, "The vendor " + vendorId + " was accepted.");
+                    }
+                    for (String purposeId : consent.acceptedCategories) {
+                        Log.i(TAG, "The category " + purposeId + " was accepted.");
+                    }
+                    String consentUUID = sharedPreferences.getString("sp.gdpr.consentUUID" , "");
+                    String euConsent = sharedPreferences.getString("sp.gdpr.euconsent","");
+                    this.onConsentsReady(consent , consentUUID,euConsent);
+                })
+                .setOnError(error -> {
+                    Log.e(TAG, "Something went wrong: ", error);
+                    Log.i(TAG, "ConsentLibErrorMessage: " + error.consentLibErrorMessage);
+                });
+    }
+
+
+    void loadMessage(Boolean pm) {
+        if (pm){
+            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).build().showPm();
+        }else {
+            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).build().run();
+        }
+    }
+
+    void loadMessage(boolean pm, String authId) {
+        if(pm){
+            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).setAuthId(authId).build().showPm();
+        }else {
+            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).setAuthId(authId).build().run();
+        }
+    }
+
+    private PropertyConfig getConfig(int configResource){
+        PropertyConfig config = null;
+        try {
+            config = new PropertyConfig(new JSONObject(new Scanner(activity.getResources().openRawResource(configResource)).useDelimiter("\\A").next()));
+        } catch (JSONException e) {
+            Log.e(TAG, "Unable to parse config file.", e);
+        }
+        return config;
+    }
 }
 

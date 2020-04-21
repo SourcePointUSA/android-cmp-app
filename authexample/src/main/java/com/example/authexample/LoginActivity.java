@@ -11,10 +11,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText userNameInput;
     ListView consentListView;
     Toolbar toolbar;
+    private ViewGroup mainViewGroup;
 
     ArrayList<String> consentListViewData = loadingData();
     ArrayAdapter<String> consentListViewAdapter;
@@ -40,17 +44,42 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        mainViewGroup = findViewById(android.R.id.content);
+
         consentManager = new ConsentManager(this) {
             @Override
-            void onConsentsReady(String consentUUID, String euconsent) {
+            void onConsentsReady(GDPRUserConsent consent ,String consentUUID, String euconsent) {
                 consentListViewData.clear();
                 consentListViewData.add("consentUUID: "+consentUUID);
                 consentListViewData.add("euconsent: "+euconsent);
+                if(consent.acceptedCategories.size() >0 ){
+                    consentListViewData.add("Accepted Categories");
+                    consentListViewData.addAll(consent.acceptedCategories);
+                }
+                if(consent.acceptedVendors.size() >0 ){
+                    consentListViewData.add("Accepted Vendors");
+                    consentListViewData.addAll(consent.acceptedVendors);
+                }
                 consentListViewAdapter.notifyDataSetChanged();
+            }
+
+            void showView(View view) {
+                if(view.getParent() == null){
+                    view.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
+                    view.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    view.bringToFront();
+                    view.requestLayout();
+                    mainViewGroup.addView(view);
+                }
+            }
+            void removeView(View view) {
+                if(view.getParent() != null)
+                    mainViewGroup.removeView(view);
             }
         };
 
-        loginButton = findViewById(R.id.AcceptAll);
+        loginButton = findViewById(R.id.button);
         userNameInput = findViewById(R.id.userNameInput);
         consentListView = findViewById(R.id.consentListView);
         toolbar = findViewById(R.id.my_toolbar);
@@ -76,13 +105,13 @@ public class LoginActivity extends AppCompatActivity {
 
         consentListView.setAdapter(consentListViewAdapter);
 
-        //consentManager.loadMessage(false);
+        consentManager.loadMessage(false);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        //consentManager.loadMessage(false);
+        consentManager.loadMessage(false);
     }
 
     @Override
@@ -96,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_privacy_settings) {
             Log.d("App", "onOptionsItemSelected: " + item.getItemId());
-            //consentManager.loadMessage(true);
+            consentManager.loadMessage(true);
             return true;
         }
 
