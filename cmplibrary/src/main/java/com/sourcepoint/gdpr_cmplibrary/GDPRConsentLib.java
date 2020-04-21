@@ -64,8 +64,6 @@ public class GDPRConsentLib {
     private final OnErrorCallback onError;
     private final boolean shouldCleanConsentOnError;
 
-    private long defaultMessageTimeOut;
-
     public boolean isNative, isPmOn = false;
 
     private CountDownTimer mCountDownTimer;
@@ -137,10 +135,7 @@ public class GDPRConsentLib {
         onConsentUIFinished = b.onConsentUIFinished;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
-        mCountDownTimer = getTimer(defaultMessageTimeOut);
-
-        // configurable time out
-        defaultMessageTimeOut = b.defaultMessageTimeOut;
+        mCountDownTimer = getTimer(b.defaultMessageTimeOut);
 
         sourcePoint = b.sourcePointClient;
 
@@ -256,11 +251,15 @@ public class GDPRConsentLib {
 
     protected  void onPmDismiss(){
         isPmOn = false;
-        webView.post(new Runnable() {
+        goBackInAnotherThread(webView);
+    }
+
+    private void goBackInAnotherThread(ConsentWebView v) {
+        v.post(new Runnable() {
             @Override
             public void run() {
-                if (webView.canGoBack()) webView.goBack();
-                else closeView(webView);
+                if (v.canGoBack()) v.goBack();
+                else closeView(v);
             }
         });
     }
@@ -290,24 +289,25 @@ public class GDPRConsentLib {
 
     private void loadConsentUI(String url){
         mCountDownTimer.start();
-        // warning: ninja code ahead!
         if(webView == null) {
             webView = buildWebView();
             webView.loadConsentUIFromUrl(url);
-        //post(Runnable) must be called if loadUrl(String) was already called on the same instance
         } else if(!isNative) {
-            webView.post(new Runnable() {
-                @Override
-                public void run() {
-                    webView.loadConsentUIFromUrl(url);
-                }
-            });
-        //this is for the rare case of loading the pm for a second time from a native message...
+            loadConsentUIFromUrlInAnotherThread(webView, url);
+            //this is for the rare case of loading the pm for a second time from a native message...
         } else {
             showView(webView);
         }
     }
 
+    private void loadConsentUIFromUrlInAnotherThread(ConsentWebView v, String url) {
+        v.post(new Runnable() {
+            @Override
+            public void run() {
+                v.loadConsentUIFromUrl(url);
+            }
+        });
+    }
 
 
     /**
