@@ -64,13 +64,9 @@ public class GDPRConsentLib {
     private final OnErrorCallback onError;
     private final boolean shouldCleanConsentOnError;
 
-    //default time out changes
-    private boolean onMessageReadyCalled = false;
-    private long defaultMessageTimeOut;
-
     public boolean isNative, isPmOn = false;
 
-    private CountDownTimer mCountDownTimer = null;
+    private CountDownTimer mCountDownTimer;
 
     private final SourcePointClient sourcePoint;
 
@@ -139,8 +135,7 @@ public class GDPRConsentLib {
         onConsentUIFinished = b.onConsentUIFinished;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
-        // configurable time out
-        defaultMessageTimeOut = b.defaultMessageTimeOut;
+        mCountDownTimer = getTimer(b.defaultMessageTimeOut);
 
         sourcePoint = b.sourcePointClient;
 
@@ -196,8 +191,7 @@ public class GDPRConsentLib {
 
             @Override
             public void onConsentUIReady() {
-                cancelCounter();
-                runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(this));
+                GDPRConsentLib.this.showView(this);
             }
 
             @Override
@@ -257,11 +251,15 @@ public class GDPRConsentLib {
 
     protected  void onPmDismiss(){
         isPmOn = false;
-        webView.post(new Runnable() {
+        goBackInAnotherThread(webView);
+    }
+
+    private void goBackInAnotherThread(ConsentWebView v) {
+        v.post(new Runnable() {
             @Override
             public void run() {
-                if (webView.canGoBack()) webView.goBack();
-                else closeView(webView);
+                if (v.canGoBack()) v.goBack();
+                else closeView(v);
             }
         });
     }
@@ -285,29 +283,31 @@ public class GDPRConsentLib {
     }
 
     private void loadPm() {
-        loadConsentUI(pmUrl());
         isPmOn = true;
+        loadConsentUI(pmUrl());
     }
 
     private void loadConsentUI(String url){
-        mCountDownTimer = getTimer(defaultMessageTimeOut);
         mCountDownTimer.start();
         if(webView == null) {
             webView = buildWebView();
             webView.loadConsentUIFromUrl(url);
         } else if(!isNative) {
-            webView.post(new Runnable() {
-                @Override
-                public void run() {
-                    webView.loadConsentUIFromUrl(url);
-                }
-            });
+            loadConsentUIFromUrlInAnotherThread(webView, url);
+            //this is for the rare case of loading the pm for a second time from a native message...
         } else {
             showView(webView);
-            cancelCounter();
         }
     }
 
+    private void loadConsentUIFromUrlInAnotherThread(ConsentWebView v, String url) {
+        v.post(new Runnable() {
+            @Override
+            public void run() {
+                v.loadConsentUIFromUrl(url);
+            }
+        });
+    }
 
 
     /**
@@ -318,7 +318,6 @@ public class GDPRConsentLib {
      */
     public void run() {
         try {
-            onMessageReadyCalled = false;
             renderMsgAndSaveConsent();
         } catch (Exception e) {
             e.printStackTrace();
@@ -375,7 +374,10 @@ public class GDPRConsentLib {
     }
 
     private void showView(View view){
-        runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
+        cancelCounter();
+        if(view.getParent() == null){
+            runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
+        }
     }
 
     public void closeAllViews(){
@@ -461,9 +463,7 @@ public class GDPRConsentLib {
             public void onTick(long millisUntilFinished) {     }
             @Override
             public void onFinish() {
-                if (!onMessageReadyCalled) {
-                    GDPRConsentLib.this.onErrorTask(new ConsentLibException("a timeout has occurred when loading the message"));
-                }
+                GDPRConsentLib.this.onErrorTask(new ConsentLibException("a timeout has occurred when loading the message"));
                 cancel();
             }
         };
