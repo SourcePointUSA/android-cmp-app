@@ -1,3 +1,7 @@
+## 4.1.6 (March, 22, 2020)
+* fix timeout error on loadPm() from very first launch
+* fix message  auto closing after ~16s
+
 ## 4.1.5 (March, 09, 2020)
 * goBack action returns to consent message from page inside webview
 
