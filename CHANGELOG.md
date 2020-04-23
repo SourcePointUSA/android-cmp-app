@@ -1,4 +1,4 @@
-## 4.1.6 (March, 22, 2020)
+## 4.1.6 (April, 22, 2020)
 * fix timeout error on loadPm() from very first launch
 * fix message  auto closing after ~16s
 
