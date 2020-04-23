@@ -1,22 +1,23 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
 import java.util.UUID;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.StringEntity;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 class SourcePointClient {
     private static final String LOG_TAG = "SOURCE_POINT_CLIENT";
@@ -72,10 +73,6 @@ class SourcePointClient {
         }
     }
 
-   /* class MessageResponseHandler extends JsonHttpResponseHandler {
-
-    }
-*/
     SourcePointClient(
             int accountID,
             String property,
@@ -105,58 +102,59 @@ class SourcePointClient {
 
     void getGDPRStatus(GDPRConsentLib.OnLoadComplete onLoadComplete) {
         String url = GDPRStatusUrl();
-        http.get(url, new ResponseHandler(url, onLoadComplete) {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    onLoadComplete.onSuccess(response.getString("gdprApplies"));
-                } catch (JSONException e) {
-                    onFailure(statusCode, headers, e, response);
-                }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(url+"/").build();
 
-            }
+        SourcePointInterface client = retrofit.create(SourcePointInterface.class);
+        Call<ResponseBody> call = client.getGDPRStatus();
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-            }
-        });
+       call.enqueue(new Callback<ResponseBody>() {
+           @Override
+           public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+               Log.d("retrofit" , response.toString());
+               try {
+                   onLoadComplete.onSuccess(new JSONObject(response.body().string()).getString("gdprApplies"));
+               } catch (Exception e) {
+                   e.printStackTrace();
+                   onLoadComplete.onFailure( new ConsentLibException(e, "Error trying to stringify bodyJson on getMessage in sourcePointClient."));
+               }
+           }
+
+           @Override
+           public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+               onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+           }
+       });
     }
 
     void getMessage(boolean isNative, String consentUUID, String meta, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
         String url = messageUrl(isNative);
         Log.d(LOG_TAG, "Getting message from: " + url);
-        try {
-            http.post(null, url, new StringEntity(messageParams(consentUUID, meta).toString()), "application/json", new ResponseHandler(url, onLoadComplete) {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    Log.i(LOG_TAG, response.toString());
-                    onLoadComplete.onSuccess(response);
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
-                    onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-                }
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(url+"/").build();
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
-                    onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+        SourcePointInterface client = retrofit.create(SourcePointInterface.class);
+
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),messageParams(consentUUID, meta).toString());
+        Call<ResponseBody> call = client.getMessage(body);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.d("retrofit" , response.toString());
+                try {
+                    onLoadComplete.onSuccess(new JSONObject(response.body().string()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onLoadComplete.onFailure( new ConsentLibException(e, "Error trying to stringify consentjson on sendConsent in sourcePointClient."));
                 }
-            });
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            throw new ConsentLibException(e, "Error trying to stringify bodyJson on getMessage in sourcePointClient.");
-        }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+            }
+        });
     }
 
     private String messageUrl(boolean isNative) {
@@ -196,28 +194,27 @@ class SourcePointClient {
         } catch (JSONException e) {
             throw new ConsentLibException(e, "Error adding param requestUUID to sendConsentBody.");
         }
-        StringEntity entity = null;
-        try {
-            entity = new StringEntity(params.toString());
-        } catch (UnsupportedEncodingException e) {
-            throw new ConsentLibException(e, "Error stringifing params for sending consent.");
-        }
-        http.post(null, url, entity, "application/json",  new ResponseHandler(url, onLoadComplete) {
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(url+"/").build();
+
+        SourcePointInterface client = retrofit.create(SourcePointInterface.class);
+
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),params.toString());
+        Call<ResponseBody> call = client.sendConsent(body);
+
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                onLoadComplete.onSuccess(response);
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.d("retrofit" , response.toString());
+                try {
+                    onLoadComplete.onSuccess(new JSONObject(response.body().string()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
                 onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
             }
         });
