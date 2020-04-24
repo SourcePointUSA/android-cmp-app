@@ -16,7 +16,6 @@ public class ConsentLibExceptionTest {
     String noInternetConnectionMsgExpected = ConsentLibException.NoInternetConnectionException.description + ": " + errorMsgMock;
     String buildExceptionMsgExpected = ConsentLibException.BuildException.description + ": " + errorMsgMock;
     String ApiExceptionMsgExpected = ConsentLibException.ApiException.description + ": " + errorMsgMock;
-    String CustomJsonParserExceptionMsgExpected = ConsentLibException.CustomJsonParserException.description + ": " + errorMsgMock;
 
 
 
@@ -69,19 +68,6 @@ public class ConsentLibExceptionTest {
     public void ApiExceptionWithErrorPlusMessage(){
         ConsentLibException e = new ConsentLibException.ApiException(errorMock , errorMsgMock);
         assertEquals(e.consentLibErrorMessage, ApiExceptionMsgExpected);
-        assertEquals(e.getCause(), errorMock);
-    }
-
-    @Test
-    public void CustomJsonParserExceptionWithMessage(){
-        ConsentLibException e = new ConsentLibException.CustomJsonParserException(errorMsgMock);
-        assertEquals(e.consentLibErrorMessage, ApiExceptionMsgExpected);
-    }
-
-    @Test
-    public void CustomJsonParserExceptionWithErrorPlusMessage(){
-        ConsentLibException e = new ConsentLibException.CustomJsonParserException(errorMock , errorMsgMock);
-        assertEquals(e.consentLibErrorMessage, CustomJsonParserExceptionMsgExpected);
         assertEquals(e.getCause(), errorMock);
     }
 
