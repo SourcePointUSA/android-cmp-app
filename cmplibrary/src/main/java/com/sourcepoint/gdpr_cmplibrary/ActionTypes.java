@@ -1,10 +1,26 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
-public class ActionTypes {
-    public static final int SHOW_OPTIONS = 12;
-    public static final int REJECT_ALL = 13;
-    public static final int ACCEPT_ALL = 11;
-    public static final int MSG_CANCEL = 15;
-    public static final int SAVE_AND_EXIT = 1;
-    public static final int PM_DISMISS = 2;
+public enum ActionTypes {
+
+    SHOW_OPTIONS(12),
+    REJECT_ALL(13),
+    ACCEPT_ALL(11),
+    MSG_CANCEL(15),
+    SAVE_AND_EXIT(1),
+    PM_DISMISS(2);
+
+    public final int code;
+
+    ActionTypes(int actionTypeCode){
+        this.code = actionTypeCode;
+    }
+
+    public static ActionTypes fromCode(int code) {
+       for (ActionTypes actionTypes : values()){
+           if(actionTypes.code == code) return actionTypes;
+       }
+        /* TODO: throw ConsentLib exception instead. But it will change some public method
+            signatures a demand for a minor version bump up of the SDK. */
+       return null;
+    }
 }

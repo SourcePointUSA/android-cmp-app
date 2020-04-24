@@ -67,14 +67,14 @@ public class NativeMessage extends RelativeLayout {
     }
 
     public ActionButton findActionButton(int choiceType){
-        switch (choiceType) {
-            case ActionTypes.SHOW_OPTIONS:
+        switch (ActionTypes.fromCode(choiceType)) {
+            case SHOW_OPTIONS:
                 return getShowOptions();
-            case ActionTypes.ACCEPT_ALL:
+            case ACCEPT_ALL:
                 return getAcceptAll();
-            case ActionTypes.MSG_CANCEL:
+            case MSG_CANCEL:
                 return getCancel();
-            case ActionTypes.REJECT_ALL:
+            case REJECT_ALL:
                 return getRejectAll();
             default:
                 return null;
@@ -149,10 +149,9 @@ public class NativeMessage extends RelativeLayout {
     public void setTitle(TextView title) {
         this.title = title;
         this.title.setVisibility(View.INVISIBLE);
-
     }
 
-    public class ActionButton {
+    public static class ActionButton {
 
         public ActionButton(Button b){
             button = b;

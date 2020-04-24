@@ -199,15 +199,15 @@ public class GDPRConsentLib {
 
     public void onAction(ConsentAction action) {
         try{
-            Log.d(TAG, "onAction:  " +  action.actionType  + " + actionType");
+            Log.d(TAG, "onAction:  " +  action.actionType + " + actionType");
             switch (action.actionType) {
-                case ActionTypes.SHOW_OPTIONS:
+                case SHOW_OPTIONS:
                     onShowOptions();
                     break;
-                case ActionTypes.PM_DISMISS:
+                case PM_DISMISS:
                     onPmDismiss();
                     break;
-                case ActionTypes.MSG_CANCEL:
+                case MSG_CANCEL:
                     onMsgCancel();
                     break;
                 default:
