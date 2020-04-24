@@ -44,6 +44,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.loopj.android:android-async-http:1.4.9'
 
+    //okhttp
+    implementation("com.squareup.okhttp3:okhttp:3.12.10")
     //junit
     testImplementation 'junit:junit:4.13'
     //  Mockito framework
