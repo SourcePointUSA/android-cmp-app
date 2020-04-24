@@ -16,23 +16,23 @@ public class ConsentActionTest {
 
     String choiceIdMock = "122";
 
-    int actionTypeMock = 1;
+    int actionTypeCodeMock = 1;
 
     boolean requestFromPmMock = true;
 
     //ActionType validation is not being tested as this class does not have this responsibility
     @Test
     public void ConsentActionDefaults(){
-        ConsentAction consentAction = new ConsentAction(actionTypeMock, choiceIdMock, requestFromPmMock, pmSaveAndExitVariablesMock);
-        assertEquals(consentAction.actionType, actionTypeMock);
+        ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, choiceIdMock, requestFromPmMock, pmSaveAndExitVariablesMock);
+        assertEquals(consentAction.actionType, actionTypeCodeMock);
         assertEquals(choiceIdMock, choiceIdMock);
         assertEquals(pmSaveAndExitVariablesMock, pmSaveAndExitVariablesMock);
     }
 
     @Test
     public void ConsentActionNulls(){
-        ConsentAction consentAction = new ConsentAction(actionTypeMock, null, requestFromPmMock, null);
-        assertEquals(consentAction.actionType, actionTypeMock);
+        ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, null, requestFromPmMock, null);
+        assertEquals(consentAction.actionType.code, actionTypeCodeMock);
         assertNull(consentAction.choiceId);
         assertNull(consentAction.pmSaveAndExitVariables);
     }
