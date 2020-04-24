@@ -1,12 +1,8 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +10,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.UUID;
 
-import cz.msebera.android.httpclient.Header;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
