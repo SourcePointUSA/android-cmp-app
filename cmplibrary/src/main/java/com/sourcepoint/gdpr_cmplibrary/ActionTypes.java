@@ -1,7 +1,6 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 public class ActionTypes {
-
     public static final int SHOW_OPTIONS = 12;
     public static final int REJECT_ALL = 13;
     public static final int ACCEPT_ALL = 11;
