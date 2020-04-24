@@ -2,19 +2,12 @@ package com.sourcepoint.gdpr_cmplibrary;
 
 import android.util.Log;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
-import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.StringEntity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -139,13 +132,6 @@ class SourcePointClient {
             params.put("requestUUID", getRequestUUID());
         } catch (JSONException e) {
             throw new ConsentLibException(e, "Error adding param requestUUID to sendConsentBody.");
-        }
-        StringEntity entity = null;
-        try {
-            Log.i(LOG_TAG, params.toString());
-            entity = new StringEntity(params.toString());
-        } catch (UnsupportedEncodingException e) {
-            throw new ConsentLibException(e, "Error stringifing params for sending consent.");
         }
 
         final MediaType mediaType= MediaType.parse("application/json");
