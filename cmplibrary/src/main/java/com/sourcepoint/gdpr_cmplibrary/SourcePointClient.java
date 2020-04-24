@@ -1,27 +1,32 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
-import android.text.TextUtils;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
+import java.io.IOException;
 import java.util.UUID;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.StringEntity;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 class SourcePointClient {
     private static final String LOG_TAG = "SOURCE_POINT_CLIENT";
 
-    private static AsyncHttpClient http = new AsyncHttpClient();
+    private OkHttpClient httpClient = new OkHttpClient();
 
     protected static  String baseCmpUrl = "https://sourcepoint.mgr.consensu.org";
 
@@ -50,32 +55,6 @@ class SourcePointClient {
         this.requestUUID = requested_uuid;
     }
 
-    class ResponseHandler extends JsonHttpResponseHandler {
-        GDPRConsentLib.OnLoadComplete onLoadComplete;
-        String url;
-
-        ResponseHandler(String url, GDPRConsentLib.OnLoadComplete onLoadComplete) {
-            this.onLoadComplete = onLoadComplete;
-            this.url = url;
-        }
-
-        @Override
-        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-            Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
-            onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-        }
-
-        @Override
-        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-            Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
-            onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-        }
-    }
-
-   /* class MessageResponseHandler extends JsonHttpResponseHandler {
-
-    }
-*/
     SourcePointClient(
             int accountID,
             String property,
@@ -98,65 +77,66 @@ class SourcePointClient {
         return baseCmpUrl + "/consent/v2/gdpr-status";
     }
 
-    @VisibleForTesting
-    void setHttpDummy(AsyncHttpClient httpClient) {
-        http = httpClient;
-    }
-
     void getGDPRStatus(GDPRConsentLib.OnLoadComplete onLoadComplete) {
         String url = GDPRStatusUrl();
-        http.get(url, new ResponseHandler(url, onLoadComplete) {
+
+        Request request = new Request.Builder()
+                .url(url).build();
+
+        httpClient.newCall(request).enqueue(new Callback() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    onLoadComplete.onSuccess(response.getString("gdprApplies"));
-                } catch (JSONException e) {
-                    onFailure(statusCode, headers, e, response);
+            public void onFailure(Call call, IOException e) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " +   "url load failure :  " + e.getMessage());
+                onLoadComplete.onFailure(new ConsentLibException(e.getMessage()));
+            }
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    String messageString = response.body().string();
+                    onLoadComplete.onSuccess(messageString);
+                } else {
+                    Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + response.code() + ": " + response.message());
+                    onLoadComplete.onFailure(new ConsentLibException(response.message()));
                 }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-            }
-        });
+            }});
     }
 
     void getMessage(boolean isNative, String consentUUID, String meta, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
         String url = messageUrl(isNative);
         Log.d(LOG_TAG, "Getting message from: " + url);
-        try {
-            http.post(null, url, new StringEntity(messageParams(consentUUID, meta).toString()), "application/json", new ResponseHandler(url, onLoadComplete) {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    Log.i(LOG_TAG, response.toString());
-                    onLoadComplete.onSuccess(response);
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
-                    onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-                }
+        final MediaType mediaType= MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, messageParams(consentUUID ,meta).toString());
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
-                    onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+        Request request = new Request.Builder().url(url).post(body)
+                .header("Accept", "application/json")
+                .header("Content-Type", "application/json")
+                .build();
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " +   "url load failure :  " + e.getMessage());
+                onLoadComplete.onFailure(new ConsentLibException(e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()){
+                    String messageJson = response.body().string();
+                    Log.i(LOG_TAG , messageJson);
+                    try {
+                        onLoadComplete.onSuccess(new JSONObject(messageJson));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        onLoadComplete.onFailure( new ConsentLibException(e, "Error while converting string to josn : "+e.getMessage()));
+                    }
+                }else {
+                    Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + response.code() + ": " + response.message());
+                    onLoadComplete.onFailure(new ConsentLibException(response.message()));
                 }
-            });
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            throw new ConsentLibException(e, "Error trying to stringify bodyJson on getMessage in sourcePointClient.");
-        }
+            }
+        });
     }
 
     private String messageUrl(boolean isNative) {
@@ -196,29 +176,37 @@ class SourcePointClient {
         } catch (JSONException e) {
             throw new ConsentLibException(e, "Error adding param requestUUID to sendConsentBody.");
         }
-        StringEntity entity = null;
-        try {
-            entity = new StringEntity(params.toString());
-        } catch (UnsupportedEncodingException e) {
-            throw new ConsentLibException(e, "Error stringifing params for sending consent.");
-        }
-        http.post(null, url, entity, "application/json",  new ResponseHandler(url, onLoadComplete) {
+
+        final MediaType mediaType= MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, params.toString());
+
+        Request request = new Request.Builder().url(url).post(body)
+                .header("Accept", "application/json")
+                .header("Content-Type", "application/json")
+                .build();
+
+        httpClient.newCall(request).enqueue(new Callback() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                onLoadComplete.onSuccess(response);
+            public void onFailure(Call call, IOException e) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " +   "url load failure :  " + e.getMessage());
+                onLoadComplete.onFailure(new ConsentLibException(e.getMessage()));
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + responseString);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + statusCode + ": " + errorResponse);
-                onLoadComplete.onFailure(new ConsentLibException(throwable.getMessage()));
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()){
+                    String messageJson = response.body().string();
+                    Log.i(LOG_TAG , messageJson);
+                    try {
+                        onLoadComplete.onSuccess(new JSONObject(messageJson));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        onLoadComplete.onFailure( new ConsentLibException(e, "Error while converting string to josn : "+e.getMessage()));
+                    }
+                }else {
+                    Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + response.code() + ": " + response.message());
+                    onLoadComplete.onFailure(new ConsentLibException(response.message()));
+                }
             }
         });
     }
