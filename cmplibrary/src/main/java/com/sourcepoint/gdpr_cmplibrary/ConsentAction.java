@@ -11,7 +11,7 @@ public class ConsentAction {
     public final JSONObject pmSaveAndExitVariables;
 
     ConsentAction(int actionType, String choiceId, boolean requestFromPm, JSONObject pmSaveAndExitVariables) {
-        this.actionType = ActionTypes.fromCode(actionType);
+        this.actionType = ActionTypes.valueOf(actionType);
         this.choiceId = choiceId;
         this.requestFromPm = requestFromPm;
         this.pmSaveAndExitVariables = pmSaveAndExitVariables;
