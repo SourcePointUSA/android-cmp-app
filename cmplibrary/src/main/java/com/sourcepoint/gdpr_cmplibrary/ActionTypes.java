@@ -15,7 +15,7 @@ public enum ActionTypes {
         this.code = actionTypeCode;
     }
 
-    public static ActionTypes fromCode(int code) {
+    public static ActionTypes valueOf(int code) {
        for (ActionTypes actionTypes : values()){
            if(actionTypes.code == code) return actionTypes;
        }
