@@ -67,7 +67,7 @@ public class NativeMessage extends RelativeLayout {
     }
 
     public ActionButton findActionButton(int choiceType){
-        switch (ActionTypes.fromCode(choiceType)) {
+        switch (ActionTypes.valueOf(choiceType)) {
             case SHOW_OPTIONS:
                 return getShowOptions();
             case ACCEPT_ALL:
