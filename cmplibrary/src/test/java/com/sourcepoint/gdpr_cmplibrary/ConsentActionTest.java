@@ -24,7 +24,7 @@ public class ConsentActionTest {
     @Test
     public void ConsentActionDefaults(){
         ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, choiceIdMock, requestFromPmMock, pmSaveAndExitVariablesMock);
-        assertEquals(consentAction.actionType, actionTypeCodeMock);
+        assertEquals(consentAction.actionType.code, actionTypeCodeMock);
         assertEquals(choiceIdMock, choiceIdMock);
         assertEquals(pmSaveAndExitVariablesMock, pmSaveAndExitVariablesMock);
     }
