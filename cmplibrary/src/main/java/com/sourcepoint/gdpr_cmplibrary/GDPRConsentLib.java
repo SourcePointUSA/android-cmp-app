@@ -258,19 +258,8 @@ public class GDPRConsentLib {
     }
 
     private void loadConsentUI(String url){
-        if(webView == null) {
-            webView = buildWebView();
-            webView.loadConsentUIFromUrl(url);
-        } else if(!isNative) {
-            webView.post(new Runnable() {
-                @Override
-                public void run() {
-                    webView.loadConsentUIFromUrl(url);
-                }
-            });
-        } else {
-            showView(webView);
-        }
+        if(webView == null) webView = buildWebView();
+        runOnLiveActivityUIThread(() -> webView.loadConsentUIFromUrl(url));
     }
 
     /**
