@@ -30,8 +30,8 @@ public class GDPRConsentLib {
 
     private final String PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager/index.html";
 
-    private String metaData;
-    private String euConsent;
+    String metaData;
+    String euConsent;
 
     public enum DebugLevel {DEBUG, OFF}
 
@@ -46,14 +46,14 @@ public class GDPRConsentLib {
 
     private static final String TAG = "GDPRConsentLib";
 
-    private Activity activity;
-    private final String property;
-    private final int accountId, propertyId;
-    private final OnConsentUIReadyCallback onConsentUIReady;
-    private final OnConsentUIFinishedCallback onConsentUIFinished;
-    private final OnConsentReadyCallback onConsentReady;
-    private final OnErrorCallback onError;
-    private final boolean shouldCleanConsentOnError;
+    Activity activity;
+    final String property;
+    final int accountId, propertyId;
+    final OnConsentUIReadyCallback onConsentUIReady;
+    final OnConsentUIFinishedCallback onConsentUIFinished;
+    final OnConsentReadyCallback onConsentReady;
+    final OnErrorCallback onError;
+    final boolean shouldCleanConsentOnError;
 
     //default time out changes
     private boolean onMessageReadyCalled = false;
@@ -141,7 +141,7 @@ public class GDPRConsentLib {
         storeClient.clearAllData();
     }
 
-    private void setConsentData(String newAuthId){
+    void setConsentData(String newAuthId){
 
         if(didAuthIdChange(newAuthId)) clearAllData();
 
@@ -176,7 +176,7 @@ public class GDPRConsentLib {
         return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
     }
 
-    private ConsentWebView buildWebView() {
+    ConsentWebView buildWebView() {
         return new ConsentWebView(activity) {
 
             @Override
@@ -199,15 +199,15 @@ public class GDPRConsentLib {
 
     public void onAction(ConsentAction action) {
         try{
-            Log.d(TAG, "onAction:  " +  action.actionType  + " + actionType");
+            Log.d(TAG, "onAction:  " +  action.actionType + " + actionType");
             switch (action.actionType) {
-                case ActionTypes.SHOW_OPTIONS:
+                case SHOW_OPTIONS:
                     onShowOptions();
                     break;
-                case ActionTypes.PM_DISMISS:
+                case PM_DISMISS:
                     onPmDismiss();
                     break;
-                case ActionTypes.MSG_CANCEL:
+                case MSG_CANCEL:
                     onMsgCancel();
                     break;
                 default:
@@ -244,7 +244,7 @@ public class GDPRConsentLib {
         });
     }
 
-    private View getCurrentMessageView(){
+    View getCurrentMessageView(){
         return isNative ? nativeView : webView;
     }
 
@@ -369,7 +369,7 @@ public class GDPRConsentLib {
             params.put("privacyManagerId", pmId);
             params.put("uuid", consentUUID);
             params.put("meta", metaData);
-            params.put("actionType", action.actionType);
+            params.put("actionType", action.actionType.code);
             params.put("requestFromPM", action.requestFromPm);
             params.put("choiceId", action.choiceId);
             params.put("pmSaveAndExitVariables", action.pmSaveAndExitVariables);
@@ -414,7 +414,7 @@ public class GDPRConsentLib {
     }
 
 
-    private String pmUrl(){
+    String pmUrl(){
         HashSet<String> params = new HashSet<>();
         params.add("message_id=" + pmId);
         if(consentUUID != null) params.add("consentUUID=" + consentUUID);
@@ -438,7 +438,7 @@ public class GDPRConsentLib {
         runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onError.run(e));
     }
 
-    private void storeData(){
+    void storeData(){
         storeClient.setConsentUuid(consentUUID);
         storeClient.setMetaData(metaData);
         storeClient.setTCData(userConsent.TCData);

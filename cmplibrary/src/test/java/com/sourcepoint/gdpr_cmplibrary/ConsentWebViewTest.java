@@ -42,7 +42,7 @@ public class ConsentWebViewTest {
 
     @Test
     public void onError(){
-        ConsentLibException consentLibException = new ConsentLibException();
+        ConsentLibException consentLibException = new ConsentLibException("something bad just happened");
         spyView.onError(consentLibException);
         verify(spyView, times(1)).onError(consentLibException);
     }
