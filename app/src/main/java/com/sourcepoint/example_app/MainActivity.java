@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setOnConsentReady(consent -> {
                     Log.i(TAG, "onConsentReady");
+                    Log.i(TAG, "uuid: " + consent.uuid );
                     Log.i(TAG, "consentString: " + consent.consentString);
                     Log.i(TAG, consent.TCData.toString());
                     for (String vendorId : consent.acceptedVendors) {
