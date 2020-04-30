@@ -97,6 +97,7 @@ abstract public class ConsentWebView extends WebView {
         }
         getSettings().setJavaScriptEnabled(true);
         this.setBackgroundColor(Color.TRANSPARENT);
+        this.requestFocus();
         setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -146,6 +147,19 @@ abstract public class ConsentWebView extends WebView {
                 view.getContext().startActivity(browserIntent);
                 return false;
             }
+        });
+
+        setOnKeyListener((view, keyCode, event) -> {
+            WebView webView = (WebView) view;
+            if (event.getAction() == KeyEvent.ACTION_DOWN && KeyEvent.KEYCODE_BACK == keyCode) {
+                if (webView.canGoBack()){
+                    webView.goBack();
+                }else {
+                    ConsentWebView.this.onAction(ConsentAction.getEmptyDismissAction());
+                }
+                return true;
+            }
+            return false;
         });
 
         addJavascriptInterface(new JSReceiverInterface(), "JSReceiver");

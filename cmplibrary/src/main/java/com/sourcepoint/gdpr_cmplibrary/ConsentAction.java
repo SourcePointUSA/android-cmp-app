@@ -16,4 +16,9 @@ public class ConsentAction {
         this.requestFromPm = requestFromPm;
         this.pmSaveAndExitVariables = pmSaveAndExitVariables;
     }
+
+    public static ConsentAction getEmptyDismissAction(){
+        return new ConsentAction(15, "",false,new JSONObject());
+    }
+
 }
