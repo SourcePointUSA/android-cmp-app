@@ -151,11 +151,9 @@ public class GDPRConsentLib {
         storeClient.clearAllData();
     }
 
-    private void setConsentData(String newAuthId){
+    void setConsentData(String newAuthId){
 
-        if(didAuthIdChange(newAuthId)) clearAllData();
-
-        euConsent = storeClient.getConsentString();
+        if(didConsentUserChange(newAuthId, storeClient.getAuthId())) storeClient.clearAllData();
 
         metaData = storeClient.getMetaData();
 
@@ -164,15 +162,8 @@ public class GDPRConsentLib {
         storeClient.setAuthId(newAuthId);
     }
 
-    private boolean didAuthIdChange(String newAuthId){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return !Objects.equals(newAuthId, storeClient.getAuthId());
-        }
-        //TODO: remove this code when we migrate to api > 19
-        String storedAuthId = storeClient.getAuthId();
-        if(newAuthId == null && storedAuthId == null) return false;
-        else if (newAuthId != null && newAuthId.equals(storeClient.getAuthId())) return false;
-        return true;
+    private boolean didConsentUserChange(String newAuthId, String oldAuthId){
+        return oldAuthId != null && newAuthId != null && !newAuthId.equals(oldAuthId);
     }
 
     private boolean hasLostInternetConnection() {
