@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     // TODO: This method will throw null pointer exception if config file is not parsed correctly
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId,this)
-                .setAuthId("leo_auth_id_TCFv1_test_30_04_2020-0001")
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
