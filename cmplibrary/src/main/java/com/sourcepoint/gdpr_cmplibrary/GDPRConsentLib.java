@@ -289,26 +289,11 @@ public class GDPRConsentLib {
 
     private void loadConsentUI(String url){
         mCountDownTimer.start();
-        if(webView == null) {
-            webView = buildWebView();
+        runOnLiveActivityUIThread(() -> {
+            if(webView == null) webView = buildWebView();
             webView.loadConsentUIFromUrl(url);
-        } else if(!isNative) {
-            loadConsentUIFromUrlInAnotherThread(webView, url);
-            //this is for the rare case of loading the pm for a second time from a native message...
-        } else {
-            showView(webView);
-        }
-    }
-
-    private void loadConsentUIFromUrlInAnotherThread(ConsentWebView v, String url) {
-        v.post(new Runnable() {
-            @Override
-            public void run() {
-                v.loadConsentUIFromUrl(url);
-            }
         });
     }
-
 
     /**
      * Communicates with SourcePoint to load the message. It all happens in the background and the WebView
@@ -344,7 +329,7 @@ public class GDPRConsentLib {
             @Override
             public void onSuccess(Object result) {
                 try{
-                    JSONObject jsonResult = (JSONObject) result;
+                    JSONObject jsonResult = new JSONObject((String) result);
                     consentUUID = jsonResult.getString("uuid");
                     metaData = jsonResult.getString("meta");
                     if(jsonResult.has("msgJSON") && !jsonResult.isNull("msgJSON")) {
@@ -352,12 +337,7 @@ public class GDPRConsentLib {
                         showView(nativeView);
                     } else if(jsonResult.has("url") && !jsonResult.isNull("url")){
                         String url = jsonResult.getString("url");
-                        runOnLiveActivityUIThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadConsentUI(url);
-                            }
-                        });
+                        loadConsentUI(url);
                     } else {
                         userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
                         if(euConsent == null) euConsent = userConsent.consentString;
@@ -399,7 +379,6 @@ public class GDPRConsentLib {
         closeView(getCurrentMessageView());
     }
 
-    @VisibleForTesting
     protected void closeView(View v){
         if(v != null) runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
     }
@@ -407,11 +386,8 @@ public class GDPRConsentLib {
     private JSONObject paramsToSendConsent(int actionType, Integer choiceId) throws ConsentLibException {
         try{
 
-            Log.i("GDPR_UUID", "From sendConsentBody: " + consentUUID);
-
             JSONObject params = new JSONObject();
 
-            //TODO: get rid of jsonConsents, decouple the pm consents json from the userConsents obj
             params.put("consents", userConsent != null ? userConsent.jsonConsents : null);
             params.put("accountId", accountId);
             params.put("propertyId", propertyId);
@@ -428,14 +404,13 @@ public class GDPRConsentLib {
         }
     }
 
-    @VisibleForTesting
     protected void sendConsent(int actionType, Integer choiceId) {
         try {
             sourcePoint.sendConsent(paramsToSendConsent(actionType, choiceId), new OnLoadComplete() {
                 @Override
                 public void onSuccess(Object result) {
                     try{
-                        JSONObject jsonResult = (JSONObject) result;
+                        JSONObject jsonResult = new JSONObject((String) result);
                         JSONObject jsonUserConsent = jsonResult.getJSONObject("userConsent");
                         userConsent = new GDPRUserConsent(jsonUserConsent);
                         euConsent = jsonUserConsent.getString("euconsent");
@@ -496,12 +471,17 @@ public class GDPRConsentLib {
         sourcePoint.getGDPRStatus(new OnLoadComplete() {
             @Override
             public void onSuccess(Object gdprApplies) {
-                isSubjectToGdpr = gdprApplies.equals("true");
+                try {
+                    JSONObject jsonResult = new JSONObject((String) gdprApplies);
+                    isSubjectToGdpr = jsonResult.getBoolean("gdprApplies");
+                } catch (JSONException e) {
+                    onErrorTask(new ConsentLibException(e, "Error parsing gdprApplies result"));
+                }
             }
 
             @Override
             public void onFailure(ConsentLibException exception) {
-                Log.d(TAG, "Failed setting the preference IAB_CONSENT_SUBJECT_TO_GDPR");
+                onErrorTask(new ConsentLibException("Error getting gdprApplies from server."));
             }
         });
     }
