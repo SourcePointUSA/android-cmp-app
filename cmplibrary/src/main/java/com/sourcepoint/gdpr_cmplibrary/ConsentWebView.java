@@ -137,6 +137,11 @@ abstract public class ConsentWebView extends WebView {
                 onError(new ConsentLibException(message));
                 return false;
             }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return loadLinkOnExternalBrowser(view , url);
+            }
         });
 
         setWebChromeClient(new WebChromeClient() {
@@ -188,5 +193,12 @@ abstract public class ConsentWebView extends WebView {
             sb.append( '\n' );
         }
         return sb.toString();
+    }
+
+    //loads url on external browser
+    private boolean loadLinkOnExternalBrowser(WebView view, String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW , Uri.parse(url));
+        view.getContext().startActivity(intent);
+        return true;
     }
 }
