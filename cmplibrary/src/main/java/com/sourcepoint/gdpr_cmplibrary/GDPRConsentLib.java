@@ -204,15 +204,10 @@ public class GDPRConsentLib {
 
             @Override
             public void onBackPressAction() {
-                if(this.canGoBack()){
-                    this.goBack();
-                    isPmOn = false;
+                if (isPmOn){
+                    GDPRConsentLib.this.onAction(2,null);
                 }else {
-                    if (isPmOn){
-                        GDPRConsentLib.this.onAction(2,null);
-                    }else {
-                        GDPRConsentLib.this.onAction(15, null);
-                    }
+                    GDPRConsentLib.this.onAction(15, null);
                 }
             }
         };
