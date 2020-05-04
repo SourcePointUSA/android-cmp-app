@@ -11,6 +11,7 @@ import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getHashMap;
 
 public class GDPRUserConsent {
 
+    public String uuid;
     public ArrayList<String> acceptedVendors;
     public ArrayList<String> acceptedCategories;
     public ArrayList<String> specialFeatures;
@@ -23,10 +24,12 @@ public class GDPRUserConsent {
         acceptedVendors = new ArrayList<>();
         acceptedCategories = new ArrayList<>();
         consentString = "";
+        uuid = "";
         TCData = new HashMap();
     }
 
-    public GDPRUserConsent(JSONObject jConsent) throws JSONException, ConsentLibException {
+    public GDPRUserConsent(JSONObject jConsent, String uuid) throws JSONException, ConsentLibException {
+        this.uuid = uuid;
         this.acceptedVendors = json2StrArr(jConsent.getJSONArray("acceptedVendors"));
         this.acceptedCategories = json2StrArr(jConsent.getJSONArray("acceptedCategories"));
         this.specialFeatures = json2StrArr(jConsent.getJSONArray("specialFeatures"));

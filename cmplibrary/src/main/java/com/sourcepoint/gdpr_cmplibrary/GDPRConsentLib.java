@@ -143,9 +143,7 @@ public class GDPRConsentLib {
 
     void setConsentData(String newAuthId){
 
-        if(didAuthIdChange(newAuthId)) clearAllData();
-
-        euConsent = storeClient.getConsentString();
+        if(didConsentUserChange(newAuthId, storeClient.getAuthId())) storeClient.clearAllData();
 
         metaData = storeClient.getMetaData();
 
@@ -154,15 +152,8 @@ public class GDPRConsentLib {
         storeClient.setAuthId(newAuthId);
     }
 
-    private boolean didAuthIdChange(String newAuthId){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return !Objects.equals(newAuthId, storeClient.getAuthId());
-        }
-        //TODO: remove this code when we migrate to api > 19
-        String storedAuthId = storeClient.getAuthId();
-        if(newAuthId == null && storedAuthId == null) return false;
-        else if (newAuthId != null && newAuthId.equals(storeClient.getAuthId())) return false;
-        return true;
+    private boolean didConsentUserChange(String newAuthId, String oldAuthId){
+        return oldAuthId != null && newAuthId != null && !newAuthId.equals(oldAuthId);
     }
 
     private boolean hasLostInternetConnection() {
@@ -300,7 +291,7 @@ public class GDPRConsentLib {
                     JSONObject jsonResult = (JSONObject) result;
                     consentUUID = jsonResult.getString("uuid");
                     metaData = jsonResult.getString("meta");
-                    userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
+                    userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"), consentUUID);
                     storeData();
                     if(jsonResult.has("msgJSON") && !jsonResult.isNull("msgJSON")) {
                         setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
@@ -376,10 +367,10 @@ public class GDPRConsentLib {
                     try{
                         JSONObject jsonResult = (JSONObject) result;
                         JSONObject jsonUserConsent = jsonResult.getJSONObject("userConsent");
-                        userConsent = new GDPRUserConsent(jsonUserConsent);
                         euConsent = jsonUserConsent.getString("euconsent");
                         consentUUID = jsonResult.getString("uuid");
                         metaData = jsonResult.getString("meta");
+                        userConsent = new GDPRUserConsent(jsonUserConsent, consentUUID);
                         Log.i("GDPR_UUID", "From sendConsentReponse: " + consentUUID);
                         consentFinished();
                     }
