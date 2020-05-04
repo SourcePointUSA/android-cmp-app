@@ -136,6 +136,13 @@ abstract public class ConsentWebView extends WebView {
                 onError(new ConsentLibException(message));
                 return false;
             }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                view.getContext().startActivity(intent);
+                return true;
+            }
         });
         setWebChromeClient(new WebChromeClient() {
             @Override
