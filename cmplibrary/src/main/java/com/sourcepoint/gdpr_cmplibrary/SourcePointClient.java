@@ -2,8 +2,6 @@ package com.sourcepoint.gdpr_cmplibrary;
 
 import android.util.Log;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,11 +43,6 @@ class SourcePointClient {
         return requestUUID;
     }
 
-    @VisibleForTesting
-    protected void setReuestedUUID(String requested_uuid) {
-        this.requestUUID = requested_uuid;
-    }
-
     SourcePointClient(
             int accountID,
             String property,
@@ -86,7 +79,7 @@ class SourcePointClient {
             }
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                if (!response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     String messageString = response.body().string();
                     onLoadComplete.onSuccess(messageString);
                 } else {
@@ -101,7 +94,7 @@ class SourcePointClient {
         Log.d(LOG_TAG, "Getting message from: " + url);
 
         final MediaType mediaType= MediaType.parse("application/json");
-        RequestBody body = RequestBody.create(mediaType, messageParams(consentUUID ,meta).toString());
+        RequestBody body = RequestBody.create(mediaType, messageParams(consentUUID, meta).toString());
 
         Request request = new Request.Builder().url(url).post(body)
                 .header("Accept", "application/json")
@@ -112,7 +105,7 @@ class SourcePointClient {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(LOG_TAG, "Failed to load resource " + url + " due to " +   "url load failure :  " + e.getMessage());
-                onLoadComplete.onFailure(new ConsentLibException(e.getMessage()));
+                onLoadComplete.onFailure(new ConsentLibException(e, "Fail to send consent to: " + url));
             }
 
             @Override
@@ -120,12 +113,7 @@ class SourcePointClient {
                 if (response.isSuccessful()){
                     String messageJson = response.body().string();
                     Log.i(LOG_TAG , messageJson);
-                    try {
-                        onLoadComplete.onSuccess(new JSONObject(messageJson));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        onLoadComplete.onFailure( new ConsentLibException(e, "Error while converting string to josn : "+e.getMessage()));
-                    }
+                    onLoadComplete.onSuccess(messageJson);
                 }else {
                     Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + response.code() + ": " + response.message());
                     onLoadComplete.onFailure(new ConsentLibException(response.message()));
@@ -169,8 +157,11 @@ class SourcePointClient {
         try {
             params.put("requestUUID", getRequestUUID());
         } catch (JSONException e) {
-            throw new ConsentLibException(e, "Error adding param requestUUID to sendConsentBody.");
+            throw new ConsentLibException(e, "Error adding param requestUUID.");
         }
+        Log.d(LOG_TAG, "Sending consent to: " + url);
+        Log.d(LOG_TAG, params.toString());
+
 
         final MediaType mediaType= MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, params.toString());
@@ -184,7 +175,7 @@ class SourcePointClient {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(LOG_TAG, "Failed to load resource " + url + " due to " +   "url load failure :  " + e.getMessage());
-                onLoadComplete.onFailure(new ConsentLibException(e.getMessage()));
+                onLoadComplete.onFailure(new ConsentLibException(e, "Fail to send consent to: " + url));
             }
 
             @Override
@@ -192,15 +183,10 @@ class SourcePointClient {
                 if (response.isSuccessful()){
                     String messageJson = response.body().string();
                     Log.i(LOG_TAG , messageJson);
-                    try {
-                        onLoadComplete.onSuccess(new JSONObject(messageJson));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        onLoadComplete.onFailure( new ConsentLibException(e, "Error while converting string to josn : "+e.getMessage()));
-                    }
+                    onLoadComplete.onSuccess(messageJson);
                 }else {
                     Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + response.code() + ": " + response.message());
-                    onLoadComplete.onFailure(new ConsentLibException(response.message()));
+                    onLoadComplete.onFailure(new ConsentLibException("Fail to send consent to: " + url));
                 }
             }
         });
