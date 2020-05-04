@@ -18,11 +18,8 @@ public class ConsentAction {
     }
 
     public static ConsentAction getEmptyDismissAction(boolean isPmOn){
-        if (isPmOn){
-            return new ConsentAction(2, "", true, new JSONObject());
-        }else {
-            return new ConsentAction(15, "", false, new JSONObject());
-        }
+        return isPmOn ? new ConsentAction(2, "", true, new JSONObject())
+                : new ConsentAction(15, "", false, new JSONObject());
     }
 
 }
