@@ -17,8 +17,12 @@ public class ConsentAction {
         this.pmSaveAndExitVariables = pmSaveAndExitVariables;
     }
 
-    public static ConsentAction getEmptyDismissAction(){
-        return new ConsentAction(15, "",false,new JSONObject());
+    public static ConsentAction getEmptyDismissAction(boolean isPmOn){
+        if (isPmOn){
+            return new ConsentAction(2, "", true, new JSONObject());
+        }else {
+            return new ConsentAction(15, "", false, new JSONObject());
+        }
     }
 
 }

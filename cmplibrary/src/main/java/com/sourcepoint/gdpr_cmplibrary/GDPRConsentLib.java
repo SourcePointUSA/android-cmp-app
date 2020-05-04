@@ -194,6 +194,16 @@ public class GDPRConsentLib {
             public void onAction(ConsentAction action) {
                 GDPRConsentLib.this.onAction(action);
             }
+
+            @Override
+            public void onBackPressAction() {
+                if (webView.canGoBack()){
+                    webView.goBack();
+                    isPmOn = false;
+                }else {
+                    GDPRConsentLib.this.onAction(ConsentAction.getEmptyDismissAction(isPmOn));
+                }
+            }
         };
     }
 

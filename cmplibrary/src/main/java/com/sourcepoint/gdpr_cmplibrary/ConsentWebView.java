@@ -150,13 +150,8 @@ abstract public class ConsentWebView extends WebView {
         });
 
         setOnKeyListener((view, keyCode, event) -> {
-            WebView webView = (WebView) view;
             if (event.getAction() == KeyEvent.ACTION_DOWN && KeyEvent.KEYCODE_BACK == keyCode) {
-                if (webView.canGoBack()){
-                    webView.goBack();
-                }else {
-                    ConsentWebView.this.onAction(ConsentAction.getEmptyDismissAction());
-                }
+                ConsentWebView.this.onBackPressAction();
                 return true;
             }
             return false;
@@ -170,6 +165,8 @@ abstract public class ConsentWebView extends WebView {
     abstract public void onError(ConsentLibException error);
 
     abstract public void onAction(ConsentAction action);
+
+    abstract public void onBackPressAction();
 
     public void loadConsentUIFromUrl(String url) {
         Log.d(TAG, "Loading Webview with: " + url);
