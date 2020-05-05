@@ -258,19 +258,10 @@ public class GDPRConsentLib {
     }
 
     private void loadConsentUI(String url){
-        if(webView == null) {
-            webView = buildWebView();
+        runOnLiveActivityUIThread(() -> {
+            if(webView == null) webView = buildWebView();
             webView.loadConsentUIFromUrl(url);
-        } else if(!isNative) {
-            webView.post(new Runnable() {
-                @Override
-                public void run() {
-                    webView.loadConsentUIFromUrl(url);
-                }
-            });
-        } else {
-            showView(webView);
-        }
+        });
     }
 
     /**
@@ -308,7 +299,7 @@ public class GDPRConsentLib {
             @Override
             public void onSuccess(Object result) {
                 try{
-                    JSONObject jsonResult = (JSONObject) result;
+                    JSONObject jsonResult = new JSONObject((String) result);
                     consentUUID = jsonResult.getString("uuid");
                     metaData = jsonResult.getString("meta");
                     userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
@@ -317,13 +308,8 @@ public class GDPRConsentLib {
                         setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
                         showView(nativeView);
                     } else if(jsonResult.has("url") && !jsonResult.isNull("url")){
-                        String messageUrl = jsonResult.getString("url");
-                        runOnLiveActivityUIThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadConsentUI(messageUrl);
-                            }
-                        });
+                        String url = jsonResult.getString("url");
+                        loadConsentUI(url);
                     } else {
                         consentFinished();
                     }
@@ -391,7 +377,7 @@ public class GDPRConsentLib {
                 @Override
                 public void onSuccess(Object result) {
                     try{
-                        JSONObject jsonResult = (JSONObject) result;
+                        JSONObject jsonResult = new JSONObject((String) result);
                         JSONObject jsonUserConsent = jsonResult.getJSONObject("userConsent");
                         userConsent = new GDPRUserConsent(jsonUserConsent);
                         euConsent = jsonUserConsent.getString("euconsent");
