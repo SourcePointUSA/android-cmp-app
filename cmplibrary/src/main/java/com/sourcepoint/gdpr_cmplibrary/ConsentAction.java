@@ -16,4 +16,10 @@ public class ConsentAction {
         this.requestFromPm = requestFromPm;
         this.pmSaveAndExitVariables = pmSaveAndExitVariables;
     }
+
+    public static ConsentAction getEmptyDismissAction(boolean isPmOn){
+        return isPmOn ? new ConsentAction(ActionTypes.PM_DISMISS.code, "", true, new JSONObject())
+                : new ConsentAction(ActionTypes.MSG_CANCEL.code, "", false, new JSONObject());
+    }
+
 }
