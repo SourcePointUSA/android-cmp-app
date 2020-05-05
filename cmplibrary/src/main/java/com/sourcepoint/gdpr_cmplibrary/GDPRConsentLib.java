@@ -205,9 +205,9 @@ public class GDPRConsentLib {
             @Override
             public void onBackPressAction() {
                 if (isPmOn){
-                    GDPRConsentLib.this.onAction(2,null);
+                    GDPRConsentLib.this.onAction(ActionTypes.PM_DISMISS,null);
                 }else {
-                    GDPRConsentLib.this.onAction(15, null);
+                    GDPRConsentLib.this.onAction(ActionTypes.MSG_CANCEL, null);
                 }
             }
         };
