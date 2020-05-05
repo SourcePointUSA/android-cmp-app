@@ -201,6 +201,15 @@ public class GDPRConsentLib {
             public void onAction(int choiceType, Integer choiceId) {
                 GDPRConsentLib.this.onAction(choiceType, choiceId);
             }
+
+            @Override
+            public void onBackPressAction() {
+                if (isPmOn){
+                    GDPRConsentLib.this.onAction(ActionTypes.PM_DISMISS,null);
+                }else {
+                    GDPRConsentLib.this.onAction(ActionTypes.MSG_CANCEL, null);
+                }
+            }
         };
     }
 
