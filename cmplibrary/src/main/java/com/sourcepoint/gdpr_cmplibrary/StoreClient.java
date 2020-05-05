@@ -43,6 +43,7 @@ public class StoreClient {
     private SharedPreferences pref;
 
     public static final String DEFAULT_EMPTY_CONSENT_STRING = null;
+    public static final String DEFAULT_CONSENT_SUBJECT_TO_GDPR = "1";
 
     public static final String DEFAULT_META_DATA = "{}";
 
@@ -55,7 +56,7 @@ public class StoreClient {
     }
 
     public void setConsentSubjectToGDPr(Boolean consentSubjectToGDPR){
-        editor.putString(IAB_CONSENT_SUBJECT_TO_GDPR, consentSubjectToGDPR != null ? (consentSubjectToGDPR ? "1" : "0") : null);
+        editor.putString(IAB_CONSENT_SUBJECT_TO_GDPR, consentSubjectToGDPR != null ? (consentSubjectToGDPR ? "1" : "0") : DEFAULT_CONSENT_SUBJECT_TO_GDPR);
         editor.commit();
     }
 
