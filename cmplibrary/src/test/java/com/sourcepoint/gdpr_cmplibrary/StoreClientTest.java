@@ -49,7 +49,6 @@ public class StoreClientTest {
     @Test
     public void setTCDataClearsIABTCFDataBeforeStoringNewOne() {
         editor.putString("IABTCF_bar", "bar");
-        editor.putString(StoreClient.TC_KEYS_KEY, "IABTCF_bar;");
         editor.clear().commit();
 
         HashMap<String, String> tcData = new HashMap<>();
@@ -58,17 +57,6 @@ public class StoreClientTest {
 
         assertFalse("expected "+sharedPreferences.contains("IABTCF_bar")+" to be false", sharedPreferences.contains("IABTCF_bar"));
         assertEquals("foo", sharedPreferences.getString("IABTCF_foo", null));
-    }
-
-    @Test
-    public void setTCDataSetsTC_KEYS_ToSharedPreferencesDelimitedBySemiColons() {
-        HashMap<String, String> tcData = new HashMap<>();
-        tcData.put("IABTCF_foo", "foo");
-        storeClient.setTCData(tcData);
-
-        String tcKeys = sharedPreferences.getString(StoreClient.TC_KEYS_KEY, null);
-
-        assertEquals("IABTCF_foo;", tcKeys);
     }
 
     @Test

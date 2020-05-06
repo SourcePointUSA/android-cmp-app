@@ -1,26 +1,16 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.content.SharedPreferences;
-import android.os.Build;
 
 import java.util.HashMap;
-import java.util.Set;
 
 public class StoreClient {
-
-    /**
-     * They key used to store the IAB Consent string for the user in the shared preferences
-     */
-    public static final String IAB_CONSENT_CONSENT_STRING = "IABConsent_ConsentString";
-
-
-    public static final String TC_KEYS_KEY = "sp.gdpr.TCKeys";
 
     public static final String CONSENT_UUID_KEY = "sp.gdpr.consentUUID";
 
     public static final String META_DATA_KEY = "sp.gdpr.metaData";
 
-    public static final String EU_CONSENT__KEY = "sp.gdpr.euconsent";
+    public static final String EU_CONSENT_KEY = "sp.gdpr.euconsent";
 
     public static final String AUTH_ID_KEY = "sp.gdpr.authId";
 
@@ -34,35 +24,19 @@ public class StoreClient {
 
     public static final String DEFAULT_AUTH_ID = null;
 
-    public static final String TC_KEYS_DELIMITER = ";";
+    static final String IABTCF_KEY_PREFIX = "IABTCF_";
 
     StoreClient(SharedPreferences pref){
         this.editor = pref.edit();
         this.pref = pref;
     }
 
-    public void setTCData(HashMap<String, String> data){
-        clearTCData();
-        for(String s : data.keySet()){
-            editor.putString(s, data.get(s));
+    public void setTCData(HashMap<String, String> tcdata){
+        clearConsentData();
+        for(String key : tcdata.keySet()){
+            editor.putString(key, tcdata.get(key));
         }
-        editor.putString(TC_KEYS_KEY, dataSetToStr(data.keySet()));
         editor.commit();
-    }
-
-    private String dataSetToStr(Set<String> dataSet){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return String.join(TC_KEYS_DELIMITER, dataSet);
-        }
-        //TODO: remove this code when update min API to 26
-        else {
-            String result = "";
-            for (String s : dataSet){
-                result += s + TC_KEYS_DELIMITER;
-            }
-            if(result != "") result = result.substring(0, result.length() - 1);
-            return result;
-        }
     }
 
     public void setConsentUuid(String consentUuid){
@@ -81,8 +55,7 @@ public class StoreClient {
     }
 
     public void setConsentString(String euconsent){
-        editor.putString(IAB_CONSENT_CONSENT_STRING, euconsent);
-        editor.putString(EU_CONSENT__KEY, euconsent);
+        editor.putString(EU_CONSENT_KEY, euconsent);
         editor.commit();
     }
 
@@ -95,7 +68,7 @@ public class StoreClient {
     }
 
     public String getConsentString() {
-        return pref.getString(EU_CONSENT__KEY, DEFAULT_EMPTY_CONSENT_STRING);
+        return pref.getString(EU_CONSENT_KEY, DEFAULT_EMPTY_CONSENT_STRING);
     }
 
     public String getAuthId() {
@@ -110,25 +83,14 @@ public class StoreClient {
     public void clearInternalData(){
         editor.remove(CONSENT_UUID_KEY);
         editor.remove(META_DATA_KEY);
-        editor.remove(EU_CONSENT__KEY);
+        editor.remove(EU_CONSENT_KEY);
         editor.remove(AUTH_ID_KEY);
         editor.commit();
     }
 
-
     public void clearConsentData(){
-        clearTCData();
-        editor.remove(IAB_CONSENT_CONSENT_STRING);
-    }
-
-    private void clearTCData() {
-        for(String s : dataSetFromStore()){
-            editor.remove(s);
-        }
-        editor.remove(TC_KEYS_KEY);
-    }
-
-    private String[] dataSetFromStore(){
-        return pref.getString(TC_KEYS_KEY, "").split(TC_KEYS_DELIMITER);
+        for(String key : pref.getAll().keySet()) if (key.startsWith(IABTCF_KEY_PREFIX))
+            editor.remove(key);
+        editor.commit();
     }
 }
