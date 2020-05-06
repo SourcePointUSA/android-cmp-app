@@ -3,15 +3,15 @@ package com.sourcepoint.gdpr_cmplibrary;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.HashMap;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +28,7 @@ public class StoreClientTest {
 
     @Before
     public void setUp() {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application.getApplicationContext());
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext());
         storeClient = new StoreClient(sharedPreferences);
         editor = sharedPreferences.edit();
     }
