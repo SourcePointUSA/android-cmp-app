@@ -10,6 +10,9 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.HashMap;
+import java.util.Set;
+
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
@@ -41,6 +44,31 @@ public class StoreClientTest {
         assertTrue(sharedPreferences.contains(CONSENT_UUID_KEY));
         editor.clear().commit();
         assertFalse(sharedPreferences.contains(CONSENT_UUID_KEY));
+    }
+
+    @Test
+    public void setTCDataClearsIABTCFDataBeforeStoringNewOne() {
+        editor.putString("IABTCF_bar", "bar");
+        editor.putString(StoreClient.TC_KEYS_KEY, "IABTCF_bar;");
+        editor.clear().commit();
+
+        HashMap<String, String> tcData = new HashMap<>();
+        tcData.put("IABTCF_foo", "foo");
+        storeClient.setTCData(tcData);
+
+        assertFalse("expected "+sharedPreferences.contains("IABTCF_bar")+" to be false", sharedPreferences.contains("IABTCF_bar"));
+        assertEquals("foo", sharedPreferences.getString("IABTCF_foo", null));
+    }
+
+    @Test
+    public void setTCDataSetsTC_KEYS_ToSharedPreferencesDelimitedBySemiColons() {
+        HashMap<String, String> tcData = new HashMap<>();
+        tcData.put("IABTCF_foo", "foo");
+        storeClient.setTCData(tcData);
+
+        String tcKeys = sharedPreferences.getString(StoreClient.TC_KEYS_KEY, null);
+
+        assertEquals("IABTCF_foo;", tcKeys);
     }
 
     @Test

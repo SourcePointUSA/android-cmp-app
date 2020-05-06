@@ -42,6 +42,7 @@ public class StoreClient {
     }
 
     public void setTCData(HashMap<String, String> data){
+        clearTCData();
         for(String s : data.keySet()){
             editor.putString(s, data.get(s));
         }
