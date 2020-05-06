@@ -7,6 +7,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.robolectric.RobolectricTestRunner;
 
@@ -46,6 +48,9 @@ public class GDPRConsentLibTest {
     @Mock
     ConsentWebView webViewMock;
 
+    @Captor
+    ArgumentCaptor<Runnable> lambdaCaptor;
+
     private ConsentLibBuilder builderMock(){
         ConsentLibBuilder consentLibBuilder = new ConsentLibBuilder(123, "example.com", 321, "abcd", activityMock){
             @Override
@@ -79,6 +84,7 @@ public class GDPRConsentLibTest {
     public void setUp() {
         initMocks(this);
         setStoreClientMock();
+        lambdaCaptor = ArgumentCaptor.forClass(Runnable.class);
         lib = spy(builderMock().build());
         doNothing().when(webViewMock).loadConsentUIFromUrl(any());
         doReturn(webViewMock).when(lib).buildWebView();
@@ -117,8 +123,10 @@ public class GDPRConsentLibTest {
     }
 
     @Test
-    public void onShowOptions(){
+    public void onShowOptions() {
         lib.onShowOptions();
+        verify(lib.activity).runOnUiThread(lambdaCaptor.capture());
+        lambdaCaptor.getValue().run();
         verify(lib.webView).loadConsentUIFromUrl(lib.pmUrl());
     }
 
