@@ -25,12 +25,9 @@ class SourcePointClient {
     private static final String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/native-message?inApp=true";
     private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/consent?inApp=true";
 
-    private int accountId;
-    private String property;
-    private int propertyId;
-    private Boolean isStagingCampaign, isStaging;
     private String requestUUID = "";
-    private String targetingParams, authId;
+
+    SourcePointClientConfig config;
 
     private String getRequestUUID(){
         if(!requestUUID.isEmpty()) return requestUUID;
@@ -38,22 +35,9 @@ class SourcePointClient {
         return requestUUID;
     }
 
-    SourcePointClient(
-            int accountID,
-            String property,
-            int propertyId,
-            boolean isStagingCampaign,
-            boolean isStaging,
-            String targetingParams,
-            String authId
-    ) {
-        this.isStagingCampaign = isStagingCampaign;
-        this.isStaging = isStaging;
-        this.accountId = accountID;
-        this.propertyId = propertyId;
-        this.property = property;
-        this.targetingParams = targetingParams;
-        this.authId = authId;
+    SourcePointClient(OkHttpClient httpClient, SourcePointClientConfig config) {
+        this.httpClient = httpClient;
+        this.config = config;
     }
 
     void getMessage(boolean isNative, String consentUUID, String meta, String euconsent, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
@@ -97,16 +81,16 @@ class SourcePointClient {
 
         try {
             JSONObject params = new JSONObject();
-            params.put("accountId", accountId);
+            params.put("accountId", config.prop.accountId);
             params.put("euconsent", euconsent);
-            params.put("propertyId", propertyId);
+            params.put("propertyId", config.prop.propertyId);
             params.put("requestUUID", getRequestUUID());
             params.put("uuid", consentUUID);
             params.put("meta", meta);
-            params.put("propertyHref", "https://" + property);
-            params.put("campaignEnv", isStagingCampaign ? "stage" : "public");
-            params.put("targetingParams", targetingParams);
-            params.put("authId", authId);
+            params.put("propertyHref", "https://" + config.prop.propertyName);
+            params.put("campaignEnv", config.isStagingCampaign ? "stage" : "public");
+            params.put("targetingParams", config.targetingParams);
+            params.put("authId", config.authId);
             Log.i(LOG_TAG, params.toString());
             return params;
         } catch (JSONException e) {

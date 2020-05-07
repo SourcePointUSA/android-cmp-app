@@ -7,6 +7,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import okhttp3.OkHttpClient;
+
 @SuppressWarnings("unused")
 public class ConsentLibBuilder {
     private final JSONObject targetingParams = new JSONObject();
@@ -34,16 +36,16 @@ public class ConsentLibBuilder {
 
     StoreClient storeClient;
 
+    PropertyConfig propertyConfig;
+
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity) {
         init(accountId, property, propertyId , pmId , activity);
     }
 
-    private void init(Integer accountId, String property, Integer propertyId , String pmId , Activity activity){
-        this.accountId = accountId;
-        this.propertyId = propertyId;
-        this.property = property;
-        this.pmId = pmId;
+    private void init(Integer accountId, String propertyName, Integer propertyId , String pmId , Activity activity){
+        //TODO: add a constructor method that takes PropertyConfig class as parameter
+        propertyConfig = new PropertyConfig(accountId, propertyId, propertyName, pmId);
         this.activity = activity;
         staging = stagingCampaign = false;
         shouldCleanConsentOnError = true;
@@ -168,7 +170,17 @@ public class ConsentLibBuilder {
     }
 
     protected void setSourcePointClient(){
-        sourcePointClient = new SourcePointClient(accountId, property, propertyId, stagingCampaign, staging, targetingParamsString, authId);
+        sourcePointClient = new SourcePointClient(new OkHttpClient(), spClientConfig());
+    }
+
+    private SourcePointClientConfig spClientConfig(){
+        return new SourcePointClientConfig(
+                propertyConfig,
+                stagingCampaign,
+                staging,
+                targetingParamsString,
+                authId
+        );
     }
 
     /**
