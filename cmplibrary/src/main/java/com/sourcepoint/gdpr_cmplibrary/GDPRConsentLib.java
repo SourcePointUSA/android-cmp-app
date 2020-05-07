@@ -16,6 +16,8 @@ import org.json.JSONObject;
 import java.util.HashSet;
 import java.util.Objects;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
  * It offers methods to get custom vendors consents.
@@ -248,12 +250,7 @@ public class GDPRConsentLib {
     }
 
     public void onShowOptions(){
-        loadPm();
-    }
-
-    private void loadPm() {
-        loadConsentUI(pmUrl());
-        isPmOn = true;
+        showPm();
     }
 
     private void loadConsentUI(String url){
@@ -279,8 +276,14 @@ public class GDPRConsentLib {
     }
 
     public void showPm() {
-        mCountDownTimer.start();
-        loadPm();
+        try {
+            mCountDownTimer.start();
+            isPmOn = true;
+            loadConsentUI(pmUrl());
+        } catch (Exception e) {
+            e.printStackTrace();
+            onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.showPm()"));
+        }
     }
 
     public void run(NativeMessage v) {
@@ -328,6 +331,7 @@ public class GDPRConsentLib {
     }
 
     private void showView(View view){
+        cancelCounter();
         runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
     }
 
