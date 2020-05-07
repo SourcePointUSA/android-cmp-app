@@ -121,13 +121,16 @@ public class GDPRConsentLib {
         onConsentUIFinished = b.onConsentUIFinished;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
-        // configurable time out
-        defaultMessageTimeOut = b.messageTimeOut;
+        mCountDownTimer = b.getTimer(onCountdownFinished());
 
-        sourcePoint = b.sourcePointClient;
+        sourcePoint = b.getSourcePointClient();
 
-        storeClient = b.storeClient;
+        storeClient = b.getStoreClient();
         setConsentData(b.authId);
+    }
+
+    private Runnable onCountdownFinished(){
+        return () -> GDPRConsentLib.this.onErrorTask(new ConsentLibException("a timeout has occurred when loading the message"));
     }
 
     private void resetDataFields(){
@@ -266,6 +269,7 @@ public class GDPRConsentLib {
      */
     public void run() {
         try {
+            mCountDownTimer.start();
             onMessageReadyCalled = false;
             renderMsgAndSaveConsent();
         } catch (Exception e) {
@@ -275,11 +279,13 @@ public class GDPRConsentLib {
     }
 
     public void showPm() {
+        mCountDownTimer.start();
         loadPm();
     }
 
     public void run(NativeMessage v) {
         try {
+            mCountDownTimer.start();
             nativeView = v;
             isNative = true;
             renderMsgAndSaveConsent();

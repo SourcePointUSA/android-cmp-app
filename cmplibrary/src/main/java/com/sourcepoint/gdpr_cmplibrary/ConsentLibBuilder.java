@@ -1,6 +1,7 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -33,6 +34,7 @@ public class ConsentLibBuilder {
     long messageTimeOut;
 
     StoreClient storeClient;
+    private CountDownTimer timer;
 
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity) {
@@ -50,8 +52,8 @@ public class ConsentLibBuilder {
         messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
     }
 
-    protected void setStoreClient(){
-        storeClient = new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
+    protected StoreClient getStoreClient(){
+        return new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
     }
 
     /**
@@ -163,12 +165,12 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    private void setTargetingParamsString() {
-        targetingParamsString = targetingParams.toString();
+    String getTargetingParamsString() {
+        return targetingParams.toString();
     }
 
-    protected void setSourcePointClient(){
-        sourcePointClient = new SourcePointClient(accountId, property, propertyId, stagingCampaign, staging, targetingParamsString, authId);
+    protected SourcePointClient getSourcePointClient(){
+        return new SourcePointClient(accountId, property, propertyId, stagingCampaign, staging, getTargetingParamsString(), authId);
     }
 
     /**
@@ -179,11 +181,19 @@ public class ConsentLibBuilder {
      * @throws ConsentLibException.BuildException - if any of the required data is missing or invalid
      */
     public GDPRConsentLib build() {
-
-        setTargetingParamsString();
-        setStoreClient();
-        setSourcePointClient();
         return getConsetLib();
+    }
+
+    CountDownTimer getTimer(Runnable onFinish) {
+        return new CountDownTimer(messageTimeOut, messageTimeOut) {
+            @Override
+            public void onTick(long millisUntilFinished) {     }
+            @Override
+            public void onFinish() {
+                onFinish.run();
+                cancel();
+            }
+        };
     }
 
     public ConsentLibBuilder setMessageTimeOut(long milliSecond){

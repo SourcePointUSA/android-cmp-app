@@ -1,6 +1,7 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
+import android.os.CountDownTimer;
 
 import org.json.JSONObject;
 import org.junit.After;
@@ -42,17 +43,25 @@ public class GDPRConsentLibTest {
     @Mock
     ConsentWebView webViewMock;
 
+    @Mock
+    CountDownTimer timerMock;
+
     @Captor
     ArgumentCaptor<Runnable> lambdaCaptor;
 
     private ConsentLibBuilder builderMock(){
         return new ConsentLibBuilder(123, "example.com", 321, "abcd", activityMock){
             @Override
-            public void setSourcePointClient(){
-                sourcePointClient = sourcePointClientMock;
+            public SourcePointClient getSourcePointClient(){
+                return sourcePointClientMock;
             }
-            public void setStoreClient(){
-                storeClient = storeClientMock;
+            @Override
+            public StoreClient getStoreClient(){
+                return storeClientMock;
+            }
+            @Override
+            public CountDownTimer getTimer(Runnable r){
+                return timerMock;
             }
         };
     }
