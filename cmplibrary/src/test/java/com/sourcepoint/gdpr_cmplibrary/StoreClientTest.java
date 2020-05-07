@@ -3,15 +3,15 @@ package com.sourcepoint.gdpr_cmplibrary;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.HashMap;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +28,7 @@ public class StoreClientTest {
 
     @Before
     public void setUp() {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application.getApplicationContext());
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext());
         storeClient = new StoreClient(sharedPreferences);
         editor = sharedPreferences.edit();
     }
@@ -49,7 +49,6 @@ public class StoreClientTest {
     @Test
     public void setTCDataClearsIABTCFDataBeforeStoringNewOne() {
         editor.putString("IABTCF_bar", "bar");
-        editor.putString(StoreClient.TC_KEYS_KEY, "IABTCF_bar;");
         editor.clear().commit();
 
         HashMap<String, String> tcData = new HashMap<>();
@@ -58,17 +57,6 @@ public class StoreClientTest {
 
         assertFalse("expected "+sharedPreferences.contains("IABTCF_bar")+" to be false", sharedPreferences.contains("IABTCF_bar"));
         assertEquals("foo", sharedPreferences.getString("IABTCF_foo", null));
-    }
-
-    @Test
-    public void setTCDataSetsTC_KEYS_ToSharedPreferencesDelimitedBySemiColons() {
-        HashMap<String, String> tcData = new HashMap<>();
-        tcData.put("IABTCF_foo", "foo");
-        storeClient.setTCData(tcData);
-
-        String tcKeys = sharedPreferences.getString(StoreClient.TC_KEYS_KEY, null);
-
-        assertEquals("IABTCF_foo;", tcKeys);
     }
 
     @Test

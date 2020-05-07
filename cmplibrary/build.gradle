@@ -44,13 +44,13 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.loopj.android:android-async-http:1.4.9'
 
-
     //junit
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     //  Mockito framework
     testImplementation 'org.mockito:mockito-core:2.19.0'
 
     testImplementation 'org.robolectric:robolectric:4.2.1'
+    testImplementation 'androidx.test:core:1.2.0'
 
     // mockwebserver
     testImplementation("com.squareup.okhttp3:mockwebserver:4.4.0")
@@ -58,7 +58,7 @@ dependencies {
     testImplementation 'org.json:json:20140107'
 
 
-    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation 'junit:junit:4.13'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
 

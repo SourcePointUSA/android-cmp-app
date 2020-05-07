@@ -1,14 +1,14 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import com.example.gdpr_cmplibrary.R;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,7 +20,7 @@ public class NativeMessageTest {
 
     @Before
     public void setUp(){
-        nativeMessage = new NativeMessage(RuntimeEnvironment.application.getApplicationContext());
+        nativeMessage = new NativeMessage(ApplicationProvider.getApplicationContext());
     }
 
     @Test
