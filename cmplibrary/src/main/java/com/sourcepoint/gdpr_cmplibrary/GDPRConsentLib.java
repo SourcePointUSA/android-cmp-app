@@ -113,10 +113,10 @@ public class GDPRConsentLib {
 
     GDPRConsentLib(ConsentLibBuilder b) {
         activity = b.activity;
-        property = b.property;
-        accountId = b.accountId;
-        propertyId = b.propertyId;
-        pmId = b.pmId;
+        property = b.propertyConfig.propertyName;
+        accountId = b.propertyConfig.accountId;
+        propertyId = b.propertyConfig.propertyId;
+        pmId = b.propertyConfig.pmId;
         onConsentReady = b.onConsentReady;
         onError = b.onError;
         onConsentUIReady = b.onConsentUIReady;

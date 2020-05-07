@@ -31,24 +31,10 @@ public class ConsentLibBuilderTest {
     private GDPRConsentLib.OnConsentUIFinishedCallback onConsentUIFinished;
     private GDPRConsentLib.OnErrorCallback onError;
 
-    class PropertyConfig {
-        private final int accountId;
-        private final String property           ;
-        private final int propertyId;
-        private final String pmId;
-
-        PropertyConfig(Integer accountId, String property, Integer propertyId , String pmId) {
-            this.accountId = accountId;
-            this.property = property;
-            this.propertyId = propertyId;
-            this.pmId = pmId;
-        }
-    }
-
-    private PropertyConfig defaultConfig = new PropertyConfig(22, "mobile.demo", 1234, "1234");
+    private PropertyConfig defaultConfig = new PropertyConfig(22, 1234,"mobile.demo", "1234");
 
     private ConsentLibBuilder spyBuilder(PropertyConfig config){
-        ConsentLibBuilder spy =  spy(new ConsentLibBuilder(config.accountId, config.property, config.propertyId, config.pmId, activityMock));
+        ConsentLibBuilder spy =  spy(new ConsentLibBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId, activityMock));
         // mocking dependencies...
         doReturn(storeClientMock).when(spy).getStoreClient();
         doReturn(sourcePointClientMock).when(spy).getSourcePointClient();
@@ -99,11 +85,11 @@ public class ConsentLibBuilderTest {
 
     @Test
     public void ConsentLibBuilder(){
-        ConsentLibBuilder builder = new ConsentLibBuilder(defaultConfig.accountId, defaultConfig.property, defaultConfig.propertyId, defaultConfig.pmId, activityMock);
-        assertEquals(builder.accountId, defaultConfig.accountId);
-        assertEquals(builder.propertyId, defaultConfig.propertyId);
-        assertEquals(builder.property, defaultConfig.property);
-        assertEquals(builder.pmId, defaultConfig.pmId);
+        ConsentLibBuilder builder = new ConsentLibBuilder(defaultConfig.accountId, defaultConfig.propertyName, defaultConfig.propertyId, defaultConfig.pmId, activityMock);
+        assertEquals(builder.propertyConfig.accountId, defaultConfig.accountId);
+        assertEquals(builder.propertyConfig.propertyId, defaultConfig.propertyId);
+        assertEquals(builder.propertyConfig.propertyName, defaultConfig.propertyName);
+        assertEquals(builder.propertyConfig.pmId, defaultConfig.pmId);
         assertEquals(builder.activity, activityMock);
         assertFalse(builder.staging);
         assertTrue(builder.shouldCleanConsentOnError);
