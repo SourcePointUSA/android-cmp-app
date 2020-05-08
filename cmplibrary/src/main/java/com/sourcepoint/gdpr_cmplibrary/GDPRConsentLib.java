@@ -420,7 +420,10 @@ public class GDPRConsentLib {
         }
         cancelCounter();
         closeCurrentMessageView();
-        runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onError.run(e));
+        runOnLiveActivityUIThread(() ->{
+            GDPRConsentLib.this.onError.run(e);
+            this.activity = null;
+        });
     }
 
     void storeData(){
