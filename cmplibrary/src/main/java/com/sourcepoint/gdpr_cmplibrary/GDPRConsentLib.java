@@ -177,8 +177,7 @@ public class GDPRConsentLib {
 
             @Override
             public void onConsentUIReady() {
-                cancelCounter();
-                runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(this));
+                showView(this);
             }
 
             @Override
@@ -330,8 +329,8 @@ public class GDPRConsentLib {
         });
     }
 
-    private void showView(View view){
-        cancelCounter();
+    void showView(View view){
+        mCountDownTimer.cancel();
         runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
     }
 
@@ -423,12 +422,12 @@ public class GDPRConsentLib {
         }
     }
 
-    private void onErrorTask(ConsentLibException e){
+    void onErrorTask(ConsentLibException e){
         this.error = e;
         if(shouldCleanConsentOnError) {
             storeClient.clearConsentData();
         }
-        cancelCounter();
+        mCountDownTimer.cancel();
         closeCurrentMessageView();
         runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onError.run(e));
     }
@@ -440,14 +439,11 @@ public class GDPRConsentLib {
         storeClient.setConsentString(euConsent);
     }
 
-    private void cancelCounter(){
-        if (mCountDownTimer != null) mCountDownTimer.cancel();
-    }
-
-    private void consentFinished() {
+    void consentFinished() {
         storeData();
+        mCountDownTimer.cancel();
         runOnLiveActivityUIThread(() -> {
-            if(userConsent != null) onConsentReady.run(userConsent);
+            onConsentReady.run(userConsent);
             activity = null; // release reference to activity
         });
     }
