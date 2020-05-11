@@ -1,3 +1,10 @@
+## 5.1.2 (April, 11, 2020)
+* open links from webview on external browser
+* flush IAB consent data before storing new one
+* add configurable timeout
+* fix login logout behaviour from SDK side
+
+
 ## 4.1.6 (April, 22, 2020)
 * fix timeout error on loadPm() from very first launch
 * fix message  auto closing after ~16s
@@ -7,7 +14,7 @@
 
 ## 5.1.0 (April, 16, 2020)
 * fix pmSave&exit action flow
-* ConsentAction added 
+* ConsentAction added
 
 ## 5.0.3 (April, 03, 2020)
 * Storing IAB consent data earlier by persisting it at the very first http call #114
