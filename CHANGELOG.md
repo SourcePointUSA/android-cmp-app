@@ -1,3 +1,8 @@
+## 4.1.7 (March, 11, 2020)
+* change asyncHttp lib to okHttp
+* fix login logout flow
+* open links from webview on external browser 
+
 ## 4.1.6 (March, 22, 2020)
 * fix timeout error on loadPm() from very first launch
 * fix message  auto closing after ~16s
