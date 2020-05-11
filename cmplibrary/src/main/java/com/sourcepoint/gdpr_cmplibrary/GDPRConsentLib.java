@@ -16,6 +16,8 @@ import org.json.JSONObject;
 import java.util.HashSet;
 import java.util.Objects;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
  * It offers methods to get custom vendors consents.
@@ -121,13 +123,16 @@ public class GDPRConsentLib {
         onConsentUIFinished = b.onConsentUIFinished;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
-        // configurable time out
-        defaultMessageTimeOut = b.messageTimeOut;
+        mCountDownTimer = b.getTimer(onCountdownFinished());
 
-        sourcePoint = b.sourcePointClient;
+        sourcePoint = b.getSourcePointClient();
 
-        storeClient = b.storeClient;
+        storeClient = b.getStoreClient();
         setConsentData(b.authId);
+    }
+
+    private Runnable onCountdownFinished(){
+        return () -> GDPRConsentLib.this.onErrorTask(new ConsentLibException("a timeout has occurred when loading the message"));
     }
 
     private void resetDataFields(){
@@ -172,8 +177,7 @@ public class GDPRConsentLib {
 
             @Override
             public void onConsentUIReady() {
-                cancelCounter();
-                runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(this));
+                showView(this);
             }
 
             @Override
@@ -245,12 +249,7 @@ public class GDPRConsentLib {
     }
 
     public void onShowOptions(){
-        loadPm();
-    }
-
-    private void loadPm() {
-        loadConsentUI(pmUrl());
-        isPmOn = true;
+        showPm();
     }
 
     private void loadConsentUI(String url){
@@ -266,6 +265,7 @@ public class GDPRConsentLib {
      */
     public void run() {
         try {
+            mCountDownTimer.start();
             onMessageReadyCalled = false;
             renderMsgAndSaveConsent();
         } catch (Exception e) {
@@ -275,11 +275,19 @@ public class GDPRConsentLib {
     }
 
     public void showPm() {
-        loadPm();
+        try {
+            mCountDownTimer.start();
+            isPmOn = true;
+            loadConsentUI(pmUrl());
+        } catch (Exception e) {
+            e.printStackTrace();
+            onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.showPm()"));
+        }
     }
 
     public void run(NativeMessage v) {
         try {
+            mCountDownTimer.start();
             nativeView = v;
             isNative = true;
             renderMsgAndSaveConsent();
@@ -321,7 +329,8 @@ public class GDPRConsentLib {
         });
     }
 
-    private void showView(View view){
+    void showView(View view){
+        mCountDownTimer.cancel();
         runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
     }
 
@@ -413,12 +422,12 @@ public class GDPRConsentLib {
         }
     }
 
-    private void onErrorTask(ConsentLibException e){
+    void onErrorTask(ConsentLibException e){
         this.error = e;
         if(shouldCleanConsentOnError) {
             storeClient.clearConsentData();
         }
-        cancelCounter();
+        mCountDownTimer.cancel();
         closeCurrentMessageView();
         runOnLiveActivityUIThread(() ->{
             GDPRConsentLib.this.onError.run(e);
@@ -433,14 +442,11 @@ public class GDPRConsentLib {
         storeClient.setConsentString(euConsent);
     }
 
-    private void cancelCounter(){
-        if (mCountDownTimer != null) mCountDownTimer.cancel();
-    }
-
-    private void consentFinished() {
+    void consentFinished() {
         storeData();
+        mCountDownTimer.cancel();
         runOnLiveActivityUIThread(() -> {
-            if(userConsent != null) onConsentReady.run(userConsent);
+            onConsentReady.run(userConsent);
             activity = null; // release reference to activity
         });
     }

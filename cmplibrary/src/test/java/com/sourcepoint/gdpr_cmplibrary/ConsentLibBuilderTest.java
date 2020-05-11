@@ -1,6 +1,7 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
+import android.os.CountDownTimer;
 
 import org.json.JSONObject;
 import org.junit.Before;
@@ -15,10 +16,12 @@ import java.lang.reflect.Method;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(RobolectricTestRunner.class)
 public class ConsentLibBuilderTest {
@@ -47,9 +50,10 @@ public class ConsentLibBuilderTest {
     private ConsentLibBuilder spyBuilder(PropertyConfig config){
         ConsentLibBuilder spy =  spy(new ConsentLibBuilder(config.accountId, config.property, config.propertyId, config.pmId, activityMock));
         // mocking dependencies...
+        doReturn(storeClientMock).when(spy).getStoreClient();
+        doReturn(sourcePointClientMock).when(spy).getSourcePointClient();
         doReturn(consentLibMock).when(spy).getConsetLib();
-        doAnswer((i) -> spy.sourcePointClient = sourcePointClientMock).when(spy).setSourcePointClient();
-        doAnswer((i) -> spy.storeClient = storeClientMock).when(spy).setStoreClient();
+        doReturn(timerMock).when(spy).getTimer(any());
         return spy;
     }
 
@@ -67,14 +71,15 @@ public class ConsentLibBuilderTest {
     @Mock
     GDPRConsentLib consentLibMock;
 
+    @Mock
+    CountDownTimer timerMock;
+
     ConsentLibBuilder defaultBuilder;
 
     @Before
     public void initConsentLibBuilder() {
+        initMocks(this);
         defaultBuilder = spyBuilder(defaultConfig);
-        doNothing().when(defaultBuilder).setStoreClient();
-        doNothing().when(defaultBuilder).setSourcePointClient();
-        doReturn(consentLibMock).when(defaultBuilder).getConsetLib();
         onConsentUIReady = c -> {
         };
         onConsentReady = c -> {
@@ -108,9 +113,6 @@ public class ConsentLibBuilderTest {
     @Test
     public void build() {
         assertEquals(defaultBuilder.build(), consentLibMock);
-        assertEquals(defaultBuilder.storeClient, storeClientMock);
-        assertEquals(defaultBuilder.sourcePointClient, sourcePointClientMock);
-        assertEquals(defaultBuilder.targetingParamsString, expectedEmptyTargetingParamsString);
     }
 
     @Test
@@ -192,7 +194,7 @@ public class ConsentLibBuilderTest {
     }
 
     @Test
-    public void targetingParamStringIsEncoded() throws Exception {
+    public void targetingParamString() throws Exception {
         String key = "key";
         String stringValue = "stringValue";
 
@@ -200,11 +202,7 @@ public class ConsentLibBuilderTest {
         jsonObject.put(key, stringValue);
         defaultBuilder.setTargetingParam(key, stringValue);
 
-        Method method = ConsentLibBuilder.class.getDeclaredMethod("setTargetingParamsString");
-        method.setAccessible(true);
-        method.invoke(defaultBuilder);
-
-        assertEquals(jsonObject.toString(), defaultBuilder.targetingParamsString);
+        assertEquals(jsonObject.toString(), defaultBuilder.getTargetingParamsString());
     }
 
     @Test

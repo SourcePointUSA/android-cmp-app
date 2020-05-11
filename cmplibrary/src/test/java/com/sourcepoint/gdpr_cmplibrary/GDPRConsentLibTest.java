@@ -1,6 +1,7 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
+import android.os.CountDownTimer;
 
 import org.json.JSONObject;
 import org.junit.After;
@@ -42,17 +43,25 @@ public class GDPRConsentLibTest {
     @Mock
     ConsentWebView webViewMock;
 
+    @Mock
+    CountDownTimer timerMock;
+
     @Captor
     ArgumentCaptor<Runnable> lambdaCaptor;
 
     private ConsentLibBuilder builderMock(){
         return new ConsentLibBuilder(123, "example.com", 321, "abcd", activityMock){
             @Override
-            public void setSourcePointClient(){
-                sourcePointClient = sourcePointClientMock;
+            public SourcePointClient getSourcePointClient(){
+                return sourcePointClientMock;
             }
-            public void setStoreClient(){
-                storeClient = storeClientMock;
+            @Override
+            public StoreClient getStoreClient(){
+                return storeClientMock;
+            }
+            @Override
+            public CountDownTimer getTimer(Runnable r){
+                return timerMock;
             }
         };
     }
@@ -72,19 +81,45 @@ public class GDPRConsentLibTest {
         doNothing().when(storeClientMock).clearInternalData();
     }
 
+    private void setTimerMock(){
+        doReturn(timerMock).when(timerMock).start();
+        doNothing().when(timerMock).cancel();
+    }
+
 
     @Before
     public void setUp() {
         initMocks(this);
         setStoreClientMock();
+        setTimerMock();
         lambdaCaptor = ArgumentCaptor.forClass(Runnable.class);
         lib = spy(builderMock().build());
         doNothing().when(webViewMock).loadConsentUIFromUrl(any());
         doReturn(webViewMock).when(lib).buildWebView();
     }
 
-    @After
-    public void tearDown() {
+    @Test
+    public void run_followed_by_show_view(){
+        lib.run();
+        verify(timerMock).start();
+        lib.showView(lib.webView);
+        verify(timerMock).cancel();
+    }
+
+    @Test
+    public void run_followed_by_consentFinished(){
+        lib.run();
+        verify(timerMock).start();
+        lib.consentFinished();
+        verify(timerMock).cancel();
+    }
+
+    @Test
+    public void run_followed_by_onErrorTask(){
+        lib.run();
+        verify(timerMock).start();
+        lib.onErrorTask(new ConsentLibException("ooops, I have a bad feeling about this..."));
+        verify(timerMock).cancel();
     }
 
     @Test
