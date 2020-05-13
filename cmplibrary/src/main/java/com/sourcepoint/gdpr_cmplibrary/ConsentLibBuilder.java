@@ -190,7 +190,7 @@ public class ConsentLibBuilder {
      * @throws ConsentLibException.BuildException - if any of the required data is missing or invalid
      */
     public GDPRConsentLib build() {
-        return getConsetLib();
+        return getConsentLib();
     }
 
     CountDownTimer getTimer(Runnable onFinish) {
@@ -210,7 +210,7 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    protected GDPRConsentLib getConsetLib(){
+    protected GDPRConsentLib getConsentLib(){
         return new GDPRConsentLib(this);
     }
 }
