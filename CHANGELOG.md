@@ -1,13 +1,13 @@
-## 4.1.7 (March, 11, 2020)
+## 4.1.7 (May, 11, 2020)
 * change asyncHttp lib to okHttp
 * fix login logout flow
 * open links from webview on external browser 
 
-## 4.1.6 (March, 22, 2020)
+## 4.1.6 (April, 22, 2020)
 * fix timeout error on loadPm() from very first launch
 * fix message  auto closing after ~16s
 
-## 4.1.5 (March, 09, 2020)
+## 4.1.5 (April, 09, 2020)
 * goBack action returns to consent message from page inside webview
 
 ## 5.0.2 (March, 26, 2020)
