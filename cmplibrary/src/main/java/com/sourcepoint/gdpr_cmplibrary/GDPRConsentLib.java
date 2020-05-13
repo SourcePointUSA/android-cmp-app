@@ -336,8 +336,8 @@ public class GDPRConsentLib {
                     if (jsonResult.has("msgJSON") && !jsonResult.isNull("msgJSON")) {
                         setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
                         showView(nativeView);
-                    } else if (jsonResult.has("url") && !jsonResult.isNull("url")) {
-                        loadConsentUI(jsonResult.getString("url"));
+                    } else if(jsonResult.has("url") && !jsonResult.isNull("url")){
+                        loadConsentUI(jsonResult.getString("url")+"&consentUUID="+consentUUID);
                     } else {
                         storeData();
                         consentFinished();
