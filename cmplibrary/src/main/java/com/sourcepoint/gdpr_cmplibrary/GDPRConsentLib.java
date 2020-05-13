@@ -113,10 +113,10 @@ public class GDPRConsentLib {
 
     GDPRConsentLib(ConsentLibBuilder b) {
         activity = b.activity;
-        property = b.property;
-        accountId = b.accountId;
-        propertyId = b.propertyId;
-        pmId = b.pmId;
+        property = b.propertyConfig.propertyName;
+        accountId = b.propertyConfig.accountId;
+        propertyId = b.propertyConfig.propertyId;
+        pmId = b.propertyConfig.pmId;
         onConsentReady = b.onConsentReady;
         onError = b.onError;
         onConsentUIReady = b.onConsentUIReady;
@@ -301,7 +301,7 @@ public class GDPRConsentLib {
             @Override
             public void onSuccess(Object result) {
                 try{
-                    JSONObject jsonResult = (JSONObject) result;
+                    JSONObject jsonResult = new JSONObject((String) result);
                     consentUUID = jsonResult.getString("uuid");
                     metaData = jsonResult.getString("meta");
                     userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"), consentUUID);
@@ -379,7 +379,7 @@ public class GDPRConsentLib {
                 @Override
                 public void onSuccess(Object result) {
                     try{
-                        JSONObject jsonResult = (JSONObject) result;
+                        JSONObject jsonResult = new JSONObject((String) result);
                         JSONObject jsonUserConsent = jsonResult.getJSONObject("userConsent");
                         euConsent = jsonUserConsent.getString("euconsent");
                         consentUUID = jsonResult.getString("uuid");
