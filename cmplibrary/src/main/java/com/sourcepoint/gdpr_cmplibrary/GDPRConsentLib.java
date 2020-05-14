@@ -159,7 +159,15 @@ public class GDPRConsentLib {
 
         consentUUID = storeClient.getConsentUUID();
 
+        euConsent = storeClient.getConsentString();
+
         storeClient.setAuthId(newAuthId);
+
+        try {
+            userConsent = storeClient.getUserConsent();
+        } catch (ConsentLibException e) {
+            onErrorTask(e);
+        }
     }
 
     private boolean didConsentUserChange(String newAuthId, String oldAuthId){
@@ -360,7 +368,7 @@ public class GDPRConsentLib {
 
     private void showView(View view){
         cancelCounter();
-        if(view.getParent() == null){
+        if(!hasParent(view)){
             runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
         }
     }
@@ -379,7 +387,11 @@ public class GDPRConsentLib {
     }
 
     protected void closeView(View v){
-        if(v != null) runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
+        if(hasParent(v)) runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
+    }
+
+    private boolean hasParent(View v){
+        return v != null && v.getParent() != null;
     }
 
     private JSONObject paramsToSendConsent(int actionType, Integer choiceId) throws ConsentLibException {
@@ -525,6 +537,7 @@ public class GDPRConsentLib {
         storeClient.setIabConsentCmpPresent(true);
         storeClient.setIabConsentConsentString(euConsent);
         storeClient.setMetaData(metaData);
+        storeClient.setUserConsents(userConsent);
         setIABVars();
         storeClient.apply();
     }
