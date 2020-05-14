@@ -1,11 +1,12 @@
 package com.sourcepointmeta.app;
 
 import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.sourcepointmeta.app.database.AppDataBase;
 import com.sourcepointmeta.app.repository.PropertyListRepository;
 
-public class SourcepointApp extends Application {
+public class SourcepointApp extends MultiDexApplication {
 
     private AppExecutors mAppExecutors;
 
