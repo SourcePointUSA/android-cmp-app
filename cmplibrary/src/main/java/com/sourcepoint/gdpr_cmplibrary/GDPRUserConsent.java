@@ -29,6 +29,15 @@ public class GDPRUserConsent {
     }
 
     public GDPRUserConsent(JSONObject jConsent, String uuid) throws JSONException, ConsentLibException {
+        init(jConsent, uuid);
+    }
+
+    public GDPRUserConsent(JSONObject jConsent, String uuid, HashMap tcData) throws JSONException, ConsentLibException {
+        init(jConsent, uuid);
+        TCData = tcData;
+    }
+
+    private void init(JSONObject jConsent, String uuid) throws JSONException, ConsentLibException {
         this.uuid = uuid;
         this.acceptedVendors = json2StrArr(jConsent.getJSONArray("acceptedVendors"));
         this.acceptedCategories = json2StrArr(jConsent.getJSONArray("acceptedCategories"));

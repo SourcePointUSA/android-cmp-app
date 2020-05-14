@@ -456,7 +456,7 @@ public class GDPRConsentLib {
                 public void onSuccess(Object result) {
                     try {
                         JSONObject jsonResult = new JSONObject((String) result);
-                        userConsent = new GDPRUserConsent(fullConsentObj(jsonResult), consentUUID);
+                        userConsent = new GDPRUserConsent(fullConsentObj(jsonResult), consentUUID, storeClient.getTCData());
                         consentFinished(c);
                     } catch (Exception e) {
                         onErrorTask(new ConsentLibException(e, "Error trying to parse response from sendConsents."));
@@ -474,6 +474,7 @@ public class GDPRConsentLib {
 
     private JSONObject fullConsentObj(JSONObject customConsent) throws JSONException {
         JSONObject fullObj = new JSONObject();
+        fullObj.put("tcData", storeClient.getTCData());
         fullObj.put("euconsent", euConsent);
         fullObj.put("acceptedVendors", customConsent.getJSONArray("vendors"));
         fullObj.put("acceptedCategories", customConsent.getJSONArray("categories"));
