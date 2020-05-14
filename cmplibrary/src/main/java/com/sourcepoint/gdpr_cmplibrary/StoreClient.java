@@ -88,6 +88,13 @@ public class StoreClient {
         editor.commit();
     }
 
+    public HashMap getTCData(){
+        HashMap tcData = new HashMap();
+        for(String key : pref.getAll().keySet()) if (key.startsWith(IABTCF_KEY_PREFIX))
+            tcData.put(key, pref.getString(key, null));
+        return tcData;
+    };
+
     public void clearConsentData(){
         for(String key : pref.getAll().keySet()) if (key.startsWith(IABTCF_KEY_PREFIX))
             editor.remove(key);

@@ -24,6 +24,7 @@ class SourcePointClient {
     private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/message-url?inApp=true";
     private static final String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/native-message?inApp=true";
     private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/consent?inApp=true";
+    private static final String baseSendCustomConsentsUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/custom-consent?inApp=true";
 
     private String requestUUID = "";
 
@@ -77,6 +78,10 @@ class SourcePointClient {
         return isNative ? baseNativeMsgUrl : baseMsgUrl;
     }
 
+    private String customConsentsUrl(){
+        return baseSendCustomConsentsUrl;
+    }
+
     private JSONObject messageParams(String consentUUID, String meta, String euconsent) throws ConsentLibException {
 
         try {
@@ -112,6 +117,46 @@ class SourcePointClient {
             throw new ConsentLibException(e, "Error adding param requestUUID.");
         }
         Log.d(LOG_TAG, "Sending consent to: " + url);
+        Log.d(LOG_TAG, params.toString());
+
+
+        final MediaType mediaType= MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, params.toString());
+
+        Request request = new Request.Builder().url(url).post(body)
+                .header("Accept", "application/json")
+                .header("Content-Type", "application/json")
+                .build();
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d(LOG_TAG, "Failed to load resource " + url + " due to " +   "url load failure :  " + e.getMessage());
+                onLoadComplete.onFailure(new ConsentLibException(e, "Fail to send consent to: " + url));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()){
+                    String messageJson = response.body().string();
+                    Log.i(LOG_TAG , messageJson);
+                    onLoadComplete.onSuccess(messageJson);
+                }else {
+                    Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + response.code() + ": " + response.message());
+                    onLoadComplete.onFailure(new ConsentLibException("Fail to send consent to: " + url));
+                }
+            }
+        });
+    }
+
+    void sendCustomConsents(JSONObject params, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
+        String url = customConsentsUrl();
+        try {
+            params.put("requestUUID", getRequestUUID());
+        } catch (JSONException e) {
+            throw new ConsentLibException(e, "Error adding param requestUUID.");
+        }
+        Log.d(LOG_TAG, "Sending custom consents to: " + url);
         Log.d(LOG_TAG, params.toString());
 
 

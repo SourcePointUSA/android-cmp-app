@@ -11,14 +11,11 @@ import org.mockito.Mock;
 import org.robolectric.RobolectricTestRunner;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -38,7 +35,7 @@ public class ConsentLibBuilderTest {
         // mocking dependencies...
         doReturn(storeClientMock).when(spy).getStoreClient();
         doReturn(sourcePointClientMock).when(spy).getSourcePointClient();
-        doReturn(consentLibMock).when(spy).getConsetLib();
+        doReturn(consentLibMock).when(spy).getConsentLib();
         doReturn(timerMock).when(spy).getTimer(any());
         return spy;
     }
