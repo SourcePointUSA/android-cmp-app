@@ -8,10 +8,16 @@ import java.util.ArrayList;
 
 public class GDPRUserConsent {
 
-    public ArrayList<String> acceptedVendors = new ArrayList();
-    public ArrayList<String> acceptedCategories = new ArrayList();
-    public JSONObject jsonConsents = new JSONObject();
+    public ArrayList<String> acceptedVendors;
+    public ArrayList<String> acceptedCategories;
+    public JSONObject jsonConsents;
     public String consentString;
+
+    public GDPRUserConsent(){
+        acceptedVendors = new ArrayList<>();
+        acceptedCategories = new ArrayList<>();
+        consentString = "";
+    }
 
     public GDPRUserConsent(JSONObject jConsent) throws JSONException, ConsentLibException {
         this.acceptedVendors = json2StrArr(jConsent.getJSONArray("acceptedVendors"));
@@ -19,7 +25,7 @@ public class GDPRUserConsent {
         if(jConsent.has("euconsent") && !jConsent.isNull("euconsent")){
             consentString = jConsent.getString("euconsent");
         }
-        setJsonConsents();
+        jsonConsents = jConsent;
     }
 
     private ArrayList<String> json2StrArr(JSONArray jArray) throws JSONException {
@@ -32,8 +38,7 @@ public class GDPRUserConsent {
         return listData;
     }
 
-    private void setJsonConsents() throws JSONException {
-        jsonConsents.put("acceptedVendors", new JSONArray(acceptedVendors));
-        jsonConsents.put("acceptedCategories", new JSONArray(acceptedCategories));
+    public JSONObject getJsonConsents() {
+        return jsonConsents;
     }
 }

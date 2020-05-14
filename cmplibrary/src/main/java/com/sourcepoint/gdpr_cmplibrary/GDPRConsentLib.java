@@ -159,7 +159,15 @@ public class GDPRConsentLib {
 
         consentUUID = storeClient.getConsentUUID();
 
+        euConsent = storeClient.getConsentString();
+
         storeClient.setAuthId(newAuthId);
+
+        try {
+            userConsent = storeClient.getUserConsent();
+        } catch (ConsentLibException e) {
+            onErrorTask(e);
+        }
     }
 
     private boolean didConsentUserChange(String newAuthId, String oldAuthId){
@@ -525,6 +533,7 @@ public class GDPRConsentLib {
         storeClient.setIabConsentCmpPresent(true);
         storeClient.setIabConsentConsentString(euConsent);
         storeClient.setMetaData(metaData);
+        storeClient.setUserConsents(userConsent);
         setIABVars();
         storeClient.apply();
     }

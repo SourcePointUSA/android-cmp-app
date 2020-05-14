@@ -2,6 +2,9 @@ package com.sourcepoint.gdpr_cmplibrary;
 
 import android.content.SharedPreferences;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.UUID;
 
 public class StoreClient {
@@ -35,6 +38,8 @@ public class StoreClient {
     public static final String META_DATA_KEY = "sp.gdpr.metaData";
 
     public static final String EU_CONSENT__KEY = "sp.gdpr.euconsent";
+
+    public static final String USER_CONSENT_KEY = "sp.gdpr.userConsent";
 
     public static final String AUTH_ID_KEY = "sp.gdpr.authId";
 
@@ -96,6 +101,13 @@ public class StoreClient {
         editor.commit();
     }
 
+    public void setUserConsents(GDPRUserConsent userConsent){
+        editor.putString(USER_CONSENT_KEY, userConsent.getJsonConsents().toString());
+        editor.commit();
+    }
+
+
+
     public void apply(){
         editor.apply();
     }
@@ -106,6 +118,15 @@ public class StoreClient {
 
     public String getConsentUUID() {
         return pref.getString(CONSENT_UUID_KEY, UUID.randomUUID().toString());
+    }
+
+    public GDPRUserConsent getUserConsent() throws ConsentLibException {
+        try {
+            String uStr = pref.getString(USER_CONSENT_KEY, null);
+            return uStr != null ? new GDPRUserConsent(new JSONObject(uStr)) : new GDPRUserConsent();
+        } catch (Exception e) {
+            throw new ConsentLibException(e, "Error trying to recover UserConsents for sharedPrefs");
+        }
     }
 
     public String getConsentString() {
