@@ -138,6 +138,7 @@ public class GDPRConsentLib {
         userConsent = new GDPRUserConsent();
         metaData = storeClient.DEFAULT_META_DATA;
         euConsent = storeClient.DEFAULT_EMPTY_CONSENT_STRING;
+        consentUUID = null;
     }
 
     public void clearAllData() {
@@ -148,6 +149,8 @@ public class GDPRConsentLib {
     void setConsentData(String newAuthId) {
 
         if (didConsentUserChange(newAuthId, storeClient.getAuthId())) storeClient.clearAllData();
+
+        euConsent = storeClient.getConsentString();
 
         metaData = storeClient.getMetaData();
 
