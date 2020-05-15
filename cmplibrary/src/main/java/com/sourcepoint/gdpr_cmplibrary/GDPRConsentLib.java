@@ -518,19 +518,6 @@ public class GDPRConsentLib {
         storeClient.setIabConsentParsedVendorConsents(new String(allowedVendors));
     }
 
-    private void onErrorTask(ConsentLibException e) {
-        this.error = e;
-        if (shouldCleanConsentOnError) {
-            storeClient.clearIABConsentData();
-        }
-        cancelCounter();
-        closeCurrentMessageView();
-        runOnLiveActivityUIThread(() -> {
-            GDPRConsentLib.this.onError.run(e);
-            activity = null;
-        });
-    }
-
     private void storeData() {
         storeClient.setConsentSubjectToGDPr(isSubjectToGdpr);
         storeClient.setConsentUuid(consentUUID);
@@ -550,7 +537,24 @@ public class GDPRConsentLib {
         storeData();
         runOnLiveActivityUIThread(() -> {
             if (userConsent != null) onConsentReady.run(userConsent);
-            activity = null; // release reference to activity
+            releaseActivity();
         });
+    }
+
+    private void onErrorTask(ConsentLibException e) {
+        this.error = e;
+        if (shouldCleanConsentOnError) {
+            storeClient.clearIABConsentData();
+        }
+        cancelCounter();
+        closeCurrentMessageView();
+        runOnLiveActivityUIThread(() -> {
+            GDPRConsentLib.this.onError.run(e);
+            releaseActivity();
+        });
+    }
+
+    public void releaseActivity(){
+        activity = null;
     }
 }
