@@ -136,6 +136,20 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
+## Programatically consenting the current user
+It's possible to programatically consent the current user to a list of vendors, categories and legitimate interest caregories by using the following method from the consentlib:
+```java
+customConsentTo(
+            ArrayList<String> vendors,
+            ArrayList<String> categories,
+            ArrayList<String> legIntCategories,
+            OnConsentReadyCallback onCustomConsentReady
+    )
+```
+The ids passed will be appended to the list of already accepted vendors, categories and leg. int. categories. The method is asynchronous so you must pass a `Runnable` that will receive back an instance of `GDPRUserConsent` in case of success or it'll call the `onError` callback in case of failure.
+
+It's important to notice, this method is intended to be used for **custom** vendors and purposes only. For IAB vendors and purposes, it's still required to get consents via the consent message or privacy manager.
+
 ## Authenticated Consent
 
 In order to use the authenticated consent all you need to do is calling `.setAuthId(String)` in the instance of `ConsentLibBuilder`. Example: 
