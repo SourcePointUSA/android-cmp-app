@@ -1,3 +1,9 @@
+## 4.1.8 (May, 15, 2020)
+* add public method: releaseActivity()
+* aways call onConsentReady or onError as the very last callback
+* fix consentUIFinished aways called before onConsentError
+* fix calling other callbacks after onError
+
 ## 4.1.7 (May, 11, 2020)
 * change asyncHttp lib to okHttp
 * fix login logout flow
