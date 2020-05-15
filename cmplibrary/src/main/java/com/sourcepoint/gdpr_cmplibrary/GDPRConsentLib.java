@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.iab.gdpr_android.consent.VendorConsent;
 import com.iab.gdpr_android.consent.VendorConsentDecoder;
 
@@ -18,7 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashSet;
-import java.util.Objects;
 
 import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_CONSENT_STRING;
 
@@ -263,11 +260,11 @@ public class GDPRConsentLib {
     }
 
     private void goBackInAnotherThread(ConsentWebView v) {
-        v.post(new Runnable() {
-            @Override
-            public void run() {
-                if (v.canGoBack()) v.goBack();
-                else closeView(v);
+        v.post(() -> {
+            if (v.canGoBack()) v.goBack();
+            else {
+                closeView(v);
+                consentFinished();
             }
         });
     }
