@@ -296,11 +296,15 @@ public class GDPRConsentLib {
     }
 
     private void loadConsentUI(String url) {
-        mCountDownTimer.start();
-        runOnLiveActivityUIThread(() -> {
-            if (webView == null) webView = buildWebView();
-            webView.loadConsentUIFromUrl(url);
-        });
+        if (!hasLostInternetConnection()) {
+            mCountDownTimer.start();
+            runOnLiveActivityUIThread(() -> {
+                if (webView == null) webView = buildWebView();
+                webView.loadConsentUIFromUrl(url);
+            });
+        }else {
+            onErrorTask(new ConsentLibException.NoInternetConnectionException());
+        }
     }
 
     /**
@@ -333,7 +337,7 @@ public class GDPRConsentLib {
     }
 
     private void renderMsgAndSaveConsent() throws ConsentLibException {
-        if(!hasLostInternetConnection()) {
+        if (!hasLostInternetConnection()) {
             sourcePoint.getMessage(isNative, consentUUID, metaData, new OnLoadComplete() {
                 @Override
                 public void onSuccess(Object result) {
@@ -419,35 +423,39 @@ public class GDPRConsentLib {
     }
 
     protected void sendConsent(int actionType, Integer choiceId) {
-        try {
-            sourcePoint.sendConsent(paramsToSendConsent(actionType, choiceId), new OnLoadComplete() {
-                @Override
-                public void onSuccess(Object result) {
-                    try {
-                        JSONObject jsonResult = new JSONObject((String) result);
-                        JSONObject jsonUserConsent = jsonResult.getJSONObject("userConsent");
-                        userConsent = new GDPRUserConsent(jsonUserConsent);
-                        euConsent = jsonUserConsent.getString("euconsent");
-                        consentUUID = jsonResult.getString("uuid");
-                        metaData = jsonResult.getString("meta");
-                        Log.i("GDPR_UUID", "From sendConsentReponse: " + consentUUID);
-                        consentFinished();
-                    } catch (Exception e) {
-                        Log.d(TAG, "Sorry, something went wrong");
-                        e.printStackTrace();
-                        onErrorTask(new ConsentLibException(e, "Error trying to parse response from sendConsents."));
+        if (!hasLostInternetConnection()) {
+            try {
+                sourcePoint.sendConsent(paramsToSendConsent(actionType, choiceId), new OnLoadComplete() {
+                    @Override
+                    public void onSuccess(Object result) {
+                        try {
+                            JSONObject jsonResult = new JSONObject((String) result);
+                            JSONObject jsonUserConsent = jsonResult.getJSONObject("userConsent");
+                            userConsent = new GDPRUserConsent(jsonUserConsent);
+                            euConsent = jsonUserConsent.getString("euconsent");
+                            consentUUID = jsonResult.getString("uuid");
+                            metaData = jsonResult.getString("meta");
+                            Log.i("GDPR_UUID", "From sendConsentReponse: " + consentUUID);
+                            consentFinished();
+                        } catch (Exception e) {
+                            Log.d(TAG, "Sorry, something went wrong");
+                            e.printStackTrace();
+                            onErrorTask(new ConsentLibException(e, "Error trying to parse response from sendConsents."));
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(ConsentLibException exception) {
-                    Log.d(TAG, "Failed getting message response params.");
-                    exception.printStackTrace();
-                    onErrorTask(exception);
-                }
-            });
-        } catch (ConsentLibException e) {
-            e.printStackTrace();
+                    @Override
+                    public void onFailure(ConsentLibException exception) {
+                        Log.d(TAG, "Failed getting message response params.");
+                        exception.printStackTrace();
+                        onErrorTask(exception);
+                    }
+                });
+            } catch (ConsentLibException e) {
+                e.printStackTrace();
+            }
+        }else {
+            onErrorTask(new ConsentLibException.NoInternetConnectionException());
         }
     }
 
@@ -482,23 +490,26 @@ public class GDPRConsentLib {
     }
 
     private void setSubjectToGDPR() {
-
-        sourcePoint.getGDPRStatus(new OnLoadComplete() {
-            @Override
-            public void onSuccess(Object gdprApplies) {
-                try {
-                    JSONObject jsonResult = new JSONObject((String) gdprApplies);
-                    isSubjectToGdpr = jsonResult.getBoolean("gdprApplies");
-                } catch (JSONException e) {
-                    onErrorTask(new ConsentLibException(e, "Error parsing gdprApplies result"));
+        if (!hasLostInternetConnection()) {
+            sourcePoint.getGDPRStatus(new OnLoadComplete() {
+                @Override
+                public void onSuccess(Object gdprApplies) {
+                    try {
+                        JSONObject jsonResult = new JSONObject((String) gdprApplies);
+                        isSubjectToGdpr = jsonResult.getBoolean("gdprApplies");
+                    } catch (JSONException e) {
+                        onErrorTask(new ConsentLibException(e, "Error parsing gdprApplies result"));
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(ConsentLibException exception) {
-                onErrorTask(new ConsentLibException("Error getting gdprApplies from server."));
-            }
-        });
+                @Override
+                public void onFailure(ConsentLibException exception) {
+                    onErrorTask(new ConsentLibException("Error getting gdprApplies from server."));
+                }
+            });
+        }else {
+            onErrorTask(new ConsentLibException.NoInternetConnectionException());
+        }
     }
 
     private void setIABVars() {
