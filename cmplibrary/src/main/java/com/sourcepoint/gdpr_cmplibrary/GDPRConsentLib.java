@@ -172,6 +172,9 @@ public class GDPRConsentLib {
     }
 
     private boolean hasLostInternetConnection() {
+        if (activity == null){
+            return true;
+        }
         ConnectivityManager manager = (ConnectivityManager) activity
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         if (manager == null) {
@@ -330,36 +333,40 @@ public class GDPRConsentLib {
     }
 
     private void renderMsgAndSaveConsent() throws ConsentLibException {
-        sourcePoint.getMessage(isNative, consentUUID, metaData, new OnLoadComplete() {
-            @Override
-            public void onSuccess(Object result) {
-                try {
-                    JSONObject jsonResult = new JSONObject((String) result);
-                    consentUUID = jsonResult.getString("uuid");
-                    metaData = jsonResult.getString("meta");
-                    if (jsonResult.has("msgJSON") && !jsonResult.isNull("msgJSON")) {
-                        setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
-                        showView(nativeView);
-                    } else if (jsonResult.has("url") && !jsonResult.isNull("url")) {
-                        loadConsentUI(jsonResult.getString("url"));
-                    } else {
-                        userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
-                        if (euConsent == null) euConsent = userConsent.consentString;
-                        else userConsent.consentString = euConsent;
-                        consentFinished();
+        if(!hasLostInternetConnection()) {
+            sourcePoint.getMessage(isNative, consentUUID, metaData, new OnLoadComplete() {
+                @Override
+                public void onSuccess(Object result) {
+                    try {
+                        JSONObject jsonResult = new JSONObject((String) result);
+                        consentUUID = jsonResult.getString("uuid");
+                        metaData = jsonResult.getString("meta");
+                        if (jsonResult.has("msgJSON") && !jsonResult.isNull("msgJSON")) {
+                            setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
+                            showView(nativeView);
+                        } else if (jsonResult.has("url") && !jsonResult.isNull("url")) {
+                            loadConsentUI(jsonResult.getString("url"));
+                        } else {
+                            userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
+                            if (euConsent == null) euConsent = userConsent.consentString;
+                            else userConsent.consentString = euConsent;
+                            consentFinished();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        onErrorTask(new ConsentLibException(e, "Error trying to parse response from getConsents."));
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    onErrorTask(new ConsentLibException(e, "Error trying to parse response from getConsents."));
                 }
-            }
 
-            @Override
-            public void onFailure(ConsentLibException exception) {
-                exception.printStackTrace();
-                onErrorTask(exception);
-            }
-        });
+                @Override
+                public void onFailure(ConsentLibException exception) {
+                    exception.printStackTrace();
+                    onErrorTask(exception);
+                }
+            });
+        }else {
+            onErrorTask(new ConsentLibException.NoInternetConnectionException());
+        }
     }
 
     private void showView(View view) {
