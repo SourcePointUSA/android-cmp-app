@@ -1,9 +1,9 @@
 ## 5.1.2 (April, 11, 2020)
+* fixed an issue with back button while the consent webview was open.
 * open links from webview on external browser
 * flush IAB consent data before storing new one
 * add configurable timeout
 * fix login logout behaviour from SDK side
-
 
 ## 4.1.6 (April, 22, 2020)
 * fix timeout error on loadPm() from very first launch
