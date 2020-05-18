@@ -1,4 +1,4 @@
-## 5.1.2 (April, 11, 2020)
+## 5.1.2 (May, 11, 2020)
 * fixed an issue with back button while the consent webview was open.
 * open links from webview on external browser
 * flush IAB consent data before storing new one
