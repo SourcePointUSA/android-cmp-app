@@ -1,3 +1,8 @@
+## 5.2.0 (May, 15, 2020)
+* Added the method `customConsentTo` to `GDPRConsentLib` #139
+* fixed consent persistence for pm as first layer message #3517
+* network calls library changed for okHttp #3439
+
 ## 5.1.2 (May, 11, 2020)
 * fixed an issue with back button while the consent webview was open.
 * open links from webview on external browser
