@@ -136,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-## Programatically consenting the current user
-It's possible to programatically consent the current user to a list of vendors, categories and legitimate interest caregories by using the following method from the consentlib:
+## Programmatically consenting the current user
+It's possible to programmatically consent the current user to a list of vendors, categories and legitimate interest categories by using the following method from the consentlib:
 ```java
 customConsentTo(
             ArrayList<String> vendors,
