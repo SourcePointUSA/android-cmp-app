@@ -160,7 +160,7 @@ public class GDPRConsentLibTest {
     }
 
     @Test
-    public void onAction_MSG_ACCEPT() {
+    public void onAction_MSG_ACCEPT() throws ConsentLibException {
         GDPRConsentLib spyLib = spy(gdprConsentLib);
 
         spyLib.onAction(GDPRConsentLib.ActionTypes.MSG_ACCEPT , 1);
@@ -170,7 +170,7 @@ public class GDPRConsentLibTest {
 
 
     @Test
-    public void onAction_MSG_SHOW_OPTIONS() {
+    public void onAction_MSG_SHOW_OPTIONS() throws ConsentLibException{
         GDPRConsentLib spyLib = spy(gdprConsentLib);
 
         spyLib.onAction(GDPRConsentLib.ActionTypes.MSG_SHOW_OPTIONS , 1);
@@ -188,7 +188,7 @@ public class GDPRConsentLibTest {
     }
 
     @Test
-    public void onAction_MSG_REJECT() {
+    public void onAction_MSG_REJECT() throws ConsentLibException{
         GDPRConsentLib spyLib = spy(gdprConsentLib);
 
         spyLib.onAction(GDPRConsentLib.ActionTypes.MSG_REJECT , 1);
@@ -205,8 +205,8 @@ public class GDPRConsentLibTest {
         verify(spyLib, times(1)).onPmDismiss();
     }
 
-    @Test
-    public void onMsgAccepted() {
+    @Test(expected = ConsentLibException.class)
+    public void onMsgAccepted() throws ConsentLibException {
         GDPRConsentLib spyLib = spy(gdprConsentLib);
         spyLib.onMsgAccepted(1);
         verify(spyLib,times(1)).closeAllViews();
@@ -214,8 +214,8 @@ public class GDPRConsentLibTest {
 
     }
 
-    @Test
-    public void onMsgRejected() {
+    @Test(expected = ConsentLibException.class)
+    public void onMsgRejected() throws  ConsentLibException{
         GDPRConsentLib spyLib = spy(gdprConsentLib);
         spyLib.onMsgRejected(1);
         verify(spyLib ,times(1)).closeAllViews();
