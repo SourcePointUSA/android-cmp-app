@@ -38,6 +38,11 @@ public class ConsentWebViewTest {
 
             @Override
             public void onSavePM(GDPRUserConsent GDPRUserConsent) {   }
+
+            @Override
+            public void onBackPressAction() {
+
+            }
         };
 
         spyView = spy(consentWebView);
