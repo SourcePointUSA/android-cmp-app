@@ -205,21 +205,29 @@ public class GDPRConsentLibTest {
         verify(spyLib, times(1)).onPmDismiss();
     }
 
-    @Test(expected = ConsentLibException.class)
-    public void onMsgAccepted() throws ConsentLibException {
+    @Test
+    public void onMsgAccepted()  {
         GDPRConsentLib spyLib = spy(gdprConsentLib);
         spyLib.onMsgAccepted(1);
         verify(spyLib,times(1)).closeAllViews();
-        verify(spyLib,times(1)).sendConsent(GDPRConsentLib.ActionTypes.MSG_ACCEPT , 1);
+        try {
+            verify(spyLib,times(1)).sendConsent(GDPRConsentLib.ActionTypes.MSG_ACCEPT , 1);
+        } catch (ConsentLibException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    @Test(expected = ConsentLibException.class)
-    public void onMsgRejected() throws  ConsentLibException{
+    @Test
+    public void onMsgRejected() {
         GDPRConsentLib spyLib = spy(gdprConsentLib);
         spyLib.onMsgRejected(1);
         verify(spyLib ,times(1)).closeAllViews();
-        verify(spyLib ,times(1)).sendConsent(GDPRConsentLib.ActionTypes.MSG_REJECT, 1);
+        try {
+            verify(spyLib ,times(1)).sendConsent(GDPRConsentLib.ActionTypes.MSG_REJECT, 1);
+        } catch (ConsentLibException e) {
+            e.printStackTrace();
+        }
     }
 
 
