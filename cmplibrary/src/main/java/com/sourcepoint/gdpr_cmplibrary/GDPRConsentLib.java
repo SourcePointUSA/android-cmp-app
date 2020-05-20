@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
@@ -358,7 +357,9 @@ public class GDPRConsentLib {
 
     void showView(View view) {
         mCountDownTimer.cancel();
-        runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
+        if (!hasParent(view)) {
+            runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
+        }
     }
 
     public void closeAllViews() {
@@ -373,8 +374,12 @@ public class GDPRConsentLib {
         closeView(getCurrentMessageView());
     }
 
+    private boolean hasParent(View v) {
+        return v != null && v.getParent() != null;
+    }
+
     protected void closeView(View v) {
-        if (v != null)
+        if (hasParent(v))
             runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
     }
 
