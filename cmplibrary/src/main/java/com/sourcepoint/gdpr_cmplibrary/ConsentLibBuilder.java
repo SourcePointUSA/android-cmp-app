@@ -1,6 +1,8 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -37,6 +39,8 @@ public class ConsentLibBuilder {
 
     PropertyConfig propertyConfig;
 
+    ConnectivityManager manager ;
+
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity) {
         init(accountId, property, propertyId , pmId , activity);
@@ -53,6 +57,11 @@ public class ConsentLibBuilder {
 
     protected StoreClient getStoreClient(){
         return new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
+    }
+
+    protected ConnectivityManager getManager(){
+        return  (ConnectivityManager) activity
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     /**
