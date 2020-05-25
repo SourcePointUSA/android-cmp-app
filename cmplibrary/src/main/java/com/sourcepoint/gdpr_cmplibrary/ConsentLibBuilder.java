@@ -177,7 +177,7 @@ public class ConsentLibBuilder {
                 propertyConfig,
                 stagingCampaign,
                 staging,
-                targetingParamsString,
+                getTargetingParamsString(),
                 authId
         );
     }
