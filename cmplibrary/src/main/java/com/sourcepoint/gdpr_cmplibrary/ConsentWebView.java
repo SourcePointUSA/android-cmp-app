@@ -1,10 +1,13 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
@@ -39,6 +42,7 @@ import static java.lang.Boolean.getBoolean;
 abstract public class ConsentWebView extends WebView {
 
     private static final String TAG = "ConsentWebView";
+    private ConnectivityManager manager;
 
     @SuppressWarnings("unused")
     private class JSReceiverInterface {
@@ -84,6 +88,7 @@ abstract public class ConsentWebView extends WebView {
 
     public ConsentWebView(Context context) {
         super(context);
+        this.manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         setup();
     }
 
@@ -174,7 +179,9 @@ abstract public class ConsentWebView extends WebView {
 
     abstract public void onBackPressAction();
 
-    public void loadConsentUIFromUrl(String url) {
+    public void loadConsentUIFromUrl(String url) throws ConsentLibException {
+        if (hasLostInternetConnection())
+            throw new ConsentLibException.NoInternetConnectionException();
         Log.d(TAG, "Loading Webview with: " + url);
         Log.d(TAG, "User-Agent: " + getSettings().getUserAgentString());
         loadUrl(url);
@@ -210,5 +217,13 @@ abstract public class ConsentWebView extends WebView {
     private void loadLinkOnExternalBrowser(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW , Uri.parse(url));
         this.getContext().startActivity(intent);
+    }
+
+    private boolean hasLostInternetConnection() {
+        if (this.manager == null) {
+            return true;
+        }
+        NetworkInfo activeNetwork = this.manager.getActiveNetworkInfo();
+        return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
     }
 }

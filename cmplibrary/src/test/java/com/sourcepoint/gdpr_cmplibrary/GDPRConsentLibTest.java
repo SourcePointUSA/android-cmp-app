@@ -89,7 +89,7 @@ public class GDPRConsentLibTest {
 
 
     @Before
-    public void setUp() {
+    public void setUp() throws ConsentLibException {
         initMocks(this);
         setStoreClientMock();
         setTimerMock();
@@ -151,7 +151,7 @@ public class GDPRConsentLibTest {
     }
 
     @Test
-    public void onShowOptions() {
+    public void onShowOptions() throws ConsentLibException {
         lib.onShowOptions();
         verify(lib.activity).runOnUiThread(lambdaCaptor.capture());
         if(lib.onError != null )

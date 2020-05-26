@@ -39,8 +39,6 @@ public class ConsentLibBuilder {
 
     PropertyConfig propertyConfig;
 
-    ConnectivityManager manager ;
-
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity) {
         init(accountId, property, propertyId , pmId , activity);
@@ -178,7 +176,7 @@ public class ConsentLibBuilder {
     }
 
     protected SourcePointClient getSourcePointClient(){
-        return new SourcePointClient(new OkHttpClient(), spClientConfig());
+        return new SourcePointClient(new OkHttpClient(), spClientConfig() , getManager());
     }
 
     private SourcePointClientConfig spClientConfig(){

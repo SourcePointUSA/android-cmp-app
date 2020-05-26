@@ -70,8 +70,6 @@ public class GDPRConsentLib {
 
     public NativeMessage nativeView;
 
-    private ConnectivityManager manager ;
-
     public interface Callback {
         void run(GDPRConsentLib c);
     }
@@ -128,7 +126,6 @@ public class GDPRConsentLib {
         sourcePoint = b.getSourcePointClient();
 
         storeClient = b.getStoreClient();
-        this.manager = b.getManager();
         setConsentData(b.authId);
     }
 
@@ -164,16 +161,6 @@ public class GDPRConsentLib {
     private boolean didConsentUserChange(String newAuthId, String oldAuthId) {
         return oldAuthId != null && newAuthId != null && !newAuthId.equals(oldAuthId);
     }
-
-    private boolean hasLostInternetConnection() {
-        if (this.manager == null) {
-            return true;
-        }
-
-        NetworkInfo activeNetwork = this.manager.getActiveNetworkInfo();
-        return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
-    }
-
 
     ConsentWebView buildWebView() {
         return new ConsentWebView(activity) {
@@ -229,12 +216,7 @@ public class GDPRConsentLib {
 
     public void onDefaultAction(ConsentAction action) {
         closeAllViews();
-        try {
-            sendConsent(action);
-        } catch (ConsentLibException e) {
-            e.printStackTrace();
-            onErrorTask(e);
-        }
+        sendConsent(action);
     }
 
     public void onMsgCancel() {
@@ -260,13 +242,15 @@ public class GDPRConsentLib {
         showPm();
     }
 
-    private void loadConsentUI(String url) throws ConsentLibException{
-        if (hasLostInternetConnection())
-            throw new ConsentLibException.NoInternetConnectionException();
-
+    private void loadConsentUI(String url) {
         runOnLiveActivityUIThread(() -> {
             if (webView == null) webView = buildWebView();
-            webView.loadConsentUIFromUrl(url);
+            try {
+                webView.loadConsentUIFromUrl(url);
+            } catch (ConsentLibException e) {
+                e.printStackTrace();
+                onErrorTask(e);
+            }
         });
     }
 
@@ -292,10 +276,7 @@ public class GDPRConsentLib {
             mCountDownTimer.start();
             isPmOn = true;
             loadConsentUI(pmUrl());
-        } catch (ConsentLibException e){
-            e.printStackTrace();
-            onErrorTask(e);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.showPm()"));
         }
@@ -335,8 +316,6 @@ public class GDPRConsentLib {
     }
 
     private void renderMsgAndSaveConsent() throws ConsentLibException {
-        if (hasLostInternetConnection())
-            throw new ConsentLibException.NoInternetConnectionException();
         sourcePoint.getMessage(isNative, consentUUID, metaData, euConsent, new OnLoadComplete() {
             @Override
             public void onSuccess(Object result) {
@@ -419,9 +398,7 @@ public class GDPRConsentLib {
         }
     }
 
-    protected void sendConsent(ConsentAction action) throws ConsentLibException {
-        if (hasLostInternetConnection())
-            throw new ConsentLibException.NoInternetConnectionException();
+    protected void sendConsent(ConsentAction action)  {
         try {
             sourcePoint.sendConsent(paramsToSendConsent(action), new OnLoadComplete() {
                 @Override
