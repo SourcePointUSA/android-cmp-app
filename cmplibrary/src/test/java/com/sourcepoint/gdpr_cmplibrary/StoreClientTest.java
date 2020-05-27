@@ -51,7 +51,7 @@ public class StoreClientTest {
         editor.putString("IABTCF_bar", "bar");
         editor.clear().commit();
 
-        HashMap<String, String> tcData = new HashMap<>();
+        HashMap<String, Object> tcData = new HashMap<>();
         tcData.put("IABTCF_foo", "foo");
         storeClient.setTCData(tcData);
 
