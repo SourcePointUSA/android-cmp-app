@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GDPR-MetaApp</string>
+    <string name="app_name">TCFv1_GDPR-MetaApp</string>
 
     <string name="account_id">Account ID</string>
     <string name="account_id_placeholder">Enter account id here</string>
