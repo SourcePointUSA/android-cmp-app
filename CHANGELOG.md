@@ -1,3 +1,6 @@
+## 5.2.1 (May, 20, 2020)
+* fix issue preventing release of 5.2.0
+
 ## 5.2.0 (May, 20, 2020)
 * Added the method `customConsentTo` to `GDPRConsentLib` #139
 * fixed consent persistence for pm as first layer message
