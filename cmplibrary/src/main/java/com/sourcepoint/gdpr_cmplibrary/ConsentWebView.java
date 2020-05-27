@@ -1,7 +1,6 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -26,7 +25,6 @@ import android.webkit.WebViewClient;
 
 import com.example.gdpr_cmplibrary.R;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -37,12 +35,11 @@ import java.io.InputStreamReader;
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getInt;
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getJson;
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getString;
-import static java.lang.Boolean.getBoolean;
 
 abstract public class ConsentWebView extends WebView {
 
     private static final String TAG = "ConsentWebView";
-    private ConnectivityManager manager;
+    private ConnectivityManager connectivityManager;
 
     @SuppressWarnings("unused")
     private class JSReceiverInterface {
@@ -88,7 +85,7 @@ abstract public class ConsentWebView extends WebView {
 
     public ConsentWebView(Context context) {
         super(context);
-        this.manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        this.connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         setup();
     }
 
@@ -220,10 +217,10 @@ abstract public class ConsentWebView extends WebView {
     }
 
     private boolean hasLostInternetConnection() {
-        if (this.manager == null) {
+        if (this.connectivityManager == null) {
             return true;
         }
-        NetworkInfo activeNetwork = this.manager.getActiveNetworkInfo();
+        NetworkInfo activeNetwork = this.connectivityManager.getActiveNetworkInfo();
         return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
     }
 }

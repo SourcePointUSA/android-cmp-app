@@ -32,7 +32,7 @@ class SourcePointClient {
 
     SourcePointClientConfig config;
 
-    ConnectivityManager manager;
+    ConnectivityManager connectivityManager;
 
     private String getRequestUUID(){
         if(!requestUUID.isEmpty()) return requestUUID;
@@ -40,17 +40,17 @@ class SourcePointClient {
         return requestUUID;
     }
 
-    SourcePointClient(OkHttpClient httpClient, SourcePointClientConfig config, ConnectivityManager manager) {
+    SourcePointClient(OkHttpClient httpClient, SourcePointClientConfig config, ConnectivityManager connectivityManager) {
         this.httpClient = httpClient;
         this.config = config;
-        this.manager = manager;
+        this.connectivityManager = connectivityManager;
     }
 
     private boolean hasLostInternetConnection() {
-        if (this.manager == null) {
+        if (this.connectivityManager == null) {
             return true;
         }
-        NetworkInfo activeNetwork = this.manager.getActiveNetworkInfo();
+        NetworkInfo activeNetwork = this.connectivityManager.getActiveNetworkInfo();
         return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
     }
 

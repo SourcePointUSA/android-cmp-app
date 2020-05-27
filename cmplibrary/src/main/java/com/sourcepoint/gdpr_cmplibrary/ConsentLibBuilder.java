@@ -57,7 +57,7 @@ public class ConsentLibBuilder {
         return new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
     }
 
-    protected ConnectivityManager getManager(){
+    protected ConnectivityManager getConnectivityManager(){
         return  (ConnectivityManager) activity
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
     }
@@ -176,7 +176,7 @@ public class ConsentLibBuilder {
     }
 
     protected SourcePointClient getSourcePointClient(){
-        return new SourcePointClient(new OkHttpClient(), spClientConfig() , getManager());
+        return new SourcePointClient(new OkHttpClient(), spClientConfig() , getConnectivityManager());
     }
 
     private SourcePointClientConfig spClientConfig(){

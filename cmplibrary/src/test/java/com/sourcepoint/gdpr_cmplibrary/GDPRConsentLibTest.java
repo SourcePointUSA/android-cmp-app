@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.CountDownTimer;
 
 import org.json.JSONObject;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -154,9 +153,7 @@ public class GDPRConsentLibTest {
     public void onShowOptions() throws ConsentLibException {
         lib.onShowOptions();
         verify(lib.activity).runOnUiThread(lambdaCaptor.capture());
-        if(lib.onError != null )
         lambdaCaptor.getValue().run();
-        if (lib.webView != null)
         verify(lib.webView).loadConsentUIFromUrl(lib.pmUrl());
     }
 
