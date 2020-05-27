@@ -7,7 +7,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getBoolean;
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getHashMap;
+import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getJson;
+import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getString;
 
 public class GDPRUserConsent {
 
@@ -18,7 +21,8 @@ public class GDPRUserConsent {
     public ArrayList<String> legIntCategories;
     public JSONObject jsonConsents = new JSONObject();
     public String consentString;
-    public HashMap<String, String> TCData;
+    public HashMap TCData;
+    public VendorGrants vendorGrants;
 
     public GDPRUserConsent(){
         acceptedVendors = new ArrayList<>();
@@ -49,6 +53,9 @@ public class GDPRUserConsent {
         if(jConsent.has("TCData") && !jConsent.isNull("TCData")){
             TCData = getHashMap(jConsent.getJSONObject("TCData"));
         }
+        if(jConsent.has("vendorGrants") && !jConsent.isNull("vendorGrants")){
+            vendorGrants = new VendorGrants(jConsent.getJSONObject("vendorGrants"));
+        }
         setJsonConsents();
     }
 
@@ -65,6 +72,31 @@ public class GDPRUserConsent {
     private void setJsonConsents() throws JSONException {
         jsonConsents.put("acceptedVendors", new JSONArray(acceptedVendors));
         jsonConsents.put("acceptedCategories", new JSONArray(acceptedCategories));
+    }
+
+    public class VendorGrants extends HashMap<String, VendorGrants.VendorGrant> {
+        VendorGrants(JSONObject jVendorGrants) throws ConsentLibException {
+            super();
+            JSONArray names = jVendorGrants.names();
+            if (names != null){
+                for(int i = 0; i < names.length(); i++) {
+                    String name = getString(i, names);
+                    this.put(name, new VendorGrant(getJson(name, jVendorGrants)));
+                }
+            }
+        }
+
+        class VendorGrant {
+            public boolean vendorGrant;
+            public HashMap<String, Boolean> purposeGrants;
+            VendorGrant(JSONObject jVendorGrant) throws ConsentLibException {
+                vendorGrant = getBoolean("vendorGrant", jVendorGrant);
+                purposeGrants = getHashMap(getJson("purposeGrants", jVendorGrant));
+            }
+            public String toString(){
+                return "{" + "vendorGrant: " + vendorGrant + ", " + "purposeGrants: " + purposeGrants + "}";
+            }
+        }
     }
 
 }
