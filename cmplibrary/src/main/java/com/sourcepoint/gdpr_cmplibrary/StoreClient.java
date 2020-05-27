@@ -3,6 +3,7 @@ package com.sourcepoint.gdpr_cmplibrary;
 import android.content.SharedPreferences;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class StoreClient {
 
@@ -31,10 +32,11 @@ public class StoreClient {
         this.pref = pref;
     }
 
-    public void setTCData(HashMap<String, String> tcdata){
+    public void setTCData(HashMap<String, Object> tcData){
         clearConsentData();
-        for(String key : tcdata.keySet()){
-            editor.putString(key, tcdata.get(key));
+        for(String key : tcData.keySet()){
+            if(tcData.get(key).getClass().equals(Integer.class)) editor.putInt(key, (Integer) tcData.get(key));
+            if(tcData.get(key).getClass().equals(String.class)) editor.putString(key, (String) tcData.get(key));
         }
         editor.commit();
     }
