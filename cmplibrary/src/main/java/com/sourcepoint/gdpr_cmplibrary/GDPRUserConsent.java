@@ -10,16 +10,18 @@ public class GDPRUserConsent {
 
     public ArrayList<String> acceptedVendors;
     public ArrayList<String> acceptedCategories;
-    public JSONObject jsonConsents;
+    public JSONObject jsonConsents = new JSONObject();
     public String consentString;
 
-    public GDPRUserConsent(){
-        acceptedVendors = new ArrayList<>();
-        acceptedCategories = new ArrayList<>();
-        consentString = "";
+    public GDPRUserConsent() throws JSONException {
+        this.acceptedVendors = new ArrayList<>();
+        this.acceptedCategories = new ArrayList<>();
+        this.consentString = "";
+        jsonConsents.put("acceptedVendors",new JSONArray());
+        jsonConsents.put("acceptedCategories",new JSONArray());
     }
 
-    public GDPRUserConsent(JSONObject jConsent) throws JSONException, ConsentLibException {
+    public GDPRUserConsent(JSONObject jConsent) throws JSONException {
         this.acceptedVendors = json2StrArr(jConsent.getJSONArray("acceptedVendors"));
         this.acceptedCategories = json2StrArr(jConsent.getJSONArray("acceptedCategories"));
         if(jConsent.has("euconsent") && !jConsent.isNull("euconsent")){
