@@ -22,7 +22,7 @@ public class GDPRUserConsent {
     public JSONObject jsonConsents = new JSONObject();
     public String consentString;
     public HashMap TCData;
-    public VendorGrants vendorGrants;
+    public VendorGrants vendorGrants = new VendorGrants();
 
     public GDPRUserConsent(){
         acceptedVendors = new ArrayList<>();
@@ -85,6 +85,7 @@ public class GDPRUserConsent {
                 }
             }
         }
+        VendorGrants(){ super(); }
 
         class VendorGrant {
             public boolean vendorGrant;
