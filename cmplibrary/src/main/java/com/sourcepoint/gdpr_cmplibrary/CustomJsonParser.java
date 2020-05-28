@@ -8,6 +8,14 @@ import java.util.HashMap;
 
 public class CustomJsonParser {
 
+    static Object getObject(String key, JSONObject j) throws ConsentLibException {
+        try {
+            return j.get(key);
+        } catch (JSONException e) {
+            throw new ConsentLibException(e, key + " missing from JSONObject");
+        }
+    }
+
     static boolean getBoolean(String key, JSONObject j) throws ConsentLibException {
         try {
             return j.getBoolean(key);
@@ -72,15 +80,15 @@ public class CustomJsonParser {
         }
     }
 
-    static HashMap<String, String> getHashMap(JSONObject jCustomFields) throws ConsentLibException {
-        HashMap<String, String> hMap = new HashMap<>();
+    static <T extends HashMap> T getHashMap(JSONObject jCustomFields) throws ConsentLibException {
+        HashMap hMap = new HashMap<>();
         JSONArray names = jCustomFields.names();
         if (names != null){
             for(int i = 0; i < names.length(); i++) {
                 String name = getString(i, names);
-                hMap.put(name, getString(name, jCustomFields));
+                hMap.put(name, getObject(name, jCustomFields));
             }
         }
-        return hMap;
+        return (T) hMap;
     }
 }
