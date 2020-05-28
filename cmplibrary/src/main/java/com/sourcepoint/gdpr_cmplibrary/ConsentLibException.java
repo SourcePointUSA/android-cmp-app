@@ -15,10 +15,10 @@ public class ConsentLibException extends Exception {
     }
 
     public static class NoInternetConnectionException extends ConsentLibException {
-        public static final String description = "Error due to no internet connection";
+        public static final String description = "The device is not connected to the internet.";
 
-        NoInternetConnectionException(Throwable e, String message) { super(e, description + ": " + message); }
-        NoInternetConnectionException(String message) { super(description + ": " + message); }
+        NoInternetConnectionException(Throwable e) { super(e, description); }
+        NoInternetConnectionException() { super(description); }
 
     }
 

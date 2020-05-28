@@ -1,9 +1,6 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
@@ -162,18 +159,6 @@ public class GDPRConsentLib {
         return oldAuthId != null && newAuthId != null && !newAuthId.equals(oldAuthId);
     }
 
-    private boolean hasLostInternetConnection() {
-        ConnectivityManager manager = (ConnectivityManager) activity
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (manager == null) {
-            return true;
-        }
-
-        NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
-        return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
-    }
-
-
     ConsentWebView buildWebView() {
         return new ConsentWebView(activity) {
 
@@ -257,7 +242,12 @@ public class GDPRConsentLib {
     private void loadConsentUI(String url) {
         runOnLiveActivityUIThread(() -> {
             if (webView == null) webView = buildWebView();
-            webView.loadConsentUIFromUrl(url);
+            try {
+                webView.loadConsentUIFromUrl(url);
+            } catch (ConsentLibException e) {
+                e.printStackTrace();
+                onErrorTask(e);
+            }
         });
     }
 
@@ -405,7 +395,7 @@ public class GDPRConsentLib {
         }
     }
 
-    protected void sendConsent(ConsentAction action) {
+    protected void sendConsent(ConsentAction action)  {
         try {
             sourcePoint.sendConsent(paramsToSendConsent(action), new OnLoadComplete() {
                 @Override

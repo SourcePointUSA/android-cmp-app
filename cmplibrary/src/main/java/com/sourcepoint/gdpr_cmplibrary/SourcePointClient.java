@@ -1,5 +1,7 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -30,18 +32,32 @@ class SourcePointClient {
 
     SourcePointClientConfig config;
 
+    ConnectivityManager connectivityManager;
+
     private String getRequestUUID(){
         if(!requestUUID.isEmpty()) return requestUUID;
         requestUUID =  UUID.randomUUID().toString();
         return requestUUID;
     }
 
-    SourcePointClient(OkHttpClient httpClient, SourcePointClientConfig config) {
+    SourcePointClient(OkHttpClient httpClient, SourcePointClientConfig config, ConnectivityManager connectivityManager) {
         this.httpClient = httpClient;
         this.config = config;
+        this.connectivityManager = connectivityManager;
+    }
+
+    private boolean hasLostInternetConnection() {
+        if (this.connectivityManager == null) {
+            return true;
+        }
+        NetworkInfo activeNetwork = this.connectivityManager.getActiveNetworkInfo();
+        return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
     }
 
     void getMessage(boolean isNative, String consentUUID, String meta, String euconsent, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
+        if(hasLostInternetConnection())
+            throw new ConsentLibException.NoInternetConnectionException();
+
         String url = messageUrl(isNative);
         Log.d(LOG_TAG, "Getting message from: " + url);
 
@@ -110,6 +126,9 @@ class SourcePointClient {
 
 
     void sendConsent(JSONObject params, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
+        if (hasLostInternetConnection())
+            throw new ConsentLibException.NoInternetConnectionException();
+
         String url = consentUrl();
         try {
             params.put("requestUUID", getRequestUUID());

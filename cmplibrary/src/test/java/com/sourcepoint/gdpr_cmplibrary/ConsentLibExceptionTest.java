@@ -13,7 +13,7 @@ public class ConsentLibExceptionTest {
     String errorMsgMock = "Something bad just happened";
     Exception errorMock = new Exception();
 
-    String noInternetConnectionMsgExpected = ConsentLibException.NoInternetConnectionException.description + ": " + errorMsgMock;
+    String noInternetConnectionMsgExpected = ConsentLibException.NoInternetConnectionException.description ;
     String buildExceptionMsgExpected = ConsentLibException.BuildException.description + ": " + errorMsgMock;
     String ApiExceptionMsgExpected = ConsentLibException.ApiException.description + ": " + errorMsgMock;
 
@@ -34,13 +34,13 @@ public class ConsentLibExceptionTest {
 
     @Test
     public void NoInternetConnectionExceptionWithMessage(){
-        ConsentLibException e = new ConsentLibException.NoInternetConnectionException(errorMsgMock);
+        ConsentLibException e = new ConsentLibException.NoInternetConnectionException();
         assertEquals(e.consentLibErrorMessage, noInternetConnectionMsgExpected);
     }
 
     @Test
     public void NoInternetConnectionExceptionWithErrorPlusMessage(){
-        ConsentLibException e = new ConsentLibException.NoInternetConnectionException(errorMock , errorMsgMock);
+        ConsentLibException e = new ConsentLibException.NoInternetConnectionException(errorMock);
         assertEquals(e.consentLibErrorMessage, noInternetConnectionMsgExpected);
         assertEquals(e.getCause(), errorMock);
     }
