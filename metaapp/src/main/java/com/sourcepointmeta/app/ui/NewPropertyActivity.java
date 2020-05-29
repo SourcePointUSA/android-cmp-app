@@ -94,7 +94,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
     private GDPRConsentLib buildConsentLib(Property property, Activity activity) {
         ConsentLibBuilder consentLibBuilder = GDPRConsentLib.newBuilder(property.getAccountID(), property.getProperty(), property.getPropertyID(), property.getPmID(), activity)
                 .setStagingCampaign(property.isStaging())
-                .setMessageTimeOut(15000)
+                .setMessageTimeOut(30000)
                 .setOnConsentUIReady(view -> {
                             getSupportActionBar().hide();
                             hideProgressBar();

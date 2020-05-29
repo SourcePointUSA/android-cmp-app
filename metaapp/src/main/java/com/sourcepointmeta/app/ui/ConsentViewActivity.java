@@ -1,5 +1,6 @@
 package com.sourcepointmeta.app.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -93,7 +94,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private GDPRConsentLib buildConsentLib(Property property, Activity activity) {
         ConsentLibBuilder consentLibBuilder = GDPRConsentLib.newBuilder(property.getAccountID(), property.getProperty(), property.getPropertyID(), property.getPmID(), activity)
                 .setStagingCampaign(property.isStaging())
-                //.setMessageTimeOut(15000)
+                .setMessageTimeOut(30000)
                 .setOnConsentUIReady(view -> {
                             getSupportActionBar().hide();
                             isPMLoaded = true;
@@ -300,7 +301,6 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
             mProgressDialog.setMessage("Please wait...");
             mProgressDialog.setCancelable(false);
             mProgressDialog.setIndeterminate(true);
-            mProgressDialog.getWindow().setTransitionBackgroundFadeDuration(1000);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.show();
 
@@ -330,6 +330,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     }
 
     // method to show alert/error dialog
+    @SuppressLint("NewApi")
     private void showAlertDialog(String message) {
         hideProgressBar();
         if (!isDestroyed()) {
