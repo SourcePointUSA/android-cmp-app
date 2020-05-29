@@ -321,8 +321,12 @@ public class GDPRConsentLib {
 
             mCountDownTimer.start();
             runOnLiveActivityUIThread(() -> {
-                if (webView == null) webView = buildWebView();
-                webView.loadConsentUIFromUrl(url);
+                try {
+                    if (webView == null) webView = buildWebView();
+                    webView.loadConsentUIFromUrl(url);
+                } catch (Exception e) {
+                    onErrorTask(new ConsentLibException(e, "Error loan webview with ulr: " + url));
+                }
             });
     }
 
