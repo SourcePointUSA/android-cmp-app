@@ -217,7 +217,8 @@ public class GDPRConsentLib {
     }
 
     public void onMsgCancel() {
-        closeAllViews();
+        closeCurrentMessageView();
+        consentFinished();
     }
 
     protected void onPmDismiss() {
@@ -226,7 +227,7 @@ public class GDPRConsentLib {
             @Override
             public void run() {
                 if (webView.canGoBack()) webView.goBack();
-                else closeView(webView);
+                else onMsgCancel();
             }
         });
     }
