@@ -1,3 +1,8 @@
+## 4.1.9 (May, 29, 2020)
+* add internet connection check before http calls #156
+* call onError from goBackInAnotherThread (runnable passed to ConsentWebView.pot()) #163
+* fix error due to empty consent object #160
+
 ## 4.1.8 (May, 15, 2020)
 * add public method: releaseActivity()
 * aways call onConsentReady or onError as the very last callback
