@@ -272,10 +272,14 @@ public class GDPRConsentLib {
 
     private void goBackInAnotherThread(ConsentWebView v) {
         v.post(() -> {
-            if (v.canGoBack()) v.goBack();
-            else {
-                closeView(v);
-                consentFinished();
+            try {
+                if (v.canGoBack()) v.goBack();
+                else {
+                    closeView(v);
+                    consentFinished();
+                }
+            } catch (Exception e) {
+                onErrorTask(new ConsentLibException(e, "Unexpected error trying go back from 2nd layer msg"));
             }
         });
     }
