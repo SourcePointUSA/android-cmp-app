@@ -1,5 +1,5 @@
 ## 4.1.10 (May, 29, 2020)
-* fix: > call onError from loadConsentUI
+* fix: call onError from loadConsentUI
 
 ## 4.1.9 (May, 29, 2020)
 * add internet connection check before http calls #156
