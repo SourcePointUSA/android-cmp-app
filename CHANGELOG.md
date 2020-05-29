@@ -1,6 +1,9 @@
+## 4.1.10 (May, 29, 2020)
+* fix: > call onError from loadConsentUI
+
 ## 4.1.9 (May, 29, 2020)
 * add internet connection check before http calls #156
-* call onError from goBackInAnotherThread (runnable passed to ConsentWebView.pot()) #163
+* fix: call onError from goBackInAnotherThread (runnable passed to ConsentWebView.post()) #163
 * fix error due to empty consent object #160
 
 ## 4.1.8 (May, 15, 2020)
