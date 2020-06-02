@@ -21,7 +21,7 @@ import okhttp3.Response;
 class SourcePointClient {
     private static final String LOG_TAG = "SOURCE_POINT_CLIENT";
 
-    private OkHttpClient httpClient = new OkHttpClient();
+    private OkHttpClient httpClient;
 
     private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/message-url?inApp=true";
     private static final String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/native-message?inApp=true";
