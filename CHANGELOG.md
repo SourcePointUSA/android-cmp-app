@@ -1,3 +1,7 @@
+## 5.2.2 (Jun, 02, 2020)
+* fix an issue when loading the PM for properties belonging to property groups - 7c098
+* fix an issue preventing campaign with targeting params from showing consent message - 5890c
+
 ## 5.2.1 (May, 20, 2020)
 * fix issue preventing release of 5.2.0
 
