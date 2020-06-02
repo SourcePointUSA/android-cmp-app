@@ -492,6 +492,7 @@ public class GDPRConsentLib {
     String pmUrl() {
         HashSet<String> params = new HashSet<>();
         params.add("message_id=" + pmId);
+        params.add("site_id="+ propertyId);
         if (consentUUID != null) params.add("consentUUID=" + consentUUID);
 
         return PM_BASE_URL + "?" + TextUtils.join("&", params);

@@ -13,6 +13,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.robolectric.RobolectricTestRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -49,8 +50,8 @@ public class GDPRConsentLibTest {
     @Captor
     ArgumentCaptor<Runnable> lambdaCaptor;
 
-    private ConsentLibBuilder builderMock(){
-        return new ConsentLibBuilder(123, "example.com", 321, "abcd", activityMock){
+    private ConsentLibBuilder builderMock(int accountId, String propertyName, int propertyId, String pmId, Activity activity){
+        return new ConsentLibBuilder(accountId, propertyName, propertyId, pmId, activity){
             @Override
             public SourcePointClient getSourcePointClient(){
                 return sourcePointClientMock;
@@ -64,6 +65,10 @@ public class GDPRConsentLibTest {
                 return timerMock;
             }
         };
+    }
+
+    private ConsentLibBuilder builderMock(){
+        return builderMock(123, "example.com", 321, "abcd", activityMock);
     }
 
     private void setStoreClientMock(){
@@ -85,7 +90,6 @@ public class GDPRConsentLibTest {
         doReturn(timerMock).when(timerMock).start();
         doNothing().when(timerMock).cancel();
     }
-
 
     @Before
     public void setUp() {
@@ -171,5 +175,14 @@ public class GDPRConsentLibTest {
         verify(storeClientMock).setMetaData(lib.metaData);
         verify(storeClientMock).setTCData(lib.userConsent.TCData);
         verify(storeClientMock).setConsentString(lib.euConsent);
+    }
+
+    @Test
+    public void pmUrl() {
+        GDPRConsentLib lib = builderMock(1, "propertyName", 1, "pmId", activityMock).build();
+        lib.consentUUID = null;
+        assertEquals(lib.pmUrl(), "https://notice.sp-prod.net/privacy-manager/index.html?site_id=1&message_id=pmId");
+        lib.consentUUID = "ExampleUUID";
+        assertEquals(lib.pmUrl(), "https://notice.sp-prod.net/privacy-manager/index.html?consentUUID=ExampleUUID&site_id=1&message_id=pmId");
     }
 }
