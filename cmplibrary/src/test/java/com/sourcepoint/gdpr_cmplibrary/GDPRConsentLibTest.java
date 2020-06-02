@@ -92,6 +92,7 @@ public class GDPRConsentLibTest {
         doNothing().when(timerMock).cancel();
     }
 
+
     @Before
     public void setUp() throws ConsentLibException {
         initMocks(this);
@@ -166,15 +167,6 @@ public class GDPRConsentLibTest {
     public void onDefaultAction() {
         lib.onDefaultAction(consentActionMock);
         verify(lib, atLeast(1)).closeView(any());
-    }
-
-    @Test
-    public void storeData(){
-        lib.storeData();
-        verify(storeClientMock).setConsentUuid(lib.consentUUID);
-        verify(storeClientMock).setMetaData(lib.metaData);
-        verify(storeClientMock).setTCData(lib.userConsent.TCData);
-        verify(storeClientMock).setConsentString(lib.euConsent);
     }
 
     @Test
