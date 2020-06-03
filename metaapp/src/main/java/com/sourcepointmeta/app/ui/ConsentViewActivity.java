@@ -1,5 +1,6 @@
 package com.sourcepointmeta.app.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -16,10 +17,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,9 +50,6 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private final String TAG = "ConsentViewActivity";
     private ProgressDialog mProgressDialog;
     private AlertDialog mAlertDialog;
-    private boolean isShow = false;
-    private boolean onConsentReadyCalled = false;
-    private boolean isShowOnceOrError = false;
 
     private List<Consents> mVendorConsents = new ArrayList<>();
     private List<Consents> mPurposeConsents = new ArrayList<>();
@@ -68,7 +63,6 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private ConstraintLayout mConstraintLayout;
 
     private ViewGroup mMainViewGroup;
-    //private boolean isPropertySaved = false;
 
     private CountDownTimer mCountDownTimer = null;
     private boolean isPMLoaded = false;
@@ -93,14 +87,13 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private GDPRConsentLib buildConsentLib(Property property, Activity activity) {
         ConsentLibBuilder consentLibBuilder = GDPRConsentLib.newBuilder(property.getAccountID(), property.getProperty(), property.getPropertyID(), property.getPmID(), activity)
                 .setStagingCampaign(property.isStaging())
-                //.setMessageTimeOut(15000)
+                .setMessageTimeOut(30000)
                 .setOnConsentUIReady(view -> {
                             getSupportActionBar().hide();
                             isPMLoaded = true;
                             cancelCounter();
                             hideProgressBar();
                             Log.i(TAG, "The message is about to be shown.");
-                            isShow = true;
                             showMessageWebView(view);
                         }
                 ).setOnConsentUIFinished(view -> {
@@ -115,13 +108,9 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                     mPurposeConsents.clear();
 
                     runOnUiThread(this::showProgressBar);
-                    onConsentReadyCalled = true;
                     getConsentsFromConsentLib(userConsent);
                     Log.d(TAG, "OnConsentReady");
                     runOnUiThread(() -> {
-                        /*if (!isShow && onConsentReadyCalled) {
-                            isShowOnceOrError = true;
-                        }*/
                         showPropertyDebugInfo();
                     });
                 })
@@ -300,7 +289,6 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
             mProgressDialog.setMessage("Please wait...");
             mProgressDialog.setCancelable(false);
             mProgressDialog.setIndeterminate(true);
-            mProgressDialog.getWindow().setTransitionBackgroundFadeDuration(1000);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.show();
 
@@ -330,6 +318,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     }
 
     // method to show alert/error dialog
+    @SuppressLint("NewApi")
     private void showAlertDialog(String message) {
         hideProgressBar();
         if (!isDestroyed()) {
@@ -402,75 +391,10 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
 
     // show debug info of property
     private void showPropertyDebugInfo() {
-        if (isShowOnceOrError) {
-            showAlertDialogForShowMessageOnce(getResources().getString(R.string.no_message_matching_scenario));
-        } else {
-            setConsents(false);
-        }
-
-    }
-
-    private void showAlertDialogForShowMessageOnce(String message) {
-        hideProgressBar();
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ConsentViewActivity.this)
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton("Clear Cookies", (dialog, which) -> {
-                    dialog.cancel();
-                    showAlertDialogForCookiesCleared();
-                })
-                .setNegativeButton("Show property Info", (dialog, which) -> {
-                    dialog.cancel();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setConsents(false);
-                        }
-                    });
-                });
-        AlertDialog mAlertDialog = alertDialog.create();
-        mAlertDialog.show();
-    }
-
-    private void showAlertDialogForCookiesCleared() {
-        SpannableString cookieConfirmation = new SpannableString(getResources().getString(R.string.cookie_confirmation_message));
-        cookieConfirmation.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 12, 21, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        cookieConfirmation.setSpan(new RelativeSizeSpan(1.2f), 12, 21, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ConsentViewActivity.this)
-                .setMessage(cookieConfirmation)
-                .setCancelable(false)
-                .setPositiveButton("YES", (dialog, which) -> {
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.clear();
-                    editor.commit();
-                    resetFlag();
-                    Bundle data = getIntent().getExtras();
-                    Property property = data.getParcelable(Constants.PROPERTY);
-                    try {
-                        if (Util.isNetworkAvailable(this)) {
-                            showProgressBar();
-                            buildConsentLib(property, this).run();
-                        } else showAlertDialog(getString(R.string.network_check_message));
-                    } catch (Exception e) {
-                        showAlertDialog("" + e.toString());
-                        e.printStackTrace();
-                    }
-
-                })
-                .setNegativeButton("NO", (dialog, which) -> {
-                    dialog.cancel();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setConsents(false);
-                        }
-                    });
-                });
-        AlertDialog mAlertDialog = alertDialog.create();
-        mAlertDialog.show();
+        setConsents(false);
     }
 
     private void resetFlag() {
-        isShow = onConsentReadyCalled = isShowOnceOrError = isError = false;
+        isError = false;
     }
 }
