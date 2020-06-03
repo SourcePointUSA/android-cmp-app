@@ -56,7 +56,7 @@ public class GDPRUserConsent {
             legIntCategories = json2StrArr(jConsent.getJSONArray("legIntCategories"));
             consentString = jConsent.getString("euconsent");
             TCData = getHashMap(jConsent.getJSONObject("TCData"));
-            vendorGrants = new VendorGrants(jConsent.getJSONObject("vendorGrants"));
+            vendorGrants = new VendorGrants(jConsent.getJSONObject("grants"));
         } catch (Exception e){
             //This general catch block is meant to deal with null pointer exceptions as well
             throw new ConsentLibException(e, "Error parsing JSONObject to ConsentUser obj");
@@ -82,7 +82,7 @@ public class GDPRUserConsent {
         jsonConsents.put("uuid", uuid);
         jsonConsents.put("euconsent", consentString);
         jsonConsents.put("TCData", getJson(TCData));
-        jsonConsents.put("vendorGrants", vendorGrants.toJsonObject());
+        jsonConsents.put("grants", vendorGrants.toJsonObject());
         return jsonConsents;
     }
 
