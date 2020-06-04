@@ -1,4 +1,5 @@
 ## 5.2.3 (Jun, 04, 2020)
+* add vendorGrants to UserConsents obj
 * add cached UserConsents obj feature #167
 * add release activity public method #168
 
