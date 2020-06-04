@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class CustomJsonParser {
 
@@ -69,6 +70,16 @@ public class CustomJsonParser {
             return jArray.getJSONObject(i);
         } catch (JSONException e) {
             throw new ConsentLibException(e, "Error trying to get action obj from JSONObject");
+        }
+    }
+
+    static JSONObject getJson(Map m) throws ConsentLibException {
+        try {
+            JSONObject json = new JSONObject();
+            for(Object key : m.keySet()) json.put((String) key, m.get(key));
+            return json;
+        } catch (JSONException e) {
+            throw new ConsentLibException(e, "Error parsing Map to JSONObject");
         }
     }
 

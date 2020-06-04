@@ -19,44 +19,48 @@ public class GDPRUserConsent {
     public ArrayList<String> acceptedCategories;
     public ArrayList<String> specialFeatures;
     public ArrayList<String> legIntCategories;
-    public JSONObject jsonConsents = new JSONObject();
     public String consentString;
     public HashMap TCData;
-    public VendorGrants vendorGrants = new VendorGrants();
+    public VendorGrants vendorGrants;
 
-    public GDPRUserConsent(){
+    public GDPRUserConsent() {
         acceptedVendors = new ArrayList<>();
         acceptedCategories = new ArrayList<>();
-        consentString = "";
-        uuid = "";
+        specialFeatures = new ArrayList<>();
+        legIntCategories = new ArrayList<>();
+        consentString = StoreClient.DEFAULT_EMPTY_CONSENT_STRING;
+        uuid = StoreClient.DEFAULT_EMPTY_UUID;
         TCData = new HashMap();
+        vendorGrants = new VendorGrants();
     }
 
-    public GDPRUserConsent(JSONObject jConsent, String uuid) throws JSONException, ConsentLibException {
-        init(jConsent, uuid);
+    public GDPRUserConsent(JSONObject jConsent) throws ConsentLibException {
+        init(jConsent);
     }
 
-    public GDPRUserConsent(JSONObject jConsent, String uuid, HashMap tcData) throws JSONException, ConsentLibException {
-        init(jConsent, uuid);
-        TCData = tcData;
+    public GDPRUserConsent(JSONObject jConsent, String uuid) throws ConsentLibException {
+        try {
+            jConsent.put("uuid", uuid);
+        } catch (JSONException e) {
+            throw new ConsentLibException(e, "Error parsing jConsent");
+        }
+        init(jConsent);
     }
 
-    private void init(JSONObject jConsent, String uuid) throws JSONException, ConsentLibException {
-        this.uuid = uuid;
-        this.acceptedVendors = json2StrArr(jConsent.getJSONArray("acceptedVendors"));
-        this.acceptedCategories = json2StrArr(jConsent.getJSONArray("acceptedCategories"));
-        this.specialFeatures = json2StrArr(jConsent.getJSONArray("specialFeatures"));
-        this.legIntCategories = json2StrArr(jConsent.getJSONArray("legIntCategories"));
-        if(jConsent.has("euconsent") && !jConsent.isNull("euconsent")){
+    private void init(JSONObject jConsent) throws ConsentLibException {
+        try {
+            uuid = jConsent.getString("uuid");
+            acceptedVendors = json2StrArr(jConsent.getJSONArray("acceptedVendors"));
+            acceptedCategories = json2StrArr(jConsent.getJSONArray("acceptedCategories"));
+            specialFeatures = json2StrArr(jConsent.getJSONArray("specialFeatures"));
+            legIntCategories = json2StrArr(jConsent.getJSONArray("legIntCategories"));
             consentString = jConsent.getString("euconsent");
-        }
-        if(jConsent.has("TCData") && !jConsent.isNull("TCData")){
             TCData = getHashMap(jConsent.getJSONObject("TCData"));
+            vendorGrants = new VendorGrants(jConsent.getJSONObject("grants"));
+        } catch (Exception e){
+            //This general catch block is meant to deal with null pointer exceptions as well
+            throw new ConsentLibException(e, "Error parsing JSONObject to ConsentUser obj");
         }
-        if(jConsent.has("vendorGrants") && !jConsent.isNull("vendorGrants")){
-            vendorGrants = new VendorGrants(jConsent.getJSONObject("vendorGrants"));
-        }
-        setJsonConsents();
     }
 
     private ArrayList<String> json2StrArr(JSONArray jArray) throws JSONException {
@@ -69,9 +73,17 @@ public class GDPRUserConsent {
         return listData;
     }
 
-    private void setJsonConsents() throws JSONException {
+    public JSONObject toJsonObject() throws JSONException, ConsentLibException {
+        JSONObject jsonConsents = new JSONObject();
         jsonConsents.put("acceptedVendors", new JSONArray(acceptedVendors));
         jsonConsents.put("acceptedCategories", new JSONArray(acceptedCategories));
+        jsonConsents.put("specialFeatures", new JSONArray(specialFeatures));
+        jsonConsents.put("legIntCategories", new JSONArray(legIntCategories));
+        jsonConsents.put("uuid", uuid);
+        jsonConsents.put("euconsent", consentString);
+        jsonConsents.put("TCData", getJson(TCData));
+        jsonConsents.put("grants", vendorGrants.toJsonObject());
+        return jsonConsents;
     }
 
     public class VendorGrants extends HashMap<String, VendorGrants.VendorGrant> {
@@ -87,6 +99,14 @@ public class GDPRUserConsent {
         }
         VendorGrants(){ super(); }
 
+        public JSONObject toJsonObject() throws JSONException, ConsentLibException {
+            JSONObject json = new JSONObject();
+            for(String key : keySet()){
+                json.put(key, this.get(key).toJsonObject());
+            }
+            return json;
+        }
+
         class VendorGrant {
             public boolean vendorGrant;
             public HashMap<String, Boolean> purposeGrants;
@@ -95,7 +115,14 @@ public class GDPRUserConsent {
                 purposeGrants = getHashMap(getJson("purposeGrants", jVendorGrant));
             }
             public String toString(){
-                return "{" + "vendorGrant: " + vendorGrant + ", " + "purposeGrants: " + purposeGrants + "}";
+                return "{" + "vendorGrant=" + vendorGrant + ", " + "purposeGrants=" + purposeGrants + "}";
+            }
+
+            public JSONObject toJsonObject() throws ConsentLibException, JSONException {
+                JSONObject json = new JSONObject();
+                json.put("vendorGrant", vendorGrant);
+                json.put("purposeGrants" , getJson(purposeGrants));
+                return json;
             }
         }
     }

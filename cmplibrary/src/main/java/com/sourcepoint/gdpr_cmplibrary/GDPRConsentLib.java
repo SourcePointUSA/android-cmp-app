@@ -39,7 +39,7 @@ public class GDPRConsentLib {
 
     public ConsentLibException error = null;
 
-    public GDPRUserConsent userConsent = new GDPRUserConsent();
+    public GDPRUserConsent userConsent;
 
     private static final String TAG = "GDPRConsentLib";
 
@@ -151,6 +151,12 @@ public class GDPRConsentLib {
         metaData = storeClient.getMetaData();
 
         consentUUID = storeClient.getConsentUUID();
+
+        try {
+            userConsent = storeClient.getUserConsent();
+        } catch (ConsentLibException e) {
+            onErrorTask(e);
+        }
 
         storeClient.setAuthId(newAuthId);
     }
@@ -321,7 +327,9 @@ public class GDPRConsentLib {
                     JSONObject jsonResult = new JSONObject((String) result);
                     consentUUID = jsonResult.getString("uuid");
                     metaData = jsonResult.getString("meta");
-                    userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"), consentUUID);
+                    JSONObject jConsent = jsonResult.getJSONObject("userConsent");
+                    jConsent.put("uuid", consentUUID);
+                    userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
                     storeData();
                     if (jsonResult.has("msgJSON") && !jsonResult.isNull("msgJSON")) {
                         setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
@@ -452,7 +460,7 @@ public class GDPRConsentLib {
                 public void onSuccess(Object result) {
                     try {
                         JSONObject jsonResult = new JSONObject((String) result);
-                        userConsent = new GDPRUserConsent(fullConsentObj(jsonResult), consentUUID, storeClient.getTCData());
+                        userConsent = new GDPRUserConsent(fullConsentObj(jsonResult), consentUUID);
                         consentFinished(c);
                     } catch (Exception e) {
                         onErrorTask(new ConsentLibException(e, "Error trying to parse response from sendConsents."));
@@ -468,10 +476,8 @@ public class GDPRConsentLib {
         }
     }
 
-    private JSONObject fullConsentObj(JSONObject customConsent) throws JSONException {
-        JSONObject fullObj = new JSONObject();
-        fullObj.put("tcData", storeClient.getTCData());
-        fullObj.put("euconsent", euConsent);
+    private JSONObject fullConsentObj(JSONObject customConsent) throws JSONException, ConsentLibException {
+        JSONObject fullObj = storeClient.getUserConsent().toJsonObject();
         fullObj.put("acceptedVendors", customConsent.getJSONArray("vendors"));
         fullObj.put("acceptedCategories", customConsent.getJSONArray("categories"));
         fullObj.put("specialFeatures", customConsent.getJSONArray("specialFeatures"));
@@ -508,11 +514,12 @@ public class GDPRConsentLib {
         });
     }
 
-    void storeData() {
+    void storeData() throws JSONException, ConsentLibException {
         storeClient.setConsentUuid(consentUUID);
         storeClient.setMetaData(metaData);
         storeClient.setTCData(userConsent.TCData);
         storeClient.setConsentString(euConsent);
+        storeClient.setUserConsents(userConsent);
     }
 
     void consentFinished(OnConsentReadyCallback c) {
