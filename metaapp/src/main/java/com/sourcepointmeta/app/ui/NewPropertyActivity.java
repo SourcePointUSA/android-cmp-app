@@ -111,7 +111,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                     getConsentsFromConsentLib(userConsent);
                     Log.d(TAG, "OnConsentReady");
                     runOnUiThread(() -> {
-                        showAlertDialogForMessageShowOnce(getResources().getString(R.string.no_message_matching_scenario), property);
+                        startConsentViewActivity(property);
                     });
                 })
                 .setOnError(error -> {
@@ -299,21 +299,6 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                     .setMessage(message)
                     .setCancelable(false)
                     .setPositiveButton("OK", (dialog, which) -> dialog.cancel()
-                    );
-            mAlertDialog = alertDialog.create();
-        }
-        mAlertDialog.show();
-    }
-
-    private void showAlertDialogForMessageShowOnce(String message, Property property) {
-        if (!(mAlertDialog != null && mAlertDialog.isShowing())) {
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(NewPropertyActivity.this)
-                    .setMessage(message)
-                    .setCancelable(false)
-                    .setPositiveButton("OK", (dialog, which) -> {
-                                dialog.cancel();
-                                startConsentViewActivity(property);
-                            }
                     );
             mAlertDialog = alertDialog.create();
         }
