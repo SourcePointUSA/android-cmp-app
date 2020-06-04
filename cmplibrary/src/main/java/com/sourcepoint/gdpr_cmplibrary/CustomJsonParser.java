@@ -1,7 +1,5 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
-import android.app.MediaRouteActionProvider;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
