@@ -1,3 +1,7 @@
+## 5.2.3 (Jun, 04, 2020)
+* add cached UserConsents obj feature #167
+* add release activity public method #168
+
 ## 5.2.2 (Jun, 02, 2020)
 * fix an issue when loading the PM for properties belonging to property groups - 7c098
 * fix an issue preventing campaign with targeting params from showing consent message - 5890c
