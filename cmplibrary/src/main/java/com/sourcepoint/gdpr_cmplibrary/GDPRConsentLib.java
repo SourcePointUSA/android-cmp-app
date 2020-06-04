@@ -523,6 +523,10 @@ public class GDPRConsentLib {
         });
     }
 
+    public void releaseActivity(){
+        activity = null;
+    }
+
     void consentFinished() {
         consentFinished(onConsentReady);
     }

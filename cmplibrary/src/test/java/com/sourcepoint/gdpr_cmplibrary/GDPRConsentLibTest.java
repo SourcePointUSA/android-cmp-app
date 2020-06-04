@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.robolectric.RobolectricTestRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeast;
@@ -183,5 +184,11 @@ public class GDPRConsentLibTest {
         assertEquals(lib.pmUrl(), "https://notice.sp-prod.net/privacy-manager/index.html?site_id=1&message_id=pmId");
         lib.consentUUID = "ExampleUUID";
         assertEquals(lib.pmUrl(), "https://notice.sp-prod.net/privacy-manager/index.html?consentUUID=ExampleUUID&site_id=1&message_id=pmId");
+    }
+
+    @Test
+    public void releaseActivity(){
+        lib.releaseActivity();
+        assertNull(lib.activity);
     }
 }
