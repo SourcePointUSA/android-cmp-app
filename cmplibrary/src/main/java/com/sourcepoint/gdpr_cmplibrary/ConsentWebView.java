@@ -1,9 +1,11 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -11,6 +13,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.JavascriptInterface;
@@ -31,6 +34,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+
 
 abstract public class ConsentWebView extends WebView {
 
@@ -74,12 +79,19 @@ abstract public class ConsentWebView extends WebView {
         public void onError(String errorMessage) {
             ConsentWebView.this.onError(new ConsentLibException("errorMessage"));
         }
-
     }
 
     public ConsentWebView(Context context) {
-        super(context);
+        super(getFixedContext(context));
         setup();
+    }
+
+    // Method created for avoiding crashes when inflating the webview on android Lollipop
+    public static Context getFixedContext(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return context.createConfigurationContext(context.getResources().getConfiguration());
+        }
+        return context;
     }
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
