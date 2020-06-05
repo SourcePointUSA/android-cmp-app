@@ -1,3 +1,6 @@
+## 4.1.11 (June, 06, 2020)
+* fix webview build crash on android Lollipop #169
+
 ## 4.1.10 (May, 29, 2020)
 * fix: call onError from loadConsentUI
 
