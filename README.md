@@ -169,10 +169,10 @@ This way, if we already have consent for that token (`"JohDoe"`) we'll bring the
 ```Java
 [
   "vendorId1": VendorGrant(
-    vendorGrant: Bool,
+    vendorGrant: boolean,
     purposeGrants: [
-      "purposeId1": Bool,
-      "purposeId2": Bool,
+      "purposeId1": boolean,
+      "purposeId2": boolean,
       // more purposes here
     ]
   )
