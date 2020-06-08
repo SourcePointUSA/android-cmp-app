@@ -163,6 +163,23 @@ ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
 
 This way, if we already have consent for that token (`"JohDoe"`) we'll bring the consent profile from the server, overwriting whatever was stored in the device.
 
+## Vendor Grants obj
+
+* `vendorGrants` is an attribute of `GDPRUserConsent` class. The `vendorGrants` attribute, simply put, is an Map reprensenting the consent state (on a legal basis) of all vendors and its purposes for the current user. For example:
+```Java
+[
+  "vendorId1": VendorGrant(
+    vendorGrant: Bool,
+    purposeGrants: [
+      "purposeId1": Bool,
+      "purposeId2": Bool,
+      // more purposes here
+    ]
+  )
+  // more vendors here
+]
+```
+
 
 ## Setting a Targeting Param
 
