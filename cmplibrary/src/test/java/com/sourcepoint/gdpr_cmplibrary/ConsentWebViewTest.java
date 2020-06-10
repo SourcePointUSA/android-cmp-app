@@ -32,9 +32,19 @@ public class ConsentWebViewTest {
             public void onAction(ConsentAction action) {  }
 
             @Override
-            public void onBackPressAction() {
+            public void onBackPressAction() {  }
 
-            }
+            @Override
+            public void onPMWillShow() {  }
+
+            @Override
+            public void onMessageWillShow() {  }
+
+            @Override
+            public void onPMDidDisappear() {  }
+
+            @Override
+            public void onMessageDidDisappear() { }
         };
         spyView = spy(consentWebView);
     }
