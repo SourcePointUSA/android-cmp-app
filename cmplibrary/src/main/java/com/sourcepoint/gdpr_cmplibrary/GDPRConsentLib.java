@@ -50,6 +50,10 @@ public class GDPRConsentLib {
     final OnConsentUIFinishedCallback onConsentUIFinished;
     final OnConsentReadyCallback onConsentReady;
     final OnErrorCallback onError;
+    final pmWillShowCallback pmWillShow;
+    final messageWillShowCallback messageWillShow;
+    final pmDidDisappearCallback pmDidDisappear;
+    final messageDidDisappearCallback messageDidDisappear;
     final boolean shouldCleanConsentOnError;
 
     //default time out changes
@@ -88,6 +92,22 @@ public class GDPRConsentLib {
         void run(ConsentLibException v);
     }
 
+    public interface pmWillShowCallback {
+        void run();
+    }
+
+    public interface messageWillShowCallback {
+        void run();
+    }
+
+    public interface pmDidDisappearCallback {
+        void run();
+    }
+
+    public interface messageDidDisappearCallback {
+        void run();
+    }
+
     public interface OnLoadComplete {
         void onSuccess(Object result);
 
@@ -116,6 +136,10 @@ public class GDPRConsentLib {
         onError = b.onError;
         onConsentUIReady = b.onConsentUIReady;
         onConsentUIFinished = b.onConsentUIFinished;
+        pmWillShow = b.pmWillShow;
+        messageWillShow = b.messageWillShow;
+        pmDidDisappear = b.pmDidDisappear;
+        messageDidDisappear = b.messageDidDisappear;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
         mCountDownTimer = b.getTimer(onCountdownFinished());
@@ -186,6 +210,30 @@ public class GDPRConsentLib {
             @Override
             public void onBackPressAction() {
                 GDPRConsentLib.this.onAction(ConsentAction.getEmptyDismissAction(isPmOn));
+            }
+
+            @Override
+            public void onPMWillShow() {
+                if (GDPRConsentLib.this.pmWillShow !=null)
+                runOnLiveActivityUIThread(GDPRConsentLib.this.pmWillShow::run);
+            }
+
+            @Override
+            public void onMessageWillShow() {
+                if (GDPRConsentLib.this.messageWillShow !=null)
+                runOnLiveActivityUIThread(GDPRConsentLib.this.messageWillShow::run);
+            }
+
+            @Override
+            public void onPMDidDisappear() {
+                if (GDPRConsentLib.this.pmDidDisappear !=null)
+                runOnLiveActivityUIThread(GDPRConsentLib.this.pmDidDisappear::run);
+            }
+
+            @Override
+            public void onMessageDidDisappear() {
+                if (GDPRConsentLib.this.messageDidDisappear !=null)
+                runOnLiveActivityUIThread(GDPRConsentLib.this.messageDidDisappear::run);
             }
         };
     }
