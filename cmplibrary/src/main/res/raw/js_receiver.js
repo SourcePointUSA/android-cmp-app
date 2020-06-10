@@ -3,7 +3,7 @@ function handleEvent(event) {
     try {
         JSReceiver.log(JSON.stringify(event.data, null, 2));
         if (event.data.name === 'sp.showMessage') {
-            JSReceiver.onConsentUIReady();
+            isFromPM(event) ? JSReceiver.onPMReady() : JSReceiver.onMessageReady() ;
             return;
         }
         JSReceiver.onAction(JSON.stringify(consentData(event), null, 2));
@@ -17,7 +17,8 @@ function consentData(event) {
 };
 
 function isFromPM(event) {
-    return !!event.data.payload;
+    event.data.settings = event.data.settings || {};
+    return event.data.fromPM || event.data.settings.vendorList != null;
 };
 
 function dataFromMessage(msgEvent) {
