@@ -62,8 +62,6 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
     private List<TargetingParam> mTargetingParamList = new ArrayList<>();
     private TextView mAddParamMessage;
     private boolean messageVisible = false;
-    private boolean onConsentReadyCalled = false;
-    private boolean isShow = false;
     private List<Consents> mVendorConsents = new ArrayList<>();
     private List<Consents> mPurposeConsents = new ArrayList<>();
     private ArrayList<Consents> mConsentList = new ArrayList<>();
@@ -94,12 +92,11 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
     private GDPRConsentLib buildConsentLib(Property property, Activity activity) {
         ConsentLibBuilder consentLibBuilder = GDPRConsentLib.newBuilder(property.getAccountID(), property.getProperty(), property.getPropertyID(), property.getPmID(), activity)
                 .setStagingCampaign(property.isStaging())
-                .setMessageTimeOut(15000)
+                .setMessageTimeOut(30000)
                 .setOnConsentUIReady(view -> {
                             getSupportActionBar().hide();
                             hideProgressBar();
                             Log.i(TAG, "The message is about to be shown.");
-                            isShow = true;
                             showMessageWebView(view);
                         }
                 ).setOnConsentUIFinished(view -> {
@@ -110,16 +107,11 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                 })
                 .setOnConsentReady(userConsent -> {
                     runOnUiThread(this::showProgressBar);
-                    onConsentReadyCalled = true;
                     saveToDatabase(property);
                     getConsentsFromConsentLib(userConsent);
                     Log.d(TAG, "OnConsentReady");
                     runOnUiThread(() -> {
-                        if (!isShow && onConsentReadyCalled) {
-                            showAlertDialogForMessageShowOnce(getResources().getString(R.string.no_message_matching_scenario), property);
-                        } else {
-                            startConsentViewActivity(property);
-                        }
+                        startConsentViewActivity(property);
                     });
                 })
                 .setOnError(error -> {
@@ -307,21 +299,6 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                     .setMessage(message)
                     .setCancelable(false)
                     .setPositiveButton("OK", (dialog, which) -> dialog.cancel()
-                    );
-            mAlertDialog = alertDialog.create();
-        }
-        mAlertDialog.show();
-    }
-
-    private void showAlertDialogForMessageShowOnce(String message, Property property) {
-        if (!(mAlertDialog != null && mAlertDialog.isShowing())) {
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(NewPropertyActivity.this)
-                    .setMessage(message)
-                    .setCancelable(false)
-                    .setPositiveButton("OK", (dialog, which) -> {
-                                dialog.cancel();
-                                startConsentViewActivity(property);
-                            }
                     );
             mAlertDialog = alertDialog.create();
         }
