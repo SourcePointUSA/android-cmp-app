@@ -1,7 +1,7 @@
 package com.sourcepoint.example_app;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 .setMessageWillShow(()-> Log.e(TAG, "MessageWillShow"))
                 .setPMDidDisappear(()-> Log.e(TAG, "PMDidDisappear"))
                 .setMessageDidDisappear(()-> Log.e(TAG, "MessageDidDisappear"))
+                .setOnAction(actionType  -> Log.e(TAG , "ActionType : "+actionType.toString()))
                 .build();
     }
 

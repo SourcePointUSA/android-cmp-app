@@ -29,6 +29,7 @@ public class ConsentLibBuilder {
     protected GDPRConsentLib.messageWillShowCallback messageWillShow;
     protected GDPRConsentLib.pmDidDisappearCallback pmDidDisappear;
     protected GDPRConsentLib.messageDidDisappearCallback messageDidDisappear;
+    protected GDPRConsentLib.onActionCallback onAction;
     boolean staging, stagingCampaign, shouldCleanConsentOnError;
 
     SourcePointClient sourcePointClient;
@@ -115,6 +116,11 @@ public class ConsentLibBuilder {
 
     public ConsentLibBuilder setMessageDidDisappear(GDPRConsentLib.messageDidDisappearCallback callback) {
         this.messageDidDisappear = callback;
+        return this;
+    }
+
+    public ConsentLibBuilder setOnAction(GDPRConsentLib.onActionCallback callback){
+        this.onAction = callback;
         return this;
     }
 

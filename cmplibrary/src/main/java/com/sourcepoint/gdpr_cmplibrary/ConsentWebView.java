@@ -12,7 +12,6 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.JavascriptInterface;
@@ -32,7 +31,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashSet;
 
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getInt;
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getJson;
@@ -42,7 +40,6 @@ abstract public class ConsentWebView extends WebView {
 
     private static final String TAG = "ConsentWebView";
     private ConnectivityManager connectivityManager;
-    private boolean isPmOn = false;
 
     @SuppressWarnings("unused")
     private class JSReceiverInterface {
@@ -59,22 +56,10 @@ abstract public class ConsentWebView extends WebView {
             Log.i(TAG, msg);
         }
 
-        // called when message is about to be shown
+        // called when message or pm is about to be shown
         @JavascriptInterface
-        public void onMessageReady() {
-            ConsentWebView.this.onConsentUIReady();
-            isPmOn = false;
-            ConsentWebView.this.onMessageWillShow();
-            Log.e(TAG, "onMessageReady");
-        }
-
-        // called when Privacy Manager is about to be shown
-        @JavascriptInterface
-        public void onPMReady() {
-            ConsentWebView.this.onConsentUIReady();
-            isPmOn = true;
-            ConsentWebView.this.onPMWillShow();
-            Log.e(TAG ,"onPMReady");
+        public void onConsentUIReady( boolean isFromPM) {
+            ConsentWebView.this.onConsentUIReady(isFromPM);
         }
 
         // called when a choice is selected on the message
@@ -82,12 +67,6 @@ abstract public class ConsentWebView extends WebView {
         public void onAction(String actionData) {
             try {
                 ConsentWebView.this.onAction(consentAction(getJson(actionData)));
-                if (isPmOn) {
-                    isPmOn = false;
-                    ConsentWebView.this.onPMDidDisappear();
-                } else {
-                    ConsentWebView.this.onMessageDidDisappear();
-                }
             } catch (ConsentLibException e) {
                 ConsentWebView.this.onError(e);
             }
@@ -188,7 +167,7 @@ abstract public class ConsentWebView extends WebView {
 
         setOnKeyListener((view, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && KeyEvent.KEYCODE_BACK == keyCode) {
-                ConsentWebView.this.onBackPress();
+                ConsentWebView.this.onBackPressAction();
                 return true;
             }
             return false;
@@ -197,21 +176,13 @@ abstract public class ConsentWebView extends WebView {
         addJavascriptInterface(new JSReceiverInterface(), "JSReceiver");
     }
 
-    abstract public void onConsentUIReady();
+    abstract public void onConsentUIReady(boolean isFromPM);
 
     abstract public void onError(ConsentLibException error);
 
     abstract public void onAction(ConsentAction action);
 
     abstract public void onBackPressAction();
-
-    abstract public void onPMWillShow();
-
-    abstract public void onMessageWillShow();
-
-    abstract public void onPMDidDisappear();
-
-    abstract public void onMessageDidDisappear();
 
     public void loadConsentUIFromUrl(String url) throws ConsentLibException {
         if (hasLostInternetConnection())
@@ -259,17 +230,5 @@ abstract public class ConsentWebView extends WebView {
         }
         NetworkInfo activeNetwork = this.connectivityManager.getActiveNetworkInfo();
         return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
-    }
-
-    //this method will ensure onPMDidDisappear and onMessageDidDisappear callbacks
-    // in case of back button press
-    private void onBackPress() {
-        if (isPmOn){
-            isPmOn = false;
-            onPMDidDisappear();
-        }else {
-            onMessageDidDisappear();
-        }
-        onBackPressAction();
     }
 }

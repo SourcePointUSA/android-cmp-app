@@ -3,7 +3,7 @@ function handleEvent(event) {
     try {
         JSReceiver.log(JSON.stringify(event.data, null, 2));
         if (event.data.name === 'sp.showMessage') {
-            isFromPM(event) ? JSReceiver.onPMReady() : JSReceiver.onMessageReady() ;
+            JSReceiver.onConsentUIReady(isFromPM(event)) ;
             return;
         }
         JSReceiver.onAction(JSON.stringify(consentData(event), null, 2));

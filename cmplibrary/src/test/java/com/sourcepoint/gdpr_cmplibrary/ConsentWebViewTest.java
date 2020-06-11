@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -23,7 +24,7 @@ public class ConsentWebViewTest {
 
         ConsentWebView consentWebView = new ConsentWebView(RuntimeEnvironment.systemContext) {
             @Override
-            public void onConsentUIReady() {   }
+            public void onConsentUIReady(boolean isFromPM) {   }
 
             @Override
             public void onError(ConsentLibException error) {  }
@@ -33,26 +34,14 @@ public class ConsentWebViewTest {
 
             @Override
             public void onBackPressAction() {  }
-
-            @Override
-            public void onPMWillShow() {  }
-
-            @Override
-            public void onMessageWillShow() {  }
-
-            @Override
-            public void onPMDidDisappear() {  }
-
-            @Override
-            public void onMessageDidDisappear() { }
         };
         spyView = spy(consentWebView);
     }
 
     @Test
     public void onConsentUIReady(){
-        spyView.onConsentUIReady();
-        verify(spyView,times(1)).onConsentUIReady();
+        spyView.onConsentUIReady(anyBoolean());
+        verify(spyView,times(1)).onConsentUIReady(anyBoolean());
     }
 
     @Test
