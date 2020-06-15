@@ -84,9 +84,17 @@ abstract public class ConsentWebView extends WebView {
     }
 
     public ConsentWebView(Context context) {
-        super(context);
+        super(getFixedContext(context));
         this.connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         setup();
+    }
+
+    // Method created for avoiding crashes when inflating the webview on android Lollipop
+    public static Context getFixedContext(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return context.createConfigurationContext(context.getResources().getConfiguration());
+        }
+        return context;
     }
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
