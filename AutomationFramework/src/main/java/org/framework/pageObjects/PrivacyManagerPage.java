@@ -3,31 +3,20 @@ package org.framework.pageObjects;
 import static org.framework.logger.LoggingManager.logMessage;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import org.framework.enums.PlatformName;
 import org.framework.helpers.Page;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.touch.TouchActions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import io.appium.java_client.HidesKeyboard;
 import io.appium.java_client.MobileBy;
-import io.appium.java_client.PerformsTouchActions;
-import io.appium.java_client.TouchAction;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import io.appium.java_client.pagefactory.WithTimeout;
-import io.appium.java_client.pagefactory.iOSXCUITFindBy;
-import io.appium.java_client.touch.offset.PointOption;
 
 public class PrivacyManagerPage extends Page {
 

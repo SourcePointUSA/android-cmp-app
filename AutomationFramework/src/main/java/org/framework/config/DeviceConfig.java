@@ -18,14 +18,6 @@ public class DeviceConfig {
         this.executionPlatform = executionPlatform;
     }
 
-    public static IOSDeviceModel readIOSDeviceConfig() throws IOException {
-        byte[] jsonData = null;
-        ObjectMapper objectMapper = new ObjectMapper();
-        jsonData = Files.readAllBytes(FileUtils.getFile(FileUtility.getFile("iosDevice.json")).toPath());
-        IOSDeviceModel[] iosDeviceModels = objectMapper.readValue(jsonData, IOSDeviceModel[].class);
-        return new IOSDeviceModel(iosDeviceModels);
-    }
-
     public static AndroidDeviceModel readAndroidDeviceConfig() throws IOException {
         byte[] jsonData = null;
         ObjectMapper objectMapper = new ObjectMapper();
@@ -34,11 +26,4 @@ public class DeviceConfig {
         return new AndroidDeviceModel(androidDeviceModels);
     }
 
-//    public static DeviceViewportModel readDeviceViewportConfig() throws IOException {
-//        byte[] jsonData = null;
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        jsonData = Files.readAllBytes(FileUtils.getFile(FileUtility.getFile("deviceViewport.json")).toPath());
-//        DeviceViewportModel[] deviceViewportModels = objectMapper.readValue(jsonData, DeviceViewportModel[].class);
-//        return new DeviceViewportModel(deviceViewportModels);
-//    }
 }

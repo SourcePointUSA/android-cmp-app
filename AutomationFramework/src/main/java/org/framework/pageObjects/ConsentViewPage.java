@@ -5,11 +5,7 @@ import static org.framework.logger.LoggingManager.logMessage;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import org.framework.helpers.Page;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;

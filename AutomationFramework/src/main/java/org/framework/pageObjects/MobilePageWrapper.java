@@ -2,9 +2,6 @@ package org.framework.pageObjects;
 
 import org.openqa.selenium.WebDriver;
 
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileDriver;
-
 public class MobilePageWrapper {
 	public SiteListPage siteListPage;
 	public NewSitePage newSitePage;
