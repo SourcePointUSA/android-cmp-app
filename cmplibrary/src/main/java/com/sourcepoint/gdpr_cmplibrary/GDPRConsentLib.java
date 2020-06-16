@@ -57,10 +57,6 @@ public class GDPRConsentLib {
     final onActionCallback onAction;
     final boolean shouldCleanConsentOnError;
 
-    //default time out changes
-    private boolean onMessageReadyCalled = false;
-    private long defaultMessageTimeOut;
-
     public boolean isNative, isPmOn = false;
 
     private CountDownTimer mCountDownTimer;
@@ -304,7 +300,6 @@ public class GDPRConsentLib {
     public void run() {
         try {
             mCountDownTimer.start();
-            onMessageReadyCalled = false;
             renderMsgAndSaveConsent();
         } catch (Exception e) {
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.run()"));
