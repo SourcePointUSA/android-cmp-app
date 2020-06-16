@@ -25,10 +25,10 @@ public class ConsentLibBuilder {
     protected GDPRConsentLib.OnConsentUIFinishedCallback onConsentUIFinished;
     protected GDPRConsentLib.OnConsentReadyCallback onConsentReady;
     protected GDPRConsentLib.OnErrorCallback onError;
-    protected GDPRConsentLib.pmWillShowCallback pmWillShow;
-    protected GDPRConsentLib.messageWillShowCallback messageWillShow;
-    protected GDPRConsentLib.pmDidDisappearCallback pmDidDisappear;
-    protected GDPRConsentLib.messageDidDisappearCallback messageDidDisappear;
+    protected GDPRConsentLib.pmReadyCallback pmReady;
+    protected GDPRConsentLib.messageReadyCallback messageReady;
+    protected GDPRConsentLib.pmFinishedCallback pmFinished;
+    protected GDPRConsentLib.messageFinishedCallback messageFinished;
     protected GDPRConsentLib.onActionCallback onAction;
     boolean staging, stagingCampaign, shouldCleanConsentOnError;
 
@@ -89,13 +89,13 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    public ConsentLibBuilder setPMWillShow(GDPRConsentLib.pmWillShowCallback callback) {
-        this.pmWillShow = callback;
+    public ConsentLibBuilder setPMReady(GDPRConsentLib.pmReadyCallback callback) {
+        this.pmReady = callback;
         return this;
     }
 
-    public ConsentLibBuilder setMessageWillShow(GDPRConsentLib.messageWillShowCallback callback) {
-        this.messageWillShow = callback;
+    public ConsentLibBuilder setMessageReady(GDPRConsentLib.messageReadyCallback callback) {
+        this.messageReady = callback;
         return this;
     }
 
@@ -109,13 +109,13 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    public ConsentLibBuilder setPMDidDisappear(GDPRConsentLib.pmDidDisappearCallback callback) {
-        this.pmDidDisappear = callback;
+    public ConsentLibBuilder setPMFinished(GDPRConsentLib.pmFinishedCallback callback) {
+        this.pmFinished = callback;
         return this;
     }
 
-    public ConsentLibBuilder setMessageDidDisappear(GDPRConsentLib.messageDidDisappearCallback callback) {
-        this.messageDidDisappear = callback;
+    public ConsentLibBuilder setMessageFinished(GDPRConsentLib.messageFinishedCallback callback) {
+        this.messageFinished = callback;
         return this;
     }
 

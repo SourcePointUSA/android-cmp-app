@@ -50,10 +50,10 @@ public class GDPRConsentLib {
     final OnConsentUIFinishedCallback onConsentUIFinished;
     final OnConsentReadyCallback onConsentReady;
     final OnErrorCallback onError;
-    final pmWillShowCallback pmWillShow;
-    final messageWillShowCallback messageWillShow;
-    final pmDidDisappearCallback pmDidDisappear;
-    final messageDidDisappearCallback messageDidDisappear;
+    final pmReadyCallback pmReady;
+    final messageReadyCallback messageReady;
+    final pmFinishedCallback pmFinished;
+    final messageFinishedCallback messageFinished;
     final onActionCallback onAction;
     final boolean shouldCleanConsentOnError;
 
@@ -93,19 +93,19 @@ public class GDPRConsentLib {
         void run(ConsentLibException v);
     }
 
-    public interface pmWillShowCallback {
+    public interface pmReadyCallback {
         void run();
     }
 
-    public interface messageWillShowCallback {
+    public interface messageReadyCallback {
         void run();
     }
 
-    public interface pmDidDisappearCallback {
+    public interface pmFinishedCallback {
         void run();
     }
 
-    public interface messageDidDisappearCallback {
+    public interface messageFinishedCallback {
         void run();
     }
 
@@ -141,10 +141,10 @@ public class GDPRConsentLib {
         onError = b.onError;
         onConsentUIReady = b.onConsentUIReady;
         onConsentUIFinished = b.onConsentUIFinished;
-        pmWillShow = b.pmWillShow;
-        messageWillShow = b.messageWillShow;
-        pmDidDisappear = b.pmDidDisappear;
-        messageDidDisappear = b.messageDidDisappear;
+        pmReady = b.pmReady;
+        messageReady = b.messageReady;
+        pmFinished = b.pmFinished;
+        messageFinished = b.messageFinished;
         onAction = b.onAction;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
@@ -266,7 +266,7 @@ public class GDPRConsentLib {
             try{
                 if (webView.canGoBack()) {
                     webView.goBack();
-                    runPMDidDisappear();
+                    runPMFinished();
                 }
                 else onMsgCancel(requestFromPM);
             } catch(Exception e){
@@ -394,19 +394,19 @@ public class GDPRConsentLib {
         if (!hasParent(view)) {
             runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
         }
-        if (isFromPM) runPMWillShow();
-        else runMessageWillShow();
+        if (isFromPM) runPMReady();
+        else runMessageReady();
     }
 
-    private void runPMWillShow(){
-        if (this.pmWillShow != null)
-            runOnLiveActivityUIThread(GDPRConsentLib.this.pmWillShow::run);
+    private void runPMReady(){
+        if (this.pmReady != null)
+            runOnLiveActivityUIThread(GDPRConsentLib.this.pmReady::run);
         isPmOn = true;
     }
 
-    private void runMessageWillShow(){
-        if (this.messageWillShow != null)
-            runOnLiveActivityUIThread(GDPRConsentLib.this.messageWillShow::run);
+    private void runMessageReady(){
+        if (this.messageReady != null)
+            runOnLiveActivityUIThread(GDPRConsentLib.this.messageReady::run);
     }
 
     public void closeAllViews(boolean requestFromPM) {
@@ -428,19 +428,19 @@ public class GDPRConsentLib {
     protected void closeView(View v, boolean requestFromPM) {
         if (hasParent(v)) {
             runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
-            if (requestFromPM) runPMDidDisappear();
-            else runMessageDidDisappear();
+            if (requestFromPM) runPMFinished();
+            else runMessageFinished();
         }
     }
 
-    private void runPMDidDisappear(){
-        if (this.pmDidDisappear != null)
-            runOnLiveActivityUIThread(this.pmDidDisappear::run);
+    private void runPMFinished(){
+        if (this.pmFinished != null)
+            runOnLiveActivityUIThread(this.pmFinished::run);
     }
 
-    private void runMessageDidDisappear(){
-        if (this.messageDidDisappear != null)
-            runOnLiveActivityUIThread(this.messageDidDisappear::run);
+    private void runMessageFinished(){
+        if (this.messageFinished != null)
+            runOnLiveActivityUIThread(this.messageFinished::run);
     }
 
     private JSONObject paramsToSendConsent(ConsentAction action) throws ConsentLibException {
