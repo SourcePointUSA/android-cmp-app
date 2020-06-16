@@ -1,7 +1,7 @@
 package com.sourcepoint.example_app;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "Something went wrong: ", error);
                     Log.i(TAG, "ConsentLibErrorMessage: " + error.consentLibErrorMessage);
                 })
+                .setPMReady(()-> Log.e(TAG, "PM Ready"))
+                .setMessageReady(()-> Log.e(TAG, "Message Ready"))
+                .setPMFinished(()-> Log.e(TAG, "PM Finished"))
+                .setMessageFinished(()-> Log.e(TAG, "Message Finished"))
+                .setOnAction(actionType  -> Log.e(TAG , "ActionType : "+actionType.toString()))
                 .build();
     }
 

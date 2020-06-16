@@ -50,11 +50,12 @@ public class GDPRConsentLib {
     final OnConsentUIFinishedCallback onConsentUIFinished;
     final OnConsentReadyCallback onConsentReady;
     final OnErrorCallback onError;
+    final pmReadyCallback pmReady;
+    final messageReadyCallback messageReady;
+    final pmFinishedCallback pmFinished;
+    final messageFinishedCallback messageFinished;
+    final onActionCallback onAction;
     final boolean shouldCleanConsentOnError;
-
-    //default time out changes
-    private boolean onMessageReadyCalled = false;
-    private long defaultMessageTimeOut;
 
     public boolean isNative, isPmOn = false;
 
@@ -88,6 +89,26 @@ public class GDPRConsentLib {
         void run(ConsentLibException v);
     }
 
+    public interface pmReadyCallback {
+        void run();
+    }
+
+    public interface messageReadyCallback {
+        void run();
+    }
+
+    public interface pmFinishedCallback {
+        void run();
+    }
+
+    public interface messageFinishedCallback {
+        void run();
+    }
+
+    public interface onActionCallback{
+        void run(ActionTypes actionTypes);
+    }
+
     public interface OnLoadComplete {
         void onSuccess(Object result);
 
@@ -116,6 +137,11 @@ public class GDPRConsentLib {
         onError = b.onError;
         onConsentUIReady = b.onConsentUIReady;
         onConsentUIFinished = b.onConsentUIFinished;
+        pmReady = b.pmReady;
+        messageReady = b.messageReady;
+        pmFinished = b.pmFinished;
+        messageFinished = b.messageFinished;
+        onAction = b.onAction;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
 
         mCountDownTimer = b.getTimer(onCountdownFinished());
@@ -169,8 +195,8 @@ public class GDPRConsentLib {
         return new ConsentWebView(activity) {
 
             @Override
-            public void onConsentUIReady() {
-                showView(this);
+            public void onConsentUIReady(boolean isFromPM) {
+                showView(this , isFromPM);
             }
 
             @Override
@@ -191,6 +217,9 @@ public class GDPRConsentLib {
     }
 
     public void onAction(ConsentAction action) {
+        if (GDPRConsentLib.this.onAction != null)
+            runOnLiveActivityUIThread( () ->GDPRConsentLib.this.onAction.run(action.actionType));
+
         try {
             Log.d(TAG, "onAction:  " + action.actionType + " + actionType");
             switch (action.actionType) {
@@ -198,10 +227,10 @@ public class GDPRConsentLib {
                     onShowOptions();
                     break;
                 case PM_DISMISS:
-                    onPmDismiss();
+                    onPmDismiss(action.requestFromPm);
                     break;
                 case MSG_CANCEL:
-                    onMsgCancel();
+                    onMsgCancel(action.requestFromPm);
                     break;
                 default:
                     onDefaultAction(action);
@@ -218,26 +247,30 @@ public class GDPRConsentLib {
     }
 
     public void onDefaultAction(ConsentAction action) {
-        closeAllViews();
+        closeAllViews(action.requestFromPm);
         sendConsent(action);
     }
 
-    public void onMsgCancel() {
-        closeCurrentMessageView();
+    public void onMsgCancel(boolean requestFromPM) {
+        closeCurrentMessageView(requestFromPM);
         consentFinished();
     }
 
-    protected void onPmDismiss() {
+    protected void onPmDismiss(boolean requestFromPM) {
         isPmOn = false;
         webView.post(() -> {
             try{
-                if (webView.canGoBack()) webView.goBack();
-                else onMsgCancel();
+                if (webView.canGoBack()) {
+                    webView.goBack();
+                    runPMFinished();
+                }
+                else onMsgCancel(requestFromPM);
             } catch(Exception e){
                 onErrorTask(new ConsentLibException(e, "Error trying go back from consentUI."));
             }
         });
     }
+
 
     View getCurrentMessageView() {
         return isNative ? nativeView : webView;
@@ -249,8 +282,8 @@ public class GDPRConsentLib {
 
     private void loadConsentUI(String url) {
         runOnLiveActivityUIThread(() -> {
+            if (webView == null) webView = buildWebView();
             try {
-                if (webView == null) webView = buildWebView();
                 webView.loadConsentUIFromUrl(url);
             } catch (Exception e) {
                 onErrorTask(new ConsentLibException(e, "Error trying to load url to webview: " + url));
@@ -267,7 +300,6 @@ public class GDPRConsentLib {
     public void run() {
         try {
             mCountDownTimer.start();
-            onMessageReadyCalled = false;
             renderMsgAndSaveConsent();
         } catch (Exception e) {
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.run()"));
@@ -333,7 +365,7 @@ public class GDPRConsentLib {
                     storeData();
                     if (jsonResult.has("msgJSON") && !jsonResult.isNull("msgJSON")) {
                         setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
-                        showView(nativeView);
+                        showView(nativeView,false);
                     } else if(jsonResult.has("url") && !jsonResult.isNull("url")){
                         loadConsentUI(jsonResult.getString("url")+"&consentUUID="+consentUUID);
                     } else {
@@ -352,32 +384,58 @@ public class GDPRConsentLib {
         });
     }
 
-    void showView(View view) {
+    void showView(View view, boolean isFromPM) {
         mCountDownTimer.cancel();
         if (!hasParent(view)) {
             runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
         }
+        if (isFromPM) runPMReady();
+        else runMessageReady();
     }
 
-    public void closeAllViews() {
+    private void runPMReady(){
+        if (this.pmReady != null)
+            runOnLiveActivityUIThread(GDPRConsentLib.this.pmReady::run);
+        isPmOn = true;
+    }
+
+    private void runMessageReady(){
+        if (this.messageReady != null)
+            runOnLiveActivityUIThread(GDPRConsentLib.this.messageReady::run);
+    }
+
+    public void closeAllViews(boolean requestFromPM) {
         if (isNative) {
-            closeView(nativeView);
-            if (isPmOn) closeView(webView);
-        } else closeView(webView);
+            closeView(nativeView,requestFromPM);
+            if (isPmOn) closeView(webView,requestFromPM);
+        } else closeView(webView ,requestFromPM);
 
     }
 
-    private void closeCurrentMessageView() {
-        closeView(getCurrentMessageView());
+    private void closeCurrentMessageView(boolean requestFromPM) {
+        closeView(getCurrentMessageView(),requestFromPM);
     }
 
     private boolean hasParent(View v) {
         return v != null && v.getParent() != null;
     }
 
-    protected void closeView(View v) {
-        if (hasParent(v))
+    protected void closeView(View v, boolean requestFromPM) {
+        if (hasParent(v)) {
             runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
+            if (requestFromPM) runPMFinished();
+            else runMessageFinished();
+        }
+    }
+
+    private void runPMFinished(){
+        if (this.pmFinished != null)
+            runOnLiveActivityUIThread(this.pmFinished::run);
+    }
+
+    private void runMessageFinished(){
+        if (this.messageFinished != null)
+            runOnLiveActivityUIThread(this.messageFinished::run);
     }
 
     private JSONObject paramsToSendConsent(ConsentAction action) throws ConsentLibException {
@@ -498,13 +556,12 @@ public class GDPRConsentLib {
     }
 
     void onErrorTask(ConsentLibException e) {
-        e.printStackTrace();
         this.error = e;
         if (shouldCleanConsentOnError) {
             storeClient.clearConsentData();
         }
         mCountDownTimer.cancel();
-        closeCurrentMessageView();
+        closeCurrentMessageView(isPmOn);
         runOnLiveActivityUIThread(() -> {
             GDPRConsentLib.this.onError.run(e);
             releaseActivity();

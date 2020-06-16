@@ -56,10 +56,10 @@ abstract public class ConsentWebView extends WebView {
             Log.i(TAG, msg);
         }
 
-        // called when message is about to be shown
+        // called when message or pm is about to be shown
         @JavascriptInterface
-        public void onConsentUIReady() {
-            ConsentWebView.this.onConsentUIReady();
+        public void onConsentUIReady( boolean isFromPM) {
+            ConsentWebView.this.onConsentUIReady(isFromPM);
         }
 
         // called when a choice is selected on the message
@@ -158,7 +158,7 @@ abstract public class ConsentWebView extends WebView {
 
         setWebChromeClient(new WebChromeClient() {
             @Override
-            public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, android.os.Message resultMsg) {
+            public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.getHitTestResult())));
                 view.getContext().startActivity(browserIntent);
                 return false;
@@ -176,7 +176,7 @@ abstract public class ConsentWebView extends WebView {
         addJavascriptInterface(new JSReceiverInterface(), "JSReceiver");
     }
 
-    abstract public void onConsentUIReady();
+    abstract public void onConsentUIReady(boolean isFromPM);
 
     abstract public void onError(ConsentLibException error);
 

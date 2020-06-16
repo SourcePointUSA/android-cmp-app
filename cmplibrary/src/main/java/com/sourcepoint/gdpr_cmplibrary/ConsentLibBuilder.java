@@ -25,6 +25,11 @@ public class ConsentLibBuilder {
     protected GDPRConsentLib.OnConsentUIFinishedCallback onConsentUIFinished;
     protected GDPRConsentLib.OnConsentReadyCallback onConsentReady;
     protected GDPRConsentLib.OnErrorCallback onError;
+    protected GDPRConsentLib.pmReadyCallback pmReady;
+    protected GDPRConsentLib.messageReadyCallback messageReady;
+    protected GDPRConsentLib.pmFinishedCallback pmFinished;
+    protected GDPRConsentLib.messageFinishedCallback messageFinished;
+    protected GDPRConsentLib.onActionCallback onAction;
     boolean staging, stagingCampaign, shouldCleanConsentOnError;
 
     SourcePointClient sourcePointClient;
@@ -84,6 +89,16 @@ public class ConsentLibBuilder {
         return this;
     }
 
+    public ConsentLibBuilder setPMReady(GDPRConsentLib.pmReadyCallback callback) {
+        this.pmReady = callback;
+        return this;
+    }
+
+    public ConsentLibBuilder setMessageReady(GDPRConsentLib.messageReadyCallback callback) {
+        this.messageReady = callback;
+        return this;
+    }
+
     /**
      * Called when the Dialog message is about to disapear
      * @param callback to be called when the message is ready to disapear
@@ -91,6 +106,21 @@ public class ConsentLibBuilder {
      */
     public ConsentLibBuilder setOnConsentUIFinished(GDPRConsentLib.OnConsentUIFinishedCallback callback) {
         onConsentUIFinished = callback;
+        return this;
+    }
+
+    public ConsentLibBuilder setPMFinished(GDPRConsentLib.pmFinishedCallback callback) {
+        this.pmFinished = callback;
+        return this;
+    }
+
+    public ConsentLibBuilder setMessageFinished(GDPRConsentLib.messageFinishedCallback callback) {
+        this.messageFinished = callback;
+        return this;
+    }
+
+    public ConsentLibBuilder setOnAction(GDPRConsentLib.onActionCallback callback){
+        this.onAction = callback;
         return this;
     }
 

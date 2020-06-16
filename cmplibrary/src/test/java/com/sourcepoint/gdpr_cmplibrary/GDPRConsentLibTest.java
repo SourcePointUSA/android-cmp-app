@@ -15,6 +15,7 @@ import org.robolectric.RobolectricTestRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
@@ -47,6 +48,9 @@ public class GDPRConsentLibTest {
 
     @Mock
     CountDownTimer timerMock;
+
+
+    Boolean requestFromPM = false;
 
     @Captor
     ArgumentCaptor<Runnable> lambdaCaptor;
@@ -108,7 +112,7 @@ public class GDPRConsentLibTest {
     public void run_followed_by_show_view(){
         lib.run();
         verify(timerMock).start();
-        lib.showView(lib.webView);
+        lib.showView(lib.webView , false);
         verify(timerMock , atLeast(1)).cancel();
     }
 
@@ -136,8 +140,8 @@ public class GDPRConsentLibTest {
 
     @Test
     public void closeAllViews() {
-        lib.closeAllViews();
-        verify(lib).closeView(lib.webView);
+        lib.closeAllViews(requestFromPM);
+        verify(lib).closeView(lib.webView, requestFromPM);
     }
 
     @Test
@@ -146,10 +150,10 @@ public class GDPRConsentLibTest {
         verify(lib).onDefaultAction(any());
 
         lib.onAction(consentActionMockPMDismiss);
-        verify(lib).onPmDismiss();
+        verify(lib).onPmDismiss(requestFromPM);
 
         lib.onAction(consentActionMockMsgCancel);
-        verify(lib).onMsgCancel();
+        verify(lib).onMsgCancel(requestFromPM);
 
         lib.onAction(consentActionMockShowOptions);
         verify(lib).onShowOptions();
@@ -166,7 +170,7 @@ public class GDPRConsentLibTest {
     @Test
     public void onDefaultAction() {
         lib.onDefaultAction(consentActionMock);
-        verify(lib, atLeast(1)).closeView(any());
+        verify(lib, atLeast(1)).closeView(any(),anyBoolean());
     }
 
     @Test
