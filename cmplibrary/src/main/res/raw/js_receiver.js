@@ -17,8 +17,7 @@ function consentData(event) {
 };
 
 function isFromPM(event) {
-    event.data.settings = event.data.settings || {};
-    return event.data.fromPM || event.data.settings.vendorList != null;
+    return event.data.fromPM || event.data.settings && event.data.settings.vendorList != null;
 };
 
 function dataFromMessage(msgEvent) {
