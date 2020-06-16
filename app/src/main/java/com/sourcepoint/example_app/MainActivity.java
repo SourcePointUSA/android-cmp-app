@@ -80,10 +80,10 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "Something went wrong: ", error);
                     Log.i(TAG, "ConsentLibErrorMessage: " + error.consentLibErrorMessage);
                 })
-                .setPMWillShow(()-> Log.e(TAG, "PMWillShow"))
-                .setMessageWillShow(()-> Log.e(TAG, "MessageWillShow"))
-                .setPMDidDisappear(()-> Log.e(TAG, "PMDidDisappear"))
-                .setMessageDidDisappear(()-> Log.e(TAG, "MessageDidDisappear"))
+                .setPMReady(()-> Log.e(TAG, "PM Ready"))
+                .setMessageReady(()-> Log.e(TAG, "Message Ready"))
+                .setPMFinished(()-> Log.e(TAG, "PM Finished"))
+                .setMessageFinished(()-> Log.e(TAG, "Message Finished"))
                 .setOnAction(actionType  -> Log.e(TAG , "ActionType : "+actionType.toString()))
                 .build();
     }
