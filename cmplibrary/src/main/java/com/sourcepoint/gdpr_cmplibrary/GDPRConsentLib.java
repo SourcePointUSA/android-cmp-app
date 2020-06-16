@@ -229,11 +229,12 @@ public class GDPRConsentLib {
 
     protected void onPmDismiss() {
         isPmOn = false;
-        webView.post(new Runnable() {
-            @Override
-            public void run() {
+        webView.post(() -> {
+            try{
                 if (webView.canGoBack()) webView.goBack();
                 else onMsgCancel();
+            } catch(Exception e){
+                onErrorTask(new ConsentLibException(e, "Error trying go back from consentUI."));
             }
         });
     }
@@ -248,12 +249,11 @@ public class GDPRConsentLib {
 
     private void loadConsentUI(String url) {
         runOnLiveActivityUIThread(() -> {
-            if (webView == null) webView = buildWebView();
             try {
+                if (webView == null) webView = buildWebView();
                 webView.loadConsentUIFromUrl(url);
-            } catch (ConsentLibException e) {
-                e.printStackTrace();
-                onErrorTask(e);
+            } catch (Exception e) {
+                onErrorTask(new ConsentLibException(e, "Error trying to load url to webview: " + url));
             }
         });
     }
@@ -270,7 +270,6 @@ public class GDPRConsentLib {
             onMessageReadyCalled = false;
             renderMsgAndSaveConsent();
         } catch (Exception e) {
-            e.printStackTrace();
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.run()"));
         }
     }
@@ -281,7 +280,6 @@ public class GDPRConsentLib {
             isPmOn = true;
             loadConsentUI(pmUrl());
         } catch (Exception e) {
-            e.printStackTrace();
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.showPm()"));
         }
     }
@@ -316,6 +314,8 @@ public class GDPRConsentLib {
             sendCustomConsents(paramsToSendCustomConsents(vendors, categories, legIntCategories), onCustomConsentReady);
         } catch (ConsentLibException e) {
             onErrorTask(e);
+        } catch (Exception e) {
+            onErrorTask(new ConsentLibException(e, "Error trying to send custom consents."));
         }
     }
 
@@ -341,14 +341,12 @@ public class GDPRConsentLib {
                         consentFinished();
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
                     onErrorTask(new ConsentLibException(e, "Error trying to parse response from getConsents."));
                 }
             }
 
             @Override
             public void onFailure(ConsentLibException exception) {
-                exception.printStackTrace();
                 onErrorTask(exception);
             }
         });
@@ -425,8 +423,6 @@ public class GDPRConsentLib {
 
                 @Override
                 public void onFailure(ConsentLibException exception) {
-                    Log.d(TAG, "Failed getting message response params.");
-                    exception.printStackTrace();
                     onErrorTask(exception);
                 }
             });
@@ -502,6 +498,7 @@ public class GDPRConsentLib {
     }
 
     void onErrorTask(ConsentLibException e) {
+        e.printStackTrace();
         this.error = e;
         if (shouldCleanConsentOnError) {
             storeClient.clearConsentData();
@@ -510,7 +507,7 @@ public class GDPRConsentLib {
         closeCurrentMessageView();
         runOnLiveActivityUIThread(() -> {
             GDPRConsentLib.this.onError.run(e);
-            this.activity = null;
+            releaseActivity();
         });
     }
 
@@ -526,7 +523,7 @@ public class GDPRConsentLib {
         mCountDownTimer.cancel();
         runOnLiveActivityUIThread(() -> {
             c.run(userConsent);
-            activity = null; // release reference to activity
+            releaseActivity();
         });
     }
 
