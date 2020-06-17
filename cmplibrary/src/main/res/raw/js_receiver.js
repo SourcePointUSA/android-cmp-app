@@ -1,4 +1,4 @@
-addEventListener('message', handleEvent);
+window.addEventListener('message', handleEvent);
 function handleEvent(event) {
     try {
         JSReceiver.log(JSON.stringify(event.data, null, 2));
@@ -39,3 +39,5 @@ function dataFromPM(pmEvent) {
         saveAndExitVariables: pmEvent.data.payload
     };
 };
+
+module.exports = handleEvent
