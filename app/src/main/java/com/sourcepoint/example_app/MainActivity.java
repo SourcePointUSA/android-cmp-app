@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId,this)
+                .setAuthId("test-leo-18.06-00000004424345345345")
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
-        config = getConfig(R.raw.mobile_demo_web);
+        config = getConfig(R.raw.ignore_tcfv2_soundcoloud_android);
         findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
     }
 }
