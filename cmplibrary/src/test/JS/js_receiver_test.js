@@ -1,8 +1,20 @@
-var {relativePath, eventMocks} = require('./test_config.js')
+var {
+        it,
+        expects,
+        relativePath,
+        eventMocks,
+        JSReceiver,
+        callBacksMonitor
+    } = require('./test_config.js')
 
 var handleEvents = require(relativePath)
 
-handleEvents(eventMocks.showMessage)
+it("onConsentUIReady should not have been called before showMessage event: ", () =>
+    expects(JSReceiver.onConsentUIReadyCalled).toBeFalsey()
+);
 
-handleEvents(eventMocks.hideMessage)
-
+it("onConsentUIReady should have been called after showMessage event: ", () => {
+    handleEvents(eventMocks.showMessage)
+    expects(callBacksMonitor.onConsentUIReadyCalled).toBeFalsey()
+    expects(callBacksMonitor.onConsentUIReadyCalled).toBeTruthy()
+});

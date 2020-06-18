@@ -31,12 +31,18 @@ var eventMocks = {
   }
 }
 
+var callBacksMonitor = {
+    onConsentUIReadyCalled: false
+}
+
+var onConsentUIReady =  () => callBacksMonitor.onConsentUIReadyCalled = true
+
 var JSReceiver = {
-  onConsentUIReady: () => console.log("msgRdy!"),
+  onConsentUIReady,
   onError: console.log,
   onAction: console.log,
   onSavePM: console.log,
-  log: console.log
+  log: () => null
 }
 
 global.window = {
@@ -45,10 +51,29 @@ global.window = {
 
 global.JSReceiver = JSReceiver
 
+var expects = thing => ({
+  toEqual: other => assert(other.equals ? other.equals(thing) : other == thing),
+  toBe: other => assert(other === thing),
+  toBeTruthy: () => assert(!!!!thing),
+  toBeFalsey: () => assert(!!!thing)
+})
+
+var it = (message, assertions) => {console.log(message); assertions()}
+
 var config = {
+    it,
+    expects,
     relativePath,
     eventMocks,
-    JSReceiver
+    JSReceiver,
+    callBacksMonitor
 }
 
 module.exports = config
+
+var FgRed = "\x1b[31m"
+var FgGreen = "\x1b[32m"
+
+function assert(assertion){
+    assertion ? console.log(FgGreen, "✓") : console.log(FgRed, "✕")
+}
