@@ -89,12 +89,12 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    public ConsentLibBuilder setPMReady(GDPRConsentLib.pmReadyCallback callback) {
+    public ConsentLibBuilder setOnPMReady(GDPRConsentLib.pmReadyCallback callback) {
         this.pmReady = callback;
         return this;
     }
 
-    public ConsentLibBuilder setMessageReady(GDPRConsentLib.messageReadyCallback callback) {
+    public ConsentLibBuilder setOnMessageReady(GDPRConsentLib.messageReadyCallback callback) {
         this.messageReady = callback;
         return this;
     }
@@ -109,12 +109,12 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    public ConsentLibBuilder setPMFinished(GDPRConsentLib.pmFinishedCallback callback) {
+    public ConsentLibBuilder setOnPMFinished(GDPRConsentLib.pmFinishedCallback callback) {
         this.pmFinished = callback;
         return this;
     }
 
-    public ConsentLibBuilder setMessageFinished(GDPRConsentLib.messageFinishedCallback callback) {
+    public ConsentLibBuilder setOnMessageFinished(GDPRConsentLib.messageFinishedCallback callback) {
         this.messageFinished = callback;
         return this;
     }
