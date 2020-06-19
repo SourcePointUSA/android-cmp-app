@@ -107,7 +107,7 @@ public class GDPRUserConsent {
             return json;
         }
 
-        class VendorGrant {
+        public class VendorGrant {
             public boolean vendorGrant;
             public HashMap<String, Boolean> purposeGrants;
             VendorGrant(JSONObject jVendorGrant) throws ConsentLibException {
