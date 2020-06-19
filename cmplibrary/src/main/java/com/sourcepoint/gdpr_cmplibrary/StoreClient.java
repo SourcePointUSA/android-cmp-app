@@ -112,7 +112,12 @@ public class StoreClient {
     public HashMap getTCData(){
         HashMap tcData = new HashMap();
         for(String key : pref.getAll().keySet()) if (key.startsWith(IABTCF_KEY_PREFIX))
-            tcData.put(key, pref.getString(key, null));
+            try {
+                String value = pref.getString(key,null);
+                tcData.put(key, value);
+            }catch (ClassCastException e){
+                tcData.put(key , pref.getInt(key,-1));
+            }
         return tcData;
     };
 
