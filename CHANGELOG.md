@@ -1,3 +1,14 @@
+## 5.2.4 (Jun, 19, 2020)
+* make VendorGrant class public
+* add life cycle methods from iOS SDK
+    - onPmReady
+    - onMessageReady
+    - onPmFinished
+    - onMessageFinished
+    - onAction
+* fix crash on android lollipop webview #178
+* ensure to catch errors on async methods
+
 ## 5.2.3 (Jun, 04, 2020)
 * add vendorGrants to UserConsents obj
 * add cached UserConsents obj feature #167
