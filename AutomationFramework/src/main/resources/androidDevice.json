@@ -1,0 +1,13 @@
+[
+{
+    "name": "emulator-5554",
+    "deviceName": "emulator-5554",
+    "platformName": "Android",
+    "platformVersion": "10",
+    "automationName": "UIAutomator2",
+    "packageName": "com.sourcepointmeta.app",
+    "activity": "com.sourcepointmeta.app.ui.SplashScreenActivity",
+    "reset": false,
+    "app": "TCFv1_GDPR-MetaApp.apk"
+  }
+]
