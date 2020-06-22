@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class StoreClient {
 
@@ -111,13 +112,9 @@ public class StoreClient {
 
     public HashMap getTCData(){
         HashMap tcData = new HashMap();
+        Map map = pref.getAll();
         for(String key : pref.getAll().keySet()) if (key.startsWith(IABTCF_KEY_PREFIX))
-            try {
-                String value = pref.getString(key,null);
-                tcData.put(key, value);
-            }catch (ClassCastException e){
-                tcData.put(key , pref.getInt(key,-1));
-            }
+            tcData.put(key, map.get(key));
         return tcData;
     };
 
