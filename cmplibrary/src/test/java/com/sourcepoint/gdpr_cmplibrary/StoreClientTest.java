@@ -5,6 +5,7 @@ import android.preference.PreferenceManager;
 
 import androidx.test.core.app.ApplicationProvider;
 
+import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -125,33 +126,83 @@ public class StoreClientTest {
     public void setTCDataAndcheckPrimitives() {
         editor.clear().commit();
 
+        String keyForStringVlaue =  "IABTCF_String";
+        String stringValue = "foo";
+        String keyForIntValue = "IABTCF_Integer";
+        int intValue = 100;
+
         HashMap<String, Object> tcData = new HashMap<>();
-        tcData.put("IABTCF_String", "foo");
-        tcData.put("IABTCF_Integer" , 100);
+        tcData.put(keyForStringVlaue, stringValue);
+        tcData.put(keyForIntValue , intValue);
         storeClient.setTCData(tcData);
 
         Map map = sharedPreferences.getAll();
 
-        assertEquals("foo", map.get("IABTCF_String"));
-        assertEquals(100 , map.get("IABTCF_Integer"));
+        assertEquals(stringValue, map.get(keyForStringVlaue));
+        assertEquals(intValue , map.get(keyForIntValue));
+
+        assertEquals(map.get(keyForStringVlaue).getClass(), String.class);
+        assertEquals(map.get(keyForIntValue).getClass(), Integer.class);
     }
 
     @Test
     public void getTCDataAndCheckPrimitives() {
         editor.clear().commit();
 
+        String keyForStringVlaue =  "IABTCF_String";
+        String stringValue = "foo";
+        String keyForIntValue = "IABTCF_Integer";
+        int intValue = 100;
+
         HashMap<String, Object> tcData = new HashMap<>();
-        tcData.put("IABTCF_String", "foo");
-        tcData.put("IABTCF_Integer" , 100);
+        tcData.put(keyForStringVlaue, stringValue);
+        tcData.put(keyForIntValue , intValue);
         storeClient.setTCData(tcData);
 
         HashMap clientTCData = storeClient.getTCData();
 
-        assertEquals("foo", clientTCData.get("IABTCF_String"));
-        assertEquals(100 , clientTCData.get("IABTCF_Integer"));
+        assertEquals(stringValue, clientTCData.get(keyForStringVlaue));
+        assertEquals(intValue , clientTCData.get(keyForIntValue));
 
-        assertTrue(clientTCData.get("IABTCF_String") instanceof String);
-        assertTrue(clientTCData.get("IABTCF_Integer") instanceof Integer);
+        assertEquals(clientTCData.get(keyForStringVlaue).getClass(), String.class);
+        assertEquals(clientTCData.get(keyForIntValue).getClass(), Integer.class);
     }
 
+    @Test
+    public void setUserConsentAndCheckPrimitives() throws JSONException,ConsentLibException {
+        editor.clear().commit();
+        GDPRUserConsent userConsent = new GDPRUserConsent();
+        userConsent.consentString = "consentString";
+        userConsent.uuid = "uuid";
+
+        String keyForStringVlaue =  "IABTCF_String";
+        String stringValue = "foo";
+        String keyForIntValue = "IABTCF_Integer";
+        int intValue = 100;
+
+        HashMap<String, Object> tcData = new HashMap<>();
+        tcData.put(keyForStringVlaue, stringValue);
+        tcData.put(keyForIntValue , intValue);
+        userConsent.TCData = tcData;
+
+        storeClient.setUserConsents(userConsent);
+        GDPRUserConsent clientUserConsent = storeClient.getUserConsent();
+
+        assertNotNull(clientUserConsent);
+        assertEquals(clientUserConsent.getClass(), GDPRUserConsent.class);
+
+        assertEquals(userConsent.uuid , clientUserConsent.uuid);
+        assertEquals(clientUserConsent.uuid.getClass() , String.class);
+
+        assertEquals(userConsent.consentString , clientUserConsent.consentString);
+        assertEquals(clientUserConsent.consentString.getClass() , String.class);
+
+        HashMap clientTCData = clientUserConsent.TCData;
+
+        assertEquals(stringValue, clientTCData.get(keyForStringVlaue));
+        assertEquals(intValue , clientTCData.get(keyForIntValue));
+
+        assertEquals(clientTCData.get(keyForStringVlaue).getClass(), String.class);
+        assertEquals(clientTCData.get(keyForIntValue).getClass(), Integer.class);
+    }
 }
