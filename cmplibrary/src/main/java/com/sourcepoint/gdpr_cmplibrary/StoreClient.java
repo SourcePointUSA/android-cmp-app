@@ -112,8 +112,8 @@ public class StoreClient {
 
     public HashMap getTCData(){
         HashMap tcData = new HashMap();
-        Map map = pref.getAll();
-        for(String key : pref.getAll().keySet()) if (key.startsWith(IABTCF_KEY_PREFIX))
+        Map<String , ?> map = pref.getAll();
+        for(String key : map.keySet()) if (key.startsWith(IABTCF_KEY_PREFIX))
             tcData.put(key, map.get(key));
         return tcData;
     };
