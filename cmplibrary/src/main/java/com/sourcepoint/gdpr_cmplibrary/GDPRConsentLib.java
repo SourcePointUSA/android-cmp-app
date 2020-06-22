@@ -1,7 +1,9 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -40,10 +42,10 @@ public class GDPRConsentLib {
     public ConsentLibException error = null;
 
     public GDPRUserConsent userConsent;
-
     private static final String TAG = "GDPRConsentLib";
 
     Activity activity;
+    Context context;
     final String property;
     final int accountId, propertyId;
     final OnConsentUIReadyCallback onConsentUIReady;
@@ -123,12 +125,12 @@ public class GDPRConsentLib {
     /**
      * @return a new instance of GDPRConsentLib.Builder
      */
-    public static ConsentLibBuilder newBuilder(Integer accountId, String property, Integer propertyId, String pmId, Activity activity) {
-        return new ConsentLibBuilder(accountId, property, propertyId, pmId, activity);
+    public static ConsentLibBuilder newBuilder(Integer accountId, String property, Integer propertyId, String pmId, Context context) {
+        return new ConsentLibBuilder(accountId, property, propertyId, pmId, context);
     }
 
     GDPRConsentLib(ConsentLibBuilder b) {
-        activity = b.activity;
+        context = b.getContext();
         property = b.propertyConfig.propertyName;
         accountId = b.propertyConfig.accountId;
         propertyId = b.propertyConfig.propertyId;
@@ -192,7 +194,7 @@ public class GDPRConsentLib {
     }
 
     ConsentWebView buildWebView() {
-        return new ConsentWebView(activity) {
+        return new ConsentWebView(context) {
 
             @Override
             public void onConsentUIReady(boolean isFromPM) {
@@ -550,9 +552,13 @@ public class GDPRConsentLib {
     }
 
     private void runOnLiveActivityUIThread(Runnable uiRunnable) {
-        if (activity != null && !activity.isFinishing()) {
-            activity.runOnUiThread(uiRunnable);
-        }
+//        if (activity != null && !activity.isFinishing()) {
+//            activity.runOnUiThread(uiRunnable);
+//        }
+        // Get a handler that can be used to post to the main thread
+        Handler mainHandler = new Handler(context.getMainLooper());
+
+        mainHandler.post(uiRunnable);
     }
 
     void onErrorTask(ConsentLibException e) {

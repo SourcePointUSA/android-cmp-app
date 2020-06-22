@@ -20,7 +20,6 @@ public class ConsentLibBuilder {
 
     public  static final long DEFAULT_MESSAGE_TIMEOUT = 10000;
 
-    Activity activity;
     protected GDPRConsentLib.OnConsentUIReadyCallback onConsentUIReady;
     protected GDPRConsentLib.OnConsentUIFinishedCallback onConsentUIFinished;
     protected GDPRConsentLib.OnConsentReadyCallback onConsentReady;
@@ -43,28 +42,32 @@ public class ConsentLibBuilder {
     private CountDownTimer timer;
 
     PropertyConfig propertyConfig;
+    private Context context;
 
 
-    ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Activity activity) {
-        init(accountId, property, propertyId , pmId , activity);
+    ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Context context) {
+        init(accountId, property, propertyId , pmId , context);
     }
 
-    private void init(Integer accountId, String propertyName, Integer propertyId , String pmId , Activity activity){
+    private void init(Integer accountId, String propertyName, Integer propertyId , String pmId , Context context){
         //TODO: add a constructor method that takes PropertyConfig class as parameter
         propertyConfig = new PropertyConfig(accountId, propertyId, propertyName, pmId);
-        this.activity = activity;
+        this.context = context;
         staging = stagingCampaign = false;
         shouldCleanConsentOnError = true;
         messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
     }
 
     protected StoreClient getStoreClient(){
-        return new StoreClient(PreferenceManager.getDefaultSharedPreferences(activity));
+        return new StoreClient(PreferenceManager.getDefaultSharedPreferences(context));
     }
 
     protected ConnectivityManager getConnectivityManager(){
-        return  (ConnectivityManager) activity
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        return  (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    }
+
+    Context getContext(){
+        return context;
     }
 
     /**
