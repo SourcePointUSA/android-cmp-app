@@ -1,20 +1,17 @@
 var {
-        it,
-        expects,
         relativePath,
         eventMocks,
         JSReceiver,
         callBacksMonitor
     } = require('./test_config.js')
+var { describe, it, expects } = require('./ledrest.js')
 
 var handleEvents = require(relativePath)
 
-it("onConsentUIReady should not have been called before showMessage event: ", () =>
-    expects(JSReceiver.onConsentUIReadyCalled).toBeFalsey()
-);
-
-it("onConsentUIReady should have been called after showMessage event: ", () => {
-    handleEvents(eventMocks.showMessage)
-    expects(callBacksMonitor.onConsentUIReadyCalled).toBeFalsey()
-    expects(callBacksMonitor.onConsentUIReadyCalled).toBeTruthy()
-});
+describe("JSReceiver test cases:", () => {
+    it("onConsentUIReady should only be called after showMessage event", () => {
+        expects(JSReceiver.onConsentUIReadyCalled).toBeFalsey()
+        handleEvents(eventMocks.showMessage)
+        expects(callBacksMonitor.onConsentUIReadyCalled).toBeTruthy()
+    })
+})
