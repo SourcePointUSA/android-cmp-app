@@ -46,15 +46,15 @@ public class StoreClientTest {
 
     @Test
     public void setTCDataClearsIABTCFDataBeforeStoringNewOne() {
-        editor.putString("IABTCF_bar", "bar");
         editor.clear().commit();
 
         HashMap<String, Object> tcData = new HashMap<>();
         tcData.put("IABTCF_foo", "foo");
+        tcData.put("IABTCF_number", 4);
         storeClient.setTCData(tcData);
 
-        assertFalse("expected "+sharedPreferences.contains("IABTCF_bar")+" to be false", sharedPreferences.contains("IABTCF_bar"));
         assertEquals("foo", sharedPreferences.getString("IABTCF_foo", null));
+        assertEquals(4, sharedPreferences.getInt("IABTCF_number", 0));
     }
 
     @Test
