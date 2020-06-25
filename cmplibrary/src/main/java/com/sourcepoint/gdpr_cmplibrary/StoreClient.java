@@ -20,6 +20,10 @@ public class StoreClient {
 
     public static final String AUTH_ID_KEY = "sp.gdpr.authId";
     public static final String DEFAULT_EMPTY_UUID = "";
+    private static final String CMP_SDK_ID_KEY = "IABTCF_CmpSdkID";
+    private static final int CMP_SDK_ID = 6;
+    private static final String CMP_SDK_VERSION_KEY = "IABTCF_CmpSdkVersion";
+    private static final int CMP_SDK_VERSION = 2;
 
     private SharedPreferences.Editor editor;
 
@@ -45,6 +49,14 @@ public class StoreClient {
             if(tcData.get(key).getClass().equals(String.class)) editor.putString(key, (String) tcData.get(key));
         }
         editor.commit();
+    }
+
+    public void setCmpSdkID(){
+        editor.putInt(CMP_SDK_ID_KEY, CMP_SDK_ID);
+    }
+
+    public void setCmpSdkVersion(){
+        editor.putInt(CMP_SDK_VERSION_KEY, CMP_SDK_VERSION);
     }
 
     public void setConsentUuid(String consentUuid){

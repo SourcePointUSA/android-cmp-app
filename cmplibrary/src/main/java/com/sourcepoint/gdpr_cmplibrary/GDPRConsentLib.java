@@ -185,6 +185,10 @@ public class GDPRConsentLib {
         }
 
         storeClient.setAuthId(newAuthId);
+
+        storeClient.setCmpSdkID();
+
+        storeClient.setCmpSdkVersion();
     }
 
     private boolean didConsentUserChange(String newAuthId, String oldAuthId) {
