@@ -1,3 +1,6 @@
+## 5.2.5 (Jun, 25, 2020)
+* save CMP_SDK_ID and CMP_SDK_VERSION on consentLib constructor
+
 ## 5.2.4 (Jun, 19, 2020)
 * make VendorGrant class public
 * add life cycle methods from iOS SDK
