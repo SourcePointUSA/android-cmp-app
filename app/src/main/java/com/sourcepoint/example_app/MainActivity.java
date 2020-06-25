@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId,this)
-                .setAuthId("test-leo-18.06-00000004424345345345")
+                .setStagingCampaign(true)
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
@@ -89,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 .build();
     }
 
-    private NativeMessage buildNativeMessage(){
-        return new NativeMessage(this){
+    private NativeMessage buildNativeMessage() {
+        return new NativeMessage(this) {
             @Override
             public void init(){
                 super.init();
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
-        config = getConfig(R.raw.ignore_tcfv2_soundcoloud_android);
+        config = getConfig(R.raw.ignore_ccpa_flipboard);
         findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
     }
 }

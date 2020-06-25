@@ -1,4 +1,4 @@
-var relativePath = '../../main/res/raw/js_receiver.js'
+var eventHandlerRelativePath = '../../main/res/raw/js_receiver.js'
 
 var eventMocks = {
   showMessage: {
@@ -7,6 +7,32 @@ var eventMocks = {
       actions: [],
       settings: {
         "language": "browser"
+      }
+    }
+  },
+  showPm: {
+    data: {
+      "name": "sp.showMessage",
+      "actions": [],
+      "settings": {
+        "vendorList": "5ed8f883b8e05c4a06748e19",
+        "useStacks": false,
+        "lockScroll": true,
+        "width": {
+          "type": "%",
+          "value": 100
+        },
+        "border": {
+          "borderWidth": 0,
+          "borderColor": "#000000",
+          "borderTopLeftRadius": 0,
+          "borderTopRightRadius": 0,
+          "borderBottomLeftRadius": 0,
+          "borderBottomRightRadius": 0,
+          "borderStyle": "solid"
+        },
+        "showVeil": true,
+        "veilOpacity": 0.55
       }
     }
   },
@@ -31,13 +57,13 @@ var eventMocks = {
   }
 }
 
-var callBacksMonitor = {
-    onConsentUIReadyCalled: false
+var callBacksMonitor = {}
+
+function onConsentUIReady(){
+  callBacksMonitor.onConsentUIReady = [...arguments]
 }
 
-var onConsentUIReady =  () => callBacksMonitor.onConsentUIReadyCalled = true
-
-var JSReceiver = {
+var JSReceiverMock = {
   onConsentUIReady,
   onError: console.log,
   onAction: console.log,
@@ -49,11 +75,11 @@ global.window = {
   addEventListener: function () { }
 }
 
-global.JSReceiver = JSReceiver
+global.JSReceiver = JSReceiverMock
 
 module.exports = {
-    relativePath,
+    eventHandlerRelativePath,
     eventMocks,
-    JSReceiver,
+    JSReceiverMock,
     callBacksMonitor
 }
