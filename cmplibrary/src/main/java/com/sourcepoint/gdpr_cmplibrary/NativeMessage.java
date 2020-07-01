@@ -14,13 +14,13 @@ import com.example.gdpr_cmplibrary.R;
  */
 public class NativeMessage extends RelativeLayout {
 
-    private ActionButton cancel;
-    private ActionButton acceptAll;
-    private ActionButton rejectAll;
-    private ActionButton showOptions;
+    public ActionButton cancel;
+    public ActionButton acceptAll;
+    public ActionButton rejectAll;
+    public ActionButton showOptions;
 
-    private TextView body;
-    private TextView title;
+    public TextView body;
+    public TextView title;
 
     public NativeMessage(Context context) {
         super(context);
@@ -102,7 +102,6 @@ public class NativeMessage extends RelativeLayout {
     public void setCancel(Button cancel) {
         this.cancel = new ActionButton(cancel);
         this.cancel.button.setVisibility(View.INVISIBLE);
-
     }
 
     public ActionButton getAcceptAll() {
@@ -157,8 +156,8 @@ public class NativeMessage extends RelativeLayout {
             button = b;
         }
 
-        Button button;
-        int choiceType;
-        int choiceId;
+        public Button button;
+        public int choiceType;
+        public int choiceId;
     }
 }

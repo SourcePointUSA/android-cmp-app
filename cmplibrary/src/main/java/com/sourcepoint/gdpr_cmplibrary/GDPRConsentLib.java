@@ -245,9 +245,15 @@ public class GDPRConsentLib {
         }
     }
 
-    private void setNativeMessageView(JSONObject msgJson) throws ConsentLibException {
-        nativeView.setCallBacks(this);
-        nativeView.setAttributes(new NativeMessageAttrs(msgJson));
+    private void setNativeMessageView(JSONObject msgJson) {
+        runOnLiveActivityUIThread(() -> {
+            try {
+                nativeView.setCallBacks(this);
+                nativeView.setAttributes(new NativeMessageAttrs(msgJson));
+            } catch (ConsentLibException e) {
+                onErrorTask(e);
+            }
+        });
     }
 
     public void onDefaultAction(ConsentAction action) {
