@@ -149,9 +149,7 @@ abstract public class ConsentWebView extends WebView {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                view.getContext().startActivity(intent);
+                loadLinkOnExternalBrowser(url);
                 return true;
             }
         });
@@ -188,6 +186,12 @@ abstract public class ConsentWebView extends WebView {
         Log.d(TAG, "Loading Webview with: " + url);
         Log.d(TAG, "User-Agent: " + getSettings().getUserAgentString());
         loadUrl(url);
+    }
+
+    private void loadLinkOnExternalBrowser(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW , Uri.parse(url));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.getContext().startActivity(intent);
     }
 
     private boolean doesLinkContainImage(HitTestResult testResult) {
