@@ -8,6 +8,7 @@ import io.appium.java_client.AppiumDriver;
 public class Page {
 
 	WebDriver driver;
+	public int timeOutInSeconds = 30;
 
     public void clickElement(WebElement element) {
         element.click();
