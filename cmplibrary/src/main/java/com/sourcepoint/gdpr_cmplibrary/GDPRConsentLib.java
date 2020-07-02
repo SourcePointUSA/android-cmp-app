@@ -1,6 +1,5 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -44,8 +43,9 @@ public class GDPRConsentLib {
     public GDPRUserConsent userConsent;
     private static final String TAG = "GDPRConsentLib";
 
-    Activity activity;
-    Context context;
+    Handler uiThreadHandler;
+
+
     final String property;
     final int accountId, propertyId;
     final OnConsentUIReadyCallback onConsentUIReady;
@@ -130,7 +130,7 @@ public class GDPRConsentLib {
     }
 
     GDPRConsentLib(ConsentLibBuilder b) {
-        context = b.getContext();
+        uiThreadHandler = b.getUIThreadHandler();
         property = b.propertyConfig.propertyName;
         accountId = b.propertyConfig.accountId;
         propertyId = b.propertyConfig.propertyId;
@@ -145,6 +145,9 @@ public class GDPRConsentLib {
         messageFinished = b.messageFinished;
         onAction = b.onAction;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
+
+        //TODO: inject consoleWebview from the builder as well (overload/callbacks refactor required)
+        webView = buildWebView(b.getContext());
 
         mCountDownTimer = b.getTimer(onCountdownFinished());
 
@@ -197,7 +200,7 @@ public class GDPRConsentLib {
         return oldAuthId != null && newAuthId != null && !newAuthId.equals(oldAuthId);
     }
 
-    ConsentWebView buildWebView() {
+    ConsentWebView buildWebView(Context context) {
         return new ConsentWebView(context) {
 
             @Override
@@ -224,7 +227,7 @@ public class GDPRConsentLib {
 
     public void onAction(ConsentAction action) {
         if (GDPRConsentLib.this.onAction != null)
-            runOnLiveActivityUIThread( () ->GDPRConsentLib.this.onAction.run(action.actionType));
+            uiThreadHandler.post( () ->GDPRConsentLib.this.onAction.run(action.actionType));
 
         try {
             Log.d(TAG, "onAction:  " + action.actionType + " + actionType");
@@ -293,8 +296,7 @@ public class GDPRConsentLib {
     }
 
     private void loadConsentUI(String url) {
-        runOnLiveActivityUIThread(() -> {
-            if (webView == null) webView = buildWebView();
+        uiThreadHandler.post(() -> {
             try {
                 webView.loadConsentUIFromUrl(url);
             } catch (Exception e) {
@@ -399,7 +401,7 @@ public class GDPRConsentLib {
     void showView(View view, boolean isFromPM) {
         mCountDownTimer.cancel();
         if (!hasParent(view)) {
-            runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
+            uiThreadHandler.post(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
         }
         if (isFromPM) runPMReady();
         else runMessageReady();
@@ -407,13 +409,13 @@ public class GDPRConsentLib {
 
     private void runPMReady(){
         if (this.pmReady != null)
-            runOnLiveActivityUIThread(GDPRConsentLib.this.pmReady::run);
+            uiThreadHandler.post(GDPRConsentLib.this.pmReady::run);
         isPmOn = true;
     }
 
     private void runMessageReady(){
         if (this.messageReady != null)
-            runOnLiveActivityUIThread(GDPRConsentLib.this.messageReady::run);
+            uiThreadHandler.post(GDPRConsentLib.this.messageReady::run);
     }
 
     public void closeAllViews(boolean requestFromPM) {
@@ -434,7 +436,7 @@ public class GDPRConsentLib {
 
     protected void closeView(View v, boolean requestFromPM) {
         if (hasParent(v)) {
-            runOnLiveActivityUIThread(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
+            uiThreadHandler.post(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
             if (requestFromPM) runPMFinished();
             else runMessageFinished();
         }
@@ -442,12 +444,12 @@ public class GDPRConsentLib {
 
     private void runPMFinished(){
         if (this.pmFinished != null)
-            runOnLiveActivityUIThread(this.pmFinished::run);
+            uiThreadHandler.post(this.pmFinished::run);
     }
 
     private void runMessageFinished(){
         if (this.messageFinished != null)
-            runOnLiveActivityUIThread(this.messageFinished::run);
+            uiThreadHandler.post(this.messageFinished::run);
     }
 
     private JSONObject paramsToSendConsent(ConsentAction action) throws ConsentLibException {
@@ -561,16 +563,6 @@ public class GDPRConsentLib {
         return PM_BASE_URL + "?" + TextUtils.join("&", params);
     }
 
-    private void runOnLiveActivityUIThread(Runnable uiRunnable) {
-//        if (activity != null && !activity.isFinishing()) {
-//            activity.runOnUiThread(uiRunnable);
-//        }
-        // Get a handler that can be used to post to the main thread
-        Handler mainHandler = new Handler(context.getMainLooper());
-
-        mainHandler.post(uiRunnable);
-    }
-
     void onErrorTask(ConsentLibException e) {
         this.error = e;
         if (shouldCleanConsentOnError) {
@@ -578,9 +570,8 @@ public class GDPRConsentLib {
         }
         mCountDownTimer.cancel();
         closeCurrentMessageView(isPmOn);
-        runOnLiveActivityUIThread(() -> {
+        uiThreadHandler.post(() -> {
             GDPRConsentLib.this.onError.run(e);
-            releaseActivity();
         });
     }
 
@@ -594,14 +585,9 @@ public class GDPRConsentLib {
 
     void consentFinished(OnConsentReadyCallback c) {
         mCountDownTimer.cancel();
-        runOnLiveActivityUIThread(() -> {
+        uiThreadHandler.post(() -> {
             c.run(userConsent);
-            releaseActivity();
         });
-    }
-
-    public void releaseActivity(){
-        activity = null;
     }
 
     void consentFinished() {
