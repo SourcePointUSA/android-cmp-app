@@ -1,3 +1,10 @@
+## 5.2.6 (July, 01, 2020)
+* fix NativeMessage crash on setAttributes method call
+* set NativeMessage attributes to public
+
+## 5.2.5 (Jun, 25, 2020)
+* save CMP_SDK_ID and CMP_SDK_VERSION on consentLib constructor
+
 ## 5.2.4 (Jun, 19, 2020)
 * make VendorGrant class public
 * add life cycle methods from iOS SDK

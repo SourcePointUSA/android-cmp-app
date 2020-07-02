@@ -181,10 +181,14 @@ public class GDPRConsentLib {
         try {
             userConsent = storeClient.getUserConsent();
         } catch (ConsentLibException e) {
-            onErrorTask(e);
+            userConsent = new GDPRUserConsent();
         }
 
         storeClient.setAuthId(newAuthId);
+
+        storeClient.setCmpSdkID();
+
+        storeClient.setCmpSdkVersion();
     }
 
     private boolean didConsentUserChange(String newAuthId, String oldAuthId) {
@@ -241,9 +245,15 @@ public class GDPRConsentLib {
         }
     }
 
-    private void setNativeMessageView(JSONObject msgJson) throws ConsentLibException {
-        nativeView.setCallBacks(this);
-        nativeView.setAttributes(new NativeMessageAttrs(msgJson));
+    private void setNativeMessageView(JSONObject msgJson) {
+        runOnLiveActivityUIThread(() -> {
+            try {
+                nativeView.setCallBacks(this);
+                nativeView.setAttributes(new NativeMessageAttrs(msgJson));
+            } catch (ConsentLibException e) {
+                onErrorTask(e);
+            }
+        });
     }
 
     public void onDefaultAction(ConsentAction action) {
@@ -361,7 +371,7 @@ public class GDPRConsentLib {
                     metaData = jsonResult.getString("meta");
                     JSONObject jConsent = jsonResult.getJSONObject("userConsent");
                     jConsent.put("uuid", consentUUID);
-                    userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
+                    userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"), consentUUID);
                     storeData();
                     if (jsonResult.has("msgJSON") && !jsonResult.isNull("msgJSON")) {
                         setNativeMessageView(jsonResult.getJSONObject("msgJSON"));

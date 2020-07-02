@@ -18,18 +18,18 @@ public class SiteDebugInfoPage {
 
 	WebDriver driver;
 
-	 public SiteDebugInfoPage(WebDriver driver) throws InterruptedException {
-	        this.driver = driver;
-	        PageFactory.initElements(driver, this);
-	        logMessage("Initializing the "+this.getClass().getSimpleName()+" elements");
-	        PageFactory.initElements(new AppiumFieldDecorator(driver), this);
-	        Thread.sleep(1000);
-	    } 
-	 
-	// @WithTimeout(time = 30, unit = TimeUnit.SECONDS)
-		@AndroidFindBy(id = "com.sourcepointmeta.app:id/toolbar_title")
+	public SiteDebugInfoPage(WebDriver driver) throws InterruptedException {
+		this.driver = driver;
+		PageFactory.initElements(driver, this);
+		logMessage("Initializing the " + this.getClass().getSimpleName() + " elements");
+		PageFactory.initElements(new AppiumFieldDecorator(driver), this);
+		Thread.sleep(1000);
+	}
+
+	@WithTimeout(time = 30, chronoUnit = ChronoUnit.SECONDS)
+	@AndroidFindBy(id = "com.sourcepointmeta.app:id/toolbar_title")
 	public WebElement GDPRSiteDebugInfoPageTitle;
-	
+
 	@WithTimeout(time = 30, chronoUnit = ChronoUnit.SECONDS)
 	@AndroidFindBy(id = "com.sourcepointmeta.app:id/tvConsentUUID")
 	public WebElement GDPRConsentUUID;
@@ -39,11 +39,11 @@ public class SiteDebugInfoPage {
 
 	@AndroidFindBy(id = "com.sourcepointmeta.app:id/tv_consentsNotAvailable")
 	public WebElement GDPRConsentNotAvailable;
-	
+
 	@AndroidFindBy(id = "com.sourcepointmeta.app:id/consentRecyclerView")
 	public List<WebElement> GDPRConsentView;
-	
-	// @WithTimeout(time = 30, unit = TimeUnit.SECONDS)
+
+	@WithTimeout(time = 30, chronoUnit = ChronoUnit.SECONDS)
 	@AndroidFindBy(xpath = "//android.widget.ImageButton[@content-desc='Navigate up']")
 	public WebElement BackButton;
 
@@ -62,9 +62,9 @@ public class SiteDebugInfoPage {
 		consentData.add(consentUUID.getText());
 		return consentData;
 	}
-	
+
 	public boolean isConsentViewDataPresent(List<WebElement> consentView) {
-		if (consentView.size() > 0){
+		if (consentView.size() > 0) {
 			return true;
 		} else {
 			return false;
