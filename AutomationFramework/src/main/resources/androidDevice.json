@@ -7,7 +7,6 @@
     "automationName": "UIAutomator2",
     "packageName": "com.sourcepointmeta.app",
     "activity": "com.sourcepointmeta.app.ui.SplashScreenActivity",
-    "reset": false,
     "app": "GDPR-MetaApp.apk"
   }
 ]
