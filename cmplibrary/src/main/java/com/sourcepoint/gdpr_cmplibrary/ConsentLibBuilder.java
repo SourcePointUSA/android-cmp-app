@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -52,10 +53,10 @@ public class ConsentLibBuilder {
     private void init(Integer accountId, String propertyName, Integer propertyId , String pmId , Context context){
         //TODO: add a constructor method that takes PropertyConfig class as parameter
         propertyConfig = new PropertyConfig(accountId, propertyId, propertyName, pmId);
-        this.context = context;
         staging = stagingCampaign = false;
         shouldCleanConsentOnError = true;
         messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
+        this.context = context;
     }
 
     protected StoreClient getStoreClient(){
@@ -64,6 +65,10 @@ public class ConsentLibBuilder {
 
     protected ConnectivityManager getConnectivityManager(){
         return  (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    }
+
+    Handler getUIThreadHandler(){
+        return new Handler(context.getMainLooper());
     }
 
     Context getContext(){
