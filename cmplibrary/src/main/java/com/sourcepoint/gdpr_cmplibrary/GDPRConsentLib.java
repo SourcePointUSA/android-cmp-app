@@ -181,7 +181,7 @@ public class GDPRConsentLib {
         try {
             userConsent = storeClient.getUserConsent();
         } catch (ConsentLibException e) {
-            onErrorTask(e);
+            userConsent = new GDPRUserConsent();
         }
 
         storeClient.setAuthId(newAuthId);
@@ -371,7 +371,7 @@ public class GDPRConsentLib {
                     metaData = jsonResult.getString("meta");
                     JSONObject jConsent = jsonResult.getJSONObject("userConsent");
                     jConsent.put("uuid", consentUUID);
-                    userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"));
+                    userConsent = new GDPRUserConsent(jsonResult.getJSONObject("userConsent"), consentUUID);
                     storeData();
                     if (jsonResult.has("msgJSON") && !jsonResult.isNull("msgJSON")) {
                         setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
