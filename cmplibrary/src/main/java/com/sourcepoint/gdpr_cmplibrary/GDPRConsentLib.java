@@ -251,7 +251,7 @@ public class GDPRConsentLib {
     }
 
     private void setNativeMessageView(JSONObject msgJson) {
-        runOnLiveActivityUIThread(() -> {
+        uiThreadHandler.post(() -> {
             try {
                 nativeView.setCallBacks(this);
                 nativeView.setAttributes(new NativeMessageAttrs(msgJson));
