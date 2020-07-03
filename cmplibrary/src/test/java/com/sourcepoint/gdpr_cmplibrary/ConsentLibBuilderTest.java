@@ -87,7 +87,6 @@ public class ConsentLibBuilderTest {
         assertEquals(builder.propertyConfig.propertyId, defaultConfig.propertyId);
         assertEquals(builder.propertyConfig.propertyName, defaultConfig.propertyName);
         assertEquals(builder.propertyConfig.pmId, defaultConfig.pmId);
-        assertEquals(builder.activity, activityMock);
         assertFalse(builder.staging);
         assertTrue(builder.shouldCleanConsentOnError);
         assertEquals(builder.messageTimeOut, builder.DEFAULT_MESSAGE_TIMEOUT);
@@ -135,42 +134,36 @@ public class ConsentLibBuilderTest {
 
     @Test
     public void setStage() {
-        boolean stage = true;
-        defaultBuilder.setStagingCampaign(stage);
-        assertEquals(stage, defaultBuilder.stagingCampaign);
+        defaultBuilder.setStagingCampaign(true);
+        assertEquals(true, defaultBuilder.stagingCampaign);
     }
 
     @Test
     public void setInternalStage() {
-        boolean stage = true;
-        defaultBuilder.setInternalStage(stage);
-        assertEquals(stage, defaultBuilder.staging);
+        defaultBuilder.setInternalStage(true);
+        assertEquals(true, defaultBuilder.staging);
     }
 
     @Test
     public void setShouldCleanConsentOnError() {
-        boolean shouldCleanConsentOnError = false;
-        defaultBuilder.setShouldCleanConsentOnError(shouldCleanConsentOnError);
-        assertEquals(shouldCleanConsentOnError, defaultBuilder.shouldCleanConsentOnError);
+        defaultBuilder.setShouldCleanConsentOnError(false);
+        assertEquals(false, defaultBuilder.shouldCleanConsentOnError);
     }
 
     @Test
     public void setAuthId() {
-        String authId = "authId";
-        defaultBuilder.setAuthId(authId);
-        assertEquals(authId, defaultBuilder.authId);
+        defaultBuilder.setAuthId("authId");
+        assertEquals("authId", defaultBuilder.authId);
     }
 
     @Test
     public void setTargetingParamString() throws Exception {
-        String key = "key";
-        String stringValue = "stringValue";
-        defaultBuilder.setTargetingParam(key, stringValue);
+        defaultBuilder.setTargetingParam("key", "stringValue");
 
         Field localMember = getDeclaredFieldAccess("targetingParams");
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(key, stringValue);
+        jsonObject.put("key", "stringValue");
 
         assertEquals(jsonObject.toString(), localMember.get(defaultBuilder).toString());
 
