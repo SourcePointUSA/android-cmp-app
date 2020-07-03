@@ -12,13 +12,14 @@ import java.io.IOException;
 public class AppiumServer {
 
     public static AppiumDriverLocalService appium;
-
+	
     public static void start() throws IOException {
         AppiumServiceBuilder builder = new AppiumServiceBuilder()
                 .withAppiumJS(new File("/usr/local/lib/node_modules/appium/build/lib/main.js"))
                 .withArgument(GeneralServerFlag.SESSION_OVERRIDE);
         appium = builder.build();
         appium.start();
+        appium.clearOutPutStreams();
         logMessage("Appium server has been started");
     }
 

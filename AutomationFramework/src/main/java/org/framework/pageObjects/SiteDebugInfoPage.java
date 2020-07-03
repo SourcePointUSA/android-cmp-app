@@ -34,6 +34,7 @@ public class SiteDebugInfoPage {
 	@AndroidFindBy(id = "com.sourcepointmeta.app:id/tvConsentUUID")
 	public WebElement GDPRConsentUUID;
 
+	@WithTimeout(time = 30, chronoUnit = ChronoUnit.SECONDS)
 	@AndroidFindBy(id = "com.sourcepointmeta.app:id/tvEUConsent")
 	public WebElement GDPREUConsent;
 
