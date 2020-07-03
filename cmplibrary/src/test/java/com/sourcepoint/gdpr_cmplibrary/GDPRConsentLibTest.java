@@ -1,7 +1,9 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.CountDownTimer;
+import android.os.Handler;
 
 import org.json.JSONObject;
 import org.junit.Before;
@@ -49,6 +51,8 @@ public class GDPRConsentLibTest {
     @Mock
     CountDownTimer timerMock;
 
+    @Mock
+    Handler uiThreadHandlerMock;
 
     Boolean requestFromPM = false;
 
@@ -68,6 +72,10 @@ public class GDPRConsentLibTest {
             @Override
             public CountDownTimer getTimer(Runnable r){
                 return timerMock;
+            }
+            @Override
+            public Handler getUIThreadHandler(){
+                return uiThreadHandlerMock;
             }
         };
     }
@@ -103,9 +111,14 @@ public class GDPRConsentLibTest {
         setStoreClientMock();
         setTimerMock();
         lambdaCaptor = ArgumentCaptor.forClass(Runnable.class);
-        lib = spy(builderMock().build());
+        lib = spy(new GDPRConsentLib(builderMock()){
+            @Override
+            ConsentWebView buildWebView(Context context){
+                return webViewMock;
+            }
+        });
         doNothing().when(webViewMock).loadConsentUIFromUrl(any());
-        doReturn(webViewMock).when(lib).buildWebView();
+        doReturn(webViewMock).when(lib).buildWebView(any());
     }
 
     @Test
@@ -162,7 +175,7 @@ public class GDPRConsentLibTest {
     @Test
     public void onShowOptions() throws ConsentLibException {
         lib.onShowOptions();
-        verify(lib.activity).runOnUiThread(lambdaCaptor.capture());
+        verify(lib.uiThreadHandler).post(lambdaCaptor.capture());
         lambdaCaptor.getValue().run();
         verify(lib.webView).loadConsentUIFromUrl(lib.pmUrl());
     }
@@ -171,20 +184,5 @@ public class GDPRConsentLibTest {
     public void onDefaultAction() {
         lib.onDefaultAction(consentActionMock);
         verify(lib, atLeast(1)).closeView(any(),anyBoolean());
-    }
-
-    @Test
-    public void pmUrl() {
-        GDPRConsentLib lib = builderMock(1, "propertyName", 1, "pmId", activityMock).build();
-        lib.consentUUID = null;
-        assertEquals(lib.pmUrl(), "https://notice.sp-prod.net/privacy-manager/index.html?site_id=1&message_id=pmId");
-        lib.consentUUID = "ExampleUUID";
-        assertEquals(lib.pmUrl(), "https://notice.sp-prod.net/privacy-manager/index.html?consentUUID=ExampleUUID&site_id=1&message_id=pmId");
-    }
-
-    @Test
-    public void releaseActivity(){
-        lib.releaseActivity();
-        assertNull(lib.activity);
     }
 }
