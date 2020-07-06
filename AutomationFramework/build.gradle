@@ -7,7 +7,6 @@ group 'Framework'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
-apply plugin: 'io.qameta.allure'
 
 sourceCompatibility = 1.8
 
