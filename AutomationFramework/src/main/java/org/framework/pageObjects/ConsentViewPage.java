@@ -75,8 +75,10 @@ public class ConsentViewPage extends Page {
 	boolean errorFound = false;
 
 	public void scrollAndClick(String text) throws InterruptedException {
-		waitForElement(tcfv2_AcceptAll, timeOutInSeconds);
-		driver.findElement(By.xpath("//android.widget.Button[@text=\"" + text + "\"]")).click();
+	//	waitForElement(tcfv2_AcceptAll, timeOutInSeconds);
+		WebElement ele = driver.findElement(By.xpath("//android.widget.Button[@text=\"" + text + "\"]"));
+		waitForElement(ele, timeOutInSeconds);
+		ele.click();
 	}
 
 	ArrayList<String> consentMsg = new ArrayList<String>();
