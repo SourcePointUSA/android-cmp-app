@@ -20,7 +20,7 @@ dependencies {
     compile group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '3.3.0'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     compile 'ru.yandex.qatools.ashot:ashot:1.5.2'
-    compile group: 'io.qameta.allure', name: 'allure-testng', version: '2.13.1'
+    compile group: 'io.qameta.allure', name: 'allure-testng', version: '2.8.1'
 }
 
 
