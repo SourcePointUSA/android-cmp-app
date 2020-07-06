@@ -23,6 +23,7 @@ dependencies {
     compile group: 'io.qameta.allure', name: 'allure-testng', version: '2.8.1'
 }
 
+
 jar {
     manifest {
         attributes 'Main-Class': mainClassName

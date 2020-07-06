@@ -43,7 +43,7 @@ public class PrivacyManagerPage extends Page {
 	public List<WebElement> AllButtons;
 
 	// TCFV2 application elements
-	@WithTimeout(time = 30, chronoUnit = ChronoUnit.SECONDS)
+	@WithTimeout(time = 50, chronoUnit = ChronoUnit.SECONDS)
 	@AndroidFindBy(xpath = "//android.widget.Button[@text='Accept All']")
 	public WebElement tcfv2_AcceptAll;
 

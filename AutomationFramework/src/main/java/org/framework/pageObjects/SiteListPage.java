@@ -44,9 +44,11 @@ public class SiteListPage extends Page {
 	@AndroidFindBy(id = "com.sourcepointmeta.app:id/websiteListRecycleView")
 	public WebElement GDPRSiteListView;
 
+	@WithTimeout(time = 30, chronoUnit = ChronoUnit.SECONDS)
 	@AndroidFindBy(id = "com.sourcepointmeta.app:id/edit_button")
 	public WebElement GDPREditButton;
 
+	@WithTimeout(time = 30, chronoUnit = ChronoUnit.SECONDS)
 	@AndroidFindBy(id = "com.sourcepointmeta.app:id/reset_button")
 	public WebElement GDPRResetButton;
 
@@ -100,6 +102,7 @@ public class SiteListPage extends Page {
 		action.press(PointOption.point(rightTopCoordinates[0] - 1, rightTopCoordinates[1] + 1))
 				.waitAction(WaitOptions.waitOptions(Duration.ofMillis(3000)))
 				.moveTo(PointOption.point(leftTopCoordinates[0] + 1, leftTopCoordinates[1] + 1)).release().perform();
+		waitForElement(GDPRDeleteButton, 30);
 	}
 
 	public void waitForElement(WebElement ele, int timeOutInSeconds) {

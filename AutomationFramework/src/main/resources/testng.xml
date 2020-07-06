@@ -4,7 +4,6 @@
 <suite name="Test Execution" parallel="none">
 
     <test name="E2E Test Suite On Android - emulator-5554">
-        <parameter name="platformType" value="mobile"/>
         <parameter name="platformName" value="android"/>
         <parameter name="model" value="emulator-5554"/>
         <classes>
@@ -13,3 +12,4 @@
     </test>
     
 </suite>
+
