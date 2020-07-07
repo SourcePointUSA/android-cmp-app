@@ -1,3 +1,7 @@
+## 5.2.7 (July, 07, 2020)
+* fix error when cancel 1st layer message on 1st launch
+* fix webview crash when hyperlink is selected from within it
+
 ## 5.2.6 (July, 01, 2020)
 * fix NativeMessage crash on setAttributes method call
 * set NativeMessage attributes to public

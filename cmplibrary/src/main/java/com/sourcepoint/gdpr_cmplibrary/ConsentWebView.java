@@ -221,6 +221,7 @@ abstract public class ConsentWebView extends WebView {
 
     private void loadLinkOnExternalBrowser(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW , Uri.parse(url));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         this.getContext().startActivity(intent);
     }
 
