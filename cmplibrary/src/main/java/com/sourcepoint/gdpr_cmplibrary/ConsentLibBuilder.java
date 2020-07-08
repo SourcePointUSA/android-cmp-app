@@ -67,8 +67,8 @@ public class ConsentLibBuilder {
         return  (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
-    Handler getUIThreadHandler(){
-        return new Handler(context.getMainLooper());
+    UIThreadHandler getUIThreadHandler(){
+        return new UIThreadHandler(context.getMainLooper());
     }
 
     Context getContext(){
