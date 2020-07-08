@@ -40,6 +40,8 @@ public class GDPRConsentLib {
 
     public ConsentLibException error = null;
 
+    private boolean isSDKFinished = false;
+
     public GDPRUserConsent userConsent;
     private static final String TAG = "GDPRConsentLib";
 
@@ -226,7 +228,7 @@ public class GDPRConsentLib {
     }
 
     public void onAction(ConsentAction action) {
-        if (GDPRConsentLib.this.onAction != null)
+        if (GDPRConsentLib.this.onAction != null && !isSDKFinished)
             uiThreadHandler.post( () ->GDPRConsentLib.this.onAction.run(action.actionType));
 
         try {
@@ -400,7 +402,7 @@ public class GDPRConsentLib {
 
     void showView(View view, boolean isFromPM) {
         mCountDownTimer.cancel();
-        if (!hasParent(view)) {
+        if (!hasParent(view) && !isSDKFinished) {
             uiThreadHandler.post(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
         }
         if (isFromPM) runPMReady();
@@ -408,13 +410,13 @@ public class GDPRConsentLib {
     }
 
     private void runPMReady(){
-        if (this.pmReady != null)
+        if (this.pmReady != null && !isSDKFinished)
             uiThreadHandler.post(GDPRConsentLib.this.pmReady::run);
         isPmOn = true;
     }
 
     private void runMessageReady(){
-        if (this.messageReady != null)
+        if (this.messageReady != null && !isSDKFinished)
             uiThreadHandler.post(GDPRConsentLib.this.messageReady::run);
     }
 
@@ -435,7 +437,7 @@ public class GDPRConsentLib {
     }
 
     protected void closeView(View v, boolean requestFromPM) {
-        if (hasParent(v)) {
+        if (hasParent(v) && !isSDKFinished) {
             uiThreadHandler.post(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
             if (requestFromPM) runPMFinished();
             else runMessageFinished();
@@ -443,12 +445,12 @@ public class GDPRConsentLib {
     }
 
     private void runPMFinished(){
-        if (this.pmFinished != null)
+        if (this.pmFinished != null && !isSDKFinished)
             uiThreadHandler.post(this.pmFinished::run);
     }
 
     private void runMessageFinished(){
-        if (this.messageFinished != null)
+        if (this.messageFinished != null && !isSDKFinished)
             uiThreadHandler.post(this.messageFinished::run);
     }
 
@@ -571,7 +573,9 @@ public class GDPRConsentLib {
         mCountDownTimer.cancel();
         closeCurrentMessageView(isPmOn);
         uiThreadHandler.post(() -> {
-            GDPRConsentLib.this.onError.run(e);
+            if (!isSDKFinished)
+                GDPRConsentLib.this.onError.run(e);
+            isSDKFinished = true;
         });
     }
 
@@ -586,7 +590,9 @@ public class GDPRConsentLib {
     void consentFinished(OnConsentReadyCallback c) {
         mCountDownTimer.cancel();
         uiThreadHandler.post(() -> {
-            c.run(userConsent);
+            if (!isSDKFinished)
+                c.run(userConsent);
+            isSDKFinished = true;
         });
     }
 
