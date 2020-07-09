@@ -226,10 +226,8 @@ public class GDPRConsentLib {
     }
 
     public void onAction(ConsentAction action) {
-        if (GDPRConsentLib.this.onAction != null)
-            uiThreadHandler.postIfEnabled( () ->GDPRConsentLib.this.onAction.run(action.actionType));
-
         try {
+            uiThreadHandler.postIfEnabled( () ->GDPRConsentLib.this.onAction.run(action.actionType));
             Log.d(TAG, "onAction:  " + action.actionType + " + actionType");
             switch (action.actionType) {
                 case SHOW_OPTIONS:
