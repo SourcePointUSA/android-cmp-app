@@ -3,10 +3,12 @@ package org.framework.pageObjects;
 import static org.framework.logger.LoggingManager.logMessage;
 
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
 
 import org.framework.helpers.Page;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
@@ -41,6 +43,7 @@ public class PrivacyManagerPage extends Page {
 	public List<WebElement> AllButtons;
 
 	// TCFV2 application elements
+	@WithTimeout(time = 50, chronoUnit = ChronoUnit.SECONDS)
 	@AndroidFindBy(xpath = "//android.widget.Button[@text='Accept All']")
 	public WebElement tcfv2_AcceptAll;
 
@@ -59,42 +62,16 @@ public class PrivacyManagerPage extends Page {
 	@AndroidFindBy(xpath = "(//android.view.View)")
 	public List<WebElement> ONToggleButtons;
 
-//	public void scrollDown(String udid) throws InterruptedException {
-//		JavascriptExecutor js = (JavascriptExecutor) driver;
-//		HashMap<String, String> scrollObject = new HashMap<String, String>();
-//
-//		if (!IniFileOperations.getValueFromIniFile(IniFileType.Mobile, udid, "platformName")
-//				.equalsIgnoreCase("Android")) {
-//			scrollObject.put("direction", "down");
-//			js.executeScript("mobile: scroll", scrollObject);
-//			js.executeScript("mobile: scroll", scrollObject);
-//		}
-//		Thread.sleep(2000);
-//	}
-
 	public void scrollAndClick(String text) throws InterruptedException {
-
-		driver.findElement(MobileBy.AndroidUIAutomator(
-				"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\""
-						+ text + "\").instance(0))")).click();
-
-	}
-
-	public void loadTime() {
-		long startTime = System.currentTimeMillis();
-		new WebDriverWait(driver, 60).until(
-				ExpectedConditions.presenceOfElementLocated(By.xpath("//android.widget.Button[@text='Cancel']")));
-		long endTime = System.currentTimeMillis();
-		long totalTime = endTime - startTime;
-		System.out.println("**** Total Privacy Manager Load Time: " + totalTime + " milliseconds");
+		waitForElement(tcfv2_Cancel, timeOutInSeconds);
+		driver.findElement(By.xpath("//android.widget.Button[@text=\""+ text + "\"]")).click();
 	}
 
 	boolean privacyManageeFound = false;
 
 	public boolean isPrivacyManagerViewPresent() throws InterruptedException {
-		Thread.sleep(10000);
-
 		try {
+			waitForElement(tcfv2_AcceptAll, timeOutInSeconds);
 			if (driver.findElements(By.xpath("//*[@class='android.webkit.WebView']")).size() > 0)
 				privacyManageeFound = true;
 
@@ -103,6 +80,11 @@ public class PrivacyManagerPage extends Page {
 			throw e;
 		}
 		return privacyManageeFound;
+	}
+
+	public void waitForElement(WebElement ele, int timeOutInSeconds) {
+		WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
+		wait.until(ExpectedConditions.visibilityOf(ele));
 	}
 
 	public WebElement eleButton(String udid, String buttonText) {

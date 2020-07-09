@@ -29,12 +29,12 @@ public class AndroidDriverBuilder extends DeviceConfig {
         androidCapabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, device.getPlatformName());
         androidCapabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, device.getPlatformVersion());
         androidCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, device.getAutomationName());
-        androidCapabilities.setCapability(MobileCapabilityType.NO_RESET, device.isReset());
+   //     androidCapabilities.setCapability(MobileCapabilityType.NO_RESET, device.isReset());
         androidCapabilities.setCapability(MobileCapabilityType.APP, FileUtility.getFile(device.getApp()).getAbsolutePath());
-        androidCapabilities.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, device.getPackageName());
-        androidCapabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, device.getActivity());
+        androidCapabilities.setCapability("appPackage", device.getPackageName());
+        androidCapabilities.setCapability("appActivity", device.getActivity());
         System.setProperty("webdriver.http.factory", "apache");
-        driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), androidCapabilities);
+        driver = new AndroidDriver(new URL("http://0.0.0.0:4723/wd/hub"), androidCapabilities);
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
         logMessage("Android driver has been created for the " + model + " device");
         return driver;

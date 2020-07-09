@@ -8,12 +8,13 @@ import java.util.NoSuchElementException;
 
 import org.framework.allureReport.TestListener;
 import org.framework.pageObjects.MobilePageWrapper;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
+
+import io.qameta.allure.Description;
+
+import static org.framework.logger.LoggingManager.logMessage;
 
 import tests.BaseTest;
 
@@ -26,58 +27,59 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	String siteName = "tcfv2.automation.testing";
 	String staggingValue = "OFF";
 	String siteID = "7376";
-	String pmID = "122040";
+	String pmID = "162636";
 	String key = "language";
 	String value = "fr";
 	String authID;
-	String expectedTCFv2MessageTitle = "TCFv2 Message Title";
-	String expectedTCFv2MessageBody = "We and our partners require consent for the following purposes:";
+	String expectedFRMessageTitle = "TCFv2 Message Title";
+	String expectedFRMessageBody = "We and our partners require consent for the following purposes:";
 
-	String expectedESTCFv2MessageTitle = "TCF v2 Message Title for Language English";
-	String expectedESTCFv2MessageBody = "TCF V2 Message Body for Language English";
+	String expectedESMessageTitle = "TCF v2 Message Title for Language English";
+	String expectedESMessageBody = "TCF V2 Message Body for Language English";
 
-	String expectedShowOnceTCFv2MessageTitle = "ShowOnce :We use cookies to give you the best experience";
-	String expectedShowOnceTCFv2MessageBody = "We and our partners require consent for the following purposes:";
+	String expectedShowOnceMessageTitle = "ShowOnce :We use cookies to give you the best experience";
+	String expectedShowOnceMessageBody = "We and our partners require consent for the following purposes:";
 
-	ArrayList<String> expectedTCFv2Message = new ArrayList<String>();
-	ArrayList<String> expectedESTCFv2Message = new ArrayList<String>();
-	ArrayList<String> expectedShowOnceTCFv2Message = new ArrayList<String>();
+	ArrayList<String> expectedShowOnlyMsg = new ArrayList<String>();
 
-	public void setExpectedTCFv2Message(ArrayList<String> expectedTCFv2Message) {
-		if (expectedTCFv2Message != null) {
-			expectedTCFv2Message.add(expectedTCFv2MessageTitle);
-			expectedTCFv2Message.add(expectedTCFv2MessageBody);
-			this.expectedTCFv2Message = expectedTCFv2Message;
-		}
+	public ArrayList<String> setExpectedShowOnlyMsg() {
+		expectedShowOnlyMsg.add(expectedShowOnceMessageTitle);
+		expectedShowOnlyMsg.add(expectedShowOnceMessageBody);
+		return expectedShowOnlyMsg;
 	}
 
-	public ArrayList<String> getExpectedTCFv2Message() {
-		return expectedShowOnceTCFv2Message;
+	ArrayList<String> expectedFRConsentMsg = new ArrayList<String>();
+
+	public ArrayList<String> setExpectedFRConsentMsg() {
+		expectedFRConsentMsg.add(expectedFRMessageTitle);
+		expectedFRConsentMsg.add(expectedFRMessageBody);
+		return expectedFRConsentMsg;
 	}
 
-	public void setExpectedESTCFv2Message(ArrayList<String> expectedESTCFv2Message) {
-		expectedESTCFv2Message.add(expectedESTCFv2MessageTitle);
-		expectedESTCFv2Message.add(expectedESTCFv2MessageBody);
-		this.expectedESTCFv2Message = expectedESTCFv2Message;
-	}
+	ArrayList<String> expectedESConsentMsg = new ArrayList<String>();
 
-	public void setExpectedShowOnceTCFv2Message() {
-		expectedShowOnceTCFv2Message.add(expectedShowOnceTCFv2MessageTitle);
-		expectedShowOnceTCFv2Message.add(expectedShowOnceTCFv2MessageBody);
-		// this.expectedShowOnceTCFv2Message = expectedShowOnceTCFv2Message;
+	public ArrayList<String> setExpectedESConsentMsg() {
+		expectedESConsentMsg.add(expectedESMessageTitle);
+		expectedESConsentMsg.add(expectedESMessageBody);
+		return expectedESConsentMsg;
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 1)
+	@Description("Given user submit valid property details and tap on Save Then the expected\n"
+			+ "	 consent message should display And When user click on Manage PREFERENCES\n"
+			+ "	 button Then user will see Privacy Manager screen When user select Accept All\n"
+			+ "	 Then user will navigate to Site Info screen showing ConsentUUID, EUConsent\n"
+			+ "	 and all Purpose Consents When user navigate back and tap on the site name And\n"
+			+ "	 click on MANAGE PREFERENCES button from consent message Then he/she should\n"
+			+ "	 see all purposes are selected")
 	public void CheckAcceptAllFromPrivacyManage() throws InterruptedException, NoSuchElementException {
-
+		logMessage(" Test execution start :CheckAcceptAllFromPrivacyManager ");
 		SoftAssert softAssert = new SoftAssert();
+		setExpectedFRConsentMsg();
 		try {
 
-			System.out.println(" Test execution start ");
-			System.out.println("CheckAcceptAllFromPrivacyManager - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(8000);
+			logMessage("Enter property details...");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -88,55 +90,59 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 			mobilePageWrapper.newSitePage.selectCampaign(mobilePageWrapper.newSitePage.GDPRToggleButton, staggingValue);
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(10000);
+			logMessage("Check for expected message and navigate to Privacy Manager ");
 
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
+			logMessage("Check for Privacy Manager");
 
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-			Thread.sleep(8000);
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
 			mobilePageWrapper.privacyManagerPage.scrollAndClick("Accept All");
-			Thread.sleep(8000);
-			
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
+
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
-					"ConsentUUID not available");
+					"ConsentUUID not available", "ConsentUUID not generated.");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
-					"EUConsent not available");
+					"EUConsent not available", "EUConsent not generated.");
 
-			// softAssert.assertTrue(mobilePageWrapper.siteDebugInfoPage.isConsentViewDataPresent(mobilePageWrapper.siteDebugInfoPage.GDPRConsentView));
-			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
-					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
-					mobilePageWrapper.siteDebugInfoPage.GDPREUConsent);
-
+			logMessage("Navigate back to the Privacy Manager and check for toggle buttons");
 			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
 
-			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
+			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName,
+					"Property not created");
 			mobilePageWrapper.siteListPage.tapOnSite_gdpr(siteName, mobilePageWrapper.siteListPage.GDPRSiteList);
 
-			Thread.sleep(8000);
-
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed.");
 
 			// check for all purposes selected as true
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
 		}
 	}
 
-//	@Test(groups = { "GDPR-MetaAppTests" }, priority = 2)
+	@Test(groups = { "GDPR-MetaAppTests" }, priority = 2)
+	@Description("Given user submit valid property details and tap on Save Then expected\n"
+			+ "	 consent should display When user click on MANAGE PREFERENCES button Then user\n"
+			+ "	 will see Privacy Manager screen When user click on Cancel button Then user\n"
+			+ "	 will navigate back to the consent message")
 	public void CheckCancelFromPrivacyManager() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start :CheckCancleFromPrivacyManager");
 		SoftAssert softAssert = new SoftAssert();
-
+		setExpectedFRConsentMsg();
 		try {
-			System.out.println(" Test execution start ");
-			System.out.println("CheckCancleFromPrivacyManager - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(8000);
+			logMessage("Enter property details...");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -147,28 +153,25 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(8000);
+			logMessage("Check for message and navigate to Privacy Manager screen");
+
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
 
-			Thread.sleep(5000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-			Thread.sleep(8000);
+			logMessage("Tap on Cancel from PM and verify user navigate back to message ");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
 			mobilePageWrapper.privacyManagerPage.scrollAndClick("Cancel");
-			Thread.sleep(5000);
-			
 
-//				ArrayList<String> consentMessage1 = mobilePageWrapper.consentViewPage1.getConsentMessageDetails(udid);
-//				if (IniFileOperations.getValueFromIniFile(IniFileType.Mobile, udid, "platformName")
-//						.equalsIgnoreCase("Android")) {
-//					softAssert.assertTrue(consentMessage1.containsAll(expectedTCFv2Message));
-//				} else {
-//					softAssert.assertEquals(consentMessage1.get(11), expectedTCFv2MessageTitle);
-//					softAssert.assertEquals(consentMessage1.get(12), expectedTCFv2MessageBody);
-//				}
+			ArrayList<String> consentMessage1 = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage1.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
@@ -176,16 +179,19 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 3)
+	@Description("Given user submit valid property details and tap on Save Then expected\n"
+			+ "	consent message should display When user select Accept all Then user will\n"
+			+ "	navigate to Site Info screen showing ConsentUUID, EUConsent and all Vendors &\n"
+			+ "	Purpose Consents When user navigate back & tap on the site name and select\n"
+			+ "	MANAGE PREFERENCES button from consent message view Then he/she will see all\n"
+			+ "	vendors & purposes as selected")
 	public void CheckConsentOnAcceptAllFromConsentView() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start :CheckConsentOnAcceptAllFromMessage ");
 		SoftAssert softAssert = new SoftAssert();
-
+		setExpectedFRConsentMsg();
 		try {
-			System.out.println(" Test execution start ");
-			System.out.println(
-					"CheckConsentOnAcceptAllFromConsentView - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
+			logMessage("Enter property details...");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -197,33 +203,34 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(5000);
+			logMessage("Check for message and tap on Accept All");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("ACCEPT ALL");
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
-					"ConsentUUID not available");
+					"ConsentUUID not available", "ConsentUUID not generated");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
-					"EUConsent not available");
-
-			// softAssert.assertTrue(mobilePageWrapper.siteDebugInfoPage.isConsentViewDataPresent(mobilePageWrapper.siteDebugInfoPage.GDPRConsentView));
-			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
-					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
-					mobilePageWrapper.siteDebugInfoPage.GDPREUConsent);
+					"EUConsent not available", "EUConsent not generated");
 
 			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
+			logMessage("Tap on the property again and navigate to the PM");
 
 			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
 			mobilePageWrapper.siteListPage.tapOnSite_gdpr(siteName, mobilePageWrapper.siteListPage.GDPRSiteList);
-			Thread.sleep(5000);
-
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
 
-			Thread.sleep(5000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
+			logMessage("Verify all toggel buttons displayed as true");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
@@ -231,17 +238,19 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 4)
+	@Description("Given user submit valid property details and tap on Save Then expected\n"
+			+ "	 consent message should display When user select Reject all Then user will\n"
+			+ "	 navigate to Site Info screen showing ConsentUUID and no EUConsent and with no\n"
+			+ "	 Vendors & Purpose Consents When user navigate back & tap on the site name and\n"
+			+ "	 select MANAGE PREFERENCES button from consent message view Then he/she will\n"
+			+ "	 see all vendors & purposes as selected false")
 	public void CheckConsentOnRejectAllFromConsentView() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start : CheckConsentOnRejectAllFromMessage");
 		SoftAssert softAssert = new SoftAssert();
-
+		setExpectedFRConsentMsg();
 		try {
-			System.out.println(" Test execution start ");
-			System.out.println(
-					"CheckConsentOnRejectAllFromConsentView - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
-
+			logMessage("Enter property details");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -253,35 +262,34 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(10000);
+			logMessage("Check for message and tap on Reject All");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("REJECT ALL");
-			Thread.sleep(8000);
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
 
-			// softAssert.assertTrue(mobilePageWrapper.siteDebugInfoPage.checkForNoPurposeConsentData(mobilePageWrapper.siteDebugInfoPage.GDPRConsentNotAvailable));
-			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
-					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
-					mobilePageWrapper.siteDebugInfoPage.GDPREUConsent);
-
 			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
+			logMessage("Tap on the property agian and navigate to PM");
 
 			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
 			mobilePageWrapper.siteListPage.tapOnSite_gdpr(siteName, mobilePageWrapper.siteListPage.GDPRSiteList);
-			Thread.sleep(5000);
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
 
-			Thread.sleep(5000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-			Thread.sleep(5000);
-
+			logMessage("Verify all toggle button displated as false");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager nor displayed");
 			// check PM data for all false
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
@@ -289,16 +297,19 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 5)
+	@Description("Given user submit valid property details and tap on Save Then expected\n"
+			+ "	 consent message should display When user tap on Accept All button Then user\n"
+			+ "	 navigate back to Info screen showing ConsentUUID and EUConsent data When user\n"
+			+ "	 tap on the property from property list screen And navigate to PM, all consent\n"
+			+ "	 toggle should show as selected When user tap on Reject all Then should see\n"
+			+ "	 same COnsentUUID and newly generated EUCONSENT data")
 	public void CheckConsentOnRejectAllFromPM() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start : CheckConsentOnRejectAllFromPM");
 		SoftAssert softAssert = new SoftAssert();
-
+		setExpectedFRConsentMsg();
 		try {
-			System.out.println(" Test execution start ");
-			System.out.println("CheckConsentOnRejectAllFromPM - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(5000);
-
+			logMessage("Enter property details..");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -310,49 +321,55 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(5000);
+			logMessage("Check for the message and tap on Accept All");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("ACCEPT ALL");
-
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
 
-			// check or purpose data //
-//				softAssert.assertTrue(mobilePageWrapper.siteDebugInfoPage //
-//						.isConsentViewDataPresent(mobilePageWrapper.siteDebugInfoPage.GDPRConsentView));
 			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
 					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
 					mobilePageWrapper.siteDebugInfoPage.GDPREUConsent);
 
 			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
+			logMessage("Tap on the property and navigate to PM");
 
 			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
 			mobilePageWrapper.siteListPage.tapOnSite_gdpr(siteName, mobilePageWrapper.siteListPage.GDPRSiteList);
-			Thread.sleep(3000);
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
+			logMessage("Verify all toggles are displayed as true");
 
-			Thread.sleep(8000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
+			logMessage("Tap on Reject All and verify for generated consent information");
+
 			// check for all purposes selected as true
 
 			mobilePageWrapper.privacyManagerPage.scrollAndClick("Reject All");
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 
-			Thread.sleep(3000);
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
-			Thread.sleep(3000);
-			softAssert.assertTrue(mobilePageWrapper.siteDebugInfoPage
-					.checkForNoPurposeConsentData(mobilePageWrapper.siteDebugInfoPage.GDPRConsentNotAvailable));
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0));
-			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1));
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),
+					"COnsentUUID not matching");
+			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1),
+					"EUConsent not matching");
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
@@ -360,17 +377,18 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 6)
-	public void CheckPurposeConsentAfterRestCookies() throws InterruptedException, NoSuchElementException {
+	@Description("Given user submit valid property details and tap on Save Then expected\n"
+			+ "	 consent message should display When user select MANAGE PREFERENCES Then user\n"
+			+ "	 navigate to PM And should see all toggles as false When user select Save &\n"
+			+ "	 Exit without any change Then user should navigate back to the info screen\n"
+			+ "	 showing no Vendors and Purposes as selected")
+	public void CheckConsentOnSaveAndExitFromPM() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start : CheckConsentOnSaveAndExitFromPM");
 		SoftAssert softAssert = new SoftAssert();
-
+		setExpectedFRConsentMsg();
 		try {
-			String value = "en";
-			System.out.println(" Test execution start ");
-			System.out
-					.println("CheckPurposeConsentAfterRestCookies - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
+			logMessage("Enter property details...");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -380,47 +398,29 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
 					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
-
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(8000);
+
+			logMessage("Check for message and navigate to PM");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
 
-			Thread.sleep(5000);
 			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
 			// check for all purposes selected as false
 
-			mobilePageWrapper.privacyManagerPage.scrollAndClick("Accept All");
-
-			Thread.sleep(5000);
+			logMessage("Tap on Save & Exit and verify generated consent information");
+			mobilePageWrapper.privacyManagerPage.tcfv2_SaveAndExitButton.click();
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
-					"ConsentUUID not available");
+					"ConsentUUID not available", "ConsentUUID not generated");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
-					"EUConsent not available");
-
-			// softAssert.assertTrue(mobilePageWrapper.siteDebugInfoPage.isConsentViewDataPresent(mobilePageWrapper.siteDebugInfoPage.GDPRConsentView));
-			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
-					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
-					mobilePageWrapper.siteDebugInfoPage.GDPREUConsent);
-			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
-
-			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
-
-			mobilePageWrapper.siteListPage.swipeHorizontaly_gdpr(siteName);
-			mobilePageWrapper.siteListPage.GDPRResetButton.click();
-
-			softAssert.assertTrue(mobilePageWrapper.consentViewPage.verifyDeleteCookiesMessage());
-
-			mobilePageWrapper.consentViewPage.YESButton.click();
-			Thread.sleep(8000);
-			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
-
-			Thread.sleep(5000);
-			System.out.println("passed");
-			// check for all purposes selected as false
-
+					"EUConsent not available", "EUConsent not generated");
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
@@ -428,16 +428,20 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 7)
-	public void CheckConsentDataFromPrivacyManagerDirect() throws InterruptedException, NoSuchElementException {
+	@Description("Given user submit valid property details and tap on Save Then expected\n"
+			+ "	 consent message should display When user select MANAGE PREFERENCES and tap\n"
+			+ "	 from Accept All button Then consent data should display on info screen When\n"
+			+ "	 user navigate back and tap on the Property again Then he/she should not see\n"
+			+ "	 message again When user delete cookies for the property Then he.\\/she should\n"
+			+ "	 see consent message again")
+	public void CheckPurposeConsentAfterRestCookies() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start : CheckPurposeConsentAfterRestCookies");
 		SoftAssert softAssert = new SoftAssert();
-
+		String value = "en";
+		setExpectedESConsentMsg();
 		try {
-			System.out.println(" Test execution start ");
-			System.out.println(
-					"CheckConsentDataFromPrivacyManagerDirect - " + String.valueOf(Thread.currentThread().getId()));
-
+			logMessage("Enter property details...");
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(4000);
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -449,60 +453,66 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(8000);
+			logMessage("Check for message and navigate to PM");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedESConsentMsg),
+					"Expected consent message not displayed");
 
-			mobilePageWrapper.consentViewPage.scrollAndClick("ACCEPT ALL");
-
-			Thread.sleep(5000);
-			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
-					"ConsentUUID not available");
-			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
-					"EUConsent not available");
-
-//				softAssert.assertTrue(mobilePageWrapper.siteDebugInfoPage
-//						.isConsentViewDataPresent(mobilePageWrapper.siteDebugInfoPage.GDPRConsentView));
-
-			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
-					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
-					mobilePageWrapper.siteDebugInfoPage.GDPREUConsent);
-			mobilePageWrapper.siteDebugInfoPage.GDPRShowPMLink.click();
-			Thread.sleep(3000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-
-			mobilePageWrapper.privacyManagerPage.scrollAndClick("Reject All");
-
-			Thread.sleep(5000);
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0));
-			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1));
-
-//			softAssert.assertTrue(mobilePageWrapper.siteDebugInfoPage
-//					.checkForNoPurposeConsentData(mobilePageWrapper.siteDebugInfoPage.GDPRConsentNotAvailable));
-
-			mobilePageWrapper.siteDebugInfoPage.GDPRShowPMLink.click();
-
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
+			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displyed");
+			logMessage("Tap on Accept All");
 
 			// check for all purposes selected as false
 
+			logMessage("Tap on Accept All");
+
+			mobilePageWrapper.privacyManagerPage.scrollAndClick("Accept All");
+			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
+
+			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
+
+			mobilePageWrapper.siteListPage.tapOnSite_gdpr(siteName, mobilePageWrapper.siteListPage.GDPRSiteList);
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
+			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
+					"ConsentUUID not available", "'ConsentUUID not matching");
+			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
+					"EUConsent not available", "EUConsent not matching");
+			logMessage("Reset property consent information and check all toggles are displayed as false ");
+			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
+			mobilePageWrapper.siteListPage.swipeHorizontaly_gdpr(siteName);
+			mobilePageWrapper.siteListPage.GDPRResetButton.click();
+
+			softAssert.assertTrue(mobilePageWrapper.consentViewPage.verifyDeleteCookiesMessage());
+
+			mobilePageWrapper.consentViewPage.YESButton.click();
+			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not present");
+			// check for all purposes selected as false
+
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
 		}
 	}
 
-//	@Test(groups = { "GDPR-MetaAppTests" }, priority = 8)
-	public void CheckCancelFromDirectPrivacyManager() throws InterruptedException, NoSuchElementException {
-
+	@Test(groups = { "GDPR-MetaAppTests" }, priority = 8)
+	@Description("Given user submit valid property details and tap on Save Then expected\n"
+			+ "	 consent message should display When user tap on Accept All Then consent data\n"
+			+ "	 should get stored When user navigate to PM directly by clicking on Show PM\n"
+			+ "	 link And select Reject All Then EUConsent information should get updated")
+	public void CheckConsentDataFromPrivacyManagerDirect() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start : CheckConsentDataFromPrivacyManagerDirect");
 		SoftAssert softAssert = new SoftAssert();
+		setExpectedFRConsentMsg();
 		try {
-			System.out.println(" Test execution start ");
-			System.out
-					.println("CheckCancelFromDirectPrivacyManager - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
+			logMessage("Enter property details..");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -514,45 +524,48 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(8000);
+			logMessage("Check for message and tap on Accept All");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("ACCEPT ALL");
 
-			Thread.sleep(8000);
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
-//				softAssert.assertTrue(mobilePageWrapper.siteDebugInfoPage
-//						.isConsentViewDataPresent(mobilePageWrapper.siteDebugInfoPage.GDPRConsentView));
+
 			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
 					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
 					mobilePageWrapper.siteDebugInfoPage.GDPREUConsent);
+			mobilePageWrapper.siteDebugInfoPage.GDPRShowPMLink.click();
+			logMessage("Tap on Show PM link and naviagte to PM direct");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
+
+			mobilePageWrapper.privacyManagerPage.scrollAndClick("Reject All");
+
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),
+					"ConsentUUID not matching");
+			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1),
+					"EUCOnsent not matching");
 
 			mobilePageWrapper.siteDebugInfoPage.GDPRShowPMLink.click();
-			Thread.sleep(8000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-
-			mobilePageWrapper.privacyManagerPage.scrollAndClick("Cancel");
-
-			Thread.sleep(5000);
-
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0));
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1));
-//				softAssert.assertTrue(mobilePageWrapper.siteDebugInfoPage
-//						.isConsentViewDataPresent(mobilePageWrapper.siteDebugInfoPage.GDPRConsentView));
-
-//			mobilePageWrapper.siteDebugInfoPage.BackButton);
-//
-//			softAssert.assertEquals(mobilePageWrapper.siteListPage.SiteName.getText(), siteName);
-//			mobilePageWrapper.siteListPage.tapOnSite(siteName, udid);
-//			Thread.sleep(8000);
-//			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(udid));
+			logMessage("Verify all toggles as false by navigating to PM directly on clicking on Show PM link");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manage not displayed");
 
 			// check for all purposes selected as false
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
@@ -560,18 +573,17 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 9)
-	public void CheckNoConsentMessageDisplayAfterShowSiteInfo() throws InterruptedException, NoSuchElementException {
+	@Description("Given user submit valid property details and tap on Save Then expected\n"
+			+ "	 message should load When user select Accept All Then consent information\n"
+			+ "	 should get stored When user tap on the Show link And click on Cancel Then\n"
+			+ "	 he/she should navigate back to the info screen")
+	public void CheckCancelFromDirectPrivacyManager() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start : CheckCancelFromDirectPrivacyManager");
 		SoftAssert softAssert = new SoftAssert();
-
+		setExpectedFRConsentMsg();
 		try {
-			String key = "displayMode";
-			String value = "appLaunch";
-			System.out.println(" Test execution start ");
-			System.out.println("CheckNoConsentMessageDisplayAfterShowSiteInfo - "
-					+ String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
+			logMessage("Enter property details...");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -583,11 +595,16 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(10000);
+			logMessage("Check for message and tap on Accept All");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("ACCEPT ALL");
 
-			Thread.sleep(5000);
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
@@ -595,16 +612,25 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
 					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
 					mobilePageWrapper.siteDebugInfoPage.GDPREUConsent);
-			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
 
-			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
-			mobilePageWrapper.siteListPage.tapOnSite_gdpr(siteName, mobilePageWrapper.siteListPage.GDPRSiteList);
-			Thread.sleep(5000);
+			logMessage("Navigate to PM directly on click of Show Link");
+			mobilePageWrapper.siteDebugInfoPage.GDPRShowPMLink.click();
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
 
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0));
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1));
+			mobilePageWrapper.privacyManagerPage.scrollAndClick("Cancel");
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
+
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),
+					"ConsentUUID not matching");
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1),
+					"EUConsent not matching");
+			// check for all purposes selected as false
+
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
@@ -612,17 +638,19 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 10)
-	public void DeleteSite() throws InterruptedException, NoSuchElementException {
+	@Description("Given user submit valid property details to show message once and tap on\n"
+			+ "	 Save Then expected message should load When user select Accept All Then\n"
+			+ "	 consent should get stored When user tap on the property from list screen Then\n"
+			+ "	 he/she should not see message again")
+	public void CheckNoConsentMessageDisplayAfterShowSiteInfo() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start CheckNoConsentMessageDisplayAfterShowSiteInfo: ");
 		SoftAssert softAssert = new SoftAssert();
-
+		String key = "displayMode";
+		String value = "appLaunch";
+		setExpectedShowOnlyMsg();
 		try {
-			String key = "language";
-			String value = "fr";
-			System.out.println(" Test execution start ");
-			System.out.println("DeleteSite - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
+			logMessage("Enter property details...");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -634,10 +662,80 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-		//	Thread.sleep(8000);
+			logMessage("Check for message and tap on Accept All");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedShowOnlyMsg),
+					"Expected consent message not displayed");
+
+			mobilePageWrapper.consentViewPage.scrollAndClick("ACCEPT ALL");
+
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
+			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
+					"ConsentUUID not available");
+			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
+					"EUConsent not available");
+			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
+					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
+					mobilePageWrapper.siteDebugInfoPage.GDPREUConsent);
+			logMessage("Tap on the property again and check no message displayed");
+
+			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
+
+			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
+			mobilePageWrapper.siteListPage.tapOnSite_gdpr(siteName, mobilePageWrapper.siteListPage.GDPRSiteList);
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
+
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),
+					"ConsentUUID not matching");
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1),
+					"EUConsent not matching");
+		} catch (Exception e) {
+			logMessage("Exception: " + e);
+			throw e;
+		} finally {
+			softAssert.assertAll();
+		}
+	}
+
+	@Test(groups = { "GDPR-MetaAppTests" }, priority = 11)
+	@Description("Given user submit valid property details and tap on Save Then expected\n"
+			+ "	 message should load When user select Reject All Then consent information\n"
+			+ "	 should get stored When user swipe on property and choose to delete he/she\n"
+			+ "	 should able to delete the property screen")
+	public void DeleteSite() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start : DeleteSite");
+		SoftAssert softAssert = new SoftAssert();
+		String key = "language";
+		String value = "fr";
+		setExpectedFRConsentMsg();
+		try {
+			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
+			logMessage("Enter property details...");
+			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
+			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
+			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
+			mobilePageWrapper.newSitePage.GDPRSiteName.sendKeys(siteName);
+			mobilePageWrapper.newSitePage.GDPRPMId.sendKeys(pmID);
+			mobilePageWrapper.newSitePage.selectCampaign(mobilePageWrapper.newSitePage.GDPRToggleButton, staggingValue);
+			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
+					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
+			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
+
+			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
+			logMessage("Check for message and click on Reject All");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("REJECT ALL");
-			Thread.sleep(10000);
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
+
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
@@ -647,47 +745,42 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
 
 			mobilePageWrapper.siteListPage.swipeHorizontaly_gdpr(siteName);
-			Thread.sleep(3000);
-
 			mobilePageWrapper.siteListPage.GDPRDeleteButton.click();
 
-			// softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(),
-			// siteName);
-
+			softAssert.assertTrue(mobilePageWrapper.siteListPage.verifyDeleteSiteMessage());
 			mobilePageWrapper.siteListPage.NOButton.click();
-//				softAssert.assertTrue(mobilePageWrapper.siteListPage.isSitePressent_gdpr(siteName, udid,
-//						mobilePageWrapper.siteListPage.GDPRSiteList));
-			Thread.sleep(3000);
-			mobilePageWrapper.siteListPage.swipeHorizontaly_gdpr(siteName);
-			Thread.sleep(5000);
+			softAssert.assertTrue(mobilePageWrapper.siteListPage.isSitePressent_gdpr(siteName));
 
+			mobilePageWrapper.siteListPage.swipeHorizontaly_gdpr(siteName);
 			mobilePageWrapper.siteListPage.GDPRDeleteButton.click();
+			softAssert.assertTrue(mobilePageWrapper.siteListPage.verifyDeleteSiteMessage());
+			logMessage("Delete property and check property not present in list");
 
 			mobilePageWrapper.siteListPage.YESButton.click();
-//				softAssert.assertFalse(mobilePageWrapper.siteListPage.isSitePressent_gdpr(siteName, udid,
-//						mobilePageWrapper.siteListPage.GDPRSiteList));
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
 		}
 	}
 
-	@Test(groups = { "GDPR-MetaAppTests" }, priority = 11)
+	@Test(groups = { "GDPR-MetaAppTests" }, priority = 12)
+	@Description("Given user submit valid property details and tap on Save Then expected\n"
+			+ "	 message should load When user select Accept All Then consent information\n"
+			+ "	 should get stored When user swipe on property and edit the key/parameter\n"
+			+ "	 details Then he/she should see respective message")
 	public void EditSiteWithConsentGivenBefore() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start : EditSiteWithConsentGivenBefore");
 		String key = "language";
 		String value = "en";
 		SoftAssert softAssert = new SoftAssert();
-
 		ArrayList<String> consentData;
+		setExpectedESConsentMsg();
 		try {
-			System.out.println(" Test execution start ");
-			System.out.println("EditSiteWithConsentGivenBefore - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
+			logMessage("Enter proeprty details...");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -699,10 +792,15 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(5000);
+			logMessage("Check for message and tap on Accept All");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedESConsentMsg),
+					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("ACCEPT ALL");
-
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
@@ -715,47 +813,52 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 
 			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
 
+			logMessage("Update property with new details");
 			mobilePageWrapper.siteListPage.swipeHorizontaly_gdpr(siteName);
-			Thread.sleep(3000);
-
 			mobilePageWrapper.siteListPage.GDPREditButton.click();
-			Thread.sleep(3000);
-
 			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
 					mobilePageWrapper.newSitePage.GDPRParameterValue, key, "fr");
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
-
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(3000);
+			logMessage("Check message as per updated property details an tap on Accept All");
+			ArrayList<String> consentMessage1 = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage1.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("ACCEPT ALL");
-
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0));
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),
+					"ConsentUUID not matching");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
 		}
 	}
 
-	@Test(groups = { "GDPR-MetaAppTests" }, priority = 12)
+	@Test(groups = { "GDPR-MetaAppTests" }, priority = 13)
+	@Description("Given user submit valid property details to show message once with AuthID and\n"
+			+ "	 tap on Save Then expected message should load When user select Accept All\n"
+			+ "	 Then consent information should get stored When user reset the property Then\n"
+			+ "	 user should not see the message again")
 	public void CheckNoMessageWithShowOnceCriteriaWhenConsentAlreadySaved()
 			throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start ; CheckNoMessageWithShowOnceCriteriaWhenConsentAlreadySaved");
+
 		SoftAssert softAssert = new SoftAssert();
-
+		ArrayList<String> consentData;
+		String key = "displayMode";
+		String value = "appLaunch";
+		setExpectedShowOnlyMsg();
 		try {
-			String key = "displayMode";
-			String value = "appLaunch";
-			System.out.println(" Test execution start ");
-			System.out.println("CheckNoMessageWithShowOnceCriteriaWhenConsentAlreadySaved - "
-					+ String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
+			logMessage("Enter property details with unique authentication...");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -769,13 +872,16 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
 					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
-
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			ArrayList<String> consentData;
+			logMessage("Check for message and tap on Accept All");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedShowOnlyMsg),
+					"Expected consent message not displayed");
 
-			Thread.sleep(10000);
 			mobilePageWrapper.consentViewPage.scrollAndClick("ACCEPT ALL");
-			Thread.sleep(5000);
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
@@ -787,43 +893,46 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
 
 			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
-
+			logMessage("Reset property consent information and check for no message ");
 			mobilePageWrapper.siteListPage.swipeHorizontaly_gdpr(siteName);
 			mobilePageWrapper.siteListPage.GDPRResetButton.click();
 
 			softAssert.assertTrue(mobilePageWrapper.consentViewPage.verifyDeleteCookiesMessage());
 			mobilePageWrapper.consentViewPage.YESButton.click();
-			Thread.sleep(8000);
-
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0));
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),
+					"ConsentUUID not matching");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
 		}
 	}
 
-	@Test(groups = { "GDPR-MetaAppTests" }, priority = 13)
+	@Test(groups = { "GDPR-MetaAppTests" }, priority = 14)
+	@Description("Given user submit valid property details with unique AuthID and tap on Save\n"
+			+ "	 Then expected message should load When user navigate PM and tap on Accept All\n"
+			+ "	 Then all consent data should be stored When user try to create new property\n"
+			+ "	 with same details but another unique authId And navigate to PM Then he/she\n"
+			+ "	 should not see already saved consent")
 	public void CheckSavedConsentAlwaysWithSameAuthID() throws InterruptedException, NoSuchElementException {
-
+		logMessage(" Test execution start :CheckSavedConsentAlwaysWithSameAuthID");
 		SoftAssert softAssert = new SoftAssert();
 		String key = "language";
 		String value = "fr";
 		Date date = new Date();
 		ArrayList<String> consentData;
-
+		setExpectedFRConsentMsg();
 		try {
-			System.out.println(" Test execution start ");
-			System.out.println(
-					"CheckSavedConsentAlwaysWithSameAuthID - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
-			Thread.sleep(3000);
+			logMessage("Enter proeprty details with unique authentication");
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
 			mobilePageWrapper.newSitePage.GDPRSiteName.sendKeys(siteName);
@@ -833,23 +942,24 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			Date date1 = new Date();
 			authID = sdf.format(date1);
 			mobilePageWrapper.newSitePage.GDPRAuthID.sendKeys(authID);
-			System.out.println("AuthID : " + authID);
+			logMessage("Unique AuthID : " + authID);
 			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
 					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
-
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(5000);
+			logMessage("Check for message and tap on Accept All from Privacy Manager");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
-
-			Thread.sleep(5000);
-
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
 
 			mobilePageWrapper.privacyManagerPage.scrollAndClick("Accept All");
-
-			Thread.sleep(5000);
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
@@ -860,7 +970,7 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 
 			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
 			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
-
+			logMessage("Create new property with same details but some other unique authentication");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
@@ -872,41 +982,41 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			Date date2 = new Date();
 			authID = sdf.format(date2);
 			mobilePageWrapper.newSitePage.GDPRAuthID.sendKeys(authID);
-			System.out.println("AuthID : " + authID);
+			logMessage("Unique AuthID : " + authID);
 			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
 					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(10000);
-
+			logMessage("Check for message and check all toggles displyed as false from PM");
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
-
-			Thread.sleep(5000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not present");
 
 			// Check all consent are saves as false
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
 		}
 	}
 
-//	@Test(groups = { "GDPR-MetaAppTests" }, priority=14)
-	public void CheckConsentWithSameAuthIDWithNewInstallation() throws InterruptedException, NoSuchElementException {
+	@Test(groups = { "GDPR-MetaAppTests" }, priority = 15)
+	@Description("Given user submit valid property details with unique AuthID and tap on Save\n"
+			+ "	 Then expected Message should load When user navigate to PM and tap on Accept\n"
+			+ "	 All Then all consent data will get stored When user delete this property and\n"
+			+ "	 create property with same details And navigate to PM Then he/she should see\n"
+			+ "	 already saved consents")
+	public void CheckConsentWithSameAuthIDAfterDeletingAndRecreate()
+			throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start :CheckConsentWithSameAuthIDAfterDeletingAndRecreate");
 		String key = "language";
 		String value = "fr";
-		Date date = new Date();
 		SoftAssert softAssert = new SoftAssert();
-
+		setExpectedFRConsentMsg();
 		try {
-			System.out.println(" Test execution start ");
-			System.out.println("CheckConsentWithSameAuthIDWithNewInstallation - "
-					+ String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
+			logMessage("Enter property details with unique authentication....");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -917,40 +1027,41 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			Date date1 = new Date();
 			authID = sdf.format(date1);
 			mobilePageWrapper.newSitePage.GDPRAuthID.sendKeys(authID);
-			System.out.println("AuthID : " + authID);
+			logMessage("Unique AuthID : " + authID);
 			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
 					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(5000);
+			logMessage("Check for message and tap on Accept All from PM");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
-
-			Thread.sleep(8000);
-
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
 			mobilePageWrapper.privacyManagerPage.scrollAndClick("Accept All");
 
-			Thread.sleep(5000);
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
-			System.out.println(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
 
 			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
 			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
+			logMessage("Delete property");
+			mobilePageWrapper.siteListPage.swipeHorizontaly_gdpr(siteName);
+			mobilePageWrapper.siteListPage.GDPRDeleteButton.click();
 
-			System.out.println("Uninstall app");
-			// mobilePageWrapper.siteListPage.removeGDPRApp();
+			softAssert.assertTrue(mobilePageWrapper.siteListPage.verifyDeleteSiteMessage());
 
-			System.out.println("Install app");
-			// mobilePageWrapper.siteListPage.installApp();
+			mobilePageWrapper.siteListPage.YESButton.click();
 
-			MobilePageWrapper mobilePageWrapper1 = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
-			mobilePageWrapper1.siteListPage.GDPRTCFv2AddButton.click();
+			logMessage("Create property again with same Authentication details");
+			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
 			mobilePageWrapper.newSitePage.GDPRSiteName.sendKeys(siteName);
@@ -961,92 +1072,20 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
 					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
-			mobilePageWrapper1.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(5000);
+			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
+			logMessage("Check for all toggels as true from PM");
 
+			ArrayList<String> consentMessage1 = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage1.containsAll(expectedFRConsentMsg),
+					"Expected consent message not displayed");
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
 
-			softAssert.assertTrue(mobilePageWrapper1.privacyManagerPage.isPrivacyManagerViewPresent());
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not present");
 
 			// Check all consent are save as true
 		} catch (Exception e) {
-			System.out.println(e);
-			throw e;
-		} finally {
-			softAssert.assertAll();
-		}
-	}
-
-//	@Test(groups = { "GDPR-MetaAppTests" }, priority=15)
-	public void CheckSavedConsentAlwaysWithSameAuthIDCrossPlatform()
-			throws InterruptedException, NoSuchElementException {
-		String key = "language";
-		String value = "fr";
-		SoftAssert softAssert = new SoftAssert();
-
-		try {
-			System.out.println(" Test execution start ");
-			System.out.println("CheckSavedConsentAlwaysWithSameAuthIDCrossPlatform - "
-					+ String.valueOf(Thread.currentThread().getId()));
-
-			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
-			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
-			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
-			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
-			mobilePageWrapper.newSitePage.GDPRSiteName.sendKeys(siteName);
-			mobilePageWrapper.newSitePage.GDPRPMId.sendKeys(pmID);
-			mobilePageWrapper.newSitePage.selectCampaign(mobilePageWrapper.newSitePage.GDPRToggleButton, staggingValue);
-
-			Date date1 = new Date();
-			authID = sdf.format(date1);
-			mobilePageWrapper.newSitePage.GDPRAuthID.sendKeys(authID);
-			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
-					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
-			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
-			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(8000);
-
-			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
-			Thread.sleep(5000);
-
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-
-			mobilePageWrapper.privacyManagerPage.scrollAndClick("Accept All");
-
-			Thread.sleep(5000);
-			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
-					"ConsentUUID not available");
-			System.out.println(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText());
-			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
-					"EUConsent not available");
-
-			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
-			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
-
-			// String baseDir = DirectoryOperations.getProjectRootPath();
-			// System.setProperty("webdriver.chrome.driver", baseDir +
-			// "/setupfiles/Fusion/chromedriver_MAC");
-
-			WebDriver driver1 = new ChromeDriver(); // init chrome driver
-
-			driver1.get("https://in-app-messaging.pm.sourcepoint.mgr.consensu.org/v2.0.html?\r\n" + "\r\n"
-					+ "_sp_accountId=" + accountId + "&_sp_writeFirstPartyCookies=true&_sp_msg_domain=mms.sp-\r\n"
-					+ "\r\n" + "prod.net&_sp_debug_level=OFF&_sp_pmOrigin=production&_sp_siteHref=https%3A%2F%2F"
-					+ siteName + "\r\n" + "\r\n" + "%2F&_sp_msg_targetingParams=\r\n" + "\r\n" + "%7B\"" + key
-					+ "\"%3A\"" + value + "\"%7D&_sp_authId=" + authID + "&_sp_cmp_inApp=true&_sp_msg_stageCampaign="
-					+ staggingValue + "&_sp_cmp_origin=%2F\r\n" + "\r\n" + "%2Fsourcepoint.mgr.consensu.org");
-
-			Thread.sleep(3000);
-			driver1.findElement(By.id("Show Purposes")).click();
-			Thread.sleep(3000);
-//			WebDriverWait wait = new WebDriverWait(webDriver, 30);
-//			wait.until(ExpectedConditions.presenceOfElementLocated(By.className("priv_main_parent")));
-// Check all consent are save as true
-
-			driver1.quit();
-		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
@@ -1054,85 +1093,47 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 16)
-	public void CheckConsentWithSameAuthIDAfterDeletingAndRecreate()
-			throws InterruptedException, NoSuchElementException {
+	@Description("Given user submit valid property details tap on Save Then expected message\n"
+			+ "	 should load When user dismiss the message Then he/she should see info screen\n"
+			+ "	 with ConsentUUID details")
+	public void CheckPropertDetailsOnMessageDismiss() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start : CheckPropertDetailsOnMessageDismiss");
 		String key = "language";
-		String value = "fr";
-		Date date = new Date();
+		String value = "en";
 		SoftAssert softAssert = new SoftAssert();
-
+		setExpectedESConsentMsg();
 		try {
-			System.out.println(" Test execution start ");
-			System.out.println("CheckConsentWithSameAuthIDAfterDeletingAndRecreate - "
-					+ String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
+			logMessage("Enter property details..");
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
 			mobilePageWrapper.newSitePage.GDPRSiteName.sendKeys(siteName);
 			mobilePageWrapper.newSitePage.GDPRPMId.sendKeys(pmID);
 			mobilePageWrapper.newSitePage.selectCampaign(mobilePageWrapper.newSitePage.GDPRToggleButton, staggingValue);
-
-			Date date1 = new Date();
-			authID = sdf.format(date1);
-			mobilePageWrapper.newSitePage.GDPRAuthID.sendKeys(authID);
-			System.out.println("AuthID : " + authID);
 			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
 					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(5000);
 
-			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
+			logMessage("Check for message and tap on X to dismiss it");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedESConsentMsg),
+					"Expected consent message not displayed");
 
-			Thread.sleep(8000);
+			mobilePageWrapper.consentViewPage.CloseButton.click();
+			logMessage("Generated consent data : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-			mobilePageWrapper.privacyManagerPage.scrollAndClick("Accept All");
-
-			Thread.sleep(5000);
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
-			System.out.println(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText());
-			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
-					"EUConsent not available");
-
 			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
+
 			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
 
-			mobilePageWrapper.siteListPage.swipeHorizontaly_gdpr(siteName);
-			
-			mobilePageWrapper.siteListPage.GDPRDeleteButton.click();
-			// softAssert.assertTrue(mobilePageWrapper.siteListPage.verifyDeleteSiteMessage(udid));
-
-			mobilePageWrapper.siteListPage.YESButton.click();
-//				softAssert.assertFalse(mobilePageWrapper.siteListPage.isSitePressent_gdpr(siteName, udid,
-//						mobilePageWrapper.siteListPage.GDPRSiteList));
-
-			// MobilePageWrapper mobilePageWrapper1 = new MobilePageWrapper(driver);
-			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
-			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
-			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
-			mobilePageWrapper.newSitePage.GDPRSiteName.sendKeys(siteName);
-			mobilePageWrapper.newSitePage.GDPRPMId.sendKeys(pmID);
-			mobilePageWrapper.newSitePage.selectCampaign(mobilePageWrapper.newSitePage.GDPRToggleButton, staggingValue);
-			mobilePageWrapper.newSitePage.GDPRAuthID.sendKeys(authID);
-
-			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
-					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
-			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
-			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(5000);
-
-			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
-
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-
-			// Check all consent are save as true
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
@@ -1140,19 +1141,17 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 17)
-	public void CheckPropertDetailsOnMessageDismiss() throws InterruptedException, NoSuchElementException {
-		String key = "language";
-		String value = "en";
+	@Description("iven user submit valid property details for loading PM as first layer\n"
+			+ "	 message and tap on Save Then expected PM should load")
+	public void CheckPMAsFirstLayerMessage() throws InterruptedException, NoSuchElementException {
+		logMessage("Test execution start : CheckPMAsFirstLayerMessage");
+		String key = "pm";
+		String value = "true";
 		SoftAssert softAssert = new SoftAssert();
-
 		try {
-			System.out.println(" Test execution start ");
-			System.out
-					.println("CheckPropertDetailsOnMessageDismiss - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
+			logMessage("Enter property details to laod Privacy Manager as first layer message");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
-
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
 			mobilePageWrapper.newSitePage.GDPRSiteName.sendKeys(siteName);
@@ -1164,23 +1163,12 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			ArrayList<String> consentData;
-
-			Thread.sleep(20000);
-
-			mobilePageWrapper.consentViewPage.CloseButton.click();
-			// driver.hideKeyboard();
-			Thread.sleep(8000);
-			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
-					"ConsentUUID not available");
-//				softAssert
-//						.assertTrue(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText().contains("EUConsent"));
-			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
-
-			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
+			logMessage("Check for Privacy Managre displayed as first layer message");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not present");
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
@@ -1188,59 +1176,19 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 18)
-	public void CheckPMAsMEssage() throws InterruptedException, NoSuchElementException {
+	@Description("Given user submit valid property details for loading PM as first layer message and tap on Save \n"
+			+ "	 Then expected PM should load \n" + "	 When user select Accept All Then consent should get stored \n"
+			+ "	 When user tap on the property from list screen And click on Cancel \n"
+			+ "	 Then he/she should navigate back to the info screen")
+	public void CheckCancelFromPMAsFirstLayerMessage() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start :CheckCancelFromPMAsFirstLayerMessage");
 		String key = "pm";
 		String value = "true";
 		SoftAssert softAssert = new SoftAssert();
-
-		try {
-			System.out.println(" Test execution start ");
-			System.out.println("CheckPMAsMEssage - " + String.valueOf(Thread.currentThread().getId()));
-
-			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
-
-			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
-			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
-			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
-			mobilePageWrapper.newSitePage.GDPRSiteName.sendKeys(siteName);
-			mobilePageWrapper.newSitePage.GDPRPMId.sendKeys(pmID);
-			mobilePageWrapper.newSitePage.selectCampaign(mobilePageWrapper.newSitePage.GDPRToggleButton, staggingValue);
-
-			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
-					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
-			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
-
-			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			ArrayList<String> consentData;
-
-			Thread.sleep(20000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-
-		} catch (Exception e) {
-			System.out.println(e);
-			throw e;
-		} finally {
-			softAssert.assertAll();
-		}
-	}
-
-//	@Test(groups = { "GDPR-MetaAppTests" }, priority = 19)
-	public void CheckCancelFromPMAsMEssage() throws InterruptedException, NoSuchElementException {
-		String key = "pm";
-		String value = "true";
-		SoftAssert softAssert = new SoftAssert();
-
 		Date date = new Date();
-		String authID = sdf.format(date);
-
 		try {
-			System.out.println(" Test execution start ");
-			System.out.println("CheckPMAsMEssageWithAuthID - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(8000);
-
+			logMessage("Enter property details to load Privacy Manager as first layer message");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -1252,20 +1200,20 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
 					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
-
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
 
-			Thread.sleep(15000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-
+			logMessage("Check Privacy Manager displayed as first layer message");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not present");
+			logMessage("Tap on Accept All from Privacy Manager");
 			mobilePageWrapper.privacyManagerPage.tcfv2_AcceptAll.click();
-			Thread.sleep(5000);
+			logMessage("Generated consent data : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
-			System.out.println(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
-			System.out.println(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 
 			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
 					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
@@ -1273,20 +1221,81 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
 			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
 
+			logMessage("Tap on property to load it again");
 			mobilePageWrapper.siteListPage.tapOnSite_gdpr(siteName, mobilePageWrapper.siteListPage.GDPRSiteList);
-			Thread.sleep(8000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not present");
+
+			// check for all data saved as true
+			logMessage("Tap on Cancel from Privacy Manager");
+			mobilePageWrapper.privacyManagerPage.tcfv2_Cancel.click();
+			logMessage("Generated consent data : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),
+					"ConsentUUID not matching");
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1),
+					"EUConsent not matching");
+
+		} catch (Exception e) {
+			logMessage("Exception: " + e);
+			throw e;
+		} finally {
+			softAssert.assertAll();
+		}
+	}
+
+	@Test(groups = { "GDPR-MetaAppTests" }, priority = 19)
+	@Description("Given user submit valid property details for loading PM as first layer\n"
+			+ "	 message and tap on Save Then expected PM should load When user select Accept\n"
+			+ "	 All Then consent should get stored When user tap on the Show PM link from the\n"
+			+ "	 info screen Then he/she should navigate to PM screen showing all toggle as selected")
+	public void CheckConsentOnDirectPMLoadWhenPMConfiguredAsMessage()
+			throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start : CheckConsentOnDirectPMLoadWhenPMConfiguredAsMessage");
+		String key = "pm";
+		String value = "true";
+		SoftAssert softAssert = new SoftAssert();
+		try {
+			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
+			logMessage("Enter property details...");
+			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
+			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
+			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
+			mobilePageWrapper.newSitePage.GDPRSiteName.sendKeys(siteName);
+			mobilePageWrapper.newSitePage.GDPRPMId.sendKeys(pmID);
+			mobilePageWrapper.newSitePage.selectCampaign(mobilePageWrapper.newSitePage.GDPRToggleButton, staggingValue);
+
+			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
+					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
+			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
+			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
+
+			logMessage("Check for Privacy Manager as first layer message");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not present");
+
+			logMessage("Tap on Accept All from Privacy Manager");
+			mobilePageWrapper.privacyManagerPage.tcfv2_AcceptAll.click();
+			logMessage("Generated consent data : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
+
+			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
+					"ConsentUUID not available");
+			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
+					"EUConsent not available");
+
+			logMessage("Tap on Show Link to load Privacy Manager directand check given consent");
+			mobilePageWrapper.siteDebugInfoPage.GDPRShowPMLink.click();
+
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not present");
 
 			// check for all data saved as true
 
-			mobilePageWrapper.privacyManagerPage.tcfv2_Cancel.click();
-
-			Thread.sleep(8000);
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0));
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1));
-
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
@@ -1294,23 +1303,26 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 20)
-	public void CheckConsentOnDirectPMLoadWhenPMAsMEssage() throws InterruptedException, NoSuchElementException {
+	@Description(" Given user submit valid property details for loading PM as first layer\n"
+			+ "	 message with unique AuthID and tap on Save Then expected PM should load When\n"
+			+ "	 user select Accept All Then consent should get stored When user tap on the\n"
+			+ "	 property from list screen Then he/she should see all toggle as true")
+	public void CheckConsentWithAuthIDFromPMAsMessage() throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start :CheckConsentWithAuthIDFromPMAsMessage ");
 		String key = "pm";
 		String value = "true";
 		SoftAssert softAssert = new SoftAssert();
-
+		Date date = new Date();
+		String authID = sdf.format(date);
 		try {
-			System.out.println(" Test execution start ");
-			System.out.println("CheckPMAsMEssageWithAuthID - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
-
+			logMessage("Enter property details..");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
 			mobilePageWrapper.newSitePage.GDPRSiteName.sendKeys(siteName);
 			mobilePageWrapper.newSitePage.GDPRPMId.sendKeys(pmID);
+			mobilePageWrapper.newSitePage.GDPRAuthID.sendKeys(authID);
 			mobilePageWrapper.newSitePage.selectCampaign(mobilePageWrapper.newSitePage.GDPRToggleButton, staggingValue);
 
 			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
@@ -1319,29 +1331,31 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
 
-			Thread.sleep(15000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
+			logMessage("Check for Privacy Manager as first layer message");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
 
+			logMessage("Tap on Accept All from Privacy Manager");
 			mobilePageWrapper.privacyManagerPage.tcfv2_AcceptAll.click();
-			Thread.sleep(5000);
+			logMessage("Generated consent data : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
-			System.out.println(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
-			System.out.println(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 
-			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
-					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
-					mobilePageWrapper.siteDebugInfoPage.GDPREUConsent);
-			mobilePageWrapper.siteDebugInfoPage.GDPRShowPMLink.click();
+			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
+			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
+			logMessage("Tap on property again and check for consent data from Privacy Manager");
 
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-
+			mobilePageWrapper.siteListPage.tapOnSite_gdpr(siteName, mobilePageWrapper.siteListPage.GDPRSiteList);
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
 			// check for all data saved as true
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();
@@ -1349,83 +1363,23 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 21)
-	public void CheckConsentWithAuthIDFromPMAsMessage() throws InterruptedException, NoSuchElementException {
-		String key = "pm";
-		String value = "true";
-		SoftAssert softAssert = new SoftAssert();
-
-		Date date = new Date();
-		String authID = sdf.format(date);
-
-		try {
-			System.out.println(" Test execution start ");
-			System.out.println(
-					"CheckConsentWithAuthIDFromPMAsMessage - " + String.valueOf(Thread.currentThread().getId()));
-
-			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
-
-			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
-			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
-			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
-			mobilePageWrapper.newSitePage.GDPRSiteName.sendKeys(siteName);
-			mobilePageWrapper.newSitePage.GDPRPMId.sendKeys(pmID);
-			mobilePageWrapper.newSitePage.GDPRAuthID.sendKeys(authID);
-			mobilePageWrapper.newSitePage.selectCampaign(mobilePageWrapper.newSitePage.GDPRToggleButton, staggingValue);
-
-			mobilePageWrapper.newSitePage.addTargetingParameter(mobilePageWrapper.newSitePage.GDPRParameterKey,
-					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
-			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
-
-			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-
-			Thread.sleep(15000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-
-			mobilePageWrapper.privacyManagerPage.tcfv2_AcceptAll.click();
-			Thread.sleep(5000);
-			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
-					"ConsentUUID not available");
-			System.out.println(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText());
-			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
-					"EUConsent not available");
-			System.out.println(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
-
-			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
-					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
-					mobilePageWrapper.siteDebugInfoPage.GDPREUConsent);
-			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
-			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
-
-			mobilePageWrapper.siteListPage.tapOnSite_gdpr(siteName, mobilePageWrapper.siteListPage.GDPRSiteList);
-			Thread.sleep(3000);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent());
-
-			// check for all data saved as true
-
-		} catch (Exception e) {
-			System.out.println(e);
-			throw e;
-		} finally {
-			softAssert.assertAll();
-		}
-	}
-
-	@Test(groups = { "GDPR-MetaAppTests" }, priority = 22)
-	public void CheckNoMessageAfterLoggedInWithAuthID() throws InterruptedException, NoSuchElementException {
+	@Description("Given user submit valid property details without AuthID and tap on Save Then\n"
+			+ "	 expected consent message should display When user select Accept all Then user\n"
+			+ "	 will navigate to Site Info screen showing ConsentUUID, EUConsent and all\n"
+			+ "	 Vendors & Purpose Consents When user navigate back & edit property with\n"
+			+ "	 unique AuthID Then he/she should not see message again should see given\n" + "	 consent information")
+	public void CheckNoMessageAfterLoggedInWithAuthIDWhenConsentAlreadyGiven()
+			throws InterruptedException, NoSuchElementException {
+		logMessage(" Test execution start : CheckNoMessageAfterLoggedInWithAuthIDWhenConsentAlreadyGiven");
 		String key = "displayMode";
 		String value = "appLaunch";
 		Date date = new Date();
 		String authID = sdf.format(date);
 		SoftAssert softAssert = new SoftAssert();
-
+		setExpectedShowOnlyMsg();
 		try {
-			System.out.println(" Test execution start ");
-			System.out.println(
-					"CheckNoMessageAfterLoggedInWithAuthID - " + String.valueOf(Thread.currentThread().getId()));
-
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
-			Thread.sleep(3000);
+			logMessage("Enter property details configured to show message once");
 			mobilePageWrapper.siteListPage.GDPRTCFv2AddButton.click();
 			mobilePageWrapper.newSitePage.GDPRAccountID.sendKeys(accountId);
 			mobilePageWrapper.newSitePage.GDPRSiteId.sendKeys(siteID);
@@ -1437,16 +1391,22 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 					mobilePageWrapper.newSitePage.GDPRParameterValue, key, value);
 			mobilePageWrapper.newSitePage.GDPRParameterAddButton.click();
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
-			Thread.sleep(8000);
+			logMessage("Check for expected message");
+			ArrayList<String> consentMessage = mobilePageWrapper.consentViewPage.getConsentMessageDetails();
+			softAssert.assertTrue(consentMessage.containsAll(expectedShowOnlyMsg),
+					"Expected consent message not displayed");
+			logMessage("Select Accept All from message");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("ACCEPT ALL");
+			logMessage("Generated consent data : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
 					"ConsentUUID not available");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
 
-			// softAssert.assertTrue(mobilePageWrapper.siteDebugInfoPage.isConsentViewDataPresent(mobilePageWrapper.siteDebugInfoPage.GDPRConsentView));
 			ArrayList<String> consentData = mobilePageWrapper.siteDebugInfoPage.storeConsent(
 					mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID,
 					mobilePageWrapper.siteDebugInfoPage.GDPREUConsent);
@@ -1454,23 +1414,27 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
 
 			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
+			logMessage("Edit and save property details with unique authentication");
+
 			mobilePageWrapper.siteListPage.swipeHorizontaly_gdpr(siteName);
 			mobilePageWrapper.siteListPage.GDPREditButton.click();
-			Thread.sleep(5000);
-
 			mobilePageWrapper.newSitePage.GDPRAuthID.sendKeys(authID);
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
 
-			Thread.sleep(5000);
+			logMessage("Get consent information : ConsentUUID: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
+					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(),
-					"ConsentUUID not available");
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0));
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1));
+					"ConsentUUID not available", "ConsentUUID not generated");
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),
+					"ConsentUUID not matching with expected ConsentUUID");
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1),
+					"EUConsent not matching with expected EUConsent");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
-					"EUConsent not available");
+					"EUConsent not available", "EUConsent not generated");
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logMessage("Exception: " + e);
 			throw e;
 		} finally {
 			softAssert.assertAll();

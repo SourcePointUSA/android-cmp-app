@@ -1,8 +1,7 @@
 package tests;
 
+import org.framework.appium.AppiumServer;
 import org.framework.drivers.AndroidDriverBuilder;
-import org.framework.enums.PlatformName;
-import org.framework.enums.PlatformType;
 import org.framework.helpers.Page;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.*;
@@ -14,25 +13,37 @@ import java.io.IOException;
 public class BaseTest extends Page {
 	public WebDriver driver = null;
 
-	@Parameters({ "platformType", "platformName", "model" })
+	@BeforeTest
+	public void startAppiumServer() throws IOException {
+		if (AppiumServer.appium == null || !AppiumServer.appium.isRunning()) {
+			AppiumServer.start();
+		}
+	}
+
+	@AfterTest
+	public void stopAppiumServer() throws IOException {
+		if (AppiumServer.appium != null || AppiumServer.appium.isRunning()) {
+			AppiumServer.stop();
+		}
+	}
+
+	@Parameters({ "model" })
 	@BeforeMethod
-	public void setupDriver(String platformType, String platformName, @Optional String model) throws IOException {
+	public void setupDriver(@Optional String model) throws IOException {
 		try {
-			if (platformType.equalsIgnoreCase(PlatformType.MOBILE.toString())) {
-				setupMobileDriver(platformName, model);
-			}
+			setupMobileDriver(model);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void setupMobileDriver(String platformName, String model) throws IOException {
+	@Parameters({ "platformName", "model" })
+	public void setupMobileDriver(String model) throws IOException {
 		try {
-			if (platformName.equalsIgnoreCase(PlatformName.ANDROID.toString())) {
-				driver = new AndroidDriverBuilder().setupDriver(model);
-			}
+			driver = new AndroidDriverBuilder().setupDriver(model);
 			logMessage(model + " driver has been created for execution");
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
