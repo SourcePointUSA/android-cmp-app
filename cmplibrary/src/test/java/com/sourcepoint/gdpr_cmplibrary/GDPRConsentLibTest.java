@@ -52,7 +52,7 @@ public class GDPRConsentLibTest {
     CountDownTimer timerMock;
 
     @Mock
-    Handler uiThreadHandlerMock;
+    UIThreadHandler uiThreadHandlerMock;
 
     Boolean requestFromPM = false;
 
@@ -74,7 +74,7 @@ public class GDPRConsentLibTest {
                 return timerMock;
             }
             @Override
-            public Handler getUIThreadHandler(){
+            public UIThreadHandler getUIThreadHandler(){
                 return uiThreadHandlerMock;
             }
         };
@@ -175,7 +175,7 @@ public class GDPRConsentLibTest {
     @Test
     public void onShowOptions() throws ConsentLibException {
         lib.onShowOptions();
-        verify(lib.uiThreadHandler).post(lambdaCaptor.capture());
+        verify(lib.uiThreadHandler).postIfEnabled(lambdaCaptor.capture());
         lambdaCaptor.getValue().run();
         verify(lib.webView).loadConsentUIFromUrl(lib.pmUrl());
     }
