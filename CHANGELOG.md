@@ -1,6 +1,6 @@
 ## 5.3.0 (July, 09, 2020)
 Bye bye activity reference 👋
-Now to callbacks are being posted to the main event looper instead being fired via `Activity.runOnUIThread(Runnable r)`
+Now the callbacks are being posted to the main event looper instead being fired via `Activity.runOnUIThread(Runnable r)`
 Even though it's a minor bump up we took care to not change the public api (except for the `releaseActivity()` method) nor the SDKs behaviour.
 
 * Refactor ConsentLib to decouple from activity
