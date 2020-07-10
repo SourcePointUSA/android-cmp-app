@@ -16,7 +16,7 @@ jobs:
       - name: creating local.properties # this file is normally added to .gitignore
         run: touch local.properties
       - name: running unit tests
-        run: ./gradlew test
+        run: ./gradlew test --quiet --build-cache
       - name: reporting tests results
         uses: asadmansr/android-test-report-action@v1.2.0
         if: ${{ always() }} # runs this task regardless if the previous step failed (necessary)
