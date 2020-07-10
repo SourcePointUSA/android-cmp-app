@@ -43,7 +43,7 @@ public class GDPRConsentLib {
     public GDPRUserConsent userConsent;
     private static final String TAG = "GDPRConsentLib";
 
-    Handler uiThreadHandler;
+    UIThreadHandler uiThreadHandler;
 
 
     final String property;
@@ -227,7 +227,7 @@ public class GDPRConsentLib {
 
     public void onAction(ConsentAction action) {
         if (GDPRConsentLib.this.onAction != null)
-            uiThreadHandler.post( () ->GDPRConsentLib.this.onAction.run(action.actionType));
+            uiThreadHandler.postIfEnabled( () ->GDPRConsentLib.this.onAction.run(action.actionType));
 
         try {
             Log.d(TAG, "onAction:  " + action.actionType + " + actionType");
@@ -251,7 +251,7 @@ public class GDPRConsentLib {
     }
 
     private void setNativeMessageView(JSONObject msgJson) {
-        uiThreadHandler.post(() -> {
+        uiThreadHandler.postIfEnabled(() -> {
             try {
                 nativeView.setCallBacks(this);
                 nativeView.setAttributes(new NativeMessageAttrs(msgJson));
@@ -296,7 +296,7 @@ public class GDPRConsentLib {
     }
 
     private void loadConsentUI(String url) {
-        uiThreadHandler.post(() -> {
+        uiThreadHandler.postIfEnabled(() -> {
             try {
                 webView.loadConsentUIFromUrl(url);
             } catch (Exception e) {
@@ -401,7 +401,7 @@ public class GDPRConsentLib {
     void showView(View view, boolean isFromPM) {
         mCountDownTimer.cancel();
         if (!hasParent(view)) {
-            uiThreadHandler.post(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
+            uiThreadHandler.postIfEnabled(() -> GDPRConsentLib.this.onConsentUIReady.run(view));
         }
         if (isFromPM) runPMReady();
         else runMessageReady();
@@ -409,13 +409,13 @@ public class GDPRConsentLib {
 
     private void runPMReady(){
         if (this.pmReady != null)
-            uiThreadHandler.post(GDPRConsentLib.this.pmReady::run);
+            uiThreadHandler.postIfEnabled(GDPRConsentLib.this.pmReady::run);
         isPmOn = true;
     }
 
     private void runMessageReady(){
         if (this.messageReady != null)
-            uiThreadHandler.post(GDPRConsentLib.this.messageReady::run);
+            uiThreadHandler.postIfEnabled(GDPRConsentLib.this.messageReady::run);
     }
 
     public void closeAllViews(boolean requestFromPM) {
@@ -436,7 +436,7 @@ public class GDPRConsentLib {
 
     protected void closeView(View v, boolean requestFromPM) {
         if (hasParent(v)) {
-            uiThreadHandler.post(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
+            uiThreadHandler.postIfEnabled(() -> GDPRConsentLib.this.onConsentUIFinished.run(v));
             if (requestFromPM) runPMFinished();
             else runMessageFinished();
         }
@@ -444,12 +444,12 @@ public class GDPRConsentLib {
 
     private void runPMFinished(){
         if (this.pmFinished != null)
-            uiThreadHandler.post(this.pmFinished::run);
+            uiThreadHandler.postIfEnabled(this.pmFinished::run);
     }
 
     private void runMessageFinished(){
         if (this.messageFinished != null)
-            uiThreadHandler.post(this.messageFinished::run);
+            uiThreadHandler.postIfEnabled(this.messageFinished::run);
     }
 
     private JSONObject paramsToSendConsent(ConsentAction action) throws ConsentLibException {
@@ -570,8 +570,9 @@ public class GDPRConsentLib {
         }
         mCountDownTimer.cancel();
         closeCurrentMessageView(isPmOn);
-        uiThreadHandler.post(() -> {
+        uiThreadHandler.postIfEnabled(() -> {
             GDPRConsentLib.this.onError.run(e);
+            uiThreadHandler.disable();
         });
     }
 
@@ -585,8 +586,9 @@ public class GDPRConsentLib {
 
     void consentFinished(OnConsentReadyCallback c) {
         mCountDownTimer.cancel();
-        uiThreadHandler.post(() -> {
+        uiThreadHandler.postIfEnabled(() -> {
             c.run(userConsent);
+            uiThreadHandler.disable();
         });
     }
 

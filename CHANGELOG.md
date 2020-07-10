@@ -1,3 +1,16 @@
+## 5.3.0 (July, 09, 2020)
+Bye bye activity reference 👋
+Now the callbacks are being posted to the main event looper instead being fired via `Activity.runOnUIThread(Runnable r)`
+Even though it's a minor bump up we took care to not change the public api (except for the `releaseActivity()` method) nor the SDKs behaviour.
+
+* Refactor ConsentLib to decouple from activity
+* `releaseActivity()` public method taken out of the public api :warning:
+* potential fix to app crash on webview build due to null context/activity obj
+
+## 5.2.7 (July, 07, 2020)
+* fix error when cancel 1st layer message on 1st launch
+* fix webview crash when hyperlink is selected from within it
+
 ## 5.2.6 (July, 01, 2020)
 * fix NativeMessage crash on setAttributes method call
 * set NativeMessage attributes to public
