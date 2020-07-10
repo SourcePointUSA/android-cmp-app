@@ -24,7 +24,7 @@ The following documentation and code is suitable for properties supporting TCFv2
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.3.0'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.3.1'
 }
 
 ```

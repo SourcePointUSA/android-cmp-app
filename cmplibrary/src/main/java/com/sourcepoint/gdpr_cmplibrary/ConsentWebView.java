@@ -165,14 +165,6 @@ abstract public class ConsentWebView extends WebView {
             }
         });
 
-        setOnKeyListener((view, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && KeyEvent.KEYCODE_BACK == keyCode) {
-                ConsentWebView.this.onBackPressAction();
-                return true;
-            }
-            return false;
-        });
-
         addJavascriptInterface(new JSReceiverInterface(), "JSReceiver");
     }
 
