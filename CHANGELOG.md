@@ -1,3 +1,6 @@
+## 5.3.1 (July, 10, 2020)
+* revert override of back button behaviour on ConsentWebview
+
 ## 5.3.0 (July, 09, 2020)
 Bye bye activity reference 👋
 Now the callbacks are being posted to the main event looper instead being fired via `Activity.runOnUIThread(Runnable r)`
