@@ -13,5 +13,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: creating local.properties # this file is normally added to .gitignore
+        run: touch local.properties
       - name: running unit tests
         run: ./gradlew test
