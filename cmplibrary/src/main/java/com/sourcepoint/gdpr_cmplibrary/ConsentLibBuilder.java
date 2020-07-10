@@ -25,11 +25,11 @@ public class ConsentLibBuilder {
     protected GDPRConsentLib.OnConsentUIFinishedCallback onConsentUIFinished;
     protected GDPRConsentLib.OnConsentReadyCallback onConsentReady;
     protected GDPRConsentLib.OnErrorCallback onError;
-    protected GDPRConsentLib.pmReadyCallback pmReady;
-    protected GDPRConsentLib.messageReadyCallback messageReady;
-    protected GDPRConsentLib.pmFinishedCallback pmFinished;
-    protected GDPRConsentLib.messageFinishedCallback messageFinished;
-    protected GDPRConsentLib.onActionCallback onAction;
+    protected GDPRConsentLib.pmReadyCallback pmReady = () -> {};
+    protected GDPRConsentLib.messageReadyCallback messageReady = () -> {};
+    protected GDPRConsentLib.pmFinishedCallback pmFinished = () -> {};
+    protected GDPRConsentLib.messageFinishedCallback messageFinished = () -> {};
+    protected GDPRConsentLib.onActionCallback onAction = (ActionTypes a) -> {};
     boolean staging, stagingCampaign, shouldCleanConsentOnError;
 
     SourcePointClient sourcePointClient;
