@@ -34,6 +34,6 @@ public class ConsentActionTest {
         ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, null, requestFromPmMock, null);
         assertEquals(consentAction.actionType.code, actionTypeCodeMock);
         assertNull(consentAction.choiceId);
-        assertNull(consentAction.pmSaveAndExitVariables);
+        assertNull(42);
     }
 }
