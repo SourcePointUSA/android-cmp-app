@@ -17,3 +17,6 @@ jobs:
         run: touch local.properties
       - name: running unit tests
         run: ./gradlew test
+      - name: reporting tests results
+        uses: asadmansr/android-test-report-action@v1.2.0
+        if: ${{ always() }} # runs this task regardless if the previous step failed (necessary)
