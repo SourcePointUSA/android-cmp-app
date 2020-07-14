@@ -8,9 +8,6 @@ import java.util.NoSuchElementException;
 
 import org.framework.allureReport.TestListener;
 import org.framework.pageObjects.MobilePageWrapper;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -380,11 +377,11 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 	}
 
 	@Test(groups = { "GDPR-MetaAppTests" }, priority = 6)
-	@Description("Given user submit valid property details and tap on Save Then expected\n" + 
-			"	 consent message should display When user select MANAGE PREFERENCES Then user\n" + 
-			"	 navigate to PM And should see all toggles as false When user select Save &\n" + 
-			"	 Exit without any change Then user should navigate back to the info screen\n" + 
-			"	 showing no Vendors and Purposes as selected")
+	@Description("Given user submit valid property details and tap on Save Then expected\n"
+			+ "	 consent message should display When user select MANAGE PREFERENCES Then user\n"
+			+ "	 navigate to PM And should see all toggles as false When user select Save &\n"
+			+ "	 Exit without any change Then user should navigate back to the info screen\n"
+			+ "	 showing no Vendors and Purposes as selected")
 	public void CheckConsentOnSaveAndExitFromPM() throws InterruptedException, NoSuchElementException {
 		logMessage(" Test execution start : CheckConsentOnSaveAndExitFromPM");
 		SoftAssert softAssert = new SoftAssert();
@@ -469,7 +466,8 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			// check for all purposes selected as false
 
 			logMessage("Tap on Accept All");
-			mobilePageWrapper.privacyManagerPage.tcfv2_AcceptAll.click();
+
+			mobilePageWrapper.privacyManagerPage.scrollAndClick("Accept All");
 			mobilePageWrapper.siteDebugInfoPage.BackButton.click();
 
 			softAssert.assertEquals(mobilePageWrapper.siteListPage.GDPRSiteName.getText(), siteName);
@@ -691,8 +689,10 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
 					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
 
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),"ConsentUUID not matching");
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1), "EUConsent not matching");
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),
+					"ConsentUUID not matching");
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1),
+					"EUConsent not matching");
 		} catch (Exception e) {
 			logMessage("Exception: " + e);
 			throw e;
@@ -829,7 +829,8 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			logMessage("Get consent information : ConsentUUID: "
 					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
 					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0), "ConsentUUID not matching");
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),
+					"ConsentUUID not matching");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
 
@@ -901,7 +902,8 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			logMessage("Get consent information : ConsentUUID: "
 					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
 					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0), "ConsentUUID not matching");
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),
+					"ConsentUUID not matching");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
 
@@ -951,7 +953,8 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),"Privacy Manager not displayed");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
 
 			mobilePageWrapper.privacyManagerPage.scrollAndClick("Accept All");
 			logMessage("Get consent information : ConsentUUID: "
@@ -986,7 +989,8 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
 			logMessage("Check for message and check all toggles displyed as false from PM");
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),"Privacy Manager not present");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not present");
 
 			// Check all consent are saves as false
 		} catch (Exception e) {
@@ -1034,7 +1038,8 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 					"Expected consent message not displayed");
 
 			mobilePageWrapper.consentViewPage.scrollAndClick("MANAGE PREFERENCES");
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(), "Privacy Manager not displayed");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
 			mobilePageWrapper.privacyManagerPage.scrollAndClick("Accept All");
 
 			logMessage("Get consent information : ConsentUUID: "
@@ -1181,7 +1186,6 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 		String value = "true";
 		SoftAssert softAssert = new SoftAssert();
 		Date date = new Date();
-		String authID = sdf.format(date);
 		try {
 			MobilePageWrapper mobilePageWrapper = new MobilePageWrapper(driver);
 			logMessage("Enter property details to load Privacy Manager as first layer message");
@@ -1219,7 +1223,8 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 
 			logMessage("Tap on property to load it again");
 			mobilePageWrapper.siteListPage.tapOnSite_gdpr(siteName, mobilePageWrapper.siteListPage.GDPRSiteList);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),"Privacy Manager not present");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not present");
 
 			// check for all data saved as true
 			logMessage("Tap on Cancel from Privacy Manager");
@@ -1227,8 +1232,10 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			logMessage("Generated consent data : ConsentUUID: "
 					+ mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText() + " EUConsent: "
 					+ mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText());
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0), "ConsentUUID not matching");
-			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1), "EUConsent not matching");
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPRConsentUUID.getText(), consentData.get(0),
+					"ConsentUUID not matching");
+			softAssert.assertEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(), consentData.get(1),
+					"EUConsent not matching");
 
 		} catch (Exception e) {
 			logMessage("Exception: " + e);
@@ -1243,7 +1250,8 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			+ "	 message and tap on Save Then expected PM should load When user select Accept\n"
 			+ "	 All Then consent should get stored When user tap on the Show PM link from the\n"
 			+ "	 info screen Then he/she should navigate to PM screen showing all toggle as selected")
-	public void CheckConsentOnDirectPMLoadWhenPMConfiguredAsMessage() throws InterruptedException, NoSuchElementException {
+	public void CheckConsentOnDirectPMLoadWhenPMConfiguredAsMessage()
+			throws InterruptedException, NoSuchElementException {
 		logMessage(" Test execution start : CheckConsentOnDirectPMLoadWhenPMConfiguredAsMessage");
 		String key = "pm";
 		String value = "true";
@@ -1277,11 +1285,12 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 					"ConsentUUID not available");
 			softAssert.assertNotEquals(mobilePageWrapper.siteDebugInfoPage.GDPREUConsent.getText(),
 					"EUConsent not available");
-			
+
 			logMessage("Tap on Show Link to load Privacy Manager directand check given consent");
 			mobilePageWrapper.siteDebugInfoPage.GDPRShowPMLink.click();
 
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),"Privacy Manager not present");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not present");
 
 			// check for all data saved as true
 
@@ -1323,7 +1332,8 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			mobilePageWrapper.newSitePage.GDPRSaveButton.click();
 
 			logMessage("Check for Privacy Manager as first layer message");
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(), "Privacy Manager not displayed");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
 
 			logMessage("Tap on Accept All from Privacy Manager");
 			mobilePageWrapper.privacyManagerPage.tcfv2_AcceptAll.click();
@@ -1340,7 +1350,8 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			logMessage("Tap on property again and check for consent data from Privacy Manager");
 
 			mobilePageWrapper.siteListPage.tapOnSite_gdpr(siteName, mobilePageWrapper.siteListPage.GDPRSiteList);
-			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(), "Privacy Manager not displayed");
+			softAssert.assertTrue(mobilePageWrapper.privacyManagerPage.isPrivacyManagerViewPresent(),
+					"Privacy Manager not displayed");
 			// check for all data saved as true
 
 		} catch (Exception e) {
@@ -1357,7 +1368,8 @@ public class GDPR_TCFV2_MetaAppTests extends BaseTest {
 			+ "	 will navigate to Site Info screen showing ConsentUUID, EUConsent and all\n"
 			+ "	 Vendors & Purpose Consents When user navigate back & edit property with\n"
 			+ "	 unique AuthID Then he/she should not see message again should see given\n" + "	 consent information")
-	public void CheckNoMessageAfterLoggedInWithAuthIDWhenConsentAlreadyGiven() throws InterruptedException, NoSuchElementException {
+	public void CheckNoMessageAfterLoggedInWithAuthIDWhenConsentAlreadyGiven()
+			throws InterruptedException, NoSuchElementException {
 		logMessage(" Test execution start : CheckNoMessageAfterLoggedInWithAuthIDWhenConsentAlreadyGiven");
 		String key = "displayMode";
 		String value = "appLaunch";
