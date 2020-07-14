@@ -8,14 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getHashMap;
 import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_CONSENT_STRING;
 import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_UUID;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -74,32 +69,40 @@ public class GDPRUserConsentTest {
 
     @Test
     public void userConsentAcceptedCategories() throws JSONException {
-        ArrayList<String> acceptedCategories = userConsent.json2StrArr(jsonConsentsMock.getJSONArray("acceptedCategories"));
-        assertEquals(acceptedCategories, userConsent.acceptedCategories);
+        JSONArray  acceptedCategories = jsonConsentsMock.getJSONArray("acceptedCategories");
+        assertEquals(acceptedCategories, new JSONArray(userConsent.acceptedCategories));
     }
 
     @Test
     public void userConsentAcceptedVendors() throws JSONException {
-        ArrayList<String> acceptedVendors = userConsent.json2StrArr(jsonConsentsMock.getJSONArray("acceptedVendors"));
-        assertEquals(acceptedVendors , userConsent.acceptedVendors);
+        JSONArray acceptedVendors = jsonConsentsMock.getJSONArray("acceptedVendors");
+        assertEquals(acceptedVendors , new JSONArray(userConsent.acceptedVendors));
+    }
+
+    @Test
+    public void json2StrArr() throws JSONException {
+        JSONArray acceptedVendors = jsonConsentsMock.getJSONArray("acceptedVendors");
+        assertEquals(userConsent.acceptedVendors , userConsent.json2StrArr(acceptedVendors));
     }
 
     @Test
     public void userConsentLegInCategories() throws JSONException {
-        ArrayList<String> legIntCategories = userConsent.json2StrArr(jsonConsentsMock.getJSONArray("legIntCategories"));
-        assertEquals(legIntCategories, userConsent.legIntCategories);
+        JSONArray legIntCategories = jsonConsentsMock.getJSONArray("legIntCategories");
+        assertEquals(legIntCategories, new JSONArray(userConsent.legIntCategories));
     }
 
     @Test
     public void userConsentSpecialFeatures() throws JSONException {
-        ArrayList<String> specialFeatures = userConsent.json2StrArr(jsonConsentsMock.getJSONArray("specialFeatures"));
-        assertEquals(specialFeatures, userConsent.specialFeatures);
+        JSONArray specialFeatures = jsonConsentsMock.getJSONArray("specialFeatures");
+        assertEquals(specialFeatures, new JSONArray(userConsent.specialFeatures));
     }
 
     @Test
-    public void userConsentTCData() throws JSONException, ConsentLibException {
-        HashMap tcData = CustomJsonParser.getHashMap(jsonConsentsMock.getJSONObject("TCData"));
-        assertEquals(tcData, userConsent.TCData);
+    public void userConsentTCData() throws JSONException {
+        JSONObject tcData = jsonConsentsMock.getJSONObject("TCData");
+        JSONObject consentTCData = new JSONObject(userConsent.TCData);
+        assertEquals(tcData.get("IABTCF_CmpSdkID"), consentTCData.get("IABTCF_CmpSdkID"));
+        assertEquals(tcData.get("IABTCF_VendorConsents"), consentTCData.get("IABTCF_VendorConsents"));
     }
 
     @Test
