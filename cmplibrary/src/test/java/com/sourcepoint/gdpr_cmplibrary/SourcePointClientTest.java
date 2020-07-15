@@ -90,10 +90,6 @@ public class SourcePointClientTest {
 
         try {
             sourcePointClientMock.getMessage(isNative, consentUUID, meta, euConsent, onLoadComplete);
-            ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
-            verify(onLoadComplete, timeout(1000)).onSuccess(captor.capture());
-            String response = captor.getValue().toString();
-            assertEquals("{}",response);
         } catch (ConsentLibException e) {
             assertEquals("The device is not connected to the internet.", e.consentLibErrorMessage);
         }
@@ -140,10 +136,6 @@ public class SourcePointClientTest {
 
         try {
             sourcePointClientMock.sendConsent(mock(JSONObject.class), onLoadComplete);
-            ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
-            verify(onLoadComplete, timeout(1000)).onSuccess(captor.capture());
-            String response = captor.getValue().toString();
-            assertEquals("{}",response);
         } catch (ConsentLibException e) {
             assertEquals("The device is not connected to the internet.", e.consentLibErrorMessage);
         }
@@ -157,10 +149,6 @@ public class SourcePointClientTest {
         doThrow(JSONException.class).when(jsonMock).put(anyString(),anyString());
         try {
             sourcePointClientMock.sendCustomConsents(jsonMock, onLoadComplete);
-            ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
-            verify(onLoadComplete, timeout(1000)).onSuccess(captor.capture());
-            String response = captor.getValue().toString();
-            assertEquals("{}",response);
         } catch (ConsentLibException e) {
             assertEquals("Error adding param requestUUID.", e.consentLibErrorMessage);
         }
@@ -206,10 +194,6 @@ public class SourcePointClientTest {
         doThrow(JSONException.class).when(jsonMock).put(anyString(),anyString());
         try {
             sourcePointClientMock.sendConsent(jsonMock, onLoadComplete);
-            ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
-            verify(onLoadComplete, timeout(1000)).onSuccess(captor.capture());
-            String response = captor.getValue().toString();
-            assertEquals("{}",response);
         } catch (ConsentLibException e) {
             assertEquals("Error adding param requestUUID.", e.consentLibErrorMessage);
         }
