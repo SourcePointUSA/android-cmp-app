@@ -23,10 +23,10 @@ class SourcePointClient {
 
     private OkHttpClient httpClient;
 
-    private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/message-url?inApp=true";
-    private static final String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/native-message?inApp=true";
-    private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/consent?inApp=true";
-    private static final String baseSendCustomConsentsUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/custom-consent?inApp=true";
+    String baseMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/message-url?inApp=true";
+    String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/native-message?inApp=true";
+    String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/consent?inApp=true";
+    String baseSendCustomConsentsUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/custom-consent?inApp=true";
 
     private String requestUUID = "";
 
@@ -84,7 +84,7 @@ class SourcePointClient {
                     onLoadComplete.onSuccess(messageJson);
                 }else {
                     Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + response.code() + ": " + response.message());
-                    onLoadComplete.onFailure(new ConsentLibException(response.message()));
+                    onLoadComplete.onFailure(new ConsentLibException("Fail to get message from: " + url));
                 }
             }
         });
