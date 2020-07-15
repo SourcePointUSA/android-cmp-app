@@ -57,18 +57,12 @@ var eventMocks = {
   }
 }
 
-var callBacksMonitor = {}
-
-function onConsentUIReady(){
-  callBacksMonitor.onConsentUIReady = [...arguments]
-}
-
 var JSReceiverMock = {
-  onConsentUIReady,
-  onError: console.log,
-  onAction: console.log,
-  onSavePM: console.log,
-  log: () => null
+  onConsentUIReady: jest.fn(),
+  onError: jest.fn(),
+  onAction: jest.fn(),
+  onSavePM: jest.fn(),
+  log: jest.fn()
 }
 
 global.window = {
@@ -80,6 +74,5 @@ global.JSReceiver = JSReceiverMock
 module.exports = {
     eventHandlerRelativePath,
     eventMocks,
-    JSReceiverMock,
-    callBacksMonitor
+    JSReceiverMock
 }
