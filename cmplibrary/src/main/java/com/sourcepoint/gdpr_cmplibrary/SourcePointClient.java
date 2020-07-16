@@ -23,10 +23,10 @@ class SourcePointClient {
 
     private OkHttpClient httpClient;
 
-    String baseMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/message-url?inApp=true";
-    String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/native-message?inApp=true";
-    String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/consent?inApp=true";
-    String baseSendCustomConsentsUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/custom-consent?inApp=true";
+    static String baseMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/message-url?inApp=true";
+    static String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/native-message?inApp=true";
+    static String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/consent?inApp=true";
+    static String baseSendCustomConsentsUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/custom-consent?inApp=true";
 
     private String requestUUID = "";
 
@@ -73,7 +73,7 @@ class SourcePointClient {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(LOG_TAG, "Failed to load resource " + url + " due to " +   "url load failure :  " + e.getMessage());
-                onLoadComplete.onFailure(new ConsentLibException(e, "Fail to send consent to: " + url));
+                onLoadComplete.onFailure(new ConsentLibException(e, "Fail to get message from: " + url));
             }
 
             @Override
@@ -169,6 +169,9 @@ class SourcePointClient {
     }
 
     void sendCustomConsents(JSONObject params, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
+        if (hasLostInternetConnection())
+            throw new ConsentLibException.NoInternetConnectionException();
+
         String url = customConsentsUrl();
         try {
             params.put("requestUUID", getRequestUUID());
