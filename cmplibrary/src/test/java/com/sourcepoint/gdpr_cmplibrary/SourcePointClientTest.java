@@ -36,42 +36,53 @@ import static org.mockito.Mockito.when;
 @Config(manifest = Config.NONE, sdk = Build.VERSION_CODES.O_MR1)
 public class SourcePointClientTest {
 
-    private OkHttpClient http = new OkHttpClient();
-    private SourcePointClient sourcePointClientMock;
+    private SourcePointClient sourcePointClient;
     private GDPRConsentLib.OnLoadComplete onLoadComplete;
 
     private MockWebServer webServerMock;
 
-    private String consentUUID = "consentUUID";
-    private String euConsent = "euConsent";
-    private String meta = "meta";
-    private boolean isNative = false;
-    private NetworkInfo networkInfo;
-    private ConnectivityManager connectivityManager;
+    private static final String consentUUID = "consentUUID";
+    private static final String euConsent = "euConsent";
+    private static final String meta = "meta";
+    private static final boolean isNative = false;
+    private static NetworkInfo networkInfo;
+    private static ConnectivityManager connectivityManager;
+    private static long timeout = 1000;
 
 
     @Before
     public void setUp() throws IOException {
-        onLoadComplete = mock(GDPRConsentLib.OnLoadComplete.class);
-        int accountId = 123;
-        int propertyId = 1234;
-        String property = "example.com";
-        String targettingParams = "targetingParams";
-        String authId = "";
-        boolean staging = false;
-        boolean stagingCampaign = false;
-        PropertyConfig propertyConfig = new PropertyConfig(accountId,propertyId,property,"123221");
-        SourcePointClientConfig config = new SourcePointClientConfig(propertyConfig,stagingCampaign,staging,targettingParams,authId);
+        OkHttpClient http = new OkHttpClient();
 
-        networkInfo = mock(NetworkInfo.class);
+        onLoadComplete = mock(GDPRConsentLib.OnLoadComplete.class);
+
+        networkInfo = getNetworkInfo();
+        connectivityManager = getConnectivityManager();
+
+        sourcePointClient =  new SourcePointClient(http, getSourcePointClientConfig(), connectivityManager);
+        webServerMock = new MockWebServer();
+        webServerMock.start();
+    }
+
+    private SourcePointClientConfig getSourcePointClientConfig(){
+
+        PropertyConfig propertyConfig = new PropertyConfig(123, 1234, "example.com","123221");
+        SourcePointClientConfig config = new SourcePointClientConfig(propertyConfig, false, false,"targetingParams","authId");
+        return config;
+    }
+
+    private ConnectivityManager getConnectivityManager(){
+        ConnectivityManager connectivityManager = mock(ConnectivityManager.class);
+        when(connectivityManager.getActiveNetworkInfo()).thenReturn(networkInfo);
+        return connectivityManager;
+    }
+
+    private NetworkInfo getNetworkInfo(){
+        NetworkInfo networkInfo = mock(NetworkInfo.class);
         when(networkInfo.isConnectedOrConnecting()).thenReturn(true);
         when(networkInfo.getType()).thenReturn(ConnectivityManager.TYPE_MOBILE);
         when(networkInfo.isRoaming()).thenReturn(true);
-        connectivityManager = mock(ConnectivityManager.class);
-        when(connectivityManager.getActiveNetworkInfo()).thenReturn(networkInfo);
-        sourcePointClientMock =  new SourcePointClient(http,config, connectivityManager);
-        webServerMock = new MockWebServer();
-        webServerMock.start();
+        return networkInfo;
     }
 
     @After
@@ -83,152 +94,145 @@ public class SourcePointClientTest {
     }
 
     @Test
-    public void noInternetErrorWhileGetMessge() {
+    public void noInternetErrorWhileGetMessage() {
         when(networkInfo.isConnectedOrConnecting()).thenReturn(false);
-        webServerMock.enqueue(new MockResponse().setBody("{}").setResponseCode(200));
-        sourcePointClientMock.baseMsgUrl = webServerMock.url("/").toString();
+        webServerMock.enqueue(new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK));
+        sourcePointClient.baseMsgUrl = webServerMock.url("/").toString();
 
         try {
-            sourcePointClientMock.getMessage(isNative, consentUUID, meta, euConsent, onLoadComplete);
+            sourcePointClient.getMessage(isNative, consentUUID, meta, euConsent, onLoadComplete);
         } catch (ConsentLibException e) {
-            assertEquals("The device is not connected to the internet.", e.consentLibErrorMessage);
+            assertEquals(ConsentLibException.NoInternetConnectionException.description, e.consentLibErrorMessage);
         }
     }
 
     @Test
-    public void getMessageSuccess() {
+    public void getMessageSuccess() throws ConsentLibException {
         String responseString = "https://notice.sp-prod.net?message_id=162961";
-        webServerMock.enqueue(new MockResponse().setBody(responseString).setResponseCode(200));
-        sourcePointClientMock.baseMsgUrl = webServerMock.url("/").toString();
+        webServerMock.enqueue(new MockResponse().setBody(responseString).setResponseCode(HttpURLConnection.HTTP_OK));
+        sourcePointClient.baseMsgUrl = webServerMock.url("/").toString();
 
-        try {
-            sourcePointClientMock.getMessage(isNative, consentUUID, meta, euConsent, onLoadComplete);
-            ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
-            verify(onLoadComplete, timeout(1000)).onSuccess(captor.capture());
-            String response = captor.getValue().toString();
-            assertEquals(responseString,response);
-        } catch (ConsentLibException e) {
-            assertEquals("The device is not connected to the internet.", e.consentLibErrorMessage);
-        }
+        sourcePointClient.getMessage(isNative, consentUUID, meta, euConsent, onLoadComplete);
+        ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
+        verify(onLoadComplete, timeout(timeout)).onSuccess(captor.capture());
+        String response = captor.getValue().toString();
+        assertEquals(responseString, response);
     }
 
     @Test
-    public void getMessageFailure() {
+    public void getMessageFailure() throws ConsentLibException {
+        String errorMessage = "Fail to get message from: ";
         webServerMock.enqueue(new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST));
-        sourcePointClientMock.baseMsgUrl = webServerMock.url("/").toString();
+        sourcePointClient.baseMsgUrl = webServerMock.url("/").toString();
 
-        try {
-            sourcePointClientMock.getMessage(isNative ,consentUUID, meta , euConsent, onLoadComplete);
-            ArgumentCaptor<ConsentLibException> captor = ArgumentCaptor.forClass(ConsentLibException.class);
-            verify(onLoadComplete, timeout(1000)).onFailure(captor.capture());
-            assertTrue(captor.getValue().consentLibErrorMessage.contains("Fail to get message from: "));
-
-        } catch (ConsentLibException e) {
-            assertEquals("The device is not connected to the internet.",e.consentLibErrorMessage);
-        }
-    }
+        sourcePointClient.getMessage(isNative ,consentUUID, meta , euConsent, onLoadComplete);
+        ArgumentCaptor<ConsentLibException> captor = ArgumentCaptor.forClass(ConsentLibException.class);
+        verify(onLoadComplete, timeout(timeout)).onFailure(captor.capture());
+        assertTrue(captor.getValue().consentLibErrorMessage.contains(errorMessage));
+}
 
     @Test
     public void noInternetErrorWhileSendConsent() {
         when(networkInfo.isConnectedOrConnecting()).thenReturn(false);
-        webServerMock.enqueue(new MockResponse().setBody("{}").setResponseCode(200));
-        sourcePointClientMock.baseSendConsentUrl = webServerMock.url("/").toString();
+        webServerMock.enqueue(new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK));
+        sourcePointClient.baseSendConsentUrl = webServerMock.url("/").toString();
 
         try {
-            sourcePointClientMock.sendConsent(mock(JSONObject.class), onLoadComplete);
+            sourcePointClient.sendConsent(mock(JSONObject.class), onLoadComplete);
         } catch (ConsentLibException e) {
-            assertEquals("The device is not connected to the internet.", e.consentLibErrorMessage);
+            assertEquals(ConsentLibException.NoInternetConnectionException.description, e.consentLibErrorMessage);
         }
     }
 
     @Test
     public void errorWhileSendConsent() throws JSONException {
-        webServerMock.enqueue(new MockResponse().setBody("{}").setResponseCode(200));
-        sourcePointClientMock.baseSendConsentUrl = webServerMock.url("/").toString();
+        String errorMessage = "Error adding param requestUUID.";
+        webServerMock.enqueue(new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK));
+        sourcePointClient.baseSendConsentUrl = webServerMock.url("/").toString();
         JSONObject jsonMock = mock(JSONObject.class);
         doThrow(JSONException.class).when(jsonMock).put(anyString(),anyString());
         try {
-            sourcePointClientMock.sendCustomConsents(jsonMock, onLoadComplete);
+            sourcePointClient.sendCustomConsents(jsonMock, onLoadComplete);
         } catch (ConsentLibException e) {
-            assertEquals("Error adding param requestUUID.", e.consentLibErrorMessage);
+            assertEquals(errorMessage, e.consentLibErrorMessage);
         }
     }
 
     @Test
-    public void sendConsentSuccess() {
+    public void sendConsentSuccess() throws ConsentLibException {
         String responseString = "A dummy response string";
-        webServerMock.enqueue(new MockResponse().setBody(responseString).setResponseCode(200));
-        sourcePointClientMock.baseSendConsentUrl = webServerMock.url("/").toString();
+        webServerMock.enqueue(new MockResponse().setBody(responseString).setResponseCode(HttpURLConnection.HTTP_OK));
+        sourcePointClient.baseSendConsentUrl = webServerMock.url("/").toString();
 
-        try {
-            sourcePointClientMock.sendConsent(mock(JSONObject.class), onLoadComplete);
-            ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
-            verify(onLoadComplete, timeout(1000)).onSuccess(captor.capture());
-            String response = captor.getValue().toString();
-            assertEquals(responseString,response);
-        } catch (ConsentLibException e) {
-            assertEquals("The device is not connected to the internet.", e.consentLibErrorMessage);
-        }
+        sourcePointClient.sendConsent(mock(JSONObject.class), onLoadComplete);
+        ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
+        verify(onLoadComplete, timeout(timeout)).onSuccess(captor.capture());
+        String response = captor.getValue().toString();
+        assertEquals(responseString,response);
     }
 
     @Test
-    public void sendConsentFailure() {
+    public void sendConsentFailure() throws ConsentLibException {
+        String errorMessage = "Fail to send consent to: ";
         webServerMock.enqueue(new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST));
-        sourcePointClientMock.baseSendConsentUrl = webServerMock.url("/").toString();
+        sourcePointClient.baseSendConsentUrl = webServerMock.url("/").toString();
+
+        sourcePointClient.sendConsent(mock(JSONObject.class), onLoadComplete);
+        ArgumentCaptor<ConsentLibException> captor = ArgumentCaptor.forClass(ConsentLibException.class);
+        verify(onLoadComplete, timeout(timeout)).onFailure(captor.capture());
+        assertTrue(captor.getValue().consentLibErrorMessage.contains(errorMessage));
+    }
+
+    @Test
+    public void noInternetErrorWhileSendCustomConsents() {
+        when(networkInfo.isConnectedOrConnecting()).thenReturn(false);
+        webServerMock.enqueue(new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK));
+        sourcePointClient.baseSendCustomConsentsUrl = webServerMock.url("/").toString();
 
         try {
-            sourcePointClientMock.sendConsent(mock(JSONObject.class), onLoadComplete);
-            ArgumentCaptor<ConsentLibException> captor = ArgumentCaptor.forClass(ConsentLibException.class);
-            verify(onLoadComplete, timeout(1000)).onFailure(captor.capture());
-            assertTrue(captor.getValue().consentLibErrorMessage.contains("Fail to send consent to: "));
+            sourcePointClient.sendCustomConsents(mock(JSONObject.class), onLoadComplete);
         } catch (ConsentLibException e) {
-            assertEquals("The device is not connected to the internet.",e.consentLibErrorMessage);
+            assertEquals(ConsentLibException.NoInternetConnectionException.description, e.consentLibErrorMessage);
         }
     }
+
 
     @Test
     public void errorWhileSendCustomConsent() throws JSONException {
-        webServerMock.enqueue(new MockResponse().setBody("{}").setResponseCode(200));
-        sourcePointClientMock.baseSendCustomConsentsUrl = webServerMock.url("/").toString();
+        String errorMessage = "Error adding param requestUUID.";
+        webServerMock.enqueue(new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK));
+        sourcePointClient.baseSendCustomConsentsUrl = webServerMock.url("/").toString();
         JSONObject jsonMock = mock(JSONObject.class);
         doThrow(JSONException.class).when(jsonMock).put(anyString(),anyString());
         try {
-            sourcePointClientMock.sendConsent(jsonMock, onLoadComplete);
+            sourcePointClient.sendConsent(jsonMock, onLoadComplete);
         } catch (ConsentLibException e) {
-            assertEquals("Error adding param requestUUID.", e.consentLibErrorMessage);
+            assertEquals(errorMessage, e.consentLibErrorMessage);
         }
     }
 
     @Test
-    public void sendCustomConsentsSuccess()  {
+    public void sendCustomConsentsSuccess() throws ConsentLibException {
         String responseString = "A dummy response string";
-        webServerMock.enqueue(new MockResponse().setBody(responseString).setResponseCode(200));
-        sourcePointClientMock.baseSendCustomConsentsUrl = webServerMock.url("/").toString();
+        webServerMock.enqueue(new MockResponse().setBody(responseString).setResponseCode(HttpURLConnection.HTTP_OK));
+        sourcePointClient.baseSendCustomConsentsUrl = webServerMock.url("/").toString();
 
-        try {
-            sourcePointClientMock.sendCustomConsents(mock(JSONObject.class), onLoadComplete);
-            ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
-            verify(onLoadComplete, timeout(1000)).onSuccess(captor.capture());
-            String response = captor.getValue().toString();
-            assertEquals(responseString, response);
-        } catch (ConsentLibException e) {
-            assertEquals("The device is not connected to the internet.", e.consentLibErrorMessage);
-        }
+        sourcePointClient.sendCustomConsents(mock(JSONObject.class), onLoadComplete);
+        ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
+        verify(onLoadComplete, timeout(timeout)).onSuccess(captor.capture());
+        String response = captor.getValue().toString();
+        assertEquals(responseString, response);
     }
 
     @Test
-    public void sendCustomConsentsFailure() {
+    public void sendCustomConsentsFailure() throws ConsentLibException {
+        String errorMessage ="Fail to send consent to: " ;
         webServerMock.enqueue(new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST));
-        sourcePointClientMock.baseSendCustomConsentsUrl = webServerMock.url("/").toString();
+        sourcePointClient.baseSendCustomConsentsUrl = webServerMock.url("/").toString();
 
-        try {
-            sourcePointClientMock.sendCustomConsents(mock(JSONObject.class), onLoadComplete);
-            ArgumentCaptor<ConsentLibException> captor = ArgumentCaptor.forClass(ConsentLibException.class);
-            verify(onLoadComplete, timeout(1000)).onFailure(captor.capture());
-            assertTrue(captor.getValue().consentLibErrorMessage.contains("Fail to send consent to: "));
-
-        } catch (ConsentLibException e) {
-            assertEquals("The device is not connected to the internet.",e.consentLibErrorMessage);
-        }
+        sourcePointClient.sendCustomConsents(mock(JSONObject.class), onLoadComplete);
+        ArgumentCaptor<ConsentLibException> captor = ArgumentCaptor.forClass(ConsentLibException.class);
+        verify(onLoadComplete, timeout(timeout)).onFailure(captor.capture());
+        assertTrue(captor.getValue().consentLibErrorMessage.contains(errorMessage));
     }
 }
