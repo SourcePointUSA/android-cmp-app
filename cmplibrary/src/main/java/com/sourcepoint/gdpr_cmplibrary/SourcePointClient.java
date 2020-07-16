@@ -23,10 +23,10 @@ class SourcePointClient {
 
     private OkHttpClient httpClient;
 
-    static String baseMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/message-url?inApp=true";
-    static String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/native-message?inApp=true";
-    static String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/consent?inApp=true";
-    static String baseSendCustomConsentsUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/custom-consent?inApp=true";
+    private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/message-url?inApp=true";
+    private static final String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/native-message?inApp=true";
+    private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/consent?inApp=true";
+    private static final String baseSendCustomConsentsUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/custom-consent?inApp=true";
 
     private String requestUUID = "";
 
@@ -116,7 +116,7 @@ class SourcePointClient {
             return params;
         } catch (JSONException e) {
             e.printStackTrace();
-            throw new ConsentLibException(e, "Error bulding message bodyJson in sourcePointClient");
+            throw new ConsentLibException(e, "Error building message bodyJson in sourcePointClient");
         }
     }
 
