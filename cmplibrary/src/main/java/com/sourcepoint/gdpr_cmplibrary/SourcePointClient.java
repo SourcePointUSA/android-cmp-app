@@ -90,11 +90,11 @@ class SourcePointClient {
         });
     }
 
-    private String messageUrl(boolean isNative) {
+    String messageUrl(boolean isNative) {
         return isNative ? baseNativeMsgUrl : baseMsgUrl;
     }
 
-    private String customConsentsUrl(){
+    String customConsentsUrl(){
         return baseSendCustomConsentsUrl;
     }
 
@@ -120,7 +120,7 @@ class SourcePointClient {
         }
     }
 
-    private String consentUrl(){
+    String consentUrl(){
         return baseSendConsentUrl;
     }
 
