@@ -1,13 +1,4 @@
-Table of Contents
-=================
-   * [Setup](#setup)
-   * [Usage](#usage)
-   * [Development](#development)
-      * [How to build the `cmplibrary` module from source](#how-to-build-the-cmplibrary-module-from-source)
-      * [How to import the master version of `cmplibrary` into existing an Android app project for development](#how-to-import-the-master-version-of-cmplibrary-into-existing-an-android-app-project-for-development)
-      * [How to publish a new version into JCenter](#how-to-publish-a-new-version-into-jcenter)
-
-# Setup
+# How to Install
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle.
 
 :heavy_exclamation_mark: **IMPORTANT** if you still haven't moved to TCFv2, use `v4.x`.
@@ -163,7 +154,7 @@ ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
 
 This way, if we already have consent for that token (`"JohDoe"`) we'll bring the consent profile from the server, overwriting whatever was stored in the device.
 
-## Vendor Grants obj
+## Vendor Grants object
 
 * `vendorGrants` is an attribute of `GDPRUserConsent` class. The `vendorGrants` attribute, simply put, is an Map reprensenting the consent state (on a legal basis) of all vendors and its purposes for the current user. For example:
 ```Java
@@ -180,7 +171,6 @@ This way, if we already have consent for that token (`"JohDoe"`) we'll bring the
 ]
 ```
 
-
 ## Setting a Targeting Param
 
 In order to set a targeting param all you need to do is calling `.setTargetingParam(key: string, value: string)
@@ -194,6 +184,16 @@ ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
 ```
 
 In this example a key/value pair "language":"fr" is passed to the sp scenario and can be useded, wiht the proper scenario setup, to show a french message instead of a english one.
+
+## Frequently Asked Questions
+### 1. How big is the SDK?
+The SDK is pretty slim, there are no assets, a single dependency, it's just pure code. The SDK shouldn't exceed `2 MB`.
+### 2. What's the lowest Android API supported?
+Although our SDK can be technically added to projects targeting Android API 16, we support Android API >= 21 only.
+
+We'll update this list over time, if you have any questions feel free to open an issue or concact your SourcePoint account manager.
+
+--- 
 
 # Development
 ## How to build the `cmplibrary` module from source
