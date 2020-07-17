@@ -7,10 +7,19 @@ var {
 
 var handleEvents = require(eventHandlerRelativePath)
 
+afterEach(() => {
+    jest.clearAllMocks();
+});
+
 describe("JSReceiver/EventHandler test cases:", () => {
-    it("onConsentUIReady", () => {
+    it("showMessage", () => {
         expect(JSReceiverMock.onConsentUIReady).not.toBeCalled()
         handleEvents(eventMocks.showMessage)
-        expect(JSReceiverMock.onConsentUIReady).toBeCalled()
+        expect(JSReceiverMock.onConsentUIReady).toBeCalledWith(false)
+    })
+    it("showPm", () => {
+        expect(JSReceiverMock.onConsentUIReady).not.toBeCalled()
+        handleEvents(eventMocks.showPm)
+        expect(JSReceiverMock.onConsentUIReady).toBeCalledWith(true)
     })
 })
