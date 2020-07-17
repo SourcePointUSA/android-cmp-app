@@ -137,7 +137,7 @@ public class SourcePointClientTest {
 
     @Test
     public void getMessageSuccess() throws ConsentLibException {
-        String responseString = "https://notice.sp-prod.net?message_id=162961";
+        String responseString = "foo_string";
 
         doAPICallWithAnswer(true , HttpURLConnection.HTTP_OK, responseString);
 
@@ -146,6 +146,19 @@ public class SourcePointClientTest {
         verify(onLoadComplete).onSuccess(captor.capture());
         String response = captor.getValue().toString();
         assertEquals(responseString, response);
+    }
+
+    @Test
+    public void getMessageRequest() throws ConsentLibException {
+        String responseString = "foo_string";
+
+        doAPICallWithAnswer(true , HttpURLConnection.HTTP_OK, responseString);
+
+        sourcePointClient.getMessage(isNative, consentUUID, meta, euConsent, onLoadComplete);
+        ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
+        verify(http).newCall(requestArgumentCaptor.capture());
+        Request request = requestArgumentCaptor.getValue();
+        assertEquals(sourcePointClient.messageUrl(isNative),request.url().toString());
     }
 
     @Test
@@ -197,7 +210,7 @@ public class SourcePointClientTest {
 
     @Test
     public void sendConsentSuccess() throws ConsentLibException {
-        String responseString = "A dummy response string";
+        String responseString = "foo_string";
         doAPICallWithAnswer(true, HttpURLConnection.HTTP_OK, responseString);
 
         sourcePointClient.sendConsent(mock(JSONObject.class), onLoadComplete);
@@ -205,6 +218,17 @@ public class SourcePointClientTest {
         verify(onLoadComplete).onSuccess(captor.capture());
         String response = captor.getValue().toString();
         assertEquals(responseString,response);
+    }
+
+    @Test
+    public void sendConsentRequest() throws ConsentLibException {
+        String responseString = "foo_string";
+        doAPICallWithAnswer(true, HttpURLConnection.HTTP_OK, responseString);
+
+        sourcePointClient.sendConsent(mock(JSONObject.class), onLoadComplete);
+        ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
+        verify(http).newCall(requestArgumentCaptor.capture());
+        assertEquals(sourcePointClient.consentUrl(),requestArgumentCaptor.getValue().url().toString());
     }
 
     @Test
@@ -254,7 +278,7 @@ public class SourcePointClientTest {
 
     @Test
     public void sendCustomConsentsSuccess() throws ConsentLibException {
-        String responseString = "A dummy response string";
+        String responseString = "foo_string";
         doAPICallWithAnswer(true, HttpURLConnection.HTTP_OK, responseString);
 
         sourcePointClient.sendCustomConsents(mock(JSONObject.class), onLoadComplete);
@@ -262,6 +286,17 @@ public class SourcePointClientTest {
         verify(onLoadComplete).onSuccess(captor.capture());
         String response = captor.getValue().toString();
         assertEquals(responseString, response);
+    }
+
+    @Test
+    public void sendCustomConsentsRequest() throws ConsentLibException {
+        String responseString = "foo_string";
+        doAPICallWithAnswer(true, HttpURLConnection.HTTP_OK, responseString);
+
+        sourcePointClient.sendCustomConsents(mock(JSONObject.class), onLoadComplete);
+        ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
+        verify(http).newCall(requestArgumentCaptor.capture());
+        assertEquals(sourcePointClient.customConsentsUrl(), requestArgumentCaptor.getValue().url().toString());
     }
 
     @Test
