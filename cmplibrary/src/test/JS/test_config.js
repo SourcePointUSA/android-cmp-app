@@ -1,5 +1,24 @@
 var eventHandlerRelativePath = '../../main/res/raw/js_receiver.js'
 
+var expectedArgs = {
+  acceptAllFromPm: {
+    "name": "sp.hideMessage",
+    "actionType": 11,
+    "choiceId": null,
+    "requestFromPm": true,
+    "saveAndExitVariables": {
+      "foo": "bar"
+    }
+  },
+  acceptAllFromMsg: { 
+    "name": "sp.hideMessage", 
+    "actionType": 11, 
+    "choiceId": 1067098, 
+    "requestFromPm": false, 
+    "saveAndExitVariables": {} 
+  }
+}
+
 var eventMocks = {
   showMessage: {
     data: {
@@ -36,22 +55,55 @@ var eventMocks = {
       }
     }
   },
-  hideMessage: {
+  AcceptAllFromPm: {
+    data: {
+      "name": "sp.hideMessage",
+      "fromPM": true,
+      "actionType": 11,
+      "payload": {
+        "foo": "bar"
+      }
+    },
+  },
+  acceptAllFromMsg: {
     data: {
       "name": "sp.hideMessage",
       "actions": [
         {
           "type": "choice",
           "data": {
-            "choice_id": 920716,
+            "choice_id": 1067098,
             "type": 11,
             "iframe_url": null,
-            "button_text": "1583247568929"
+            "button_text": "1589214494409"
           }
         }
       ],
       "settings": {
-        "language": "browser"
+        "showClose": true,
+        "useBrowserDefault": true,
+        "width": {
+          "type": "px",
+          "value": 600
+        },
+        "border": {
+          "borderWidth": 1,
+          "borderColor": "#ffffff",
+          "borderTopLeftRadius": 0,
+          "borderTopRightRadius": 0,
+          "borderBottomLeftRadius": 0,
+          "borderBottomRightRadius": 0,
+          "borderStyle": "solid"
+        },
+        "defaultLanguage": "EN",
+        "selectedLanguage": "EN",
+        "closeAlign": "right",
+        "closeFont": {
+          "fontSize": 24,
+          "fontWeight": "800",
+          "color": "#999999",
+          "fontFamily": "tahoma,geneva,sans-serif"
+        }
       }
     }
   }
@@ -72,7 +124,8 @@ global.window = {
 global.JSReceiver = JSReceiverMock
 
 module.exports = {
-    eventHandlerRelativePath,
-    eventMocks,
-    JSReceiverMock
+  eventHandlerRelativePath,
+  eventMocks,
+  JSReceiverMock,
+  expectedArgs
 }
