@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId,this)
-                .setStagingCampaign(true)
                 .setOnConsentUIReady(view -> {
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
@@ -89,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
                 .build();
     }
 
-    private NativeMessage buildNativeMessage() {
-        return new NativeMessage(this) {
+    private NativeMessage buildNativeMessage(){
+        return new NativeMessage(this){
             @Override
             public void init(){
                 super.init();
