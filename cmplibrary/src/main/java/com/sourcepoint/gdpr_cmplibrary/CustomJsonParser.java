@@ -19,7 +19,7 @@ public class CustomJsonParser {
 
     static boolean getBoolean(String key, JSONObject j) throws ConsentLibException {
         try {
-            return j.getBoolean(key);
+            return !j.isNull(key) ? j.getBoolean(key) : null;
         } catch (JSONException e) {
             throw new ConsentLibException(e, key + " missing from JSONObject");
         }
@@ -27,7 +27,7 @@ public class CustomJsonParser {
 
     static int getInt(String key, JSONObject j) throws ConsentLibException {
         try {
-            return j.getInt(key);
+            return !j.isNull(key) ? j.getInt(key) : null;
         } catch (JSONException e) {
             throw new ConsentLibException(e, key + " missing from JSONObject");
         }
@@ -35,7 +35,7 @@ public class CustomJsonParser {
 
     static String getString(String key, JSONObject j) throws ConsentLibException {
         try {
-            return j.getString(key);
+            return !j.isNull(key) ? j.getString(key) : null;
         } catch (JSONException e) {
             throw new ConsentLibException(e, key + " missing from JSONObject");
         }
