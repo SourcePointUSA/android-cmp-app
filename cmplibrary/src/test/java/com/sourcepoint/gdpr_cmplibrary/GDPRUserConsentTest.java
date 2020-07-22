@@ -8,15 +8,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
+import java.util.ArrayList;
+
 import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_CONSENT_STRING;
 import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_UUID;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 
 @RunWith(RobolectricTestRunner.class)
 public class GDPRUserConsentTest {
-
 
     private String jsonData =
                 "{\r\n   \"uuid\":\"f9afbd99-cb24-442a-a2db-aaba58fdb929\",\r\n  " +
@@ -55,7 +57,6 @@ public class GDPRUserConsentTest {
         assertTrue(emptyUserConsent.TCData.isEmpty());
         assertTrue(emptyUserConsent.vendorGrants.isEmpty());
     }
-
 
     @Test
     public void userConsentUUID() {
@@ -121,23 +122,23 @@ public class GDPRUserConsentTest {
 
         JSONArray categories = jsonObject.getJSONArray("acceptedCategories");
         assertEquals(userConsent.acceptedCategories.size(), categories.length());
-        assertEquals(userConsent.acceptedCategories.get(0), categories.get(0));
-        assertEquals(userConsent.acceptedCategories.get(userConsent.acceptedCategories.size()-1), categories.get(categories.length()-1));
+        assertEquals(userConsent.acceptedCategories.toArray()[0], categories.get(0));
+        assertEquals(userConsent.acceptedCategories.toArray()[userConsent.acceptedCategories.size()-1], categories.get(categories.length()-1));
 
         JSONArray vendors = jsonObject.getJSONArray("acceptedVendors");
         assertEquals(userConsent.acceptedVendors.size(), vendors.length());
-        assertEquals(userConsent.acceptedVendors.get(0), vendors.get(0));
-        assertEquals(userConsent.acceptedVendors.get(userConsent.acceptedVendors.size()-1), vendors.get(vendors.length()-1));
+        assertEquals(userConsent.acceptedVendors.toArray()[0], vendors.get(0));
+        assertEquals(userConsent.acceptedVendors.toArray()[userConsent.acceptedVendors.size()-1], vendors.get(vendors.length()-1));
 
         JSONArray specialFeatures = jsonObject.getJSONArray("specialFeatures");
         assertEquals(userConsent.specialFeatures.size(), specialFeatures.length());
-        assertEquals(userConsent.specialFeatures.get(0), specialFeatures.get(0));
-        assertEquals(userConsent.specialFeatures.get(userConsent.specialFeatures.size()-1), specialFeatures.get(specialFeatures.length()-1));
+        assertEquals(userConsent.specialFeatures.toArray()[0], specialFeatures.get(0));
+        assertEquals(userConsent.specialFeatures.toArray()[userConsent.specialFeatures.size()-1], specialFeatures.get(specialFeatures.length()-1));
 
         JSONArray legIntCategories = jsonObject.getJSONArray("legIntCategories");
         assertEquals(userConsent.legIntCategories.size(), legIntCategories.length());
-        assertEquals(userConsent.legIntCategories.get(0), legIntCategories.get(0));
-        assertEquals(userConsent.legIntCategories.get(userConsent.legIntCategories.size()-1), legIntCategories.get(legIntCategories.length()-1));
+        assertEquals(userConsent.legIntCategories.toArray()[0], legIntCategories.get(0));
+        assertEquals(userConsent.legIntCategories.toArray()[userConsent.legIntCategories.size()-1], legIntCategories.get(legIntCategories.length()-1));
     }
 
     @Test
@@ -158,6 +159,12 @@ public class GDPRUserConsentTest {
     }
 
     @Test
+    public void constructorShouldThrowExceptionForNoUUIDOnJConsent() {
+        ConsentLibException err = assertThrows(ConsentLibException.class, () -> new GDPRUserConsent(jsonConsentsMock));
+        assertEquals("No uuid found on jConsent", err.consentLibErrorMessage);
+    }
+
+    @Test
     public void tcDataFromToJSONObject() throws JSONException, ConsentLibException {
         JSONObject jsonObject = userConsent.toJsonObject();
         assertEquals(userConsent.TCData.get("IABTCF_CmpSdkID") , jsonObject.getJSONObject("TCData").get("IABTCF_CmpSdkID"));
@@ -175,11 +182,15 @@ public class GDPRUserConsentTest {
     }
 
     @Test
-    public void userConsentInitException() {
-        try{
-             new GDPRUserConsent(jsonConsentsMock, null);
-        }catch (ConsentLibException e){
-            assertEquals("Error parsing JSONObject to ConsentUser obj",e.consentLibErrorMessage);
-        }
+    public void constructorShouldThrowExceptionForNullUUID() {
+        ConsentLibException err = assertThrows(ConsentLibException.class, () ->  new GDPRUserConsent(jsonConsentsMock, null));
+        assertTrue(err.getCause().getMessage().contains("uuid should not be null"));
+        assertEquals("Error parsing JSONObject to ConsentUser obj", err.consentLibErrorMessage);
+    }
+
+    @Test
+    public void constructorShouldThrowExceptionForEmptyJSONObject() {
+        ConsentLibException err = assertThrows(ConsentLibException.class, () ->  new GDPRUserConsent(new JSONObject(), "foo_uuid"));
+        assertEquals("Error parsing JSONObject to ConsentUser obj", err.consentLibErrorMessage);
     }
 }
