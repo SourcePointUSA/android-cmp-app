@@ -197,7 +197,7 @@ public class StoreClientTest {
         assertEquals(userConsent.consentString , clientUserConsent.consentString);
         assertEquals(clientUserConsent.consentString.getClass() , String.class);
 
-        HashMap clientTCData = clientUserConsent.TCData;
+        Map clientTCData = clientUserConsent.TCData;
 
         assertEquals(stringValue, clientTCData.get(keyForStringVlaue));
         assertEquals(intValue , clientTCData.get(keyForIntValue));
