@@ -27,17 +27,17 @@ describe("JSReceiver/EventHandler test cases:", () => {
         handleEvents(eventMocks.AcceptAllFromPm)
         expect(JSReceiverMock.onAction).toBeCalledWith(JSON.stringify(expectedArgs.acceptAllFromPm))
     })
-    it("actionAll from message dialog", () => {
+    it("acceptAll from message dialog", () => {
         expect(JSReceiverMock.onAction).not.toBeCalled()
         handleEvents(eventMocks.acceptAllFromMsg)
         expect(JSReceiverMock.onAction).toBeCalledWith(JSON.stringify(expectedArgs.acceptAllFromMsg))
     }),
-    it("actionAll from message dialog (w/ choiceId:number)", () => {
+    it("acceptAll from message dialog (w/ choiceId:number)", () => {
         expect(JSReceiverMock.onAction).not.toBeCalled()
         handleEvents(eventMocks.acceptAllFromMsg)
         expect(JSReceiverMock.onAction).toBeCalledWith(JSON.stringify(expectedArgs.acceptAllFromMsg))
     }),
-    it("actionAll from message dialog (w/ choiceId:string) ", () => {
+    it("acceptAll from message dialog (w/ choiceId:string) ", () => {
         expect(JSReceiverMock.onAction).not.toBeCalled()
         handleEvents({...eventMocks.acceptAllFromMsg,choiceId:Number(eventMocks.acceptAllFromMsg.choiceId)})
         expect(JSReceiverMock.onAction).toBeCalledWith(JSON.stringify(expectedArgs.acceptAllFromMsg))
