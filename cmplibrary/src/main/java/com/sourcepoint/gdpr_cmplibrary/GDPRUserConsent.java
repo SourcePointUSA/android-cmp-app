@@ -5,7 +5,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getBoolean;
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getHashMap;
@@ -15,12 +17,12 @@ import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getString;
 public class GDPRUserConsent {
 
     public String uuid;
-    public ArrayList<String> acceptedVendors;
-    public ArrayList<String> acceptedCategories;
-    public ArrayList<String> specialFeatures;
-    public ArrayList<String> legIntCategories;
+    public Collection<String> acceptedVendors;
+    public Collection<String> acceptedCategories;
+    public Collection<String> specialFeatures;
+    public Collection<String> legIntCategories;
     public String consentString;
-    public HashMap TCData;
+    public Map TCData;
     public VendorGrants vendorGrants;
 
     public GDPRUserConsent() {
@@ -39,17 +41,23 @@ public class GDPRUserConsent {
     }
 
     public GDPRUserConsent(JSONObject jConsent, String uuid) throws ConsentLibException {
-        try {
-            jConsent.put("uuid", uuid);
-        } catch (JSONException e) {
-            throw new ConsentLibException(e, "Error parsing jConsent");
-        }
-        init(jConsent);
+        init(jConsent, uuid);
     }
 
     private void init(JSONObject jConsent) throws ConsentLibException {
+        String consentUUID;
         try {
-            uuid = jConsent.getString("uuid");
+            consentUUID = jConsent.getString("uuid");
+        } catch (JSONException e) {
+            throw new ConsentLibException(e, "No uuid found on jConsent");
+        }
+        init(jConsent, consentUUID);
+    }
+
+    private void init(JSONObject jConsent, String uuid) throws ConsentLibException {
+        try {
+            if(uuid == null) throw new IllegalArgumentException("uuid should not be null");
+            this.uuid = uuid;
             acceptedVendors = json2StrArr(jConsent.getJSONArray("acceptedVendors"));
             acceptedCategories = json2StrArr(jConsent.getJSONArray("acceptedCategories"));
             specialFeatures = json2StrArr(jConsent.getJSONArray("specialFeatures"));
@@ -109,7 +117,7 @@ public class GDPRUserConsent {
 
         public class VendorGrant {
             public boolean vendorGrant;
-            public HashMap<String, Boolean> purposeGrants;
+            public Map<String, Boolean> purposeGrants;
             VendorGrant(JSONObject jVendorGrant) throws ConsentLibException {
                 vendorGrant = getBoolean("vendorGrant", jVendorGrant);
                 purposeGrants = getHashMap(getJson("purposeGrants", jVendorGrant));
