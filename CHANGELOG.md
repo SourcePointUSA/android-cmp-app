@@ -1,3 +1,6 @@
+## 5.3.2 (July, 22, 2020)
+* fix choiceId passed as Number from JSReceiver (now aways passed as String)
+
 ## 5.3.1 (July, 10, 2020)
 * revert override of back button behaviour on ConsentWebview
 
