@@ -13,7 +13,7 @@ var expectedArgs = {
   acceptAllFromMsg: { 
     "name": "sp.hideMessage", 
     "actionType": 11, 
-    "choiceId": 1067098, 
+    "choiceId": "1067098", 
     "requestFromPm": false, 
     "saveAndExitVariables": {} 
   }

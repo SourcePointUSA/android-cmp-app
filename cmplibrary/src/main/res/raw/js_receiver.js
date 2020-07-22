@@ -3,10 +3,10 @@ function handleEvent(event) {
     try {
         JSReceiver.log(JSON.stringify(event.data, null, 2));
         if (event.data.name === 'sp.showMessage') {
-            JSReceiver.onConsentUIReady(isFromPM(event)) ;
+            JSReceiver.onConsentUIReady(isFromPM(event));
             return;
         }
-        JSReceiver.onAction(JSON.stringify(consentData(event), null, 2));
+        JSReceiver.onAction(JSON.stringify(consentData(event)));
     } catch (err) {
         JSReceiver.log(err.stack);
     };
@@ -24,7 +24,7 @@ function dataFromMessage(msgEvent) {
     return {
         name: msgEvent.data.name,
         actionType: msgEvent.data.actions.length ? msgEvent.data.actions[0].data.type : null,
-        choiceId: msgEvent.data.actions.length ? msgEvent.data.actions[0].data.choice_id : null,
+        choiceId: msgEvent.data.actions.length ? String(msgEvent.data.actions[0].data.choice_id) : null,
         requestFromPm: false,
         saveAndExitVariables: {}
     };
