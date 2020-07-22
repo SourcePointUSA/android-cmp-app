@@ -6,7 +6,7 @@ function handleEvent(event) {
             JSReceiver.onConsentUIReady(isFromPM(event));
             return;
         }
-        JSReceiver.onAction(JSON.stringify(consentData(event), null, 2));
+        JSReceiver.onAction(JSON.stringify(consentData(event)));
     } catch (err) {
         JSReceiver.log(err.stack);
     };
