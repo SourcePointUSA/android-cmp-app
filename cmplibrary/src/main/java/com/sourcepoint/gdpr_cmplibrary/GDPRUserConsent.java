@@ -63,7 +63,7 @@ public class GDPRUserConsent {
         }
     }
 
-    private ArrayList<String> json2StrArr(JSONArray jArray) throws JSONException {
+    protected ArrayList<String> json2StrArr(JSONArray jArray) throws JSONException {
         ArrayList<String> listData = new ArrayList();
         if (jArray != null) {
             for (int i=0;i<jArray.length();i++){

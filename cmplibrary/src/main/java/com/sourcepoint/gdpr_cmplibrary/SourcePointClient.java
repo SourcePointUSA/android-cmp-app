@@ -73,7 +73,7 @@ class SourcePointClient {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(LOG_TAG, "Failed to load resource " + url + " due to " +   "url load failure :  " + e.getMessage());
-                onLoadComplete.onFailure(new ConsentLibException(e, "Fail to send consent to: " + url));
+                onLoadComplete.onFailure(new ConsentLibException(e, "Fail to get message from: " + url));
             }
 
             @Override
@@ -84,17 +84,17 @@ class SourcePointClient {
                     onLoadComplete.onSuccess(messageJson);
                 }else {
                     Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + response.code() + ": " + response.message());
-                    onLoadComplete.onFailure(new ConsentLibException(response.message()));
+                    onLoadComplete.onFailure(new ConsentLibException("Fail to get message from: " + url));
                 }
             }
         });
     }
 
-    private String messageUrl(boolean isNative) {
+    String messageUrl(boolean isNative) {
         return isNative ? baseNativeMsgUrl : baseMsgUrl;
     }
 
-    private String customConsentsUrl(){
+    String customConsentsUrl(){
         return baseSendCustomConsentsUrl;
     }
 
@@ -116,11 +116,11 @@ class SourcePointClient {
             return params;
         } catch (JSONException e) {
             e.printStackTrace();
-            throw new ConsentLibException(e, "Error bulding message bodyJson in sourcePointClient");
+            throw new ConsentLibException(e, "Error building message bodyJson in sourcePointClient");
         }
     }
 
-    private String consentUrl(){
+    String consentUrl(){
         return baseSendConsentUrl;
     }
 
@@ -169,6 +169,9 @@ class SourcePointClient {
     }
 
     void sendCustomConsents(JSONObject params, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
+        if (hasLostInternetConnection())
+            throw new ConsentLibException.NoInternetConnectionException();
+
         String url = customConsentsUrl();
         try {
             params.put("requestUUID", getRequestUUID());
