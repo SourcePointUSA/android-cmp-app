@@ -42,7 +42,7 @@ public class StoreClient {
         this.pref = pref;
     }
 
-    public void setTCData(HashMap<String, Object> tcData){
+    public void setTCData(Map<String, Object> tcData){
         clearConsentData();
         for(String key : tcData.keySet()){
             if(tcData.get(key).getClass().equals(Integer.class)) editor.putInt(key, (Integer) tcData.get(key));
