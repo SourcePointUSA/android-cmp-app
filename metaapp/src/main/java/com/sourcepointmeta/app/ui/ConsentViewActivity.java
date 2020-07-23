@@ -140,8 +140,8 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     public void getConsentsFromConsentLib(GDPRUserConsent userConsent) {
         GDPRUserConsent consent = userConsent;
 
-        ArrayList<String> acceptedVendors = consent.acceptedVendors;
-        ArrayList<String> acceptedPurposes = consent.acceptedCategories;
+        ArrayList<String> acceptedVendors = new ArrayList<>(consent.acceptedVendors);
+        ArrayList<String> acceptedPurposes = new ArrayList<>(consent.acceptedCategories);
 
         if (acceptedVendors.size() > 0) {
             Consents vendorHeader = new Consents("0", "Accepted Vendor Consents Ids", "Header");

@@ -138,8 +138,8 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
 
     public void getConsentsFromConsentLib(GDPRUserConsent userConsent) {
 
-        ArrayList<String> acceptedVendors = userConsent.acceptedVendors;
-        ArrayList<String> acceptedPurposes = userConsent.acceptedCategories;
+        ArrayList<String> acceptedVendors = new ArrayList<>(userConsent.acceptedVendors);
+        ArrayList<String> acceptedPurposes = new ArrayList<>(userConsent.acceptedCategories);
 
         if (acceptedVendors.size() > 0) {
             Consents vendorHeader = new Consents("0", "Accepted Vendor Consents Ids", "Header");
