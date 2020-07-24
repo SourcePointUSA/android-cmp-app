@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 
 /**
@@ -340,17 +341,17 @@ public class GDPRConsentLib {
     }
 
     public void customConsentTo(
-            ArrayList<String> vendors,
-            ArrayList<String> categories,
-            ArrayList<String> legIntCategories
+            Collection<String> vendors,
+            Collection<String> categories,
+            Collection<String> legIntCategories
     ) {
         customConsentTo(vendors, categories, legIntCategories, onConsentReady);
     }
 
     public void customConsentTo(
-            ArrayList<String> vendors,
-            ArrayList<String> categories,
-            ArrayList<String> legIntCategories,
+            Collection<String> vendors,
+            Collection<String> categories,
+            Collection<String> legIntCategories,
             OnConsentReadyCallback onCustomConsentReady
     ) {
         try {
@@ -502,9 +503,9 @@ public class GDPRConsentLib {
     }
 
     private JSONObject paramsToSendCustomConsents(
-            ArrayList<String> vendors,
-            ArrayList<String> categories,
-            ArrayList<String> legIntCategories
+            Collection<String> vendors,
+            Collection<String> categories,
+            Collection<String> legIntCategories
     ) throws ConsentLibException {
         try {
             JSONObject params = new JSONObject();
