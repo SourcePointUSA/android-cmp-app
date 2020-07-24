@@ -3,8 +3,9 @@ package com.sourcepoint.gdpr_cmplibrary;
 import android.app.Activity;
 import android.content.Context;
 import android.os.CountDownTimer;
-import android.os.Handler;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,10 +15,15 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.robolectric.RobolectricTestRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
@@ -104,12 +110,19 @@ public class GDPRConsentLibTest {
         doNothing().when(timerMock).cancel();
     }
 
+    private void setSourcePointClientMock() throws ConsentLibException {
+        doNothing().when(sourcePointClientMock).sendConsent(any(JSONObject.class), any(GDPRConsentLib.OnLoadComplete.class));
+        doNothing().when(sourcePointClientMock).sendCustomConsents(any(JSONObject.class), any(GDPRConsentLib.OnLoadComplete.class));
+        doNothing().when(sourcePointClientMock).getMessage(anyBoolean(), anyString(), anyString(), anyString(), any(GDPRConsentLib.OnLoadComplete.class));
+    }
+
 
     @Before
     public void setUp() throws ConsentLibException {
         initMocks(this);
         setStoreClientMock();
         setTimerMock();
+        setSourcePointClientMock();
         lambdaCaptor = ArgumentCaptor.forClass(Runnable.class);
         lib = spy(new GDPRConsentLib(builderMock()){
             @Override
@@ -183,6 +196,21 @@ public class GDPRConsentLibTest {
     @Test
     public void onDefaultAction() {
         lib.onDefaultAction(consentActionMock);
-        verify(lib, atLeast(1)).closeView(any(),anyBoolean());
+        verify(lib).closeView(any(),anyBoolean());
+    }
+
+    @Test
+    public void customConsentTo() throws ConsentLibException, JSONException {
+        ArgumentCaptor<JSONObject> captor = ArgumentCaptor.forClass(JSONObject.class);
+        lib.customConsentTo(
+                new ArrayList(Arrays.asList("foo_vendor")),
+                new ArrayList(Arrays.asList("foo_category")),
+                new ArrayList(Arrays.asList("foo_legIntCategory"))
+        );
+        verify(sourcePointClientMock).sendCustomConsents(captor.capture(), any());
+        JSONObject requestParams = captor.getValue();
+        assertEquals("foo_vendor", requestParams.getJSONArray("vendors").get(0));
+        assertEquals("foo_category", requestParams.getJSONArray("categories").get(0));
+        assertEquals("foo_legIntCategory", requestParams.getJSONArray("legIntCategories").get(0));
     }
 }
