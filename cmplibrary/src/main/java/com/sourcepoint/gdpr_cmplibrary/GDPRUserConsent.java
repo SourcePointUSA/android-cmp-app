@@ -39,17 +39,23 @@ public class GDPRUserConsent {
     }
 
     public GDPRUserConsent(JSONObject jConsent, String uuid) throws ConsentLibException {
-        try {
-            jConsent.put("uuid", uuid);
-        } catch (JSONException e) {
-            throw new ConsentLibException(e, "Error parsing jConsent");
-        }
-        init(jConsent);
+        init(jConsent, uuid);
     }
 
     private void init(JSONObject jConsent) throws ConsentLibException {
+        String consentUUID;
         try {
-            uuid = jConsent.getString("uuid");
+            consentUUID = jConsent.getString("uuid");
+        } catch (JSONException e) {
+            throw new ConsentLibException(e, "No uuid found on jConsent");
+        }
+        init(jConsent, consentUUID);
+    }
+
+    private void init(JSONObject jConsent, String uuid) throws ConsentLibException {
+        try {
+            if(uuid == null) throw new IllegalArgumentException("uuid should not be null");
+            this.uuid = uuid;
             acceptedVendors = json2StrArr(jConsent.getJSONArray("acceptedVendors"));
             acceptedCategories = json2StrArr(jConsent.getJSONArray("acceptedCategories"));
             specialFeatures = json2StrArr(jConsent.getJSONArray("specialFeatures"));
