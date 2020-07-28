@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.CountDownTimer;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -17,13 +16,10 @@ import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
@@ -60,6 +56,9 @@ public class GDPRConsentLibTest {
     @Mock
     UIThreadHandler uiThreadHandlerMock;
 
+    @Mock
+    GDPRUserConsent gdprUserConsent;
+
     Boolean requestFromPM = false;
 
     @Captor
@@ -90,7 +89,7 @@ public class GDPRConsentLibTest {
         return builderMock(123, "example.com", 321, "abcd", activityMock);
     }
 
-    private void setStoreClientMock(){
+    private void setStoreClientMock() throws ConsentLibException {
         doReturn(null).when(storeClientMock).getAuthId();
         doReturn("").when(storeClientMock).getConsentString();
         doReturn("").when(storeClientMock).getConsentUUID();
@@ -103,6 +102,7 @@ public class GDPRConsentLibTest {
         doNothing().when(storeClientMock).clearAllData();
         doNothing().when(storeClientMock).clearConsentData();
         doNothing().when(storeClientMock).clearInternalData();
+        doReturn(gdprUserConsent).when(storeClientMock).getUserConsent();
     }
 
     private void setTimerMock(){
@@ -212,5 +212,10 @@ public class GDPRConsentLibTest {
         assertEquals("foo_vendor", requestParams.getJSONArray("vendors").get(0));
         assertEquals("foo_category", requestParams.getJSONArray("categories").get(0));
         assertEquals("foo_legIntCategory", requestParams.getJSONArray("legIntCategories").get(0));
+    }
+
+    @Test
+    public void getCachedUserConsent() throws ConsentLibException {
+        assertEquals(gdprUserConsent, lib.getCachedUserConsent() );
     }
 }
