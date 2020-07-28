@@ -583,6 +583,10 @@ public class GDPRConsentLib {
         storeClient.setUserConsents(userConsent);
     }
 
+    public GDPRUserConsent getCachedUserConsent() throws ConsentLibException {
+        return storeClient.getUserConsent();
+    }
+
     void consentFinished(OnConsentReadyCallback c) {
         mCountDownTimer.cancel();
         uiThreadHandler.postIfEnabled(() -> {
