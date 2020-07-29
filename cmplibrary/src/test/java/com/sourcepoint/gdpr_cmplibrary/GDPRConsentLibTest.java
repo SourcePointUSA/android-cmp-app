@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.CountDownTimer;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -17,13 +16,11 @@ import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
@@ -37,10 +34,10 @@ public class GDPRConsentLibTest {
 
     private GDPRConsentLib lib;
 
-    private ConsentAction consentActionMock = new ConsentAction(ActionTypes.ACCEPT_ALL.code, "foo", false, new JSONObject());
-    private ConsentAction consentActionMockPMDismiss = new ConsentAction(ActionTypes.PM_DISMISS.code, "foo", false, new JSONObject());
-    private ConsentAction consentActionMockMsgCancel = new ConsentAction(ActionTypes.MSG_CANCEL.code, "foo", false, new JSONObject());
-    private ConsentAction consentActionMockShowOptions = new ConsentAction(ActionTypes.SHOW_OPTIONS.code, "foo", false, new JSONObject());
+    private ConsentAction consentActionMock = new ConsentAction(ActionTypes.ACCEPT_ALL.code, "foo", null, false, new JSONObject());
+    private ConsentAction consentActionMockPMDismiss = new ConsentAction(ActionTypes.PM_DISMISS.code, "foo", null, false, new JSONObject());
+    private ConsentAction consentActionMockMsgCancel = new ConsentAction(ActionTypes.MSG_CANCEL.code, "foo", null, false, new JSONObject());
+    private ConsentAction consentActionMockShowOptions = new ConsentAction(ActionTypes.SHOW_OPTIONS.code, "foo", "foo_pmId", false, new JSONObject());
 
     @Mock
     Activity activityMock;
@@ -182,15 +179,15 @@ public class GDPRConsentLibTest {
         verify(lib).onMsgCancel(requestFromPM);
 
         lib.onAction(consentActionMockShowOptions);
-        verify(lib).onShowOptions();
+        verify(lib).onShowOptions("foo_pmId");
     }
 
     @Test
     public void onShowOptions() throws ConsentLibException {
-        lib.onShowOptions();
+        lib.onShowOptions("foo_pmId");
         verify(lib.uiThreadHandler).postIfEnabled(lambdaCaptor.capture());
         lambdaCaptor.getValue().run();
-        verify(lib.webView).loadConsentUIFromUrl(lib.pmUrl());
+        verify(lib.webView).loadConsentUIFromUrl(lib.pmUrl("foo_pmId"));
     }
 
     @Test
