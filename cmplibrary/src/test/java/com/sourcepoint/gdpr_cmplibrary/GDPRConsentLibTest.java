@@ -215,7 +215,7 @@ public class GDPRConsentLibTest {
     }
 
     @Test
-    public void getCachedUserConsent() throws ConsentLibException {
+    public void getCachedUserConsent()  {
         assertEquals(gdprUserConsent, lib.getCachedUserConsent() );
     }
 }
