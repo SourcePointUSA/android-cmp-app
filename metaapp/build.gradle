@@ -74,12 +74,12 @@ android {
             html.enabled = true
             csv.enabled false
         }
-        classDirectories = fileTree(
+        classDirectories.setFrom( fileTree(
                 dir: 'build/intermediates/classes/debug/com/com.sourcepoint.app',
                 excludes: androidExclusion
-        )
-        sourceDirectories = files('src/main/java/com.sourcepoint.app')
-        executionData = files('build/jacoco/testDebugUnitTest.exec')
+        ))
+        sourceDirectories.setFrom( files('src/main/java/com.sourcepoint.app'))
+        executionData.setFrom( files('build/jacoco/testDebugUnitTest.exec'))
     }
 
     task getCoverage(type: Exec, dependsOn: 'codeCoverageReport') {
