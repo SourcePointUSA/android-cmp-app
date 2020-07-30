@@ -41,5 +41,10 @@ describe("JSReceiver/EventHandler test cases:", () => {
         expect(JSReceiverMock.onAction).not.toBeCalled()
         handleEvents({...eventMocks.acceptAllFromMsg,choiceId:Number(eventMocks.acceptAllFromMsg.choiceId)})
         expect(JSReceiverMock.onAction).toBeCalledWith(JSON.stringify(expectedArgs.acceptAllFromMsg))
+    }),
+    it("showPm should have correct pmId", () => {
+        expect(JSReceiverMock.onAction).not.toBeCalled()
+        handleEvents(eventMocks.showOptions)
+        expect(JSReceiverMock.onAction).toBeCalledWith(JSON.stringify(expectedArgs.showOptions))
     })
 })

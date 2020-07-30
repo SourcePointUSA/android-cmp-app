@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.webkit.JavascriptInterface;
 import android.webkit.RenderProcessGoneDetail;
 import android.webkit.SslErrorHandler;
@@ -78,9 +77,8 @@ abstract public class ConsentWebView extends WebView {
         }
 
         private ConsentAction consentAction(JSONObject actionFromJS) throws ConsentLibException {
-            return new ConsentAction(getInt("actionType", actionFromJS), getString("choiceId", actionFromJS), CustomJsonParser.getBoolean("requestFromPm", actionFromJS), getJson("saveAndExitVariables", actionFromJS));
+            return new ConsentAction(getInt("actionType", actionFromJS), getString("choiceId", actionFromJS), getString("privacyManagerId", actionFromJS), CustomJsonParser.getBoolean("requestFromPm", actionFromJS), getJson("saveAndExitVariables", actionFromJS));
         }
-
     }
 
     public ConsentWebView(Context context) {
