@@ -572,7 +572,7 @@ public class GDPRConsentLib {
         closeCurrentMessageView(isPmOn);
         uiThreadHandler.postIfEnabled(() -> {
             GDPRConsentLib.this.onError.run(e);
-            uiThreadHandler.disable();
+            destroy();
         });
     }
 
@@ -588,11 +588,16 @@ public class GDPRConsentLib {
         mCountDownTimer.cancel();
         uiThreadHandler.postIfEnabled(() -> {
             c.run(userConsent);
-            uiThreadHandler.disable();
+            destroy();
         });
     }
 
     void consentFinished() {
         consentFinished(onConsentReady);
+    }
+
+    void destroy(){
+        uiThreadHandler.disable();
+        webView.destroy();
     }
 }
