@@ -20,10 +20,10 @@ public class StoreClient {
 
     public static final String AUTH_ID_KEY = "sp.gdpr.authId";
     public static final String DEFAULT_EMPTY_UUID = "";
-    private static final String CMP_SDK_ID_KEY = "IABTCF_CmpSdkID";
-    private static final int CMP_SDK_ID = 6;
-    private static final String CMP_SDK_VERSION_KEY = "IABTCF_CmpSdkVersion";
-    private static final int CMP_SDK_VERSION = 2;
+    public static final String CMP_SDK_ID_KEY = "IABTCF_CmpSdkID";
+    public static final int CMP_SDK_ID = 6;
+    public static final String CMP_SDK_VERSION_KEY = "IABTCF_CmpSdkVersion";
+    public static final int CMP_SDK_VERSION = 2;
 
     private SharedPreferences.Editor editor;
 
@@ -52,36 +52,31 @@ public class StoreClient {
     }
 
     public void setCmpSdkID(){
-        editor.putInt(CMP_SDK_ID_KEY, CMP_SDK_ID);
+        editor.putInt(CMP_SDK_ID_KEY, CMP_SDK_ID).commit();
     }
 
     public void setCmpSdkVersion(){
-        editor.putInt(CMP_SDK_VERSION_KEY, CMP_SDK_VERSION);
+        editor.putInt(CMP_SDK_VERSION_KEY, CMP_SDK_VERSION).commit();
     }
 
     public void setConsentUuid(String consentUuid){
-        editor.putString(CONSENT_UUID_KEY, consentUuid);
-        editor.commit();
+        editor.putString(CONSENT_UUID_KEY, consentUuid).commit();
     }
 
     public void setMetaData(String  metaData){
-        editor.putString(META_DATA_KEY, metaData);
-        editor.commit();
+        editor.putString(META_DATA_KEY, metaData).commit();
     }
 
     public void setAuthId(String authId){
-        editor.putString(AUTH_ID_KEY, authId);
-        editor.commit();
+        editor.putString(AUTH_ID_KEY, authId).commit();
     }
 
     public void setConsentString(String euconsent){
-        editor.putString(EU_CONSENT_KEY, euconsent);
-        editor.commit();
+        editor.putString(EU_CONSENT_KEY, euconsent).commit();
     }
 
     public void setUserConsents(GDPRUserConsent userConsent) throws JSONException, ConsentLibException {
-        editor.putString(USER_CONSENT_KEY, userConsent.toJsonObject().toString());
-        editor.commit();
+        editor.putString(USER_CONSENT_KEY, userConsent.toJsonObject().toString()).commit();
     }
 
     public String getMetaData() {
@@ -92,7 +87,11 @@ public class StoreClient {
         return pref.getString(CONSENT_UUID_KEY, DEFAULT_EMPTY_UUID);
     }
 
-    public GDPRUserConsent getUserConsent() throws ConsentLibException {
+    GDPRUserConsent getUserConsent() throws ConsentLibException {
+        return getUserConsent(pref);
+    }
+
+    public static GDPRUserConsent getUserConsent(SharedPreferences pref) throws ConsentLibException {
         try {
             String uStr = pref.getString(USER_CONSENT_KEY, null);
             return uStr != null ? new GDPRUserConsent(new JSONObject(uStr)) : new GDPRUserConsent();
@@ -115,11 +114,12 @@ public class StoreClient {
     }
 
     public void clearInternalData(){
-        editor.remove(CONSENT_UUID_KEY);
-        editor.remove(META_DATA_KEY);
-        editor.remove(EU_CONSENT_KEY);
-        editor.remove(AUTH_ID_KEY);
-        editor.commit();
+        editor
+            .remove(CONSENT_UUID_KEY)
+            .remove(META_DATA_KEY)
+            .remove(EU_CONSENT_KEY)
+            .remove(AUTH_ID_KEY)
+            .commit();
     }
 
     public HashMap getTCData(){
