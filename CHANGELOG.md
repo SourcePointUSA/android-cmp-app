@@ -1,3 +1,9 @@
+## 5.3.3 (August, 03, 2020)
+* change customConsentTo to Collection instead of ArrayList  #216
+* add static method StoreClient.getUserConsent() for getting cached user consents obj #225
+* fix webview memory leak from not calling android.Webview.destruct() #223
+
+
 ## 5.3.2 (July, 22, 2020)
 * fix choiceId passed as Number from JSReceiver (now aways passed as String)
 
