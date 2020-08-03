@@ -3,8 +3,8 @@ package com.sourcepoint.gdpr_cmplibrary;
 import android.app.Activity;
 import android.content.Context;
 import android.os.CountDownTimer;
-import android.os.Handler;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,8 +14,11 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.robolectric.RobolectricTestRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -31,10 +34,10 @@ public class GDPRConsentLibTest {
 
     private GDPRConsentLib lib;
 
-    private ConsentAction consentActionMock = new ConsentAction(ActionTypes.ACCEPT_ALL.code, "foo", false, new JSONObject());
-    private ConsentAction consentActionMockPMDismiss = new ConsentAction(ActionTypes.PM_DISMISS.code, "foo", false, new JSONObject());
-    private ConsentAction consentActionMockMsgCancel = new ConsentAction(ActionTypes.MSG_CANCEL.code, "foo", false, new JSONObject());
-    private ConsentAction consentActionMockShowOptions = new ConsentAction(ActionTypes.SHOW_OPTIONS.code, "foo", false, new JSONObject());
+    private ConsentAction consentActionMock = new ConsentAction(ActionTypes.ACCEPT_ALL.code, "foo", null, false, new JSONObject());
+    private ConsentAction consentActionMockPMDismiss = new ConsentAction(ActionTypes.PM_DISMISS.code, "foo", null, false, new JSONObject());
+    private ConsentAction consentActionMockMsgCancel = new ConsentAction(ActionTypes.MSG_CANCEL.code, "foo", null, false, new JSONObject());
+    private ConsentAction consentActionMockShowOptions = new ConsentAction(ActionTypes.SHOW_OPTIONS.code, "foo", "foo_pmId", false, new JSONObject());
 
     @Mock
     Activity activityMock;
@@ -104,12 +107,19 @@ public class GDPRConsentLibTest {
         doNothing().when(timerMock).cancel();
     }
 
+    private void setSourcePointClientMock() throws ConsentLibException {
+        doNothing().when(sourcePointClientMock).sendConsent(any(JSONObject.class), any(GDPRConsentLib.OnLoadComplete.class));
+        doNothing().when(sourcePointClientMock).sendCustomConsents(any(JSONObject.class), any(GDPRConsentLib.OnLoadComplete.class));
+        doNothing().when(sourcePointClientMock).getMessage(anyBoolean(), anyString(), anyString(), anyString(), any(GDPRConsentLib.OnLoadComplete.class));
+    }
+
 
     @Before
     public void setUp() throws ConsentLibException {
         initMocks(this);
         setStoreClientMock();
         setTimerMock();
+        setSourcePointClientMock();
         lambdaCaptor = ArgumentCaptor.forClass(Runnable.class);
         lib = spy(new GDPRConsentLib(builderMock()){
             @Override
@@ -169,20 +179,35 @@ public class GDPRConsentLibTest {
         verify(lib).onMsgCancel(requestFromPM);
 
         lib.onAction(consentActionMockShowOptions);
-        verify(lib).onShowOptions();
+        verify(lib).onShowOptions("foo_pmId");
     }
 
     @Test
     public void onShowOptions() throws ConsentLibException {
-        lib.onShowOptions();
+        lib.onShowOptions("foo_pmId");
         verify(lib.uiThreadHandler).postIfEnabled(lambdaCaptor.capture());
         lambdaCaptor.getValue().run();
-        verify(lib.webView).loadConsentUIFromUrl(lib.pmUrl());
+        verify(lib.webView).loadConsentUIFromUrl(lib.pmUrl("foo_pmId"));
     }
 
     @Test
     public void onDefaultAction() {
         lib.onDefaultAction(consentActionMock);
-        verify(lib, atLeast(1)).closeView(any(),anyBoolean());
+        verify(lib).closeView(any(),anyBoolean());
+    }
+
+    @Test
+    public void customConsentTo() throws ConsentLibException, JSONException {
+        ArgumentCaptor<JSONObject> captor = ArgumentCaptor.forClass(JSONObject.class);
+        lib.customConsentTo(
+                new ArrayList(Arrays.asList("foo_vendor")),
+                new ArrayList(Arrays.asList("foo_category")),
+                new ArrayList(Arrays.asList("foo_legIntCategory"))
+        );
+        verify(sourcePointClientMock).sendCustomConsents(captor.capture(), any());
+        JSONObject requestParams = captor.getValue();
+        assertEquals("foo_vendor", requestParams.getJSONArray("vendors").get(0));
+        assertEquals("foo_category", requestParams.getJSONArray("categories").get(0));
+        assertEquals("foo_legIntCategory", requestParams.getJSONArray("legIntCategories").get(0));
     }
 }

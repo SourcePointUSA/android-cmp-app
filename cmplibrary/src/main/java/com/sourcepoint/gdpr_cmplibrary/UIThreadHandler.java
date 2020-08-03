@@ -21,7 +21,7 @@ public class UIThreadHandler extends Handler {
     }
 
     public boolean postIfEnabled(Runnable r){
-        return isEnabled ? super.post(r) : false;
+        return isEnabled ? post(r) : false;
     }
 
 }

@@ -11,6 +11,7 @@ import org.robolectric.RobolectricTestRunner;
 import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_CONSENT_STRING;
 import static com.sourcepoint.gdpr_cmplibrary.StoreClient.DEFAULT_EMPTY_UUID;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 
@@ -158,6 +159,12 @@ public class GDPRUserConsentTest {
     }
 
     @Test
+    public void constructorShouldThrowExceptionForNoUUIDOnJConsent() {
+        ConsentLibException err = assertThrows(ConsentLibException.class, () -> new GDPRUserConsent(jsonConsentsMock));
+        assertEquals("No uuid found on jConsent", err.consentLibErrorMessage);
+    }
+
+    @Test
     public void tcDataFromToJSONObject() throws JSONException, ConsentLibException {
         JSONObject jsonObject = userConsent.toJsonObject();
         assertEquals(userConsent.TCData.get("IABTCF_CmpSdkID") , jsonObject.getJSONObject("TCData").get("IABTCF_CmpSdkID"));
@@ -175,11 +182,15 @@ public class GDPRUserConsentTest {
     }
 
     @Test
-    public void userConsentInitException() {
-        try{
-             new GDPRUserConsent(jsonConsentsMock, null);
-        }catch (ConsentLibException e){
-            assertEquals("Error parsing JSONObject to ConsentUser obj",e.consentLibErrorMessage);
-        }
+    public void constructorShouldThrowExceptionForNullUUID() {
+        ConsentLibException err = assertThrows(ConsentLibException.class, () ->  new GDPRUserConsent(jsonConsentsMock, null));
+        assertTrue(err.getCause().getMessage().contains("uuid should not be null"));
+        assertEquals("Error parsing JSONObject to ConsentUser obj", err.consentLibErrorMessage);
+    }
+
+    @Test
+    public void constructorShouldThrowExceptionForEmptyJSONObject() {
+        ConsentLibException err = assertThrows(ConsentLibException.class, () ->  new GDPRUserConsent(new JSONObject(), "foo_uuid"));
+        assertEquals("Error parsing JSONObject to ConsentUser obj", err.consentLibErrorMessage);
     }
 }

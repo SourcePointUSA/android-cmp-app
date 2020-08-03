@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import androidx.test.core.app.ApplicationProvider;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,20 +29,7 @@ public class StoreClientTest {
     public void setUp() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext());
         storeClient = new StoreClient(sharedPreferences);
-        editor = sharedPreferences.edit();
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    @Test
-    public void setConsentUuid() {
-        String consentUUID = "consentUUID";
-        storeClient.setConsentUuid(consentUUID);
-        assertTrue(sharedPreferences.contains(StoreClient.CONSENT_UUID_KEY));
-        editor.clear().commit();
-        assertFalse(sharedPreferences.contains(StoreClient.CONSENT_UUID_KEY));
+        editor = sharedPreferences.edit().clear();
     }
 
     @Test
@@ -59,57 +47,93 @@ public class StoreClientTest {
 
     @Test
     public void setMetaData() {
-        String metaData = "metaData";
-        storeClient.setMetaData(metaData);
-        assertTrue(sharedPreferences.contains(StoreClient.META_DATA_KEY));
-        editor.clear().commit();
         assertFalse(sharedPreferences.contains(StoreClient.META_DATA_KEY));
+        storeClient.setMetaData("metaData");
+        assertEquals("metaData" ,sharedPreferences.getString(StoreClient.META_DATA_KEY, null));
     }
 
     @Test
     public void setAuthId() {
-        String authId = "authId";
-        storeClient.setAuthId(authId);
-        assertTrue(sharedPreferences.contains(StoreClient.AUTH_ID_KEY));
-        editor.clear().commit();
         assertFalse(sharedPreferences.contains(StoreClient.AUTH_ID_KEY));
+        storeClient.setAuthId("authId");
+        assertEquals("authId" ,sharedPreferences.getString(StoreClient.AUTH_ID_KEY, null));
+    }
+
+    @Test
+    public void setConsentUuid() {
+        assertFalse(sharedPreferences.contains(StoreClient.CONSENT_UUID_KEY));
+        storeClient.setConsentUuid("foo_uuid");
+        assertEquals("foo_uuid" ,sharedPreferences.getString(StoreClient.CONSENT_UUID_KEY, null));
+    }
+
+    @Test
+    public void setCmpSdkID(){
+        assertFalse(sharedPreferences.contains(StoreClient.CMP_SDK_ID_KEY));
+        storeClient.setCmpSdkID();
+        assertEquals(StoreClient.CMP_SDK_ID, sharedPreferences.getInt(StoreClient.CMP_SDK_ID_KEY, -1));
+    }
+
+    @Test
+    public void setCmpSdkVersion(){
+        assertFalse(sharedPreferences.contains(StoreClient.CMP_SDK_VERSION_KEY));
+        storeClient.setCmpSdkVersion();
+        assertEquals(StoreClient.CMP_SDK_VERSION, sharedPreferences.getInt(StoreClient.CMP_SDK_VERSION_KEY, -1));
+    }
+
+    @Test
+    public void setConsentString() {
+        assertFalse(sharedPreferences.contains(StoreClient.EU_CONSENT_KEY));
+        storeClient.setConsentString("foo_str");
+        assertEquals("foo_str" ,sharedPreferences.getString(StoreClient.EU_CONSENT_KEY, null));
     }
 
     @Test
     public void getMetaData() {
-        String metaData = "metaData";
-        storeClient.setMetaData(metaData);
-        assertEquals(metaData,storeClient.getMetaData());
-        editor.clear().commit();
         assertFalse(sharedPreferences.contains(StoreClient.META_DATA_KEY));
+        assertEquals(StoreClient.DEFAULT_META_DATA, storeClient.getMetaData());
+        editor.putString(StoreClient.META_DATA_KEY, "metaData").commit();
+        assertEquals("metaData",storeClient.getMetaData());
     }
 
     @Test
     public void getConsentUUID() {
-        String consentUUID = "consentUUID";
-        storeClient.setConsentUuid(consentUUID);
-        assertEquals(consentUUID,storeClient.getConsentUUID());
-        editor.clear().commit();
         assertFalse(sharedPreferences.contains(StoreClient.CONSENT_UUID_KEY));
+        assertEquals(StoreClient.DEFAULT_EMPTY_UUID, storeClient.getConsentUUID());
+        editor.putString(StoreClient.CONSENT_UUID_KEY, "consentUUID").commit();
+        assertEquals("consentUUID",storeClient.getConsentUUID());
     }
 
     @Test
     public void getAuthId() {
-        String authId = "authId";
-        storeClient.setAuthId(authId);
-        assertEquals(authId,storeClient.getAuthId());
-        editor.clear().commit();
         assertFalse(sharedPreferences.contains(StoreClient.AUTH_ID_KEY));
+        assertEquals(StoreClient.DEFAULT_AUTH_ID, storeClient.getAuthId());
+        editor.putString(StoreClient.AUTH_ID_KEY, "authId").commit();
+        assertEquals("authId",storeClient.getAuthId());
+    }
+
+    @Test
+    public void getConsentString() {
+        assertFalse(sharedPreferences.contains(StoreClient.EU_CONSENT_KEY));
+        assertEquals(StoreClient.DEFAULT_EMPTY_CONSENT_STRING, storeClient.getConsentString());
+        editor.putString(StoreClient.EU_CONSENT_KEY, "authId").commit();
+        assertEquals("authId",storeClient.getConsentString());
     }
 
     @Test
     public void clearAllData() {
+        editor
+            .putString(StoreClient.CONSENT_UUID_KEY,"foo_uuid")
+            .putString(StoreClient.META_DATA_KEY,"foo_metadata")
+            .putString(StoreClient.EU_CONSENT_KEY,"foo_euconsent")
+            .putString(StoreClient.AUTH_ID_KEY,"foo_authId")
+            .putString(StoreClient.IABTCF_KEY_PREFIX+"foo_data","foo_IAB_data")
+            .commit();
         storeClient.clearAllData();
         assertFalse(sharedPreferences.contains(StoreClient.CONSENT_UUID_KEY));
         assertFalse(sharedPreferences.contains(StoreClient.META_DATA_KEY));
         assertFalse(sharedPreferences.contains(StoreClient.EU_CONSENT_KEY));
         assertFalse(sharedPreferences.contains(StoreClient.AUTH_ID_KEY));
-        assertFalse(sharedPreferences.contains(IAB_CONSENT_CONSENT_STRING));
+        assertFalse(sharedPreferences.contains(StoreClient.IABTCF_KEY_PREFIX+"foo_data"));
     }
 
     @Test
@@ -123,7 +147,7 @@ public class StoreClientTest {
 
 
     @Test
-    public void setTCDataAndcheckPrimitives() {
+    public void setTCDataAndCheckPrimitives() {
         editor.clear().commit();
 
         String keyForStringVlaue =  "IABTCF_String";
@@ -205,4 +229,12 @@ public class StoreClientTest {
         assertEquals(clientTCData.get(keyForStringVlaue).getClass(), String.class);
         assertEquals(clientTCData.get(keyForIntValue).getClass(), Integer.class);
     }
+
+    @Test
+    public void shouldThrowConsentLibExceptionWhenGettingInvalidUserConsent(){
+        editor.putString(StoreClient.USER_CONSENT_KEY, "{description:\"im not a valid UserConsent str ojb, sorry...\"}").commit();
+        ConsentLibException err = assertThrows(ConsentLibException.class, () -> storeClient.getUserConsent());
+        assertEquals("Error trying to recover UserConsents for sharedPrefs", err.consentLibErrorMessage);
+    }
+
 }

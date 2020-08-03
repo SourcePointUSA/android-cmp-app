@@ -1,7 +1,6 @@
 package com.sourcepointmeta.app;
 
-import android.app.Application;
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
 
 import com.sourcepointmeta.app.database.AppDataBase;
 import com.sourcepointmeta.app.repository.PropertyListRepository;

@@ -2,7 +2,6 @@ package com.sourcepoint.gdpr_cmplibrary;
 
 import android.content.Context;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -11,7 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 
 /**
@@ -231,7 +230,7 @@ public class GDPRConsentLib {
             Log.d(TAG, "onAction:  " + action.actionType + " + actionType");
             switch (action.actionType) {
                 case SHOW_OPTIONS:
-                    onShowOptions();
+                    onShowOptions(action.privacyManagerId);
                     break;
                 case PM_DISMISS:
                     onPmDismiss(action.requestFromPm);
@@ -289,8 +288,8 @@ public class GDPRConsentLib {
         return isNative ? nativeView : webView;
     }
 
-    public void onShowOptions() {
-        showPm();
+    public void onShowOptions(String privacyManagerId) {
+        showPm(privacyManagerId);
     }
 
     private void loadConsentUI(String url) {
@@ -319,10 +318,14 @@ public class GDPRConsentLib {
     }
 
     public void showPm() {
+        showPm(null);
+    }
+
+    public void showPm(String privacyManagerId) {
         try {
             mCountDownTimer.start();
             isPmOn = true;
-            loadConsentUI(pmUrl());
+            loadConsentUI(pmUrl(privacyManagerId));
         } catch (Exception e) {
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.showPm()"));
         }
@@ -340,17 +343,17 @@ public class GDPRConsentLib {
     }
 
     public void customConsentTo(
-            ArrayList<String> vendors,
-            ArrayList<String> categories,
-            ArrayList<String> legIntCategories
+            Collection<String> vendors,
+            Collection<String> categories,
+            Collection<String> legIntCategories
     ) {
         customConsentTo(vendors, categories, legIntCategories, onConsentReady);
     }
 
     public void customConsentTo(
-            ArrayList<String> vendors,
-            ArrayList<String> categories,
-            ArrayList<String> legIntCategories,
+            Collection<String> vendors,
+            Collection<String> categories,
+            Collection<String> legIntCategories,
             OnConsentReadyCallback onCustomConsentReady
     ) {
         try {
@@ -502,9 +505,9 @@ public class GDPRConsentLib {
     }
 
     private JSONObject paramsToSendCustomConsents(
-            ArrayList<String> vendors,
-            ArrayList<String> categories,
-            ArrayList<String> legIntCategories
+            Collection<String> vendors,
+            Collection<String> categories,
+            Collection<String> legIntCategories
     ) throws ConsentLibException {
         try {
             JSONObject params = new JSONObject();
@@ -552,12 +555,11 @@ public class GDPRConsentLib {
     }
 
 
-    String pmUrl() {
+    String pmUrl(String privacyManagerId) {
         HashSet<String> params = new HashSet<>();
-        params.add("message_id=" + pmId);
+        params.add("message_id=" + (privacyManagerId != null ? privacyManagerId : pmId));
         params.add("site_id="+ propertyId);
         if (consentUUID != null) params.add("consentUUID=" + consentUUID);
-
         return PM_BASE_URL + "?" + TextUtils.join("&", params);
     }
 
@@ -570,7 +572,7 @@ public class GDPRConsentLib {
         closeCurrentMessageView(isPmOn);
         uiThreadHandler.postIfEnabled(() -> {
             GDPRConsentLib.this.onError.run(e);
-            uiThreadHandler.disable();
+            destroy();
         });
     }
 
@@ -586,11 +588,16 @@ public class GDPRConsentLib {
         mCountDownTimer.cancel();
         uiThreadHandler.postIfEnabled(() -> {
             c.run(userConsent);
-            uiThreadHandler.disable();
+            destroy();
         });
     }
 
     void consentFinished() {
         consentFinished(onConsentReady);
+    }
+
+    void destroy(){
+        uiThreadHandler.disable();
+        webView.destroy();
     }
 }
