@@ -87,7 +87,6 @@ public class ConsentLibBuilderTest {
         assertEquals(builder.propertyConfig.propertyId, defaultConfig.propertyId);
         assertEquals(builder.propertyConfig.propertyName, defaultConfig.propertyName);
         assertEquals(builder.propertyConfig.pmId, defaultConfig.pmId);
-        assertFalse(builder.staging);
         assertTrue(builder.shouldCleanConsentOnError);
         assertEquals(builder.messageTimeOut, builder.DEFAULT_MESSAGE_TIMEOUT);
     }
@@ -135,19 +134,17 @@ public class ConsentLibBuilderTest {
     @Test
     public void setStage() {
         defaultBuilder.setStagingCampaign(true);
-        assertEquals(true, defaultBuilder.stagingCampaign);
-    }
-
-    @Test
-    public void setInternalStage() {
-        defaultBuilder.setInternalStage(true);
-        assertEquals(true, defaultBuilder.staging);
+        assertTrue(defaultBuilder.stagingCampaign);
+        defaultBuilder.setStagingCampaign(false);
+        assertFalse(defaultBuilder.stagingCampaign);
     }
 
     @Test
     public void setShouldCleanConsentOnError() {
         defaultBuilder.setShouldCleanConsentOnError(false);
-        assertEquals(false, defaultBuilder.shouldCleanConsentOnError);
+        assertFalse(defaultBuilder.shouldCleanConsentOnError);
+        defaultBuilder.setShouldCleanConsentOnError(true);
+        assertTrue(defaultBuilder.shouldCleanConsentOnError);
     }
 
     @Test
