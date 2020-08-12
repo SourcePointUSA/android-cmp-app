@@ -1,18 +1,24 @@
 package com.sourcepoint.example_app;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sourcepoint.gdpr_cmplibrary.ConsentLibException;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
+import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
+import com.sourcepoint.gdpr_cmplibrary.StoreClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewGroup mainViewGroup;
 
     private PropertyConfig config;
+    private boolean customConsentToCalled = false;
 
     private void showView(View view) {
         if(view.getParent() == null){
@@ -59,21 +66,10 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setOnConsentReady(consent -> {
                     Log.i(TAG, "onConsentReady");
-                    Log.i(TAG, "uuid: " + consent.uuid );
-                    Log.i(TAG, "consentString: " + consent.consentString);
-                    Log.i(TAG, "TCData: " + consent.TCData);
-                    Log.i(TAG, "vendorGrants: " + consent.vendorGrants);
-                    for (String vendorId : consent.acceptedVendors) {
-                        Log.i(TAG, "The vendor " + vendorId + " was accepted.");
-                    }
-                    for (String purposeId : consent.acceptedCategories) {
-                        Log.i(TAG, "The category " + purposeId + " was accepted.");
-                    }
-                    for (String purposeId : consent.legIntCategories) {
-                        Log.i(TAG, "The legIntCategory " + purposeId + " was accepted.");
-                    }
-                    for (String specialFeatureId : consent.specialFeatures) {
-                        Log.i(TAG, "The specialFeature " + specialFeatureId + " was accepted.");
+                    printConsent(consent);
+                    if(!customConsentToCalled){
+                        buildGDPRConsentLib().customConsentTo(Arrays.asList("5e4a5fbf26de4a77922b38a6"), Arrays.asList("5e87321eb31ef52cd96cc556"), Arrays.asList());
+                        customConsentToCalled = true;
                     }
                 })
                 .setOnError(error -> {
@@ -86,6 +82,25 @@ public class MainActivity extends AppCompatActivity {
                 .setOnMessageFinished(()-> Log.e(TAG, "Message Finished"))
                 .setOnAction(actionType  -> Log.e(TAG , "ActionType : "+actionType.toString()))
                 .build();
+    }
+
+    private void printConsent(GDPRUserConsent consent){
+        Log.i(TAG, "uuid: " + consent.uuid );
+        Log.i(TAG, "consentString: " + consent.consentString);
+        Log.i(TAG, "TCData: " + consent.TCData);
+        Log.i(TAG, "vendorGrants: " + consent.vendorGrants);
+        for (String vendorId : consent.acceptedVendors) {
+            Log.i(TAG, "The vendor " + vendorId + " was accepted.");
+        }
+        for (String purposeId : consent.acceptedCategories) {
+            Log.i(TAG, "The category " + purposeId + " was accepted.");
+        }
+        for (String purposeId : consent.legIntCategories) {
+            Log.i(TAG, "The legIntCategory " + purposeId + " was accepted.");
+        }
+        for (String specialFeatureId : consent.specialFeatures) {
+            Log.i(TAG, "The specialFeature " + specialFeatureId + " was accepted.");
+        }
     }
 
     private NativeMessage buildNativeMessage(){
@@ -111,6 +126,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "init");
+        try {
+            printConsent(StoreClient.getUserConsent(PreferenceManager.getDefaultSharedPreferences(this)));
+        } catch (ConsentLibException e) {
+            e.printStackTrace();
+        }
         buildGDPRConsentLib().run();
     }
 
