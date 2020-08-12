@@ -37,3 +37,4 @@ jobs:
         packageName: com.sourcepointmeta.metaapp
         releaseFile: metaapp/build/outputs/apk/release/GDPR-MetaApp-signed.apk
         track: production
+      
