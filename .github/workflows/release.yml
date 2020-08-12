@@ -1,7 +1,7 @@
 name: RELEASE
 on:
   push:
-    branches: [ master ]
+    branches: [ SP-4310_automate_meta_app_release_github_action ]
 jobs:
   build:
     name: Build APK and Create release

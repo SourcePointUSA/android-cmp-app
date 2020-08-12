@@ -2,14 +2,13 @@ evaluationDependsOn(':cmplibrary')
 apply plugin: 'com.android.application'
 apply plugin: 'org.sonarqube'
 apply plugin: 'jacoco'
-def code =  evaluate(project(':cmplibrary').version.toString().replaceAll("\\.", "+"))
 android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.sourcepointmeta.metaapp"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 1
+        versionCode 2
         versionName project(':cmplibrary').version
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
