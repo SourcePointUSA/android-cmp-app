@@ -334,8 +334,7 @@ public class MetaAppTests extends Utility{
     @Test
     public void checkConsentsOnMessageDismiss() {
         tapOnAddProperty();
-        addPropertyDetails();
-        addParameterWithAuthentication(TestData.keyParam, TestData.valueParamEnglish, NO_AUTHENTICATION);
+        addPropertyWith(ALL_FIELDS);
         tapOnSave();
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         chooseDismiss();

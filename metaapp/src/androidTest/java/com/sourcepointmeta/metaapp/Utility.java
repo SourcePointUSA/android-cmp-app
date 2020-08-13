@@ -11,6 +11,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -31,25 +32,62 @@ import static org.hamcrest.core.StringContains.containsString;
 public class Utility extends TestData {
     final CountDownLatch signal = new CountDownLatch(1);
 
-    public void tapOnAddProperty(){
+    public void tapOnAddProperty() {
         onView(allOf(withId(R.id.action_addProperty), withContentDescription("Add Property"), isDisplayed()))
                 .perform(click());
     }
 
     public void addPropertyFor(String messageType, String authentication) {
         tapOnAddProperty();
-        addPropertyDetails();
-        if(messageType.equals(SHOW_MESSAGE_ALWAYS))
-            addParameterWithAuthentication(TestData.keyParam, TestData.valueParamFrench, authentication);
+        addPropertyDetails(accountID, propertyID, propertyName, pmID);
+        if (messageType.equals(SHOW_MESSAGE_ALWAYS))
+            addParameterWithAuthentication(keyParam, valueParamFrench, authentication);
         else if (messageType.equals(SHOW_MESSAGE_ONCE))
-            addParameterWithAuthentication(TestData.keyParamShowOnce, TestData.valueParamShowOnce, authentication);
-        else if(messageType.equals(PM_AS_FIRST_LAYER_MESSAGE))
-            addParameterWithAuthentication(TestData.keyParamForPMAsMessage, TestData.valueParamForPMAsMessage, authentication);
-        chooseCampaign(TestData.campaign);
+            addParameterWithAuthentication(keyParamShowOnce, valueParamShowOnce, authentication);
+        else if (messageType.equals(PM_AS_FIRST_LAYER_MESSAGE))
+            addParameterWithAuthentication(keyParamForPMAsMessage, valueParamForPMAsMessage, authentication);
+        else if (messageType.equals(WRONG_CAMPAIGN))
+            chooseCampaign(campaign);
         tapOnSave();
     }
 
-    public void addParameterWithAuthentication(String key, String value, String authentication){
+    public void addPropertyWith(String field) {
+        if (field.equals(ALL_FIELDS)){
+            addPropertyDetails(accountID, propertyID, propertyName, pmID);
+            addParameterWithAuthentication(keyParam, valueParamEnglish, NO_AUTHENTICATION);}
+        else if (field.equals(ALL_FIELDS_BLANK))
+            addPropertyDetails("", "", "", "");
+        else if (field.equals(NO_ACCOUNT_ID))
+            addPropertyDetails("", propertyID, propertyName, pmID);
+        else if (field.equals(NO_PROPERTY_ID))
+            addPropertyDetails(accountID, "", propertyName, pmID);
+        else if (field.equals(NO_PROPERTY_NAME))
+            addPropertyDetails(accountID, propertyID, "", pmID);
+        else if (field.equals(NO_PM_ID))
+            addPropertyDetails(accountID, propertyID, propertyName, "");
+        else if (field.equals(NO_PARAMETER_KEY))
+            addParameterWithAuthentication("", valueParamFrench, NO_AUTHENTICATION);
+        else if (field.equals(NO_PARAMETER_VALUE))
+            addParameterWithAuthentication(keyParam, "", NO_AUTHENTICATION);
+        else if (field.equals(NO_PARAMETER_KEY_VALUE))
+            addParameterWithAuthentication("", "", NO_AUTHENTICATION);
+        else if (field.equals(WRONG_CAMPAIGN)){
+            addPropertyDetails(accountID, propertyID, propertyName, pmID);
+            chooseCampaign(STAGING_CAMPAIGN);}
+        else if (field.equals(WRONG_ACCOUNT_ID))
+            addPropertyDetails(accountID + "111", propertyID, propertyName, pmID);
+        else if (field.equals(WRONG_PROPERTY_ID))
+            addPropertyDetails(accountID, propertyID + "111", propertyName, pmID);
+        else if (field.equals(WRONG_PROPERTY_NAME))
+            addPropertyDetails(accountID, propertyID, propertyName + "111", pmID);
+        else if (field.equals(WRONG_PRIVACY_MANAGER))
+            addPropertyDetails(accountID, propertyID, propertyName, pmID + "111");
+    }
+
+    public void addParameterWithAuthentication(String key, String value, String authentication) {
+        if (!authentication.equals(NO_AUTHENTICATION)) {
+            addAuthentication(authentication);
+        }
         onView(allOf(withId(R.id.etKey), isDisplayed()))
                 .perform(clearText(), typeText(key), closeSoftKeyboard());
 
@@ -58,37 +96,34 @@ public class Utility extends TestData {
 
         onView(allOf(withId(R.id.btn_addParams), withText("Add"), isDisplayed()))
                 .perform(click());
-        if(!authentication.equals(NO_AUTHENTICATION)){
-            addAuthentication(authentication);
-        }
     }
 
     public void addAuthentication(String authentication) {
         if (authentication.equals(UNIQUE_AUTHENTICATION)) {
             onView(allOf(withId(R.id.etAuthID), isDisplayed()))
-                    .perform(clearText(), typeText(TestData.authID()), closeSoftKeyboard());
-        }else{
+                    .perform(clearText(), typeText(authID()), closeSoftKeyboard());
+        } else {
             onView(allOf(withId(R.id.etAuthID), isDisplayed()))
-                    .perform(clearText(), typeText(TestData.authIdValue), closeSoftKeyboard());
+                    .perform(clearText(), typeText(authIdValue), closeSoftKeyboard());
         }
     }
 
-    public void addPropertyDetails(){
+    public void addPropertyDetails(String accountId, String propertyId, String propertyName, String pmId) {
         onView(allOf(withId(R.id.etAccountID), isDisplayed()))
-                .perform(clearText(), typeText(TestData.accountID), closeSoftKeyboard());
+                .perform(clearText(), replaceText(accountId), closeSoftKeyboard());
 
         onView(allOf(withId(R.id.etPropertyId), isDisplayed()))
-                .perform(clearText(), typeText(TestData.propertyID), closeSoftKeyboard());
+                .perform(clearText(), replaceText(propertyId), closeSoftKeyboard());
 
         onView(allOf(withId(R.id.etPropertyName), isDisplayed()))
-                .perform(clearText(), typeText(TestData.propertyName), closeSoftKeyboard());
+                .perform(clearText(), replaceText(propertyName), closeSoftKeyboard());
 
         onView(allOf(withId(R.id.etPMId), isDisplayed()))
-                .perform(clearText(), typeText(TestData.pmID), closeSoftKeyboard());
+                .perform(clearText(), replaceText(pmId), closeSoftKeyboard());
     }
 
-    public void chooseCampaign(String option){
-        if(option.equals(STAGING_CAMPAIGN)) {
+    public void chooseCampaign(String option) {
+        if (option.equals(STAGING_CAMPAIGN)) {
             onView(allOf(withId(R.id.toggleStaging), isDisplayed()))
                     .perform(click());
         }
@@ -104,12 +139,12 @@ public class Utility extends TestData {
             onWebView().forceJavascriptEnabled().withElement(findElement(Locator.XPATH, "//button[contains('" + option + "',text())]"))
                     .perform(webScrollIntoView())
                     .perform(webClick());
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
-    public void chooseDismiss(){
+
+    public void chooseDismiss() {
         onWebView().forceJavascriptEnabled()
                 .withElement(findElement(Locator.CLASS_NAME, "message-stacksclose"))
                 .perform(webScrollIntoView())
@@ -128,23 +163,23 @@ public class Utility extends TestData {
             } catch (Exception e) {
                 i++;
             }
-        }while (i < 10) ;
+        } while (i < 10);
         return value;
     }
 
-    public boolean checkFor(String details){
+    public boolean checkFor(String details) {
         int i = 0;
         while (i++ < 10) {
             try {
-                if(details.equals(CONSENTS_ARE_DISPLAYED) || details.equals(PROPERTY_INFO_SCREEN))
+                if (details.equals(CONSENTS_ARE_DISPLAYED) || details.equals(PROPERTY_INFO_SCREEN))
                     onView(withId(R.id.consentRecyclerView)).check(matches(isDisplayed()));
-                if(details.equals(CONSENTS_ARE_NOT_DISPLAYED))
+                if (details.equals(CONSENTS_ARE_NOT_DISPLAYED))
                     onView(withId(R.id.tv_consentsNotAvailable)).check(matches(isDisplayed()));
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
                 try {
-                    signal.await(3 , TimeUnit.SECONDS);
+                    signal.await(3, TimeUnit.SECONDS);
                 } catch (Exception e1) {
                     e.printStackTrace();
                 }
@@ -170,37 +205,34 @@ public class Utility extends TestData {
 
     public void swipeAndChooseAction(String action, String field) {
         onView(allOf(withId(R.id.item_view), isDisplayed())).perform(swipeLeft());
-        if(action.equals(RESET_ACTION)) {
-                onView(allOf(withId(R.id.reset_button), isDisplayed())).perform(click());
-                onView(withText(field)).perform(scrollTo(), click());
+        if (action.equals(RESET_ACTION)) {
+            onView(allOf(withId(R.id.reset_button), isDisplayed())).perform(click());
+            onView(withText(field)).perform(scrollTo(), click());
+        } else if (action.equals(DELETE_ACTION)) {
+            onView(allOf(withId(R.id.delete_button), isDisplayed())).perform(click());
+            onView(withText(field)).perform(scrollTo(), click());
+        } else if (action.equals(EDIT_ACTION)) {
+            onView(allOf(withId(R.id.edit_button), isDisplayed())).perform(click());
+            if (field.equals(PARAM_VALUE)) {
+                addParameterWithAuthentication(keyParam, valueParamEnglish, NO_AUTHENTICATION);
+            } else {
+                addAuthentication(UNIQUE_AUTHENTICATION);
             }
-        else if(action.equals(DELETE_ACTION)) {
-                onView(allOf(withId(R.id.delete_button), isDisplayed())).perform(click());
-                onView(withText(field)).perform(scrollTo(), click());
-            }
-        else if(action.equals(EDIT_ACTION))
-            {
-                onView(allOf(withId(R.id.edit_button), isDisplayed())).perform(click());
-                if (field.equals(PARAM_VALUE)) {
-                    addParameterWithAuthentication(TestData.keyParam, TestData.valueParamEnglish, NO_AUTHENTICATION);
-                } else {
-                    addAuthentication(UNIQUE_AUTHENTICATION);
-                }
-                tapOnSave();
+            tapOnSave();
         }
     }
 
-    public boolean checkPropertyPresent(){
+    public boolean checkPropertyPresent() {
         try {
             onView(withId(R.id.item_view)).check(matches(isDisplayed()));
             return true;
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    public void selectConsents(String[] userConsentArray){
+    public void selectConsents(String[] userConsentArray) {
         for (String s : userConsentArray) {
             onWebView().forceJavascriptEnabled()
                     .withElement(findElement(Locator.XPATH, "//label[@aria-label='" + s + "']/span[@class='slider round']"))
@@ -209,7 +241,7 @@ public class Utility extends TestData {
         }
     }
 
-    public boolean checkConsentsAsSelected(String[] userConsentArray){
+    public boolean checkConsentsAsSelected(String[] userConsentArray) {
         boolean check = true;
         for (String s : userConsentArray) {
             try {
@@ -223,5 +255,22 @@ public class Utility extends TestData {
             }
         }
         return check;
+    }
+
+    public boolean checkErrorFor(String type) {
+        int i = 0;
+        boolean value = false;
+        do {
+            try {
+                signal.await(3, TimeUnit.SECONDS);
+                onView(allOf(withId(R.id.message), withText(type), isDisplayed()));
+                onView(withText("OK")).perform(click());
+                value = true;
+                break;
+            } catch (Exception e) {
+                i++;
+            }
+        } while (i < 10);
+        return value;
     }
 }

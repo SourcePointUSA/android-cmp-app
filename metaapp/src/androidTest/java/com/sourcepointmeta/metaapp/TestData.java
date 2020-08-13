@@ -57,4 +57,23 @@ public class TestData {
     public static String NO = "NO";
     public static String PARAM_VALUE = "param value";
     public static String STAGING_CAMPAIGN = "staging";
+    public static String PUBLIC_CAMPAIGN = "public";
+    public static String WRONG_CAMPAIGN = "public";
+    public static String ALL_FIELDS = "all fields";
+    public static String ALL_FIELDS_BLANK = "all fields blank";
+    public static String NO_ACCOUNT_ID = "account id blank";
+    public static String NO_PROPERTY_ID = "property id blank";
+    public static String NO_PROPERTY_NAME = "property name blank";
+    public static String NO_PM_ID = "pm id blank";
+    public static String NO_PARAMETER_KEY = "parameter key blank";
+    public static String NO_PARAMETER_VALUE = "parameter value blank";
+    public static String NO_PARAMETER_KEY_VALUE = "parameter key value blank";
+    public static String WRONG_ACCOUNT_ID =  "wrong account id";
+    public static String WRONG_PROPERTY_ID = "wrong property id";
+    public static String WRONG_PROPERTY_NAME = "wrong property name";
+    public static String WRONG_PRIVACY_MANAGER = "wrong privacy manager";
+    public static String MANDATORY_FIELDS = "Please enter Account ID, Property ID, Property Name, Privacy Manager ID";
+    public static String TARGETING_PARAMETER_FIELDS = "Please enter Account ID, Property ID, Property Name, Privacy Manager ID";
+    public static String PROPERTY_EXITS_ERROR = "Property details already exists.";
+    public static String UNABLE_TO_LOAD_PM_ERROR = "Unable to load PM, No response from SDK";
 }
