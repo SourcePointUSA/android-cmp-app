@@ -87,11 +87,12 @@ public class GDPRConsentLibTest {
         return builderMock(123, "example.com", 321, "abcd", activityMock);
     }
 
-    private void setStoreClientMock(){
+    private void setStoreClientMock() throws ConsentLibException {
         doReturn(null).when(storeClientMock).getAuthId();
         doReturn("").when(storeClientMock).getConsentString();
         doReturn("").when(storeClientMock).getConsentUUID();
         doReturn("").when(storeClientMock).getMetaData();
+        doReturn(new GDPRUserConsent()).when(storeClientMock).getUserConsent();
         doNothing().when(storeClientMock).setAuthId(anyString());
         doNothing().when(storeClientMock).setConsentString(anyString());
         doNothing().when(storeClientMock).setConsentUuid(anyString());
@@ -140,11 +141,12 @@ public class GDPRConsentLibTest {
     }
 
     @Test
-    public void run_followed_by_consentFinished(){
+    public void run_followed_by_consentFinished() throws JSONException, ConsentLibException {
         lib.run();
         verify(timerMock).start();
         lib.consentFinished();
-        verify(timerMock, atLeast(1)).cancel();
+        verify(timerMock).cancel();
+        verify(lib).storeData();
     }
 
     @Test

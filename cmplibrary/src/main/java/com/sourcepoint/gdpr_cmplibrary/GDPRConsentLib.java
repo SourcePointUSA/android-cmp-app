@@ -264,8 +264,14 @@ public class GDPRConsentLib {
     }
 
     public void onMsgCancel(boolean requestFromPM) {
-        closeCurrentMessageView(requestFromPM);
-        consentFinished();
+        try {
+            closeCurrentMessageView(requestFromPM);
+            consentFinished();
+        } catch (ConsentLibException e) {
+            onErrorTask(e);
+        } catch (Exception e) {
+            onErrorTask(new ConsentLibException(e, "Unexpect error on cancel action."));
+        }
     }
 
     protected void onPmDismiss(boolean requestFromPM) {
@@ -455,9 +461,6 @@ public class GDPRConsentLib {
 
     private JSONObject paramsToSendConsent(ConsentAction action) throws ConsentLibException {
         try {
-
-            Log.i("GDPR_UUID", "From sendConsentBody: " + consentUUID);
-
             JSONObject params = new JSONObject();
             params.put("accountId", accountId);
             params.put("propertyId", propertyId);
@@ -551,6 +554,7 @@ public class GDPRConsentLib {
         fullObj.put("acceptedCategories", customConsent.getJSONArray("categories"));
         fullObj.put("specialFeatures", customConsent.getJSONArray("specialFeatures"));
         fullObj.put("legIntCategories", customConsent.getJSONArray("legIntCategories"));
+        fullObj.put("vendorGrants", customConsent.getJSONObject("grants"));
         return fullObj;
     }
 
@@ -584,15 +588,16 @@ public class GDPRConsentLib {
         storeClient.setUserConsents(userConsent);
     }
 
-    void consentFinished(OnConsentReadyCallback c) {
+    void consentFinished(OnConsentReadyCallback c) throws JSONException, ConsentLibException {
         mCountDownTimer.cancel();
+        storeData();
         uiThreadHandler.postIfEnabled(() -> {
             c.run(userConsent);
             destroy();
         });
     }
 
-    void consentFinished() {
+    void consentFinished() throws JSONException, ConsentLibException {
         consentFinished(onConsentReady);
     }
 
