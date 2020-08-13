@@ -78,13 +78,13 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setOnError(error -> {
                     Log.e(TAG, "Something went wrong: ", error);
-                    Log.i(TAG, "ConsentLibErrorMessage: " + error.consentLibErrorMessage);
+                    Log.e(TAG, "ConsentLibErrorMessage: " + error.consentLibErrorMessage);
                 })
-                .setOnPMReady(()-> Log.e(TAG, "PM Ready"))
-                .setOnMessageReady(()-> Log.e(TAG, "Message Ready"))
-                .setOnPMFinished(()-> Log.e(TAG, "PM Finished"))
-                .setOnMessageFinished(()-> Log.e(TAG, "Message Finished"))
-                .setOnAction(actionType  -> Log.e(TAG , "ActionType : "+actionType.toString()))
+                .setOnPMReady(()-> Log.i(TAG, "PM Ready"))
+                .setOnMessageReady(()-> Log.i(TAG, "Message Ready"))
+                .setOnPMFinished(()-> Log.i(TAG, "PM Finished"))
+                .setOnMessageFinished(()-> Log.i(TAG, "Message Finished"))
+                .setOnAction(actionType  -> Log.i(TAG , "ActionType : "+actionType.toString()))
                 .build();
     }
 
