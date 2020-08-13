@@ -7,9 +7,7 @@ var {
 
 var handleEvents = require(eventHandlerRelativePath)
 
-afterEach(() => {
-    jest.clearAllMocks();
-});
+afterEach(jest.clearAllMocks)
 
 describe("JSReceiver/EventHandler test cases:", () => {
     it("showMessage", () => {
@@ -31,17 +29,17 @@ describe("JSReceiver/EventHandler test cases:", () => {
         expect(JSReceiverMock.onAction).not.toBeCalled()
         handleEvents(eventMocks.acceptAllFromMsg)
         expect(JSReceiverMock.onAction).toBeCalledWith(JSON.stringify(expectedArgs.acceptAllFromMsg))
-    }),
+    })
     it("acceptAll from message dialog (w/ choiceId:number)", () => {
         expect(JSReceiverMock.onAction).not.toBeCalled()
         handleEvents(eventMocks.acceptAllFromMsg)
         expect(JSReceiverMock.onAction).toBeCalledWith(JSON.stringify(expectedArgs.acceptAllFromMsg))
-    }),
+    })
     it("acceptAll from message dialog (w/ choiceId:string) ", () => {
         expect(JSReceiverMock.onAction).not.toBeCalled()
         handleEvents({...eventMocks.acceptAllFromMsg,choiceId:Number(eventMocks.acceptAllFromMsg.choiceId)})
         expect(JSReceiverMock.onAction).toBeCalledWith(JSON.stringify(expectedArgs.acceptAllFromMsg))
-    }),
+    })
     it("showPm should have correct pmId", () => {
         expect(JSReceiverMock.onAction).not.toBeCalled()
         handleEvents(eventMocks.showOptions)
