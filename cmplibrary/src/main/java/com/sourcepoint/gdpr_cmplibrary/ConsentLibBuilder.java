@@ -1,10 +1,8 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -30,7 +28,7 @@ public class ConsentLibBuilder {
     protected GDPRConsentLib.pmFinishedCallback pmFinished = () -> {};
     protected GDPRConsentLib.messageFinishedCallback messageFinished = () -> {};
     protected GDPRConsentLib.onActionCallback onAction = (ActionTypes a) -> {};
-    boolean staging, stagingCampaign, shouldCleanConsentOnError;
+    boolean stagingCampaign, shouldCleanConsentOnError;
 
     SourcePointClient sourcePointClient;
 
@@ -53,7 +51,7 @@ public class ConsentLibBuilder {
     private void init(Integer accountId, String propertyName, Integer propertyId , String pmId , Context context){
         //TODO: add a constructor method that takes PropertyConfig class as parameter
         propertyConfig = new PropertyConfig(accountId, propertyId, propertyName, pmId);
-        staging = stagingCampaign = false;
+        stagingCampaign = false;
         shouldCleanConsentOnError = true;
         messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
         this.context = context;
@@ -160,18 +158,6 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    /**
-     * <b>Optional</b> This parameter refers to SourcePoint's environment itself. True for staging
-     * or false for production. <b>Default:</b> false
-     * @param st - True for staging or false for production
-     * @return ConsentLibBuilder - the next build step
-     * @see ConsentLibBuilder
-     */
-    public ConsentLibBuilder setInternalStage(boolean st) {
-        staging = st;
-        return this;
-    }
-
     public ConsentLibBuilder setAuthId(String authId) {
         this.authId = authId;
         return this;
@@ -221,7 +207,6 @@ public class ConsentLibBuilder {
         return new SourcePointClientConfig(
                 propertyConfig,
                 stagingCampaign,
-                staging,
                 getTargetingParamsString(),
                 authId
         );

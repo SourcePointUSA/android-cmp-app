@@ -76,7 +76,7 @@ public class SourcePointClientTest {
     private SourcePointClientConfig getSourcePointClientConfig(){
 
         PropertyConfig propertyConfig = new PropertyConfig(123, 1234, "example.com","123221");
-        SourcePointClientConfig config = new SourcePointClientConfig(propertyConfig, false, false,"targetingParams","authId");
+        SourcePointClientConfig config = new SourcePointClientConfig(propertyConfig, false, "targetingParams","authId");
         return config;
     }
 

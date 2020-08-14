@@ -1,3 +1,8 @@
+## 5.3.4 (August, 14, 2020)
+* fix JS error being logged to console + nice and cozy JS code refactoring :100: #223
+* fix VendorGrants returned from customConsentTo do not reflecting new data #221 #230
+* remove deprecated `.setInternalStage(Boolean)` from builder
+
 ## 5.3.3 (August, 03, 2020)
 * change customConsentTo to Collection instead of ArrayList  #216
 * add static method StoreClient.getUserConsent() for getting cached user consents obj #225
