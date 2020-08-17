@@ -45,4 +45,9 @@ describe("JSReceiver/EventHandler test cases:", () => {
         handleEvents(eventMocks.showOptions)
         expect(JSReceiverMock.onAction).toBeCalledWith(JSON.stringify(expectedArgs.showOptions))
     })
+    it("should do nothing (and not throw error!!) on resizeMsg event", () => {
+        expect(JSReceiverMock.onAction).not.toBeCalled()
+        handleEvents(eventMocks.resizeMessage)
+        expect(JSReceiverMock.log).toBeCalledWith("Unexpected event name: " + eventMocks.resizeMessage.data.name)
+    })
 })

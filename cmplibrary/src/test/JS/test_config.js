@@ -11,20 +11,20 @@ var expectedArgs = {
       "foo": "bar",
     }
   },
-  acceptAllFromMsg: { 
-    "name": "sp.hideMessage", 
-    "actionType": 11, 
-    "choiceId": "1067098", 
-    "requestFromPm": false, 
-    "pmId":null,
-    "saveAndExitVariables": {} 
+  acceptAllFromMsg: {
+    "name": "sp.hideMessage",
+    "actionType": 11,
+    "choiceId": "1067098",
+    "requestFromPm": false,
+    "pmId": null,
+    "saveAndExitVariables": {}
   },
   showOptions: {
     "name": "sp.hideMessage",
     "actionType": 12,
     "choiceId": "1067098",
     "requestFromPm": false,
-    "pmId":"122058",
+    "pmId": "122058",
     "saveAndExitVariables": {}
   },
 }
@@ -157,6 +157,18 @@ var eventMocks = {
           "fontFamily": "tahoma,geneva,sans-serif"
         }
       }
+    }
+  },
+  resizeMessage: {
+      data: {
+      "name": "sp.resizeMessage",
+      "type": "bottom",
+      "height": 2203,
+      "heightSettings": {
+        "type": "auto",
+        "value": 1
+      },
+      "showVeil": false
     }
   }
 }
