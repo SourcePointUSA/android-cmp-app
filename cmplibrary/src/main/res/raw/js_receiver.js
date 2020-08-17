@@ -43,17 +43,23 @@ function notImplemented(callbackName) {
 function handleEvent(event) {
     var payload = event.data;
     var sdk = window.JSReceiver || {
-        onConsentUIReady: notImplemented('onCosentReady'),
+        onConsentUIReady: notImplemented('onConsentReady'),
         onAction: notImplemented('onAction'),
         onError: notImplemented('onError'),
         log: notImplemented('log')
     };
     try {
         sdk.log(JSON.stringify(payload));
-        if (payload.name === 'sp.showMessage')
-            sdk.onConsentUIReady(isFromPM(payload));
-        else
-            sdk.onAction(JSON.stringify(actionData(payload)));
+        switch (payload.name) {
+            case 'sp.showMessage':
+                sdk.onConsentUIReady(isFromPM(payload));
+                break;
+            case 'sp.hideMessage':
+                sdk.onAction(JSON.stringify(actionData(payload)));
+                break;
+            default:
+                sdk.log("Unexpected event name: " + payload.name);
+        }
     } catch (err) {
         sdk.onError(err.stack);
     }
