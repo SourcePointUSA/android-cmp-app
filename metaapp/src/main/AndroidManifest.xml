@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sourcepointmeta.app">
+    package="com.sourcepointmeta.metaapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".SourcepointApp"
+        android:name="com.sourcepointmeta.metaapp.SourcepointApp"
         android:allowBackup="true"
         android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.SplashScreenActivity"
+            android:name="com.sourcepointmeta.metaapp.ui.SplashScreenActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -23,14 +23,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.ConsentViewActivity"
+            android:name="com.sourcepointmeta.metaapp.ui.ConsentViewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.NewPropertyActivity"
+            android:name="com.sourcepointmeta.metaapp.ui.NewPropertyActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".ui.PropertyListActivity"
+            android:name="com.sourcepointmeta.metaapp.ui.PropertyListActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"></activity>
 
