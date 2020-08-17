@@ -2,8 +2,6 @@ package com.sourcepointmeta.metaapp;
 
 import androidx.test.espresso.web.webdriver.Locator;
 
-import com.sourcepointmeta.app.R;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
