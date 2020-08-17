@@ -3,7 +3,7 @@ package com.sourcepointmeta.metaapp;
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 import androidx.test.rule.ActivityTestRule;
 
-import com.sourcepointmeta.app.ui.SplashScreenActivity;
+import com.sourcepointmeta.metaapp.ui.SplashScreenActivity;
 
 import org.junit.Assert;
 import org.junit.Before;
