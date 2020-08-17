@@ -554,7 +554,7 @@ public class GDPRConsentLib {
         fullObj.put("acceptedCategories", customConsent.getJSONArray("categories"));
         fullObj.put("specialFeatures", customConsent.getJSONArray("specialFeatures"));
         fullObj.put("legIntCategories", customConsent.getJSONArray("legIntCategories"));
-        fullObj.put("vendorGrants", customConsent.getJSONObject("grants"));
+        fullObj.put("grants", customConsent.getJSONObject("grants"));
         return fullObj;
     }
 
