@@ -73,7 +73,7 @@ but the Node runtime.
 */
 try {
     module.exports = handleEvent;
-} catch {
+} catch (error){
   /* no-op */
 }
 
