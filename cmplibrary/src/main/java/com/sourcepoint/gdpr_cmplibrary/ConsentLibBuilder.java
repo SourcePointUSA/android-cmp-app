@@ -34,7 +34,6 @@ public class ConsentLibBuilder {
 
     String targetingParamsString = null;
     String authId = null;
-    GDPRConsentLib.DebugLevel debugLevel = GDPRConsentLib.DebugLevel.OFF;
     long messageTimeOut;
 
     StoreClient storeClient;
@@ -180,21 +179,6 @@ public class ConsentLibBuilder {
         return this;
     }
 
-
-
-    /**
-     * <b>Optional</b> Sets the DEBUG level.
-     * <i>(Not implemented yet)</i>
-     * <b>Default</b>{@link GDPRConsentLib.DebugLevel#DEBUG}
-     * @param l - one of the values of {@link GDPRConsentLib.DebugLevel#DEBUG}
-     * @return ConsentLibBuilder - the next build step
-     * @see ConsentLibBuilder
-     */
-    public ConsentLibBuilder setDebugLevel(GDPRConsentLib.DebugLevel l) {
-        debugLevel = l;
-        return this;
-    }
-
     String getTargetingParamsString() {
         return targetingParams.toString();
     }
@@ -214,10 +198,8 @@ public class ConsentLibBuilder {
 
     /**
      * Run internal tasks and build the GDPRConsentLib. This method will validate the
-     * data coming from the previous Builders and throw {@link ConsentLibException.BuildException}
-     * in case something goes wrong.
+     * data coming from the previous Builders
      * @return GDPRConsentLib | ConsentLibNoOp
-     * @throws ConsentLibException.BuildException - if any of the required data is missing or invalid
      */
     public GDPRConsentLib build() {
         return getConsentLib();

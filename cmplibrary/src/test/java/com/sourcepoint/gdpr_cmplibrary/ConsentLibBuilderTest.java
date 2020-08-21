@@ -207,10 +207,4 @@ public class ConsentLibBuilderTest {
 
         assertEquals(jsonObject.toString(), localMember.get(defaultBuilder).toString());
     }
-
-    @Test
-    public void setDebugLevel() {
-        defaultBuilder.setDebugLevel(GDPRConsentLib.DebugLevel.DEBUG);
-        assertEquals(GDPRConsentLib.DebugLevel.DEBUG, defaultBuilder.debugLevel);
-    }
 }

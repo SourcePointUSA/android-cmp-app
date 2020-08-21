@@ -30,9 +30,6 @@ public class GDPRConsentLib {
     String metaData;
     String euConsent;
 
-    public enum DebugLevel {DEBUG, OFF}
-
-
     public Boolean isSubjectToGdpr = null;
 
     public String consentUUID;
@@ -217,10 +214,6 @@ public class GDPRConsentLib {
                 GDPRConsentLib.this.onAction(action);
             }
 
-            @Override
-            public void onBackPressAction() {
-                GDPRConsentLib.this.onAction(ConsentAction.getEmptyDismissAction(isPmOn));
-            }
         };
     }
 
@@ -415,14 +408,12 @@ public class GDPRConsentLib {
     }
 
     private void runPMReady(){
-        if (this.pmReady != null)
-            uiThreadHandler.postIfEnabled(GDPRConsentLib.this.pmReady::run);
+        uiThreadHandler.postIfEnabled(GDPRConsentLib.this.pmReady::run);
         isPmOn = true;
     }
 
     private void runMessageReady(){
-        if (this.messageReady != null)
-            uiThreadHandler.postIfEnabled(GDPRConsentLib.this.messageReady::run);
+        uiThreadHandler.postIfEnabled(GDPRConsentLib.this.messageReady::run);
     }
 
     public void closeAllViews(boolean requestFromPM) {
@@ -450,13 +441,11 @@ public class GDPRConsentLib {
     }
 
     private void runPMFinished(){
-        if (this.pmFinished != null)
-            uiThreadHandler.postIfEnabled(this.pmFinished::run);
+        uiThreadHandler.postIfEnabled(this.pmFinished::run);
     }
 
     private void runMessageFinished(){
-        if (this.messageFinished != null)
-            uiThreadHandler.postIfEnabled(this.messageFinished::run);
+        uiThreadHandler.postIfEnabled(this.messageFinished::run);
     }
 
     private JSONObject paramsToSendConsent(ConsentAction action) throws ConsentLibException {
