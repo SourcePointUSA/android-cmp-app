@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -206,5 +207,30 @@ public class ConsentLibBuilderTest {
         jsonObject.put(key, stringValue);
 
         assertEquals(jsonObject.toString(), localMember.get(defaultBuilder).toString());
+    }
+
+    @Test
+    public void nullCheckPMReadyCallback(){
+        assertNotNull(defaultBuilder.pmReady);
+    }
+
+    @Test
+    public void nullCheckPMFinishedCallback(){
+        assertNotNull(defaultBuilder.pmFinished);
+    }
+
+    @Test
+    public void nullCheckMessageReadyCallback(){
+        assertNotNull(defaultBuilder.messageReady);
+    }
+
+    @Test
+    public void nullCheckMessageFinishedCallback(){
+        assertNotNull(defaultBuilder.messageFinished);
+    }
+
+    @Test
+    public void nullCheckOnActionCallback(){
+        assertNotNull(defaultBuilder.onAction);
     }
 }
