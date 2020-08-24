@@ -43,7 +43,7 @@ function notImplemented(callbackName) {
 function handleEvent(event) {
     var payload = event.data;
     var sdk = window.JSReceiver || {
-        onConsentUIReady: notImplemented('onConsentReady'),
+        onConsentUIReady: notImplemented('onConsentUIReady'),
         onAction: notImplemented('onAction'),
         onError: notImplemented('onError'),
         log: notImplemented('log')
@@ -73,7 +73,7 @@ but the Node runtime.
 */
 try {
     module.exports = handleEvent;
-} catch {
+} catch (error){
   /* no-op */
 }
 
