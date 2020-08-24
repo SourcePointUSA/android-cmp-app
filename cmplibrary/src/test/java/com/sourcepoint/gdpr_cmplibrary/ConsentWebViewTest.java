@@ -31,9 +31,6 @@ public class ConsentWebViewTest {
 
             @Override
             public void onAction(ConsentAction action) {  }
-
-            @Override
-            public void onBackPressAction() {  }
         };
         spyView = spy(consentWebView);
     }
