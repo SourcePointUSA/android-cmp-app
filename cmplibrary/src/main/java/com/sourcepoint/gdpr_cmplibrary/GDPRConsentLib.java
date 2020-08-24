@@ -563,10 +563,8 @@ public class GDPRConsentLib {
         }
         mCountDownTimer.cancel();
         closeCurrentMessageView(isPmOn);
-        uiThreadHandler.postIfEnabled(() -> {
-            GDPRConsentLib.this.onError.run(e);
-            destroy();
-        });
+        uiThreadHandler.postIfEnabled(() -> GDPRConsentLib.this.onError.run(e));
+        destroy();
     }
 
     void storeData() throws JSONException, ConsentLibException {
@@ -580,10 +578,8 @@ public class GDPRConsentLib {
     void consentFinished(OnConsentReadyCallback c) throws JSONException, ConsentLibException {
         mCountDownTimer.cancel();
         storeData();
-        uiThreadHandler.postIfEnabled(() -> {
-            c.run(userConsent);
-            destroy();
-        });
+        uiThreadHandler.postIfEnabled(() -> c.run(userConsent));
+        destroy();
     }
 
     void consentFinished() throws JSONException, ConsentLibException {
@@ -591,7 +587,7 @@ public class GDPRConsentLib {
     }
 
     void destroy(){
+        uiThreadHandler.post(webView::destroy);
         uiThreadHandler.disable();
-        webView.destroy();
     }
 }
