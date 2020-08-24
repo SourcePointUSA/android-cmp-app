@@ -1,3 +1,6 @@
+## 5.3.7 (August, 24, 2020)
+* fix syntax error on JSReceiver in order to prevent webview JS error on api 23 and bellow
+
 ## 5.3.6 (August, 17, 2020)
 * fix VendorGrants returned from customConsentTo do not reflecting new data #221 #230
 
