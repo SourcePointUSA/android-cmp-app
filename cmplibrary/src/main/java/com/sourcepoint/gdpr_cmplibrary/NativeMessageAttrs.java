@@ -53,8 +53,15 @@ public class NativeMessageAttrs {
         Style(JSONObject styleJSON) throws ConsentLibException {
             fontFamily = getString("fontFamily", styleJSON);
             fontSize = getInt("fontSize", styleJSON);
-            color = Color.parseColor(getString("color", styleJSON));
-            backgroundColor = Color.parseColor(getString("backgroundColor", styleJSON));
+            color = Color.parseColor(getSixDigitHexValue(getString("color", styleJSON)));
+            backgroundColor = Color.parseColor(getSixDigitHexValue(getString("backgroundColor", styleJSON)));
+        }
+
+        private String getSixDigitHexValue(String colorString){
+            String value = colorString;
+            if (value.length() == 4)
+                value = value.replaceAll("#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])", "#$1$1$2$2$3$3");
+            return value;
         }
     }
 
