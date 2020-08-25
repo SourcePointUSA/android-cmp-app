@@ -245,8 +245,8 @@ public class GDPRConsentLib {
             try {
                 nativeView.setCallBacks(this);
                 nativeView.setAttributes(new NativeMessageAttrs(msgJson));
-            } catch (ConsentLibException e) {
-                onErrorTask(e);
+            } catch (Exception e) {
+                onErrorTask(new ConsentLibException(e.getMessage()));
             }
         });
     }
