@@ -388,6 +388,8 @@ public class GDPRConsentLib {
                         storeData();
                         consentFinished();
                     }
+                } catch (ConsentLibException e) {
+                    onErrorTask(e);
                 } catch (Exception e) {
                     onErrorTask(new ConsentLibException(e, "Error trying to parse response from getConsents."));
                 }
@@ -483,6 +485,8 @@ public class GDPRConsentLib {
                         userConsent = new GDPRUserConsent(jsonUserConsent, consentUUID);
                         storeData();
                         consentFinished();
+                    } catch (ConsentLibException e) {
+                        onErrorTask(e);
                     } catch (Exception e) {
                         onErrorTask(new ConsentLibException(e, "Error trying to parse response from sendConsents."));
                     }
