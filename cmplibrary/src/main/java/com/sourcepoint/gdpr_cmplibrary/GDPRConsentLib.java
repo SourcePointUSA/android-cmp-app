@@ -297,6 +297,8 @@ public class GDPRConsentLib {
         uiThreadHandler.postIfEnabled(() -> {
             try {
                 webView.loadConsentUIFromUrl(url);
+            } catch(ConsentLibException e) {
+                onErrorTask(e);
             } catch (Exception e) {
                 onErrorTask(new ConsentLibException(e, "Error trying to load url to webview: " + url));
             }
