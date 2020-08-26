@@ -30,9 +30,6 @@ public class GDPRConsentLib {
     String metaData;
     String euConsent;
 
-    public enum DebugLevel {DEBUG, OFF}
-
-
     public Boolean isSubjectToGdpr = null;
 
     public String consentUUID;
@@ -217,10 +214,6 @@ public class GDPRConsentLib {
                 GDPRConsentLib.this.onAction(action);
             }
 
-            @Override
-            public void onBackPressAction() {
-                GDPRConsentLib.this.onAction(ConsentAction.getEmptyDismissAction(isPmOn));
-            }
         };
     }
 
@@ -248,12 +241,14 @@ public class GDPRConsentLib {
     }
 
     private void setNativeMessageView(JSONObject msgJson) {
-        uiThreadHandler.postIfEnabled(() -> {
+        uiThreadHandler.post(() -> {
             try {
                 nativeView.setCallBacks(this);
                 nativeView.setAttributes(new NativeMessageAttrs(msgJson));
             } catch (ConsentLibException e) {
                 onErrorTask(e);
+            } catch (Exception e) {
+                onErrorTask(new ConsentLibException(e, "Unexpected error trying to setNativeMsg attributes"));
             }
         });
     }
@@ -302,6 +297,8 @@ public class GDPRConsentLib {
         uiThreadHandler.postIfEnabled(() -> {
             try {
                 webView.loadConsentUIFromUrl(url);
+            } catch(ConsentLibException e) {
+                onErrorTask(e);
             } catch (Exception e) {
                 onErrorTask(new ConsentLibException(e, "Error trying to load url to webview: " + url));
             }
@@ -318,6 +315,8 @@ public class GDPRConsentLib {
         try {
             mCountDownTimer.start();
             renderMsgAndSaveConsent();
+        } catch (ConsentLibException e) {
+            onErrorTask(e);
         } catch (Exception e) {
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.run()"));
         }
@@ -343,8 +342,10 @@ public class GDPRConsentLib {
             nativeView = v;
             isNative = true;
             renderMsgAndSaveConsent();
+        } catch (ConsentLibException e) {
+            onErrorTask(e);
         } catch (Exception e) {
-            onErrorTask(new ConsentLibException(e, "Error trying to load pm URL."));
+            onErrorTask(new ConsentLibException(e, "Unexpected error trying to run Native Message"));
         }
     }
 
@@ -393,6 +394,8 @@ public class GDPRConsentLib {
                         storeData();
                         consentFinished();
                     }
+                } catch (ConsentLibException e) {
+                    onErrorTask(e);
                 } catch (Exception e) {
                     onErrorTask(new ConsentLibException(e, "Error trying to parse response from getConsents."));
                 }
@@ -415,14 +418,12 @@ public class GDPRConsentLib {
     }
 
     private void runPMReady(){
-        if (this.pmReady != null)
-            uiThreadHandler.postIfEnabled(GDPRConsentLib.this.pmReady::run);
+        uiThreadHandler.postIfEnabled(GDPRConsentLib.this.pmReady::run);
         isPmOn = true;
     }
 
     private void runMessageReady(){
-        if (this.messageReady != null)
-            uiThreadHandler.postIfEnabled(GDPRConsentLib.this.messageReady::run);
+        uiThreadHandler.postIfEnabled(GDPRConsentLib.this.messageReady::run);
     }
 
     public void closeAllViews(boolean requestFromPM) {
@@ -450,13 +451,11 @@ public class GDPRConsentLib {
     }
 
     private void runPMFinished(){
-        if (this.pmFinished != null)
-            uiThreadHandler.postIfEnabled(this.pmFinished::run);
+        uiThreadHandler.postIfEnabled(this.pmFinished::run);
     }
 
     private void runMessageFinished(){
-        if (this.messageFinished != null)
-            uiThreadHandler.postIfEnabled(this.messageFinished::run);
+        uiThreadHandler.postIfEnabled(this.messageFinished::run);
     }
 
     private JSONObject paramsToSendConsent(ConsentAction action) throws ConsentLibException {
@@ -492,6 +491,8 @@ public class GDPRConsentLib {
                         userConsent = new GDPRUserConsent(jsonUserConsent, consentUUID);
                         storeData();
                         consentFinished();
+                    } catch (ConsentLibException e) {
+                        onErrorTask(e);
                     } catch (Exception e) {
                         onErrorTask(new ConsentLibException(e, "Error trying to parse response from sendConsents."));
                     }
@@ -574,10 +575,8 @@ public class GDPRConsentLib {
         }
         mCountDownTimer.cancel();
         closeCurrentMessageView(isPmOn);
-        uiThreadHandler.postIfEnabled(() -> {
-            GDPRConsentLib.this.onError.run(e);
-            destroy();
-        });
+        uiThreadHandler.postIfEnabled(() -> GDPRConsentLib.this.onError.run(e));
+        destroy();
     }
 
     void storeData() throws JSONException, ConsentLibException {
@@ -591,10 +590,8 @@ public class GDPRConsentLib {
     void consentFinished(OnConsentReadyCallback c) throws JSONException, ConsentLibException {
         mCountDownTimer.cancel();
         storeData();
-        uiThreadHandler.postIfEnabled(() -> {
-            c.run(userConsent);
-            destroy();
-        });
+        uiThreadHandler.postIfEnabled(() -> c.run(userConsent));
+        destroy();
     }
 
     void consentFinished() throws JSONException, ConsentLibException {
@@ -602,7 +599,7 @@ public class GDPRConsentLib {
     }
 
     void destroy(){
+        uiThreadHandler.post(webView::destroy);
         uiThreadHandler.disable();
-        webView.destroy();
     }
 }

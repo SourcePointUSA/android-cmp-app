@@ -7,13 +7,6 @@ public class ConsentLibException extends Exception {
     ConsentLibException(Throwable e, String  message){ super(e); consentLibErrorMessage = message;}
     ConsentLibException(String  message){ super(); consentLibErrorMessage = message;}
 
-    public static class BuildException extends ConsentLibException {
-        public static final String description = "Error during ConsentLib build";
-
-        BuildException(Throwable e, String message) { super(e, description + ": " + message); }
-        BuildException(String message) { super(description + ": " + message); }
-    }
-
     public static class NoInternetConnectionException extends ConsentLibException {
         public static final String description = "The device is not connected to the internet.";
 

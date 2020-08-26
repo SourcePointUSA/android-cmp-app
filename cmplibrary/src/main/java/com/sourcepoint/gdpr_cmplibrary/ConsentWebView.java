@@ -110,7 +110,6 @@ abstract public class ConsentWebView extends WebView {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                //view.loadUrl("javascript:" + "addEventListener('message', SDK.onEvent('oie'))");
                 try {
                     view.loadUrl("javascript:" + getFileContent(getResources().openRawResource(R.raw.js_receiver)));
                 } catch (IOException e) {
@@ -171,8 +170,6 @@ abstract public class ConsentWebView extends WebView {
     abstract public void onError(ConsentLibException error);
 
     abstract public void onAction(ConsentAction action);
-
-    abstract public void onBackPressAction();
 
     public void loadConsentUIFromUrl(String url) throws ConsentLibException {
         if (hasLostInternetConnection())

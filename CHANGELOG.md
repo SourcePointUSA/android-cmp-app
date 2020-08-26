@@ -1,3 +1,10 @@
+## 5.3.8 (August, 26, 2020)
+* fix parsing error on native msg causing app crash #249
+* fix onError called twice on some cases #246
+* fix network exceptions with different structures on different cases #235
+* fix `ConsentLibException.BuildException` not used in code #187
+
+
 ## 5.3.7 (August, 24, 2020)
 * fix syntax error on JSReceiver in order to prevent webview JS error on api 23 and bellow
 

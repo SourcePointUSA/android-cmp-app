@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -209,8 +210,27 @@ public class ConsentLibBuilderTest {
     }
 
     @Test
-    public void setDebugLevel() {
-        defaultBuilder.setDebugLevel(GDPRConsentLib.DebugLevel.DEBUG);
-        assertEquals(GDPRConsentLib.DebugLevel.DEBUG, defaultBuilder.debugLevel);
+    public void nullCheckPMReadyCallback(){
+        assertNotNull(defaultBuilder.pmReady);
+    }
+
+    @Test
+    public void nullCheckPMFinishedCallback(){
+        assertNotNull(defaultBuilder.pmFinished);
+    }
+
+    @Test
+    public void nullCheckMessageReadyCallback(){
+        assertNotNull(defaultBuilder.messageReady);
+    }
+
+    @Test
+    public void nullCheckMessageFinishedCallback(){
+        assertNotNull(defaultBuilder.messageFinished);
+    }
+
+    @Test
+    public void nullCheckOnActionCallback(){
+        assertNotNull(defaultBuilder.onAction);
     }
 }
