@@ -241,12 +241,14 @@ public class GDPRConsentLib {
     }
 
     private void setNativeMessageView(JSONObject msgJson) {
-        uiThreadHandler.postIfEnabled(() -> {
+        uiThreadHandler.post(() -> {
             try {
                 nativeView.setCallBacks(this);
                 nativeView.setAttributes(new NativeMessageAttrs(msgJson));
+            } catch (ConsentLibException e) {
+                onErrorTask(e);
             } catch (Exception e) {
-                onErrorTask(new ConsentLibException(e.getMessage()));
+                onErrorTask(new ConsentLibException(e, "Unexpected error trying to setNativeMsg attributes"));
             }
         });
     }
