@@ -30,6 +30,11 @@ public class ConsentWebViewTest {
             public void onError(ConsentLibException error) {  }
 
             @Override
+            public void onNoIntentActivitiesFoundFor(String url) {
+
+            }
+
+            @Override
             public void onAction(ConsentAction action) {  }
         };
         spyView = spy(consentWebView);
