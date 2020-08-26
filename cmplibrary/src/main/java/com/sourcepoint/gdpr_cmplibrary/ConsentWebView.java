@@ -174,6 +174,8 @@ abstract public class ConsentWebView extends WebView {
 
     abstract public void onError(ConsentLibException error);
 
+    abstract public void onNoIntentActivitiesFoundFor(String url);
+
     abstract public void onAction(ConsentAction action);
 
     public void loadConsentUIFromUrl(String url) throws ConsentLibException {
@@ -216,8 +218,8 @@ abstract public class ConsentWebView extends WebView {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PackageManager m = getContext().getPackageManager();
         List<ResolveInfo> l = m.queryIntentActivities(intent, m.MATCH_DEFAULT_ONLY);
-        if(l.size() != 0)
-            getContext().startActivity(intent);
+        if(l.size() != 0) getContext().startActivity(intent);
+        else onNoIntentActivitiesFoundFor(url);
     }
 
     private boolean hasLostInternetConnection() {
