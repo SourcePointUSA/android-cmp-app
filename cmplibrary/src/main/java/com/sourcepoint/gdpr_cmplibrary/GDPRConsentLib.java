@@ -313,6 +313,8 @@ public class GDPRConsentLib {
         try {
             mCountDownTimer.start();
             renderMsgAndSaveConsent();
+        } catch (ConsentLibException e) {
+            onErrorTask(e);
         } catch (Exception e) {
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.run()"));
         }
@@ -338,8 +340,10 @@ public class GDPRConsentLib {
             nativeView = v;
             isNative = true;
             renderMsgAndSaveConsent();
+        } catch (ConsentLibException e) {
+            onErrorTask(e);
         } catch (Exception e) {
-            onErrorTask(new ConsentLibException(e, "Error trying to load pm URL."));
+            onErrorTask(new ConsentLibException(e, "Unexpected error trying to run Native Message"));
         }
     }
 
