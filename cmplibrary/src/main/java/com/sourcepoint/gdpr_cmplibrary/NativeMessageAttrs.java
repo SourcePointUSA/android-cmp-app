@@ -58,10 +58,9 @@ public class NativeMessageAttrs {
         }
 
         private String getSixDigitHexValue(String colorString){
-            String value = colorString;
-            if (value.length() == 4)
-                value = value.replaceAll("#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])", "#$1$1$2$2$3$3");
-            return value;
+            if (colorString.length() == 4)
+                return colorString.replaceAll("#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])", "#$1$1$2$2$3$3");
+            return colorString;
         }
     }
 
