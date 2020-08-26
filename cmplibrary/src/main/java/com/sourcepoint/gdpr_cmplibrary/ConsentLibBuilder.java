@@ -9,6 +9,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.RunnableFuture;
+
 import okhttp3.OkHttpClient;
 
 @SuppressWarnings("unused")
@@ -27,7 +29,8 @@ public class ConsentLibBuilder {
     protected GDPRConsentLib.messageReadyCallback messageReady = () -> {};
     protected GDPRConsentLib.pmFinishedCallback pmFinished = () -> {};
     protected GDPRConsentLib.messageFinishedCallback messageFinished = () -> {};
-    protected GDPRConsentLib.onActionCallback onAction = (ActionTypes a) -> {};
+    protected GDPRConsentLib.onActionCallback onAction = a -> {};
+    protected GDPRConsentLib.onBeforeSendingConsent onBeforeSendingConsent = (a, c) -> c.sendConsent(a);
     boolean stagingCampaign, shouldCleanConsentOnError;
 
     SourcePointClient sourcePointClient;
@@ -126,6 +129,11 @@ public class ConsentLibBuilder {
 
     public ConsentLibBuilder setOnAction(GDPRConsentLib.onActionCallback callback){
         this.onAction = callback;
+        return this;
+    }
+
+    public ConsentLibBuilder setOnBeforeSendingConsent(GDPRConsentLib.onBeforeSendingConsent c){
+        this.onBeforeSendingConsent = c;
         return this;
     }
 
