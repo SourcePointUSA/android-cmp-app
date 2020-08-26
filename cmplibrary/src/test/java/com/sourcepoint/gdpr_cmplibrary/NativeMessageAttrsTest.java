@@ -2,6 +2,7 @@ package com.sourcepoint.gdpr_cmplibrary;
 
 import android.graphics.Color;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class NativeMessageAttrsTest {
     private JSONObject msgJSON ;
 
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         msgJSON = new JSONObject(jsonString);
         nativeMessageAttrs = new NativeMessageAttrs(msgJSON);
     }
@@ -41,6 +42,17 @@ public class NativeMessageAttrsTest {
         assertEquals  (nativeMessageAttrs.title.style.fontSize , getInt("fontSize", styleJson));
         assertEquals  (nativeMessageAttrs.title.style.color , Color.parseColor(getString("color", styleJson)));
         assertEquals  (nativeMessageAttrs.title.style.backgroundColor , Color.parseColor(getString("backgroundColor", styleJson)));
+    }
+
+    @Test
+    public void styleShouldAlwaysSetBGColourToLongHex() throws JSONException, ConsentLibException {
+        String jsonString = "{\"title\":{\"text\":\"Message Title\",\"style\":{\"fontFamily\":\"Arial\",\"fontSize\":34,\"color\":\"#000\",\"backgroundColor\":\"#abc\"},\"customFields\":{\"fooTitle\":\"barTitle\"}},\"body\":{\"text\":\"foo text\",\"style\":{\"fontFamily\":\"Verdana\",\"fontSize\":14,\"color\":\"#123\",\"backgroundColor\":\"#fff\"},\"customFields\":{\"fooBody\":\"barBody\"}},\"actions\":[{\"text\":\"I Accept\",\"style\":{\"fontFamily\":\"Arial\",\"fontSize\":16,\"color\":\"#ffffff\",\"backgroundColor\":\"#1890ff\"},\"customFields\":{\"fooActionAccept\":\"barActionAccept\"},\"choiceType\":11,\"choiceId\":492690},{\"text\":\"I Reject\",\"style\":{\"fontFamily\":\"Arial\",\"fontSize\":16,\"color\":\"#585858\",\"backgroundColor\":\"#ebebeb\"},\"customFields\":{\"fooActionReject\":\"barActionReject\"},\"choiceType\":13,\"choiceId\":492691},{\"text\":\"Show Options\",\"style\":{\"fontFamily\":\"Arial\",\"fontSize\":16,\"color\":\"#1890ff\",\"backgroundColor\":\"#ffffff\"},\"customFields\":{\"fooActionShowOptions\":\"barActionShowOptions\"},\"choiceType\":12,\"choiceId\":492692},{\"text\":\"×\",\"style\":{\"fontFamily\":\"Gill Sans Extrabold, sans-serif\",\"fontSize\":24,\"color\":\"#fc7e7e\",\"backgroundColor\":\"#cecece\"},\"customFields\":{\"fooActionDismiss\":\"barActionDismiss\"},\"choiceType\":15,\"choiceId\":492689}],\"customFields\":{\"fooMessage\":\"barMessage\"}}";
+        msgJSON = new JSONObject(jsonString);
+        nativeMessageAttrs = new NativeMessageAttrs(msgJSON);
+        assertEquals  (nativeMessageAttrs.title.style.color , Color.parseColor("#000000"));
+        assertEquals  (nativeMessageAttrs.title.style.backgroundColor , Color.parseColor("#aabbcc"));
+        assertEquals  (nativeMessageAttrs.body.style.color , Color.parseColor("#112233"));
+        assertEquals  (nativeMessageAttrs.body.style.backgroundColor , Color.parseColor("#ffffff"));
     }
 
     @Test
