@@ -26,6 +26,7 @@ public class GDPRConsentLib {
     private final String pmId;
 
     private final String PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager/index.html";
+    private final onBeforeSendingConsent onBeforeSendingConsent;
 
     String metaData;
     String euConsent;
@@ -107,8 +108,26 @@ public class GDPRConsentLib {
         void run(ActionTypes actionTypes);
     }
 
-    public interface OnLoadComplete {
+    public interface onBeforeSendingConsent {
+        void run(ConsentAction a, OnBeforeSendingConsentComplete c);
+    }
+
+    public interface OnLoadComplete extends ProneToFailure {
         void onSuccess(Object result);
+    }
+
+    public class OnBeforeSendingConsentComplete implements ProneToFailure {
+        public void sendConsent(ConsentAction a){
+            GDPRConsentLib.this.sendConsent(a);
+        };
+
+        @Override
+        public void onFailure(ConsentLibException exception) {
+            GDPRConsentLib.this.onErrorTask(exception);
+        }
+    }
+
+    public interface ProneToFailure {
 
         default void onFailure(ConsentLibException exception) {
             Log.d(TAG, "default implementation of onFailure, did you forget to override onFailure ?");
@@ -141,6 +160,7 @@ public class GDPRConsentLib {
         messageFinished = b.messageFinished;
         onAction = b.onAction;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
+        onBeforeSendingConsent = b.onBeforeSendingConsent;
 
         //TODO: inject consoleWebview from the builder as well (overload/callbacks refactor required)
         webView = buildWebView(b.getContext());
@@ -255,7 +275,7 @@ public class GDPRConsentLib {
 
     public void onDefaultAction(ConsentAction action) {
         closeAllViews(action.requestFromPm);
-        sendConsent(action);
+        onBeforeSendingConsent.run(action, new OnBeforeSendingConsentComplete());
     }
 
     public void onMsgCancel(boolean requestFromPM) {
@@ -469,6 +489,7 @@ public class GDPRConsentLib {
             params.put("requestFromPM", action.requestFromPm);
             params.put("choiceId", action.choiceId);
             params.put("pmSaveAndExitVariables", action.pmSaveAndExitVariables);
+            params.put("pubData", action.getPubData());
             return params;
         } catch (JSONException e) {
             throw new ConsentLibException(e, "Error trying to build body to send consents.");
