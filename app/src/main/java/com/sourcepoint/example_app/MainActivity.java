@@ -13,6 +13,8 @@ import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
                 .setOnConsentUIFinished(view -> {
                     removeView(view);
                     Log.i(TAG, "onConsentUIFinished");
+                })
+                .setOnBeforeSendingConsent((consentAction, consentCallback) -> {
+                    Map pubData = new HashMap();
+                    pubData.put("foo", "bar");
+                    consentAction.setPubData(pubData);
+                    consentCallback.sendConsent(consentAction);
                 })
                 .setOnConsentReady(consent -> {
                     Log.i(TAG, "onConsentReady");
