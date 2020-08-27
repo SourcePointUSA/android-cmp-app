@@ -1,11 +1,13 @@
 package com.sourcepoint.example_app;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sourcepoint.gdpr_cmplibrary.ActionTypes;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
@@ -92,17 +94,46 @@ public class MainActivity extends AppCompatActivity {
         return new NativeMessage(this){
             @Override
             public void init(){
-                super.init();
+              //  super.init(); //call this when not providing layout for native message.
+
                 // When using a customized layout one can completely override the init method
                 // not calling super.init() and inflating the native view with the chosen layout instead.
                 // In this case its important to set all the default child views using the setter methods
                 // like its done in the super.init()
+                inflate(getContext(), R.layout.native_message, this);
+                setAcceptAll(findViewById(R.id.AcceptAll));
+                setRejectAll(findViewById(R.id.RejectAll));
+                setShowOptions(findViewById(R.id.ShowOption));
+                setCancel(findViewById(R.id.Cancel));
+                setTitle(findViewById(R.id.Title));
+                setBody(findViewById(R.id.msgBody));
             }
             @Override
             public void setAttributes(NativeMessageAttrs attrs){
-                super.setAttributes(attrs);
+                //super.setAttributes(attrs);
                 //Here one can extend this method in order to set customized attributes other then the ones
                 //already set in the super.setAttributes. No need to completely override this method.
+
+                setChildAttributes(getTitle(), attrs.title);
+                setChildAttributes(getBody(), attrs.body);
+                for(NativeMessageAttrs.Action action: attrs.actions){
+                    if (action.choiceType == ActionTypes.REJECT_ALL.code)
+                        continue; // skip an action that we dont want to render
+                    setChildAttributes(findActionButton(action.choiceType), action);
+                }
+
+                //here we can override button colors
+                getAcceptAll().button.setBackgroundColor(Color.GRAY);
+            }
+
+            @Override
+            public void setCallBacks(GDPRConsentLib consentLib) {
+                //super.setCallBacks(consentLib);
+                setOnclickAction(getAcceptAll(), consentLib);
+                // setOnclickAction(getRejectAll(), consentLib); // here skip an action not to be shown
+                setOnclickAction(getShowOptions(), consentLib);
+                setOnclickAction(getCancel(), consentLib);
+
             }
         };
     }
@@ -111,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "init");
-        buildGDPRConsentLib().run();
+        buildGDPRConsentLib().run(buildNativeMessage());
     }
 
     @Override
@@ -119,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
-        config = getConfig(R.raw.mobile_demo_web);
+        config = getConfig(R.raw.mobile_demo_native);
         findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
     }
 }
