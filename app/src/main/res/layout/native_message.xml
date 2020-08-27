@@ -12,10 +12,9 @@
         android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="180dp"
+        android:layout_marginTop="132dp"
         android:text="@string/hello_stranger"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,10 +37,11 @@
         android:layout_marginLeft="56dp"
         android:layout_marginEnd="56dp"
         android:layout_marginRight="56dp"
-        android:layout_marginBottom="61dp"
+        android:layout_marginBottom="60dp"
         android:text="@android:string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/AcceptAll"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -55,7 +55,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <Button
         android:id="@+id/ShowOption"
         android:layout_width="98dp"
         android:layout_height="0dp"
@@ -65,4 +65,14 @@
         android:text="@string/show_opitions"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/msgBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Meesage Body"
+        app:layout_constraintBottom_toTopOf="@+id/AcceptAll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Title" />
 </android.support.constraint.ConstraintLayout>
