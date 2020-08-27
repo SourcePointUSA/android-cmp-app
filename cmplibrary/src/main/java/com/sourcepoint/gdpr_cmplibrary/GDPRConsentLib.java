@@ -27,6 +27,7 @@ public class GDPRConsentLib {
 
     private final String PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager/index.html";
     private final onBeforeSendingConsent onBeforeSendingConsent;
+    private final OnNoIntentActivitiesFound onNoIntentActivitiesFound;
 
     String metaData;
     String euConsent;
@@ -90,6 +91,10 @@ public class GDPRConsentLib {
 
     public interface pmReadyCallback {
         void run();
+    }
+
+    public interface OnNoIntentActivitiesFound {
+        void run(String url);
     }
 
     public interface messageReadyCallback {
@@ -161,6 +166,7 @@ public class GDPRConsentLib {
         onAction = b.onAction;
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
         onBeforeSendingConsent = b.onBeforeSendingConsent;
+        onNoIntentActivitiesFound = b.onNoIntentActivitiesFound;
 
         //TODO: inject consoleWebview from the builder as well (overload/callbacks refactor required)
         webView = buildWebView(b.getContext());
@@ -227,6 +233,11 @@ public class GDPRConsentLib {
             @Override
             public void onError(ConsentLibException error) {
                 GDPRConsentLib.this.onErrorTask(error);
+            }
+
+            @Override
+            public void onNoIntentActivitiesFoundFor(String url) {
+                uiThreadHandler.postIfEnabled(() -> onNoIntentActivitiesFound.run(url));
             }
 
             @Override
@@ -317,6 +328,8 @@ public class GDPRConsentLib {
         uiThreadHandler.postIfEnabled(() -> {
             try {
                 webView.loadConsentUIFromUrl(url);
+            } catch(ConsentLibException e) {
+                onErrorTask(e);
             } catch (Exception e) {
                 onErrorTask(new ConsentLibException(e, "Error trying to load url to webview: " + url));
             }

@@ -9,8 +9,6 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.concurrent.RunnableFuture;
-
 import okhttp3.OkHttpClient;
 
 @SuppressWarnings("unused")
@@ -44,6 +42,7 @@ public class ConsentLibBuilder {
 
     PropertyConfig propertyConfig;
     private Context context;
+    public GDPRConsentLib.OnNoIntentActivitiesFound onNoIntentActivitiesFound;
 
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Context context) {
@@ -134,6 +133,11 @@ public class ConsentLibBuilder {
 
     public ConsentLibBuilder setOnBeforeSendingConsent(GDPRConsentLib.onBeforeSendingConsent c){
         this.onBeforeSendingConsent = c;
+        return this;
+    }
+
+    public ConsentLibBuilder setOnNoIntentActivitiesFound(GDPRConsentLib.OnNoIntentActivitiesFound callback){
+        this.onNoIntentActivitiesFound = callback;
         return this;
     }
 
