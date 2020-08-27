@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 setAcceptAll(findViewById(R.id.AcceptAll));
                 setRejectAll(findViewById(R.id.RejectAll));
                 setShowOptions(findViewById(R.id.ShowOption));
-                setCancel(findViewById(R.id.Cancel));
+               // setCancel(findViewById(R.id.Cancel));
                 setTitle(findViewById(R.id.Title));
                 setBody(findViewById(R.id.msgBody));
             }
@@ -117,22 +117,17 @@ public class MainActivity extends AppCompatActivity {
                 setChildAttributes(getTitle(), attrs.title);
                 setChildAttributes(getBody(), attrs.body);
                 for(NativeMessageAttrs.Action action: attrs.actions){
-                    if (action.choiceType == ActionTypes.REJECT_ALL.code)
+                    if (action.choiceType == ActionTypes.MSG_CANCEL.code)
                         continue; // skip an action that we dont want to render
                     setChildAttributes(findActionButton(action.choiceType), action);
                 }
-
-                //here we can override button colors
-                getAcceptAll().button.setBackgroundColor(Color.GRAY);
             }
 
             @Override
             public void setCallBacks(GDPRConsentLib consentLib) {
-                //super.setCallBacks(consentLib);
                 setOnclickAction(getAcceptAll(), consentLib);
-                // setOnclickAction(getRejectAll(), consentLib); // here skip an action not to be shown
+                setOnclickAction(getRejectAll(), consentLib); // here skip an action not to be shown
                 setOnclickAction(getShowOptions(), consentLib);
-                setOnclickAction(getCancel(), consentLib);
 
             }
         };
