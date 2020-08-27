@@ -192,12 +192,6 @@ public class GDPRConsentLibTest {
     }
 
     @Test
-    public void onDefaultAction() {
-        lib.onDefaultAction(consentActionMock);
-        verify(lib).closeView(any(),anyBoolean());
-    }
-
-    @Test
     public void customConsentTo() throws ConsentLibException, JSONException {
         ArgumentCaptor<JSONObject> captor = ArgumentCaptor.forClass(JSONObject.class);
         lib.customConsentTo(
