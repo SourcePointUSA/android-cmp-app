@@ -41,6 +41,7 @@ public class ConsentLibBuilder {
 
     PropertyConfig propertyConfig;
     private Context context;
+    public GDPRConsentLib.OnNoIntentActivitiesFound onNoIntentActivitiesFound;
 
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Context context) {
@@ -126,6 +127,11 @@ public class ConsentLibBuilder {
 
     public ConsentLibBuilder setOnAction(GDPRConsentLib.onActionCallback callback){
         this.onAction = callback;
+        return this;
+    }
+
+    public ConsentLibBuilder setOnNoIntentActivitiesFound(GDPRConsentLib.OnNoIntentActivitiesFound callback){
+        this.onNoIntentActivitiesFound = callback;
         return this;
     }
 
