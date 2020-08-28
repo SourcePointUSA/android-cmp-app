@@ -1,8 +1,12 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.Mock;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -22,11 +26,17 @@ public class ConsentActionTest {
 
     //ActionType validation is not being tested as this class does not have this responsibility
     @Test
-    public void ConsentActionDefaults(){
+    public void ConsentActionDefaults() throws JSONException {
         ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, choiceIdMock, null, requestFromPmMock, pmSaveAndExitVariablesMock);
         assertEquals(consentAction.actionType.code, actionTypeCodeMock);
         assertEquals(choiceIdMock, choiceIdMock);
         assertEquals(pmSaveAndExitVariablesMock, pmSaveAndExitVariablesMock);
+
+        Map pubData = new HashMap();
+        pubData.put("foo", "bar");
+        consentAction.setPubData(pubData);
+
+        assertEquals("bar", consentAction.getPubData().get("foo"));
     }
 
     @Test
@@ -35,5 +45,6 @@ public class ConsentActionTest {
         assertEquals(consentAction.actionType.code, actionTypeCodeMock);
         assertNull(consentAction.choiceId);
         assertNull(consentAction.pmSaveAndExitVariables);
+        assertNull(consentAction.getPubData());
     }
 }
