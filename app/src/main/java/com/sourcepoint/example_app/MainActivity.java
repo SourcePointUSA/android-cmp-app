@@ -59,12 +59,6 @@ public class MainActivity extends AppCompatActivity {
                     removeView(view);
                     Log.i(TAG, "onConsentUIFinished");
                 })
-                .setOnBeforeSendingConsent((consentAction, consentCallback) -> {
-                    Map pubData = new HashMap();
-                    pubData.put("foo", "bar");
-                    consentAction.setPubData(pubData);
-                    consentCallback.sendConsent(consentAction);
-                })
                 .setOnConsentReady(consent -> {
                     Log.i(TAG, "onConsentReady");
                     Log.i(TAG, "uuid: " + consent.uuid );
