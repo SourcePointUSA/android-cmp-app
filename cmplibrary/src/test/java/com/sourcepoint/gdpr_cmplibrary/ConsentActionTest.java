@@ -36,7 +36,7 @@ public class ConsentActionTest {
         pubData.put("foo", "bar");
         consentAction.setPubData(pubData);
 
-        assertEquals("bar", consentAction.getPubData().get("foo"));
+        assertEquals("{\"foo\":\"bar\"}", consentAction.getPubData().toString());
     }
 
     @Test
@@ -45,6 +45,6 @@ public class ConsentActionTest {
         assertEquals(consentAction.actionType.code, actionTypeCodeMock);
         assertNull(consentAction.choiceId);
         assertNull(consentAction.pmSaveAndExitVariables);
-        assertNull(consentAction.getPubData());
+        assertEquals("{}",consentAction.getPubData().toString());
     }
 }
