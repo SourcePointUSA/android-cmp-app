@@ -36,7 +36,7 @@ public class ConsentAction {
     }
 
     public JSONObject getPubData(){
-        return new JSONObject(pubData);
+        return pubData != null ? new JSONObject(pubData) : null;
     }
 
 }
