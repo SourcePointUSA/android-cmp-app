@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         return new NativeMessage(this){
             @Override
             public void init(){
-              //  super.init(); //call this when not providing layout for native message.
+               //  super.init(); //call this when not providing layout for native message.
 
                 // When using a customized layout one can completely override the init method
                 // not calling super.init() and inflating the native view with the chosen layout instead.
@@ -104,31 +104,34 @@ public class MainActivity extends AppCompatActivity {
                 setAcceptAll(findViewById(R.id.AcceptAll));
                 setRejectAll(findViewById(R.id.RejectAll));
                 setShowOptions(findViewById(R.id.ShowOption));
-               // setCancel(findViewById(R.id.Cancel));
+                // *** cancel button is not on this layout
+                // setCancel(findViewById(R.id.Cancel));
                 setTitle(findViewById(R.id.Title));
                 setBody(findViewById(R.id.msgBody));
             }
             @Override
             public void setAttributes(NativeMessageAttrs attrs){
                 //super.setAttributes(attrs);
+
                 //Here one can extend this method in order to set customized attributes other then the ones
                 //already set in the super.setAttributes. No need to completely override this method.
 
                 setChildAttributes(getTitle(), attrs.title);
                 setChildAttributes(getBody(), attrs.body);
                 for(NativeMessageAttrs.Action action: attrs.actions){
+                    // Skip cancel action
                     if (action.choiceType == ActionTypes.MSG_CANCEL.code)
-                        continue; // skip an action that we dont want to render
+                        continue;
                     setChildAttributes(findActionButton(action.choiceType), action);
                 }
             }
 
             @Override
             public void setCallBacks(GDPRConsentLib consentLib) {
+                // set only the needed callbacks
                 setOnclickAction(getAcceptAll(), consentLib);
-                setOnclickAction(getRejectAll(), consentLib); // here skip an action not to be shown
+                setOnclickAction(getRejectAll(), consentLib);
                 setOnclickAction(getShowOptions(), consentLib);
-
             }
         };
     }
