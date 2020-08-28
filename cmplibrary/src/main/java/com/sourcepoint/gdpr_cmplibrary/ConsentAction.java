@@ -2,6 +2,7 @@ package com.sourcepoint.gdpr_cmplibrary;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ConsentAction {
@@ -12,7 +13,7 @@ public class ConsentAction {
     public final String privacyManagerId;
     public final boolean requestFromPm;
     public final JSONObject pmSaveAndExitVariables;
-    private Map pubData = null;
+    private Map pubData = new HashMap();
 
     ConsentAction(int actionType, String choiceId, String privacyManagerId, boolean requestFromPm, JSONObject pmSaveAndExitVariables) {
         this.actionType = ActionTypes.valueOf(actionType);
@@ -36,7 +37,7 @@ public class ConsentAction {
     }
 
     public JSONObject getPubData(){
-        return pubData != null ? new JSONObject(pubData) : null;
+        return new JSONObject(pubData);
     }
 
 }
