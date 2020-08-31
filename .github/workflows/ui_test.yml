@@ -31,7 +31,7 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: Nexus 6
-          script: ./gradlew :metaapp:connectedAndroidDebugTest
+          script: ./gradlew :metaapp:connectedDebugAndroidTest
 
       - name: run Example app tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -40,4 +40,4 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: Nexus 6
-          script: ./gradlew :app:connectedAndroidDebugTest
+          script: ./gradlew :app:connectedDebugAndroidTest
