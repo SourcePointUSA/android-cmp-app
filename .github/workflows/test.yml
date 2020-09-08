@@ -17,9 +17,7 @@ jobs:
         run: touch local.properties
       - name: running unit tests
         run: ./gradlew test --quiet --build-cache
-      - name: reporting tests results
-        uses: asadmansr/android-test-report-action@v1.2.0
-        if: ${{ always() }} # runs this task regardless if the previous step failed (necessary)
+      
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
@@ -43,3 +41,10 @@ jobs:
           arch: x86_64
           profile: Nexus 6
           script: ./gradlew :app:connectedDebugAndroidTest
+  report:
+    runs-on: ubuntu-latest
+    needs: test
+    if: ${{ always() }}
+    steps:
+      - name: reporting tests results
+        uses: asadmansr/android-test-report-action@v1.2.0
