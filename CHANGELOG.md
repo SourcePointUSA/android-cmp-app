@@ -1,3 +1,15 @@
+## 5.3.8 (September, 9, 2020)
+* add `setOnNoIntentActivitiesFound(String intentUrl)` to avoid crashing when no url intent handler is found.
+* prepare for the new  `pubData` feature:
+- ability to set `Set<Object> pubData` on the `ConsentAction` obj before sending consent:
+```JAVA
+    .setOnBeforeSendingConsent((a,b) -> {
+        a.setPubData(Collections.singletonMap("foo", "bar"));
+        b.sendConsent(a);
+    })
+```
+
+
 ## 5.3.8 (August, 26, 2020)
 * fix parsing error on native msg causing app crash #249
 * fix onError called twice on some cases #246
