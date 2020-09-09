@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -30,6 +32,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getInt;
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getJson;
@@ -149,6 +152,7 @@ abstract public class ConsentWebView extends WebView {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 loadLinkOnExternalBrowser(url);
+
                 return true;
             }
         });
@@ -156,6 +160,7 @@ abstract public class ConsentWebView extends WebView {
         setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
+                loadLinkOnExternalBrowser(getLinkUrl(view.getHitTestResult()));
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.getHitTestResult())));
                 view.getContext().startActivity(browserIntent);
                 return false;
@@ -168,6 +173,8 @@ abstract public class ConsentWebView extends WebView {
     abstract public void onConsentUIReady(boolean isFromPM);
 
     abstract public void onError(ConsentLibException error);
+
+    abstract public void onNoIntentActivitiesFoundFor(String url);
 
     abstract public void onAction(ConsentAction action);
 
@@ -209,7 +216,10 @@ abstract public class ConsentWebView extends WebView {
     private void loadLinkOnExternalBrowser(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW , Uri.parse(url));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        this.getContext().startActivity(intent);
+        PackageManager m = getContext().getPackageManager();
+        List<ResolveInfo> l = m.queryIntentActivities(intent, m.MATCH_DEFAULT_ONLY);
+        if(l.size() != 0) getContext().startActivity(intent);
+        else onNoIntentActivitiesFoundFor(url);
     }
 
     private boolean hasLostInternetConnection() {

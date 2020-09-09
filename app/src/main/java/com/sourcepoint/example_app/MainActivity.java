@@ -13,6 +13,8 @@ import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {

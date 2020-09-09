@@ -14,6 +14,7 @@ A clear and concise description of what the bug is.
  - Account Id
  - Property Id
  - Property Name
+ - Privacy Manager Id
  - Campaign Env
  - Targeting Params (if any)
  - AuthId (if any)

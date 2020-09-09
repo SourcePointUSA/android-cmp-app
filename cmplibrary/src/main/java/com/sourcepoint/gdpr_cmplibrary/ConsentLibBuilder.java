@@ -27,9 +27,11 @@ public class ConsentLibBuilder {
     protected GDPRConsentLib.messageReadyCallback messageReady = () -> {};
     protected GDPRConsentLib.pmFinishedCallback pmFinished = () -> {};
     protected GDPRConsentLib.messageFinishedCallback messageFinished = () -> {};
-    protected GDPRConsentLib.onActionCallback onAction = (ActionTypes a) -> {};
-    boolean stagingCampaign, shouldCleanConsentOnError;
+    protected GDPRConsentLib.onActionCallback onAction = a -> {};
+    protected GDPRConsentLib.onBeforeSendingConsent onBeforeSendingConsent = (a, c) -> c.post(a);
+    protected GDPRConsentLib.OnNoIntentActivitiesFound onNoIntentActivitiesFound = url -> {};
 
+    boolean stagingCampaign, shouldCleanConsentOnError;
     SourcePointClient sourcePointClient;
 
     String targetingParamsString = null;
@@ -126,6 +128,16 @@ public class ConsentLibBuilder {
 
     public ConsentLibBuilder setOnAction(GDPRConsentLib.onActionCallback callback){
         this.onAction = callback;
+        return this;
+    }
+
+    public ConsentLibBuilder setOnBeforeSendingConsent(GDPRConsentLib.onBeforeSendingConsent c){
+        this.onBeforeSendingConsent = c;
+        return this;
+    }
+
+    public ConsentLibBuilder setOnNoIntentActivitiesFound(GDPRConsentLib.OnNoIntentActivitiesFound callback){
+        this.onNoIntentActivitiesFound = callback;
         return this;
     }
 
