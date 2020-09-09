@@ -122,7 +122,7 @@ public class GDPRConsentLib {
     }
 
     public class OnBeforeSendingConsentComplete implements ProneToFailure {
-        public void sendConsent(ConsentAction a){
+        public void post(ConsentAction a){
             GDPRConsentLib.this.sendConsent(a);
         };
 

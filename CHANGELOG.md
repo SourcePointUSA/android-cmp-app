@@ -3,9 +3,9 @@
 * prepare for the new  `pubData` feature:
 - ability to set `Set<Object> pubData` on the `ConsentAction` obj before sending consent:
 ```JAVA
-    .setOnBeforeSendingConsent((a,b) -> {
-        a.setPubData(Collections.singletonMap("foo", "bar"));
-        b.sendConsent(a);
+    .setOnBeforeSendingConsent((consentAction, consentHandler) -> {
+        consentAction.setPubData(Collections.singletonMap("foo", "bar"));
+        consentHandler.post(consentAction);
     })
 ```
 

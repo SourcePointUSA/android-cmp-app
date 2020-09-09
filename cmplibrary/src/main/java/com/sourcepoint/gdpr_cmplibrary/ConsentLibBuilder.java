@@ -28,7 +28,7 @@ public class ConsentLibBuilder {
     protected GDPRConsentLib.pmFinishedCallback pmFinished = () -> {};
     protected GDPRConsentLib.messageFinishedCallback messageFinished = () -> {};
     protected GDPRConsentLib.onActionCallback onAction = a -> {};
-    protected GDPRConsentLib.onBeforeSendingConsent onBeforeSendingConsent = (a, c) -> c.sendConsent(a);
+    protected GDPRConsentLib.onBeforeSendingConsent onBeforeSendingConsent = (a, c) -> c.post(a);
     protected GDPRConsentLib.OnNoIntentActivitiesFound onNoIntentActivitiesFound = url -> {};
 
     boolean stagingCampaign, shouldCleanConsentOnError;
