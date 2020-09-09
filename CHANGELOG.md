@@ -1,7 +1,6 @@
 ## 5.3.8 (September, 9, 2020)
 * add `setOnNoIntentActivitiesFound(String intentUrl)` to avoid crashing when no url intent handler is found.
-* prepare for the new  `pubData` feature:
-- ability to set `Set<Object> pubData` on the `ConsentAction` obj before sending consent:
+* prepare for the new  `pubData` feature. Ability to set `Set<Object> pubData` on the `ConsentAction` obj before sending consent:
 ```JAVA
     .setOnBeforeSendingConsent((consentAction, consentHandler) -> {
         consentAction.setPubData(Collections.singletonMap("foo", "bar"));
