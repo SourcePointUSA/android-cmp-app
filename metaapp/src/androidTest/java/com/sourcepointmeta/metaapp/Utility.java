@@ -271,4 +271,17 @@ public class Utility extends TestData {
         } while (i < 10);
         return value;
     }
+
+    public boolean checkPMTabSelected(String expected){
+        boolean check = false;
+        try {
+            onWebView().forceJavascriptEnabled()
+                    .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab active') and text()='"+ expected +"']"));
+            check = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            check = false;
+        }
+        return check;
+    }
 }
