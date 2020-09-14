@@ -2,18 +2,22 @@ function isFromPM(payload) {
     return payload.fromPM || (payload.settings && payload.settings.vendorList != null);
 }
 
-function getPmIdFromURL(url) {
-    return url ? url.match(/[?&]message_id(=([^&#]*)|&|#|$)/)[2] : null;
+function getPmIdAndPmTabFromURL(url) {
+    let pmId = url ? url.match(/[?&]message_id(=([^&#]*)|&|#|$)/)[2] : null;
+    let pmTab = url ? url.match(/[?&]pmTab(=([^&#]*)|&|#|$)/)[2] : null;
+    return [pmId, pmTab];
 }
 
 function actionFromMessage(payload) {
     var actionPayload = payload.actions && payload.actions.length && payload.actions[0] && payload.actions[0].data ? payload.actions[0].data : {};
+    let pmDetails = getPmIdAndPmTabFromURL(actionPayload.iframe_url);
     return {
         name: payload.name,
         actionType: actionPayload.type,
         choiceId: String(actionPayload.choice_id),
         requestFromPm: false,
-        pmId: getPmIdFromURL(actionPayload.iframe_url),
+        pmId: pmDetails[0],
+        pmTab: pmDetails[1],
         saveAndExitVariables: {}
     };
 }
@@ -25,6 +29,7 @@ function actionFromPM(payload) {
         choiceId: null,
         requestFromPm: true,
         pmId: null,
+        pmTab: null,
         saveAndExitVariables: payload.payload
     };
 }
