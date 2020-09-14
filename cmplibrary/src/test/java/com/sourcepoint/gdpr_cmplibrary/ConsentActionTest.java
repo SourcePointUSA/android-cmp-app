@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 
@@ -27,7 +26,7 @@ public class ConsentActionTest {
     //ActionType validation is not being tested as this class does not have this responsibility
     @Test
     public void ConsentActionDefaults() throws JSONException {
-        ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, choiceIdMock, null, requestFromPmMock, pmSaveAndExitVariablesMock);
+        ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, choiceIdMock, null, null,requestFromPmMock, pmSaveAndExitVariablesMock);
         assertEquals(consentAction.actionType.code, actionTypeCodeMock);
         assertEquals(choiceIdMock, choiceIdMock);
         assertEquals(pmSaveAndExitVariablesMock, pmSaveAndExitVariablesMock);
@@ -41,7 +40,7 @@ public class ConsentActionTest {
 
     @Test
     public void ConsentActionNulls(){
-        ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, null, null, requestFromPmMock, null);
+        ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, null, null, null, requestFromPmMock, null);
         assertEquals(consentAction.actionType.code, actionTypeCodeMock);
         assertNull(consentAction.choiceId);
         assertNull(consentAction.pmSaveAndExitVariables);
