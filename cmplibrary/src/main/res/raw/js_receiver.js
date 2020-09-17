@@ -4,8 +4,11 @@ function isFromPM(payload) {
 
 function getPmIdAndPmTabFromURL(url) {
     let pmId = url ? url.match(/[?&]message_id(=([^&#]*)|&|#|$)/)[2] : null;
-    let pmTab = url ? url.match(/[?&]pmTab(=([^&#]*)|&|#|$)/)[2] : null;
-    return [pmId, pmTab];
+    let pmTabShow = null;
+    if(url &&  url.match(/[?&]pmTab(=([^&#]*)|&|#|$)/) && url.match(/[?&]pmTab(=([^&#]*)|&|#|$)/)[2]){
+       pmTabShow = url.match(/[?&]pmTab(=([^&#]*)|&|#|$)/)[2];
+     }
+    return [pmId, pmTabShow];
 }
 
 function actionFromMessage(payload) {
