@@ -35,8 +35,8 @@ public class Property implements Parcelable {
     @ColumnInfo ( name = "staging")
     private boolean isStaging;
 
-    @ColumnInfo( name = "showPM")
-    private boolean isShowPM;
+    @ColumnInfo( name = "isNative")
+    private boolean isNative;
 
     @ColumnInfo (name = "authId")
     private String authId;
@@ -47,24 +47,24 @@ public class Property implements Parcelable {
     private List<TargetingParam> targetingParamList;
 
 
-    public Property(int accountID, int propertyID, String property, String pmID, boolean isStaging, boolean isShowPM, String authId) {
+    public Property(int accountID, int propertyID, String property, String pmID, boolean isStaging, boolean isNative, String authId) {
         this.accountID = accountID;
         this.propertyID = propertyID;
         this.property = property;
         this.pmID = pmID;
         this.isStaging = isStaging;
-        this.isShowPM = isShowPM;
+        this.isNative = isNative;
         this.authId = authId;
     }
 
     @Ignore
-    public Property(int accountID, int propertyID, String property, String pmID, boolean isStaging, boolean isShowPM, String authId, List<TargetingParam> targetingParamList) {
+    public Property(int accountID, int propertyID, String property, String pmID, boolean isStaging, boolean isNative, String authId, List<TargetingParam> targetingParamList) {
         this.accountID = accountID;
         this.propertyID = propertyID;
         this.property = property;
         this.pmID = pmID;
         this.isStaging = isStaging;
-        this.isShowPM = isShowPM;
+        this.isNative = isNative;
         this.authId = authId;
         this.targetingParamList = targetingParamList;
     }
@@ -121,12 +121,12 @@ public class Property implements Parcelable {
         this.pmID = pmID;
     }
 
-    public boolean isShowPM() {
-        return isShowPM;
+    public boolean isNative() {
+        return isNative;
     }
 
-    public void setShowPM(boolean showPM) {
-        isShowPM = showPM;
+    public void setNativeMessage(boolean nativeMessage) {
+        isNative = nativeMessage;
     }
 
     public boolean isStaging() {
@@ -164,7 +164,7 @@ public class Property implements Parcelable {
         this.property = in.readString();
         this.pmID = in.readString();
         this.isStaging = in.readByte() !=0;
-        this.isShowPM = in.readByte() !=0;
+        this.isNative = in.readByte() !=0;
         this.authId = in.readString();
         this.targetingParamList = (List<TargetingParam>) in.createTypedArrayList(TargetingParam.CREATOR);
     }
@@ -176,7 +176,7 @@ public class Property implements Parcelable {
         dest.writeString(this.property);
         dest.writeString(this.pmID);
         dest.writeByte((byte)(isStaging?1:0));
-        dest.writeByte((byte)(isShowPM?1:0));
+        dest.writeByte((byte)(isNative?1:0));
         dest.writeString(this.authId);
         dest.writeTypedList(this.targetingParamList);
     }
