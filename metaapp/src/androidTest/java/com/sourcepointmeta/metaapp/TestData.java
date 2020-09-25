@@ -30,6 +30,10 @@ public class TestData {
     public static String[] CONSENT_LIST={"Select personalised content", "Information storage and access", "Personalisation", "Ad selection, delivery, reporting",
             "Content selection, delivery, reporting", "Measurement", "Measure ad performance", "Apply market research to generate audience insights",
             "Measure content performance", "Develop and improve products"};
+
+    public static String[] NATIVE_MESSAGE_CONSENT_LIST={"Select personalised content", "Information storage and access", "Ad selection, delivery, reporting",
+            "Content selection, delivery, reporting", "Measurement", "Measure ad performance", "Apply market research to generate audience insights",
+            "Measure content performance", "Develop and improve products"};
     public static String [] PARTIAL_CONSENT_LIST={"Select personalised content", "Information storage and access"};
 
     public static String SHOW_MESSAGE_ALWAYS = "show message always";
