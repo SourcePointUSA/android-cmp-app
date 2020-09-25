@@ -160,7 +160,7 @@ public class MetaAppTests extends Utility{
     }
 
     @Test
-    public void resetConsentDataAndCheckForMessageWithShowMessageOnce() {
+    public void resetConsentDataAndCheckForMessageWithShowMessageOnce() throws InterruptedException {
         addPropertyFor(SHOW_MESSAGE_ONCE, NO_AUTHENTICATION);
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         chooseAction(MANAGE_PREFERENCES);
@@ -181,7 +181,7 @@ public class MetaAppTests extends Utility{
     }
 
     @Test
-    public void resetConsentDataAndCheckForConsentWithShowMessageAlways() {
+    public void resetConsentDataAndCheckForConsentWithShowMessageAlways() throws InterruptedException {
         addPropertyFor(SHOW_MESSAGE_ALWAYS, NO_AUTHENTICATION);
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         chooseAction(MANAGE_PREFERENCES);
@@ -198,7 +198,7 @@ public class MetaAppTests extends Utility{
     }
 
     @Test
-    public void deleteProperty() {
+    public void deleteProperty() throws InterruptedException {
         addPropertyFor(SHOW_MESSAGE_ALWAYS, NO_AUTHENTICATION);
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         chooseAction(REJECT_ALL);
@@ -212,7 +212,7 @@ public class MetaAppTests extends Utility{
     }
 
     @Test
-    public void checkMessageAfterEditProperty() {
+    public void checkMessageAfterEditProperty() throws InterruptedException {
         addPropertyFor(SHOW_MESSAGE_ALWAYS, NO_AUTHENTICATION);
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         chooseAction(ACCEPT_ALL);
@@ -269,7 +269,7 @@ public class MetaAppTests extends Utility{
     }
 
     @Test
-    public void checkConsentWithSameAuthenticationWhenPropertyDeleteAndRecreate()  {
+    public void checkConsentWithSameAuthenticationWhenPropertyDeleteAndRecreate() throws InterruptedException {
         addPropertyFor(SHOW_MESSAGE_ALWAYS, UNIQUE_AUTHENTICATION);
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         chooseAction(ACCEPT_ALL);
@@ -323,7 +323,7 @@ public class MetaAppTests extends Utility{
     }
 
     @Test
-    public void checkNoMessageAfterLoggedInWithAuthIDWhenConsentAlreadyGiven() {
+    public void checkNoMessageAfterLoggedInWithAuthIDWhenConsentAlreadyGiven() throws InterruptedException {
         addPropertyFor(SHOW_MESSAGE_ONCE, NO_AUTHENTICATION);
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         chooseAction(ACCEPT_ALL);
