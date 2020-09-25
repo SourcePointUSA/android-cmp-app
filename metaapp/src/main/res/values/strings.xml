@@ -47,6 +47,6 @@
     <string name="no_message_matching_scenario">There is no message matching the scenario based on the property info and device local data. Consider reviewing the property info or clearing the cookies. If that was intended, just ignore this message.</string>
     <string name="property_details_exists">Property details already exists.</string>
     <string name="authId">AuthId</string>
-    <string name="show_pm">Show PM</string>
+    <string name="native_message">Native Message</string>
     <string name="show_pm_btn">Show PM</string>
 </resources>
