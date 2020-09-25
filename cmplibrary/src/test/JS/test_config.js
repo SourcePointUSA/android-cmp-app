@@ -7,6 +7,7 @@ var expectedArgs = {
     "choiceId": null,
     "requestFromPm": true,
     "pmId": null,
+    "pmTab" : null,
     "saveAndExitVariables": {
       "foo": "bar",
     }
@@ -17,6 +18,7 @@ var expectedArgs = {
     "choiceId": "1067098",
     "requestFromPm": false,
     "pmId": null,
+    "pmTab": null,
     "saveAndExitVariables": {}
   },
   showOptions: {
@@ -25,6 +27,7 @@ var expectedArgs = {
     "choiceId": "1067098",
     "requestFromPm": false,
     "pmId": "122058",
+    "pmTab" : "features",
     "saveAndExitVariables": {}
   },
 }
@@ -126,7 +129,7 @@ var eventMocks = {
           "data": {
             "choice_id": 1067098,
             "type": 12,
-            "iframe_url": "https://notice.sp-prod.net/privacy-manager/index.html?site_id=7639&message_id=122058",
+            "iframe_url": "https://notice.sp-prod.net/privacy-manager/index.html?site_id=7639&message_id=122058&pmTab=features",
             "button_text": "1589214494409"
           }
         }

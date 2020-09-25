@@ -3,24 +3,24 @@ function isFromPM(payload) {
 }
 
 function getPmIdAndPmTabFromURL(url) {
-    let pmId = url ? url.match(/[?&]message_id(=([^&#]*)|&|#|$)/)[2] : null;
-    let pmTabShow = null;
+    var pmId = url ? url.match(/[?&]message_id(=([^&#]*)|&|#|$)/)[2] : null;
+    var pmTabShow = null;
     if(url &&  url.match(/[?&]pmTab(=([^&#]*)|&|#|$)/) && url.match(/[?&]pmTab(=([^&#]*)|&|#|$)/)[2]){
        pmTabShow = url.match(/[?&]pmTab(=([^&#]*)|&|#|$)/)[2];
      }
-    return [pmId, pmTabShow];
+    return {pmId, pmTabShow};
 }
 
 function actionFromMessage(payload) {
     var actionPayload = payload.actions && payload.actions.length && payload.actions[0] && payload.actions[0].data ? payload.actions[0].data : {};
-    let pmDetails = getPmIdAndPmTabFromURL(actionPayload.iframe_url);
+    var pmDetails = getPmIdAndPmTabFromURL(actionPayload.iframe_url);
     return {
         name: payload.name,
         actionType: actionPayload.type,
         choiceId: String(actionPayload.choice_id),
         requestFromPm: false,
-        pmId: pmDetails[0],
-        pmTab: pmDetails[1],
+        pmId: pmDetails.pmId,
+        pmTab: pmDetails.pmTabShow,
         saveAndExitVariables: {}
     };
 }
