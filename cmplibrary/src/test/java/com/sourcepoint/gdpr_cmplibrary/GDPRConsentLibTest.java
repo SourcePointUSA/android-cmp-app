@@ -33,10 +33,10 @@ public class GDPRConsentLibTest {
 
     private GDPRConsentLib lib;
 
-    private ConsentAction consentActionMock = new ConsentAction(ActionTypes.ACCEPT_ALL.code, "foo", null, false, new JSONObject());
-    private ConsentAction consentActionMockPMDismiss = new ConsentAction(ActionTypes.PM_DISMISS.code, "foo", null, false, new JSONObject());
-    private ConsentAction consentActionMockMsgCancel = new ConsentAction(ActionTypes.MSG_CANCEL.code, "foo", null, false, new JSONObject());
-    private ConsentAction consentActionMockShowOptions = new ConsentAction(ActionTypes.SHOW_OPTIONS.code, "foo", "foo_pmId", false, new JSONObject());
+    private ConsentAction consentActionMock = new ConsentAction(ActionTypes.ACCEPT_ALL.code, "foo", null, "null",false, new JSONObject());
+    private ConsentAction consentActionMockPMDismiss = new ConsentAction(ActionTypes.PM_DISMISS.code, "foo", null, null, false, new JSONObject());
+    private ConsentAction consentActionMockMsgCancel = new ConsentAction(ActionTypes.MSG_CANCEL.code, "foo", null, null,false, new JSONObject());
+    private ConsentAction consentActionMockShowOptions = new ConsentAction(ActionTypes.SHOW_OPTIONS.code, "foo", "foo_pmId", "foo_pmTab",false, new JSONObject());
 
     @Mock
     Activity activityMock;
@@ -180,15 +180,15 @@ public class GDPRConsentLibTest {
         verify(lib).onMsgCancel(requestFromPM);
 
         lib.onAction(consentActionMockShowOptions);
-        verify(lib).onShowOptions("foo_pmId");
+        verify(lib).onShowOptions(consentActionMockShowOptions);
     }
 
     @Test
     public void onShowOptions() throws ConsentLibException {
-        lib.onShowOptions("foo_pmId");
+        lib.onShowOptions(consentActionMockShowOptions);
         verify(lib.uiThreadHandler).postIfEnabled(lambdaCaptor.capture());
         lambdaCaptor.getValue().run();
-        verify(lib.webView).loadConsentUIFromUrl(lib.pmUrl("foo_pmId"));
+        verify(lib.webView).loadConsentUIFromUrl(lib.pmUrl("foo_pmId","foo_pmTab"));
     }
 
     @Test

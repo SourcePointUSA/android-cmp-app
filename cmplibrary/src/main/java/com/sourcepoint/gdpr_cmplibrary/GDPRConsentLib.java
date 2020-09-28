@@ -254,7 +254,7 @@ public class GDPRConsentLib {
             Log.d(TAG, "onAction:  " + action.actionType + " + actionType");
             switch (action.actionType) {
                 case SHOW_OPTIONS:
-                    onShowOptions(action.privacyManagerId);
+                    onShowOptions(action);
                     break;
                 case PM_DISMISS:
                     onPmDismiss(action.requestFromPm);
@@ -320,8 +320,8 @@ public class GDPRConsentLib {
         return isNative ? nativeView : webView;
     }
 
-    public void onShowOptions(String privacyManagerId) {
-        showPm(privacyManagerId);
+    public void onShowOptions(ConsentAction action) {
+        showPm(action.privacyManagerId, action.pmTab);
     }
 
     private void loadConsentUI(String url) {
@@ -354,14 +354,14 @@ public class GDPRConsentLib {
     }
 
     public void showPm() {
-        showPm(null);
+        showPm(null,null);
     }
 
-    public void showPm(String privacyManagerId) {
+    public void showPm(String privacyManagerId, String pmTab) {
         try {
             mCountDownTimer.start();
             isPmOn = true;
-            loadConsentUI(pmUrl(privacyManagerId));
+            loadConsentUI(pmUrl(privacyManagerId, pmTab));
         } catch (Exception e) {
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.showPm()"));
         }
@@ -592,9 +592,11 @@ public class GDPRConsentLib {
     }
 
 
-    String pmUrl(String privacyManagerId) {
+    String pmUrl(String privacyManagerId, String pmTab) {
         HashSet<String> params = new HashSet<>();
         params.add("message_id=" + (privacyManagerId != null ? privacyManagerId : pmId));
+        if (pmTab != null)
+        params.add("pmTab="+pmTab);
         params.add("site_id="+ propertyId);
         if (consentUUID != null) params.add("consentUUID=" + consentUUID);
         return PM_BASE_URL + "?" + TextUtils.join("&", params);

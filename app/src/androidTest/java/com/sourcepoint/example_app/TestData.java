@@ -16,4 +16,6 @@ public class TestData {
     public static String PRIVACY_MANAGER = "privacy-manager";
     public static String SITE_VENDORS = "Site Vendors";
     public static String VENDOR_NAME = "google";
+    public static String FEATURES = "Features";
+    public static String PURPOSES = "Purposes";
 }
