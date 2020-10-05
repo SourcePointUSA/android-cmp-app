@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private NativeMessage buildNativeMessage() {
-        return new CustomNativeMessage(this);
+        return new CustomNativeMessage(getApplicationContext());
     }
 
     @Override
