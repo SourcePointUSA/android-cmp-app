@@ -345,6 +345,8 @@ public class MetaAppTests extends Utility{
         Assert.assertTrue(checkFor(CONSENTS_ARE_NOT_DISPLAYED));
     }
 
+    // Native message tests
+
     @Test
     public void checkNativeMessage(){
         tapOnAddProperty();
