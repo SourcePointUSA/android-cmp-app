@@ -201,19 +201,16 @@ public class Utility extends TestData {
                 .perform(click());
     }
 
-    public void swipeAndChooseAction(String action, String field) throws InterruptedException {
+    public void swipeAndChooseAction(String action, String field) {
         onView(allOf(withId(R.id.item_view), isDisplayed())).perform(swipeLeft());
         if (action.equals(RESET_ACTION)) {
             onView(allOf(withId(R.id.reset_button), isDisplayed())).perform(click());
-            signal.await(1, TimeUnit.SECONDS);
             onView(withText(field)).perform(scrollTo(), click());
         } else if (action.equals(DELETE_ACTION)) {
             onView(allOf(withId(R.id.delete_button), isDisplayed())).perform(click());
-            signal.await(1, TimeUnit.SECONDS);
             onView(withText(field)).perform(scrollTo(), click());
         } else if (action.equals(EDIT_ACTION)) {
             onView(allOf(withId(R.id.edit_button), isDisplayed())).perform(click());
-            signal.await(1, TimeUnit.SECONDS);
             if (field.equals(PARAM_VALUE)) {
                 addParameterWithAuthentication(keyParam, valueParamEnglish, NO_AUTHENTICATION);
             } else {
@@ -275,63 +272,16 @@ public class Utility extends TestData {
         return value;
     }
 
-    public void addNativeMessagePropertyDetails() {
-        String accountId = "22";
-        String propertyId= "7094";
-        String propertyName= "tcfv2.mobile.demo";
-        String pmId = "179657";
-        onView(allOf(withId(R.id.etAccountID), isDisplayed()))
-                .perform(clearText(), replaceText(accountId), closeSoftKeyboard());
-
-        onView(allOf(withId(R.id.etPropertyId), isDisplayed()))
-                .perform(clearText(), replaceText(propertyId), closeSoftKeyboard());
-
-        onView(allOf(withId(R.id.etPropertyName), isDisplayed()))
-                .perform(clearText(), replaceText(propertyName), closeSoftKeyboard());
-
-        onView(allOf(withId(R.id.etPMId), isDisplayed()))
-                .perform(clearText(), replaceText(pmId), closeSoftKeyboard());
-
-        onView(allOf(withId(R.id.toggleNativeMessage), isDisplayed()))
-                .perform(click());
-    }
-
-    public boolean checkNativeMessageDisplayed(){
-        int i = 0 ;
-        boolean value = false;
-        do {
-            try {
-                signal.await(3, TimeUnit.SECONDS);
-                onView(allOf(withId(R.id.Title), isDisplayed()));
-                value = true;
-                break;
-            }catch (Exception e){
-                i++;
-            }
-        }while (i < 10);
-        return value;
-    }
-
-    public void chooseNativeMessageAction(int actionId){
-        onView(allOf(withId(actionId), isDisplayed()))
-                .perform(click());
-    }
-
-    public boolean checkForPropertyListScrren() {
-        int i = 0;
-        while (i++ < 10) {
-            try {
-                onView(withId(R.id.action_addProperty)).check(matches(isDisplayed()));
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                try {
-                    signal.await(3, TimeUnit.SECONDS);
-                } catch (Exception e1) {
-                    e.printStackTrace();
-                }
-            }
+    public boolean checkPMTabSelected(String expected){
+        boolean check = false;
+        try {
+            onWebView().forceJavascriptEnabled()
+                    .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab active') and text()='"+ expected +"']"));
+            check = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            check = false;
         }
-        return false;
+        return check;
     }
 }
