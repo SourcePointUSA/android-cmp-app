@@ -21,6 +21,13 @@ public class TestData {
     public static String valueParamForPMAsMessage = "true";
     public static String authIdValue;
 
+    public static String Example_accountID = "22";
+    public static String Example_propertyID = "7639";
+    public static String Example_propertyName = "tcfv2.mobile.webview";
+    public static String Example_pmID = "122058";
+    public static String OPTIONS = "Options";
+    public static String FEATURES = "Features";
+    public static String PURPOSES = "Purposes";
     public static String authID(){
         Date date = new Date();
         authIdValue = sdf.format(date);

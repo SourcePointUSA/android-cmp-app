@@ -556,4 +556,20 @@ public class MetaAppTests extends Utility{
         Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
         Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
     }
+
+    @Test
+    public void checkPMTabSelected(){
+        tapOnAddProperty();
+        addPropertyDetails(Example_accountID, Example_propertyID, Example_propertyName, Example_pmID);
+        tapOnSave();
+        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+        chooseAction(OPTIONS);
+        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+        checkPMTabSelected(FEATURES);
+        chooseAction(PM_SAVE_AND_EXIT);
+        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+        loadPrivacyManagerDirect();
+        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+        checkPMTabSelected(PURPOSES);
+    }
 }

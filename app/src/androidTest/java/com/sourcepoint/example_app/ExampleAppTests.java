@@ -135,4 +135,18 @@ public class ExampleAppTests extends Utility {
         clickOnReviewConsent();
         Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
     }
+
+    @Test
+    public void checkShowOptionsFromMessage(){
+        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+        chooseAction(OPTIONS);
+        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+        Assert.assertTrue(checkPMTabSelected(FEATURES));
+
+        chooseAction(SAVE_AND_EXIT);
+        Assert.assertTrue(checkMainWebViewDisplayed());
+        clickOnReviewConsent();
+        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+        Assert.assertTrue(checkPMTabSelected(PURPOSES));
+    }
 }
