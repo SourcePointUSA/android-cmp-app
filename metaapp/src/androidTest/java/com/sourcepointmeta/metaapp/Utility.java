@@ -203,6 +203,7 @@ public class Utility extends TestData {
 
     public void swipeAndChooseAction(String action, String field) throws InterruptedException {
         onView(allOf(withId(R.id.item_view), isDisplayed())).perform(swipeLeft());
+        signal.await(1, TimeUnit.SECONDS);
         if (action.equals(RESET_ACTION)) {
             onView(allOf(withId(R.id.reset_button), isDisplayed())).perform(click());
             signal.await(1, TimeUnit.SECONDS);

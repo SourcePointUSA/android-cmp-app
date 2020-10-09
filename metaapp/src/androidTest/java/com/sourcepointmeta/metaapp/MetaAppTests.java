@@ -32,6 +32,7 @@ public class MetaAppTests extends Utility{
         chooseAction(ACCEPT_ALL);
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
         navigateBackToListView();
+        Assert.assertTrue(checkForPropertyListScrren());
         tapOnProperty();
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         chooseAction(MANAGE_PREFERENCES);
@@ -47,6 +48,7 @@ public class MetaAppTests extends Utility{
         Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
         Assert.assertTrue(checkFor(CONSENTS_ARE_NOT_DISPLAYED));
         navigateBackToListView();
+        Assert.assertTrue(checkForPropertyListScrren());
         tapOnProperty();
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         chooseAction(MANAGE_PREFERENCES);
@@ -64,6 +66,7 @@ public class MetaAppTests extends Utility{
         chooseAction(PM_ACCEPT_ALL);
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
         navigateBackToListView();
+        Assert.assertTrue(checkForPropertyListScrren());
         tapOnProperty();
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         chooseAction(MANAGE_PREFERENCES);
@@ -81,6 +84,7 @@ public class MetaAppTests extends Utility{
         chooseAction(PM_REJECT_ALL);
         Assert.assertTrue(checkFor(CONSENTS_ARE_NOT_DISPLAYED));
         navigateBackToListView();
+        Assert.assertTrue(checkForPropertyListScrren());
         tapOnProperty();
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         chooseAction(MANAGE_PREFERENCES);
@@ -99,6 +103,7 @@ public class MetaAppTests extends Utility{
         chooseAction(PM_SAVE_AND_EXIT);
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
         navigateBackToListView();
+        Assert.assertTrue(checkForPropertyListScrren());
         tapOnProperty();
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         chooseAction(MANAGE_PREFERENCES);
@@ -154,6 +159,7 @@ public class MetaAppTests extends Utility{
         chooseAction(ACCEPT_ALL);
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
         navigateBackToListView();
+        Assert.assertTrue(checkForPropertyListScrren());
         tapOnProperty();
         Assert.assertFalse(checkWebViewDisplayedFor(MESSAGE));
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
@@ -169,6 +175,7 @@ public class MetaAppTests extends Utility{
         chooseAction(PM_ACCEPT_ALL);
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
         navigateBackToListView();
+        Assert.assertTrue(checkForPropertyListScrren());
         tapOnProperty();
         Assert.assertFalse(checkWebViewDisplayedFor(MESSAGE));
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
@@ -233,6 +240,7 @@ public class MetaAppTests extends Utility{
         chooseAction(ACCEPT_ALL);
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
         navigateBackToListView();
+        Assert.assertTrue(checkForPropertyListScrren());
         tapOnProperty();
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
         chooseAction(MANAGE_PREFERENCES);
@@ -247,6 +255,7 @@ public class MetaAppTests extends Utility{
         chooseAction(ACCEPT_ALL);
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
         navigateBackToListView();
+        Assert.assertTrue(checkForPropertyListScrren());
         tapOnProperty();
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
         loadPrivacyManagerDirect();
@@ -303,6 +312,7 @@ public class MetaAppTests extends Utility{
         chooseAction(PM_ACCEPT_ALL);
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
         navigateBackToListView();
+        Assert.assertTrue(checkForPropertyListScrren());
         tapOnProperty();
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
     }
