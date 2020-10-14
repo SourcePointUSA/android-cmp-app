@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     private PropertyConfig config;
 
+    private boolean isMessageVisible = false;
+
     private void showView(View view) {
         if(view.getParent() == null){
             view.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
@@ -52,10 +54,12 @@ public class MainActivity extends AppCompatActivity {
     private GDPRConsentLib buildGDPRConsentLib() {
         return GDPRConsentLib.newBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId,this)
                 .setOnConsentUIReady(view -> {
+                    isMessageVisible = true;
                     showView(view);
                     Log.i(TAG, "onConsentUIReady");
                 })
                 .setOnConsentUIFinished(view -> {
+                    isMessageVisible = false;
                     removeView(view);
                     Log.i(TAG, "onConsentUIFinished");
                 })
@@ -113,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "init");
+        if (!isMessageVisible)
         buildGDPRConsentLib().run();
     }
 
