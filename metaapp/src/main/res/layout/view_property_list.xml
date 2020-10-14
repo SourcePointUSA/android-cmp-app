@@ -104,7 +104,7 @@
                     android:textSize="@dimen/text_size_16" />
             </LinearLayout>
             <TextView
-                android:id="@+id/propertyType"
+                android:id="@+id/messageType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_medium"
