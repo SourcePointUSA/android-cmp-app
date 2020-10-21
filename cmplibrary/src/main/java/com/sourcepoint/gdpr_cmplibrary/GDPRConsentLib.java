@@ -25,9 +25,8 @@ import java.util.Locale;
 public class GDPRConsentLib {
 
     private final String pmId;
-
-    final String PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager/index.html";
-    final String OTT_PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager-ott/index.html";
+    private final String PM_BASE_URL = "https://cdn.privacy-mgmt.com/privacy-manager/index.html";
+    private final String OTT_PM_BASE_URL = "https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html";
     private final onBeforeSendingConsent onBeforeSendingConsent;
     private final OnNoIntentActivitiesFound onNoIntentActivitiesFound;
     private final Context context;
