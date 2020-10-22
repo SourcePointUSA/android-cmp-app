@@ -28,6 +28,8 @@ import android.widget.TextView;
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibBuilder;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
+import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
+import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
 import com.sourcepointmeta.metaapp.R;
 import com.sourcepointmeta.metaapp.SourcepointApp;
 import com.sourcepointmeta.metaapp.adapters.TargetingParamsAdapter;
@@ -55,7 +57,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
     private TextView mAddParamBtn;
     private ViewGroup mMainViewGroup;
 
-    private SwitchCompat mStagingSwitch;
+    private SwitchCompat mStagingSwitch , mNativeMessage;
     private TextView mTitle;
     private AlertDialog mAlertDialog;
     private TargetingParamsAdapter mTargetingParamsAdapter;
@@ -186,6 +188,9 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
         mStagingSwitch = findViewById(R.id.toggleStaging);
         mStagingSwitch.setChecked(false);
 
+        mNativeMessage = findViewById(R.id.toggleNativeMessage);
+        mNativeMessage.setChecked(false);
+
         mKeyET = findViewById(R.id.etKey);
         mValueET = findViewById(R.id.etValue);
         mAddParamBtn = findViewById(R.id.btn_addParams);
@@ -215,6 +220,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                 mPropertyNameET.setText(property.getProperty());
                 mPMIdET.setText(property.getPmID());
                 mStagingSwitch.setChecked(property.isStaging());
+                mNativeMessage.setChecked(property.isNative());
 
                 if (!TextUtils.isEmpty(property.getAuthId())) {
                     mAuthIdET.setText(property.getAuthId());
@@ -339,7 +345,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
         String pmID = mPMIdET.getText().toString().trim();
         String authId = mAuthIdET.getText().toString().trim();
         boolean isStaging = mStagingSwitch.isChecked();
-        boolean isShowPm = false;
+        boolean isNativeMessage = mNativeMessage.isChecked();
         if (TextUtils.isEmpty(accountID)) {
             return null;
         }
@@ -355,7 +361,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
         int account = Integer.parseInt(accountID);
         int property_id = Integer.parseInt(PropertyID);
 
-        return new Property(account, property_id, propertyName, pmID, isStaging, isShowPm, authId, mTargetingParamList);
+        return new Property(account, property_id, propertyName, pmID, isStaging, isNativeMessage, authId, mTargetingParamList);
     }
 
     private void loadPropertyWithInput() {
@@ -374,7 +380,11 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                     mGDPRConsentLib = buildConsentLib(property, this);
                     if (Util.isNetworkAvailable(this)) {
                         showProgressBar();
-                        mGDPRConsentLib.run();
+                        if (property.isNative()){
+                            mGDPRConsentLib.run(buildNativeMessage());
+                        }else {
+                            mGDPRConsentLib.run();
+                        }
                     } else {
                         showAlertDialog(getString(R.string.network_check_message));
                         hideProgressBar();
@@ -482,5 +492,36 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
 
     private void updateProperty(Property property) {
         viewModel.updateProperty(property);
+    }
+
+    private NativeMessage buildNativeMessage(){
+        return new NativeMessage(this){
+            @Override
+            public void init(){
+                inflate(getContext(), R.layout.meta_app_native_message, this);
+                setAcceptAll(findViewById(R.id.AcceptAll));
+                setRejectAll(findViewById(R.id.RejectAll));
+                setShowOptions(findViewById(R.id.ShowOption));
+                setCancel(findViewById(R.id.Cancel));
+                setTitle(findViewById(R.id.Title));
+                setBody(findViewById(R.id.msgBody));
+            }
+            @Override
+            public void setAttributes(NativeMessageAttrs attrs){
+
+                setChildAttributes(getTitle(), attrs.title);
+                setChildAttributes(getBody(), attrs.body);
+                for(NativeMessageAttrs.Action action: attrs.actions){
+                    setChildAttributes(findActionButton(action.choiceType), action);
+                }
+            }
+
+            @Override
+            public void setCallBacks(GDPRConsentLib consentLib) {
+                // set only the needed callbacks
+                super.setCallBacks(consentLib);
+
+            }
+        };
     }
 }

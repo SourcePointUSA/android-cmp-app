@@ -160,7 +160,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_10"
             android:orientation="horizontal"
-            android:visibility="gone"
             android:weightSum="1">
 
             <TextView
@@ -169,12 +168,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
                 android:fontFamily="@font/roboto_medium"
-                android:text="@string/show_pm"
+                android:text="@string/native_message"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/text_size_20" />
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/toggleShowPM"
+                android:id="@+id/toggleNativeMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/margin_10"

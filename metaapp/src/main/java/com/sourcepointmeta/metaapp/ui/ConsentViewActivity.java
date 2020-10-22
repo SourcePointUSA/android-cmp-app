@@ -28,6 +28,8 @@ import android.widget.TextView;
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibBuilder;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
+import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
+import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
 import com.sourcepointmeta.metaapp.R;
 import com.sourcepointmeta.metaapp.SourcepointApp;
 import com.sourcepointmeta.metaapp.adapters.ConsentListRecyclerView;
@@ -223,7 +225,11 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
         } else {
             if (Util.isNetworkAvailable(this)) {
                 showProgressBar();
-                buildConsentLib(property, this).run();
+                if (property.isNative()){
+                    buildConsentLib(property, this).run(buildNativeMessage());
+                }else {
+                    buildConsentLib(property, this).run();
+                }
             } else showAlertDialog(getString(R.string.network_check_message));
         }
     }
@@ -396,5 +402,34 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
 
     private void resetFlag() {
         isError = false;
+    }
+
+    private NativeMessage buildNativeMessage(){
+        return new NativeMessage(this){
+            @Override
+            public void init(){
+                inflate(getContext(), R.layout.meta_app_native_message, this);
+                setAcceptAll(findViewById(R.id.AcceptAll));
+                setRejectAll(findViewById(R.id.RejectAll));
+                setShowOptions(findViewById(R.id.ShowOption));
+                setCancel(findViewById(R.id.Cancel));
+                setTitle(findViewById(R.id.Title));
+                setBody(findViewById(R.id.msgBody));
+            }
+            @Override
+            public void setAttributes(NativeMessageAttrs attrs){
+
+                setChildAttributes(getTitle(), attrs.title);
+                setChildAttributes(getBody(), attrs.body);
+                for(NativeMessageAttrs.Action action: attrs.actions){
+                    setChildAttributes(findActionButton(action.choiceType), action);
+                }
+            }
+
+            @Override
+            public void setCallBacks(GDPRConsentLib consentLib) {
+                super.setCallBacks(consentLib);
+            }
+        };
     }
 }

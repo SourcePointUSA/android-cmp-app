@@ -23,8 +23,8 @@ public interface PropertyListDao {
     long insert(Property property);
 
 
-    @Query("UPDATE Property SET accountId= :accountID, propertyId= :propertyID ,property= :propertyName, pmId= :pmID ,staging= :isStaging, showPM= :isShowPM , authId= :authId WHERE id= :id ")
-    int update(int accountID, int propertyID, String propertyName, String pmID, boolean isStaging, boolean isShowPM, String authId, long id);
+    @Query("UPDATE Property SET accountId= :accountID, propertyId= :propertyID ,property= :propertyName, pmId= :pmID ,staging= :isStaging, isNative= :isNativeMessage , authId= :authId WHERE id= :id ")
+    int update(int accountID, int propertyID, String propertyName, String pmID, boolean isStaging, boolean isNativeMessage, String authId, long id);
 
     @Query("SELECT * FROM Property WHERE id= :ID")
     LiveData<Property> getPropertyByID(long ID);
@@ -49,8 +49,8 @@ public interface PropertyListDao {
            "AND pmId= :pmID " +
            "AND authId= :authId " +
            "AND staging= :isStaging " +
-           "AND showPM= :isShowPM ")
-   List<TargetingParameterList> getPropertyWithDetails(int accountID, int propertyID, String propertyName, String pmID, boolean isStaging, boolean isShowPM, String authId, String keyList, String valueList);
+           "AND isNative= :isNativeMessage ")
+   List<TargetingParameterList> getPropertyWithDetails(int accountID, int propertyID, String propertyName, String pmID, boolean isStaging, boolean isNativeMessage, String authId, String keyList, String valueList);
 
     @Query( "SELECT count(*) FROM Property as P LEFT JOIN 'targeting_param' as TP on P.id=TP.refID WHERE " +
             "P.accountId= :accountID " +
@@ -58,10 +58,10 @@ public interface PropertyListDao {
             "AND P.property= :propertyName " +
             "AND P.pmId= :pmID " +
             "AND P.staging= :isStaging " +
-            "AND P.showPM= :isShowPM " +
+            "AND P.isNative= :isNativeMessage " +
             "AND P.authId= :authId " +
             "AND TP.id  IS NULL")
-   int getPropertyWithDetails(int accountID, int propertyID, String propertyName, String pmID, boolean isStaging, boolean isShowPM, String authId);
+   int getPropertyWithDetails(int accountID, int propertyID, String propertyName, String pmID, boolean isStaging, boolean isNativeMessage, String authId);
 
     @Query("DELETE FROM Property WHERE id= :id")
     int deleteProperty(long id);
