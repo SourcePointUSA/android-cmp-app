@@ -31,7 +31,7 @@ public class ConsentLibBuilder {
     protected GDPRConsentLib.onBeforeSendingConsent onBeforeSendingConsent = (a, c) -> c.post(a);
     protected GDPRConsentLib.OnNoIntentActivitiesFound onNoIntentActivitiesFound = url -> {};
 
-    boolean stagingCampaign, shouldCleanConsentOnError;
+    boolean stagingCampaign, shouldCleanConsentOnError, isOTT;
     SourcePointClient sourcePointClient;
 
     String targetingParamsString = null;
@@ -161,6 +161,11 @@ public class ConsentLibBuilder {
      */
     public ConsentLibBuilder setStagingCampaign(boolean st) {
         stagingCampaign = st;
+        return this;
+    }
+
+    public ConsentLibBuilder setIsOTT(boolean isOTT){
+        this.isOTT = isOTT;
         return this;
     }
 

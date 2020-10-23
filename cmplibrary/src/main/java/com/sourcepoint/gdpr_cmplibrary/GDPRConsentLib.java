@@ -26,6 +26,7 @@ public class GDPRConsentLib {
     private final String pmId;
 
     private final String PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager/index.html";
+    private final String OTT_PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager-ott/index.html";
     private final onBeforeSendingConsent onBeforeSendingConsent;
     private final OnNoIntentActivitiesFound onNoIntentActivitiesFound;
 
@@ -56,6 +57,7 @@ public class GDPRConsentLib {
     final messageFinishedCallback messageFinished;
     final onActionCallback onAction;
     final boolean shouldCleanConsentOnError;
+    final boolean isOTT;
 
     public boolean isNative, isPmOn = false;
 
@@ -167,6 +169,7 @@ public class GDPRConsentLib {
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
         onBeforeSendingConsent = b.onBeforeSendingConsent;
         onNoIntentActivitiesFound = b.onNoIntentActivitiesFound;
+        this.isOTT = b.isOTT;
 
         //TODO: inject consoleWebview from the builder as well (overload/callbacks refactor required)
         webView = buildWebView(b.getContext());
@@ -599,7 +602,8 @@ public class GDPRConsentLib {
         params.add("pmTab="+pmTab);
         params.add("site_id="+ propertyId);
         if (consentUUID != null) params.add("consentUUID=" + consentUUID);
-        return PM_BASE_URL + "?" + TextUtils.join("&", params);
+        String PM_URL = isOTT ? OTT_PM_BASE_URL : PM_BASE_URL;
+        return PM_URL + "?" + TextUtils.join("&", params);
     }
 
     void onErrorTask(ConsentLibException e) {
