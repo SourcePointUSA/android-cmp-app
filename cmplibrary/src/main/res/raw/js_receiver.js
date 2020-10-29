@@ -21,7 +21,8 @@ function actionFromMessage(payload) {
         requestFromPm: false,
         pmId: pmDetails.pmId,
         pmTab: pmDetails.pmTabShow,
-        saveAndExitVariables: {}
+        saveAndExitVariables: {},
+        consentLanguage: payload.consentLanguage
     };
 }
 
@@ -33,7 +34,8 @@ function actionFromPM(payload) {
         requestFromPm: true,
         pmId: null,
         pmTab: null,
-        saveAndExitVariables: payload.payload
+        saveAndExitVariables: payload.payload,
+        consentLanguage: payload.consentLanguage ? payload.consentLanguage : null
     };
 }
 

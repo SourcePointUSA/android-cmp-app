@@ -503,6 +503,7 @@ public class GDPRConsentLib {
             params.put("choiceId", action.choiceId);
             params.put("pmSaveAndExitVariables", action.pmSaveAndExitVariables);
             params.put("pubData", action.getPubData());
+            params.put("consentLanguage", action.consentLanguage);
             return params;
         } catch (JSONException e) {
             throw new ConsentLibException(e, "Error trying to build body to send consents.");
