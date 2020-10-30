@@ -25,8 +25,8 @@ public class GDPRConsentLib {
 
     private final String pmId;
 
-    private final String PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager/index.html";
-    private final String OTT_PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager-ott/index.html";
+    final String PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager/index.html";
+    final String OTT_PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager-ott/index.html";
     private final onBeforeSendingConsent onBeforeSendingConsent;
     private final OnNoIntentActivitiesFound onNoIntentActivitiesFound;
 
@@ -57,7 +57,7 @@ public class GDPRConsentLib {
     final messageFinishedCallback messageFinished;
     final onActionCallback onAction;
     final boolean shouldCleanConsentOnError;
-    final boolean isOTT;
+    boolean isOTT;
 
     public boolean isNative, isPmOn = false;
 
