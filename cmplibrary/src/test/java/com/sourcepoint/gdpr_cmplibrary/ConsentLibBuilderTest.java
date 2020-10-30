@@ -141,6 +141,14 @@ public class ConsentLibBuilderTest {
     }
 
     @Test
+    public void setIsOTT() {
+        defaultBuilder.setIsOTT(true);
+        assertTrue(defaultBuilder.isOTT);
+        defaultBuilder.setIsOTT(false);
+        assertFalse(defaultBuilder.isOTT);
+    }
+
+    @Test
     public void setShouldCleanConsentOnError() {
         defaultBuilder.setShouldCleanConsentOnError(false);
         assertFalse(defaultBuilder.shouldCleanConsentOnError);
