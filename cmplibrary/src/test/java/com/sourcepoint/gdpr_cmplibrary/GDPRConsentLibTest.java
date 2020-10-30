@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -204,5 +205,12 @@ public class GDPRConsentLibTest {
         assertEquals("foo_vendor", requestParams.getJSONArray("vendors").get(0));
         assertEquals("foo_category", requestParams.getJSONArray("categories").get(0));
         assertEquals("foo_legIntCategory", requestParams.getJSONArray("legIntCategories").get(0));
+    }
+
+    @Test
+    public void pmURL(){
+        assertTrue(lib.pmUrl("foo_pmID", "foo_pmTab").contains(lib.PM_BASE_URL));
+        lib.isOTT = true;
+        assertTrue(lib.pmUrl("foo_pmID", "foo_pmTab").contains(lib.OTT_PM_BASE_URL));
     }
 }
