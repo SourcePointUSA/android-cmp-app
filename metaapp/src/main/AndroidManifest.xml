@@ -14,7 +14,6 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="com.sourcepointmeta.metaapp.ui.SplashScreenActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,15 +23,14 @@
         </activity>
         <activity
             android:name="com.sourcepointmeta.metaapp.ui.ConsentViewActivity"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|screenSize"/>
         <activity
             android:name="com.sourcepointmeta.metaapp.ui.NewPropertyActivity"
-            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.sourcepointmeta.metaapp.ui.PropertyListActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
+            android:launchMode="singleTask"/>
 
         <meta-data
             android:name="preloaded_fonts"
