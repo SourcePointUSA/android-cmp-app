@@ -35,7 +35,7 @@ function actionFromPM(payload) {
         pmId: null,
         pmTab: null,
         saveAndExitVariables: payload.payload,
-        consentLanguage: payload.consentLanguage ? payload.consentLanguage : null
+        consentLanguage: payload.consentLanguage
     };
 }
 
