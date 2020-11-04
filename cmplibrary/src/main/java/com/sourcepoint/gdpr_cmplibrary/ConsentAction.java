@@ -17,7 +17,7 @@ public class ConsentAction {
     public final String consentLanguage;
     private Map pubData = new HashMap();
 
-    ConsentAction(int actionType, String choiceId, String privacyManagerId, String defaultPmTab,boolean requestFromPm, JSONObject pmSaveAndExitVariables, String consentLanguage) {
+    ConsentAction(int actionType, String choiceId, String privacyManagerId, String defaultPmTab, boolean requestFromPm, JSONObject pmSaveAndExitVariables, String consentLanguage) {
         this.actionType = ActionTypes.valueOf(actionType);
         this.choiceId = choiceId;
         this.privacyManagerId = privacyManagerId;
@@ -28,7 +28,7 @@ public class ConsentAction {
     }
 
     ConsentAction(int actionType, String choiceId, boolean requestFromPm, JSONObject pmSaveAndExitVariables) {
-        this(actionType, choiceId, null, null,requestFromPm, pmSaveAndExitVariables,null);
+        this(actionType, choiceId, null, null, requestFromPm, pmSaveAndExitVariables, null);
     }
 
     public void setPubData(Map pubData){

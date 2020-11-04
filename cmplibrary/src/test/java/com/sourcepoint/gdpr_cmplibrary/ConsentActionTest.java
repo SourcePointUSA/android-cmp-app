@@ -27,7 +27,7 @@ public class ConsentActionTest {
     //ActionType validation is not being tested as this class does not have this responsibility
     @Test
     public void ConsentActionDefaults() throws JSONException {
-        ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, choiceIdMock, null, null,requestFromPmMock, pmSaveAndExitVariablesMock, consentLanguageMock);
+        ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, choiceIdMock, null, null, requestFromPmMock, pmSaveAndExitVariablesMock, consentLanguageMock);
         assertEquals(consentAction.actionType.code, actionTypeCodeMock);
         assertEquals(choiceIdMock, choiceIdMock);
         assertEquals(pmSaveAndExitVariablesMock, pmSaveAndExitVariablesMock);
@@ -41,12 +41,12 @@ public class ConsentActionTest {
     }
 
     @Test
-    public void ConsentActionNulls(){
-        ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, null, null, null, requestFromPmMock, null,null);
+    public void ConsentActionNulls() {
+        ConsentAction consentAction = new ConsentAction(actionTypeCodeMock, null, null, null, requestFromPmMock, null, null);
         assertEquals(consentAction.actionType.code, actionTypeCodeMock);
         assertNull(consentAction.choiceId);
         assertNull(consentAction.pmSaveAndExitVariables);
-        assertEquals("{}",consentAction.getPubData().toString());
-        assertNull(consentAction.consentLanguage );
+        assertEquals("{}", consentAction.getPubData().toString());
+        assertNull(consentAction.consentLanguage);
     }
 }

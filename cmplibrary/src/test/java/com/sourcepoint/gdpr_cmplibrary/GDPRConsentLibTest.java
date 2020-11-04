@@ -33,10 +33,10 @@ public class GDPRConsentLibTest {
 
     private GDPRConsentLib lib;
 
-    private ConsentAction consentActionMock = new ConsentAction(ActionTypes.ACCEPT_ALL.code, "foo", null, "null",false, new JSONObject(),"foo_en");
-    private ConsentAction consentActionMockPMDismiss = new ConsentAction(ActionTypes.PM_DISMISS.code, "foo", null, null, false, new JSONObject(),"foo_en");
-    private ConsentAction consentActionMockMsgCancel = new ConsentAction(ActionTypes.MSG_CANCEL.code, "foo", null, null,false, new JSONObject(), "foo_en");
-    private ConsentAction consentActionMockShowOptions = new ConsentAction(ActionTypes.SHOW_OPTIONS.code, "foo", "foo_pmId", "foo_pmTab",false, new JSONObject(), "foo_en");
+    private ConsentAction consentActionMock = new ConsentAction(ActionTypes.ACCEPT_ALL.code, "foo", null, "null", false, new JSONObject(), "foo_en");
+    private ConsentAction consentActionMockPMDismiss = new ConsentAction(ActionTypes.PM_DISMISS.code, "foo", null, null, false, new JSONObject(), "foo_en");
+    private ConsentAction consentActionMockMsgCancel = new ConsentAction(ActionTypes.MSG_CANCEL.code, "foo", null, null, false, new JSONObject(), "foo_en");
+    private ConsentAction consentActionMockShowOptions = new ConsentAction(ActionTypes.SHOW_OPTIONS.code, "foo", "foo_pmId", "foo_pmTab", false, new JSONObject(), "foo_en");
 
     @Mock
     Activity activityMock;

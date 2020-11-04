@@ -80,7 +80,7 @@ abstract public class ConsentWebView extends WebView {
         }
 
         private ConsentAction consentAction(JSONObject actionFromJS) throws ConsentLibException {
-            return new ConsentAction(getInt("actionType", actionFromJS), getString("choiceId", actionFromJS), getString("privacyManagerId", actionFromJS), getString("pmTab",actionFromJS),CustomJsonParser.getBoolean("requestFromPm", actionFromJS), getJson("saveAndExitVariables", actionFromJS), getString("consentLanguage",actionFromJS));
+            return new ConsentAction(getInt("actionType", actionFromJS), getString("choiceId", actionFromJS), getString("privacyManagerId", actionFromJS), getString("pmTab", actionFromJS), CustomJsonParser.getBoolean("requestFromPm", actionFromJS), getJson("saveAndExitVariables", actionFromJS), getString("consentLanguage", actionFromJS));
         }
     }
 
