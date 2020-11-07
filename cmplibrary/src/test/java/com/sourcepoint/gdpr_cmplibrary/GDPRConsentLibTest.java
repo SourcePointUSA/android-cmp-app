@@ -16,8 +16,10 @@ import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -25,6 +27,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -116,7 +120,7 @@ public class GDPRConsentLibTest {
 
 
     @Before
-    public void setUp() throws ConsentLibException {
+    public void setUp() throws Exception {
         initMocks(this);
         setStoreClientMock();
         setTimerMock();
@@ -212,5 +216,31 @@ public class GDPRConsentLibTest {
         assertTrue(lib.pmUrl("foo_pmID", "foo_pmTab").contains(lib.PM_BASE_URL));
         lib.isOTT = true;
         assertTrue(lib.pmUrl("foo_pmID", "foo_pmTab").contains(lib.OTT_PM_BASE_URL));
+    }
+
+    @Test
+    public void shouldNotCallAnyCallbacksWhenBuildingConsentLib(){
+        verify(lib.uiThreadHandler, never()).postIfEnabled(any());
+    }
+
+    @Test
+    public void shouldCallOnErrorWhenBuildWebviewThrowsError(){
+        AtomicBoolean onErrorCalled = new AtomicBoolean(false);
+
+        ConsentLibBuilder builder = builderMock();
+        builder.onError = e -> onErrorCalled.set(true);
+
+        assertFalse(onErrorCalled.get());
+
+        GDPRConsentLib errorLib = spy(new GDPRConsentLib(builder){
+            @Override
+            ConsentWebView buildWebView(Context context) throws Exception {
+                throw new Exception();
+            }
+        });
+
+        verify(errorLib.uiThreadHandler).postIfEnabled(lambdaCaptor.capture());
+        lambdaCaptor.getValue().run();
+        assertTrue(onErrorCalled.get());
     }
 }
