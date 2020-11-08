@@ -55,7 +55,7 @@ public class ConsentLibBuilder {
         stagingCampaign = false;
         shouldCleanConsentOnError = true;
         messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     protected StoreClient getStoreClient(){
