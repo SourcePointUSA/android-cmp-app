@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static kotlin.text.Typography.times;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -30,11 +31,15 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(RobolectricTestRunner.class)
 public class GDPRConsentLibTest {
+
+    private AtomicBoolean onErrorCalled;
 
     private GDPRConsentLib lib;
 
@@ -42,6 +47,9 @@ public class GDPRConsentLibTest {
     private ConsentAction consentActionMockPMDismiss = new ConsentAction(ActionTypes.PM_DISMISS.code, "foo", null, null, false, new JSONObject());
     private ConsentAction consentActionMockMsgCancel = new ConsentAction(ActionTypes.MSG_CANCEL.code, "foo", null, null,false, new JSONObject());
     private ConsentAction consentActionMockShowOptions = new ConsentAction(ActionTypes.SHOW_OPTIONS.code, "foo", "foo_pmId", "foo_pmTab",false, new JSONObject());
+
+    @Mock
+    Context contextMock;
 
     @Mock
     Activity activityMock;
@@ -67,7 +75,7 @@ public class GDPRConsentLibTest {
     ArgumentCaptor<Runnable> lambdaCaptor;
 
     private ConsentLibBuilder builderMock(int accountId, String propertyName, int propertyId, String pmId, Activity activity){
-        return new ConsentLibBuilder(accountId, propertyName, propertyId, pmId, activity){
+        ConsentLibBuilder b = new ConsentLibBuilder(accountId, propertyName, propertyId, pmId, activity){
             @Override
             public SourcePointClient getSourcePointClient(){
                 return sourcePointClientMock;
@@ -85,6 +93,8 @@ public class GDPRConsentLibTest {
                 return uiThreadHandlerMock;
             }
         };
+        b.onError = e -> onErrorCalled.set(true);
+        return b;
     }
 
     private ConsentLibBuilder builderMock(){
@@ -118,10 +128,17 @@ public class GDPRConsentLibTest {
         doNothing().when(sourcePointClientMock).getMessage(anyBoolean(), anyString(), anyString(), anyString(), any(GDPRConsentLib.OnLoadComplete.class));
     }
 
+    private void setContextMock(){
+        doReturn(contextMock).when(contextMock).getApplicationContext();
+        doReturn(contextMock).when(activityMock).getApplicationContext();
+    }
+
 
     @Before
     public void setUp() throws Exception {
+        onErrorCalled = new AtomicBoolean(false);
         initMocks(this);
+        setContextMock();
         setStoreClientMock();
         setTimerMock();
         setSourcePointClientMock();
@@ -129,11 +146,11 @@ public class GDPRConsentLibTest {
         lib = spy(new GDPRConsentLib(builderMock()){
             @Override
             ConsentWebView buildWebView(Context context){
+                this.webView = webViewMock;
                 return webViewMock;
             }
         });
         doNothing().when(webViewMock).loadConsentUIFromUrl(any());
-        doReturn(webViewMock).when(lib).buildWebView(any());
     }
 
     @Test
@@ -224,22 +241,15 @@ public class GDPRConsentLibTest {
     }
 
     @Test
-    public void shouldCallOnErrorWhenBuildWebviewThrowsError(){
-        AtomicBoolean onErrorCalled = new AtomicBoolean(false);
-
-        ConsentLibBuilder builder = builderMock();
-        builder.onError = e -> onErrorCalled.set(true);
-
+    public void shouldCallOnErrorWhenBuildWebviewThrowsError() throws Exception {
         assertFalse(onErrorCalled.get());
-
-        GDPRConsentLib errorLib = spy(new GDPRConsentLib(builder){
-            @Override
-            ConsentWebView buildWebView(Context context) throws Exception {
-                throw new Exception();
-            }
-        });
-
-        verify(errorLib.uiThreadHandler).postIfEnabled(lambdaCaptor.capture());
+        when(lib.buildWebView(contextMock)).thenThrow(RuntimeException.class);
+        lib.loadConsentUI("foo_url");
+        //run 1st to try to build webview
+        verify(lib.uiThreadHandler).postIfEnabled(lambdaCaptor.capture());
+        lambdaCaptor.getValue().run();
+        //run 2nd to call onError asynchronously
+        verify(lib.uiThreadHandler, times(2) ).postIfEnabled(lambdaCaptor.capture());
         lambdaCaptor.getValue().run();
         assertTrue(onErrorCalled.get());
     }

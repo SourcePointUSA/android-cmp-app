@@ -29,6 +29,7 @@ public class GDPRConsentLib {
     final String OTT_PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager-ott/index.html";
     private final onBeforeSendingConsent onBeforeSendingConsent;
     private final OnNoIntentActivitiesFound onNoIntentActivitiesFound;
+    private final Context context;
 
     String metaData;
     String euConsent;
@@ -152,6 +153,7 @@ public class GDPRConsentLib {
     }
 
     GDPRConsentLib(ConsentLibBuilder b) {
+        context = b.getContext();
         property = b.propertyConfig.propertyName;
         accountId = b.propertyConfig.accountId;
         propertyId = b.propertyConfig.propertyId;
@@ -177,11 +179,6 @@ public class GDPRConsentLib {
 
         // :warning: following methods depend on storeClient initialization
         setConsentData(b.authId);
-        try {
-            webView = buildWebView(b.getContext());
-        } catch(Exception e) {
-            onErrorTask(new ConsentLibException(e, "Error building webview"));
-        }
     }
 
     private Runnable onCountdownFinished() {
@@ -228,7 +225,7 @@ public class GDPRConsentLib {
     }
 
     ConsentWebView buildWebView(Context context) throws Exception {
-        return new ConsentWebView(context) {
+        if(webView == null) webView = new ConsentWebView(context) {
             @Override
             public void onConsentUIReady(boolean isFromPM) {
                 showView(this, isFromPM);
@@ -249,6 +246,7 @@ public class GDPRConsentLib {
                 GDPRConsentLib.this.onAction(action);
             }
         };
+        return webView;
     }
 
     public void onAction(ConsentAction action) {
@@ -327,10 +325,10 @@ public class GDPRConsentLib {
         showPm(action.privacyManagerId, action.pmTab);
     }
 
-    private void loadConsentUI(String url) {
+    void loadConsentUI(String url) {
         uiThreadHandler.postIfEnabled(() -> {
             try {
-                webView.loadConsentUIFromUrl(url);
+                buildWebView(context).loadConsentUIFromUrl(url);
             } catch(ConsentLibException e) {
                 onErrorTask(e);
             } catch (Exception e) {
