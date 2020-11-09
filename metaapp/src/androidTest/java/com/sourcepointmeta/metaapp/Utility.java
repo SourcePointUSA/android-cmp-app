@@ -86,12 +86,15 @@ public class Utility extends TestData {
         if (!authentication.equals(NO_AUTHENTICATION)) {
             addAuthentication(authentication);
         }
+        onView(ViewMatchers.withId(R.id.decor_content_parent)).perform(ViewActions.swipeUp());
         onView(allOf(withId(R.id.etKey), isDisplayed()))
                 .perform(clearText(), typeText(key), closeSoftKeyboard());
 
+        onView(ViewMatchers.withId(R.id.decor_content_parent)).perform(ViewActions.swipeUp());
         onView(allOf(withId(R.id.etValue), isDisplayed()))
                 .perform(clearText(), typeText(value), closeSoftKeyboard());
 
+        onView(ViewMatchers.withId(R.id.decor_content_parent)).perform(ViewActions.swipeUp());
         onView(allOf(withId(R.id.btn_addParams), withText("Add"), isDisplayed()))
                 .perform(click());
     }
