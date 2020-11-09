@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Locale;
 
 /**
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
@@ -495,6 +496,7 @@ public class GDPRConsentLib {
     private JSONObject paramsToSendConsent(ConsentAction action) throws ConsentLibException {
         try {
             JSONObject params = new JSONObject();
+            String consentLanguage = action.consentLanguage != null ? action.consentLanguage : Locale.getDefault().getLanguage().toUpperCase();
             params.put("accountId", accountId);
             params.put("propertyId", propertyId);
             params.put("propertyHref", "https://" + property);
@@ -506,6 +508,7 @@ public class GDPRConsentLib {
             params.put("choiceId", action.choiceId);
             params.put("pmSaveAndExitVariables", action.pmSaveAndExitVariables);
             params.put("pubData", action.getPubData());
+            params.put("consentLanguage", consentLanguage);
             return params;
         } catch (JSONException e) {
             throw new ConsentLibException(e, "Error trying to build body to send consents.");
