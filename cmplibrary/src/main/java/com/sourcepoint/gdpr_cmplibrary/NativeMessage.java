@@ -1,6 +1,7 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.content.Context;
+import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -139,6 +140,7 @@ public class NativeMessage extends RelativeLayout {
     public void setBody(TextView body) {
         this.body = body;
         this.body.setVisibility(View.INVISIBLE);
+        this.body.setMovementMethod(new ScrollingMovementMethod());
     }
 
     public TextView getTitle() {

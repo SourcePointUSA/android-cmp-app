@@ -1,11 +1,11 @@
 package com.sourcepoint.example_app;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
