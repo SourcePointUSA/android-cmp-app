@@ -1,5 +1,7 @@
 package com.sourcepointmeta.metaapp;
 
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.espresso.web.webdriver.Locator;
 
 import java.util.concurrent.CountDownLatch;
