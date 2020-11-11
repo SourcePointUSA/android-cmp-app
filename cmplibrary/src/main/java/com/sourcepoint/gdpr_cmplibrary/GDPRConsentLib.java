@@ -59,6 +59,7 @@ public class GDPRConsentLib {
     final onActionCallback onAction;
     final boolean shouldCleanConsentOnError;
     boolean isOTT;
+    String messageLanguage;
 
     public boolean isNative, isPmOn = false;
 
@@ -171,6 +172,7 @@ public class GDPRConsentLib {
         onBeforeSendingConsent = b.onBeforeSendingConsent;
         onNoIntentActivitiesFound = b.onNoIntentActivitiesFound;
         this.isOTT = b.isOTT;
+        messageLanguage = b.messageLanguage;
 
         //TODO: inject consoleWebview from the builder as well (overload/callbacks refactor required)
         webView = buildWebView(b.getContext());
@@ -424,7 +426,7 @@ public class GDPRConsentLib {
                         setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
                         showView(nativeView,false);
                     } else if(jsonResult.has("url") && !jsonResult.isNull("url")){
-                        loadConsentUI(jsonResult.getString("url")+"&consentUUID="+consentUUID);
+                        loadConsentUI(jsonResult.getString("url")+"&consentUUID=" + consentUUID +"&consentLanguage=" + messageLanguage);
                     } else {
                         storeData();
                         consentFinished();
@@ -605,6 +607,7 @@ public class GDPRConsentLib {
         params.add("pmTab="+pmTab);
         params.add("site_id="+ propertyId);
         if (consentUUID != null) params.add("consentUUID=" + consentUUID);
+        if (messageLanguage != null) params.add("consentLanguage=" + messageLanguage);
         String PM_URL = isOTT ? OTT_PM_BASE_URL : PM_BASE_URL;
         return PM_URL + "?" + TextUtils.join("&", params);
     }
