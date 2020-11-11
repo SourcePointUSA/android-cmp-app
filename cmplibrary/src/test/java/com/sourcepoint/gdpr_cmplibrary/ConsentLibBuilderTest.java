@@ -163,6 +163,12 @@ public class ConsentLibBuilderTest {
     }
 
     @Test
+    public void setMessageLanguage() {
+        defaultBuilder.setMessageLanguage(MessageLanguage.BULGARIAN);
+        assertEquals("BG", defaultBuilder.messageLanguage);
+    }
+
+    @Test
     public void setTargetingParamString() throws Exception {
         defaultBuilder.setTargetingParam("key", "stringValue");
 
