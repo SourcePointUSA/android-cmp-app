@@ -2,6 +2,8 @@ package com.sourcepointmeta.metaapp
 
 class MetaAppTestsKRobot {
 
+    private val utility by lazy { Utility() }
+
     suspend fun tapOnAddProperty() = apply {
         waitAndRetry {
             performClickByIdAndContent(R.id.action_addProperty, "Add Property")
@@ -21,17 +23,17 @@ class MetaAppTestsKRobot {
         val pmId = "179657"
 
         waitAndRetry {
-            writeText(propId = R.id.etAccountID, text = accountId)
-            writeText(propId = R.id.etPropertyId, text = propertyId)
-            writeText(propId = R.id.etPropertyName, text = propertyName)
-            writeText(propId = R.id.etPMId, text = pmId)
+            insertTextByResId(propId = R.id.etAccountID, text = accountId)
+            insertTextByResId(propId = R.id.etPropertyId, text = propertyId)
+            insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
+            insertTextByResId(propId = R.id.etPMId, text = pmId)
             performClickById(resId = R.id.toggleNativeMessage)
         }
     }
 
     suspend fun checkNativeMessageDisplayed() = apply {
         waitAndRetry {
-            isDisplayAllOf(R.id.Title)
+            isDisplayedAllOf(R.id.Title)
         }
     }
 
@@ -41,21 +43,63 @@ class MetaAppTestsKRobot {
         }
     }
 
-    suspend fun isPrivacyManagerVisible() = apply {
+    suspend fun tapRejectAll() = apply {
+        waitAndRetry {
+            performClickById(R.id.RejectAll)
+        }
+    }
+
+    suspend fun checkWebViewDisplayedForPrivacyManager() = apply {
         waitAndRetry {
             checkWebViewHasText(TestData.PRIVACY_MANAGER)
         }
     }
 
-    suspend fun rejectAll() = apply {
+    suspend fun checkWebViewDisplayedForMessage() = apply {
         waitAndRetry {
-            performClickInWebViewByContent(TestData.PM_REJECT_ALL)
+            checkWebViewHasText(TestData.MESSAGE)
         }
     }
 
-    suspend fun isPropertyInfoScreenDisplayed() = apply {
+    suspend fun tapRejectAllOnWebView() = apply {
         waitAndRetry {
-            isDisplay(R.id.consentRecyclerView)
+            performClickOnWebViewByContent(TestData.PM_REJECT_ALL)
+        }
+    }
+
+    suspend fun tapAcceptAllOnWebView() = apply {
+        waitAndRetry {
+            performClickOnWebViewByContent(TestData.PM_ACCEPT_ALL)
+        }
+    }
+
+    suspend fun tapManagePreferencesOnWebView() = apply {
+        waitAndRetry {
+            performClickOnWebViewByContent(TestData.MANAGE_PREFERENCES)
+        }
+    }
+
+    suspend fun tapSaveAndExitOnWebView() = apply {
+        waitAndRetry {
+            performClickOnWebViewByContent(TestData.PM_SAVE_AND_EXIT)
+        }
+    }
+
+    suspend fun checkForPropertyInfoScreen() = apply {
+        waitAndRetry {
+            isDisplayedByResId(R.id.consentRecyclerView)
+        }
+    }
+
+    suspend fun checkForConsentAreDisplayed() = apply {
+        waitAndRetry {
+            isDisplayedByResId(R.id.consentRecyclerView)
+        }
+    }
+
+    suspend fun checkForConsentAreNotDisplayed() = apply {
+        waitAndRetry {
+            isDisplayedByResId(R.id.tv_consentsNotAvailable)
         }
     }
 
@@ -65,15 +109,71 @@ class MetaAppTestsKRobot {
         }
     }
 
-    suspend fun isAddPropertyDisplayed() = apply {
-        waitAndRetry {
-            isDisplay(R.id.action_addProperty)
-        }
-    }
-
     suspend fun tapOnProperty() = apply {
         waitAndRetry {
             performClickById(R.id.item_view)
+        }
+    }
+
+    suspend fun loadPrivacyManagerDirect() = apply {
+        waitAndRetry {
+            performClickById(R.id.action_showPM)
+        }
+    }
+
+    suspend fun selectNativeMessageConsentList() = apply {
+        TestData.NATIVE_MESSAGE_CONSENT_LIST.forEach { consent ->
+            waitAndRetry {
+                checkConsentWebView(consent)
+            }
+        }
+    }
+
+    suspend fun selectPartialConsentList() = apply {
+        TestData.PARTIAL_CONSENT_LIST.forEach { consent ->
+            waitAndRetry {
+                checkConsentWebView(consent)
+            }
+        }
+    }
+
+    suspend fun checkInsertedProperty() = apply {
+        waitAndRetry {
+            isDisplayedByResId(R.id.action_addProperty)
+        }
+    }
+
+    suspend fun addPropertyFor(messageType : String, authentication : String) = apply {
+
+        tapOnAddProperty()
+        addPropertyDetails()
+
+        waitAndRetry {
+            when(messageType){
+                TestData.SHOW_MESSAGE_ALWAYS -> {
+                    utility.addParameterWithAuthentication(TestData.keyParam, TestData.valueParamFrench, authentication)
+                }
+                TestData.SHOW_MESSAGE_ONCE -> {
+                    utility.addParameterWithAuthentication(TestData.keyParamShowOnce, TestData.valueParamShowOnce, authentication)
+                }
+                TestData.PM_AS_FIRST_LAYER_MESSAGE -> {
+                    utility.addParameterWithAuthentication(TestData.keyParamForPMAsMessage, TestData.valueParamForPMAsMessage, authentication)
+                }
+                TestData.WRONG_CAMPAIGN -> {
+                    utility.chooseCampaign(TestData.campaign)
+                }
+            }
+        }
+
+        tapOnSave()
+    }
+
+    private suspend fun addPropertyDetails() = apply {
+        waitAndRetry {
+            insertTextByResId(R.id.etAccountID, TestData.accountID)
+            insertTextByResId(R.id.etPropertyId, TestData.propertyID)
+            insertTextByResId(R.id.etPropertyName, TestData.propertyName)
+            insertTextByResId(R.id.etPMId, TestData.pmID)
         }
     }
 

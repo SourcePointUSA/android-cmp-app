@@ -38,12 +38,12 @@ fun performClickContent(
     ).perform(ViewActions.click())
 }
 
-fun isDisplayAllOf(@IdRes resId: Int) {
+fun isDisplayedAllOf(@IdRes resId: Int) {
     Espresso
         .onView(allOf(withId(resId), isDisplayed()))
 }
 
-fun isDisplay(@IdRes resId: Int) {
+fun isDisplayedByResId(@IdRes resId: Int) {
     Espresso
         .onView(withId(resId))
         .check(ViewAssertions.matches(isDisplayed()))
@@ -60,7 +60,7 @@ fun performClickById(
     ).perform(ViewActions.click())
 }
 
-fun writeText(
+fun insertTextByResId(
     @IdRes propId: Int,
     text: String
 ) {
@@ -87,9 +87,16 @@ fun checkWebViewHasText(text: String) {
         )
 }
 
-fun performClickInWebViewByContent(text: String) {
+fun performClickOnWebViewByContent(text: String) {
     onWebView()
         .forceJavascriptEnabled().withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
+        .perform(DriverAtoms.webScrollIntoView())
+        .perform(DriverAtoms.webClick())
+}
+
+fun checkConsentWebView(consent: String) {
+    onWebView().forceJavascriptEnabled()
+        .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='slider round']"))
         .perform(DriverAtoms.webScrollIntoView())
         .perform(DriverAtoms.webClick())
 }
