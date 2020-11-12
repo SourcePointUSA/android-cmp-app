@@ -1,19 +1,11 @@
 package com.sourcepointmeta.metaapp
 
-import android.content.Intent
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Lifecycle.*
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.rule.ActivityTestRule
 import com.sourcepointmeta.metaapp.ui.SplashScreenActivity
+import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Assert
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -28,21 +20,24 @@ class MetaAppTestsK {
     }
 
     @Test
-    fun myTest3() {
-        val intent = Intent(ApplicationProvider.getApplicationContext(), SplashScreenActivity::class.java)
-                .putExtra("title", "Testing rules!")
-        scenario = launchActivity(intent)
-        Assert.assertEquals(State.DESTROYED, scenario.state)
-        // Your test code goes here.
-    }
+    fun checkNativeMessageRejectAllFromPMViaMessage() = runBlocking<Unit> {
 
-    @Test
-    fun myTestWithDifferentExtra() {
-        val intent = Intent(ApplicationProvider.getApplicationContext(), SplashScreenActivity::class.java)
-                .putExtra("title", "Something different")
-        scenario = launchActivity(intent)
-        Assert.assertEquals(State.DESTROYED, scenario.state)
-        // Your test code goes here.
+        scenario = launchActivity()
+
+        MetaAppTestsKRobot()
+            .tapOnAddProperty()
+            .addNativeMessagePropertyDetails()
+            .tapOnSave()
+            .checkNativeMessageDisplayed()
+            .tapShowOption()
+            .isPrivacyManagerVisible()
+            .rejectAll()
+            .isPropertyInfoScreenDisplayed()
+            .navigateBackToListView()
+            .isAddPropertyDisplayed()
+            .tapOnProperty()
+            .checkNativeMessageDisplayed()
+            .isPropertyInfoScreenDisplayed()
     }
 
 }

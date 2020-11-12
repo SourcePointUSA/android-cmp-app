@@ -1,6 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+
+    ext.kotlinVersion = '1.4.10'
     
     repositories {
         google()
@@ -8,7 +10,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
         classpath 'com.palantir:jacoco-coverage:0.2.1'
         
@@ -25,3 +27,6 @@ allprojects {
     }
 }
 
+ext {
+    coroutineVersion = "1.4.1"
+}
