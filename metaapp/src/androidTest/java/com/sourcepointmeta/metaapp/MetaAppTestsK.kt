@@ -126,25 +126,4 @@ class MetaAppTestsK {
             .selectPartialConsentList()
     }
 
-    /*
-@Test
-    public void checkConsentWithSaveAndExitActionFromPrivacyManager() {
-        addPropertyFor(SHOW_MESSAGE_ALWAYS, NO_AUTHENTICATION); #
-        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE)); #
-        chooseAction(MANAGE_PREFERENCES); #
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER)); #
-        Assert.assertFalse(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));#
-        selectConsents(PARTIAL_CONSENT_LIST);#
-        chooseAction(PM_SAVE_AND_EXIT);#
-        Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));#
-        navigateBackToListView();
-        Assert.assertTrue(checkForPropertyListScrren());
-        tapOnProperty();
-        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        chooseAction(MANAGE_PREFERENCES);
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
-    }
-     */
-
 }
