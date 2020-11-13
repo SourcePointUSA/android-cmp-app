@@ -84,19 +84,19 @@ public class ExampleAppTests extends Utility {
         Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
     }
 
-    @Test
-    public void checkAcceptActionFromDirectPrivacyManager(){
-        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        chooseAction(REJECT);
-        Assert.assertTrue(checkMainWebViewDisplayed());
-        clickOnReviewConsent();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        chooseAction(ACCEPT_ALL);
-        Assert.assertTrue(checkMainWebViewDisplayed());
-        clickOnReviewConsent();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
-    }
+//    @Test
+//    public void checkAcceptActionFromDirectPrivacyManager(){
+//        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        chooseAction(REJECT);
+//        Assert.assertTrue(checkMainWebViewDisplayed());
+//        clickOnReviewConsent();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        chooseAction(ACCEPT_ALL);
+//        Assert.assertTrue(checkMainWebViewDisplayed());
+//        clickOnReviewConsent();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
+//    }
 
     @Test
     public void checkRejectActionFromDirectPrivacyManager(){
