@@ -49,6 +49,12 @@ class MetaAppTestsKRobot {
         }
     }
 
+    suspend fun tapAcceptAll() = apply {
+        waitAndRetry {
+            performClickById(R.id.AcceptAll)
+        }
+    }
+
     suspend fun checkWebViewDisplayedForPrivacyManager() = apply {
         waitAndRetry {
             checkWebViewHasText(TestData.PRIVACY_MANAGER)

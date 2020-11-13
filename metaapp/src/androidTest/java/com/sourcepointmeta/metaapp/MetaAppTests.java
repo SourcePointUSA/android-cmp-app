@@ -425,22 +425,22 @@ public class MetaAppTests extends Utility{
 //        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
 //    }
 
-    @Test
-    public void checkNativeMessageSave_ExitFromPMViaMessage(){
-        tapOnAddProperty();
-        addNativeMessagePropertyDetails();
-        tapOnSave();
-        Assert.assertTrue(checkNativeMessageDisplayed());
-        chooseNativeMessageAction(R.id.ShowOption);
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        chooseAction(PM_SAVE_AND_EXIT);
-        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-        navigateBackToListView();
-        Assert.assertTrue(checkForPropertyListScrren());
-        tapOnProperty();
-        Assert.assertTrue(checkNativeMessageDisplayed());
-        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-    }
+//    @Test
+//    public void checkNativeMessageSave_ExitFromPMViaMessage(){
+//        tapOnAddProperty();
+//        addNativeMessagePropertyDetails();
+//        tapOnSave();
+//        Assert.assertTrue(checkNativeMessageDisplayed());
+//        chooseNativeMessageAction(R.id.ShowOption);
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        chooseAction(PM_SAVE_AND_EXIT);
+//        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+//        navigateBackToListView();
+//        Assert.assertTrue(checkForPropertyListScrren());
+//        tapOnProperty();
+//        Assert.assertTrue(checkNativeMessageDisplayed());
+//        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+//    }
 
     @Test
     public void checkNativeMessageDirectPMLoad(){
@@ -454,45 +454,45 @@ public class MetaAppTests extends Utility{
         Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
     }
 
-    @Test
-    public void checkNativeMessageAcceptAllDirectPMLoad() throws InterruptedException {
-        tapOnAddProperty();
-        addNativeMessagePropertyDetails();
-        tapOnSave();
-        Assert.assertTrue(checkNativeMessageDisplayed());
-        chooseNativeMessageAction(R.id.AcceptAll);
-        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-        loadPrivacyManagerDirect();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
-        chooseAction(PM_REJECT_ALL);
-        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-        CountDownLatch signal = new CountDownLatch(1);
-        signal.await(1, TimeUnit.SECONDS);
-        loadPrivacyManagerDirect();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertFalse(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
-    }
+//    @Test
+//    public void checkNativeMessageAcceptAllDirectPMLoad() throws InterruptedException {
+//        tapOnAddProperty();
+//        addNativeMessagePropertyDetails();
+//        tapOnSave();
+//        Assert.assertTrue(checkNativeMessageDisplayed());
+//        chooseNativeMessageAction(R.id.AcceptAll);
+//        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+//        loadPrivacyManagerDirect();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
+//        chooseAction(PM_REJECT_ALL);
+//        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+//        CountDownLatch signal = new CountDownLatch(1);
+//        signal.await(1, TimeUnit.SECONDS);
+//        loadPrivacyManagerDirect();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertFalse(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
+//    }
 
-    @Test
-    public void checkNativeMessageRejectAllDirectPMLoad() throws InterruptedException {
-        tapOnAddProperty();
-        addNativeMessagePropertyDetails();
-        tapOnSave();
-        Assert.assertTrue(checkNativeMessageDisplayed());
-        chooseNativeMessageAction(R.id.RejectAll);
-        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-        loadPrivacyManagerDirect();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertFalse(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
-        chooseAction(PM_ACCEPT_ALL);
-        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-        CountDownLatch signal = new CountDownLatch(1);
-        signal.await(1, TimeUnit.SECONDS);
-        loadPrivacyManagerDirect();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
-    }
+//    @Test
+//    public void checkNativeMessageRejectAllDirectPMLoad() throws InterruptedException {
+//        tapOnAddProperty();
+//        addNativeMessagePropertyDetails();
+//        tapOnSave();
+//        Assert.assertTrue(checkNativeMessageDisplayed());
+//        chooseNativeMessageAction(R.id.RejectAll);
+//        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+//        loadPrivacyManagerDirect();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertFalse(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
+//        chooseAction(PM_ACCEPT_ALL);
+//        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+//        CountDownLatch signal = new CountDownLatch(1);
+//        signal.await(1, TimeUnit.SECONDS);
+//        loadPrivacyManagerDirect();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
+//    }
 
 //    @Test
 //    public void checkNativeMessageSave_ExitDirectPMLoad() throws InterruptedException {
