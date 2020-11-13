@@ -140,7 +140,7 @@ class MetaAppTestsK {
             .addNativeMessagePropertyDetails()
             .tapOnSave()
             .checkNativeMessageDisplayed()
-            .tapRejectAll()
+            .tapAcceptAll()
             .checkForPropertyInfoScreen()
             .loadPrivacyManagerDirect()
             .checkWebViewDisplayedForPrivacyManager()
