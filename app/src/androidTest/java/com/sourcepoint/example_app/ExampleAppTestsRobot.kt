@@ -1,8 +1,9 @@
 package com.sourcepoint.example_app
 
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.matcher.ViewMatchers
 import com.sourcepoint.example_app.TestData.CONSENT_LIST
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import org.hamcrest.core.AllOf
 
 class ExampleAppTestsRobot {
 
@@ -12,36 +13,39 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun tapRejectOnWebView() = apply {
-        waitAndRetry {
+    suspend fun tapRejectOnWebView(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             performClickOnWebViewByContent(TestData.REJECT)
         }
     }
 
-    suspend fun tapAcceptAllOnWebView() = apply {
+    suspend fun tapOptionWebView() = apply {
         waitAndRetry {
+            performClickOnWebViewByContent(TestData.OPTIONS)
+        }
+    }
+
+    suspend fun tapAcceptAllOnWebView(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             performClickOnWebViewByContent(TestData.ACCEPT_ALL)
         }
+
     }
 
-    suspend fun checkMainWebViewDisplayed() = apply {
-        waitAndRetry {
-            isDisplayedAllOfByResIdAndContent(resId = R.id.review_consents, content = "Review Consents")
+    suspend fun checkMainWebViewDisplayed(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
+            isDisplayedAllOfByResId(resId = R.id.review_consents)
         }
     }
 
-    suspend fun clickOnReviewConsent(delay : Long = 400) = apply {
-        coroutineScope {
-            delay(delay)
+    suspend fun clickOnReviewConsent() = apply {
             waitAndRetry {
                 performClickById(resId = R.id.review_consents)
             }
-        }
-
     }
 
-    suspend fun checkWebViewDisplayedForPrivacyManager() = apply {
-        waitAndRetry {
+    suspend fun checkWebViewDisplayedForPrivacyManager(delayBeforeExecute : Long = 0) = apply {
+        waitAndRetry(delayBeforeExecute) {
             checkWebViewHasText(TestData.PRIVACY_MANAGER)
         }
     }

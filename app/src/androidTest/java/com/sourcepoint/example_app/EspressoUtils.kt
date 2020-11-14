@@ -3,7 +3,6 @@ package com.sourcepoint.example_app
 import androidx.annotation.IdRes
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.web.assertion.WebViewAssertions.webMatches
 import androidx.test.espresso.web.model.Atoms
@@ -14,11 +13,10 @@ import androidx.test.espresso.web.webdriver.Locator
 import org.hamcrest.core.AllOf.allOf
 import org.hamcrest.core.StringContains
 
-fun isDisplayedAllOfByResIdAndContent(
-    @IdRes resId: Int,
-    content: String
+fun isDisplayedAllOfByResId(
+    @IdRes resId: Int
 ) {
-    onView(allOf(withId(resId), withText(content), isDisplayed()))
+    onView(allOf(withId(resId), isDisplayed()))
 }
 
 
@@ -28,7 +26,7 @@ fun performClickById(
     onView(
         allOf(
             withId(resId),
-            isDisplayed()
+            isDisplayingAtLeast(100)
         )
     ).perform(ViewActions.click())
 }
