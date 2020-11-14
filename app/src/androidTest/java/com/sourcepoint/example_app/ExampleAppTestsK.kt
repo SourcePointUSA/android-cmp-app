@@ -27,11 +27,11 @@ class ExampleAppTestsK {
         ExampleAppTestsRobot()
             .checkWebViewDisplayedForMessage()          // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
             .tapRejectOnWebView()                       // chooseAction(REJECT);
-            .checkMainWebViewDisplayed()                // Assert.assertTrue(checkMainWebViewDisplayed());
+            .checkMainWebViewDisplayed(400)                // Assert.assertTrue(checkMainWebViewDisplayed());
             .clickOnReviewConsent()                     // clickOnReviewConsent();
             .checkWebViewDisplayedForPrivacyManager()   // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .tapAcceptAllOnWebView()                    // chooseAction(ACCEPT_ALL);
-            .checkMainWebViewDisplayed()                // Assert.assertTrue(checkMainWebViewDisplayed());
+            .checkMainWebViewDisplayed(400)                // Assert.assertTrue(checkMainWebViewDisplayed());
             .clickOnReviewConsent()                     // clickOnReviewConsent();
             .checkWebViewDisplayedForPrivacyManager()   // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
 //            .checkConsentAsSelectedFromConsentList()    // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
