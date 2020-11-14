@@ -26,7 +26,7 @@ fun performClickById(
     onView(
         allOf(
             withId(resId),
-            isDisplayingAtLeast(100)
+            isCompletelyDisplayed()
         )
     ).perform(ViewActions.click())
 }

@@ -31,7 +31,7 @@ class ExampleAppTestsK {
             .clickOnReviewConsent()                     // clickOnReviewConsent();
             .checkWebViewDisplayedForPrivacyManager()   // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .tapAcceptAllOnWebView()                    // chooseAction(ACCEPT_ALL);
-            .checkMainWebViewDisplayed(400)                // Assert.assertTrue(checkMainWebViewDisplayed());
+            .checkMainWebViewDisplayed()                // Assert.assertTrue(checkMainWebViewDisplayed());
             .clickOnReviewConsent()                     // clickOnReviewConsent();
             .checkWebViewDisplayedForPrivacyManager()   // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
 //            .checkConsentAsSelectedFromConsentList()    // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
