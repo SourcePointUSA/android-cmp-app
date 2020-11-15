@@ -20,15 +20,15 @@ public class ExampleAppTests extends Utility {
         mActivityTestRule.getActivity();
         }
 
-    @Test
-    public void checkAcceptActionFromMessage(){
-        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        chooseAction(ACCEPT);
-        Assert.assertTrue(checkMainWebViewDisplayed());
-        clickOnReviewConsent();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
-    }
+//    @Test
+//    public void checkAcceptActionFromMessage(){
+//        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        chooseAction(ACCEPT);
+//        Assert.assertTrue(checkMainWebViewDisplayed());
+//        clickOnReviewConsent();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
+//    }
 
   //  @Test
     public void checkRejectActionFromMessage(){

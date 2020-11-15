@@ -50,10 +50,10 @@ fun performClickOnWebViewByContent(text: String) {
         .perform(DriverAtoms.webClick())
 }
 
-fun checkConsentAsSelected(consent: String) {
+fun checkConsentState(consent: String, selected : Boolean) {
     onWebView().forceJavascriptEnabled()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']"))
-        .withElement(findElement(Locator.XPATH, "//label[@aria-checked='true']"))
+        .withElement(findElement(Locator.XPATH, "//label[@aria-checked='$selected']"))
 }
 
 fun checkPMTabSelected( expected : String){
