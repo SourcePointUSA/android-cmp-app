@@ -1,9 +1,9 @@
 package com.sourcepoint.example_app
 
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.matcher.ViewMatchers
-import com.sourcepoint.example_app.TestData.CONSENT_LIST
-import org.hamcrest.core.AllOf
+import androidx.test.espresso.web.sugar.Web
+import androidx.test.espresso.web.webdriver.DriverAtoms
+import androidx.test.espresso.web.webdriver.Locator
+import com.sourcepoint.example_app.TestData.*
 
 class ExampleAppTestsRobot {
 
@@ -25,6 +25,18 @@ class ExampleAppTestsRobot {
         }
     }
 
+    suspend fun tapSaveAndExitWebView(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
+            performClickOnWebViewByContent(TestData.SAVE_AND_EXIT)
+        }
+    }
+
+    suspend fun tapRejectAllWebView() = apply {
+        waitAndRetry {
+            performClickOnWebViewByContent(TestData.REJECT_ALL)
+        }
+    }
+
     suspend fun tapAcceptAllOnWebView(delayExecution : Long = 0) = apply {
         waitAndRetry(delayExecution) {
             performClickOnWebViewByContent(TestData.ACCEPT_ALL)
@@ -38,8 +50,8 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun clickOnReviewConsent() = apply {
-            waitAndRetry {
+    suspend fun clickOnReviewConsent(delayExecution : Long = 0) = apply {
+            waitAndRetry(delayExecution) {
                 performClickById(resId = R.id.review_consents)
             }
     }
@@ -54,6 +66,45 @@ class ExampleAppTestsRobot {
         waitAndRetry {
             CONSENT_LIST.forEach { consent ->
                 checkConsentAsSelected(consent)
+            }
+        }
+    }
+
+    suspend fun checkConsentAsSelectedFromPartialConsentList(delayBeforeExecute : Long = 0) = apply {
+        waitAndRetry(delayBeforeExecute) {
+            PARTIAL_CONSENT_LIST.forEach { consent ->
+//                setCheckBoxTrue(consent)
+                Web.onWebView()
+                    .forceJavascriptEnabled()
+                    .withElement(DriverAtoms.findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='on']"))
+                    .perform(DriverAtoms.webScrollIntoView())
+                    .perform(DriverAtoms.webClick())
+            }
+        }
+    }
+
+    suspend fun checkPMTabSelectedFeatures() = apply {
+        waitAndRetry {
+            checkPMTabSelected(TestData.FEATURES)
+        }
+    }
+
+    suspend fun checkPMTabSelectedPurposes() = apply {
+        waitAndRetry {
+            checkPMTabSelected(TestData.PURPOSES)
+        }
+    }
+
+    suspend fun clickPMTabSelectedPurposes() = apply {
+        waitAndRetry {
+            performClickPMTabSelected(TestData.PURPOSES)
+        }
+    }
+
+    suspend fun selectPartialConsentList() = apply {
+        TestData.PARTIAL_CONSENT_LIST.forEach { consent ->
+            waitAndRetry {
+                checkConsentWebView(consent)
             }
         }
     }

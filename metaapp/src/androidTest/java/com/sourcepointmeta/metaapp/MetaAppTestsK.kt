@@ -127,7 +127,7 @@ class MetaAppTestsK {
             .checkWebViewDisplayedForMessage()
             .tapManagePreferencesOnWebView()
             .checkWebViewDisplayedForPrivacyManager()
-            .selectPartialConsentList()
+            .selectPartialConsentList()                 // Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST))
     }
 
     @Test
