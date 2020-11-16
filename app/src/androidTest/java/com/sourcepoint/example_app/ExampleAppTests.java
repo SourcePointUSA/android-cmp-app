@@ -127,14 +127,14 @@ public class ExampleAppTests extends Utility {
 //        Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
 //    }
 
-    @Test
-    public void checkMessageDismiss() {
-        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        chooseDismiss();
-        Assert.assertTrue(checkMainWebViewDisplayed());
-        clickOnReviewConsent();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-    }
+//    @Test
+//    public void checkMessageDismiss() {
+//        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        chooseDismiss();
+//        Assert.assertTrue(checkMainWebViewDisplayed());
+//        clickOnReviewConsent();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//    }
 
 //    @Test
 //    public void checkShowOptionsFromMessage(){
