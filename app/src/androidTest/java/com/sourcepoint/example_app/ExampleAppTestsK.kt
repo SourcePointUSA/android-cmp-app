@@ -121,11 +121,11 @@ class ExampleAppTestsK {
             .tapRejectOnWebView()                               // chooseAction(REJECT);
             .checkMainWebViewDisplayed(400)         // Assert.assertTrue(checkMainWebViewDisplayed());
             .clickOnReviewConsent()                             // clickOnReviewConsent();
-            .checkWebViewDisplayedForPrivacyManager()           // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//            .checkWebViewDisplayedForPrivacyManager()           // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .tapRejectAllWebView()                              // chooseAction(REJECT_ALL);
             .checkMainWebViewDisplayed(400)         // Assert.assertTrue(checkMainWebViewDisplayed());
             .clickOnReviewConsent()                             // clickOnReviewConsent();
-            .checkWebViewDisplayedForPrivacyManager()           // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//            .checkWebViewDisplayedForPrivacyManager()           // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .checkConsentIsNotSelected()                        // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
     }
 
@@ -144,7 +144,7 @@ class ExampleAppTestsK {
             .tapSaveAndExitWebView()                            //   chooseAction(SAVE_AND_EXIT);
             .checkMainWebViewDisplayed(400)         //   Assert.assertTrue(checkMainWebViewDisplayed());
             .clickOnReviewConsent()                             //   clickOnReviewConsent();
-            .checkWebViewDisplayedForPrivacyManager()           //   Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//            .checkWebViewDisplayedForPrivacyManager()           //   Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .checkPartialConsentIsSelected()                    //   Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
     }
 
