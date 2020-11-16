@@ -98,7 +98,7 @@ class MetaAppTestsK {
             .checkNativeMessageDisplayed()
             .tapShowOption()
 //            .checkWebViewDisplayedForPrivacyManager()
-            .tapAcceptAllOnWebView()
+            .tapPMAcceptAllOnWebView()
             .checkForPropertyInfoScreen()
             .navigateBackToListView(400)
             .checkInsertedProperty()
@@ -166,7 +166,7 @@ class MetaAppTestsK {
             .loadPrivacyManagerDirect()                 //    loadPrivacyManagerDirect();
 //            .checkWebViewDisplayedForPrivacyManager()   //    Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .selectNativeMessageConsentList()           //    Assert.assertFalse(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
-            .tapAcceptAllOnWebView()                    //    chooseAction(PM_ACCEPT_ALL);
+            .tapPMAcceptAllOnWebView()                    //    chooseAction(PM_ACCEPT_ALL);
             .checkForPropertyInfoScreen()               //    Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
             .loadPrivacyManagerDirect()                 //    loadPrivacyManagerDirect();
 //            .checkWebViewDisplayedForPrivacyManager()   //    Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
@@ -220,7 +220,7 @@ class MetaAppTestsK {
             .tapManagePreferencesOnWebView()                        //  chooseAction(MANAGE_PREFERENCES);
 //            .checkWebViewDisplayedForPrivacyManager()               //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .checkConsentListNotSelected()                          //  Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-            .tapAcceptAllOnWebView()                                //  chooseAction(PM_ACCEPT_ALL);
+            .tapPMAcceptAllOnWebView()                                //  chooseAction(PM_ACCEPT_ALL);
             .checkForConsentsAreDisplayed()                         //  Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
             .navigateBackToListView(400)                //  navigateBackToListView();
             .checkInsertedProperty()                                //  Assert.assertTrue(checkForPropertyListScrren());
@@ -233,6 +233,24 @@ class MetaAppTestsK {
             .tapManagePreferencesOnWebView()                        //  chooseAction(MANAGE_PREFERENCES);
 //            .checkWebViewDisplayedForPrivacyManager()               //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .checkConsentListNotSelected()                          //  Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
+    }
+
+    @Test
+    fun checkConsentForPropertyWithDifferentAuthenticationAlwaysWithDifferentAuthID() = runBlocking<Unit> {
+
+        scenario = launchActivity()
+
+        MetaAppTestsKRobot()
+            .addPropertyFor(SHOW_MESSAGE_ALWAYS, UNIQUE_AUTHENTICATION)     //        addPropertyFor(SHOW_MESSAGE_ALWAYS, UNIQUE_AUTHENTICATION);
+            .checkWebViewDisplayedForMessage()                              //        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+            .tapAcceptAllOnWebView()                                        //        chooseAction(ACCEPT_ALL);
+            .checkForConsentsAreDisplayed()                                 //        Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
+            .navigateBackToListView()                                       //        navigateBackToListView();
+            .addPropertyFor(SHOW_MESSAGE_ALWAYS, UNIQUE_AUTHENTICATION)     //        addPropertyFor(SHOW_MESSAGE_ALWAYS, UNIQUE_AUTHENTICATION);
+            .checkWebViewDisplayedForMessage()                              //        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+            .tapManagePreferencesOnWebView()                                //        chooseAction(MANAGE_PREFERENCES);
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+            .checkConsentListNotSelected()                                  //        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
     }
 
 }

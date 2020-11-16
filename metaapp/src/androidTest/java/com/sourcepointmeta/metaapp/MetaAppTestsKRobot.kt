@@ -93,9 +93,15 @@ class MetaAppTestsKRobot {
         }
     }
 
-    suspend fun tapAcceptAllOnWebView() = apply {
+    suspend fun tapPMAcceptAllOnWebView() = apply {
         waitAndRetry {
             performClickOnWebViewByContent(TestData.PM_ACCEPT_ALL)
+        }
+    }
+
+    suspend fun tapAcceptAllOnWebView() = apply {
+        waitAndRetry {
+            performClickOnWebViewByContent(TestData.ACCEPT_ALL)
         }
     }
 
