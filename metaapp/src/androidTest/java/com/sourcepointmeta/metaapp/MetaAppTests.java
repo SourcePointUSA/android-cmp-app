@@ -165,27 +165,27 @@ public class MetaAppTests extends Utility{
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
     }
 
-    @Test
-    public void resetConsentDataAndCheckForMessageWithShowMessageOnce() throws InterruptedException {
-        addPropertyFor(SHOW_MESSAGE_ONCE, NO_AUTHENTICATION);
-        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        chooseAction(MANAGE_PREFERENCES);
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-        chooseAction(PM_ACCEPT_ALL);
-        Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
-        navigateBackToListView();
-        Assert.assertTrue(checkForPropertyListScrren());
-        tapOnProperty();
-        Assert.assertFalse(checkWebViewDisplayedFor(MESSAGE));
-        Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
-        navigateBackToListView();
-        swipeAndChooseAction(RESET_ACTION, YES);
-        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        chooseAction(MANAGE_PREFERENCES);
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-    }
+//    @Test
+//    public void resetConsentDataAndCheckForMessageWithShowMessageOnce() throws InterruptedException {
+//        addPropertyFor(SHOW_MESSAGE_ONCE, NO_AUTHENTICATION);
+//        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        chooseAction(MANAGE_PREFERENCES);
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
+//        chooseAction(PM_ACCEPT_ALL);
+//        Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
+//        navigateBackToListView();
+//        Assert.assertTrue(checkForPropertyListScrren());
+//        tapOnProperty();
+//        Assert.assertFalse(checkWebViewDisplayedFor(MESSAGE));
+//        Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
+//        navigateBackToListView();
+//        swipeAndChooseAction(RESET_ACTION, YES);
+//        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        chooseAction(MANAGE_PREFERENCES);
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
+//    }
 
     @Test
     public void resetConsentDataAndCheckForConsentWithShowMessageAlways() throws InterruptedException {
@@ -344,16 +344,16 @@ public class MetaAppTests extends Utility{
         Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
     }
 
-    @Test
-    public void checkConsentsOnMessageDismiss() {
-        tapOnAddProperty();
-        addPropertyWith(ALL_FIELDS);
-        tapOnSave();
-        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        chooseDismiss();
-        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-        Assert.assertTrue(checkFor(CONSENTS_ARE_NOT_DISPLAYED));
-    }
+//    @Test
+//    public void checkConsentsOnMessageDismiss() {
+//        tapOnAddProperty();
+//        addPropertyWith(ALL_FIELDS);
+//        tapOnSave();
+//        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        chooseDismiss();
+//        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+//        Assert.assertTrue(checkFor(CONSENTS_ARE_NOT_DISPLAYED));
+//    }
 
     @Test
     public void checkNativeMessage(){

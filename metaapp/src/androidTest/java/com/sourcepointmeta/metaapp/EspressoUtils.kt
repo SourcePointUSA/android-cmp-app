@@ -13,6 +13,7 @@ import androidx.test.espresso.web.webdriver.DriverAtoms.findElement
 import androidx.test.espresso.web.webdriver.Locator
 import org.hamcrest.core.AllOf.allOf
 import org.hamcrest.core.StringContains
+import java.security.InvalidParameterException
 
 fun performClickByIdAndContent(
     @IdRes resId: Int,
@@ -99,4 +100,46 @@ fun checkConsentWebView(consent: String) {
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='slider round']"))
         .perform(DriverAtoms.webScrollIntoView())
         .perform(DriverAtoms.webClick())
+}
+
+fun performClickOnWebViewByClass(classValue: String) {
+    onWebView()
+        .forceJavascriptEnabled()
+        .withElement(findElement(Locator.CLASS_NAME, classValue))
+        .perform(DriverAtoms.webScrollIntoView())
+        .perform(DriverAtoms.webClick())
+}
+
+fun checkConsentState(consent: String, selected : Boolean) {
+    onWebView()
+        .forceJavascriptEnabled()
+        .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']"))
+        .withElement(findElement(Locator.XPATH, "//label[@aria-checked='$selected']"))
+}
+
+fun checkWebViewDoesNotHasText(text: String) {
+    try {
+        onWebView()
+            .forceJavascriptEnabled()
+            .check(
+                webMatches(
+                    Atoms.getCurrentUrl(),
+                    StringContains.containsString(text)
+                )
+            )
+
+        throw InvalidParameterException("""
+            The current view with text {$text} is displayed. 
+        """.trimIndent())
+    } catch (e: Exception) { /** This is the success case */ }
+}
+
+fun swipeAndChooseAction(
+    @IdRes resId: Int,
+    field: String
+) {
+    Espresso.onView(allOf(withId(R.id.item_view), isDisplayed())).perform(ViewActions.swipeLeft())
+//    Espresso.onView(allOf(withId(resId), isDisplayed())).perform(ViewActions.click())
+    performClickById(resId)
+    Espresso.onView(withText(field)).perform(ViewActions.scrollTo(), ViewActions.click())
 }

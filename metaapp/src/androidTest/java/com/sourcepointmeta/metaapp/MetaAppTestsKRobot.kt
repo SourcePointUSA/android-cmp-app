@@ -10,6 +10,18 @@ class MetaAppTestsKRobot {
         }
     }
 
+    suspend fun addPropertyWithAllFields() = apply {
+        waitAndRetry {
+            utility.addPropertyWith(TestData.ALL_FIELDS)
+        }
+    }
+
+    suspend fun tapDismissWebView() = apply {
+        waitAndRetry {
+            performClickOnWebViewByClass("message-stacksclose")
+        }
+    }
+
     suspend fun tapOnSave() = apply {
         waitAndRetry {
             performClickById(resId = R.id.action_saveProperty)
@@ -61,6 +73,14 @@ class MetaAppTestsKRobot {
         }
     }
 
+    suspend fun checkConsentListNotSelected() = apply {
+        TestData.CONSENT_LIST.forEach { consent ->
+            waitAndRetry {
+                checkConsentState(consent, false)
+            }
+        }
+    }
+
     suspend fun checkWebViewDisplayedForMessage() = apply {
         waitAndRetry {
             checkWebViewHasText(TestData.MESSAGE)
@@ -76,6 +96,12 @@ class MetaAppTestsKRobot {
     suspend fun tapAcceptAllOnWebView() = apply {
         waitAndRetry {
             performClickOnWebViewByContent(TestData.PM_ACCEPT_ALL)
+        }
+    }
+
+    suspend fun checkForConsentsAreDisplayed() = apply {
+        waitAndRetry {
+            isDisplayedByResId(R.id.consentRecyclerView)
         }
     }
 
@@ -109,8 +135,8 @@ class MetaAppTestsKRobot {
         }
     }
 
-    suspend fun navigateBackToListView() = apply {
-        waitAndRetry {
+    suspend fun navigateBackToListView(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             performClickContent("Navigate up")
         }
     }
@@ -121,9 +147,21 @@ class MetaAppTestsKRobot {
         }
     }
 
-    suspend fun loadPrivacyManagerDirect() = apply {
+    suspend fun checkWebViewDoesNotDisplayTheMessage() = apply {
         waitAndRetry {
+            checkWebViewDoesNotHasText(TestData.MESSAGE)
+        }
+    }
+
+    suspend fun loadPrivacyManagerDirect(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             performClickById(R.id.action_showPM)
+        }
+    }
+
+    suspend fun swipeAndChooseResetAction() = apply {
+        waitAndRetry {
+            swipeAndChooseAction(R.id.reset_button, TestData.YES)
         }
     }
 
@@ -146,6 +184,12 @@ class MetaAppTestsKRobot {
     suspend fun checkInsertedProperty() = apply {
         waitAndRetry {
             isDisplayedByResId(R.id.action_addProperty)
+        }
+    }
+
+    suspend fun checkConsentNotDisplayed() = apply {
+        waitAndRetry {
+            isDisplayedByResId(R.id.tv_consentsNotAvailable)
         }
     }
 
