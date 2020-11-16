@@ -9,16 +9,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(AndroidJUnit4ClassRunner.class)
+//@RunWith(AndroidJUnit4ClassRunner.class)
 public class ExampleAppTests extends Utility {
 
-    @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
-
-    @Before
-    public void setup() {
-        mActivityTestRule.getActivity();
-        }
+//    @Rule
+//    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+//
+//    @Before
+//    public void setup() {
+//        mActivityTestRule.getActivity();
+//        }
 
 //    @Test
 //    public void checkAcceptActionFromMessage(){
