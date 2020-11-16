@@ -66,23 +66,23 @@ public class ExampleAppTests extends Utility {
         Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
     }
 
-    @Test
-    public void checkSaveAndExitActionFromPrivacyManager(){
-        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        chooseAction(OPTIONS);
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-        chooseAction(REJECT_ALL);
-        Assert.assertTrue(checkMainWebViewDisplayed());
-        clickOnReviewConsent();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        selectConsents(PARTIAL_CONSENT_LIST);
-        chooseAction(SAVE_AND_EXIT);
-        Assert.assertTrue(checkMainWebViewDisplayed());
-        clickOnReviewConsent();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
-    }
+//    @Test
+//    public void checkSaveAndExitActionFromPrivacyManager(){
+//        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        chooseAction(OPTIONS);
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
+//        chooseAction(REJECT_ALL);
+//        Assert.assertTrue(checkMainWebViewDisplayed());
+//        clickOnReviewConsent();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        selectConsents(PARTIAL_CONSENT_LIST);
+//        chooseAction(SAVE_AND_EXIT);
+//        Assert.assertTrue(checkMainWebViewDisplayed());
+//        clickOnReviewConsent();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
+//    }
 
 //    @Test
 //    public void checkAcceptActionFromDirectPrivacyManager(){
@@ -98,34 +98,34 @@ public class ExampleAppTests extends Utility {
 //        Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
 //    }
 
-    @Test
-    public void checkRejectActionFromDirectPrivacyManager(){
-        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        chooseAction(REJECT);
-        Assert.assertTrue(checkMainWebViewDisplayed());
-        clickOnReviewConsent();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        chooseAction(REJECT_ALL);
-        Assert.assertTrue(checkMainWebViewDisplayed());
-        clickOnReviewConsent();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-    }
+//    @Test
+//    public void checkRejectActionFromDirectPrivacyManager(){
+//        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        chooseAction(REJECT);
+//        Assert.assertTrue(checkMainWebViewDisplayed());
+//        clickOnReviewConsent();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        chooseAction(REJECT_ALL);
+//        Assert.assertTrue(checkMainWebViewDisplayed());
+//        clickOnReviewConsent();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
+//    }
 
-    @Test
-    public void checkSaveAndExitActionFromDirectPrivacyManager(){
-        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        chooseAction(REJECT);
-        Assert.assertTrue(checkMainWebViewDisplayed());
-        clickOnReviewConsent();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        selectConsents(PARTIAL_CONSENT_LIST);
-        chooseAction(SAVE_AND_EXIT);
-        Assert.assertTrue(checkMainWebViewDisplayed());
-        clickOnReviewConsent();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
-    }
+//    @Test
+//    public void checkSaveAndExitActionFromDirectPrivacyManager(){
+//        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        chooseAction(REJECT);
+//        Assert.assertTrue(checkMainWebViewDisplayed());
+//        clickOnReviewConsent();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        selectConsents(PARTIAL_CONSENT_LIST);
+//        chooseAction(SAVE_AND_EXIT);
+//        Assert.assertTrue(checkMainWebViewDisplayed());
+//        clickOnReviewConsent();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
+//    }
 
     @Test
     public void checkMessageDismiss() {
@@ -136,17 +136,17 @@ public class ExampleAppTests extends Utility {
         Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
     }
 
-    @Test
-    public void checkShowOptionsFromMessage(){
-        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        chooseAction(OPTIONS);
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertTrue(checkPMTabSelected(FEATURES));
-
-        chooseAction(SAVE_AND_EXIT);
-        Assert.assertTrue(checkMainWebViewDisplayed());
-        clickOnReviewConsent();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertTrue(checkPMTabSelected(PURPOSES));
-    }
+//    @Test
+//    public void checkShowOptionsFromMessage(){
+//        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        chooseAction(OPTIONS);
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertTrue(checkPMTabSelected(FEATURES));
+//
+//        chooseAction(SAVE_AND_EXIT);
+//        Assert.assertTrue(checkMainWebViewDisplayed());
+//        clickOnReviewConsent();
+//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+//        Assert.assertTrue(checkPMTabSelected(PURPOSES));
+//    }
 }

@@ -27,19 +27,19 @@ class MetaAppTestsK {
         scenario = launchActivity()
 
         MetaAppTestsKRobot()
-            .tapOnAddProperty()
-            .addNativeMessagePropertyDetails()
-            .tapOnSave()
-            .checkNativeMessageDisplayed()
-            .tapShowOption()
-            .checkWebViewDisplayedForPrivacyManager()
-            .tapRejectAllOnWebView()
-            .checkForPropertyInfoScreen()
-            .navigateBackToListView()
-            .checkInsertedProperty()
-            .tapOnProperty()
-            .checkNativeMessageDisplayed()
-            .checkForPropertyInfoScreen()
+            .tapOnAddProperty()                         // tapOnAddProperty();
+            .addNativeMessagePropertyDetails()          // addNativeMessagePropertyDetails();
+            .tapOnSave()                                // tapOnSave();
+            .checkNativeMessageDisplayed()              // Assert.assertTrue(checkNativeMessageDisplayed());
+            .tapShowOption()                            // chooseNativeMessageAction(R.id.ShowOption);
+            .checkWebViewDisplayedForPrivacyManager()   // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+            .tapRejectAllOnWebView()                    // chooseAction(PM_REJECT_ALL);
+            .checkForPropertyInfoScreen()               // Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+            .navigateBackToListView()                   // navigateBackToListView();
+            .checkInsertedProperty()                    // Assert.assertTrue(checkForPropertyListScrren());
+            .tapOnProperty()                            // tapOnProperty();
+            .checkNativeMessageDisplayed()              // Assert.assertTrue(checkNativeMessageDisplayed());
+            .checkForPropertyInfoScreen()               // Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
     }
 
     @Test
@@ -48,21 +48,21 @@ class MetaAppTestsK {
         scenario = launchActivity()
 
         MetaAppTestsKRobot()
-            .tapOnAddProperty()
-            .addNativeMessagePropertyDetails()
-            .tapOnSave()
-            .checkNativeMessageDisplayed()
-            .tapRejectAll()
-            .checkForPropertyInfoScreen()
-            .loadPrivacyManagerDirect()
-            .checkWebViewDisplayedForPrivacyManager()
-            .selectNativeMessageConsentList()
-            .selectPartialConsentList()
-            .tapSaveAndExitOnWebView()
-            .checkForPropertyInfoScreen()
-            .loadPrivacyManagerDirect()
-            .checkWebViewDisplayedForPrivacyManager()
-            .selectPartialConsentList()
+            .tapOnAddProperty()                         //  tapOnAddProperty();
+            .addNativeMessagePropertyDetails()          //  addNativeMessagePropertyDetails();
+            .tapOnSave()                                //  tapOnSave();
+            .checkNativeMessageDisplayed()              //  Assert.assertTrue(checkNativeMessageDisplayed());
+            .tapRejectAll()                             //  chooseNativeMessageAction(R.id.RejectAll);
+            .checkForPropertyInfoScreen()               //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+            .loadPrivacyManagerDirect()                 //  loadPrivacyManagerDirect();
+            .checkWebViewDisplayedForPrivacyManager()   //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+            .selectNativeMessageConsentList()           //  Assert.assertFalse(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
+            .selectPartialConsentList()                 //  selectConsents(PARTIAL_CONSENT_LIST);
+            .tapSaveAndExitOnWebView()                  //  chooseAction(PM_SAVE_AND_EXIT);
+            .checkForPropertyInfoScreen()               //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+            .loadPrivacyManagerDirect()                 //  loadPrivacyManagerDirect();
+            .checkWebViewDisplayedForPrivacyManager()   //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+            .selectPartialConsentList()                 //  Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
     }
 
     @Test
@@ -71,20 +71,20 @@ class MetaAppTestsK {
         scenario = launchActivity()
 
         MetaAppTestsKRobot()
-            .tapOnAddProperty()
-            .addNativeMessagePropertyDetails()
-            .tapOnSave()
-            .checkNativeMessageDisplayed()
-            .tapRejectAll()
-            .checkForPropertyInfoScreen()
-            .loadPrivacyManagerDirect()
-            .checkWebViewDisplayedForPrivacyManager()
-            .selectNativeMessageConsentList()
-            .tapSaveAndExitOnWebView()
-            .navigateBackToListView()
-            .checkInsertedProperty()
-            .tapOnProperty()
-            .checkForPropertyInfoScreen()
+            .tapOnAddProperty()                         //  tapOnAddProperty();
+            .addNativeMessagePropertyDetails()          //  addNativeMessagePropertyDetails();
+            .tapOnSave()                                //  tapOnSave();
+            .checkNativeMessageDisplayed()              //  Assert.assertTrue(checkNativeMessageDisplayed());
+            .tapRejectAll()                             //  chooseNativeMessageAction(R.id.RejectAll);
+            .checkForPropertyInfoScreen()               //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+            .loadPrivacyManagerDirect()                 //  loadPrivacyManagerDirect();
+            .checkWebViewDisplayedForPrivacyManager()   //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+            .selectNativeMessageConsentList()           //  Assert.assertFalse(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
+            .tapSaveAndExitOnWebView()                  //  chooseAction(PM_SAVE_AND_EXIT);
+            .navigateBackToListView()                   //  navigateBackToListView();
+            .checkInsertedProperty()                    //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+            .tapOnProperty()                            //  tapOnProperty();
+            .checkForPropertyInfoScreen()               //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
     }
 
     @Test
@@ -158,20 +158,20 @@ class MetaAppTestsK {
         scenario = launchActivity()
 
         MetaAppTestsKRobot()
-            .tapOnAddProperty()
-            .addNativeMessagePropertyDetails()
-            .tapOnSave()
-            .checkNativeMessageDisplayed()
-            .tapRejectAll()
-            .checkForPropertyInfoScreen()
-            .loadPrivacyManagerDirect()
-            .checkWebViewDisplayedForPrivacyManager()
-            .selectNativeMessageConsentList()
-            .tapAcceptAllOnWebView()
-            .checkForPropertyInfoScreen()
-            .loadPrivacyManagerDirect()
-            .checkWebViewDisplayedForPrivacyManager()
-            .selectNativeMessageConsentList()
+            .tapOnAddProperty()                         //    tapOnAddProperty();
+            .addNativeMessagePropertyDetails()          //    addNativeMessagePropertyDetails();
+            .tapOnSave()                                //    tapOnSave();
+            .checkNativeMessageDisplayed()              //    Assert.assertTrue(checkNativeMessageDisplayed());
+            .tapRejectAll()                             //    chooseNativeMessageAction(R.id.RejectAll);
+            .checkForPropertyInfoScreen()               //    Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+            .loadPrivacyManagerDirect()                 //    loadPrivacyManagerDirect();
+            .checkWebViewDisplayedForPrivacyManager()   //    Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+            .selectNativeMessageConsentList()           //    Assert.assertFalse(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
+            .tapAcceptAllOnWebView()                    //    chooseAction(PM_ACCEPT_ALL);
+            .checkForPropertyInfoScreen()               //    Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+            .loadPrivacyManagerDirect()                 //    loadPrivacyManagerDirect();
+            .checkWebViewDisplayedForPrivacyManager()   //    Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+            .selectNativeMessageConsentList()           //    Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
     }
 
     @Test
@@ -194,27 +194,5 @@ class MetaAppTestsK {
             .checkNativeMessageDisplayed()
             .checkForPropertyInfoScreen()
     }
-
-    /*
-    @Test
-    public void checkNativeMessageRejectAllDirectPMLoad() throws InterruptedException {
-        tapOnAddProperty();
-        addNativeMessagePropertyDetails();
-        tapOnSave();
-        Assert.assertTrue(checkNativeMessageDisplayed());
-        chooseNativeMessageAction(R.id.RejectAll);
-        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-        loadPrivacyManagerDirect();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertFalse(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
-        chooseAction(PM_ACCEPT_ALL);
-        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-        CountDownLatch signal = new CountDownLatch(1);
-        signal.await(1, TimeUnit.SECONDS);
-        loadPrivacyManagerDirect();
-        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
-    }
-     */
 
 }

@@ -6,7 +6,6 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.web.assertion.WebViewAssertions.webMatches
 import androidx.test.espresso.web.model.Atoms
-import androidx.test.espresso.web.sugar.Web
 import androidx.test.espresso.web.sugar.Web.onWebView
 import androidx.test.espresso.web.webdriver.DriverAtoms
 import androidx.test.espresso.web.webdriver.DriverAtoms.findElement
@@ -50,8 +49,17 @@ fun performClickOnWebViewByContent(text: String) {
         .perform(DriverAtoms.webClick())
 }
 
+fun performClickOnWebViewByClass(classValue: String) {
+    onWebView()
+        .forceJavascriptEnabled()
+        .withElement(findElement(Locator.CLASS_NAME, classValue))
+        .perform(DriverAtoms.webScrollIntoView())
+        .perform(DriverAtoms.webClick())
+}
+
 fun checkConsentState(consent: String, selected : Boolean) {
-    onWebView().forceJavascriptEnabled()
+    onWebView()
+        .forceJavascriptEnabled()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']"))
         .withElement(findElement(Locator.XPATH, "//label[@aria-checked='$selected']"))
 }
@@ -79,7 +87,8 @@ fun setCheckBoxTrue(property : String){
 }
 
 fun checkConsentWebView(consent: String) {
-    onWebView().forceJavascriptEnabled()
+    onWebView()
+        .forceJavascriptEnabled()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='slider round']"))
         .perform(DriverAtoms.webScrollIntoView())
         .perform(DriverAtoms.webClick())

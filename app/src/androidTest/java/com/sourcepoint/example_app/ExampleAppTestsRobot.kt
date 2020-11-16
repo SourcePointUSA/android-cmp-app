@@ -37,6 +37,12 @@ class ExampleAppTestsRobot {
         }
     }
 
+    suspend fun tapDismissWebView() = apply {
+        waitAndRetry {
+            performClickOnWebViewByClass("message-stacksclose")
+        }
+    }
+
     suspend fun tapAcceptAllOnWebView(delayExecution : Long = 0) = apply {
         waitAndRetry(delayExecution) {
             performClickOnWebViewByContent(ACCEPT_ALL)
