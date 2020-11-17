@@ -25,7 +25,7 @@ public class MetaAppTests extends Utility{
         mActivityTestRule.getActivity();
     }
 
-    @Test
+// TODO    @Test
     public void checkForConsentWithAcceptActionFromMessage() {
         addPropertyFor(SHOW_MESSAGE_ALWAYS, NO_AUTHENTICATION);
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));

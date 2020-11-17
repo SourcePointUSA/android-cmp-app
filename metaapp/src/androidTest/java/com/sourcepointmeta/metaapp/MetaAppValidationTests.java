@@ -72,8 +72,8 @@ public class MetaAppValidationTests extends Utility{
         Assert.assertFalse(checkWebViewDisplayedFor(MESSAGE));
     }
 
-    @Ignore("SP-2709:To get expected message, we are depend on the wrapper api, and it is not going to change any time soon")
-    @Test
+// TODO    @Ignore("SP-2709:To get expected message, we are depend on the wrapper api, and it is not going to change any time soon")
+//TODO    @Test
     public void checkNoMessageDisplayedForWrongPropertyId() {
         tapOnAddProperty();
         addPropertyWith(WRONG_PROPERTY_ID);
@@ -91,7 +91,7 @@ public class MetaAppValidationTests extends Utility{
         Assert.assertFalse(checkWebViewDisplayedFor(MESSAGE));
     }
 
-    @Test
+// TODO    @Test
     public void checkErrorMessageForDuplicateProperty() {
         addPropertyFor(SHOW_MESSAGE_ALWAYS, NO_AUTHENTICATION);
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
