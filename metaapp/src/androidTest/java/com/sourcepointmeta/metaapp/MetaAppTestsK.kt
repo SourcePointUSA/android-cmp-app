@@ -53,15 +53,15 @@ class MetaAppTestsK {
             .checkNativeMessageDisplayed()              //  Assert.assertTrue(checkNativeMessageDisplayed());
             .tapRejectAll()                             //  chooseNativeMessageAction(R.id.RejectAll);
             .checkForPropertyInfoScreen()               //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-            .loadPrivacyManagerDirect()                 //  loadPrivacyManagerDirect();
+            .loadPrivacyManagerDirect(400) //  loadPrivacyManagerDirect();
 //            .checkWebViewDisplayedForPrivacyManager()   //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-            .selectNativeMessageConsentList()           //  Assert.assertFalse(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
-            .selectPartialConsentList()                 //  selectConsents(PARTIAL_CONSENT_LIST);
+            .selectNativeMessageConsentList(400)           //  Assert.assertFalse(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
+            .selectPartialConsentList(400)                 //  selectConsents(PARTIAL_CONSENT_LIST);
             .tapSaveAndExitOnWebView()                  //  chooseAction(PM_SAVE_AND_EXIT);
             .checkForPropertyInfoScreen()               //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
             .loadPrivacyManagerDirect()                 //  loadPrivacyManagerDirect();
 //            .checkWebViewDisplayedForPrivacyManager()   //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-            .selectPartialConsentList()                 //  Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
+            .selectPartialConsentList(400)                 //  Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
     }
 
     @Test

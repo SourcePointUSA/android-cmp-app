@@ -177,17 +177,17 @@ class MetaAppTestsKRobot {
         }
     }
 
-    suspend fun selectNativeMessageConsentList() = apply {
+    suspend fun selectNativeMessageConsentList(delayExecution : Long = 0) = apply {
         TestData.NATIVE_MESSAGE_CONSENT_LIST.forEach { consent ->
-            waitAndRetry {
+            waitAndRetry(delayExecution) {
                 checkConsentWebView(consent)
             }
         }
     }
 
-    suspend fun selectPartialConsentList() = apply {
+    suspend fun selectPartialConsentList(delayExecution : Long = 0) = apply {
         TestData.PARTIAL_CONSENT_LIST.forEach { consent ->
-            waitAndRetry {
+            waitAndRetry(delayExecution) {
                 checkConsentWebView(consent)
             }
         }
