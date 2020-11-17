@@ -4,9 +4,9 @@ class MetaAppTestsKRobot {
 
     private val utility by lazy { Utility() }
 
-    suspend fun tapOnAddProperty() = apply {
-        waitAndRetry {
-            performClickByIdAndContent(R.id.action_addProperty, "Add Property")
+    suspend fun tapOnAddProperty(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
+            performClickById(R.id.action_addProperty)
         }
     }
 
@@ -93,8 +93,8 @@ class MetaAppTestsKRobot {
         }
     }
 
-    suspend fun tapPMAcceptAllOnWebView() = apply {
-        waitAndRetry {
+    suspend fun tapPMAcceptAllOnWebView(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             performClickOnWebViewByContent(TestData.PM_ACCEPT_ALL)
         }
     }
@@ -129,6 +129,12 @@ class MetaAppTestsKRobot {
         }
     }
 
+    suspend fun checkForPropertyInfoInList() = apply {
+        waitAndRetry {
+            isDisplayedByResId(R.id.swipe_layout)
+        }
+    }
+
     suspend fun checkForConsentAreDisplayed() = apply {
         waitAndRetry {
             isDisplayedByResId(R.id.consentRecyclerView)
@@ -147,8 +153,8 @@ class MetaAppTestsKRobot {
         }
     }
 
-    suspend fun tapOnProperty() = apply {
-        waitAndRetry {
+    suspend fun tapOnProperty(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             performClickById(R.id.item_view)
         }
     }
@@ -201,36 +207,10 @@ class MetaAppTestsKRobot {
 
     suspend fun addPropertyFor(messageType : String, authentication : String) = apply {
 
-        tapOnAddProperty()
-        addPropertyDetails()
-
         waitAndRetry {
-            when(messageType){
-                TestData.SHOW_MESSAGE_ALWAYS -> {
-                    utility.addParameterWithAuthentication(TestData.keyParam, TestData.valueParamFrench, authentication)
-                }
-                TestData.SHOW_MESSAGE_ONCE -> {
-                    utility.addParameterWithAuthentication(TestData.keyParamShowOnce, TestData.valueParamShowOnce, authentication)
-                }
-                TestData.PM_AS_FIRST_LAYER_MESSAGE -> {
-                    utility.addParameterWithAuthentication(TestData.keyParamForPMAsMessage, TestData.valueParamForPMAsMessage, authentication)
-                }
-                TestData.WRONG_CAMPAIGN -> {
-                    utility.chooseCampaign(TestData.campaign)
-                }
-            }
+            utility.addPropertyFor(messageType, authentication)
         }
 
-        tapOnSave()
-    }
-
-    private suspend fun addPropertyDetails() = apply {
-        waitAndRetry {
-            insertTextByResId(R.id.etAccountID, TestData.accountID)
-            insertTextByResId(R.id.etPropertyId, TestData.propertyID)
-            insertTextByResId(R.id.etPropertyName, TestData.propertyName)
-            insertTextByResId(R.id.etPMId, TestData.pmID)
-        }
     }
 
 }

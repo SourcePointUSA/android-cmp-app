@@ -7,12 +7,13 @@ import kotlin.jvm.Throws
 suspend fun waitAndRetry(delayExecution : Long = 0, task: () -> Unit) {
     var res: TestRes.NotVerified = TestRes.NotVerified(RuntimeException("Not initialize condition!"))
     delay(delayExecution)
-    repeat(20) {
+    repeat(30) {
+        delay(400)
         when (val t = checkCondition(task)) {
             TestRes.Verified -> return
             is TestRes.NotVerified -> res = t
         }
-        delay(250)
+
     }
     throw res.th
 }

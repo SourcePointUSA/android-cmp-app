@@ -1,18 +1,14 @@
 package com.sourcepointmeta.metaapp;
 
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.espresso.web.webdriver.Locator;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.clearText;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
-import static androidx.test.espresso.action.ViewActions.swipeLeft;
-import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.action.ViewActions.*;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -31,7 +27,7 @@ public class Utility extends TestData {
     final CountDownLatch signal = new CountDownLatch(1);
 
     public void tapOnAddProperty() {
-        onView(allOf(withId(R.id.action_addProperty), withContentDescription("Add Property"), isDisplayed()))
+        onView(allOf(withId(R.id.action_addProperty), isDisplayed()))
                 .perform(click());
     }
 
@@ -52,7 +48,8 @@ public class Utility extends TestData {
     public void addPropertyWith(String field) {
         if (field.equals(ALL_FIELDS)){
             addPropertyDetails(accountID, propertyID, propertyName, pmID);
-            addParameterWithAuthentication(keyParam, valueParamEnglish, NO_AUTHENTICATION);}
+            addParameterWithAuthentication(keyParam, valueParamEnglish, NO_AUTHENTICATION);
+        }
         else if (field.equals(ALL_FIELDS_BLANK))
             addPropertyDetails("", "", "", "");
         else if (field.equals(NO_ACCOUNT_ID))
@@ -88,6 +85,8 @@ public class Utility extends TestData {
         }
         onView(allOf(withId(R.id.etKey), isDisplayed()))
                 .perform(clearText(), typeText(key), closeSoftKeyboard());
+
+        onView(withId(R.id.decor_content_parent)).perform(swipeUp());
 
         onView(allOf(withId(R.id.etValue), isDisplayed()))
                 .perform(clearText(), typeText(value), closeSoftKeyboard());

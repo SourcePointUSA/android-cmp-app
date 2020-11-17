@@ -46,7 +46,7 @@ class ExampleAppTestsK {
             .tapOptionWebView()                                 // chooseAction(OPTIONS);
             .checkWebViewDisplayedForPrivacyManager()           // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .clickPMTabSelectedPurposes()
-            .checkConsentIsNotSelected()                        // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));   TO CHECK THAT THEY ARE NOT CHECKED
+            .checkConsentIsNotSelected()                        // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
             .tapAcceptAllOnWebView()                            // chooseAction(ACCEPT_ALL);
             .checkMainWebViewDisplayed(400)         // Assert.assertTrue(checkMainWebViewDisplayed());
             .clickOnReviewConsent()                             // clickOnReviewConsent();

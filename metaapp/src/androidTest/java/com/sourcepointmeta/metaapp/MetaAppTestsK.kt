@@ -33,12 +33,12 @@ class MetaAppTestsK {
             .tapShowOption()                            // chooseNativeMessageAction(R.id.ShowOption);
 //            .checkWebViewDisplayedForPrivacyManager()   // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .tapRejectAllOnWebView()                    // chooseAction(PM_REJECT_ALL);
-            .checkForPropertyInfoScreen()               // Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-            .navigateBackToListView(400)    // navigateBackToListView();
+            .navigateBackToListView()    // navigateBackToListView();
             .checkInsertedProperty()                    // Assert.assertTrue(checkForPropertyListScrren());
             .tapOnProperty()                            // tapOnProperty();
             .checkNativeMessageDisplayed()              // Assert.assertTrue(checkNativeMessageDisplayed());
-            .checkForPropertyInfoScreen()               // Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+            .navigateBackToListView()
+            .checkForPropertyInfoInList()               // Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
     }
 
     @Test
@@ -80,10 +80,9 @@ class MetaAppTestsK {
 //            .checkWebViewDisplayedForPrivacyManager()   //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .selectNativeMessageConsentList()           //  Assert.assertFalse(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
             .tapSaveAndExitOnWebView()                  //  chooseAction(PM_SAVE_AND_EXIT);
-            .navigateBackToListView(400)                   //  navigateBackToListView();
+            .navigateBackToListView()                   //  navigateBackToListView();
             .checkInsertedProperty()                    //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
             .tapOnProperty()                            //  tapOnProperty();
-            .checkForPropertyInfoScreen()               //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
     }
 
     @Test
@@ -92,19 +91,20 @@ class MetaAppTestsK {
         scenario = launchActivity()
 
         MetaAppTestsKRobot()
-            .tapOnAddProperty()
-            .addNativeMessagePropertyDetails()
-            .tapOnSave()
-            .checkNativeMessageDisplayed()
-            .tapShowOption()
-//            .checkWebViewDisplayedForPrivacyManager()
-            .tapPMAcceptAllOnWebView()
-            .checkForPropertyInfoScreen()
-            .navigateBackToListView(400)
-            .checkInsertedProperty()
-            .tapOnProperty()
-            .checkNativeMessageDisplayed()
-            .checkForPropertyInfoScreen()
+            .tapOnAddProperty()                         //  tapOnAddProperty();
+            .addNativeMessagePropertyDetails()          //  addNativeMessagePropertyDetails();
+            .tapOnSave()                                //  tapOnSave();
+            .checkNativeMessageDisplayed()              //  Assert.assertTrue(checkNativeMessageDisplayed());
+            .tapShowOption()                            // chooseNativeMessageAction(R.id.ShowOption);
+            .checkWebViewDisplayedForPrivacyManager()
+            .tapPMAcceptAllOnWebView()   //  chooseAction(PM_ACCEPT_ALL);
+            .checkForPropertyInfoScreen()               //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+            .navigateBackToListView()    //  navigateBackToListView();
+            .checkInsertedProperty()                    //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+            .tapOnProperty()                            //  tapOnProperty();
+            .checkNativeMessageDisplayed()              //  Assert.assertTrue(checkNativeMessageDisplayed());
+            .navigateBackToListView()
+            .checkForPropertyInfoInList()               //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
     }
 
     @Test
@@ -184,14 +184,14 @@ class MetaAppTestsK {
             .tapOnSave()
             .checkNativeMessageDisplayed()
             .tapShowOption()
-//            .checkWebViewDisplayedForPrivacyManager()
+            .checkWebViewDisplayedForPrivacyManager()
             .tapSaveAndExitOnWebView()
             .checkForPropertyInfoScreen()
-            .navigateBackToListView(400)
-            .checkInsertedProperty()
+            .navigateBackToListView()
             .tapOnProperty()
             .checkNativeMessageDisplayed()
-            .checkForPropertyInfoScreen()
+            .navigateBackToListView()
+            .checkForPropertyInfoInList()               // Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
     }
 
     @Test
@@ -222,7 +222,7 @@ class MetaAppTestsK {
             .checkConsentListNotSelected()                          //  Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
             .tapPMAcceptAllOnWebView()                                //  chooseAction(PM_ACCEPT_ALL);
             .checkForConsentsAreDisplayed()                         //  Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
-            .navigateBackToListView(400)                //  navigateBackToListView();
+            .navigateBackToListView()                               //  navigateBackToListView();
             .checkInsertedProperty()                                //  Assert.assertTrue(checkForPropertyListScrren());
             .tapOnProperty()                                        //  tapOnProperty();
             .checkWebViewDoesNotDisplayTheMessage()                 //  Assert.assertFalse(checkWebViewDisplayedFor(MESSAGE));
@@ -231,7 +231,7 @@ class MetaAppTestsK {
             .swipeAndChooseResetAction()                            //  swipeAndChooseAction(RESET_ACTION, YES);
             .checkWebViewDisplayedForMessage()                      //  Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
             .tapManagePreferencesOnWebView()                        //  chooseAction(MANAGE_PREFERENCES);
-//            .checkWebViewDisplayedForPrivacyManager()               //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+            .checkWebViewDisplayedForPrivacyManager()               //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .checkConsentListNotSelected()                          //  Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
     }
 
@@ -249,7 +249,7 @@ class MetaAppTestsK {
             .addPropertyFor(SHOW_MESSAGE_ALWAYS, UNIQUE_AUTHENTICATION)     //        addPropertyFor(SHOW_MESSAGE_ALWAYS, UNIQUE_AUTHENTICATION);
             .checkWebViewDisplayedForMessage()                              //        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
             .tapManagePreferencesOnWebView()                                //        chooseAction(MANAGE_PREFERENCES);
-//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+            //        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             .checkConsentListNotSelected()                                  //        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
     }
 
