@@ -7,8 +7,8 @@ import com.sourcepoint.example_app.TestData.*
 
 class ExampleAppTestsRobot {
 
-    suspend fun checkWebViewDisplayedForMessage() = apply {
-        waitAndRetry {
+    suspend fun checkWebViewDisplayedForMessage(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             checkWebViewHasText(MESSAGE)
         }
     }
@@ -63,6 +63,12 @@ class ExampleAppTestsRobot {
         }
     }
 
+    suspend fun setFocusOnLayoutActivity(delayExecution : Long = 0) = apply {
+            waitAndRetry(delayExecution) {
+                performClickById(resId = R.id.main_view)
+            }
+    }
+
     suspend fun clickOnReviewConsent(delayExecution : Long = 0) = apply {
             waitAndRetry(delayExecution) {
                 performClickById(resId = R.id.review_consents)
@@ -91,8 +97,8 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun checkPartialConsentIsSelected() = apply {
-        waitAndRetry {
+    suspend fun checkPartialConsentIsSelected(delayBeforeExecute : Long = 0) = apply {
+        waitAndRetry(delayBeforeExecute) {
             PARTIAL_CONSENT_LIST.forEach { consent ->
                 checkConsentState(consent, true)
             }
@@ -120,8 +126,8 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun checkPMTabSelectedFeatures() = apply {
-        waitAndRetry {
+    suspend fun checkPMTabSelectedFeatures(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             checkPMTabSelected(FEATURES)
         }
     }
@@ -132,8 +138,8 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun clickPMTabSelectedPurposes() = apply {
-        waitAndRetry {
+    suspend fun clickPMTabSelectedPurposes(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             performClickPMTabSelected(PURPOSES)
         }
     }
