@@ -81,8 +81,8 @@ class MetaAppTestsKRobot {
         }
     }
 
-    suspend fun checkWebViewDisplayedForMessage() = apply {
-        waitAndRetry {
+    suspend fun checkWebViewDisplayedForMessage(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             checkWebViewHasText(TestData.MESSAGE)
         }
     }
@@ -193,8 +193,8 @@ class MetaAppTestsKRobot {
         }
     }
 
-    suspend fun checkInsertedProperty() = apply {
-        waitAndRetry {
+    suspend fun checkInsertedProperty(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             isDisplayedByResId(R.id.action_addProperty)
         }
     }

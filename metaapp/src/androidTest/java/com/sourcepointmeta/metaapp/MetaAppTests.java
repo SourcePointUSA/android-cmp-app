@@ -13,9 +13,8 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-//@RunWith(AndroidJUnit4ClassRunner.class)
 /*
+@RunWith(AndroidJUnit4ClassRunner.class)
 public class MetaAppTests extends Utility{
 
     @Rule
@@ -26,7 +25,7 @@ public class MetaAppTests extends Utility{
         mActivityTestRule.getActivity();
     }
 
-// TODO    @Test
+    @Test
     public void checkForConsentWithAcceptActionFromMessage() {
         addPropertyFor(SHOW_MESSAGE_ALWAYS, NO_AUTHENTICATION);
         Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
