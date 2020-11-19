@@ -19,8 +19,8 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun tapOptionWebView() = apply {
-        waitAndRetry {
+    suspend fun tapOptionWebView(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             performClickOnWebViewByContent(OPTIONS)
         }
     }
@@ -31,8 +31,8 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun tapRejectAllWebView() = apply {
-        waitAndRetry {
+    suspend fun tapRejectAllWebView(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             performClickOnWebViewByContent(REJECT_ALL)
         }
     }
@@ -89,8 +89,8 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun checkConsentIsNotSelected() = apply {
-        waitAndRetry {
+    suspend fun checkConsentIsNotSelected(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             CONSENT_LIST.forEach { consent ->
                 checkConsentState(consent, false)
             }

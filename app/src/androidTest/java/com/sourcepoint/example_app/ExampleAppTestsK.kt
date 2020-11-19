@@ -41,13 +41,13 @@ class ExampleAppTestsK {
 
         ExampleAppTestsRobot()
             .checkWebViewDisplayedForMessage(200)   // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE))
-            .tapOptionWebView()                                 // chooseAction(OPTIONS);
+            .tapOptionWebView(200)                                 // chooseAction(OPTIONS);
             .clickPMTabSelectedPurposes(200)
             .checkConsentIsNotSelected()                        // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-            .tapAcceptAllOnWebView()                            // chooseAction(ACCEPT_ALL);
-            .checkMainWebViewDisplayed(400)         // Assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent()                             // clickOnReviewConsent();
-            .clickPMTabSelectedPurposes()
+            .tapAcceptAllOnWebView(200)                            // chooseAction(ACCEPT_ALL);
+            .checkMainWebViewDisplayed(200)         // Assert.assertTrue(checkMainWebViewDisplayed());
+            .clickOnReviewConsent(200)                             // clickOnReviewConsent();
+            .clickPMTabSelectedPurposes(200)
             .checkConsentIsSelected()                           // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
     }
 
@@ -73,17 +73,17 @@ class ExampleAppTestsK {
 
         ExampleAppTestsRobot()
             .checkWebViewDisplayedForMessage(200)       // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-            .tapOptionWebView()                                     // chooseAction(OPTIONS);
-            .clickPMTabSelectedPurposes()
-            .checkConsentIsNotSelected()                            // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-            .tapRejectAllWebView()                                  // chooseAction(REJECT_ALL);
+            .tapOptionWebView(200)                                     // chooseAction(OPTIONS);
+            .clickPMTabSelectedPurposes(200)
+            .checkConsentIsNotSelected(200)                            // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
+            .tapRejectAllWebView(200)                                  // chooseAction(REJECT_ALL);
             .checkMainWebViewDisplayed(200)             // Assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent(400)                  // clickOnReviewConsent();
-            .clickPMTabSelectedPurposes()
+            .clickOnReviewConsent(200)                  // clickOnReviewConsent();
+            .clickPMTabSelectedPurposes(200)
             .checkConsentAsSelectedFromPartialConsentList()         // selectConsents(PARTIAL_CONSENT_LIST);
-            .tapSaveAndExitWebView()                                // chooseAction(SAVE_AND_EXIT);
+            .tapSaveAndExitWebView(200)                                // chooseAction(SAVE_AND_EXIT);
             .checkMainWebViewDisplayed(200)             // assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent(400)                  // clickOnReviewConsent();
+            .clickOnReviewConsent(200)                  // clickOnReviewConsent();
             .checkPartialConsentIsSelected(200)     // Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
     }
 
