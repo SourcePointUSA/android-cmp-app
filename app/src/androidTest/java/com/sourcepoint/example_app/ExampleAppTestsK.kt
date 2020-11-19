@@ -45,7 +45,7 @@ class ExampleAppTestsK {
             .clickPMTabSelectedPurposes(200)
             .checkConsentIsNotSelected()                        // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
             .tapAcceptAllOnWebView(200)                            // chooseAction(ACCEPT_ALL);
-            .checkMainWebViewDisplayed(200)         // Assert.assertTrue(checkMainWebViewDisplayed());
+            .checkMainWebViewDisplayed(400)         // Assert.assertTrue(checkMainWebViewDisplayed());
             .clickOnReviewConsent(200)                             // clickOnReviewConsent();
             .clickPMTabSelectedPurposes(200)
             .checkConsentIsSelected()                           // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
@@ -78,7 +78,7 @@ class ExampleAppTestsK {
             .checkConsentIsNotSelected(200)                            // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
             .tapRejectAllWebView(200)                                  // chooseAction(REJECT_ALL);
             .checkMainWebViewDisplayed(200)             // Assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent(200)                  // clickOnReviewConsent();
+            .clickOnReviewConsent(400)                  // clickOnReviewConsent();
             .clickPMTabSelectedPurposes(200)
             .checkConsentAsSelectedFromPartialConsentList()         // selectConsents(PARTIAL_CONSENT_LIST);
             .tapSaveAndExitWebView(200)                                // chooseAction(SAVE_AND_EXIT);
