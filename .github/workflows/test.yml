@@ -25,14 +25,14 @@ jobs:
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-${{ hashFiles('**/build.gradle') }}-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-#      - name: run MetaApp tests
-#        uses: reactivecircus/android-emulator-runner@v2
-#        with:
-#          api-level: 29
-#          target: google_apis
-#          arch: x86_64
-#          profile: Nexus 6
-#          script: ./gradlew :metaapp:connectedDebugAndroidTest
+      - name: run MetaApp tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          target: google_apis
+          arch: x86_64
+          profile: Nexus 6
+          script: ./gradlew :metaapp:connectedDebugAndroidTest
       - name: run Example app tests
         uses: reactivecircus/android-emulator-runner@v2
         with:

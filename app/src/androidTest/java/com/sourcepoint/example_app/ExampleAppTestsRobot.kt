@@ -7,32 +7,32 @@ import com.sourcepoint.example_app.TestData.*
 
 class ExampleAppTestsRobot {
 
-    suspend fun checkWebViewDisplayedForMessage(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+    suspend fun checkWebViewDisplayedForMessage(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             checkWebViewHasText(MESSAGE)
         }
     }
 
-    suspend fun tapRejectOnWebView(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+    suspend fun tapRejectOnWebView(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             performClickOnWebViewByContent(REJECT)
         }
     }
 
-    suspend fun tapOptionWebView(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+    suspend fun tapOptionWebView(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             performClickOnWebViewByContent(OPTIONS)
         }
     }
 
-    suspend fun tapSaveAndExitWebView(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+    suspend fun tapSaveAndExitWebView(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             performClickOnWebViewByContent(SAVE_AND_EXIT)
         }
     }
 
-    suspend fun tapRejectAllWebView(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+    suspend fun tapRejectAllWebView(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             performClickOnWebViewByContent(REJECT_ALL)
         }
     }
@@ -43,40 +43,40 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun tapAcceptAllOnWebView(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+    suspend fun tapAcceptAllOnWebView(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             performClickOnWebViewByContent(ACCEPT_ALL)
         }
 
     }
 
-    suspend fun tapAcceptOnWebView(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+    suspend fun tapAcceptOnWebView(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             performClickOnWebViewByContent(ACCEPT)
         }
 
     }
 
-    suspend fun checkMainWebViewDisplayed(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+    suspend fun checkMainWebViewDisplayed(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             isDisplayedAllOfByResId(resId = R.id.review_consents)
         }
     }
 
-    suspend fun setFocusOnLayoutActivity(delayExecution : Long = 0) = apply {
-            waitAndRetry(delayExecution) {
+    suspend fun setFocusOnLayoutActivity(delay : Long = 0) = apply {
+            waitAndRetry(delay) {
                 performClickById(resId = R.id.main_view)
             }
     }
 
-    suspend fun clickOnReviewConsent(delayExecution : Long = 0) = apply {
-            waitAndRetry(delayExecution) {
+    suspend fun clickOnReviewConsent(delay : Long = 0) = apply {
+            waitAndRetry(delay) {
                 performClickById(resId = R.id.review_consents)
             }
     }
 
-    suspend fun checkWebViewDisplayedForPrivacyManager(delayBeforeExecute : Long = 0) = apply {
-        waitAndRetry(delayBeforeExecute) {
+    suspend fun checkWebViewDisplayedForPrivacyManager(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             checkWebViewHasText(PRIVACY_MANAGER)
         }
     }
