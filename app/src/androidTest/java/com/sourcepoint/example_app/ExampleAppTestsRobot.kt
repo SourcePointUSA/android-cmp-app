@@ -81,8 +81,8 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun checkConsentIsSelected() = apply {
-        waitAndRetry {
+    suspend fun checkConsentIsSelected(delayExecution : Long = 0) = apply {
+        waitAndRetry(delayExecution) {
             CONSENT_LIST.forEach { consent ->
                 checkConsentState(consent, true)
             }

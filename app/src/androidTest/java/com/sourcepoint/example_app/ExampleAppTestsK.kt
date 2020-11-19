@@ -43,12 +43,12 @@ class ExampleAppTestsK {
             .checkWebViewDisplayedForMessage(200)   // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE))
             .tapOptionWebView(200)                                 // chooseAction(OPTIONS);
             .clickPMTabSelectedPurposes(200)
-            .checkConsentIsNotSelected()                        // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
+            .checkConsentIsNotSelected(400)                        // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
             .tapAcceptAllOnWebView(200)                            // chooseAction(ACCEPT_ALL);
             .checkMainWebViewDisplayed(400)         // Assert.assertTrue(checkMainWebViewDisplayed());
             .clickOnReviewConsent(200)                             // clickOnReviewConsent();
             .clickPMTabSelectedPurposes(200)
-            .checkConsentIsSelected()                           // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
+            .checkConsentIsSelected(200)                           // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
     }
 
     @Test
