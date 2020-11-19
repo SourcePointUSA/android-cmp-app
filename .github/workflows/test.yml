@@ -15,8 +15,8 @@ jobs:
           java-version: 1.8
       - name: creating local.properties # this file is normally added to .gitignore
         run: touch local.properties
-#      - name: running unit tests
-#        run: ./gradlew test --quiet --build-cache
+      - name: running unit tests
+        run: ./gradlew test --quiet --build-cache
       
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
