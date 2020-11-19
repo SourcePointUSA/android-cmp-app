@@ -58,9 +58,9 @@ class ExampleAppTestsK {
 
         ExampleAppTestsRobot()
             .checkWebViewDisplayedForMessage(200)       // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-            .tapOptionWebView()                                     // chooseAction(OPTIONS);
+            .tapOptionWebView(200)                                     // chooseAction(OPTIONS);
             .checkPMTabSelectedFeatures(200)           // Assert.assertTrue(checkPMTabSelected(FEATURES));
-            .tapSaveAndExitWebView()                                // chooseAction(SAVE_AND_EXIT);
+            .tapSaveAndExitWebView(200)                                // chooseAction(SAVE_AND_EXIT);
             .checkMainWebViewDisplayed(200)             // Assert.assertTrue(checkMainWebViewDisplayed());
             .clickOnReviewConsent(400)                  // clickOnReviewConsent();
             .checkPMTabSelectedPurposes()                           // Assert.assertTrue(checkPMTabSelected(PURPOSES));

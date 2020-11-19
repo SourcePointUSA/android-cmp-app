@@ -81,24 +81,24 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun checkConsentIsSelected(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+    suspend fun checkConsentIsSelected(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             CONSENT_LIST.forEach { consent ->
                 checkConsentState(consent, true)
             }
         }
     }
 
-    suspend fun checkConsentIsNotSelected(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+    suspend fun checkConsentIsNotSelected(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             CONSENT_LIST.forEach { consent ->
                 checkConsentState(consent, false)
             }
         }
     }
 
-    suspend fun checkPartialConsentIsSelected(delayBeforeExecute : Long = 0) = apply {
-        waitAndRetry(delayBeforeExecute) {
+    suspend fun checkPartialConsentIsSelected(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             PARTIAL_CONSENT_LIST.forEach { consent ->
                 checkConsentState(consent, true)
             }
@@ -113,8 +113,8 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun checkConsentAsSelectedFromPartialConsentList(delayBeforeExecute : Long = 0) = apply {
-        waitAndRetry(delayBeforeExecute) {
+    suspend fun checkConsentAsSelectedFromPartialConsentList(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             PARTIAL_CONSENT_LIST.forEach { consent ->
 //                setCheckBoxTrue(consent)
                 Web.onWebView()
@@ -126,8 +126,8 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun checkPMTabSelectedFeatures(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+    suspend fun checkPMTabSelectedFeatures(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             checkPMTabSelected(FEATURES)
         }
     }
@@ -138,8 +138,8 @@ class ExampleAppTestsRobot {
         }
     }
 
-    suspend fun clickPMTabSelectedPurposes(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+    suspend fun clickPMTabSelectedPurposes(delay : Long = 0) = apply {
+        waitAndRetry(delay) {
             performClickPMTabSelected(PURPOSES)
         }
     }
