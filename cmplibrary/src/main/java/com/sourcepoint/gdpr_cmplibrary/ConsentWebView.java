@@ -71,6 +71,7 @@ abstract public class ConsentWebView extends WebView {
                 ConsentWebView.this.onAction(consentAction(getJson(actionData)));
             } catch (ConsentLibException e) {
                 ConsentWebView.this.onError(e);
+                throw new RuntimeException(e);
             }
         }
 
@@ -117,6 +118,7 @@ abstract public class ConsentWebView extends WebView {
                     view.loadUrl("javascript:" + getFileContent(getResources().openRawResource(R.raw.js_receiver)));
                 } catch (IOException e) {
                     ConsentWebView.this.onError(new ConsentLibException(e, "Unable to load jsReceiver into ConasentLibWebview."));
+                    throw new RuntimeException(e);
                 }
             }
 

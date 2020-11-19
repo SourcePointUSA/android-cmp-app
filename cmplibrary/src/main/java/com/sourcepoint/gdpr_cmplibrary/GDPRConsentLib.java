@@ -213,6 +213,7 @@ public class GDPRConsentLib {
             userConsent = storeClient.getUserConsent();
         } catch (ConsentLibException e) {
             userConsent = new GDPRUserConsent();
+            throw new RuntimeException(e);
         }
 
         storeClient.setAuthId(newAuthId);
@@ -272,6 +273,7 @@ public class GDPRConsentLib {
             }
         } catch (Exception e) {
             GDPRConsentLib.this.onErrorTask(new ConsentLibException(e, "Unexpected error when calling onAction."));
+            throw new RuntimeException(e);
         }
     }
 
@@ -282,8 +284,10 @@ public class GDPRConsentLib {
                 nativeView.setAttributes(new NativeMessageAttrs(msgJson));
             } catch (ConsentLibException e) {
                 onErrorTask(e);
+                throw new RuntimeException(e);
             } catch (Exception e) {
                 onErrorTask(new ConsentLibException(e, "Unexpected error trying to setNativeMsg attributes"));
+                throw new RuntimeException(e);
             }
         });
     }
@@ -299,8 +303,10 @@ public class GDPRConsentLib {
             consentFinished();
         } catch (ConsentLibException e) {
             onErrorTask(e);
+            throw new RuntimeException(e);
         } catch (Exception e) {
             onErrorTask(new ConsentLibException(e, "Unexpect error on cancel action."));
+            throw new RuntimeException(e);
         }
     }
 
@@ -315,6 +321,7 @@ public class GDPRConsentLib {
                 else onMsgCancel(requestFromPM);
             } catch(Exception e){
                 onErrorTask(new ConsentLibException(e, "Error trying go back from consentUI."));
+                throw new RuntimeException(e);
             }
         });
     }
@@ -334,8 +341,10 @@ public class GDPRConsentLib {
                 webView.loadConsentUIFromUrl(url);
             } catch(ConsentLibException e) {
                 onErrorTask(e);
+                throw new RuntimeException(e);
             } catch (Exception e) {
                 onErrorTask(new ConsentLibException(e, "Error trying to load url to webview: " + url));
+                throw new RuntimeException(e);
             }
         });
     }
@@ -352,8 +361,10 @@ public class GDPRConsentLib {
             renderMsgAndSaveConsent();
         } catch (ConsentLibException e) {
             onErrorTask(e);
+            throw new RuntimeException(e);
         } catch (Exception e) {
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.run()"));
+            throw new RuntimeException(e);
         }
     }
 
@@ -368,6 +379,7 @@ public class GDPRConsentLib {
             loadConsentUI(pmUrl(privacyManagerId, pmTab));
         } catch (Exception e) {
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.showPm()"));
+            throw new RuntimeException(e);
         }
     }
 
@@ -379,8 +391,10 @@ public class GDPRConsentLib {
             renderMsgAndSaveConsent();
         } catch (ConsentLibException e) {
             onErrorTask(e);
+            throw new RuntimeException(e);
         } catch (Exception e) {
             onErrorTask(new ConsentLibException(e, "Unexpected error trying to run Native Message"));
+            throw new RuntimeException(e);
         }
     }
 
@@ -403,8 +417,10 @@ public class GDPRConsentLib {
             sendCustomConsents(paramsToSendCustomConsents(vendors, categories, legIntCategories), onCustomConsentReady);
         } catch (ConsentLibException e) {
             onErrorTask(e);
+            throw new RuntimeException(e);
         } catch (Exception e) {
             onErrorTask(new ConsentLibException(e, "Error trying to send custom consents."));
+            throw new RuntimeException(e);
         }
     }
 
@@ -431,8 +447,10 @@ public class GDPRConsentLib {
                     }
                 } catch (ConsentLibException e) {
                     onErrorTask(e);
+                    throw new RuntimeException(e);
                 } catch (Exception e) {
                     onErrorTask(new ConsentLibException(e, "Error trying to parse response from getConsents."));
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -531,8 +549,10 @@ public class GDPRConsentLib {
                         consentFinished();
                     } catch (ConsentLibException e) {
                         onErrorTask(e);
+                        throw new RuntimeException(e);
                     } catch (Exception e) {
                         onErrorTask(new ConsentLibException(e, "Error trying to parse response from sendConsents."));
+                        throw new RuntimeException(e);
                     }
                 }
 
