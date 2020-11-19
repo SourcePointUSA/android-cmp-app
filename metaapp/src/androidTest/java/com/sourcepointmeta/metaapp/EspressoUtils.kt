@@ -79,7 +79,6 @@ fun insertTextByResId(
 
 fun checkWebViewHasText(text: String) {
     onWebView()
-        .forceJavascriptEnabled()
         .check(
             webMatches(
                 Atoms.getCurrentUrl(),
@@ -90,13 +89,13 @@ fun checkWebViewHasText(text: String) {
 
 fun performClickOnWebViewByContent(text: String) {
     onWebView()
-        .forceJavascriptEnabled().withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
+        .withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
         .perform(DriverAtoms.webScrollIntoView())
         .perform(DriverAtoms.webClick())
 }
 
 fun checkConsentWebView(consent: String) {
-    onWebView().forceJavascriptEnabled()
+    onWebView()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='slider round']"))
         .perform(DriverAtoms.webScrollIntoView())
         .perform(DriverAtoms.webClick())
@@ -104,7 +103,6 @@ fun checkConsentWebView(consent: String) {
 
 fun performClickOnWebViewByClass(classValue: String) {
     onWebView()
-        .forceJavascriptEnabled()
         .withElement(findElement(Locator.CLASS_NAME, classValue))
         .perform(DriverAtoms.webScrollIntoView())
         .perform(DriverAtoms.webClick())
@@ -112,7 +110,6 @@ fun performClickOnWebViewByClass(classValue: String) {
 
 fun checkConsentState(consent: String, selected : Boolean) {
     onWebView()
-        .forceJavascriptEnabled()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']"))
         .withElement(findElement(Locator.XPATH, "//label[@aria-checked='$selected']"))
 }
@@ -120,7 +117,6 @@ fun checkConsentState(consent: String, selected : Boolean) {
 fun checkWebViewDoesNotHasText(text: String) {
     try {
         onWebView()
-            .forceJavascriptEnabled()
             .check(
                 webMatches(
                     Atoms.getCurrentUrl(),

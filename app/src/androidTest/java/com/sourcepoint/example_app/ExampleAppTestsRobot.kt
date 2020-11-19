@@ -118,7 +118,6 @@ class ExampleAppTestsRobot {
             PARTIAL_CONSENT_LIST.forEach { consent ->
 //                setCheckBoxTrue(consent)
                 Web.onWebView()
-                    .forceJavascriptEnabled()
                     .withElement(DriverAtoms.findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='on']"))
                     .perform(DriverAtoms.webScrollIntoView())
                     .perform(DriverAtoms.webClick())

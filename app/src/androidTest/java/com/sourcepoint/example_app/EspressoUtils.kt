@@ -33,7 +33,6 @@ fun performClickById(
 
 fun checkWebViewHasText(text: String) {
     onWebView()
-        .forceJavascriptEnabled()
         .check(
             webMatches(
                 Atoms.getCurrentUrl(),
@@ -44,14 +43,13 @@ fun checkWebViewHasText(text: String) {
 
 fun performClickOnWebViewByContent(text: String) {
     onWebView()
-        .forceJavascriptEnabled().withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
+        .withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
         .perform(DriverAtoms.webScrollIntoView())
         .perform(DriverAtoms.webClick())
 }
 
 fun performClickOnWebViewByClass(classValue: String) {
     onWebView()
-        .forceJavascriptEnabled()
         .withElement(findElement(Locator.CLASS_NAME, classValue))
         .perform(DriverAtoms.webScrollIntoView())
         .perform(DriverAtoms.webClick())
@@ -59,20 +57,17 @@ fun performClickOnWebViewByClass(classValue: String) {
 
 fun checkConsentState(consent: String, selected : Boolean) {
     onWebView()
-        .forceJavascriptEnabled()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']"))
         .withElement(findElement(Locator.XPATH, "//label[@aria-checked='$selected']"))
 }
 
 fun checkPMTabSelected( expected : String){
     onWebView()
-        .forceJavascriptEnabled()
         .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab active') and text()='$expected']"))
 }
 
 fun performClickPMTabSelected( expected : String){
     onWebView()
-        .forceJavascriptEnabled()
         .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab') and text()='$expected']"))
         .perform(DriverAtoms.webScrollIntoView())
         .perform(DriverAtoms.webClick())
@@ -80,7 +75,6 @@ fun performClickPMTabSelected( expected : String){
 
 fun setCheckBoxTrue(property : String){
     onWebView()
-        .forceJavascriptEnabled()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$property']/span[@class='on']"))
         .perform(DriverAtoms.webScrollIntoView())
         .perform(DriverAtoms.webClick())
@@ -88,7 +82,6 @@ fun setCheckBoxTrue(property : String){
 
 fun checkConsentWebView(consent: String) {
     onWebView()
-        .forceJavascriptEnabled()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='slider round']"))
         .perform(DriverAtoms.webScrollIntoView())
         .perform(DriverAtoms.webClick())
