@@ -81,7 +81,7 @@ public class ConsentLibBuilder {
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnConsentReady( GDPRConsentLib.OnConsentReadyCallback callback) {
+    public ConsentLibBuilder setOnConsentReady(GDPRConsentLib.OnConsentReadyCallback callback) {
         onConsentReady = callback;
         return this;
     }

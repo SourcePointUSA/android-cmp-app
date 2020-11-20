@@ -13,7 +13,6 @@ import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getJson;
 import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getString;
 
 public class GDPRUserConsent {
-
     public String uuid;
     public ArrayList<String> acceptedVendors;
     public ArrayList<String> acceptedCategories;
@@ -79,6 +78,27 @@ public class GDPRUserConsent {
         return listData;
     }
 
+    public String toString() {
+        StringBuilder buffer = new StringBuilder();
+        String tcdataString;
+        try {
+            tcdataString = getJson(TCData).toString(2);
+        } catch (Exception ignored) {
+            tcdataString = TCData.toString();
+        }
+        return buffer.append("GDPRUserConsent(\n")
+                .append("acceptedVendors: ").append(acceptedVendors).append("\n")
+                .append("acceptedCategories: ").append(acceptedCategories).append("\n")
+                .append("specialFeatures: ").append(specialFeatures).append("\n")
+                .append("legIntCategories: ").append(legIntCategories).append("\n")
+                .append("uuid: ").append(uuid).append("\n")
+                .append("euconsent: ").append(consentString).append("\n")
+                .append("TCData: ").append(tcdataString).append("\n")
+                .append("vendorGrants: ").append(vendorGrants).append("\n")
+                .append(")\n")
+                .toString();
+    }
+
     public JSONObject toJsonObject() throws JSONException, ConsentLibException {
         JSONObject jsonConsents = new JSONObject();
         jsonConsents.put("acceptedVendors", new JSONArray(acceptedVendors));
@@ -92,11 +112,11 @@ public class GDPRUserConsent {
         return jsonConsents;
     }
 
-    public class VendorGrants extends HashMap<String, VendorGrants.VendorGrant> {
+    public static class VendorGrants extends HashMap<String, VendorGrants.VendorGrant> {
         VendorGrants(JSONObject jVendorGrants) throws ConsentLibException {
             super();
             JSONArray names = jVendorGrants.names();
-            if (names != null){
+            if (names != null) {
                 for(int i = 0; i < names.length(); i++) {
                     String name = getString(i, names);
                     this.put(name, new VendorGrant(getJson(name, jVendorGrants)));
@@ -113,13 +133,23 @@ public class GDPRUserConsent {
             return json;
         }
 
-        public class VendorGrant {
+        public String toString() {
+            try {
+                return this.toJsonObject().toString(2);
+            } catch (Exception ignored) {
+                return super.toString();
+            }
+        }
+
+        public static class VendorGrant {
             public boolean vendorGrant;
             public HashMap<String, Boolean> purposeGrants;
+
             VendorGrant(JSONObject jVendorGrant) throws ConsentLibException {
                 vendorGrant = getBoolean("vendorGrant", jVendorGrant);
                 purposeGrants = getHashMap(getJson("purposeGrants", jVendorGrant));
             }
+
             public String toString(){
                 return "{" + "vendorGrant=" + vendorGrant + ", " + "purposeGrants=" + purposeGrants + "}";
             }

@@ -7,22 +7,16 @@ import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
-import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
-import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
 
-    private ViewGroup mainViewGroup;
+    final static int accountId = 22;
+    final static int propertyId = 7639;
+    final static String propertyName = "tcfv2.mobile.webview";
+    final static String pmId = "122058";
 
-    private PropertyConfig config;
+    private ViewGroup mainViewGroup;
 
     private void showView(View view) {
         if(view.getParent() == null){
@@ -35,84 +29,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void removeView(View view) {
-        if(view.getParent() != null)
-            mainViewGroup.removeView(view);
-    }
-
-    private PropertyConfig getConfig(int configResource){
-        PropertyConfig config = null;
-        try {
-            config = new PropertyConfig(new JSONObject(new Scanner(getResources().openRawResource(configResource)).useDelimiter("\\A").next()));
-        } catch (JSONException e) {
-            Log.e(TAG, "Unable to parse config file.", e);
-        }
-        return config;
+        if(view.getParent() != null) mainViewGroup.removeView(view);
     }
 
     private GDPRConsentLib buildGDPRConsentLib() {
-        return GDPRConsentLib.newBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId,this)
-                .setOnConsentUIReady(view -> {
-                    showView(view);
-                    Log.i(TAG, "onConsentUIReady");
-                })
-                .setOnConsentUIFinished(view -> {
-                    removeView(view);
-                    Log.i(TAG, "onConsentUIFinished");
-                })
+        return GDPRConsentLib.newBuilder(accountId, propertyName, propertyId, pmId,this)
+                .setOnConsentUIReady(this::showView)
+                .setOnAction(actionType  -> Log.i(TAG , "ActionType: " + actionType.toString()))
+                .setOnConsentUIFinished(this::removeView)
                 .setOnConsentReady(consent -> {
-                    Log.i(TAG, "onConsentReady");
-                    Log.i(TAG, "uuid: " + consent.uuid );
-                    Log.i(TAG, "consentString: " + consent.consentString);
-                    Log.i(TAG, "TCData: " + consent.TCData);
-                    Log.i(TAG, "vendorGrants: " + consent.vendorGrants);
-                    for (String vendorId : consent.acceptedVendors) {
-                        Log.i(TAG, "The vendor " + vendorId + " was accepted.");
-                    }
-                    for (String purposeId : consent.acceptedCategories) {
-                        Log.i(TAG, "The category " + purposeId + " was accepted.");
-                    }
-                    for (String purposeId : consent.legIntCategories) {
-                        Log.i(TAG, "The legIntCategory " + purposeId + " was accepted.");
-                    }
-                    for (String specialFeatureId : consent.specialFeatures) {
-                        Log.i(TAG, "The specialFeature " + specialFeatureId + " was accepted.");
-                    }
+                    // at this point it's safe to initialise vendors
+                    for (String line : consent.toString().split("\n"))
+                        Log.i(TAG, line);
                 })
-                .setOnError(error -> {
-                    Log.e(TAG, "Something went wrong: ", error);
-                    Log.e(TAG, "ConsentLibErrorMessage: " + error.consentLibErrorMessage);
-                })
-                .setOnPMReady(()-> Log.i(TAG, "PM Ready"))
-                .setOnMessageReady(()-> Log.i(TAG, "Message Ready"))
-                .setOnPMFinished(()-> Log.i(TAG, "PM Finished"))
-                .setOnMessageFinished(()-> Log.i(TAG, "Message Finished"))
-                .setOnAction(actionType  -> Log.i(TAG , "ActionType : "+actionType.toString()))
+                .setOnError(error -> Log.e(TAG, "Something went wrong"))
                 .build();
-    }
-
-    private NativeMessage buildNativeMessage(){
-        return new NativeMessage(this){
-            @Override
-            public void init(){
-                super.init();
-                // When using a customized layout one can completely override the init method
-                // not calling super.init() and inflating the native view with the chosen layout instead.
-                // In this case its important to set all the default child views using the setter methods
-                // like its done in the super.init()
-            }
-            @Override
-            public void setAttributes(NativeMessageAttrs attrs){
-                super.setAttributes(attrs);
-                //Here one can extend this method in order to set customized attributes other then the ones
-                //already set in the super.setAttributes. No need to completely override this method.
-            }
-        };
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, "init");
         buildGDPRConsentLib().run();
     }
 
@@ -121,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
-        config = getConfig(R.raw.mobile_demo_web);
         findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
     }
 }
