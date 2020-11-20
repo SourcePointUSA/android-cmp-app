@@ -3,6 +3,25 @@ package com.sourcepoint.example_app
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkConsentAsSelectedFromPartialConsentList
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkConsentIsNotSelected
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkConsentIsSelected
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkMainWebViewDisplayed
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkPMTabSelectedFeatures
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkPMTabSelectedPurposes
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkPartialConsentIsSelected
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkWebViewDisplayedForMessage
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkWebViewDisplayedForPrivacyManager
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.clickOnReviewConsent
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.clickPMTabSelectedPurposes
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.setFocusOnLayoutActivity
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapAcceptAllOnWebView
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapAcceptOnWebView
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapDismissWebView
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapOptionWebView
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapRejectAllWebView
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapRejectOnWebView
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapSaveAndExitWebView
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
@@ -19,19 +38,18 @@ class ExampleAppTestsK {
     }
 
     @Test
-    fun checkAcceptActionFromDirectPrivacyManager() = runBlocking <Unit> {
+    fun checkAcceptActionFromDirectPrivacyManager() = runBlocking<Unit> {
 
         scenario = launchActivity()
 
-        ExampleAppTestsRobot()
-            .checkWebViewDisplayedForMessage(200)   // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-            .tapRejectOnWebView()                               // chooseAction(REJECT);
-            .checkMainWebViewDisplayed(400)         // Assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent(200)                             // clickOnReviewConsent();
-            .tapAcceptAllOnWebView()                            // chooseAction(ACCEPT_ALL);
-            .checkMainWebViewDisplayed(400)         // Assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent(400)                             // clickOnReviewConsent();
-            .checkConsentIsSelected()                           // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
+        wr { checkWebViewDisplayedForMessage() }    // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+        wr { tapRejectOnWebView() }                 // chooseAction(REJECT);
+        wr { checkMainWebViewDisplayed() }          // Assert.assertTrue(checkMainWebViewDisplayed());
+        wr { clickOnReviewConsent() }               // clickOnReviewConsent();
+        wr { tapAcceptAllOnWebView() }              // chooseAction(ACCEPT_ALL);
+        wr { checkMainWebViewDisplayed() }          // Assert.assertTrue(checkMainWebViewDisplayed());
+        wr { clickOnReviewConsent() }               // clickOnReviewConsent();
+        wr { checkConsentIsSelected() }             // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
     }
 
     @Test
@@ -39,16 +57,15 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        ExampleAppTestsRobot()
-            .checkWebViewDisplayedForMessage(200)   // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE))
-            .tapOptionWebView(200)                                 // chooseAction(OPTIONS);
-            .clickPMTabSelectedPurposes(200)
-            .checkConsentIsNotSelected(400)                        // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-            .tapAcceptAllOnWebView(200)                            // chooseAction(ACCEPT_ALL);
-            .checkMainWebViewDisplayed(400)         // Assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent(200)                             // clickOnReviewConsent();
-            .clickPMTabSelectedPurposes(200)
-            .checkConsentIsSelected(200)                           // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
+        wr { checkWebViewDisplayedForMessage() }    // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE))
+        wr { tapOptionWebView() }                   // chooseAction(OPTIONS);
+        wr { clickPMTabSelectedPurposes() }
+        wr { checkConsentIsNotSelected() }          // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
+        wr { tapAcceptAllOnWebView() }              // chooseAction(ACCEPT_ALL);
+        wr { checkMainWebViewDisplayed() }          // Assert.assertTrue(checkMainWebViewDisplayed());
+        wr { clickOnReviewConsent() }               // clickOnReviewConsent();
+        wr { clickPMTabSelectedPurposes() }
+        wr { checkConsentIsSelected() }             // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
     }
 
     @Test
@@ -56,14 +73,13 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        ExampleAppTestsRobot()
-            .checkWebViewDisplayedForMessage(200)       // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-            .tapOptionWebView(200)                                     // chooseAction(OPTIONS);
-            .checkPMTabSelectedFeatures(200)           // Assert.assertTrue(checkPMTabSelected(FEATURES));
-            .tapSaveAndExitWebView(200)                                // chooseAction(SAVE_AND_EXIT);
-            .checkMainWebViewDisplayed(200)             // Assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent(400)                  // clickOnReviewConsent();
-            .checkPMTabSelectedPurposes()                           // Assert.assertTrue(checkPMTabSelected(PURPOSES));
+        wr { checkWebViewDisplayedForMessage() }        // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+        wr { tapOptionWebView() }                       // chooseAction(OPTIONS);
+        wr { checkPMTabSelectedFeatures() }             // Assert.assertTrue(checkPMTabSelected(FEATURES));
+        wr { tapSaveAndExitWebView() }                  // chooseAction(SAVE_AND_EXIT);
+        wr { checkMainWebViewDisplayed() }              // Assert.assertTrue(checkMainWebViewDisplayed());
+        wr { clickOnReviewConsent() }                   // clickOnReviewConsent();
+        wr { checkPMTabSelectedPurposes() }             // Assert.assertTrue(checkPMTabSelected(PURPOSES));
     }
 
     @Test
@@ -71,20 +87,19 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        ExampleAppTestsRobot()
-            .checkWebViewDisplayedForMessage(200)       // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-            .tapOptionWebView(200)                                     // chooseAction(OPTIONS);
-            .clickPMTabSelectedPurposes(200)
-            .checkConsentIsNotSelected(200)                            // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-            .tapRejectAllWebView(200)                                  // chooseAction(REJECT_ALL);
-            .checkMainWebViewDisplayed(200)             // Assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent(400)                  // clickOnReviewConsent();
-            .clickPMTabSelectedPurposes(200)
-            .checkConsentAsSelectedFromPartialConsentList()         // selectConsents(PARTIAL_CONSENT_LIST);
-            .tapSaveAndExitWebView(200)                                // chooseAction(SAVE_AND_EXIT);
-            .checkMainWebViewDisplayed(200)             // assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent(400)                  // clickOnReviewConsent();
-            .checkPartialConsentIsSelected(200)     // Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
+        wr { checkWebViewDisplayedForMessage()}                 // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+        wr { tapOptionWebView()}                                // chooseAction(OPTIONS);
+        wr { clickPMTabSelectedPurposes()}
+        wr { checkConsentIsNotSelected()}                       // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
+        wr { tapRejectAllWebView()}                             // chooseAction(REJECT_ALL);
+        wr { checkMainWebViewDisplayed()}                       // Assert.assertTrue(checkMainWebViewDisplayed());
+        wr { clickOnReviewConsent()}                            // clickOnReviewConsent();
+        wr { clickPMTabSelectedPurposes()}
+        wr { checkConsentAsSelectedFromPartialConsentList() }   // selectConsents(PARTIAL_CONSENT_LIST);
+        wr { tapSaveAndExitWebView()}                           // chooseAction(SAVE_AND_EXIT);
+        wr { checkMainWebViewDisplayed()}                       // assert.assertTrue(checkMainWebViewDisplayed());
+        wr { clickOnReviewConsent()}                            // clickOnReviewConsent();
+        wr { checkPartialConsentIsSelected()}                   // Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
     }
 
     @Test
@@ -92,14 +107,13 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        ExampleAppTestsRobot()
-            .checkWebViewDisplayedForMessage(200)   // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-            .tapAcceptOnWebView(200)                               // chooseAction(ACCEPT);
-            .checkMainWebViewDisplayed(200)         // Assert.assertTrue(checkMainWebViewDisplayed());
-            .setFocusOnLayoutActivity(200)
-            .clickOnReviewConsent(200)                             // clickOnReviewConsent();
-            .checkWebViewDisplayedForPrivacyManager(200)           // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-            .checkConsentIsSelected()                           // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
+        wr { checkWebViewDisplayedForMessage()}             // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+        wr { tapAcceptOnWebView()}                          // chooseAction(ACCEPT);
+        wr { checkMainWebViewDisplayed()}                   // Assert.assertTrue(checkMainWebViewDisplayed());
+        wr { setFocusOnLayoutActivity()}
+        wr { clickOnReviewConsent()}                        // clickOnReviewConsent();
+        wr { checkWebViewDisplayedForPrivacyManager()}      // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+        wr { checkConsentIsSelected()  }                    // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
     }
 
     @Test
@@ -107,17 +121,16 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        ExampleAppTestsRobot()
-            .checkWebViewDisplayedForMessage(200)   // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-            .tapRejectOnWebView(200)                               // chooseAction(REJECT);
-            .checkMainWebViewDisplayed(200)         // Assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent(200)                             // clickOnReviewConsent();
-//            .checkWebViewDisplayedForPrivacyManager()         // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-            .tapRejectAllWebView(200)                              // chooseAction(REJECT_ALL);
-            .checkMainWebViewDisplayed(200)         // Assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent(400)              // clickOnReviewConsent();
-//            .checkWebViewDisplayedForPrivacyManager()         // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-            .checkConsentIsNotSelected()                        // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
+        wr { checkWebViewDisplayedForMessage()}     // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+        wr { tapRejectOnWebView()}                  // chooseAction(REJECT);
+        wr { checkMainWebViewDisplayed()}           // Assert.assertTrue(checkMainWebViewDisplayed());
+        wr { clickOnReviewConsent()}                // clickOnReviewConsent();
+//.checkWebViewDisplayedForPrivacyManager()         // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+        wr { tapRejectAllWebView()}                 // chooseAction(REJECT_ALL);
+        wr { checkMainWebViewDisplayed()}           // Assert.assertTrue(checkMainWebViewDisplayed());
+        wr { clickOnReviewConsent() }               // clickOnReviewConsent();
+//.checkWebViewDisplayedForPrivacyManager()         // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+        wr { checkConsentIsNotSelected()}           // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
     }
 
     @Test
@@ -126,17 +139,17 @@ class ExampleAppTestsK {
         scenario = launchActivity()
 
         ExampleAppTestsRobot()
-            .checkWebViewDisplayedForMessage(200)   //   Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-            .tapRejectOnWebView(200)                               //   chooseAction(REJECT);
-            .checkMainWebViewDisplayed(200)         //   Assert.assertTrue(checkMainWebViewDisplayed());
-            .clickOnReviewConsent(200)                             //   clickOnReviewConsent();
-            .checkWebViewDisplayedForPrivacyManager(200)           //   Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-            .checkConsentAsSelectedFromPartialConsentList(200)     //   selectConsents(PARTIAL_CONSENT_LIST);
-            .tapSaveAndExitWebView(200)                            //   chooseAction(SAVE_AND_EXIT);
-            .checkMainWebViewDisplayed(200)                        //   Assert.assertTrue(checkMainWebViewDisplayed());
-            .setFocusOnLayoutActivity(200)
-            .clickOnReviewConsent(400)              //   clickOnReviewConsent();
-            .checkPartialConsentIsSelected()                    //   Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
+        wr { checkWebViewDisplayedForMessage()}                 //   Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+        wr { tapRejectOnWebView()}                              //   chooseAction(REJECT);
+        wr { checkMainWebViewDisplayed()}                       //   Assert.assertTrue(checkMainWebViewDisplayed());
+        wr { clickOnReviewConsent()}                            //   clickOnReviewConsent();
+        wr { checkWebViewDisplayedForPrivacyManager()}          //   Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+        wr { checkConsentAsSelectedFromPartialConsentList()}    //   selectConsents(PARTIAL_CONSENT_LIST);
+        wr { tapSaveAndExitWebView()}                           //   chooseAction(SAVE_AND_EXIT);
+        wr { checkMainWebViewDisplayed()}                       //   Assert.assertTrue(checkMainWebViewDisplayed());
+        wr { setFocusOnLayoutActivity()}
+        wr { clickOnReviewConsent()}                            //   clickOnReviewConsent();
+        wr { checkPartialConsentIsSelected()}                   //   Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
     }
 
     @Test
@@ -144,10 +157,9 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        ExampleAppTestsRobot()
-            .checkWebViewDisplayedForMessage(200)   //  Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-            .tapDismissWebView()                                //  chooseDismiss();
-            .checkMainWebViewDisplayed()                        //  Assert.assertTrue(checkMainWebViewDisplayed());
+        wr { checkWebViewDisplayedForMessage()}     //  Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+        wr { tapDismissWebView()}                   //  chooseDismiss();
+        wr { checkMainWebViewDisplayed()}           //  Assert.assertTrue(checkMainWebViewDisplayed());
     }
 
 }

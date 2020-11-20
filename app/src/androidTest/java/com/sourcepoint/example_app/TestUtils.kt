@@ -4,8 +4,8 @@ import kotlinx.coroutines.delay
 import kotlin.jvm.Throws
 
 @Throws(Exception::class)
-suspend fun waitAndRetry(delayExecution : Long = 0, task: () -> Unit) {
-    var res: TestRes.NotVerified = TestRes.NotVerified(RuntimeException("Not initialize condition!"))
+suspend fun wr(delayExecution : Long = 200, task: () -> Unit) {
+    var res: TestRes.NotVerified = TestRes.NotVerified(RuntimeException("Condition Not initialized!"))
     delay(delayExecution)
     repeat(30) {
         delay(400)
