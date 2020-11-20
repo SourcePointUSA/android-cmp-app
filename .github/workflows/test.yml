@@ -33,13 +33,12 @@ jobs:
           arch: x86_64
           profile: Nexus 6
           script: ./gradlew :app:connectedDebugAndroidTest --stacktrace
-
       - name: 'Publish Test Report'
-          if: always()
-          uses: actions/upload-artifact@v2-preview
-          with:
-            name: 'test-report'
-            path: app/build/reports/androidTests/*
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: 'test-report'
+          path: app/build/reports/androidTests/*
 
       - name: run MetaApp tests
         uses: reactivecircus/android-emulator-runner@v2
