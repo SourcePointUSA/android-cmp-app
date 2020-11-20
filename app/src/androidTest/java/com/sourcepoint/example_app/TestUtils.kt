@@ -8,7 +8,7 @@ suspend fun wr(d : Long = 200, task: () -> Unit) {
     var res: TestRes.NotVerified = TestRes.NotVerified(RuntimeException("Condition Not initialized!"))
     delay(d)
     repeat(30) {
-        delay(400)
+        delay(250)
         when (val t = checkCondition(task)) {
             TestRes.Verified -> return
             is TestRes.NotVerified -> res = t
