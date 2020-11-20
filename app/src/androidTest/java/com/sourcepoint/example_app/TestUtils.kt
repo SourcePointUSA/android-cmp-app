@@ -3,7 +3,7 @@ package com.sourcepoint.example_app
 import kotlinx.coroutines.delay
 import kotlin.jvm.Throws
 
-@Throws(Exception::class)
+@Throws(Throwable::class)
 suspend fun wr(delayExecution : Long = 200, task: () -> Unit) {
     var res: TestRes.NotVerified = TestRes.NotVerified(RuntimeException("Condition Not initialized!"))
     delay(delayExecution)

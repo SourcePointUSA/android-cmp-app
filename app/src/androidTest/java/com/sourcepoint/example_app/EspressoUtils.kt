@@ -12,14 +12,16 @@ import androidx.test.espresso.web.webdriver.DriverAtoms.findElement
 import androidx.test.espresso.web.webdriver.Locator
 import org.hamcrest.core.AllOf.allOf
 import org.hamcrest.core.StringContains
+import kotlin.jvm.Throws
 
+@Throws(Throwable::class)
 fun isDisplayedAllOfByResId(
     @IdRes resId: Int
 ) {
     onView(allOf(withId(resId), isDisplayed()))
 }
 
-
+@Throws(Throwable::class)
 fun performClickById(
     @IdRes resId: Int
 ) {
@@ -31,6 +33,7 @@ fun performClickById(
     ).perform(ViewActions.click())
 }
 
+@Throws(Throwable::class)
 fun checkWebViewHasText(text: String) {
     onWebView()
         .check(
@@ -41,6 +44,7 @@ fun checkWebViewHasText(text: String) {
         )
 }
 
+@Throws(Throwable::class)
 fun performClickOnWebViewByContent(text: String) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
@@ -48,6 +52,7 @@ fun performClickOnWebViewByContent(text: String) {
         .perform(DriverAtoms.webClick())
 }
 
+@Throws(Throwable::class)
 fun performClickOnWebViewByClass(classValue: String) {
     onWebView()
         .withElement(findElement(Locator.CLASS_NAME, classValue))
@@ -55,17 +60,20 @@ fun performClickOnWebViewByClass(classValue: String) {
         .perform(DriverAtoms.webClick())
 }
 
+@Throws(Throwable::class)
 fun checkConsentState(consent: String, selected : Boolean) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']"))
         .withElement(findElement(Locator.XPATH, "//label[@aria-checked='$selected']"))
 }
 
+@Throws(Throwable::class)
 fun checkPMTabSelected( expected : String){
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab active') and text()='$expected']"))
 }
 
+@Throws(Throwable::class)
 fun performClickPMTabSelected( expected : String){
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab') and text()='$expected']"))
@@ -73,6 +81,7 @@ fun performClickPMTabSelected( expected : String){
         .perform(DriverAtoms.webClick())
 }
 
+@Throws(Throwable::class)
 fun setCheckBoxTrue(property : String){
     onWebView()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$property']/span[@class='on']"))
@@ -80,6 +89,7 @@ fun setCheckBoxTrue(property : String){
         .perform(DriverAtoms.webClick())
 }
 
+@Throws(Throwable::class)
 fun checkConsentWebView(consent: String) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='slider round']"))

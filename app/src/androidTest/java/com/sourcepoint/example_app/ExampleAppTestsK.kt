@@ -43,7 +43,7 @@ class ExampleAppTestsK {
         scenario = launchActivity()
 
         wr { checkWebViewDisplayedForMessage() }    // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        wr { tapRejectOnWebView() }                 // chooseAction(REJECT);
+//        wr { tapRejectOnWebView() }                 // chooseAction(REJECT);
         wr { checkMainWebViewDisplayed() }          // Assert.assertTrue(checkMainWebViewDisplayed());
         wr { clickOnReviewConsent() }               // clickOnReviewConsent();
         wr { tapAcceptAllOnWebView() }              // chooseAction(ACCEPT_ALL);
