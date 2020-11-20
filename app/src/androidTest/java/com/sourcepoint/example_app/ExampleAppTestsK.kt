@@ -44,7 +44,7 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        wr(d) { checkWebViewDisplayedForMessage() }  // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        wr(d) { checkWebViewDisplayedForMessage() }  // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         wr { tapRejectOnWebView() }                 // chooseAction(REJECT);
         wr { checkMainWebViewDisplayed() }          // Assert.assertTrue(checkMainWebViewDisplayed());
         wr { clickOnReviewConsent() }               // clickOnReviewConsent();
@@ -59,7 +59,7 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        wr(d) { checkWebViewDisplayedForMessage() }    // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE))
+//        wr(d) { checkWebViewDisplayedForMessage() }    // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE))
         wr { tapOptionWebView() }                           // chooseAction(OPTIONS);
         wr { clickPMTabSelectedPurposes() }
         wr { checkConsentIsNotSelected() }                  // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
@@ -75,7 +75,7 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        wr(d) { checkWebViewDisplayedForMessage() }        // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        wr(d) { checkWebViewDisplayedForMessage() }        // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         wr { tapOptionWebView() }                       // chooseAction(OPTIONS);
         wr { checkPMTabSelectedFeatures() }             // Assert.assertTrue(checkPMTabSelected(FEATURES));
         wr { tapSaveAndExitWebView() }                  // chooseAction(SAVE_AND_EXIT);
@@ -89,7 +89,7 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        wr(d) { checkWebViewDisplayedForMessage()}                 // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        wr(d) { checkWebViewDisplayedForMessage()}                 // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         wr { tapOptionWebView()}                                // chooseAction(OPTIONS);
         wr { clickPMTabSelectedPurposes()}
         wr { checkConsentIsNotSelected()}                       // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
@@ -109,7 +109,7 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        wr(d) { checkWebViewDisplayedForMessage()}             // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        wr(d) { checkWebViewDisplayedForMessage()}             // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         wr { tapAcceptOnWebView()}                          // chooseAction(ACCEPT);
         wr { checkMainWebViewDisplayed()}                   // Assert.assertTrue(checkMainWebViewDisplayed());
         wr { setFocusOnLayoutActivity()}
@@ -123,7 +123,7 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        wr(d) { checkWebViewDisplayedForMessage()}     // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        wr(d) { checkWebViewDisplayedForMessage()}     // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         wr { tapRejectOnWebView()}                  // chooseAction(REJECT);
         wr { checkMainWebViewDisplayed()}           // Assert.assertTrue(checkMainWebViewDisplayed());
         wr { clickOnReviewConsent()}                // clickOnReviewConsent();
@@ -140,7 +140,7 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        wr(d) { checkWebViewDisplayedForMessage()}                 //   Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        wr(d) { checkWebViewDisplayedForMessage()}                 //   Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         wr { tapRejectOnWebView()}                              //   chooseAction(REJECT);
         wr { checkMainWebViewDisplayed()}                       //   Assert.assertTrue(checkMainWebViewDisplayed());
         wr { clickOnReviewConsent()}                            //   clickOnReviewConsent();
@@ -158,7 +158,7 @@ class ExampleAppTestsK {
 
         scenario = launchActivity()
 
-        wr(d) { checkWebViewDisplayedForMessage()}     //  Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+//        wr(d) { checkWebViewDisplayedForMessage()}     //  Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         wr { tapDismissWebView()}                           //  chooseDismiss();
         wr { checkMainWebViewDisplayed()}                   //  Assert.assertTrue(checkMainWebViewDisplayed());
     }
