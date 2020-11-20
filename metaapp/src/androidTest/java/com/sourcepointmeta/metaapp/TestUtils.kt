@@ -3,10 +3,10 @@ package com.sourcepointmeta.metaapp
 import kotlinx.coroutines.delay
 import kotlin.jvm.Throws
 
-@Throws(Exception::class)
-suspend fun waitAndRetry(delayExecution : Long = 0, task: () -> Unit) {
-    var res: TestRes.NotVerified = TestRes.NotVerified(RuntimeException("Not initialize condition!"))
-    delay(delayExecution)
+@Throws(Throwable::class)
+suspend fun wr(d : Long = 200, task: () -> Unit) {
+    var res: TestRes.NotVerified = TestRes.NotVerified(RuntimeException("Condition Not initialized!"))
+    delay(d)
     repeat(30) {
         delay(400)
         when (val t = checkCondition(task)) {

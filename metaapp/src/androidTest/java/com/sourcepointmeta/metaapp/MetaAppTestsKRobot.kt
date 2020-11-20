@@ -2,215 +2,149 @@ package com.sourcepointmeta.metaapp
 
 class MetaAppTestsKRobot {
 
-    private val utility by lazy { Utility() }
+    companion object {
 
-    suspend fun tapOnAddProperty(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+        fun tapOnAddProperty() {
             performClickById(R.id.action_addProperty)
         }
-    }
 
-    suspend fun addPropertyWithAllFields() = apply {
-        waitAndRetry {
-            utility.addPropertyWith(TestData.ALL_FIELDS)
+        fun addPropertyWithAllFields() {
+            Utility().addPropertyWith(TestData.ALL_FIELDS)
         }
-    }
 
-    suspend fun tapDismissWebView() = apply {
-        waitAndRetry {
+        fun tapDismissWebView() {
             performClickOnWebViewByClass("message-stacksclose")
         }
-    }
 
-    suspend fun tapOnSave() = apply {
-        waitAndRetry {
+        fun tapOnSave() {
             performClickById(resId = R.id.action_saveProperty)
         }
-    }
 
-    suspend fun addNativeMessagePropertyDetails() = apply {
-        val accountId = "22"
-        val propertyId = "7094"
-        val propertyName = "tcfv2.mobile.demo"
-        val pmId = "179657"
+        fun addNativeMessagePropertyDetails() {
+            val accountId = "22"
+            val propertyId = "7094"
+            val propertyName = "tcfv2.mobile.demo"
+            val pmId = "179657"
 
-        waitAndRetry {
             insertTextByResId(propId = R.id.etAccountID, text = accountId)
             insertTextByResId(propId = R.id.etPropertyId, text = propertyId)
             insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
             insertTextByResId(propId = R.id.etPMId, text = pmId)
             performClickById(resId = R.id.toggleNativeMessage)
         }
-    }
 
-    suspend fun checkNativeMessageDisplayed() = apply {
-        waitAndRetry {
+        fun checkNativeMessageDisplayed() {
             isDisplayedAllOf(R.id.Title)
         }
-    }
 
-    suspend fun tapShowOption() = apply {
-        waitAndRetry {
+        fun tapShowOption() {
             performClickById(R.id.ShowOption)
         }
-    }
 
-    suspend fun tapRejectAll() = apply {
-        waitAndRetry {
+        fun tapRejectAll() {
             performClickById(R.id.RejectAll)
         }
-    }
 
-    suspend fun tapAcceptAll() = apply {
-        waitAndRetry {
+        fun tapAcceptAll() {
             performClickById(R.id.AcceptAll)
         }
-    }
 
-    suspend fun checkWebViewDisplayedForPrivacyManager() = apply {
-        waitAndRetry {
+        fun checkWebViewDisplayedForPrivacyManager() {
             checkWebViewHasText(TestData.PRIVACY_MANAGER)
         }
-    }
 
-    suspend fun checkConsentListNotSelected() = apply {
-        TestData.CONSENT_LIST.forEach { consent ->
-            waitAndRetry {
+        fun checkConsentListNotSelected() {
+            TestData.CONSENT_LIST.forEach { consent ->
                 checkConsentState(consent, false)
             }
         }
-    }
 
-    suspend fun checkWebViewDisplayedForMessage(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+        fun checkWebViewDisplayedForMessage() {
             checkWebViewHasText(TestData.MESSAGE)
         }
-    }
 
-    suspend fun tapRejectAllOnWebView() = apply {
-        waitAndRetry {
+        fun tapRejectAllOnWebView() {
             performClickOnWebViewByContent(TestData.PM_REJECT_ALL)
         }
-    }
 
-    suspend fun tapPMAcceptAllOnWebView(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+        fun tapPMAcceptAllOnWebView() {
             performClickOnWebViewByContent(TestData.PM_ACCEPT_ALL)
         }
-    }
 
-    suspend fun tapAcceptAllOnWebView() = apply {
-        waitAndRetry {
+        fun tapAcceptAllOnWebView() {
             performClickOnWebViewByContent(TestData.ACCEPT_ALL)
         }
-    }
 
-    suspend fun checkForConsentsAreDisplayed() = apply {
-        waitAndRetry {
+        fun checkForConsentsAreDisplayed() {
             isDisplayedByResId(R.id.consentRecyclerView)
         }
-    }
 
-    suspend fun tapManagePreferencesOnWebView() = apply {
-        waitAndRetry {
+        fun tapManagePreferencesOnWebView() {
             performClickOnWebViewByContent(TestData.MANAGE_PREFERENCES)
         }
-    }
 
-    suspend fun tapSaveAndExitOnWebView() = apply {
-        waitAndRetry {
+        fun tapSaveAndExitOnWebView() {
             performClickOnWebViewByContent(TestData.PM_SAVE_AND_EXIT)
         }
-    }
 
-    suspend fun checkForPropertyInfoScreen() = apply {
-        waitAndRetry {
+        fun checkForPropertyInfoScreen() {
             isDisplayedByResId(R.id.consentRecyclerView)
         }
-    }
 
-    suspend fun checkForPropertyInfoInList() = apply {
-        waitAndRetry {
+        fun checkForPropertyInfoInList() {
             isDisplayedByResId(R.id.swipe_layout)
         }
-    }
 
-    suspend fun checkForConsentAreDisplayed() = apply {
-        waitAndRetry {
+        fun checkForConsentAreDisplayed() {
             isDisplayedByResId(R.id.consentRecyclerView)
         }
-    }
 
-    suspend fun checkForConsentAreNotDisplayed() = apply {
-        waitAndRetry {
+        fun checkForConsentAreNotDisplayed() {
             isDisplayedByResId(R.id.tv_consentsNotAvailable)
         }
-    }
 
-    suspend fun navigateBackToListView(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+        fun navigateBackToListView() {
             performClickContent("Navigate up")
         }
-    }
 
-    suspend fun tapOnProperty(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+        fun tapOnProperty() {
             performClickById(R.id.item_view)
         }
-    }
 
-    suspend fun checkWebViewDoesNotDisplayTheMessage() = apply {
-        waitAndRetry {
+        fun checkWebViewDoesNotDisplayTheMessage() {
             checkWebViewDoesNotHasText(TestData.MESSAGE)
         }
-    }
 
-    suspend fun loadPrivacyManagerDirect(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+        fun loadPrivacyManagerDirect() {
             performClickById(R.id.action_showPM)
         }
-    }
 
-    suspend fun swipeAndChooseResetAction() = apply {
-        waitAndRetry {
+        fun swipeAndChooseResetAction() {
             swipeAndChooseAction(R.id.reset_button, TestData.YES)
         }
-    }
 
-    suspend fun selectNativeMessageConsentList(delayExecution : Long = 0) = apply {
-        TestData.NATIVE_MESSAGE_CONSENT_LIST.forEach { consent ->
-            waitAndRetry(delayExecution) {
+        fun selectNativeMessageConsentList() {
+            TestData.NATIVE_MESSAGE_CONSENT_LIST.forEach { consent ->
                 checkConsentWebView(consent)
             }
         }
-    }
 
-    suspend fun selectPartialConsentList(delayExecution : Long = 0) = apply {
-        TestData.PARTIAL_CONSENT_LIST.forEach { consent ->
-            waitAndRetry(delayExecution) {
+        fun selectPartialConsentList() {
+            TestData.PARTIAL_CONSENT_LIST.forEach { consent ->
                 checkConsentWebView(consent)
             }
         }
-    }
 
-    suspend fun checkInsertedProperty(delayExecution : Long = 0) = apply {
-        waitAndRetry(delayExecution) {
+        fun checkInsertedProperty() {
             isDisplayedByResId(R.id.action_addProperty)
         }
-    }
 
-    suspend fun checkConsentNotDisplayed() = apply {
-        waitAndRetry {
+        fun checkConsentNotDisplayed() {
             isDisplayedByResId(R.id.tv_consentsNotAvailable)
         }
-    }
 
-    suspend fun addPropertyFor(messageType : String, authentication : String) = apply {
-
-        waitAndRetry {
-            utility.addPropertyFor(messageType, authentication)
+        fun addPropertyFor(messageType: String, authentication: String) {
+            Utility().addPropertyFor(messageType, authentication)
         }
-
     }
-
 }
