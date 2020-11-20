@@ -37,7 +37,7 @@ class ExampleAppTestsK {
         scenario.close()
     }
 
-    private val d = 5000L
+    private val d = 1000L
 
     @Test
     fun checkAcceptActionFromDirectPrivacyManager() = runBlocking<Unit> {
