@@ -139,6 +139,10 @@ It's important to notice, this method is intended to be used for **custom** vend
 ]
 ```
 
+## `pubData`
+When the user takes an action within the consent UI, it's possible to attach an arbitrary payload to the action data an have it sent to our endpoints. For more information on how to do that check our wiki: [Sending arbitrary data when the user takes an action](https://github.com/SourcePointUSA/android-cmp-app/wiki/Sending-arbitrary-data-when-the-user-takes-an-action)
+
+
 ## Frequently Asked Questions
 ### 1. How big is the SDK?
 The SDK is pretty slim, there are no assets, a single dependency, it's just pure code. The SDK shouldn't exceed `2 MB`.
