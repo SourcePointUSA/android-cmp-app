@@ -30,7 +30,7 @@ class ExampleAppTestsRobot {
         }
 
         fun checkWebViewDisplayedForMessage() {
-            checkWebViewHasText("consentUUID")
+            checkWebViewHasText(MESSAGE)
         }
 
         fun clickPMTabSelectedPurposes() {
