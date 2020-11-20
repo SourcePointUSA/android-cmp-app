@@ -4,9 +4,9 @@ import kotlinx.coroutines.delay
 import kotlin.jvm.Throws
 
 @Throws(Throwable::class)
-suspend fun wr(delayExecution : Long = 200, task: () -> Unit) {
+suspend fun wr(d : Long = 200, task: () -> Unit) {
     var res: TestRes.NotVerified = TestRes.NotVerified(RuntimeException("Condition Not initialized!"))
-    delay(delayExecution)
+    delay(d)
     repeat(30) {
         delay(400)
         when (val t = checkCondition(task)) {
