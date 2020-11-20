@@ -23,18 +23,16 @@ import java.util.Locale;
  * </pre>
  */
 public class GDPRConsentLib {
+    static final String PM_BASE_URL = "https://cdn.privacy-mgmt.com/privacy-manager/index.html";
+    static final String OTT_PM_BASE_URL = "https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html";
 
     private final String pmId;
-    private final String PM_BASE_URL = "https://cdn.privacy-mgmt.com/privacy-manager/index.html";
-    private final String OTT_PM_BASE_URL = "https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html";
     private final onBeforeSendingConsent onBeforeSendingConsent;
     private final OnNoIntentActivitiesFound onNoIntentActivitiesFound;
     private final Context context;
 
     String metaData;
     String euConsent;
-
-    public Boolean isSubjectToGdpr = null;
 
     public String consentUUID;
 
@@ -62,7 +60,7 @@ public class GDPRConsentLib {
 
     public boolean isNative, isPmOn = false;
 
-    private CountDownTimer mCountDownTimer;
+    private final CountDownTimer mCountDownTimer;
 
     private final SourcePointClient sourcePoint;
 
@@ -127,7 +125,7 @@ public class GDPRConsentLib {
     public class OnBeforeSendingConsentComplete implements ProneToFailure {
         public void post(ConsentAction a){
             GDPRConsentLib.this.sendConsent(a);
-        };
+        }
 
         @Override
         public void onFailure(ConsentLibException exception) {
@@ -143,7 +141,7 @@ public class GDPRConsentLib {
         }
     }
 
-    private StoreClient storeClient;
+    private final StoreClient storeClient;
 
     /**
      * @return a new instance of GDPRConsentLib.Builder
@@ -187,8 +185,8 @@ public class GDPRConsentLib {
 
     private void resetDataFields() {
         userConsent = new GDPRUserConsent();
-        metaData = storeClient.DEFAULT_META_DATA;
-        euConsent = storeClient.DEFAULT_EMPTY_CONSENT_STRING;
+        metaData = StoreClient.DEFAULT_META_DATA;
+        euConsent = StoreClient.DEFAULT_EMPTY_CONSENT_STRING;
         consentUUID = null;
     }
 
@@ -339,8 +337,6 @@ public class GDPRConsentLib {
     /**
      * Communicates with SourcePoint to load the message. It all happens in the background and the WebView
      * will only show after the message is ready to be displayed (received data from SourcePoint).
-     *
-     * @throws ConsentLibException.NoInternetConnectionException - thrown if the device has lost connection either prior or while interacting with GDPRConsentLib
      */
     public void run() {
         try {
@@ -637,7 +633,7 @@ public class GDPRConsentLib {
 
     void destroy(){
         uiThreadHandler.post(() -> {
-            //Webview is null in case of error on buildWebview() method
+            //WebView is null in case of error on buildWebView() method
             if(webView != null) webView.destroy();
         });
         uiThreadHandler.disable();
