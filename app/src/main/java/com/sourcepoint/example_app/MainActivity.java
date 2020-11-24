@@ -1,5 +1,8 @@
 package com.sourcepoint.example_app;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +19,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
@@ -50,6 +54,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private GDPRConsentLib buildGDPRConsentLib() {
+
+        SharedPreferences sharedPref = this.getSharedPreferences("myshared", Context.MODE_PRIVATE);
+        if(!sharedPref.contains("MyAppsAuthId")){
+            String uniqueID = UUID.randomUUID().toString();
+            System.out.println("cookie ["+ uniqueID +"]");
+            sharedPref.edit().putString("MyAppsAuthId", uniqueID).apply();
+        }
+
         return GDPRConsentLib.newBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId,this)
                 .setOnConsentUIReady(view -> {
                     showView(view);
@@ -87,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 .setOnPMFinished(()-> Log.i(TAG, "PM Finished"))
                 .setOnMessageFinished(()-> Log.i(TAG, "Message Finished"))
                 .setOnAction(actionType  -> Log.i(TAG , "ActionType : "+actionType.toString()))
+                .setAuthId(sharedPref.getString("MyAppsAuthId",""))
                 .build();
     }
 
@@ -123,5 +136,6 @@ public class MainActivity extends AppCompatActivity {
         mainViewGroup = findViewById(android.R.id.content);
         config = getConfig(R.raw.mobile_demo_web);
         findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
+        findViewById(R.id.open_activity).setOnClickListener(_v -> startActivity(new Intent(this, MainActivityAuthId.class)));
     }
 }
