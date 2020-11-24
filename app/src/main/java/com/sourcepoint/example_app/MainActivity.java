@@ -1,5 +1,8 @@
 package com.sourcepoint.example_app;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -7,6 +10,15 @@ import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
+import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
+import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
@@ -58,5 +70,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
         findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
+        findViewById(R.id.open_activity).setOnClickListener(_v -> startActivity(new Intent(this, MainActivityAuthId.class)));
     }
 }
