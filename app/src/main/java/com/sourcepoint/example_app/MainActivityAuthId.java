@@ -21,25 +21,21 @@ public class MainActivityAuthId extends AppCompatActivity {
 
         SharedPreferences sharedPref = this.getSharedPreferences("myshared", Context.MODE_PRIVATE);
         String authId = sharedPref.getString("MyAppsAuthId", "");
-//        WebViewUtils.setAuthId(authId);
-        WebViewUtils.setAuthIdGitHub(authId, wv);
+
 
         wv.setWebViewClient(new WebViewClient(){
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 view.loadUrl(request.getUrl().toString());
                 return true;
             }
-
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-//                WebViewUtils.setAuthIdGitHub(authId, view);
+                WebViewUtils.setAuthId(authId, view);
                 super.onPageStarted(view, url, favicon);
             }
         });
 
         wv.loadUrl("https://carmelo-iriti.github.io/authid.github.io");
-//        wv.loadUrl("https://192.168.1.59:8080");
     }
 }
