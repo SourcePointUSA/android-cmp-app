@@ -72,10 +72,15 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
+## OTT 
+If you're working on a Android compatible OTT environment, when building the SDK make sure to call the builder method `.setIsOTT(true)`. 
+This will instruct the SDK to load OTT-specific message and privacy manager.
+
 ## ConsentLibBuilder
 On top of the methods exemplified above, the `ConsentLibBuilder` has the following methods:
 * `.setStagingCampaign(boolean env)`:passing `true` to this method will instruct the SDK to load a Stage campaign.
 * `.setTargetingParams(key, value)`: Check the _Setting Targeting Params_ section below.
+* `.setIsOTT(boolean)`: Instructs the SDK to load OTT specific assets.
 * `.setMessageTimeOut(int milliseconds)`: this will control how long it takes between calling `.run()` and one of the callback such as `.onConsentUIReady / .onConsentReady / .onError`. We set this value to 10 seconds by default.
 * `.setAuthId(String authID)`: Check the section on authenticated consent below.
 * `.setOnBeforeSendingConsent(_Callback_ ConsentAction action)`: We'll call this method just before sending the consent action taken by the user to the server.
