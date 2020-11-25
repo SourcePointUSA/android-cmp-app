@@ -25,8 +25,8 @@
         app:layout_constraintVertical_bias="0.932" />
 
     <Button
-            android:id="@+id/open_activity"
-            android:text="open activity"
+            android:id="@+id/auth_id_activity"
+            android:text="@string/authid_activity"
             app:layout_constraintStart_toStartOf="@id/review_consents"
             app:layout_constraintEnd_toEndOf="@id/review_consents"
             app:layout_constraintTop_toBottomOf="@id/review_consents"
