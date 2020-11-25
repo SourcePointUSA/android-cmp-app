@@ -46,12 +46,10 @@ fun checkWebViewHasText(text: String) {
 }
 
 @Throws(Throwable::class)
-fun checkElementWithText(expected: String) {
+fun checkElementWithText(id : String, expected: String) {
     onWebView()
-        .forceJavascriptEnabled()
-        .withElement(findElement(Locator.XPATH, "//p[contains(text(), 'AuthId')]"))
-        .perform(webScrollIntoView())
-        .perform(webClick())
+            .withElement(findElement(Locator.ID, id))
+            .check(webMatches(getText(), containsString(expected)));
 }
 
 @Throws(Throwable::class)

@@ -38,7 +38,11 @@ class ExampleAppTestsRobot {
         }
 
         fun checkAuthIdIsDisplayed(autId : String) {
-            checkElementWithText(autId)
+            checkElementWithText("authId", autId)
+        }
+
+        fun checkAuthIdIsNotDisplayed() {
+            checkElementWithText("authId", "no_auth_id")
         }
 
         fun clickPMTabSelectedPurposes() {
