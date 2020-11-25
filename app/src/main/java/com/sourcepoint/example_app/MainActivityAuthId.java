@@ -1,10 +1,13 @@
 package com.sourcepoint.example_app;
 
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.example_app.core.DataProvider;
 import com.sourcepoint.gdpr_cmplibrary.WebViewUtils;
@@ -25,6 +28,7 @@ public class MainActivityAuthId extends AppCompatActivity {
         wv.getSettings().setJavaScriptEnabled(true);
 
         wv.setWebViewClient(new WebViewClient(){
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 view.loadUrl(request.getUrl().toString());

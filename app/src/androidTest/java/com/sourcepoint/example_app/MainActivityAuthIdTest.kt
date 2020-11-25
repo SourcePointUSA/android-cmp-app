@@ -4,8 +4,10 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkAuthIdIsDisplayed
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkAuthIdIsNotDisplayed
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.openAuthIdActivity
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapAcceptOnWebView
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapDismissWebView
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapRejectOnWebView
 import com.sourcepoint.example_app.core.DataProvider
 import kotlinx.coroutines.runBlocking
@@ -25,11 +27,11 @@ class MainActivityAuthIdTest : KoinTest {
 
     @After
     fun cleanup() {
-        if (this::scenario.isLateinit) scenario.close()
+        if (this::scenario.isLateinit) { scenario.close() }
     }
 
     @Test
-    fun accept_is_checked_authId_is_displayed() = runBlocking {
+    fun accept_all_authId_is_displayed() = runBlocking {
 
         val uuid = UUID.randomUUID().toString()
 
@@ -43,7 +45,7 @@ class MainActivityAuthIdTest : KoinTest {
     }
 
     @Test
-    fun reject_is_checked_authId_is_displayed() = runBlocking {
+    fun reject_all_authId_is_displayed() = runBlocking {
 
         val uuid = UUID.randomUUID().toString()
 
@@ -53,18 +55,20 @@ class MainActivityAuthIdTest : KoinTest {
 
         wr { tapRejectOnWebView() }
         wr { openAuthIdActivity() }
-        wr(800)   { checkAuthIdIsDisplayed(uuid) }
+        wr { checkAuthIdIsDisplayed(uuid) }
     }
 
-    private fun mockModule(uuid: String): Module {
-        return module(override = true) {
-            single<DataProvider> {
-                object : DataProvider {
-                    override val authId: String
-                        get() = uuid
-                }
-            }
-        }
-    }
+    @Test
+    fun dismiss_privacy_note_authId_is_not_displayed() = runBlocking {
 
+        val uuid = UUID.randomUUID().toString()
+
+        loadKoinModules(mockModule(uuid))
+
+        scenario = launchActivity()
+
+        wr { tapDismissWebView() }
+        wr { openAuthIdActivity() }
+        wr { checkAuthIdIsNotDisplayed() }
+    }
 }
