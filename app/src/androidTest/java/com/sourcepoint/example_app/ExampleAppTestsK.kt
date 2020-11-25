@@ -34,7 +34,7 @@ class ExampleAppTestsK {
 
     @After
     fun cleanup() {
-        scenario.close()
+        if(this::scenario.isLateinit) scenario.close()
     }
 
     private val d = 1000L

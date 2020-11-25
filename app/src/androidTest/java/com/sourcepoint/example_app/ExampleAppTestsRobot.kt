@@ -29,6 +29,10 @@ class ExampleAppTestsRobot {
             performClickById(resId = R.id.review_consents)
         }
 
+        fun clickOnAuthIdBtn() {
+            performClickById(resId = R.id.auth_id_activity)
+        }
+
         fun checkWebViewDisplayedForMessage() {
             checkWebViewHasText(MESSAGE)
         }

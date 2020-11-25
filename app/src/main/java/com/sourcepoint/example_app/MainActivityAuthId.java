@@ -1,15 +1,19 @@
 package com.sourcepoint.example_app;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import androidx.appcompat.app.AppCompatActivity;
+import com.sourcepoint.example_app.core.DataProvider;
+import kotlin.Lazy;
+
+import static org.koin.java.KoinJavaComponent.inject;
 
 public class MainActivityAuthId extends AppCompatActivity {
+
+    private final Lazy<DataProvider> dataProvider = inject(DataProvider.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,10 +23,6 @@ public class MainActivityAuthId extends AppCompatActivity {
         WebView wv = findViewById(R.id.webview);
         wv.getSettings().setJavaScriptEnabled(true);
 
-        SharedPreferences sharedPref = this.getSharedPreferences("myshared", Context.MODE_PRIVATE);
-        String authId = sharedPref.getString("MyAppsAuthId", "");
-
-
         wv.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -31,8 +31,14 @@ public class MainActivityAuthId extends AppCompatActivity {
             }
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                WebViewUtils.setAuthId(authId, view);
+
                 super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                WebViewUtils.setAuthId(dataProvider.getValue().getAuthId(), view);
             }
         });
 
