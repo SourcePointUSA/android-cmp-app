@@ -1,6 +1,6 @@
 @file:JvmName("WebViewUtils")
 
-package com.sourcepoint.example_app
+package com.sourcepoint.gdpr_cmplibrary
 
 import android.webkit.WebView
 
