@@ -8,10 +8,11 @@ import androidx.test.espresso.web.assertion.WebViewAssertions.webMatches
 import androidx.test.espresso.web.model.Atoms
 import androidx.test.espresso.web.sugar.Web.onWebView
 import androidx.test.espresso.web.webdriver.DriverAtoms
-import androidx.test.espresso.web.webdriver.DriverAtoms.findElement
+import androidx.test.espresso.web.webdriver.DriverAtoms.*
 import androidx.test.espresso.web.webdriver.Locator
 import org.hamcrest.core.AllOf.allOf
 import org.hamcrest.core.StringContains
+import org.hamcrest.core.StringContains.containsString
 import kotlin.jvm.Throws
 
 @Throws(Throwable::class)
@@ -39,25 +40,34 @@ fun checkWebViewHasText(text: String) {
         .check(
             webMatches(
                 Atoms.getCurrentUrl(),
-                StringContains.containsString(text)
+                containsString(text)
             )
         )
+}
+
+@Throws(Throwable::class)
+fun checkElementWithText(expected: String) {
+    onWebView()
+        .forceJavascriptEnabled()
+        .withElement(findElement(Locator.XPATH, "//p[contains(text(), 'AuthId')]"))
+        .perform(webScrollIntoView())
+        .perform(webClick())
 }
 
 @Throws(Throwable::class)
 fun performClickOnWebViewByContent(text: String) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
-        .perform(DriverAtoms.webScrollIntoView())
-        .perform(DriverAtoms.webClick())
+        .perform(webScrollIntoView())
+        .perform(webClick())
 }
 
 @Throws(Throwable::class)
 fun performClickOnWebViewByClass(classValue: String) {
     onWebView()
         .withElement(findElement(Locator.CLASS_NAME, classValue))
-        .perform(DriverAtoms.webScrollIntoView())
-        .perform(DriverAtoms.webClick())
+        .perform(webScrollIntoView())
+        .perform(webClick())
 }
 
 @Throws(Throwable::class)
@@ -77,22 +87,22 @@ fun checkPMTabSelected( expected : String){
 fun performClickPMTabSelected( expected : String){
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab') and text()='$expected']"))
-        .perform(DriverAtoms.webScrollIntoView())
-        .perform(DriverAtoms.webClick())
+        .perform(webScrollIntoView())
+        .perform(webClick())
 }
 
 @Throws(Throwable::class)
 fun setCheckBoxTrue(property : String){
     onWebView()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$property']/span[@class='on']"))
-        .perform(DriverAtoms.webScrollIntoView())
-        .perform(DriverAtoms.webClick())
+        .perform(webScrollIntoView())
+        .perform(webClick())
 }
 
 @Throws(Throwable::class)
 fun checkConsentWebView(consent: String) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='slider round']"))
-        .perform(DriverAtoms.webScrollIntoView())
-        .perform(DriverAtoms.webClick())
+        .perform(webScrollIntoView())
+        .perform(webClick())
 }

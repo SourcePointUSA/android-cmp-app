@@ -7,6 +7,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.example_app.core.DataProvider;
+import com.sourcepoint.gdpr_cmplibrary.WebViewUtils;
 import kotlin.Lazy;
 
 import static org.koin.java.KoinJavaComponent.inject;
@@ -31,14 +32,8 @@ public class MainActivityAuthId extends AppCompatActivity {
             }
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-
-                super.onPageStarted(view, url, favicon);
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
                 WebViewUtils.setAuthId(dataProvider.getValue().getAuthId(), view);
+                super.onPageStarted(view, url, favicon);
             }
         });
 

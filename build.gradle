@@ -2,15 +2,15 @@
 
 buildscript {
 
-    ext.kotlinVersion = '1.4.10'
-
+    ext.kotlin_version = '1.4.10'
+    
     repositories {
         google()
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
         classpath 'com.palantir:jacoco-coverage:0.2.1'
         
