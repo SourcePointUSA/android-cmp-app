@@ -1,9 +1,10 @@
 package com.sourcepoint.example_app
 
-import android.webkit.CookieManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkCookieExist
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkCookieNotExist
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.openAuthIdActivity
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapAcceptOnWebView
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapRejectOnWebView
@@ -39,13 +40,7 @@ class MainActivityAuthIdTest : KoinTest {
 
         wr { tapAcceptOnWebView() }
         wr { openAuthIdActivity() }
-        wr {
-            CookieManager.getInstance()
-                .getCookie(urlTest)
-                .contains(uuid)
-                .assertTrue()
-        }
-
+        wr { checkCookieExist(urlTest, uuid) }
     }
 
     @Test
@@ -59,12 +54,7 @@ class MainActivityAuthIdTest : KoinTest {
 
         wr { tapRejectOnWebView() }
         wr { openAuthIdActivity() }
-        wr {
-            CookieManager.getInstance()
-                .getCookie(urlTest)
-                .contains(uuid)
-                .assertTrue()
-        }
+        wr { checkCookieExist(urlTest, uuid) }
     }
 
     @Test
@@ -76,11 +66,6 @@ class MainActivityAuthIdTest : KoinTest {
 
         wr { tapRejectOnWebView() }
         wr { openAuthIdActivity() }
-        wr {
-            CookieManager.getInstance()
-                .getCookie(urlTest)
-                .contains("authId=")
-                .assertFalse()
-        }
+        wr { checkCookieNotExist(urlTest) }
     }
 }

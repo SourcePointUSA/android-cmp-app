@@ -1,5 +1,6 @@
 package com.sourcepoint.example_app
 
+import android.webkit.CookieManager
 import com.sourcepoint.example_app.TestData.*
 
 class ExampleAppTestsRobot {
@@ -112,6 +113,20 @@ class ExampleAppTestsRobot {
             PARTIAL_CONSENT_LIST.forEach { consent ->
                 checkConsentWebView(consent)
             }
+        }
+
+        fun checkCookieExist(url : String, value : String){
+            CookieManager.getInstance()
+                .getCookie(url)
+                .contains(value)
+                .assertTrue()
+        }
+
+        fun checkCookieNotExist(url : String){
+            CookieManager.getInstance()
+                .getCookie(url)
+                .contains("authId=")
+                .assertFalse()
         }
     }
 }
