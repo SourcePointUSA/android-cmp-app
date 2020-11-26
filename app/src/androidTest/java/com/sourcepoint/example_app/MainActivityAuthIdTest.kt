@@ -38,7 +38,7 @@ class MainActivityAuthIdTest : KoinTest {
 
         scenario = launchActivity()
 
-        wr { tapAcceptOnWebView() }
+        wr(400) { tapAcceptOnWebView() }
         wr(600) { openAuthIdActivity() }
         wr(200) { checkAuthIdIsDisplayed(uuid) }
     }
@@ -52,7 +52,7 @@ class MainActivityAuthIdTest : KoinTest {
 
         scenario = launchActivity()
 
-        wr { tapRejectOnWebView() }
+        wr(400) { tapRejectOnWebView() }
         wr(600) { openAuthIdActivity() }
         wr(200) { checkAuthIdIsDisplayed(uuid) }
     }
