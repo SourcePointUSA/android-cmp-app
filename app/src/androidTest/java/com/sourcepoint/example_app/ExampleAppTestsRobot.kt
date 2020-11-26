@@ -30,6 +30,10 @@ class ExampleAppTestsRobot {
             performClickById(resId = R.id.auth_id_activity)
         }
 
+        fun checkAuthIdIsDisplayed(autId : String) {
+            checkElementWithText("authId", autId)
+        }
+
         fun checkWebViewDisplayedForMessage() {
             checkWebViewHasText(MESSAGE)
         }

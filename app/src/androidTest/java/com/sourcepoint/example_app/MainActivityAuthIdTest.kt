@@ -4,6 +4,7 @@ import android.webkit.CookieManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkAuthIdIsDisplayed
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.openAuthIdActivity
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapAcceptOnWebView
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapRejectOnWebView
@@ -39,11 +40,7 @@ class MainActivityAuthIdTest : KoinTest {
 
         wr { tapAcceptOnWebView() }
         wr { openAuthIdActivity() }
-
-        CookieManager.getInstance()
-            .getCookie(urlTest)
-            .contains(uuid)
-            .assertTrue()
+        wr { checkAuthIdIsDisplayed(uuid) }
     }
 
     @Test
@@ -57,11 +54,7 @@ class MainActivityAuthIdTest : KoinTest {
 
         wr { tapRejectOnWebView() }
         wr { openAuthIdActivity() }
-
-        CookieManager.getInstance()
-            .getCookie(urlTest)
-            .contains(uuid)
-            .assertTrue()
+        wr { checkAuthIdIsDisplayed(uuid) }
     }
 
     @Test
@@ -73,9 +66,5 @@ class MainActivityAuthIdTest : KoinTest {
 
         wr { tapRejectOnWebView() }
         wr { openAuthIdActivity() }
-
-        CookieManager.getInstance()
-            .getCookie(urlTest)
-            .assertNull()
     }
 }
