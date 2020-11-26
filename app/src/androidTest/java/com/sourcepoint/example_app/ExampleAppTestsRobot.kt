@@ -34,6 +34,10 @@ class ExampleAppTestsRobot {
             checkElementWithText("authId", autId)
         }
 
+        fun checkAuthIdIsNotDisplayed() {
+            checkElementWithText("authId", "no_auth_id")
+        }
+
         fun checkWebViewDisplayedForMessage() {
             checkWebViewHasText(MESSAGE)
         }
