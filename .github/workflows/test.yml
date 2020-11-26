@@ -23,14 +23,14 @@ jobs:
             !~/cache/exclude
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-#      - name: running unit tests
-#        run: ./gradlew test --quiet --build-cache
+      - name: running unit tests
+        run: ./gradlew test --quiet --build-cache
 
       - name: run Example app tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.sourcepoint.example_app.MainActivityAuthIdTest
+          script: ./gradlew app:connectedDebugAndroidTest
       - name: 'Publish Example-app Test Report'
         if: always()
         uses: actions/upload-artifact@v2-preview
