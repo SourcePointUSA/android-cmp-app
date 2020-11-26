@@ -35,3 +35,4 @@ sealed class TestRes {
 
 fun Boolean.assertTrue() = Assert.assertTrue(this)
 fun<T : Any?> T.assertNull() = Assert.assertNull(this)
+fun<T> T.assertNotNull() = apply { Assert.assertNotNull(this) }
