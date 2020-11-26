@@ -1,6 +1,7 @@
 package com.sourcepoint.example_app
 
 import kotlinx.coroutines.delay
+import org.junit.Assert
 import kotlin.jvm.Throws
 
 @Throws(Throwable::class)
@@ -31,3 +32,6 @@ sealed class TestRes {
     object Verified : TestRes()
     data class NotVerified(val th: Throwable) : TestRes()
 }
+
+fun Boolean.assertTrue() = Assert.assertTrue(this)
+fun<T : Any?> T.assertNull() = Assert.assertNull(this)

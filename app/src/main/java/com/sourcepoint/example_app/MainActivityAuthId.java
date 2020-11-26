@@ -27,6 +27,7 @@ public class MainActivityAuthId extends AppCompatActivity {
         wv.getSettings().setJavaScriptEnabled(true);
 
         String authId = dataProvider.getValue().getAuthId();
+        String url = dataProvider.getValue().getUrl();
 
         wv.setWebViewClient(new WebViewClient() {
             @Override
@@ -36,6 +37,6 @@ public class MainActivityAuthId extends AppCompatActivity {
             }
         });
 
-        wv.loadUrl("https://carmelo-iriti.github.io/authid.github.io");
+        wv.loadUrl(url);
     }
 }

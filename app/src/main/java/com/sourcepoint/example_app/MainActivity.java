@@ -25,8 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewGroup mainViewGroup;
 
-    private PropertyConfig config;
-
     private final Lazy<DataProvider> dataProvider = inject(DataProvider.class);
 
     private void showView(View view) {
