@@ -1,5 +1,7 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
+import java.util.Arrays;
+
 public enum MessageLanguage {
 
     BULGARIAN("BG"),
@@ -39,5 +41,21 @@ public enum MessageLanguage {
 
     MessageLanguage(String language) {
         this.language = language;
+    }
+
+    public static String[] names() {
+        return Arrays.toString(MessageLanguage.values()).replaceAll("^.|.$", "").split(", ");
+    }
+    public static String getName(String name) {
+        return name;
+    }
+
+    public static MessageLanguage findByName(String name){
+        for(MessageLanguage ml : values()){
+            if( ml.name().equals(name)){
+                return ml;
+            }
+        }
+        return null;
     }
 }

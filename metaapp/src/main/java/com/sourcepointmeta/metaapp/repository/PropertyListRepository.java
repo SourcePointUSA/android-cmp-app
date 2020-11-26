@@ -102,7 +102,7 @@ public class PropertyListRepository {
         MutableLiveData<Integer> propertyID = new MutableLiveData<>();
         mAppExecutors.diskIO().execute(() -> {
             Log.d(TAG, property.getProperty() + " " + property.getAccountID() + " " + property.isStaging() + " " + property.getId());
-            int propertyId = mPropertyListDao.update(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID() ,property.isStaging(), property.isNative(), property.getAuthId(),property.getId());
+            int propertyId = mPropertyListDao.update(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID() ,property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage(), property.getId());
             propertyID.postValue(propertyId);
             List<TargetingParam> listOfParams = new ArrayList<>();
             List<TargetingParam> targetingParamList = property.getTargetingParamList();
@@ -164,12 +164,12 @@ public class PropertyListRepository {
             }
 
             if (keyList.isEmpty()){
-                int propertyCount = mPropertyListDao.getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative() ,property.getAuthId());
+                int propertyCount = mPropertyListDao.getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative() ,property.getAuthId(), property.getMessageLanguage());
                 listSize.postValue(propertyCount);
             }else {
 
             List<TargetingParameterList> paramList = mPropertyListDao.getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(),
-                    property.getAuthId() ,keyList, valueList);
+                    property.getAuthId(), property.getMessageLanguage() , keyList, valueList);
             listSize.postValue(paramList.size());
             }
             //check if properties exists
