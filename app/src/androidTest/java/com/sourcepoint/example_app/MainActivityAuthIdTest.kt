@@ -4,7 +4,6 @@ import android.webkit.CookieManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkAuthIdIsNotDisplayed
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.openAuthIdActivity
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapAcceptOnWebView
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapRejectOnWebView
