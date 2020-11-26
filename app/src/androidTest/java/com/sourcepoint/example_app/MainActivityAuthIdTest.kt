@@ -9,14 +9,11 @@ import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.openAuthIdActi
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapAcceptOnWebView
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapDismissWebView
 import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapRejectOnWebView
-import com.sourcepoint.example_app.core.DataProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
-import org.koin.core.module.Module
-import org.koin.dsl.module
 import org.koin.test.KoinTest
 import java.util.*
 
@@ -27,7 +24,9 @@ class MainActivityAuthIdTest : KoinTest {
 
     @After
     fun cleanup() {
-        if (this::scenario.isLateinit) { scenario.close() }
+        if (this::scenario.isLateinit) {
+            scenario.close()
+        }
     }
 
     @Test
