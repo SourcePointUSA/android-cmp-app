@@ -40,7 +40,7 @@ class MainActivityAuthIdTest : KoinTest {
 
         wr { tapAcceptOnWebView() }
         wr { openAuthIdActivity() }
-        wr { checkAuthIdIsDisplayed(uuid) }
+        wr(600) { checkAuthIdIsDisplayed(uuid) }
     }
 
     @Test
@@ -54,7 +54,7 @@ class MainActivityAuthIdTest : KoinTest {
 
         wr { tapRejectOnWebView() }
         wr { openAuthIdActivity() }
-        wr { checkAuthIdIsDisplayed(uuid) }
+        wr(600) { checkAuthIdIsDisplayed(uuid) }
     }
 
     @Test
