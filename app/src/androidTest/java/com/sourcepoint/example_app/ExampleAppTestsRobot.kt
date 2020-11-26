@@ -23,7 +23,7 @@ class ExampleAppTestsRobot {
         }
 
         fun clickOnReviewConsent() {
-            performClickByIdAllVisible(resId = R.id.review_consents)
+            performClickById(resId = R.id.review_consents)
         }
 
         fun openAuthIdActivity() {
@@ -67,7 +67,7 @@ class ExampleAppTestsRobot {
         }
 
         fun setFocusOnLayoutActivity() {
-            performClickByIdAllVisible(resId = R.id.main_view)
+            performClickById(resId = R.id.main_view)
         }
 
         fun checkWebViewDisplayedForPrivacyManager() {

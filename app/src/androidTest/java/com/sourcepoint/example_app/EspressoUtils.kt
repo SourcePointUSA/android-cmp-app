@@ -23,7 +23,7 @@ fun isDisplayedAllOfByResId(
 }
 
 @Throws(Throwable::class)
-fun performClickByIdAllVisible(
+fun performClickById(
     @IdRes resId: Int
 ) {
     onView(
@@ -32,13 +32,6 @@ fun performClickByIdAllVisible(
             isCompletelyDisplayed()
         )
     ).perform(ViewActions.click())
-}
-
-@Throws(Throwable::class)
-fun performClickById(
-    @IdRes resId: Int
-) {
-    onView(withId(resId)).perform(ViewActions.click())
 }
 
 @Throws(Throwable::class)
@@ -53,15 +46,9 @@ fun checkWebViewHasText(text: String) {
 }
 
 @Throws(Throwable::class)
-fun checkElementWithTextById(id : String, expected: String) {
+fun checkElementWithText(id : String, expected: String) {
     onWebView()
             .withElement(findElement(Locator.ID, id))
-            .check(webMatches(getText(), containsString(expected)));
-}
-
-@Throws(Throwable::class)
-fun checkElementWithText(expected: String) {
-    onWebView()
             .check(webMatches(getText(), containsString(expected)));
 }
 

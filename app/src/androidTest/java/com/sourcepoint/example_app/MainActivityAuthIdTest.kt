@@ -41,8 +41,7 @@ class MainActivityAuthIdTest : KoinTest {
         wr { openAuthIdActivity() }
 
         CookieManager.getInstance()
-            .getCookie("https://carmelo-iriti.github.io")
-            .assertNotNull()
+            .getCookie(urlTest)
             .contains(uuid)
             .assertTrue()
     }
@@ -60,8 +59,7 @@ class MainActivityAuthIdTest : KoinTest {
         wr { openAuthIdActivity() }
 
         CookieManager.getInstance()
-            .getCookie("https://carmelo-iriti.github.io")
-            .assertNotNull()
+            .getCookie(urlTest)
             .contains(uuid)
             .assertTrue()
     }
@@ -77,7 +75,7 @@ class MainActivityAuthIdTest : KoinTest {
         wr { openAuthIdActivity() }
 
         CookieManager.getInstance()
-            .getCookie("https://carmelo-iriti.github.io")
+            .getCookie(urlTest)
             .assertNull()
     }
 }
