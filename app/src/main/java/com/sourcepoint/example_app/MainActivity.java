@@ -1,12 +1,19 @@
 package com.sourcepoint.example_app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.sourcepoint.example_app.core.DataProvider;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
+
+import kotlin.Lazy;
+
+import static org.koin.java.KoinJavaComponent.inject;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
@@ -17,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     final static String pmId = "122058";
 
     private ViewGroup mainViewGroup;
+
+    private final Lazy<DataProvider> dataProvider = inject(DataProvider.class);
 
     private void showView(View view) {
         if(view.getParent() == null){
@@ -43,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, line);
                 })
                 .setOnError(error -> Log.e(TAG, "Something went wrong"))
+                .setAuthId(dataProvider.getValue().getAuthId())
                 .build();
     }
 
@@ -58,5 +68,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
         findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
+        findViewById(R.id.auth_id_activity).setOnClickListener(_v -> startActivity(new Intent(this, MainActivityAuthId.class)));
     }
 }
