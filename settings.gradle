@@ -1,1 +1,2 @@
+include ':ui-test-util'
 include ':app', ':cmplibrary', ':authexample', ':metaapp'

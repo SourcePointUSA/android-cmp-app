@@ -1,9 +1,10 @@
 package com.sourcepoint.example_app
 
 import android.webkit.CookieManager
-import com.sourcepoint.example_app.TestData.*
+import com.example.uitestutil.*
+import com.example.uitestutil.TestData.*
 
-class ExampleAppTestsRobot {
+class TestUseCase {
 
     companion object {
 

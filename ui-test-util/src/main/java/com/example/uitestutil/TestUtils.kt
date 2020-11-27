@@ -1,4 +1,4 @@
-package com.sourcepoint.example_app
+package com.example.uitestutil
 
 import kotlinx.coroutines.delay
 import org.junit.Assert

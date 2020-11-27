@@ -1,4 +1,4 @@
-package com.sourcepoint.example_app;
+package com.example.uitestutil;
 
 public class TestData {
 

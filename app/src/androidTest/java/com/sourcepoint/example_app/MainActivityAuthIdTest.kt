@@ -3,16 +3,20 @@ package com.sourcepoint.example_app
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkCookieExist
-import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.checkCookieNotExist
-import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.openAuthIdActivity
-import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapAcceptOnWebView
-import com.sourcepoint.example_app.ExampleAppTestsRobot.Companion.tapRejectOnWebView
+import com.example.uitestutil.wr
+import com.sourcepoint.example_app.TestUseCase.Companion.checkCookieExist
+import com.sourcepoint.example_app.TestUseCase.Companion.checkCookieNotExist
+import com.sourcepoint.example_app.TestUseCase.Companion.openAuthIdActivity
+import com.sourcepoint.example_app.TestUseCase.Companion.tapAcceptOnWebView
+import com.sourcepoint.example_app.TestUseCase.Companion.tapRejectOnWebView
+import com.sourcepoint.example_app.core.DataProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
+import org.koin.core.module.Module
+import org.koin.dsl.module
 import org.koin.test.KoinTest
 import java.util.*
 
@@ -67,5 +71,16 @@ class MainActivityAuthIdTest : KoinTest {
         wr { tapRejectOnWebView() }
         wr { openAuthIdActivity() }
         wr { checkCookieNotExist(urlTest) }
+    }
+
+    private fun mockModule(uuid: String?, url : String): Module {
+        return module(override = true) {
+            single<DataProvider> {
+                object : DataProvider {
+                    override val authId = uuid
+                    override val url = url
+                }
+            }
+        }
     }
 }

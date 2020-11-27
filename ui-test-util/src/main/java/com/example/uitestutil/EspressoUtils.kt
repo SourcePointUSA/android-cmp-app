@@ -1,4 +1,4 @@
-package com.sourcepoint.example_app
+package com.example.uitestutil
 
 import androidx.annotation.IdRes
 import androidx.test.espresso.Espresso.onView
