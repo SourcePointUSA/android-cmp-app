@@ -1,2 +1,5 @@
 include ':ui-test-util'
-include ':app', ':cmplibrary', ':authexample', ':metaapp'
+include ':app'
+include ':cmplibrary'
+include ':authexample'
+include ':metaapp'
