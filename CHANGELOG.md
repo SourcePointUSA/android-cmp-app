@@ -1,8 +1,8 @@
 ## 5.3.10 (November, 23, 2020)
+* Added a feature to ease sharing consent between native and webview. For more information on this one, check our README. #289
 * Fixed an issue that would prevent the Privacy Manager from showing the default tab set on the _Show Options_ action button. #269
 * Improved support to OTT. #277
 * Fixed an issue that caused the `consentLanguage` on the consent string to always be set to `EN` #279
-* Fixed a regression causing the consent message not to show up on Android API ≤ 22 #283
 * Reduced memory footprint by instantianting the WebView only when needed #281
 * Removed dependency on `ConstraingLayout`, making the project AndroidX friendly #284
 
