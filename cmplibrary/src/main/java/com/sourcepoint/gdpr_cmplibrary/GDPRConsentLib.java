@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Locale;
 
 /**
  * Entry point class encapsulating the Consents a giving user has given to one or several vendors.
@@ -25,9 +26,11 @@ public class GDPRConsentLib {
 
     private final String pmId;
 
-    private final String PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager/index.html";
+    final String PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager/index.html";
+    final String OTT_PM_BASE_URL = "https://notice.sp-prod.net/privacy-manager-ott/index.html";
     private final onBeforeSendingConsent onBeforeSendingConsent;
     private final OnNoIntentActivitiesFound onNoIntentActivitiesFound;
+    private final Context context;
 
     String metaData;
     String euConsent;
@@ -56,6 +59,7 @@ public class GDPRConsentLib {
     final messageFinishedCallback messageFinished;
     final onActionCallback onAction;
     final boolean shouldCleanConsentOnError;
+    boolean isOTT;
 
     public boolean isNative, isPmOn = false;
 
@@ -150,7 +154,7 @@ public class GDPRConsentLib {
     }
 
     GDPRConsentLib(ConsentLibBuilder b) {
-        uiThreadHandler = b.getUIThreadHandler();
+        context = b.getContext();
         property = b.propertyConfig.propertyName;
         accountId = b.propertyConfig.accountId;
         propertyId = b.propertyConfig.propertyId;
@@ -167,15 +171,14 @@ public class GDPRConsentLib {
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
         onBeforeSendingConsent = b.onBeforeSendingConsent;
         onNoIntentActivitiesFound = b.onNoIntentActivitiesFound;
+        isOTT = b.isOTT;
 
-        //TODO: inject consoleWebview from the builder as well (overload/callbacks refactor required)
-        webView = buildWebView(b.getContext());
-
+        uiThreadHandler = b.getUIThreadHandler();
         mCountDownTimer = b.getTimer(onCountdownFinished());
-
         sourcePoint = b.getSourcePointClient();
-
         storeClient = b.getStoreClient();
+
+        // :warning: following methods depend on storeClient initialization
         setConsentData(b.authId);
     }
 
@@ -222,12 +225,11 @@ public class GDPRConsentLib {
         return oldAuthId != null && newAuthId != null && !newAuthId.equals(oldAuthId);
     }
 
-    ConsentWebView buildWebView(Context context) {
-        return new ConsentWebView(context) {
-
+    ConsentWebView buildWebView(Context context) throws Exception {
+        if(webView == null) webView = new ConsentWebView(context) {
             @Override
             public void onConsentUIReady(boolean isFromPM) {
-                showView(this , isFromPM);
+                showView(this, isFromPM);
             }
 
             @Override
@@ -244,17 +246,16 @@ public class GDPRConsentLib {
             public void onAction(ConsentAction action) {
                 GDPRConsentLib.this.onAction(action);
             }
-
         };
+        return webView;
     }
 
     public void onAction(ConsentAction action) {
         try {
             uiThreadHandler.postIfEnabled( () ->GDPRConsentLib.this.onAction.run(action.actionType));
-            Log.d(TAG, "onAction:  " + action.actionType + " + actionType");
             switch (action.actionType) {
                 case SHOW_OPTIONS:
-                    onShowOptions(action.privacyManagerId);
+                    onShowOptions(action);
                     break;
                 case PM_DISMISS:
                     onPmDismiss(action.requestFromPm);
@@ -320,14 +321,14 @@ public class GDPRConsentLib {
         return isNative ? nativeView : webView;
     }
 
-    public void onShowOptions(String privacyManagerId) {
-        showPm(privacyManagerId);
+    public void onShowOptions(ConsentAction action) {
+        showPm(action.privacyManagerId, action.pmTab);
     }
 
-    private void loadConsentUI(String url) {
+    void loadConsentUI(String url) {
         uiThreadHandler.postIfEnabled(() -> {
             try {
-                webView.loadConsentUIFromUrl(url);
+                buildWebView(context).loadConsentUIFromUrl(url);
             } catch(ConsentLibException e) {
                 onErrorTask(e);
             } catch (Exception e) {
@@ -354,14 +355,14 @@ public class GDPRConsentLib {
     }
 
     public void showPm() {
-        showPm(null);
+        showPm(null,null);
     }
 
-    public void showPm(String privacyManagerId) {
+    public void showPm(String privacyManagerId, String pmTab) {
         try {
             mCountDownTimer.start();
             isPmOn = true;
-            loadConsentUI(pmUrl(privacyManagerId));
+            loadConsentUI(pmUrl(privacyManagerId, pmTab));
         } catch (Exception e) {
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.showPm()"));
         }
@@ -492,6 +493,7 @@ public class GDPRConsentLib {
     private JSONObject paramsToSendConsent(ConsentAction action) throws ConsentLibException {
         try {
             JSONObject params = new JSONObject();
+            String consentLanguage = action.consentLanguage != null ? action.consentLanguage : Locale.getDefault().getLanguage().toUpperCase();
             params.put("accountId", accountId);
             params.put("propertyId", propertyId);
             params.put("propertyHref", "https://" + property);
@@ -503,6 +505,7 @@ public class GDPRConsentLib {
             params.put("choiceId", action.choiceId);
             params.put("pmSaveAndExitVariables", action.pmSaveAndExitVariables);
             params.put("pubData", action.getPubData());
+            params.put("consentLanguage", consentLanguage);
             return params;
         } catch (JSONException e) {
             throw new ConsentLibException(e, "Error trying to build body to send consents.");
@@ -592,12 +595,15 @@ public class GDPRConsentLib {
     }
 
 
-    String pmUrl(String privacyManagerId) {
+    String pmUrl(String privacyManagerId, String pmTab) {
         HashSet<String> params = new HashSet<>();
         params.add("message_id=" + (privacyManagerId != null ? privacyManagerId : pmId));
+        if (pmTab != null)
+        params.add("pmTab="+pmTab);
         params.add("site_id="+ propertyId);
         if (consentUUID != null) params.add("consentUUID=" + consentUUID);
-        return PM_BASE_URL + "?" + TextUtils.join("&", params);
+        String PM_URL = isOTT ? OTT_PM_BASE_URL : PM_BASE_URL;
+        return PM_URL + "?" + TextUtils.join("&", params);
     }
 
     void onErrorTask(ConsentLibException e) {
@@ -631,7 +637,10 @@ public class GDPRConsentLib {
     }
 
     void destroy(){
-        uiThreadHandler.post(webView::destroy);
+        uiThreadHandler.post(() -> {
+            //Webview is null in case of error on buildWebview() method
+            if(webView != null) webView.destroy();
+        });
         uiThreadHandler.disable();
     }
 }

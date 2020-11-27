@@ -1,104 +1,32 @@
+![Test](https://github.com/SourcePointUSA/android-cmp-app/workflows/Test/badge.svg?branch=develop)
+
 # How to Install
-To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle.
+To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
 
-:heavy_exclamation_mark: **IMPORTANT** if you still haven't moved to TCFv2, use `v4.x`.
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:4.1.5'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.3.10'
 }
-```
-
-The README for the older version can be found [here](https://github.com/SourcePointUSA/android-cmp-app/blob/aa51fcc0f6bc475e734c6846b3b60abb487732f9/README.md).
-
-The following documentation and code is suitable for properties supporting TCFv2
-```
-...
-dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.3.9'
-}
-
 ```
 
 # Usage
-* In your main activity, create an instance of `ConsentLib` class using `ConsentLib.newBuilder()` class function passing the configurations and callback handlers to the builder and call `.run()` on the instantiated `ConsentLib` object to load the CMP like following:
+Instantiate and build the `ConsentLib` class via `ConsentLib.newBuilder()` static function passing the configurations and callback handlers to the builder.
+Once you wish to trigger the consent workflow simply call `.run()` on the instantiated `ConsentLib`.
 
 ```java
+import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
 
+    final static int accountId = 22;
+    final static int propertyId = 7639;
+    final static String propertyName = "tcfv2.mobile.webview";
+    final static String pmId = "122058";
+
     private ViewGroup mainViewGroup;
 
-    private PropertyConfig config;
-
-    private GDPRConsentLib buildGDPRConsentLib() {
-        return GDPRConsentLib.newBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId,this)
-                        .setOnConsentUIReady(view -> {
-                            showView(view);
-                            Log.i(TAG, "onConsentUIReady");
-                        })
-                        .setOnConsentUIFinished(view -> {
-                            removeView(view);
-                            Log.i(TAG, "onConsentUIFinished");
-                        })
-                        .setOnConsentReady(consent -> {
-                            Log.i(TAG, "onConsentReady");
-                            Log.i(TAG, "consentString: " + consent.consentString);
-                            Log.i(TAG, consent.TCData.toString());
-                            for (String vendorId : consent.acceptedVendors) {
-                                Log.i(TAG, "The vendor " + vendorId + " was accepted.");
-                            }
-                            for (String purposeId : consent.acceptedCategories) {
-                                Log.i(TAG, "The category " + purposeId + " was accepted.");
-                            }
-                            for (String purposeId : consent.legIntCategories) {
-                                Log.i(TAG, "The legIntCategory " + purposeId + " was accepted.");
-                            }
-                            for (String specialFeatureId : consent.specialFeatures) {
-                                Log.i(TAG, "The specialFeature " + specialFeatureId + " was accepted.");
-                            }
-                        })
-                .setOnError(error -> {
-                    Log.e(TAG, "Something went wrong: ", error);
-                    Log.i(TAG, "ConsentLibErrorMessage: " + error.consentLibErrorMessage);
-                })
-                .build();
-    }
-
-    private NativeMessage buildNativeMessage(){
-        return new NativeMessage(this){
-            @Override
-            public void init(){
-                super.init();
-                // When using a customized layout one can completely override the init method
-                // not calling super.init() and inflating the native view with the chosen layout instead.
-                // In this case its important to set all the default child views using the setter methods
-                // like its done in the super.init()
-            }
-            @Override
-            public void setAttributes(NativeMessageAttrs attrs){
-                super.setAttributes(attrs);
-                //Here one can extend this method in order to set customized attributes other then the ones
-                //already set in the super.setAttributes. No need to completely override this method.
-            }
-        };
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "init");
-        buildGDPRConsentLib().run();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mainViewGroup = findViewById(android.R.id.content);
-        config = getConfig(R.raw.mobile_demo_web);
-        findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
-    }
     private void showView(View view) {
         if(view.getParent() == null){
             view.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
@@ -110,22 +38,120 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void removeView(View view) {
-        if(view.getParent() != null)
-            mainViewGroup.removeView(view);
+        if(view.getParent() != null) mainViewGroup.removeView(view);
     }
 
-    private PropertyConfig getConfig(int configResource){
-        PropertyConfig config = null;
-        try {
-            config = new PropertyConfig(new JSONObject(new Scanner(getResources().openRawResource(configResource)).useDelimiter("\\A").next()));
-        } catch (JSONException e) {
-            Log.e(TAG, "Unable to parse config file.", e);
-        }
-        return config;
+    private GDPRConsentLib buildGDPRConsentLib() {
+        return GDPRConsentLib.newBuilder(accountId, propertyName, propertyId, pmId,this)
+                .setOnConsentUIReady(this::showView)
+                .setOnAction(actionType  -> Log.i(TAG , "ActionType: " + actionType.toString()))
+                .setOnConsentUIFinished(this::removeView)
+                .setOnConsentReady(consent -> {
+                    // at this point it's safe to initialise vendors
+                    for (String line : consent.toString().split("\n"))
+                        Log.i(TAG, line);
+                })
+                .setOnError(error -> Log.e(TAG, "Something went wrong"))
+                .build();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        buildGDPRConsentLib().run();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mainViewGroup = findViewById(android.R.id.content);
+        findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
+    }
 }
 ```
+
+## OTT
+If you're working on a Android compatible OTT environment, when building the SDK make sure to call the builder method `.setIsOTT(true)`.
+This will instruct the SDK to load OTT-specific message and privacy manager.
+
+## ConsentLibBuilder
+On top of the methods exemplified above, the `ConsentLibBuilder` has the following methods:
+* `.setStagingCampaign(boolean env)`:passing `true` to this method will instruct the SDK to load a Stage campaign.
+* `.setTargetingParams(key, value)`: Check the _Setting Targeting Params_ section below.
+* `.setIsOTT(boolean)`: Instructs the SDK to load OTT specific assets.
+* `.setMessageTimeOut(int milliseconds)`: this will control how long it takes between calling `.run()` and one of the callback such as `.onConsentUIReady / .onConsentReady / .onError`. We set this value to 10 seconds by default.
+* `.setAuthId(String authID)`: Check the section on authenticated consent below.
+* `.setOnBeforeSendingConsent(_Callback_ ConsentAction action)`: We'll call this method just before sending the consent action taken by the user to the server.
+* `.setShouldCleanConsentOnError(boolean flag)`: if this flag is set to `false`, the SDK won't wipe consent data when the `.onError` callback is called. By default this flag is set to `true`.
+
+## Authenticated Consent
+In order to use the authenticated consent all you need to do is calling the instance method `.setAuthId(String)` on `ConsentLibBuilder`. Example:
+
+```java
+ConsentLib.newBuilder(22, "tcfv2.mobile.webview", 7639,"122058", this)
+    // other setters
+    .setAuthId("JohnDoe")
+    .build();
+```
+
+This way, if there's a consent profile associated with that `authId` ("JohDoe") the SDK will bring the consent data from the server, overwriting whatever was stored in the device.
+
+## Sharing consent with a `WebView`
+In order to share the consent between native and webview the SDK will rely on authenticated consent (explained in detail below).
+
+### The `authId`:
+This feature makes use of what we call [Authenticated Consent](https://documentation.sourcepoint.com/dialogue/authenticated-consent/authenticated-consent-overview). In a nutshell, you provide an identifier for the current user (username, user id, uuid or any unique string) and we'll take care of associating the consent profile to that identifier.
+The authId will then assume 1 of the 2 values below:
+1. **User is authenticated and have an id:**
+In that case the `authId` is going to be that user id.
+2. **User is _not_ authenticated and I'm only interested in using consent in this app.**
+We recommend using a randomly generated `UUID` as `authId`. Make sure to persist this `authId` before passing it to the builder method `.setAuthId(String)`
+
+### Complete Example
+```java
+import com.sourcepoint.gdpr_cmplibrary.WebViewUtils;
+
+String authId = UUID.randomUUID().toString(); // make sure to persist this value and reuse it whenever building the SDK
+
+// First execute the SDK passing a `authId`. Either a randomly generated one or whatever token you use to identify an user.
+ConsentLib.newBuilder(22, "tcfv2.mobile.webview", 7639, "122058", this)
+    // other setters
+    .setAuthId(authId)
+    .build()
+    .run();
+
+// After your `onConsentReady` callback is called. The consent information is ready and persisted in the user's device.
+// At this point you're free to use the static method `WebViewUtils.setAuthId` in order to inject authId into the webview.
+// When your page is loaded, assuming our JavaScript client is correctly setup, the consent information for that user
+// is going to be brought from our server to the webview.
+WebView webview = findViewById(R.id.webview);
+webview.setWebViewClient(new WebViewClient() {
+    @Override
+    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        WebViewUtils.setAuthId(authId, view);
+        super.onPageStarted(view, url, favicon);
+    }
+});
+```
+
+A few remarks:
+1. The web content being loaded (web property) needs to share the same vendor list as the app.
+2. The web content needs to include our [js client setup](https://documentation.sourcepoint.com/web-implementation/sourcepoint-gdpr-and-tcf-v2-support/gdpr-and-tcf-v2-setup-and-configuration_v1.1.3) in it.
+3. The vendor list's consent scope needs to be set to _Shared Site_ instead of _Single Site_
+
+## Setting a Targeting Param
+In order to set a targeting param all you need to do is calling `.setTargetingParam(key: string, value: string)` in the instance of `ConsentLibBuilder`. Example:
+
+```java
+ConsentLib.newBuilder(22, "tcfv2.mobile.webview", 7639,"122058", this)
+    // other setters
+    .setTargetingParam("language", "fr")
+    .setTargetingParam("foo", "bar")
+    .build();
+```
+
+In this example 2 key/value pairs, "language":"fr" and "foo":"bar", are passed to the campaign scenario.
 
 ## Programmatically consenting the current user
 It's possible to programmatically consent the current user to a list of vendors, categories and legitimate interest categories by using the following method from the consentlib:
@@ -141,22 +167,8 @@ The ids passed will be appended to the list of already accepted vendors, categor
 
 It's important to notice, this method is intended to be used for **custom** vendors and purposes only. For IAB vendors and purposes, it's still required to get consents via the consent message or privacy manager.
 
-## Authenticated Consent
-
-In order to use the authenticated consent all you need to do is calling `.setAuthId(String)` in the instance of `ConsentLibBuilder`. Example: 
-
-```java
-ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
-    // calling other .set methods
-    .setAuthId("JohnDoe")
-    .build();
-```
-
-This way, if we already have consent for that token (`"JohDoe"`) we'll bring the consent profile from the server, overwriting whatever was stored in the device.
-
 ## Vendor Grants object
-
-* `vendorGrants` is an attribute of `GDPRUserConsent` class. The `vendorGrants` attribute, simply put, is an Map reprensenting the consent state (on a legal basis) of all vendors and its purposes for the current user. For example:
+The `vendorGrants` is an attribute of `GDPRUserConsent` class. The `vendorGrants` attribute, simply put, is an Map representing the consent state (on a legal basis) of all vendors and its purposes for the current user. For example:
 ```Java
 [
   "vendorId1": VendorGrant(
@@ -171,19 +183,8 @@ This way, if we already have consent for that token (`"JohDoe"`) we'll bring the
 ]
 ```
 
-## Setting a Targeting Param
-
-In order to set a targeting param all you need to do is calling `.setTargetingParam(key: string, value: string)
-` in the instance of `ConsentLibBuilder`. Example: 
-
-```java
-ConsentLib.newBuilder(22, "mobile.demo", 2372,"5c0e81b7d74b3c30c6852301",this)
-    // calling other .set methods
-    .setTargetingParam("language", "fr")
-    .build();
-```
-
-In this example a key/value pair "language":"fr" is passed to the sp scenario and can be useded, wiht the proper scenario setup, to show a french message instead of a english one.
+## `pubData`
+When the user takes an action within the consent UI, it's possible to attach an arbitrary payload to the action data an have it sent to our endpoints. For more information on how to do that check our wiki: [Sending arbitrary data when the user takes an action](https://github.com/SourcePointUSA/android-cmp-app/wiki/Sending-arbitrary-data-when-the-user-takes-an-action)
 
 ## Frequently Asked Questions
 ### 1. How big is the SDK?
@@ -191,9 +192,9 @@ The SDK is pretty slim, there are no assets, a single dependency, it's just pure
 ### 2. What's the lowest Android API supported?
 Although our SDK can be technically added to projects targeting Android API 16, we support Android API >= 21 only.
 
-We'll update this list over time, if you have any questions feel free to open an issue or concact your SourcePoint account manager.
+We'll update this list over time, if you have any questions feel free to open an issue or contact your SourcePoint account manager.
 
---- 
+---
 
 # Development
 ## How to build the `cmplibrary` module from source

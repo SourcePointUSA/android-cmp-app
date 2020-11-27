@@ -1,20 +1,26 @@
-## 5.3.8 (September, 9, 2020)
+## 5.3.10 (November, 23, 2020)
+* Added a feature to ease sharing consent between native and webview. For more information on this one, check our README. #289
+* Fixed an issue that would prevent the Privacy Manager from showing the default tab set on the _Show Options_ action button. #269
+* Improved support to OTT. #277
+* Fixed an issue that caused the `consentLanguage` on the consent string to always be set to `EN` #279
+* Reduced memory footprint by instantianting the WebView only when needed #281
+* Removed dependency on `ConstraingLayout`, making the project AndroidX friendly #284
+
+## 5.3.9 (September, 9, 2020)
 * add `setOnNoIntentActivitiesFound(String intentUrl)` to avoid crashing when no url intent handler is found.
 * prepare for the new  `pubData` feature. Ability to set `Set<Object> pubData` on the `ConsentAction` obj before sending consent:
-```JAVA
-    .setOnBeforeSendingConsent((consentAction, consentHandler) -> {
-        consentAction.setPubData(Collections.singletonMap("foo", "bar"));
-        consentHandler.post(consentAction);
-    })
+```java
+.setOnBeforeSendingConsent((consentAction, consentHandler) -> {
+  consentAction.setPubData(Collections.singletonMap("foo", "bar"));
+  consentHandler.post(consentAction);
+})
 ```
-
 
 ## 5.3.8 (August, 26, 2020)
 * fix parsing error on native msg causing app crash #249
 * fix onError called twice on some cases #246
 * fix network exceptions with different structures on different cases #235
 * fix `ConsentLibException.BuildException` not used in code #187
-
 
 ## 5.3.7 (August, 24, 2020)
 * fix syntax error on JSReceiver in order to prevent webview JS error on api 23 and bellow
@@ -33,7 +39,6 @@
 * change customConsentTo to Collection instead of ArrayList  #216
 * add static method StoreClient.getUserConsent() for getting cached user consents obj #225
 * fix webview memory leak from not calling android.Webview.destruct() #223
-
 
 ## 5.3.2 (July, 22, 2020)
 * fix choiceId passed as Number from JSReceiver (now aways passed as String)
@@ -137,7 +142,7 @@ Even though it's a minor bump up we took care to not change the public api (exce
 
 ## 4.1.2 (February, 14, 2020)
 * keep stored consentString when server does not return one
-* simplified webview settings -> no side effects on app cookies  
+* simplified webview settings -> no side effects on app cookies
 
 ## 4.1.1 (February, 11, 2020)
 * clearAllData() public method added to consentLib
@@ -207,7 +212,7 @@ Additionally, a new method was introduced on `ConsentLibBuilder` -> `ConsentLibB
 ## 2.4.4 (Aug 20, 2019)
 * implemented gdpr_status_check on every SDK initialization.
 * implemented onFailure callbacks for api calls.
-* Added isEmpty check on "euconsent" string. 
+* Added isEmpty check on "euconsent" string.
 
 ## 2.4.3 (July 10, 2019)
 * implemented `ConsentLib.MESSAGE_OPTIONS` enum
@@ -238,7 +243,7 @@ stored in our server, we'll load it instead of a new profile.
 * Fix an issue with `ConsentWebView` prevented the consent message from showing intermittently
 
 ## 2.3.1 (April 10, 2019)
-* Add timeout for `onMessageReady`  
+* Add timeout for `onMessageReady`
 
 ## 2.3.0 (April 2, 2019)
 * Fix an issue with `ConsentWebView` prevented the consent message from showing intermittently
@@ -249,7 +254,7 @@ stored in our server, we'll load it instead of a new profile.
 * Fix a bug that'd prevent the `WebView` from loading the first time on Android > 19
 
 ## 2.2.0 (March 25, 2019)
-* We changed the way the `WebView` is loaded. You know have two options: 
+* We changed the way the `WebView` is loaded. You know have two options:
   1. If you don't mind us managing the view for you, make sure to call `setViewGroup` passing the `ViewGroup` in which the `WebView` should be attached to and we'll take care of everything for you.
   2. If you need more control over views, simply don't call `setViewGroup`. You'll need to add/remove `ConsentLib#webView` to/from your view hierarchy by yourself. This will usually be done on `willShowMessage` and `onConsentReady`.
 * `messageWillShow` callback method was renamed to `onMessageReady`

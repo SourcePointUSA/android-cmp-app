@@ -21,6 +21,13 @@ public class TestData {
     public static String valueParamForPMAsMessage = "true";
     public static String authIdValue;
 
+    public static String Example_accountID = "22";
+    public static String Example_propertyID = "7639";
+    public static String Example_propertyName = "tcfv2.mobile.webview";
+    public static String Example_pmID = "122058";
+    public static String OPTIONS = "Options";
+    public static String FEATURES = "Features";
+    public static String PURPOSES = "Purposes";
     public static String authID(){
         Date date = new Date();
         authIdValue = sdf.format(date);
@@ -30,6 +37,9 @@ public class TestData {
     public static String[] CONSENT_LIST={"Select personalised content", "Information storage and access", "Personalisation", "Ad selection, delivery, reporting",
             "Content selection, delivery, reporting", "Measurement", "Measure ad performance", "Apply market research to generate audience insights",
             "Measure content performance", "Develop and improve products"};
+
+    public static String[] NATIVE_MESSAGE_CONSENT_LIST={"Select personalised content", "Information storage and access", "Ad selection, delivery, reporting",
+            "Content selection, delivery, reporting", "Measurement","Measure content performance","Personalisation"};
     public static String [] PARTIAL_CONSENT_LIST={"Select personalised content", "Information storage and access"};
 
     public static String SHOW_MESSAGE_ALWAYS = "show message always";

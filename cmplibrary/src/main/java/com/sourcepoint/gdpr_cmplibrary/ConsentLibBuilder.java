@@ -31,7 +31,7 @@ public class ConsentLibBuilder {
     protected GDPRConsentLib.onBeforeSendingConsent onBeforeSendingConsent = (a, c) -> c.post(a);
     protected GDPRConsentLib.OnNoIntentActivitiesFound onNoIntentActivitiesFound = url -> {};
 
-    boolean stagingCampaign, shouldCleanConsentOnError;
+    boolean stagingCampaign, shouldCleanConsentOnError, isOTT = false;
     SourcePointClient sourcePointClient;
 
     String targetingParamsString = null;
@@ -55,7 +55,7 @@ public class ConsentLibBuilder {
         stagingCampaign = false;
         shouldCleanConsentOnError = true;
         messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     protected StoreClient getStoreClient(){
@@ -81,7 +81,7 @@ public class ConsentLibBuilder {
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnConsentReady( GDPRConsentLib.OnConsentReadyCallback callback) {
+    public ConsentLibBuilder setOnConsentReady(GDPRConsentLib.OnConsentReadyCallback callback) {
         onConsentReady = callback;
         return this;
     }
@@ -161,6 +161,11 @@ public class ConsentLibBuilder {
      */
     public ConsentLibBuilder setStagingCampaign(boolean st) {
         stagingCampaign = st;
+        return this;
+    }
+
+    public ConsentLibBuilder setIsOTT(boolean isOTT){
+        this.isOTT = isOTT;
         return this;
     }
 

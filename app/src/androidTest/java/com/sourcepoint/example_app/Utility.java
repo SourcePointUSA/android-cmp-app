@@ -28,7 +28,7 @@ public class Utility extends TestData{
         do {
             try {
                 signal.await(3, TimeUnit.SECONDS);
-                onWebView().forceJavascriptEnabled().check(webMatches(getCurrentUrl(), containsString(type)));
+                onWebView().check(webMatches(getCurrentUrl(), containsString(type)));
                 value = true;
                 break;
             } catch (Exception e) {
@@ -58,7 +58,7 @@ public class Utility extends TestData{
 
     public void chooseAction(String option) {
         try {
-            onWebView().forceJavascriptEnabled().withElement(findElement(Locator.XPATH, "//button[contains('" + option + "',text())]"))
+            onWebView().withElement(findElement(Locator.XPATH, "//button[contains('" + option + "',text())]"))
                     .perform(webScrollIntoView())
                     .perform(webClick());
         } catch (Exception e) {
@@ -67,7 +67,7 @@ public class Utility extends TestData{
     }
 
     public void chooseDismiss() {
-        onWebView().forceJavascriptEnabled()
+        onWebView()
                 .withElement(findElement(Locator.CLASS_NAME, "message-stacksclose"))
                 .perform(webScrollIntoView())
                 .perform(webClick());
@@ -87,7 +87,7 @@ public class Utility extends TestData{
         boolean check = true;
         for (String s : userConsentArray) {
             try {
-                onWebView().forceJavascriptEnabled()
+                onWebView()
                         .withElement(findElement(Locator.XPATH, "//label[@aria-label='" + s + "']"))
                         .withElement(findElement(Locator.XPATH, "//label[@aria-checked='true']"));
                 check = true;
@@ -101,10 +101,23 @@ public class Utility extends TestData{
 
     public void selectConsents(String[] userConsentArray) {
         for (String s : userConsentArray) {
-            onWebView().forceJavascriptEnabled()
+            onWebView()
                     .withElement(findElement(Locator.XPATH, "//label[@aria-label='" + s + "']/span[@class='on']"))
                     .perform(webScrollIntoView())
                     .perform(webClick());
         }
+    }
+
+    public boolean checkPMTabSelected(String expected){
+        boolean check = false;
+        try {
+            onWebView()
+                    .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab active') and text()='"+ expected +"']"));
+            check = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            check = false;
+        }
+        return check;
     }
 }

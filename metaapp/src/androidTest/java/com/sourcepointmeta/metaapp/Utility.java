@@ -1,18 +1,14 @@
 package com.sourcepointmeta.metaapp;
 
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.espresso.web.webdriver.Locator;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.clearText;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
-import static androidx.test.espresso.action.ViewActions.swipeLeft;
-import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.action.ViewActions.*;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -31,7 +27,7 @@ public class Utility extends TestData {
     final CountDownLatch signal = new CountDownLatch(1);
 
     public void tapOnAddProperty() {
-        onView(allOf(withId(R.id.action_addProperty), withContentDescription("Add Property"), isDisplayed()))
+        onView(allOf(withId(R.id.action_addProperty), isDisplayed()))
                 .perform(click());
     }
 
@@ -52,7 +48,8 @@ public class Utility extends TestData {
     public void addPropertyWith(String field) {
         if (field.equals(ALL_FIELDS)){
             addPropertyDetails(accountID, propertyID, propertyName, pmID);
-            addParameterWithAuthentication(keyParam, valueParamEnglish, NO_AUTHENTICATION);}
+            addParameterWithAuthentication(keyParam, valueParamEnglish, NO_AUTHENTICATION);
+        }
         else if (field.equals(ALL_FIELDS_BLANK))
             addPropertyDetails("", "", "", "");
         else if (field.equals(NO_ACCOUNT_ID))
@@ -88,6 +85,8 @@ public class Utility extends TestData {
         }
         onView(allOf(withId(R.id.etKey), isDisplayed()))
                 .perform(clearText(), typeText(key), closeSoftKeyboard());
+
+        onView(withId(R.id.decor_content_parent)).perform(swipeUp());
 
         onView(allOf(withId(R.id.etValue), isDisplayed()))
                 .perform(clearText(), typeText(value), closeSoftKeyboard());
@@ -134,7 +133,7 @@ public class Utility extends TestData {
 
     public void chooseAction(String option) {
         try {
-            onWebView().forceJavascriptEnabled().withElement(findElement(Locator.XPATH, "//button[contains('" + option + "',text())]"))
+            onWebView().withElement(findElement(Locator.XPATH, "//button[contains('" + option + "',text())]"))
                     .perform(webScrollIntoView())
                     .perform(webClick());
         } catch (Exception e) {
@@ -143,7 +142,7 @@ public class Utility extends TestData {
     }
 
     public void chooseDismiss() {
-        onWebView().forceJavascriptEnabled()
+        onWebView()
                 .withElement(findElement(Locator.CLASS_NAME, "message-stacksclose"))
                 .perform(webScrollIntoView())
                 .perform(webClick());
@@ -155,7 +154,7 @@ public class Utility extends TestData {
         do {
             try {
                 signal.await(3, TimeUnit.SECONDS);
-                onWebView().forceJavascriptEnabled().check(webMatches(getCurrentUrl(), containsString(type)));
+                onWebView().check(webMatches(getCurrentUrl(), containsString(type)));
                 value = true;
                 break;
             } catch (Exception e) {
@@ -201,16 +200,20 @@ public class Utility extends TestData {
                 .perform(click());
     }
 
-    public void swipeAndChooseAction(String action, String field) {
+    public void swipeAndChooseAction(String action, String field) throws InterruptedException {
         onView(allOf(withId(R.id.item_view), isDisplayed())).perform(swipeLeft());
+        signal.await(1, TimeUnit.SECONDS);
         if (action.equals(RESET_ACTION)) {
             onView(allOf(withId(R.id.reset_button), isDisplayed())).perform(click());
+            signal.await(1, TimeUnit.SECONDS);
             onView(withText(field)).perform(scrollTo(), click());
         } else if (action.equals(DELETE_ACTION)) {
             onView(allOf(withId(R.id.delete_button), isDisplayed())).perform(click());
+            signal.await(1, TimeUnit.SECONDS);
             onView(withText(field)).perform(scrollTo(), click());
         } else if (action.equals(EDIT_ACTION)) {
             onView(allOf(withId(R.id.edit_button), isDisplayed())).perform(click());
+            signal.await(1, TimeUnit.SECONDS);
             if (field.equals(PARAM_VALUE)) {
                 addParameterWithAuthentication(keyParam, valueParamEnglish, NO_AUTHENTICATION);
             } else {
@@ -232,7 +235,7 @@ public class Utility extends TestData {
 
     public void selectConsents(String[] userConsentArray) {
         for (String s : userConsentArray) {
-            onWebView().forceJavascriptEnabled()
+            onWebView()
                     .withElement(findElement(Locator.XPATH, "//label[@aria-label='" + s + "']/span[@class='slider round']"))
                     .perform(webScrollIntoView())
                     .perform(webClick());
@@ -243,7 +246,7 @@ public class Utility extends TestData {
         boolean check = true;
         for (String s : userConsentArray) {
             try {
-                onWebView().forceJavascriptEnabled()
+                onWebView()
                         .withElement(findElement(Locator.XPATH, "//label[@aria-label='" + s + "']"))
                         .withElement(findElement(Locator.CLASS_NAME, "checked"));
                 check = true;
@@ -270,5 +273,78 @@ public class Utility extends TestData {
             }
         } while (i < 10);
         return value;
+    }
+
+    public void addNativeMessagePropertyDetails() {
+        String accountId = "22";
+        String propertyId= "7094";
+        String propertyName= "tcfv2.mobile.demo";
+        String pmId = "179657";
+        onView(allOf(withId(R.id.etAccountID), isDisplayed()))
+                .perform(clearText(), replaceText(accountId), closeSoftKeyboard());
+
+        onView(allOf(withId(R.id.etPropertyId), isDisplayed()))
+                .perform(clearText(), replaceText(propertyId), closeSoftKeyboard());
+
+        onView(allOf(withId(R.id.etPropertyName), isDisplayed()))
+                .perform(clearText(), replaceText(propertyName), closeSoftKeyboard());
+
+        onView(allOf(withId(R.id.etPMId), isDisplayed()))
+                .perform(clearText(), replaceText(pmId), closeSoftKeyboard());
+
+        onView(allOf(withId(R.id.toggleNativeMessage), isDisplayed()))
+                .perform(click());
+    }
+
+    public boolean checkNativeMessageDisplayed(){
+        int i = 0 ;
+        boolean value = false;
+        do {
+            try {
+                signal.await(3, TimeUnit.SECONDS);
+                onView(allOf(withId(R.id.Title), isDisplayed()));
+                value = true;
+                break;
+            }catch (Exception e){
+                i++;
+            }
+        }while (i < 10);
+        return value;
+    }
+
+    public void chooseNativeMessageAction(int actionId){
+        onView(allOf(withId(actionId), isDisplayed()))
+                .perform(click());
+    }
+
+    public boolean checkForPropertyListScrren() {
+        int i = 0;
+        while (i++ < 10) {
+            try {
+                onView(withId(R.id.action_addProperty)).check(matches(isDisplayed()));
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                try {
+                    signal.await(3, TimeUnit.SECONDS);
+                } catch (Exception e1) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean checkPMTabSelected(String expected){
+        boolean check = false;
+        try {
+            onWebView()
+                    .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab active') and text()='"+ expected +"']"));
+            check = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            check = false;
+        }
+        return check;
     }
 }

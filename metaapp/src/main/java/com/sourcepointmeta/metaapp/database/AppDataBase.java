@@ -16,7 +16,7 @@ import com.sourcepointmeta.metaapp.database.dao.TargetingParamDao;
 import com.sourcepointmeta.metaapp.database.entity.Property;
 import com.sourcepointmeta.metaapp.database.entity.TargetingParam;
 
-@Database(entities = {Property.class, TargetingParam.class}, version = 5, exportSchema = false)
+@Database(entities = {Property.class, TargetingParam.class}, version = 6, exportSchema = false)
 public abstract class AppDataBase extends RoomDatabase {
 
     private static AppDataBase sInstance;
@@ -59,6 +59,7 @@ public abstract class AppDataBase extends RoomDatabase {
                 .addMigrations(MIGRATION_2_3)
                 .addMigrations(MIGRATION_3_4)
                 .addMigrations(MIGRATION_4_5)
+                .addMigrations(MIGRATION_5_6)
                 .build();
     }
 
@@ -134,6 +135,23 @@ public abstract class AppDataBase extends RoomDatabase {
             // Change the table name to the targetting param
             database.execSQL("ALTER TABLE targeting_param_new RENAME TO targeting_param");
 
+        }
+    };
+
+    private static final Migration MIGRATION_5_6 = new Migration(5,6) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL(
+                    "CREATE TABLE property_new (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `accountId` INTEGER NOT NULL, `propertyId` INTEGER NOT NULL, `property` TEXT, `pmId` TEXT, `staging` INTEGER NOT NULL, `isNative` INTEGER NOT NULL,`authId` TEXT)");
+            //copy the data
+            database.execSQL(
+                    "INSERT INTO property_new (id, accountId, propertyId, property, pmId, staging, isNative, authId) SELECT id, accountId, propertyId, property, pmId, staging, showPM, authId  FROM property");
+
+
+            database.execSQL("DROP TABLE property");
+
+            database.execSQL("ALTER TABLE property_new RENAME TO property");
         }
     };
 

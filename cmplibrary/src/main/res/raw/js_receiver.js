@@ -2,8 +2,16 @@ function isFromPM(payload) {
     return payload.fromPM || (payload.settings && payload.settings.vendorList != null);
 }
 
-function getPmIdFromURL(url) {
-    return url ? url.match(/[?&]message_id(=([^&#]*)|&|#|$)/)[2] : null;
+function getQueryParam(paramName, url) {
+    var query = url && url.split && url.split("?")[1] || "";
+    var params = query.split("&");
+    for (i = 0; i < params.length; i++) {
+        var pair = params[i].split("=");
+        if(pair[0] === paramName) {
+            return pair[1];
+        }
+    }
+    return null;
 }
 
 function actionFromMessage(payload) {
@@ -13,8 +21,10 @@ function actionFromMessage(payload) {
         actionType: actionPayload.type,
         choiceId: String(actionPayload.choice_id),
         requestFromPm: false,
-        pmId: getPmIdFromURL(actionPayload.iframe_url),
-        saveAndExitVariables: {}
+        pmId: getQueryParam("message_id", actionPayload.iframe_url),
+        pmTab: getQueryParam("pmTab", actionPayload.iframe_url),
+        saveAndExitVariables: {},
+        consentLanguage: payload.consentLanguage
     };
 }
 
@@ -25,7 +35,9 @@ function actionFromPM(payload) {
         choiceId: null,
         requestFromPm: true,
         pmId: null,
-        saveAndExitVariables: payload.payload
+        pmTab: null,
+        saveAndExitVariables: payload.payload,
+        consentLanguage: payload.consentLanguage
     };
 }
 
