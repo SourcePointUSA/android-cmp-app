@@ -56,7 +56,7 @@ public class ConsentLibBuilder {
         stagingCampaign = false;
         shouldCleanConsentOnError = true;
         messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     protected StoreClient getStoreClient(){
@@ -82,7 +82,7 @@ public class ConsentLibBuilder {
      * @return ConsentLibBuilder - the next build step
      * @see ConsentLibBuilder
      */
-    public ConsentLibBuilder setOnConsentReady( GDPRConsentLib.OnConsentReadyCallback callback) {
+    public ConsentLibBuilder setOnConsentReady(GDPRConsentLib.OnConsentReadyCallback callback) {
         onConsentReady = callback;
         return this;
     }
