@@ -173,9 +173,6 @@ public class GDPRConsentLib {
         onBeforeSendingConsent = b.onBeforeSendingConsent;
         onNoIntentActivitiesFound = b.onNoIntentActivitiesFound;
         messageLanguage = b.messageLanguage;
-
-        //TODO: inject consoleWebview from the builder as well (overload/callbacks refactor required)
-        webView = buildWebView(b.getContext());
         isOTT = b.isOTT;
 
         uiThreadHandler = b.getUIThreadHandler();
