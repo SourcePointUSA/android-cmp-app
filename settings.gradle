@@ -4,9 +4,9 @@ include ":app"
 include ":authexample"
 include ":metaapp"
 
-include ":ui-test"
+include ":ui-test-util"
 
-project(':ui-test').projectDir = new File(settingsDir, "ui-test-util")
+project(':ui-test-util').projectDir = new File(settingsDir, "ui-test-util")
 project(':app').projectDir = new File(settingsDir, "samples/app")
 project(':metaapp').projectDir = new File(settingsDir, "samples/metaapp")
 project(':authexample').projectDir = new File(settingsDir, "samples/authexample")

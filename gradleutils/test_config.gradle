@@ -1,6 +1,6 @@
 dependencies {
 
-    androidTestImplementation project(':ui-test')
+    androidTestImplementation project(':ui-test-util')
 
     testImplementation "junit:junit:$junit_version"
 
