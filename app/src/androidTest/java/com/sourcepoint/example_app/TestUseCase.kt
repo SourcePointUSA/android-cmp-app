@@ -2,7 +2,18 @@ package com.sourcepoint.example_app
 
 import android.webkit.CookieManager
 import com.example.uitestutil.*
-import com.example.uitestutil.TestData.*
+import com.example.uitestutil.TestData.ACCEPT
+import com.example.uitestutil.TestData.ACCEPT_ALL
+import com.example.uitestutil.TestData.CONSENT_LIST
+import com.example.uitestutil.TestData.FEATURES
+import com.example.uitestutil.TestData.MESSAGE
+import com.example.uitestutil.TestData.OPTIONS
+import com.example.uitestutil.TestData.PARTIAL_CONSENT_LIST
+import com.example.uitestutil.TestData.PRIVACY_MANAGER
+import com.example.uitestutil.TestData.PURPOSES
+import com.example.uitestutil.TestData.REJECT
+import com.example.uitestutil.TestData.REJECT_ALL
+import com.example.uitestutil.TestData.SAVE_AND_EXIT
 
 class TestUseCase {
 
@@ -25,11 +36,11 @@ class TestUseCase {
         }
 
         fun clickOnReviewConsent() {
-            performClickById(resId = R.id.review_consents)
+            performClickByIdCompletlyDisplayed(resId = R.id.review_consents)
         }
 
         fun openAuthIdActivity() {
-            performClickById(resId = R.id.auth_id_activity)
+            performClickByIdCompletlyDisplayed(resId = R.id.auth_id_activity)
         }
 
         fun checkAuthIdIsDisplayed(autId : String) {
@@ -77,7 +88,7 @@ class TestUseCase {
         }
 
         fun setFocusOnLayoutActivity() {
-            performClickById(resId = R.id.main_view)
+            performClickByIdCompletlyDisplayed(resId = R.id.main_view)
         }
 
         fun checkWebViewDisplayedForPrivacyManager() {

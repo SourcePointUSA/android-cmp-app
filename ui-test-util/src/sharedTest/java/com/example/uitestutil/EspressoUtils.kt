@@ -1,8 +1,10 @@
 package com.example.uitestutil
 
 import androidx.annotation.IdRes
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.web.assertion.WebViewAssertions.webMatches
 import androidx.test.espresso.web.model.Atoms
@@ -11,7 +13,6 @@ import androidx.test.espresso.web.webdriver.DriverAtoms
 import androidx.test.espresso.web.webdriver.DriverAtoms.*
 import androidx.test.espresso.web.webdriver.Locator
 import org.hamcrest.core.AllOf.allOf
-import org.hamcrest.core.StringContains
 import org.hamcrest.core.StringContains.containsString
 import kotlin.jvm.Throws
 
@@ -23,7 +24,7 @@ fun isDisplayedAllOfByResId(
 }
 
 @Throws(Throwable::class)
-fun performClickById(
+fun performClickByIdCompletlyDisplayed(
     @IdRes resId: Int
 ) {
     onView(
@@ -32,6 +33,57 @@ fun performClickById(
             isCompletelyDisplayed()
         )
     ).perform(ViewActions.click())
+}
+
+@Throws(Throwable::class)
+fun performClickById(
+    @IdRes resId: Int
+) {
+    Espresso.onView(
+        allOf(
+            withId(resId),
+            isDisplayed()
+        )
+    ).perform(ViewActions.click())
+}
+
+fun performClickContent(
+    contentDescription: String
+) {
+    Espresso.onView(
+        allOf(
+            withContentDescription(contentDescription),
+            isDisplayed()
+        )
+    ).perform(ViewActions.click())
+}
+
+fun isDisplayedAllOf(@IdRes resId: Int) {
+    Espresso
+        .onView(allOf(withId(resId), isDisplayed()))
+}
+
+fun isDisplayedByResId(@IdRes resId: Int) {
+    Espresso
+        .onView(withId(resId))
+        .check(ViewAssertions.matches(isDisplayed()))
+}
+
+@Throws(Throwable::class)
+fun insertTextByResId(
+    @IdRes propId: Int,
+    text: String
+) {
+    Espresso.onView(
+        allOf(
+            withId(propId),
+            isDisplayed())
+    )
+        .perform(
+            ViewActions.clearText(),
+            ViewActions.replaceText(text),
+            ViewActions.closeSoftKeyboard()
+        )
 }
 
 @Throws(Throwable::class)
@@ -103,4 +155,15 @@ fun checkConsentWebView(consent: String) {
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='slider round']"))
         .perform(webScrollIntoView())
         .perform(webClick())
+}
+
+fun swipeAndChooseAction(
+    @IdRes resId: Int,
+    @IdRes resIdListItem: Int,
+    field: String
+) {
+    Espresso.onView(allOf(withId(resIdListItem), isDisplayed())).perform(ViewActions.swipeLeft())
+//    Espresso.onView(allOf(withId(resId), isDisplayed())).perform(ViewActions.click())
+    performClickById(resId)
+    Espresso.onView(withText(field)).perform(ViewActions.scrollTo(), ViewActions.click())
 }

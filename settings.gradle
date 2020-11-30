@@ -1,5 +1,5 @@
-include ':ui-test-util'
-include ':app'
-include ':cmplibrary'
-include ':authexample'
-include ':metaapp'
+include ":ui-test-util"
+include ":app"
+include ":cmplibrary"
+include ":authexample"
+include ":metaapp"
