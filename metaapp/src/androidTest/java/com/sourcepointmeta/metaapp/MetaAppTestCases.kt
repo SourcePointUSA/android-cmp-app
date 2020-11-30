@@ -1,9 +1,8 @@
 package com.sourcepointmeta.metaapp
 
-import com.example.uitestutil.performClickById
-import com.example.uitestutil.swipeAndChooseAction
+import com.example.uitestutil.*
 
-class MetaAppTestsKRobot {
+class MetaAppTestCases {
 
     companion object {
 

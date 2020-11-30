@@ -9,10 +9,13 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.web.assertion.WebViewAssertions.webMatches
 import androidx.test.espresso.web.model.Atoms
 import androidx.test.espresso.web.sugar.Web.onWebView
+import androidx.test.espresso.web.webdriver.DriverAtoms
 import androidx.test.espresso.web.webdriver.DriverAtoms.*
 import androidx.test.espresso.web.webdriver.Locator
 import org.hamcrest.core.AllOf.allOf
+import org.hamcrest.core.StringContains
 import org.hamcrest.core.StringContains.containsString
+import java.security.InvalidParameterException
 import kotlin.jvm.Throws
 
 @Throws(Throwable::class)
@@ -20,6 +23,19 @@ fun isDisplayedAllOfByResId(
     @IdRes resId: Int
 ) {
     onView(allOf(withId(resId), isDisplayed()))
+}
+
+fun performClickByIdAndContent(
+    @IdRes resId: Int,
+    contentDescription: String
+) {
+    Espresso.onView(
+        allOf(
+            withId(resId),
+            withContentDescription(contentDescription),
+            isDisplayed()
+        )
+    ).perform(ViewActions.click())
 }
 
 @Throws(Throwable::class)
@@ -57,11 +73,13 @@ fun performClickContent(
     ).perform(ViewActions.click())
 }
 
+@Throws(Throwable::class)
 fun isDisplayedAllOf(@IdRes resId: Int) {
     Espresso
         .onView(allOf(withId(resId), isDisplayed()))
 }
 
+@Throws(Throwable::class)
 fun isDisplayedByResId(@IdRes resId: Int) {
     Espresso
         .onView(withId(resId))
@@ -165,4 +183,20 @@ fun swipeAndChooseAction(
 //    Espresso.onView(allOf(withId(resId), isDisplayed())).perform(ViewActions.click())
     performClickById(resId)
     onView(withText(field)).perform(ViewActions.scrollTo(), ViewActions.click())
+}
+
+fun checkWebViewDoesNotHasText(text: String) {
+    try {
+        onWebView()
+            .check(
+                webMatches(
+                    Atoms.getCurrentUrl(),
+                    StringContains.containsString(text)
+                )
+            )
+
+        throw InvalidParameterException("""
+            The current view with text {$text} is displayed. 
+        """.trimIndent())
+    } catch (e: Exception) { /** This is the success case */ }
 }
