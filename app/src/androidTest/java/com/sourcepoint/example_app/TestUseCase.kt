@@ -36,11 +36,11 @@ class TestUseCase {
         }
 
         fun clickOnReviewConsent() {
-            performClickByIdCompletlyDisplayed(resId = R.id.review_consents)
+            performClickByIdCompletelyDisplayed(resId = R.id.review_consents)
         }
 
         fun openAuthIdActivity() {
-            performClickByIdCompletlyDisplayed(resId = R.id.auth_id_activity)
+            performClickByIdCompletelyDisplayed(resId = R.id.auth_id_activity)
         }
 
         fun checkAuthIdIsDisplayed(autId : String) {
@@ -88,7 +88,7 @@ class TestUseCase {
         }
 
         fun setFocusOnLayoutActivity() {
-            performClickByIdCompletlyDisplayed(resId = R.id.main_view)
+            performClickByIdCompletelyDisplayed(resId = R.id.main_view)
         }
 
         fun checkWebViewDisplayedForPrivacyManager() {

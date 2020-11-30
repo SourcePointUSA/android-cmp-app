@@ -23,7 +23,7 @@ fun isDisplayedAllOfByResId(
 }
 
 @Throws(Throwable::class)
-fun performClickByIdCompletlyDisplayed(
+fun performClickByIdCompletelyDisplayed(
     @IdRes resId: Int
 ) {
     onView(
@@ -161,8 +161,8 @@ fun swipeAndChooseAction(
     @IdRes resIdListItem: Int,
     field: String
 ) {
-    Espresso.onView(allOf(withId(resIdListItem), isDisplayed())).perform(ViewActions.swipeLeft())
+    onView(allOf(withId(resIdListItem), isDisplayed())).perform(ViewActions.swipeLeft())
 //    Espresso.onView(allOf(withId(resId), isDisplayed())).perform(ViewActions.click())
     performClickById(resId)
-    Espresso.onView(withText(field)).perform(ViewActions.scrollTo(), ViewActions.click())
+    onView(withText(field)).perform(ViewActions.scrollTo(), ViewActions.click())
 }
