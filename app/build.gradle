@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+apply from: rootDir.path + '/gradleutils/test_config.gradle'
+
 android {
     compileSdkVersion 29
     defaultConfig {
@@ -33,13 +35,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    sourceSets {
-        androidTest {
-            java.srcDirs += rootDir.path + "/ui-test-util/src/sharedTest/java"
-        }
-    }
-
-
 }
 
 dependencies {
@@ -63,22 +58,4 @@ dependencies {
     androidTestImplementation "org.koin:koin-test:$koin_version"
     implementation "org.koin:koin-android:$koin_version"
     implementation "org.koin:koin-java:$koin_java_version"
-
-    testImplementation "junit:junit:$junit_version"
-
-    androidTestImplementation "androidx.test:runner:$androidx_test_version"
-    androidTestUtil "androidx.test:orchestrator:$androidx_test_version"
-    androidTestImplementation "androidx.test:rules:$androidx_test_version"
-    androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.2'
-    androidTestImplementation "androidx.test:core-ktx:$androidx_test_version"
-
-    // Set this dependency to build and run Espresso tests espresso web
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-    androidTestImplementation "androidx.test.espresso:espresso-web:$espresso_version"
-    //activity rules for instrumentation test
-    androidTestImplementation("androidx.test:rules:$androidx_test_version") {
-        exclude module: 'support-annotations'
-    }
-
-    androidTestImplementation project(':ui-test')
 }

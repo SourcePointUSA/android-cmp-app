@@ -8,6 +8,8 @@ android{
 
 dependencies {
 
+    androidTestImplementation project(':ui-test')
+
     testImplementation "junit:junit:$junit_version"
 
     androidTestImplementation "androidx.test:runner:$androidx_test_version"
@@ -16,13 +18,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.2'
     androidTestImplementation "androidx.test:core-ktx:$androidx_test_version"
 
-    // Set this dependency to build and run Espresso tests espresso web
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
     androidTestImplementation "androidx.test.espresso:espresso-web:$espresso_version"
-    //activity rules for instrumentation test
     androidTestImplementation("androidx.test:rules:$androidx_test_version") {
         exclude module: 'support-annotations'
     }
-
-    androidTestImplementation project(':ui-test')
 }
