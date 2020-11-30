@@ -1,5 +1,8 @@
 package com.sourcepointmeta.metaapp
 
+import com.example.uitestutil.performClickById
+import com.example.uitestutil.swipeAndChooseAction
+
 class MetaAppTestsKRobot {
 
     companion object {
@@ -120,7 +123,7 @@ class MetaAppTestsKRobot {
         }
 
         fun swipeAndChooseResetAction() {
-            swipeAndChooseAction(R.id.reset_button, TestData.YES)
+            swipeAndChooseAction(R.id.reset_button, R.id.item_view, TestData.YES)
         }
 
         fun selectNativeMessageConsentList() {

@@ -50,16 +50,16 @@ fun isDisplayedByResId(@IdRes resId: Int) {
         .check(ViewAssertions.matches(isDisplayed()))
 }
 
-fun performClickById(
-    @IdRes resId: Int
-) {
-    Espresso.onView(
-        allOf(
-            withId(resId),
-            isDisplayed()
-        )
-    ).perform(ViewActions.click())
-}
+//fun performClickById(
+//    @IdRes resId: Int
+//) {
+//    Espresso.onView(
+//        allOf(
+//            withId(resId),
+//            isDisplayed()
+//        )
+//    ).perform(ViewActions.click())
+//}
 
 fun insertTextByResId(
     @IdRes propId: Int,
@@ -130,12 +130,12 @@ fun checkWebViewDoesNotHasText(text: String) {
     } catch (e: Exception) { /** This is the success case */ }
 }
 
-fun swipeAndChooseAction(
-    @IdRes resId: Int,
-    field: String
-) {
-    Espresso.onView(allOf(withId(R.id.item_view), isDisplayed())).perform(ViewActions.swipeLeft())
-//    Espresso.onView(allOf(withId(resId), isDisplayed())).perform(ViewActions.click())
-    performClickById(resId)
-    Espresso.onView(withText(field)).perform(ViewActions.scrollTo(), ViewActions.click())
-}
+//fun swipeAndChooseAction(
+//    @IdRes resId: Int,
+//    field: String
+//) {
+//    Espresso.onView(allOf(withId(R.id.item_view), isDisplayed())).perform(ViewActions.swipeLeft())
+////    Espresso.onView(allOf(withId(resId), isDisplayed())).perform(ViewActions.click())
+//    performClickById(resId)
+//    Espresso.onView(withText(field)).perform(ViewActions.scrollTo(), ViewActions.click())
+//}

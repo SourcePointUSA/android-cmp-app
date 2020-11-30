@@ -1,5 +1,7 @@
-include ":ui-test-util"
+include ":ui-test"
 include ":app"
 include ":cmplibrary"
 include ":authexample"
 include ":metaapp"
+
+project(':ui-test').projectDir = new File(settingsDir, "ui-test-util")

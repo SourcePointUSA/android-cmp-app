@@ -1,0 +1,28 @@
+android{
+    sourceSets {
+        androidTest {
+            java.srcDirs += rootDir.path + "/ui-test-util/src/sharedTest/java"
+        }
+    }
+}
+
+dependencies {
+
+    testImplementation "junit:junit:$junit_version"
+
+    androidTestImplementation "androidx.test:runner:$androidx_test_version"
+    androidTestUtil "androidx.test:orchestrator:$androidx_test_version"
+    androidTestImplementation "androidx.test:rules:$androidx_test_version"
+    androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.2'
+    androidTestImplementation "androidx.test:core-ktx:$androidx_test_version"
+
+    // Set this dependency to build and run Espresso tests espresso web
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-web:$espresso_version"
+    //activity rules for instrumentation test
+    androidTestImplementation("androidx.test:rules:$androidx_test_version") {
+        exclude module: 'support-annotations'
+    }
+
+    androidTestImplementation project(':ui-test')
+}

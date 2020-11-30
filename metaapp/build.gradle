@@ -22,11 +22,6 @@ android {
             outputFileName = APP_NAME + ".apk"
         }
     }
-    sourceSets {
-        androidTest {
-            java.srcDirs += rootDir.path + "/ui-test-util/src/sharedTest/java"
-        }
-    }
     buildTypes {
         release {
             minifyEnabled true
@@ -35,6 +30,11 @@ android {
         }
         debug{
             testCoverageEnabled = true
+        }
+    }
+    sourceSets {
+        androidTest {
+            java.srcDirs += rootDir.path + "/ui-test-util/src/sharedTest/java"
         }
     }
     compileOptions {
@@ -145,4 +145,6 @@ dependencies {
     androidTestImplementation('androidx.test:rules:1.3.0') {
         exclude module: 'support-annotations'
     }
+
+    androidTestImplementation project(':ui-test')
 }
