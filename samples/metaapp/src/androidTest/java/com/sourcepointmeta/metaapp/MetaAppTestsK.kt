@@ -63,9 +63,9 @@ class MetaAppTestsK {
         wr { checkNativeMessageDisplayed() }                // Assert.assertTrue(checkNativeMessageDisplayed());
         wr { tapShowOption() }                              // chooseNativeMessageAction(R.id.ShowOption);
         wr { checkWebViewDisplayedForPrivacyManager() }     // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        wr { tapRejectAllOnWebView() }                      // chooseAction(PM_REJECT_ALL);
-        wr { navigateBackToListView() }                     // navigateBackToListView();
-        wr { tapOnProperty() }                              // tapOnProperty();
+        wr(400) { tapRejectAllOnWebView() }             // chooseAction(PM_REJECT_ALL);
+        wr(400) { navigateBackToListView() }            // navigateBackToListView();
+        wr(400) { tapOnProperty() }                     // tapOnProperty();
         wr { checkNativeMessageDisplayed() }                // Assert.assertTrue(checkNativeMessageDisplayed());
         wr { navigateBackToListView() }                     // navigateBackToListView();
         wr { checkForPropertyInfoInList() }                 // Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));

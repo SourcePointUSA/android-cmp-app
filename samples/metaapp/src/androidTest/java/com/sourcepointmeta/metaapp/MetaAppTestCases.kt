@@ -11,7 +11,55 @@ class MetaAppTestCases {
         }
 
         fun addPropertyWithAllFields() {
-            Utility().addPropertyWith(TestData.ALL_FIELDS)
+            Utility.addPropertyWith(TestData.ALL_FIELDS)
+        }
+
+        fun addPropertyNoAccountId() {
+            Utility.addPropertyWith(TestData.NO_ACCOUNT_ID)
+        }
+
+        fun addPropertyNoPropertyId() {
+            Utility.addPropertyWith(TestData.NO_PROPERTY_ID)
+        }
+
+        fun addPropertyNoPropertyName() {
+            Utility.addPropertyWith(TestData.NO_PROPERTY_NAME)
+        }
+
+        fun addPropertyNoPmId() {
+            Utility.addPropertyWith(TestData.NO_PM_ID)
+        }
+
+        fun addPropertyWithAllFieldsBlank() {
+            Utility.addPropertyWith(TestData.ALL_FIELDS_BLANK)
+        }
+
+        fun addPropertyWrongPrivacyManager() {
+            Utility.addPropertyWith(TestData.WRONG_PRIVACY_MANAGER)
+        }
+
+        fun addPropertyWrongAccountId() {
+            Utility.addPropertyWith(TestData.WRONG_ACCOUNT_ID)
+        }
+
+        fun addPropertyWrongPropertyName() {
+            Utility.addPropertyWith(TestData.WRONG_PROPERTY_NAME)
+        }
+
+        fun addPropertyNoParamKey() {
+            Utility.addPropertyWith(TestData.NO_PARAMETER_KEY)
+        }
+
+        fun addPropertyNoParamKeyValue() {
+            Utility.addPropertyWith(TestData.NO_PARAMETER_KEY_VALUE)
+        }
+
+        fun addPropertyNoParamValue() {
+            Utility.addPropertyWith(TestData.NO_PARAMETER_VALUE)
+        }
+
+        fun addPropertyWrongCampaign() {
+            Utility.addPropertyWith(TestData.WRONG_CAMPAIGN)
         }
 
         fun tapDismissWebView() {
@@ -20,6 +68,26 @@ class MetaAppTestCases {
 
         fun tapOnSave() {
             performClickById(resId = R.id.action_saveProperty)
+        }
+
+        fun tapOkPopupError(){
+            isDisplayedByResIdByText(R.id.message, TestData.MANDATORY_FIELDS)
+            performClickByText("OK")
+        }
+
+        fun tapOkPopupErrorUnableLoadPm(){
+            isDisplayedByResIdByText(R.id.message, TestData.UNABLE_TO_LOAD_PM_ERROR)
+            performClickByText("OK")
+        }
+
+        fun tapOkPopupErrorPropertyExist(){
+            isDisplayedByResIdByText(R.id.message, TestData.PROPERTY_EXITS_ERROR)
+            performClickByText("OK")
+        }
+
+        fun tapOkPopupErrorParameter(){
+            isDisplayedByResIdByText(R.id.message, TestData.TARGETING_PARAMETER_FIELDS)
+            performClickByText("OK")
         }
 
         fun addNativeMessagePropertyDetails() {
@@ -146,7 +214,7 @@ class MetaAppTestCases {
         }
 
         fun addPropertyFor(messageType: String, authentication: String) {
-            Utility().addPropertyFor(messageType, authentication)
+            Utility.addPropertyFor(messageType, authentication)
         }
     }
 }
