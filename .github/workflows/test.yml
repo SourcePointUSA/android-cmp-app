@@ -26,22 +26,22 @@ jobs:
       - name: running unit tests
         run: ./gradlew test --quiet --build-cache
 
-      - name: run Example app and Metaapp tests
+      - name: run Example app tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew app:connectedDebugAndroidTest :metaapp:connectedDebugAndroidTest
+          script: ./gradlew app:connectedDebugAndroidTest
       - name: 'Publish Example-app Test Report'
         if: always()
         uses: actions/upload-artifact@v2-preview
         with:
           name: 'example-app-test-report'
           path: app/build/reports/androidTests/*
-#      - name: run MetaApp tests
-#        uses: reactivecircus/android-emulator-runner@v2
-#        with:
-#          api-level: 29
-#          script: ./gradlew :metaapp:connectedDebugAndroidTest
+      - name: run MetaApp tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew :metaapp:connectedDebugAndroidTest
       - name: 'Publish Metaapp Test Report'
         if: always()
         uses: actions/upload-artifact@v2-preview
