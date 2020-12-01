@@ -1,0 +1,18 @@
+dependencies {
+
+    androidTestImplementation project(':ui-test-util')
+
+    testImplementation "junit:junit:$junit_version"
+
+    androidTestImplementation "androidx.test:runner:$androidx_test_version"
+    androidTestUtil "androidx.test:orchestrator:$androidx_test_version"
+    androidTestImplementation "androidx.test:rules:$androidx_test_version"
+    androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.2'
+    androidTestImplementation "androidx.test:core-ktx:$androidx_test_version"
+
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-web:$espresso_version"
+    androidTestImplementation("androidx.test:rules:$androidx_test_version") {
+        exclude module: 'support-annotations'
+    }
+}
