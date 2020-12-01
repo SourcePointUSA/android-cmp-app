@@ -1,4 +1,4 @@
-package com.example.uitestutil
+package com.sourcepoint.example_app
 
 object TestData {
     var CONSENT_LIST = arrayOf("Store and/or access information on a device", "Create a personalised ads profile", "Select personalised ads",
