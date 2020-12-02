@@ -1,0 +1,202 @@
+package com.example.uitestutil
+
+import androidx.annotation.IdRes
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.web.assertion.WebViewAssertions.webMatches
+import androidx.test.espresso.web.model.Atoms
+import androidx.test.espresso.web.sugar.Web.onWebView
+import androidx.test.espresso.web.webdriver.DriverAtoms
+import androidx.test.espresso.web.webdriver.DriverAtoms.*
+import androidx.test.espresso.web.webdriver.Locator
+import org.hamcrest.core.AllOf.allOf
+import org.hamcrest.core.StringContains
+import org.hamcrest.core.StringContains.containsString
+import java.security.InvalidParameterException
+import kotlin.jvm.Throws
+
+@Throws(Throwable::class)
+fun isDisplayedAllOfByResId(
+    @IdRes resId: Int
+) {
+    onView(allOf(withId(resId), isDisplayed()))
+}
+
+fun performClickByIdAndContent(
+    @IdRes resId: Int,
+    contentDescription: String
+) {
+    Espresso.onView(
+        allOf(
+            withId(resId),
+            withContentDescription(contentDescription),
+            isDisplayed()
+        )
+    ).perform(ViewActions.click())
+}
+
+@Throws(Throwable::class)
+fun performClickByIdCompletelyDisplayed(
+    @IdRes resId: Int
+) {
+    onView(
+        allOf(
+            withId(resId),
+            isCompletelyDisplayed()
+        )
+    ).perform(ViewActions.click())
+}
+
+@Throws(Throwable::class)
+fun performClickById(
+    @IdRes resId: Int
+) {
+    Espresso.onView(
+        allOf(
+            withId(resId),
+            isDisplayed()
+        )
+    ).perform(ViewActions.click())
+}
+
+fun performClickContent(
+    contentDescription: String
+) {
+    Espresso.onView(
+        allOf(
+            withContentDescription(contentDescription),
+            isDisplayed()
+        )
+    ).perform(ViewActions.click())
+}
+
+@Throws(Throwable::class)
+fun isDisplayedAllOf(@IdRes resId: Int) {
+    Espresso
+        .onView(allOf(withId(resId), isDisplayed()))
+}
+
+@Throws(Throwable::class)
+fun isDisplayedByResId(@IdRes resId: Int) {
+    Espresso
+        .onView(withId(resId))
+        .check(ViewAssertions.matches(isDisplayed()))
+}
+
+@Throws(Throwable::class)
+fun insertTextByResId(
+    @IdRes propId: Int,
+    text: String
+) {
+    Espresso.onView(
+        allOf(
+            withId(propId),
+            isDisplayed())
+    )
+        .perform(
+            ViewActions.clearText(),
+            ViewActions.replaceText(text),
+            ViewActions.closeSoftKeyboard()
+        )
+}
+
+@Throws(Throwable::class)
+fun checkWebViewHasText(text: String) {
+    onWebView()
+        .check(
+            webMatches(
+                Atoms.getCurrentUrl(),
+                containsString(text)
+            )
+        )
+}
+
+@Throws(Throwable::class)
+fun checkElementWithText(id : String, expected: String) {
+    onWebView()
+            .withElement(findElement(Locator.ID, id))
+            .check(webMatches(getText(), containsString(expected)));
+}
+
+@Throws(Throwable::class)
+fun performClickOnWebViewByContent(text: String) {
+    onWebView()
+        .withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
+        .perform(webScrollIntoView())
+        .perform(webClick())
+}
+
+@Throws(Throwable::class)
+fun performClickOnWebViewByClass(classValue: String) {
+    onWebView()
+        .withElement(findElement(Locator.CLASS_NAME, classValue))
+        .perform(webScrollIntoView())
+        .perform(webClick())
+}
+
+@Throws(Throwable::class)
+fun checkConsentState(consent: String, selected : Boolean) {
+    onWebView()
+        .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']"))
+        .withElement(findElement(Locator.XPATH, "//label[@aria-checked='$selected']"))
+}
+
+@Throws(Throwable::class)
+fun checkPMTabSelected( expected : String){
+    onWebView()
+        .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab active') and text()='$expected']"))
+}
+
+@Throws(Throwable::class)
+fun performClickPMTabSelected( expected : String){
+    onWebView()
+        .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab') and text()='$expected']"))
+        .perform(webScrollIntoView())
+        .perform(webClick())
+}
+
+@Throws(Throwable::class)
+fun setCheckBoxTrue(property : String){
+    onWebView()
+        .withElement(findElement(Locator.XPATH, "//label[@aria-label='$property']/span[@class='on']"))
+        .perform(webScrollIntoView())
+        .perform(webClick())
+}
+
+@Throws(Throwable::class)
+fun checkConsentWebView(consent: String) {
+    onWebView()
+        .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='slider round']"))
+        .perform(webScrollIntoView())
+        .perform(webClick())
+}
+
+fun swipeAndChooseAction(
+    @IdRes resId: Int,
+    @IdRes resIdListItem: Int,
+    field: String
+) {
+    onView(allOf(withId(resIdListItem), isDisplayed())).perform(ViewActions.swipeLeft())
+//    Espresso.onView(allOf(withId(resId), isDisplayed())).perform(ViewActions.click())
+    performClickById(resId)
+    onView(withText(field)).perform(ViewActions.scrollTo(), ViewActions.click())
+}
+
+fun checkWebViewDoesNotHasText(text: String) {
+    try {
+        onWebView()
+            .check(
+                webMatches(
+                    Atoms.getCurrentUrl(),
+                    StringContains.containsString(text)
+                )
+            )
+
+        throw InvalidParameterException("""
+            The current view with text {$text} is displayed. 
+        """.trimIndent())
+    } catch (e: Exception) { /** This is the success case */ }
+}

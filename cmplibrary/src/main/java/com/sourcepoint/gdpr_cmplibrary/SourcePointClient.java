@@ -22,11 +22,11 @@ class SourcePointClient {
     private static final String LOG_TAG = "SOURCE_POINT_CLIENT";
 
     private OkHttpClient httpClient;
-
-    private static final String baseMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/message-url?inApp=true";
-    private static final String baseNativeMsgUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/native-message?inApp=true";
-    private static final String baseSendConsentUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/consent?inApp=true";
-    private static final String baseSendCustomConsentsUrl = "https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/custom-consent?inApp=true";
+    private static final String wrapper_url = "https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/";
+    private static final String baseMsgUrl = wrapper_url + "message-url?inApp=true";
+    private static final String baseNativeMsgUrl = wrapper_url + "native-message?inApp=true";
+    private static final String baseSendConsentUrl = wrapper_url + "consent?inApp=true";
+    private static final String baseSendCustomConsentsUrl = wrapper_url +  "custom-consent?inApp=true";
 
     private String requestUUID = "";
 
