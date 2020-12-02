@@ -8,7 +8,7 @@ jobs:
   ui-test-app:
     runs-on: macos-latest
     strategy:
-      max-parallel: default
+      max-parallel: 2
       fail-fast: false
       matrix:
         api-level: [30, 29, 28, 27, 26, 25, 24]
