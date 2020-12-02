@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
+/*
 @RunWith(AndroidJUnit4ClassRunner.class)
 public class MetaAppTests extends Utility{
 
@@ -24,7 +24,7 @@ public class MetaAppTests extends Utility{
     public void setup() {
         mActivityTestRule.getActivity();
     }
-/*
+
     @Test
     public void checkForConsentWithAcceptActionFromMessage() {
         addPropertyFor(SHOW_MESSAGE_ALWAYS, NO_AUTHENTICATION);
@@ -543,35 +543,34 @@ public class MetaAppTests extends Utility{
         tapOnSave();
         Assert.assertTrue(checkNativeMessageDisplayed());
         chooseNativeMessageAction(R.id.AcceptAll);
-//        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-//        loadPrivacyManagerDirect();
-//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-//        Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
-//        selectConsents(PARTIAL_CONSENT_LIST);
-//        chooseAction(PM_CANCEL);
-//        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-//        CountDownLatch signal = new CountDownLatch(1);
-//        signal.await(1, TimeUnit.SECONDS);
-//        loadPrivacyManagerDirect();
-//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-//        Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
+        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+        loadPrivacyManagerDirect();
+        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+        Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
+        selectConsents(PARTIAL_CONSENT_LIST);
+        chooseAction(PM_CANCEL);
+        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+        CountDownLatch signal = new CountDownLatch(1);
+        signal.await(1, TimeUnit.SECONDS);
+        loadPrivacyManagerDirect();
+        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+        Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
     }
 
-//    @Test
-//    public void checkPMTabSelected(){
-//        tapOnAddProperty();
-//        addPropertyDetails(Example_accountID, Example_propertyID, Example_propertyName, Example_pmID);
-//        tapOnSave();
-//        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-//        chooseAction(OPTIONS);
-//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-//        checkPMTabSelected(FEATURES);
-//        chooseAction(PM_SAVE_AND_EXIT);
-//        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-//        loadPrivacyManagerDirect();
-//        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-//        checkPMTabSelected(PURPOSES);
-//    }
-
+    @Test
+    public void checkPMTabSelected(){
+        tapOnAddProperty();
+        addPropertyDetails(Example_accountID, Example_propertyID, Example_propertyName, Example_pmID);
+        tapOnSave();
+        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+        chooseAction(OPTIONS);
+        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+        checkPMTabSelected(FEATURES);
+        chooseAction(PM_SAVE_AND_EXIT);
+        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+        loadPrivacyManagerDirect();
+        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+        checkPMTabSelected(PURPOSES);
+    }
 }
-
+*/
