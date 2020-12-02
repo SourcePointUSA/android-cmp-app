@@ -5,6 +5,7 @@ import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.addNativeMessagePropertyDetails
+import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.addPropertyDetails
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.addPropertyFor
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.addPropertyWithAllFields
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkConsentListNotSelected
@@ -15,6 +16,9 @@ import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkForPropertyIn
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkForPropertyInfoScreen
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkInsertedProperty
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkNativeMessageDisplayed
+import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkPMTabSelectedFeatures
+import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkPMTabSelectedOptions
+import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkPMTabSelectedPurposes
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkWebViewDisplayedForMessage
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkWebViewDisplayedForPrivacyManager
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkWebViewDoesNotDisplayTheMessage
@@ -30,7 +34,9 @@ import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapManagePreferenc
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapOnAddProperty
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapOnProperty
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapOnSave
+import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapOptionOnWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapPMAcceptAllOnWebView
+import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapPmCancelOnWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapRejectAll
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapRejectAllOnWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapSaveAndExitOnWebView
@@ -247,7 +253,7 @@ class MetaAppTestsK {
         wr { navigateBackToListView() }                               //  navigateBackToListView();
         wr { swipeAndChooseResetAction() }                            //  swipeAndChooseAction(RESET_ACTION, YES);
         wr { checkWebViewDisplayedForMessage() }                      //  Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        wr(400) { tapManagePreferencesOnWebView() }                        //  chooseAction(MANAGE_PREFERENCES);
+        wr(400) { tapManagePreferencesOnWebView() }                 //  chooseAction(MANAGE_PREFERENCES);
         wr { checkWebViewDisplayedForPrivacyManager() }               //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
         wr { checkConsentListNotSelected() }                          //  Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
     }
@@ -269,4 +275,40 @@ class MetaAppTestsK {
         wr { checkConsentListNotSelected() }                                  //        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
     }
 
+    @Test
+    fun checkNativeMessagePMCancelDirectPMLoad() = runBlocking<Unit> {
+
+        scenario = launchActivity()
+
+        tapOnAddProperty()                          //  tapOnAddProperty();
+        addNativeMessagePropertyDetails()           //  addNativeMessagePropertyDetails();
+        tapOnSave()                                 //  tapOnSave();
+        checkNativeMessageDisplayed()               //  Assert.assertTrue(checkNativeMessageDisplayed());
+        wr { tapAcceptAll() }                       //  chooseNativeMessageAction(R.id.AcceptAll);
+        wr { checkForPropertyInfoScreen() }         //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+        wr { loadPrivacyManagerDirect() }           //  loadPrivacyManagerDirect();
+        wr { selectNativeMessageConsentList() }     //  Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
+        selectPartialConsentList()                  //  selectConsents(PARTIAL_CONSENT_LIST);
+        tapPmCancelOnWebView()                      //  chooseAction(PM_CANCEL);
+        wr { checkForPropertyInfoScreen() }         //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+        wr { loadPrivacyManagerDirect() }           //  loadPrivacyManagerDirect();
+        wr { selectNativeMessageConsentList() }     //  Assert.assertTrue(checkConsentsAsSelected(NATIVE_MESSAGE_CONSENT_LIST));
+    }
+
+    @Test
+    fun checkPMTabSelected() = runBlocking<Unit> {
+
+        scenario = launchActivity()
+
+        tapOnAddProperty()                          //  tapOnAddProperty();
+        addPropertyDetails()                        //  addPropertyDetails(Example_accountID, Example_propertyID, Example_propertyName, Example_pmID);
+        tapOnSave()                                 //  tapOnSave();
+        wr { checkWebViewDisplayedForMessage() }    //  Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+        tapOptionOnWebView()                        //  chooseAction(OPTIONS);
+        wr { checkPMTabSelectedFeatures() }         //  checkPMTabSelected(FEATURES);
+        tapSaveAndExitOnWebView()                   //  chooseAction(PM_SAVE_AND_EXIT);
+        wr { checkForPropertyInfoScreen() }         //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+        wr { loadPrivacyManagerDirect() }           //  loadPrivacyManagerDirect();
+        wr { checkPMTabSelectedPurposes() }         //  checkPMTabSelected(PURPOSES);
+    }
 }
