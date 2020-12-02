@@ -535,7 +535,7 @@ public class MetaAppTests extends Utility{
 //        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
 //        Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
 //    }
-*/
+
     @Test
     public void checkNativeMessagePMCancelDirectPMLoad() throws InterruptedException {
         tapOnAddProperty();
