@@ -7,6 +7,9 @@ on:
 jobs:
   ui-test-app:
     runs-on: macos-latest
+    strategy:
+      matrix:
+        api-level: [29]
     steps:
       - uses: actions/checkout@v2
       - name: set up JDK 1.8
@@ -26,7 +29,7 @@ jobs:
       - name: run Example app tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 28
+          api-level: ${{ matrix.api-level }}
           script: ./gradlew app:connectedDebugAndroidTest
       - name: 'Testing Matrix : Publish Example-app Test Report'
         if: always()
