@@ -607,10 +607,8 @@ public class GDPRConsentLib {
         params.add("pmTab="+pmTab);
         params.add("site_id="+ propertyId);
         if (consentUUID != null) params.add("consentUUID=" + consentUUID);
-        if (messageLanguage != null) {
-            params.add("consentLanguage=" + messageLanguage);
-            params.add("defaultLanguage="+"");
-        }
+        String consentLanguage = messageLanguage != null ? messageLanguage : "";
+        params.add("consentLanguage=" + consentLanguage);
         String PM_URL = isOTT ? OTT_PM_BASE_URL : PM_BASE_URL;
         return PM_URL + "?" + TextUtils.join("&", params);
     }
