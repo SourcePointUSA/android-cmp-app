@@ -4,6 +4,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
+import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.addMessageLanguagePropertyDetails
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.addNativeMessagePropertyDetails
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.addPropertyFor
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.addPropertyWithAllFields
@@ -24,6 +25,7 @@ import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.selectNativeMessag
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.selectPartialConsentList
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.swipeAndChooseResetAction
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapAcceptAll
+import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapAcceptAllFrenchOnWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapAcceptAllOnWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapDismissWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapManagePreferencesOnWebView
@@ -35,6 +37,7 @@ import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapRejectAll
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapRejectAllOnWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapSaveAndExitOnWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapShowOption
+import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapShowOptionOnWebView
 import com.sourcepointmeta.metaapp.TestData.*
 import com.sourcepointmeta.metaapp.ui.SplashScreenActivity
 import kotlinx.coroutines.runBlocking
@@ -267,6 +270,43 @@ class MetaAppTestsK {
         wr { tapManagePreferencesOnWebView() }                                //        chooseAction(MANAGE_PREFERENCES);
         wr { checkWebViewDisplayedForPrivacyManager() }                       //        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
         wr { checkConsentListNotSelected() }                                  //        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
+    }
+
+    @Test
+    fun acceptAllActionOnFrenchLanguage() = runBlocking {
+
+        scenario = launchActivity()
+
+        wr { tapOnAddProperty() }
+        wr { addMessageLanguagePropertyDetails() }
+        wr { tapOnSave() }
+        wr { checkWebViewDisplayedForMessage() }
+        wr { tapAcceptAllFrenchOnWebView() }
+    }
+
+    @Test
+    fun rejectAllActionOnFrenchLanguage() = runBlocking {
+
+        scenario = launchActivity()
+
+        wr { tapOnAddProperty() }
+        wr { addMessageLanguagePropertyDetails() }
+        wr { tapOnSave() }
+        wr { checkWebViewDisplayedForMessage() }
+        wr { tapRejectAllOnWebView() }
+    }
+
+    @Test
+    fun showOptionsActionOnFrenchLanguage() = runBlocking {
+
+        scenario = launchActivity()
+
+        wr { tapOnAddProperty() }
+        wr { addMessageLanguagePropertyDetails() }
+        wr { tapOnSave() }
+        wr { checkWebViewDisplayedForMessage() }
+        wr { tapShowOptionOnWebView() }
+        wr { checkWebViewDisplayedForPrivacyManager()}
     }
 
 }

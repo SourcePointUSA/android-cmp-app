@@ -164,8 +164,11 @@ public class ConsentLibBuilderTest {
 
     @Test
     public void setMessageLanguage() {
-        defaultBuilder.setMessageLanguage(MessageLanguage.BULGARIAN);
-        assertEquals("BG", defaultBuilder.messageLanguage);
+        String [] languages = MessageLanguage.names();
+        for (String languageName : languages ){
+            defaultBuilder.setMessageLanguage(MessageLanguage.findByName(languageName));
+            assertEquals(MessageLanguage.findByName(languageName).language, defaultBuilder.messageLanguage);
+        }
     }
 
     @Test

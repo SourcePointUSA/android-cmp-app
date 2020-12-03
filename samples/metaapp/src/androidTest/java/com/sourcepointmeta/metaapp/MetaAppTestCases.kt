@@ -1,6 +1,11 @@
 package com.sourcepointmeta.metaapp
 
+import androidx.test.espresso.Espresso.onData
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.example.uitestutil.*
+import org.hamcrest.CoreMatchers.*
 
 class MetaAppTestCases {
 
@@ -33,6 +38,20 @@ class MetaAppTestCases {
             insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
             insertTextByResId(propId = R.id.etPMId, text = pmId)
             performClickById(resId = R.id.toggleNativeMessage)
+        }
+
+        fun addMessageLanguagePropertyDetails() {
+            val accountId = "22"
+            val propertyId = "7639"
+            val propertyName = "tcfv2.mobile.webview"
+            val pmId = "122058"
+            val messageLanguage = "FRENCH";
+
+            insertTextByResId(propId = R.id.etAccountID, text = accountId)
+            insertTextByResId(propId = R.id.etPropertyId, text = propertyId)
+            insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
+            insertTextByResId(propId = R.id.etPMId, text = pmId)
+            performSpinnerItemSelection(resId = R.id.spinnerMessageLanguage, contentDescription = messageLanguage)
         }
 
         fun checkNativeMessageDisplayed() {
@@ -77,12 +96,20 @@ class MetaAppTestCases {
             performClickOnWebViewByContent(TestData.ACCEPT_ALL)
         }
 
-        fun checkForConsentsAreDisplayed() {
-            isDisplayedByResId(R.id.consentRecyclerView)
+        fun tapAcceptAllFrenchOnWebView() {
+            performClickOnWebViewByContent(TestData.ACCEPT_ALL_FRENCH)
         }
 
         fun tapManagePreferencesOnWebView() {
             performClickOnWebViewByContent(TestData.MANAGE_PREFERENCES)
+        }
+
+        fun checkForConsentsAreDisplayed() {
+            isDisplayedByResId(R.id.consentRecyclerView)
+        }
+
+        fun tapShowOptionOnWebView() {
+            performClickOnWebViewByContent(TestData.OPTIONS)
         }
 
         fun tapSaveAndExitOnWebView() {

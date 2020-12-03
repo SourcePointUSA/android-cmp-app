@@ -439,11 +439,10 @@ public class GDPRConsentLib {
     }
 
     private String getSelectedMessageLanguage(){
-        String language = "";
-        if (!TextUtils.isEmpty(messageLanguage)){
-            language = "&consentLanguage="+ messageLanguage + "&defaultLanguage= " + "";
-        }
-        return language;
+        String consentLanguage = "";
+        if (!TextUtils.isEmpty(messageLanguage))
+            consentLanguage = messageLanguage;
+        return "&consentLanguage="+consentLanguage;
     }
 
     void showView(View view, boolean isFromPM) {

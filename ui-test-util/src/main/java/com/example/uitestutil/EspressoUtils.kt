@@ -12,6 +12,7 @@ import androidx.test.espresso.web.sugar.Web.onWebView
 import androidx.test.espresso.web.webdriver.DriverAtoms
 import androidx.test.espresso.web.webdriver.DriverAtoms.*
 import androidx.test.espresso.web.webdriver.Locator
+import org.hamcrest.CoreMatchers
 import org.hamcrest.core.AllOf.allOf
 import org.hamcrest.core.StringContains
 import org.hamcrest.core.StringContains.containsString
@@ -71,6 +72,12 @@ fun performClickContent(
             isDisplayed()
         )
     ).perform(ViewActions.click())
+}
+
+fun performSpinnerItemSelection(@IdRes resId: Int , contentDescription: String){
+    performClickById(resId )
+    Espresso.onData(CoreMatchers.allOf(CoreMatchers.`is`(CoreMatchers.instanceOf(String::class.java)), CoreMatchers.`is`(contentDescription)))
+            .perform(ViewActions.click())
 }
 
 @Throws(Throwable::class)
