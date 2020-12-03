@@ -10,8 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [30, 29, 28, 27, 26, 25, 24]
-        target: [google_apis]
+        api-level: [29, 28, 27, 26, 25, 24]
     steps:
       - uses: actions/checkout@v2
       - name: set up JDK 1.8
@@ -32,7 +31,6 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
           script: ./gradlew app:connectedDebugAndroidTest
       - name: 'Publish Example-app Test Report'
         if: always()
