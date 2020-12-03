@@ -1,6 +1,7 @@
 package com.sourcepointmeta.metaapp
 
 import com.example.uitestutil.*
+import com.sourcepointmeta.metaapp.TestData.*
 
 class MetaAppTestCases {
 
@@ -11,7 +12,55 @@ class MetaAppTestCases {
         }
 
         fun addPropertyWithAllFields() {
-            Utility().addPropertyWith(TestData.ALL_FIELDS)
+            Utility.addPropertyWith(ALL_FIELDS)
+        }
+
+        fun addPropertyNoAccountId() {
+            Utility.addPropertyWith(NO_ACCOUNT_ID)
+        }
+
+        fun addPropertyNoPropertyId() {
+            Utility.addPropertyWith(NO_PROPERTY_ID)
+        }
+
+        fun addPropertyNoPropertyName() {
+            Utility.addPropertyWith(NO_PROPERTY_NAME)
+        }
+
+        fun addPropertyNoPmId() {
+            Utility.addPropertyWith(NO_PM_ID)
+        }
+
+        fun addPropertyWithAllFieldsBlank() {
+            Utility.addPropertyWith(ALL_FIELDS_BLANK)
+        }
+
+        fun addPropertyWrongPrivacyManager() {
+            Utility.addPropertyWith(WRONG_PRIVACY_MANAGER)
+        }
+
+        fun addPropertyWrongAccountId() {
+            Utility.addPropertyWith(WRONG_ACCOUNT_ID)
+        }
+
+        fun addPropertyWrongPropertyName() {
+            Utility.addPropertyWith(WRONG_PROPERTY_NAME)
+        }
+
+        fun addPropertyNoParamKey() {
+            Utility.addPropertyWith(NO_PARAMETER_KEY)
+        }
+
+        fun addPropertyNoParamKeyValue() {
+            Utility.addPropertyWith(NO_PARAMETER_KEY_VALUE)
+        }
+
+        fun addPropertyNoParamValue() {
+            Utility.addPropertyWith(NO_PARAMETER_VALUE)
+        }
+
+        fun addPropertyWrongCampaign() {
+            Utility.addPropertyWith(WRONG_CAMPAIGN)
         }
 
         fun tapDismissWebView() {
@@ -20,6 +69,26 @@ class MetaAppTestCases {
 
         fun tapOnSave() {
             performClickById(resId = R.id.action_saveProperty)
+        }
+
+        fun tapOkPopupError(){
+            isDisplayedByResIdByText(R.id.message, MANDATORY_FIELDS)
+            performClickByText("OK")
+        }
+
+        fun tapOkPopupErrorUnableLoadPm(){
+            isDisplayedByResIdByText(R.id.message, UNABLE_TO_LOAD_PM_ERROR)
+            performClickByText("OK")
+        }
+
+        fun tapOkPopupErrorPropertyExist(){
+            isDisplayedByResIdByText(R.id.message, PROPERTY_EXITS_ERROR)
+            performClickByText("OK")
+        }
+
+        fun tapOkPopupErrorParameter(){
+            isDisplayedByResIdByText(R.id.message, TARGETING_PARAMETER_FIELDS)
+            performClickByText("OK")
         }
 
         fun addNativeMessagePropertyDetails() {
@@ -33,6 +102,18 @@ class MetaAppTestCases {
             insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
             insertTextByResId(propId = R.id.etPMId, text = pmId)
             performClickById(resId = R.id.toggleNativeMessage)
+        }
+
+        fun addPropertyDetails() {
+            val accountId = Example_accountID
+            val propertyId = Example_propertyID
+            val propertyName = Example_propertyName
+            val pmId = Example_pmID
+
+            insertTextByResId(propId = R.id.etAccountID, text = accountId)
+            insertTextByResId(propId = R.id.etPropertyId, text = propertyId)
+            insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
+            insertTextByResId(propId = R.id.etPMId, text = pmId)
         }
 
         fun checkNativeMessageDisplayed() {
@@ -52,29 +133,45 @@ class MetaAppTestCases {
         }
 
         fun checkWebViewDisplayedForPrivacyManager() {
-            checkWebViewHasText(TestData.PRIVACY_MANAGER)
+            checkWebViewHasText(PRIVACY_MANAGER)
         }
 
         fun checkConsentListNotSelected() {
-            TestData.CONSENT_LIST.forEach { consent ->
+            CONSENT_LIST.forEach { consent ->
                 checkConsentState(consent, false)
             }
         }
 
         fun checkWebViewDisplayedForMessage() {
-            checkWebViewHasText(TestData.MESSAGE)
+            checkWebViewHasText(MESSAGE)
         }
 
         fun tapRejectAllOnWebView() {
-            performClickOnWebViewByContent(TestData.PM_REJECT_ALL)
+            performClickOnWebViewByContent(PM_REJECT_ALL)
+        }
+
+        fun tapPmCancelOnWebView() {
+            performClickOnWebViewByContent(PM_CANCEL)
+        }
+
+        fun tapOptionOnWebView() {
+            performClickOnWebViewByContent(OPTIONS)
+        }
+
+        fun checkPMTabSelectedFeatures() {
+            checkPMTabSelected(FEATURES)
+        }
+
+        fun checkPMTabSelectedOptions() {
+            checkPMTabSelected(OPTIONS)
         }
 
         fun tapPMAcceptAllOnWebView() {
-            performClickOnWebViewByContent(TestData.PM_ACCEPT_ALL)
+            performClickOnWebViewByContent(PM_ACCEPT_ALL)
         }
 
         fun tapAcceptAllOnWebView() {
-            performClickOnWebViewByContent(TestData.ACCEPT_ALL)
+            performClickOnWebViewByContent(ACCEPT_ALL)
         }
 
         fun checkForConsentsAreDisplayed() {
@@ -82,11 +179,11 @@ class MetaAppTestCases {
         }
 
         fun tapManagePreferencesOnWebView() {
-            performClickOnWebViewByContent(TestData.MANAGE_PREFERENCES)
+            performClickOnWebViewByContent(MANAGE_PREFERENCES)
         }
 
         fun tapSaveAndExitOnWebView() {
-            performClickOnWebViewByContent(TestData.PM_SAVE_AND_EXIT)
+            performClickOnWebViewByContent(PM_SAVE_AND_EXIT)
         }
 
         fun checkForPropertyInfoScreen() {
@@ -114,7 +211,7 @@ class MetaAppTestCases {
         }
 
         fun checkWebViewDoesNotDisplayTheMessage() {
-            checkWebViewDoesNotHasText(TestData.MESSAGE)
+            checkWebViewDoesNotHasText(MESSAGE)
         }
 
         fun loadPrivacyManagerDirect() {
@@ -122,17 +219,17 @@ class MetaAppTestCases {
         }
 
         fun swipeAndChooseResetAction() {
-            swipeAndChooseAction(R.id.reset_button, R.id.item_view, TestData.YES)
+            swipeAndChooseAction(R.id.reset_button, R.id.item_view, YES)
         }
 
         fun selectNativeMessageConsentList() {
-            TestData.NATIVE_MESSAGE_CONSENT_LIST.forEach { consent ->
+            NATIVE_MESSAGE_CONSENT_LIST.forEach { consent ->
                 checkConsentWebView(consent)
             }
         }
 
         fun selectPartialConsentList() {
-            TestData.PARTIAL_CONSENT_LIST.forEach { consent ->
+            PARTIAL_CONSENT_LIST.forEach { consent ->
                 checkConsentWebView(consent)
             }
         }
@@ -146,7 +243,11 @@ class MetaAppTestCases {
         }
 
         fun addPropertyFor(messageType: String, authentication: String) {
-            Utility().addPropertyFor(messageType, authentication)
+            Utility.addPropertyFor(messageType, authentication)
+        }
+
+        fun checkPMTabSelectedPurposes() {
+            checkPMTabSelected(PURPOSES)
         }
     }
 }

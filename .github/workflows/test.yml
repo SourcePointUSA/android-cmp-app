@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ develop ]
 jobs:
-  test:
+  unit-test-cmplib:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
