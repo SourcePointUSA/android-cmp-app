@@ -100,14 +100,12 @@ fun performClickContent(
 
 @Throws(Throwable::class)
 fun isDisplayedAllOf(@IdRes resId: Int) {
-    Espresso
-        .onView(allOf(withId(resId), isDisplayed()))
+    onView(allOf(withId(resId), isDisplayed()))
 }
 
 @Throws(Throwable::class)
 fun isDisplayedByResId(@IdRes resId: Int) {
-    Espresso
-        .onView(withId(resId))
+    onView(withId(resId))
         .check(ViewAssertions.matches(isDisplayed()))
 }
 

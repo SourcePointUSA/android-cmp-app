@@ -276,7 +276,7 @@ class MetaAppTestsK {
     }
 
     @Test
-    fun checkNativeMessagePMCancelDirectPMLoad() = runBlocking<Unit> {
+    fun checkNativeMessagePMCancelDirectPMLoad() = runBlocking {
 
         scenario = launchActivity()
 
@@ -296,7 +296,7 @@ class MetaAppTestsK {
     }
 
     @Test
-    fun checkPMTabSelected() = runBlocking<Unit> {
+    fun checkPMTabSelected() = runBlocking {
 
         scenario = launchActivity()
 
@@ -310,5 +310,38 @@ class MetaAppTestsK {
         wr { checkForPropertyInfoScreen() }         //  Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
         wr { loadPrivacyManagerDirect() }           //  loadPrivacyManagerDirect();
         wr { checkPMTabSelectedPurposes() }         //  checkPMTabSelected(PURPOSES);
+    }
+
+    @Test
+    fun checkNativeMessageAcceptAllAction() = runBlocking {
+
+        scenario = launchActivity()
+
+        tapOnAddProperty()                          //        tapOnAddProperty();
+        addNativeMessagePropertyDetails()           //        addNativeMessagePropertyDetails();
+        tapOnSave()                                 //        tapOnSave();
+        checkNativeMessageDisplayed()               //        Assert.assertTrue(checkNativeMessageDisplayed());
+        wr { tapAcceptAll() }                       //        chooseNativeMessageAction(R.id.AcceptAll);
+        wr { checkForPropertyInfoScreen() }         //        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+        navigateBackToListView()                    //        navigateBackToListView();
+        checkInsertedProperty()                     //        Assert.assertTrue(checkForPropertyListScrren());
+        tapOnProperty()                             //        tapOnProperty();
+        wr { checkForPropertyInfoScreen() }         //        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+    }
+
+    @Test
+    fun checkNativeMessageDirectPMLoad() = runBlocking {
+
+        scenario = launchActivity()
+
+        tapOnAddProperty()                                  //        tapOnAddProperty();
+        addNativeMessagePropertyDetails()                   //        addNativeMessagePropertyDetails();
+        tapOnSave()                                         //        tapOnSave();
+        checkNativeMessageDisplayed()                       //        Assert.assertTrue(checkNativeMessageDisplayed());
+        wr { tapRejectAll() }                               //        chooseNativeMessageAction(R.id.RejectAll);
+        wr { checkForPropertyInfoScreen() }                 //        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+        loadPrivacyManagerDirect()                          //        loadPrivacyManagerDirect();
+        wr { checkWebViewDisplayedForPrivacyManager() }     //        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
+
     }
 }
