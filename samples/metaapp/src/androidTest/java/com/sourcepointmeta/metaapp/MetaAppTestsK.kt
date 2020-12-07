@@ -278,43 +278,6 @@ class MetaAppTestsK {
         wr { checkConsentListNotSelected() }                                  //        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
     }
 
-    @Test
-    fun acceptAllActionOnFrenchLanguage() = runBlocking {
-
-        scenario = launchActivity()
-
-        wr { tapOnAddProperty() }
-        wr { addMessageLanguagePropertyDetails() }
-        wr { tapOnSave() }
-        wr { checkWebViewDisplayedForMessage() }
-        wr { tapAcceptAllFrenchOnWebView() }
-    }
-
-    @Test
-    fun rejectAllActionOnFrenchLanguage() = runBlocking {
-
-        scenario = launchActivity()
-
-        wr { tapOnAddProperty() }
-        wr { addMessageLanguagePropertyDetails() }
-        wr { tapOnSave() }
-        wr { checkWebViewDisplayedForMessage() }
-        wr { tapRejectAllOnWebView() }
-    }
-
-    @Test
-    fun showOptionsActionOnFrenchLanguage() = runBlocking {
-
-        scenario = launchActivity()
-
-        wr { tapOnAddProperty() }
-        wr { addMessageLanguagePropertyDetails() }
-        wr { tapOnSave() }
-        wr { checkWebViewDisplayedForMessage() }
-        wr { tapShowOptionOnWebView() }
-        wr { checkWebViewDisplayedForPrivacyManager()}
-    }
-
     fun checkNativeMessagePMCancelDirectPMLoad() = runBlocking {
 
         scenario = launchActivity()
