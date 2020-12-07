@@ -33,7 +33,6 @@ import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapOnSave
 import com.sourcepointmeta.metaapp.TestData.NO_AUTHENTICATION
 import com.sourcepointmeta.metaapp.TestData.SHOW_MESSAGE_ALWAYS
 import com.sourcepointmeta.metaapp.ui.SplashScreenActivity
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test

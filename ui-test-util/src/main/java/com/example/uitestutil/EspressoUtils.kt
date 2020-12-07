@@ -9,7 +9,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.web.assertion.WebViewAssertions.webMatches
 import androidx.test.espresso.web.model.Atoms
 import androidx.test.espresso.web.sugar.Web.onWebView
-import androidx.test.espresso.web.webdriver.DriverAtoms
 import androidx.test.espresso.web.webdriver.DriverAtoms.*
 import androidx.test.espresso.web.webdriver.Locator
 import org.hamcrest.CoreMatchers
@@ -17,7 +16,6 @@ import org.hamcrest.core.AllOf.allOf
 import org.hamcrest.core.StringContains
 import org.hamcrest.core.StringContains.containsString
 import java.security.InvalidParameterException
-import kotlin.jvm.Throws
 
 @Throws(Throwable::class)
 fun isDisplayedAllOfByResId(

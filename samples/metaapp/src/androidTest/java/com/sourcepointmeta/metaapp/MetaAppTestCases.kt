@@ -1,13 +1,6 @@
 package com.sourcepointmeta.metaapp
 
-import androidx.test.espresso.Espresso.onData
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.example.uitestutil.*
-
-import org.hamcrest.CoreMatchers.*
-
 import com.sourcepointmeta.metaapp.TestData.*
 
 

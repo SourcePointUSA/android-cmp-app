@@ -4,7 +4,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
-import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.addMessageLanguagePropertyDetails
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.addNativeMessagePropertyDetails
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.addPropertyDetails
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.addPropertyFor
@@ -18,7 +17,6 @@ import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkForPropertyIn
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkInsertedProperty
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkNativeMessageDisplayed
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkPMTabSelectedFeatures
-import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkPMTabSelectedOptions
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkPMTabSelectedPurposes
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkWebViewDisplayedForMessage
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkWebViewDisplayedForPrivacyManager
@@ -29,7 +27,6 @@ import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.selectNativeMessag
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.selectPartialConsentList
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.swipeAndChooseResetAction
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapAcceptAll
-import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapAcceptAllFrenchOnWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapAcceptAllOnWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapDismissWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapManagePreferencesOnWebView
@@ -43,7 +40,6 @@ import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapRejectAll
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapRejectAllOnWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapSaveAndExitOnWebView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapShowOption
-import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapShowOptionOnWebView
 import com.sourcepointmeta.metaapp.TestData.*
 import com.sourcepointmeta.metaapp.ui.SplashScreenActivity
 import kotlinx.coroutines.runBlocking
@@ -278,6 +274,7 @@ class MetaAppTestsK {
         wr { checkConsentListNotSelected() }                                  //        Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
     }
 
+    @Test
     fun checkNativeMessagePMCancelDirectPMLoad() = runBlocking {
 
         scenario = launchActivity()
