@@ -46,8 +46,7 @@ class ExampleAppTests {
         scenario = launchActivity()
 
         wr(d) { checkWebViewDisplayedForMessage() } // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        // to tests the artifact, after the test restore the change
-//        wr { tapRejectOnWebView() }                 // chooseAction(REJECT);
+        wr { tapRejectOnWebView() }                 // chooseAction(REJECT);
         wr { checkMainWebViewDisplayed() }          // Assert.assertTrue(checkMainWebViewDisplayed());
         wr { clickOnReviewConsent() }               // clickOnReviewConsent();
         wr { tapAcceptAllOnWebView() }              // chooseAction(ACCEPT_ALL);
