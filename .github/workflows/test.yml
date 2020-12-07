@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         with:
           name: 'example-app-test-report'
-          path: app/build/reports/androidTests/*
+          path: samples/app/build/reports/androidTests/*
   ui-test-metaapp:
     runs-on: macos-latest
     steps:
@@ -82,4 +82,4 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         with:
           name: 'metaap-test-report'
-          path: metaapp/build/reports/androidTests/*
+          path: samples/metaapp/build/reports/androidTests/*

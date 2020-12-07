@@ -64,7 +64,8 @@ class MetaAppTestsK {
         scenario = launchActivity()
 
         wr { tapOnAddProperty() }                           // tapOnAddProperty();
-        wr { addNativeMessagePropertyDetails() }            // addNativeMessagePropertyDetails();
+        // to tests the artifact, after the test restore the change
+//        wr { addNativeMessagePropertyDetails() }            // addNativeMessagePropertyDetails();
         wr { tapOnSave() }                                  // tapOnSave();
         wr { checkNativeMessageDisplayed() }                // Assert.assertTrue(checkNativeMessageDisplayed());
         wr { tapShowOption() }                              // chooseNativeMessageAction(R.id.ShowOption);
