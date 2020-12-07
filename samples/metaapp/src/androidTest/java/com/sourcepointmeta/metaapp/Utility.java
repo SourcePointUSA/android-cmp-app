@@ -26,12 +26,12 @@ import static org.hamcrest.core.StringContains.containsString;
 public class Utility extends TestData {
     final CountDownLatch signal = new CountDownLatch(1);
 
-    public void tapOnAddProperty() {
+    public static void tapOnAddProperty() {
         onView(allOf(withId(R.id.action_addProperty), isDisplayed()))
                 .perform(click());
     }
 
-    public void addPropertyFor(String messageType, String authentication) {
+    public static void addPropertyFor(String messageType, String authentication) {
         tapOnAddProperty();
         addPropertyDetails(accountID, propertyID, propertyName, pmID);
         if (messageType.equals(SHOW_MESSAGE_ALWAYS))
@@ -45,7 +45,7 @@ public class Utility extends TestData {
         tapOnSave();
     }
 
-    public void addPropertyWith(String field) {
+    public static void addPropertyWith(String field) {
         if (field.equals(ALL_FIELDS)){
             addPropertyDetails(accountID, propertyID, propertyName, pmID);
             addParameterWithAuthentication(keyParam, valueParamEnglish, NO_AUTHENTICATION);
@@ -79,7 +79,7 @@ public class Utility extends TestData {
             addPropertyDetails(accountID, propertyID, propertyName, pmID + "111");
     }
 
-    public void addParameterWithAuthentication(String key, String value, String authentication) {
+    public static void addParameterWithAuthentication(String key, String value, String authentication) {
         if (!authentication.equals(NO_AUTHENTICATION)) {
             addAuthentication(authentication);
         }
@@ -95,7 +95,7 @@ public class Utility extends TestData {
                 .perform(click());
     }
 
-    public void addAuthentication(String authentication) {
+    public static void addAuthentication(String authentication) {
         if (authentication.equals(UNIQUE_AUTHENTICATION)) {
             onView(allOf(withId(R.id.etAuthID), isDisplayed()))
                     .perform(clearText(), typeText(authID()), closeSoftKeyboard());
@@ -105,7 +105,7 @@ public class Utility extends TestData {
         }
     }
 
-    public void addPropertyDetails(String accountId, String propertyId, String propertyName, String pmId) {
+    public static void addPropertyDetails(String accountId, String propertyId, String propertyName, String pmId) {
         onView(allOf(withId(R.id.etAccountID), isDisplayed()))
                 .perform(clearText(), replaceText(accountId), closeSoftKeyboard());
 
@@ -119,19 +119,19 @@ public class Utility extends TestData {
                 .perform(clearText(), replaceText(pmId), closeSoftKeyboard());
     }
 
-    public void chooseCampaign(String option) {
+    public static void chooseCampaign(String option) {
         if (option.equals(STAGING_CAMPAIGN)) {
             onView(allOf(withId(R.id.toggleStaging), isDisplayed()))
                     .perform(click());
         }
     }
 
-    public void tapOnSave() {
+    public static void tapOnSave() {
         onView(allOf(withId(R.id.action_saveProperty), withText("Save"), isDisplayed()))
                 .perform(click());
     }
 
-    public void chooseAction(String option) {
+    public static void chooseAction(String option) {
         try {
             onWebView().withElement(findElement(Locator.XPATH, "//button[contains('" + option + "',text())]"))
                     .perform(webScrollIntoView())
@@ -141,7 +141,7 @@ public class Utility extends TestData {
         }
     }
 
-    public void chooseDismiss() {
+    public static void chooseDismiss() {
         onWebView()
                 .withElement(findElement(Locator.CLASS_NAME, "message-stacksclose"))
                 .perform(webScrollIntoView())
@@ -185,17 +185,17 @@ public class Utility extends TestData {
         return false;
     }
 
-    public void navigateBackToListView() {
+    public static void navigateBackToListView() {
         onView(allOf(withContentDescription("Navigate up"), isDisplayed()))
                 .perform(click());
     }
 
-    public void tapOnProperty() {
+    public static void tapOnProperty() {
         onView(allOf(withId(R.id.item_view), isDisplayed()))
                 .perform(click());
     }
 
-    public void loadPrivacyManagerDirect() {
+    public static void loadPrivacyManagerDirect() {
         onView(allOf(withId(R.id.action_showPM), isDisplayed()))
                 .perform(click());
     }
@@ -233,7 +233,7 @@ public class Utility extends TestData {
         return false;
     }
 
-    public void selectConsents(String[] userConsentArray) {
+    public static void selectConsents(String[] userConsentArray) {
         for (String s : userConsentArray) {
             onWebView()
                     .withElement(findElement(Locator.XPATH, "//label[@aria-label='" + s + "']/span[@class='slider round']"))
@@ -275,7 +275,7 @@ public class Utility extends TestData {
         return value;
     }
 
-    public void addNativeMessagePropertyDetails() {
+    public static void addNativeMessagePropertyDetails() {
         String accountId = "22";
         String propertyId= "7094";
         String propertyName= "tcfv2.mobile.demo";
@@ -312,7 +312,7 @@ public class Utility extends TestData {
         return value;
     }
 
-    public void chooseNativeMessageAction(int actionId){
+    public static void chooseNativeMessageAction(int actionId){
         onView(allOf(withId(actionId), isDisplayed()))
                 .perform(click());
     }

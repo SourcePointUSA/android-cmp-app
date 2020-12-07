@@ -1,6 +1,5 @@
 package com.sourcepoint.example_app;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -31,9 +30,8 @@ public class MainActivityAuthId extends AppCompatActivity {
 
         wv.setWebViewClient(new WebViewClient() {
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            public void onPageFinished(WebView view, String url) {
                 WebViewUtils.setAuthId(authId, view);
-                super.onPageStarted(view, url, favicon);
             }
         });
 

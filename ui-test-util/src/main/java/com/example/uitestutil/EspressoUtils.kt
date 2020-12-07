@@ -26,11 +26,24 @@ fun isDisplayedAllOfByResId(
     onView(allOf(withId(resId), isDisplayed()))
 }
 
+fun isDisplayedByResIdByText(
+    @IdRes resId: Int,
+    text : String
+) {
+    onView(
+        allOf(
+            withId(resId),
+            withText(text),
+            isDisplayed()
+        )
+    )
+}
+
 fun performClickByIdAndContent(
     @IdRes resId: Int,
     contentDescription: String
 ) {
-    Espresso.onView(
+    onView(
         allOf(
             withId(resId),
             withContentDescription(contentDescription),
@@ -55,9 +68,21 @@ fun performClickByIdCompletelyDisplayed(
 fun performClickById(
     @IdRes resId: Int
 ) {
-    Espresso.onView(
+    onView(
         allOf(
             withId(resId),
+            isDisplayed()
+        )
+    ).perform(ViewActions.click())
+}
+
+@Throws(Throwable::class)
+fun performClickByText(
+    text : String
+) {
+    onView(
+        allOf(
+            withText(text),
             isDisplayed()
         )
     ).perform(ViewActions.click())
@@ -66,7 +91,7 @@ fun performClickById(
 fun performClickContent(
     contentDescription: String
 ) {
-    Espresso.onView(
+    onView(
         allOf(
             withContentDescription(contentDescription),
             isDisplayed()
@@ -82,14 +107,12 @@ fun performSpinnerItemSelection(@IdRes resId: Int , contentDescription: String){
 
 @Throws(Throwable::class)
 fun isDisplayedAllOf(@IdRes resId: Int) {
-    Espresso
-        .onView(allOf(withId(resId), isDisplayed()))
+    onView(allOf(withId(resId), isDisplayed()))
 }
 
 @Throws(Throwable::class)
 fun isDisplayedByResId(@IdRes resId: Int) {
-    Espresso
-        .onView(withId(resId))
+    onView(withId(resId))
         .check(ViewAssertions.matches(isDisplayed()))
 }
 
@@ -98,7 +121,7 @@ fun insertTextByResId(
     @IdRes propId: Int,
     text: String
 ) {
-    Espresso.onView(
+    onView(
         allOf(
             withId(propId),
             isDisplayed())
@@ -124,8 +147,8 @@ fun checkWebViewHasText(text: String) {
 @Throws(Throwable::class)
 fun checkElementWithText(id : String, expected: String) {
     onWebView()
-            .withElement(findElement(Locator.ID, id))
-            .check(webMatches(getText(), containsString(expected)));
+        .withElement(findElement(Locator.ID, id))
+        .check(webMatches(getText(), containsString(expected)));
 }
 
 @Throws(Throwable::class)
@@ -187,7 +210,7 @@ fun swipeAndChooseAction(
     field: String
 ) {
     onView(allOf(withId(resIdListItem), isDisplayed())).perform(ViewActions.swipeLeft())
-//    Espresso.onView(allOf(withId(resId), isDisplayed())).perform(ViewActions.click())
+//    onView(allOf(withId(resId), isDisplayed())).perform(ViewActions.click())
     performClickById(resId)
     onView(withText(field)).perform(ViewActions.scrollTo(), ViewActions.click())
 }
