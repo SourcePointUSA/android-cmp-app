@@ -197,7 +197,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
         mPropertyNameET = findViewById(R.id.etPropertyName);
         mPMIdET = findViewById(R.id.etPMId);
         mAuthIdET = findViewById(R.id.etAuthID);
-        mSpinnerML = findViewById(R.id.spinnerMessageLanguage);
+        mSpinnerML = findViewById(R.id.spinner_message_language);
         mSpinnerML.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,messageLanguages));
         mSpinnerML.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
 

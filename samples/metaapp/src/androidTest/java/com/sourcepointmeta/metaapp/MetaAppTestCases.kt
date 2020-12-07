@@ -129,8 +129,13 @@ class MetaAppTestCases {
             val propertyId = "7639"
             val propertyName = "tcfv2.mobile.webview"
             val pmId = "122058"
+
+            insertTextByResId(propId = R.id.etAccountID, text = accountId)
+            insertTextByResId(propId = R.id.etPropertyId, text = propertyId)
+            insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
+            insertTextByResId(propId = R.id.etPMId, text = pmId)
             val messageLanguage = "FRENCH";
-            performSpinnerItemSelection(resId = R.id.spinnerMessageLanguage, contentDescription = messageLanguage)
+            performSpinnerItemSelection(resId = R.id.spinner_message_language, contentDescription = messageLanguage)
         }
 
         fun checkNativeMessageDisplayed() {
