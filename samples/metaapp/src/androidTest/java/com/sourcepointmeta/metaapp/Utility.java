@@ -4,6 +4,8 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.espresso.web.webdriver.Locator;
 
+import com.example.uitestutil.EspressoUtilsKt;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -117,6 +119,7 @@ public class Utility extends TestData {
 
         onView(allOf(withId(R.id.etPMId), isDisplayed()))
                 .perform(clearText(), replaceText(pmId), closeSoftKeyboard());
+        EspressoUtilsKt.performSpinnerItemSelection(R.id.spinner_message_language, TestData.ENGLISH);
     }
 
     public static void chooseCampaign(String option) {

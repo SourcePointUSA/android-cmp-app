@@ -83,7 +83,7 @@ class MetaAppValidationTestsK {
         addPropertyNoParamKey()             //        addPropertyWith(NO_PARAMETER_KEY);
         tapOkPopupErrorParameter()          //        Assert.assertTrue(checkErrorFor(TARGETING_PARAMETER_FIELDS));
         addPropertyNoParamValue()           //        addPropertyWith(NO_PARAMETER_VALUE);
-        tapOkPopupErrorParameter()          //        Assert.assertTrue(checkErrorFor(TARGETING_PARAMETER_FIELDS));
+        wr{ tapOkPopupErrorParameter() }         //        Assert.assertTrue(checkErrorFor(TARGETING_PARAMETER_FIELDS));
     }
 
     @Test
@@ -133,7 +133,7 @@ class MetaAppValidationTestsK {
         wr { checkForConsentsAreDisplayed() }                           //        Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
         wr { navigateBackToListView() }                                 //        navigateBackToListView();
         wr { addPropertyFor(SHOW_MESSAGE_ALWAYS, NO_AUTHENTICATION) }   //        addPropertyFor(SHOW_MESSAGE_ALWAYS, NO_AUTHENTICATION);
-        tapOkPopupErrorPropertyExist()                                  //        Assert.assertTrue(checkErrorFor(PROPERTY_EXITS_ERROR));
+        wr { tapOkPopupErrorPropertyExist() }                                //        Assert.assertTrue(checkErrorFor(PROPERTY_EXITS_ERROR));
     }
 
     @Test

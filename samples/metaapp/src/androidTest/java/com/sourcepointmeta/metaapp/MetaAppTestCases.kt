@@ -110,6 +110,7 @@ class MetaAppTestCases {
             insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
             insertTextByResId(propId = R.id.etPMId, text = pmId)
             performClickById(resId = R.id.toggleNativeMessage)
+            performSpinnerItemSelection(resId = R.id.spinner_message_language, contentDescription = ENGLISH)
         }
 
         fun addPropertyDetails() {
@@ -122,6 +123,7 @@ class MetaAppTestCases {
             insertTextByResId(propId = R.id.etPropertyId, text = propertyId)
             insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
             insertTextByResId(propId = R.id.etPMId, text = pmId)
+            performSpinnerItemSelection(resId = R.id.spinner_message_language, contentDescription = ENGLISH);
         }
 
         fun addMessageLanguagePropertyDetails() {
@@ -134,7 +136,7 @@ class MetaAppTestCases {
             insertTextByResId(propId = R.id.etPropertyId, text = propertyId)
             insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
             insertTextByResId(propId = R.id.etPMId, text = pmId)
-            val messageLanguage = "FRENCH";
+            val messageLanguage = FRENCH;
             performSpinnerItemSelection(resId = R.id.spinner_message_language, contentDescription = messageLanguage)
         }
 
