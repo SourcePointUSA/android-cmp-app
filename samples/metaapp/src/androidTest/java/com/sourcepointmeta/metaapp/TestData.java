@@ -52,6 +52,7 @@ public class TestData {
     public static String EXISTING_AUTHENTICATION = "same";
     public static String ACCEPT_ALL = "ACCEPT ALL";
     public static String ACCEPT_ALL_FRENCH = "accepte";
+    public static String REJECT_ALL_FRENCH = "Reject";
     public static String PM_ACCEPT_ALL = "Accept All";
     public static String REJECT_ALL = "REJECT ALL";
     public static String PM_REJECT_ALL = "Reject All";

@@ -40,7 +40,7 @@ class MessageLanguageTests {
         wr { MetaAppTestCases.addMessageLanguagePropertyDetails() }
         wr { MetaAppTestCases.tapOnSave() }
         wr { MetaAppTestCases.checkWebViewDisplayedForMessage() }
-        wr { MetaAppTestCases.tapRejectAllOnWebView() }
+        wr { MetaAppTestCases.tapRejectAllFrenchOnWebView() }
     }
 
     @Test

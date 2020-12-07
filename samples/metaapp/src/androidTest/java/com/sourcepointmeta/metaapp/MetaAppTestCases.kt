@@ -197,7 +197,11 @@ class MetaAppTestCases {
         }
 
         fun tapAcceptAllFrenchOnWebView() {
-            performClickOnWebViewByContent(TestData.ACCEPT_ALL_FRENCH)
+            performClickOnWebViewByContent(ACCEPT_ALL_FRENCH)
+        }
+
+        fun tapRejectAllFrenchOnWebView() {
+            performClickOnWebViewByContent(REJECT_ALL_FRENCH)
         }
 
         fun tapManagePreferencesOnWebView() {
