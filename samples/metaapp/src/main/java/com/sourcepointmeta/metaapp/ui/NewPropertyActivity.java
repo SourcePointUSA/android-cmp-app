@@ -23,11 +23,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibBuilder;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
+import com.sourcepoint.gdpr_cmplibrary.MessageLanguage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
 import com.sourcepointmeta.metaapp.R;
@@ -53,6 +57,9 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
     private final String TAG = "NewPropertyActivity";
     private ProgressDialog mProgressDialog;
     private TextInputEditText mAccountIdET, mPropertyIdET, mPropertyNameET, mPMIdET, mAuthIdET, mKeyET, mValueET;
+    private Spinner mSpinnerML;
+    private String [] messageLanguages = MessageLanguage.names();
+    private String selectedLanguage ;
 
     private TextView mAddParamBtn;
     private ViewGroup mMainViewGroup;
@@ -134,6 +141,11 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
         } else {
             Log.d(TAG, "AuthID Not available : " + property.getAuthId());
         }
+        if (!TextUtils.isEmpty(property.getMessageLanguage())) {
+            consentLibBuilder.setMessageLanguage(MessageLanguage.findByName(property.getMessageLanguage()));
+        } else {
+            Log.d(TAG, "MessageLanguage Not selected : " + property.getMessageLanguage());
+        }
         // generate ConsentLib at this point modifying builder will not do anything
         return consentLibBuilder.build();
     }
@@ -185,6 +197,21 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
         mPropertyNameET = findViewById(R.id.etPropertyName);
         mPMIdET = findViewById(R.id.etPMId);
         mAuthIdET = findViewById(R.id.etAuthID);
+        mSpinnerML = findViewById(R.id.spinner_message_language);
+        mSpinnerML.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,messageLanguages));
+        mSpinnerML.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedLanguage = MessageLanguage.valueOf(messageLanguages[position]).name();
+                Log.d("selectedLanguage", selectedLanguage);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                selectedLanguage = "";
+            }
+        });
         mStagingSwitch = findViewById(R.id.toggleStaging);
         mStagingSwitch.setChecked(false);
 
@@ -221,6 +248,11 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                 mPMIdET.setText(property.getPmID());
                 mStagingSwitch.setChecked(property.isStaging());
                 mNativeMessage.setChecked(property.isNative());
+                int spinnerPosition = 0;
+                for(int i=0; i < messageLanguages.length; i++)
+                    if(messageLanguages[i].contains(property.getMessageLanguage()))
+                        spinnerPosition = i;
+                mSpinnerML.setSelection(spinnerPosition);
 
                 if (!TextUtils.isEmpty(property.getAuthId())) {
                     mAuthIdET.setText(property.getAuthId());
@@ -361,7 +393,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
         int account = Integer.parseInt(accountID);
         int property_id = Integer.parseInt(PropertyID);
 
-        return new Property(account, property_id, propertyName, pmID, isStaging, isNativeMessage, authId, mTargetingParamList);
+        return new Property(account, property_id, propertyName, pmID, isStaging, isNativeMessage, authId, selectedLanguage, mTargetingParamList);
     }
 
     private void loadPropertyWithInput() {

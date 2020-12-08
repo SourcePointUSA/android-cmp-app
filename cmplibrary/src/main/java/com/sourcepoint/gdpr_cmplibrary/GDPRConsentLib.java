@@ -57,6 +57,7 @@ public class GDPRConsentLib {
     final onActionCallback onAction;
     final boolean shouldCleanConsentOnError;
     boolean isOTT;
+    String messageLanguage;
 
     public boolean isNative, isPmOn = false;
 
@@ -168,6 +169,7 @@ public class GDPRConsentLib {
         shouldCleanConsentOnError = b.shouldCleanConsentOnError;
         onBeforeSendingConsent = b.onBeforeSendingConsent;
         onNoIntentActivitiesFound = b.onNoIntentActivitiesFound;
+        messageLanguage = b.messageLanguage;
         isOTT = b.isOTT;
 
         uiThreadHandler = b.getUIThreadHandler();
@@ -416,7 +418,8 @@ public class GDPRConsentLib {
                         setNativeMessageView(jsonResult.getJSONObject("msgJSON"));
                         showView(nativeView,false);
                     } else if(jsonResult.has("url") && !jsonResult.isNull("url")){
-                        loadConsentUI(jsonResult.getString("url")+"&consentUUID="+consentUUID);
+                        loadConsentUI(jsonResult.getString("url")+"&consentUUID=" + consentUUID +
+                                getSelectedMessageLanguage());
                     } else {
                         storeData();
                         consentFinished();
@@ -433,6 +436,13 @@ public class GDPRConsentLib {
                 onErrorTask(exception);
             }
         });
+    }
+
+    private String getSelectedMessageLanguage(){
+        String consentLanguage = "";
+        if (!TextUtils.isEmpty(messageLanguage))
+            consentLanguage = messageLanguage;
+        return "&consentLanguage="+consentLanguage;
     }
 
     void showView(View view, boolean isFromPM) {
@@ -597,6 +607,8 @@ public class GDPRConsentLib {
         params.add("pmTab="+pmTab);
         params.add("site_id="+ propertyId);
         if (consentUUID != null) params.add("consentUUID=" + consentUUID);
+        String consentLanguage = messageLanguage != null ? messageLanguage : "";
+        params.add("consentLanguage=" + consentLanguage);
         String PM_URL = isOTT ? OTT_PM_BASE_URL : PM_BASE_URL;
         return PM_URL + "?" + TextUtils.join("&", params);
     }

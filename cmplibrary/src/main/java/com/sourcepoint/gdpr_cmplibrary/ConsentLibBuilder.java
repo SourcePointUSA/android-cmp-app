@@ -36,6 +36,7 @@ public class ConsentLibBuilder {
 
     String targetingParamsString = null;
     String authId = null;
+    String messageLanguage = null;
     long messageTimeOut;
 
     StoreClient storeClient;
@@ -176,6 +177,11 @@ public class ConsentLibBuilder {
 
     public ConsentLibBuilder setAuthId(String authId) {
         this.authId = authId;
+        return this;
+    }
+
+    public ConsentLibBuilder setMessageLanguage(MessageLanguage messageLanguage){
+        this.messageLanguage = messageLanguage.language;
         return this;
     }
 

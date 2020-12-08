@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibBuilder;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
+import com.sourcepoint.gdpr_cmplibrary.MessageLanguage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
 import com.sourcepointmeta.metaapp.R;
@@ -134,6 +135,12 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
             consentLibBuilder.setAuthId(property.getAuthId());
         } else {
             Log.d(TAG, "AuthID Not available : " + property.getAuthId());
+        }
+
+        if (!TextUtils.isEmpty(property.getMessageLanguage())) {
+            consentLibBuilder.setMessageLanguage(MessageLanguage.findByName(property.getMessageLanguage()));
+        } else {
+            Log.d(TAG, "MessageLanguage Not selected : " + property.getMessageLanguage());
         }
         // generate ConsentLib at this point modifying builder will not do anything
         return consentLibBuilder.build();

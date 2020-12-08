@@ -1,14 +1,21 @@
 package com.sourcepointmeta.metaapp;
 
-import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.espresso.web.webdriver.Locator;
+
+import com.example.uitestutil.EspressoUtilsKt;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.*;
+import static androidx.test.espresso.action.ViewActions.clearText;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.swipeLeft;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -117,6 +124,7 @@ public class Utility extends TestData {
 
         onView(allOf(withId(R.id.etPMId), isDisplayed()))
                 .perform(clearText(), replaceText(pmId), closeSoftKeyboard());
+        EspressoUtilsKt.performSpinnerItemSelection(R.id.spinner_message_language, TestData.ENGLISH);
     }
 
     public static void chooseCampaign(String option) {

@@ -163,6 +163,15 @@ public class ConsentLibBuilderTest {
     }
 
     @Test
+    public void setMessageLanguage() {
+        String [] languages = MessageLanguage.names();
+        for (String languageName : languages ){
+            defaultBuilder.setMessageLanguage(MessageLanguage.findByName(languageName));
+            assertEquals(MessageLanguage.findByName(languageName).language, defaultBuilder.messageLanguage);
+        }
+    }
+
+    @Test
     public void setTargetingParamString() throws Exception {
         defaultBuilder.setTargetingParam("key", "stringValue");
 

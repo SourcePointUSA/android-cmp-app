@@ -3,6 +3,7 @@ package com.sourcepointmeta.metaapp
 import com.example.uitestutil.*
 import com.sourcepointmeta.metaapp.TestData.*
 
+
 class MetaAppTestCases {
 
     companion object {
@@ -71,22 +72,22 @@ class MetaAppTestCases {
             performClickById(resId = R.id.action_saveProperty)
         }
 
-        fun tapOkPopupError(){
+        fun tapOkPopupError() {
             isDisplayedByResIdByText(R.id.message, MANDATORY_FIELDS)
             performClickByText("OK")
         }
 
-        fun tapOkPopupErrorUnableLoadPm(){
+        fun tapOkPopupErrorUnableLoadPm() {
             isDisplayedByResIdByText(R.id.message, UNABLE_TO_LOAD_PM_ERROR)
             performClickByText("OK")
         }
 
-        fun tapOkPopupErrorPropertyExist(){
+        fun tapOkPopupErrorPropertyExist() {
             isDisplayedByResIdByText(R.id.message, PROPERTY_EXITS_ERROR)
             performClickByText("OK")
         }
 
-        fun tapOkPopupErrorParameter(){
+        fun tapOkPopupErrorParameter() {
             isDisplayedByResIdByText(R.id.message, TARGETING_PARAMETER_FIELDS)
             performClickByText("OK")
         }
@@ -102,6 +103,7 @@ class MetaAppTestCases {
             insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
             insertTextByResId(propId = R.id.etPMId, text = pmId)
             performClickById(resId = R.id.toggleNativeMessage)
+            performSpinnerItemSelection(resId = R.id.spinner_message_language, contentDescription = ENGLISH)
         }
 
         fun addPropertyDetails() {
@@ -114,6 +116,21 @@ class MetaAppTestCases {
             insertTextByResId(propId = R.id.etPropertyId, text = propertyId)
             insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
             insertTextByResId(propId = R.id.etPMId, text = pmId)
+            performSpinnerItemSelection(resId = R.id.spinner_message_language, contentDescription = ENGLISH);
+        }
+
+        fun addMessageLanguagePropertyDetails() {
+            val accountId = "22"
+            val propertyId = "7639"
+            val propertyName = "tcfv2.mobile.webview"
+            val pmId = "122058"
+
+            insertTextByResId(propId = R.id.etAccountID, text = accountId)
+            insertTextByResId(propId = R.id.etPropertyId, text = propertyId)
+            insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
+            insertTextByResId(propId = R.id.etPMId, text = pmId)
+            val messageLanguage = FRENCH;
+            performSpinnerItemSelection(resId = R.id.spinner_message_language, contentDescription = messageLanguage)
         }
 
         fun checkNativeMessageDisplayed() {
@@ -174,12 +191,24 @@ class MetaAppTestCases {
             performClickOnWebViewByContent(ACCEPT_ALL)
         }
 
-        fun checkForConsentsAreDisplayed() {
-            isDisplayedByResId(R.id.consentRecyclerView)
+        fun tapAcceptAllFrenchOnWebView() {
+            performClickOnWebViewByContent(ACCEPT_ALL_FRENCH)
+        }
+
+        fun tapRejectAllFrenchOnWebView() {
+            performClickOnWebViewByContent(REJECT_ALL_FRENCH)
         }
 
         fun tapManagePreferencesOnWebView() {
             performClickOnWebViewByContent(MANAGE_PREFERENCES)
+        }
+
+        fun checkForConsentsAreDisplayed() {
+            isDisplayedByResId(R.id.consentRecyclerView)
+        }
+
+        fun tapShowOptionOnWebView() {
+            performClickOnWebViewByContent(TestData.OPTIONS)
         }
 
         fun tapSaveAndExitOnWebView() {

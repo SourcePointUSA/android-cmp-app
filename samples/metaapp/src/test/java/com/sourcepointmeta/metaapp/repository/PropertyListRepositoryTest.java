@@ -88,11 +88,11 @@ public class PropertyListRepositoryTest {
         Property property = StaticTestData.PROPERTIES.get(0);
         property.setId(1);
 
-        propertyListDao.update(property.getAccountID(), property.getPropertyID() , property.getProperty(), property.getPmID() , property.isStaging(), property.isNative(), property.getAuthId(), property.getId());
-        verify(propertyListDao).update(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getId());
+        propertyListDao.update(property.getAccountID(), property.getPropertyID() , property.getProperty(), property.getPmID() , property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage(), property.getId());
+        verify(propertyListDao).update(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage(), property.getId());
 
-        when(propertyListDao.update(property.getAccountID(), property.getPropertyID() , property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getId())).thenReturn(1);
-        assertEquals(1, propertyListDao.update(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getId()));
+        when(propertyListDao.update(property.getAccountID(), property.getPropertyID() , property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage() , property.getId())).thenReturn(1);
+        assertEquals(1, propertyListDao.update(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage(), property.getId()));
     }
 
     @Test
@@ -129,14 +129,14 @@ public class PropertyListRepositoryTest {
         }
 
         if (keyList.isEmpty()){
-            when(propertyListDao.getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID() , property.isStaging(), property.isNative() , property.getAuthId())).thenReturn(1);
+            when(propertyListDao.getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID() , property.isStaging(), property.isNative() , property.getAuthId(), property.getMessageLanguage())).thenReturn(1);
         }else {
             TargetingParameterList targetingParameterList = new TargetingParameterList();
             targetingParameterList.setKeyList(keyList);
             targetingParameterList.setValueList(valueList);
             List<TargetingParameterList> targetingParameterLists = Arrays.asList(targetingParameterList);
             when(propertyListDao.getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative() , property.getAuthId(),
-                    keyList, valueList)).thenReturn(targetingParameterLists);
+                    property.getMessageLanguage() ,keyList, valueList)).thenReturn(targetingParameterLists);
         }
 
         MutableLiveData<Integer> listSize = (MutableLiveData<Integer>) propertyListRepository.getPropertyWithDetails(property);
@@ -155,7 +155,7 @@ public class PropertyListRepositoryTest {
 
         Property property = StaticTestData.PROPERTIES.get(2);
         Observer<Integer> observer = mock(Observer.class);
-        doReturn(1).when(propertyListDao).getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID() , property.isStaging(), property.isNative(), property.getAuthId());
+        doReturn(1).when(propertyListDao).getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID() , property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage());
 
 
         MutableLiveData<Integer> listSize = (MutableLiveData<Integer>) propertyListRepository.getPropertyWithDetails(property);

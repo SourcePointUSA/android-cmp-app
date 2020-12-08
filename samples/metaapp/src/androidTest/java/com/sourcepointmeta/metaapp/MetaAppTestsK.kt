@@ -17,7 +17,6 @@ import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkForPropertyIn
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkInsertedProperty
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkNativeMessageDisplayed
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkPMTabSelectedFeatures
-import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkPMTabSelectedOptions
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkPMTabSelectedPurposes
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkWebViewDisplayedForMessage
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.checkWebViewDisplayedForPrivacyManager

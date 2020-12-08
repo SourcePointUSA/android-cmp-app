@@ -16,7 +16,7 @@ import com.sourcepointmeta.metaapp.database.dao.TargetingParamDao;
 import com.sourcepointmeta.metaapp.database.entity.Property;
 import com.sourcepointmeta.metaapp.database.entity.TargetingParam;
 
-@Database(entities = {Property.class, TargetingParam.class}, version = 6, exportSchema = false)
+@Database(entities = {Property.class, TargetingParam.class}, version = 7, exportSchema = false)
 public abstract class AppDataBase extends RoomDatabase {
 
     private static AppDataBase sInstance;
@@ -60,6 +60,7 @@ public abstract class AppDataBase extends RoomDatabase {
                 .addMigrations(MIGRATION_3_4)
                 .addMigrations(MIGRATION_4_5)
                 .addMigrations(MIGRATION_5_6)
+                .addMigrations(MIGRATION_6_7)
                 .build();
     }
 
@@ -147,6 +148,23 @@ public abstract class AppDataBase extends RoomDatabase {
             //copy the data
             database.execSQL(
                     "INSERT INTO property_new (id, accountId, propertyId, property, pmId, staging, isNative, authId) SELECT id, accountId, propertyId, property, pmId, staging, showPM, authId  FROM property");
+
+
+            database.execSQL("DROP TABLE property");
+
+            database.execSQL("ALTER TABLE property_new RENAME TO property");
+        }
+    };
+
+    private static final Migration MIGRATION_6_7 = new Migration(6,7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL(
+                    "CREATE TABLE property_new (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `accountId` INTEGER NOT NULL, `propertyId` INTEGER NOT NULL, `property` TEXT, `pmId` TEXT, `staging` INTEGER NOT NULL, `isNative` INTEGER NOT NULL,`authId` TEXT, `message_language` TEXT)");
+            //copy the data
+            database.execSQL(
+                    "INSERT INTO property_new (id, accountId, propertyId, property, pmId, staging, isNative, authId) SELECT id, accountId, propertyId, property, pmId, staging, isNative, authId  FROM property");
 
 
             database.execSQL("DROP TABLE property");
