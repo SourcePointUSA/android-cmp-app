@@ -14,11 +14,6 @@ jobs:
         java-version: 1.8
     - name: creating local.properties # this file is normally added to .gitignore
       run: touch local.properties
-    - name: Bump versionCode
-      uses: chkfung/android-version-actions@v1.1
-      with:
-        gradlePath: samples/metaapp/build.gradle
-        versionCode: ${{github.run_number}}
     - name: generating MetaApp build release
       id: buildRelease
       run: ./gradlew :metaapp:assembleRelease
