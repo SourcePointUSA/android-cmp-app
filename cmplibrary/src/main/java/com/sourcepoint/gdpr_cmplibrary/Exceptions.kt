@@ -81,3 +81,15 @@ internal class ConnectionTimeoutException(
     code = "",
     description = "")
 
+/**
+invalid_local_data
+invalid_response
+invalid_event_payload
+url_loading_error
+web_view_error
+no_internet_connection
+internal_server_error
+resource_not_found
+connection_timeout
+ */
+
