@@ -1,12 +1,12 @@
 ![Test](https://github.com/SourcePointUSA/android-cmp-app/workflows/Test/badge.svg?branch=develop)
 
-# How to Install
+# How to Install ![Bintray](https://img.shields.io/bintray/v/sourcepoint/sourcepoint/cmplibrary)
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
 
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.3.10'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.3.11'
 }
 ```
 

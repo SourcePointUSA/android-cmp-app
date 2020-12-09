@@ -1,4 +1,4 @@
-## 5.3.11 (December, 09, 2020)
+## 5.3.11 (December, 9, 2020)
 * Added a feature that allow the developer to override the default message language.
 
 ## 5.3.10 (November, 23, 2020)
