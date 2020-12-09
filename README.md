@@ -1,12 +1,12 @@
 ![Test](https://github.com/SourcePointUSA/android-cmp-app/workflows/Test/badge.svg?branch=develop)
 
-# How to Install
+# How to Install ![Bintray](https://img.shields.io/bintray/v/sourcepoint/sourcepoint/cmplibrary)
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
 
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.3.10'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.3.11'
 }
 ```
 
@@ -77,13 +77,14 @@ This will instruct the SDK to load OTT-specific message and privacy manager.
 
 ## ConsentLibBuilder
 On top of the methods exemplified above, the `ConsentLibBuilder` has the following methods:
-* `.setStagingCampaign(boolean env)`:passing `true` to this method will instruct the SDK to load a Stage campaign.
-* `.setTargetingParams(key, value)`: Check the _Setting Targeting Params_ section below.
-* `.setIsOTT(boolean)`: Instructs the SDK to load OTT specific assets.
+* `.setStagingCampaign(boolean env)`: passing `true` to this method will instruct the SDK to load a Stage campaign.
+* `.setTargetingParams(key, value)`: check the _Setting Targeting Params_ section below.
+* `.setIsOTT(boolean)`: instructs the SDK to load OTT specific assets.
 * `.setMessageTimeOut(int milliseconds)`: this will control how long it takes between calling `.run()` and one of the callback such as `.onConsentUIReady / .onConsentReady / .onError`. We set this value to 10 seconds by default.
-* `.setAuthId(String authID)`: Check the section on authenticated consent below.
-* `.setOnBeforeSendingConsent(_Callback_ ConsentAction action)`: We'll call this method just before sending the consent action taken by the user to the server.
+* `.setAuthId(String authID)`: check the section on authenticated consent below.
+* `.setOnBeforeSendingConsent(_Callback_ ConsentAction action)`: we'll call this method just before sending the consent action taken by the user to the server.
 * `.setShouldCleanConsentOnError(boolean flag)`: if this flag is set to `false`, the SDK won't wipe consent data when the `.onError` callback is called. By default this flag is set to `true`.
+* `.setMessageLanguage(MessageLanguage messageLanguage)`: set the language parameter to receive a message in the same language. The message should be translated in the Dashboard to the given language otherwise English will be used as a fallback.
 
 ## Authenticated Consent
 In order to use the authenticated consent all you need to do is calling the instance method `.setAuthId(String)` on `ConsentLibBuilder`. Example:

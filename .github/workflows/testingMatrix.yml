@@ -1,11 +1,9 @@
-name: Test
+name: Testing Matrix
 on:
   push:
     branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
 jobs:
-  unit-test-cmplib:
+  test:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -27,6 +25,10 @@ jobs:
         run: ./gradlew test --quiet --build-cache
   ui-test-app:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [30, 29, 28, 27, 26, 25, 24]
     steps:
       - uses: actions/checkout@v2
       - name: set up JDK 1.8
@@ -46,16 +48,20 @@ jobs:
       - name: run Example app tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
+          api-level: ${{ matrix.api-level }}
           script: ./gradlew app:connectedDebugAndroidTest
       - name: 'Publish Example-app Test Report'
         if: always()
         uses: actions/upload-artifact@v2-preview
         with:
           name: 'example-app-test-report'
-          path: samples/app/build/reports/androidTests/*
+          path: app/build/reports/androidTests/*
   ui-test-metaapp:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [30, 29, 28, 27, 26, 25, 24]
     steps:
       - uses: actions/checkout@v2
       - name: set up JDK 1.8
@@ -75,11 +81,11 @@ jobs:
       - name: run MetaApp tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
+          api-level: ${{ matrix.api-level }}
           script: ./gradlew :metaapp:connectedDebugAndroidTest
       - name: 'Publish Metaapp Test Report'
         if: always()
         uses: actions/upload-artifact@v2-preview
         with:
           name: 'metaap-test-report'
-          path: samples/metaapp/build/reports/androidTests/*
+          path: metaapp/build/reports/androidTests/*
