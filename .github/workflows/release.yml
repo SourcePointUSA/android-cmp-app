@@ -35,5 +35,5 @@ jobs:
       with:
         serviceAccountJson: service_account.json
         packageName: com.sourcepointmeta.metaapp
-        releaseFile: metaapp/build/outputs/apk/release/GDPR-MetaApp-signed.apk
+        releaseFile: samples/metaapp/build/outputs/apk/release/GDPR-MetaApp-signed.apk
         track: production
