@@ -1,3 +1,6 @@
+## 5.3.11 (December, 09, 2020)
+* Added a feature that allow the developer to override the default message language.
+
 ## 5.3.10 (November, 23, 2020)
 * Added a feature to ease sharing consent between native and webview. For more information on this one, check our README. #289
 * Fixed an issue that would prevent the Privacy Manager from showing the default tab set on the _Show Options_ action button. #269
