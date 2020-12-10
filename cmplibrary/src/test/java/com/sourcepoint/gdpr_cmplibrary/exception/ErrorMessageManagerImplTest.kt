@@ -54,7 +54,7 @@ class ErrorMessageManagerImplTest {
     @Test
     fun `GIVEN an InternalServerException VERIFY the generated message`() {
 
-        val originalException = ConnectionException("test_message")
+        val originalException = RuntimeException("test_message")
         val exception = InternalServerException(originalException, "test_description")
 
         val expected = """
@@ -73,7 +73,7 @@ class ErrorMessageManagerImplTest {
     @Test
     fun `GIVEN a WebViewException VERIFY the generated message`() {
 
-        val originalException = ConnectionException("test_message")
+        val originalException = RuntimeException("test_message")
         val exception = WebViewException(originalException, "test_description")
 
         val expected = """
@@ -92,7 +92,7 @@ class ErrorMessageManagerImplTest {
     @Test
     fun `GIVEN a UrlLoadingException VERIFY the generated message`() {
 
-        val originalException = ConnectionException("test_message")
+        val originalException = RuntimeException("test_message")
         val exception = UrlLoadingException(originalException, "test_description")
 
         val expected = """
@@ -111,7 +111,7 @@ class ErrorMessageManagerImplTest {
     @Test
     fun `GIVEN an InvalidEventPayloadException VERIFY the generated message`() {
 
-        val originalException = ConnectionException("test_message")
+        val originalException = RuntimeException("test_message")
         val exception = InvalidEventPayloadException(originalException, "test_description")
 
         val expected = """
@@ -130,7 +130,7 @@ class ErrorMessageManagerImplTest {
     @Test
     fun `GIVEN an InvalidResponseException VERIFY the generated message`() {
 
-        val originalException = ConnectionException("test_message")
+        val originalException = RuntimeException("test_message")
         val exception = InvalidResponseException(originalException, "test_description")
 
         val expected = """
@@ -149,7 +149,7 @@ class ErrorMessageManagerImplTest {
     @Test
     fun `GIVEN an InvalidLocalDataException VERIFY the generated message`() {
 
-        val originalException = ConnectionException("test_message")
+        val originalException = RuntimeException("test_message")
         val exception = InvalidLocalDataException(originalException, "test_description")
 
         val expected = """
@@ -168,7 +168,7 @@ class ErrorMessageManagerImplTest {
     @Test
     fun `GIVEN a ConnectionTimeoutException VERIFY the generated message`() {
 
-        val originalException = ConnectionException("test_message")
+        val originalException = RuntimeException("test_message")
         val exception = ConnectionTimeoutException(originalException, "test_description")
 
         val expected = """
