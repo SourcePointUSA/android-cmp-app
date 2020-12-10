@@ -8,7 +8,7 @@ import org.junit.Test
 class ExceptionMessageTest {
 
     @Test
-    fun `GIVEN an ResourceNotFoundException VERIFY the generated message`() {
+    fun `GIVEN a ResourceNotFoundException VERIFY the generated message`() {
 
         val originalException = JSONException("test_message")
         val sut = ResourceNotFoundException(originalException, "test_description")
@@ -26,7 +26,7 @@ class ExceptionMessageTest {
     }
 
     @Test
-    fun `GIVEN an NoInternetConnectionException VERIFY the generated message`() {
+    fun `GIVEN a NoInternetConnectionException VERIFY the generated message`() {
 
         val originalException = ConnectionException("test_message")
         val sut = NoInternetConnectionException(originalException, "test_description")
@@ -62,7 +62,7 @@ class ExceptionMessageTest {
     }
 
     @Test
-    fun `GIVEN an WebViewException VERIFY the generated message`() {
+    fun `GIVEN a WebViewException VERIFY the generated message`() {
 
         val originalException = ConnectionException("test_message")
         val sut = WebViewException(originalException, "test_description")
@@ -80,7 +80,7 @@ class ExceptionMessageTest {
     }
 
     @Test
-    fun `GIVEN an UrlLoadingException VERIFY the generated message`() {
+    fun `GIVEN a UrlLoadingException VERIFY the generated message`() {
 
         val originalException = ConnectionException("test_message")
         val sut = UrlLoadingException(originalException, "test_description")
@@ -152,7 +152,7 @@ class ExceptionMessageTest {
     }
 
     @Test
-    fun `GIVEN an ConnectionTimeoutException VERIFY the generated message`() {
+    fun `GIVEN a ConnectionTimeoutException VERIFY the generated message`() {
 
         val originalException = ConnectionException("test_message")
         val sut = ConnectionTimeoutException(originalException, "test_description")
