@@ -1,21 +1,10 @@
-package com.sourcepoint.gdpr_cmplibrary
+package com.sourcepoint.gdpr_cmplibrary.exception
 
 internal sealed class ConsentLibExceptionK(
     val description: String,
     cause: Throwable? = null
 ) : RuntimeException(cause) {
     abstract val code: String
-
-    override fun toString(): String {
-        return """
-            {
-                "code" : "$code",
-                "message" : "${cause?.message ?: ""}",
-                "description" : "$description",
-                "class_type" : "${this::class.java}"
-            }
-        """.trimIndent()
-    }
 }
 
 internal class NoInternetConnectionException @JvmOverloads constructor(
