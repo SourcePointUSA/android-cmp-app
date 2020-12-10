@@ -1,95 +1,90 @@
 package com.sourcepoint.gdpr_cmplibrary
 
-import java.lang.RuntimeException
-
 internal sealed class ConsentLibExceptionK(
-    val details: String,
-    val code: String,
     val description: String,
     cause: Throwable? = null
-) : RuntimeException(cause)
+) : RuntimeException(cause){
+    abstract val code: String
+}
 
 internal class NoInternetConnectionException(
-    details: String,
-    cause: Throwable? = null
+    cause: Throwable? = null,
+    description: String
 ) : ConsentLibExceptionK(
-    details = details,
     cause = cause,
-    code = "",
-    description = "")
+    description = description){
+    override val code: String = "no_internet_connection"
+}
 
-internal class ServerInternalException(
-    details: String,
-    cause: Throwable? = null
+internal class InternalServerException(
+    cause: Throwable? = null,
+    description: String
 ) : ConsentLibExceptionK(
-    details = details,
     cause = cause,
-    code = "",
-    description = "")
+    description = description){
+    override val code: String = "internal_server_error"
+}
 
-internal class WebViewOnErrorException(
-    details: String,
-    cause: Throwable? = null
+internal class WebViewException(
+    cause: Throwable? = null,
+    description: String
 ) : ConsentLibExceptionK(
-    details = details,
     cause = cause,
-    code = "",
-    description = "")
+    description = description){
+    override val code: String = "web_view_error"
+}
 
 internal class UrlLoadingException(
-    details: String,
-    cause: Throwable? = null
+    cause: Throwable? = null,
+    description: String
 ) : ConsentLibExceptionK(
-    details = details,
     cause = cause,
-    code = "",
-    description = "")
+    description = description){
+    override val code: String = "url_loading_error"
+}
 
-internal class EventPayloadException(
-    details: String,
-    cause: Throwable? = null
+internal class InvalidEventPayloadException(
+    cause: Throwable? = null,
+    description: String
 ) : ConsentLibExceptionK(
-    details = details,
     cause = cause,
-    code = "",
-    description = "")
-
-internal class RemoteConfigException(
-    details: String,
-    cause: Throwable? = null
-) : ConsentLibExceptionK(
-    details = details,
-    cause = cause,
-    code = "",
-    description = "")
+    description = description){
+    override val code: String = "invalid_event_payload"
+}
 
 internal class ResourceNotFoundException(
-    details: String,
-    cause: Throwable? = null
+    cause: Throwable? = null,
+    description: String
 ) : ConsentLibExceptionK(
-    details = details,
     cause = cause,
-    code = "",
-    description = "")
+    description = description){
+    override val code: String = "resource_not_found"
+}
+
+internal class InvalidResponseException(
+    cause: Throwable? = null,
+    description: String
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description){
+    override val code: String = "invalid_response"
+}
+
+internal class InvalidLocalDataException(
+    cause: Throwable? = null,
+    description: String
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description){
+    override val code: String = "invalid_local_data"
+}
 
 internal class ConnectionTimeoutException(
-    details: String,
-    cause: Throwable? = null
+    cause: Throwable? = null,
+    description: String
 ) : ConsentLibExceptionK(
-    details = details,
     cause = cause,
-    code = "",
-    description = "")
-
-/**
-invalid_local_data
-invalid_response
-invalid_event_payload
-url_loading_error
-web_view_error
-no_internet_connection
-internal_server_error
-resource_not_found
-connection_timeout
- */
+    description = description){
+    override val code: String = "connection_timeout"
+}
 
