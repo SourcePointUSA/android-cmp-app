@@ -10,6 +10,7 @@ class ErrorMessageManagerImplTest {
     private val accountId = 22
     private val propertyHref = "http://dev.local"
     private val propertyId = 100
+
     internal val sut by lazy { createErrorManager(accountId, propertyId, propertyHref) }
 
     @Test

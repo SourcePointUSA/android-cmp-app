@@ -1,7 +1,7 @@
 package com.sourcepoint.gdpr_cmplibrary.exception
 
 /**
- * These are the code use to categorize an exception occurred
+ * These codes are use to categorize an exception occurred
  */
 enum class ExceptionCodes {
     CONNECTION_TIMEOUT,
