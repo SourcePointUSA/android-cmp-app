@@ -20,11 +20,11 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${exception.code}",
+                "code" : "${ExceptionCodes.RESOURCE_NOT_FOUND}",
                 "accountId": "$accountId",
                 "propertyHref": "$propertyHref",
                 "propertyId": "$propertyId",
-                "description": "${exception.description}"
+                "description": "test_description"
             }
         """.trimIndent()
 
@@ -39,11 +39,11 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${exception.code}",
+                "code" : "${ExceptionCodes.NO_INTERNET_CONNECTION}",
                 "accountId": "$accountId",
                 "propertyHref": "$propertyHref",
                 "propertyId": "$propertyId",
-                "description": "${exception.description}"
+                "description": "test_description"
             }
         """.trimIndent()
 
@@ -58,11 +58,11 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${exception.code}",
+                "code" : "${ExceptionCodes.INTERNAL_SERVER_ERROR}",
                 "accountId": "$accountId",
                 "propertyHref": "$propertyHref",
                 "propertyId": "$propertyId",
-                "description": "${exception.description}"
+                "description": "test_description"
             }
         """.trimIndent()
 
@@ -77,11 +77,11 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${exception.code}",
+                "code" : "${ExceptionCodes.WEB_VIEW_ERROR}",
                 "accountId": "$accountId",
                 "propertyHref": "$propertyHref",
                 "propertyId": "$propertyId",
-                "description": "${exception.description}"
+                "description": "test_description"
             }
         """.trimIndent()
 
@@ -96,11 +96,11 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${exception.code}",
+                "code" : "${ExceptionCodes.URL_LOADING_ERROR}",
                 "accountId": "$accountId",
                 "propertyHref": "$propertyHref",
                 "propertyId": "$propertyId",
-                "description": "${exception.description}"
+                "description": "test_description"
             }
         """.trimIndent()
 
@@ -115,11 +115,11 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${exception.code}",
+                "code" : "${ExceptionCodes.INVALID_EVENT_PAYLOAD}",
                 "accountId": "$accountId",
                 "propertyHref": "$propertyHref",
                 "propertyId": "$propertyId",
-                "description": "${exception.description}"
+                "description": "test_description"
             }
         """.trimIndent()
 
@@ -134,11 +134,11 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${exception.code}",
+                "code" : "${ExceptionCodes.INVALID_RESPONSE}",
                 "accountId": "$accountId",
                 "propertyHref": "$propertyHref",
                 "propertyId": "$propertyId",
-                "description": "${exception.description}"
+                "description": "test_description"
             }
         """.trimIndent()
 
@@ -153,11 +153,11 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${exception.code}",
+                "code" : "${ExceptionCodes.INVALID_LOCAL_DATA}",
                 "accountId": "$accountId",
                 "propertyHref": "$propertyHref",
                 "propertyId": "$propertyId",
-                "description": "${exception.description}"
+                "description": "test_description"
             }
         """.trimIndent()
 
@@ -172,11 +172,11 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${exception.code}",
+                "code" : "${ExceptionCodes.CONNECTION_TIMEOUT}",
                 "accountId": "$accountId",
                 "propertyHref": "$propertyHref",
                 "propertyId": "$propertyId",
-                "description": "${exception.description}"
+                "description": "test_description"
             }
         """.trimIndent()
 
