@@ -178,7 +178,7 @@ internal class ConnectionTimeoutException @JvmOverloads constructor(
 }
 
 /**
- * This exception is thrown when a generic network request error occurred
+ * This exception is thrown when a generic error occurred
  */
 internal class GenericNetworkRequestException @JvmOverloads constructor(
     cause: Throwable? = null,
@@ -186,6 +186,6 @@ internal class GenericNetworkRequestException @JvmOverloads constructor(
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description) {
-    override val code: ExceptionCodes = CodeList.GENERIC_NETWORK_REQUEST
+    override val code: ExceptionCodes = CodeList.GENERIC_SDK_ERROR
 }
 

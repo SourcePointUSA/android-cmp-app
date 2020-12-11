@@ -17,6 +17,7 @@ object CodeList{
     val RESOURCE_NOT_FOUND = ExceptionCodes("resource_not_found_4xx")
     val CONNECTION_TIMEOUT = ExceptionCodes("connection_timeout")
     val GENERIC_NETWORK_REQUEST = ExceptionCodes("generic_network_request")
+    val GENERIC_SDK_ERROR = ExceptionCodes("generic_sdk_error")
 }
 
 inline class ExceptionCodes(val code : String)
