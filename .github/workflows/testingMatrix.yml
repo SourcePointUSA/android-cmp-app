@@ -1,7 +1,7 @@
 name: Testing Matrix
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop_disabled ]
 jobs:
   test:
     runs-on: macos-latest
