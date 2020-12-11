@@ -16,6 +16,7 @@ import org.hamcrest.core.AllOf.allOf
 import org.hamcrest.core.StringContains
 import org.hamcrest.core.StringContains.containsString
 import java.security.InvalidParameterException
+import kotlin.jvm.Throws
 
 @Throws(Throwable::class)
 fun isDisplayedAllOfByResId(
@@ -208,9 +209,16 @@ fun swipeAndChooseAction(
     field: String
 ) {
     onView(allOf(withId(resIdListItem), isDisplayed())).perform(ViewActions.swipeLeft())
-//    onView(allOf(withId(resId), isDisplayed())).perform(ViewActions.click())
     performClickById(resId)
     onView(withText(field)).perform(ViewActions.scrollTo(), ViewActions.click())
+}
+
+fun swipeAndChooseActionEdit(
+    @IdRes resId: Int,
+    @IdRes resIdListItem: Int,
+) {
+    onView(allOf(withId(resIdListItem), isDisplayed())).perform(ViewActions.swipeLeft())
+    performClickById(resId)
 }
 
 fun checkWebViewDoesNotHasText(text: String) {

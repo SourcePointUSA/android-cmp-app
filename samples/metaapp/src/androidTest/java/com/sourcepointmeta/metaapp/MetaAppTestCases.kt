@@ -251,6 +251,18 @@ class MetaAppTestCases {
             swipeAndChooseAction(R.id.reset_button, R.id.item_view, YES)
         }
 
+        fun swipeAndChooseEditActionUniqueAuth() {
+            swipeAndChooseActionEdit(R.id.edit_button, R.id.item_view)
+            Utility.addAuthentication(UNIQUE_AUTHENTICATION)
+            tapOnSave()
+        }
+
+        fun swipeAndChooseEditActionParamValue() {
+            swipeAndChooseActionEdit(R.id.edit_button, R.id.item_view)
+            Utility.addParameterWithAuthentication(keyParam, valueParamEnglish, NO_AUTHENTICATION)
+            tapOnSave()
+        }
+
         fun selectNativeMessageConsentList() {
             NATIVE_MESSAGE_CONSENT_LIST.forEach { consent ->
                 checkConsentWebView(consent)
