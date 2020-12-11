@@ -25,6 +25,7 @@ import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.loadPrivacyManager
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.navigateBackToListView
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.selectNativeMessageConsentList
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.selectPartialConsentList
+import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.swipeAndChooseEditActionUniqueAuth
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.swipeAndChooseResetAction
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapAcceptAll
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapAcceptAllOnWebView
@@ -342,5 +343,38 @@ class MetaAppTestsK {
         loadPrivacyManagerDirect()                          //        loadPrivacyManagerDirect();
         wr { checkWebViewDisplayedForPrivacyManager() }     //        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
 
+    }
+
+
+    @Test
+    fun checkNativeMessageRejectAllAction() = runBlocking {
+
+        scenario = launchActivity()
+
+        tapOnAddProperty()                          //        tapOnAddProperty();
+        addNativeMessagePropertyDetails()           //        addNativeMessagePropertyDetails();
+        tapOnSave()                                 //        tapOnSave();
+        checkNativeMessageDisplayed()               //        Assert.assertTrue(checkNativeMessageDisplayed());
+        wr { tapRejectAll() }                       //        chooseNativeMessageAction(R.id.RejectAll);
+        wr { checkForPropertyInfoScreen() }         //        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+        navigateBackToListView()                    //        navigateBackToListView();
+        checkInsertedProperty()                     //        Assert.assertTrue(checkForPropertyListScrren());
+        tapOnProperty()                             //        tapOnProperty();
+        wr { checkForPropertyInfoScreen() }         //        Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
+    }
+
+    @Test
+    fun checkNoMessageAfterLoggedInWithAuthIDWhenConsentAlreadyGiven() = runBlocking {
+
+        scenario = launchActivity()
+
+        wr { addPropertyFor(SHOW_MESSAGE_ONCE, NO_AUTHENTICATION) } //        addPropertyFor(SHOW_MESSAGE_ONCE, NO_AUTHENTICATION);
+        wr { checkWebViewDisplayedForMessage() }                    //        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
+        wr { tapAcceptAllOnWebView() }                              //        chooseAction(ACCEPT_ALL);
+        wr { checkForConsentsAreDisplayed() }                       //        Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
+        navigateBackToListView()                                    //        navigateBackToListView();
+        wr { swipeAndChooseEditActionUniqueAuth() }                 //        swipeAndChooseAction(EDIT_ACTION, UNIQUE_AUTHENTICATION);
+        wr { checkWebViewDoesNotDisplayTheMessage() }               //        Assert.assertFalse(checkWebViewDisplayedFor(MESSAGE));
+        wr { checkForConsentsAreDisplayed() }                       //        Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
     }
 }
