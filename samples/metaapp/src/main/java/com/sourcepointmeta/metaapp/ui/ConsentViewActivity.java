@@ -25,13 +25,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sourcepoint.gdpr_cmplibrary.ConsentLibBuilder;
-import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
-import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
-import com.sourcepoint.gdpr_cmplibrary.MessageLanguage;
-import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
-import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
-import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab;
+import com.sourcepoint.cmplibrary.BuilderV6;
+import com.sourcepoint.cmplibrary.gdpr.ClientInteraction;
+import com.sourcepoint.cmplibrary.gdpr.GDPRConsentLibClient;
+import com.sourcepoint.gdpr_cmplibrary.*;
 import com.sourcepointmeta.metaapp.R;
 import com.sourcepointmeta.metaapp.SourcepointApp;
 import com.sourcepointmeta.metaapp.adapters.ConsentListRecyclerView;
@@ -43,6 +40,7 @@ import com.sourcepointmeta.metaapp.repository.PropertyListRepository;
 import com.sourcepointmeta.metaapp.utility.Util;
 import com.sourcepointmeta.metaapp.viewmodel.ConsentViewViewModel;
 import com.sourcepointmeta.metaapp.viewmodel.ViewModelUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +84,91 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private void removeWebView(View view) {
         if (view != null && view.getParent() != null)
             mMainViewGroup.removeView(view);
+    }
+
+    class ClientInter implements ClientInteraction {
+        Property property;
+        public ClientInter(Property property) {
+            this.property = property;
+        }
+
+        @Override
+        public void onConsentUIFinishedCallback(@Nullable View view) {
+            getSupportActionBar().show();
+            Log.i(TAG, "The message is removed.");
+            removeWebView(view);
+        }
+
+        @Override
+        public void onConsentUIReadyCallback(View view) {
+            getSupportActionBar().hide();
+            isPMLoaded = true;
+            cancelCounter();
+            hideProgressBar();
+            Log.i(TAG, "The message is about to be shown.");
+            showMessageWebView(view);
+        }
+
+        @Override
+        public void onConsentReadyCallback(GDPRUserConsent userConsent) {
+            Log.i(TAG, "setOnConsentReady called.");
+            mConsentList.clear();
+            mVendorConsents.clear();
+            mPurposeConsents.clear();
+
+            runOnUiThread(ConsentViewActivity.this::showProgressBar);
+            getConsentsFromConsentLib(userConsent);
+            Log.d(TAG, "OnConsentReady");
+            runOnUiThread(() -> {
+                showPropertyDebugInfo();
+            });
+        }
+
+        @Override
+        public void onErrorCallback(ConsentLibException error) {
+            hideProgressBar();
+            Log.d(TAG, "setOnError");
+            isError = true;
+            showAlertDialog("" + error.consentLibErrorMessage);
+            Log.d(TAG, "Something went wrong: ", error);
+        }
+
+        @Override
+        public void onActionCallback(ActionTypes actionTypes) {
+            Log.i(TAG , "ActionType: " + actionTypes.toString());
+        }
+    }
+
+    private GDPRConsentLibClient buildConsentLibV6(Property property, Activity activity) {
+
+        BuilderV6 builderV6 = new BuilderV6()
+                .setAccountId(property.getAccountID())
+                .setContext(this)
+                .setPropertyName(property.getProperty())
+                .setPropertyId(property.getPropertyID())
+                .setPmId(property.getPmID())
+                .setClientInteraction(new ClientInter(property));
+
+//        //get and set targeting param
+//        List<TargetingParam> list = property.getTargetingParamList();//getTargetingParamList(property);
+//        for (TargetingParam tps : list) {
+//            consentLibBuilder.setTargetingParam(tps.getKey(), tps.getValue());
+//        }
+
+        if (!TextUtils.isEmpty(property.getAuthId())) {
+//            consentLibBuilder.setAuthId(property.getAuthId());
+            builderV6.setAuthId(property.getAuthId());
+        } else {
+            Log.d(TAG, "AuthID Not available : " + property.getAuthId());
+        }
+        if (!TextUtils.isEmpty(property.getMessageLanguage())) {
+//            consentLibBuilder.setMessageLanguage(MessageLanguage.findByName(property.getMessageLanguage()));
+//            builderV6.setMessageLanguage(MessageLanguage.findByName(property.getMessageLanguage()));
+        } else {
+            Log.d(TAG, "MessageLanguage Not selected : " + property.getMessageLanguage());
+        }
+        // generate ConsentLib at this point modifying builder will not do anything
+        return builderV6.build(GDPRConsentLibClient.class);
     }
 
     private GDPRConsentLib buildConsentLib(Property property, Activity activity) {
@@ -240,8 +323,10 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
                 showProgressBar();
                 if (property.isNative()){
                     buildConsentLib(property, this).run(buildNativeMessage());
+//                    buildConsentLibV6(property, this).loadMessage(buildNativeMessage());
                 }else {
                     buildConsentLib(property, this).run();
+//                    buildConsentLibV6(property, this).loadMessage();
                 }
             } else showAlertDialog(getString(R.string.network_check_message));
         }
@@ -281,6 +366,7 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
             mCountDownTimer = getTimer(30000);
             mCountDownTimer.start();
             buildConsentLib(property, this).showPm();
+//            buildConsentLibV6(property, this).loadPrivacyManager();
         } else showAlertDialog(getString(R.string.network_check_message));
 
     }
