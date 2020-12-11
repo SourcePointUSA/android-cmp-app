@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
+/*
 @RunWith(AndroidJUnit4ClassRunner.class)
 public class MetaAppTests extends Utility{
 
@@ -24,7 +24,7 @@ public class MetaAppTests extends Utility{
     public void setup() {
         mActivityTestRule.getActivity();
     }
-/*
+
     @Test
     public void checkForConsentWithAcceptActionFromMessage() {
         addPropertyFor(SHOW_MESSAGE_ALWAYS, NO_AUTHENTICATION);
@@ -535,7 +535,7 @@ public class MetaAppTests extends Utility{
 //        Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
 //        Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
 //    }
-*/
+
     @Test
     public void checkNativeMessagePMCancelDirectPMLoad() throws InterruptedException {
         tapOnAddProperty();
@@ -574,4 +574,6 @@ public class MetaAppTests extends Utility{
 //    }
 
 }
+
+ */
 
