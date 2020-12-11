@@ -16,13 +16,13 @@ import java.util.concurrent.TimeUnit;
 
 //@RunWith(AndroidJUnit4ClassRunner.class)
 public class MetaAppTests extends Utility{
-    /*
+
         @Rule
         public ActivityTestRule<SplashScreenActivity> mActivityTestRule = new ActivityTestRule<>(SplashScreenActivity.class);
 
         @Before
         public void setup() {
-            mActivityTestRu.getActivity();
+            mActivityTestRule.getActivity();
         }
     /*
         @Test
@@ -316,9 +316,8 @@ public class MetaAppTests extends Utility{
             tapOnProperty();
             Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
         }
-
-        @Test
-        public void checkCancelFromPrivacyManagerDisplayedAsFirstLayerMessage()  {
+        @Test // TEST NOT WORKING
+        public void checkCancelFromPrivacyManagerDisplayedAsFirstLayerMessage(){
             addPropertyFor(PM_AS_FIRST_LAYER_MESSAGE, UNIQUE_AUTHENTICATION);
             Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
@@ -328,8 +327,8 @@ public class MetaAppTests extends Utility{
             Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
             Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
             chooseAction(PM_CANCEL);
-            Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));
-            Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
+            Assert.assertTrue(checkFor(PROPERTY_INFO_SCREEN));  // This is not checked
+            Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED)); // This is not checked
         }
     @Test
     public void checkNoMessageAfterLoggedInWithAuthIDWhenConsentAlreadyGiven() throws InterruptedException {

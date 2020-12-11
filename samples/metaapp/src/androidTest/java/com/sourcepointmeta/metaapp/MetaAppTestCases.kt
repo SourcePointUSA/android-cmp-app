@@ -275,6 +275,12 @@ class MetaAppTestCases {
             }
         }
 
+        fun selectConsentList() {
+            CONSENT_LIST.forEach { consent ->
+                checkConsentWebView(consent)
+            }
+        }
+
         fun checkInsertedProperty() {
             isDisplayedByResId(R.id.action_addProperty)
         }
