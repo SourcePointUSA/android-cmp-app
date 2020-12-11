@@ -19,7 +19,19 @@ internal class NoInternetConnectionException @JvmOverloads constructor(
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description) {
-    override val code: ExceptionCodes = ExceptionCodes.NO_INTERNET_CONNECTION
+    override val code: ExceptionCodes = CodeList.NO_INTERNET_CONNECTION
+}
+
+/**
+ * This exception is thrown when the response from getting the message is invalid
+ */
+internal class InvalidResponseWebMessageException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description) {
+    override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_WEB_MESSAGE
 }
 
 /**
@@ -31,7 +43,7 @@ internal class InternalServerException @JvmOverloads constructor(
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description) {
-    override val code: ExceptionCodes = ExceptionCodes.INTERNAL_SERVER_ERROR
+    override val code: ExceptionCodes = CodeList.INTERNAL_SERVER_ERROR
 }
 
 /**
@@ -43,7 +55,7 @@ internal class WebViewException @JvmOverloads constructor(
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description) {
-    override val code: ExceptionCodes = ExceptionCodes.WEB_VIEW_ERROR
+    override val code: ExceptionCodes = CodeList.WEB_VIEW_ERROR
 }
 
 /**
@@ -55,19 +67,30 @@ internal class UrlLoadingException @JvmOverloads constructor(
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description) {
-    override val code: ExceptionCodes = ExceptionCodes.URL_LOADING_ERROR
+    override val code: ExceptionCodes = CodeList.URL_LOADING_ERROR
 }
 
 /**
  * This exception is thrown when a not expected event payloads is received
  */
-internal class InvalidEventPayloadException @JvmOverloads constructor(
+internal class InvalidOnActionEventPayloadException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description) {
-    override val code: ExceptionCodes = ExceptionCodes.INVALID_EVENT_PAYLOAD
+    override val code: ExceptionCodes = CodeList.INVALID_EVENT_PAYLOAD
+}
+
+internal class RenderingAppException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    pCode : String
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description
+){
+    override val code: ExceptionCodes = ExceptionCodes(pCode)
 }
 
 /**
@@ -79,11 +102,11 @@ internal class ResourceNotFoundException @JvmOverloads constructor(
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description) {
-    override val code: ExceptionCodes = ExceptionCodes.RESOURCE_NOT_FOUND
+    override val code: ExceptionCodes = CodeList.RESOURCE_NOT_FOUND
 }
 
 /**
- * This exception is thrown when a not valid response is received
+ * This exception is thrown when the response from getting the web message is invalid
  */
 internal class InvalidResponseException @JvmOverloads constructor(
     cause: Throwable? = null,
@@ -91,7 +114,43 @@ internal class InvalidResponseException @JvmOverloads constructor(
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description) {
-    override val code: ExceptionCodes = ExceptionCodes.INVALID_RESPONSE
+    override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_WEB_MESSAGE
+}
+
+/**
+ * This exception is thrown when the response from getting the native message is invalid
+ */
+internal class InvalidResponseNativeMessageException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description) {
+    override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_NATIVE_MESSAGE
+}
+
+/**
+ * This exception is thrown when the response from posting consent is invalid
+ */
+internal class InvalidResponseConsentException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description) {
+    override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_CONSENT
+}
+
+/**
+ * This exception is thrown when the response from posting custom consent is invalid
+ */
+internal class InvalidResponseCustomConsent @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description) {
+    override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_CUSTOM_CONSENT
 }
 
 /**
@@ -103,7 +162,7 @@ internal class InvalidLocalDataException @JvmOverloads constructor(
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description) {
-    override val code: ExceptionCodes = ExceptionCodes.INVALID_LOCAL_DATA
+    override val code: ExceptionCodes = CodeList.INVALID_LOCAL_DATA
 }
 
 /**
@@ -115,6 +174,6 @@ internal class ConnectionTimeoutException @JvmOverloads constructor(
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description) {
-    override val code: ExceptionCodes = ExceptionCodes.CONNECTION_TIMEOUT
+    override val code: ExceptionCodes = CodeList.CONNECTION_TIMEOUT
 }
 
