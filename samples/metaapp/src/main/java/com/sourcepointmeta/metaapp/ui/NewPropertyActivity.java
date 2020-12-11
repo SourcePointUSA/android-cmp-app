@@ -16,25 +16,17 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.sourcepoint.gdpr_cmplibrary.ConsentLibBuilder;
-import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
-import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
-import com.sourcepoint.gdpr_cmplibrary.MessageLanguage;
-import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
-import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
-import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab;
+import com.sourcepoint.cmplibrary.BuilderV6;
+import com.sourcepoint.cmplibrary.gdpr.ClientInteraction;
+import com.sourcepoint.cmplibrary.gdpr.GDPRConsentLibClient;
+import com.sourcepoint.gdpr_cmplibrary.*;
 import com.sourcepointmeta.metaapp.R;
 import com.sourcepointmeta.metaapp.SourcepointApp;
 import com.sourcepointmeta.metaapp.adapters.TargetingParamsAdapter;
@@ -47,6 +39,7 @@ import com.sourcepointmeta.metaapp.repository.PropertyListRepository;
 import com.sourcepointmeta.metaapp.utility.Util;
 import com.sourcepointmeta.metaapp.viewmodel.NewPropertyViewModel;
 import com.sourcepointmeta.metaapp.viewmodel.ViewModelUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,16 +52,16 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
     private ProgressDialog mProgressDialog;
     private TextInputEditText mAccountIdET, mPropertyIdET, mPropertyNameET, mPMIdET, mAuthIdET, mKeyET, mValueET;
     private Spinner mSpinnerML;
-    private String [] messageLanguages = MessageLanguage.names();
-    private String selectedLanguage ;
-    private String [] pmTabs = PrivacyManagerTab.tabNames();
+    private String[] messageLanguages = MessageLanguage.names();
+    private String selectedLanguage;
+    private String[] pmTabs = PrivacyManagerTab.tabNames();
     private Spinner mSpinnerPMTab;
     private String selectedPMTab;
 
     private TextView mAddParamBtn;
     private ViewGroup mMainViewGroup;
 
-    private SwitchCompat mStagingSwitch , mNativeMessage;
+    private SwitchCompat mStagingSwitch, mNativeMessage;
     private TextView mTitle;
     private AlertDialog mAlertDialog;
     private TargetingParamsAdapter mTargetingParamsAdapter;
@@ -100,6 +93,87 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
             invalidateOptionsMenu();
             mMainViewGroup.removeView(view);
         }
+    }
+
+
+    class ClientInter implements ClientInteraction {
+        Property property;
+
+        public ClientInter(Property property) {
+            this.property = property;
+        }
+
+        @Override
+        public void onConsentUIFinishedCallback(@Nullable View view) {
+            getSupportActionBar().show();
+            Log.i(TAG, "The message is removed.");
+            removeWebView(view);
+        }
+
+        @Override
+        public void onConsentUIReadyCallback(View view) {
+            getSupportActionBar().hide();
+            hideProgressBar();
+            Log.i(TAG, "The message is about to be shown.");
+            showMessageWebView(view);
+        }
+
+        @Override
+        public void onConsentReadyCallback(GDPRUserConsent userConsent) {
+            // at this point it's safe to initialise vendors
+            runOnUiThread(NewPropertyActivity.this::showProgressBar);
+            saveToDatabase(property);
+            getConsentsFromConsentLib(userConsent);
+            Log.d(TAG, "OnConsentReady");
+            runOnUiThread(() -> {
+                startConsentViewActivity(property);
+            });
+        }
+
+        @Override
+        public void onErrorCallback(ConsentLibException error) {
+            hideProgressBar();
+            Log.d(TAG, "setOnError");
+            showAlertDialog("" + error.consentLibErrorMessage);
+            Log.d(TAG, "Something went wrong: ", error);
+        }
+
+        @Override
+        public void onActionCallback(ActionTypes actionTypes) {
+            Log.i(TAG, "ActionType: " + actionTypes.toString());
+        }
+    }
+
+    private GDPRConsentLibClient buildConsentLibV6(Property property, Activity activity) {
+
+        BuilderV6 builderV6 = new BuilderV6()
+                .setAccountId(property.getAccountID())
+                .setContext(this)
+                .setPropertyName(property.getProperty())
+                .setPropertyId(property.getPropertyID())
+                .setPmId(property.getPmID())
+                .setClientInteraction(new ClientInter(property));
+
+//        //get and set targeting param
+//        List<TargetingParam> list = property.getTargetingParamList();//getTargetingParamList(property);
+//        for (TargetingParam tps : list) {
+//            consentLibBuilder.setTargetingParam(tps.getKey(), tps.getValue());
+//        }
+
+        if (!TextUtils.isEmpty(property.getAuthId())) {
+//            consentLibBuilder.setAuthId(property.getAuthId());
+            builderV6.setAuthId(property.getAuthId());
+        } else {
+            Log.d(TAG, "AuthID Not available : " + property.getAuthId());
+        }
+        if (!TextUtils.isEmpty(property.getMessageLanguage())) {
+//            consentLibBuilder.setMessageLanguage(MessageLanguage.findByName(property.getMessageLanguage()));
+//            builderV6.setMessageLanguage(MessageLanguage.findByName(property.getMessageLanguage()));
+        } else {
+            Log.d(TAG, "MessageLanguage Not selected : " + property.getMessageLanguage());
+        }
+        // generate ConsentLib at this point modifying builder will not do anything
+        return builderV6.build(GDPRConsentLibClient.class);
     }
 
     private GDPRConsentLib buildConsentLib(Property property, Activity activity) {
@@ -202,8 +276,8 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
         mPMIdET = findViewById(R.id.etPMId);
         mAuthIdET = findViewById(R.id.etAuthID);
         mSpinnerML = findViewById(R.id.spinner_message_language);
-        mSpinnerML.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,messageLanguages));
-        mSpinnerML.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        mSpinnerML.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, messageLanguages));
+        mSpinnerML.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -216,8 +290,8 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
             }
         });
         mSpinnerPMTab = findViewById(R.id.spinner_pm_tab);
-        mSpinnerPMTab.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,pmTabs));
-        mSpinnerPMTab.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        mSpinnerPMTab.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, pmTabs));
+        mSpinnerPMTab.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -267,14 +341,14 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                 mStagingSwitch.setChecked(property.isStaging());
                 mNativeMessage.setChecked(property.isNative());
                 int spinnerPosition = 0;
-                for(int i=0; i < messageLanguages.length; i++)
-                    if(messageLanguages[i].contains(property.getMessageLanguage()))
+                for (int i = 0; i < messageLanguages.length; i++)
+                    if (messageLanguages[i].contains(property.getMessageLanguage()))
                         spinnerPosition = i;
                 mSpinnerML.setSelection(spinnerPosition);
 
                 spinnerPosition = 0;
-                for(int i=0; i < pmTabs.length; i++)
-                    if(pmTabs[i].contains(property.getPmTab()))
+                for (int i = 0; i < pmTabs.length; i++)
+                    if (pmTabs[i].contains(property.getPmTab()))
                         spinnerPosition = i;
                 mSpinnerPMTab.setSelection(spinnerPosition);
                 if (!TextUtils.isEmpty(property.getAuthId())) {
@@ -433,11 +507,14 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                     hideProgressBar();
                 } else {
                     mGDPRConsentLib = buildConsentLib(property, this);
+//                    GDPRConsentLibClient mGDPRConsentLibv6 = buildConsentLibV6(property, this);
                     if (Util.isNetworkAvailable(this)) {
                         showProgressBar();
-                        if (property.isNative()){
+                        if (property.isNative()) {
+//                            mGDPRConsentLibv6.loadMessage(buildNativeMessage());
                             mGDPRConsentLib.run(buildNativeMessage());
-                        }else {
+                        } else {
+//                            mGDPRConsentLibv6.loadPrivacyManager();
                             mGDPRConsentLib.run();
                         }
                     } else {
@@ -549,10 +626,10 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
         viewModel.updateProperty(property);
     }
 
-    private NativeMessage buildNativeMessage(){
-        return new NativeMessage(this){
+    private NativeMessage buildNativeMessage() {
+        return new NativeMessage(this) {
             @Override
-            public void init(){
+            public void init() {
                 inflate(getContext(), R.layout.meta_app_native_message, this);
                 setAcceptAll(findViewById(R.id.AcceptAll));
                 setRejectAll(findViewById(R.id.RejectAll));
@@ -561,12 +638,13 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                 setTitle(findViewById(R.id.Title));
                 setBody(findViewById(R.id.msgBody));
             }
+
             @Override
-            public void setAttributes(NativeMessageAttrs attrs){
+            public void setAttributes(NativeMessageAttrs attrs) {
 
                 setChildAttributes(getTitle(), attrs.title);
                 setChildAttributes(getBody(), attrs.body);
-                for(NativeMessageAttrs.Action action: attrs.actions){
+                for (NativeMessageAttrs.Action action : attrs.actions) {
                     setChildAttributes(findActionButton(action.choiceType), action);
                 }
             }

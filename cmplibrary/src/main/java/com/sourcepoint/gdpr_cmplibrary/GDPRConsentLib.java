@@ -146,7 +146,7 @@ public class GDPRConsentLib implements IGDPRConsentLib{
         }
     }
 
-    private final StoreClient storeClient;
+    final StoreClient storeClient;
     private final Logger logger;
 
     /**
@@ -230,7 +230,7 @@ public class GDPRConsentLib implements IGDPRConsentLib{
         storeClient.setCmpSdkVersion();
     }
 
-    private boolean didConsentUserChange(String newAuthId, String oldAuthId) {
+    boolean didConsentUserChange(String newAuthId, String oldAuthId) {
         return oldAuthId != null && newAuthId != null && !newAuthId.equals(oldAuthId);
     }
 
