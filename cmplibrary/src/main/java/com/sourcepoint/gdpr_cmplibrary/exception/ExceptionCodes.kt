@@ -10,6 +10,7 @@ object CodeList{
     val INVALID_RESPONSE_CONSENT = ExceptionCodes("invalid_response_consent")
     val INVALID_RESPONSE_CUSTOM_CONSENT = ExceptionCodes("invalid_response_custom_consent")
     val INVALID_EVENT_PAYLOAD = ExceptionCodes("invalid_event_payload")
+    val INVALID_ON_ACTION_EVENT_PAYLOAD = ExceptionCodes("invalid_onAction_event_payload")
     val URL_LOADING_ERROR = ExceptionCodes("url_loading_error")
     val WEB_VIEW_ERROR = ExceptionCodes("web_view_error")
     val NO_INTERNET_CONNECTION = ExceptionCodes("no_internet_connection")
