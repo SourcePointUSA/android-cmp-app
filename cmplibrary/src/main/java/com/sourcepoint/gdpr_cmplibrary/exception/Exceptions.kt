@@ -71,6 +71,18 @@ internal class UrlLoadingException @JvmOverloads constructor(
 }
 
 /**
+ * This exception is thrown when the event payload coming from the webview is invalid
+ */
+internal class InvalidEventPayloadException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description) {
+    override val code: ExceptionCodes = CodeList.INVALID_EVENT_PAYLOAD
+}
+
+/**
  * This exception is thrown when a not expected event payloads is received
  */
 internal class InvalidOnActionEventPayloadException @JvmOverloads constructor(
@@ -79,7 +91,7 @@ internal class InvalidOnActionEventPayloadException @JvmOverloads constructor(
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description) {
-    override val code: ExceptionCodes = CodeList.INVALID_EVENT_PAYLOAD
+    override val code: ExceptionCodes = CodeList.INVALID_ON_ACTION_EVENT_PAYLOAD
 }
 
 internal class RenderingAppException @JvmOverloads constructor(
