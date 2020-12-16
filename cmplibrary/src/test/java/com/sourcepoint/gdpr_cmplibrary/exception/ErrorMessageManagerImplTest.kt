@@ -1,8 +1,8 @@
 package com.sourcepoint.gdpr_cmplibrary.exception
 
+import com.sourcepoint.gdpr_cmplibrary.assertEquals
 import org.apache.maven.wagon.ConnectionException
 import org.json.JSONException
-import org.junit.Assert.*
 import org.junit.Test
 
 class ErrorMessageManagerImplTest{
@@ -38,7 +38,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -61,7 +61,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -84,7 +84,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -107,7 +107,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -130,7 +130,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -153,7 +153,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -176,7 +176,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -199,7 +199,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -222,7 +222,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -245,7 +245,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -268,7 +268,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -291,7 +291,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -314,7 +314,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -337,7 +337,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -360,7 +360,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -383,7 +383,7 @@ class ErrorMessageManagerImplTest{
             }
         """.trimIndent()
 
-        assertEquals(expected, sut.build(exception))
+        sut.build(exception).assertEquals(expected)
     }
 
 }
