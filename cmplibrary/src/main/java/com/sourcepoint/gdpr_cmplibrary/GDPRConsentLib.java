@@ -288,7 +288,7 @@ public class GDPRConsentLib {
         uiThreadHandler.post(() -> {
             try {
                 nativeView.setCallBacks(this);
-                nativeView.setAttributes(new NativeMessageAttrs(msgJson));
+                nativeView.setAttributes(new NativeMessageAttrs(msgJson, logger));
             } catch (ConsentLibException e) {
                 onErrorTask(e);
             } catch (Exception e) {
@@ -601,7 +601,9 @@ public class GDPRConsentLib {
                         userConsent = new GDPRUserConsent(fullConsentObj(jsonResult), consentUUID, logger);
                         consentFinished(c);
                     } catch (Exception e) {
-                        logger.error(new InvalidLocalDataException(e, "Error trying to parse response from sendConsents."));
+                        if(!(e instanceof ConsentLibException)){
+                            logger.error(new InvalidLocalDataException(e, "Error trying to parse response from sendConsents."));
+                        }
                         onErrorTask(new ConsentLibException(e, "Error trying to parse response from sendConsents."));
                     }
                 }

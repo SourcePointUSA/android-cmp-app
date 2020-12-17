@@ -68,11 +68,14 @@ public class GDPRUserConsent {
             specialFeatures = json2StrArr(jConsent.getJSONArray("specialFeatures"));
             legIntCategories = json2StrArr(jConsent.getJSONArray("legIntCategories"));
             consentString = jConsent.getString("euconsent");
-            TCData = getHashMap(jConsent.getJSONObject("TCData"));
-            vendorGrants = new VendorGrants(jConsent.getJSONObject("grants"));
-        } catch (Exception e){
+            TCData = getHashMap(jConsent.getJSONObject("TCData"), logger);
+            vendorGrants = new VendorGrants(jConsent.getJSONObject("grants"), logger);
+        }
+        catch (Exception e){
             //This general catch block is meant to deal with null pointer exceptions as well
-            logger.error(new GenericSDKException(e, "Error parsing JSONObject to ConsentUser obj"));
+            if(!(e instanceof ConsentLibException)){
+                logger.error(new GenericSDKException(e, "Error parsing JSONObject to ConsentUser obj"));
+            }
             throw new ConsentLibException(e, "Error parsing JSONObject to ConsentUser obj");
         }
     }
@@ -91,7 +94,7 @@ public class GDPRUserConsent {
         StringBuilder buffer = new StringBuilder();
         String tcdataString;
         try {
-            tcdataString = getJson(TCData).toString(2);
+            tcdataString = getJson(TCData, logger).toString(2);
         } catch (Exception ignored) {
             tcdataString = TCData.toString();
         }
@@ -116,19 +119,19 @@ public class GDPRUserConsent {
         jsonConsents.put("legIntCategories", new JSONArray(legIntCategories));
         jsonConsents.put("uuid", uuid);
         jsonConsents.put("euconsent", consentString);
-        jsonConsents.put("TCData", getJson(TCData));
+        jsonConsents.put("TCData", getJson(TCData, logger));
         jsonConsents.put("grants", vendorGrants.toJsonObject());
         return jsonConsents;
     }
 
     public static class VendorGrants extends HashMap<String, VendorGrants.VendorGrant> {
-        VendorGrants(JSONObject jVendorGrants) throws ConsentLibException {
+        VendorGrants(JSONObject jVendorGrants, Logger logger) throws ConsentLibException {
             super();
             JSONArray names = jVendorGrants.names();
             if (names != null) {
                 for(int i = 0; i < names.length(); i++) {
-                    String name = getString(i, names);
-                    this.put(name, new VendorGrant(getJson(name, jVendorGrants)));
+                    String name = getString(i, names, logger);
+                    this.put(name, new VendorGrant(getJson(name, jVendorGrants, logger), logger));
                 }
             }
         }
@@ -153,10 +156,12 @@ public class GDPRUserConsent {
         public static class VendorGrant {
             public boolean vendorGrant;
             public HashMap<String, Boolean> purposeGrants;
+            private Logger logger;
 
-            VendorGrant(JSONObject jVendorGrant) throws ConsentLibException {
-                vendorGrant = getBoolean("vendorGrant", jVendorGrant);
-                purposeGrants = getHashMap(getJson("purposeGrants", jVendorGrant));
+            VendorGrant(JSONObject jVendorGrant, Logger logger) throws ConsentLibException {
+                vendorGrant = getBoolean("vendorGrant", jVendorGrant, logger);
+                purposeGrants = getHashMap(getJson("purposeGrants", jVendorGrant, logger), logger);
+                this.logger = logger;
             }
 
             public String toString(){
@@ -166,7 +171,7 @@ public class GDPRUserConsent {
             public JSONObject toJsonObject() throws ConsentLibException, JSONException {
                 JSONObject json = new JSONObject();
                 json.put("vendorGrant", vendorGrant);
-                json.put("purposeGrants" , getJson(purposeGrants));
+                json.put("purposeGrants" , getJson(purposeGrants, logger));
                 return json;
             }
         }

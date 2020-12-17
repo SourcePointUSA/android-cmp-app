@@ -35,9 +35,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getInt;
-import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getJson;
-import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getString;
+import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.*;
 
 abstract public class ConsentWebView extends WebView {
 
@@ -68,7 +66,7 @@ abstract public class ConsentWebView extends WebView {
         @JavascriptInterface
         public void onAction(String actionData) {
             try {
-                ConsentWebView.this.onAction(consentAction(getJson(actionData)));
+                ConsentWebView.this.onAction(consentAction(getJson(actionData, getLogger()), getLogger()));
             } catch (ConsentLibException e) {
                 ConsentWebView.this.onError(e);
             }
@@ -80,8 +78,16 @@ abstract public class ConsentWebView extends WebView {
             getLogger().error(new RenderingAppException(errorMessage, errorMessage));
         }
 
-        private ConsentAction consentAction(JSONObject actionFromJS) throws ConsentLibException {
-            return new ConsentAction(getInt("actionType", actionFromJS), getString("choiceId", actionFromJS), getString("privacyManagerId", actionFromJS), getString("pmTab", actionFromJS), CustomJsonParser.getBoolean("requestFromPm", actionFromJS), getJson("saveAndExitVariables", actionFromJS), getString("consentLanguage", actionFromJS));
+        private ConsentAction consentAction(JSONObject actionFromJS, Logger logger) throws ConsentLibException {
+            return new ConsentAction(
+                    getInt("actionType", actionFromJS, getLogger()),
+                    getString("choiceId", actionFromJS, logger),
+                    getString("privacyManagerId", actionFromJS, logger),
+                    getString("pmTab", actionFromJS, logger),
+                    getBoolean("requestFromPm", actionFromJS, getLogger()),
+                    getJson("saveAndExitVariables", actionFromJS, getLogger()),
+                    getString("consentLanguage", actionFromJS, logger)
+            );
         }
     }
 
