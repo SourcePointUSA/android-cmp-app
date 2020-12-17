@@ -19,6 +19,7 @@ object CodeList{
     val CONNECTION_TIMEOUT = ExceptionCodes("connection_timeout")
     val GENERIC_NETWORK_REQUEST = ExceptionCodes("generic_network_request")
     val GENERIC_SDK_ERROR = ExceptionCodes("generic_sdk_error")
+    val UNABLE_TO_LOAD_JS_RECEIVER = ExceptionCodes("unable_to_load_jsreceiver")
 }
 
 inline class ExceptionCodes(val code : String)

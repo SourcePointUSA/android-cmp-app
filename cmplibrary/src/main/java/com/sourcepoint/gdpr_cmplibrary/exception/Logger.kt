@@ -12,10 +12,9 @@ import okhttp3.RequestBody
 internal interface Logger {
     /**
      * The [error] method receives contains the logic to communicate with the server
-     * @param url server url
      * @param e instance of [ConsentLibExceptionK]
      */
-    fun error(url: String, e: ConsentLibExceptionK)
+    fun error(e: ConsentLibExceptionK)
     companion object
 }
 
@@ -23,20 +22,23 @@ internal interface Logger {
  * Factory method used to create an instance of the [Logger] interface
  * @param networkClient network client
  * @param errorMessageManager entity used to build the network request body
+ * @param url server url
  */
 internal fun createLogger(
     networkClient: OkHttpClient,
-    errorMessageManager: ErrorMessageManager
-) : Logger = LoggerImpl(networkClient, errorMessageManager)
+    errorMessageManager: ErrorMessageManager,
+    url: String,
+) : Logger = LoggerImpl(networkClient, errorMessageManager, url)
 
 /**
  * Implementation of [Logger]
  */
 private class LoggerImpl(
     val networkClient: OkHttpClient,
-    val errorMessageManager: ErrorMessageManager
+    val errorMessageManager: ErrorMessageManager,
+    val url: String,
 ) : Logger {
-    override fun error(url: String, e: ConsentLibExceptionK) {
+    override fun error(e: ConsentLibExceptionK) {
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, errorMessageManager.build(e))
         val request: Request = Request.Builder().url(url).post(body)
@@ -44,6 +46,10 @@ private class LoggerImpl(
             .header("Content-Type", mediaType?.type()?:"")
             .build()
 
-        networkClient.newCall(request).enqueue { }
+        networkClient.newCall(request).enqueue {
+            onFailure { _, exception ->
+                exception.printStackTrace()
+            }
+        }
     }
 }

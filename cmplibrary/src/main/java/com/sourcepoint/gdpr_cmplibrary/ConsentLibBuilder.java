@@ -79,7 +79,8 @@ public class ConsentLibBuilder {
                         propertyId, "", // TODO propertyId
                         ci,
                         Legislation.GDPR
-                )
+                ),
+                "https://testlogger.com"
         );
     }
 

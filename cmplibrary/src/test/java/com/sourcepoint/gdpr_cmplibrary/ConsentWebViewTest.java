@@ -1,5 +1,6 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,11 @@ public class ConsentWebViewTest {
 
             @Override
             public void onAction(ConsentAction action) {  }
+
+            @Override
+            protected Logger getLogger() {
+                return new MockLogger();
+            }
         };
         spyView = spy(consentWebView);
     }

@@ -26,6 +26,8 @@ import android.webkit.WebViewClient;
 
 import com.example.gdpr_cmplibrary.R;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.Logger;
+import com.sourcepoint.gdpr_cmplibrary.exception.UnableToLoadJSReceiverException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -42,7 +44,6 @@ abstract public class ConsentWebView extends WebView {
 
     private static final String TAG = "ConsentWebView";
     private ConnectivityManager connectivityManager;
-
     @SuppressWarnings("unused")
     private class JSReceiverInterface {
 
@@ -84,6 +85,8 @@ abstract public class ConsentWebView extends WebView {
         }
     }
 
+    protected abstract Logger getLogger();
+
     public ConsentWebView(Context context) {
         super(getFixedContext(context));
         this.connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -117,6 +120,7 @@ abstract public class ConsentWebView extends WebView {
                     view.loadUrl("javascript:" + getFileContent(getResources().openRawResource(R.raw.js_receiver)));
                 } catch (IOException e) {
                     ConsentWebView.this.onError(new ConsentLibException(e, "Unable to load jsReceiver into ConasentLibWebview."));
+                    getLogger().error(new UnableToLoadJSReceiverException(e, "Unable to load jsReceiver into ConasentLibWebview."));
                 }
             }
 
@@ -125,6 +129,7 @@ abstract public class ConsentWebView extends WebView {
                 super.onReceivedError(view, request, error);
                 Log.d(TAG, "onReceivedError: " + error.toString());
                 onError(new ConsentLibException.ApiException(error.toString()));
+                getLogger().error(new UnableToLoadJSReceiverException(error.toString()));
             }
 
             @Override
@@ -132,6 +137,7 @@ abstract public class ConsentWebView extends WebView {
                 super.onReceivedError(view, errorCode, description, failingUrl);
                 Log.d(TAG, "onReceivedError: Error " + errorCode + ": " + description);
                 onError(new ConsentLibException.ApiException(description));
+                getLogger().error(new UnableToLoadJSReceiverException(description));
             }
 
             @Override

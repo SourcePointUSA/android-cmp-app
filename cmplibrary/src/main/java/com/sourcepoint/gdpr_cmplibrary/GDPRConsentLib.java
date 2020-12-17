@@ -249,6 +249,11 @@ public class GDPRConsentLib {
             public void onAction(ConsentAction action) {
                 GDPRConsentLib.this.onAction(action);
             }
+
+            @Override
+            protected Logger getLogger() {
+                return logger;
+            }
         };
         return webView;
     }
