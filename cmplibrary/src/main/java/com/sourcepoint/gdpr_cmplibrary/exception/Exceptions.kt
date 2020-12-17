@@ -11,18 +11,6 @@ internal sealed class ConsentLibExceptionK(
 }
 
 /**
- * This exception is thrown when any network problem has occurred
- */
-internal class NoInternetConnectionException @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description) {
-    override val code: ExceptionCodes = CodeList.NO_INTERNET_CONNECTION
-}
-
-/**
  * This exception is thrown when the response from getting the message is invalid
  */
 internal class InvalidResponseWebMessageException @JvmOverloads constructor(

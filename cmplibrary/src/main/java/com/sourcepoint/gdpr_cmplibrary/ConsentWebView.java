@@ -187,10 +187,8 @@ abstract public class ConsentWebView extends WebView {
     abstract public void onAction(ConsentAction action);
 
     public void loadConsentUIFromUrl(String url) throws ConsentLibException {
-        if (hasLostInternetConnection()){
-            getLogger().error(new NoInternetConnectionException("Connection to the internet lost"));
+        if (hasLostInternetConnection())
             throw new ConsentLibException.NoInternetConnectionException();
-        }
 
         Log.d(TAG, "Loading Webview with: " + url);
         Log.d(TAG, "User-Agent: " + getSettings().getUserAgentString());

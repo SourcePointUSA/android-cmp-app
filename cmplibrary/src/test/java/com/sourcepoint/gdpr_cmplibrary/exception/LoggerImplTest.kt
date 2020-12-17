@@ -27,8 +27,8 @@ class LoggerImplTest {
 
     @Test
     fun `GIVEN a NoInternetConnectionException VERIFY the generated call`() {
-        val ex = NoInternetConnectionException(cause = null, description = "description")
-        val json = json(CodeList.NO_INTERNET_CONNECTION)
+        val ex = InvalidResponseWebMessageException(cause = null, description = "description")
+        val json = json(CodeList.INVALID_RESPONSE_WEB_MESSAGE)
         every { messageManager.build(ex) } returns json
 
         val sut = createLogger(client, messageManager, "https://myserver.com/")

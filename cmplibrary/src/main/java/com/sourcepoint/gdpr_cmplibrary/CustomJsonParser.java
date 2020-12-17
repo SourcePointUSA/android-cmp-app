@@ -1,5 +1,6 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,5 +1,7 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.GenericSDKException;
+import com.sourcepoint.gdpr_cmplibrary.exception.InvalidLocalDataException;
 import com.sourcepoint.gdpr_cmplibrary.exception.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +53,7 @@ public class GDPRUserConsent {
         try {
             consentUUID = jConsent.getString("uuid");
         } catch (JSONException e) {
+            logger.error(new InvalidLocalDataException(e, "No uuid found on jConsent"));
             throw new ConsentLibException(e, "No uuid found on jConsent");
         }
         init(jConsent, consentUUID);
@@ -69,6 +72,7 @@ public class GDPRUserConsent {
             vendorGrants = new VendorGrants(jConsent.getJSONObject("grants"));
         } catch (Exception e){
             //This general catch block is meant to deal with null pointer exceptions as well
+            logger.error(new GenericSDKException(e, "Error parsing JSONObject to ConsentUser obj"));
             throw new ConsentLibException(e, "Error parsing JSONObject to ConsentUser obj");
         }
     }

@@ -42,29 +42,6 @@ class ErrorMessageManagerImplTest{
     }
 
     @Test
-    fun `GIVEN a NoInternetConnectionException VERIFY the generated message`() {
-
-        val originalException = ConnectionException("test_message")
-        val exception = NoInternetConnectionException(originalException, "test_description")
-
-        val expected = """
-            {
-                "code" : "${CodeList.NO_INTERNET_CONNECTION.code}",
-                "accountId" : "$accountId",
-                "propertyHref" : "$propertyHref",
-                "propertyId" : "$propertyId",
-                "description" : "test_description"
-                "clientVersion" : "${client.clientVersion}",
-                "OSVersion" : "${client.osVersion}",
-                "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
-            }
-        """.trimIndent()
-
-        sut.build(exception).assertEquals(expected)
-    }
-
-    @Test
     fun `GIVEN an InternalServerException VERIFY the generated message`() {
 
         val originalException = RuntimeException("test_message")
