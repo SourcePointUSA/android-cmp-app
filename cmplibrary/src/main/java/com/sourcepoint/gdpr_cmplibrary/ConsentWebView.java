@@ -26,8 +26,7 @@ import android.webkit.WebViewClient;
 
 import com.example.gdpr_cmplibrary.R;
 
-import com.sourcepoint.gdpr_cmplibrary.exception.Logger;
-import com.sourcepoint.gdpr_cmplibrary.exception.UnableToLoadJSReceiverException;
+import com.sourcepoint.gdpr_cmplibrary.exception.*;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -78,6 +77,7 @@ abstract public class ConsentWebView extends WebView {
         @JavascriptInterface
         public void onError(String errorMessage) {
             ConsentWebView.this.onError(new ConsentLibException(errorMessage));
+            getLogger().error(new RenderingAppException(errorMessage, errorMessage));
         }
 
         private ConsentAction consentAction(JSONObject actionFromJS) throws ConsentLibException {
@@ -145,6 +145,7 @@ abstract public class ConsentWebView extends WebView {
                 super.onReceivedSslError(view, handler, error);
                 Log.d(TAG, "onReceivedSslError: Error " + error);
                 onError(new ConsentLibException.ApiException(error.toString()));
+                getLogger().error(new UnableToLoadJSReceiverException(error.toString()));
             }
 
             @Override
@@ -152,6 +153,7 @@ abstract public class ConsentWebView extends WebView {
                 String message = "The WebView rendering process crashed!";
                 Log.e(TAG, message);
                 onError(new ConsentLibException(message));
+                getLogger().error(new WebViewException(message));
                 return false;
             }
 
@@ -185,8 +187,11 @@ abstract public class ConsentWebView extends WebView {
     abstract public void onAction(ConsentAction action);
 
     public void loadConsentUIFromUrl(String url) throws ConsentLibException {
-        if (hasLostInternetConnection())
+        if (hasLostInternetConnection()){
+            getLogger().error(new NoInternetConnectionException("Connection to the internet lost"));
             throw new ConsentLibException.NoInternetConnectionException();
+        }
+
         Log.d(TAG, "Loading Webview with: " + url);
         Log.d(TAG, "User-Agent: " + getSettings().getUserAgentString());
         loadUrl(url);
