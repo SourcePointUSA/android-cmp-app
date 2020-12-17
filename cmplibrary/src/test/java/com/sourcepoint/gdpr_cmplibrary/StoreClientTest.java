@@ -5,6 +5,9 @@ import android.preference.PreferenceManager;
 
 import androidx.test.core.app.ApplicationProvider;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.ConsentLibExceptionK;
+import com.sourcepoint.gdpr_cmplibrary.exception.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -28,7 +31,7 @@ public class StoreClientTest {
     @Before
     public void setUp() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext());
-        storeClient = new StoreClient(sharedPreferences);
+        storeClient = new StoreClient(sharedPreferences, new MockLogger());
         editor = sharedPreferences.edit().clear();
     }
 

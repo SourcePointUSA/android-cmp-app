@@ -1,11 +1,15 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.example.gdpr_cmplibrary.BuildConfig;
+import com.sourcepoint.gdpr_cmplibrary.exception.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,7 +49,6 @@ public class ConsentLibBuilder {
     PropertyConfig propertyConfig;
     private Context context;
 
-
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Context context) {
         init(accountId, property, propertyId , pmId , context);
     }
@@ -60,7 +63,24 @@ public class ConsentLibBuilder {
     }
 
     protected StoreClient getStoreClient(){
-        return new StoreClient(PreferenceManager.getDefaultSharedPreferences(context));
+        return new StoreClient(
+                PreferenceManager.getDefaultSharedPreferences(context),
+                getLogger(propertyConfig.accountId, build().propertyId)
+        );
+    }
+
+    protected Logger getLogger(int accountId, int propertyId){
+        String osVersion = String.valueOf(Build.VERSION.SDK_INT);
+        ClientInfo ci = new ClientInfo(BuildConfig.VERSION_NAME, osVersion, Build.MODEL);
+        return LoggerKt.createLogger(
+                new OkHttpClient(),
+                ErrorMessageManagerKt.createErrorManager(
+                        accountId,
+                        propertyId, "", // TODO propertyId
+                        ci,
+                        Legislation.GDPR
+                )
+        );
     }
 
     protected ConnectivityManager getConnectivityManager(){

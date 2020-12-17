@@ -2,6 +2,7 @@ package com.sourcepoint.gdpr_cmplibrary;
 
 import android.content.SharedPreferences;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +30,8 @@ public class StoreClient {
 
     private SharedPreferences pref;
 
+    private Logger logger;
+
     public static final String DEFAULT_EMPTY_CONSENT_STRING = "";
 
     public static final String DEFAULT_META_DATA = "{}";
@@ -37,9 +40,10 @@ public class StoreClient {
 
     static final String IABTCF_KEY_PREFIX = "IABTCF_";
 
-    StoreClient(SharedPreferences pref){
+    StoreClient(SharedPreferences pref, Logger logger){
         this.editor = pref.edit();
         this.pref = pref;
+        this.logger = logger;
     }
 
     public void setTCData(HashMap<String, Object> tcData){

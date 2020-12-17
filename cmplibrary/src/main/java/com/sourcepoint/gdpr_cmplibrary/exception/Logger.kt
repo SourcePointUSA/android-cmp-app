@@ -24,7 +24,7 @@ internal interface Logger {
  * @param networkClient network client
  * @param errorMessageManager entity used to build the network request body
  */
-internal fun Logger.Companion.create(
+internal fun createLogger(
     networkClient: OkHttpClient,
     errorMessageManager: ErrorMessageManager
 ) : Logger = LoggerImpl(networkClient, errorMessageManager)

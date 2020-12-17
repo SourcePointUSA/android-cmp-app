@@ -31,7 +31,7 @@ class LoggerImplTest {
         val json = json(CodeList.NO_INTERNET_CONNECTION)
         every { messageManager.build(ex) } returns json
 
-        val sut = Logger.create(client, messageManager)
+        val sut = createLogger(client, messageManager)
         sut.error("https://myserver.com", ex)
 
         val slot = slot<Request>()
@@ -51,7 +51,7 @@ class LoggerImplTest {
         val json = json(ExceptionCodes("custom_code"))
         every { messageManager.build(ex) } returns json
 
-        val sut = Logger.create(client, messageManager)
+        val sut = createLogger(client, messageManager)
         sut.error("https://myserver.com", ex)
 
         val slot = slot<Request>()

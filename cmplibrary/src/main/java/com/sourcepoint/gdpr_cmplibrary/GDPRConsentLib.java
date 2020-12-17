@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.*;
+import okhttp3.OkHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -143,6 +145,7 @@ public class GDPRConsentLib {
     }
 
     private final StoreClient storeClient;
+    private final Logger logger;
 
     /**
      * @return a new instance of GDPRConsentLib.Builder
@@ -172,6 +175,7 @@ public class GDPRConsentLib {
         messageLanguage = b.messageLanguage;
         isOTT = b.isOTT;
 
+        logger = b.getLogger(accountId, propertyId);
         uiThreadHandler = b.getUIThreadHandler();
         mCountDownTimer = b.getTimer(onCountdownFinished());
         sourcePoint = b.getSourcePointClient();
