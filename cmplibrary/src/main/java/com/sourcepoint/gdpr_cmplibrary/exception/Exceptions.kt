@@ -94,6 +94,9 @@ internal class InvalidOnActionEventPayloadException @JvmOverloads constructor(
     override val code: ExceptionCodes = CodeList.INVALID_ON_ACTION_EVENT_PAYLOAD
 }
 
+/**
+ * This exception is thrown when a JS on error is called
+ */
 internal class RenderingAppException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
