@@ -217,6 +217,18 @@ internal class GenericSDKException @JvmOverloads constructor(
 }
 
 /**
+ * This exception is thrown when the SDK doesn't have all the necessary data to perform a request.
+ */
+internal class InvalidRequestException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description) {
+    override val code: ExceptionCodes = CodeList.INVALID_REQUEST_ERROR
+}
+
+/**
  * This exception is thrown when a generic error occurred
  */
 internal class UnableToLoadJSReceiverException @JvmOverloads constructor(
@@ -227,4 +239,5 @@ internal class UnableToLoadJSReceiverException @JvmOverloads constructor(
     description = description) {
     override val code: ExceptionCodes = CodeList.UNABLE_TO_LOAD_JS_RECEIVER
 }
+
 
