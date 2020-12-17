@@ -234,7 +234,7 @@ public class ConsentLibBuilder {
     }
 
     protected SourcePointClient getSourcePointClient(){
-        return new SourcePointClient(new OkHttpClient(), spClientConfig() , getConnectivityManager());
+        return new SourcePointClient(new OkHttpClient(), spClientConfig() , getConnectivityManager(), logger);
     }
 
     private SourcePointClientConfig spClientConfig(){

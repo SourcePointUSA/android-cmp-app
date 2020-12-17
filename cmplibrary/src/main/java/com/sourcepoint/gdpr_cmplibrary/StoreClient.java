@@ -99,7 +99,7 @@ public class StoreClient {
     public GDPRUserConsent getUserConsent(SharedPreferences pref) throws ConsentLibException {
         try {
             String uStr = pref.getString(USER_CONSENT_KEY, null);
-            return uStr != null ? new GDPRUserConsent(new JSONObject(uStr)) : new GDPRUserConsent();
+            return uStr != null ? new GDPRUserConsent(new JSONObject(uStr), logger) : new GDPRUserConsent(logger);
         } catch (Exception e) {
             logger.error(new ResourceNotFoundException(e, "Error trying to recover UserConsents for sharedPrefs"));
             throw new ConsentLibException(e, "Error trying to recover UserConsents for sharedPrefs");

@@ -104,7 +104,7 @@ public class GDPRConsentLibTest {
         doReturn("").when(storeClientMock).getConsentString();
         doReturn("").when(storeClientMock).getConsentUUID();
         doReturn("").when(storeClientMock).getMetaData();
-        doReturn(new GDPRUserConsent()).when(storeClientMock).getUserConsent();
+        doReturn(new GDPRUserConsent(new MockLogger())).when(storeClientMock).getUserConsent();
         doNothing().when(storeClientMock).setAuthId(anyString());
         doNothing().when(storeClientMock).setConsentString(anyString());
         doNothing().when(storeClientMock).setConsentUuid(anyString());
@@ -154,9 +154,9 @@ public class GDPRConsentLibTest {
     @Test
     public void run_followed_by_show_view(){
         lib.run();
-//        verify(timerMock).start();
-//        lib.showView(lib.webView , false);
-//        verify(timerMock , atLeast(1)).cancel();
+        verify(timerMock).start();
+        lib.showView(lib.webView , false);
+        verify(timerMock , atLeast(1)).cancel();
     }
 
     @Test

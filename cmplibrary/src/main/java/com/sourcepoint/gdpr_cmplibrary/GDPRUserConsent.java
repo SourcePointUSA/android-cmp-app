@@ -1,5 +1,6 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,8 +22,9 @@ public class GDPRUserConsent {
     public String consentString;
     public HashMap TCData;
     public VendorGrants vendorGrants;
+    public Logger logger;
 
-    public GDPRUserConsent() {
+    public GDPRUserConsent(Logger logger) {
         acceptedVendors = new ArrayList<>();
         acceptedCategories = new ArrayList<>();
         specialFeatures = new ArrayList<>();
@@ -31,13 +33,16 @@ public class GDPRUserConsent {
         uuid = StoreClient.DEFAULT_EMPTY_UUID;
         TCData = new HashMap();
         vendorGrants = new VendorGrants();
+        this.logger = logger;
     }
 
-    public GDPRUserConsent(JSONObject jConsent) throws ConsentLibException {
+    public GDPRUserConsent(JSONObject jConsent, Logger logger) throws ConsentLibException {
+        this.logger = logger;
         init(jConsent);
     }
 
-    public GDPRUserConsent(JSONObject jConsent, String uuid) throws ConsentLibException {
+    public GDPRUserConsent(JSONObject jConsent, String uuid, Logger logger) throws ConsentLibException {
+        this.logger = logger;
         init(jConsent, uuid);
     }
 

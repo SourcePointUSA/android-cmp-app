@@ -4,6 +4,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,16 +35,19 @@ class SourcePointClient {
 
     ConnectivityManager connectivityManager;
 
+    private Logger logger = null;
+
     private String getRequestUUID(){
         if(!requestUUID.isEmpty()) return requestUUID;
         requestUUID =  UUID.randomUUID().toString();
         return requestUUID;
     }
 
-    SourcePointClient(OkHttpClient httpClient, SourcePointClientConfig config, ConnectivityManager connectivityManager) {
+    SourcePointClient(OkHttpClient httpClient, SourcePointClientConfig config, ConnectivityManager connectivityManager, Logger logger) {
         this.httpClient = httpClient;
         this.config = config;
         this.connectivityManager = connectivityManager;
+        this.logger = logger;
     }
 
     private boolean hasLostInternetConnection() {

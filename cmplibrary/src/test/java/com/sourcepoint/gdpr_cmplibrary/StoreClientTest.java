@@ -198,7 +198,7 @@ public class StoreClientTest {
     @Test
     public void setUserConsentAndCheckPrimitives() throws JSONException,ConsentLibException {
         editor.clear().commit();
-        GDPRUserConsent userConsent = new GDPRUserConsent();
+        GDPRUserConsent userConsent = new GDPRUserConsent(new MockLogger());
         userConsent.consentString = "consentString";
         userConsent.uuid = "uuid";
 
