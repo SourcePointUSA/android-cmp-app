@@ -186,7 +186,10 @@ public class GDPRConsentLib {
     }
 
     private Runnable onCountdownFinished() {
-        return () -> GDPRConsentLib.this.onErrorTask(new ConsentLibException("a timeout has occurred when loading the message"));
+        return () -> {
+            logger.error(new ConnectionTimeoutException("a timeout has occurred when loading the message"));
+            GDPRConsentLib.this.onErrorTask(new ConsentLibException("a timeout has occurred when loading the message"));
+        };
     }
 
     private void resetDataFields() {
@@ -276,6 +279,7 @@ public class GDPRConsentLib {
                     break;
             }
         } catch (Exception e) {
+            logger.error(new InvalidOnActionEventPayloadException("Unexpected error when calling onAction."));
             GDPRConsentLib.this.onErrorTask(new ConsentLibException(e, "Unexpected error when calling onAction."));
         }
     }
@@ -288,6 +292,7 @@ public class GDPRConsentLib {
             } catch (ConsentLibException e) {
                 onErrorTask(e);
             } catch (Exception e) {
+                logger.error(new InvalidResponseNativeMessageException("Unexpected error trying to setNativeMsg attributes"));
                 onErrorTask(new ConsentLibException(e, "Unexpected error trying to setNativeMsg attributes"));
             }
         });
@@ -305,6 +310,7 @@ public class GDPRConsentLib {
         } catch (ConsentLibException e) {
             onErrorTask(e);
         } catch (Exception e) {
+            logger.error(new InvalidResponseWebMessageException("Unexpect error on cancel action."));
             onErrorTask(new ConsentLibException(e, "Unexpect error on cancel action."));
         }
     }
@@ -319,6 +325,7 @@ public class GDPRConsentLib {
                 }
                 else onMsgCancel(requestFromPM);
             } catch(Exception e){
+                logger.error(new InvalidEventPayloadException("Error trying go back from consentUI."));
                 onErrorTask(new ConsentLibException(e, "Error trying go back from consentUI."));
             }
         });
@@ -340,6 +347,7 @@ public class GDPRConsentLib {
             } catch(ConsentLibException e) {
                 onErrorTask(e);
             } catch (Exception e) {
+                logger.error(new WebViewException("Error trying to load url to webview: " + url));
                 onErrorTask(new ConsentLibException(e, "Error trying to load url to webview: " + url));
             }
         });

@@ -48,6 +48,7 @@ public class ConsentLibBuilder {
 
     PropertyConfig propertyConfig;
     private Context context;
+    private Logger logger = null;
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Context context) {
         init(accountId, property, propertyId , pmId , context);
@@ -60,16 +61,21 @@ public class ConsentLibBuilder {
         shouldCleanConsentOnError = true;
         messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
         this.context = context.getApplicationContext();
+        logger = initLogger(accountId, propertyId);
     }
 
     protected StoreClient getStoreClient(){
         return new StoreClient(
                 PreferenceManager.getDefaultSharedPreferences(context),
-                getLogger(propertyConfig.accountId, build().propertyId)
+                logger
         );
     }
 
     protected Logger getLogger(int accountId, int propertyId){
+        return logger;
+    }
+
+    private Logger initLogger(int accountId, int propertyId){
         String osVersion = String.valueOf(Build.VERSION.SDK_INT);
         ClientInfo ci = new ClientInfo(BuildConfig.VERSION_NAME, osVersion, Build.MODEL);
         return LoggerKt.createLogger(
