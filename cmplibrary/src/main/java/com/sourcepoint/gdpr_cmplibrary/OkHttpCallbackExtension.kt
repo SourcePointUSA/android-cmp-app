@@ -6,7 +6,7 @@ import okhttp3.Response
 import java.io.IOException
 
 fun Call.enqueue(block : OkHttpCallbackImpl.() -> Unit){
-    OkHttpCallbackImpl().apply(block)
+    enqueue(OkHttpCallbackImpl().apply(block))
 }
 
 class OkHttpCallbackImpl : Callback{

@@ -78,7 +78,7 @@ public class ConsentLibBuilder {
     private Logger initLogger(int accountId, int propertyId){
         String osVersion = String.valueOf(Build.VERSION.SDK_INT);
         ClientInfo ci = new ClientInfo(BuildConfig.VERSION_NAME, osVersion, Build.MODEL);
-        return LoggerKt.createLogger(
+        return LoggerFactory.createLogger(
                 new OkHttpClient(),
                 ErrorMessageManagerKt.createErrorManager(
                         accountId,

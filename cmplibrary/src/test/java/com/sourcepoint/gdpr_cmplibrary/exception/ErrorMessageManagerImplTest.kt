@@ -30,7 +30,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -53,7 +53,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -76,7 +76,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -99,7 +99,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -122,7 +122,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -145,7 +145,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -168,7 +168,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -191,7 +191,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -214,7 +214,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -237,7 +237,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -260,7 +260,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -283,7 +283,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -306,7 +306,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -329,7 +329,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -352,7 +352,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -375,7 +375,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -398,7 +398,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
