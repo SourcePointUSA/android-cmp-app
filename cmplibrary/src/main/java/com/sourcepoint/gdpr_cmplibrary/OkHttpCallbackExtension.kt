@@ -1,5 +1,6 @@
 package com.sourcepoint.gdpr_cmplibrary
 
+import android.util.Log
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -23,10 +24,12 @@ class OkHttpCallbackImpl : Callback{
     }
     
     override fun onFailure(call: Call, e: IOException) {
+        Log.d("OkHttpCallbackImpl", e.stackTraceToString())
         onFailure_?.invoke(call, e)
     }
 
     override fun onResponse(call: Call, r: Response) {
+        Log.d("OkHttpCallbackImpl", r.toString())
         onResponse_?.invoke(call, r)
     }
 }

@@ -18,7 +18,7 @@ internal fun createLogger(
     networkClient: OkHttpClient,
     errorMessageManager: ErrorMessageManager,
     url: String,
-) : Logger = LoggerImpl(networkClient, errorMessageManager, url)
+): Logger = LoggerImpl(networkClient, errorMessageManager, url)
 
 /**
  * Implementation of [Logger]
@@ -32,17 +32,10 @@ private class LoggerImpl(
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, errorMessageManager.build(e))
         val request: Request = Request.Builder().url(url).post(body)
-            .header("Accept", mediaType?.type()?:"")
-            .header("Content-Type", mediaType?.type()?:"")
+            .header("Accept", mediaType?.type() ?: "")
+            .header("Content-Type", mediaType?.type() ?: "")
             .build()
 
-        networkClient.newCall(request).enqueue {
-            onFailure { _, exception ->
-                exception.printStackTrace()
-            }
-            onResponse { call, r ->
-                println("TrackerLogger: $r")
-            }
-        }
+        networkClient.newCall(request).enqueue { }
     }
 }
