@@ -62,7 +62,6 @@ public class ConsentLibBuilder {
         messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
         this.context = context.getApplicationContext();
         logger = initLogger(accountId, propertyId);
-        logger.error(new InvalidResponseConsentException("Error building message bodyJson in sourcePointClient"));
     }
 
     protected StoreClient getStoreClient(){
