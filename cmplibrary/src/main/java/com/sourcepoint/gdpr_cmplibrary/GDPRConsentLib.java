@@ -187,7 +187,7 @@ public class GDPRConsentLib {
 
     private Runnable onCountdownFinished() {
         return () -> {
-            logger.error(new ConnectionTimeoutException("a timeout has occurred when loading the message"));
+            logger.error(new GenericSDKException("a timeout has occurred when loading the message"));
             GDPRConsentLib.this.onErrorTask(new ConsentLibException("a timeout has occurred when loading the message"));
         };
     }
