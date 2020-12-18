@@ -24,12 +24,12 @@ class OkHttpCallbackImpl : Callback{
     }
     
     override fun onFailure(call: Call, e: IOException) {
-        Log.d("OkHttpCallbackImpl", e.stackTraceToString())
+        Log.d("ELogger", e.stackTraceToString())
         onFailure_?.invoke(call, e)
     }
 
     override fun onResponse(call: Call, r: Response) {
-        Log.d("OkHttpCallbackImpl", r.toString())
+        Log.d("ELogger", r.toString())
         onResponse_?.invoke(call, r)
     }
 }
