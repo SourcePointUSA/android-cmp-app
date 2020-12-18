@@ -27,12 +27,12 @@ class LoggerImplTest {
 
     @Test
     fun `GIVEN a NoInternetConnectionException VERIFY the generated call`() {
-        val ex = NoInternetConnectionException(cause = null, description = "description")
-        val json = json(CodeList.NO_INTERNET_CONNECTION)
+        val ex = InvalidResponseWebMessageException(cause = null, description = "description")
+        val json = json(CodeList.INVALID_RESPONSE_WEB_MESSAGE)
         every { messageManager.build(ex) } returns json
 
-        val sut = Logger.create(client, messageManager)
-        sut.error("https://myserver.com", ex)
+        val sut = createLogger(client, messageManager, "https://myserver.com/")
+        sut.error(ex)
 
         val slot = slot<Request>()
         verify(exactly = 1) { client.newCall(capture(slot)) }
@@ -51,8 +51,8 @@ class LoggerImplTest {
         val json = json(ExceptionCodes("custom_code"))
         every { messageManager.build(ex) } returns json
 
-        val sut = Logger.create(client, messageManager)
-        sut.error("https://myserver.com", ex)
+        val sut = createLogger(client, messageManager, "https://myserver.com/")
+        sut.error(ex)
 
         val slot = slot<Request>()
         verify(exactly = 1) { client.newCall(capture(slot)) }

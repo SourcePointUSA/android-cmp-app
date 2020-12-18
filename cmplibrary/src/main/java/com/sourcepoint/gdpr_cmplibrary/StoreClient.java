@@ -2,6 +2,8 @@ package com.sourcepoint.gdpr_cmplibrary;
 
 import android.content.SharedPreferences;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.Logger;
+import com.sourcepoint.gdpr_cmplibrary.exception.ResourceNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +31,8 @@ public class StoreClient {
 
     private SharedPreferences pref;
 
+    private Logger logger;
+
     public static final String DEFAULT_EMPTY_CONSENT_STRING = "";
 
     public static final String DEFAULT_META_DATA = "{}";
@@ -37,9 +41,10 @@ public class StoreClient {
 
     static final String IABTCF_KEY_PREFIX = "IABTCF_";
 
-    StoreClient(SharedPreferences pref){
+    StoreClient(SharedPreferences pref, Logger logger){
         this.editor = pref.edit();
         this.pref = pref;
+        this.logger = logger;
     }
 
     public void setTCData(HashMap<String, Object> tcData){
@@ -91,11 +96,12 @@ public class StoreClient {
         return getUserConsent(pref);
     }
 
-    public static GDPRUserConsent getUserConsent(SharedPreferences pref) throws ConsentLibException {
+    public GDPRUserConsent getUserConsent(SharedPreferences pref) throws ConsentLibException {
         try {
             String uStr = pref.getString(USER_CONSENT_KEY, null);
-            return uStr != null ? new GDPRUserConsent(new JSONObject(uStr)) : new GDPRUserConsent();
+            return uStr != null ? new GDPRUserConsent(new JSONObject(uStr), logger) : new GDPRUserConsent(logger);
         } catch (Exception e) {
+            logger.error(new ResourceNotFoundException(e, "Error trying to recover UserConsents for sharedPrefs"));
             throw new ConsentLibException(e, "Error trying to recover UserConsents for sharedPrefs");
         }
     }

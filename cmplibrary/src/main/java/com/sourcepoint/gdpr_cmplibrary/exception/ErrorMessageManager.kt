@@ -57,7 +57,7 @@ private class ErrorMessageManagerImpl(
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "${exception.description}"
+                "description" : "${exception.description}",
                 "clientVersion" : "${clientInfo.clientVersion}",
                 "OSVersion" : "${clientInfo.osVersion}",
                 "deviceFamily" : "${clientInfo.deviceFamily}",

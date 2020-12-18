@@ -30,9 +30,13 @@ android {
     }
 
     buildTypes {
+        debug{
+            buildConfigField "String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\""
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\""
         }
     }
 

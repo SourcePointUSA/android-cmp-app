@@ -64,7 +64,7 @@ public class SourcePointClientTest {
         onLoadComplete = mock(GDPRConsentLib.OnLoadComplete.class);
         networkInfo = getNetworkInfo();
         connectivityManager = getConnectivityManager();
-        sourcePointClient =  new SourcePointClient(http, getSourcePointClientConfig(), connectivityManager);
+        sourcePointClient =  new SourcePointClient(http, getSourcePointClientConfig(), connectivityManager, new MockLogger());
     }
 
     private OkHttpClient getOkHttpClientMock(){

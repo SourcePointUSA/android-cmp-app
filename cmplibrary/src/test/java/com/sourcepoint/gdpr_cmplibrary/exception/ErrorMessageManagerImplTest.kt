@@ -30,30 +30,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
-                "clientVersion" : "${client.clientVersion}",
-                "OSVersion" : "${client.osVersion}",
-                "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
-            }
-        """.trimIndent()
-
-        sut.build(exception).assertEquals(expected)
-    }
-
-    @Test
-    fun `GIVEN a NoInternetConnectionException VERIFY the generated message`() {
-
-        val originalException = ConnectionException("test_message")
-        val exception = NoInternetConnectionException(originalException, "test_description")
-
-        val expected = """
-            {
-                "code" : "${CodeList.NO_INTERNET_CONNECTION.code}",
-                "accountId" : "$accountId",
-                "propertyHref" : "$propertyHref",
-                "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -76,7 +53,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -99,7 +76,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -122,7 +99,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -145,7 +122,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -168,7 +145,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -191,7 +168,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -214,7 +191,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -237,7 +214,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -260,7 +237,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -283,7 +260,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -306,7 +283,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -329,7 +306,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -352,7 +329,7 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
@@ -375,7 +352,53 @@ class ErrorMessageManagerImplTest{
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "propertyId" : "$propertyId",
-                "description" : "test_description"
+                "description" : "test_description",
+                "clientVersion" : "${client.clientVersion}",
+                "OSVersion" : "${client.osVersion}",
+                "deviceFamily" : "${client.deviceFamily}",
+                "legislation" : "${Legislation.GDPR.name}"
+            }
+        """.trimIndent()
+
+        sut.build(exception).assertEquals(expected)
+    }
+
+    @Test
+    fun `GIVEN a InvalidRequestException VERIFY the generated message`() {
+
+        val originalException = RuntimeException("test_message")
+        val exception = InvalidRequestException(originalException, "test_description")
+
+        val expected = """
+            {
+                "code" : "${CodeList.INVALID_REQUEST_ERROR.code}",
+                "accountId" : "$accountId",
+                "propertyHref" : "$propertyHref",
+                "propertyId" : "$propertyId",
+                "description" : "test_description",
+                "clientVersion" : "${client.clientVersion}",
+                "OSVersion" : "${client.osVersion}",
+                "deviceFamily" : "${client.deviceFamily}",
+                "legislation" : "${Legislation.GDPR.name}"
+            }
+        """.trimIndent()
+
+        sut.build(exception).assertEquals(expected)
+    }
+
+    @Test
+    fun `GIVEN a UnableToLoadJSReceiverException VERIFY the generated message`() {
+
+        val originalException = RuntimeException("test_message")
+        val exception = UnableToLoadJSReceiverException(originalException, "test_description")
+
+        val expected = """
+            {
+                "code" : "${CodeList.UNABLE_TO_LOAD_JS_RECEIVER.code}",
+                "accountId" : "$accountId",
+                "propertyHref" : "$propertyHref",
+                "propertyId" : "$propertyId",
+                "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",

@@ -4,6 +4,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,16 +35,19 @@ class SourcePointClient {
 
     ConnectivityManager connectivityManager;
 
+    private Logger logger;
+
     private String getRequestUUID(){
         if(!requestUUID.isEmpty()) return requestUUID;
         requestUUID =  UUID.randomUUID().toString();
         return requestUUID;
     }
 
-    SourcePointClient(OkHttpClient httpClient, SourcePointClientConfig config, ConnectivityManager connectivityManager) {
+    SourcePointClient(OkHttpClient httpClient, SourcePointClientConfig config, ConnectivityManager connectivityManager, Logger logger) {
         this.httpClient = httpClient;
         this.config = config;
         this.connectivityManager = connectivityManager;
+        this.logger = logger;
     }
 
     private boolean hasLostInternetConnection() {
@@ -55,8 +59,10 @@ class SourcePointClient {
     }
 
     void getMessage(boolean isNative, String consentUUID, String meta, String euconsent, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
-        if(hasLostInternetConnection())
+        if(hasLostInternetConnection()){
             throw new ConsentLibException.NoInternetConnectionException();
+        }
+
 
         String url = messageUrl(isNative);
         Log.d(LOG_TAG, "Getting message from: " + url);
@@ -72,6 +78,7 @@ class SourcePointClient {
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                logger.error(new InvalidResponseWebMessageException(e, "Fail to get message from: " + url));
                 Log.d(LOG_TAG, "Failed to load resource " + url + " due to " +   "url load failure :  " + e.getMessage());
                 onLoadComplete.onFailure(new ConsentLibException(e, "Fail to get message from: " + url));
             }
@@ -85,6 +92,7 @@ class SourcePointClient {
                 }else {
                     Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + response.code() + ": " + response.message());
                     onLoadComplete.onFailure(new ConsentLibException("Fail to get message from: " + url));
+                    logger.error(new InvalidResponseWebMessageException("Fail to get message from: " + url));
                 }
             }
         });
@@ -116,6 +124,7 @@ class SourcePointClient {
             return params;
         } catch (JSONException e) {
             e.printStackTrace();
+            logger.error(new InvalidResponseConsentException(e, "Error building message bodyJson in sourcePointClient"));
             throw new ConsentLibException(e, "Error building message bodyJson in sourcePointClient");
         }
     }
@@ -133,6 +142,7 @@ class SourcePointClient {
         try {
             params.put("requestUUID", getRequestUUID());
         } catch (JSONException e) {
+            logger.error(new InvalidRequestException(e, "Error adding param requestUUID."));
             throw new ConsentLibException(e, "Error adding param requestUUID.");
         }
         Log.d(LOG_TAG, "Sending consent to: " + url);
@@ -152,6 +162,7 @@ class SourcePointClient {
             public void onFailure(Call call, IOException e) {
                 Log.d(LOG_TAG, "Failed to load resource " + url + " due to " +   "url load failure :  " + e.getMessage());
                 onLoadComplete.onFailure(new ConsentLibException(e, "Fail to send consent to: " + url));
+                logger.error(new InvalidRequestException(e, "Fail to send consent to: " + url));
             }
 
             @Override
@@ -163,6 +174,7 @@ class SourcePointClient {
                 }else {
                     Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + response.code() + ": " + response.message());
                     onLoadComplete.onFailure(new ConsentLibException("Fail to send consent to: " + url));
+                    logger.error(new InvalidResponseConsentException("Fail to send consent to: " + url));
                 }
             }
         });
@@ -176,6 +188,7 @@ class SourcePointClient {
         try {
             params.put("requestUUID", getRequestUUID());
         } catch (JSONException e) {
+            logger.error(new InvalidRequestException(e, "Error adding param requestUUID."));
             throw new ConsentLibException(e, "Error adding param requestUUID.");
         }
         Log.d(LOG_TAG, "Sending custom consents to: " + url);
@@ -195,6 +208,7 @@ class SourcePointClient {
             public void onFailure(Call call, IOException e) {
                 Log.d(LOG_TAG, "Failed to load resource " + url + " due to " +   "url load failure :  " + e.getMessage());
                 onLoadComplete.onFailure(new ConsentLibException(e, "Fail to send consent to: " + url));
+                logger.error(new InvalidRequestException(e, "Fail to send custom consent to: " + url));
             }
 
             @Override
@@ -206,6 +220,7 @@ class SourcePointClient {
                 }else {
                     Log.d(LOG_TAG, "Failed to load resource " + url + " due to " + response.code() + ": " + response.message());
                     onLoadComplete.onFailure(new ConsentLibException("Fail to send consent to: " + url));
+                    logger.error(new InvalidResponseCustomConsent("Fail to send custom consent to: " + url));
                 }
             }
         });
