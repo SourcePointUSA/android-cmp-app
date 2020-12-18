@@ -82,11 +82,12 @@ public class ConsentLibBuilder {
                 new OkHttpClient(),
                 ErrorMessageManagerKt.createErrorManager(
                         accountId,
-                        propertyId, "", // TODO propertyId
+                        propertyId,
+                        "https://" + propertyConfig.propertyName,
                         ci,
                         Legislation.GDPR
                 ),
-                "https://testlogger.com"
+                BuildConfig.LOGGER_URL
         );
     }
 
