@@ -264,12 +264,14 @@ class MetaAppTestCases {
         }
 
         fun selectNativeMessageConsentList() {
+            clickPMTabSelectedPurposes()
             NATIVE_MESSAGE_CONSENT_LIST.forEach { consent ->
                 checkConsentWebView(consent)
             }
         }
 
         fun selectPartialConsentList() {
+            clickPMTabSelectedPurposes()
             PARTIAL_CONSENT_LIST.forEach { consent ->
                 checkConsentWebView(consent)
             }
@@ -295,6 +297,10 @@ class MetaAppTestCases {
 
         fun checkPMTabSelectedPurposes() {
             checkPMTabSelected(PURPOSES)
+        }
+
+        fun clickPMTabSelectedPurposes() {
+            performClickPMTabSelected(PURPOSES)
         }
     }
 }
