@@ -14,9 +14,6 @@ jobs:
       - name: Build and test
         run: |
           ./gradlew datalib:build
-#      - name: Get the version
-#        id: get_version
-#        run: echo ::set-output name=VERSION::${GITHUB_REF##*/}
       - name: Get current time
         uses: 1466587594/get-current-time@v2
         id: current-time
