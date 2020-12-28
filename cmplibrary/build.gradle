@@ -14,17 +14,17 @@ version VERSION_NAME
 group = "com.sourcepoint.cmplibrary"
 version = VERSION_NAME
 
-ext {
-    android_sourceSet = true
-    pom_name = "cmplibrary"
-    pom_repo = "sourcepoint"
-    pom_description = ""
-    pom_user_org = "sourcepoint"
-    pom_vcs_url = "https://github.com/SourcePointUSA/android-cmp-app"
-    web_site_url = "https://github.com/SourcePointUSA/android-cmp-app"
-    pom_issue_tracker_url = "https://github.com/SourcePointUSA/android-cmp-app/issues"
-    github_repo = "SourcePointUSA/android-cmp-app"
-}
+//ext {
+//    android_sourceSet = true
+//    pom_name = "cmplibrary"
+//    pom_repo = "sourcepoint"
+//    pom_description = ""
+//    pom_user_org = "sourcepoint"
+//    pom_vcs_url = "https://github.com/SourcePointUSA/android-cmp-app"
+//    web_site_url = "https://github.com/SourcePointUSA/android-cmp-app"
+//    pom_issue_tracker_url = "https://github.com/SourcePointUSA/android-cmp-app/issues"
+//    github_repo = "SourcePointUSA/android-cmp-app"
+//}
 
 android {
     compileSdkVersion 28
