@@ -2,7 +2,7 @@ name: SDK Release
 
 on:
   push:
-    branches: [ main ]
+    branches: [ release/* ]
 
 jobs:
   build:
