@@ -2,7 +2,7 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-def VERSION_NAME = "5.3.11"
+def VERSION_NAME = "0.0.20"
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
