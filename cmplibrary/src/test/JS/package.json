@@ -8,5 +8,8 @@
   },
   "dependencies": {
     "jest": "^26.1.0"
-  }
+   },
+   "peerDependencies": {
+    "node-notifier": "^8.0.1"
+  } 
 }
