@@ -1,0 +1,55 @@
+name: SDK Release
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Create Release and tag
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build and test
+        run: |
+          ./gradlew datalib:build
+#      - name: Get the version
+#        id: get_version
+#        run: echo ::set-output name=VERSION::${GITHUB_REF##*/}
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: (MMMM, DD, YYYY)
+      - name: Extracting version lib
+        run: ./gradlew datalib:versionTxt
+      - name: Read Release Note
+        id: release_note
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./datalib/release_note.txt
+      - name: Get the version
+        id: get_version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./datalib/version.txt
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: v${{ steps.get_version.outputs.content }}
+          release_name: v${{ steps.get_version.outputs.content }}
+          body: |
+            ## ${{ steps.get_version.outputs.content }} ${{ steps.current-time.outputs.formattedTime }}
+            ${{ steps.release_note.outputs.content }}
+          draft: false
+          prerelease: false
+      - name: Bintray upload artifact
+        env:
+          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+          BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
+        run: |
+          ./gradlew datalib:bintrayUpload
