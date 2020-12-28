@@ -13,24 +13,24 @@ jobs:
         uses: actions/checkout@v2
       - name: Build and test
         run: |
-          ./gradlew datalib:build
+          ./gradlew cmplibrary:build
       - name: Get current time
         uses: 1466587594/get-current-time@v2
         id: current-time
         with:
           format: (MMMM, DD, YYYY)
       - name: Extracting version lib
-        run: ./gradlew datalib:versionTxt
+        run: ./gradlew cmplibrary:versionTxt
       - name: Read Release Note
         id: release_note
         uses: juliangruber/read-file-action@v1
         with:
-          path: ./datalib/release_note.txt
+          path: ./cmplibrary/release_note.txt
       - name: Get the version
         id: get_version
         uses: juliangruber/read-file-action@v1
         with:
-          path: ./datalib/version.txt
+          path: ./cmplibrary/version.txt
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -49,4 +49,4 @@ jobs:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
           BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
         run: |
-          ./gradlew datalib:bintrayUpload
+          ./gradlew cmplibrary:bintrayUpload
