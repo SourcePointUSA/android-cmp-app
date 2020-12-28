@@ -1,0 +1,54 @@
+apply plugin: 'digital.wup.android-maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+
+// Android Publish local
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    duplicatesStrategy = "exclude"
+    from android.sourceSets.main.java.source
+}
+
+publishing {
+    publications {
+        Production(MavenPublication) {
+            from components.android
+            artifact sourcesJar
+        }
+    }
+}
+
+def BINTRAY_USER = hasProperty('bintray_user') ? bintray_user : "$System.env.BINTRAY_USER"
+def BINTRAY_APIKEY = hasProperty('bintray_apikey') ? bintray_apikey : "$System.env.BINTRAY_APIKEY"
+
+// Bintray
+if (BINTRAY_USER != null && BINTRAY_APIKEY != null ) {
+    println("BINTRAY_USER: " + BINTRAY_USER)
+    println("BINTRAY_APIKEY: " + BINTRAY_APIKEY)
+    bintray {
+        user = BINTRAY_USER
+        key = BINTRAY_APIKEY
+
+        pkg {
+            repo = pom_repo
+            name = pom_name
+            userOrg = pom_user_org
+
+//            description = pom_description
+            publish = true
+            override = false
+
+            publicDownloadNumbers = true
+            licenses = ['Apache-2.0']
+            vcsUrl = pom_vcs_url
+            websiteUrl = web_site_url
+            issueTrackerUrl = pom_issue_tracker_url
+            dryRun = false
+
+            githubRepo = github_repo
+            githubReleaseNotesFile = 'README.md'
+
+            publications = ['Production']
+        }
+    }
+}

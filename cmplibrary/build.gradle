@@ -11,8 +11,20 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 version VERSION_NAME
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
+group = "com.sourcepoint.cmplibrary"
+version = VERSION_NAME
+
+ext {
+    android_sourceSet = true
+    pom_name = "cmplibrary"
+    pom_repo = "sourcepoint"
+    pom_description = ""
+    pom_user_org = "sourcepoint"
+    pom_vcs_url = "https://github.com/SourcePointUSA/android-cmp-app"
+    web_site_url = "https://github.com/SourcePointUSA/android-cmp-app"
+    pom_issue_tracker_url = "https://github.com/SourcePointUSA/android-cmp-app/issues"
+    github_repo = "SourcePointUSA/android-cmp-app"
+}
 
 android {
     compileSdkVersion 28
@@ -58,7 +70,7 @@ dependencies {
 
     // Unfortunately we depend on a outdated version of okhttp due to its support to older versions of Android
     //noinspection GradleDependency
-    implementation 'com.squareup.okhttp3:okhttp:3.12.10'
+    api 'com.squareup.okhttp3:okhttp:3.12.10'
 
     testImplementation "io.mockk:mockk:$mockk_version"
     testImplementation 'androidx.test:core:1.2.0'
@@ -70,126 +82,4 @@ dependencies {
     androidTestImplementation 'junit:junit:4.13'
 }
 
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    archiveClassifier = 'sources'
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-def pomConfig = {
-    licenses {
-        license {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution "repo"
-        }
-    }
-    developers {
-        developer {
-            id properties.getProperty("bintray.user")
-            name "Sourcepoint"
-            email properties.getProperty("bintray.email")
-        }
-    }
-
-    scm {
-        url "https://github.com/SourcePointUSA/android-cmp-app"
-    }
-}
-
-
-publishing {
-    publications {
-        POM(MavenPublication) {
-            artifact("$buildDir/outputs/aar/cmplibrary-release.aar")
-            artifact sourcesJar
-            groupId 'com.sourcepoint.cmplibrary'
-            artifactId 'cmplibrary'
-            version VERSION_NAME
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-                def root = asNode()
-                root.appendNode('description', 'mvp architecture for android')
-                root.appendNode('name', 'mvp-arch-android')
-                root.appendNode('url', 'https://github.com/linjonh/MvpArch')
-                root.children().last() + pomConfig
-                // Iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
-                configurations.implementation.allDependencies.each {
-                    // Ensure dependencies such as fileTree are not included.
-                    logger.log(LogLevel.ERROR,"allDependencies.each:====>"+it.toString()+"\n")
-
-                    if (it.name != 'unspecified') {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
-                }
-            }
-        }
-    }
-
-}
-
-bintray {
-    user =  properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-    publications = ['POM']
-    configurations = ['archives']
-    override = true
-    pkg {
-        repo = 'sourcepoint'
-        name = 'cmplibrary'
-        publish = true
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/SourcePointUSA/android-cmp-app'
-        dryRun = true
-        publicDownloadNumbers = true
-
-        version {
-            name = VERSION_NAME
-            desc = 'SourcePoint CMP Lib'
-            released  = new Date()
-            vcsTag = VERSION_NAME
-            gpg {
-                sign = true //Determines whether to GPG sign the files. The default is false
-                passphrase = properties.getProperty("bintray.gpg.password")
-                //Optional. The passphrase for GPG signing'
-            }
-        }
-    }
-}
-
-task copyAARToZip(type: Copy) {
-    from "$buildDir/outputs/aar/cmplibrary-release.aar"
-    into "$buildDir/zip/com/sourcepoint/cmplibrary/cmplibrary/$VERSION_NAME"
-    rename "cmplibrary-release.aar", "cmplibrary-$VERSION_NAME" + ".aar"
-}
-
-task copySourcesToZip(type: Copy) {
-    from "$buildDir/libs/cmplibrary-$VERSION_NAME-sources.jar"
-    into "$buildDir/zip/com/sourcepoint/cmplibrary/cmplibrary/$VERSION_NAME"
-}
-
-task copyPOMToZip(type: Copy) {
-    from "$buildDir/publications/POM/pom-default.xml"
-    into "$buildDir/zip/com/sourcepoint/cmplibrary/cmplibrary/$VERSION_NAME"
-    rename "pom-default.xml", "cmplibrary-$VERSION_NAME" + ".pom"
-}
-
-task createZip(type: Zip) {
-    from "$buildDir/zip"
-    destinationDirectory = file("$buildDir")
-    archiveFileName = "cmplibrary-$VERSION_NAME" + ".zip"
-}
-
-task bundleZip {
-    def tasks = [sourcesJar, generatePomFileForPOMPublication, copySourcesToZip, copyPOMToZip, copyAARToZip, createZip]
-    for (int i = 0; i < tasks.size() - 1; i++) {
-        tasks[i + 1].mustRunAfter(tasks[i])
-    }
-    dependsOn(tasks)
-}
+apply from: '../gradleutils/publish-android.gradle'
