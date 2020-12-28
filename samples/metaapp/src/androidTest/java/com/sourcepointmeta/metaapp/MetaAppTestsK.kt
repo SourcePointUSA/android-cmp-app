@@ -44,7 +44,6 @@ import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapSaveAndExitOnWe
 import com.sourcepointmeta.metaapp.MetaAppTestCases.Companion.tapShowOption
 import com.sourcepointmeta.metaapp.TestData.*
 import com.sourcepointmeta.metaapp.ui.SplashScreenActivity
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
@@ -374,7 +373,7 @@ class MetaAppTestsK {
         wr { checkWebViewDisplayedForMessage() }                    //        Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
         wr { tapAcceptAllOnWebView() }                              //        chooseAction(ACCEPT_ALL);
         wr { checkForConsentsAreDisplayed() }                       //        Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
-        navigateBackToListView()                                    //        navigateBackToListView();
+        wr { navigateBackToListView() }                             //        navigateBackToListView();
         wr { swipeAndChooseEditActionUniqueAuth() }                 //        swipeAndChooseAction(EDIT_ACTION, UNIQUE_AUTHENTICATION);
         wr { checkWebViewDoesNotDisplayTheMessage() }               //        Assert.assertFalse(checkWebViewDisplayedFor(MESSAGE));
         wr { checkForConsentsAreDisplayed() }                       //        Assert.assertTrue(checkFor(CONSENTS_ARE_DISPLAYED));
