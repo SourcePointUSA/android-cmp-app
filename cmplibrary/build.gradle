@@ -82,4 +82,11 @@ dependencies {
     androidTestImplementation 'junit:junit:4.13'
 }
 
+task versionTxt{
+    group = "release-utility"
+    doLast{
+        new File(projectDir, "version.txt").text = "$VERSION_NAME"
+    }
+}
+
 apply from: '../gradleutils/publish-android.gradle'
