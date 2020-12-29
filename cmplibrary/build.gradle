@@ -14,33 +14,16 @@ version VERSION_NAME
 group = "com.sourcepoint.cmplibrary"
 version = VERSION_NAME
 
-ext {
-    android_sourceSet = true
-    pom_name = "cmplibrary"
-    pom_repo = "sourcepoint"
-    pom_description = ""
-    pom_user_org = "sourcepoint"
-    pom_vcs_url = "https://github.com/SourcePointUSA/android-cmp-app"
-    web_site_url = "https://github.com/SourcePointUSA/android-cmp-app"
-    pom_issue_tracker_url = "https://github.com/SourcePointUSA/android-cmp-app/issues"
-    github_repo = "SourcePointUSA/android-cmp-app"
-}
-
 android {
     compileSdkVersion 28
-
     testOptions.unitTests.includeAndroidResources = true
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 300
         versionName VERSION_NAME
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
-
     buildTypes {
         debug{
             buildConfigField "String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\""
@@ -51,7 +34,6 @@ android {
             buildConfigField "String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\""
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

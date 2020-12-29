@@ -30,9 +30,9 @@ if (BINTRAY_USER != null && BINTRAY_APIKEY != null ) {
         key = BINTRAY_APIKEY
 
         pkg {
-            repo = pom_repo
-            name = pom_name
-            userOrg = pom_user_org
+            repo = POM_REPO
+            name = POM_NAME
+            userOrg = POM_USER_ORG
 
 //            description = pom_description
             publish = true
@@ -40,12 +40,12 @@ if (BINTRAY_USER != null && BINTRAY_APIKEY != null ) {
 
             publicDownloadNumbers = true
             licenses = ['Apache-2.0']
-            vcsUrl = pom_vcs_url
-            websiteUrl = web_site_url
-            issueTrackerUrl = pom_issue_tracker_url
+            vcsUrl = POM_VCS_URL
+            websiteUrl = WEB_SITE_URL
+            issueTrackerUrl = POM_ISSUE_TRACKER_URL
             dryRun = false
 
-            githubRepo = github_repo
+            githubRepo = GITHUB_REPO
             githubReleaseNotesFile = 'README.md'
 
             publications = ['Production']
