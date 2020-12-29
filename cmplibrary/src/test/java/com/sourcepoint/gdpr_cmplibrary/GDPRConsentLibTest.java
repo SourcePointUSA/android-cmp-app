@@ -153,7 +153,7 @@ public class GDPRConsentLibTest {
 
     @Test
     public void run_followed_by_show_view(){
-        lib.run();
+        lib.loadMessage();
         verify(timerMock).start();
         lib.showView(lib.webView , false);
         verify(timerMock , atLeast(1)).cancel();
@@ -161,7 +161,7 @@ public class GDPRConsentLibTest {
 
     @Test
     public void run_followed_by_consentFinished() throws JSONException, ConsentLibException {
-        lib.run();
+        lib.loadMessage();
         verify(timerMock).start();
         lib.consentFinished();
         verify(timerMock).cancel();
@@ -170,7 +170,7 @@ public class GDPRConsentLibTest {
 
     @Test
     public void run_followed_by_onErrorTask(){
-        lib.run();
+        lib.loadMessage();
         verify(timerMock).start();
         lib.onErrorTask(new ConsentLibException("ooops, I have a bad feeling about this..."));
         verify(timerMock, atLeast(1)).cancel();

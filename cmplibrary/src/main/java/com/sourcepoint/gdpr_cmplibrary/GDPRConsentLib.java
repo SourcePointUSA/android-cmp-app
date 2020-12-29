@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.sourcepoint.gdpr_cmplibrary.exception.*;
-import okhttp3.OkHttpClient;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -337,7 +337,7 @@ public class GDPRConsentLib {
     }
 
     public void onShowOptions(ConsentAction action) {
-        showPm(action.privacyManagerId, action.pmTab);
+        loadPrivacyManager(action.privacyManagerId, action.pmTab);
     }
 
     void loadConsentUI(String url) {
@@ -357,7 +357,7 @@ public class GDPRConsentLib {
      * Communicates with SourcePoint to load the message. It all happens in the background and the WebView
      * will only show after the message is ready to be displayed (received data from SourcePoint).
      */
-    public void run() {
+    public void loadMessage() {
         try {
             mCountDownTimer.start();
             renderMsgAndSaveConsent();
@@ -369,11 +369,11 @@ public class GDPRConsentLib {
         }
     }
 
-    public void showPm() {
-        showPm(null,null);
+    public void loadPrivacyManager() {
+        loadPrivacyManager(null,null);
     }
 
-    public void showPm(String privacyManagerId, String pmTab) {
+    public void loadPrivacyManager(String privacyManagerId, String pmTab) {
         try {
             mCountDownTimer.start();
             isPmOn = true;
@@ -384,7 +384,7 @@ public class GDPRConsentLib {
         }
     }
 
-    public void run(NativeMessage v) {
+    public void loadMessage(NativeMessage v) {
         try {
             mCountDownTimer.start();
             nativeView = v;
