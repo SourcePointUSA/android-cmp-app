@@ -123,7 +123,7 @@ public class GDPRConsentLibTest {
     private void setSourcePointClientMock() throws ConsentLibException {
         doNothing().when(sourcePointClientMock).sendConsent(any(JSONObject.class), any(GDPRConsentLib.OnLoadComplete.class));
         doNothing().when(sourcePointClientMock).sendCustomConsents(any(JSONObject.class), any(GDPRConsentLib.OnLoadComplete.class));
-        doNothing().when(sourcePointClientMock).getMessage(anyBoolean(), anyString(), anyString(), anyString(), any(GDPRConsentLib.OnLoadComplete.class));
+        doNothing().when(sourcePointClientMock).getMessage(anyBoolean(), anyString(), anyString(), anyString(), anyString(), any(GDPRConsentLib.OnLoadComplete.class));
     }
 
     private void setContextMock(){
