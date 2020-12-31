@@ -214,6 +214,7 @@ public class GDPRConsentLib {
 
         consentUUID = storeClient.getConsentUUID();
 
+        if(!TextUtils.isEmpty(newAuthId))
         authId = newAuthId;
 
         try {
@@ -222,7 +223,7 @@ public class GDPRConsentLib {
             userConsent = new GDPRUserConsent(logger);
         }
 
-        storeClient.setAuthId(newAuthId);
+        storeClient.setAuthId(authId);
 
         storeClient.setCmpSdkID();
 
