@@ -73,9 +73,9 @@ abstract class ConsentManager {
 
     void loadMessage(boolean pm, String authId) {
         if(pm){
-            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).setAuthId(authId).build().loadPrivacyManager();
+            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).build().loadPrivacyManager(authId);
         }else {
-            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).setAuthId(authId).build().loadMessage();
+            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).build().loadMessage(authId);
         }
     }
 
