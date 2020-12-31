@@ -52,14 +52,13 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, line);
                 })
                 .setOnError(error -> Log.e(TAG, "Something went wrong"))
-                .setAuthId(dataProvider.getValue().getAuthId())
                 .build();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        buildGDPRConsentLib().loadMessage();
+        buildGDPRConsentLib().loadMessage(dataProvider.getValue().getAuthId());
     }
 
     @Override
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
-        findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().loadPrivacyManager());
+        findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().loadPrivacyManager(dataProvider.getValue().getAuthId()));
         findViewById(R.id.auth_id_activity).setOnClickListener(_v -> startActivity(new Intent(this, MainActivityAuthId.class)));
     }
 }
