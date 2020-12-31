@@ -3,17 +3,15 @@ package com.sourcepoint.gdpr_cmplibrary;
 class SourcePointClientConfig {
     PropertyConfig prop;
     Boolean isStagingCampaign;
-    String targetingParams, authId;
+    String targetingParams;
 
     SourcePointClientConfig(
             PropertyConfig prop,
             Boolean isStagingCampaign,
-            String targetingParams,
-            String authId
+            String targetingParams
     ){
         this.prop = prop;
         this.isStagingCampaign = isStagingCampaign;
         this.targetingParams = targetingParams;
-        this.authId = authId;
     }
 }

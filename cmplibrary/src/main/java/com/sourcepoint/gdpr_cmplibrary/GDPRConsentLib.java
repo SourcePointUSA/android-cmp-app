@@ -35,6 +35,7 @@ public class GDPRConsentLib {
 
     String metaData;
     String euConsent;
+    String authId = null;
 
     public String consentUUID;
 
@@ -182,7 +183,6 @@ public class GDPRConsentLib {
         storeClient = b.getStoreClient();
 
         // :warning: following methods depend on storeClient initialization
-        setConsentData(b.authId);
     }
 
     private Runnable onCountdownFinished() {
@@ -213,6 +213,8 @@ public class GDPRConsentLib {
         metaData = storeClient.getMetaData();
 
         consentUUID = storeClient.getConsentUUID();
+
+        authId = newAuthId;
 
         try {
             userConsent = storeClient.getUserConsent();
@@ -357,7 +359,9 @@ public class GDPRConsentLib {
      * Communicates with SourcePoint to load the message. It all happens in the background and the WebView
      * will only show after the message is ready to be displayed (received data from SourcePoint).
      */
-    public void loadMessage() {
+    public void loadMessage(String authId) {
+        setConsentData(authId);
+
         try {
             mCountDownTimer.start();
             renderMsgAndSaveConsent();
@@ -369,7 +373,16 @@ public class GDPRConsentLib {
         }
     }
 
-    public void loadPrivacyManager() {
+    public void loadMessage(){
+        loadMessage("");
+    }
+
+    public void loadPrivacyManager(){
+        loadPrivacyManager("");
+    }
+
+    public void loadPrivacyManager(String authId) {
+        setConsentData(authId);
         loadPrivacyManager(null,null);
     }
 
@@ -379,12 +392,17 @@ public class GDPRConsentLib {
             isPmOn = true;
             loadConsentUI(pmUrl(privacyManagerId, pmTab));
         } catch (Exception e) {
-            logger.error(new WebViewException(e, "Unexpected error on consentLib.showPm()"));
-            onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.showPm()"));
+            logger.error(new WebViewException(e, "Unexpected error on consentLib.loadPrivacyManager()"));
+            onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.loadPrivacyManager()"));
         }
     }
 
-    public void loadMessage(NativeMessage v) {
+    public void loadMessage(NativeMessage v){
+        loadMessage(v, "");
+    }
+
+    public void loadMessage(NativeMessage v, String authId) {
+        setConsentData(authId);
         try {
             mCountDownTimer.start();
             nativeView = v;
@@ -424,7 +442,7 @@ public class GDPRConsentLib {
     }
 
     private void renderMsgAndSaveConsent() throws ConsentLibException {
-        sourcePoint.getMessage(isNative, consentUUID, metaData, euConsent, new OnLoadComplete() {
+        sourcePoint.getMessage(isNative, consentUUID, metaData, euConsent, authId, new OnLoadComplete() {
             @Override
             public void onSuccess(Object result) {
                 try {

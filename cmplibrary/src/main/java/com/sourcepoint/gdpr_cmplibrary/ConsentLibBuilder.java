@@ -39,7 +39,6 @@ public class ConsentLibBuilder {
     SourcePointClient sourcePointClient;
 
     String targetingParamsString = null;
-    String authId = null;
     String messageLanguage = null;
     long messageTimeOut;
 
@@ -203,11 +202,6 @@ public class ConsentLibBuilder {
         return this;
     }
 
-    public ConsentLibBuilder setAuthId(String authId) {
-        this.authId = authId;
-        return this;
-    }
-
     public ConsentLibBuilder setMessageLanguage(MessageLanguage messageLanguage){
         this.messageLanguage = messageLanguage.language;
         return this;
@@ -242,8 +236,7 @@ public class ConsentLibBuilder {
         return new SourcePointClientConfig(
                 propertyConfig,
                 stagingCampaign,
-                getTargetingParamsString(),
-                authId
+                getTargetingParamsString()
         );
     }
 
