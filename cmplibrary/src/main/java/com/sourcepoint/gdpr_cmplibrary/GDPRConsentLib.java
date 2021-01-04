@@ -60,6 +60,7 @@ public class GDPRConsentLib {
     final boolean shouldCleanConsentOnError;
     boolean isOTT;
     String messageLanguage;
+    String privacyManagerTab;
 
     public boolean isNative, isPmOn = false;
 
@@ -173,6 +174,7 @@ public class GDPRConsentLib {
         onBeforeSendingConsent = b.onBeforeSendingConsent;
         onNoIntentActivitiesFound = b.onNoIntentActivitiesFound;
         messageLanguage = b.messageLanguage;
+        privacyManagerTab = b.pmTab;
         isOTT = b.isOTT;
 
         logger = b.getLogger(accountId, propertyId);
@@ -374,10 +376,11 @@ public class GDPRConsentLib {
     }
 
     public void showPm(String privacyManagerId, String pmTab) {
+        String selectedTab = TextUtils.isEmpty(privacyManagerTab) ? pmTab :  privacyManagerTab;
         try {
             mCountDownTimer.start();
             isPmOn = true;
-            loadConsentUI(pmUrl(privacyManagerId, pmTab));
+            loadConsentUI(pmUrl(privacyManagerId, selectedTab));
         } catch (Exception e) {
             logger.error(new WebViewException(e, "Unexpected error on consentLib.showPm()"));
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.showPm()"));

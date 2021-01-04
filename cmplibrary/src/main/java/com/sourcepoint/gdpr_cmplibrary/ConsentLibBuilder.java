@@ -41,6 +41,7 @@ public class ConsentLibBuilder {
     String targetingParamsString = null;
     String authId = null;
     String messageLanguage = null;
+    String pmTab = null;
     long messageTimeOut;
 
     StoreClient storeClient;
@@ -210,6 +211,11 @@ public class ConsentLibBuilder {
 
     public ConsentLibBuilder setMessageLanguage(MessageLanguage messageLanguage){
         this.messageLanguage = messageLanguage.language;
+        return this;
+    }
+
+    public ConsentLibBuilder setPrivacyManagerTab(PrivacyManagerTab privacyManagerTab){
+        this.pmTab = privacyManagerTab.pmTab;
         return this;
     }
 
