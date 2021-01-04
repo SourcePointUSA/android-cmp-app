@@ -135,7 +135,17 @@
             android:layout_marginTop="@dimen/margin_10"
             android:layout_marginBottom="@dimen/margin_5"
             android:fontFamily="@font/roboto_bold"
-            android:hint="@string/authId"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_size_20"
+            />
+
+        <Spinner
+            android:id="@+id/spinner_pm_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10"
+            android:layout_marginBottom="@dimen/margin_5"
+            android:fontFamily="@font/roboto_bold"
             android:textColor="@android:color/black"
             android:textSize="@dimen/text_size_20"
             />
