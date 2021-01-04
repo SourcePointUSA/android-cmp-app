@@ -86,17 +86,17 @@ public class NewPropertyViewModelTest {
         }
 
         if (keyList.isEmpty()) {
-            when(propertyListDao.getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage())).thenReturn(1);
-            size.postValue(propertyListDao.getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage()));
+            when(propertyListDao.getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage(), property.getPmTab())).thenReturn(1);
+            size.postValue(propertyListDao.getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage(), property.getPmTab()));
         } else {
             TargetingParameterList targetingParameterList = new TargetingParameterList();
             targetingParameterList.setKeyList(keyList);
             targetingParameterList.setValueList(valueList);
             List<TargetingParameterList> targetingParameterLists = Arrays.asList(targetingParameterList);
             when(propertyListDao.getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(),
-                    property.getMessageLanguage(), keyList, valueList)).thenReturn(targetingParameterLists);
+                    property.getMessageLanguage(), property.getPmTab(), keyList, valueList)).thenReturn(targetingParameterLists);
             size.postValue(propertyListDao.getPropertyWithDetails(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(),
-                    property.getMessageLanguage(), keyList, valueList).size());
+                    property.getMessageLanguage(), property.getPmTab(), keyList, valueList).size());
 
         }
         when(propertyListRepository.getPropertyWithDetails(property)).thenReturn(size);
@@ -156,8 +156,8 @@ public class NewPropertyViewModelTest {
         Property property = StaticTestData.PROPERTIES.get(0);
         property.setId(1);
 
-        when(propertyListDao.update(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage(), property.getId())).thenReturn(1);
-        propertyID.postValue(propertyListDao.update(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage(), property.getId()));
+        when(propertyListDao.update(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage(), property.getPmTab() ,property.getId())).thenReturn(1);
+        propertyID.postValue(propertyListDao.update(property.getAccountID(), property.getPropertyID(), property.getProperty(), property.getPmID(), property.isStaging(), property.isNative(), property.getAuthId(), property.getMessageLanguage(), property.getPmTab(), property.getId()));
         doReturn(propertyID).when(propertyListRepository).updateProperty(property);
 
 
