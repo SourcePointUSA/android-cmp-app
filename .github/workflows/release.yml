@@ -25,10 +25,12 @@ jobs:
         signingKeyBase64: ${{ secrets.SIGNING_KEY }}
         alias: ${{ secrets.SIGNING_ALIAS }}
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-        keyPassword: ${{ secrets.KEY_ALIAS_PASSWORD }}   
+        keyPassword: ${{ secrets.KEY_ALIAS_PASSWORD }}
     - name: Create service_account.json
       id: createServiceAccount
-      run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+      run: |
+        echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+        ./gradlew :metaapp:printVersionCode
     - name: 'Publish release artifact'
       if: always()
       uses: actions/upload-artifact@v2-preview

@@ -34,7 +34,6 @@ if (BINTRAY_USER != null && BINTRAY_APIKEY != null ) {
             name = POM_NAME
             userOrg = POM_USER_ORG
 
-//            description = pom_description
             publish = true
             override = false
 
