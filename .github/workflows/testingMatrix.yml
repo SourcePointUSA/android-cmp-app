@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [30, 29, 28, 27, 26, 25, 24]
+        api-level: [29, 28, 27, 26, 25, 24]
     steps:
       - uses: actions/checkout@v2
       - name: set up JDK 1.8
