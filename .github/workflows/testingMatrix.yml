@@ -45,7 +45,7 @@ jobs:
             !~/cache/exclude
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-      - name: run Example app tests
+      - name: run UI tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
@@ -57,8 +57,8 @@ jobs:
           name: 'example-app-test-report'
           path: samples/app/build/reports/androidTests/*
       - name: 'Publish Example-app Test Report'
-          if: always()
-          uses: actions/upload-artifact@v2-preview
-          with:
-            name: 'example-app-test-report'
-            path: samples/metaapp/build/reports/androidTests/*
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: 'example-app-test-report'
+          path: samples/metaapp/build/reports/androidTests/*
