@@ -1,7 +1,7 @@
 name: Testing Matrix
 on:
   push:
-    branches: [ SP-5903_test_matrix_github_workflow ]
+    branches: [ develop ]
 jobs:
   test:
     runs-on: macos-latest
