@@ -56,9 +56,9 @@ jobs:
         with:
           name: 'example-app-test-report'
           path: samples/app/build/reports/androidTests/*
-      - name: 'Publish Example-app Test Report'
+      - name: 'Publish Meta-app Test Report'
         if: always()
         uses: actions/upload-artifact@v2-preview
         with:
-          name: 'example-app-test-report'
+          name: 'Meta-app-test-report'
           path: samples/metaapp/build/reports/androidTests/*
