@@ -123,7 +123,7 @@ public class GDPRConsentLibTest {
     private void setSourcePointClientMock() throws ConsentLibException {
         doNothing().when(sourcePointClientMock).sendConsent(any(JSONObject.class), any(GDPRConsentLib.OnLoadComplete.class));
         doNothing().when(sourcePointClientMock).sendCustomConsents(any(JSONObject.class), any(GDPRConsentLib.OnLoadComplete.class));
-        doNothing().when(sourcePointClientMock).getMessage(anyBoolean(), anyString(), anyString(), anyString(), anyString(), any(GDPRConsentLib.OnLoadComplete.class));
+        doNothing().when(sourcePointClientMock).getMessage(anyBoolean(), anyString(), anyString(), anyString(), any(GDPRConsentLib.OnLoadComplete.class));
     }
 
     private void setContextMock(){
@@ -153,7 +153,7 @@ public class GDPRConsentLibTest {
 
     @Test
     public void run_followed_by_show_view(){
-        lib.loadMessage();
+        lib.run();
         verify(timerMock).start();
         lib.showView(lib.webView , false);
         verify(timerMock , atLeast(1)).cancel();
@@ -161,7 +161,7 @@ public class GDPRConsentLibTest {
 
     @Test
     public void run_followed_by_consentFinished() throws JSONException, ConsentLibException {
-        lib.loadMessage();
+        lib.run();
         verify(timerMock).start();
         lib.consentFinished();
         verify(timerMock).cancel();
@@ -170,7 +170,7 @@ public class GDPRConsentLibTest {
 
     @Test
     public void run_followed_by_onErrorTask(){
-        lib.loadMessage();
+        lib.run();
         verify(timerMock).start();
         lib.onErrorTask(new ConsentLibException("ooops, I have a bad feeling about this..."));
         verify(timerMock, atLeast(1)).cancel();

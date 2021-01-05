@@ -157,6 +157,12 @@ public class ConsentLibBuilderTest {
     }
 
     @Test
+    public void setAuthId() {
+        defaultBuilder.setAuthId("authId");
+        assertEquals("authId", defaultBuilder.authId);
+    }
+
+    @Test
     public void setMessageLanguage() {
         String [] languages = MessageLanguage.names();
         for (String languageName : languages ){
