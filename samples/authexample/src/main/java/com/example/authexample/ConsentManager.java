@@ -13,7 +13,6 @@ import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashSet;
 import java.util.Scanner;
 
 abstract class ConsentManager {
@@ -66,17 +65,17 @@ abstract class ConsentManager {
 
     void loadMessage(Boolean pm) {
         if (pm){
-            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).build().showPm();
+            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).build().loadPrivacyManager();
         }else {
-            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).build().run();
+            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).build().loadMessage();
         }
     }
 
     void loadMessage(boolean pm, String authId) {
         if(pm){
-            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).setAuthId(authId).build().showPm();
+            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).build().loadPrivacyManager(authId);
         }else {
-            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).setAuthId(authId).build().run();
+            buildGDPRConsentLib(getConfig(R.raw.mobile_demo_web)).build().loadMessage(authId);
         }
     }
 

@@ -60,6 +60,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
     private Spinner mSpinnerML;
     private String [] messageLanguages = MessageLanguage.names();
     private String selectedLanguage ;
+    private String authId;
 
     private TextView mAddParamBtn;
     private ViewGroup mMainViewGroup;
@@ -99,6 +100,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
     }
 
     private GDPRConsentLib buildConsentLib(Property property, Activity activity) {
+        authId = property.getAuthId();
         ConsentLibBuilder consentLibBuilder = GDPRConsentLib.newBuilder(property.getAccountID(), property.getProperty(), property.getPropertyID(), property.getPmID(), activity)
                 .setStagingCampaign(property.isStaging())
                 .setMessageTimeOut(30000)
@@ -136,11 +138,6 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
             consentLibBuilder.setTargetingParam(tps.getKey(), tps.getValue());
         }
 
-        if (!TextUtils.isEmpty(property.getAuthId())) {
-            consentLibBuilder.setAuthId(property.getAuthId());
-        } else {
-            Log.d(TAG, "AuthID Not available : " + property.getAuthId());
-        }
         if (!TextUtils.isEmpty(property.getMessageLanguage())) {
             consentLibBuilder.setMessageLanguage(MessageLanguage.findByName(property.getMessageLanguage()));
         } else {
@@ -412,10 +409,14 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                     mGDPRConsentLib = buildConsentLib(property, this);
                     if (Util.isNetworkAvailable(this)) {
                         showProgressBar();
-                        if (property.isNative()){
-                            mGDPRConsentLib.run(buildNativeMessage());
+                        if (property.isNative() && !TextUtils.isEmpty(authId)){
+                            mGDPRConsentLib.loadMessage(buildNativeMessage(), authId);
+                        }else if(property.isNative()){
+                            mGDPRConsentLib.loadMessage(buildNativeMessage());
+                        }else if(!TextUtils.isEmpty(authId)){
+                            mGDPRConsentLib.loadMessage(authId);
                         }else {
-                            mGDPRConsentLib.run();
+                            mGDPRConsentLib.loadMessage();
                         }
                     } else {
                         showAlertDialog(getString(R.string.network_check_message));
