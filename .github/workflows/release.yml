@@ -15,7 +15,7 @@ jobs:
     - name: Bump versionCode
       id: bump
       run: |
-        ./gradlew app:bumpVersionCode
+        ./gradlew metaapp:bumpVersionCode
     - name: creating local.properties # this file is normally added to .gitignore
       run: touch local.properties
     - name: generating MetaApp build release
