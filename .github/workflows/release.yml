@@ -1,7 +1,7 @@
 name: RELEASE
 on:
   push:
-    branches: [ sp-5952-metapp-release-playstore ]
+    branches: [ master ]
 jobs:
   build:
     name: Build APK and Create release
@@ -42,11 +42,11 @@ jobs:
       with:
         name: 'release-artifact'
         path: ${{ steps.sign.outputs.signedReleaseFile }}
-#    - name: Deploy to Play Store
-#      id: deploy
-#      uses: r0adkll/upload-google-play@v1
-#      with:
-#        serviceAccountJson: service_account.json
-#        packageName: com.sourcepointmeta.metaapp
-#        releaseFiles: ${{ steps.sign.outputs.signedReleaseFile }}
-#        track: production
+    - name: Deploy to Play Store
+      id: deploy
+      uses: r0adkll/upload-google-play@v1
+      with:
+        serviceAccountJson: service_account.json
+        packageName: com.sourcepointmeta.metaapp
+        releaseFiles: ${{ steps.sign.outputs.signedReleaseFile }}
+        track: production

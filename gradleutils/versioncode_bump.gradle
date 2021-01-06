@@ -51,7 +51,7 @@ def getModuleProperties(String propsFileName) {
 }
 
 private void commitAndPushSingleFile(String commitMessage, String filePath) {
-    // git add .
+    // git add <filePath>
     Process addChanges = ['git', 'add', filePath].execute(null, project.rootDir)
     addChanges.waitForProcessOutput(System.out, System.err)
     // git commit -m ""
