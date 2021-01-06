@@ -58,7 +58,7 @@ class SourcePointClient {
         return activeNetwork == null || !activeNetwork.isConnectedOrConnecting();
     }
 
-    void getMessage(boolean isNative, String consentUUID, String meta, String euconsent, String authId,  GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
+    void getMessage(boolean isNative, String consentUUID, String meta, String euconsent, GDPRConsentLib.OnLoadComplete onLoadComplete) throws ConsentLibException {
         if(hasLostInternetConnection()){
             throw new ConsentLibException.NoInternetConnectionException();
         }
@@ -68,7 +68,7 @@ class SourcePointClient {
         Log.d(LOG_TAG, "Getting message from: " + url);
 
         final MediaType mediaType= MediaType.parse("application/json");
-        RequestBody body = RequestBody.create(mediaType, messageParams(consentUUID, meta, euconsent, authId).toString());
+        RequestBody body = RequestBody.create(mediaType, messageParams(consentUUID, meta, euconsent).toString());
 
         Request request = new Request.Builder().url(url).post(body)
                 .header("Accept", "application/json")
@@ -106,7 +106,7 @@ class SourcePointClient {
         return baseSendCustomConsentsUrl;
     }
 
-    private JSONObject messageParams(String consentUUID, String meta, String euconsent, String authId) throws ConsentLibException {
+    private JSONObject messageParams(String consentUUID, String meta, String euconsent) throws ConsentLibException {
 
         try {
             JSONObject params = new JSONObject();
@@ -119,7 +119,7 @@ class SourcePointClient {
             params.put("propertyHref", "https://" + config.prop.propertyName);
             params.put("campaignEnv", config.isStagingCampaign ? "stage" : "public");
             params.put("targetingParams", config.targetingParams);
-            params.put("authId", authId);
+            params.put("authId", config.authId);
             Log.i(LOG_TAG, params.toString());
             return params;
         } catch (JSONException e) {

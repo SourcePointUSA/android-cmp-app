@@ -50,7 +50,6 @@ public class SourcePointClientTest {
     private static final String consentUUID = "consentUUID";
     private static final String euConsent = "euConsent";
     private static final String meta = "meta";
-    private static final String authId = "authId";
     private static final boolean isNative = false;
     private static NetworkInfo networkInfo;
     private static ConnectivityManager connectivityManager;
@@ -77,7 +76,7 @@ public class SourcePointClientTest {
     private SourcePointClientConfig getSourcePointClientConfig(){
 
         PropertyConfig propertyConfig = new PropertyConfig(123, 1234, "example.com","123221");
-        SourcePointClientConfig config = new SourcePointClientConfig(propertyConfig, false, "targetingParams");
+        SourcePointClientConfig config = new SourcePointClientConfig(propertyConfig, false, "targetingParams","authId");
         return config;
     }
 
@@ -130,7 +129,7 @@ public class SourcePointClientTest {
     public void noInternetErrorWhileGetMessage() {
         when(networkInfo.isConnectedOrConnecting()).thenReturn(false);
         try {
-            sourcePointClient.getMessage(isNative, consentUUID, meta, euConsent, authId, onLoadComplete);
+            sourcePointClient.getMessage(isNative, consentUUID, meta, euConsent, onLoadComplete);
         } catch (ConsentLibException e) {
             assertEquals(ConsentLibException.NoInternetConnectionException.description, e.consentLibErrorMessage);
         }
@@ -142,7 +141,7 @@ public class SourcePointClientTest {
 
         doAPICallWithAnswer(true , HttpURLConnection.HTTP_OK, responseString);
 
-        sourcePointClient.getMessage(isNative, consentUUID, meta, euConsent, authId, onLoadComplete);
+        sourcePointClient.getMessage(isNative, consentUUID, meta, euConsent, onLoadComplete);
         ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
         verify(onLoadComplete).onSuccess(captor.capture());
         String response = captor.getValue().toString();
@@ -155,7 +154,7 @@ public class SourcePointClientTest {
 
         doAPICallWithAnswer(true , HttpURLConnection.HTTP_OK, responseString);
 
-        sourcePointClient.getMessage(isNative, consentUUID, meta, euConsent, authId, onLoadComplete);
+        sourcePointClient.getMessage(isNative, consentUUID, meta, euConsent, onLoadComplete);
         ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
         verify(http).newCall(requestArgumentCaptor.capture());
         Request request = requestArgumentCaptor.getValue();
@@ -168,7 +167,7 @@ public class SourcePointClientTest {
 
         doAPICallWithAnswer(true , HttpURLConnection.HTTP_BAD_REQUEST, errorMessage);
 
-        sourcePointClient.getMessage(isNative ,consentUUID, meta , euConsent, authId, onLoadComplete);
+        sourcePointClient.getMessage(isNative ,consentUUID, meta , euConsent, onLoadComplete);
         ArgumentCaptor<ConsentLibException> captor = ArgumentCaptor.forClass(ConsentLibException.class);
         verify(onLoadComplete).onFailure(captor.capture());
         assertTrue(captor.getValue().consentLibErrorMessage.contains(errorMessage));
@@ -180,7 +179,7 @@ public class SourcePointClientTest {
 
         doAPICallWithAnswer(false , HttpURLConnection.HTTP_BAD_REQUEST, errorMessage);
 
-        sourcePointClient.getMessage(isNative ,consentUUID, meta , euConsent, authId, onLoadComplete);
+        sourcePointClient.getMessage(isNative ,consentUUID, meta , euConsent, onLoadComplete);
         ArgumentCaptor<ConsentLibException> captor = ArgumentCaptor.forClass(ConsentLibException.class);
         verify(onLoadComplete).onFailure(captor.capture());
         assertTrue(captor.getValue().consentLibErrorMessage.contains(errorMessage));

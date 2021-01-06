@@ -70,7 +70,6 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private CountDownTimer mCountDownTimer = null;
     private boolean isPMLoaded = false;
     private boolean isError = false;
-    private String authId ;
 
     private void showMessageWebView(View view) {
         view.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
@@ -89,7 +88,6 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     }
 
     private GDPRConsentLib buildConsentLib(Property property, Activity activity) {
-        authId = property.getAuthId();
         ConsentLibBuilder consentLibBuilder = GDPRConsentLib.newBuilder(property.getAccountID(), property.getProperty(), property.getPropertyID(), property.getPmID(), activity)
                 .setStagingCampaign(property.isStaging())
                 .setMessageTimeOut(30000)
@@ -131,6 +129,12 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
         List<TargetingParam> list = property.getTargetingParamList();//getTargetingParamList(property);
         for (TargetingParam tps : list) {
             consentLibBuilder.setTargetingParam(tps.getKey(), tps.getValue());
+        }
+
+        if (!TextUtils.isEmpty(property.getAuthId())) {
+            consentLibBuilder.setAuthId(property.getAuthId());
+        } else {
+            Log.d(TAG, "AuthID Not available : " + property.getAuthId());
         }
 
         if (!TextUtils.isEmpty(property.getMessageLanguage())) {
@@ -226,17 +230,12 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
             mConsentList = data.getParcelableArrayList(Constants.CONSENTS);
             setConsents(true);
         } else {
-            GDPRConsentLib consentLib = buildConsentLib(property, this);
             if (Util.isNetworkAvailable(this)) {
                 showProgressBar();
-                if (property.isNative() && !TextUtils.isEmpty(authId)){
-                    consentLib.loadMessage(buildNativeMessage(), authId);
-                }else if(property.isNative()){
-                    consentLib.loadMessage(buildNativeMessage());
-                }else if(!TextUtils.isEmpty(authId)){
-                    consentLib.loadMessage(authId);
+                if (property.isNative()){
+                    buildConsentLib(property, this).run(buildNativeMessage());
                 }else {
-                    buildConsentLib(property, this).loadMessage();
+                    buildConsentLib(property, this).run();
                 }
             } else showAlertDialog(getString(R.string.network_check_message));
         }
@@ -270,17 +269,12 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
     private void buildAndShowConsentLibPM() {
         Bundle data = getIntent().getExtras();
         Property property = data.getParcelable(Constants.PROPERTY);
-        authId = property.getAuthId();
         if (Util.isNetworkAvailable(this)) {
             showProgressBar();
             isPMLoaded = false;
             mCountDownTimer = getTimer(30000);
             mCountDownTimer.start();
-            if (!TextUtils.isEmpty(authId)){
-                buildConsentLib(property, this).loadPrivacyManager(authId);
-            }else {
-                buildConsentLib(property, this).loadPrivacyManager();
-            }
+            buildConsentLib(property, this).showPm();
         } else showAlertDialog(getString(R.string.network_check_message));
 
     }
