@@ -26,11 +26,13 @@ android {
     buildTypes {
         debug{
             buildConfigField "String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\""
+            buildConfigField "String", "PRELOADING_URL", "\"https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/native-message\""
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\""
+            buildConfigField "String", "PRELOADING_URL", "\"https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/native-message\""
         }
     }
     compileOptions {
@@ -39,6 +41,16 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    sourceSets {
+        String sharedResources = projectDir.path + '/src/test/JS'
+        println("======== sharedResources =========" + sharedResources)
+        test {
+            resources {
+                srcDir sharedResources
+            }
+        }
+        androidTest.res.srcDirs += sharedResources
     }
 }
 
