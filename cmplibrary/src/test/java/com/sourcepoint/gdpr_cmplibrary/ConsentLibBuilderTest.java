@@ -32,7 +32,7 @@ public class ConsentLibBuilderTest {
     private PropertyConfig defaultConfig = new PropertyConfig(22, 1234,"mobile.demo", "1234");
 
     private ConsentLibBuilder spyBuilder(PropertyConfig config){
-        ConsentLibBuilder spy =  spy(new ConsentLibBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId, activityMock));
+        ConsentLibBuilder spy =  spy(new ConsentLibBuilder(config.getAccountId(), config.getPropertyName(), config.getPropertyId(), config.getPmId(), activityMock));
         // mocking dependencies...
         doReturn(storeClientMock).when(spy).getStoreClient();
         doReturn(sourcePointClientMock).when(spy).getSourcePointClient();
@@ -83,11 +83,11 @@ public class ConsentLibBuilderTest {
 
     @Test
     public void ConsentLibBuilder(){
-        ConsentLibBuilder builder = new ConsentLibBuilder(defaultConfig.accountId, defaultConfig.propertyName, defaultConfig.propertyId, defaultConfig.pmId, activityMock);
-        assertEquals(builder.propertyConfig.accountId, defaultConfig.accountId);
-        assertEquals(builder.propertyConfig.propertyId, defaultConfig.propertyId);
-        assertEquals(builder.propertyConfig.propertyName, defaultConfig.propertyName);
-        assertEquals(builder.propertyConfig.pmId, defaultConfig.pmId);
+        ConsentLibBuilder builder = new ConsentLibBuilder(defaultConfig.getAccountId(), defaultConfig.getPropertyName(), defaultConfig.getPropertyId(), defaultConfig.getPmId(), activityMock);
+        assertEquals(builder.propertyConfig.getAccountId(), defaultConfig.getAccountId());
+        assertEquals(builder.propertyConfig.getPropertyId(), defaultConfig.getPropertyId());
+        assertEquals(builder.propertyConfig.getPropertyName(), defaultConfig.getPropertyName());
+        assertEquals(builder.propertyConfig.getPmId(), defaultConfig.getPmId());
         assertTrue(builder.shouldCleanConsentOnError);
         assertEquals(builder.messageTimeOut, builder.DEFAULT_MESSAGE_TIMEOUT);
     }

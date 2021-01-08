@@ -14,6 +14,9 @@ import com.sourcepoint.cmplibrary.gdpr.GDPRConsentLibClient;
 import com.sourcepoint.example_app.core.DataProvider;
 import com.sourcepoint.gdpr_cmplibrary.*;
 
+import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
+import com.sourcepoint.gdpr_cmplibrary.data.network.FactoryUtils;
+import com.sourcepoint.gdpr_cmplibrary.data.network.model.NativeMessageReq;
 import kotlin.Lazy;
 import org.jetbrains.annotations.Nullable;
 
@@ -94,6 +97,16 @@ public class MainActivity extends AppCompatActivity {
 //                buildGDPRConsentLib().showPm()
         );
         findViewById(R.id.auth_id_activity).setOnClickListener(_v -> startActivity(new Intent(this, MainActivityAuthId.class)));
+
+        NativeMessageReq nativeMessage = new NativeMessageReq(
+                22,
+                7639,
+                "https://tcfv2.mobile.webview",
+                "test",
+                "{}"
+                );
+        FactoryUtils.createNetClient().getNativeMessage(nativeMessage);
+
     }
 
     class ClientInter implements ClientInteraction {

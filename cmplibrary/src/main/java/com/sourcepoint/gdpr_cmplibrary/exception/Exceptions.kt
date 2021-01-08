@@ -2,8 +2,10 @@ package com.sourcepoint.gdpr_cmplibrary.exception
 
 /**
  * Generic exception class for common lib errors
+ * @param isConsumed is used to know if the [Throwable] has been logged already
  */
 internal sealed class ConsentLibExceptionK(
+    var isConsumed : Boolean = false,
     val description: String,
     cause: Throwable? = null
 ) : RuntimeException(cause) {
