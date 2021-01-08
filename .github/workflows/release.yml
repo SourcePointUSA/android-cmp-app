@@ -12,13 +12,14 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Bump versionCode
+      id: bump
+      run: |
+        git config user.email "carmelo@sourcepoint.com"
+        git config user.name "GitHub Action"
+        ./gradlew metaapp:bumpVersionCode
     - name: creating local.properties # this file is normally added to .gitignore
       run: touch local.properties
-    - name: Bump version
-      uses: chkfung/android-version-actions@v1.1
-      with:
-        gradlePath: samples/metaapp/build.gradle
-        versionCode: ${{github.run_number}}
     - name: generating MetaApp build release
       id: buildRelease
       run: ./gradlew :metaapp:assembleRelease
@@ -30,15 +31,22 @@ jobs:
         signingKeyBase64: ${{ secrets.SIGNING_KEY }}
         alias: ${{ secrets.SIGNING_ALIAS }}
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-        keyPassword: ${{ secrets.KEY_ALIAS_PASSWORD }}   
+        keyPassword: ${{ secrets.KEY_ALIAS_PASSWORD }}
     - name: Create service_account.json
       id: createServiceAccount
-      run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+      run: |
+        echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+    - name: 'Publish release artifact'
+      if: always()
+      uses: actions/upload-artifact@v2-preview
+      with:
+        name: 'release-artifact'
+        path: ${{ steps.sign.outputs.signedReleaseFile }}
     - name: Deploy to Play Store
       id: deploy
       uses: r0adkll/upload-google-play@v1
       with:
         serviceAccountJson: service_account.json
         packageName: com.sourcepointmeta.metaapp
-        releaseFiles: samples/metaapp/build/outputs/apk/release/GDPR-MetaApp-signed.apk
+        releaseFiles: ${{ steps.sign.outputs.signedReleaseFile }}
         track: production

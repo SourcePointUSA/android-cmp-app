@@ -1,0 +1,63 @@
+task bumpVersionCode() {
+    doLast {
+        String propertiesFile = "gradle.properties"
+        String propertyName = "VERSION_CODE"
+        // get the version code
+        Long versionCode = getProperty(propertyName).toLong()
+        // bump the version code
+        Long bumpedVersionCode = versionCode + 1
+        // update the property in the propertiesFile
+        saveProperty(propertyName, bumpedVersionCode, propertiesFile)
+        println("BUMPED VERSION_CODE: " + getProjectProperty(propertyName, propertiesFile))
+        String commitMessage = "-m Bumped version code to  ${bumpedVersionCode}"
+        String pathEditedFile = "${project.projectDir}/${propertiesFile}"
+        // push the change to the repo
+        commitAndPushSingleFile(commitMessage, pathEditedFile)
+    }
+}
+
+private void saveProperty(String propertyKey, Long valueProperty, String propsFileName) {
+    saveProperty(propertyKey, "$valueProperty", propsFileName)
+}
+
+private void saveProperty(String propertyKey, String valueProperty, String propsFileName) {
+    // get all the properties
+    def versionProps = getModuleProperties(propsFileName)
+    // update the target property
+    versionProps[propertyKey] = valueProperty
+    // update the properties file
+    versionProps.store(file(propsFileName).newWriter(), null)
+}
+
+def getProjectProperty(String propertyKey, String propsFileName) {
+    // get the file
+    def propsFile = file(propsFileName)
+    if (!propsFile.exists()) propsFile.createNewFile()
+    def versionProps = new Properties()
+    // load properties
+    versionProps.load(new FileInputStream(propsFile))
+    // return the target property
+    return versionProps[propertyKey]
+}
+
+def getModuleProperties(String propsFileName) {
+    // get the file
+    def propsFile = file(propsFileName)
+    if (!propsFile.exists()) propsFile.createNewFile()
+    def versionProps = new Properties()
+    // load properties
+    versionProps.load(new FileInputStream(propsFile))
+    return versionProps
+}
+
+private void commitAndPushSingleFile(String commitMessage, String filePath) {
+    // git add <filePath>
+    Process addChanges = ['git', 'add', filePath].execute(null, project.rootDir)
+    addChanges.waitForProcessOutput(System.out, System.err)
+    // git commit -m ""
+    Process createCommit = ['git', 'commit', commitMessage].execute(null, project.rootDir)
+    createCommit.waitForProcessOutput(System.out, System.err)
+    // git push
+    Process push = ['git', 'push'].execute(null, project.rootDir)
+    push.waitForProcessOutput(System.out, System.err)
+}
