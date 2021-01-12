@@ -23,44 +23,14 @@ class PMTabFeatureTests {
     }
 
     @Test
-    fun testPmTabPurposes()= runBlocking{
+    fun testPmTabVendors() = runBlocking {
         scenario = launchActivity()
 
         wr { MetaAppTestCases.tapOnAddProperty() }
-        wr { MetaAppTestCases.addPMTabFeaturesPropertyDetails(PURPOSES.toUpperCase())}
+        wr { MetaAppTestCases.addPMTabFeaturesPropertyDetails(VENDORS.toUpperCase()) }
         wr { MetaAppTestCases.tapOnSave() }
-        wr { MetaAppTestCases.checkWebViewDisplayedForMessage() }
         wr { MetaAppTestCases.tapAcceptOnWebView() }
-        wr { MetaAppTestCases.checkForConsentsAreDisplayed() }
         wr { MetaAppTestCases.loadPrivacyManagerDirect() }
-        wr { checkPMTabSelected(PURPOSES)}
-    }
-
-    @Test
-    fun testPmTabFeatures()= runBlocking{
-        scenario = launchActivity()
-
-        wr { MetaAppTestCases.tapOnAddProperty() }
-        wr { MetaAppTestCases.addPMTabFeaturesPropertyDetails(FEATURES.toUpperCase())}
-        wr { MetaAppTestCases.tapOnSave() }
-        wr { MetaAppTestCases.checkWebViewDisplayedForMessage() }
-        wr { MetaAppTestCases.tapAcceptOnWebView() }
-        wr { MetaAppTestCases.checkForConsentsAreDisplayed() }
-        wr { MetaAppTestCases.loadPrivacyManagerDirect() }
-        wr { checkPMTabSelected(FEATURES)}
-    }
-
-    @Test
-    fun testPmTabVendors()= runBlocking{
-        scenario = launchActivity()
-
-        wr { MetaAppTestCases.tapOnAddProperty() }
-        wr { MetaAppTestCases.addPMTabFeaturesPropertyDetails(VENDORS.toUpperCase())}
-        wr { MetaAppTestCases.tapOnSave() }
-        wr { MetaAppTestCases.checkWebViewDisplayedForMessage() }
-        wr { MetaAppTestCases.tapAcceptOnWebView() }
-        wr { MetaAppTestCases.checkForConsentsAreDisplayed() }
-        wr { MetaAppTestCases.loadPrivacyManagerDirect() }
-        wr { checkPMTabSelected(SITE_VENDORS)}
+        wr { checkPMTabSelected(SITE_VENDORS) }
     }
 }

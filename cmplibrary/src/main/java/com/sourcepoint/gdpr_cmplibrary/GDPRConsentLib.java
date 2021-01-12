@@ -340,7 +340,12 @@ public class GDPRConsentLib implements IGDPRConsentLib{
     }
 
     public void onShowOptions(ConsentAction action) {
-        showPm(action.privacyManagerId, action.pmTab);
+        // add logic what pm to use
+        // Message priority on the privacyManagerId
+        // if dev set pmTab
+        String privacyManagerId = action.privacyManagerId == null ? pmId : action.privacyManagerId;
+        String pmTab = action.pmTab == null ? privacyManagerTab : action.pmTab;
+        showPm(privacyManagerId, pmTab);
     }
 
     void loadConsentUI(String url) {
@@ -375,20 +380,17 @@ public class GDPRConsentLib implements IGDPRConsentLib{
 
     @Override
     public void showPm() {
-        showPm(null,null);
+        // if privacyManagerTab has not been set, use null value.
+        String selectedTab = TextUtils.isEmpty(privacyManagerTab) ? null :  privacyManagerTab;
+        showPm(pmId,selectedTab);
     }
 
-    @Override
-    public void show(@NotNull PrivacyManagerTab tab) {
-        showPm(pmId, tab.name());
-    }
-
-    public void showPm(String privacyManagerId, String pmTab) {
-        String selectedTab = TextUtils.isEmpty(privacyManagerTab) ? pmTab :  privacyManagerTab;
+    public void showPm(@NotNull String privacyManagerId, String pmTab) {
         try {
             mCountDownTimer.start();
             isPmOn = true;
-            loadConsentUI(pmUrl(privacyManagerId, selectedTab));
+            String url = pmUrl(privacyManagerId, pmTab);
+            loadConsentUI(url);
         } catch (Exception e) {
             logger.error(new WebViewException(e, "Unexpected error on consentLib.showPm()"));
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.showPm()"));
@@ -639,11 +641,10 @@ public class GDPRConsentLib implements IGDPRConsentLib{
     }
 
 
-    String pmUrl(String privacyManagerId, String pmTab) {
+    String pmUrl(@NotNull String privacyManagerId, String pmTab) {
         HashSet<String> params = new HashSet<>();
-        params.add("message_id=" + (privacyManagerId != null ? privacyManagerId : pmId));
-        if (pmTab != null)
-        params.add("pmTab="+pmTab);
+        params.add("message_id=" + privacyManagerId);
+        if (pmTab != null) params.add("pmTab="+pmTab);
         params.add("site_id="+ propertyId);
         if (consentUUID != null) params.add("consentUUID=" + consentUUID);
         String consentLanguage = messageLanguage != null ? messageLanguage : "";
@@ -690,3 +691,6 @@ public class GDPRConsentLib implements IGDPRConsentLib{
         uiThreadHandler.disable();
     }
 }
+
+//   https://cdn.privacy-mgmt.com/privacy-manager/index.html?consentLanguage=&consentUUID=94c9a079-0476-4416-b1bb-736f3e69f25e&site_id=7639&message_id=122058
+//   https://cdn.privacy-mgmt.com/privacy-manager/index.html?consentLanguage=&consentUUID=94c9a079-0476-4416-b1bb-736f3e69f25e&site_id=7639&message_id=122058&pmTab=features
