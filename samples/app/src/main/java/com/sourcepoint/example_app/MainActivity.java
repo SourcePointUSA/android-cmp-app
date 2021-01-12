@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.example_app.core.DataProvider;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 
-import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab;
 import kotlin.Lazy;
 
 import static org.koin.java.KoinJavaComponent.inject;
@@ -47,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
                 .setOnConsentUIReady(this::showView)
                 .setOnAction(actionType  -> Log.i(TAG , "ActionType: " + actionType.toString()))
                 .setOnConsentUIFinished(this::removeView)
-                .setPrivacyManagerTab(PrivacyManagerTab.VENDORS)
                 .setOnConsentReady(consent -> {
                     // at this point it's safe to initialise vendors
                     for (String line : consent.toString().split("\n"))
