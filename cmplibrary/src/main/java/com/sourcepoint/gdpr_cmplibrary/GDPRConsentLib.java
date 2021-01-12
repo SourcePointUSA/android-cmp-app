@@ -380,7 +380,7 @@ public class GDPRConsentLib implements IGDPRConsentLib{
 
     @Override
     public void show(@NotNull PrivacyManagerTab tab) {
-
+        showPm(pmId, tab.name());
     }
 
     public void showPm(String privacyManagerId, String pmTab) {
