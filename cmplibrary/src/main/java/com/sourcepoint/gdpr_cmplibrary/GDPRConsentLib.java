@@ -340,9 +340,6 @@ public class GDPRConsentLib implements IGDPRConsentLib{
     }
 
     public void onShowOptions(ConsentAction action) {
-        // add logic what pm to use
-        // Message priority on the privacyManagerId
-        // if dev set pmTab
         String privacyManagerId = action.privacyManagerId == null ? pmId : action.privacyManagerId;
         String pmTab = action.pmTab == null ? privacyManagerTab : action.pmTab;
         showPm(privacyManagerId, pmTab);
@@ -691,6 +688,3 @@ public class GDPRConsentLib implements IGDPRConsentLib{
         uiThreadHandler.disable();
     }
 }
-
-//   https://cdn.privacy-mgmt.com/privacy-manager/index.html?consentLanguage=&consentUUID=94c9a079-0476-4416-b1bb-736f3e69f25e&site_id=7639&message_id=122058
-//   https://cdn.privacy-mgmt.com/privacy-manager/index.html?consentLanguage=&consentUUID=94c9a079-0476-4416-b1bb-736f3e69f25e&site_id=7639&message_id=122058&pmTab=features
