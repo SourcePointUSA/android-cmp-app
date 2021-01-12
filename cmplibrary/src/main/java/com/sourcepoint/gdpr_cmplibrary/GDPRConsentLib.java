@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.sourcepoint.gdpr_cmplibrary.exception.*;
 import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +25,7 @@ import java.util.Locale;
  * }
  * </pre>
  */
-public class GDPRConsentLib {
+public class GDPRConsentLib implements IGDPRConsentLib{
     static final String PM_BASE_URL = "https://cdn.privacy-mgmt.com/privacy-manager/index.html";
     static final String OTT_PM_BASE_URL = "https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html";
 
@@ -359,6 +360,7 @@ public class GDPRConsentLib {
      * Communicates with SourcePoint to load the message. It all happens in the background and the WebView
      * will only show after the message is ready to be displayed (received data from SourcePoint).
      */
+    @Override
     public void run() {
         try {
             mCountDownTimer.start();
@@ -371,8 +373,14 @@ public class GDPRConsentLib {
         }
     }
 
+    @Override
     public void showPm() {
         showPm(null,null);
+    }
+
+    @Override
+    public void show(@NotNull PrivacyManagerTab tab) {
+
     }
 
     public void showPm(String privacyManagerId, String pmTab) {
