@@ -1,0 +1,4 @@
+com/example/myapplication/BuildConfig.java
+ com.example.myapplication.BuildConfig
+com/example/myapplication/CustomLayout.java
+ com.example.myapplication.CustomLayout
