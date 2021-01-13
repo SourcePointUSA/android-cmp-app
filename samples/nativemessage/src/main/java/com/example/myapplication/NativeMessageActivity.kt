@@ -2,19 +2,18 @@ package com.example.myapplication
 
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage
-import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainActivity : AppCompatActivity() {
+class NativeMessageActivity : AppCompatActivity() {
 
     private val mainViewGroup by lazy<ViewGroup> { findViewById(android.R.id.content) }
 
@@ -33,6 +32,8 @@ class MainActivity : AppCompatActivity() {
         consent.setOnClickListener {
             buildGDPRConsentLib().showPm()
         }
+
+        findViewById<View>(R.id.consent).setOnClickListener { buildGDPRConsentLib().showPm() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -54,10 +55,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.i(TAG, "init");
-        buildGDPRConsentLib().run(buildNativeMessage());
+        buildGDPRConsentLib().run(buildNativeMessageConstraintLayout());
     }
 
-    fun buildGDPRConsentLib(): GDPRConsentLib {
+    private fun buildGDPRConsentLib(): GDPRConsentLib {
         return GDPRConsentLib
             .newBuilder(
                 Accounts.nativeAccount.accountId,
@@ -116,9 +117,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
     private fun buildNativeMessage(): NativeMessage? {
-        return layoutInflater.inflate(R.layout.custom_layout, null) as? NativeMessage
+        return NativeMessage(this)
     }
+
+    private fun buildNativeMessageConstraintLayout(): NativeMessage? {
+        return object : NativeMessage(this) {
+            override fun init() {
+                super.init()
+                // set your layout
+                View.inflate(context, R.layout.custom_layout_cl, this)
+                setAcceptAll(findViewById(R.id.accept_all_cl))
+                setRejectAll(findViewById(R.id.reject_all_cl))
+                setShowOptions(findViewById(R.id.show_options_cl))
+                setCancel(findViewById(R.id.cancel_cl))
+                setTitle(findViewById(R.id.title_cl))
+                setBody(findViewById(R.id.body_cl))
+            }
+        }
+    }
+    private fun buildNativeMessageRelativeLayout(): NativeMessage? {
+        return object : NativeMessage(this){
+            override fun init() {
+                super.init()
+                // set your layout
+                View.inflate(context, R.layout.custom_layout, this)
+                setAcceptAll(findViewById(R.id.accept_all))
+                setRejectAll(findViewById(R.id.reject_all))
+                setShowOptions(findViewById(R.id.show_options))
+                setCancel(findViewById(R.id.cancel))
+                setTitle(findViewById(R.id.title))
+                setBody(findViewById(R.id.body))
+            }
+        }
+    }
+
 }

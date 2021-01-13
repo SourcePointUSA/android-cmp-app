@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.sourcepoint.gdpr_cmplibrary.NativeMessage
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/custom_native_message"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white">
+
     <TextView
-            android:id="@+id/Title"
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/description_scrollview"
@@ -32,7 +33,7 @@
                 android:orientation="vertical">
 
             <TextView
-                    android:id="@+id/MsgBody"
+                    android:id="@+id/body"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scrollbars="vertical"
@@ -42,7 +43,7 @@
     </ScrollView>
 
     <Button
-            android:id="@+id/AcceptAll"
+            android:id="@+id/accept_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -57,7 +58,7 @@
             android:text="@string/agree_btn"/>
 
     <Button
-            android:id="@+id/Cancel"
+            android:id="@+id/cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -70,7 +71,7 @@
             android:text="@string/cancel_btn"/>
 
     <Button
-            android:id="@+id/RejectAll"
+            android:id="@+id/reject_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -85,7 +86,7 @@
             android:text="@string/reject_all_btn"/>
 
     <Button
-            android:id="@+id/ShowOptions"
+            android:id="@+id/show_options"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -96,4 +97,4 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:text="@string/show_options_btn"/>
-</com.sourcepoint.gdpr_cmplibrary.NativeMessage>
+</RelativeLayout>
