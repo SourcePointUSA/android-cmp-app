@@ -1,4 +1,0 @@
-#Wed Jan 13 16:20:22 CET 2021
-base.0=/Users/sourcepoint/Development/workspace/android-cmp-app/samples/nativemessage/build/intermediates/dex/debug/mergeDexDebug/classes.dex
-path.0=classes.dex
-renamed.0=classes.dex
