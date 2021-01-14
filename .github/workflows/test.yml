@@ -4,12 +4,12 @@ on:
     branches: [ develop ]
     paths:
       - '!README.md'
-      - 'samples/nativemessage/*'
+      - '!samples/nativemessage/*'
   pull_request:
     branches: [ develop ]
     paths:
       - '!README.md'
-      - 'samples/nativemessage/*'
+      - '!samples/nativemessage/*'
 jobs:
   unit-test-cmplib:
     runs-on: macos-latest
