@@ -39,13 +39,17 @@ public class NativeMessage extends RelativeLayout {
     }
 
     public void init(){
-        inflate(getContext(), R.layout.sample_native_message, this);
+        inflate(getContext(), getLayout(), this);
         setAcceptAll(findViewById(R.id.AcceptAll));
         setRejectAll(findViewById(R.id.RejectAll));
         setShowOptions(findViewById(R.id.ShowOptions));
         setCancel(findViewById(R.id.Cancel));
         setTitle(findViewById(R.id.Title));
         setBody(findViewById(R.id.MsgBody));
+    }
+
+    public int getLayout(){
+        return R.layout.sample_native_message;
     }
 
     public void setOnclickAction(ActionButton actionButton, GDPRConsentLib consentLib){

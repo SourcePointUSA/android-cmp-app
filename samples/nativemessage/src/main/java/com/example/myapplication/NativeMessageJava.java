@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
+import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
 
 public class NativeMessageJava extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
@@ -78,6 +80,23 @@ public class NativeMessageJava extends AppCompatActivity {
                 setCancel(findViewById(R.id.cancel_cl));
                 setTitle(findViewById(R.id.title_cl));
                 setBody(findViewById(R.id.body_cl));
+            }
+
+            @Override
+            public int getLayout() {
+                return R.layout.custom_layout_cl;
+            }
+
+
+            @Override
+            public void setAttributes(NativeMessageAttrs attrs) {
+                super.setAttributes(attrs);
+                // This will ensure all attributes are correctly set.
+                super.setAttributes(attrs);
+
+                // Overwrite any layout after calling super.setAttributes
+                getAcceptAll().button.setBackgroundColor(Color.GRAY);
+                getRejectAll().button.setBackgroundColor(Color.BLUE);
             }
         };
     }
