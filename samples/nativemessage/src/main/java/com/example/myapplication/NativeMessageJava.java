@@ -83,12 +83,6 @@ public class NativeMessageJava extends AppCompatActivity {
             }
 
             @Override
-            public int getLayout() {
-                return R.layout.custom_layout_cl;
-            }
-
-
-            @Override
             public void setAttributes(NativeMessageAttrs attrs) {
                 super.setAttributes(attrs);
                 // This will ensure all attributes are correctly set.
