@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.sourcepoint.gdpr_cmplibrary.exception.*;
 import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +25,7 @@ import java.util.Locale;
  * }
  * </pre>
  */
-public class GDPRConsentLib {
+public class GDPRConsentLib implements IGDPRConsentLib{
     static final String PM_BASE_URL = "https://cdn.privacy-mgmt.com/privacy-manager/index.html";
     static final String OTT_PM_BASE_URL = "https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html";
 
@@ -60,6 +61,7 @@ public class GDPRConsentLib {
     final boolean shouldCleanConsentOnError;
     boolean isOTT;
     String messageLanguage;
+    String privacyManagerTab;
 
     public boolean isNative, isPmOn = false;
 
@@ -173,6 +175,7 @@ public class GDPRConsentLib {
         onBeforeSendingConsent = b.onBeforeSendingConsent;
         onNoIntentActivitiesFound = b.onNoIntentActivitiesFound;
         messageLanguage = b.messageLanguage;
+        privacyManagerTab = b.pmTab;
         isOTT = b.isOTT;
 
         logger = b.getLogger(accountId, propertyId);
@@ -337,7 +340,9 @@ public class GDPRConsentLib {
     }
 
     public void onShowOptions(ConsentAction action) {
-        showPm(action.privacyManagerId, action.pmTab);
+        String privacyManagerId = action.privacyManagerId == null ? pmId : action.privacyManagerId;
+        String pmTab = action.pmTab == null ? privacyManagerTab : action.pmTab;
+        showPm(privacyManagerId, pmTab);
     }
 
     void loadConsentUI(String url) {
@@ -357,6 +362,7 @@ public class GDPRConsentLib {
      * Communicates with SourcePoint to load the message. It all happens in the background and the WebView
      * will only show after the message is ready to be displayed (received data from SourcePoint).
      */
+    @Override
     public void run() {
         try {
             mCountDownTimer.start();
@@ -369,15 +375,19 @@ public class GDPRConsentLib {
         }
     }
 
+    @Override
     public void showPm() {
-        showPm(null,null);
+        // if privacyManagerTab has not been set, use null value.
+        String selectedTab = TextUtils.isEmpty(privacyManagerTab) ? null :  privacyManagerTab;
+        showPm(pmId,selectedTab);
     }
 
-    public void showPm(String privacyManagerId, String pmTab) {
+    public void showPm(@NotNull String privacyManagerId, String pmTab) {
         try {
             mCountDownTimer.start();
             isPmOn = true;
-            loadConsentUI(pmUrl(privacyManagerId, pmTab));
+            String url = pmUrl(privacyManagerId, pmTab);
+            loadConsentUI(url);
         } catch (Exception e) {
             logger.error(new WebViewException(e, "Unexpected error on consentLib.showPm()"));
             onErrorTask(new ConsentLibException(e, "Unexpected error on consentLib.showPm()"));
@@ -628,11 +638,10 @@ public class GDPRConsentLib {
     }
 
 
-    String pmUrl(String privacyManagerId, String pmTab) {
+    String pmUrl(@NotNull String privacyManagerId, String pmTab) {
         HashSet<String> params = new HashSet<>();
-        params.add("message_id=" + (privacyManagerId != null ? privacyManagerId : pmId));
-        if (pmTab != null)
-        params.add("pmTab="+pmTab);
+        params.add("message_id=" + privacyManagerId);
+        if (pmTab != null) params.add("pmTab="+pmTab);
         params.add("site_id="+ propertyId);
         if (consentUUID != null) params.add("consentUUID=" + consentUUID);
         String consentLanguage = messageLanguage != null ? messageLanguage : "";

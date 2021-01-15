@@ -28,6 +28,8 @@ public class TestData {
     public static String OPTIONS = "Options";
     public static String FEATURES = "Features";
     public static String PURPOSES = "Purposes";
+    public static String VENDORS = "Vendors";
+    public static String SITE_VENDORS = "Site Vendors";
     public static String authID(){
         Date date = new Date();
         authIdValue = sdf.format(date);
@@ -53,6 +55,7 @@ public class TestData {
     public static String FRENCH = "FRENCH";
     public static String ENGLISH = "ENGLISH";
     public static String ACCEPT_ALL = "ACCEPT ALL";
+    public static String ACCEPT = "Accept";
     public static String ACCEPT_ALL_FRENCH = "accepte";
     public static String REJECT_ALL_FRENCH = "Reject";
     public static String PM_ACCEPT_ALL = "Accept All";

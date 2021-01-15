@@ -2,14 +2,14 @@ name: Test
 on:
   push:
     branches: [ develop ]
-    paths:
-      - '!README.md'
-      - '!samples/nativemessage/*'
+#    paths:
+#      - '!README.md'
+#      - '!samples/nativemessage/*'
   pull_request:
     branches: [ develop ]
-    paths:
-      - '!README.md'
-      - '!samples/nativemessage/*'
+#    paths:
+#      - '!README.md'
+#      - '!samples/nativemessage/*'
 jobs:
   unit-test-cmplib:
     runs-on: macos-latest
@@ -78,14 +78,14 @@ jobs:
             !~/cache/exclude
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-      - name: run MetaApp tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          script: ./gradlew :metaapp:connectedDebugAndroidTest
-      - name: 'Publish Metaapp Test Report'
-        if: always()
-        uses: actions/upload-artifact@v2-preview
-        with:
-          name: 'metaap-test-report'
-          path: samples/metaapp/build/reports/androidTests/*
+#      - name: run MetaApp tests
+#        uses: reactivecircus/android-emulator-runner@v2
+#        with:
+#          api-level: 29
+#          script: ./gradlew :metaapp:connectedDebugAndroidTest
+#      - name: 'Publish Metaapp Test Report'
+#        if: always()
+#        uses: actions/upload-artifact@v2-preview
+#        with:
+#          name: 'metaap-test-report'
+#          path: samples/metaapp/build/reports/androidTests/*

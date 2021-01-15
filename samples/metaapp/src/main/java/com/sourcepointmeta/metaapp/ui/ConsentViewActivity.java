@@ -31,6 +31,7 @@ import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 import com.sourcepoint.gdpr_cmplibrary.MessageLanguage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
+import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab;
 import com.sourcepointmeta.metaapp.R;
 import com.sourcepointmeta.metaapp.SourcepointApp;
 import com.sourcepointmeta.metaapp.adapters.ConsentListRecyclerView;
@@ -141,6 +142,11 @@ public class ConsentViewActivity extends BaseActivity<ConsentViewViewModel> {
             consentLibBuilder.setMessageLanguage(MessageLanguage.findByName(property.getMessageLanguage()));
         } else {
             Log.d(TAG, "MessageLanguage Not selected : " + property.getMessageLanguage());
+        }
+        if (!TextUtils.isEmpty(property.getPmTab())) {
+            consentLibBuilder.setPrivacyManagerTab(PrivacyManagerTab.findTabByName(property.getPmTab()));
+        } else {
+            Log.d(TAG, "privacy manager tab Not selected : " + property.getPmTab());
         }
         // generate ConsentLib at this point modifying builder will not do anything
         return consentLibBuilder.build();

@@ -41,6 +41,7 @@ public class ConsentLibBuilder {
     String targetingParamsString = null;
     String authId = null;
     String messageLanguage = null;
+    String pmTab = null;
     long messageTimeOut;
 
     StoreClient storeClient;
@@ -210,6 +211,24 @@ public class ConsentLibBuilder {
 
     public ConsentLibBuilder setMessageLanguage(MessageLanguage messageLanguage){
         this.messageLanguage = messageLanguage.language;
+        return this;
+    }
+
+    /**
+     * This method set the tab that the PrivacyManager should select.
+     * You'll be able to see that tab as soon as the Privacy Manager get rendered.
+     *
+     * N.B. This value is overwritten if the Message coming from the server was set from the console.
+     *
+     * Ex:
+     * if you set pmTab=VENDORS from the console and then you use the `setPrivacyManagerTab(FEATURES)`, the library
+     * will display the VENDORS tab.
+     *
+     * @param privacyManagerTab tab to be rendered first.
+     * @return [ConsentLibBuilder]
+     */
+    public ConsentLibBuilder setPrivacyManagerTab(PrivacyManagerTab privacyManagerTab){
+        this.pmTab = privacyManagerTab.pmTab;
         return this;
     }
 

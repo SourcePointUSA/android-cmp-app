@@ -34,6 +34,7 @@ import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 import com.sourcepoint.gdpr_cmplibrary.MessageLanguage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
+import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab;
 import com.sourcepointmeta.metaapp.R;
 import com.sourcepointmeta.metaapp.SourcepointApp;
 import com.sourcepointmeta.metaapp.adapters.TargetingParamsAdapter;
@@ -60,6 +61,9 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
     private Spinner mSpinnerML;
     private String [] messageLanguages = MessageLanguage.names();
     private String selectedLanguage ;
+    private String [] pmTabs = PrivacyManagerTab.tabNames();
+    private Spinner mSpinnerPMTab;
+    private String selectedPMTab;
 
     private TextView mAddParamBtn;
     private ViewGroup mMainViewGroup;
@@ -204,7 +208,6 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedLanguage = MessageLanguage.valueOf(messageLanguages[position]).name();
-                Log.d("selectedLanguage", selectedLanguage);
             }
 
             @Override
@@ -212,6 +215,21 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                 selectedLanguage = "";
             }
         });
+        mSpinnerPMTab = findViewById(R.id.spinner_pm_tab);
+        mSpinnerPMTab.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,pmTabs));
+        mSpinnerPMTab.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedPMTab = PrivacyManagerTab.valueOf(pmTabs[position]).name();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                selectedPMTab = "";
+            }
+        });
+
         mStagingSwitch = findViewById(R.id.toggleStaging);
         mStagingSwitch.setChecked(false);
 
@@ -254,6 +272,11 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
                         spinnerPosition = i;
                 mSpinnerML.setSelection(spinnerPosition);
 
+                spinnerPosition = 0;
+                for(int i=0; i < pmTabs.length; i++)
+                    if(pmTabs[i].contains(property.getPmTab()))
+                        spinnerPosition = i;
+                mSpinnerPMTab.setSelection(spinnerPosition);
                 if (!TextUtils.isEmpty(property.getAuthId())) {
                     mAuthIdET.setText(property.getAuthId());
                 }
@@ -393,7 +416,7 @@ public class NewPropertyActivity extends BaseActivity<NewPropertyViewModel> {
         int account = Integer.parseInt(accountID);
         int property_id = Integer.parseInt(PropertyID);
 
-        return new Property(account, property_id, propertyName, pmID, isStaging, isNativeMessage, authId, selectedLanguage, mTargetingParamList);
+        return new Property(account, property_id, propertyName, pmID, isStaging, isNativeMessage, authId, selectedLanguage, selectedPMTab, mTargetingParamList);
     }
 
     private void loadPropertyWithInput() {

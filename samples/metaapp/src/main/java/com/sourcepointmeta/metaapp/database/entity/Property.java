@@ -44,13 +44,16 @@ public class Property implements Parcelable {
     @ColumnInfo (name = "message_language")
     private String messageLanguage;
 
+    @ColumnInfo (name = "pm_tab")
+    private String pmTab;
+
     @Ignore
     @ColumnInfo (name = "params_list")
     @TypeConverters(ListTypeConverter.class)
     private List<TargetingParam> targetingParamList;
 
 
-    public Property(int accountID, int propertyID, String property, String pmID, boolean isStaging, boolean isNative, String authId, String messageLanguage) {
+    public Property(int accountID, int propertyID, String property, String pmID, boolean isStaging, boolean isNative, String authId, String messageLanguage, String pmTab) {
         this.accountID = accountID;
         this.propertyID = propertyID;
         this.property = property;
@@ -59,10 +62,11 @@ public class Property implements Parcelable {
         this.isNative = isNative;
         this.authId = authId;
         this.messageLanguage = messageLanguage;
+        this.pmTab = pmTab;
     }
 
     @Ignore
-    public Property(int accountID, int propertyID, String property, String pmID, boolean isStaging, boolean isNative, String authId, String selectedLanguage, List<TargetingParam> targetingParamList) {
+    public Property(int accountID, int propertyID, String property, String pmID, boolean isStaging, boolean isNative, String authId, String selectedLanguage, String pmTab, List<TargetingParam> targetingParamList) {
         this.accountID = accountID;
         this.propertyID = propertyID;
         this.property = property;
@@ -71,6 +75,7 @@ public class Property implements Parcelable {
         this.isNative = isNative;
         this.authId = authId;
         this.messageLanguage = selectedLanguage;
+        this.pmTab = pmTab;
         this.targetingParamList = targetingParamList;
     }
 
@@ -158,6 +163,14 @@ public class Property implements Parcelable {
         this.messageLanguage = messageLanguage;
     }
 
+    public String getPmTab (){
+        return pmTab;
+    }
+
+    public void setPmTab(String pmTab){
+        this.pmTab = pmTab;
+    }
+
     public List<TargetingParam> getTargetingParamList() {
         return targetingParamList;
     }
@@ -180,6 +193,7 @@ public class Property implements Parcelable {
         this.isNative = in.readByte() !=0;
         this.authId = in.readString();
         this.messageLanguage = in.readString();
+        this.pmTab = in.readString();
         this.targetingParamList = (List<TargetingParam>) in.createTypedArrayList(TargetingParam.CREATOR);
     }
     @Ignore
@@ -193,6 +207,7 @@ public class Property implements Parcelable {
         dest.writeByte((byte)(isNative?1:0));
         dest.writeString(this.authId);
         dest.writeString(this.messageLanguage);
+        dest.writeString(this.pmTab);
         dest.writeTypedList(this.targetingParamList);
     }
 }
