@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -11,6 +12,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage
+import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs
 import kotlinx.android.synthetic.main.content_main.*
 
 class NativeMessageActivity : AppCompatActivity() {
@@ -56,6 +58,8 @@ class NativeMessageActivity : AppCompatActivity() {
         super.onResume()
         Log.i(TAG, "init");
         buildGDPRConsentLib().run(buildNativeMessageConstraintLayout());
+
+
     }
 
     private fun buildGDPRConsentLib(): GDPRConsentLib {
@@ -124,7 +128,6 @@ class NativeMessageActivity : AppCompatActivity() {
     private fun buildNativeMessageConstraintLayout(): NativeMessage? {
         return object : NativeMessage(this) {
             override fun init() {
-                super.init()
                 // set your layout
                 View.inflate(context, R.layout.custom_layout_cl, this)
                 setAcceptAll(findViewById(R.id.accept_all_cl))
@@ -134,12 +137,22 @@ class NativeMessageActivity : AppCompatActivity() {
                 setTitle(findViewById(R.id.title_cl))
                 setBody(findViewById(R.id.body_cl))
             }
+
+            override fun setAttributes(attrs: NativeMessageAttrs?) {
+                // This will ensure all attributes are correctly set.
+                super.setAttributes(attrs)
+
+                // Overwrite any layout after calling super.setAttributes
+                getAcceptAll().button.setBackgroundColor(Color.RED)
+                getRejectAll().button.setBackgroundColor(Color.YELLOW)
+                getTitle().text = "custom title"
+            }
         }
     }
+
     private fun buildNativeMessageRelativeLayout(): NativeMessage? {
-        return object : NativeMessage(this){
+        return object : NativeMessage(this) {
             override fun init() {
-                super.init()
                 // set your layout
                 View.inflate(context, R.layout.custom_layout, this)
                 setAcceptAll(findViewById(R.id.accept_all))

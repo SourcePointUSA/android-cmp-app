@@ -13,11 +13,6 @@ import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
 public class NativeMessageJava extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
 
-    final static int accountId = 22;
-    final static int propertyId = 7639;
-    final static String propertyName = "tcfv2.mobile.webview";
-    final static String pmId = "122058";
-
     private ViewGroup mainViewGroup;
 
     private void showView(View view) {
@@ -91,6 +86,7 @@ public class NativeMessageJava extends AppCompatActivity {
                 // Overwrite any layout after calling super.setAttributes
                 getAcceptAll().button.setBackgroundColor(Color.GRAY);
                 getRejectAll().button.setBackgroundColor(Color.BLUE);
+                getTitle().setText("custom title");
             }
         };
     }
