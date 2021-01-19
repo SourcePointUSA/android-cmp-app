@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
+## Loading the Privacy Manager on demand
+You can load the Privacy Manager (that UI with the toggles) any time programatically by calling the `.showPM()` method. The SDK will follow the same exact same lifecycle as with the 1st layer consent message. First calling the delegate method `onConsentUIReady` when the PM is ready and then calling `onConsentReady` after the user takes an action.
+
 ## OTT
 If you're working on a Android compatible OTT environment, when building the SDK make sure to call the builder method `.setIsOTT(true)`.
 This will instruct the SDK to load OTT-specific message and privacy manager.
