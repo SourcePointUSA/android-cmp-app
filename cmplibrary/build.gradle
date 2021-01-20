@@ -80,6 +80,7 @@ changeLogConfig {
 
 replaceInFile {
     docs {
+        println " ============================= " + rootDir.path + "/README.md"
         doc {
             path = rootDir.path + "/README.md"
             find = "com.sourcepoint.cmplibrary:cmplibrary:(\\d)+\\.(\\d)+\\.(\\d)+"
@@ -91,7 +92,6 @@ replaceInFile {
 addCommitPushConfig {
     fileList = [
             rootDir.path + '/CHANGELOG.md',
-            rootDir.path + '/README.md',
-            rootDir.path + '/app/gradle.properties'
+            rootDir.path + '/README.md'
     ]
 }
