@@ -6,6 +6,10 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
+apply plugin: 'io.github.dryrum.update-changelog'
+apply plugin: "io.github.dryrum.replace-in-file"
+apply plugin: "io.github.dryrum.git-utils"
+
 group = "com.sourcepoint.cmplibrary"
 version = VERSION_NAME
 
@@ -67,3 +71,27 @@ task versionTxt{
 }
 
 apply from: '../gradleutils/publish-android.gradle'
+
+changeLogConfig {
+    changeLogPath = rootDir.path + "/CHANGELOG.md"
+    content = file(rootDir.path + "/cmplibrary/release_note.txt").text
+    version = "$VERSION_NAME"
+}
+
+replaceInFile {
+    docs {
+        doc {
+            path = rootDir.path + "/README.md"
+            find = "com.sourcepoint.cmplibrary:cmplibrary:(\\d)+\\.(\\d)+\\.(\\d)+"
+            replaceWith = "com.sourcepoint.cmplibrary:cmplibrary:$VERSION_NAME"
+        }
+    }
+}
+
+addCommitPushConfig {
+    fileList = [
+            rootDir.path + '/CHANGELOG.md',
+            rootDir.path + '/README.md',
+            rootDir.path + '/app/gradle.properties'
+    ]
+}

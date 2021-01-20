@@ -7,6 +7,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
@@ -16,6 +17,12 @@ buildscript {
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+        def cdVersion = "0.6.1"
+        classpath "io.github.dryrum:git-utils:$cdVersion"
+        classpath "io.github.dryrum:update-changelog:$cdVersion"
+        classpath "io.github.dryrum:replace-in-file:$cdVersion"
+        classpath "io.github.dryrum:bump-version-code:$cdVersion"
     }
 }
 
@@ -28,6 +35,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
 }
 
