@@ -1,0 +1,60 @@
+name: SDK Release
+
+on:
+  push:
+    branches:  [ main ] #[ release/* ]
+
+jobs:
+  build:
+    name: Create Release and tag
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build and test
+        run: |
+          ./gradlew cmplibrary:build
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: (MMMM, DD, YYYY)
+      - name: Set version lib into VERSION_NAME variable
+        run: |
+          ./gradlew cmplibrary:versionTxt
+          echo "VERSION_NAME=$(cat app/version.txt)" >> $GITHUB_ENV
+      - name: Update CHANGELOG.md
+        run: ./gradlew cmplibrary:changeLogUpdate
+      - name: Update README.md
+        run: ./gradlew cmplibrary:replaceInFile
+      - name: Read Release Note
+        id: release_note
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./cmplibrary/release_note.txt
+      - name: Get the version
+        id: get_version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./cmplibrary/version.txt
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: v${{ steps.get_version.outputs.content }}
+          release_name: v${{ steps.get_version.outputs.content }}
+          body: |
+            ## ${{ steps.get_version.outputs.content }} ${{ steps.current-time.outputs.formattedTime }}
+            ${{ steps.release_note.outputs.content }}
+          draft: false
+          prerelease: false
+      - name: Bintray upload artifact
+        env:
+          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+          BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
+        run: |
+          ./gradlew cmplibrary:bintrayUpload
+      - name: Add, commit and push CHANGELOG.md and README.md
+        run: ./gradlew cmplibrary:addCommitPush

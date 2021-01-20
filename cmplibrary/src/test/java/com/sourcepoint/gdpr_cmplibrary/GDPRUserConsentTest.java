@@ -40,12 +40,12 @@ public class GDPRUserConsentTest {
         JSONObject consentsResponse = new JSONObject(jsonData);
         consentUUIDMock = consentsResponse.getString("uuid");
         jsonConsentsMock = consentsResponse.getJSONObject("userConsent");
-        userConsent = new GDPRUserConsent(jsonConsentsMock ,consentUUIDMock);
+        userConsent = new GDPRUserConsent(jsonConsentsMock ,consentUUIDMock, new MockLogger());
     }
 
     @Test
     public void emptyUserConsentConstructor() {
-        GDPRUserConsent emptyUserConsent = new GDPRUserConsent();
+        GDPRUserConsent emptyUserConsent = new GDPRUserConsent(new MockLogger());
 
         assertEquals(DEFAULT_EMPTY_UUID, emptyUserConsent.uuid);
         assertEquals(DEFAULT_EMPTY_CONSENT_STRING, emptyUserConsent.consentString);
@@ -109,7 +109,7 @@ public class GDPRUserConsentTest {
     @Test
     public void userConsentVendorGrants() throws JSONException, ConsentLibException {
         jsonConsentsMock.put("uuid",consentUUIDMock);
-        GDPRUserConsent.VendorGrants vendorGrants = new GDPRUserConsent(jsonConsentsMock).vendorGrants;
+        GDPRUserConsent.VendorGrants vendorGrants = new GDPRUserConsent(jsonConsentsMock, new MockLogger()).vendorGrants;
         assertEquals(vendorGrants.toString(), userConsent.vendorGrants.toString());
     }
 
@@ -145,7 +145,7 @@ public class GDPRUserConsentTest {
     public void userConsentConstructorWithoutUUID() throws ConsentLibException, JSONException {
         jsonConsentsMock.put("uuid",consentUUIDMock);
 
-        GDPRUserConsent userConsentWithoutUUID = new GDPRUserConsent(jsonConsentsMock);
+        GDPRUserConsent userConsentWithoutUUID = new GDPRUserConsent(jsonConsentsMock, new MockLogger());
 
         assertEquals(userConsent.uuid , userConsentWithoutUUID.uuid );
         assertEquals(userConsent.consentString, userConsentWithoutUUID.consentString);
@@ -160,7 +160,7 @@ public class GDPRUserConsentTest {
 
     @Test
     public void constructorShouldThrowExceptionForNoUUIDOnJConsent() {
-        ConsentLibException err = assertThrows(ConsentLibException.class, () -> new GDPRUserConsent(jsonConsentsMock));
+        ConsentLibException err = assertThrows(ConsentLibException.class, () -> new GDPRUserConsent(jsonConsentsMock, new MockLogger()));
         assertEquals("No uuid found on jConsent", err.consentLibErrorMessage);
     }
 
@@ -183,14 +183,14 @@ public class GDPRUserConsentTest {
 
     @Test
     public void constructorShouldThrowExceptionForNullUUID() {
-        ConsentLibException err = assertThrows(ConsentLibException.class, () ->  new GDPRUserConsent(jsonConsentsMock, null));
+        ConsentLibException err = assertThrows(ConsentLibException.class, () ->  new GDPRUserConsent(jsonConsentsMock, null, new MockLogger()));
         assertTrue(err.getCause().getMessage().contains("uuid should not be null"));
         assertEquals("Error parsing JSONObject to ConsentUser obj", err.consentLibErrorMessage);
     }
 
     @Test
     public void constructorShouldThrowExceptionForEmptyJSONObject() {
-        ConsentLibException err = assertThrows(ConsentLibException.class, () ->  new GDPRUserConsent(new JSONObject(), "foo_uuid"));
+        ConsentLibException err = assertThrows(ConsentLibException.class, () ->  new GDPRUserConsent(new JSONObject(), "foo_uuid", new MockLogger()));
         assertEquals("Error parsing JSONObject to ConsentUser obj", err.consentLibErrorMessage);
     }
 }

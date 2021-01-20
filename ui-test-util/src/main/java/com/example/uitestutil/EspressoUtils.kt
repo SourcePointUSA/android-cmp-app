@@ -16,6 +16,7 @@ import org.hamcrest.core.AllOf.allOf
 import org.hamcrest.core.StringContains
 import org.hamcrest.core.StringContains.containsString
 import java.security.InvalidParameterException
+import kotlin.jvm.Throws
 
 @Throws(Throwable::class)
 fun isDisplayedAllOfByResId(
@@ -26,7 +27,7 @@ fun isDisplayedAllOfByResId(
 
 fun isDisplayedByResIdByText(
     @IdRes resId: Int,
-    text : String
+    text: String
 ) {
     onView(
         allOf(
@@ -76,7 +77,7 @@ fun performClickById(
 
 @Throws(Throwable::class)
 fun performClickByText(
-    text : String
+    text: String
 ) {
     onView(
         allOf(
@@ -97,10 +98,10 @@ fun performClickContent(
     ).perform(ViewActions.click())
 }
 
-fun performSpinnerItemSelection(@IdRes resId: Int , contentDescription: String){
-    performClickById(resId )
+fun performSpinnerItemSelection(@IdRes resId: Int, contentDescription: String) {
+    performClickById(resId)
     Espresso.onData(CoreMatchers.allOf(CoreMatchers.`is`(CoreMatchers.instanceOf(String::class.java)), CoreMatchers.`is`(contentDescription)))
-            .perform(ViewActions.click())
+        .perform(ViewActions.click())
 }
 
 @Throws(Throwable::class)
@@ -143,7 +144,7 @@ fun checkWebViewHasText(text: String) {
 }
 
 @Throws(Throwable::class)
-fun checkElementWithText(id : String, expected: String) {
+fun checkElementWithText(id: String, expected: String) {
     onWebView()
         .withElement(findElement(Locator.ID, id))
         .check(webMatches(getText(), containsString(expected)));
@@ -166,20 +167,20 @@ fun performClickOnWebViewByClass(classValue: String) {
 }
 
 @Throws(Throwable::class)
-fun checkConsentState(consent: String, selected : Boolean) {
+fun checkConsentState(consent: String, selected: Boolean) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']"))
         .withElement(findElement(Locator.XPATH, "//label[@aria-checked='$selected']"))
 }
 
 @Throws(Throwable::class)
-fun checkPMTabSelected( expected : String){
+fun checkPMTabSelected(expected: String) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab active') and text()='$expected']"))
 }
 
 @Throws(Throwable::class)
-fun performClickPMTabSelected( expected : String){
+fun performClickPMTabSelected(expected: String) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab') and text()='$expected']"))
         .perform(webScrollIntoView())
@@ -187,7 +188,7 @@ fun performClickPMTabSelected( expected : String){
 }
 
 @Throws(Throwable::class)
-fun setCheckBoxTrue(property : String){
+fun setCheckBoxTrue(property: String) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//label[@aria-label='$property']/span[@class='on']"))
         .perform(webScrollIntoView())
@@ -208,9 +209,16 @@ fun swipeAndChooseAction(
     field: String
 ) {
     onView(allOf(withId(resIdListItem), isDisplayed())).perform(ViewActions.swipeLeft())
-//    onView(allOf(withId(resId), isDisplayed())).perform(ViewActions.click())
     performClickById(resId)
     onView(withText(field)).perform(ViewActions.scrollTo(), ViewActions.click())
+}
+
+fun swipeAndChooseActionEdit(
+    @IdRes resId: Int,
+    @IdRes resIdListItem: Int,
+) {
+    onView(allOf(withId(resIdListItem), isDisplayed())).perform(ViewActions.swipeLeft())
+    performClickById(resId)
 }
 
 fun checkWebViewDoesNotHasText(text: String) {
@@ -226,5 +234,7 @@ fun checkWebViewDoesNotHasText(text: String) {
         throw InvalidParameterException("""
             The current view with text {$text} is displayed. 
         """.trimIndent())
-    } catch (e: Exception) { /** This is the success case */ }
+    } catch (e: Exception) {
+        /** This is the success case */
+    }
 }

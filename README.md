@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
+## Loading the Privacy Manager on demand
+You can load the Privacy Manager (that UI with the toggles) any time programatically by calling the `.showPM()` method. The SDK will follow the same exact same lifecycle as with the 1st layer consent message. First calling the delegate method `onConsentUIReady` when the PM is ready and then calling `onConsentReady` after the user takes an action.
+
 ## OTT
 If you're working on a Android compatible OTT environment, when building the SDK make sure to call the builder method `.setIsOTT(true)`.
 This will instruct the SDK to load OTT-specific message and privacy manager.
@@ -102,7 +105,7 @@ This way, if there's a consent profile associated with that `authId` ("JohDoe") 
 In order to share the consent between native and webview the SDK will rely on authenticated consent (explained in detail below).
 
 ### The `authId`:
-This feature makes use of what we call [Authenticated Consent](https://documentation.sourcepoint.com/dialogue/authenticated-consent/authenticated-consent-overview). In a nutshell, you provide an identifier for the current user (username, user id, uuid or any unique string) and we'll take care of associating the consent profile to that identifier.
+This feature makes use of what we call [Authenticated Consent](https://documentation.sourcepoint.com/consent_mp/authenticated-consent/authenticated-consent-overview). In a nutshell, you provide an identifier for the current user (username, user id, uuid or any unique string) and we'll take care of associating the consent profile to that identifier.
 The authId will then assume 1 of the 2 values below:
 1. **User is authenticated and have an id:**
 In that case the `authId` is going to be that user id.

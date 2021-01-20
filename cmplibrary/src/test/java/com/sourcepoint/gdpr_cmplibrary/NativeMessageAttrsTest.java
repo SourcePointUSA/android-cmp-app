@@ -25,30 +25,30 @@ public class NativeMessageAttrsTest {
     @Before
     public void setUp() throws Exception {
         msgJSON = new JSONObject(jsonString);
-        nativeMessageAttrs = new NativeMessageAttrs(msgJSON);
+        nativeMessageAttrs = new NativeMessageAttrs(msgJSON, new MockLogger());
     }
 
     @Test
     public void titleFieldTextTest() throws Exception{
-        JSONObject jsonObject = getJson("title",msgJSON);
-        assertEquals  (nativeMessageAttrs.title.text , getString("text", jsonObject));
+        JSONObject jsonObject = getJson("title",msgJSON, new MockLogger());
+        assertEquals  (nativeMessageAttrs.title.text , getString("text", jsonObject, new MockLogger()));
     }
 
     @Test
     public void titleFieldStyleTest() throws Exception{
-        JSONObject jsonObject = getJson("title",msgJSON);
-        JSONObject styleJson = getJson("style", jsonObject);
-        assertEquals  (nativeMessageAttrs.title.style.fontFamily , getString("fontFamily", styleJson));
-        assertEquals  (nativeMessageAttrs.title.style.fontSize , getInt("fontSize", styleJson));
-        assertEquals  (nativeMessageAttrs.title.style.color , Color.parseColor(getString("color", styleJson)));
-        assertEquals  (nativeMessageAttrs.title.style.backgroundColor , Color.parseColor(getString("backgroundColor", styleJson)));
+        JSONObject jsonObject = getJson("title",msgJSON, new MockLogger());
+        JSONObject styleJson = getJson("style", jsonObject, new MockLogger());
+        assertEquals  (nativeMessageAttrs.title.style.fontFamily , getString("fontFamily", styleJson, new MockLogger()));
+        assertEquals  (nativeMessageAttrs.title.style.fontSize , getInt("fontSize", styleJson, new MockLogger()));
+        assertEquals  (nativeMessageAttrs.title.style.color , Color.parseColor(getString("color", styleJson, new MockLogger())));
+        assertEquals  (nativeMessageAttrs.title.style.backgroundColor , Color.parseColor(getString("backgroundColor", styleJson, new MockLogger())));
     }
 
     @Test
     public void styleShouldAlwaysSetBGColourToLongHex() throws JSONException, ConsentLibException {
         String jsonString = "{\"title\":{\"text\":\"Message Title\",\"style\":{\"fontFamily\":\"Arial\",\"fontSize\":34,\"color\":\"#000\",\"backgroundColor\":\"#abc\"},\"customFields\":{\"fooTitle\":\"barTitle\"}},\"body\":{\"text\":\"foo text\",\"style\":{\"fontFamily\":\"Verdana\",\"fontSize\":14,\"color\":\"#123\",\"backgroundColor\":\"#fff\"},\"customFields\":{\"fooBody\":\"barBody\"}},\"actions\":[{\"text\":\"I Accept\",\"style\":{\"fontFamily\":\"Arial\",\"fontSize\":16,\"color\":\"#ffffff\",\"backgroundColor\":\"#1890ff\"},\"customFields\":{\"fooActionAccept\":\"barActionAccept\"},\"choiceType\":11,\"choiceId\":492690},{\"text\":\"I Reject\",\"style\":{\"fontFamily\":\"Arial\",\"fontSize\":16,\"color\":\"#585858\",\"backgroundColor\":\"#ebebeb\"},\"customFields\":{\"fooActionReject\":\"barActionReject\"},\"choiceType\":13,\"choiceId\":492691},{\"text\":\"Show Options\",\"style\":{\"fontFamily\":\"Arial\",\"fontSize\":16,\"color\":\"#1890ff\",\"backgroundColor\":\"#ffffff\"},\"customFields\":{\"fooActionShowOptions\":\"barActionShowOptions\"},\"choiceType\":12,\"choiceId\":492692},{\"text\":\"×\",\"style\":{\"fontFamily\":\"Gill Sans Extrabold, sans-serif\",\"fontSize\":24,\"color\":\"#fc7e7e\",\"backgroundColor\":\"#cecece\"},\"customFields\":{\"fooActionDismiss\":\"barActionDismiss\"},\"choiceType\":15,\"choiceId\":492689}],\"customFields\":{\"fooMessage\":\"barMessage\"}}";
         msgJSON = new JSONObject(jsonString);
-        nativeMessageAttrs = new NativeMessageAttrs(msgJSON);
+        nativeMessageAttrs = new NativeMessageAttrs(msgJSON, new MockLogger());
         assertEquals  (nativeMessageAttrs.title.style.color , Color.parseColor("#000000"));
         assertEquals  (nativeMessageAttrs.title.style.backgroundColor , Color.parseColor("#aabbcc"));
         assertEquals  (nativeMessageAttrs.body.style.color , Color.parseColor("#112233"));
@@ -57,6 +57,6 @@ public class NativeMessageAttrsTest {
 
     @Test
     public void customFieldsFieldTest() throws Exception{
-        assertEquals(nativeMessageAttrs.customFields , getHashMap(CustomJsonParser.getJson("customFields", msgJSON)));
+        assertEquals(nativeMessageAttrs.customFields , getHashMap(CustomJsonParser.getJson("customFields", msgJSON, new MockLogger()), new MockLogger()));
     }
 }

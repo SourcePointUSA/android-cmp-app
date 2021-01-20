@@ -26,6 +26,7 @@ import android.webkit.WebViewClient;
 
 import com.example.gdpr_cmplibrary.R;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.*;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -34,15 +35,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getInt;
-import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getJson;
-import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.getString;
+import static com.sourcepoint.gdpr_cmplibrary.CustomJsonParser.*;
 
 abstract public class ConsentWebView extends WebView {
 
     private static final String TAG = "ConsentWebView";
     private ConnectivityManager connectivityManager;
-
     @SuppressWarnings("unused")
     private class JSReceiverInterface {
 
@@ -68,7 +66,7 @@ abstract public class ConsentWebView extends WebView {
         @JavascriptInterface
         public void onAction(String actionData) {
             try {
-                ConsentWebView.this.onAction(consentAction(getJson(actionData)));
+                ConsentWebView.this.onAction(consentAction(getJson(actionData, getLogger()), getLogger()));
             } catch (ConsentLibException e) {
                 ConsentWebView.this.onError(e);
             }
@@ -77,12 +75,23 @@ abstract public class ConsentWebView extends WebView {
         @JavascriptInterface
         public void onError(String errorMessage) {
             ConsentWebView.this.onError(new ConsentLibException(errorMessage));
+            getLogger().error(new RenderingAppException(errorMessage, errorMessage));
         }
 
-        private ConsentAction consentAction(JSONObject actionFromJS) throws ConsentLibException {
-            return new ConsentAction(getInt("actionType", actionFromJS), getString("choiceId", actionFromJS), getString("privacyManagerId", actionFromJS), getString("pmTab", actionFromJS), CustomJsonParser.getBoolean("requestFromPm", actionFromJS), getJson("saveAndExitVariables", actionFromJS), getString("consentLanguage", actionFromJS));
+        private ConsentAction consentAction(JSONObject actionFromJS, Logger logger) throws ConsentLibException {
+            return new ConsentAction(
+                    getInt("actionType", actionFromJS, getLogger()),
+                    getString("choiceId", actionFromJS, logger),
+                    getString("privacyManagerId", actionFromJS, logger),
+                    getString("pmTab", actionFromJS, logger),
+                    getBoolean("requestFromPm", actionFromJS, getLogger()),
+                    getJson("saveAndExitVariables", actionFromJS, getLogger()),
+                    getString("consentLanguage", actionFromJS, logger)
+            );
         }
     }
+
+    protected abstract Logger getLogger();
 
     public ConsentWebView(Context context) {
         super(getFixedContext(context));
@@ -117,6 +126,7 @@ abstract public class ConsentWebView extends WebView {
                     view.loadUrl("javascript:" + getFileContent(getResources().openRawResource(R.raw.js_receiver)));
                 } catch (IOException e) {
                     ConsentWebView.this.onError(new ConsentLibException(e, "Unable to load jsReceiver into ConasentLibWebview."));
+                    getLogger().error(new UnableToLoadJSReceiverException(e, "Unable to load jsReceiver into ConasentLibWebview."));
                 }
             }
 
@@ -125,6 +135,7 @@ abstract public class ConsentWebView extends WebView {
                 super.onReceivedError(view, request, error);
                 Log.d(TAG, "onReceivedError: " + error.toString());
                 onError(new ConsentLibException.ApiException(error.toString()));
+                getLogger().error(new UnableToLoadJSReceiverException(error.toString()));
             }
 
             @Override
@@ -132,6 +143,7 @@ abstract public class ConsentWebView extends WebView {
                 super.onReceivedError(view, errorCode, description, failingUrl);
                 Log.d(TAG, "onReceivedError: Error " + errorCode + ": " + description);
                 onError(new ConsentLibException.ApiException(description));
+                getLogger().error(new UnableToLoadJSReceiverException(description));
             }
 
             @Override
@@ -139,6 +151,7 @@ abstract public class ConsentWebView extends WebView {
                 super.onReceivedSslError(view, handler, error);
                 Log.d(TAG, "onReceivedSslError: Error " + error);
                 onError(new ConsentLibException.ApiException(error.toString()));
+                getLogger().error(new UnableToLoadJSReceiverException(error.toString()));
             }
 
             @Override
@@ -146,6 +159,7 @@ abstract public class ConsentWebView extends WebView {
                 String message = "The WebView rendering process crashed!";
                 Log.e(TAG, message);
                 onError(new ConsentLibException(message));
+                getLogger().error(new WebViewException(message));
                 return false;
             }
 
@@ -181,6 +195,7 @@ abstract public class ConsentWebView extends WebView {
     public void loadConsentUIFromUrl(String url) throws ConsentLibException {
         if (hasLostInternetConnection())
             throw new ConsentLibException.NoInternetConnectionException();
+
         Log.d(TAG, "Loading Webview with: " + url);
         Log.d(TAG, "User-Agent: " + getSettings().getUserAgentString());
         loadUrl(url);

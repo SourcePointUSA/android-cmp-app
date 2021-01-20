@@ -7,23 +7,35 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
         classpath 'com.palantir:jacoco-coverage:0.2.1'
-        
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+        def cdVersion = "0.6.1"
+        classpath "io.github.dryrum:git-utils:$cdVersion"
+        classpath "io.github.dryrum:update-changelog:$cdVersion"
+        classpath "io.github.dryrum:replace-in-file:$cdVersion"
+        classpath "io.github.dryrum:bump-version-code:$cdVersion"
     }
+}
+
+plugins {
+    id 'digital.wup.android-maven-publish' version '3.6.2'
+    id "com.jfrog.bintray" version "1.8.4"
 }
 
 allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
 }
 
@@ -35,5 +47,6 @@ ext {
     androidx_test_version = "1.3.0"
     espresso_version = "3.3.0"
     junit_version = "4.13.1"
+    mockk_version = "1.10.3-jdk8"
 
 }

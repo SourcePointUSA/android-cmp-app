@@ -1,11 +1,15 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.example.gdpr_cmplibrary.BuildConfig;
+import com.sourcepoint.gdpr_cmplibrary.exception.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,6 +41,7 @@ public class ConsentLibBuilder {
     String targetingParamsString = null;
     String authId = null;
     String messageLanguage = null;
+    String pmTab = null;
     long messageTimeOut;
 
     StoreClient storeClient;
@@ -44,7 +49,7 @@ public class ConsentLibBuilder {
 
     PropertyConfig propertyConfig;
     private Context context;
-
+    private Logger logger = null;
 
     ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Context context) {
         init(accountId, property, propertyId , pmId , context);
@@ -57,10 +62,34 @@ public class ConsentLibBuilder {
         shouldCleanConsentOnError = true;
         messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
         this.context = context.getApplicationContext();
+        logger = initLogger(accountId, propertyId);
     }
 
     protected StoreClient getStoreClient(){
-        return new StoreClient(PreferenceManager.getDefaultSharedPreferences(context));
+        return new StoreClient(
+                PreferenceManager.getDefaultSharedPreferences(context),
+                logger
+        );
+    }
+
+    protected Logger getLogger(int accountId, int propertyId){
+        return logger;
+    }
+
+    private Logger initLogger(int accountId, int propertyId){
+        String osVersion = String.valueOf(Build.VERSION.SDK_INT);
+        ClientInfo ci = new ClientInfo(BuildConfig.VERSION_NAME, osVersion, Build.MODEL);
+        return LoggerFactory.createLogger(
+                new OkHttpClient(),
+                ErrorMessageManagerKt.createErrorManager(
+                        accountId,
+                        propertyId,
+                        "https://" + propertyConfig.propertyName,
+                        ci,
+                        Legislation.GDPR
+                ),
+                BuildConfig.LOGGER_URL
+        );
     }
 
     protected ConnectivityManager getConnectivityManager(){
@@ -185,6 +214,24 @@ public class ConsentLibBuilder {
         return this;
     }
 
+    /**
+     * This method set the tab that the PrivacyManager should select.
+     * You'll be able to see that tab as soon as the Privacy Manager get rendered.
+     *
+     * N.B. This value is overwritten if the Message coming from the server was set from the console.
+     *
+     * Ex:
+     * if you set pmTab=VENDORS from the console and then you use the `setPrivacyManagerTab(FEATURES)`, the library
+     * will display the VENDORS tab.
+     *
+     * @param privacyManagerTab tab to be rendered first.
+     * @return [ConsentLibBuilder]
+     */
+    public ConsentLibBuilder setPrivacyManagerTab(PrivacyManagerTab privacyManagerTab){
+        this.pmTab = privacyManagerTab.pmTab;
+        return this;
+    }
+
     public ConsentLibBuilder setTargetingParam(String key, Integer val)  {
         return setTargetingParam(key, (Object) val);
     }
@@ -207,7 +254,7 @@ public class ConsentLibBuilder {
     }
 
     protected SourcePointClient getSourcePointClient(){
-        return new SourcePointClient(new OkHttpClient(), spClientConfig() , getConnectivityManager());
+        return new SourcePointClient(new OkHttpClient(), spClientConfig() , getConnectivityManager(), logger);
     }
 
     private SourcePointClientConfig spClientConfig(){

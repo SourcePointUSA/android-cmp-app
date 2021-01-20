@@ -3,6 +3,7 @@ package com.sourcepoint.gdpr_cmplibrary;
 import android.app.Activity;
 import android.os.CountDownTimer;
 
+import com.sourcepoint.gdpr_cmplibrary.exception.Logger;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,8 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(RobolectricTestRunner.class)
@@ -168,6 +168,15 @@ public class ConsentLibBuilderTest {
         for (String languageName : languages ){
             defaultBuilder.setMessageLanguage(MessageLanguage.findByName(languageName));
             assertEquals(MessageLanguage.findByName(languageName).language, defaultBuilder.messageLanguage);
+        }
+    }
+
+    @Test
+    public void setPmTab() {
+        String [] pmtabs = PrivacyManagerTab.tabNames();
+        for (String tabName : pmtabs ){
+            defaultBuilder.setPrivacyManagerTab(PrivacyManagerTab.findTabByName(tabName));
+            assertEquals(PrivacyManagerTab.findTabByName(tabName).pmTab, defaultBuilder.pmTab);
         }
     }
 
