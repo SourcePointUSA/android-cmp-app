@@ -5,8 +5,11 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'org.sonarqube'
 apply plugin: 'jacoco'
 
+apply plugin: 'io.github.dryrum.bump-version-code'
+apply plugin: "io.github.dryrum.git-utils"
+
 apply from: rootDir.path + '/gradleutils/test_config.gradle'
-apply from: rootDir.path + '/gradleutils/versioncode_bump.gradle'
+//apply from: rootDir.path + '/gradleutils/versioncode_bump.gradle'
 
 android {
     compileSdkVersion 29
@@ -132,3 +135,14 @@ dependencies {
     // TODO remove this dependency
     implementation "android.arch.core:core-testing:1.1.1"
 }
+
+versionCodePropPath {
+    path = "gradle.properties"
+}
+
+addCommitPushConfig {
+    fileList = [
+            rootDir.path + '/samples/metaapp/gradle.properties'
+    ]
+}
+

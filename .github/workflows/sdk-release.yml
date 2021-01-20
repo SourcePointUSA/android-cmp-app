@@ -19,8 +19,14 @@ jobs:
         id: current-time
         with:
           format: (MMMM, DD, YYYY)
-      - name: Extracting version lib
-        run: ./gradlew cmplibrary:versionTxt
+      - name: Set version lib into VERSION_NAME variable
+        run: |
+          ./gradlew cmplibrary:versionTxt
+          echo "VERSION_NAME=$(cat app/version.txt)" >> $GITHUB_ENV
+      - name: Update CHANGELOG.md
+        run: ./gradlew cmplibrary:changeLogUpdate
+      - name: Update README.md
+        run: ./gradlew cmplibrary:replaceInFile
       - name: Read Release Note
         id: release_note
         uses: juliangruber/read-file-action@v1
@@ -50,3 +56,5 @@ jobs:
           BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
         run: |
           ./gradlew cmplibrary:bintrayUpload
+      - name: Add, commit and push CHANGELOG.md and README.md
+        run: ./gradlew cmplibrary:addCommitPush
