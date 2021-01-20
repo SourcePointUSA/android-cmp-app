@@ -6,6 +6,7 @@ apply plugin: 'org.sonarqube'
 apply plugin: 'jacoco'
 
 apply plugin: 'io.github.dryrum.bump-version-code'
+apply plugin: "io.github.dryrum.git-utils"
 
 apply from: rootDir.path + '/gradleutils/test_config.gradle'
 //apply from: rootDir.path + '/gradleutils/versioncode_bump.gradle'
@@ -137,5 +138,11 @@ dependencies {
 
 versionCodePropPath {
     path = "gradle.properties"
+}
+
+addCommitPushConfig {
+    fileList = [
+            rootDir.path + '/samples/metaapp/gradle.properties'
+    ]
 }
 
