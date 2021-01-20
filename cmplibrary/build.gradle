@@ -80,7 +80,6 @@ changeLogConfig {
 
 replaceInFile {
     docs {
-        println " ============================= " + rootDir.path + "/README.md"
         doc {
             path = rootDir.path + "/README.md"
             find = "com.sourcepoint.cmplibrary:cmplibrary:(\\d)+\\.(\\d)+\\.(\\d)+"
