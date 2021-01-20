@@ -50,3 +50,5 @@ jobs:
         packageName: com.sourcepointmeta.metaapp
         releaseFiles: ${{ steps.sign.outputs.signedReleaseFile }}
         track: production
+    - name: Add, commit and push CHANGELOG.md and README.md
+      run: ./gradlew metaapp:addCommitPush
