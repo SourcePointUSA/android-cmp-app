@@ -2,6 +2,12 @@ name: RELEASE
 on:
   push:
     branches: [ master ]
+    paths:
+      - '!*.yml'
+      - '!README.md'
+      - '!CHANGELOG.md'
+      - '!samples/metaapp/gradle.properties'
+
 jobs:
   build:
     name: Build APK and Create release
@@ -50,5 +56,8 @@ jobs:
         packageName: com.sourcepointmeta.metaapp
         releaseFiles: ${{ steps.sign.outputs.signedReleaseFile }}
         track: production
-    - name: Add, commit and push CHANGELOG.md and README.md
-      run: ./gradlew metaapp:addCommitPush
+    - name: Add, commit and push edited files
+      env:
+        GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+        GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+      run: ./gradlew addCommitPush

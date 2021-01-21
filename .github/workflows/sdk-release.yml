@@ -3,6 +3,11 @@ name: SDK Release
 on:
   push:
     branches:  [ master ] #[ release/* ]
+    paths:
+      - '!*.yml'
+      - '!README.md'
+      - '!CHANGELOG.md'
+      - '!samples/metaapp/gradle.properties'
 
 jobs:
   build:
@@ -56,5 +61,8 @@ jobs:
           BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
         run: |
           ./gradlew cmplibrary:bintrayUpload
-      - name: Add, commit and push CHANGELOG.md and README.md
-        run: ./gradlew cmplibrary:addCommitPush
+      - name: Add, commit and push edited files
+        env:
+          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+        run: ./gradlew addCommitPush
