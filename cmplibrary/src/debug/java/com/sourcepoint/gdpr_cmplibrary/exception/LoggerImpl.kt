@@ -2,6 +2,7 @@
 
 package com.sourcepoint.gdpr_cmplibrary.exception
 
+import com.example.gdpr_cmplibrary.BuildConfig
 import com.sourcepoint.gdpr_cmplibrary.enqueue
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
@@ -26,16 +27,9 @@ internal fun createLogger(
 private class LoggerImpl(
     val networkClient: OkHttpClient,
     val errorMessageManager: ErrorMessageManager,
-    val url: String,
+    val url: String
 ) : Logger {
     override fun error(e: ConsentLibExceptionK) {
-        val mediaType = MediaType.parse("application/json")
-        val body: RequestBody = RequestBody.create(mediaType, errorMessageManager.build(e))
-        val request: Request = Request.Builder().url(url).post(body)
-            .header("Accept", mediaType?.type() ?: "")
-            .header("Content-Type", mediaType?.type() ?: "")
-            .build()
-
-        networkClient.newCall(request).enqueue { }
+        // No log in debug
     }
 }
