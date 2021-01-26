@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary
 
 import android.content.Context
-import com.sourcepoint.cmplibrary.ccpa.CCPAClientInteraction
 import com.sourcepoint.cmplibrary.ccpa.CCPAConsentLibClient
 import com.sourcepoint.cmplibrary.ccpa.CCPAConsentLibImpl
 import com.sourcepoint.cmplibrary.gdpr.GDPRConsentLibClient
@@ -51,9 +50,6 @@ class BuilderV6 {
     fun <T : ConsentLib> build(clazz: Class<out T>): T {
         checkParameter()
         return when (clazz) {
-
-//            IGDPRConsentLib::class.java -> (createGDPR(accountId!!, property!!, propertyId!!, pmId!!, context!!) as? T)
-//                ?: fail("this")
 
             GDPRConsentLibClient::class.java -> {
                 (
