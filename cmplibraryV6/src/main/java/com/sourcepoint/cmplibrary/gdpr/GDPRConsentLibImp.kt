@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import com.sourcepoint.cmplibrary.ClientInteraction
 import com.sourcepoint.gdpr_cmplibrary.*
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLibTest.Companion.newBuilder_
 
@@ -14,17 +15,16 @@ internal class GDPRConsentLibImpl(
     private val pmId: String,
     private val authId: String?,
     private val privacyManagerTab: PrivacyManagerTab?,
-    private val context: Context,
-    pClientInteraction: ClientInteraction
+    private val context: Context
 ) : GDPRConsentLibClient {
 
-    override val clientInteraction: ClientInteraction = pClientInteraction
+    override var clientInteraction: GDPRClientInteraction? = null
 
     private val gdprConsentLib: GDPRConsentLibTest by lazy {
         newBuilder_(accountId, propertyName, propertyId, pmId, context)
-            .setOnConsentUIReady { view: View? -> view?.let { clientInteraction.onConsentUIReadyCallback(it) } }
+            .setOnConsentUIReady { view: View? -> view?.let { clientInteraction?.onConsentUIReadyCallback(it) } }
             .setOnAction { actionType: ActionTypes -> Log.i("builder v6", "ActionType: $actionType") }
-            .setOnConsentUIFinished { view: View? -> view?.let { clientInteraction.onConsentUIFinishedCallback(it) } }
+            .setOnConsentUIFinished { view: View? -> view?.let { clientInteraction?.onConsentUIFinishedCallback(it) } }
             .setOnConsentReady { consent: GDPRUserConsent ->
                 // at this point it's safe to initialise vendors
                 for (line in consent.toString().split("\n").toTypedArray()) Log.i("builder v6", line)

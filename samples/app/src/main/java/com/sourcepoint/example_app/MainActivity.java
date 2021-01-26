@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.sourcepoint.cmplibrary.BuilderV6;
-import com.sourcepoint.cmplibrary.gdpr.ClientInteraction;
+import com.sourcepoint.cmplibrary.ClientInteraction;
 import com.sourcepoint.cmplibrary.gdpr.GDPRConsentLibClient;
 import com.sourcepoint.example_app.core.DataProvider;
 import com.sourcepoint.gdpr_cmplibrary.*;
