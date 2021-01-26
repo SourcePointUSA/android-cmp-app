@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.gdpr
+package com.sourcepoint.cmplibrary
 
 import android.view.View
 import com.sourcepoint.gdpr_cmplibrary.ActionTypes
@@ -10,5 +10,4 @@ interface ClientInteraction {
     fun onConsentUIReadyCallback(v: View)
     fun onErrorCallback(error: ConsentLibException?)
     fun onActionCallback(actionTypes: ActionTypes?)
-    fun onConsentReadyCallback(c: GDPRUserConsent?)
 }

@@ -1,7 +1,9 @@
 package com.sourcepoint.cmplibrary
 
 import android.content.Context
-import com.sourcepoint.cmplibrary.gdpr.ClientInteraction
+import com.sourcepoint.cmplibrary.ccpa.CCPAClientInteraction
+import com.sourcepoint.cmplibrary.ccpa.CCPAConsentLibClient
+import com.sourcepoint.cmplibrary.ccpa.CCPAConsentLibImpl
 import com.sourcepoint.cmplibrary.gdpr.GDPRConsentLibClient
 import com.sourcepoint.cmplibrary.gdpr.GDPRConsentLibImpl
 import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
@@ -15,7 +17,6 @@ class BuilderV6 {
     private var pmId: String? = null
     private var context: Context? = null
     private var privacyManagerTab: PrivacyManagerTab? = null
-    private var clientInteraction: ClientInteraction? = null
 
     fun setAccountId(accountId: Int) = apply {
         this.accountId = accountId
@@ -24,6 +25,7 @@ class BuilderV6 {
     fun setPropertyName(property: String) = apply {
         this.propertyName = property
     }
+
     fun setAuthId(authId: String) = apply {
         this.authId = authId
     }
@@ -44,11 +46,6 @@ class BuilderV6 {
         this.privacyManagerTab = privacyManagerTab
     }
 
-    fun setClientInteraction(clientInteraction: ClientInteraction) = apply {
-        this.clientInteraction = clientInteraction
-    }
-
-
 
     @Suppress("UNCHECKED_CAST")
     fun <T : ConsentLib> build(clazz: Class<out T>): T {
@@ -58,17 +55,21 @@ class BuilderV6 {
 //            IGDPRConsentLib::class.java -> (createGDPR(accountId!!, property!!, propertyId!!, pmId!!, context!!) as? T)
 //                ?: fail("this")
 
-            GDPRConsentLibClient::class.java -> (
-                GDPRConsentLibImpl(
-                    accountId ?: fail("accountId"),
-                    propertyName ?: fail("propertyName"),
-                    propertyId ?: fail("propertyId"),
-                    pmId ?: fail("pmId"),
-                    authId,
-                    privacyManagerTab,
-                    context ?: fail("context"),
-                    clientInteraction ?: fail("clientInteraction")) as? T
-                ) ?: fail(this::class.java.name)
+            GDPRConsentLibClient::class.java -> {
+                (
+                    GDPRConsentLibImpl(
+                        accountId ?: fail("accountId"),
+                        propertyName ?: fail("propertyName"),
+                        propertyId ?: fail("propertyId"),
+                        pmId ?: fail("pmId"),
+                        authId,
+                        privacyManagerTab,
+                        context ?: fail("context"),
+                    ) as? T) ?: fail(this::class.java.name)
+            }
+            CCPAConsentLibClient::class.java -> {
+                (CCPAConsentLibImpl() as? T) ?: fail(this::class.java.name)
+            }
 
             else -> fail(clazz.name)
         }

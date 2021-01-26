@@ -1,9 +1,9 @@
-package com.sourcepoint.cmplibrary.gdpr
+package com.sourcepoint.cmplibrary.ccpa
 
 import com.sourcepoint.cmplibrary.ConsentLib
 
-interface GDPRConsentLibClient : ConsentLib {
-    var clientInteraction: GDPRClientInteraction?
+interface CCPAConsentLibClient : ConsentLib {
+    var clientInteraction: CCPAClientInteraction?
     // set the client for implementing the callback
 //    fun setClient(/*gdpr : Client*/)
 }
