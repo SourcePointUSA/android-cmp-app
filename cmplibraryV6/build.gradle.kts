@@ -29,6 +29,12 @@ android {
             buildConfigField("String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\"")
         }
     }
+
+    sourceSets{
+        val sharedRes = "${project.rootDir.path}/ui-test-util/jsonFiles"
+        getByName("test").resources.srcDir(sharedRes)
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -38,6 +44,10 @@ android {
             kotlinOptions.jvmTarget = "1.8"
         }
     }
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -46,6 +56,9 @@ dependencies {
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
     implementation(Libs.kotlinReflect)
+
+    // gson
+    api(Libs.jacksonJr)
 
     // Unfortunately we depend on a outdated version of okhttp due to its support to older versions of Android
     //noinspection GradleDependency
