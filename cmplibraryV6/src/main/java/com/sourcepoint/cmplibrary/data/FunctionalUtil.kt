@@ -1,4 +1,4 @@
-package com.sourcepoint.gdpr_cmplibrary.data
+package com.sourcepoint.cmplibrary.data
 
 /**
  * This method execute the `block` closure and

@@ -1,6 +1,6 @@
 @file:JvmName("FactoryUtils")
 
-package com.sourcepoint.gdpr_cmplibrary.data.network
+package com.sourcepoint.cmplibrary.data.network
 
 // TODO delete it, it is for test
 fun createNetClient() : NetworkClient = createNetworkClient()

@@ -84,7 +84,7 @@ public class ConsentLibBuilder {
                 ErrorMessageManagerKt.createErrorManager(
                         accountId,
                         propertyId,
-                        "https://" + propertyConfig.getPropertyName(),
+                        "https://" + propertyConfig.propertyName,
                         ci,
                         Legislation.GDPR
                 ),

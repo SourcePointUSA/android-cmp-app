@@ -1,8 +1,8 @@
-package com.sourcepoint.gdpr_cmplibrary.data
+package com.sourcepoint.cmplibrary.data
 
-import com.sourcepoint.gdpr_cmplibrary.assertEquals
-import com.sourcepoint.gdpr_cmplibrary.data.Either.Left
-import com.sourcepoint.gdpr_cmplibrary.data.Either.Right
+import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.data.Either.Left
+import com.sourcepoint.cmplibrary.data.Either.Right
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify

@@ -1,4 +1,4 @@
-package com.sourcepoint.gdpr_cmplibrary
+package com.sourcepoint.cmplibrary
 
 import okhttp3.Request
 import okio.Buffer

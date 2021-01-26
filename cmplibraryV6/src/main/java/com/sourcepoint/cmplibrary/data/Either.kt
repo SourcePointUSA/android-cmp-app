@@ -1,4 +1,4 @@
-package com.sourcepoint.gdpr_cmplibrary.data
+package com.sourcepoint.cmplibrary.data
 
 /**
  * Either pattern implementation
