@@ -14,3 +14,7 @@ data class GdprReq(
     val propertyHref: String,
     val propertyId: Int
 )
+
+fun UWReq.toBodyRequest(): String {
+    TODO("Not yet implemented")
+}

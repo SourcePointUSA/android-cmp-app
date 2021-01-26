@@ -110,13 +110,13 @@ class SourcePointClient {
 
         try {
             JSONObject params = new JSONObject();
-            params.put("accountId", config.prop.getAccountId());
+            params.put("accountId", config.prop.accountId);
             params.put("euconsent", euconsent);
-            params.put("propertyId", config.prop.getPropertyId());
+            params.put("propertyId", config.prop.propertyId);
             params.put("requestUUID", getRequestUUID());
             params.put("uuid", consentUUID);
             params.put("meta", meta);
-            params.put("propertyHref", "https://" + config.prop.getPropertyName());
+            params.put("propertyHref", "https://" + config.prop.propertyName);
             params.put("campaignEnv", config.isStagingCampaign ? "stage" : "public");
             params.put("targetingParams", config.targetingParams);
             params.put("authId", config.authId);

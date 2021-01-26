@@ -3,8 +3,6 @@ package com.sourcepoint.cmplibrary.data.network
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
 import org.junit.Test
 
 

@@ -158,10 +158,10 @@ public class GDPRConsentLib implements IGDPRConsentLib{
 
     GDPRConsentLib(ConsentLibBuilder b) {
         context = b.getContext();
-        property = b.propertyConfig.getPropertyName();
-        accountId = b.propertyConfig.getAccountId();
-        propertyId = b.propertyConfig.getPropertyId();
-        pmId = b.propertyConfig.getPmId();
+        property = b.propertyConfig.propertyName;
+        accountId = b.propertyConfig.accountId;
+        propertyId = b.propertyConfig.propertyId;
+        pmId = b.propertyConfig.pmId;
         onConsentReady = b.onConsentReady;
         onError = b.onError;
         onConsentUIReady = b.onConsentUIReady;

@@ -1,4 +1,4 @@
-package com.sourcepoint.gdpr_cmplibrary.data.network
+package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.gdpr_cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException

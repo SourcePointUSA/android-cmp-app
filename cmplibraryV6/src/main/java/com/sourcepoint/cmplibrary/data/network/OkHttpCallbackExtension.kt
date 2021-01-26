@@ -1,4 +1,4 @@
-package com.sourcepoint.gdpr_cmplibrary.data.network
+package com.sourcepoint.cmplibrary.data.network
 
 import okhttp3.Call
 import okhttp3.Callback
