@@ -2,11 +2,11 @@ package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.readText
+import com.sourcepoint.cmplibrary.util.Either
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import io.mockk.slot
 import io.mockk.verify
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -18,14 +18,7 @@ class NetworkClientImplTest {
     @MockK
     lateinit var okHttp: OkHttpClient
 
-    @MockK
-    lateinit var success: (UWResp) -> Unit
-
-    @MockK
-    lateinit var error: (Throwable) -> Unit
-
-    @MockK
-    internal lateinit var responseManager: ResponseManager
+    private val responseManager: ResponseManager = ResponseManager.create(JsonConverter.create())
 
     @Before
     fun setup() {
@@ -52,7 +45,7 @@ class NetworkClientImplTest {
             url = HttpUrlManagerSingleton.inAppLocalUrlMessage
         )
 
-        sut.getMessage(uwReq = req, success = success, error = error)
+        sut.getMessage(uwReq = req, success = {}, error = {})
 
         val slot = slot<Request>()
         verify(exactly = 1) { okHttp.newCall(capture(slot)) }
@@ -67,22 +60,6 @@ class NetworkClientImplTest {
     }
 
     @Test
-    fun `GIVEN a UWReq Object and a real endpoint VERIFY the okHttp response`() = runBlocking<Unit> {
-
-        val sut = createNetworkClient(
-            httpClient = OkHttpClient(),
-            responseManager = responseManager,
-            url = HttpUrlManagerSingleton.inAppLocalUrlMessage
-        )
-        sut.getMessage(uwReq = req, success = success, error = error)
-
-        verify(exactly = 0) { success(any()) }
-        verify(exactly = 0) { error(any()) }
-
-        delay(5000)
-    }
-
-    @Test
     fun `GIVEN a UWReq Object and a real endpoint VERIFY the okHttp response susp`() = runBlocking<Unit> {
 
         val sut = createNetworkClient(
@@ -93,7 +70,6 @@ class NetworkClientImplTest {
 
         val res = sut.getMessage(uwReq = req)
 
-        verify(exactly = 0) { success(any()) }
-        verify(exactly = 0) { error(any()) }
+        val a = res as Either.Right<UWResp>
     }
 }
