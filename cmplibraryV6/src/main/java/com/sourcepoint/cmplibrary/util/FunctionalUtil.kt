@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data
+package com.sourcepoint.cmplibrary.util
 
 /**
  * This method execute the `block` closure and
