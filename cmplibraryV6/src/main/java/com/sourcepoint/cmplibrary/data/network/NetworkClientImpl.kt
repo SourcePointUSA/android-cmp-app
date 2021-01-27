@@ -48,24 +48,10 @@ private class NetworkClientImpl(
     }
 
     override suspend fun getMessage(uwReq: UWReq) = suspendCoroutine<Either<UWResp>> {
-
-        val mediaType = MediaType.parse("application/json")
-        val body: RequestBody = RequestBody.create(mediaType, uwReq.toBodyRequest())
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-
-        httpClient
-            .newCall(request)
-            .enqueue {
-                onFailure { _, exception ->
-                    it.resume(Either.Left(exception))
-                }
-                onResponse { _, r ->
-                    it.resume(responseManager.parseResponse(r))
-                }
-            }
+        getMessage(
+            uwReq,
+            { uwResp -> it.resume(Either.Right(uwResp)) },
+            { throwable -> it.resume(Either.Left(throwable)) }
+        )
     }
 }
