@@ -1,8 +1,8 @@
 package com.sourcepoint.cmplibrary.data.network
 
 data class UserConsent(
-    val acceptedCategories: List<Any>,
-    val acceptedVendors: List<Any>,
-    val euconsent: String,
-    val specialFeatures: List<Any>
+    var acceptedCategories: List<Any> = listOf(),
+    var acceptedVendors: List<Any> = listOf(),
+    var euconsent: String = "",
+    var specialFeatures: List<Any> = listOf()
 )

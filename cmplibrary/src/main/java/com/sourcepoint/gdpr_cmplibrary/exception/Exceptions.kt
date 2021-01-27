@@ -8,7 +8,7 @@ sealed class ConsentLibExceptionK(
     var isConsumed : Boolean = false,
     val description: String,
     cause: Throwable? = null
-) : RuntimeException(cause) {
+) : RuntimeException(description, cause) {
     abstract val code: ExceptionCodes
 }
 
