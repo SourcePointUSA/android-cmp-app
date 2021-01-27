@@ -8,5 +8,5 @@ data class Gdpr(
     val message: String,
     val meta: String,
     val uuid: String,
-    val userConsent: UserConsent?=null
+    val userConsent: UserConsent? = null
 )

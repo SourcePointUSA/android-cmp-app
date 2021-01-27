@@ -55,7 +55,7 @@ internal inline fun <B> Either<B>.executeOnLeft(block: (Throwable) -> Unit): Eit
  * @param ifRight the function to apply if this is a [Right]
  * @return the results of applying the function
  */
-internal inline fun <B,C> Either<B>.fold(ifLeft: (Throwable) -> C, ifRight: (B) -> C) = when (this) {
+internal inline fun <B,C> Either<B>.fold(ifLeft: (Throwable) -> C, ifRight: (B) -> C) : C = when (this) {
     is Right -> ifRight(r)
     is Left -> ifLeft(t)
 }

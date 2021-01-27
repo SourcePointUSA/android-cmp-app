@@ -1,5 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network
 
+import com.fasterxml.jackson.jr.ob.JSON
+
 data class UWReq(
     val categories: Categories,
     val requestUUID: String
@@ -16,5 +18,5 @@ data class GdprReq(
 )
 
 fun UWReq.toBodyRequest(): String {
-    TODO("Not yet implemented")
+    return JSON.std.asString(this)
 }
