@@ -45,7 +45,6 @@ class BuilderV6 {
         this.privacyManagerTab = privacyManagerTab
     }
 
-
     @Suppress("UNCHECKED_CAST")
     fun <T : ConsentLib> build(clazz: Class<out T>): T {
         checkParameter()
@@ -61,7 +60,8 @@ class BuilderV6 {
                         authId,
                         privacyManagerTab,
                         context ?: fail("context"),
-                    ) as? T) ?: fail(this::class.java.name)
+                    ) as? T
+                    ) ?: fail(this::class.java.name)
             }
             CCPAConsentLibClient::class.java -> {
                 (CCPAConsentLibImpl() as? T) ?: fail(this::class.java.name)
@@ -69,7 +69,6 @@ class BuilderV6 {
 
             else -> fail(clazz.name)
         }
-
     }
 
     private fun checkParameter() {

@@ -10,4 +10,4 @@ internal fun createNetClient(
     httpClient: OkHttpClient,
     url: HttpUrl,
     responseManager: ResponseManager
-) : NetworkClient = createNetworkClient(httpClient, url, responseManager)
+): NetworkClient = createNetworkClient(httpClient, url, responseManager)

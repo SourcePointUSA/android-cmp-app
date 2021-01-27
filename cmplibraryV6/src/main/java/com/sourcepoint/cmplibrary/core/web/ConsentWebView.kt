@@ -11,7 +11,6 @@ abstract class ConsentWebView : WebView {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    internal abstract val jsReceiver : JSReceiver
-    internal abstract val logger : Logger
-
+    internal abstract val jsReceiver: JSReceiver
+    internal abstract val logger: Logger
 }

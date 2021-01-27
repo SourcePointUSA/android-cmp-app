@@ -3,8 +3,6 @@ package com.sourcepoint.cmplibrary.data.network
 import android.accounts.NetworkErrorException
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.flatMap
-import com.sourcepoint.cmplibrary.util.fold
 import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException
 import okhttp3.Response
 

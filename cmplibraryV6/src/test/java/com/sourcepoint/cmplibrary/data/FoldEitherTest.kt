@@ -8,7 +8,7 @@ import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 
-class FoldEitherTest{
+class FoldEitherTest {
 
     @MockK
     private lateinit var rightFun: (Int) -> Unit
@@ -21,7 +21,7 @@ class FoldEitherTest{
     }
 
     @Test
-    fun `GIVEN a Left obj extract the content`(){
+    fun `GIVEN a Left obj extract the content`() {
 
         val value = RuntimeException()
         val original = Either.Left(value)
@@ -33,11 +33,10 @@ class FoldEitherTest{
 
         verify(exactly = 0) { rightFun(any()) }
         verify(exactly = 1) { leftFun(any()) }
-
     }
 
     @Test
-    fun `GIVEN a Right obj extract the content`(){
+    fun `GIVEN a Right obj extract the content`() {
 
         val value = 1
         val original = Either.Right(value)
@@ -49,6 +48,5 @@ class FoldEitherTest{
 
         verify(exactly = 1) { rightFun(any()) }
         verify(exactly = 0) { leftFun(any()) }
-
     }
 }

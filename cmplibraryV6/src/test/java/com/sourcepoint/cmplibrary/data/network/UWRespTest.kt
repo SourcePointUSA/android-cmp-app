@@ -5,8 +5,7 @@ import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
 import org.junit.Test
 
-
-class UWRespTest{
+class UWRespTest {
 
     val req = UWReq(
         requestUUID = "test",
@@ -20,7 +19,7 @@ class UWRespTest{
     )
 
     @Test
-    fun `parse response`(){
+    fun `parse response`() {
         val jsonContent = "unified_wrapper_resp.json".jsonFile2String()
 
         val json1 = JSON.std.asString(req)
@@ -34,8 +33,5 @@ class UWRespTest{
         val userConsent = JSON.std.beanFrom(UserConsent::class.java, JSON.std.asString(gdpr["userConsent"] as DeferredMap))
 
         println()
-
-
     }
-
 }
