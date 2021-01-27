@@ -1,8 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network
 
-import com.example.gdpr_cmplibrary.BuildConfig
-import com.sourcepoint.cmplibrary.data.executeOnLeft
-import com.sourcepoint.cmplibrary.data.map
+import com.sourcepoint.cmplibrary.util.executeOnLeft
+import com.sourcepoint.cmplibrary.util.map
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request

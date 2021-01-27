@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network
 
-import com.sourcepoint.cmplibrary.data.Either
+import com.sourcepoint.cmplibrary.util.Either
 
 /**
  * Factory method for building an instance of JsonConverter

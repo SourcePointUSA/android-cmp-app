@@ -1,5 +1,7 @@
 package com.sourcepoint.cmplibrary.data
 
+import com.sourcepoint.cmplibrary.util.Either
+import com.sourcepoint.cmplibrary.util.fold
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify

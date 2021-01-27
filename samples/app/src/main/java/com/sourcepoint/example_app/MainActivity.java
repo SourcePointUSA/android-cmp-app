@@ -8,17 +8,10 @@ import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.sourcepoint.cmplibrary.BuilderV6;
-import com.sourcepoint.cmplibrary.ClientInteraction;
-import com.sourcepoint.cmplibrary.gdpr.GDPRConsentLibClient;
 import com.sourcepoint.example_app.core.DataProvider;
-import com.sourcepoint.gdpr_cmplibrary.*;
+import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 
-import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
-import com.sourcepoint.gdpr_cmplibrary.data.network.FactoryUtils;
-import com.sourcepoint.gdpr_cmplibrary.data.network.model.NativeMessageReq;
 import kotlin.Lazy;
-import org.jetbrains.annotations.Nullable;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -58,33 +51,15 @@ public class MainActivity extends AppCompatActivity {
                     for (String line : consent.toString().split("\n"))
                         Log.i(TAG, line);
                 })
-                .setAuthId(dataProvider.getValue().getAuthId())
                 .setOnError(error -> Log.e(TAG, "Something went wrong"))
+                .setAuthId(dataProvider.getValue().getAuthId())
                 .build();
-    }
-
-    // GDPRConsentLibClient
-    private GDPRConsentLibClient buildGDPRConsentLibV6() {
-        GDPRConsentLibClient consentLibClient =  new BuilderV6()
-                .setAccountId(accountId)
-                .setContext(this)
-                .setPropertyName(propertyName)
-                .setPropertyId(propertyId)
-                .setPmId(pmId)
-                .setClientInteraction(new ClientInter())
-//                .setAuthId(dataProvider.getValue().getAuthId())
-                .build(GDPRConsentLibClient.class);
-
-//        consentLibClient.setClientInteraction(new ClientInter());
-
-        return consentLibClient;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        buildGDPRConsentLibV6().loadMessage(dataProvider.getValue().getAuthId());
-//        buildGDPRConsentLib().run();
+        buildGDPRConsentLib().run();
     }
 
     @Override
@@ -92,50 +67,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainViewGroup = findViewById(android.R.id.content);
-        findViewById(R.id.review_consents).setOnClickListener(_v ->
-                buildGDPRConsentLibV6().loadPrivacyManager(dataProvider.getValue().getAuthId())
-//                buildGDPRConsentLib().showPm()
-        );
+        findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
         findViewById(R.id.auth_id_activity).setOnClickListener(_v -> startActivity(new Intent(this, MainActivityAuthId.class)));
-
-        NativeMessageReq nativeMessage = new NativeMessageReq(
-                22,
-                7639,
-                "https://tcfv2.mobile.webview",
-                "test",
-                "{}"
-                );
-        FactoryUtils.createNetClient().getNativeMessage(nativeMessage);
-
-    }
-
-    class ClientInter implements ClientInteraction {
-
-        @Override
-        public void onConsentUIFinishedCallback(@Nullable View v) {
-            removeView(v);
-        }
-
-        @Override
-        public void onConsentUIReadyCallback(View v) {
-            showView(v);
-        }
-
-        @Override
-        public void onConsentReadyCallback(GDPRUserConsent consent) {
-            // at this point it's safe to initialise vendors
-            for (String line : consent.toString().split("\n"))
-                Log.i(TAG, line);
-        }
-
-        @Override
-        public void onErrorCallback(ConsentLibException v) {
-            Log.e(TAG, "Something went wrong");
-        }
-
-        @Override
-        public void onActionCallback(ActionTypes actionTypes) {
-            Log.i(TAG , "ActionType: " + actionTypes.toString());
-        }
     }
 }

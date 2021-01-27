@@ -1,7 +1,7 @@
-package com.sourcepoint.cmplibrary.data
+package com.sourcepoint.cmplibrary.util
 
-import com.sourcepoint.cmplibrary.data.Either.Left
-import com.sourcepoint.cmplibrary.data.Either.Right
+import com.sourcepoint.cmplibrary.util.Either.Left
+import com.sourcepoint.cmplibrary.util.Either.Right
 
 /**
  * Either pattern implementation

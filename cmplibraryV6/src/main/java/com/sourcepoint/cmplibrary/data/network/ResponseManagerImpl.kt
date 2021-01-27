@@ -1,9 +1,8 @@
 package com.sourcepoint.cmplibrary.data.network
 
-import com.sourcepoint.cmplibrary.data.Either
-import com.sourcepoint.cmplibrary.data.check
+import com.sourcepoint.cmplibrary.util.Either
+import com.sourcepoint.cmplibrary.util.check
 import okhttp3.Response
-import org.json.JSONObject
 
 internal fun createResponseManager() : ResponseManager = ResponseManagerImpl()
 
