@@ -4,11 +4,10 @@ import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
 import com.sourcepoint.cmplibrary.util.Either
 import kotlinx.coroutines.runBlocking
-import okhttp3.*
+import okhttp3.* // ktlint-disable
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Test
-
 
 /**
  * You need to have the local server running to test this class
@@ -55,5 +54,4 @@ class ResponseManagerImplTest {
         val result = sut.parseResponse(resp) as Either.Left
         result.t.message.assertEquals("message object is null")
     }
-
 }

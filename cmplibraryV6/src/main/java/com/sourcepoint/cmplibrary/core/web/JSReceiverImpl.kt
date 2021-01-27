@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.core.web
 
-internal fun JSReceiver.Companion.build() : JSReceiver =
+internal fun JSReceiver.Companion.build(): JSReceiver =
     JSReceiverImpl(
         // TODO remove this mock implementation
 
@@ -19,7 +19,7 @@ internal fun JSReceiver.Companion.build() : JSReceiver =
         }
     )
 
-private class JSReceiverImpl(val client : JSReceiverClient) : JSReceiver {
+private class JSReceiverImpl(val client: JSReceiverClient) : JSReceiver {
 
     override fun log(tag: String?, msg: String?) {
         TODO("Not yet implemented")
@@ -37,7 +37,6 @@ private class JSReceiverImpl(val client : JSReceiverClient) : JSReceiver {
         actionData
             ?.let { client.onAction(it) }
             ?: fail("actionData is null!!")
-
     }
 
     override fun onError(errorMessage: String?) {
@@ -45,7 +44,7 @@ private class JSReceiverImpl(val client : JSReceiverClient) : JSReceiver {
         client.onError(error)
     }
 
-    fun fail(message : String){
+    fun fail(message: String) {
         client.onError(message)
     }
 }

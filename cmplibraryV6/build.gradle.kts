@@ -4,6 +4,8 @@ plugins {
     kotlin("android.extensions")
 }
 
+apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
+
 val versionLib = project.property("VERSION_NAME_V6") as String
 
 group = "com.sourcepoint.cmplibrary"

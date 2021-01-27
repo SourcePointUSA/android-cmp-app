@@ -46,7 +46,7 @@ class NetworkClientImplTest {
     @Test
     fun `GIVEN a UWReq Object VERIFY the okHttp generated request`() {
 
-        val sut =  createNetworkClient(
+        val sut = createNetworkClient(
             httpClient = okHttp,
             responseManager = responseManager,
             url = HttpUrlManagerSingleton.inAppLocalUrlMessage
@@ -80,7 +80,6 @@ class NetworkClientImplTest {
         verify(exactly = 0) { error(any()) }
 
         delay(5000)
-
     }
 
     @Test
@@ -96,7 +95,5 @@ class NetworkClientImplTest {
 
         verify(exactly = 0) { success(any()) }
         verify(exactly = 0) { error(any()) }
-
     }
-
 }

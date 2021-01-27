@@ -4,8 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import com.sourcepoint.cmplibrary.ClientInteraction
-import com.sourcepoint.gdpr_cmplibrary.*
+import com.sourcepoint.gdpr_cmplibrary.* // ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLibTest.Companion.newBuilder_
 
 internal class GDPRConsentLibImpl(
@@ -51,7 +50,7 @@ internal class GDPRConsentLibImpl(
         TODO("Not yet implemented")
     }
 
-    override fun    loadPrivacyManager() {
+    override fun loadPrivacyManager() {
         // if privacyManagerTab has not been set, use null value.
 
         // if privacyManagerTab has not been set, use null value.

@@ -42,7 +42,7 @@ internal inline fun <B, C> Either<B>.map(f: (B) -> C): Either<C> =
  * This extension execute the closure if invoked on a [com.sourcepoint.gdpr_cmplibrary.data.Either.Left] object
  */
 internal inline fun <B> Either<B>.executeOnLeft(block: (Throwable) -> Unit): Either<B> = apply {
-    when(this){
+    when (this) {
         is Right -> { /** do nothing */ }
         is Left -> block(this.t)
     }
@@ -55,7 +55,7 @@ internal inline fun <B> Either<B>.executeOnLeft(block: (Throwable) -> Unit): Eit
  * @param ifRight the function to apply if this is a [Right]
  * @return the results of applying the function
  */
-internal inline fun <B,C> Either<B>.fold(ifLeft: (Throwable) -> C, ifRight: (B) -> C) : C = when (this) {
+internal inline fun <B, C> Either<B>.fold(ifLeft: (Throwable) -> C, ifRight: (B) -> C): C = when (this) {
     is Right -> ifRight(r)
     is Left -> ifLeft(t)
 }

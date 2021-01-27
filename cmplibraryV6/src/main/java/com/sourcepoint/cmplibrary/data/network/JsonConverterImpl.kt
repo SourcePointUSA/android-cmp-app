@@ -11,7 +11,6 @@ import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageExcept
  */
 internal fun JsonConverter.Companion.create(): JsonConverter = JsonConverterImpl()
 
-
 private class JsonConverterImpl : JsonConverter {
 
     override fun toUWResp(body: String): Either<UWResp> = check {

@@ -12,7 +12,7 @@ import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 
-class EitherTest{
+class EitherTest {
 
     @MockK
     private lateinit var mockFun: () -> Unit
@@ -23,11 +23,11 @@ class EitherTest{
     }
 
     @Test
-    fun `First law - left identity`(){
+    fun `First law - left identity`() {
 
         val value = 1
 
-        fun f(a : Int): Either<Int> = Right(a * 2)
+        fun f(a: Int): Either<Int> = Right(a * 2)
 
         val original = Right(value)
         val new = original.flatMap { f(it) }
@@ -36,7 +36,7 @@ class EitherTest{
     }
 
     @Test
-    fun `Second law - right identity`(){
+    fun `Second law - right identity`() {
 
         val original = Right(1)
         val new = original.flatMap { Right(it) }
@@ -45,12 +45,12 @@ class EitherTest{
     }
 
     @Test
-    fun `Third law - Associativity`(){
+    fun `Third law - Associativity`() {
 
         val original = Right(1)
 
-        fun f(a : Int): Right<Int> = Right(a * 2)
-        fun g(a : Int): Right<Int> = Right(a + 6)
+        fun f(a: Int): Right<Int> = Right(a * 2)
+        fun g(a: Int): Right<Int> = Right(a + 6)
 
         val first = original.flatMap { f(it) }.flatMap { g(it) }
         val second = original.flatMap { f(it).flatMap { it2 -> g(it2) } }
@@ -59,7 +59,7 @@ class EitherTest{
     }
 
     @Test
-    fun `APPLIED the executeOnLeft on a Either object VERIFY the result`(){
+    fun `APPLIED the executeOnLeft on a Either object VERIFY the result`() {
 
         val right = Right("")
         val left = Left(RuntimeException())
@@ -68,7 +68,5 @@ class EitherTest{
         verify(exactly = 0) { mockFun() }
         left.executeOnLeft { mockFun() }
         verify(exactly = 1) { mockFun() }
-
-
     }
 }

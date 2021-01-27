@@ -6,7 +6,8 @@ internal interface NetworkClient {
     fun getMessage(
         uwReq: UWReq,
         success: (UWResp) -> Unit,
-        error: (Throwable) -> Unit)
+        error: (Throwable) -> Unit
+    )
 
-    suspend fun getMessage(uwReq: UWReq) : Either<UWResp>
+    suspend fun getMessage(uwReq: UWReq): Either<UWResp>
 }

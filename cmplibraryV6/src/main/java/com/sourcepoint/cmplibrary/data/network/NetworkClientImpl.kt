@@ -3,8 +3,7 @@ package com.sourcepoint.cmplibrary.data.network
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.executeOnLeft
 import com.sourcepoint.cmplibrary.util.map
-import okhttp3.*
-import java.io.IOException
+import okhttp3.* // ktlint-disable
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -23,7 +22,8 @@ private class NetworkClientImpl(
     override fun getMessage(
         uwReq: UWReq,
         success: (UWResp) -> Unit,
-        error: (Throwable) -> Unit) {
+        error: (Throwable) -> Unit
+    ) {
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, uwReq.toBodyRequest())
 
@@ -68,6 +68,4 @@ private class NetworkClientImpl(
                 }
             }
     }
-
-
 }
