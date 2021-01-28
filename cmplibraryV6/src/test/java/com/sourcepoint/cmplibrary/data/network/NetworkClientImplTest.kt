@@ -1,31 +1,39 @@
 package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.data.network.converted.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converted.create
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
+import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
+import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.util.Either
-import io.mockk.MockKAnnotations
+import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK
-import io.mockk.slot
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.junit.Before
 import org.junit.Test
+import java.lang.RuntimeException
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class NetworkClientImplTest {
 
     @MockK
     lateinit var okHttp: OkHttpClient
 
-    private val responseManager: ResponseManager = ResponseManager.create(JsonConverter.create())
+    @MockK
+    private lateinit var responseManager: ResponseManager
 
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
     }
 
-    val req = UWReq(
+    private val req = UWReq(
         requestUUID = "test",
         categories = Categories(
             gdpr = GdprReq(
@@ -60,7 +68,9 @@ class NetworkClientImplTest {
     }
 
     @Test
-    fun `GIVEN a UWReq Object and a real endpoint VERIFY the okHttp response susp`() = runBlocking<Unit> {
+    fun `GIVEN a UWReq Object and a real endpoint VERIFY that the output is a Right`() = runBlocking<Unit> {
+
+        val responseManager = ResponseManager.create(JsonConverter.create())
 
         val sut = createNetworkClient(
             httpClient = OkHttpClient(),
@@ -70,6 +80,47 @@ class NetworkClientImplTest {
 
         val res = sut.getMessage(uwReq = req)
 
-        val a = res as Either.Right<UWResp>
+        val output = (res as Either.Right<UWResp>).r
+    }
+
+    @Test
+    fun `GIVEN a UWReq Object VERIFY that the output is a Right`() = runBlocking<Unit> {
+
+        every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
+
+        val sut = createNetworkClient(
+            httpClient = OkHttpClient(),
+            responseManager = responseManager,
+            url = HttpUrlManagerSingleton.inAppLocalUrlMessage
+        )
+
+        val res = sut.getMessage(uwReq = req)
+
+        val output = (res as Either.Right<UWResp>).r
+    }
+
+    @Test
+    fun `GIVEN an exception VERIFY that the output is a Left`() = runBlocking<Unit> {
+
+        every { responseManager.parseResponse(any()) }.returns(Either.Left(RuntimeException("test")))
+
+        val sut = createNetworkClient(
+            httpClient = OkHttpClient(),
+            responseManager = responseManager,
+            url = HttpUrlManagerSingleton.inAppLocalUrlMessage
+        )
+
+        val res = sut.getMessage(uwReq = req)
+
+        val output = (res as Either.Left).t
+        output.message.assertEquals("test")
+    }
+
+    private suspend fun NetworkClient.getMessage(uwReq: UWReq) = suspendCoroutine<Either<UWResp>> {
+        getMessage(
+            uwReq,
+            { uwResp -> it.resume(Either.Right(uwResp)) },
+            { throwable -> it.resume(Either.Left(throwable)) }
+        )
     }
 }
