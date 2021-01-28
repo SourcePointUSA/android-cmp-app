@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.ccpa
+package com.sourcepoint.cmplibrary.legislation.ccpa
 
 import com.sourcepoint.cmplibrary.ClientInteraction
 

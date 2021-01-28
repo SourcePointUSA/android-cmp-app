@@ -7,11 +7,10 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Message
-import android.util.AttributeSet
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.data.network.converted.JsonConverter
-import com.sourcepoint.cmplibrary.util.*
+import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException.NoInternetConnectionException
 import com.sourcepoint.gdpr_cmplibrary.exception.Logger
