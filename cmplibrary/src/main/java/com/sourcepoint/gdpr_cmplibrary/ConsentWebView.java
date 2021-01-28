@@ -66,6 +66,7 @@ abstract public class ConsentWebView extends WebView {
         @JavascriptInterface
         public void onAction(String actionData) {
             try {
+                System.out.println("===actionData ["+actionData+"]");
                 ConsentWebView.this.onAction(consentAction(getJson(actionData, getLogger()), getLogger()));
             } catch (ConsentLibException e) {
                 ConsentWebView.this.onError(e);
