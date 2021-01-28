@@ -1,67 +1,65 @@
 package com.sourcepoint.cmplibrary.gdpr
 
 import android.content.Context
-import android.text.TextUtils
-import android.util.Log
-import android.view.View
-import com.sourcepoint.gdpr_cmplibrary.* // ktlint-disable
-import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLibTest.Companion.newBuilder_
+import com.sourcepoint.cmplibrary.Account
+import com.sourcepoint.cmplibrary.core.web.ConsentWebView
+import com.sourcepoint.cmplibrary.core.web.JSReceiver
+import com.sourcepoint.cmplibrary.data.network.converted.JsonConverter
+import com.sourcepoint.cmplibrary.util.ConnectionManager
+import com.sourcepoint.cmplibrary.util.map
+import com.sourcepoint.gdpr_cmplibrary.ConsentAction
+import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
+import com.sourcepoint.gdpr_cmplibrary.NativeMessage
+import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
+import com.sourcepoint.gdpr_cmplibrary.exception.Logger
+import com.sourcepoint.gdpr_cmplibrary.exception.RenderingAppException
 
 internal class GDPRConsentLibImpl(
-    private val accountId: Int,
-    private val propertyName: String,
-    private val propertyId: Int,
-    private val pmId: String,
-    private val authId: String?,
-    private val privacyManagerTab: PrivacyManagerTab?,
-    private val context: Context
-) : GDPRConsentLibClient {
+    private val account: Account,
+    private val pPrivacyManagerTab: PrivacyManagerTab,
+    private val context: Context,
+    private val pLogger: Logger,
+    private val pJsonConverter: JsonConverter,
+    private val pConnectionManager: ConnectionManager
+) : GDPRConsentLibClient, JSReceiver {
 
     override var clientInteraction: GDPRClientInteraction? = null
 
-    private val gdprConsentLib: GDPRConsentLibTest by lazy {
-        newBuilder_(accountId, propertyName, propertyId, pmId, context)
-            .setOnConsentUIReady { view: View? -> view?.let { clientInteraction?.onConsentUIReadyCallback(it) } }
-            .setOnAction { actionType: ActionTypes -> Log.i("builder v6", "ActionType: $actionType") }
-            .setOnConsentUIFinished { view: View? -> view?.let { clientInteraction?.onConsentUIFinishedCallback(it) } }
-            .setOnConsentReady { consent: GDPRUserConsent ->
-                // at this point it's safe to initialise vendors
-                for (line in consent.toString().split("\n").toTypedArray()) Log.i("builder v6", line)
-            }
-            .setAuthId(authId)
-            .setOnError { error: ConsentLibException? -> Log.e("builder v6", "Something went wrong") }
-            .build() as GDPRConsentLibTest
-    }
+    /** Start Client's methods */
+    override fun loadMessage(authId: String?) {}
+    override fun loadMessage() {}
+    override fun loadMessage(nativeMessage: NativeMessage) {}
+    override fun loadMessage(authId: String, nativeMessage: NativeMessage) {}
+    override fun loadPrivacyManager() {}
+    override fun loadPrivacyManager(authId: String) {}
 
-    override fun loadMessage(authId: String?) {
-        gdprConsentLib.setAuthId(authId)
-        gdprConsentLib.run()
-    }
+    /** end Client's methods */
 
-    override fun loadMessage() {
-        gdprConsentLib.run()
-    }
-
-    override fun loadMessage(nativeMessage: NativeMessage) {
-        gdprConsentLib.run(nativeMessage)
-    }
-
-    override fun loadMessage(authId: String, nativeMessage: NativeMessage) {
-        TODO("Not yet implemented")
-    }
-
-    override fun loadPrivacyManager() {
-        // if privacyManagerTab has not been set, use null value.
-
-        // if privacyManagerTab has not been set, use null value.
-        privacyManagerTab?.let {
-            val selectedTab: String? = if (TextUtils.isEmpty(it.name)) null else it.name
-            gdprConsentLib.showPm(pmId, selectedTab)
+    private fun createWebView() : ConsentWebView {
+        return object : ConsentWebView(context) {
+            override val jsReceiver: JSReceiver = this@GDPRConsentLibImpl
+            override val logger: Logger = pLogger
+            override val connectionManager: ConnectionManager = pConnectionManager
+            override val jsonConverter: JsonConverter = pJsonConverter
+            override val onNoIntentActivitiesFoundFor: (url: String) -> Unit = { url -> }
+            override val onError: (error: ConsentLibException) -> Unit = { error -> }
         }
-        gdprConsentLib.showPm(pmId, null)
     }
 
-    override fun loadPrivacyManager(authId: String) {
-        gdprConsentLib.showPm(pmId, null)
+    /** Start Receiver methods */
+    override fun log(tag: String?, msg: String?) {}
+    override fun log(msg: String?) {}
+    override fun onConsentUIReady(isFromPM: Boolean) {}
+    override fun onAction(actionData: String) {
+        pJsonConverter
+            .toConsentAction(actionData)
+            .map { /** ConsentAction  */ }
     }
+
+    override fun onError(errorMessage: String) {
+        clientInteraction?.onErrorCallback(ConsentLibException(errorMessage))
+        pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
+    }
+    /** End Receiver methods */
+
 }

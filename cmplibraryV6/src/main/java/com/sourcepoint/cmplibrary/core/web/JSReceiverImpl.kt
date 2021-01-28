@@ -33,18 +33,12 @@ private class JSReceiverImpl(val client: JSReceiverClient) : JSReceiver {
         client.onConsentUIReady(isFromPM)
     }
 
-    override fun onAction(actionData: String?) {
-        actionData
-            ?.let { client.onAction(it) }
-            ?: fail("actionData is null!!")
+    override fun onAction(actionData: String) {
+        client.onAction(actionData)
     }
 
-    override fun onError(errorMessage: String?) {
+    override fun onError(errorMessage: String) {
         val error = errorMessage ?: "error"
         client.onError(error)
-    }
-
-    fun fail(message: String) {
-        client.onError(message)
     }
 }

@@ -8,26 +8,21 @@ import android.net.Uri
 import android.os.Build
 import android.os.Message
 import android.util.AttributeSet
-import android.util.Log
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.data.network.converted.JsonConverter
-import com.sourcepoint.cmplibrary.util.* // ktlint-disable
-import com.sourcepoint.gdpr_cmplibrary.ConsentAction
+import com.sourcepoint.cmplibrary.util.*
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException.NoInternetConnectionException
 import com.sourcepoint.gdpr_cmplibrary.exception.Logger
-import com.sourcepoint.gdpr_cmplibrary.exception.RenderingAppException
 
-abstract class ConsentWebView : WebView, JSReceiver {
+abstract class ConsentWebView(context: Context) : WebView(context) {
 
-    constructor(context: Context?) : super(context) { setup() }
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) { setup() }
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { setup() }
-
-    companion object {
-        val TAG = ConsentWebView::class.simpleName
+    init {
+        setup()
     }
+
+    private val tag = ConsentWebView::class.simpleName
 
     private val spWebViewClient: SPWebViewClient by lazy {
         SPWebViewClient(
@@ -38,6 +33,8 @@ abstract class ConsentWebView : WebView, JSReceiver {
         )
     }
 
+    internal abstract val onNoIntentActivitiesFoundFor: (url: String) -> Unit
+    internal abstract val onError: (error: ConsentLibException) -> Unit
     internal abstract val jsReceiver: JSReceiver
     internal abstract val logger: Logger
     internal abstract val connectionManager: ConnectionManager
@@ -81,25 +78,5 @@ abstract class ConsentWebView : WebView, JSReceiver {
         if (connectionManager.isConnected) throw NoInternetConnectionException()
         loadUrl(url)
         true
-    }
-
-    abstract fun onNoIntentActivitiesFoundFor(url: String)
-    abstract fun onError(error: ConsentLibException)
-    abstract override fun onConsentUIReady(isFromPM: Boolean)
-    abstract fun onAction(action: ConsentAction?)
-
-    override fun log(tag: String?, msg: String?) { Log.i(tag, msg) }
-
-    override fun log(msg: String?) { Log.i(TAG, msg) }
-
-    override fun onAction(actionData: String) {
-        jsonConverter
-            .toConsentAction(actionData)
-            .map { onAction(it) }
-    }
-
-    override fun onError(errorMessage: String) {
-        onError(ConsentLibException(errorMessage))
-        logger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
     }
 }
