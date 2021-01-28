@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.legislation.gdpr
 
 import android.R
 import android.app.Activity
-import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import com.sourcepoint.cmplibrary.Account
@@ -30,6 +29,10 @@ internal class GDPRConsentLibImpl(
 
     override var spGdprClient: SpGDPRClient? = null
 
+    private val mainView by lazy {
+        context.findViewById<ViewGroup>(R.id.content)
+    }
+
     /** Start Client's methods */
     override fun loadMessage(authId: String?) {}
     override fun loadMessage() {}
@@ -45,11 +48,15 @@ internal class GDPRConsentLibImpl(
             view.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
             view.bringToFront()
             view.requestLayout()
-            context
-                .findViewById<ViewGroup>(R.id.content)
-                .addView(view)
+            mainView.addView(view)
         }
     }
+
+    override fun removeView(view: View) {
+        view.parent?.let { mainView.removeView(view)}
+    }
+
+
     /** end Client's methods */
 
     private fun createWebView(): ConsentWebView {

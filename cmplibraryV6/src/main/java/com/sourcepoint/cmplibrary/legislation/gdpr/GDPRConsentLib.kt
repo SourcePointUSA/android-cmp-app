@@ -9,4 +9,5 @@ interface GDPRConsentLib : ConsentLib {
     // set the client for implementing the callback
 //    fun setClient(/*gdpr : Client*/)
     fun showView(view : View)
+    fun removeView(view : View)
 }
