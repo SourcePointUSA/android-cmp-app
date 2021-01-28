@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.sourcepoint.cmplibrary.Builder;
 import com.sourcepoint.example_app.core.DataProvider;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     final static String pmId = "122058";
 
     private ViewGroup mainViewGroup;
+
+    com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib gdprConsent = null;
 
     private final Lazy<DataProvider> dataProvider = inject(DataProvider.class);
 
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         buildGDPRConsentLib().run();
+        gdprConsent.loadMessage();
     }
 
     @Override
@@ -69,5 +73,13 @@ public class MainActivity extends AppCompatActivity {
         mainViewGroup = findViewById(android.R.id.content);
         findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
         findViewById(R.id.auth_id_activity).setOnClickListener(_v -> startActivity(new Intent(this, MainActivityAuthId.class)));
+
+        gdprConsent = new Builder()
+                .setAccountId(accountId)
+                .setPropertyName(propertyName)
+                .setPropertyId(propertyId)
+                .setPmId(pmId)
+                .setContext(this)
+                .build(GDPRConsentLib.class);
     }
 }

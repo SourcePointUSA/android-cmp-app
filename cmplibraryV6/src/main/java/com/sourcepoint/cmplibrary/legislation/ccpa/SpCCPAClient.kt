@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.legislation.ccpa
 
-import com.sourcepoint.cmplibrary.ClientInteraction
+import com.sourcepoint.cmplibrary.SpClient
 
-interface CCPAClientInteraction : ClientInteraction {
+interface SpCCPAClient : SpClient {
     fun onConsentReadyCallback(c: CCPAUserConsent?)
 }
