@@ -4,20 +4,20 @@ public class ConsentLibException extends Exception {
 
     public String consentLibErrorMessage;
 
-    ConsentLibException(Throwable e, String  message){ super(e); consentLibErrorMessage = message;}
-    ConsentLibException(String  message){ super(); consentLibErrorMessage = message;}
+    public ConsentLibException(Throwable e, String  message){ super(e); consentLibErrorMessage = message;}
+    public ConsentLibException(String  message){ super(); consentLibErrorMessage = message;}
 
     public static class NoInternetConnectionException extends ConsentLibException {
         public static final String description = "The device is not connected to the internet.";
 
-        NoInternetConnectionException(Throwable e) { super(e, description); }
-        NoInternetConnectionException() { super(description); }
+        public NoInternetConnectionException(Throwable e) { super(e, description); }
+        public NoInternetConnectionException() { super(description); }
 
     }
 
     public static class ApiException extends ConsentLibException {
         public static final String description = "Error due to android API";
-        ApiException(Throwable e, String message) { super(e, description + ": " + message); }
-        ApiException(String message) { super(description + ": " + message); }
+        public ApiException(Throwable e, String message) { super(e, description + ": " + message); }
+        public ApiException(String message) { super(description + ": " + message); }
     }
 }

@@ -3,7 +3,7 @@ package com.sourcepoint.gdpr_cmplibrary.exception
 /**
  * Class used to send message contain the error details to the server
  */
-internal interface Logger {
+interface Logger {
     /**
      * The [error] method receives contains the logic to communicate with the server
      * it is used only in production

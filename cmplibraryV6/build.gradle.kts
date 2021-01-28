@@ -7,6 +7,7 @@ plugins {
 }
 
 apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
+apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
 
 val versionLib = project.property("VERSION_NAME_V6") as String
 
@@ -21,7 +22,7 @@ android {
         targetSdkVersion(28)
         versionCode = 300
         versionName = versionLib
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         getByName("debug") {
@@ -37,6 +38,7 @@ android {
     sourceSets{
         val sharedRes = "${project.rootDir.path}/ui-test-util/jsonFiles"
         getByName("test").resources.srcDir(sharedRes)
+        getByName("main").resources.srcDir("${projectDir.path}/files")
     }
 
     compileOptions {
@@ -69,13 +71,7 @@ dependencies {
     api(project(":cmplibrary"))
 
     testImplementation (Libs.mockk)
-    testImplementation("androidx.test:core:1.2.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.4.0")
-    testImplementation("junit:junit:4.13")
-    testImplementation("org.json:json:20180813")
-    testImplementation("org.mockito:mockito-core:2.19.0")
-    testImplementation("org.robolectric:robolectric:4.2.1")
-    androidTestImplementation("junit:junit:4.13")
 }
 
 apply(from = "${rootDir}/gradleutils/publish-android.gradle")

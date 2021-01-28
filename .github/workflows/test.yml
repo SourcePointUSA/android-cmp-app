@@ -32,6 +32,12 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: running unit tests
         run: ./gradlew test --quiet --build-cache
+      - name: 'Publish Unit tests Report'
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: 'unit-tests-report'
+          path: cmplibrary/build/reports/*
   ui-test-app:
     runs-on: macos-latest
     steps:
