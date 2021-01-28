@@ -4,5 +4,5 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent
 
 interface SpGDPRClient : SpClient {
-    fun onConsentReadyCallback(c: GDPRUserConsent?)
+    fun onConsentReady(c: GDPRUserConsent?)
 }

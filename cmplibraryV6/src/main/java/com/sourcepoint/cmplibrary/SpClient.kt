@@ -5,8 +5,8 @@ import com.sourcepoint.gdpr_cmplibrary.ActionTypes
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
 
 interface SpClient {
-    fun onConsentUIFinishedCallback(v: View)
-    fun onConsentUIReadyCallback(v: View)
-    fun onErrorCallback(error: ConsentLibException?)
-    fun onActionCallback(actionTypes: ActionTypes?)
+    fun onConsentUIFinished(v: View)
+    fun onConsentUIReady(v: View)
+    fun onError(error: ConsentLibException?)
+    fun onAction(actionTypes: ActionTypes?)
 }
