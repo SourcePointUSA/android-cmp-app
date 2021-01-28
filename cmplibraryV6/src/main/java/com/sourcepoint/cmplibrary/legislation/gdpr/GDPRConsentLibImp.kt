@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.gdpr
+package com.sourcepoint.cmplibrary.legislation.gdpr
 
 import android.content.Context
 import com.sourcepoint.cmplibrary.Account
@@ -7,7 +7,6 @@ import com.sourcepoint.cmplibrary.core.web.JSReceiver
 import com.sourcepoint.cmplibrary.data.network.converted.JsonConverter
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.map
-import com.sourcepoint.gdpr_cmplibrary.ConsentAction
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage
 import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
@@ -35,7 +34,7 @@ internal class GDPRConsentLibImpl(
 
     /** end Client's methods */
 
-    private fun createWebView() : ConsentWebView {
+    private fun createWebView(): ConsentWebView {
         return object : ConsentWebView(context) {
             override val jsReceiver: JSReceiver = this@GDPRConsentLibImpl
             override val logger: Logger = pLogger
@@ -61,5 +60,4 @@ internal class GDPRConsentLibImpl(
         pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
     }
     /** End Receiver methods */
-
 }

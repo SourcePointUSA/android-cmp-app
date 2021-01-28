@@ -3,7 +3,7 @@ package com.sourcepoint.gdpr_cmplibrary.exception
 /**
  * Class in charge of building an error message
  */
-internal interface ErrorMessageManager {
+interface ErrorMessageManager {
     /**
      * The build method receives a ConsentLibExceptionK object and build out of it the message to sent to the server.
      * @param exception instance of [ConsentLibExceptionK]
@@ -32,7 +32,7 @@ data class ClientInfo(
 /**
  * Factory method for creating an instance of [ErrorMessageManager]
  */
-internal fun createErrorManager(
+fun createErrorManager(
     accountId: Int,
     propertyId: Int,
     propertyHref: String,
