@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary
 
+import android.app.Activity
 import android.content.Context
 import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib
 import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
@@ -11,7 +12,7 @@ import org.junit.Test
 class BuilderTest {
 
     @MockK
-    private lateinit var context: Context
+    private lateinit var context: Activity
 
     @Before
     fun setup() {
