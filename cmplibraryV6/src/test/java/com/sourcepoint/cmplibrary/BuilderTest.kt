@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary
 
 import android.content.Context
-import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLibClient
+import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib
 import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
@@ -27,7 +27,7 @@ class BuilderTest {
             .setPropertyId(1)
             .setPropertyName("a")
             .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(GDPRConsentLibClient::class.java)
+            .build(GDPRConsentLib::class.java)
     }
 
     @Test(expected = RuntimeException::class)
@@ -39,7 +39,7 @@ class BuilderTest {
             .setPropertyId(1)
             .setPropertyName("a")
             .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(GDPRConsentLibClient::class.java)
+            .build(GDPRConsentLib::class.java)
     }
 
     @Test(expected = RuntimeException::class)
@@ -51,7 +51,7 @@ class BuilderTest {
             .setPropertyId(1)
             .setPropertyName("a")
             .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(GDPRConsentLibClient::class.java)
+            .build(GDPRConsentLib::class.java)
     }
 
     @Test(expected = RuntimeException::class)
@@ -63,7 +63,7 @@ class BuilderTest {
             // .setPropertyId(1)
             .setPropertyName("a")
             .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(GDPRConsentLibClient::class.java)
+            .build(GDPRConsentLib::class.java)
     }
 
     @Test(expected = RuntimeException::class)
@@ -75,7 +75,7 @@ class BuilderTest {
             .setPropertyId(1)
             // .setPropertyName("a")
             .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(GDPRConsentLibClient::class.java)
+            .build(GDPRConsentLib::class.java)
     }
 
     @Test
@@ -87,7 +87,7 @@ class BuilderTest {
             .setPropertyId(1)
             .setPropertyName("a")
             // .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(GDPRConsentLibClient::class.java)
+            .build(GDPRConsentLib::class.java)
     }
 
     @Test(expected = RuntimeException::class)

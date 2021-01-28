@@ -1,8 +1,8 @@
 package com.sourcepoint.cmplibrary.legislation.gdpr
 
-import com.sourcepoint.cmplibrary.ClientInteraction
+import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent
 
-interface GDPRClientInteraction : ClientInteraction {
+interface SpGDPRClient : SpClient {
     fun onConsentReadyCallback(c: GDPRUserConsent?)
 }

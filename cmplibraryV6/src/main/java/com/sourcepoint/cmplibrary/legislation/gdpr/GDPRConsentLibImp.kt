@@ -1,9 +1,14 @@
 package com.sourcepoint.cmplibrary.legislation.gdpr
 
+import android.R
+import android.app.Activity
 import android.content.Context
+import android.view.View
+import android.view.ViewGroup
 import com.sourcepoint.cmplibrary.Account
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSReceiver
+import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.map
@@ -16,13 +21,14 @@ import com.sourcepoint.gdpr_cmplibrary.exception.RenderingAppException
 internal class GDPRConsentLibImpl(
     private val account: Account,
     private val pPrivacyManagerTab: PrivacyManagerTab,
-    private val context: Context,
+    private val context: Activity,
     private val pLogger: Logger,
     private val pJsonConverter: JsonConverter,
-    private val pConnectionManager: ConnectionManager
-) : GDPRConsentLibClient, JSReceiver {
+    private val pConnectionManager: ConnectionManager,
+    private val networkClient: NetworkClient
+) : GDPRConsentLib, JSReceiver {
 
-    override var clientInteraction: GDPRClientInteraction? = null
+    override var spGdprClient: SpGDPRClient? = null
 
     /** Start Client's methods */
     override fun loadMessage(authId: String?) {}
@@ -32,6 +38,18 @@ internal class GDPRConsentLibImpl(
     override fun loadPrivacyManager() {}
     override fun loadPrivacyManager(authId: String) {}
 
+    override fun showView(view: View) {
+        if (view.parent == null) {
+            view.layoutParams = ViewGroup.LayoutParams(0, 0)
+            view.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            view.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            view.bringToFront()
+            view.requestLayout()
+            context
+                .findViewById<ViewGroup>(R.id.content)
+                .addView(view)
+        }
+    }
     /** end Client's methods */
 
     private fun createWebView(): ConsentWebView {
@@ -56,7 +74,7 @@ internal class GDPRConsentLibImpl(
     }
 
     override fun onError(errorMessage: String) {
-        clientInteraction?.onErrorCallback(ConsentLibException(errorMessage))
+        spGdprClient?.onErrorCallback(ConsentLibException(errorMessage))
         pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
     }
     /** End Receiver methods */

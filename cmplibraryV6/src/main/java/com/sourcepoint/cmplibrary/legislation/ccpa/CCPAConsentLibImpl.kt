@@ -2,9 +2,8 @@ package com.sourcepoint.cmplibrary.legislation.ccpa
 
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage
 
-internal class CCPAConsentLibImpl : CCPAConsentLibClient {
-
-    override var clientInteraction: CCPAClientInteraction?
+internal class CCPAConsentLibImpl : CCPAConsentLib {
+    override var spCcpaClient: SpCCPAClient?
         get() = TODO("Not yet implemented")
         set(value) {}
 

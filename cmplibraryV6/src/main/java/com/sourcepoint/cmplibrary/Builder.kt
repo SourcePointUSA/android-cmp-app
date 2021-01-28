@@ -1,12 +1,18 @@
 package com.sourcepoint.cmplibrary
 
+import android.app.Activity
 import android.content.Context
 import com.example.cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
-import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAConsentLibClient
+import com.sourcepoint.cmplibrary.data.network.createNetworkClient
+import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
+import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
+import com.sourcepoint.cmplibrary.data.network.util.create
+import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAConsentLib
 import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAConsentLibImpl
-import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLibClient
+import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib
 import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLibImpl
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.create
@@ -21,11 +27,16 @@ class Builder {
     private var authId: String? = null
     private var propertyId: Int? = null
     private var pmId: String? = null
-    private var context: Context? = null
+    private var context: Activity? = null
+    private var ott: Boolean = false
     private var privacyManagerTab: PrivacyManagerTab? = null
 
     fun setAccountId(accountId: Int) = apply {
         this.accountId = accountId
+    }
+
+    fun isOtt(ott: Boolean) = apply {
+        this.ott = ott
     }
 
     fun setPropertyName(property: String) = apply {
@@ -44,7 +55,7 @@ class Builder {
         this.propertyId = propertyId
     }
 
-    fun setContext(context: Context) = apply {
+    fun setContext(context: Activity) = apply {
         this.context = context
     }
 
@@ -63,21 +74,21 @@ class Builder {
         val pmTab = privacyManagerTab ?: PrivacyManagerTab.FEATURES
         val jsonConverter = JsonConverter.create()
         val connManager = ConnectionManager.create(ctx)
+        val responseManager = ResponseManager.create(jsonConverter)
+        val networkClient = networkClient(OkHttpClient(), responseManager)
 
         return when (clazz) {
-
-            GDPRConsentLibClient::class.java -> {
-                GDPRConsentLibImpl(account, pmTab, ctx, logger, jsonConverter, connManager) as T
+            GDPRConsentLib::class.java -> {
+                GDPRConsentLibImpl(account, pmTab, ctx, logger, jsonConverter, connManager, networkClient) as T
             }
-            CCPAConsentLibClient::class.java -> {
+            CCPAConsentLib::class.java -> {
                 CCPAConsentLibImpl() as T
             }
-
             else -> fail(clazz.name)
         }
     }
 
-    internal fun createAccount(): Account {
+    private fun createAccount(): Account {
         return Account(
             propertyId = propertyId ?: failParam("propertyId"),
             propertyName = propertyName ?: failParam("property"),
@@ -86,7 +97,7 @@ class Builder {
         )
     }
 
-    internal fun createClientInfo(): ClientInfo {
+    private fun createClientInfo(): ClientInfo {
         return ClientInfo(
             clientVersion = "5.X.X",
             deviceFamily = "android",
@@ -94,7 +105,7 @@ class Builder {
         )
     }
 
-    internal fun errorMessageManager(a: Account, client: ClientInfo): ErrorMessageManager {
+    private fun errorMessageManager(a: Account, client: ClientInfo): ErrorMessageManager {
         return createErrorManager(
             accountId = a.accountId,
             propertyId = a.propertyId,
@@ -104,7 +115,7 @@ class Builder {
         )
     }
 
-    internal fun createLogger(errorMessageManager: ErrorMessageManager): Logger {
+    private fun createLogger(errorMessageManager: ErrorMessageManager): Logger {
         return createLogger(
             networkClient = OkHttpClient(),
             errorMessageManager = errorMessageManager,
@@ -112,6 +123,14 @@ class Builder {
         )
     }
 
-    internal fun fail(m: String): Nothing = throw RuntimeException("Invalid class exception. $m is not an available option.")
-    internal fun failParam(p: String): Nothing = throw RuntimeException("$p cannot be null!!!")
+    private fun networkClient(netClient : OkHttpClient, responseManage : ResponseManager) : NetworkClient {
+        return createNetworkClient(
+            httpClient = netClient,
+            responseManager = responseManage,
+            url = HttpUrlManagerSingleton.inAppUrlMessage
+        )
+    }
+
+    private fun fail(m: String): Nothing = throw RuntimeException("Invalid class exception. $m is not an available option.")
+    private fun failParam(p: String): Nothing = throw RuntimeException("$p cannot be null!!!")
 }
