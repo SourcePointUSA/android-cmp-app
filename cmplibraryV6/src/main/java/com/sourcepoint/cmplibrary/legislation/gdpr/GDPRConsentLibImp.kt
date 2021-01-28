@@ -53,9 +53,8 @@ internal class GDPRConsentLibImpl(
     }
 
     override fun removeView(view: View) {
-        view.parent?.let { mainView.removeView(view)}
+        view.parent?.let { mainView.removeView(view) }
     }
-
 
     /** end Client's methods */
 

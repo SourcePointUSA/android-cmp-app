@@ -122,7 +122,7 @@ class Builder {
         )
     }
 
-    private fun networkClient(netClient : OkHttpClient, responseManage : ResponseManager) : NetworkClient {
+    private fun networkClient(netClient: OkHttpClient, responseManage: ResponseManager): NetworkClient {
         return createNetworkClient(
             httpClient = netClient,
             responseManager = responseManage,

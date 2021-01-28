@@ -1,33 +1,17 @@
 package com.sourcepoint.cmplibrary.legislation.ccpa
 
+import android.view.View
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage
 
 internal class CCPAConsentLibImpl : CCPAConsentLib {
-    override var spCcpaClient: SpCCPAClient?
-        get() = TODO("Not yet implemented")
-        set(value) {}
 
-    override fun loadMessage() {
-        TODO("Not yet implemented")
-    }
-
-    override fun loadMessage(authId: String?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun loadMessage(nativeMessage: NativeMessage) {
-        TODO("Not yet implemented")
-    }
-
-    override fun loadMessage(authId: String, nativeMessage: NativeMessage) {
-        TODO("Not yet implemented")
-    }
-
-    override fun loadPrivacyManager() {
-        TODO("Not yet implemented")
-    }
-
-    override fun loadPrivacyManager(authId: String) {
-        TODO("Not yet implemented")
-    }
+    override var spCcpaClient: SpCCPAClient? = null
+    override fun loadMessage() { }
+    override fun loadMessage(authId: String?) { }
+    override fun loadMessage(nativeMessage: NativeMessage) { }
+    override fun loadMessage(authId: String, nativeMessage: NativeMessage) { }
+    override fun loadPrivacyManager() { }
+    override fun loadPrivacyManager(authId: String) { }
+    override fun showView(view: View) { }
+    override fun removeView(view: View) { }
 }
