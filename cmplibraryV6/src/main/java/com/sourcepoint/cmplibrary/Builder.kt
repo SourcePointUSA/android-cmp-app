@@ -2,8 +2,8 @@ package com.sourcepoint.cmplibrary
 
 import android.content.Context
 import com.example.cmplibrary.BuildConfig
-import com.sourcepoint.cmplibrary.data.network.converted.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converted.create
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAConsentLibClient
 import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAConsentLibImpl
 import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLibClient
@@ -77,7 +77,7 @@ class Builder {
         }
     }
 
-    private fun createAccount(): Account {
+    internal fun createAccount(): Account {
         return Account(
             propertyId = propertyId ?: failParam("propertyId"),
             propertyName = propertyName ?: failParam("property"),
@@ -86,7 +86,7 @@ class Builder {
         )
     }
 
-    private fun createClientInfo(): ClientInfo {
+    internal fun createClientInfo(): ClientInfo {
         return ClientInfo(
             clientVersion = "5.X.X",
             deviceFamily = "android",
@@ -94,7 +94,7 @@ class Builder {
         )
     }
 
-    private fun errorMessageManager(a: Account, client: ClientInfo): ErrorMessageManager {
+    internal fun errorMessageManager(a: Account, client: ClientInfo): ErrorMessageManager {
         return createErrorManager(
             accountId = a.accountId,
             propertyId = a.propertyId,
@@ -104,7 +104,7 @@ class Builder {
         )
     }
 
-    private fun createLogger(errorMessageManager: ErrorMessageManager): Logger {
+    internal fun createLogger(errorMessageManager: ErrorMessageManager): Logger {
         return createLogger(
             networkClient = OkHttpClient(),
             errorMessageManager = errorMessageManager,
@@ -112,6 +112,6 @@ class Builder {
         )
     }
 
-    private fun fail(m: String): Nothing = throw RuntimeException("Invalid class exception. $m is not an available option.")
-    private fun failParam(p: String): Nothing = throw RuntimeException("$p cannot be null!!!")
+    internal fun fail(m: String): Nothing = throw RuntimeException("Invalid class exception. $m is not an available option.")
+    internal fun failParam(p: String): Nothing = throw RuntimeException("$p cannot be null!!!")
 }

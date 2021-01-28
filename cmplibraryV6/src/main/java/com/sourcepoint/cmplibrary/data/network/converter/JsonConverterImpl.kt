@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.converted
+package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
