@@ -4,6 +4,7 @@ import android.R
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.JavascriptInterface
 import com.sourcepoint.cmplibrary.Account
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSReceiver
@@ -70,15 +71,19 @@ internal class GDPRConsentLibImpl(
     }
 
     /** Start Receiver methods */
+    @JavascriptInterface
     override fun log(tag: String?, msg: String?) {}
+    @JavascriptInterface
     override fun log(msg: String?) {}
+    @JavascriptInterface
     override fun onConsentUIReady(isFromPM: Boolean) {}
+    @JavascriptInterface
     override fun onAction(actionData: String) {
         pJsonConverter
             .toConsentAction(actionData)
             .map { /** ConsentAction  */ }
     }
-
+    @JavascriptInterface
     override fun onError(errorMessage: String) {
         spGdprClient?.onError(ConsentLibException(errorMessage))
         pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
