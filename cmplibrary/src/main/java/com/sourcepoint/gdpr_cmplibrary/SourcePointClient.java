@@ -23,7 +23,7 @@ class SourcePointClient {
     private static final String LOG_TAG = "SOURCE_POINT_CLIENT";
 
     private OkHttpClient httpClient;
-    private static final String wrapper_url = "https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/";
+    private static final String wrapper_url = "https://preprod-cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/";
     private static final String baseMsgUrl = wrapper_url + "message-url?inApp=true";
     private static final String baseNativeMsgUrl = wrapper_url + "native-message?inApp=true";
     private static final String baseSendConsentUrl = wrapper_url + "consent?inApp=true";
