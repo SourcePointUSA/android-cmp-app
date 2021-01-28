@@ -7,13 +7,12 @@ import android.net.Uri
 import android.os.Handler
 import android.webkit.WebView
 import java.io.BufferedReader
-import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 
 fun Context.loadLinkOnExternalBrowser(
     url: String,
-    onNoIntentActivitiesFound : ( url : String) -> Unit
+    onNoIntentActivitiesFound: (url: String) -> Unit
 ) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK

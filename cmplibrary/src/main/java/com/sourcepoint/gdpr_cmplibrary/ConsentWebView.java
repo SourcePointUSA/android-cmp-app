@@ -192,7 +192,7 @@ abstract public class ConsentWebView extends WebView {
     abstract public void onNoIntentActivitiesFoundFor(String url);
 
     abstract public void onAction(ConsentAction action);
-
+    // done
     public void loadConsentUIFromUrl(String url) throws ConsentLibException {
         if (hasLostInternetConnection())
             throw new ConsentLibException.NoInternetConnectionException();
@@ -205,7 +205,7 @@ abstract public class ConsentWebView extends WebView {
     private boolean doesLinkContainImage(HitTestResult testResult) {
         return testResult.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
     }
-
+    // done
     private String getLinkUrl(HitTestResult testResult) {
         if (doesLinkContainImage(testResult)) {
             Handler handler = new Handler();
@@ -237,7 +237,7 @@ abstract public class ConsentWebView extends WebView {
         if(l.size() != 0) getContext().startActivity(intent);
         else onNoIntentActivitiesFoundFor(url);
     }
-
+    // done
     private boolean hasLostInternetConnection() {
         if (this.connectivityManager == null) {
             return true;

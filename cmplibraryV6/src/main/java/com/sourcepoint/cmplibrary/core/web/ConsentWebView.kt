@@ -12,25 +12,24 @@ import android.util.Log
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.data.network.converted.JsonConverter
-import com.sourcepoint.cmplibrary.util.*
+import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.ConsentAction
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException.NoInternetConnectionException
-import com.sourcepoint.gdpr_cmplibrary.CustomJsonParser
 import com.sourcepoint.gdpr_cmplibrary.exception.Logger
-import org.json.JSONObject
+import com.sourcepoint.gdpr_cmplibrary.exception.RenderingAppException
 
-abstract class ConsentWebView : WebView, JSReceiver{
+abstract class ConsentWebView : WebView, JSReceiver {
 
-    constructor(context: Context?) : super(context){ setup() }
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs){ setup() }
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr){ setup() }
+    constructor(context: Context?) : super(context) { setup() }
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) { setup() }
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { setup() }
 
     companion object {
         val TAG = ConsentWebView::class.simpleName
     }
 
-    private val spWebViewClient : SPWebViewClient by lazy {
+    private val spWebViewClient: SPWebViewClient by lazy {
         SPWebViewClient(
             wv = this,
             log = logger,
@@ -44,9 +43,9 @@ abstract class ConsentWebView : WebView, JSReceiver{
     internal abstract val connectionManager: ConnectionManager
     internal abstract val jsonConverter: JsonConverter
 
-    private val  chromeClient = object : WebChromeClient() {
+    private val chromeClient = object : WebChromeClient() {
         override fun onCreateWindow(view: WebView, dialog: Boolean, userGesture: Boolean, resultMsg: Message): Boolean {
-            context.loadLinkOnExternalBrowser(getLinkUrl(view.hitTestResult)){
+            context.loadLinkOnExternalBrowser(getLinkUrl(view.hitTestResult)) {
                 onNoIntentActivitiesFoundFor(it)
             }
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.hitTestResult)))
@@ -55,7 +54,7 @@ abstract class ConsentWebView : WebView, JSReceiver{
         }
     }
 
-    private fun setup(){
+    private fun setup() {
         enableDebug()
         setStyle()
         webViewClient = spWebViewClient
@@ -63,13 +62,13 @@ abstract class ConsentWebView : WebView, JSReceiver{
         addJavascriptInterface(jsReceiver, "JSReceiver")
     }
 
-    private fun setStyle(){
+    private fun setStyle() {
         settings.javaScriptEnabled = true
         setBackgroundColor(Color.TRANSPARENT)
         this.requestFocus()
     }
 
-    private fun enableDebug(){
+    private fun enableDebug() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (0 != context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
                 setWebContentsDebuggingEnabled(true)
@@ -78,10 +77,8 @@ abstract class ConsentWebView : WebView, JSReceiver{
         }
     }
 
-    internal fun loadConsentUIFromUrl(url: String) : Either<Boolean> =  check {
+    internal fun loadConsentUIFromUrl(url: String): Either<Boolean> = check {
         if (connectionManager.isConnected) throw NoInternetConnectionException()
-        Log.d(TAG, "Loading Webview with: $url")
-        Log.d(TAG, "User-Agent: " + settings.userAgentString)
         loadUrl(url)
         true
     }
@@ -95,24 +92,14 @@ abstract class ConsentWebView : WebView, JSReceiver{
 
     override fun log(msg: String?) { Log.i(TAG, msg) }
 
-    override fun onAction(actionData: String?) {
-        jsonConverter.toConsentAction(actionData!!)
+    override fun onAction(actionData: String) {
+        jsonConverter
+            .toConsentAction(actionData)
             .map { onAction(it) }
     }
 
-    override fun onError(errorMessage: String?) {
-        TODO("Not yet implemented")
+    override fun onError(errorMessage: String) {
+        onError(ConsentLibException(errorMessage))
+        logger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
     }
-
-//    private open fun consentAction(actionFromJS: JSONObject, logger: Logger): ConsentAction? {
-//        return ConsentAction(
-//            CustomJsonParser.getInt("actionType", actionFromJS, getLogger()),
-//            CustomJsonParser.getString("choiceId", actionFromJS, logger),
-//            CustomJsonParser.getString("privacyManagerId", actionFromJS, logger),
-//            CustomJsonParser.getString("pmTab", actionFromJS, logger),
-//            CustomJsonParser.getBoolean("requestFromPm", actionFromJS, getLogger()),
-//            CustomJsonParser.getJson("saveAndExitVariables", actionFromJS, getLogger()),
-//            CustomJsonParser.getString("consentLanguage", actionFromJS, logger)
-//        )
-//    }
 }

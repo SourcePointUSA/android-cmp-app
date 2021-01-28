@@ -63,7 +63,6 @@ private class JsonConverterImpl : JsonConverter {
             saveAndExitVariables,
             consentLanguage
         )
-
     }
 
     /**

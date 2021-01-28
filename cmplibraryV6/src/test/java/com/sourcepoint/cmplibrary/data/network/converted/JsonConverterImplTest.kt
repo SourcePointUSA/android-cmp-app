@@ -12,12 +12,10 @@ class JsonConverterImplTest {
 
     @Test
     fun `GIVEN return a string RETURN a Right(UWResp)`() {
-
     }
 
     @Test
     fun `GIVEN return a string RETURN a Left(UWResp)`() {
-
     }
 
     @Test
@@ -47,5 +45,4 @@ class JsonConverterImplTest {
             it.privacyManagerId.assertNull()
         }
     }
-
 }

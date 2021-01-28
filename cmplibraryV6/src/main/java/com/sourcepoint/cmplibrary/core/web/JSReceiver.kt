@@ -12,9 +12,9 @@ interface JSReceiver {
     fun onConsentUIReady(isFromPM: Boolean)
     // called when a choice is selected on the message
     @JavascriptInterface
-    fun onAction(actionData: String?)
+    fun onAction(actionData: String)
     @JavascriptInterface
-    fun onError(errorMessage: String?)
+    fun onError(errorMessage: String)
 
     companion object
 }
