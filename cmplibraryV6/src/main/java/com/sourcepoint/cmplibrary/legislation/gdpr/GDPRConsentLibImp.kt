@@ -81,7 +81,7 @@ internal class GDPRConsentLibImpl(
     }
 
     override fun onError(errorMessage: String) {
-        spGdprClient?.onErrorCallback(ConsentLibException(errorMessage))
+        spGdprClient?.onError(ConsentLibException(errorMessage))
         pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
     }
     /** End Receiver methods */

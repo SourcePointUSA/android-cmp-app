@@ -1,8 +1,7 @@
 package com.sourcepoint.cmplibrary
 
 import android.app.Activity
-import android.content.Context
-import com.example.cmplibrary.BuildConfig
+import com.example.gdpr_cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create

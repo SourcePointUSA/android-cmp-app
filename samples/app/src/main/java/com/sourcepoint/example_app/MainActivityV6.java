@@ -25,14 +25,14 @@ public class MainActivityV6 extends AppCompatActivity {
 
     private static final String TAG = "**MainActivity";
 
-    private Account account = new Account(
+    private final Account account = new Account(
             22,
             7639,
             "tcfv2.mobile.webview",
             "122058"
     );
 
-    GDPRConsentLib gdprConsent = null;
+    private GDPRConsentLib gdprConsent = null;
 
     private final Lazy<DataProvider> dataProvider = inject(DataProvider.class);
 
@@ -65,28 +65,28 @@ public class MainActivityV6 extends AppCompatActivity {
 
     class GdprClient implements SpGDPRClient {
         @Override
-        public void onConsentReadyCallback(@Nullable GDPRUserConsent consent) {
+        public void onConsentReady(@Nullable GDPRUserConsent consent) {
             for (String line : consent.toString().split("\n"))
                 Log.i(TAG, line);
         }
 
         @Override
-        public void onConsentUIFinishedCallback(@NotNull View v) {
+        public void onConsentUIFinished(@NotNull View v) {
             gdprConsent.removeView(v);
         }
 
         @Override
-        public void onConsentUIReadyCallback(@NotNull View v) {
+        public void onConsentUIReady(@NotNull View v) {
             gdprConsent.showView(v);
         }
 
         @Override
-        public void onErrorCallback(@Nullable ConsentLibException error) {
+        public void onError(@Nullable ConsentLibException error) {
             Log.e(TAG, "Something went wrong");
         }
 
         @Override
-        public void onActionCallback(@Nullable ActionTypes actionTypes) {
+        public void onAction(@Nullable ActionTypes actionTypes) {
             Log.i(TAG, "ActionType: " + actionTypes.toString());
         }
     }
