@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network
+package com.sourcepoint.cmplibrary.data.network.model
 
 import com.fasterxml.jackson.jr.ob.JSON
 

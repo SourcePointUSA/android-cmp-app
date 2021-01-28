@@ -1,10 +1,13 @@
-package com.sourcepoint.cmplibrary.data.network
+package com.sourcepoint.cmplibrary.data.network.util
 
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
 import java.io.IOException
 
+/**
+ * Utility extension used to avoid boilerplate
+ */
 fun Call.enqueue(block: OkHttpCallbackImpl.() -> Unit) {
     enqueue(OkHttpCallbackImpl().apply(block))
 }

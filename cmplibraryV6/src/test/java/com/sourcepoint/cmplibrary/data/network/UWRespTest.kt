@@ -3,6 +3,10 @@ package com.sourcepoint.cmplibrary.data.network
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
+import com.sourcepoint.cmplibrary.data.network.model.Categories
+import com.sourcepoint.cmplibrary.data.network.model.GdprReq
+import com.sourcepoint.cmplibrary.data.network.model.UWReq
+import com.sourcepoint.cmplibrary.data.network.model.UserConsent
 import org.junit.Test
 
 class UWRespTest {

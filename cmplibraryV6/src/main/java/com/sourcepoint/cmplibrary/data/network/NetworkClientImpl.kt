@@ -1,11 +1,17 @@
 package com.sourcepoint.cmplibrary.data.network
 
-import com.sourcepoint.cmplibrary.util.Either
+import com.sourcepoint.cmplibrary.data.network.converted.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converted.create
+import com.sourcepoint.cmplibrary.data.network.model.UWReq
+import com.sourcepoint.cmplibrary.data.network.model.UWResp
+import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
+import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
+import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
+import com.sourcepoint.cmplibrary.data.network.util.create
+import com.sourcepoint.cmplibrary.data.network.util.enqueue
 import com.sourcepoint.cmplibrary.util.executeOnLeft
 import com.sourcepoint.cmplibrary.util.map
 import okhttp3.* // ktlint-disable
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 internal fun createNetworkClient(
     httpClient: OkHttpClient,
@@ -45,13 +51,5 @@ private class NetworkClientImpl(
                         .executeOnLeft { error(it) }
                 }
             }
-    }
-
-    override suspend fun getMessage(uwReq: UWReq) = suspendCoroutine<Either<UWResp>> {
-        getMessage(
-            uwReq,
-            { uwResp -> it.resume(Either.Right(uwResp)) },
-            { throwable -> it.resume(Either.Left(throwable)) }
-        )
     }
 }

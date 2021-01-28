@@ -1,16 +1,31 @@
-package com.sourcepoint.cmplibrary.data.network
+package com.sourcepoint.cmplibrary.data.network.util
 
 import android.accounts.NetworkErrorException
+import com.sourcepoint.cmplibrary.data.network.converted.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.model.UWResp
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException
 import okhttp3.Response
 
+/**
+ * Factory method for creating a concrete instance of ResponseManager
+ * @param jsonConverter abject used for converting a string to a DTO
+ * @return an implementation of [ResponseManager]
+ */
 internal fun ResponseManager.Companion.create(
-    JsonConverter: JsonConverter
-): ResponseManager = ResponseManagerImpl(JsonConverter)
+    jsonConverter: JsonConverter
+): ResponseManager = ResponseManagerImpl(jsonConverter)
 
+/**
+ * An implementation od the [ResponseManager] interface
+ */
 private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseManager {
+
+    /**
+     * @param r http response
+     * @return an [Either] object of a [UWResp] type parameter
+     */
     override fun parseResponse(r: Response): Either<UWResp> = check {
         if (r.isSuccessful) {
             val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")

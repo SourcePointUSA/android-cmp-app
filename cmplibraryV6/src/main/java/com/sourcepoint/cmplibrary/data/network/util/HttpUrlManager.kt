@@ -1,11 +1,17 @@
-package com.sourcepoint.cmplibrary.data.network
+package com.sourcepoint.cmplibrary.data.network.util
 
 import okhttp3.HttpUrl
 
+/**
+ * Component responsible of building and providing the URLs
+ */
 internal interface HttpUrlManager {
     val inAppUrlMessage: HttpUrl
 }
 
+/**
+ * Implementation of the [HttpUrlManager] interface
+ */
 internal object HttpUrlManagerSingleton : HttpUrlManager {
 
     private const val message = "wrapper/v1/unified/message"

@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network
+package com.sourcepoint.cmplibrary.data.network.model
 
 data class UserConsent(
     var acceptedCategories: List<Any> = listOf(),

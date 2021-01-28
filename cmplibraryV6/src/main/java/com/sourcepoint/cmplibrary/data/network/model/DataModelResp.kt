@@ -1,7 +1,7 @@
-package com.sourcepoint.cmplibrary.data.network
+package com.sourcepoint.cmplibrary.data.network.model
 
 data class UWResp(
-    val gdpr: Gdpr?
+    val gdpr: Gdpr
 )
 
 data class Gdpr(
