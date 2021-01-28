@@ -5,6 +5,7 @@ package com.sourcepoint.gdpr_cmplibrary
 import android.content.Context.MODE_PRIVATE
 import android.os.Build.VERSION_CODES.KITKAT
 import android.webkit.WebView
+import java.io.File
 
 /**
  * Set the authId parameter as a cookie in the webview

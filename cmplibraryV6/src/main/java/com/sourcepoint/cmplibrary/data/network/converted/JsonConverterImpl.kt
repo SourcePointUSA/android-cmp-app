@@ -7,7 +7,9 @@ import com.sourcepoint.cmplibrary.data.network.model.UWResp
 import com.sourcepoint.cmplibrary.data.network.model.UserConsent
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.gdpr_cmplibrary.ConsentAction
 import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException
+import org.json.JSONObject
 
 /**
  * Factory method for building an instance of JsonConverter
@@ -38,6 +40,30 @@ private class JsonConverterImpl : JsonConverter {
                 uuid = uuid
             )
         )
+    }
+
+    override fun toConsentAction(json: String): Either<ConsentAction> = check {
+
+        val map: MutableMap<String, Any> = JSON.std.mapFrom(json)
+
+        val actionType = (map["actionType"] as? Int) ?: fail("actionType")
+        val choiceId = (map["choiceId"] as? String)
+        val privacyManagerId = (map["privacyManagerId"] as? String)
+        val pmTab = (map["pmTab"] as? String)
+        val requestFromPm = (map["requestFromPm"] as? Boolean) ?: fail("requestFromPm")
+        val saveAndExitVariables = (map["saveAndExitVariables"] as? String)?.let { JSONObject(it) }
+        val consentLanguage = (map["consentLanguage"] as? String) ?: fail("consentLanguage")
+
+        ConsentAction(
+            actionType,
+            choiceId,
+            privacyManagerId,
+            pmTab,
+            requestFromPm,
+            saveAndExitVariables,
+            consentLanguage
+        )
+
     }
 
     /**
