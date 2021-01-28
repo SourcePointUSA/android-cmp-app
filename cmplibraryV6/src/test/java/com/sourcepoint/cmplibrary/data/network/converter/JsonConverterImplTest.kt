@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.converted
+package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNull

@@ -4,7 +4,7 @@ import android.content.Context
 import com.sourcepoint.cmplibrary.Account
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSReceiver
-import com.sourcepoint.cmplibrary.data.network.converted.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.map
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException

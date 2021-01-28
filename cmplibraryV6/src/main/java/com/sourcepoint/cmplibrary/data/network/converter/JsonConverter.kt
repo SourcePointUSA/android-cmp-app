@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.converted
+package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.data.network.model.UWResp
 import com.sourcepoint.cmplibrary.util.Either
