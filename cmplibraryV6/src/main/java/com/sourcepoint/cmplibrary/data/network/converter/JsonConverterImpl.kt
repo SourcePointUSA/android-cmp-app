@@ -2,12 +2,13 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
+import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 import com.sourcepoint.cmplibrary.data.network.model.UWResp
 import com.sourcepoint.cmplibrary.data.network.model.UserConsent
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.gdpr_cmplibrary.ConsentAction
+import com.sourcepoint.gdpr_cmplibrary.ActionTypes
 import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException
 import org.json.JSONObject
 
@@ -46,22 +47,22 @@ private class JsonConverterImpl : JsonConverter {
 
         val map: MutableMap<String, Any> = JSON.std.mapFrom(json)
 
-        val actionType = (map["actionType"] as? Int) ?: fail("actionType")
+        val actionType = (map["actionType"] as? Int)?.let { ActionTypes.valueOf(it) } ?: fail("actionType")
         val choiceId = (map["choiceId"] as? String)
         val privacyManagerId = (map["privacyManagerId"] as? String)
         val pmTab = (map["pmTab"] as? String)
         val requestFromPm = (map["requestFromPm"] as? Boolean) ?: fail("requestFromPm")
-        val saveAndExitVariables = (map["saveAndExitVariables"] as? String)?.let { JSONObject(it) }
-        val consentLanguage = (map["consentLanguage"] as? String) ?: fail("consentLanguage")
+        val saveAndExitVariables = (map["saveAndExitVariables"] as? String)?.let { JSONObject(it) } ?: JSONObject()
+        val consentLanguage = (map["consentLanguage"] as? String) ?: "EN"
 
         ConsentAction(
-            actionType,
-            choiceId,
-            privacyManagerId,
-            pmTab,
-            requestFromPm,
-            saveAndExitVariables,
-            consentLanguage
+            actionType = actionType,
+            choiceId = choiceId,
+            privacyManagerId = privacyManagerId,
+            pmTab = pmTab,
+            requestFromPm = requestFromPm,
+            saveAndExitVariables = saveAndExitVariables,
+            consentLanguage = consentLanguage
         )
     }
 
