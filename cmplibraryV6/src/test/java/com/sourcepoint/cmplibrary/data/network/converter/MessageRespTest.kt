@@ -1,17 +1,17 @@
-package com.sourcepoint.cmplibrary.data.network
+package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
 import com.sourcepoint.cmplibrary.data.network.model.Categories
 import com.sourcepoint.cmplibrary.data.network.model.GdprReq
-import com.sourcepoint.cmplibrary.data.network.model.UWReq
+import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.UserConsent
 import org.junit.Test
 
 class MessageRespTest {
 
-    val req = UWReq(
+    val req = MessageReq(
         requestUUID = "test",
         categories = Categories(
             gdpr = GdprReq(
@@ -24,7 +24,7 @@ class MessageRespTest {
 
     @Test
     fun `parse response`() {
-        val jsonContent = "unified_wrapper_resp.json".jsonFile2String()
+        val jsonContent = "unified_wrapper/full_resp.json".jsonFile2String()
 
         val json1 = JSON.std.asString(req)
         val ob = JSON.std.anyFrom(jsonContent)

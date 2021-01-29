@@ -32,7 +32,7 @@ class NetworkClientImplTest {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
     }
 
-    private val req = UWReq(
+    private val req = MessageReq(
         requestUUID = "test",
         categories = Categories(
             gdpr = GdprReq(
@@ -52,7 +52,7 @@ class NetworkClientImplTest {
             url = HttpUrlManagerSingleton.inAppLocalUrlMessage
         )
 
-        sut.getMessage(uwReq = req, success = {}, error = {})
+        sut.getMessage(messageReq = req, success = {}, error = {})
 
         val slot = slot<Request>()
         verify(exactly = 1) { okHttp.newCall(capture(slot)) }
@@ -77,7 +77,7 @@ class NetworkClientImplTest {
             url = HttpUrlManagerSingleton.inAppLocalUrlMessage
         )
 
-        val res = sut.getMessage(uwReq = req)
+        val res = sut.getMessage(messageReq = req)
 
         val output = (res as Either.Right<MessageResp>).r
     }
@@ -93,7 +93,7 @@ class NetworkClientImplTest {
             url = HttpUrlManagerSingleton.inAppLocalUrlMessage
         )
 
-        val res = sut.getMessage(uwReq = req)
+        val res = sut.getMessage(messageReq = req)
 
         val output = (res as Either.Right<MessageResp>).r
     }
@@ -109,16 +109,16 @@ class NetworkClientImplTest {
             url = HttpUrlManagerSingleton.inAppLocalUrlMessage
         )
 
-        val res = sut.getMessage(uwReq = req)
+        val res = sut.getMessage(messageReq = req)
 
         val output = (res as Either.Left).t
         output.message.assertEquals("test")
     }
 
-    private suspend fun NetworkClient.getMessage(uwReq: UWReq) = suspendCoroutine<Either<MessageResp>> {
+    private suspend fun NetworkClient.getMessage(messageReq: MessageReq) = suspendCoroutine<Either<MessageResp>> {
         getMessage(
-            uwReq,
-            { uwResp -> it.resume(Either.Right(uwResp)) },
+            messageReq,
+            { messageResp -> it.resume(Either.Right(messageResp)) },
             { throwable -> it.resume(Either.Left(throwable)) }
         )
     }

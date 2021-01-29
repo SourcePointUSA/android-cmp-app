@@ -12,7 +12,7 @@ internal interface JsonConverter {
      * @param body json object
      * @return [Either] object contain either a DTO or an [Throwable]
      */
-    fun toUWResp(body: String): Either<MessageResp>
+    fun toMessageResp(body: String): Either<MessageResp>
 
     fun toConsentAction(json: String): Either<ConsentAction>
     companion object
