@@ -5,17 +5,15 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 
 internal interface DataStorage {
-    val spEditor : SharedPreferences.Editor
+    val preference: SharedPreferences
     companion object
 }
 
-internal fun DataStorage.Companion.create(context: Context) : DataStorage = DataStorageImpl(context)
+internal fun DataStorage.Companion.create(context: Context): DataStorage = DataStorageImpl(context)
 
-private class DataStorageImpl(context: Context) : DataStorage{
+private class DataStorageImpl(context: Context) : DataStorage {
 
-    private val sp by lazy {
+    override val preference: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
-
-    override val spEditor: SharedPreferences.Editor by lazy { sp.edit() }
 }

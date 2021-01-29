@@ -5,7 +5,7 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
-import com.sourcepoint.cmplibrary.Account
+import com.sourcepoint.cmplibrary.Campaign
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSReceiver
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -20,7 +20,7 @@ import com.sourcepoint.gdpr_cmplibrary.exception.Logger
 import com.sourcepoint.gdpr_cmplibrary.exception.RenderingAppException
 
 internal class GDPRConsentLibImpl(
-    private val account: Account,
+    private val campaign: Campaign,
     private val pPrivacyManagerTab: PrivacyManagerTab,
     private val context: Activity,
     private val pLogger: Logger,
@@ -38,7 +38,8 @@ internal class GDPRConsentLibImpl(
 
     /** Start Client's methods */
     override fun loadMessage(authId: String?) {}
-    override fun loadMessage() {}
+    override fun loadMessage() {
+    }
     override fun loadMessage(nativeMessage: NativeMessage) {}
     override fun loadMessage(authId: String, nativeMessage: NativeMessage) {}
     override fun loadPrivacyManager() {}
@@ -56,6 +57,7 @@ internal class GDPRConsentLibImpl(
     }
 
     override fun removeView(view: View) {
+
         view.parent?.let { mainView.removeView(view) }
     }
 

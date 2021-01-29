@@ -4,9 +4,9 @@ import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
 import com.sourcepoint.cmplibrary.data.network.model.Categories
+import com.sourcepoint.cmplibrary.data.network.model.GDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.GdprReq
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
-import com.sourcepoint.cmplibrary.data.network.model.UserConsent
 import org.junit.Test
 
 class MessageRespTest {
@@ -34,7 +34,7 @@ class MessageRespTest {
         val gdpr = (map["gdpr"] as DeferredMap)
         val uuid = (gdpr["uuid"] as? String)
         val message = JSON.std.asString(gdpr["message"])
-        val userConsent = JSON.std.beanFrom(UserConsent::class.java, JSON.std.asString(gdpr["userConsent"] as DeferredMap))
+        val userConsent = JSON.std.beanFrom(GDPRUserConsent::class.java, JSON.std.asString(gdpr["userConsent"] as DeferredMap))
 
         println()
     }

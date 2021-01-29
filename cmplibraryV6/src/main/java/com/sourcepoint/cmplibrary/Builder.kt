@@ -92,8 +92,8 @@ class Builder {
         }
     }
 
-    private fun createAccount(): Account {
-        return Account(
+    private fun createAccount(): Campaign {
+        return Campaign(
             propertyId = propertyId ?: failParam("propertyId"),
             propertyName = propertyName ?: failParam("property"),
             accountId = accountId ?: failParam("accountId"),
@@ -109,7 +109,7 @@ class Builder {
         )
     }
 
-    private fun errorMessageManager(a: Account, client: ClientInfo): ErrorMessageManager {
+    private fun errorMessageManager(a: Campaign, client: ClientInfo): ErrorMessageManager {
         return createErrorManager(
             accountId = a.accountId,
             propertyId = a.propertyId,

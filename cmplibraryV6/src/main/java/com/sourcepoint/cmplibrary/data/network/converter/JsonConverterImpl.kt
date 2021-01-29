@@ -3,9 +3,9 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
+import com.sourcepoint.cmplibrary.data.network.model.GDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
-import com.sourcepoint.cmplibrary.data.network.model.UserConsent
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.gdpr_cmplibrary.ActionTypes
@@ -26,20 +26,38 @@ private class JsonConverterImpl : JsonConverter {
 
         val map: MutableMap<String, Any> = JSON.std.mapFrom(body)
 
-        val gdpr = (map["gdpr"] as? DeferredMap) ?: fail("gdpr")
-        val uuid = (gdpr["uuid"] as? String) ?: fail("uuid")
-        val meta = (gdpr["meta"] as? String) ?: fail("meta")
-        val message = gdpr["message"]?.let { JSON.std.asString(it) } ?: fail("message")
-        val userConsentMap = JSON.std.asString(gdpr["userConsent"] as? DeferredMap) ?: fail("userConsent")
-        val userConsent = JSON.std.beanFrom(UserConsent::class.java, userConsentMap)
+        val gdpr = (map["gdpr"] as? DeferredMap)?.let {
+            val uuid = (it["uuid"] as? String) ?: fail("uuid")
+            val meta = (it["meta"] as? String) ?: fail("meta")
+            val message = it["message"]?.let { JSON.std.asString(it) } ?: fail("message")
+
+            val userConsentMap = (it["userConsent"] as? DeferredMap) ?: fail("userConsent")
+//        val userConsentJson = JSON.std.asString(userConsentMap) ?: fail("userConsent")
+
+            val userConsent = GDPRUserConsent(
+                acceptedCategories = (userConsentMap["acceptedCategories"] as? Iterable<Any?>)?.filterNotNull()
+                    ?: fail("acceptedCategories"),
+                acceptedVendors = (userConsentMap["acceptedVendors"] as? Iterable<Any?>)?.filterNotNull()
+                    ?: fail("acceptedVendors"),
+                legIntCategories = (userConsentMap["legIntCategories"] as? Iterable<Any?>)?.filterNotNull()
+                    ?: fail("legIntCategories"),
+                specialFeatures = (userConsentMap["specialFeatures"] as? Iterable<Any?>)?.filterNotNull()
+                    ?: fail("specialFeatures"),
+                tcData = (userConsentMap["TCData"] as? DeferredMap) ?: DeferredMap(false),
+                vendorsGrants = (userConsentMap["grants"] as? DeferredMap) ?: DeferredMap(false),
+                euconsent = (userConsentMap["euconsent"] as? String) ?: ""
+            )
+
+            Gdpr(
+                uuid = uuid,
+                GDPRUserConsent = userConsent,
+                meta = meta,
+                message = message
+            )
+        }
 
         MessageResp(
-            Gdpr(
-                message = message,
-                meta = meta,
-                userConsent = userConsent,
-                uuid = uuid
-            )
+            gdpr = gdpr
         )
     }
 
