@@ -56,17 +56,23 @@ jobs:
             !~/cache/exclude
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-      - name: run Example app tests
+      - name: run Example app and cmplibraryV6 UI tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew app:connectedDebugAndroidTest
+          script: ./gradlew app:connectedDebugAndroidTest cmplibraryV6:connectedAndroidTest
       - name: 'Publish Example-app Test Report'
         if: always()
         uses: actions/upload-artifact@v2-preview
         with:
           name: 'example-app-test-report'
           path: samples/app/build/reports/androidTests/*
+      - name: 'Publish cmplibraryV6 Test Report'
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: 'cmplibraryV6-test-report'
+          path: cmplibraryV6/build/reports/androidTests/*
   ui-test-metaapp:
     runs-on: macos-latest
     steps:
