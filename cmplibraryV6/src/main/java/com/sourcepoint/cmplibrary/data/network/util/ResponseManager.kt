@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
-import com.sourcepoint.cmplibrary.data.network.model.UWResp
+import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.util.Either
 import okhttp3.Response
 
@@ -9,10 +9,10 @@ import okhttp3.Response
  */
 internal interface ResponseManager {
     /**
-     * Parsing a [UWResp]
+     * Parsing a [MessageResp]
      * @param r http response
      * @return [Either] object
      */
-    fun parseResponse(r: Response): Either<UWResp>
+    fun parseResponse(r: Response): Either<MessageResp>
     companion object
 }

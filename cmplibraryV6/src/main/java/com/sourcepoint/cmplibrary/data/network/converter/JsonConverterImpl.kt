@@ -4,7 +4,7 @@ import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
-import com.sourcepoint.cmplibrary.data.network.model.UWResp
+import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.UserConsent
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
@@ -22,7 +22,7 @@ internal fun JsonConverter.Companion.create(): JsonConverter = JsonConverterImpl
  */
 private class JsonConverterImpl : JsonConverter {
 
-    override fun toUWResp(body: String): Either<UWResp> = check {
+    override fun toUWResp(body: String): Either<MessageResp> = check {
 
         val map: MutableMap<String, Any> = JSON.std.mapFrom(body)
 
@@ -33,7 +33,7 @@ private class JsonConverterImpl : JsonConverter {
         val userConsentMap = JSON.std.asString(gdpr["userConsent"] as? DeferredMap) ?: fail("userConsent")
         val userConsent = JSON.std.beanFrom(UserConsent::class.java, userConsentMap)
 
-        UWResp(
+        MessageResp(
             Gdpr(
                 message = message,
                 meta = meta,

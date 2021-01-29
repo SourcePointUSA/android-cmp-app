@@ -79,7 +79,7 @@ class NetworkClientImplTest {
 
         val res = sut.getMessage(uwReq = req)
 
-        val output = (res as Either.Right<UWResp>).r
+        val output = (res as Either.Right<MessageResp>).r
     }
 
 //    @Test
@@ -95,7 +95,7 @@ class NetworkClientImplTest {
 
         val res = sut.getMessage(uwReq = req)
 
-        val output = (res as Either.Right<UWResp>).r
+        val output = (res as Either.Right<MessageResp>).r
     }
 
 //    @Test
@@ -115,7 +115,7 @@ class NetworkClientImplTest {
         output.message.assertEquals("test")
     }
 
-    private suspend fun NetworkClient.getMessage(uwReq: UWReq) = suspendCoroutine<Either<UWResp>> {
+    private suspend fun NetworkClient.getMessage(uwReq: UWReq) = suspendCoroutine<Either<MessageResp>> {
         getMessage(
             uwReq,
             { uwResp -> it.resume(Either.Right(uwResp)) },
