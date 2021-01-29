@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary
 
 import android.app.Activity
-import android.content.Context
 import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib
 import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
 import io.mockk.MockKAnnotations
