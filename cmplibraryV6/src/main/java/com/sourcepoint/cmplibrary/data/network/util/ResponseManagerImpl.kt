@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import android.accounts.NetworkErrorException
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.model.UWResp
+import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException
@@ -24,12 +24,12 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
 
     /**
      * @param r http response
-     * @return an [Either] object of a [UWResp] type parameter
+     * @return an [Either] object of a [MessageResp] type parameter
      */
-    override fun parseResponse(r: Response): Either<UWResp> = check {
+    override fun parseResponse(r: Response): Either<MessageResp> = check {
         if (r.isSuccessful) {
             val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-            when (val either: Either<UWResp> = jsonConverter.toUWResp(body)) {
+            when (val either: Either<MessageResp> = jsonConverter.toUWResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }

@@ -9,7 +9,7 @@ import com.sourcepoint.cmplibrary.data.network.model.UWReq
 import com.sourcepoint.cmplibrary.data.network.model.UserConsent
 import org.junit.Test
 
-class UWRespTest {
+class MessageRespTest {
 
     val req = UWReq(
         requestUUID = "test",

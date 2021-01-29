@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.data.network.model.UWReq
-import com.sourcepoint.cmplibrary.data.network.model.UWResp
+import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 
 /**
  * Component used to handle the network request
@@ -16,7 +16,7 @@ internal interface NetworkClient {
      */
     fun getMessage(
         uwReq: UWReq,
-        success: (UWResp) -> Unit,
+        success: (MessageResp) -> Unit,
         error: (Throwable) -> Unit
     )
 }

@@ -8,6 +8,7 @@ import android.webkit.JavascriptInterface
 import com.sourcepoint.cmplibrary.Account
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSReceiver
+import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.util.ConnectionManager
@@ -25,7 +26,8 @@ internal class GDPRConsentLibImpl(
     private val pLogger: Logger,
     private val pJsonConverter: JsonConverter,
     private val pConnectionManager: ConnectionManager,
-    private val networkClient: NetworkClient
+    private val networkClient: NetworkClient,
+    dataStorage: DataStorage
 ) : GDPRConsentLib, JSReceiver {
 
     override var spGdprClient: SpGDPRClient? = null

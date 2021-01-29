@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.data.network
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.UWReq
-import com.sourcepoint.cmplibrary.data.network.model.UWResp
+import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
@@ -27,7 +27,7 @@ private class NetworkClientImpl(
 
     override fun getMessage(
         uwReq: UWReq,
-        success: (UWResp) -> Unit,
+        success: (MessageResp) -> Unit,
         error: (Throwable) -> Unit
     ) {
         val mediaType = MediaType.parse("application/json")

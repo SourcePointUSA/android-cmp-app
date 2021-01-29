@@ -2,6 +2,8 @@ package com.sourcepoint.cmplibrary
 
 import android.app.Activity
 import com.example.gdpr_cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
@@ -75,10 +77,13 @@ class Builder {
         val connManager = ConnectionManager.create(ctx)
         val responseManager = ResponseManager.create(jsonConverter)
         val networkClient = networkClient(OkHttpClient(), responseManager)
+        val dataStorage = DataStorage.create(ctx)
 
         return when (clazz) {
             GDPRConsentLib::class.java -> {
-                GDPRConsentLibImpl(account, pmTab, ctx, logger, jsonConverter, connManager, networkClient) as T
+                GDPRConsentLibImpl(
+                    account, pmTab, ctx, logger, jsonConverter, connManager, networkClient, dataStorage
+                ) as T
             }
             CCPAConsentLib::class.java -> {
                 CCPAConsentLibImpl() as T
