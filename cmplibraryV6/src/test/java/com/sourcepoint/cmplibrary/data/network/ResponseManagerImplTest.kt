@@ -53,7 +53,7 @@ class ResponseManagerImplTest {
         val sut = ResponseManager.create(JsonConverter.create())
         val resp = Response.Builder() //
             .code(200)
-            .body("message_null.json".jsonFile2String().toResponseBody("application/json".toMediaTypeOrNull()))
+            .body("unified_wrapper/with_message_null.json".jsonFile2String().toResponseBody("application/json".toMediaTypeOrNull()))
             .message("OK")
             .protocol(Protocol.HTTP_1_1)
             .request(Request.Builder().url("http://localhost/").build())
@@ -64,11 +64,11 @@ class ResponseManagerImplTest {
 
     @Test
     fun `GIVEN a crash RETURN a Left object`() = runBlocking<Unit> {
-        val jsonConverter = mockk<JsonConverter>().also { every { it.toUWResp(any()) }.throws(RuntimeException("test")) }
+        val jsonConverter = mockk<JsonConverter>().also { every { it.toMessageResp(any()) }.throws(RuntimeException("test")) }
         val sut = ResponseManager.create(jsonConverter)
         val resp = Response.Builder() //
             .code(200)
-            .body("message_null.json".jsonFile2String().toResponseBody("application/json".toMediaTypeOrNull()))
+            .body("unified_wrapper/with_message_null.json".jsonFile2String().toResponseBody("application/json".toMediaTypeOrNull()))
             .message("OK")
             .protocol(Protocol.HTTP_1_1)
             .request(Request.Builder().url("http://localhost/").build())

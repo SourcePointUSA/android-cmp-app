@@ -29,7 +29,7 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
     override fun parseResponse(r: Response): Either<MessageResp> = check {
         if (r.isSuccessful) {
             val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-            when (val either: Either<MessageResp> = jsonConverter.toUWResp(body)) {
+            when (val either: Either<MessageResp> = jsonConverter.toMessageResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }

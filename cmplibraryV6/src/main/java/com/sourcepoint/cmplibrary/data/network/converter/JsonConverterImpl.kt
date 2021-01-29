@@ -22,7 +22,7 @@ internal fun JsonConverter.Companion.create(): JsonConverter = JsonConverterImpl
  */
 private class JsonConverterImpl : JsonConverter {
 
-    override fun toUWResp(body: String): Either<MessageResp> = check {
+    override fun toMessageResp(body: String): Either<MessageResp> = check {
 
         val map: MutableMap<String, Any> = JSON.std.mapFrom(body)
 

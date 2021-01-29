@@ -13,11 +13,11 @@ class JsonConverterImplTest {
     private val sut = JsonConverter.create()
 
     @Test
-    fun `GIVEN return a string RETURN a Right(UWResp)`() {
+    fun `GIVEN return a string RETURN a Right(MessageResp)`() {
     }
 
     @Test
-    fun `GIVEN return a string RETURN a Left(UWResp)`() {
+    fun `GIVEN return a string RETURN a Left(MessageResp)`() {
     }
 
     @Test

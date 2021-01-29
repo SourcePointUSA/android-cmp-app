@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network
 
-import com.sourcepoint.cmplibrary.data.network.model.UWReq
+import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 
 /**
@@ -10,12 +10,12 @@ internal interface NetworkClient {
 
     /**
      * Requesting a message object to the server
-     * @param uwReq request content to send into the body
+     * @param messageReq request content to send into the body
      * @param success success callback
      * @param error error callback
      */
     fun getMessage(
-        uwReq: UWReq,
+        messageReq: MessageReq,
         success: (MessageResp) -> Unit,
         error: (Throwable) -> Unit
     )

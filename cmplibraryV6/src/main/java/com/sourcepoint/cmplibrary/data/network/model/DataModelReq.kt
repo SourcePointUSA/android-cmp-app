@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.model
 
 import com.fasterxml.jackson.jr.ob.JSON
 
-data class UWReq(
+data class MessageReq(
     val categories: Categories,
     val requestUUID: String
 )
@@ -17,6 +17,6 @@ data class GdprReq(
     val propertyId: Int
 )
 
-fun UWReq.toBodyRequest(): String {
+fun MessageReq.toBodyRequest(): String {
     return JSON.std.asString(this)
 }
