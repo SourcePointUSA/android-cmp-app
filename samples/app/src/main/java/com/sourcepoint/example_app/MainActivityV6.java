@@ -5,14 +5,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
-import com.sourcepoint.cmplibrary.Account;
+import com.sourcepoint.cmplibrary.Campaign;
 import com.sourcepoint.cmplibrary.Builder;
+import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAConsentLib;
 import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib;
 import com.sourcepoint.cmplibrary.legislation.gdpr.SpGDPRClient;
 import com.sourcepoint.example_app.core.DataProvider;
 import com.sourcepoint.gdpr_cmplibrary.ActionTypes;
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException;
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
+import com.sourcepoint.gdpr_cmplibrary.exception.Legislation;
 import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +27,7 @@ public class MainActivityV6 extends AppCompatActivity {
 
     private static final String TAG = "**MainActivity";
 
-    private final Account account = new Account(
+    private final Campaign campaign = new Campaign(
             22,
             7639,
             "tcfv2.mobile.webview",
@@ -42,10 +44,10 @@ public class MainActivityV6 extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         gdprConsent = new Builder()
-                .setAccountId(account.accountId)
-                .setPropertyName(account.propertyName)
-                .setPropertyId(account.propertyId)
-                .setPmId(account.pmId)
+                .setAccountId(campaign.accountId)
+                .setPropertyName(campaign.propertyName)
+                .setPropertyId(campaign.propertyId)
+                .setPmId(campaign.pmId)
                 .setContext(this)
                 .setAuthId(Objects.requireNonNull(dataProvider.getValue().getAuthId()))
                 .build(GDPRConsentLib.class);
