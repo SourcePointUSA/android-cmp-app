@@ -230,4 +230,28 @@ class UnableToLoadJSReceiverException @JvmOverloads constructor(
     override val code: ExceptionCodes = CodeList.UNABLE_TO_LOAD_JS_RECEIVER
 }
 
+/**
+ * This exception is thrown when a the client is missing
+ */
+class MissingClientException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description) {
+    override val code: ExceptionCodes = ExceptionCodes("MISSING_CLIENT")
+}
+
+/**
+ * This exception is thrown when a the current thread is not the MainThread
+ */
+class ExecutionOutOfMainThreadException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description) {
+    override val code: ExceptionCodes = ExceptionCodes("OUT_OF_MAIN_THREAD")
+}
+
 
