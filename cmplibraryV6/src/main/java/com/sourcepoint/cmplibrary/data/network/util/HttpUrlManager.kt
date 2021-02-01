@@ -7,6 +7,7 @@ import okhttp3.HttpUrl
  */
 internal interface HttpUrlManager {
     val inAppUrlMessage: HttpUrl
+    val inAppUrlNativeMessage: HttpUrl
 }
 
 /**
@@ -26,4 +27,13 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .build()
 
     override val inAppUrlMessage: HttpUrl = inAppLocalUrlMessage
+
+    override val inAppUrlNativeMessage: HttpUrl
+        get() = HttpUrl.Builder()
+            .scheme("https")
+            .host("cdn.privacy-mgmt.com")
+            .addPathSegments("wrapper/tcfv2/v1/gdpr")
+            .addPathSegments("native-message")
+            .addQueryParameter("inApp", "true")
+            .build()
 }

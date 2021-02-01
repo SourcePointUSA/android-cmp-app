@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
+import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.file2List
 import com.sourcepoint.cmplibrary.util.file2String
@@ -30,6 +31,17 @@ class JsonConverterImplTest {
                 }
                 g.meta.contains("_sp_v1_uid=1:969:1346b52a-bfaa-4215-b54d-7bb787823f39").assertEquals(true)
             }
+        }
+    }
+
+    @Test
+    fun `GIVEN a native_message_resp RETURN a Right(NativeMessageResp)`() {
+        val json = "native_message_resp.json".file2String()
+        val output: Either<NativeMessageResp> = sut.toNativeMessageResp(json)
+        (output as Either.Right).r.also { m ->
+            m.msgJSON.get("name").assertEquals("GDPR Native Message")
+            (m.msgJSON.get("title") as JSONObject).get("text").assertEquals("Personalised Ads")
+            (m.msgJSON.get("body") as JSONObject).get("text").assertEquals("GDPR - Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.")
         }
     }
 

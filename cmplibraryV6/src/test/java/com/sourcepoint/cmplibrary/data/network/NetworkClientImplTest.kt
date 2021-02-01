@@ -49,7 +49,7 @@ class NetworkClientImplTest {
         val sut = createNetworkClient(
             httpClient = okHttp,
             responseManager = responseManager,
-            url = HttpUrlManagerSingleton.inAppLocalUrlMessage
+            urlManager = HttpUrlManagerSingleton
         )
 
         sut.getMessage(messageReq = req, success = {}, error = {})
@@ -74,7 +74,7 @@ class NetworkClientImplTest {
         val sut = createNetworkClient(
             httpClient = OkHttpClient(),
             responseManager = responseManager,
-            url = HttpUrlManagerSingleton.inAppLocalUrlMessage
+            urlManager = HttpUrlManagerSingleton
         )
 
         val res = sut.getMessage(messageReq = req)
@@ -90,7 +90,7 @@ class NetworkClientImplTest {
         val sut = createNetworkClient(
             httpClient = OkHttpClient(),
             responseManager = responseManager,
-            url = HttpUrlManagerSingleton.inAppLocalUrlMessage
+            urlManager = HttpUrlManagerSingleton
         )
 
         val res = sut.getMessage(messageReq = req)
@@ -106,7 +106,7 @@ class NetworkClientImplTest {
         val sut = createNetworkClient(
             httpClient = OkHttpClient(),
             responseManager = responseManager,
-            url = HttpUrlManagerSingleton.inAppLocalUrlMessage
+            urlManager = HttpUrlManagerSingleton
         )
 
         val res = sut.getMessage(messageReq = req)
