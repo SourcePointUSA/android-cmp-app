@@ -2,16 +2,12 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
 import android.content.Context
-import com.example.gdpr_cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.Campaign
 import com.sourcepoint.cmplibrary.ConsentLib
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
-import com.sourcepoint.cmplibrary.data.network.createNetworkClient
-import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAConsentLib
@@ -23,7 +19,6 @@ import com.sourcepoint.cmplibrary.util.ExecutorManager
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
 import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
-import com.sourcepoint.gdpr_cmplibrary.exception.* //ktlint-disable
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
 
@@ -116,40 +111,6 @@ class Builder {
             propertyName = propertyName ?: failParam("property"),
             accountId = accountId ?: failParam("accountId"),
             pmId = pmId ?: failParam("pmId"),
-        )
-    }
-
-    private fun createClientInfo(): ClientInfo {
-        return ClientInfo(
-            clientVersion = "5.X.X",
-            deviceFamily = "android",
-            osVersion = "30"
-        )
-    }
-
-    private fun errorMessageManager(a: Campaign, client: ClientInfo): ErrorMessageManager {
-        return createErrorManager(
-            accountId = a.accountId,
-            propertyId = a.propertyId,
-            propertyHref = "http://dev.local",
-            clientInfo = client,
-            legislation = Legislation.GDPR
-        )
-    }
-
-    private fun createLogger(errorMessageManager: ErrorMessageManager): Logger {
-        return createLogger(
-            networkClient = OkHttpClient(),
-            errorMessageManager = errorMessageManager,
-            url = BuildConfig.LOGGER_URL
-        )
-    }
-
-    private fun networkClient(netClient: OkHttpClient, responseManage: ResponseManager): NetworkClient {
-        return createNetworkClient(
-            httpClient = netClient,
-            responseManager = responseManage,
-            urlManager = HttpUrlManagerSingleton
         )
     }
 

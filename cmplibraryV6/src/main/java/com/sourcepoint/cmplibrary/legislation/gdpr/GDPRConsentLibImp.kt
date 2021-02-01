@@ -17,7 +17,6 @@ import com.sourcepoint.gdpr_cmplibrary.* // ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.exception.Logger
 import com.sourcepoint.gdpr_cmplibrary.exception.MissingClientException
 import com.sourcepoint.gdpr_cmplibrary.exception.RenderingAppException
-import org.json.JSONObject
 
 internal class GDPRConsentLibImpl(
     private val campaign: Campaign,
