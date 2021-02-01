@@ -39,6 +39,6 @@ internal fun networkClient(netClient: OkHttpClient, responseManage: ResponseMana
     return createNetworkClient(
         httpClient = netClient,
         responseManager = responseManage,
-        url = HttpUrlManagerSingleton.inAppUrlMessage
+        urlManager = HttpUrlManagerSingleton
     )
 }

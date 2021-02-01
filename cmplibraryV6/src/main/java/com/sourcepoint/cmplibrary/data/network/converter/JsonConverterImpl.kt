@@ -2,10 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
-import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
-import com.sourcepoint.cmplibrary.data.network.model.GDPRUserConsent
-import com.sourcepoint.cmplibrary.data.network.model.Gdpr
-import com.sourcepoint.cmplibrary.data.network.model.MessageResp
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.gdpr_cmplibrary.ActionTypes
@@ -33,6 +30,9 @@ private class JsonConverterImpl : JsonConverter {
 
             val userConsentMap = (it["userConsent"] as? DeferredMap) ?: fail("userConsent")
 //        val userConsentJson = JSON.std.asString(userConsentMap) ?: fail("userConsent")
+
+            val uc = JSONObject(JSON.std.asString(userConsentMap)!!)
+            com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent(uc, "consentUUID", null)
 
             val userConsent = GDPRUserConsent(
                 acceptedCategories = (userConsentMap["acceptedCategories"] as? Iterable<Any?>)?.filterNotNull()
@@ -82,6 +82,12 @@ private class JsonConverterImpl : JsonConverter {
             saveAndExitVariables = saveAndExitVariables,
             consentLanguage = consentLanguage
         )
+    }
+
+    override fun toNativeMessageResp(body: String): Either<NativeMessageResp> = check {
+        val map: MutableMap<String, Any> = JSON.std.mapFrom(body)
+        val msgJSON = (map["msgJSON"] as? DeferredMap) ?: fail("msgJSON")
+        NativeMessageResp(msgJSON = JSONObject(JSON.std.asString(msgJSON)))
     }
 
     /**

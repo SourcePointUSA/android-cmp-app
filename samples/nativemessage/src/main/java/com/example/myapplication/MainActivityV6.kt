@@ -20,8 +20,6 @@ import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib as GDPRConsent
 
 class MainActivityV6 : AppCompatActivity() {
 
-    private val mainViewGroup by lazy<ViewGroup> { findViewById(android.R.id.content) }
-
     private val TAG = "**MainActivity"
 
     private val nativeCampaign = Campaign(
@@ -74,10 +72,10 @@ class MainActivityV6 : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.i(TAG, "init");
-        gdprConsent.loadMessage(buildNativeMessageConstraintLayout())
+        gdprConsent.loadMessage(buildNativeMessage())
     }
 
-    private fun buildNativeMessage(): NativeMessage? {
+    private fun buildNativeMessage(): NativeMessage {
         return NativeMessage(this)
     }
 
@@ -106,7 +104,7 @@ class MainActivityV6 : AppCompatActivity() {
         }
     }
 
-    private fun buildNativeMessageRelativeLayout(): NativeMessage? {
+    private fun buildNativeMessageRelativeLayout(): NativeMessage {
         return object : NativeMessage(this) {
             override fun init() {
                 // set your layout

@@ -21,17 +21,25 @@ private class ViewsManagerImpl(val weakReference: WeakReference<Activity>) : Vie
         get() = weakReference.get()?.findViewById<ViewGroup>(R.id.content)
 
     override fun removeView(view: View) {
-        view.parent?.let { mainView?.removeView(view) }
+        view.parent?.let { _ ->
+            mainView?.let { mv ->
+                mv.post { removeView(view) }
+            }
+        }
     }
 
     override fun showView(view: View) {
         if (view.parent == null) {
-            view.layoutParams = ViewGroup.LayoutParams(0, 0)
-            view.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-            view.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-            view.bringToFront()
-            view.requestLayout()
-            mainView?.addView(view)
+            mainView?.let {
+                it.post {
+                    view.layoutParams = ViewGroup.LayoutParams(0, 0)
+                    view.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                    view.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                    view.bringToFront()
+                    view.requestLayout()
+                    it.addView(view)
+                }
+            }
         }
     }
 }

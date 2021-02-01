@@ -1,6 +1,11 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
+import org.json.JSONObject
+
+/**
+ * ================================== Unified wrapper =======================================
+ */
 
 data class MessageResp(
     val gdpr: Gdpr? = null,
@@ -27,4 +32,12 @@ data class GDPRUserConsent(
     var euconsent: String = "",
     var tcData: DeferredMap = DeferredMap(false),
     var vendorsGrants: DeferredMap = DeferredMap(false),
+)
+
+/**
+ * ===================================== Native Message ====================================
+ */
+
+data class NativeMessageResp(
+    val msgJSON: JSONObject
 )
