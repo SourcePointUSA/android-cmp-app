@@ -8,16 +8,16 @@ plugins {
 
 android {
 
-    compileSdkVersion (30)
+    compileSdkVersion(30)
     buildToolsVersion = "30.0.2"
 
     defaultConfig {
         applicationId = "com.example.myapplication"
-        minSdkVersion (16)
-        targetSdkVersion (30)
+        minSdkVersion(16)
+        targetSdkVersion(30)
         versionCode = 1
         versionName = "1.0"
-
+        multiDexEnabled = true
     }
 
 
@@ -28,7 +28,7 @@ android {
         }
     }
 
-    compileOptions{
+    compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -41,18 +41,18 @@ android {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 
-    implementation(project(":cmplibrary"))
+    implementation(project(":cmplibraryV6"))
 
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib:${AndroidXVersion.kotlin}")
-    implementation ("androidx.core:core-ktx:${AndroidXVersion.core_ktx}")
-    implementation ("androidx.appcompat:appcompat:${AndroidXVersion.core_ktx}")
-    implementation ("com.google.android.material:material:${AndroidXVersion.material}")
-    implementation ("androidx.constraintlayout:constraintlayout:${AndroidXVersion.constraint_layout}")
-    implementation ("androidx.navigation:navigation-fragment-ktx:${AndroidXVersion.navigation}")
-    implementation ("androidx.navigation:navigation-ui-ktx:${AndroidXVersion.navigation}")
-    testImplementation ("junit:junit:${AndroidXVersion.junit}")
-    androidTestImplementation ("androidx.test.ext:junit:${AndroidXVersion.junit_ext}")
-    androidTestImplementation ("androidx.test.espresso:espresso-core:${AndroidXVersion.espresso}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:${AndroidXVersion.kotlin}")
+    implementation("androidx.core:core-ktx:${AndroidXVersion.core_ktx}")
+    implementation("androidx.appcompat:appcompat:${AndroidXVersion.core_ktx}")
+    implementation("com.google.android.material:material:${AndroidXVersion.material}")
+    implementation("androidx.constraintlayout:constraintlayout:${AndroidXVersion.constraint_layout}")
+    implementation("androidx.navigation:navigation-fragment-ktx:${AndroidXVersion.navigation}")
+    implementation("androidx.navigation:navigation-ui-ktx:${AndroidXVersion.navigation}")
+    testImplementation("junit:junit:${AndroidXVersion.junit}")
+    androidTestImplementation("androidx.test.ext:junit:${AndroidXVersion.junit_ext}")
+    androidTestImplementation("androidx.test.espresso:espresso-core:${AndroidXVersion.espresso}")
 }
 
 object AndroidXVersion {

@@ -1,8 +1,6 @@
 dependencies {
 
     androidTestImplementation project(':ui-test-util')
-    androidTestImplementation("androidx.appcompat:appcompat:1.2.0")
-    androidTestImplementation("androidx.constraintlayout:constraintlayout:2.0.4")
 
     testImplementation "junit:junit:$junit_version"
 

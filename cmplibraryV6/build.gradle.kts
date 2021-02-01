@@ -2,7 +2,6 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("android.extensions")
-    id("kotlin-android")
 }
 
 apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
@@ -22,7 +21,6 @@ android {
         versionCode = 300
         versionName = versionLib
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        multiDexEnabled = true
     }
     buildTypes {
         getByName("debug") {
