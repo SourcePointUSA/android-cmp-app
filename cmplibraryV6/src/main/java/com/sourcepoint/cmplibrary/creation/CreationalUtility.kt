@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.creation
 
+import android.os.Build
 import com.example.gdpr_cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.Campaign
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
@@ -11,9 +12,9 @@ import okhttp3.OkHttpClient
 
 internal fun createClientInfo(): ClientInfo {
     return ClientInfo(
-        clientVersion = "5.X.X",
-        deviceFamily = "android",
-        osVersion = "30"
+        clientVersion = BuildConfig.VERSION_NAME,
+        deviceFamily = "[${Build.MANUFACTURER}]-[${Build.MODEL}]-[${Build.DEVICE}]",
+        osVersion = "${Build.VERSION.SDK_INT}"
     )
 }
 
