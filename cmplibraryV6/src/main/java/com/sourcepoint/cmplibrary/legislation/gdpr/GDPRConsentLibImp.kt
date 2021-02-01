@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.legislation.gdpr
 
-import android.app.Activity
+import android.content.Context
 import android.view.View
 import android.webkit.JavascriptInterface
 import com.sourcepoint.cmplibrary.Campaign
@@ -23,7 +23,7 @@ import com.sourcepoint.gdpr_cmplibrary.exception.RenderingAppException
 internal class GDPRConsentLibImpl(
     private val campaign: Campaign,
     private val pPrivacyManagerTab: PrivacyManagerTab,
-    private val context: Activity,
+    private val context: Context,
     private val pLogger: Logger,
     private val pJsonConverter: JsonConverter,
     private val pConnectionManager: ConnectionManager,

@@ -10,13 +10,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.sourcepoint.cmplibrary.Builder
+import com.sourcepoint.cmplibrary.factory.Builder
 import com.sourcepoint.cmplibrary.legislation.gdpr.SpGDPRClient
 import com.sourcepoint.gdpr_cmplibrary.*
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib as GDPRConsentLibV6
 
 class MainActivityV6 : AppCompatActivity() {

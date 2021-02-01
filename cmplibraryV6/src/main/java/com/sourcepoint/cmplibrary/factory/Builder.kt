@@ -1,7 +1,10 @@
-package com.sourcepoint.cmplibrary
+package com.sourcepoint.cmplibrary.factory
 
 import android.app.Activity
+import android.content.Context
 import com.example.gdpr_cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.Campaign
+import com.sourcepoint.cmplibrary.ConsentLib
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
@@ -30,7 +33,7 @@ class Builder {
     private var authId: String? = null
     private var propertyId: Int? = null
     private var pmId: String? = null
-    private var weakReference : WeakReference<Activity>? = null
+    private var weakReference: WeakReference<Activity>? = null
     private var ott: Boolean = false
     private var privacyManagerTab: PrivacyManagerTab? = null
 
@@ -69,24 +72,24 @@ class Builder {
     @Suppress("UNCHECKED_CAST")
     fun <T : ConsentLib> build(clazz: Class<out T>): T {
 
-        val activityWeakRef = weakReference ?: failParam("context")
-        val ctx = activityWeakRef.get() ?: failParam("context")
+        val activityWeakRef: WeakReference<Activity> = weakReference ?: failParam("context")
+        val appCtx: Context = activityWeakRef.get()?.applicationContext ?: failParam("context")
         val account = createAccount()
         val client = createClientInfo()
         val errorManager = errorMessageManager(account, client)
         val logger = createLogger(errorManager)
         val pmTab = privacyManagerTab ?: PrivacyManagerTab.FEATURES
         val jsonConverter = JsonConverter.create()
-        val connManager = ConnectionManager.create(ctx)
+        val connManager = ConnectionManager.create(appCtx)
         val responseManager = ResponseManager.create(jsonConverter)
         val networkClient = networkClient(OkHttpClient(), responseManager)
-        val dataStorage = DataStorage.create(ctx)
+        val dataStorage = DataStorage.create(appCtx)
         val viewManager = ViewsManager.create(activityWeakRef)
 
         return when (clazz) {
             GDPRConsentLib::class.java -> {
                 GDPRConsentLibImpl(
-                    account, pmTab, ctx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager
+                    account, pmTab, appCtx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager
                 ) as T
             }
             CCPAConsentLib::class.java -> {
