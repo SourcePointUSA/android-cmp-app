@@ -18,6 +18,7 @@ class JsonConverterImplTest {
     fun `GIVEN a string RETURN a Right(MessageResp)`() {
         val json = "unified_wrapper/full_resp.json".file2String()
         val output: Either<MessageResp> = sut.toMessageResp(json)
+        (output as? Either.Left)?.let { throw it.t }
         (output as Either.Right).r.also { m ->
             m.ccpa.assertNull()
             m.gdpr.also { g ->

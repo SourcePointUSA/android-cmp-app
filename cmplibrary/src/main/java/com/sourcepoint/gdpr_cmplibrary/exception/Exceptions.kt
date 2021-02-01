@@ -5,7 +5,7 @@ package com.sourcepoint.gdpr_cmplibrary.exception
  * @param isConsumed is used to know if the [Throwable] has been logged already
  */
 sealed class ConsentLibExceptionK(
-    var isConsumed : Boolean = false,
+    var isConsumed: Boolean = false,
     val description: String,
     cause: Throwable? = null
 ) : RuntimeException(description, cause) {
@@ -17,10 +17,12 @@ sealed class ConsentLibExceptionK(
  */
 class InvalidResponseWebMessageException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_WEB_MESSAGE
 }
 
@@ -29,10 +31,12 @@ class InvalidResponseWebMessageException @JvmOverloads constructor(
  */
 class InternalServerException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.INTERNAL_SERVER_ERROR
 }
 
@@ -41,10 +45,12 @@ class InternalServerException @JvmOverloads constructor(
  */
 class WebViewException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.WEB_VIEW_ERROR
 }
 
@@ -53,10 +59,12 @@ class WebViewException @JvmOverloads constructor(
  */
 class UrlLoadingException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.URL_LOADING_ERROR
 }
 
@@ -65,10 +73,12 @@ class UrlLoadingException @JvmOverloads constructor(
  */
 class InvalidEventPayloadException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.INVALID_EVENT_PAYLOAD
 }
 
@@ -77,10 +87,12 @@ class InvalidEventPayloadException @JvmOverloads constructor(
  */
 class InvalidOnActionEventPayloadException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.INVALID_ON_ACTION_EVENT_PAYLOAD
 }
 
@@ -90,11 +102,13 @@ class InvalidOnActionEventPayloadException @JvmOverloads constructor(
 class RenderingAppException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
-    pCode : String
+    isConsumed: Boolean = false,
+    pCode: String
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description
-){
+    description = description,
+    isConsumed = isConsumed
+) {
     override val code: ExceptionCodes = ExceptionCodes(pCode)
 }
 
@@ -103,10 +117,12 @@ class RenderingAppException @JvmOverloads constructor(
  */
 class ResourceNotFoundException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.RESOURCE_NOT_FOUND
 }
 
@@ -115,10 +131,12 @@ class ResourceNotFoundException @JvmOverloads constructor(
  */
 class InvalidResponseException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_WEB_MESSAGE
 }
 
@@ -127,10 +145,12 @@ class InvalidResponseException @JvmOverloads constructor(
  */
 class InvalidResponseNativeMessageException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_NATIVE_MESSAGE
 }
 
@@ -139,10 +159,12 @@ class InvalidResponseNativeMessageException @JvmOverloads constructor(
  */
 class InvalidResponseConsentException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_CONSENT
 }
 
@@ -151,10 +173,12 @@ class InvalidResponseConsentException @JvmOverloads constructor(
  */
 class InvalidResponseCustomConsent @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_CUSTOM_CONSENT
 }
 
@@ -163,10 +187,12 @@ class InvalidResponseCustomConsent @JvmOverloads constructor(
  */
 class InvalidLocalDataException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.INVALID_LOCAL_DATA
 }
 
@@ -175,10 +201,12 @@ class InvalidLocalDataException @JvmOverloads constructor(
  */
 class ConnectionTimeoutException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.CONNECTION_TIMEOUT
 }
 
@@ -187,10 +215,12 @@ class ConnectionTimeoutException @JvmOverloads constructor(
  */
 class GenericNetworkRequestException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.GENERIC_NETWORK_REQUEST
 }
 
@@ -199,10 +229,12 @@ class GenericNetworkRequestException @JvmOverloads constructor(
  */
 class GenericSDKException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.GENERIC_SDK_ERROR
 }
 
@@ -211,10 +243,12 @@ class GenericSDKException @JvmOverloads constructor(
  */
 class InvalidRequestException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.INVALID_REQUEST_ERROR
 }
 
@@ -223,10 +257,12 @@ class InvalidRequestException @JvmOverloads constructor(
  */
 class UnableToLoadJSReceiverException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = CodeList.UNABLE_TO_LOAD_JS_RECEIVER
 }
 
@@ -235,10 +271,12 @@ class UnableToLoadJSReceiverException @JvmOverloads constructor(
  */
 class MissingClientException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = ExceptionCodes("MISSING_CLIENT")
 }
 
@@ -247,10 +285,12 @@ class MissingClientException @JvmOverloads constructor(
  */
 class ExecutionOutOfMainThreadException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String
+    description: String,
+    isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = description) {
+    description = description,
+    isConsumed = isConsumed) {
     override val code: ExceptionCodes = ExceptionCodes("OUT_OF_MAIN_THREAD")
 }
 
