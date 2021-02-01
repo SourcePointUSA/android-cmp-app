@@ -13,13 +13,12 @@ internal interface ViewsManager {
     companion object
 }
 
-internal fun ViewsManager.Companion.create(weakReference : WeakReference<Activity>): ViewsManager = ViewsManagerImpl(weakReference)
+internal fun ViewsManager.Companion.create(weakReference: WeakReference<Activity>): ViewsManager = ViewsManagerImpl(weakReference)
 
-private class ViewsManagerImpl(val weakReference : WeakReference<Activity>) : ViewsManager {
+private class ViewsManagerImpl(val weakReference: WeakReference<Activity>) : ViewsManager {
 
-    val mainView : ViewGroup? by lazy {
-        weakReference.get()?.findViewById<ViewGroup>(R.id.content)
-    }
+    val mainView: ViewGroup?
+        get() = weakReference.get()?.findViewById<ViewGroup>(R.id.content)
 
     override fun removeView(view: View) {
         view.parent?.let { mainView?.removeView(view) }
