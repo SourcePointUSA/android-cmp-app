@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -119,8 +120,10 @@ class MainActivityV6 : AppCompatActivity() {
         }
     }
 
-    class Client(private val gdpr : GDPRConsentLibV6) : SpGDPRClient{
-        override fun onConsentReady(c: GDPRUserConsent?) {}
+    inner class Client(private val gdpr : GDPRConsentLibV6) : SpGDPRClient{
+        override fun onConsentReady(c: GDPRUserConsent?) {
+
+        }
 
         override fun onConsentUIFinished(v: View) {
            gdpr.removeView(v)
@@ -134,8 +137,8 @@ class MainActivityV6 : AppCompatActivity() {
 
         }
 
-        override fun onAction(actionTypes: ActionTypes?) {
-
+        override fun onAction(actionTypes: ActionTypes) {
+            Toast.makeText(this@MainActivityV6, "Action[${actionTypes.name}]", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -10,6 +10,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.Categories
+import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.GdprReq
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
@@ -17,6 +18,7 @@ import com.sourcepoint.gdpr_cmplibrary.* // ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.exception.Logger
 import com.sourcepoint.gdpr_cmplibrary.exception.MissingClientException
 import com.sourcepoint.gdpr_cmplibrary.exception.RenderingAppException
+import org.json.JSONObject
 
 internal class GDPRConsentLibImpl(
     private val campaign: Campaign,
@@ -62,31 +64,15 @@ internal class GDPRConsentLibImpl(
         networkClient.getNativeMessage(
             req,
             { messageResp ->
-
                 val jsonResult = messageResp.msgJSON
-//                val consentUUID = jsonResult.getString("uuid")
-//                val metaData = jsonResult.getString("meta")
-//                val jConsent = jsonResult.getJSONObject("userConsent")
-//                jConsent.put("uuid", consentUUID)
-//                val userConsent = GDPRUserConsent(jsonResult.getJSONObject("userConsent"), consentUUID, pLogger)
                 executor.executeOnMain {
-                    nativeMessage.getAcceptAll().button.setOnClickListener {
-                        println("getAcceptAll")
-                    }
-                    nativeMessage.getRejectAll().button.setOnClickListener {
-                        println("getRejectAll")
-                    }
-                    nativeMessage.getShowOptions().button.setOnClickListener {
-                        println("getShowOptions")
-                    }
-                    nativeMessage.getCancel().button.setOnClickListener {
-                        println("getCancel")
-                    }
-                    nativeMessage.setAttributes(NativeMessageAttrs(jsonResult, pLogger))
+                    /** configuring onClickListener and set the parameters */
+                    configureNativeMessage(nativeMessage, jsonResult, pLogger)
+                    /** calling the client */
                     spGdprClient?.onConsentUIReady(nativeMessage)
                 }
             },
-            { throwable -> throwable.printStackTrace() }
+            { throwable -> pLogger.error(throwable.toConsentLibException()) }
         )
     }
 
@@ -145,9 +131,9 @@ internal class GDPRConsentLibImpl(
 
     @JavascriptInterface
     override fun onAction(actionData: String) {
-        pJsonConverter
+        val consentAction = pJsonConverter
             .toConsentAction(actionData)
-            .map { /** ConsentAction  */ }
+            .map { onActionFromWebViewClient(it) }
     }
 
     @JavascriptInterface
@@ -158,7 +144,64 @@ internal class GDPRConsentLibImpl(
 
     /** End Receiver methods */
 
+    private fun configureNativeMessage(nativeMessage: NativeMessage, jsonResult: JSONObject, pLogger: Logger) {
+        nativeMessage.run {
+            getAcceptAll().button.setOnClickListener(::onAcceptAll)
+            getRejectAll().button.setOnClickListener(::onRejectAll)
+            getShowOptions().button.setOnClickListener(::onShowOptions)
+            getCancel().button.setOnClickListener(::onCancel)
+            setAttributes(NativeMessageAttrs(jsonResult, pLogger))
+        }
+    }
+
     private fun checkClient() {
         spGdprClient ?: throw MissingClientException(description = "GDPR client is missing")
+    }
+
+    /**
+     * onclick listener connected to the acceptAll button in the NativeMessage View
+     * @param view AcceptAll [android.widget.Button]
+     */
+    private fun onAcceptAll(view: View) {
+        spGdprClient?.onAction(ActionTypes.ACCEPT_ALL)
+    }
+
+    /**
+     * onclick listener connected to the RejectAll button in the NativeMessage View
+     * @param view RejectAll [android.widget.Button]
+     */
+    private fun onRejectAll(view: View) {
+        spGdprClient?.onAction(ActionTypes.REJECT_ALL)
+    }
+
+    /**
+     * onclick listener connected to the ShowOptions button in the NativeMessage View
+     * @param view ShowOptions [android.widget.Button]
+     */
+    private fun onShowOptions(view: View) {
+        spGdprClient?.onAction(ActionTypes.SHOW_OPTIONS)
+    }
+
+    /**
+     * onclick listener connected to the Cancel button in the NativeMessage View
+     * @param view Cancel [android.widget.Button]
+     */
+    private fun onCancel(view: View) {
+        spGdprClient?.onAction(ActionTypes.MSG_CANCEL)
+    }
+
+    /**
+     * Receive the action performed by the user from the WebView
+     */
+    private fun onActionFromWebViewClient(action: ConsentAction) {
+        executor.executeOnMain { spGdprClient?.onAction(action.actionType) }
+        when (action.actionType) {
+            ActionTypes.ACCEPT_ALL -> {}
+            ActionTypes.MSG_CANCEL -> {}
+            ActionTypes.SAVE_AND_EXIT -> {}
+            ActionTypes.SHOW_OPTIONS -> {}
+            ActionTypes.REJECT_ALL -> {}
+            ActionTypes.PM_DISMISS -> {}
+        }
     }
 }

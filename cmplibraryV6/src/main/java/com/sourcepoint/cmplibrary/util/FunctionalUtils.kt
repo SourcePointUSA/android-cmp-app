@@ -1,5 +1,8 @@
 package com.sourcepoint.cmplibrary.util
 
+import com.sourcepoint.gdpr_cmplibrary.exception.ConsentLibExceptionK
+import com.sourcepoint.gdpr_cmplibrary.exception.GenericSDKException
+
 /**
  * This method execute the `block` closure and
  * based on the result return an obj success or a failure
@@ -12,6 +15,13 @@ internal fun <E> check(block: () -> E): Either<E> {
         val res = block.invoke()
         Either.Right(res)
     } catch (e: Exception) {
-        Either.Left(e)
+        Either.Left(e.toConsentLibException())
+    }
+}
+
+fun Throwable.toConsentLibException(): ConsentLibExceptionK {
+    return when (this) {
+        is ConsentLibExceptionK -> this
+        else -> GenericSDKException(cause = this, description = this.message ?: "Unknown cause.")
     }
 }

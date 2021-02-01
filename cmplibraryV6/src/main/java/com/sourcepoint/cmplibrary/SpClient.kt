@@ -8,5 +8,5 @@ interface SpClient {
     fun onConsentUIFinished(v: View)
     fun onConsentUIReady(v: View)
     fun onError(error: ConsentLibException?)
-    fun onAction(actionTypes: ActionTypes?)
+    fun onAction(actionTypes: ActionTypes)
 }
