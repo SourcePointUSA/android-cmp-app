@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.factory
+package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
 import android.content.Context
