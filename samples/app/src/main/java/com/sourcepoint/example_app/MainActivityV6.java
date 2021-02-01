@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.cmplibrary.Campaign;
-import com.sourcepoint.cmplibrary.factory.Builder;
+import com.sourcepoint.cmplibrary.creation.Builder;
 import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib;
 import com.sourcepoint.cmplibrary.legislation.gdpr.SpGDPRClient;
 import com.sourcepoint.example_app.core.DataProvider;

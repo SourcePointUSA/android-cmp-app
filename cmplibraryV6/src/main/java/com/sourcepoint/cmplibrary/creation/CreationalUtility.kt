@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.factory
+package com.sourcepoint.cmplibrary.creation
 
 import com.example.gdpr_cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.Campaign

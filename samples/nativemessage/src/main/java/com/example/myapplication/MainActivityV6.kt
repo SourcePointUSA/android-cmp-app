@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.sourcepoint.cmplibrary.factory.Builder
+import com.sourcepoint.cmplibrary.Campaign
+import com.sourcepoint.cmplibrary.creation.Builder
+import com.sourcepoint.cmplibrary.creation.GDPRConsentLibDelegate
 import com.sourcepoint.cmplibrary.legislation.gdpr.SpGDPRClient
 import com.sourcepoint.gdpr_cmplibrary.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -22,16 +24,17 @@ class MainActivityV6 : AppCompatActivity() {
 
     private val TAG = "**MainActivity"
 
-    private val gdprConsent by lazy {
-        Builder()
-            .setAccountId(Accounts.nativeAccount.accountId)
-            .setPropertyName(Accounts.nativeAccount.propertyName)
-            .setPropertyId(Accounts.nativeAccount.propertyId)
-            .setPmId(Accounts.nativeAccount.pmId)
-            .setContext(this)
-            .setAuthId("auth")
-            .build(GDPRConsentLibV6::class.java)
-    }
+    private val nativeCampaign = Campaign(
+        accountId = 22,
+        propertyId = 7094,
+        propertyName = "tcfv2.mobile.demo",
+        pmId = "179657"
+    )
+
+    private val gdprConsent by GDPRConsentLibDelegate(
+        campaign = nativeCampaign,
+        privacyManagerTab = PrivacyManagerTab.FEATURES
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
