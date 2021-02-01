@@ -1,9 +1,7 @@
 package com.sourcepoint.cmplibrary.legislation.gdpr
 
-import android.R
 import android.app.Activity
 import android.view.View
-import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import com.sourcepoint.cmplibrary.Campaign
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
@@ -12,11 +10,14 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.util.ConnectionManager
+import com.sourcepoint.cmplibrary.util.ViewsManager
+import com.sourcepoint.cmplibrary.util.checkMainThread
 import com.sourcepoint.cmplibrary.util.map
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage
 import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
 import com.sourcepoint.gdpr_cmplibrary.exception.Logger
+import com.sourcepoint.gdpr_cmplibrary.exception.MissingClientException
 import com.sourcepoint.gdpr_cmplibrary.exception.RenderingAppException
 
 internal class GDPRConsentLibImpl(
@@ -27,40 +28,51 @@ internal class GDPRConsentLibImpl(
     private val pJsonConverter: JsonConverter,
     private val pConnectionManager: ConnectionManager,
     private val networkClient: NetworkClient,
-    dataStorage: DataStorage
+    private val dataStorage: DataStorage,
+    private val viewManager: ViewsManager
 ) : GDPRConsentLib, JSReceiver {
 
     override var spGdprClient: SpGDPRClient? = null
 
-    private val mainView by lazy {
-        context.findViewById<ViewGroup>(R.id.content)
-    }
-
     /** Start Client's methods */
-    override fun loadMessage(authId: String?) {}
-    override fun loadMessage() {
+    override fun loadMessage(authId: String?) {
+        checkMainThread("loadMessage")
+        checkClient()
     }
-    override fun loadMessage(nativeMessage: NativeMessage) {}
-    override fun loadMessage(authId: String, nativeMessage: NativeMessage) {}
-    override fun loadPrivacyManager() {}
-    override fun loadPrivacyManager(authId: String) {}
+    override fun loadMessage() {
+        checkMainThread("loadMessage")
+        checkClient()
+    }
+    override fun loadMessage(nativeMessage: NativeMessage) {
+        checkMainThread("loadMessage")
+        checkClient()
+        spGdprClient?.onConsentUIReady(nativeMessage)
+        viewManager.showView(nativeMessage)
+    }
+    override fun loadMessage(authId: String, nativeMessage: NativeMessage) {
+        checkMainThread("loadMessage")
+        checkClient()
+        spGdprClient?.onConsentUIReady(nativeMessage)
+        viewManager.showView(nativeMessage)
+    }
+    override fun loadPrivacyManager() {
+        checkMainThread("loadPrivacyManager")
+        checkClient()
+    }
+    override fun loadPrivacyManager(authId: String) {
+        checkMainThread("loadPrivacyManager")
+        checkClient()
+    }
 
     override fun showView(view: View) {
-        if (view.parent == null) {
-            view.layoutParams = ViewGroup.LayoutParams(0, 0)
-            view.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-            view.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-            view.bringToFront()
-            view.requestLayout()
-            mainView.addView(view)
-        }
+        checkMainThread("showView")
+        viewManager.showView(view)
     }
 
     override fun removeView(view: View) {
-
-        view.parent?.let { mainView.removeView(view) }
+        checkMainThread("removeView")
+        viewManager.removeView(view)
     }
-
     /** end Client's methods */
 
     private fun createWebView(): ConsentWebView {
@@ -93,4 +105,8 @@ internal class GDPRConsentLibImpl(
         pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
     }
     /** End Receiver methods */
+
+    private fun checkClient() {
+        spGdprClient ?: throw MissingClientException(description = "GDPR client is missing")
+    }
 }

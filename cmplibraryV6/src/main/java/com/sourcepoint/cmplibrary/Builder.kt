@@ -16,10 +16,12 @@ import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAConsentLibImpl
 import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib
 import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLibImpl
 import com.sourcepoint.cmplibrary.util.ConnectionManager
+import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
 import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
 import com.sourcepoint.gdpr_cmplibrary.exception.* //ktlint-disable
 import okhttp3.OkHttpClient
+import java.lang.ref.WeakReference
 
 class Builder {
 
@@ -28,7 +30,7 @@ class Builder {
     private var authId: String? = null
     private var propertyId: Int? = null
     private var pmId: String? = null
-    private var context: Activity? = null
+    private var weakReference : WeakReference<Activity>? = null
     private var ott: Boolean = false
     private var privacyManagerTab: PrivacyManagerTab? = null
 
@@ -57,7 +59,7 @@ class Builder {
     }
 
     fun setContext(context: Activity) = apply {
-        this.context = context
+        this.weakReference = WeakReference(context)
     }
 
     fun setPrivacyManagerTab(privacyManagerTab: PrivacyManagerTab) = apply {
@@ -67,7 +69,8 @@ class Builder {
     @Suppress("UNCHECKED_CAST")
     fun <T : ConsentLib> build(clazz: Class<out T>): T {
 
-        val ctx = context ?: failParam("context")
+        val activityWeakRef = weakReference ?: failParam("context")
+        val ctx = activityWeakRef.get() ?: failParam("context")
         val account = createAccount()
         val client = createClientInfo()
         val errorManager = errorMessageManager(account, client)
@@ -78,11 +81,12 @@ class Builder {
         val responseManager = ResponseManager.create(jsonConverter)
         val networkClient = networkClient(OkHttpClient(), responseManager)
         val dataStorage = DataStorage.create(ctx)
+        val viewManager = ViewsManager.create(activityWeakRef)
 
         return when (clazz) {
             GDPRConsentLib::class.java -> {
                 GDPRConsentLibImpl(
-                    account, pmTab, ctx, logger, jsonConverter, connManager, networkClient, dataStorage
+                    account, pmTab, ctx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager
                 ) as T
             }
             CCPAConsentLib::class.java -> {
