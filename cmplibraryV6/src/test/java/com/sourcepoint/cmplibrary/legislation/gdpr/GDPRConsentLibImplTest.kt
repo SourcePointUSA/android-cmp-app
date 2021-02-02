@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.creation.createClientInfo
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ExecutorManager
@@ -64,6 +65,9 @@ class GDPRConsentLibImplTest {
     @MockK
     private lateinit var spGDPRClient: SpGDPRClient
 
+    @MockK
+    private lateinit var urlManager: HttpUrlManager
+
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
@@ -71,14 +75,14 @@ class GDPRConsentLibImplTest {
 
     @Test(expected = MissingClientException::class)
     fun `CALLING loadMessage() with a null SpGDPRClient THROWS a MissingClientException`() {
-        val sut = GDPRConsentLibImpl(campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager, execManager)
+        val sut = GDPRConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager, execManager)
         sut.loadMessage()
         verify(exactly = 1) { networkClient.getMessage(any(), any(), any()) }
     }
 
     @Test
     fun `CALLING loadMessage() verify that getMessage is called exactly 1 time`() {
-        val sut = GDPRConsentLibImpl(campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager, execManager)
+        val sut = GDPRConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager, execManager)
         sut.spGdprClient = spGDPRClient
         sut.loadMessage()
         verify(exactly = 1) { networkClient.getMessage(any(), any(), any()) }

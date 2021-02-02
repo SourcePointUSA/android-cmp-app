@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.core.web
 
 import android.webkit.JavascriptInterface
 
-interface JSReceiver {
+internal interface JSReceiver {
     @JavascriptInterface
     fun log(tag: String?, msg: String?)
     @JavascriptInterface
@@ -15,6 +15,8 @@ interface JSReceiver {
     fun onAction(actionData: String)
     @JavascriptInterface
     fun onError(errorMessage: String)
+
+    var wv: ConsentWebView?
 
     companion object
 }

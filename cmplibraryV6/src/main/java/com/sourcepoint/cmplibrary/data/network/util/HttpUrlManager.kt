@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
+import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.legislation.gdpr.PrivacyManagerTabK
 import okhttp3.HttpUrl
 
@@ -73,11 +74,3 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("message_id", pmConf.messageId)
         .build()
 }
-
-data class PmUrlConfig(
-    val pmTab: PrivacyManagerTabK = PrivacyManagerTabK.PURPOSES,
-    val consentLanguage: String = "",
-    val consentUUID: String,
-    val siteId: String,
-    val messageId: String
-)
