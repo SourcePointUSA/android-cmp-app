@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
+import com.sourcepoint.cmplibrary.legislation.gdpr.PrivacyManagerTabK
 import okhttp3.HttpUrl
 
 /**
@@ -8,6 +9,8 @@ import okhttp3.HttpUrl
 internal interface HttpUrlManager {
     val inAppUrlMessage: HttpUrl
     val inAppUrlNativeMessage: HttpUrl
+    fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
+    fun urlPm(pmConf: PmUrlConfig): HttpUrl
 }
 
 /**
@@ -16,6 +19,7 @@ internal interface HttpUrlManager {
 internal object HttpUrlManagerSingleton : HttpUrlManager {
 
     private const val message = "wrapper/v1/unified/message"
+    private const val spHost = "cdn.privacy-mgmt.com"
 
     val inAppLocalUrlMessage: HttpUrl = HttpUrl.Builder()
         .scheme("http")
@@ -31,9 +35,49 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
     override val inAppUrlNativeMessage: HttpUrl
         get() = HttpUrl.Builder()
             .scheme("https")
-            .host("cdn.privacy-mgmt.com")
+            .host(spHost)
             .addPathSegments("wrapper/tcfv2/v1/gdpr")
             .addPathSegments("native-message")
             .addQueryParameter("inApp", "true")
             .build()
+
+    override fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
+        .scheme("https")
+        .host(spHost)
+        .addPathSegments("privacy-manager-ott")
+        .addPathSegments("index.html")
+        .addQueryParameter("consentLanguage", pmConf.consentLanguage)
+        .addQueryParameter("consentUUID", pmConf.consentUUID)
+        .apply {
+            if (pmConf.pmTab != PrivacyManagerTabK.DEFAULT) {
+                addQueryParameter("pmTab", pmConf.pmTab.key)
+            }
+        }
+        .addQueryParameter("site_id", pmConf.siteId)
+        .addQueryParameter("message_id", pmConf.messageId)
+        .build()
+
+    override fun urlPm(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
+        .scheme("https")
+        .host(spHost)
+        .addPathSegments("privacy-manager")
+        .addPathSegments("index.html")
+        .addQueryParameter("consentLanguage", pmConf.consentLanguage)
+        .addQueryParameter("consentUUID", pmConf.consentUUID)
+        .apply {
+            if (pmConf.pmTab != PrivacyManagerTabK.DEFAULT) {
+                addQueryParameter("pmTab", pmConf.pmTab.key)
+            }
+        }
+        .addQueryParameter("site_id", pmConf.siteId)
+        .addQueryParameter("message_id", pmConf.messageId)
+        .build()
 }
+
+data class PmUrlConfig(
+    val pmTab: PrivacyManagerTabK = PrivacyManagerTabK.PURPOSES,
+    val consentLanguage: String = "",
+    val consentUUID: String,
+    val siteId: String,
+    val messageId: String
+)
