@@ -8,6 +8,8 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
+import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
+import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAConsentLib
@@ -82,10 +84,12 @@ class Builder {
         val dataStorage = DataStorage.create(appCtx)
         val viewManager = ViewsManager.create(activityWeakRef)
         val execManager = ExecutorManager.create(appCtx)
+        val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 
         return when (clazz) {
             GDPRConsentLib::class.java -> {
                 GDPRConsentLibImpl(
+                    urlManager,
                     account,
                     pmTab,
                     appCtx,

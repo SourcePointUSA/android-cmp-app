@@ -7,6 +7,8 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
+import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
+import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAConsentLib
@@ -42,9 +44,10 @@ fun makeGdprConsentLib(
     val dataStorage = DataStorage.create(appCtx)
     val viewManager = ViewsManager.create(WeakReference<Activity>(context))
     val execManager = ExecutorManager.create(appCtx)
+    val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 
     return GDPRConsentLibImpl(
-        account, privacyManagerTab, appCtx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager, execManager
+        urlManager, account, privacyManagerTab, appCtx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager, execManager
     )
 }
 

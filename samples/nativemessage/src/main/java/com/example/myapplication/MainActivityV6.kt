@@ -73,7 +73,7 @@ class MainActivityV6 : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.i(TAG, "init");
-        gdprConsent.loadMessage(buildNativeMessage())
+//        gdprConsent.loadMessage(buildNativeMessage())
     }
 
     private fun buildNativeMessage(): NativeMessage {

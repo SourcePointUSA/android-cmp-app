@@ -9,13 +9,18 @@ import android.os.Build
 import android.os.Message
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException.NoInternetConnectionException
 import com.sourcepoint.gdpr_cmplibrary.exception.Logger
+import okhttp3.HttpUrl
 
-abstract class ConsentWebView(context: Context) : WebView(context) {
+internal class ConsentWebView(
+    context: Context,
+    private val jsReceiver: JSReceiver,
+    private val logger: Logger,
+    private val connectionManager: ConnectionManager
+) : WebView(context), IConsentWebView {
 
     init {
         setup()
@@ -23,26 +28,13 @@ abstract class ConsentWebView(context: Context) : WebView(context) {
 
     private val tag = ConsentWebView::class.simpleName
 
-    private val spWebViewClient: SPWebViewClient by lazy {
-        SPWebViewClient(
-            wv = this,
-            log = logger,
-            onError = { onError(it) },
-            onNoIntentActivitiesFoundFor = { onNoIntentActivitiesFoundFor(it) }
-        )
-    }
-
-    internal abstract val onNoIntentActivitiesFoundFor: (url: String) -> Unit
-    internal abstract val onError: (error: ConsentLibException) -> Unit
-    internal abstract val jsReceiver: JSReceiver
-    internal abstract val logger: Logger
-    internal abstract val connectionManager: ConnectionManager
-    internal abstract val jsonConverter: JsonConverter
+    override var onNoIntentActivitiesFoundFor: ((url: String) -> Unit)? = null
+    override var onError: ((ConsentLibException) -> Unit)? = null
 
     private val chromeClient = object : WebChromeClient() {
         override fun onCreateWindow(view: WebView, dialog: Boolean, userGesture: Boolean, resultMsg: Message): Boolean {
             context.loadLinkOnExternalBrowser(getLinkUrl(view.hitTestResult)) {
-                onNoIntentActivitiesFoundFor(it)
+                onNoIntentActivitiesFoundFor?.invoke(it)
             }
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.hitTestResult)))
             view.context.startActivity(browserIntent)
@@ -53,8 +45,15 @@ abstract class ConsentWebView(context: Context) : WebView(context) {
     private fun setup() {
         enableDebug()
         setStyle()
-        webViewClient = spWebViewClient
+        jsReceiver.wv = this
+        webViewClient = SPWebViewClient(
+            wv = this,
+            log = logger,
+            onError = { onError?.invoke(it) },
+            onNoIntentActivitiesFoundFor = { onNoIntentActivitiesFoundFor?.invoke(it) }
+        )
         webChromeClient = chromeClient
+
         addJavascriptInterface(jsReceiver, "JSReceiver")
     }
 
@@ -73,9 +72,9 @@ abstract class ConsentWebView(context: Context) : WebView(context) {
         }
     }
 
-    internal fun loadConsentUIFromUrl(url: String): Either<Boolean> = check {
-        if (connectionManager.isConnected) throw NoInternetConnectionException()
-        loadUrl(url)
+    override fun loadConsentUIFromUrl(url: HttpUrl): Either<Boolean> = check {
+        if (!connectionManager.isConnected) throw NoInternetConnectionException()
+        loadUrl(url.toString())
         true
     }
 }
