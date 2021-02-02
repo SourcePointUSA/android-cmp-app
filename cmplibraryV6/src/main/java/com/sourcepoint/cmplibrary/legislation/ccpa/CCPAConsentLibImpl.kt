@@ -7,7 +7,7 @@ internal class CCPAConsentLibImpl : CCPAConsentLib {
 
     override var spCcpaClient: SpCCPAClient? = null
     override fun loadMessage() { }
-    override fun loadMessage(authId: String?) { }
+    override fun loadMessage(authId: String) { }
     override fun loadMessage(nativeMessage: NativeMessage) { }
     override fun loadMessage(authId: String, nativeMessage: NativeMessage) { }
     override fun loadPrivacyManager() { }

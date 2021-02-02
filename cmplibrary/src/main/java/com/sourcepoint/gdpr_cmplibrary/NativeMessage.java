@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.example.gdpr_cmplibrary.R;
 
+import static com.sourcepoint.gdpr_cmplibrary.ActionTypes.*; //ktlint-disable
+
 /**
  * TODO: document NativeMessage view class.
  */
@@ -22,6 +24,8 @@ public class NativeMessage extends RelativeLayout {
 
     public TextView body;
     public TextView title;
+
+    private NativeMessageClient client = null;
 
     public NativeMessage(Context context) {
         super(context);
@@ -49,7 +53,29 @@ public class NativeMessage extends RelativeLayout {
     }
 
     public void setOnclickAction(ActionButton actionButton, GDPRConsentLib consentLib){
-        actionButton.button.setOnClickListener(_v -> consentLib.onAction(new ConsentAction(actionButton.choiceType, String.valueOf(actionButton.choiceId),false, null)));
+//        actionButton.button.setOnClickListener(_v -> consentLib.onAction(new ConsentAction(actionButton.choiceType, String.valueOf(actionButton.choiceId),false, null)));
+        actionButton.button.setOnClickListener(_v -> triggerAction(actionButton, consentLib));
+    }
+
+    private void triggerAction(ActionButton actionButton, GDPRConsentLib consentLib){
+        ConsentAction action = new ConsentAction(actionButton.choiceType, String.valueOf(actionButton.choiceId),false, null);
+        consentLib.onAction(action);
+        if(client != null){
+            switch (ActionTypes.valueOf(actionButton.choiceType)) {
+                case SHOW_OPTIONS:
+                    client.onClickShowOptions(action);
+                    break;
+                case PM_DISMISS:
+                    client.onPmDismiss(action);
+                    break;
+                case MSG_CANCEL:
+                    client.onClickCancel(action);
+                    break;
+                default:
+                    client.onDefaultAction(action);
+                    break;
+            }
+        }
     }
 
     public void setCallBacks(GDPRConsentLib consentLib) {
@@ -161,5 +187,9 @@ public class NativeMessage extends RelativeLayout {
         public Button button;
         public int choiceType;
         public int choiceId;
+    }
+
+    public void setActionClient(NativeMessageClient pClient){
+        client = pClient;
     }
 }
