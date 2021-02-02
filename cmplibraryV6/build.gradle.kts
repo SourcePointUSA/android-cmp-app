@@ -53,7 +53,10 @@ android {
     }
 
     testOptions {
+        // JSONObject return null during unit tests
+        // https://stackoverflow.com/questions/49667567/android-org-json-jsonobject-returns-null-in-unit-tests/57592457#57592457
         unitTests.isReturnDefaultValues = true
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
@@ -73,6 +76,7 @@ dependencies {
 
     testImplementation (Libs.mockk)
     testImplementation("com.squareup.okhttp3:mockwebserver:4.4.0")
+
 }
 
 apply(from = "${rootDir}/gradleutils/publish-android.gradle")

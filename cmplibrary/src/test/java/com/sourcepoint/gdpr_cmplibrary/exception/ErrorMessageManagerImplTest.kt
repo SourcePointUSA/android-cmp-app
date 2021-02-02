@@ -160,7 +160,7 @@ class ErrorMessageManagerImplTest{
     fun `GIVEN an RenderingAppException VERIFY the generated message`() {
 
         val originalException = RuntimeException("test_message")
-        val exception = RenderingAppException(originalException, "test_description", "test_code")
+        val exception = RenderingAppException(cause = originalException, description = "test_description", pCode = "test_code")
 
         val expected = """
             {
