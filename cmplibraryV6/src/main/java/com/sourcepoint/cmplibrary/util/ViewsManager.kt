@@ -4,16 +4,16 @@ import android.R
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
+import com.sourcepoint.cmplibrary.ConsentLibImpl
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
-import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLibImpl
 import com.sourcepoint.cmplibrary.util.IDS.idsSet
 import java.lang.ref.WeakReference
 
 internal interface ViewsManager {
     fun removeView(view: View?)
     fun showView(view: View)
-    fun createWebView(lib: GDPRConsentLibImpl): IConsentWebView?
+    fun createWebView(lib: ConsentLibImpl): IConsentWebView?
 
     companion object
 }
@@ -65,7 +65,7 @@ private class ViewsManagerImpl(val weakReference: WeakReference<Activity>) : Vie
         }
     }
 
-    override fun createWebView(lib: GDPRConsentLibImpl): ConsentWebView? {
+    override fun createWebView(lib: ConsentLibImpl): ConsentWebView? {
         return weakReference.get()?.let {
             ConsentWebView(
                 context = it,
