@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary
+package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.data.network.model.Categories
 import com.sourcepoint.cmplibrary.data.network.model.GdprReq

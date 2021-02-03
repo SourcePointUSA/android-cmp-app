@@ -6,18 +6,18 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.sourcepoint.cmplibrary.Campaign
-import com.sourcepoint.cmplibrary.creation.Builder
-import com.sourcepoint.cmplibrary.creation.GDPRConsentLibDelegate
+import com.sourcepoint.cmplibrary.model.Campaign
+import com.sourcepoint.cmplibrary.ConsentLib
+import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.creation.delegate.GDPRConsentLibDelegate
+import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAUserConsent
 import com.sourcepoint.cmplibrary.legislation.gdpr.SpGDPRClient
 import com.sourcepoint.gdpr_cmplibrary.*
 import kotlinx.android.synthetic.main.content_main.*
-import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib as GDPRConsentLibV6
 
 class MainActivityV6 : AppCompatActivity() {
 
@@ -40,7 +40,7 @@ class MainActivityV6 : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        gdprConsent.spGdprClient = Client(gdprConsent)
+        gdprConsent.spClient = LocalClient(gdprConsent)
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -73,11 +73,22 @@ class MainActivityV6 : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.i(TAG, "init");
-//        gdprConsent.loadMessage(buildNativeMessage())
+        gdprConsent.loadMessage(buildNativeMessage())
     }
 
     private fun buildNativeMessage(): NativeMessage {
         return NativeMessage(this)
+    }
+
+    var view : View? = null
+    override fun onBackPressed() {
+        gdprConsent.removeView(view)
+        view?.let {
+            view = null
+        }?: kotlin.run {
+            super.onBackPressed()
+        }
+
     }
 
     private fun buildNativeMessageConstraintLayout(): NativeMessage {
@@ -120,16 +131,18 @@ class MainActivityV6 : AppCompatActivity() {
         }
     }
 
-    inner class Client(private val gdpr : GDPRConsentLibV6) : SpGDPRClient{
-        override fun onConsentReady(c: GDPRUserConsent?) {
+    inner class LocalClient(private val gdpr : ConsentLib) : SpClient {
 
-        }
+        override fun onConsentReadyCallback(c: CCPAUserConsent) {}
+
+        override fun onConsentReady(c: GDPRUserConsent) {}
 
         override fun onConsentUIFinished(v: View) {
            gdpr.removeView(v)
         }
 
         override fun onConsentUIReady(v: View) {
+            view = v
             gdpr.showView(v)
         }
 
@@ -140,6 +153,10 @@ class MainActivityV6 : AppCompatActivity() {
         override fun onAction(actionTypes: ActionTypes) {
             Toast.makeText(this@MainActivityV6, "Action[${actionTypes.name}]", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
 }

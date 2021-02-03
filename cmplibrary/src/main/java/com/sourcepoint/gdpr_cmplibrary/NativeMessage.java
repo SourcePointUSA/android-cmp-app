@@ -1,6 +1,7 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
@@ -43,6 +44,9 @@ public class NativeMessage extends RelativeLayout {
     }
 
     public void init(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            setId(View.generateViewId());
+        }
         inflate(getContext(), R.layout.sample_native_message, this);
         setAcceptAll(findViewById(R.id.AcceptAll));
         setRejectAll(findViewById(R.id.RejectAll));

@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Message
+import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
@@ -43,6 +44,9 @@ internal class ConsentWebView(
     }
 
     private fun setup() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            id = View.generateViewId()
+        }
         enableDebug()
         setStyle()
         jsReceiver.wv = this

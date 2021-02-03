@@ -73,7 +73,7 @@ dependencies {
     api(project(":cmplibrary"))
 
     testImplementation (Libs.mockk)
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.4.0")
+    testImplementation(Libs.mockwebserver)
 
 }
 
