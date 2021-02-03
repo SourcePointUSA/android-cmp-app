@@ -1,6 +1,12 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
+import com.sourcepoint.cmplibrary.util.Either
+import com.sourcepoint.cmplibrary.util.Either.Left
+import com.sourcepoint.cmplibrary.util.Either.Right
+import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException
+import com.sourcepoint.gdpr_cmplibrary.exception.Legislation
+import com.sourcepoint.gdpr_cmplibrary.exception.Legislation.* // ktlint-disable
 import org.json.JSONObject
 
 /**
@@ -33,6 +39,14 @@ data class GDPRUserConsent(
     var tcData: DeferredMap = DeferredMap(false),
     var vendorsGrants: DeferredMap = DeferredMap(false),
 )
+
+internal fun MessageResp.getAppliedLegislation(): Either<Legislation> {
+    return when {
+        gdpr != null -> Right(GDPR)
+        ccpa != null -> Right(CCPA)
+        else -> Left(InvalidResponseWebMessageException(description = "Invalid Legislation type"))
+    }
+}
 
 /**
  * ===================================== Native Message ====================================

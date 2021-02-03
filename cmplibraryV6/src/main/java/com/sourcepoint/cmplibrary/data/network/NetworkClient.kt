@@ -12,13 +12,13 @@ internal interface NetworkClient {
     /**
      * Requesting a message object to the server
      * @param messageReq request content to send into the body
-     * @param success success callback
-     * @param error error callback
+     * @param pSuccess success callback
+     * @param pError error callback
      */
     fun getMessage(
         messageReq: MessageReq,
-        success: (MessageResp) -> Unit,
-        error: (Throwable) -> Unit
+        pSuccess: (MessageResp) -> Unit,
+        pError: (Throwable) -> Unit
     )
 
     /**

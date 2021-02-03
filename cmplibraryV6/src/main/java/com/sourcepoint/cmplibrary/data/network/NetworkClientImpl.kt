@@ -29,8 +29,8 @@ private class NetworkClientImpl(
 
     override fun getMessage(
         messageReq: MessageReq,
-        success: (MessageResp) -> Unit,
-        error: (Throwable) -> Unit
+        pSuccess: (MessageResp) -> Unit,
+        pError: (Throwable) -> Unit
     ) {
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
@@ -44,13 +44,13 @@ private class NetworkClientImpl(
             .newCall(request)
             .enqueue {
                 onFailure { _, exception ->
-                    error(exception)
+                    pError(exception)
                 }
                 onResponse { _, r ->
                     responseManager
                         .parseResponse(r)
-                        .map { success(it) }
-                        .executeOnLeft { error(it) }
+                        .map { pSuccess(it) }
+                        .executeOnLeft { pError(it) }
                 }
             }
     }
