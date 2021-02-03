@@ -13,9 +13,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.ConsentLib
 import com.sourcepoint.cmplibrary.SpClient
-import com.sourcepoint.cmplibrary.creation.delegate.GDPRConsentLibDelegate
+import com.sourcepoint.cmplibrary.creation.delegate.ConsentLibDelegate
 import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAUserConsent
-import com.sourcepoint.cmplibrary.legislation.gdpr.SpGDPRClient
 import com.sourcepoint.gdpr_cmplibrary.*
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -30,7 +29,7 @@ class MainActivityV6 : AppCompatActivity() {
         pmId = "179657"
     )
 
-    private val gdprConsent by GDPRConsentLibDelegate(
+    private val gdprConsent by ConsentLibDelegate(
         campaign = nativeCampaign,
         privacyManagerTab = PrivacyManagerTab.FEATURES
     )

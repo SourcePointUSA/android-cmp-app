@@ -90,7 +90,7 @@ internal class GDPRConsentLibImpl(
     override fun loadPrivacyManager() {
         checkMainThread("loadPrivacyManager")
         checkClient()
-        val webView = viewManager.createWebView(this)
+        val webView = createWebView()
         webView?.run {
             onError = { consentLibException -> }
             onNoIntentActivitiesFoundFor = { url -> }
@@ -120,14 +120,14 @@ internal class GDPRConsentLibImpl(
 
     /** end Client's methods */
 
-//    private fun createWebView(): com.sourcepoint.cmplibrary.core.web.ConsentWebView {
-//        return ConsentWebView(
-//            context = context,
-//            connectionManager = pConnectionManager,
-//            jsReceiver = JSReceiverDelegate(),
-//            logger = pLogger
-//        )
-//    }
+    private fun createWebView(): com.sourcepoint.cmplibrary.core.web.ConsentWebView {
+        return ConsentWebView(
+            context = context,
+            connectionManager = pConnectionManager,
+            jsReceiver = JSReceiverDelegate(),
+            logger = pLogger
+        )
+    }
 
     /** Start Receiver methods */
     inner class JSReceiverDelegate() : JSReceiver {

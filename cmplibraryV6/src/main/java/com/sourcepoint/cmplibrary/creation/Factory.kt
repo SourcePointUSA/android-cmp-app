@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import com.sourcepoint.cmplibrary.ConsentLib
 import com.sourcepoint.cmplibrary.ConsentLibImpl
+import com.sourcepoint.cmplibrary.data.Service
+import com.sourcepoint.cmplibrary.data.create
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
@@ -42,12 +44,13 @@ fun makeConsentLib(
     val responseManager = ResponseManager.create(jsonConverter)
     val networkClient = networkClient(OkHttpClient(), responseManager)
     val dataStorage = DataStorage.create(appCtx)
+    val service: Service = Service.create(networkClient, dataStorage)
     val viewManager = ViewsManager.create(WeakReference<Activity>(context))
     val execManager = ExecutorManager.create(appCtx)
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 
     return ConsentLibImpl(
-        urlManager, account, privacyManagerTab, appCtx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager, execManager
+        urlManager, account, privacyManagerTab, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager
     )
 }
 
