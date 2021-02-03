@@ -46,10 +46,10 @@ internal class GDPRConsentLibImpl(
         checkClient()
         networkClient.getMessage(
             messageReq = campaign.toMessageReq(),
-            success = { messageResp ->
+            pSuccess = { messageResp ->
                 println()
             },
-            error = { throwable ->
+            pError = { throwable ->
                 println()
             }
         )

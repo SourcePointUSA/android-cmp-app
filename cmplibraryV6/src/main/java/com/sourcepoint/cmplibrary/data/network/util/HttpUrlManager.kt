@@ -12,6 +12,7 @@ internal interface HttpUrlManager {
     val inAppUrlNativeMessage: HttpUrl
     fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlPm(pmConf: PmUrlConfig): HttpUrl
+    fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl
 }
 
 /**
@@ -73,4 +74,29 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("site_id", pmConf.siteId)
         .addQueryParameter("message_id", pmConf.messageId)
         .build()
+
+    override fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl {
+        // TODO tests are missing
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(spHost)
+            .addPathSegments(urlLegislation.segment)
+            .addPathSegments("privacy-manager")
+            .addPathSegments("index.html")
+            .addQueryParameter("consentLanguage", pmConf.consentLanguage)
+            .addQueryParameter("consentUUID", pmConf.consentUUID)
+            .apply {
+                if (pmConf.pmTab != PrivacyManagerTabK.DEFAULT) {
+                    addQueryParameter("pmTab", pmConf.pmTab.key)
+                }
+            }
+            .addQueryParameter("site_id", pmConf.siteId)
+            .addQueryParameter("message_id", pmConf.messageId)
+            .build()
+    }
+}
+
+enum class UrlLegislation(val segment: String) {
+    GDPR("segment_gdpr"),
+    CCPA("segment_ccpa")
 }

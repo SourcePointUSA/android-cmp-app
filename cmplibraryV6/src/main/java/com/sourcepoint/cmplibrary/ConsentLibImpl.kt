@@ -44,10 +44,10 @@ internal class ConsentLibImpl(
         checkClient()
         service.getMessage(
             messageReq = campaign.toMessageReq(),
-            success = { messageResp ->
+            pSuccess = { messageResp ->
                 println()
             },
-            error = { throwable ->
+            pError = { throwable ->
                 println()
             }
         )

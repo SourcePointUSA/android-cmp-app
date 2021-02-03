@@ -5,6 +5,9 @@ import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.getAppliedLegislation
+import com.sourcepoint.cmplibrary.util.executeOnLeft
+import com.sourcepoint.cmplibrary.util.map
 
 internal fun Service.Companion.create(nc: NetworkClient, ds: DataStorage): Service = ServiceImpl(nc, ds)
 
@@ -13,14 +16,19 @@ private class ServiceImpl(
     private val ds: DataStorage
 ) : Service, NetworkClient by nc, DataStorage by ds {
 
-    override fun getMessage(messageReq: MessageReq, success: (MessageResp) -> Unit, error: (Throwable) -> Unit) {
+    override fun getMessage(messageReq: MessageReq, pSuccess: (MessageResp) -> Unit, pError: (Throwable) -> Unit) {
         nc.getMessage(
             messageReq,
             { messageResp ->
-                success(messageResp)
-                // TODO save the data into the local storage
+                messageResp
+                    .getAppliedLegislation()
+                    .map {
+                        pSuccess(messageResp)
+                        saveAppliedLegislation(it.name)
+                    }
+                    .executeOnLeft { pError(it) }
             },
-            ::error
+            pError
         )
     }
 

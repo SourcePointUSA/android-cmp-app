@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.readText
+import com.sourcepoint.cmplibrary.stub.MockCall
 import com.sourcepoint.cmplibrary.util.Either
 import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK
@@ -15,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.junit.Before
+import org.junit.Test
 import java.lang.RuntimeException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -23,6 +25,12 @@ class NetworkClientImplTest {
 
     @MockK
     lateinit var okHttp: OkHttpClient
+
+    @MockK
+    private lateinit var successMock: (MessageResp) -> Unit
+
+    @MockK
+    private lateinit var errorMock: (Throwable) -> Unit
 
     @MockK
     private lateinit var responseManager: ResponseManager
@@ -43,8 +51,12 @@ class NetworkClientImplTest {
         )
     )
 
-//    @Test
+    @Test
     fun `GIVEN a UWReq Object VERIFY the okHttp generated request`() {
+
+        val mockCall = MockCall(logicResponseCB = { cb -> cb.onResponse(mockk(), mockk()) })
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
 
         val sut = createNetworkClient(
             httpClient = okHttp,
@@ -52,11 +64,11 @@ class NetworkClientImplTest {
             urlManager = HttpUrlManagerSingleton
         )
 
-        sut.getMessage(messageReq = req, success = {}, error = {})
+        sut.getMessage(messageReq = req, pSuccess = { successMock(it) }, pError = { errorMock(it) })
 
         val slot = slot<Request>()
         verify(exactly = 1) { okHttp.newCall(capture(slot)) }
-
+        /** capture the Request and test the parameters */
         slot.captured.run {
             readText().assertEquals(req.toBodyRequest())
             url.toString().assertEquals("http://localhost:3000/wrapper/v1/unified/message?env=localProd&inApp=true")
@@ -64,9 +76,12 @@ class NetworkClientImplTest {
             url.queryParameter("env").assertEquals("localProd")
             url.queryParameter("inApp").assertEquals("true")
         }
+        /** verify that the right callback is invocker */
+        verify(exactly = 1) { successMock(any()) }
+        verify(exactly = 0) { errorMock(any()) }
     }
 
-//    @Test
+    //    @Test
     fun `GIVEN a UWReq Object and a real endpoint VERIFY that the output is a Right`() = runBlocking<Unit> {
 
         val responseManager = ResponseManager.create(JsonConverter.create())
@@ -82,7 +97,7 @@ class NetworkClientImplTest {
         val output = (res as Either.Right<MessageResp>).r
     }
 
-//    @Test
+    //    @Test
     fun `GIVEN a UWReq Object VERIFY that the output is a Right`() = runBlocking<Unit> {
 
         every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
@@ -98,7 +113,7 @@ class NetworkClientImplTest {
         val output = (res as Either.Right<MessageResp>).r
     }
 
-//    @Test
+    //    @Test
     fun `GIVEN an exception VERIFY that the output is a Left`() = runBlocking<Unit> {
 
         every { responseManager.parseResponse(any()) }.returns(Either.Left(RuntimeException("test")))

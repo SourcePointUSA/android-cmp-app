@@ -112,4 +112,15 @@ private class DataStorageImpl(context: Context) : DataStorage {
     override fun getConsentUuid(): String {
         return preference.getString(CONSENT_UUID_KEY, "")!!
     }
+
+    override fun saveAppliedLegislation(value: String) {
+        preference
+            .edit()
+            .putString("applied_legislation", value)
+            .apply()
+    }
+
+    override fun getAppliedLegislation(): String {
+        return preference.getString("applied_legislation", "")!!
+    }
 }
