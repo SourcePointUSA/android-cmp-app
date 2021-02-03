@@ -7,10 +7,11 @@ import android.view.ViewGroup
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLibImpl
+import com.sourcepoint.cmplibrary.util.IDS.idsSet
 import java.lang.ref.WeakReference
 
 internal interface ViewsManager {
-    fun removeView(view: View)
+    fun removeView(view: View?)
     fun showView(view: View)
     fun createWebView(lib: GDPRConsentLibImpl): IConsentWebView?
 
@@ -19,20 +20,37 @@ internal interface ViewsManager {
 
 internal fun ViewsManager.Companion.create(weakReference: WeakReference<Activity>): ViewsManager = ViewsManagerImpl(weakReference)
 
+object IDS {
+    val idsSet = mutableSetOf<Int>()
+}
+
 private class ViewsManagerImpl(val weakReference: WeakReference<Activity>) : ViewsManager {
 
     val mainView: ViewGroup?
         get() = weakReference.get()?.findViewById<ViewGroup>(R.id.content)
 
-    override fun removeView(view: View) {
-        view.parent?.let { _ ->
-            mainView?.let { mv ->
-                mv.post { removeView(view) }
+    override fun removeView(view: View?) {
+        val idsList = idsSet.toMutableList()
+        idsList.forEach { id ->
+            mainView?.findViewById<View>(id)?.let { view ->
+                mainView?.run {
+                    post { this.removeView(view) }
+                }
             }
         }
+        idsSet.clear()
     }
 
     override fun showView(view: View) {
+        println("[ids]===================================================")
+        println("[ids]===================================================")
+        println("current [ids][${idsSet.size}]")
+        removeView(null)
+        println("[ids] after deletion[${idsSet.size}]")
+        idsSet.add(view.id)
+        println("current [ids][${idsSet.size}]")
+        println("[ids]===================================================")
+        println("[ids]===================================================")
         if (view.parent == null) {
             mainView?.let {
                 it.post {

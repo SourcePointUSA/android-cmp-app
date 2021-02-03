@@ -3,7 +3,8 @@ package com.sourcepoint.cmplibrary.legislation.gdpr
 import android.content.Context
 import android.view.View
 import android.webkit.JavascriptInterface
-import com.sourcepoint.cmplibrary.Campaign
+import com.sourcepoint.cmplibrary.ConsentLib
+import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSReceiver
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -13,7 +14,8 @@ import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
-import com.sourcepoint.cmplibrary.toMessageReq
+import com.sourcepoint.cmplibrary.model.Campaign
+import com.sourcepoint.cmplibrary.model.toMessageReq
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.* // ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.exception.GenericSDKException
@@ -33,9 +35,9 @@ internal class GDPRConsentLibImpl(
     internal val dataStorage: DataStorage,
     private val viewManager: ViewsManager,
     private val executor: ExecutorManager
-) : GDPRConsentLib {
+) : ConsentLib {
 
-    override var spGdprClient: SpGDPRClient? = null
+    override var spClient: SpClient? = null
     private val nativeMsgClient by lazy { NativeMsgDelegate() }
 
     /** Start Client's methods */
@@ -73,7 +75,7 @@ internal class GDPRConsentLibImpl(
                     /** set the action callback */
                     nativeMessage.setActionClient(nativeMsgClient)
                     /** calling the client */
-                    spGdprClient?.onConsentUIReady(nativeMessage)
+                    spClient?.onConsentUIReady(nativeMessage)
                 }
             },
             { throwable -> pLogger.error(throwable.toConsentLibException()) }
@@ -83,8 +85,6 @@ internal class GDPRConsentLibImpl(
     override fun loadMessage(authId: String, nativeMessage: NativeMessage) {
         checkMainThread("loadMessage")
         checkClient()
-        spGdprClient?.onConsentUIReady(nativeMessage)
-        viewManager.showView(nativeMessage)
     }
 
     override fun loadPrivacyManager() {
@@ -113,21 +113,21 @@ internal class GDPRConsentLibImpl(
         viewManager.showView(view)
     }
 
-    override fun removeView(view: View) {
+    override fun removeView(view: View?) {
         checkMainThread("removeView")
         viewManager.removeView(view)
     }
 
     /** end Client's methods */
 
-    private fun createWebView(): com.sourcepoint.cmplibrary.core.web.ConsentWebView {
-        return ConsentWebView(
-            context = context,
-            connectionManager = pConnectionManager,
-            jsReceiver = JSReceiverDelegate(),
-            logger = pLogger
-        )
-    }
+//    private fun createWebView(): com.sourcepoint.cmplibrary.core.web.ConsentWebView {
+//        return ConsentWebView(
+//            context = context,
+//            connectionManager = pConnectionManager,
+//            jsReceiver = JSReceiverDelegate(),
+//            logger = pLogger
+//        )
+//    }
 
     /** Start Receiver methods */
     inner class JSReceiverDelegate() : JSReceiver {
@@ -156,7 +156,7 @@ internal class GDPRConsentLibImpl(
 
         @JavascriptInterface
         override fun onError(errorMessage: String) {
-            spGdprClient?.onError(ConsentLibException(errorMessage))
+            spClient?.onError(ConsentLibException(errorMessage))
             pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
         }
     }
@@ -164,14 +164,14 @@ internal class GDPRConsentLibImpl(
     /** End Receiver methods */
 
     private fun checkClient() {
-        spGdprClient ?: throw MissingClientException(description = "SpGDPRClient instance is missing")
+        spClient ?: throw MissingClientException(description = "spClient instance is missing")
     }
 
     /**
      * Receive the action performed by the user from the WebView
      */
     internal fun onActionFromWebViewClient(action: ConsentAction) {
-        executor.executeOnMain { spGdprClient?.onAction(action.actionType) }
+        executor.executeOnMain { spClient?.onAction(action.actionType) }
         when (action.actionType) {
             ActionTypes.ACCEPT_ALL -> {
             }
@@ -196,14 +196,14 @@ internal class GDPRConsentLibImpl(
          * onclick listener connected to the acceptAll button in the NativeMessage View
          */
         override fun onClickAcceptAll(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
-            spGdprClient?.onAction(ActionTypes.ACCEPT_ALL)
+            spClient?.onAction(ActionTypes.ACCEPT_ALL)
         }
 
         /**
          * onclick listener connected to the RejectAll button in the NativeMessage View
          */
         override fun onClickRejectAll(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
-            spGdprClient?.onAction(ActionTypes.REJECT_ALL)
+            spClient?.onAction(ActionTypes.REJECT_ALL)
         }
 
         override fun onPmDismiss(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {}
@@ -212,14 +212,14 @@ internal class GDPRConsentLibImpl(
          * onclick listener connected to the ShowOptions button in the NativeMessage View
          */
         override fun onClickShowOptions(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
-            spGdprClient?.onAction(ActionTypes.SHOW_OPTIONS)
+            spClient?.onAction(ActionTypes.SHOW_OPTIONS)
         }
 
         /**
          * onclick listener connected to the Cancel button in the NativeMessage View
          */
         override fun onClickCancel(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
-            spGdprClient?.onAction(ActionTypes.MSG_CANCEL)
+            spClient?.onAction(ActionTypes.MSG_CANCEL)
         }
 
         override fun onDefaultAction(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {

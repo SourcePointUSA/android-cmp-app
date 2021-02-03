@@ -8,3 +8,9 @@ internal fun checkMainThread(cMethodName: String) {
         throw ExecutionOutOfMainThreadException(description = "$cMethodName must be called from the MainThread")
     }
 }
+
+internal fun checkWorkerThread(cMethodName: String) {
+    if (Looper.myLooper() == Looper.getMainLooper()) {
+        throw ExecutionOutOfMainThreadException(description = "$cMethodName must be called from a Worker Thread")
+    }
+}

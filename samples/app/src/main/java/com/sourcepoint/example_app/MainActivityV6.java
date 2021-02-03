@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
-import com.sourcepoint.cmplibrary.Campaign;
+import com.sourcepoint.cmplibrary.ConsentLib;
+import com.sourcepoint.cmplibrary.model.Campaign;
+import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.creation.Builder;
-import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib;
-import com.sourcepoint.cmplibrary.legislation.gdpr.SpGDPRClient;
+import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAUserConsent;
 import com.sourcepoint.example_app.core.DataProvider;
 import com.sourcepoint.gdpr_cmplibrary.ActionTypes;
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException;
@@ -32,7 +33,7 @@ public class MainActivityV6 extends AppCompatActivity {
             "122058"
     );
 
-    private GDPRConsentLib gdprConsent = null;
+    private ConsentLib gdprConsent = null;
 
     private final Lazy<DataProvider> dataProvider = inject(DataProvider.class);
 
@@ -48,9 +49,9 @@ public class MainActivityV6 extends AppCompatActivity {
                 .setPmId(campaign.pmId)
                 .setContext(this)
                 .setAuthId(Objects.requireNonNull(dataProvider.getValue().getAuthId()))
-                .build(GDPRConsentLib.class);
+                .build();
 
-        gdprConsent.setSpGdprClient(new GdprClient());
+        gdprConsent.setSpClient(new LocalClient());
 
         findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadPrivacyManager());
         findViewById(R.id.auth_id_activity).setOnClickListener(_v -> startActivity(new Intent(this, MainActivityAuthId.class)));
@@ -62,8 +63,22 @@ public class MainActivityV6 extends AppCompatActivity {
         gdprConsent.loadMessage();
     }
 
+    View view = null;
 
-    class GdprClient implements SpGDPRClient {
+    @Override
+    public void onBackPressed() {
+        if(view!= null){
+            gdprConsent.removeView(view);
+        }
+    }
+
+    class LocalClient implements SpClient {
+
+        @Override
+        public void onConsentReadyCallback(@NotNull CCPAUserConsent c) {
+
+        }
+
         @Override
         public void onConsentReady(@Nullable GDPRUserConsent consent) {
             for (String line : consent.toString().split("\n"))
@@ -77,6 +92,7 @@ public class MainActivityV6 extends AppCompatActivity {
 
         @Override
         public void onConsentUIReady(@NotNull View v) {
+            view = v;
             gdprConsent.showView(v);
         }
 

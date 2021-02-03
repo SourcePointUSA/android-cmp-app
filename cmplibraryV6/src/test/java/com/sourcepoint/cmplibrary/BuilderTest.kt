@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary
 
 import android.app.Activity
 import com.sourcepoint.cmplibrary.creation.Builder
-import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib
 import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
@@ -28,7 +27,7 @@ class BuilderTest {
             .setPropertyId(1)
             .setPropertyName("a")
             .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(GDPRConsentLib::class.java)
+            .build()
     }
 
     @Test(expected = RuntimeException::class)
@@ -40,7 +39,7 @@ class BuilderTest {
             .setPropertyId(1)
             .setPropertyName("a")
             .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(GDPRConsentLib::class.java)
+            .build()
     }
 
     @Test(expected = RuntimeException::class)
@@ -52,7 +51,7 @@ class BuilderTest {
             .setPropertyId(1)
             .setPropertyName("a")
             .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(GDPRConsentLib::class.java)
+            .build()
     }
 
     @Test(expected = RuntimeException::class)
@@ -64,7 +63,7 @@ class BuilderTest {
             // .setPropertyId(1)
             .setPropertyName("a")
             .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(GDPRConsentLib::class.java)
+            .build()
     }
 
     @Test(expected = RuntimeException::class)
@@ -76,7 +75,7 @@ class BuilderTest {
             .setPropertyId(1)
             // .setPropertyName("a")
             .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(GDPRConsentLib::class.java)
+            .build()
     }
 
     @Test
@@ -88,18 +87,6 @@ class BuilderTest {
             .setPropertyId(1)
             .setPropertyName("a")
             // .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(GDPRConsentLib::class.java)
-    }
-
-    @Test(expected = RuntimeException::class)
-    fun `GIVEN A wrong class THROWS an exception`() {
-        Builder()
-            .setAccountId(1)
-            .setPmId("1")
-            .setContext(context)
-            .setPropertyId(1)
-            .setPropertyName("a")
-            .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
-            .build(ConsentLib::class.java)
+            .build()
     }
 }

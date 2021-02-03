@@ -1,13 +1,14 @@
 package com.sourcepoint.cmplibrary.legislation.gdpr
 
 import android.content.Context
-import com.sourcepoint.cmplibrary.Campaign
+import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.createClientInfo
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
+import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ExecutorManager
 import com.sourcepoint.cmplibrary.util.ViewsManager
@@ -63,7 +64,7 @@ class GDPRConsentLibImplTest {
     private lateinit var execManager: ExecutorManager
 
     @MockK
-    private lateinit var spGDPRClient: SpGDPRClient
+    private lateinit var spClient: SpClient
 
     @MockK
     private lateinit var urlManager: HttpUrlManager
@@ -83,7 +84,7 @@ class GDPRConsentLibImplTest {
     @Test
     fun `CALLING loadMessage() verify that getMessage is called exactly 1 time`() {
         val sut = GDPRConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager, execManager)
-        sut.spGdprClient = spGDPRClient
+        sut.spClient = spClient
         sut.loadMessage()
         verify(exactly = 1) { networkClient.getMessage(any(), any(), any()) }
     }

@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
 import android.content.Context
-import com.sourcepoint.cmplibrary.Campaign
 import com.sourcepoint.cmplibrary.ConsentLib
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.create
@@ -12,10 +11,8 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
-import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAConsentLib
-import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAConsentLibImpl
-import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLib
 import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLibImpl
+import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ExecutorManager
 import com.sourcepoint.cmplibrary.util.ViewsManager
@@ -67,8 +64,9 @@ class Builder {
         this.privacyManagerTab = privacyManagerTab
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T : ConsentLib> build(clazz: Class<out T>): T {
+//    @Suppress("UNCHECKED_CAST")
+//    fun <T : ConsentLib> build(clazz: Class<out T>): T {
+    fun build(): ConsentLib {
 
         val activityWeakRef: WeakReference<Activity> = weakReference ?: failParam("context")
         val appCtx: Context = activityWeakRef.get()?.applicationContext ?: failParam("context")
@@ -86,27 +84,41 @@ class Builder {
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 
-        return when (clazz) {
-            GDPRConsentLib::class.java -> {
-                GDPRConsentLibImpl(
-                    urlManager,
-                    account,
-                    pmTab,
-                    appCtx,
-                    logger,
-                    jsonConverter,
-                    connManager,
-                    networkClient,
-                    dataStorage,
-                    viewManager,
-                    execManager
-                ) as T
-            }
-            CCPAConsentLib::class.java -> {
-                CCPAConsentLibImpl() as T
-            }
-            else -> fail(clazz.name)
-        }
+        return GDPRConsentLibImpl(
+            urlManager,
+            account,
+            pmTab,
+            appCtx,
+            logger,
+            jsonConverter,
+            connManager,
+            networkClient,
+            dataStorage,
+            viewManager,
+            execManager
+        )
+
+//        return when (clazz) {
+//            GDPRConsentLib::class.java -> {
+//                GDPRConsentLibImpl(
+//                    urlManager,
+//                    account,
+//                    pmTab,
+//                    appCtx,
+//                    logger,
+//                    jsonConverter,
+//                    connManager,
+//                    networkClient,
+//                    dataStorage,
+//                    viewManager,
+//                    execManager
+//                ) as T
+//            }
+//            CCPAConsentLib::class.java -> {
+//                CCPAConsentLibImpl() as T
+//            }
+//            else -> fail(clazz.name)
+//        }
     }
 
     private fun createAccount(): Campaign {
