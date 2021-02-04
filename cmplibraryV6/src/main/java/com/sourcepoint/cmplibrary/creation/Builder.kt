@@ -3,6 +3,9 @@ package com.sourcepoint.cmplibrary.creation
 import android.app.Activity
 import android.content.Context
 import com.sourcepoint.cmplibrary.ConsentLib
+import com.sourcepoint.cmplibrary.ConsentLibImpl
+import com.sourcepoint.cmplibrary.data.Service
+import com.sourcepoint.cmplibrary.data.create
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
@@ -11,7 +14,6 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
-import com.sourcepoint.cmplibrary.legislation.gdpr.GDPRConsentLibImpl
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ExecutorManager
@@ -64,7 +66,7 @@ class Builder {
         this.privacyManagerTab = privacyManagerTab
     }
 
-//    @Suppress("UNCHECKED_CAST")
+    //    @Suppress("UNCHECKED_CAST")
 //    fun <T : ConsentLib> build(clazz: Class<out T>): T {
     fun build(): ConsentLib {
 
@@ -80,11 +82,12 @@ class Builder {
         val responseManager = ResponseManager.create(jsonConverter)
         val networkClient = networkClient(OkHttpClient(), responseManager)
         val dataStorage = DataStorage.create(appCtx)
+        val service: Service = Service.create(networkClient, dataStorage)
         val viewManager = ViewsManager.create(activityWeakRef)
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 
-        return GDPRConsentLibImpl(
+        return ConsentLibImpl(
             urlManager,
             account,
             pmTab,
@@ -92,8 +95,7 @@ class Builder {
             logger,
             jsonConverter,
             connManager,
-            networkClient,
-            dataStorage,
+            service,
             viewManager,
             execManager
         )

@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.creation.delegate
 
 import android.app.Activity
 import com.sourcepoint.cmplibrary.ConsentLib
-import com.sourcepoint.cmplibrary.creation.makeGdprConsentLib
+import com.sourcepoint.cmplibrary.creation.makeConsentLib
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
 import kotlin.reflect.KProperty
@@ -16,7 +16,7 @@ class ConsentLibDelegate(
 
     operator fun getValue(thisRef: Activity, property: KProperty<*>): ConsentLib {
         if (!this::lib.isInitialized) {
-            lib = makeGdprConsentLib(
+            lib = makeConsentLib(
                 propertyName = campaign.propertyName,
                 context = thisRef,
                 pmId = campaign.pmId,

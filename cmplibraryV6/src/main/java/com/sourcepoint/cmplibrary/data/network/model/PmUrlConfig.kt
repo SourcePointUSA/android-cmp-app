@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
-import com.sourcepoint.cmplibrary.legislation.gdpr.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 
 data class PmUrlConfig(
     val pmTab: PrivacyManagerTabK = PrivacyManagerTabK.PURPOSES,

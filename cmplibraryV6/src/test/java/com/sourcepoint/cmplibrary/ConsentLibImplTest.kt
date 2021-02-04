@@ -1,8 +1,8 @@
-package com.sourcepoint.cmplibrary.legislation.gdpr
+package com.sourcepoint.cmplibrary
 
 import android.content.Context
-import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.createClientInfo
+import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
@@ -22,7 +22,7 @@ import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 
-class GDPRConsentLibImplTest {
+class ConsentLibImplTest {
 
     var campaign = Campaign(
         22,
@@ -69,6 +69,9 @@ class GDPRConsentLibImplTest {
     @MockK
     private lateinit var urlManager: HttpUrlManager
 
+    @MockK
+    private lateinit var service: Service
+
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
@@ -76,16 +79,16 @@ class GDPRConsentLibImplTest {
 
     @Test(expected = MissingClientException::class)
     fun `CALLING loadMessage() with a null SpGDPRClient THROWS a MissingClientException`() {
-        val sut = GDPRConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager, execManager)
+        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
         sut.loadMessage()
-        verify(exactly = 1) { networkClient.getMessage(any(), any(), any()) }
+        verify(exactly = 1) { service.getMessage(any(), any(), any()) }
     }
 
     @Test
     fun `CALLING loadMessage() verify that getMessage is called exactly 1 time`() {
-        val sut = GDPRConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, networkClient, dataStorage, viewManager, execManager)
+        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
         sut.spClient = spClient
         sut.loadMessage()
-        verify(exactly = 1) { networkClient.getMessage(any(), any(), any()) }
+        verify(exactly = 1) { service.getMessage(any(), any(), any()) }
     }
 }
