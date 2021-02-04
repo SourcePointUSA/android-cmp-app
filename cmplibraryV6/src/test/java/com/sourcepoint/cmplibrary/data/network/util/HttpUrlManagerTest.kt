@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
-import com.sourcepoint.cmplibrary.legislation.gdpr.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import org.junit.Test
 
 class HttpUrlManagerTest {

@@ -283,7 +283,7 @@ class MissingClientException @JvmOverloads constructor(
 /**
  * This exception is thrown when a the current thread is not the MainThread
  */
-class ExecutionOutOfMainThreadException @JvmOverloads constructor(
+class ExecutionInTheWrongThreadException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false

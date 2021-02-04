@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary
 
 import android.view.View
-import com.sourcepoint.cmplibrary.legislation.ccpa.CCPAUserConsent
+import com.sourcepoint.cmplibrary.model.CCPAUserConsent
 import com.sourcepoint.gdpr_cmplibrary.ActionTypes
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent

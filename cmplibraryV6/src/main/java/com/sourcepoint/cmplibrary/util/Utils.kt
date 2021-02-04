@@ -1,16 +1,16 @@
 package com.sourcepoint.cmplibrary.util
 
 import android.os.Looper
-import com.sourcepoint.gdpr_cmplibrary.exception.ExecutionOutOfMainThreadException
+import com.sourcepoint.gdpr_cmplibrary.exception.ExecutionInTheWrongThreadException
 
 internal fun checkMainThread(cMethodName: String) {
     if (Looper.myLooper() != Looper.getMainLooper()) {
-        throw ExecutionOutOfMainThreadException(description = "$cMethodName must be called from the MainThread")
+        throw ExecutionInTheWrongThreadException(description = "$cMethodName must be called from the MainThread")
     }
 }
 
 internal fun checkWorkerThread(cMethodName: String) {
     if (Looper.myLooper() == Looper.getMainLooper()) {
-        throw ExecutionOutOfMainThreadException(description = "$cMethodName must be called from a Worker Thread")
+        throw ExecutionInTheWrongThreadException(description = "$cMethodName must be called from a Worker Thread")
     }
 }

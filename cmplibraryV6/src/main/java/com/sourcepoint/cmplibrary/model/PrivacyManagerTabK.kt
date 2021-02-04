@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.legislation.gdpr
+package com.sourcepoint.cmplibrary.model
 
 enum class PrivacyManagerTabK(val key: String) {
     DEFAULT(""),

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.sourcepoint.cmplibrary.ConsentLibImpl
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
-import com.sourcepoint.cmplibrary.util.IDS.idsSet
+import com.sourcepoint.cmplibrary.util.ViewsManagerImpl.IDS.idsSet
 import java.lang.ref.WeakReference
 
 /**
@@ -27,11 +27,11 @@ internal interface ViewsManager {
  */
 internal fun ViewsManager.Companion.create(actWeakReference: WeakReference<Activity>): ViewsManager = ViewsManagerImpl(actWeakReference)
 
-object IDS {
-    val idsSet = mutableSetOf<Int>()
-}
-
 private class ViewsManagerImpl(val weakReference: WeakReference<Activity>) : ViewsManager {
+
+    object IDS {
+        val idsSet = mutableSetOf<Int>()
+    }
 
     val mainView: ViewGroup?
         get() = weakReference.get()?.findViewById(R.id.content)
