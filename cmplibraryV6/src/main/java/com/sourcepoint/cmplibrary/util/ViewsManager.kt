@@ -10,15 +10,22 @@ import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.util.IDS.idsSet
 import java.lang.ref.WeakReference
 
+/**
+ * Entity used to handle the activity view attached to
+ */
 internal interface ViewsManager {
     fun removeView(view: View?)
     fun showView(view: View)
     fun createWebView(lib: ConsentLibImpl): IConsentWebView?
-
     companion object
 }
 
-internal fun ViewsManager.Companion.create(weakReference: WeakReference<Activity>): ViewsManager = ViewsManagerImpl(weakReference)
+/**
+ * Factory method to create an instance of a [ViewsManager] using its implementation
+ * @param actWeakReference it is a weak reference which contains an Activity reference
+ * @return an instance of the [ViewsManagerImpl] implementation
+ */
+internal fun ViewsManager.Companion.create(actWeakReference: WeakReference<Activity>): ViewsManager = ViewsManagerImpl(actWeakReference)
 
 object IDS {
     val idsSet = mutableSetOf<Int>()
@@ -27,7 +34,7 @@ object IDS {
 private class ViewsManagerImpl(val weakReference: WeakReference<Activity>) : ViewsManager {
 
     val mainView: ViewGroup?
-        get() = weakReference.get()?.findViewById<ViewGroup>(R.id.content)
+        get() = weakReference.get()?.findViewById(R.id.content)
 
     override fun removeView(view: View?) {
         val idsList = idsSet.toMutableList()

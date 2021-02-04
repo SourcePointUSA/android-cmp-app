@@ -12,7 +12,8 @@ import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageExcept
 import org.json.JSONObject
 
 /**
- * Factory method for building an instance of JsonConverter
+ * Factory method to create an instance of a [JsonConverter] using its implementation
+ * @return an instance of the [JsonConverterImpl] implementation
  */
 internal fun JsonConverter.Companion.create(): JsonConverter = JsonConverterImpl()
 

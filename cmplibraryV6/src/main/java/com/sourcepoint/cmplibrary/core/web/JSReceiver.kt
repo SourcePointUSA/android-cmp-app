@@ -17,6 +17,5 @@ internal interface JSReceiver {
     fun onError(errorMessage: String)
 
     var wv: ConsentWebView?
-
     companion object
 }

@@ -27,6 +27,11 @@ object DSKeys {
     const val IABTCF_KEY_PREFIX = "IABTCF_"
 }
 
+/**
+ * Factory method to create an instance of a [DataStorage] using its implementation
+ * @param context is the client application context
+ * @return an instance of the [DataStorageImpl] implementation
+ */
 internal fun DataStorage.Companion.create(context: Context): DataStorage = DataStorageImpl(context)
 
 private class DataStorageImpl(context: Context) : DataStorage {

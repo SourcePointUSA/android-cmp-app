@@ -8,6 +8,11 @@ internal interface ExecutorManager {
     companion object
 }
 
+/**
+ * Factory method to create an instance of a [ExecutorManager] using its implementation
+ * @param context is the client application context
+ * @return an instance of the [ExecutorManagerImpl] implementation
+ */
 internal fun ExecutorManager.Companion.create(context: Context): ExecutorManager = ExecutorManagerImpl(context)
 
 private class ExecutorManagerImpl(val context: Context) : ExecutorManager {
