@@ -9,8 +9,17 @@ import com.sourcepoint.cmplibrary.data.network.model.getAppliedLegislation
 import com.sourcepoint.cmplibrary.util.executeOnLeft
 import com.sourcepoint.cmplibrary.util.map
 
+/**
+ * Factory method to create an instance of a [Service] using its implementation
+ * @param nc is an instance of [NetworkClient]
+ * @param ds is an instance of [DataStorage]
+ * @return an instance of the [ServiceImpl] implementation
+ */
 internal fun Service.Companion.create(nc: NetworkClient, ds: DataStorage): Service = ServiceImpl(nc, ds)
 
+/**
+ * Implementation os the [Service] interface
+ */
 private class ServiceImpl(
     private val nc: NetworkClient,
     private val ds: DataStorage
