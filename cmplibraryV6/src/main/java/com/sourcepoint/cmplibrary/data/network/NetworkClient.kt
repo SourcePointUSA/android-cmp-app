@@ -27,6 +27,7 @@ internal interface NetworkClient {
      * @param success success callback
      * @param error error callback
      */
+    // TODO verify if we need it
     fun getNativeMessage(
         messageReq: MessageReq,
         success: (NativeMessageResp) -> Unit,

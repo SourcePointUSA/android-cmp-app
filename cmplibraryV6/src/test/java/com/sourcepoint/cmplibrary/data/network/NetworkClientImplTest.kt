@@ -51,23 +51,22 @@ class NetworkClientImplTest {
         )
     )
 
-    @Test
-    fun `GIVEN a UWReq Object VERIFY the okHttp generated request`() {
-
-        val mockCall = MockCall(logicResponseCB = { cb -> cb.onResponse(mockk(), mockk()) })
-        every { okHttp.newCall(any()) }.returns(mockCall)
-        every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
-
-        val sut = createNetworkClient(
+    private val sut by lazy {
+        createNetworkClient(
             httpClient = okHttp,
             responseManager = responseManager,
             urlManager = HttpUrlManagerSingleton
         )
+    }
 
+    @Test
+    fun `GIVEN a UWReq Object VERIFY the okHttp generated request`() {
+        /** execution */
         sut.getMessage(messageReq = req, pSuccess = { successMock(it) }, pError = { errorMock(it) })
 
         val slot = slot<Request>()
         verify(exactly = 1) { okHttp.newCall(capture(slot)) }
+
         /** capture the Request and test the parameters */
         slot.captured.run {
             readText().assertEquals(req.toBodyRequest())
@@ -76,9 +75,51 @@ class NetworkClientImplTest {
             url.queryParameter("env").assertEquals("localProd")
             url.queryParameter("inApp").assertEquals("true")
         }
-        /** verify that the right callback is invocker */
+    }
+
+    @Test
+    fun `GIVEN a Right Object from parseResponse VERIFY the success callback is called`() {
+        /** preconditions */
+        val mockCall = MockCall(logicResponseCB = { cb -> cb.onResponse(mockk(), mockk()) })
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
+
+        /** execution */
+        sut.getMessage(messageReq = req, pSuccess = { successMock(it) }, pError = { errorMock(it) })
+
+        /** verify that the right callback is invoked */
         verify(exactly = 1) { successMock(any()) }
         verify(exactly = 0) { errorMock(any()) }
+    }
+
+    @Test
+    fun `GIVEN a Left Object from parseResponse VERIFY the error callback is called`() {
+        /** preconditions */
+        val mockCall = MockCall(logicResponseCB = { cb -> cb.onResponse(mockk(), mockk()) })
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { responseManager.parseResponse(any()) }.returns(Either.Left(mockk()))
+
+        /** execution */
+        sut.getMessage(messageReq = req, pSuccess = { successMock(it) }, pError = { errorMock(it) })
+
+        /** verify that the right callback is invoked */
+        verify(exactly = 0) { successMock(any()) }
+        verify(exactly = 1) { errorMock(any()) }
+    }
+
+    @Test
+    fun `GIVEN a failure from httpClient VERIFY the error callback is called`() {
+        /** preconditions */
+        val mockCall = MockCall(logicResponseCB = { cb -> cb.onFailure(mockk(), mockk()) })
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { responseManager.parseResponse(any()) }.returns(Either.Left(mockk()))
+
+        /** execution */
+        sut.getMessage(messageReq = req, pSuccess = { successMock(it) }, pError = { errorMock(it) })
+
+        /** verify that the right callback is invoked */
+        verify(exactly = 0) { successMock(any()) }
+        verify(exactly = 1) { errorMock(any()) }
     }
 
     //    @Test
