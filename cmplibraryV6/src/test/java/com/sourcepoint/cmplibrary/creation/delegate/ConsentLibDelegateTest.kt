@@ -11,7 +11,7 @@ import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test
 
-class ConsentLibDelegateTest{
+class ConsentLibDelegateTest {
 
     private val campaign = Campaign(
         22,
@@ -29,7 +29,7 @@ class ConsentLibDelegateTest{
     }
 
     @Test
-    fun `VERIFY that the delegate with a tab is not null`(){
+    fun `VERIFY that the delegate with a tab is not null`() {
 
         val delegate = ConsentLibDelegate(PrivacyManagerTab.FEATURES, campaign)
         val sut1 = delegate.getValue(context, mockk())
@@ -41,7 +41,7 @@ class ConsentLibDelegateTest{
     }
 
     @Test
-    fun `VERIFY that the delegate with a tab is null`(){
+    fun `VERIFY that the delegate with a tab is null`() {
 
         val delegate = ConsentLibDelegate(campaign = campaign)
         val sut1 = delegate.getValue(context, mockk())
@@ -51,5 +51,4 @@ class ConsentLibDelegateTest{
         sut2.assertNotNull()
         sut2.assertEquals(sut1)
     }
-
 }

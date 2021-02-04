@@ -1,11 +1,8 @@
-package com.sourcepoint.cmplibrary.data
+package com.sourcepoint.cmplibrary.util
 
 import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.Either.Left
 import com.sourcepoint.cmplibrary.util.Either.Right
-import com.sourcepoint.cmplibrary.util.executeOnLeft
-import com.sourcepoint.cmplibrary.util.flatMap
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
