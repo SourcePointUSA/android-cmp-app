@@ -6,9 +6,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Handler
 import android.webkit.WebView
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
 
 fun Context.loadLinkOnExternalBrowser(
     url: String,
@@ -35,15 +32,4 @@ fun WebView.getLinkUrl(testResult: WebView.HitTestResult): String {
 
 fun doesLinkContainImage(testResult: WebView.HitTestResult): Boolean {
     return testResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
-}
-
-fun InputStream.getFileContent(): String {
-    val br = BufferedReader(InputStreamReader(this, "UTF-8"))
-    val sb = StringBuilder()
-    var line: String?
-    while (br.readLine().also { line = it } != null) {
-        sb.append(line)
-        sb.append("\n")
-    }
-    return sb.toString()
 }

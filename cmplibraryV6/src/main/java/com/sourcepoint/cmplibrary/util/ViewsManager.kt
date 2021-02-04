@@ -11,7 +11,7 @@ import com.sourcepoint.cmplibrary.util.ViewsManagerImpl.IDS.idsSet
 import java.lang.ref.WeakReference
 
 /**
- * Entity used to handle the activity view attached to
+ * Entity used to handle the views of the activity
  */
 internal interface ViewsManager {
     fun removeView(view: View?)
