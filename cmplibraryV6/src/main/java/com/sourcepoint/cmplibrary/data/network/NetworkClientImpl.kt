@@ -55,6 +55,7 @@ private class NetworkClientImpl(
             }
     }
 
+    // TODO verify if we need it
     override fun getNativeMessage(
         messageReq: MessageReq,
         success: (NativeMessageResp) -> Unit,

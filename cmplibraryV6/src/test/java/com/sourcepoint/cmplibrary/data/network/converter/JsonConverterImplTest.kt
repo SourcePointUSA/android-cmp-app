@@ -15,6 +15,16 @@ class JsonConverterImplTest {
     private val sut = JsonConverter.create()
 
     @Test
+    fun `GIVEN an empty string RETURN a Right(MessageResp) with a null GDPR obj`() {
+        val json = "{}"
+        val output: Either<MessageResp> = sut.toMessageResp(json)
+        (output as Either.Right).r.also { m ->
+            m.ccpa.assertNull()
+            m.gdpr.assertNull()
+        }
+    }
+
+    @Test
     fun `GIVEN a string RETURN a Right(MessageResp)`() {
         val json = "unified_wrapper/full_resp.json".file2String()
         val output: Either<MessageResp> = sut.toMessageResp(json)
