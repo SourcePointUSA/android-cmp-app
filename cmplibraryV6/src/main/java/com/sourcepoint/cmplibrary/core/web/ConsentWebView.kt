@@ -49,14 +49,14 @@ internal class ConsentWebView(
         }
         enableDebug()
         setStyle()
-        jsReceiver.wv = this
+//        jsReceiver.wv = this
         webViewClient = SPWebViewClient(
             wv = this,
             log = logger,
             onError = { onError?.invoke(it) },
             onNoIntentActivitiesFoundFor = { onNoIntentActivitiesFoundFor?.invoke(it) }
         )
-//        webChromeClient = chromeClient
+        webChromeClient = chromeClient
 
         addJavascriptInterface(jsReceiver, "JSReceiver")
     }
