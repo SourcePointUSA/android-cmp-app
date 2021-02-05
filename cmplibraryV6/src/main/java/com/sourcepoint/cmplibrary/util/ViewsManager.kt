@@ -73,13 +73,14 @@ private class ViewsManagerImpl(val weakReference: WeakReference<Activity>) : Vie
     }
 
     override fun createWebView(lib: ConsentLibImpl): ConsentWebView? {
-        return weakReference.get()?.let {
-            ConsentWebView(
-                context = it,
-                connectionManager = lib.pConnectionManager,
-                jsReceiver = lib.JSReceiverDelegate(),
-                logger = lib.pLogger
-            )
-        }
+        return null
+//        weakReference.get()?.let {
+//            ConsentWebView(
+//                context = it,
+//                connectionManager = lib.pConnectionManager,
+//                jsReceiver = ConsentLibImpl.JSReceiverDelegate(),
+//                logger = lib.pLogger
+//            )
+//        }
     }
 }

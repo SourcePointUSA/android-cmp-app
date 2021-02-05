@@ -4,7 +4,9 @@ import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.model.GDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
+import com.sourcepoint.cmplibrary.data.network.model.MessageGdprResp
 import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException
+import org.json.JSONObject
 
 internal fun String.toGDPR(): Gdpr? {
 
@@ -13,16 +15,28 @@ internal fun String.toGDPR(): Gdpr? {
     return (map["gdpr"] as? DeferredMap)?.let {
         val uuid = (it["uuid"] as? String) ?: fail("uuid")
         val meta = (it["meta"] as? String) ?: fail("meta")
-        val message = (it["message"] as? DeferredMap)?.get("message_json").let { m -> JSON.std.asString(m) } ?: fail("message")
+        val message = (it["message"] as? DeferredMap)?: fail("message")
         val userConsentMap = (it["userConsent"] as? DeferredMap) ?: fail("userConsent")
+
+        val messageObj = JSONObject(JSON.std.asString(message))
 
         Gdpr(
             uuid = uuid,
             GDPRUserConsent = userConsentMap.toGDPRUserConsent(),
             meta = meta,
-            message = message
+            message = messageObj
         )
     }
+}
+
+internal fun DeferredMap.toMessageGdprResp() : MessageGdprResp{
+    return MessageGdprResp(
+        message_json = (this["message_json"] as? DeferredMap).let { m -> JSON.std.asString(m) }?: fail("message_json"),
+        categories = (this["categories"] as? Iterable<Any?>).let { m -> JSON.std.asString(m) }?: fail("categories"),
+        language = (this["language"] as? String).let { m -> JSON.std.asString(m) }?: fail("language"),
+        message_choice = (this["message_choice"] as? Iterable<Any?>).let { m -> JSON.std.asString(m) }?: fail("message_choice"),
+        site_id = (this["site_id"] as? Int).let { m -> JSON.std.asString(m) }?: fail("site_id"),
+    )
 }
 
 internal fun DeferredMap.toGDPRUserConsent(): GDPRUserConsent {

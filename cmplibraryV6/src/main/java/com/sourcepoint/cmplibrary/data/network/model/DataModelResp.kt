@@ -22,7 +22,15 @@ data class Gdpr(
     val uuid: String,
     val GDPRUserConsent: GDPRUserConsent,
     val meta: String,
-    val message: String
+    val message: JSONObject
+)
+
+data class MessageGdprResp(
+    val categories: String,
+    val language: String,
+    val message_choice: String,
+    val message_json: String,
+    val site_id: String
 )
 
 data class Ccpa(
