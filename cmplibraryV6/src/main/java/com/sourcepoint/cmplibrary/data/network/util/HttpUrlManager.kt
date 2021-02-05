@@ -13,6 +13,7 @@ internal interface HttpUrlManager {
     fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl
+    fun urlLocalTest(): HttpUrl
 }
 
 /**
@@ -92,6 +93,16 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             }
             .addQueryParameter("site_id", pmConf.siteId)
             .addQueryParameter("message_id", pmConf.messageId)
+            .build()
+    }
+
+    override fun urlLocalTest(): HttpUrl {
+        // "http://192.168.1.11:8080/?preload_message=true"
+        return HttpUrl.Builder()
+            .scheme("http")
+            .host("192.168.1.11")
+            .port(8080)
+            .addQueryParameter("preload_message", "true")
             .build()
     }
 }

@@ -1,74 +1,49 @@
 package com.sourcepoint.cmplibrary
 
 import android.content.Context
-import com.sourcepoint.cmplibrary.creation.createClientInfo
 import com.sourcepoint.cmplibrary.data.Service
-import com.sourcepoint.cmplibrary.data.local.DataStorage
-import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.model.MessageResp
+import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
-import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.model.Campaign
+import com.sourcepoint.cmplibrary.stub.MockExecutorManager
+import com.sourcepoint.cmplibrary.stub.MockService
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ExecutorManager
 import com.sourcepoint.cmplibrary.util.ViewsManager
+import com.sourcepoint.cmplibrary.util.file2String
+import com.sourcepoint.gdpr_cmplibrary.ActionTypes
+import com.sourcepoint.gdpr_cmplibrary.NativeMessage
 import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
-import com.sourcepoint.gdpr_cmplibrary.exception.ErrorMessageManager
 import com.sourcepoint.gdpr_cmplibrary.exception.Logger
 import com.sourcepoint.gdpr_cmplibrary.exception.MissingClientException
-import io.mockk.MockKAnnotations
+import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK
-import io.mockk.verify
+import kotlinx.coroutines.runBlocking
+import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 
 class ConsentLibImplTest {
 
-    var campaign = Campaign(
-        22,
-        7639,
-        "tcfv2.mobile.webview",
-        "122058"
-    )
-
-    val client = createClientInfo()
-
+    var campaign = Campaign(22, 7639, "tcfv2.mobile.webview", "122058")
     @MockK
     private lateinit var appCtx: Context
-
-    @MockK
-    private lateinit var errorManager: ErrorMessageManager
-
     @MockK
     private lateinit var logger: Logger
-
     @MockK
     private lateinit var jsonConverter: JsonConverter
-
     @MockK
     private lateinit var connManager: ConnectionManager
-
-    @MockK
-    private lateinit var responseManager: ResponseManager
-
-    @MockK
-    private lateinit var networkClient: NetworkClient
-
-    @MockK
-    private lateinit var dataStorage: DataStorage
-
     @MockK
     private lateinit var viewManager: ViewsManager
-
     @MockK
     private lateinit var execManager: ExecutorManager
-
     @MockK
     private lateinit var spClient: SpClient
-
     @MockK
     private lateinit var urlManager: HttpUrlManager
-
     @MockK
     private lateinit var service: Service
 
@@ -90,5 +65,40 @@ class ConsentLibImplTest {
         sut.spClient = spClient
         sut.loadMessage()
         verify(exactly = 1) { service.getMessage(any(), any(), any()) }
+    }
+
+    @Test
+    fun `CALLING loadMessage() with verify that spClient is called`() = runBlocking<Unit> {
+        val mockService = MockService(
+            getMessageLogic = { _, pSuccess, _ -> pSuccess.invoke(MessageResp()) }
+        )
+        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, execManager)
+        sut.spClient = spClient
+
+        sut.loadMessage()
+
+        val slot = slot<ActionTypes>()
+        verify(exactly = 1) { spClient.onAction(capture(slot)) }
+        slot.captured
+    }
+
+    // TODO
+    @Test
+    fun `CALLING loadNativeMessage() with verify that spClient is called`() = runBlocking<Unit> {
+        val dtJson = "msgJSON.json".file2String()
+        val mockService = MockService(
+            getNativeMessageLogic = { _, pSuccess, _ -> pSuccess.invoke(NativeMessageResp(JSONObject(dtJson))) }
+        )
+        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, MockExecutorManager())
+        sut.spClient = spClient
+
+        val nm = mockk<NativeMessage>()
+        every { nm.setAttributes(any()) }.returns(Unit)
+        every { nm.setActionClient(any()) }.returns(Unit)
+        sut.loadMessage(nm)
+
+        val slot = slot<NativeMessage>()
+        verify(exactly = 1) { spClient.onConsentUIReady(capture(slot)) }
+        slot.captured
     }
 }

@@ -14,6 +14,7 @@ import com.sourcepoint.example_app.core.DataProvider;
 import com.sourcepoint.gdpr_cmplibrary.ActionTypes;
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException;
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
+import com.sourcepoint.gdpr_cmplibrary.exception.ConsentLibExceptionK;
 import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -97,7 +98,7 @@ public class MainActivityV6 extends AppCompatActivity {
         }
 
         @Override
-        public void onError(@Nullable ConsentLibException error) {
+        public void onError(@NotNull ConsentLibExceptionK error) {
             Log.e(TAG, "Something went wrong");
         }
 
