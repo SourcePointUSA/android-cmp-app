@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.util
+package com.sourcepoint.cmplibrary.stub
 
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq

@@ -16,6 +16,7 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.delegate.ConsentLibDelegate
 import com.sourcepoint.cmplibrary.model.CCPAUserConsent
 import com.sourcepoint.gdpr_cmplibrary.* // ktint-disable
+import com.sourcepoint.gdpr_cmplibrary.exception.ConsentLibExceptionK
 import kotlinx.android.synthetic.main.content_main.* // ktint-disable
 
 class MainActivityV6 : AppCompatActivity() {
@@ -29,7 +30,7 @@ class MainActivityV6 : AppCompatActivity() {
         pmId = "179657"
     )
 
-    private val gdprConsent by ConsentLibDelegate(
+    private val consentLib by ConsentLibDelegate(
         campaign = nativeCampaign,
         privacyManagerTab = PrivacyManagerTab.FEATURES
     )
@@ -39,7 +40,7 @@ class MainActivityV6 : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        gdprConsent.spClient = LocalClient(gdprConsent)
+        consentLib.spClient = LocalClient(consentLib)
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -47,10 +48,10 @@ class MainActivityV6 : AppCompatActivity() {
         }
 
         consent.setOnClickListener {
-            gdprConsent.loadPrivacyManager()
+            consentLib.loadPrivacyManager()
         }
 
-        findViewById<View>(R.id.consent).setOnClickListener { gdprConsent.loadPrivacyManager() }
+        findViewById<View>(R.id.consent).setOnClickListener { consentLib.loadPrivacyManager() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -72,7 +73,8 @@ class MainActivityV6 : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.i(TAG, "init");
-        gdprConsent.loadMessage(buildNativeMessage())
+        consentLib.loadMessage()
+//        consentLib.loadMessage(buildNativeMessage())
     }
 
     private fun buildNativeMessage(): NativeMessage {
@@ -81,7 +83,7 @@ class MainActivityV6 : AppCompatActivity() {
 
     var view : View? = null
     override fun onBackPressed() {
-        gdprConsent.removeView(view)
+        consentLib.removeView(view)
         view?.let {
             view = null
         }?: kotlin.run {
@@ -145,7 +147,7 @@ class MainActivityV6 : AppCompatActivity() {
             gdpr.showView(v)
         }
 
-        override fun onError(error: ConsentLibException?) {
+        override fun onError(error: ConsentLibExceptionK) {
 
         }
 
