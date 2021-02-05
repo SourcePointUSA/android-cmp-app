@@ -22,6 +22,21 @@ internal fun createLogger(
 ): Logger = LoggerImpl(networkClient, errorMessageManager, url)
 
 /**
+ * Factory method used to create an instance of the [Logger] interface for debug purpose
+ * @param networkClient network client
+ * @param errorMessageManager entity used to build the network request body
+ * @param url server url
+ */
+internal fun createLogger4Testing(
+    info : (tag : String, msg : String) -> Unit,
+    debug : (tag : String, msg : String) -> Unit,
+    verbose : (tag : String, msg : String) -> Unit,
+    networkClient: OkHttpClient,
+    errorMessageManager: ErrorMessageManager,
+    url: String,
+): Logger = createLogger(networkClient, errorMessageManager, url)
+
+/**
  * Implementation of [Logger]
  */
 private class LoggerImpl(

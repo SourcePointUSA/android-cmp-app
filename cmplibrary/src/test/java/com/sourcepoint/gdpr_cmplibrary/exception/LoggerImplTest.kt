@@ -33,7 +33,7 @@ class LoggerImplTest {
         every { messageManager.build(ex) } returns json
 
         val cb: (String, String) -> Unit = { _, _ -> }
-        val sut = createLogger4Debug(cb, cb, cb, client, messageManager, "https://myserver.com/")
+        val sut = createLogger4Testing(cb, cb, cb, client, messageManager, "https://myserver.com/")
         sut.error(ex)
 
         /** We have 2 different implementation for Debug and Release */
@@ -58,7 +58,7 @@ class LoggerImplTest {
         every { messageManager.build(ex) } returns json
 
         val cb: (String, String) -> Unit = { _, _ -> }
-        val sut = createLogger4Debug(cb, cb, cb, client, messageManager, "https://myserver.com/")
+        val sut = createLogger4Testing(cb, cb, cb, client, messageManager, "https://myserver.com/")
         sut.error(ex)
 
         /** We have 2 different implementation for Debug and Release */

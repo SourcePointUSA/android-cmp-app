@@ -32,7 +32,7 @@ internal fun createLogger(
  * @param errorMessageManager entity used to build the network request body
  * @param url server url
  */
-internal fun createLogger4Debug(
+internal fun createLogger4Testing(
     info : (tag : String, msg : String) -> Unit,
     debug : (tag : String, msg : String) -> Unit,
     verbose : (tag : String, msg : String) -> Unit,
