@@ -30,14 +30,22 @@ jobs:
             !~/cache/exclude
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-      - name: running unit tests
-        run: ./gradlew test --quiet --build-cache
-      - name: 'Publish Unit tests Report'
+      - name: Unit Tests cmplibrary
+        run: ./gradlew cmplibrary:test --quiet --build-cache
+      - name: Unit Tests cmplibraryV6
+        run: ./gradlew cmplibraryV6:test
+      - name: 'Publish Unit tests Report cmplibrary'
         if: always()
         uses: actions/upload-artifact@v2-preview
         with:
           name: 'unit-tests-report'
           path: cmplibrary/build/reports/*
+      - name: 'Publish Unit tests Report cmplibraryV6'
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: 'unit-tests-report-v6'
+          path: cmplibraryV6/build/reports/*
   ui-test-app:
     runs-on: macos-latest
     steps:
