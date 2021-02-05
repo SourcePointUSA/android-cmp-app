@@ -39,4 +39,7 @@ private class LoggerImpl(
 
         networkClient.newCall(request).enqueue { }
     }
+    override fun i(tag : String, msg : String) { }
+    override fun d(tag : String, msg : String) { }
+    override fun v(tag : String, msg : String) { }
 }

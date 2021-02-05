@@ -32,7 +32,8 @@ class LoggerImplTest {
         val json = json(CodeList.INVALID_RESPONSE_WEB_MESSAGE)
         every { messageManager.build(ex) } returns json
 
-        val sut = createLogger(client, messageManager, "https://myserver.com/")
+        val cb: (String, String) -> Unit = { _, _ -> }
+        val sut = createLogger4Debug(cb, cb, cb, client, messageManager, "https://myserver.com/")
         sut.error(ex)
 
         /** We have 2 different implementation for Debug and Release */
@@ -56,7 +57,8 @@ class LoggerImplTest {
         val json = json(ExceptionCodes("custom_code"))
         every { messageManager.build(ex) } returns json
 
-        val sut = createLogger(client, messageManager, "https://myserver.com/")
+        val cb: (String, String) -> Unit = { _, _ -> }
+        val sut = createLogger4Debug(cb, cb, cb, client, messageManager, "https://myserver.com/")
         sut.error(ex)
 
         /** We have 2 different implementation for Debug and Release */
