@@ -56,7 +56,7 @@ internal class ConsentWebView(
             onError = { onError?.invoke(it) },
             onNoIntentActivitiesFoundFor = { onNoIntentActivitiesFoundFor?.invoke(it) }
         )
-        webChromeClient = chromeClient
+//        webChromeClient = chromeClient
 
         addJavascriptInterface(jsReceiver, "JSReceiver")
     }

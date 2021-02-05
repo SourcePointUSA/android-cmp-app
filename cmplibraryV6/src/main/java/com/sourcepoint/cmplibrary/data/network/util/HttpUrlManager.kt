@@ -26,7 +26,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 
     val inAppLocalUrlMessage: HttpUrl = HttpUrl.Builder()
         .scheme("http")
-        .host("localhost")
+        .host("192.168.1.11")
         .port(3000)
         .addPathSegments(message)
         .addQueryParameter("env", "localProd")
