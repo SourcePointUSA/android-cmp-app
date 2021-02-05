@@ -1,5 +1,6 @@
 package com.sourcepoint.gdpr_cmplibrary.exception
 
+import com.example.gdpr_cmplibrary.BuildConfig
 import com.sourcepoint.gdpr_cmplibrary.assertEquals
 import com.sourcepoint.gdpr_cmplibrary.readText
 import io.mockk.MockKAnnotations
@@ -34,15 +35,19 @@ class LoggerImplTest {
         val sut = createLogger(client, messageManager, "https://myserver.com/")
         sut.error(ex)
 
-        val slot = slot<Request>()
-        verify(exactly = 1) { client.newCall(capture(slot)) }
-
-        slot.captured.run {
-            readText().assertEquals(json)
-            url.toString().assertEquals("https://myserver.com/")
-            method.assertEquals("POST")
+        /** We have 2 different implementation for Debug and Release */
+        when (BuildConfig.DEBUG) {
+            true -> verify(exactly = 0) { client.newCall(any()) }
+            false -> {
+                val slot = slot<Request>()
+                verify(exactly = 1) { client.newCall(capture(slot)) }
+                slot.captured.run {
+                    readText().assertEquals(json)
+                    url.toString().assertEquals("https://myserver.com/")
+                    method.assertEquals("POST")
+                }
+            }
         }
-
     }
 
     @Test
@@ -54,15 +59,19 @@ class LoggerImplTest {
         val sut = createLogger(client, messageManager, "https://myserver.com/")
         sut.error(ex)
 
-        val slot = slot<Request>()
-        verify(exactly = 1) { client.newCall(capture(slot)) }
-
-        slot.captured.run {
-            readText().assertEquals(json)
-            url.toString().assertEquals("https://myserver.com/")
-            method.assertEquals("POST")
+        /** We have 2 different implementation for Debug and Release */
+        when (BuildConfig.DEBUG) {
+            true -> verify(exactly = 0) { client.newCall(any()) }
+            false -> {
+                val slot = slot<Request>()
+                verify(exactly = 1) { client.newCall(capture(slot)) }
+                slot.captured.run {
+                    readText().assertEquals(json)
+                    url.toString().assertEquals("https://myserver.com/")
+                    method.assertEquals("POST")
+                }
+            }
         }
-
     }
 
     private fun json(errorCode: ExceptionCodes) = """
