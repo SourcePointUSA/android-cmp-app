@@ -148,7 +148,7 @@ class MainActivityV6 : AppCompatActivity() {
         }
 
         override fun onError(error: ConsentLibExceptionK) {
-
+            throw error
         }
 
         override fun onAction(actionTypes: ActionTypes) {

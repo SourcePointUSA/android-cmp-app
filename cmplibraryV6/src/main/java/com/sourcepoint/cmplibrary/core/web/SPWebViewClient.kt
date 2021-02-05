@@ -26,7 +26,7 @@ class SPWebViewClient(
     override fun onPageFinished(view: WebView, url: String?) {
         super.onPageFinished(view, url)
         try {
-            view.loadUrl("javascript:" + "js_receiver.js".file2String())
+//            view.loadUrl("javascript:" + "js_receiver.js".file2String())
         } catch (e: IOException) {
             onError(ConsentLibException(e, "Unable to load jsReceiver into ConasentLibWebview."))
             log?.error(UnableToLoadJSReceiverException(e, "Unable to load jsReceiver into ConasentLibWebview."))

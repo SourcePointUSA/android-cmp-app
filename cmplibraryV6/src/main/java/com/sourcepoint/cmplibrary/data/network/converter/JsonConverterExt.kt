@@ -13,7 +13,7 @@ internal fun String.toGDPR(): Gdpr? {
     return (map["gdpr"] as? DeferredMap)?.let {
         val uuid = (it["uuid"] as? String) ?: fail("uuid")
         val meta = (it["meta"] as? String) ?: fail("meta")
-        val message = it["message"]?.let { m -> JSON.std.asString(m) } ?: fail("message")
+        val message = (it["message"] as? DeferredMap)?.get("message_json").let { m -> JSON.std.asString(m) } ?: fail("message")
         val userConsentMap = (it["userConsent"] as? DeferredMap) ?: fail("userConsent")
 
         Gdpr(
