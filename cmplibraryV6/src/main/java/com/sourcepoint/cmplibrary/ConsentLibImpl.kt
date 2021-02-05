@@ -59,31 +59,31 @@ internal class ConsentLibImpl(
         /**
          * Test with webview
          */
-//        val webView = viewManager.createWebView(this)
-//        webView?.run {
-//            onError = { consentLibException -> }
-//            onNoIntentActivitiesFoundFor = { url -> }
-//        }
-//
-//        (webView as? ConsentWebView)?.let {
-//            it.settings
-//            showView(it)
-//            it.loadConsentUIFromUrl(urlManager.urlLocalTest())
-// //            Handler(context.mainLooper).postDelayed({injectData(it)}, 500)
-//
-//        } ?: throw RuntimeException("webView is not a ConsentWebView")
+        val webView = viewManager.createWebView(this)
+        webView?.run {
+            onError = { consentLibException -> }
+            onNoIntentActivitiesFoundFor = { url -> }
+        }
+
+        (webView as? ConsentWebView)?.let {
+            it.settings
+            showView(it)
+            it.loadConsentUIFromUrl(urlManager.urlLocalTest())
+ //            Handler(context.mainLooper).postDelayed({injectData(it)}, 500)
+
+        } ?: throw RuntimeException("webView is not a ConsentWebView")
         /**
          * Test with webview
          */
 
-        service.getMessage(
-            messageReq = campaign.toMessageReq(),
-            pSuccess = { messageResp ->
-//                spClient?.onConsentUIReady(View(context))
-                spClient?.onAction(ActionTypes.REJECT_ALL)
-            },
-            pError = { throwable -> spClient?.onError(throwable.toConsentLibException()) }
-        )
+//        service.getMessage(
+//            messageReq = campaign.toMessageReq(),
+//            pSuccess = { messageResp ->
+////                spClient?.onConsentUIReady(View(context))
+//                spClient?.onAction(ActionTypes.REJECT_ALL)
+//            },
+//            pError = { throwable -> spClient?.onError(throwable.toConsentLibException()) }
+//        )
     }
 
     override fun loadMessage(nativeMessage: NativeMessage) {
