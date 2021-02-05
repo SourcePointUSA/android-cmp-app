@@ -30,8 +30,10 @@ jobs:
             !~/cache/exclude
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      - name: Assemble test artifact
+        run: ./gradlew cmplibrary:assemble cmplibraryV6:assemble
       - name: Unit Tests cmplibrary
-        run: ./gradlew cmplibrary:test --quiet --build-cache
+        run: ./gradlew cmplibrary:test
       - name: Unit Tests cmplibraryV6
         run: ./gradlew cmplibraryV6:test
       - name: 'Publish Unit tests Report cmplibrary'
