@@ -12,9 +12,9 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException.NoInternetConnectionException
-import com.sourcepoint.gdpr_cmplibrary.exception.Logger
 import okhttp3.HttpUrl
 import org.json.JSONObject
 

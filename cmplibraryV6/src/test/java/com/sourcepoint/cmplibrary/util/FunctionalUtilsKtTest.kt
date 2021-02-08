@@ -1,9 +1,9 @@
 package com.sourcepoint.cmplibrary.util
 
 import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.gdpr_cmplibrary.exception.ConsentLibExceptionK
-import com.sourcepoint.gdpr_cmplibrary.exception.GenericSDKException
-import com.sourcepoint.gdpr_cmplibrary.exception.MissingClientException
+import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
+import com.sourcepoint.cmplibrary.exception.GenericSDKException
+import com.sourcepoint.cmplibrary.exception.MissingClientException
 import org.junit.Test
 import java.io.IOException
 

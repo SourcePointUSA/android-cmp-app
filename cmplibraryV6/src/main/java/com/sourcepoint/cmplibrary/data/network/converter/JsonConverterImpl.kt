@@ -6,10 +6,10 @@ import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.getAppliedLegislation
+import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.gdpr_cmplibrary.ActionTypes
-import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException
 import org.json.JSONObject
 
 /**

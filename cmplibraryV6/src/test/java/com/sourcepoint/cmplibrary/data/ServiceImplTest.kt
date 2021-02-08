@@ -2,11 +2,11 @@ package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
+import com.sourcepoint.cmplibrary.exception.GenericSDKException
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.toMessageReq
 import com.sourcepoint.cmplibrary.stub.MockNetworkClient
-import com.sourcepoint.gdpr_cmplibrary.exception.GenericSDKException
-import com.sourcepoint.gdpr_cmplibrary.exception.Legislation
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

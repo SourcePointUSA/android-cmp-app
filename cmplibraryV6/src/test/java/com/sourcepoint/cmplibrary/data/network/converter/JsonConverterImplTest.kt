@@ -5,10 +5,10 @@ import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.file2List
 import com.sourcepoint.cmplibrary.util.file2String
-import com.sourcepoint.gdpr_cmplibrary.exception.Legislation
 import org.json.JSONObject
 import org.junit.Test
 

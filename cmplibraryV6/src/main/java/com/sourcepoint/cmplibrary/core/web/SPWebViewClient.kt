@@ -2,10 +2,10 @@ package com.sourcepoint.cmplibrary.core.web
 
 import android.net.http.SslError
 import android.webkit.* //ktlint-disable
+import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
+import com.sourcepoint.cmplibrary.exception.WebViewException
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.util.loadLinkOnExternalBrowser
-import com.sourcepoint.gdpr_cmplibrary.exception.ConsentLibExceptionK
-import com.sourcepoint.gdpr_cmplibrary.exception.WebViewException
 
 class SPWebViewClient(
     val wv: WebView,

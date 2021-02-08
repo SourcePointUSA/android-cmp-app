@@ -1,9 +1,9 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
-import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException
-import com.sourcepoint.gdpr_cmplibrary.exception.Legislation
-import com.sourcepoint.gdpr_cmplibrary.exception.Legislation.*  //ktlint-disable
+import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
+import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.Legislation.*  //ktlint-disable
 import org.json.JSONObject
 import java.util.* //ktlint-disable
 

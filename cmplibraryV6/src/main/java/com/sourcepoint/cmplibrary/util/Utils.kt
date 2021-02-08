@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.util
 
 import android.os.Looper
-import com.sourcepoint.gdpr_cmplibrary.exception.ExecutionInTheWrongThreadException
+import com.sourcepoint.cmplibrary.exception.ExecutionInTheWrongThreadException
 
 internal fun checkMainThread(cMethodName: String) {
     if (Looper.myLooper() != Looper.getMainLooper()) {

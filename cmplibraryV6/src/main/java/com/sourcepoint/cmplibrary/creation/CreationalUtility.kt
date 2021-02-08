@@ -6,8 +6,8 @@ import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.createNetworkClient
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
+import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.Campaign
-import com.sourcepoint.gdpr_cmplibrary.exception.* // ktlint-disable
 import okhttp3.OkHttpClient
 
 internal fun createClientInfo(): ClientInfo {
