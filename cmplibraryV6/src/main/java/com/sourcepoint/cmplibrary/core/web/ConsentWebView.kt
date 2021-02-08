@@ -11,11 +11,13 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException.NoInternetConnectionException
 import com.sourcepoint.gdpr_cmplibrary.exception.Logger
 import okhttp3.HttpUrl
+import org.json.JSONObject
 
 internal class ConsentWebView(
     context: Context,
@@ -27,8 +29,6 @@ internal class ConsentWebView(
     init {
         setup()
     }
-
-    private val tag = ConsentWebView::class.simpleName
 
     override var onNoIntentActivitiesFoundFor: ((url: String) -> Unit)? = null
     override var onError: ((ConsentLibException) -> Unit)? = null
@@ -50,14 +50,7 @@ internal class ConsentWebView(
         }
         enableDebug()
         setStyle()
-        webViewClient = SPWebViewClient(
-            wv = this,
-            log = logger,
-            onError = { onError?.invoke(it) },
-            onNoIntentActivitiesFoundFor = { onNoIntentActivitiesFoundFor?.invoke(it) }
-        )
         webChromeClient = chromeClient
-
         addJavascriptInterface(JSClientWebViewImpl(jsClientLib), "JSReceiver")
     }
 
@@ -76,17 +69,38 @@ internal class ConsentWebView(
         }
     }
 
-    override fun loadConsentUIFromUrl(url: HttpUrl): Either<Boolean> = check {
+    override fun loadConsentUIFromUrl(url: HttpUrl, message: JSONObject): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException()
         loadUrl(url.toString())
+        webViewClient = createWebViewClient(message)
         true
     }
 
     inner class JSClientWebViewImpl(jsClientLib: JSClientLib) : JSClientWebView, JSReceiver by jsClientLib {
         @JavascriptInterface
         override fun onConsentUIReady(isFromPM: Boolean) {
-            println("js =================== onConsentUIReady")
+            logger.i("ConsentWebView", "js =================== onConsentUIReady")
             jsClientLib.onConsentUIReady(isFromPM, this@ConsentWebView)
         }
+    }
+
+    /**
+     * Delegate used to catch the events from the [ConsentWebView]
+     * @param message this is the Message from the server used by the [ConsentWebView] to display its content
+     * @return a [WebViewClient]
+     */
+    private fun createWebViewClient(message: JSONObject) : WebViewClient {
+        return SPWebViewClient(
+            wv = this,
+            onError = { onError?.invoke(it) },
+            onNoIntentActivitiesFoundFor = { onNoIntentActivitiesFoundFor?.invoke(it) },
+            onPageFinishedLambda = { view, url ->
+                /**
+                 * adding the parameter [sp.loadMessage] needed by the webpage to trigger the loadMessage event
+                 */
+                val obj = message.put("name", "sp.loadMessage")
+                view.loadUrl("javascript: window.postMessage($obj);")
+            }
+        )
     }
 }

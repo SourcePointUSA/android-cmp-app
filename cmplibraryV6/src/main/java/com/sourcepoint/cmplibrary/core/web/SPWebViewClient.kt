@@ -13,9 +13,10 @@ import java.io.IOException
 
 class SPWebViewClient(
     val wv: WebView,
-    private val log: Logger?,
+//    private val log: Logger,
     private val onError: (ConsentLibException) -> Unit,
-    private val onNoIntentActivitiesFoundFor: (String) -> Unit
+    private val onNoIntentActivitiesFoundFor: (String) -> Unit,
+    private val onPageFinishedLambda : (view: WebView, url: String?) -> Unit
 
 ) : WebViewClient() {
 
@@ -27,34 +28,35 @@ class SPWebViewClient(
         super.onPageFinished(view, url)
         try {
             view.loadUrl("javascript:" + "js_receiver.js".file2String())
+            onPageFinishedLambda(view, url)
         } catch (e: IOException) {
             onError(ConsentLibException(e, "Unable to load jsReceiver into ConasentLibWebview."))
-            log?.error(UnableToLoadJSReceiverException(e, "Unable to load jsReceiver into ConasentLibWebview."))
+//            log?.error(UnableToLoadJSReceiverException(e, "Unable to load jsReceiver into ConasentLibWebview."))
         }
     }
 
     override fun onReceivedError(view: WebView, request: WebResourceRequest?, error: WebResourceError) {
         super.onReceivedError(view, request, error)
         onError(ApiException(error.toString()))
-        log?.error(UnableToLoadJSReceiverException(description = error.toString()))
+//        log?.error(UnableToLoadJSReceiverException(description = error.toString()))
     }
 
     override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String?) {
         super.onReceivedError(view, errorCode, description, failingUrl)
         onError(ApiException(description))
-        log?.error(UnableToLoadJSReceiverException(description = description))
+//        log?.error(UnableToLoadJSReceiverException(description = description))
     }
 
     override fun onReceivedSslError(view: WebView, handler: SslErrorHandler?, error: SslError) {
         super.onReceivedSslError(view, handler, error)
         onError(ApiException(error.toString()))
-        log?.error(UnableToLoadJSReceiverException(description = error.toString()))
+//        log?.error(UnableToLoadJSReceiverException(description = error.toString()))
     }
 
     override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail?): Boolean {
         val message = "The WebView rendering process crashed!"
         onError(ConsentLibException(message))
-        log?.error(WebViewException(description = message))
+//        log?.error(WebViewException(description = message))
         return false
     }
 

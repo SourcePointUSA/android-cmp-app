@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference
 internal interface ViewsManager {
     fun removeView(view: View?)
     fun showView(view: View)
-    fun createWebView(lib: ConsentLibImpl): IConsentWebView?
+    fun createWebView(lib: ConsentLibImpl, jsReceiverDelegate: ConsentLibImpl.JSReceiverDelegate): IConsentWebView?
     companion object
 }
 
@@ -25,9 +25,15 @@ internal interface ViewsManager {
  * @param actWeakReference it is a weak reference which contains an Activity reference
  * @return an instance of the [ViewsManagerImpl] implementation
  */
-internal fun ViewsManager.Companion.create(actWeakReference: WeakReference<Activity>): ViewsManager = ViewsManagerImpl(actWeakReference)
+internal fun ViewsManager.Companion.create(
+    actWeakReference: WeakReference<Activity>,
+    connectionManager: ConnectionManager
+): ViewsManager = ViewsManagerImpl(actWeakReference, connectionManager)
 
-private class ViewsManagerImpl(val weakReference: WeakReference<Activity>) : ViewsManager {
+private class ViewsManagerImpl(
+    val weakReference: WeakReference<Activity>,
+    val connectionManager: ConnectionManager
+) : ViewsManager {
 
     object IDS {
         val idsSet = mutableSetOf<Int>()
@@ -72,15 +78,14 @@ private class ViewsManagerImpl(val weakReference: WeakReference<Activity>) : Vie
         }
     }
 
-    override fun createWebView(lib: ConsentLibImpl): ConsentWebView? {
-        return null
-//        weakReference.get()?.let {
-//            ConsentWebView(
-//                context = it,
-//                connectionManager = lib.pConnectionManager,
-//                jsReceiver = ConsentLibImpl.JSReceiverDelegate(),
-//                logger = lib.pLogger
-//            )
-//        }
+    override fun createWebView(lib: ConsentLibImpl, jsReceiverDelegate: ConsentLibImpl.JSReceiverDelegate): ConsentWebView? {
+        return weakReference.get()?.let {
+            ConsentWebView(
+                context = it,
+                connectionManager = connectionManager,
+                jsClientLib = jsReceiverDelegate,
+                logger = lib.pLogger
+            )
+        }
     }
 }
