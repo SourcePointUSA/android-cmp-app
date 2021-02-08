@@ -17,6 +17,7 @@ internal interface ViewsManager {
     fun removeView(view: View?)
     fun showView(view: View)
     fun createWebView(lib: ConsentLibImpl, jsReceiverDelegate: ConsentLibImpl.JSReceiverDelegate): IConsentWebView?
+    fun dispose()
     companion object
 }
 
@@ -55,15 +56,8 @@ private class ViewsManagerImpl(
     }
 
     override fun showView(view: View) {
-        println("[ids]===================================================")
-        println("[ids]===================================================")
-        println("current [ids][${idsSet.size}]")
         removeView(null)
-        println("[ids] after deletion[${idsSet.size}]")
         idsSet.add(view.id)
-        println("current [ids][${idsSet.size}]")
-        println("[ids]===================================================")
-        println("[ids]===================================================")
         if (view.parent == null) {
             mainView?.let {
                 it.post {
@@ -87,5 +81,9 @@ private class ViewsManagerImpl(
                 logger = lib.pLogger
             )
         }
+    }
+
+    override fun dispose() {
+        weakReference.clear()
     }
 }
