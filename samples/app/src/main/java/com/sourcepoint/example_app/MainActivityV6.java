@@ -6,15 +6,14 @@ import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.cmplibrary.ConsentLib;
+import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK;
 import com.sourcepoint.cmplibrary.model.CCPAUserConsent;
 import com.sourcepoint.cmplibrary.model.Campaign;
 import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.creation.Builder;
 import com.sourcepoint.example_app.core.DataProvider;
 import com.sourcepoint.gdpr_cmplibrary.ActionTypes;
-import com.sourcepoint.gdpr_cmplibrary.ConsentLibException;
 import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
-import com.sourcepoint.gdpr_cmplibrary.exception.ConsentLibExceptionK;
 import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -76,6 +75,11 @@ public class MainActivityV6 extends AppCompatActivity {
     class LocalClient implements SpClient {
 
         @Override
+        public void onError(@NotNull ConsentLibExceptionK error) {
+            Log.e(TAG, "Something went wrong");
+        }
+
+        @Override
         public void onConsentReadyCallback(@NotNull CCPAUserConsent c) {
 
         }
@@ -95,11 +99,6 @@ public class MainActivityV6 extends AppCompatActivity {
         public void onConsentUIReady(@NotNull View v) {
             view = v;
             gdprConsent.showView(v);
-        }
-
-        @Override
-        public void onError(@NotNull ConsentLibExceptionK error) {
-            Log.e(TAG, "Something went wrong");
         }
 
         @Override
