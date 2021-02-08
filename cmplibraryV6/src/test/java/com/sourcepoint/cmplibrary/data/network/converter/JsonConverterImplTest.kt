@@ -3,8 +3,8 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertNull
-import com.sourcepoint.cmplibrary.data.network.model.MessageResp
-import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.file2List
@@ -28,41 +28,65 @@ class JsonConverterImplTest {
         val json = "unified_wrapper/message_in_gdpr.json".file2String()
         val output: Either<MessageResp> = sut.toMessageResp(json)
         (output as? Either.Left)?.let { throw it.t }
-        (output as Either.Right).r.also { m ->
-            m.legislation.assertEquals(Legislation.GDPR)
-            m.message.also { mess ->
-                mess["site_id"].assertEquals(7639)
-                mess["language"].assertEquals("en")
-                mess["message_json"].assertNotNull()
-                mess["message_choice"].assertNotNull()
-                mess["categories"].assertNotNull()
-//                g!!.uuid.assertEquals("144f3899-7887-445a-92fa-9a80a6fc8b5d")
-//                g.GDPRUserConsent.also { u ->
-//                    u.acceptedCategories.size.assertEquals(0)
-//                    u.acceptedVendors.size.assertEquals(0)
-//                    u.legIntCategories.size.assertEquals(2)
-//                    u.specialFeatures.size.assertEquals(0)
-//                    u.euconsent.assertEquals("CPAlTsBPAlTsBAGABCENBKCgAAAAAEIAAAYgAAAAPAAEAAAA.YAAAAAAAAAAA")
-//                }
-//                g.meta.contains("_sp_v1_uid=1:969:1346b52a-bfaa-4215-b54d-7bb787823f39").assertEquals(true)
-            }
+        val gdprMess = (output as Either.Right).r
+        gdprMess.legislation.assertEquals(Legislation.GDPR)
+        gdprMess.message.also { mess ->
+            mess["site_id"].assertEquals(7639)
+            mess["language"].assertEquals("en")
+            mess["message_json"].assertNotNull()
+            mess["message_choice"].assertNotNull()
+            mess["categories"].assertNotNull()
         }
+        gdprMess.legislation.assertEquals(Legislation.GDPR)
+        gdprMess.message.also { mess ->
+            mess["site_id"].assertEquals(7639)
+            mess["language"].assertEquals("en")
+            mess["message_json"].assertNotNull()
+            mess["message_choice"].assertNotNull()
+            mess["categories"].assertNotNull()
+        }
+        (gdprMess.userConsent as GDPRUserConsent).run {
+            acceptedCategories.size.assertEquals(0)
+            acceptedVendors.size.assertEquals(0)
+            legIntCategories.size.assertEquals(2)
+            specialFeatures.size.assertEquals(0)
+            euconsent.assertEquals("CPAlTsBPAlTsBAGABCENBKCgAAAAAEIAAAYgAAAAPAAEAAAA.YAAAAAAAAAAA")
+        }
+    }
+
+    @Test(expected = InvalidResponseWebMessageException::class)
+    fun `GIVEN a CCPA json resp with an invalid CCPAStatus THROWS an exception`() {
+        val json = "unified_wrapper/ccpa_mess_wrong_status.json".file2String()
+        val left = sut.toMessageResp(json) as Either.Left
+        throw left.t
     }
 
     @Test
     fun `GIVEN a json with CCPA as applied legislation RETURN a Right(MessageResp)`() {
-        val json = "unified_wrapper/message_in_ccpa.json".file2String()
+        val json = "unified_wrapper/ccpa_mess_correct.json".file2String()
         val output: Either<MessageResp> = sut.toMessageResp(json)
         (output as? Either.Left)?.let { throw it.t }
-        (output as Either.Right).r.also { m ->
-            m.legislation.assertEquals(Legislation.CCPA)
-            m.message.also { mess ->
-                mess["site_id"].assertEquals(7639)
-                mess["language"].assertEquals("en")
-                mess["message_json"].assertNotNull()
-                mess["message_choice"].assertNotNull()
-                mess["categories"].assertNotNull()
-            }
+        val ccpaMess = (output as Either.Right).r
+        ccpaMess.legislation.assertEquals(Legislation.CCPA)
+        ccpaMess.message.also { mess ->
+            mess["site_id"].assertEquals(7639)
+            mess["language"].assertEquals("en")
+            mess["message_json"].assertNotNull()
+            mess["message_choice"].assertNotNull()
+            mess["categories"].assertNotNull()
+        }
+        ccpaMess.message.also { mess ->
+            mess["site_id"].assertEquals(7639)
+            mess["language"].assertEquals("en")
+            mess["message_json"].assertNotNull()
+            mess["message_choice"].assertNotNull()
+            mess["categories"].assertNotNull()
+        }
+        (ccpaMess.userConsent as CCPAUserConsent).run {
+            rejectedCategories.size.assertEquals(0)
+            rejectedVendors.size.assertEquals(0)
+            status.assertEquals(CCPAStatus.REJECTED_NONE)
+            uspstring.assertEquals("test")
         }
     }
 

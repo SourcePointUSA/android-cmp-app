@@ -69,7 +69,7 @@ class ConsentLibImplTest {
 
     @Test
     fun `CALLING loadMessage() with verify that spClient is called`() = runBlocking<Unit> {
-        val mr = MessageResp(legislation = Legislation.GDPR, message = JSONObject(), uuid = "", meta = "")
+        val mr = MessageResp(legislation = Legislation.GDPR, message = JSONObject(), uuid = "", meta = "", userConsent = mockk())
         val mockService = MockService(
             getMessageLogic = { _, pSuccess, _ -> pSuccess.invoke(mr) }
         )

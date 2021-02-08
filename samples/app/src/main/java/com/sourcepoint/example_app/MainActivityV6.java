@@ -6,8 +6,8 @@ import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.cmplibrary.ConsentLib;
+import com.sourcepoint.cmplibrary.data.network.model.CCPAUserConsent;
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK;
-import com.sourcepoint.cmplibrary.model.CCPAUserConsent;
 import com.sourcepoint.cmplibrary.model.Campaign;
 import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.creation.Builder;
@@ -90,6 +90,7 @@ public class MainActivityV6 extends AppCompatActivity {
                 Log.i(TAG, line);
         }
 
+        //TODO rename this method
         @Override
         public void onConsentUIFinished(@NotNull View v) {
             gdprConsent.removeView(v);

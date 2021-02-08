@@ -1,11 +1,11 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
-import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.exception.Legislation
-import com.sourcepoint.cmplibrary.exception.Legislation.*  //ktlint-disable
+import com.sourcepoint.cmplibrary.exception.Legislation.CCPA
+import com.sourcepoint.cmplibrary.exception.Legislation.GDPR
 import org.json.JSONObject
-import java.util.* //ktlint-disable
+import java.util.* // ktlint-disable
 
 /**
  * ================================== Unified wrapper =======================================
@@ -15,7 +15,8 @@ data class MessageResp(
     val legislation: Legislation,
     val message: JSONObject,
     val uuid: String,
-    val meta: String
+    val meta: String,
+    val userConsent: UserConsent
 //    val gdpr: Gdpr? = null,
 //    val ccpa: Ccpa? = null
 )
@@ -38,16 +39,6 @@ data class MessageGdprResp(
 data class Ccpa(
     val uuid: String,
     val message: String
-)
-
-data class GDPRUserConsent(
-    var acceptedCategories: List<Any> = listOf(),
-    var acceptedVendors: List<Any> = listOf(),
-    var specialFeatures: List<Any> = listOf(),
-    var legIntCategories: List<Any> = listOf(),
-    var euconsent: String = "",
-    var tcData: DeferredMap = DeferredMap(false),
-    var vendorsGrants: DeferredMap = DeferredMap(false),
 )
 
 internal fun String.getAppliedLegislation(): Legislation {
