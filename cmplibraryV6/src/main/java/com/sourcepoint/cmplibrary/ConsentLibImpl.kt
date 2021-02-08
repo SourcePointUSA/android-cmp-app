@@ -1,8 +1,6 @@
 package com.sourcepoint.cmplibrary
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
@@ -15,11 +13,12 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.toMessageReq
-import com.sourcepoint.cmplibrary.util.* // ktlint-disable
-import com.sourcepoint.cmplibrary.util.ExecutorManager
-import com.sourcepoint.cmplibrary.util.ViewsManager
-import com.sourcepoint.gdpr_cmplibrary.* // ktlint-disable
-import com.sourcepoint.gdpr_cmplibrary.exception.* // ktlint-disable
+import com.sourcepoint.cmplibrary.util.* //ktlint-disable
+import com.sourcepoint.gdpr_cmplibrary.* //ktlint-disable
+import com.sourcepoint.gdpr_cmplibrary.exception.GenericSDKException
+import com.sourcepoint.gdpr_cmplibrary.exception.Logger
+import com.sourcepoint.gdpr_cmplibrary.exception.MissingClientException
+import com.sourcepoint.gdpr_cmplibrary.exception.RenderingAppException
 
 internal class ConsentLibImpl(
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
@@ -43,12 +42,8 @@ internal class ConsentLibImpl(
         throwsExceptionIfClientNoSet()
         service.getMessage(
             messageReq = campaign.toMessageReq(),
-            pSuccess = { messageResp ->
-                println()
-            },
-            pError = { throwable ->
-                println()
-            }
+            pSuccess = { messageResp -> },
+            pError = { throwable -> }
         )
     }
 
@@ -56,33 +51,15 @@ internal class ConsentLibImpl(
         checkMainThread("loadMessage")
         throwsExceptionIfClientNoSet()
 
-
         service.getMessage(
             messageReq = campaign.toMessageReq(),
             pSuccess = { messageResp ->
-                /**
-                 * Test with webview
-                 */
                 executor.executeOnMain {
                     val webView = viewManager.createWebView(this, JSReceiverDelegate())
-                    webView?.run {
-                        onError = { consentLibException ->
-                            println()
-                        }
-                        onNoIntentActivitiesFoundFor = { url ->
-                            println()
-                        }
-                    }
-
                     (webView as? ConsentWebView)?.let {
                         it.settings
-                        it.loadConsentUIFromUrl(urlManager.urlLocalTest(), messageResp.gdpr!!.message)
+                        it.loadConsentUIFromUrl(urlManager.urlLocalTest(), messageResp.message)
                     } ?: throw RuntimeException("webView is not a ConsentWebView")
-                    /**
-                     * Test with webview
-                     */
-//                spClient?.onConsentUIReady(View(context))
-//                    spClient?.onAction(ActionTypes.REJECT_ALL)
                 }
             },
             pError = { throwable -> spClient?.onError(throwable.toConsentLibException()) }
@@ -119,10 +96,6 @@ internal class ConsentLibImpl(
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientNoSet()
         val webView = viewManager.createWebView(this, JSReceiverDelegate())
-        webView?.run {
-            onError = { consentLibException -> }
-            onNoIntentActivitiesFoundFor = { url -> }
-        }
         val pmConfig = PmUrlConfig(
             consentUUID = "89b2d14b-70ee-4344-8cc2-1b7b281d0f2d",
             siteId = "7639",
@@ -146,33 +119,46 @@ internal class ConsentLibImpl(
         viewManager.removeView(view)
     }
 
+    override fun dispose() {
+        executor.dispose()
+    }
+
     //    /** Start Receiver methods */
     inner class JSReceiverDelegate() : JSClientLib {
         //
         override fun onConsentUIReady(isFromPM: Boolean, wv: WebView) {
-            pLogger.i("ConsentLibImpl","js ===================== msg [onConsentUIReady]  ===========================")
+            pLogger.i("ConsentLibImpl", "js ===================== msg [onConsentUIReady]  ===========================")
             wv.let { viewManager.showView(it) } ?: throw GenericSDKException(description = "WebView is null")
         }
 
         override fun log(tag: String?, msg: String?) {
-            pLogger.i("ConsentLibImpl","js =================== log")
+            pLogger.i("ConsentLibImpl", "js =================== log")
         }
 
         override fun log(msg: String?) {
-            pLogger.i("ConsentLibImpl","js =================== log")
+            pLogger.i("ConsentLibImpl", "js =================== log")
         }
 
         override fun onAction(actionData: String) {
-            pLogger.i("ConsentLibImpl","js ===================== msg actionData [$actionData]  ===========================")
+            pLogger.i("ConsentLibImpl", "js ===================== msg actionData [$actionData]  ===========================")
             pJsonConverter
                 .toConsentAction(actionData)
                 .map { onActionFromWebViewClient(it) }
         }
 
         override fun onError(errorMessage: String) {
-            pLogger.i("ConsentLibImpl","js ===================== msg errorMessage [$errorMessage]  ===========================")
+            pLogger.i("ConsentLibImpl", "js ===================== msg errorMessage [$errorMessage]  ===========================")
             spClient?.onError(GenericSDKException(description = errorMessage))
             pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
+        }
+
+        override fun onNoIntentActivitiesFoundFor(url: String) {
+            pLogger.i("ConsentLibImpl", "js ===================== msg url [$url]  ===========================")
+        }
+
+        override fun onError(error: Throwable) {
+            pLogger.i("ConsentLibImpl", "js ===================== msg onError [$error]  ===========================")
+            throw error
         }
     }
 
@@ -240,5 +226,4 @@ internal class ConsentLibImpl(
         override fun onDefaultAction(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
         }
     }
-
 }

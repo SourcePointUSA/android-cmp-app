@@ -1,22 +1,17 @@
 package com.sourcepoint.cmplibrary.core.web
 
 import android.net.http.SslError
-import android.webkit.* // ktlint-disable
+import android.webkit.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.util.loadLinkOnExternalBrowser
-import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
-import com.sourcepoint.gdpr_cmplibrary.ConsentLibException.ApiException
-import com.sourcepoint.gdpr_cmplibrary.exception.Logger
-import com.sourcepoint.gdpr_cmplibrary.exception.UnableToLoadJSReceiverException
+import com.sourcepoint.gdpr_cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.gdpr_cmplibrary.exception.WebViewException
-import java.io.IOException
 
 class SPWebViewClient(
     val wv: WebView,
-//    private val log: Logger,
-    private val onError: (ConsentLibException) -> Unit,
+    private val onError: (ConsentLibExceptionK) -> Unit,
     private val onNoIntentActivitiesFoundFor: (String) -> Unit,
-    private val onPageFinishedLambda : (view: WebView, url: String?) -> Unit
+    private val onPageFinishedLambda: (view: WebView, url: String?) -> Unit
 
 ) : WebViewClient() {
 
@@ -29,34 +24,29 @@ class SPWebViewClient(
         try {
             view.loadUrl("javascript:" + "js_receiver.js".file2String())
             onPageFinishedLambda(view, url)
-        } catch (e: IOException) {
-            onError(ConsentLibException(e, "Unable to load jsReceiver into ConasentLibWebview."))
-//            log?.error(UnableToLoadJSReceiverException(e, "Unable to load jsReceiver into ConasentLibWebview."))
+        } catch (e: Throwable) {
+            onError(WebViewException(cause = e, description = "Unable to load jsReceiver into ConasentLibWebview."))
         }
     }
 
     override fun onReceivedError(view: WebView, request: WebResourceRequest?, error: WebResourceError) {
         super.onReceivedError(view, request, error)
-        onError(ApiException(error.toString()))
-//        log?.error(UnableToLoadJSReceiverException(description = error.toString()))
+        onError(WebViewException(description = error.toString()))
     }
 
     override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String?) {
         super.onReceivedError(view, errorCode, description, failingUrl)
-        onError(ApiException(description))
-//        log?.error(UnableToLoadJSReceiverException(description = description))
+        onError(WebViewException(description = description))
     }
 
     override fun onReceivedSslError(view: WebView, handler: SslErrorHandler?, error: SslError) {
         super.onReceivedSslError(view, handler, error)
-        onError(ApiException(error.toString()))
-//        log?.error(UnableToLoadJSReceiverException(description = error.toString()))
+        onError(WebViewException(description = error.toString()))
     }
 
     override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail?): Boolean {
         val message = "The WebView rendering process crashed!"
-        onError(ConsentLibException(message))
-//        log?.error(WebViewException(description = message))
+        onError(WebViewException(description = message))
         return false
     }
 

@@ -12,7 +12,9 @@ import org.junit.Test
 class EitherTest {
 
     @MockK
-    private lateinit var mockFun: () -> Unit
+    private lateinit var mockFunR: () -> Unit
+    @MockK
+    private lateinit var mockFunL: () -> Unit
 
     @Before
     fun setup() {
@@ -61,9 +63,21 @@ class EitherTest {
         val right = Right("")
         val left = Left(RuntimeException())
 
-        right.executeOnLeft { mockFun() }
-        verify(exactly = 0) { mockFun() }
-        left.executeOnLeft { mockFun() }
-        verify(exactly = 1) { mockFun() }
+        right.executeOnLeft { mockFunR() }
+        verify(exactly = 0) { mockFunR() }
+        left.executeOnLeft { mockFunL() }
+        verify(exactly = 1) { mockFunL() }
+    }
+
+    @Test
+    fun `APPLIED the executeOnRight on a Either object VERIFY the result`() {
+
+        val right = Right("")
+        val left = Left(RuntimeException())
+
+        right.executeOnRight { mockFunR() }
+        verify(exactly = 1) { mockFunR() }
+        left.executeOnRight { mockFunL() }
+        verify(exactly = 0) { mockFunL() }
     }
 }

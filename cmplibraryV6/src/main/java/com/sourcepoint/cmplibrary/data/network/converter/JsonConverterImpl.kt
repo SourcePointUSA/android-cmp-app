@@ -5,6 +5,7 @@ import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.getAppliedLegislation
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.gdpr_cmplibrary.ActionTypes
@@ -23,8 +24,33 @@ internal fun JsonConverter.Companion.create(): JsonConverter = JsonConverterImpl
 private class JsonConverterImpl : JsonConverter {
 
     override fun toMessageResp(body: String): Either<MessageResp> = check {
-        val gdpr = body.toGDPR()
-        MessageResp(gdpr = gdpr)
+
+        val map: MutableMap<String, Any> = JSON.std.mapFrom(body)
+
+        // check the number of message contained. We can only have 1 instance
+        val numberOfMessages = map.toList().count { (it.second as DeferredMap).containsKey("message") }
+        if (numberOfMessages != 1) fail("We have [$numberOfMessages] inst. of Message. Only one Message object can exist int the MessageResp!!!")
+
+        // create a message JSONObject
+        val legislationEntry = map.toList().first { (it.second as DeferredMap).containsKey("message") }
+
+        val legislationContent = legislationEntry.second
+        val uuid = (legislationContent as? DeferredMap)?.get("uuid") as? String ?: fail("uuid")
+        val meta = (legislationContent as? DeferredMap)?.get("meta") as? String ?: fail("uuid")
+        val userConsent = (legislationContent as? DeferredMap)?.get("userConsent") ?: fail("uuid")
+        val message = (legislationContent as? DeferredMap)?.get("message") ?: fail("message")
+        val messageObj = JSONObject(JSON.std.asString(message))
+
+        // extract the applied Legislation
+        val legislation = legislationEntry.first.getAppliedLegislation()
+
+        // build the object
+        MessageResp(
+            legislation = legislation,
+            message = messageObj,
+            meta = meta,
+            uuid = uuid
+        )
     }
 
     override fun toConsentAction(json: String): Either<ConsentAction> = check {

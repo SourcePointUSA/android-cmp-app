@@ -6,4 +6,10 @@ class MockExecutorManager : ExecutorManager {
     override fun executeOnMain(block: () -> Unit) {
         block()
     }
+
+    override fun executeOnWorkerThread(block: () -> Unit) {
+        block()
+    }
+
+    override fun dispose() { }
 }

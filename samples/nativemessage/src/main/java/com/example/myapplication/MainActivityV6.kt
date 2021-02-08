@@ -158,6 +158,7 @@ class MainActivityV6 : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        consentLib.dispose()
     }
 
 }

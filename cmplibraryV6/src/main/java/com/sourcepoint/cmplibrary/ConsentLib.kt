@@ -16,4 +16,6 @@ interface ConsentLib {
 
     fun showView(view: View)
     fun removeView(view: View?)
+
+    fun dispose()
 }

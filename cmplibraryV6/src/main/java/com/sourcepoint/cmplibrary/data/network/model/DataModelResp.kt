@@ -1,21 +1,23 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
-import com.sourcepoint.cmplibrary.util.Either
-import com.sourcepoint.cmplibrary.util.Either.Left
-import com.sourcepoint.cmplibrary.util.Either.Right
 import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.gdpr_cmplibrary.exception.Legislation
-import com.sourcepoint.gdpr_cmplibrary.exception.Legislation.* // ktlint-disable
+import com.sourcepoint.gdpr_cmplibrary.exception.Legislation.*  //ktlint-disable
 import org.json.JSONObject
+import java.util.* //ktlint-disable
 
 /**
  * ================================== Unified wrapper =======================================
  */
 
 data class MessageResp(
-    val gdpr: Gdpr? = null,
-    val ccpa: Ccpa? = null
+    val legislation: Legislation,
+    val message: JSONObject,
+    val uuid: String,
+    val meta: String
+//    val gdpr: Gdpr? = null,
+//    val ccpa: Ccpa? = null
 )
 
 data class Gdpr(
@@ -48,11 +50,11 @@ data class GDPRUserConsent(
     var vendorsGrants: DeferredMap = DeferredMap(false),
 )
 
-internal fun MessageResp.getAppliedLegislation(): Either<Legislation> {
-    return when {
-        gdpr != null -> Right(GDPR)
-        ccpa != null -> Right(CCPA)
-        else -> Left(InvalidResponseWebMessageException(description = "Invalid Legislation type"))
+internal fun String.getAppliedLegislation(): Legislation {
+    return when (this.toLowerCase(Locale.getDefault())) {
+        "gdpr" -> GDPR
+        "ccpa" -> CCPA
+        else -> throw InvalidResponseWebMessageException(description = "Invalid Legislation type")
     }
 }
 

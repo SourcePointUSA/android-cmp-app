@@ -15,7 +15,7 @@ internal fun String.toGDPR(): Gdpr? {
     return (map["gdpr"] as? DeferredMap)?.let {
         val uuid = (it["uuid"] as? String) ?: fail("uuid")
         val meta = (it["meta"] as? String) ?: fail("meta")
-        val message = (it["message"] as? DeferredMap)?: fail("message")
+        val message = (it["message"] as? DeferredMap) ?: fail("message")
         val userConsentMap = (it["userConsent"] as? DeferredMap) ?: fail("userConsent")
 
         val messageObj = JSONObject(JSON.std.asString(message))
@@ -29,13 +29,13 @@ internal fun String.toGDPR(): Gdpr? {
     }
 }
 
-internal fun DeferredMap.toMessageGdprResp() : MessageGdprResp{
+internal fun DeferredMap.toMessageGdprResp(): MessageGdprResp {
     return MessageGdprResp(
-        message_json = (this["message_json"] as? DeferredMap).let { m -> JSON.std.asString(m) }?: fail("message_json"),
-        categories = (this["categories"] as? Iterable<Any?>).let { m -> JSON.std.asString(m) }?: fail("categories"),
-        language = (this["language"] as? String).let { m -> JSON.std.asString(m) }?: fail("language"),
-        message_choice = (this["message_choice"] as? Iterable<Any?>).let { m -> JSON.std.asString(m) }?: fail("message_choice"),
-        site_id = (this["site_id"] as? Int).let { m -> JSON.std.asString(m) }?: fail("site_id"),
+        message_json = (this["message_json"] as? DeferredMap).let { m -> JSON.std.asString(m) } ?: fail("message_json"),
+        categories = (this["categories"] as? Iterable<Any?>).let { m -> JSON.std.asString(m) } ?: fail("categories"),
+        language = (this["language"] as? String).let { m -> JSON.std.asString(m) } ?: fail("language"),
+        message_choice = (this["message_choice"] as? Iterable<Any?>).let { m -> JSON.std.asString(m) } ?: fail("message_choice"),
+        site_id = (this["site_id"] as? Int).let { m -> JSON.std.asString(m) } ?: fail("site_id"),
     )
 }
 

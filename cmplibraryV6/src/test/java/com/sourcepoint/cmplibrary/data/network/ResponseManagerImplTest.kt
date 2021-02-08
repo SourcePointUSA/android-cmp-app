@@ -59,7 +59,7 @@ class ResponseManagerImplTest {
             .request(Request.Builder().url("http://localhost/").build())
             .build()
         val result = sut.parseResponse(resp) as Either.Left
-        result.t.message.assertEquals("message object is null")
+        result.t.message!!.contains("We have [0] inst. of Message.").assertEquals(true)
     }
 
     @Test
