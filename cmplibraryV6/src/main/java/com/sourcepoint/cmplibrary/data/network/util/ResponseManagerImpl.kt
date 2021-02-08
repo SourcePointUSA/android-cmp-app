@@ -4,9 +4,9 @@ import android.accounts.NetworkErrorException
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException
 import okhttp3.Response
 
 /**

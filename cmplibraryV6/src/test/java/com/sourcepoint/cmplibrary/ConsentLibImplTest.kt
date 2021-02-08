@@ -6,6 +6,9 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
+import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.MissingClientException
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
 import com.sourcepoint.cmplibrary.stub.MockService
@@ -15,9 +18,6 @@ import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage
 import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
-import com.sourcepoint.gdpr_cmplibrary.exception.Legislation
-import com.sourcepoint.gdpr_cmplibrary.exception.Logger
-import com.sourcepoint.gdpr_cmplibrary.exception.MissingClientException
 import io.mockk.*  //ktlint-disable
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.runBlocking

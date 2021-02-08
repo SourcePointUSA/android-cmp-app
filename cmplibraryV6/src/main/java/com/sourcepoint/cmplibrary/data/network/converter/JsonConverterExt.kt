@@ -5,7 +5,7 @@ import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.model.GDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 import com.sourcepoint.cmplibrary.data.network.model.MessageGdprResp
-import com.sourcepoint.gdpr_cmplibrary.exception.InvalidResponseWebMessageException
+import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import org.json.JSONObject
 
 internal fun String.toGDPR(): Gdpr? {

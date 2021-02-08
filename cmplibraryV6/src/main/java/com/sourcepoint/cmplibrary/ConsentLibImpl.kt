@@ -11,14 +11,14 @@ import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
+import com.sourcepoint.cmplibrary.exception.GenericSDKException
+import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.MissingClientException
+import com.sourcepoint.cmplibrary.exception.RenderingAppException
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.toMessageReq
 import com.sourcepoint.cmplibrary.util.* //ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.* //ktlint-disable
-import com.sourcepoint.gdpr_cmplibrary.exception.GenericSDKException
-import com.sourcepoint.gdpr_cmplibrary.exception.Logger
-import com.sourcepoint.gdpr_cmplibrary.exception.MissingClientException
-import com.sourcepoint.gdpr_cmplibrary.exception.RenderingAppException
 
 internal class ConsentLibImpl(
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
@@ -76,7 +76,7 @@ internal class ConsentLibImpl(
                 val jsonResult = messageResp.msgJSON
                 executor.executeOnMain {
                     /** configuring onClickListener and set the parameters */
-                    nativeMessage.setAttributes(NativeMessageAttrs(jsonResult, pLogger))
+//                    nativeMessage.setAttributes(NativeMessageAttrs(jsonResult, pLogger))
                     /** set the action callback */
                     nativeMessage.setActionClient(nativeMsgClient)
                     /** calling the client */
