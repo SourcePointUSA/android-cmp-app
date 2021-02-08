@@ -10,8 +10,8 @@ import com.sourcepoint.gdpr_cmplibrary.exception.Legislation
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
 import io.mockk.verify
+import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 
@@ -40,8 +40,9 @@ class ServiceImplTest {
 
     @Test
     fun `GIVEN a success from NetworkClient VERIFY that saveAppliedLegislation is called`() {
+        val mr = MessageResp(legislation = Legislation.GDPR, message = JSONObject(), uuid = "", meta = "")
         val nc = MockNetworkClient(
-            logicMess = { _, success, _ -> success(MessageResp(gdpr = mockk(), ccpa = null)) }
+            logicMess = { _, success, _ -> success(mr) }
         )
         every { successMock(any()) }.answers { }
 
@@ -51,21 +52,6 @@ class ServiceImplTest {
         verify(exactly = 1) { ds.saveAppliedLegislation(Legislation.GDPR.name) }
         verify(exactly = 1) { successMock(any()) }
         verify(exactly = 0) { errorMock(any()) }
-    }
-
-    @Test
-    fun `GIVEN a not valid Legislation from NetworkClient VERIFY that saveAppliedLegislation is NOT called`() {
-        val nc = MockNetworkClient(
-            logicMess = { _, success, _ -> success(MessageResp(gdpr = null, ccpa = null)) }
-        )
-        every { successMock(any()) }.answers { }
-
-        val sut = Service.create(nc, ds)
-        sut.getMessage(nativeCampaign.toMessageReq(), successMock, errorMock)
-
-        verify(exactly = 0) { ds.saveAppliedLegislation(Legislation.GDPR.name) }
-        verify(exactly = 0) { successMock(any()) }
-        verify(exactly = 1) { errorMock(any()) }
     }
 
     @Test

@@ -70,7 +70,7 @@ class NetworkClientImplTest {
         /** capture the Request and test the parameters */
         slot.captured.run {
             readText().assertEquals(req.toBodyRequest())
-            url.toString().assertEquals("http://localhost:3000/wrapper/v1/unified/message?env=localProd&inApp=true")
+            url.toString().assertEquals("http://192.168.1.11:3000/wrapper/v1/unified/message?env=localProd&inApp=true")
             method.assertEquals("POST")
             url.queryParameter("env").assertEquals("localProd")
             url.queryParameter("inApp").assertEquals("true")

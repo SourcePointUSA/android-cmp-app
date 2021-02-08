@@ -1,12 +1,14 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.file2List
 import com.sourcepoint.cmplibrary.util.file2String
+import com.sourcepoint.gdpr_cmplibrary.exception.Legislation
 import org.json.JSONObject
 import org.junit.Test
 
@@ -15,32 +17,51 @@ class JsonConverterImplTest {
     private val sut = JsonConverter.create()
 
     @Test
-    fun `GIVEN an empty string RETURN a Right(MessageResp) with a null GDPR obj`() {
+    fun `GIVEN an empty string RETURN a Left(MessageResp)`() {
         val json = "{}"
         val output: Either<MessageResp> = sut.toMessageResp(json)
+        (output as Either.Left).t.message!!.contains("We have [0] inst. of Message.").assertEquals(true)
+    }
+
+    @Test
+    fun `GIVEN a json with GDPR as applied legislation RETURN a Right(MessageResp)`() {
+        val json = "unified_wrapper/message_in_gdpr.json".file2String()
+        val output: Either<MessageResp> = sut.toMessageResp(json)
+        (output as? Either.Left)?.let { throw it.t }
         (output as Either.Right).r.also { m ->
-            m.ccpa.assertNull()
-            m.gdpr.assertNull()
+            m.legislation.assertEquals(Legislation.GDPR)
+            m.message.also { mess ->
+                mess["site_id"].assertEquals(7639)
+                mess["language"].assertEquals("en")
+                mess["message_json"].assertNotNull()
+                mess["message_choice"].assertNotNull()
+                mess["categories"].assertNotNull()
+//                g!!.uuid.assertEquals("144f3899-7887-445a-92fa-9a80a6fc8b5d")
+//                g.GDPRUserConsent.also { u ->
+//                    u.acceptedCategories.size.assertEquals(0)
+//                    u.acceptedVendors.size.assertEquals(0)
+//                    u.legIntCategories.size.assertEquals(2)
+//                    u.specialFeatures.size.assertEquals(0)
+//                    u.euconsent.assertEquals("CPAlTsBPAlTsBAGABCENBKCgAAAAAEIAAAYgAAAAPAAEAAAA.YAAAAAAAAAAA")
+//                }
+//                g.meta.contains("_sp_v1_uid=1:969:1346b52a-bfaa-4215-b54d-7bb787823f39").assertEquals(true)
+            }
         }
     }
 
     @Test
-    fun `GIVEN a string RETURN a Right(MessageResp)`() {
-        val json = "unified_wrapper/full_resp.json".file2String()
+    fun `GIVEN a json with CCPA as applied legislation RETURN a Right(MessageResp)`() {
+        val json = "unified_wrapper/message_in_ccpa.json".file2String()
         val output: Either<MessageResp> = sut.toMessageResp(json)
         (output as? Either.Left)?.let { throw it.t }
         (output as Either.Right).r.also { m ->
-            m.ccpa.assertNull()
-            m.gdpr.also { g ->
-                g!!.uuid.assertEquals("144f3899-7887-445a-92fa-9a80a6fc8b5d")
-                g.GDPRUserConsent.also { u ->
-                    u.acceptedCategories.size.assertEquals(0)
-                    u.acceptedVendors.size.assertEquals(0)
-                    u.legIntCategories.size.assertEquals(2)
-                    u.specialFeatures.size.assertEquals(0)
-                    u.euconsent.assertEquals("CPAlTsBPAlTsBAGABCENBKCgAAAAAEIAAAYgAAAAPAAEAAAA.YAAAAAAAAAAA")
-                }
-                g.meta.contains("_sp_v1_uid=1:969:1346b52a-bfaa-4215-b54d-7bb787823f39").assertEquals(true)
+            m.legislation.assertEquals(Legislation.CCPA)
+            m.message.also { mess ->
+                mess["site_id"].assertEquals(7639)
+                mess["language"].assertEquals("en")
+                mess["message_json"].assertNotNull()
+                mess["message_choice"].assertNotNull()
+                mess["categories"].assertNotNull()
             }
         }
     }
@@ -63,7 +84,8 @@ class JsonConverterImplTest {
             print("========= TEST toMessageResp [$index]: ")
             when (val output = sut.toMessageResp(s)) {
                 is Either.Left -> throw output.t
-                is Either.Right -> {}
+                is Either.Right -> {
+                }
             }
             println("success ============")
         }

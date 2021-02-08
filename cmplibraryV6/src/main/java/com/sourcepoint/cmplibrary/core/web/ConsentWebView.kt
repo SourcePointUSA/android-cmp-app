@@ -13,7 +13,6 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
-import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
 import com.sourcepoint.gdpr_cmplibrary.ConsentLibException.NoInternetConnectionException
 import com.sourcepoint.gdpr_cmplibrary.exception.Logger
 import okhttp3.HttpUrl
@@ -30,13 +29,10 @@ internal class ConsentWebView(
         setup()
     }
 
-    override var onNoIntentActivitiesFoundFor: ((url: String) -> Unit)? = null
-    override var onError: ((ConsentLibException) -> Unit)? = null
-
     private val chromeClient = object : WebChromeClient() {
         override fun onCreateWindow(view: WebView, dialog: Boolean, userGesture: Boolean, resultMsg: Message): Boolean {
             context.loadLinkOnExternalBrowser(getLinkUrl(view.hitTestResult)) {
-                onNoIntentActivitiesFoundFor?.invoke(it)
+                jsClientLib.onNoIntentActivitiesFoundFor(it)
             }
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.hitTestResult)))
             view.context.startActivity(browserIntent)
@@ -89,11 +85,11 @@ internal class ConsentWebView(
      * @param message this is the Message from the server used by the [ConsentWebView] to display its content
      * @return a [WebViewClient]
      */
-    private fun createWebViewClient(message: JSONObject) : WebViewClient {
+    private fun createWebViewClient(message: JSONObject): WebViewClient {
         return SPWebViewClient(
             wv = this,
-            onError = { onError?.invoke(it) },
-            onNoIntentActivitiesFoundFor = { onNoIntentActivitiesFoundFor?.invoke(it) },
+            onError = { jsClientLib.onError(it) },
+            onNoIntentActivitiesFoundFor = { jsClientLib.onNoIntentActivitiesFoundFor(it) },
             onPageFinishedLambda = { view, url ->
                 /**
                  * adding the parameter [sp.loadMessage] needed by the webpage to trigger the loadMessage event

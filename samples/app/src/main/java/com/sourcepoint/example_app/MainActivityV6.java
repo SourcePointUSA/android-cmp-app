@@ -69,7 +69,7 @@ public class MainActivityV6 extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if(view!= null){
-            gdprConsent.removeView(view, );
+            gdprConsent.removeView(view);
         }
     }
 
@@ -88,13 +88,13 @@ public class MainActivityV6 extends AppCompatActivity {
 
         @Override
         public void onConsentUIFinished(@NotNull View v) {
-            gdprConsent.removeView(v, );
+            gdprConsent.removeView(v);
         }
 
         @Override
         public void onConsentUIReady(@NotNull View v) {
             view = v;
-            gdprConsent.showView(v, );
+            gdprConsent.showView(v);
         }
 
         @Override

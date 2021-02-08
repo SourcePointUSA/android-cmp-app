@@ -5,9 +5,6 @@ import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
-import com.sourcepoint.cmplibrary.data.network.model.getAppliedLegislation
-import com.sourcepoint.cmplibrary.util.executeOnLeft
-import com.sourcepoint.cmplibrary.util.map
 
 /**
  * Factory method to create an instance of a [Service] using its implementation
@@ -29,13 +26,8 @@ private class ServiceImpl(
         nc.getMessage(
             messageReq,
             { messageResp ->
-                messageResp
-                    .getAppliedLegislation()
-                    .map {
-                        pSuccess(messageResp)
-                        saveAppliedLegislation(it.name)
-                    }
-                    .executeOnLeft { pError(it) }
+                pSuccess(messageResp)
+                saveAppliedLegislation(messageResp.legislation.name)
             },
             pError
         )

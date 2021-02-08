@@ -11,7 +11,7 @@ class HttpUrlManagerTest {
     fun `GIVEN an HttpUrl unifiedWrapper CHECK the output URL`() {
         val sut = HttpUrlManagerSingleton.inAppUrlMessage
         val url = sut.toString()
-        url.assertEquals("http://localhost:3000/wrapper/v1/unified/message?env=localProd&inApp=true")
+        url.assertEquals("http://192.168.1.11:3000/wrapper/v1/unified/message?env=localProd&inApp=true")
     }
 
     @Test
