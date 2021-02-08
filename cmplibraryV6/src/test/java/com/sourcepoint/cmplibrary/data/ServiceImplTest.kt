@@ -10,6 +10,7 @@ import com.sourcepoint.cmplibrary.stub.MockNetworkClient
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import io.mockk.verify
 import org.json.JSONObject
 import org.junit.Before
@@ -40,7 +41,7 @@ class ServiceImplTest {
 
     @Test
     fun `GIVEN a success from NetworkClient VERIFY that saveAppliedLegislation is called`() {
-        val mr = MessageResp(legislation = Legislation.GDPR, message = JSONObject(), uuid = "", meta = "")
+        val mr = MessageResp(legislation = Legislation.GDPR, message = JSONObject(), uuid = "", meta = "", userConsent = mockk())
         val nc = MockNetworkClient(
             logicMess = { _, success, _ -> success(mr) }
         )

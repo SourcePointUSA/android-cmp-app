@@ -14,7 +14,7 @@ import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.ConsentLib
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.delegate.ConsentLibDelegate
-import com.sourcepoint.cmplibrary.model.CCPAUserConsent
+import com.sourcepoint.cmplibrary.data.network.model.CCPAUserConsent
 import com.sourcepoint.gdpr_cmplibrary.* // ktint-disable
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import kotlinx.android.synthetic.main.content_main.* // ktint-disable
