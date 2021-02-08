@@ -83,7 +83,7 @@ class Builder {
         val networkClient = networkClient(OkHttpClient(), responseManager)
         val dataStorage = DataStorage.create(appCtx)
         val service: Service = Service.create(networkClient, dataStorage)
-        val viewManager = ViewsManager.create(activityWeakRef)
+        val viewManager = ViewsManager.create(activityWeakRef, connManager)
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 

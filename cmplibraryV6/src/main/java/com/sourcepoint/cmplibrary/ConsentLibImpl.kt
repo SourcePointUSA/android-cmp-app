@@ -1,15 +1,12 @@
 package com.sourcepoint.cmplibrary
 
 import android.content.Context
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
-import com.sourcepoint.cmplibrary.core.web.JSReceiver
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
@@ -23,7 +20,6 @@ import com.sourcepoint.cmplibrary.util.ExecutorManager
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.gdpr_cmplibrary.* // ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.exception.* // ktlint-disable
-import org.json.JSONObject
 
 internal class ConsentLibImpl(
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
@@ -32,7 +28,7 @@ internal class ConsentLibImpl(
     internal val context: Context,
     internal val pLogger: Logger,
     internal val pJsonConverter: JsonConverter,
-    internal val pConnectionManager: ConnectionManager,
+    private val pConnectionManager: ConnectionManager,
     internal val service: Service,
     private val viewManager: ViewsManager,
     private val executor: ExecutorManager
@@ -68,9 +64,8 @@ internal class ConsentLibImpl(
                  * Test with webview
                  */
                 executor.executeOnMain {
-//                    val webView = viewManager.createWebView(this)
-                    val webView = createWebView()
-                    webView.run {
+                    val webView = viewManager.createWebView(this, JSReceiverDelegate())
+                    webView?.run {
                         onError = { consentLibException ->
                             println()
                         }
@@ -81,15 +76,7 @@ internal class ConsentLibImpl(
 
                     (webView as? ConsentWebView)?.let {
                         it.settings
-                        it.loadConsentUIFromUrl(urlManager.urlLocalTest())
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            println("msg[${messageResp.gdpr!!.message}]")
-                            val obj = messageResp.gdpr.message.put("name", "sp.loadMessage")
-                            it.loadUrl("""
-                                javascript: window.postMessage($obj);
-                            """.trimIndent())
-                        }, 1000)
-
+                        it.loadConsentUIFromUrl(urlManager.urlLocalTest(), messageResp.gdpr!!.message)
                     } ?: throw RuntimeException("webView is not a ConsentWebView")
                     /**
                      * Test with webview
@@ -131,7 +118,7 @@ internal class ConsentLibImpl(
     override fun loadPrivacyManager() {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientNoSet()
-        val webView = viewManager.createWebView(this)
+        val webView = viewManager.createWebView(this, JSReceiverDelegate())
         webView?.run {
             onError = { consentLibException -> }
             onNoIntentActivitiesFoundFor = { url -> }
@@ -141,7 +128,7 @@ internal class ConsentLibImpl(
             siteId = "7639",
             messageId = campaign.pmId
         )
-        webView?.loadConsentUIFromUrl(urlManager.urlPm(pmConfig))
+//        webView?.loadConsentUIFromUrl(urlManager.urlPm(pmConfig), messageResp.gdpr!!.message)
     }
 
     override fun loadPrivacyManager(authId: String) {
@@ -159,42 +146,31 @@ internal class ConsentLibImpl(
         viewManager.removeView(view)
     }
 
-    /** end Client's methods */
-
-    private fun createWebView(): com.sourcepoint.cmplibrary.core.web.ConsentWebView {
-        return ConsentWebView(
-            context = context,
-            connectionManager = pConnectionManager,
-            jsClientLib = JSReceiverDelegate(),
-            logger = pLogger
-        )
-    }
-
     //    /** Start Receiver methods */
     inner class JSReceiverDelegate() : JSClientLib {
         //
-        override fun onConsentUIReady(isFromPM: Boolean, wv: View) {
-            println("js ===================== msg [onConsentUIReady]  ===========================")
+        override fun onConsentUIReady(isFromPM: Boolean, wv: WebView) {
+            pLogger.i("ConsentLibImpl","js ===================== msg [onConsentUIReady]  ===========================")
             wv.let { viewManager.showView(it) } ?: throw GenericSDKException(description = "WebView is null")
         }
 
         override fun log(tag: String?, msg: String?) {
-            println("js =================== log")
+            pLogger.i("ConsentLibImpl","js =================== log")
         }
 
         override fun log(msg: String?) {
-            println("js =================== log")
+            pLogger.i("ConsentLibImpl","js =================== log")
         }
 
         override fun onAction(actionData: String) {
-            println("js ===================== msg actionData [$actionData]  ===========================")
+            pLogger.i("ConsentLibImpl","js ===================== msg actionData [$actionData]  ===========================")
             pJsonConverter
                 .toConsentAction(actionData)
                 .map { onActionFromWebViewClient(it) }
         }
 
         override fun onError(errorMessage: String) {
-            println("js ===================== msg errorMessage [$errorMessage]  ===========================")
+            pLogger.i("ConsentLibImpl","js ===================== msg errorMessage [$errorMessage]  ===========================")
             spClient?.onError(GenericSDKException(description = errorMessage))
             pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
         }
