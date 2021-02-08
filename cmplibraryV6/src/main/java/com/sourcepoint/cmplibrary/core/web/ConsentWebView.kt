@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Message
 import android.view.View
+import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
@@ -18,7 +19,7 @@ import okhttp3.HttpUrl
 
 internal class ConsentWebView(
     context: Context,
-    private val jsReceiver: JSReceiver,
+    private val jsClientLib: JSClientLib,
     private val logger: Logger,
     private val connectionManager: ConnectionManager
 ) : WebView(context), IConsentWebView {
@@ -49,7 +50,6 @@ internal class ConsentWebView(
         }
         enableDebug()
         setStyle()
-//        jsReceiver.wv = this
         webViewClient = SPWebViewClient(
             wv = this,
             log = logger,
@@ -58,7 +58,7 @@ internal class ConsentWebView(
         )
         webChromeClient = chromeClient
 
-        addJavascriptInterface(jsReceiver, "JSReceiver")
+        addJavascriptInterface(JSClientWebViewImpl(jsClientLib), "JSReceiver")
     }
 
     private fun setStyle() {
@@ -80,5 +80,13 @@ internal class ConsentWebView(
         if (!connectionManager.isConnected) throw NoInternetConnectionException()
         loadUrl(url.toString())
         true
+    }
+
+    inner class JSClientWebViewImpl(jsClientLib: JSClientLib) : JSClientWebView, JSReceiver by jsClientLib {
+        @JavascriptInterface
+        override fun onConsentUIReady(isFromPM: Boolean) {
+            println("js =================== onConsentUIReady")
+            jsClientLib.onConsentUIReady(isFromPM, this@ConsentWebView)
+        }
     }
 }

@@ -83,7 +83,7 @@ class MainActivityV6 : AppCompatActivity() {
 
     var view : View? = null
     override fun onBackPressed() {
-        consentLib.removeView(view)
+        consentLib.removeView(view, )
         view?.let {
             view = null
         }?: kotlin.run {
@@ -139,12 +139,12 @@ class MainActivityV6 : AppCompatActivity() {
         override fun onConsentReady(c: GDPRUserConsent) {}
 
         override fun onConsentUIFinished(v: View) {
-           gdpr.removeView(v)
+           gdpr.removeView(v, )
         }
 
         override fun onConsentUIReady(v: View) {
             view = v
-            gdpr.showView(v)
+            gdpr.showView(v, )
         }
 
         override fun onError(error: ConsentLibExceptionK) {
