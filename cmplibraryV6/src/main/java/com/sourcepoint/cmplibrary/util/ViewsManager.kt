@@ -14,9 +14,13 @@ import java.lang.ref.WeakReference
  * Entity used to handle the views of the activity
  */
 internal interface ViewsManager {
-    fun removeView(view: View?)
+
+    val isViewInLayout: Boolean
+
     fun showView(view: View)
     fun createWebView(lib: ConsentLibImpl, jsReceiverDelegate: ConsentLibImpl.JSReceiverDelegate): IConsentWebView?
+    fun removeView(view: View)
+    fun removeAllViews()
     fun dispose()
     companion object
 }
@@ -43,20 +47,18 @@ private class ViewsManagerImpl(
     val mainView: ViewGroup?
         get() = weakReference.get()?.findViewById(R.id.content)
 
-    override fun removeView(view: View?) {
-        val idsList = idsSet.toMutableList()
-        idsList.forEach { id ->
-            mainView?.findViewById<View>(id)?.let { view ->
-                mainView?.run {
-                    post { this.removeView(view) }
-                }
-            }
+    override fun removeView(view: View) {
+        idsSet.remove(view.id)
+        mainView?.run {
+            post { this.removeView(view) }
         }
-        idsSet.clear()
+        println("ids size [${idsSet.size}] === $idsSet")
+        println("ids =====================================")
+        println("ids =====================================")
     }
 
     override fun showView(view: View) {
-        removeView(null)
+        if (isViewInLayout) return
         idsSet.add(view.id)
         if (view.parent == null) {
             mainView?.let {
@@ -70,6 +72,25 @@ private class ViewsManagerImpl(
                 }
             }
         }
+        println("ids size [${idsSet.size}] === $idsSet")
+        println("ids =====================================")
+        println("ids =====================================")
+    }
+
+    override fun removeAllViews() {
+        val idsList = idsSet.toMutableList()
+        println("ids size [${idsList.size}] === $idsList")
+        idsList.forEach { id ->
+            mainView?.findViewById<View>(id)?.let { view ->
+                mainView?.run {
+                    post { this.removeView(view) }
+                }
+            }
+        }
+        idsSet.clear()
+        println("ids size [${idsList.size}] === $idsList")
+        println("ids =====================================")
+        println("ids =====================================")
     }
 
     override fun createWebView(lib: ConsentLibImpl, jsReceiverDelegate: ConsentLibImpl.JSReceiverDelegate): ConsentWebView? {
@@ -86,4 +107,7 @@ private class ViewsManagerImpl(
     override fun dispose() {
         weakReference.clear()
     }
+
+    override val isViewInLayout: Boolean
+        get() = idsSet.isNotEmpty()
 }

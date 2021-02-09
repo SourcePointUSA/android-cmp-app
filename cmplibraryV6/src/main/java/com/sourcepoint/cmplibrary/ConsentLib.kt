@@ -15,7 +15,7 @@ interface ConsentLib {
     fun loadPrivacyManager(authId: String)
 
     fun showView(view: View)
-    fun removeView(view: View?)
+    fun removeView(view: View)
 
     fun dispose()
 }

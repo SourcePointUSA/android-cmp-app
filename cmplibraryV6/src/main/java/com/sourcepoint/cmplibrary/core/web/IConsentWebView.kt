@@ -6,4 +6,5 @@ import org.json.JSONObject
 
 internal interface IConsentWebView {
     fun loadConsentUIFromUrl(url: HttpUrl, message: JSONObject): Either<Boolean>
+    fun loadConsentUIFromUrl(url: HttpUrl): Either<Boolean>
 }
