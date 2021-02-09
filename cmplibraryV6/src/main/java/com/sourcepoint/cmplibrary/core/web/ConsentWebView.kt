@@ -32,7 +32,7 @@ internal class ConsentWebView(
     private val chromeClient = object : WebChromeClient() {
         override fun onCreateWindow(view: WebView, dialog: Boolean, userGesture: Boolean, resultMsg: Message): Boolean {
             context.loadLinkOnExternalBrowser(getLinkUrl(view.hitTestResult)) {
-                jsClientLib.onNoIntentActivitiesFoundFor(it)
+                jsClientLib.onNoIntentActivitiesFoundFor(this@ConsentWebView, it)
             }
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.hitTestResult)))
             view.context.startActivity(browserIntent)
@@ -47,7 +47,7 @@ internal class ConsentWebView(
         enableDebug()
         setStyle()
         webChromeClient = chromeClient
-        addJavascriptInterface(JSClientWebViewImpl(jsClientLib), "JSReceiver")
+        addJavascriptInterface(JSClientWebViewImpl(), "JSReceiver")
     }
 
     private fun setStyle() {
@@ -72,16 +72,32 @@ internal class ConsentWebView(
         true
     }
 
-    inner class JSClientWebViewImpl(jsClientLib: JSClientLib) : JSClientWebView, JSReceiver by jsClientLib {
+    inner class JSClientWebViewImpl : JSClientWebView {
+
         @JavascriptInterface
         override fun onConsentUIReady(isFromPM: Boolean) {
             logger.i("ConsentWebView", "js =================== onConsentUIReady")
-            jsClientLib.onConsentUIReady(isFromPM, this@ConsentWebView)
+            jsClientLib.onConsentUIReady(this@ConsentWebView, isFromPM)
         }
 
         @JavascriptInterface
         override fun onAction(actionData: String) {
-            jsClientLib.onAction(actionData, this@ConsentWebView)
+            jsClientLib.onAction(this@ConsentWebView, actionData)
+        }
+
+        @JavascriptInterface
+        override fun log(tag: String?, msg: String?) {
+            jsClientLib.log(this@ConsentWebView, tag, msg)
+        }
+
+        @JavascriptInterface
+        override fun log(msg: String?) {
+            jsClientLib.log(this@ConsentWebView, msg)
+        }
+
+        @JavascriptInterface
+        override fun onError(errorMessage: String) {
+            jsClientLib.onError(this@ConsentWebView, errorMessage)
         }
     }
 
@@ -93,8 +109,8 @@ internal class ConsentWebView(
     private fun createWebViewClient(message: JSONObject): WebViewClient {
         return SPWebViewClient(
             wv = this,
-            onError = { jsClientLib.onError(it) },
-            onNoIntentActivitiesFoundFor = { jsClientLib.onNoIntentActivitiesFoundFor(it) },
+            onError = { jsClientLib.onError(this@ConsentWebView, it) },
+            onNoIntentActivitiesFoundFor = { jsClientLib.onNoIntentActivitiesFoundFor(this@ConsentWebView, it) },
             onPageFinishedLambda = { view, url ->
                 /**
                  * adding the parameter [sp.loadMessage] needed by the webpage to trigger the loadMessage event

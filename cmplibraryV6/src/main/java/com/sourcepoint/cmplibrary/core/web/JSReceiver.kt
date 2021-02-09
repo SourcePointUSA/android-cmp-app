@@ -13,8 +13,13 @@ internal interface JSReceiver {
     @JavascriptInterface
     fun onError(errorMessage: String)
 
-    fun onNoIntentActivitiesFoundFor(url: String)
-    fun onError(error: Throwable)
+    // called when a choice is selected on the message
+    @JavascriptInterface
+    fun onAction(actionData: String)
+
+    // called when message or pm is about to be shown
+    @JavascriptInterface
+    fun onConsentUIReady(isFromPM: Boolean)
 
     companion object
 }
