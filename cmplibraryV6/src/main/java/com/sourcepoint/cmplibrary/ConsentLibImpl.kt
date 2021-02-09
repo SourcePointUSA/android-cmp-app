@@ -16,6 +16,7 @@ import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.MissingClientException
 import com.sourcepoint.cmplibrary.exception.RenderingAppException
 import com.sourcepoint.cmplibrary.model.Campaign
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.model.toMessageReq
 import com.sourcepoint.cmplibrary.util.* //ktlint-disable
 import com.sourcepoint.gdpr_cmplibrary.* //ktlint-disable
@@ -23,7 +24,7 @@ import com.sourcepoint.gdpr_cmplibrary.* //ktlint-disable
 internal class ConsentLibImpl(
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     internal val campaign: Campaign,
-    internal val pPrivacyManagerTab: PrivacyManagerTab,
+    internal val pPrivacyManagerTab: PrivacyManagerTabK,
     internal val context: Context,
     internal val pLogger: Logger,
     internal val pJsonConverter: JsonConverter,

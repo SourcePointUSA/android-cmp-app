@@ -4,11 +4,11 @@ import android.app.Activity
 import com.sourcepoint.cmplibrary.ConsentLib
 import com.sourcepoint.cmplibrary.creation.makeConsentLib
 import com.sourcepoint.cmplibrary.model.Campaign
-import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import kotlin.reflect.KProperty
 
 class ConsentLibDelegate(
-    private val privacyManagerTab: PrivacyManagerTab = PrivacyManagerTab.PURPOSES,
+    private val privacyManagerTab: PrivacyManagerTabK = PrivacyManagerTabK.PURPOSES,
     private val campaign: Campaign
 ) {
 

@@ -4,7 +4,7 @@ import android.app.Activity
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.model.Campaign
-import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
@@ -31,7 +31,7 @@ class ConsentLibDelegateTest {
     @Test
     fun `VERIFY that the delegate with a tab is not null`() {
 
-        val delegate = ConsentLibDelegate(PrivacyManagerTab.FEATURES, campaign)
+        val delegate = ConsentLibDelegate(PrivacyManagerTabK.FEATURES, campaign)
         val sut1 = delegate.getValue(context, mockk())
         val sut2 = delegate.getValue(context, mockk())
 

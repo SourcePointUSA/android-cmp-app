@@ -10,6 +10,7 @@ import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.MissingClientException
 import com.sourcepoint.cmplibrary.model.Campaign
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
 import com.sourcepoint.cmplibrary.stub.MockService
 import com.sourcepoint.cmplibrary.util.ConnectionManager
@@ -17,7 +18,6 @@ import com.sourcepoint.cmplibrary.util.ExecutorManager
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage
-import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
 import io.mockk.*  //ktlint-disable
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.runBlocking
@@ -54,14 +54,14 @@ class ConsentLibImplTest {
 
     @Test(expected = MissingClientException::class)
     fun `CALLING loadMessage() with a null SpGDPRClient THROWS a MissingClientException`() {
-        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
+        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
         sut.loadMessage()
         verify(exactly = 1) { service.getMessage(any(), any(), any()) }
     }
 
     @Test
     fun `CALLING loadMessage() verify that getMessage is called exactly 1 time`() {
-        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
+        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
         sut.spClient = spClient
         sut.loadMessage()
         verify(exactly = 1) { service.getMessage(any(), any(), any()) }
@@ -73,7 +73,7 @@ class ConsentLibImplTest {
         val mockService = MockService(
             getMessageLogic = { _, pSuccess, _ -> pSuccess.invoke(mr) }
         )
-        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, execManager)
+        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, execManager)
         sut.spClient = spClient
 
         sut.loadMessage()
@@ -90,7 +90,7 @@ class ConsentLibImplTest {
         val mockService = MockService(
             getNativeMessageLogic = { _, pSuccess, _ -> pSuccess.invoke(NativeMessageResp(JSONObject(dtJson))) }
         )
-        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTab.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, MockExecutorManager())
+        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, MockExecutorManager())
         sut.spClient = spClient
 
         val nm = mockk<NativeMessage>()
