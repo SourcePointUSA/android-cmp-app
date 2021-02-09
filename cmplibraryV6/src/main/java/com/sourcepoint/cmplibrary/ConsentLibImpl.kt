@@ -3,6 +3,8 @@ package com.sourcepoint.cmplibrary
 import android.content.Context
 import android.view.View
 import android.webkit.WebView
+import com.sourcepoint.cmplibrary.core.NativeMessage
+import com.sourcepoint.cmplibrary.core.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
@@ -20,7 +22,6 @@ import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.model.toMessageReq
 import com.sourcepoint.cmplibrary.util.* //ktlint-disable
-import com.sourcepoint.gdpr_cmplibrary.* //ktlint-disable
 
 internal class ConsentLibImpl(
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
@@ -80,7 +81,7 @@ internal class ConsentLibImpl(
                     /** configuring onClickListener and set the parameters */
 //                    nativeMessage.setAttributes(NativeMessageAttrs(jsonResult, pLogger))
                     /** set the action callback */
-                    nativeMessage.setActionClient(nativeMsgClient)
+//                    nativeMessage.setActionClient(nativeMsgClient)
                     /** calling the client */
                     spClient?.onConsentUIReady(nativeMessage)
                 }
@@ -199,34 +200,34 @@ internal class ConsentLibImpl(
         /**
          * onclick listener connected to the acceptAll button in the NativeMessage View
          */
-        override fun onClickAcceptAll(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
+        override fun onClickAcceptAll(ca: ConsentAction) {
 //            spClient?.onAction(ActionTypes.ACCEPT_ALL)
         }
 
         /**
          * onclick listener connected to the RejectAll button in the NativeMessage View
          */
-        override fun onClickRejectAll(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
+        override fun onClickRejectAll(ca: ConsentAction) {
 //            spClient?.onAction(ActionTypes.REJECT_ALL)
         }
 
-        override fun onPmDismiss(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {}
+        override fun onPmDismiss(ca: ConsentAction) {}
 
         /**
          * onclick listener connected to the ShowOptions button in the NativeMessage View
          */
-        override fun onClickShowOptions(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
+        override fun onClickShowOptions(ca: ConsentAction) {
 //            spClient?.onAction(ActionTypes.SHOW_OPTIONS)
         }
 
         /**
          * onclick listener connected to the Cancel button in the NativeMessage View
          */
-        override fun onClickCancel(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
+        override fun onClickCancel(ca: ConsentAction) {
 //            spClient?.onAction(ActionTypes.MSG_CANCEL)
         }
 
-        override fun onDefaultAction(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
+        override fun onDefaultAction(ca: ConsentAction) {
         }
     }
 }

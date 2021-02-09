@@ -42,6 +42,7 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 
     implementation(project(":cmplibraryV6"))
+    implementation(project(":cmplibrary"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:${AndroidXVersion.kotlin}")
     implementation("androidx.core:core-ktx:${AndroidXVersion.core_ktx}")

@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary
 
 import android.view.View
-import com.sourcepoint.gdpr_cmplibrary.NativeMessage
+import com.sourcepoint.cmplibrary.core.NativeMessage
 
 interface ConsentLib {
 
