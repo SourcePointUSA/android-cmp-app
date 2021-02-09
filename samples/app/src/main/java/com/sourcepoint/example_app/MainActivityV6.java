@@ -7,13 +7,14 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.cmplibrary.ConsentLib;
 import com.sourcepoint.cmplibrary.data.network.model.CCPAUserConsent;
+import com.sourcepoint.cmplibrary.data.network.model.GDPRUserConsent;
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK;
+import com.sourcepoint.cmplibrary.model.ActionType;
 import com.sourcepoint.cmplibrary.model.Campaign;
 import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.creation.Builder;
 import com.sourcepoint.example_app.core.DataProvider;
 import com.sourcepoint.gdpr_cmplibrary.ActionTypes;
-import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent;
 import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -103,7 +104,7 @@ public class MainActivityV6 extends AppCompatActivity {
         }
 
         @Override
-        public void onAction(@Nullable ActionTypes actionTypes) {
+        public void onAction(@Nullable ActionType actionTypes) {
             Log.i(TAG, "ActionType: " + actionTypes.toString());
         }
     }

@@ -15,8 +15,11 @@ import com.sourcepoint.cmplibrary.ConsentLib
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.delegate.ConsentLibDelegate
 import com.sourcepoint.cmplibrary.data.network.model.CCPAUserConsent
+import com.sourcepoint.cmplibrary.data.network.model.GDPRUserConsent
 import com.sourcepoint.gdpr_cmplibrary.* // ktint-disable
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
+import com.sourcepoint.cmplibrary.model.ActionType
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import kotlinx.android.synthetic.main.content_main.* // ktint-disable
 
 class MainActivityV6 : AppCompatActivity() {
@@ -32,7 +35,7 @@ class MainActivityV6 : AppCompatActivity() {
 
     private val consentLib by ConsentLibDelegate(
         campaign = nativeCampaign,
-        privacyManagerTab = PrivacyManagerTab.FEATURES
+        privacyManagerTab = PrivacyManagerTabK.FEATURES
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,8 +154,8 @@ class MainActivityV6 : AppCompatActivity() {
             throw error
         }
 
-        override fun onAction(actionTypes: ActionTypes) {
-            Toast.makeText(this@MainActivityV6, "Action[${actionTypes.name}]", Toast.LENGTH_SHORT).show()
+        override fun onAction(actionType: ActionType) {
+            Toast.makeText(this@MainActivityV6, "Action[${actionType.name}]", Toast.LENGTH_SHORT).show()
         }
     }
 
