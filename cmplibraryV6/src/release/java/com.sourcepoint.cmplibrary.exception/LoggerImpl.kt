@@ -2,7 +2,7 @@
 
 package com.sourcepoint.cmplibrary.exception
 
-import com.sourcepoint.gdpr_cmplibrary.enqueue
+import com.sourcepoint.cmplibrary.util.enqueue
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request

@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.os.Build
-import com.example.gdpr_cmplibrary.BuildConfig
+import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.createNetworkClient
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton

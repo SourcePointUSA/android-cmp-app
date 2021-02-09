@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary
 
 import android.content.Context
+import com.sourcepoint.cmplibrary.core.NativeMessage
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
@@ -17,7 +18,6 @@ import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ExecutorManager
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.file2String
-import com.sourcepoint.gdpr_cmplibrary.NativeMessage
 import io.mockk.*  //ktlint-disable
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.runBlocking
