@@ -2,8 +2,9 @@ package com.sourcepoint.cmplibrary
 
 import android.content.Context
 import android.view.View
-import com.sourcepoint.cmplibrary.core.NativeMessage
-import com.sourcepoint.cmplibrary.core.NativeMessageClient
+import com.sourcepoint.cmplibrary.core.layout.NativeMessage
+import com.sourcepoint.cmplibrary.core.layout.NativeMessageAttrs
+import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
@@ -80,9 +81,9 @@ internal class ConsentLibImpl(
                 val jsonResult = messageResp.msgJSON
                 executor.executeOnMain {
                     /** configuring onClickListener and set the parameters */
-//                    nativeMessage.setAttributes(NativeMessageAttrs(jsonResult, pLogger))
+                    nativeMessage.setAttributes(NativeMessageAttrs(jsonResult, pLogger))
                     /** set the action callback */
-//                    nativeMessage.setActionClient(nativeMsgClient)
+                    nativeMessage.setActionClient(nativeMsgClient)
                     /** calling the client */
                     spClient?.onConsentUIReady(nativeMessage)
                 }

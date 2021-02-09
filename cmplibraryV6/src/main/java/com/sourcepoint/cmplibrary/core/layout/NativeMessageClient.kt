@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.core
+package com.sourcepoint.cmplibrary.core.layout
 
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 

@@ -104,8 +104,8 @@ public class MainActivityV6 extends AppCompatActivity {
         }
 
         @Override
-        public void onAction(@Nullable ActionType actionTypes) {
-            Log.i(TAG, "ActionType: " + actionTypes.toString());
+        public void onAction(@NotNull ActionType actionType) {
+            Log.i(TAG, "ActionType: " + actionType.toString());
         }
     }
 }

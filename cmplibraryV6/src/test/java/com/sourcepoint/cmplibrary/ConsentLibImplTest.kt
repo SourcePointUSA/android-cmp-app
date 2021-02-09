@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary
 
 import android.content.Context
-import com.sourcepoint.cmplibrary.core.NativeMessage
+import com.sourcepoint.cmplibrary.core.layout.NativeMessage
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
