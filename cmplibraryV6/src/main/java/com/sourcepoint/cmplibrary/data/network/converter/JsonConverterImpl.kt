@@ -6,9 +6,9 @@ import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
+import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.gdpr_cmplibrary.ActionTypes
 import org.json.JSONObject
 
 /**
@@ -30,7 +30,7 @@ private class JsonConverterImpl : JsonConverter {
 
         val map: MutableMap<String, Any> = JSON.std.mapFrom(json)
 
-        val actionType = (map["actionType"] as? Int)?.let { ActionTypes.valueOf(it) } ?: fail("actionType")
+        val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } } ?: fail("actionType")
         val choiceId = (map["choiceId"] as? String)
         val privacyManagerId = (map["privacyManagerId"] as? String)
         val pmTab = (map["pmTab"] as? String)

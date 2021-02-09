@@ -13,8 +13,8 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
-import com.sourcepoint.gdpr_cmplibrary.ConsentLibException.NoInternetConnectionException
 import okhttp3.HttpUrl
 import org.json.JSONObject
 
@@ -66,7 +66,7 @@ internal class ConsentWebView(
     }
 
     override fun loadConsentUIFromUrl(url: HttpUrl, message: JSONObject): Either<Boolean> = check {
-        if (!connectionManager.isConnected) throw NoInternetConnectionException()
+        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         loadUrl(url.toString())
         webViewClient = createWebViewClient(message)
         true

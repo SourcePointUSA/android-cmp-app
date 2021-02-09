@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
-import com.sourcepoint.gdpr_cmplibrary.ActionTypes
+import com.sourcepoint.cmplibrary.model.ActionType
 import org.json.JSONObject
 
 data class ConsentAction(
@@ -10,5 +10,5 @@ data class ConsentAction(
     val requestFromPm: Boolean,
     val saveAndExitVariables: JSONObject,
     val consentLanguage: String?,
-    val actionType: ActionTypes
+    val actionType: ActionType
 )

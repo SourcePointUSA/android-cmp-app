@@ -224,6 +224,21 @@ class ConnectionTimeoutException @JvmOverloads constructor(
 }
 
 /**
+ * This exception is thrown when we don't have connection
+ */
+class NoInternetConnectionException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = ExceptionCodes("NO_INTERNET_CONNECTION")
+}
+
+/**
  * This exception is thrown when a generic network request error occurred
  */
 class GenericNetworkRequestException @JvmOverloads constructor(

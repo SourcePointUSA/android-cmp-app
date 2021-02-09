@@ -15,6 +15,7 @@ import com.sourcepoint.cmplibrary.exception.GenericSDKException
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.MissingClientException
 import com.sourcepoint.cmplibrary.exception.RenderingAppException
+import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.model.toMessageReq
@@ -145,6 +146,7 @@ internal class ConsentLibImpl(
             pJsonConverter
                 .toConsentAction(actionData)
                 .map { onActionFromWebViewClient(it) }
+                .executeOnLeft { throw it }
         }
 
         override fun onError(errorMessage: String) {
@@ -175,17 +177,17 @@ internal class ConsentLibImpl(
     internal fun onActionFromWebViewClient(action: ConsentAction) {
         executor.executeOnMain { spClient?.onAction(action.actionType) }
         when (action.actionType) {
-            ActionTypes.ACCEPT_ALL -> {
+            ActionType.ACCEPT_ALL -> {
             }
-            ActionTypes.MSG_CANCEL -> {
+            ActionType.MSG_CANCEL -> {
             }
-            ActionTypes.SAVE_AND_EXIT -> {
+            ActionType.SAVE_AND_EXIT -> {
             }
-            ActionTypes.SHOW_OPTIONS -> {
+            ActionType.SHOW_OPTIONS -> {
             }
-            ActionTypes.REJECT_ALL -> {
+            ActionType.REJECT_ALL -> {
             }
-            ActionTypes.PM_DISMISS -> {
+            ActionType.PM_DISMISS -> {
             }
         }
     }
@@ -198,14 +200,14 @@ internal class ConsentLibImpl(
          * onclick listener connected to the acceptAll button in the NativeMessage View
          */
         override fun onClickAcceptAll(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
-            spClient?.onAction(ActionTypes.ACCEPT_ALL)
+//            spClient?.onAction(ActionTypes.ACCEPT_ALL)
         }
 
         /**
          * onclick listener connected to the RejectAll button in the NativeMessage View
          */
         override fun onClickRejectAll(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
-            spClient?.onAction(ActionTypes.REJECT_ALL)
+//            spClient?.onAction(ActionTypes.REJECT_ALL)
         }
 
         override fun onPmDismiss(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {}
@@ -214,14 +216,14 @@ internal class ConsentLibImpl(
          * onclick listener connected to the ShowOptions button in the NativeMessage View
          */
         override fun onClickShowOptions(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
-            spClient?.onAction(ActionTypes.SHOW_OPTIONS)
+//            spClient?.onAction(ActionTypes.SHOW_OPTIONS)
         }
 
         /**
          * onclick listener connected to the Cancel button in the NativeMessage View
          */
         override fun onClickCancel(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
-            spClient?.onAction(ActionTypes.MSG_CANCEL)
+//            spClient?.onAction(ActionTypes.MSG_CANCEL)
         }
 
         override fun onDefaultAction(ca: com.sourcepoint.gdpr_cmplibrary.ConsentAction) {
