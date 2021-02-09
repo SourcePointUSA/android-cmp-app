@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary
 
 import android.content.Context
 import android.view.View
-import android.webkit.WebView
 import com.sourcepoint.cmplibrary.core.NativeMessage
 import com.sourcepoint.cmplibrary.core.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
@@ -129,16 +128,16 @@ internal class ConsentLibImpl(
     //    /** Start Receiver methods */
     inner class JSReceiverDelegate : JSClientLib {
         //
-        override fun onConsentUIReady(isFromPM: Boolean, wv: WebView) {
+        override fun onConsentUIReady(wv: View, isFromPM: Boolean) {
             pLogger.i("ConsentLibImpl", "js ===================== msg [onConsentUIReady]  ===========================")
             wv.let { viewManager.showView(it) } ?: throw GenericSDKException(description = "WebView is null")
         }
 
-        override fun log(tag: String?, msg: String?) {
+        override fun log(wv: View, tag: String?, msg: String?) {
             pLogger.i("ConsentLibImpl", "js =================== log")
         }
 
-        override fun log(msg: String?) {
+        override fun log(wv: View, msg: String?) {
             pLogger.i("ConsentLibImpl", "js =================== log")
         }
 
@@ -150,22 +149,22 @@ internal class ConsentLibImpl(
 //                .executeOnLeft { throw it }
 //        }
 
-        override fun onError(errorMessage: String) {
+        override fun onError(view: View, errorMessage: String) {
             pLogger.i("ConsentLibImpl", "js ===================== msg errorMessage [$errorMessage]  ===========================")
             spClient?.onError(GenericSDKException(description = errorMessage))
             pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
         }
 
-        override fun onNoIntentActivitiesFoundFor(url: String) {
+        override fun onNoIntentActivitiesFoundFor(view: View, url: String) {
             pLogger.i("ConsentLibImpl", "js ===================== msg url [$url]  ===========================")
         }
 
-        override fun onError(error: Throwable) {
+        override fun onError(view: View, error: Throwable) {
             pLogger.i("ConsentLibImpl", "js ===================== msg onError [$error]  ===========================")
             throw error
         }
 
-        override fun onAction(actionData: String, view: View) {
+        override fun onAction(view: View, actionData: String) {
             pJsonConverter
                 .toConsentAction(actionData)
                 .map { onActionFromWebViewClient(it, view) }
