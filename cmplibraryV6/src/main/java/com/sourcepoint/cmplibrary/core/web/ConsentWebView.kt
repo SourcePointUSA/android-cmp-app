@@ -78,6 +78,11 @@ internal class ConsentWebView(
             logger.i("ConsentWebView", "js =================== onConsentUIReady")
             jsClientLib.onConsentUIReady(isFromPM, this@ConsentWebView)
         }
+
+        @JavascriptInterface
+        override fun onAction(actionData: String) {
+            jsClientLib.onAction(actionData, this@ConsentWebView)
+        }
     }
 
     /**

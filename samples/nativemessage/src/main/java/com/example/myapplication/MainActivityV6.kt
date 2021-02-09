@@ -142,12 +142,12 @@ class MainActivityV6 : AppCompatActivity() {
         override fun onConsentReady(c: GDPRUserConsent) {}
 
         override fun onConsentUIFinished(v: View) {
-           gdpr.removeView(v, )
+           gdpr.removeView(v)
         }
 
         override fun onConsentUIReady(v: View) {
             view = v
-            gdpr.showView(v, )
+            gdpr.showView(v)
         }
 
         override fun onError(error: ConsentLibExceptionK) {

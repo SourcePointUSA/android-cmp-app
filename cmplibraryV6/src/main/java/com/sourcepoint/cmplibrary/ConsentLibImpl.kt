@@ -127,7 +127,7 @@ internal class ConsentLibImpl(
     }
 
     //    /** Start Receiver methods */
-    inner class JSReceiverDelegate() : JSClientLib {
+    inner class JSReceiverDelegate : JSClientLib {
         //
         override fun onConsentUIReady(isFromPM: Boolean, wv: WebView) {
             pLogger.i("ConsentLibImpl", "js ===================== msg [onConsentUIReady]  ===========================")
@@ -142,13 +142,13 @@ internal class ConsentLibImpl(
             pLogger.i("ConsentLibImpl", "js =================== log")
         }
 
-        override fun onAction(actionData: String) {
-            pLogger.i("ConsentLibImpl", "js ===================== msg actionData [$actionData]  ===========================")
-            pJsonConverter
-                .toConsentAction(actionData)
-                .map { onActionFromWebViewClient(it) }
-                .executeOnLeft { throw it }
-        }
+//        override fun onAction(actionData: String) {
+//            pLogger.i("ConsentLibImpl", "js ===================== msg actionData [$actionData]  ===========================")
+//            pJsonConverter
+//                .toConsentAction(actionData)
+//                .map { onActionFromWebViewClient(it) }
+//                .executeOnLeft { throw it }
+//        }
 
         override fun onError(errorMessage: String) {
             pLogger.i("ConsentLibImpl", "js ===================== msg errorMessage [$errorMessage]  ===========================")
@@ -164,6 +164,13 @@ internal class ConsentLibImpl(
             pLogger.i("ConsentLibImpl", "js ===================== msg onError [$error]  ===========================")
             throw error
         }
+
+        override fun onAction(actionData: String, view: View) {
+            pJsonConverter
+                .toConsentAction(actionData)
+                .map { onActionFromWebViewClient(it, view) }
+                .executeOnLeft { throw it }
+        }
     }
 
     /** End Receiver methods */
@@ -175,12 +182,15 @@ internal class ConsentLibImpl(
     /**
      * Receive the action performed by the user from the WebView
      */
-    internal fun onActionFromWebViewClient(action: ConsentAction) {
+    internal fun onActionFromWebViewClient(action: ConsentAction, view: View? = null) {
         executor.executeOnMain { spClient?.onAction(action.actionType) }
         when (action.actionType) {
             ActionType.ACCEPT_ALL -> {
             }
             ActionType.MSG_CANCEL -> {
+                view?.let {
+                    viewManager.removeView(view)
+                }
             }
             ActionType.SAVE_AND_EXIT -> {
             }
@@ -201,14 +211,14 @@ internal class ConsentLibImpl(
          * onclick listener connected to the acceptAll button in the NativeMessage View
          */
         override fun onClickAcceptAll(ca: ConsentAction) {
-//            spClient?.onAction(ActionTypes.ACCEPT_ALL)
+            spClient?.onAction(ActionType.ACCEPT_ALL)
         }
 
         /**
          * onclick listener connected to the RejectAll button in the NativeMessage View
          */
         override fun onClickRejectAll(ca: ConsentAction) {
-//            spClient?.onAction(ActionTypes.REJECT_ALL)
+            spClient?.onAction(ActionType.REJECT_ALL)
         }
 
         override fun onPmDismiss(ca: ConsentAction) {}
@@ -217,14 +227,14 @@ internal class ConsentLibImpl(
          * onclick listener connected to the ShowOptions button in the NativeMessage View
          */
         override fun onClickShowOptions(ca: ConsentAction) {
-//            spClient?.onAction(ActionTypes.SHOW_OPTIONS)
+            spClient?.onAction(ActionType.SHOW_OPTIONS)
         }
 
         /**
          * onclick listener connected to the Cancel button in the NativeMessage View
          */
         override fun onClickCancel(ca: ConsentAction) {
-//            spClient?.onAction(ActionTypes.MSG_CANCEL)
+            spClient?.onAction(ActionType.MSG_CANCEL)
         }
 
         override fun onDefaultAction(ca: ConsentAction) {

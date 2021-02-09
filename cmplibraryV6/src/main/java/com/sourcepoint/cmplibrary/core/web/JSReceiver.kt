@@ -11,9 +11,6 @@ internal interface JSReceiver {
     fun log(msg: String?)
 
     @JavascriptInterface
-    fun onAction(actionData: String) // called when a choice is selected on the message
-
-    @JavascriptInterface
     fun onError(errorMessage: String)
 
     fun onNoIntentActivitiesFoundFor(url: String)
