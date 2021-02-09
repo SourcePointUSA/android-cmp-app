@@ -177,25 +177,27 @@ internal class ConsentLibImpl(
      * Receive the action performed by the user from the WebView
      */
     internal fun onActionFromWebViewClient(action: ConsentAction, view: View? = null) {
-        executor.executeOnMain { spClient?.onAction(action.actionType) }
-        when (action.actionType) {
-            ActionType.ACCEPT_ALL -> {
-                view?.let { viewManager.removeView(view) }
-            }
-            ActionType.MSG_CANCEL -> {
-                view?.let { viewManager.removeView(view) }
-            }
-            ActionType.SAVE_AND_EXIT -> {
-                view?.let { viewManager.removeView(view) }
-            }
-            ActionType.SHOW_OPTIONS -> {
-                view?.let { viewManager.removeView(view) }
-            }
-            ActionType.REJECT_ALL -> {
-                view?.let { viewManager.removeView(view) }
-            }
-            ActionType.PM_DISMISS -> {
-                view?.let { viewManager.removeView(view) }
+        executor.executeOnMain {
+            spClient?.onAction(action.actionType)
+            when (action.actionType) {
+                ActionType.ACCEPT_ALL -> {
+                    view?.let { spClient?.onConsentUIFinished(it) }
+                }
+                ActionType.MSG_CANCEL -> {
+                    view?.let { spClient?.onConsentUIFinished(it) }
+                }
+                ActionType.SAVE_AND_EXIT -> {
+                    view?.let { spClient?.onConsentUIFinished(it) }
+                }
+                ActionType.SHOW_OPTIONS -> {
+                    view?.let { spClient?.onConsentUIFinished(it) }
+                }
+                ActionType.REJECT_ALL -> {
+                    view?.let { spClient?.onConsentUIFinished(it) }
+                }
+                ActionType.PM_DISMISS -> {
+                    view?.let { spClient?.onConsentUIFinished(it) }
+                }
             }
         }
     }
