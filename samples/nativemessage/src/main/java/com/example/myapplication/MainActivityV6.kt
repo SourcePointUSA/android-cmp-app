@@ -86,8 +86,9 @@ class MainActivityV6 : AppCompatActivity() {
 
     var view : View? = null
     override fun onBackPressed() {
-        consentLib.removeView(view, )
+
         view?.let {
+            consentLib.removeView(it)
             view = null
         }?: kotlin.run {
             super.onBackPressed()

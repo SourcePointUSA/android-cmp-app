@@ -72,6 +72,13 @@ internal class ConsentWebView(
         true
     }
 
+    override fun loadConsentUIFromUrl(url: HttpUrl): Either<Boolean> = check {
+        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
+        loadUrl(url.toString())
+        webViewClient = createWebViewClient()
+        true
+    }
+
     inner class JSClientWebViewImpl : JSClientWebView {
 
         @JavascriptInterface
@@ -118,6 +125,20 @@ internal class ConsentWebView(
                 val obj = message.put("name", "sp.loadMessage")
                 view.loadUrl("javascript: window.postMessage($obj);")
             }
+        )
+    }
+
+    /**
+     * Delegate used to catch the events from the [ConsentWebView]
+     * @param message this is the Message from the server used by the [ConsentWebView] to display its content
+     * @return a [WebViewClient]
+     */
+    private fun createWebViewClient(): WebViewClient {
+        return SPWebViewClient(
+            wv = this,
+            onError = { jsClientLib.onError(this@ConsentWebView, it) },
+            onNoIntentActivitiesFoundFor = { jsClientLib.onNoIntentActivitiesFoundFor(this@ConsentWebView, it) },
+            onPageFinishedLambda = { view, url -> }
         )
     }
 }

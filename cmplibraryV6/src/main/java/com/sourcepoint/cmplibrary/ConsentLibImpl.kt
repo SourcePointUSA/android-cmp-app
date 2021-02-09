@@ -53,6 +53,8 @@ internal class ConsentLibImpl(
         checkMainThread("loadMessage")
         throwsExceptionIfClientNoSet()
 
+        if (viewManager.isViewInLayout) return
+
         service.getMessage(
             messageReq = campaign.toMessageReq(),
             pSuccess = { messageResp ->
@@ -103,7 +105,7 @@ internal class ConsentLibImpl(
             siteId = "7639",
             messageId = campaign.pmId
         )
-//        webView?.loadConsentUIFromUrl(urlManager.urlPm(pmConfig), messageResp.gdpr!!.message)
+        webView?.loadConsentUIFromUrl(urlManager.urlPm(pmConfig))
     }
 
     override fun loadPrivacyManager(authId: String) {
@@ -116,38 +118,31 @@ internal class ConsentLibImpl(
         viewManager.showView(view)
     }
 
-    override fun removeView(view: View?) {
+    override fun removeView(view: View) {
         checkMainThread("removeView")
         viewManager.removeView(view)
     }
 
     override fun dispose() {
         executor.dispose()
+        viewManager.removeAllViews()
     }
 
     //    /** Start Receiver methods */
     inner class JSReceiverDelegate : JSClientLib {
         //
-        override fun onConsentUIReady(wv: View, isFromPM: Boolean) {
+        override fun onConsentUIReady(view: View, isFromPM: Boolean) {
             pLogger.i("ConsentLibImpl", "js ===================== msg [onConsentUIReady]  ===========================")
-            wv.let { viewManager.showView(it) } ?: throw GenericSDKException(description = "WebView is null")
+            view.let { viewManager.showView(it) } ?: throw GenericSDKException(description = "WebView is null")
         }
 
-        override fun log(wv: View, tag: String?, msg: String?) {
+        override fun log(view: View, tag: String?, msg: String?) {
             pLogger.i("ConsentLibImpl", "js =================== log")
         }
 
-        override fun log(wv: View, msg: String?) {
+        override fun log(view: View, msg: String?) {
             pLogger.i("ConsentLibImpl", "js =================== log")
         }
-
-//        override fun onAction(actionData: String) {
-//            pLogger.i("ConsentLibImpl", "js ===================== msg actionData [$actionData]  ===========================")
-//            pJsonConverter
-//                .toConsentAction(actionData)
-//                .map { onActionFromWebViewClient(it) }
-//                .executeOnLeft { throw it }
-//        }
 
         override fun onError(view: View, errorMessage: String) {
             pLogger.i("ConsentLibImpl", "js ===================== msg errorMessage [$errorMessage]  ===========================")
@@ -185,19 +180,22 @@ internal class ConsentLibImpl(
         executor.executeOnMain { spClient?.onAction(action.actionType) }
         when (action.actionType) {
             ActionType.ACCEPT_ALL -> {
+                view?.let { viewManager.removeView(view) }
             }
             ActionType.MSG_CANCEL -> {
-                view?.let {
-                    viewManager.removeView(view)
-                }
+                view?.let { viewManager.removeView(view) }
             }
             ActionType.SAVE_AND_EXIT -> {
+                view?.let { viewManager.removeView(view) }
             }
             ActionType.SHOW_OPTIONS -> {
+                view?.let { viewManager.removeView(view) }
             }
             ActionType.REJECT_ALL -> {
+                view?.let { viewManager.removeView(view) }
             }
             ActionType.PM_DISMISS -> {
+                view?.let { viewManager.removeView(view) }
             }
         }
     }
