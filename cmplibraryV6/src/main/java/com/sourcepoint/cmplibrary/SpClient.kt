@@ -10,7 +10,7 @@ interface SpClient {
     fun onConsentUIFinished(v: View)
     fun onConsentUIReady(v: View)
     fun onError(error: ConsentLibExceptionK)
-    fun onAction(actionTypes: ActionType)
+    fun onAction(actionType: ActionType)
     fun onConsentReadyCallback(c: CCPAUserConsent)
     fun onConsentReady(c: GDPRUserConsent)
 }

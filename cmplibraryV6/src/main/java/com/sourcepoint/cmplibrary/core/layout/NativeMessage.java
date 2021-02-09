@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.core;
+package com.sourcepoint.cmplibrary.core.layout;
 
 import android.content.Context;
 import android.os.Build;
