@@ -15,11 +15,11 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.model.Campaign
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ExecutorManager
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
-import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
 
@@ -29,7 +29,7 @@ fun makeConsentLib(
     propertyId: Int,
     pmId: String,
     context: Activity,
-    privacyManagerTab: PrivacyManagerTab
+    privacyManagerTab: PrivacyManagerTabK
 ): ConsentLib {
 
     val account = Campaign(accountId, propertyId, propertyName, pmId)

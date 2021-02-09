@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
 import com.sourcepoint.cmplibrary.assertNotNull
-import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import org.junit.Before
@@ -23,7 +23,7 @@ class FactoryKtTest {
         val sut = makeConsentLib(
             accountId = 1,
             propertyId = 1,
-            privacyManagerTab = PrivacyManagerTab.FEATURES,
+            privacyManagerTab = PrivacyManagerTabK.FEATURES,
             pmId = "1",
             context = context,
             propertyName = "test"

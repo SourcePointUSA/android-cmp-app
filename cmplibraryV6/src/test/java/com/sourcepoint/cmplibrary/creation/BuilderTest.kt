@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
-import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import org.junit.Before
@@ -25,7 +25,7 @@ class BuilderTest {
             // .setContext(context)
             .setPropertyId(1)
             .setPropertyName("a")
-            .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
+            .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
             .build()
     }
 
@@ -37,7 +37,7 @@ class BuilderTest {
             .setContext(context)
             .setPropertyId(1)
             .setPropertyName("a")
-            .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
+            .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
             .build()
     }
 
@@ -49,7 +49,7 @@ class BuilderTest {
             .setContext(context)
             .setPropertyId(1)
             .setPropertyName("a")
-            .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
+            .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
             .build()
     }
 
@@ -61,7 +61,7 @@ class BuilderTest {
             .setContext(context)
             // .setPropertyId(1)
             .setPropertyName("a")
-            .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
+            .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
             .build()
     }
 
@@ -73,7 +73,7 @@ class BuilderTest {
             .setContext(context)
             .setPropertyId(1)
             // .setPropertyName("a")
-            .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
+            .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
             .build()
     }
 
@@ -85,7 +85,7 @@ class BuilderTest {
             .setContext(context)
             .setPropertyId(1)
             .setPropertyName("a")
-            // .setPrivacyManagerTab(PrivacyManagerTab.FEATURES)
+            // .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
             .build()
     }
 }

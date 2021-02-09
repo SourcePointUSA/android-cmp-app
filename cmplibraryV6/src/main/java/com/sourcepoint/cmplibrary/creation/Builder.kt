@@ -15,11 +15,11 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.model.Campaign
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ExecutorManager
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
-import com.sourcepoint.gdpr_cmplibrary.PrivacyManagerTab
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
 
@@ -32,7 +32,7 @@ class Builder {
     private var pmId: String? = null
     private var weakReference: WeakReference<Activity>? = null
     private var ott: Boolean = false
-    private var privacyManagerTab: PrivacyManagerTab? = null
+    private var privacyManagerTab: PrivacyManagerTabK? = null
 
     fun setAccountId(accountId: Int) = apply {
         this.accountId = accountId
@@ -62,7 +62,7 @@ class Builder {
         this.weakReference = WeakReference(context)
     }
 
-    fun setPrivacyManagerTab(privacyManagerTab: PrivacyManagerTab) = apply {
+    fun setPrivacyManagerTab(privacyManagerTab: PrivacyManagerTabK) = apply {
         this.privacyManagerTab = privacyManagerTab
     }
 
@@ -76,7 +76,7 @@ class Builder {
         val client = createClientInfo()
         val errorManager = errorMessageManager(account, client)
         val logger = createLogger(errorManager)
-        val pmTab = privacyManagerTab ?: PrivacyManagerTab.FEATURES
+        val pmTab = privacyManagerTab ?: PrivacyManagerTabK.FEATURES
         val jsonConverter = JsonConverter.create()
         val connManager = ConnectionManager.create(appCtx)
         val responseManager = ResponseManager.create(jsonConverter)
