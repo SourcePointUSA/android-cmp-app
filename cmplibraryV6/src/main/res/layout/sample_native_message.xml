@@ -11,7 +11,7 @@
         android:focusable="true">
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/description_scrollview"
@@ -36,7 +36,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/msg_body"
+                android:id="@+id/msg_body_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:scrollbars="vertical"
@@ -46,7 +46,7 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/accept_all"
+        android:id="@+id/accept_all_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -61,7 +61,7 @@
         android:text="@string/agree_label" />
 
     <Button
-        android:id="@+id/Cancel"
+        android:id="@+id/cancel_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -74,7 +74,7 @@
         android:text="@string/cancel_label" />
 
     <Button
-        android:id="@+id/reject_all"
+        android:id="@+id/reject_all_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -89,7 +89,7 @@
         android:text="@string/reject_all_label" />
 
     <Button
-        android:id="@+id/show_options"
+        android:id="@+id/show_options_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"

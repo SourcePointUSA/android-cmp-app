@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
+import com.sourcepoint.cmplibrary.core.layout.json.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
@@ -53,6 +54,10 @@ private class JsonConverterImpl : JsonConverter {
         val map: MutableMap<String, Any> = JSON.std.mapFrom(body)
         val msgJSON = (map["msgJSON"] as? DeferredMap) ?: fail("msgJSON")
         NativeMessageResp(msgJSON = JSONObject(JSON.std.asString(msgJSON)))
+    }
+
+    override fun toNativeMessageDto(body: String): Either<NativeMessageDto> = check{
+        JSON.std.beanFrom(NativeMessageDto::class.java, body)
     }
 
     /**

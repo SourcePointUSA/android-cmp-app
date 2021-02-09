@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
+import com.sourcepoint.cmplibrary.core.layout.json.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
@@ -16,6 +17,8 @@ internal interface JsonConverter {
     fun toMessageResp(body: String): Either<MessageResp>
 
     fun toNativeMessageResp(body: String): Either<NativeMessageResp>
+
+    fun toNativeMessageDto(body: String): Either<NativeMessageDto>
 
     fun toConsentAction(json: String): Either<ConsentAction>
     companion object
