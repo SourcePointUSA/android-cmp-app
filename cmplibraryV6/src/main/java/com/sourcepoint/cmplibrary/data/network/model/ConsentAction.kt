@@ -4,7 +4,7 @@ import com.sourcepoint.cmplibrary.model.ActionType
 import org.json.JSONObject
 
 data class ConsentAction(
-    val choiceId: Int? = null,
+    val choiceId: String? = null,
     val privacyManagerId: String? = null,
     val pmTab: String? = null,
     val requestFromPm: Boolean,
