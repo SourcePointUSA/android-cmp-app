@@ -71,7 +71,7 @@ internal fun String.toGDPR(): Gdpr? {
 
         Gdpr(
             uuid = uuid,
-            GDPRUserConsent = userConsentMap.toGDPRUserConsent(),
+            gdprUserConsent = userConsentMap.toGDPRUserConsent(),
             meta = meta,
             message = messageObj
         )
@@ -85,6 +85,7 @@ internal fun DeferredMap.toCCPA(): Ccpa? {
     return map.let {
         val uuid = (it["uuid"] as? String) ?: failParam("uuid")
         val meta = (it["meta"] as? String) ?: failParam("meta")
+        val ccpaApplies = (it["ccpaApplies"] as? Boolean) ?: failParam("meta")
         val message = (it["message"] as? DeferredMap) ?: failParam("message")
         val userConsentMap = (it["userConsent"] as? DeferredMap) ?: failParam("userConsent")
 
@@ -94,6 +95,7 @@ internal fun DeferredMap.toCCPA(): Ccpa? {
             uuid = uuid,
             ccpaUserConsent = userConsentMap.toCCPAUserConsent(),
             meta = meta,
+            ccpaApplies = ccpaApplies,
             message = messageObj
         )
     }
@@ -113,7 +115,7 @@ internal fun DeferredMap.toGDPR(): Gdpr? {
 
         Gdpr(
             uuid = uuid,
-            GDPRUserConsent = userConsentMap.toGDPRUserConsent(),
+            gdprUserConsent = userConsentMap.toGDPRUserConsent(),
             meta = meta,
             message = messageObj
         )
