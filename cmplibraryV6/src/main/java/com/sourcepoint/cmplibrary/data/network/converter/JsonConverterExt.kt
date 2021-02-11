@@ -7,13 +7,24 @@ import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.exception.Legislation
 import org.json.JSONObject
 
+internal fun String.toUnifiedMessageRespDto(): UnifiedMessageResp {
+    val map: MutableMap<String, Any> = JSON.std.mapFrom(this)
+
+    val list = mutableListOf<CampaignResp>()
+    (map["gdpr"] as? DeferredMap)?.toGDPR()?.also { list.add(it) }
+    (map["ccpa"] as? DeferredMap)?.toCCPA()?.also { list.add(it) }
+
+    return UnifiedMessageResp(list)
+}
+
 internal fun String.toMessageRespDto(): MessageResp {
     val map: MutableMap<String, Any> = JSON.std.mapFrom(this)
 
     // check the number of message contained. We can only have 1 instance
     val numberOfMessages = map.toList().count { (it.second as DeferredMap).containsKey("message") }
-    if (numberOfMessages != 1) fail("We have [$numberOfMessages] inst. of Message. Only one Message object can exist int the MessageResp!!!")
-
+//    if (numberOfMessages != 1) fail("We have [$numberOfMessages] inst. of Message. Only one Message object can exist int the MessageResp!!!")
+    val gdpr = (map["gdpr"] as? DeferredMap)?.toGDPR()
+    val ccpa = (map["ccpa"] as? DeferredMap)?.toGDPR()
     // create a message JSONObject
     val legislationEntry = map.toList().first { (it.second as DeferredMap).containsKey("message") }
 
@@ -51,6 +62,48 @@ internal fun String.toGDPR(): Gdpr? {
     val map: MutableMap<String, Any> = JSON.std.mapFrom(this)
 
     return (map["gdpr"] as? DeferredMap)?.let {
+        val uuid = (it["uuid"] as? String) ?: failParam("uuid")
+        val meta = (it["meta"] as? String) ?: failParam("meta")
+        val message = (it["message"] as? DeferredMap) ?: failParam("message")
+        val userConsentMap = (it["userConsent"] as? DeferredMap) ?: failParam("userConsent")
+
+        val messageObj = JSONObject(JSON.std.asString(message))
+
+        Gdpr(
+            uuid = uuid,
+            GDPRUserConsent = userConsentMap.toGDPRUserConsent(),
+            meta = meta,
+            message = messageObj
+        )
+    }
+}
+
+internal fun DeferredMap.toCCPA(): Ccpa? {
+
+    val map: MutableMap<String, Any> = this
+
+    return map.let {
+        val uuid = (it["uuid"] as? String) ?: failParam("uuid")
+        val meta = (it["meta"] as? String) ?: failParam("meta")
+        val message = (it["message"] as? DeferredMap) ?: failParam("message")
+        val userConsentMap = (it["userConsent"] as? DeferredMap) ?: failParam("userConsent")
+
+        val messageObj = JSONObject(JSON.std.asString(message))
+
+        Ccpa(
+            uuid = uuid,
+            ccpaUserConsent = userConsentMap.toCCPAUserConsent(),
+            meta = meta,
+            message = messageObj
+        )
+    }
+}
+
+internal fun DeferredMap.toGDPR(): Gdpr? {
+
+    val map: MutableMap<String, Any> = this
+
+    return map.let {
         val uuid = (it["uuid"] as? String) ?: failParam("uuid")
         val meta = (it["meta"] as? String) ?: failParam("meta")
         val message = (it["message"] as? DeferredMap) ?: failParam("message")

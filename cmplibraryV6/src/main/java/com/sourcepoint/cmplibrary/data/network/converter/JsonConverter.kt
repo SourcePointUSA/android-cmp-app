@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.core.layout.json.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.util.Either
 
 /**
@@ -15,6 +16,8 @@ internal interface JsonConverter {
      * @return [Either] object contain either a DTO or an [Throwable]
      */
     fun toMessageResp(body: String): Either<MessageResp>
+
+    fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp>
 
     fun toNativeMessageResp(body: String): Either<NativeMessageResp>
 

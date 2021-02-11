@@ -42,8 +42,13 @@ class NetworkClientImplTest {
 
     private val req = MessageReq(
         requestUUID = "test",
-        categories = Categories(
+        campaigns = Campaigns(
             gdpr = GdprReq(
+                accountId = 22,
+                propertyId = 7639,
+                propertyHref = "https://tcfv2.mobile.webview"
+            ),
+            ccpa = CcpaReq(
                 accountId = 22,
                 propertyId = 7639,
                 propertyHref = "https://tcfv2.mobile.webview"

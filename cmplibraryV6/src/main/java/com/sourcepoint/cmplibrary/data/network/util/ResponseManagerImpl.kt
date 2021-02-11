@@ -4,6 +4,7 @@ import android.accounts.NetworkErrorException
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
@@ -31,6 +32,18 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
         if (r.isSuccessful) {
             val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
             when (val either: Either<MessageResp> = jsonConverter.toMessageResp(body)) {
+                is Either.Right -> either.r
+                is Either.Left -> throw either.t
+            }
+        } else {
+            throw NetworkErrorException("$r")
+        }
+    }
+
+    override fun parseUnifiedResponse(r: Response): Either<UnifiedMessageResp> = check {
+        if (r.isSuccessful) {
+            val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+            when (val either: Either<UnifiedMessageResp> = jsonConverter.toUnifiedMessageResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }

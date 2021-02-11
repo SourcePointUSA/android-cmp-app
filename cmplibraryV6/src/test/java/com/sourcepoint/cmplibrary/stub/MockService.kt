@@ -6,15 +6,22 @@ import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import io.mockk.mockk
 
 internal class MockService(
     private val getMessageLogic: ((messageReq: MessageReq, pSuccess: (MessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
+    private val getUnifiedMessageLogic: ((messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
     private val getNativeMessageLogic: ((messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) -> Unit)? = null
 ) : Service {
     override fun getMessage(messageReq: MessageReq, pSuccess: (MessageResp) -> Unit, pError: (Throwable) -> Unit) {
         getMessageLogic?.invoke(messageReq, pSuccess, pError)
     }
+
+    override fun getUnifiedMessage(messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) {
+        getUnifiedMessageLogic?.invoke(messageReq, pSuccess, pError)
+    }
+
     override fun getNativeMessage(messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {
         getNativeMessageLogic?.invoke(messageReq, success, error)
     }
