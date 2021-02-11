@@ -9,8 +9,7 @@ data class ActionButtonK(
     var choiceId: Int = -1
 )
 
-fun Button.toActionButtonK() : ActionButtonK {
+fun Button.toActionButtonK(): ActionButtonK {
     visibility = View.INVISIBLE
     return ActionButtonK(this)
 }
-

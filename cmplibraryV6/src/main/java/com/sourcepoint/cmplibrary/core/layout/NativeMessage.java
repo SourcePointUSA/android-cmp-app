@@ -67,16 +67,16 @@ public class NativeMessage extends RelativeLayout {
         if(client != null){
             switch (ActionType.SHOW_OPTIONS/*valueOf(actionButton.choiceType)*/) {
                 case SHOW_OPTIONS:
-                    client.onClickShowOptions(action);
+                    client.onClickShowOptions(this, action);
                     break;
                 case PM_DISMISS:
-                    client.onPmDismiss(action);
+                    client.onPmDismiss(this, action);
                     break;
                 case MSG_CANCEL:
-                    client.onClickCancel(action);
+                    client.onClickCancel(this, action);
                     break;
                 default:
-                    client.onDefaultAction(action);
+                    client.onDefaultAction(this, action);
                     break;
             }
         }

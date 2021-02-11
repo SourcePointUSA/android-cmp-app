@@ -99,7 +99,7 @@ class ConsentLibImplTest {
         sut.loadMessage(nm)
 
         val slot = slot<NativeMessage>()
-        verify(exactly = 1) { spClient.onConsentUIReady(capture(slot)) }
+        verify(exactly = 1) { spClient.onUIReady(capture(slot)) }
         slot.captured
     }
 }

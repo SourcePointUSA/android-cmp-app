@@ -32,7 +32,7 @@ private class JsonConverterImpl : JsonConverter {
         val map: MutableMap<String, Any> = JSON.std.mapFrom(json)
 
         val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } } ?: fail("actionType")
-        val choiceId = (map["choiceId"] as? String)
+        val choiceId = (map["choiceId"] as? Int)
         val privacyManagerId = (map["privacyManagerId"] as? String)
         val pmTab = (map["pmTab"] as? String)
         val requestFromPm = (map["requestFromPm"] as? Boolean) ?: fail("requestFromPm")
@@ -56,7 +56,7 @@ private class JsonConverterImpl : JsonConverter {
         NativeMessageResp(msgJSON = JSONObject(JSON.std.asString(msgJSON)))
     }
 
-    override fun toNativeMessageDto(body: String): Either<NativeMessageDto> = check{
+    override fun toNativeMessageDto(body: String): Either<NativeMessageDto> = check {
         JSON.std.beanFrom(NativeMessageDto::class.java, body)
     }
 

@@ -7,10 +7,20 @@ import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.model.ActionType
 
 interface SpClient {
-    fun onConsentUIFinished(v: View)
-    fun onConsentUIReady(v: View)
+    /**
+     * It is invoked when the WebView has been already loaded with all the consent Info
+     */
+    fun onUIReady(view: View)
+
+    /**
+     * It is invoked when the message is available to the client App
+     */
+    fun onMessageReady(message: SPMessage)
+    fun onAction(view: View, actionType: ActionType)
+    fun onUIFinished(view: View)
+    fun onConsentReady(consent: CCPAUserConsent)
+    fun onConsentReady(consent: GDPRUserConsent)
     fun onError(error: ConsentLibExceptionK)
-    fun onAction(actionType: ActionType)
-    fun onConsentReadyCallback(c: CCPAUserConsent)
-    fun onConsentReady(c: GDPRUserConsent)
 }
+
+class SPMessage

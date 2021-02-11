@@ -1,4 +1,3 @@
 package com.sourcepoint.cmplibrary.core.layout
 
-class NativeMessageAttrsK {
-}
+class NativeMessageAttrsK
