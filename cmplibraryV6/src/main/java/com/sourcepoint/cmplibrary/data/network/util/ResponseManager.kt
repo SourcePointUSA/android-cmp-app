@@ -11,13 +11,11 @@ import okhttp3.Response
  */
 internal interface ResponseManager {
     /**
-     * Parsing a [MessageResp]
+     * Parsing a [UnifiedMessageResp]
      * @param r http response
      * @return [Either] object
      */
-    fun parseResponse(r: Response): Either<MessageResp>
-
-    fun parseUnifiedResponse(r: Response): Either<UnifiedMessageResp>
+    fun parseResponse(r: Response): Either<UnifiedMessageResp>
     /**
      * Parsing a [MessageResp]
      * @param r http response

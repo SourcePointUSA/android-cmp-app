@@ -4,7 +4,6 @@ import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.core.layout.json.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
-import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
@@ -23,10 +22,6 @@ internal fun JsonConverter.Companion.create(): JsonConverter = JsonConverterImpl
  * Implementation of the [JsonConverter] interface
  */
 private class JsonConverterImpl : JsonConverter {
-
-    override fun toMessageResp(body: String): Either<MessageResp> = check {
-        body.toMessageRespDto()
-    }
 
     override fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp> = check {
         body.toUnifiedMessageRespDto()

@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.exception.Legislation
 
 data class MessageReq(
     val requestUUID: String,
-    val campaigns : Campaigns
+    val campaigns: Campaigns
 )
 
 data class Campaigns(
@@ -17,7 +17,7 @@ data class GdprReq(
     val accountId: Int,
     val propertyHref: String,
     val propertyId: Int,
-    val targetingParams : String = """{"location": "${Legislation.GDPR.name}"}"""
+    val targetingParams: String = """{"location": "${Legislation.GDPR.name}"}"""
 )
 
 data class Location(val location: String)
@@ -27,7 +27,7 @@ data class CcpaReq(
     val propertyHref: String,
     val propertyId: Int,
     val alwaysDisplayDNS: Boolean = false,
-    val targetingParams : String = """{"location": "${Legislation.CCPA.name}"}"""
+    val targetingParams: String = """{"location": "${Legislation.CCPA.name}"}"""
 )
 
 fun MessageReq.toBodyRequest(): String {

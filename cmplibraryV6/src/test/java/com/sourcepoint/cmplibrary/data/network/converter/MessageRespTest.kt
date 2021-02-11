@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
-import com.sourcepoint.cmplibrary.data.network.model.*
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import org.junit.Test
 
 class MessageRespTest {

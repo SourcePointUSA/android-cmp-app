@@ -11,7 +11,7 @@ import java.util.* // ktlint-disable
  * ================================== Unified wrapper =======================================
  */
 data class UnifiedMessageResp(
-    val campaigns : List<CampaignResp>
+    val campaigns: List<CampaignResp>
 )
 
 data class MessageResp(
@@ -34,6 +34,7 @@ class Gdpr(
     uuid: String,
     meta: String,
     message: JSONObject,
+    val gdprApplies: Boolean = false,
     val gdprUserConsent: GDPRUserConsent
 ) : CampaignResp(uuid, meta, message)
 
@@ -41,7 +42,7 @@ class Ccpa(
     uuid: String,
     meta: String,
     message: JSONObject,
-    val ccpaApplies : Boolean,
+    val ccpaApplies: Boolean = false,
     val ccpaUserConsent: CCPAUserConsent
 ) : CampaignResp(uuid, meta, message)
 
