@@ -6,7 +6,7 @@ import android.widget.Button
 data class ActionButtonK(
     var button: Button,
     var choiceType: Int = -1,
-    var choiceId: Int = -1
+    var choiceId: String = "-1"
 )
 
 fun Button.toActionButtonK(): ActionButtonK {
