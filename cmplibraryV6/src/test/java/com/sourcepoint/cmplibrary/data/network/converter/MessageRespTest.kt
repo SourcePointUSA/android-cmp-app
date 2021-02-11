@@ -3,18 +3,20 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
-import com.sourcepoint.cmplibrary.data.network.model.Categories
-import com.sourcepoint.cmplibrary.data.network.model.GDPRUserConsent
-import com.sourcepoint.cmplibrary.data.network.model.GdprReq
-import com.sourcepoint.cmplibrary.data.network.model.MessageReq
+import com.sourcepoint.cmplibrary.data.network.model.*
 import org.junit.Test
 
 class MessageRespTest {
 
     val req = MessageReq(
         requestUUID = "test",
-        categories = Categories(
+        campaigns = Campaigns(
             gdpr = GdprReq(
+                accountId = 22,
+                propertyId = 7639,
+                propertyHref = "https://tcfv2.mobile.webview"
+            ),
+            ccpa = CcpaReq(
                 accountId = 22,
                 propertyId = 7639,
                 propertyHref = "https://tcfv2.mobile.webview"

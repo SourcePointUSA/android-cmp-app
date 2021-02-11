@@ -2,10 +2,7 @@ package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
-import com.sourcepoint.cmplibrary.data.network.model.MessageReq
-import com.sourcepoint.cmplibrary.data.network.model.MessageResp
-import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
-import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
+import com.sourcepoint.cmplibrary.data.network.model.*
 import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
@@ -33,7 +30,7 @@ private class NetworkClientImpl(
         pError: (Throwable) -> Unit
     ) {
         val mediaType = MediaType.parse("application/json")
-        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
+        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest()) // bodyString)
 
         val request: Request = Request.Builder()
             .url(urlManager.inAppUrlMessage)
@@ -49,6 +46,33 @@ private class NetworkClientImpl(
                 onResponse { _, r ->
                     responseManager
                         .parseResponse(r)
+                        .map { pSuccess(it) }
+                        .executeOnLeft { pError(it) }
+                }
+            }
+    }
+
+    override fun getUnifiedMessage(
+        messageReq: MessageReq,
+        pSuccess: (UnifiedMessageResp) -> Unit,
+        pError: (Throwable) -> Unit) {
+        val mediaType = MediaType.parse("application/json")
+        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest()) // bodyString)
+
+        val request: Request = Request.Builder()
+            .url(urlManager.inAppUrlMessage)
+            .post(body)
+            .build()
+
+        httpClient
+            .newCall(request)
+            .enqueue {
+                onFailure { _, exception ->
+                    pError(exception)
+                }
+                onResponse { _, r ->
+                    responseManager
+                        .parseUnifiedResponse(r)
                         .map { pSuccess(it) }
                         .executeOnLeft { pError(it) }
                 }
@@ -86,15 +110,22 @@ private class NetworkClientImpl(
 
     val bodyString = """
         {
-          "accountId": 22,
-          "euconsent": "",
-          "propertyId": 7094,
-          "requestUUID": "edad7293-2f81-4eb8-9960-333acd9bc738",
-          "uuid": "b1cc71f9-2e2c-465b-96d4-db039f6d0fb3",
-          "meta": "{\"mmsCookies\":[\"_sp_v1_uid=1:235:774aebaa-ae9e-4a9e-95c5-5c8aec100c8f\",\"_sp_v1_csv=1\",\"_sp_v1_lt=1:\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbKKBjLyQAyD2lidGKVUEDOvNCcHyC4BK6iurVWKBQAW54XRMAAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_data=2:259956:1612170133:0:3:0:3:0:0:753441a5-1e9e-4642-9460-09d36e36fb8a:-1\"],\"messageId\":391194}",
-          "propertyHref": "https://tcfv2.mobile.demo",
-          "campaignEnv": "public",
-          "targetingParams": "{}"
+            "requestUUID": "test",
+            "campaigns": {
+                "gdpr": {
+                    "accountId": 22,
+                    "propertyId": 10589,
+                    "propertyHref": "https://unified.mobile.demo",
+                    "targetingParams": "{\"location\": \"GDPR\"}"
+                },
+                "ccpa": {
+                    "alwaysDisplayDNS": false,
+                    "accountId": 22,
+                    "propertyId": 10589,
+                    "propertyHref": "https://unified.mobile.demo",
+                    "targetingParams": "{\"location\": \"CCPA\"}"
+                }
+            }
         }
     """.trimIndent()
 }

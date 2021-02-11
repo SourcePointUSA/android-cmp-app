@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.core.layout.json.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.util.Either
@@ -25,6 +26,10 @@ private class JsonConverterImpl : JsonConverter {
 
     override fun toMessageResp(body: String): Either<MessageResp> = check {
         body.toMessageRespDto()
+    }
+
+    override fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp> = check {
+        body.toUnifiedMessageRespDto()
     }
 
     override fun toConsentAction(json: String): Either<ConsentAction> = check {

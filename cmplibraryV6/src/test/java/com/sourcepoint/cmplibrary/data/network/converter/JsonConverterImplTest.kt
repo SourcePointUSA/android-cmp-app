@@ -26,6 +26,37 @@ class JsonConverterImplTest {
     }
 
     @Test
+    fun `GIVEN a response RETURN a Right(MessageResp)`() {
+        val json = "unified_wrapper/response_gdpr_and_ccpa.json".file2String()
+        val output: Either<MessageResp> = sut.toMessageResp(json)
+        (output as? Either.Right).assertNotNull()
+        val gdprMess = (output as Either.Right).r
+        gdprMess.legislation.assertEquals(Legislation.GDPR)
+        gdprMess.message.also { mess ->
+            mess["site_id"].assertEquals(7639)
+            mess["language"].assertEquals("en")
+            mess["message_json"].assertNotNull()
+            mess["message_choice"].assertNotNull()
+            mess["categories"].assertNotNull()
+        }
+        gdprMess.legislation.assertEquals(Legislation.GDPR)
+        gdprMess.message.also { mess ->
+            mess["site_id"].assertEquals(7639)
+            mess["language"].assertEquals("en")
+            mess["message_json"].assertNotNull()
+            mess["message_choice"].assertNotNull()
+            mess["categories"].assertNotNull()
+        }
+        (gdprMess.userConsent as GDPRUserConsent).run {
+            acceptedCategories.size.assertEquals(0)
+            acceptedVendors.size.assertEquals(0)
+            legIntCategories.size.assertEquals(2)
+            specialFeatures.size.assertEquals(0)
+            euconsent.assertEquals("CPAlTsBPAlTsBAGABCENBKCgAAAAAEIAAAYgAAAAPAAEAAAA.YAAAAAAAAAAA")
+        }
+    }
+
+    @Test
     fun `GIVEN a json with GDPR as applied legislation RETURN a Right(MessageResp)`() {
         val json = "unified_wrapper/message_in_gdpr.json".file2String()
         val output: Either<MessageResp> = sut.toMessageResp(json)

@@ -43,7 +43,7 @@ internal class ConsentLibImpl(
     override fun loadMessage(authId: String) {
         checkMainThread("loadMessage")
         throwsExceptionIfClientNoSet()
-        service.getMessage(
+        service.getUnifiedMessage(
             messageReq = campaign.toMessageReq(),
             pSuccess = { messageResp -> },
             pError = { throwable -> }
@@ -56,18 +56,22 @@ internal class ConsentLibImpl(
 
         if (viewManager.isViewInLayout) return
 
-        service.getMessage(
+        service.getUnifiedMessage(
             messageReq = campaign.toMessageReq(),
             pSuccess = { messageResp ->
                 executor.executeOnMain {
                     val webView = viewManager.createWebView(this, JSReceiverDelegate())
                     (webView as? ConsentWebView)?.let {
                         it.settings
-                        it.loadConsentUIFromUrl(urlManager.urlLocalTest(), messageResp.message)
+//                        val mess = messageResp.campaigns.first().message
+                        val mess = messageResp.campaigns.last().message
+                        it.loadConsentUIFromUrl(urlManager.urlLocalTest(), mess)
                     } ?: throw RuntimeException("webView is not a ConsentWebView")
                 }
             },
-            pError = { throwable -> spClient?.onError(throwable.toConsentLibException()) }
+            pError = { throwable ->
+                spClient?.onError(throwable.toConsentLibException())
+            }
         )
     }
 

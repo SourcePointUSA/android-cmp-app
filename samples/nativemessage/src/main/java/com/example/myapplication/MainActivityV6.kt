@@ -12,6 +12,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.ConsentLib
+import com.sourcepoint.cmplibrary.SPMessage
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.delegate.ConsentLibDelegate
 import com.sourcepoint.cmplibrary.data.network.model.CCPAUserConsent
@@ -51,10 +52,10 @@ class MainActivityV6 : AppCompatActivity() {
         }
 
         consent.setOnClickListener {
-            consentLib.loadPrivacyManager()
+            consentLib.loadGDPRPrivacyManager()
         }
 
-        findViewById<View>(R.id.consent).setOnClickListener { consentLib.loadPrivacyManager() }
+        findViewById<View>(R.id.consent).setOnClickListener { consentLib.loadGDPRPrivacyManager() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -138,24 +139,28 @@ class MainActivityV6 : AppCompatActivity() {
 
     inner class LocalClient(private val gdpr : ConsentLib) : SpClient {
 
-        override fun onConsentReadyCallback(c: CCPAUserConsent) {}
+        override fun onMessageReady(message: SPMessage) {
+        }
+
+        override fun onConsentReady(consent: CCPAUserConsent) {
+        }
 
         override fun onConsentReady(c: GDPRUserConsent) {}
 
-        override fun onConsentUIFinished(v: View) {
+        override fun onUIFinished(v: View) {
            gdpr.removeView(v)
         }
 
-        override fun onConsentUIReady(v: View) {
+        override fun onUIReady(v: View) {
             view = v
             gdpr.showView(v)
         }
 
         override fun onError(error: ConsentLibExceptionK) {
-            throw error
+             error.printStackTrace()
         }
 
-        override fun onAction(actionType: ActionType) {
+        override fun onAction(view: View, actionType: ActionType) {
             Toast.makeText(this@MainActivityV6, "Action[${actionType.name}]", Toast.LENGTH_SHORT).show()
         }
     }

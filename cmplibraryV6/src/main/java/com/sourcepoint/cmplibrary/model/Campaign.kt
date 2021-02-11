@@ -1,8 +1,6 @@
 package com.sourcepoint.cmplibrary.model
 
-import com.sourcepoint.cmplibrary.data.network.model.Categories
-import com.sourcepoint.cmplibrary.data.network.model.GdprReq
-import com.sourcepoint.cmplibrary.data.network.model.MessageReq
+import com.sourcepoint.cmplibrary.data.network.model.*
 
 data class Campaign(
     @JvmField val accountId: Int,
@@ -12,13 +10,19 @@ data class Campaign(
 )
 
 fun Campaign.toMessageReq(): MessageReq {
+
     return MessageReq(
         requestUUID = "test",
-        categories = Categories(
-            GdprReq(
-                accountId = accountId,
-                propertyId = propertyId,
-                propertyHref = "https://tcfv2.mobile.webview"
+        campaigns = Campaigns(
+            gdpr = GdprReq(
+                accountId = 22,
+                propertyId = 10589,
+                propertyHref = "https://unified.mobile.demo",
+            ),
+            ccpa = CcpaReq(
+                accountId = 22,
+                propertyId = 10589,
+                propertyHref = "https://unified.mobile.demo"
             )
         )
     )

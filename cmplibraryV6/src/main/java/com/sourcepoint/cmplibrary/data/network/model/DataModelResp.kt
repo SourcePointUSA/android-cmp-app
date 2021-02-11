@@ -10,6 +10,9 @@ import java.util.* // ktlint-disable
 /**
  * ================================== Unified wrapper =======================================
  */
+data class UnifiedMessageResp(
+    val campaigns : List<CampaignResp>
+)
 
 data class MessageResp(
     val legislation: Legislation,
@@ -21,12 +24,25 @@ data class MessageResp(
 //    val ccpa: Ccpa? = null
 )
 
-data class Gdpr(
+sealed class CampaignResp(
     val uuid: String,
-    val GDPRUserConsent: GDPRUserConsent,
     val meta: String,
     val message: JSONObject
 )
+
+class Gdpr(
+    uuid: String,
+    meta: String,
+    message: JSONObject,
+    val GDPRUserConsent: GDPRUserConsent
+) : CampaignResp(uuid, meta, message)
+
+class Ccpa(
+    uuid: String,
+    meta: String,
+    message: JSONObject,
+    val ccpaUserConsent: CCPAUserConsent
+) : CampaignResp(uuid, meta, message)
 
 data class MessageGdprResp(
     val categories: String,
@@ -34,11 +50,6 @@ data class MessageGdprResp(
     val message_choice: String,
     val message_json: String,
     val site_id: String
-)
-
-data class Ccpa(
-    val uuid: String,
-    val message: String
 )
 
 internal fun String.getAppliedLegislation(): Legislation {
