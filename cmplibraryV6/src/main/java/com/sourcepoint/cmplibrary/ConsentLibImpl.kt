@@ -63,8 +63,8 @@ internal class ConsentLibImpl(
                     val webView = viewManager.createWebView(this, JSReceiverDelegate())
                     (webView as? ConsentWebView)?.let {
                         it.settings
-//                        val mess = messageResp.campaigns.first().message
-                        val mess = messageResp.campaigns.last().message
+                        val mess = messageResp.campaigns.first().message
+//                        val mess = messageResp.campaigns.last().message
                         it.loadConsentUIFromUrl(urlManager.urlLocalTest(), mess)
                     } ?: throw RuntimeException("webView is not a ConsentWebView")
                 }

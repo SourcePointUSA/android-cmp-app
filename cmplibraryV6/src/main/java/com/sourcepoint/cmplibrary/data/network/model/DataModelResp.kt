@@ -34,13 +34,14 @@ class Gdpr(
     uuid: String,
     meta: String,
     message: JSONObject,
-    val GDPRUserConsent: GDPRUserConsent
+    val gdprUserConsent: GDPRUserConsent
 ) : CampaignResp(uuid, meta, message)
 
 class Ccpa(
     uuid: String,
     meta: String,
     message: JSONObject,
+    val ccpaApplies : Boolean,
     val ccpaUserConsent: CCPAUserConsent
 ) : CampaignResp(uuid, meta, message)
 
