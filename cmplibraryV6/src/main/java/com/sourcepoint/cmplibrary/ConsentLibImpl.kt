@@ -43,7 +43,7 @@ internal class ConsentLibImpl(
     override fun loadMessage(authId: String) {
         checkMainThread("loadMessage")
         throwsExceptionIfClientNoSet()
-        service.getUnifiedMessage(
+        service.getMessage(
             messageReq = campaign.toMessageReq(),
             pSuccess = { messageResp -> },
             pError = { throwable -> }
@@ -56,7 +56,7 @@ internal class ConsentLibImpl(
 
         if (viewManager.isViewInLayout) return
 
-        service.getUnifiedMessage(
+        service.getMessage(
             messageReq = campaign.toMessageReq(),
             pSuccess = { messageResp ->
                 executor.executeOnMain {

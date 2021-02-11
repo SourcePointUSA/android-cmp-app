@@ -4,13 +4,11 @@ import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
-import com.sourcepoint.cmplibrary.data.network.model.*
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
-import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Test
-import java.util.*
-
+import java.util.* // ktlint-disable
 
 class MessageReqTest {
 
@@ -52,8 +50,7 @@ class MessageReqTest {
     )
 
     @Test
-    fun `GIVEN an Request obj CHECK the output`(){
-
+    fun `GIVEN an Request obj CHECK the output`() {
 
         val messReq = "message_req.json".file2String()
 
@@ -63,8 +60,6 @@ class MessageReqTest {
         Assert.assertEquals(expected, sut)
 
 //        expected.assertEquals(sut)
-
-
     }
 
     @Test

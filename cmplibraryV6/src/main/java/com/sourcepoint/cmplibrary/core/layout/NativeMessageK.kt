@@ -8,7 +8,7 @@ import android.widget.RelativeLayout
 import com.example.cmplibrary.R
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.ActionType
-import kotlinx.android.synthetic.main.sample_native_message.view.*
+import kotlinx.android.synthetic.main.sample_native_message.view.*  // ktlint-disable
 
 class NativeMessageK : RelativeLayout {
 

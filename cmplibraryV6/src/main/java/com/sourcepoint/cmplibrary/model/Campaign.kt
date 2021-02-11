@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.model
 
-import com.sourcepoint.cmplibrary.data.network.model.*
+import com.sourcepoint.cmplibrary.data.network.model.*  // ktlint-disable
 
 data class Campaign(
     @JvmField val accountId: Int,

@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
-import com.sourcepoint.cmplibrary.data.network.model.*
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
@@ -26,7 +26,7 @@ private class NetworkClientImpl(
 
     override fun getMessage(
         messageReq: MessageReq,
-        pSuccess: (MessageResp) -> Unit,
+        pSuccess: (UnifiedMessageResp) -> Unit,
         pError: (Throwable) -> Unit
     ) {
         val mediaType = MediaType.parse("application/json")
@@ -46,33 +46,6 @@ private class NetworkClientImpl(
                 onResponse { _, r ->
                     responseManager
                         .parseResponse(r)
-                        .map { pSuccess(it) }
-                        .executeOnLeft { pError(it) }
-                }
-            }
-    }
-
-    override fun getUnifiedMessage(
-        messageReq: MessageReq,
-        pSuccess: (UnifiedMessageResp) -> Unit,
-        pError: (Throwable) -> Unit) {
-        val mediaType = MediaType.parse("application/json")
-        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest()) // bodyString)
-
-        val request: Request = Request.Builder()
-            .url(urlManager.inAppUrlMessage)
-            .post(body)
-            .build()
-
-        httpClient
-            .newCall(request)
-            .enqueue {
-                onFailure { _, exception ->
-                    pError(exception)
-                }
-                onResponse { _, r ->
-                    responseManager
-                        .parseUnifiedResponse(r)
                         .map { pSuccess(it) }
                         .executeOnLeft { pError(it) }
                 }

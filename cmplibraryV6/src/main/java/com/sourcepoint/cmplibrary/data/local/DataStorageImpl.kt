@@ -9,6 +9,8 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_UUID_
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.EU_CONSENT_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.META_DATA_KEY
+import com.sourcepoint.cmplibrary.data.network.model.Ccpa
+import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 
 /**
  * Factory method to create an instance of a [DataStorage] using its implementation
@@ -73,6 +75,14 @@ private class DataStorageImpl(context: Context) : DataStorage {
             .apply()
     }
 
+    override fun saveGdpr(gdpr: Gdpr) {
+        TODO("Not yet implemented")
+    }
+
+    override fun saveCcpa(ccpa: Ccpa) {
+        TODO("Not yet implemented")
+    }
+
     override fun getTcData(): DeferredMap {
         val res = DeferredMap(false)
         val map: Map<String, *> = preference.all
@@ -100,6 +110,14 @@ private class DataStorageImpl(context: Context) : DataStorage {
 
     override fun getAppliedLegislation(): String {
         return preference.getString("applied_legislation", "")!!
+    }
+
+    override fun getGdpr(): Gdpr {
+        TODO("Not yet implemented")
+    }
+
+    override fun getCcpa(): Ccpa {
+        TODO("Not yet implemented")
     }
 
     override fun clearInternalData() {

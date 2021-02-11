@@ -2,6 +2,8 @@ package com.sourcepoint.cmplibrary.data.local
 
 import android.content.SharedPreferences
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
+import com.sourcepoint.cmplibrary.data.network.model.Ccpa
+import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 
 internal interface DataStorage {
     val preference: SharedPreferences
@@ -16,6 +18,8 @@ internal interface DataStorage {
     fun saveMetaData(value: String)
     fun saveConsentUuid(value: String)
     fun saveAppliedLegislation(value: String)
+    fun saveGdpr(gdpr: Gdpr)
+    fun saveCcpa(ccpa: Ccpa)
 
     /** fetch data */
     fun getTcData(): DeferredMap
@@ -24,6 +28,8 @@ internal interface DataStorage {
     fun getMetaData(): String
     fun getConsentUuid(): String
     fun getAppliedLegislation(): String
+    fun getGdpr(): Gdpr
+    fun getCcpa(): Ccpa
 
     companion object {
         const val CONSENT_UUID_KEY = "sp.gdpr.consentUUID"

@@ -27,7 +27,7 @@ class NetworkClientImplTest {
     lateinit var okHttp: OkHttpClient
 
     @MockK
-    private lateinit var successMock: (MessageResp) -> Unit
+    private lateinit var successMock: (UnifiedMessageResp) -> Unit
 
     @MockK
     private lateinit var errorMock: (Throwable) -> Unit
@@ -140,7 +140,7 @@ class NetworkClientImplTest {
 
         val res = sut.getMessage(messageReq = req)
 
-        val output = (res as Either.Right<MessageResp>).r
+        val output = (res as Either.Right<UnifiedMessageResp>).r
     }
 
     //    @Test
@@ -156,7 +156,7 @@ class NetworkClientImplTest {
 
         val res = sut.getMessage(messageReq = req)
 
-        val output = (res as Either.Right<MessageResp>).r
+        val output = (res as Either.Right<UnifiedMessageResp>).r
     }
 
     //    @Test
@@ -176,7 +176,7 @@ class NetworkClientImplTest {
         output.message.assertEquals("test")
     }
 
-    private suspend fun NetworkClient.getMessage(messageReq: MessageReq) = suspendCoroutine<Either<MessageResp>> {
+    private suspend fun NetworkClient.getMessage(messageReq: MessageReq) = suspendCoroutine<Either<UnifiedMessageResp>> {
         getMessage(
             messageReq,
             { messageResp -> it.resume(Either.Right(messageResp)) },

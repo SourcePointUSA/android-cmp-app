@@ -3,23 +3,16 @@ package com.sourcepoint.cmplibrary.stub
 import android.content.SharedPreferences
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.Service
-import com.sourcepoint.cmplibrary.data.network.model.MessageReq
-import com.sourcepoint.cmplibrary.data.network.model.MessageResp
-import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
-import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import io.mockk.mockk
 
 internal class MockService(
-    private val getMessageLogic: ((messageReq: MessageReq, pSuccess: (MessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
-    private val getUnifiedMessageLogic: ((messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
+    private val getMessageLogic: ((messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
     private val getNativeMessageLogic: ((messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) -> Unit)? = null
 ) : Service {
-    override fun getMessage(messageReq: MessageReq, pSuccess: (MessageResp) -> Unit, pError: (Throwable) -> Unit) {
-        getMessageLogic?.invoke(messageReq, pSuccess, pError)
-    }
 
-    override fun getUnifiedMessage(messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) {
-        getUnifiedMessageLogic?.invoke(messageReq, pSuccess, pError)
+    override fun getMessage(messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) {
+        getMessageLogic?.invoke(messageReq, pSuccess, pError)
     }
 
     override fun getNativeMessage(messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {
@@ -34,10 +27,21 @@ internal class MockService(
     override fun saveMetaData(value: String) {}
     override fun saveConsentUuid(value: String) {}
     override fun saveAppliedLegislation(value: String) {}
+    override fun saveGdpr(gdpr: Gdpr) { }
+    override fun saveCcpa(ccpa: Ccpa) { }
+
     override fun getTcData(): DeferredMap = DeferredMap(false)
     override fun getAuthId(): String = ""
     override fun getEuConsent(): String = ""
     override fun getMetaData(): String = ""
     override fun getConsentUuid(): String = ""
     override fun getAppliedLegislation(): String = ""
+
+    override fun getGdpr(): Gdpr {
+        TODO("Not yet implemented")
+    }
+
+    override fun getCcpa(): Ccpa {
+        TODO("Not yet implemented")
+    }
 }

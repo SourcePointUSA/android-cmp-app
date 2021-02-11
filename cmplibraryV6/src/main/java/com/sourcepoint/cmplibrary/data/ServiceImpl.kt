@@ -3,8 +3,8 @@ package com.sourcepoint.cmplibrary.data
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
-import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 
 /**
  * Factory method to create an instance of a [Service] using its implementation
@@ -22,12 +22,12 @@ private class ServiceImpl(
     private val ds: DataStorage
 ) : Service, NetworkClient by nc, DataStorage by ds {
 
-    override fun getMessage(messageReq: MessageReq, pSuccess: (MessageResp) -> Unit, pError: (Throwable) -> Unit) {
+    override fun getMessage(messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) {
         nc.getMessage(
             messageReq,
             { messageResp ->
                 pSuccess(messageResp)
-                saveAppliedLegislation(messageResp.legislation.name)
+//                saveAppliedLegislation(messageResp.legislation.name)
             },
             pError
         )
