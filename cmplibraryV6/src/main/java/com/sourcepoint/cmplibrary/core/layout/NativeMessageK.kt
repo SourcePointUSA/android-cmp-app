@@ -50,6 +50,6 @@ class NativeMessageK : RelativeLayout {
             val action = ConsentAction(actionType = ActionType.REJECT_ALL, choiceId = this.choiceId, requestFromPm = false, saveAndExitVariables = null)
             button.setOnClickListener { client.onClickRejectAll(action) }
         }
-    }
+    }// ntest
 
 }
