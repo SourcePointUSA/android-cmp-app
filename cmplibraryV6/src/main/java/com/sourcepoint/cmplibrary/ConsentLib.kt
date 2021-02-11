@@ -10,9 +10,9 @@ interface ConsentLib {
     fun loadMessage()
     fun loadMessage(authId: String)
     fun loadMessage(nativeMessage: NativeMessage)
-    fun loadMessage(authId: String, nativeMessage: NativeMessage)
-    fun loadPrivacyManager()
-    fun loadPrivacyManager(authId: String)
+
+    fun loadGDPRPrivacyManager()
+    fun loadCCPAPrivacyManager()
 
     fun showView(view: View)
     fun removeView(view: View)

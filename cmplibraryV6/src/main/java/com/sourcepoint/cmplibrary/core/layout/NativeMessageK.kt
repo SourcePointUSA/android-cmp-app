@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.sample_native_message.view.*
 class NativeMessageK : RelativeLayout {
 
     constructor(context: Context?) : super(context) { init() }
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {init() }
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) { init() }
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { init() }
 
     lateinit var client: NativeMessageClient
@@ -36,20 +36,19 @@ class NativeMessageK : RelativeLayout {
         msg_body_tv.invisible()
         cancelAb.run {
             val action = ConsentAction(actionType = ActionType.MSG_CANCEL, choiceId = this.choiceId, requestFromPm = false, saveAndExitVariables = null)
-            button.setOnClickListener { client.onClickCancel(action) }
+            button.setOnClickListener { client.onClickCancel(this@NativeMessageK, action) }
         }
         acceptAllAb.run {
             val action = ConsentAction(actionType = ActionType.ACCEPT_ALL, choiceId = this.choiceId, requestFromPm = false, saveAndExitVariables = null)
-            button.setOnClickListener { client.onClickAcceptAll(action) }
+            button.setOnClickListener { client.onClickAcceptAll(this@NativeMessageK, action) }
         }
         showOptionsAb.run {
             val action = ConsentAction(actionType = ActionType.SHOW_OPTIONS, choiceId = this.choiceId, requestFromPm = false, saveAndExitVariables = null)
-            button.setOnClickListener { client.onClickShowOptions(action) }
+            button.setOnClickListener { client.onClickShowOptions(this@NativeMessageK, action) }
         }
         rejectAllAb.run {
             val action = ConsentAction(actionType = ActionType.REJECT_ALL, choiceId = this.choiceId, requestFromPm = false, saveAndExitVariables = null)
-            button.setOnClickListener { client.onClickRejectAll(action) }
+            button.setOnClickListener { client.onClickRejectAll(this@NativeMessageK, action) }
         }
-    }// ntest
-
+    }
 }

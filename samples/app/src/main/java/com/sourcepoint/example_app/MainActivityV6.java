@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.cmplibrary.ConsentLib;
+import com.sourcepoint.cmplibrary.SPMessage;
 import com.sourcepoint.cmplibrary.data.network.model.CCPAUserConsent;
 import com.sourcepoint.cmplibrary.data.network.model.GDPRUserConsent;
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK;
@@ -54,7 +55,7 @@ public class MainActivityV6 extends AppCompatActivity {
 
         gdprConsent.setSpClient(new LocalClient());
 
-        findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadPrivacyManager());
+        findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadGDPRPrivacyManager());
         findViewById(R.id.auth_id_activity).setOnClickListener(_v -> startActivity(new Intent(this, MainActivityAuthId.class)));
     }
 
@@ -76,12 +77,17 @@ public class MainActivityV6 extends AppCompatActivity {
     class LocalClient implements SpClient {
 
         @Override
+        public void onMessageReady(@NotNull SPMessage message) {
+
+        }
+
+        @Override
         public void onError(@NotNull ConsentLibExceptionK error) {
             Log.e(TAG, "Something went wrong");
         }
 
         @Override
-        public void onConsentReadyCallback(@NotNull CCPAUserConsent c) {
+        public void onConsentReady(@NotNull CCPAUserConsent c) {
 
         }
 
@@ -93,18 +99,18 @@ public class MainActivityV6 extends AppCompatActivity {
 
         //TODO rename this method
         @Override
-        public void onConsentUIFinished(@NotNull View v) {
+        public void onUIFinished(@NotNull View v) {
             gdprConsent.removeView(v);
         }
 
         @Override
-        public void onConsentUIReady(@NotNull View v) {
+        public void onUIReady(@NotNull View v) {
             view = v;
             gdprConsent.showView(v);
         }
 
         @Override
-        public void onAction(@NotNull ActionType actionType) {
+        public void onAction(View view, @NotNull ActionType actionType) {
             Log.i(TAG, "ActionType: " + actionType.toString());
         }
     }

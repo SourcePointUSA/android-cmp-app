@@ -8,7 +8,7 @@ class NativeMessageDto {
     var title: Title? = null
 }
 
-class Action{
+class Action {
     var choiceId: Int? = null
     var choiceType: Int? = null
     var customFields: CustomFields? = null
@@ -16,16 +16,15 @@ class Action{
     var text: String? = null
 }
 
-class Body{
+class Body {
     var customFields: CustomFields? = null
     var style: Style? = null
     var text: String? = null
 }
 
-class CustomFields{
-}
+class CustomFields
 
-class Style{
+class Style {
     var backgroundColor: String? = null
     var color: String? = null
     var fontFamily: String? = null
@@ -33,7 +32,7 @@ class Style{
     var fontWeight: String? = null
 }
 
-class Title{
+class Title {
     var customFields: CustomFields? = null
     var style: Style? = null
     var text: String? = null

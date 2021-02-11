@@ -85,19 +85,14 @@ internal class ConsentLibImpl(
                     /** set the action callback */
                     nativeMessage.setActionClient(nativeMsgClient)
                     /** calling the client */
-                    spClient?.onConsentUIReady(nativeMessage)
+                    spClient?.onUIReady(nativeMessage)
                 }
             },
             { throwable -> pLogger.error(throwable.toConsentLibException()) }
         )
     }
 
-    override fun loadMessage(authId: String, nativeMessage: NativeMessage) {
-        checkMainThread("loadMessage")
-        throwsExceptionIfClientNoSet()
-    }
-
-    override fun loadPrivacyManager() {
+    override fun loadGDPRPrivacyManager() {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientNoSet()
         val webView = viewManager.createWebView(this, JSReceiverDelegate())
@@ -109,7 +104,7 @@ internal class ConsentLibImpl(
         webView?.loadConsentUIFromUrl(urlManager.urlPm(pmConfig))
     }
 
-    override fun loadPrivacyManager(authId: String) {
+    override fun loadCCPAPrivacyManager() {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientNoSet()
     }
@@ -177,27 +172,27 @@ internal class ConsentLibImpl(
     /**
      * Receive the action performed by the user from the WebView
      */
-    internal fun onActionFromWebViewClient(action: ConsentAction, view: View? = null) {
+    internal fun onActionFromWebViewClient(action: ConsentAction, view: View) {
         executor.executeOnMain {
-            spClient?.onAction(action.actionType)
+            spClient?.onAction(view, action.actionType)
             when (action.actionType) {
                 ActionType.ACCEPT_ALL -> {
-                    view?.let { spClient?.onConsentUIFinished(it) }
+                    view.let { spClient?.onUIFinished(it) }
                 }
                 ActionType.MSG_CANCEL -> {
-                    view?.let { spClient?.onConsentUIFinished(it) }
+                    view.let { spClient?.onUIFinished(it) }
                 }
                 ActionType.SAVE_AND_EXIT -> {
-                    view?.let { spClient?.onConsentUIFinished(it) }
+                    view.let { spClient?.onUIFinished(it) }
                 }
                 ActionType.SHOW_OPTIONS -> {
-                    view?.let { spClient?.onConsentUIFinished(it) }
+                    view.let { spClient?.onUIFinished(it) }
                 }
                 ActionType.REJECT_ALL -> {
-                    view?.let { spClient?.onConsentUIFinished(it) }
+                    view.let { spClient?.onUIFinished(it) }
                 }
                 ActionType.PM_DISMISS -> {
-                    view?.let { spClient?.onConsentUIFinished(it) }
+                    view.let { spClient?.onUIFinished(it) }
                 }
             }
         }
@@ -207,37 +202,26 @@ internal class ConsentLibImpl(
      * Delegate used by the [NativeMessage] to catch events performed by the user
      */
     inner class NativeMsgDelegate : NativeMessageClient {
-        /**
-         * onclick listener connected to the acceptAll button in the NativeMessage View
-         */
-        override fun onClickAcceptAll(ca: ConsentAction) {
-            spClient?.onAction(ActionType.ACCEPT_ALL)
+
+        override fun onClickAcceptAll(view: View, ca: ConsentAction) {
+            spClient?.onAction(view, ActionType.ACCEPT_ALL)
         }
 
-        /**
-         * onclick listener connected to the RejectAll button in the NativeMessage View
-         */
-        override fun onClickRejectAll(ca: ConsentAction) {
-            spClient?.onAction(ActionType.REJECT_ALL)
+        override fun onClickRejectAll(view: View, ca: ConsentAction) {
+            spClient?.onAction(view, ActionType.REJECT_ALL)
         }
 
-        override fun onPmDismiss(ca: ConsentAction) {}
+        override fun onPmDismiss(view: View, ca: ConsentAction) {}
 
-        /**
-         * onclick listener connected to the ShowOptions button in the NativeMessage View
-         */
-        override fun onClickShowOptions(ca: ConsentAction) {
-            spClient?.onAction(ActionType.SHOW_OPTIONS)
+        override fun onClickShowOptions(view: View, ca: ConsentAction) {
+            spClient?.onAction(view, ActionType.SHOW_OPTIONS)
         }
 
-        /**
-         * onclick listener connected to the Cancel button in the NativeMessage View
-         */
-        override fun onClickCancel(ca: ConsentAction) {
-            spClient?.onAction(ActionType.MSG_CANCEL)
+        override fun onClickCancel(view: View, ca: ConsentAction) {
+            spClient?.onAction(view, ActionType.MSG_CANCEL)
         }
 
-        override fun onDefaultAction(ca: ConsentAction) {
+        override fun onDefaultAction(view: View, ca: ConsentAction) {
         }
     }
 }
