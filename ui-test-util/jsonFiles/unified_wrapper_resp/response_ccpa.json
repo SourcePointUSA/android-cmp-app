@@ -1,0 +1,308 @@
+{
+  "ccpa": {
+  "ccpa": {
+    "uuid": "9c027fb5-9dde-4d07-9f79-bbb316489b9c",
+    "ccpaApplies": true,
+    "meta": "{\"mmsCookies\":[\"_sp_v1_uid=1:365:5908d0ec-72a4-47a4-b6a8-51ad27d0b538\",\"_sp_v1_csv=1\",\"_sp_v1_lt=1:\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbLKK83J0YlRSkVil4AlqmtrlXTgyqKRGXkghkFtLC59OCWUYgEO1mB4eQAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_data=2:289044:1613060220:0:1:0:1:0:0:885b0124-dbce-4102-b017-e602962a39ed:-1\"],\"messageId\":425813,\"dnsDisplayed\":true}",
+    "userConsent": {
+      "uspstring": "1YNN",
+      "status": "rejectedNone",
+      "rejectedVendors": [],
+      "rejectedCategories": []
+    },
+    "message": {
+      "message_json": {
+        "type": "Notice",
+        "name": "CCPA Message",
+        "settings": {
+          "showClose": false
+        },
+        "children": [
+          {
+            "type": "Row",
+            "name": "Row",
+            "settings": {},
+            "children": [
+              {
+                "type": "Text",
+                "name": "Title",
+                "settings": {
+                  "languages": {
+                    "EN": {
+                      "text": "<p>CCPA Message</p>"
+                    }
+                  },
+                  "text": "<p>CCPA Message</p>",
+                  "font": {
+                    "fontSize": 35,
+                    "fontWeight": "400",
+                    "color": "#000000",
+                    "fontFamily": "arial, helvetica, sans-serif"
+                  },
+                  "align": "left",
+                  "padding": {
+                    "paddingLeft": 0,
+                    "paddingRight": 0,
+                    "paddingTop": 0,
+                    "paddingBottom": 0
+                  },
+                  "margin": {
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "marginTop": 0,
+                    "marginBottom": 0
+                  }
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "type": "Row",
+            "name": "Row",
+            "settings": {},
+            "children": [
+              {
+                "type": "Text",
+                "name": "Description",
+                "settings": {
+                  "languages": {
+                    "EN": {
+                      "text": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>"
+                    }
+                  },
+                  "text": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>",
+                  "margin": {
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "marginTop": 10,
+                    "marginBottom": 10
+                  },
+                  "padding": {
+                    "paddingLeft": 0,
+                    "paddingRight": 0,
+                    "paddingTop": 10,
+                    "paddingBottom": 10
+                  },
+                  "font": {
+                    "fontSize": 18,
+                    "fontWeight": "400",
+                    "color": "#000000",
+                    "fontFamily": "arial, helvetica, sans-serif"
+                  }
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "type": "Row",
+            "name": "Row",
+            "settings": {},
+            "children": [
+              {
+                "type": "Column",
+                "name": "Column",
+                "settings": {
+                  "align": "center",
+                  "padding": {
+                    "paddingLeft": 10,
+                    "paddingRight": 10,
+                    "paddingTop": 0,
+                    "paddingBottom": 0
+                  },
+                  "margin": {
+                    "marginLeft": 10,
+                    "marginRight": 10,
+                    "marginTop": 0,
+                    "marginBottom": 0
+                  }
+                },
+                "children": [
+                  {
+                    "type": "Button",
+                    "name": "Show PM Button",
+                    "settings": {
+                      "languages": {
+                        "EN": {
+                          "text": "Options"
+                        }
+                      },
+                      "text": "Options",
+                      "choice_option": {
+                        "type": 12,
+                        "data": {
+                          "button_text": "1612862129297",
+                          "privacy_manager_iframe_url": "https://ccpa-pm.sp-prod.net?privacy_manager_id=5f22957607d3576fbb14cf8c",
+                          "consent_origin": "https://ccpa-service.sp-prod.net"
+                        }
+                      },
+                      "font": {
+                        "fontSize": 16,
+                        "fontWeight": "400",
+                        "color": "#1890ff",
+                        "fontFamily": "arial, helvetica, sans-serif"
+                      },
+                      "width": {
+                        "type": "%",
+                        "value": 100
+                      },
+                      "background": "#fff"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "type": "Column",
+                "name": "Column",
+                "settings": {
+                  "align": "center",
+                  "margin": {
+                    "marginLeft": 10,
+                    "marginRight": 10,
+                    "marginTop": 0,
+                    "marginBottom": 0
+                  },
+                  "padding": {
+                    "paddingLeft": 10,
+                    "paddingRight": 10,
+                    "paddingTop": 0,
+                    "paddingBottom": 0
+                  }
+                },
+                "children": [
+                  {
+                    "type": "Button",
+                    "name": "Reject All Button",
+                    "settings": {
+                      "languages": {
+                        "EN": {
+                          "text": "Reject All"
+                        }
+                      },
+                      "text": "Reject All",
+                      "choice_option": {
+                        "type": 13,
+                        "data": {
+                          "button_text": "1596097595162",
+                          "consent_origin": "https://ccpa-service.sp-prod.net",
+                          "consent_language": "EN"
+                        }
+                      },
+                      "font": {
+                        "fontSize": 16,
+                        "fontWeight": "400",
+                        "color": "#ffffff",
+                        "fontFamily": "arial, helvetica, sans-serif"
+                      },
+                      "width": {
+                        "type": "%",
+                        "value": 100
+                      },
+                      "background": "#ec6565"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "type": "Column",
+                "name": "Column",
+                "settings": {
+                  "align": "center",
+                  "padding": {
+                    "paddingLeft": 10,
+                    "paddingRight": 10,
+                    "paddingTop": 0,
+                    "paddingBottom": 0
+                  },
+                  "margin": {
+                    "marginLeft": 10,
+                    "marginRight": 10,
+                    "marginTop": 0,
+                    "marginBottom": 0
+                  }
+                },
+                "children": [
+                  {
+                    "type": "Button",
+                    "name": "Accept All Button",
+                    "settings": {
+                      "languages": {
+                        "EN": {
+                          "text": "Accept All"
+                        }
+                      },
+                      "text": "Accept All",
+                      "choice_option": {
+                        "type": 11,
+                        "data": {
+                          "button_text": "1596097547308",
+                          "consent_origin": "https://ccpa-service.sp-prod.net",
+                          "consent_language": "EN"
+                        }
+                      },
+                      "font": {
+                        "fontSize": 16,
+                        "fontWeight": "400",
+                        "color": "#ffffff",
+                        "fontFamily": "arial, helvetica, sans-serif"
+                      },
+                      "width": {
+                        "type": "%",
+                        "value": 100
+                      },
+                      "margin": {
+                        "marginLeft": 10,
+                        "marginRight": 10,
+                        "marginTop": 10,
+                        "marginBottom": 10
+                      },
+                      "padding": {
+                        "paddingLeft": 15,
+                        "paddingRight": 15,
+                        "paddingTop": 10,
+                        "paddingBottom": 10
+                      }
+                    },
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "compliance_status": false,
+        "compliance_list": []
+      },
+      "message_choice": [
+        {
+          "choice_id": 3306997,
+          "type": 15,
+          "iframe_url": null,
+          "button_text": "Dismiss"
+        },
+        {
+          "choice_id": 3306998,
+          "type": 12,
+          "iframe_url": "https://ccpa-pm.sp-prod.net?privacy_manager_id=5f22957607d3576fbb14cf8c",
+          "button_text": "1612862129297"
+        },
+        {
+          "choice_id": 3306999,
+          "type": 13,
+          "iframe_url": null,
+          "button_text": "1596097595162"
+        },
+        {
+          "choice_id": 3307000,
+          "type": 11,
+          "iframe_url": null,
+          "button_text": "1596097547308"
+        }
+      ],
+      "site_id": 10589
+    }
+  }
+}

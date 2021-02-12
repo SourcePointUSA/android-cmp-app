@@ -1,0 +1,469 @@
+{
+  "gdpr": {
+    "uuid": "a42f93fc-282c-422d-89f2-841e04d9217f",
+    "userConsent": {
+      "acceptedCategories": [],
+      "acceptedVendors": [],
+      "specialFeatures": [],
+      "legIntCategories": [
+        "5f2285ef22eeb81b1348f39c",
+        "5f2285ef22eeb81b1348f3af",
+        "5f2285ef22eeb81b1348f3b5",
+        "5f2285ef22eeb81b1348f3bb",
+        "5f2285ef22eeb81b1348f3c7",
+        "5f2285ef22eeb81b1348f3cd"
+      ],
+      "grants": {
+        "5e7ced57b8e05c485246cce5": {
+          "vendorGrant": false,
+          "purposeGrants": {
+            "5f2285ef22eeb81b1348f394": false,
+            "5f2285ef22eeb81b1348f39c": false,
+            "5f2285ef22eeb81b1348f3bb": false,
+            "5f2285ef22eeb81b1348f3cd": false
+          }
+        },
+        "5f1aada6b8e05c306c0597d7": {
+          "vendorGrant": false,
+          "purposeGrants": {
+            "5f2285ef22eeb81b1348f394": false,
+            "5f2285ef22eeb81b1348f39c": true,
+            "5f2285ef22eeb81b1348f3a3": false,
+            "5f2285ef22eeb81b1348f3a9": false,
+            "5f2285ef22eeb81b1348f3af": true,
+            "5f2285ef22eeb81b1348f3b5": true,
+            "5f2285ef22eeb81b1348f3bb": true,
+            "5f2285ef22eeb81b1348f3c7": true,
+            "5f2285ef22eeb81b1348f3cd": true
+          }
+        },
+        "5e4a5fbf26de4a77922b38a6": {
+          "vendorGrant": false,
+          "purposeGrants": {
+            "5f2285ef22eeb81b1348f394": false
+          }
+        }
+      },
+      "euconsent": "CPBdARtPBdARtAGABCENBMCgAAAAAE7AAAYgAAALzgAgLzAAAAAA.YAAAAAAAAAAA",
+      "TCData": {
+        "IABTCF_AddtlConsent": "1~",
+        "IABTCF_CmpSdkID": 6,
+        "IABTCF_CmpSdkVersion": 2,
+        "IABTCF_PolicyVersion": 2,
+        "IABTCF_PublisherCC": "DE",
+        "IABTCF_PurposeOneTreatment": 0,
+        "IABTCF_UseNonStandardStacks": 0,
+        "IABTCF_TCString": "CPBdARtPBdARtAGABCENBMCgAAAAAE7AAAYgAAALzgAgLzAAAAAA.YAAAAAAAAAAA",
+        "IABTCF_VendorConsents": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "IABTCF_VendorLegitimateInterests": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "IABTCF_PurposeConsents": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "IABTCF_PurposeLegitimateInterests": "0100111011000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "IABTCF_SpecialFeaturesOptIns": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "IABTCF_PublisherConsent": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "IABTCF_PublisherLegitimateInterests": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "IABTCF_PublisherCustomPurposesConsents": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "IABTCF_PublisherCustomPurposesLegitimateInterests": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "IABTCF_gdprApplies": 1
+      }
+    },
+    "meta": "{\"mmsCookies\":[\"_sp_v1_uid=1:77:7bb48e11-2a4f-4c55-afe1-0ae3af5e4858\",\"_sp_v1_csv=1\",\"_sp_v1_lt=1:\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbKKRmbkgRgGtbE6MUqpIGZeaU4OkF0CVlBdi1tCKRYAmuD4I1IAAAA%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_data=2:289044:1613060220:0:1:0:1:0:0:885b0124-dbce-4102-b017-e602962a39ed:-1\"],\"messageId\":425812}",
+    "message": {
+      "message_json": {
+        "type": "Notice",
+        "name": "GDPR Notice",
+        "settings": {
+          "showClose": false,
+          "border": {
+            "borderWidth": 0,
+            "borderColor": "#000000",
+            "borderTopLeftRadius": 0,
+            "borderTopRightRadius": 0,
+            "borderBottomLeftRadius": 0,
+            "borderBottomRightRadius": 0,
+            "borderStyle": "solid"
+          },
+          "padding": {
+            "paddingLeft": 0,
+            "paddingRight": 0,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          "selected_privacy_manager": {
+            "type": 12,
+            "data": {
+              "button_text": "1612861627042",
+              "privacy_manager_iframe_url": "https://notice.sp-prod.net/privacy-manager/index.html?message_id=404472",
+              "consent_origin": "https://sourcepoint.mgr.consensu.org/tcfv2"
+            }
+          }
+        },
+        "children": [
+          {
+            "type": "Row",
+            "name": "Row",
+            "settings": {
+              "align": "space-between",
+              "vertical": "center",
+              "width": {
+                "type": "%",
+                "value": 100
+              },
+              "padding": {
+                "paddingLeft": 10,
+                "paddingRight": 10,
+                "paddingTop": 5,
+                "paddingBottom": 0
+              },
+              "margin": {
+                "marginLeft": 0,
+                "marginRight": 0,
+                "marginTop": 0,
+                "marginBottom": 0
+              },
+              "background": "$$primary_color$$"
+            },
+            "children": [
+              {
+                "type": "Text",
+                "name": "Text",
+                "settings": {
+                  "languages": {
+                    "EN": {
+                      "text": "<p>GDPR Privacy Notice</p>"
+                    }
+                  },
+                  "text": "<p>GDPR Privacy Notice</p>",
+                  "font": {
+                    "fontSize": 32,
+                    "fontWeight": "700",
+                    "color": "#444444",
+                    "fontFamily": "arial, helvetica, sans-serif"
+                  },
+                  "padding": {
+                    "paddingLeft": 0,
+                    "paddingRight": 0,
+                    "paddingTop": 0,
+                    "paddingBottom": 0
+                  },
+                  "margin": {
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "marginTop": 0,
+                    "marginBottom": 0
+                  }
+                },
+                "children": []
+              }
+            ],
+            "handle": "header-row"
+          },
+          {
+            "type": "Row",
+            "name": "Row",
+            "settings": {
+              "width": {
+                "type": "%",
+                "value": 100
+              },
+              "padding": {
+                "paddingLeft": 0,
+                "paddingRight": 0,
+                "paddingTop": 0,
+                "paddingBottom": 0
+              },
+              "margin": {
+                "marginLeft": 0,
+                "marginRight": 0,
+                "marginTop": 0,
+                "marginBottom": 0
+              }
+            },
+            "children": [
+              {
+                "type": "Text",
+                "name": "Text",
+                "settings": {
+                  "padding": {
+                    "paddingLeft": 10,
+                    "paddingRight": 10,
+                    "paddingTop": 8,
+                    "paddingBottom": 8
+                  },
+                  "margin": {
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "marginTop": 0,
+                    "marginBottom": 0
+                  },
+                  "languages": {
+                    "EN": {
+                      "text": "<p>We and our technology partners ask you to consent to the use of cookies to store and access personal data on your device. This can include the use of unique identifiers and information about your browsing patterns to create the best possible user experience on this website. The following description outlines how your data may be used by us, or by our partners.</p><p>&nbsp;</p><p>Some of our <a href=\"https://google.com\" target=\"_blank\" aria-label=\"message-link\">partners</a> process personal data on the basis of legitimate interest. You can object to such processing at any time. Please click “Options” below to view our list of partners and the purposes for which consent is required.</p><p>&nbsp;</p><p>You don’t have to consent in order to view the information on this site, but if you don’t consent, some personalization of content and advertising won’t be available. Your choices on this site will be applied only to this site. You can change your settings at any time by using the link at the bottom of the page to reopen the Privacy Preferences and managing the setting.</p>"
+                    }
+                  },
+                  "text": "<p>We and our technology partners ask you to consent to the use of cookies to store and access personal data on your device. This can include the use of unique identifiers and information about your browsing patterns to create the best possible user experience on this website. The following description outlines how your data may be used by us, or by our partners.</p><p>&nbsp;</p><p>Some of our <a href=\"https://google.com\" target=\"_blank\" aria-label=\"message-link\">partners</a> process personal data on the basis of legitimate interest. You can object to such processing at any time. Please click “Options” below to view our list of partners and the purposes for which consent is required.</p><p>&nbsp;</p><p>You don’t have to consent in order to view the information on this site, but if you don’t consent, some personalization of content and advertising won’t be available. Your choices on this site will be applied only to this site. You can change your settings at any time by using the link at the bottom of the page to reopen the Privacy Preferences and managing the setting.</p>",
+                  "choice_options": [],
+                  "link": {
+                    "fontWeight": "400",
+                    "color": "$$primary_color$$",
+                    "textDecoration": "underline"
+                  },
+                  "hover": {
+                    "fontWeight": "400",
+                    "color": "$$primary_color$$",
+                    "textDecoration": "underline"
+                  }
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "type": "Stacks",
+            "name": "Stacks",
+            "settings": {
+              "accordionsSpacing": {
+                "paddingLeft": 20,
+                "paddingRight": 50,
+                "paddingTop": 12,
+                "paddingBottom": 12
+              },
+              "panelSpacing": {
+                "paddingLeft": 20,
+                "paddingRight": 20,
+                "paddingTop": 0,
+                "paddingBottom": 12
+              }
+            },
+            "children": []
+          },
+          {
+            "type": "Row",
+            "name": "Row",
+            "settings": {
+              "width": {
+                "type": "%",
+                "value": 100
+              },
+              "align": "flex-end",
+              "padding": {
+                "paddingLeft": 0,
+                "paddingRight": 10,
+                "paddingTop": 0,
+                "paddingBottom": 0
+              },
+              "margin": {
+                "marginLeft": 0,
+                "marginRight": 0,
+                "marginTop": 0,
+                "marginBottom": 0
+              }
+            },
+            "children": [
+              {
+                "type": "Button",
+                "name": "Button",
+                "settings": {
+                  "languages": {
+                    "EN": {
+                      "text": "Options"
+                    }
+                  },
+                  "text": "Options",
+                  "border": {
+                    "borderWidth": 1,
+                    "borderColor": "$$primary_color$$",
+                    "borderTopLeftRadius": 0,
+                    "borderTopRightRadius": 0,
+                    "borderBottomLeftRadius": 0,
+                    "borderBottomRightRadius": 0,
+                    "borderStyle": "solid"
+                  },
+                  "choice_option": {
+                    "type": 12,
+                    "data": {
+                      "button_text": "1609159698225",
+                      "privacy_manager_iframe_url": "https://notice.sp-prod.net/privacy-manager/index.html?message_id=404472",
+                      "consent_origin": "https://sourcepoint.mgr.consensu.org/tcfv2"
+                    }
+                  },
+                  "font": {
+                    "fontSize": 14,
+                    "fontWeight": "700",
+                    "color": "$$primary_color$$",
+                    "fontFamily": "arial, helvetica, sans-serif"
+                  },
+                  "background": "#ffffff"
+                },
+                "children": []
+              },
+              {
+                "type": "Button",
+                "name": "Button",
+                "settings": {
+                  "languages": {
+                    "EN": {
+                      "text": "Accept"
+                    }
+                  },
+                  "text": "Accept",
+                  "border": {
+                    "borderWidth": 1,
+                    "borderColor": "$$primary_color$$",
+                    "borderTopLeftRadius": 0,
+                    "borderTopRightRadius": 0,
+                    "borderBottomLeftRadius": 0,
+                    "borderBottomRightRadius": 0,
+                    "borderStyle": "solid"
+                  },
+                  "choice_option": {
+                    "type": 11,
+                    "data": {
+                      "button_text": "1596474188251",
+                      "consent_origin": "https://sourcepoint.mgr.consensu.org/tcfv2",
+                      "consent_language": "EN"
+                    }
+                  },
+                  "background": "$$primary_color$$",
+                  "font": {
+                    "fontSize": 14,
+                    "fontWeight": "700",
+                    "color": "#ffffff",
+                    "fontFamily": "arial, helvetica, sans-serif"
+                  },
+                  "padding": {
+                    "paddingLeft": 20,
+                    "paddingRight": 20,
+                    "paddingTop": 10,
+                    "paddingBottom": 10
+                  }
+                },
+                "children": []
+              }
+            ],
+            "handle": "bottom-row"
+          }
+        ],
+        "css": ".stack .accordion .chevron { left: auto; }\n\n\n/*Stack Customizations - update default properties as needed*/\n.stack { background-color: #fff !important; }\n.stack .accordion .chevron { color: #000000 !important; }\n.accordion { font-family: arial, helvetica, sans-serif !important; color: #000000 !important; }\n.message-stacks .panel p { font-family: arial, helvetica, sans-serif !important; color: #555555 !important;}\n.message-stacks .panel { border-bottom: 1px solid #e5e9ee !important }\n\n@media only screen and (max-width: 600px) {\n.bottom-row { display: flex; flex-direction: row !important; justify-content: center !important; } \n.header-row { display: flex !important; flex-direction: row !important; }\n}",
+        "compliance_list": [
+          {
+            "1": true
+          },
+          {
+            "2": true
+          },
+          {
+            "3": true
+          },
+          {
+            "4": true
+          },
+          {
+            "5": true
+          },
+          {
+            "6": true
+          },
+          {
+            "7": true
+          },
+          {
+            "8": true
+          },
+          {
+            "9": true
+          },
+          {
+            "10": true
+          },
+          {
+            "11": true
+          }
+        ],
+        "compliance_status": true
+      },
+      "message_choice": [
+        {
+          "choice_id": 3306994,
+          "type": 15,
+          "iframe_url": null,
+          "button_text": "Dismiss"
+        },
+        {
+          "choice_id": 3306995,
+          "type": 12,
+          "iframe_url": "https://notice.sp-prod.net/privacy-manager/index.html?message_id=404472",
+          "button_text": "1609159698225"
+        },
+        {
+          "choice_id": 3306996,
+          "type": 11,
+          "iframe_url": null,
+          "button_text": "1596474188251"
+        }
+      ],
+      "categories": [
+        {
+          "_id": "5f2285ef22eeb81b1348f394",
+          "type": "IAB_PURPOSE",
+          "name": "Store and/or access information on a device",
+          "description": "Cookies, device identifiers, or other information can be stored or accessed on your device for the purposes presented to you."
+        },
+        {
+          "_id": "5f2285ef22eeb81b1348f39c",
+          "type": "IAB_PURPOSE",
+          "name": "Select basic ads",
+          "description": "Ads can be shown to you based on the content you’re viewing, the app you’re using, your approximate location, or your device type."
+        },
+        {
+          "_id": "5f2285ef22eeb81b1348f3a3",
+          "type": "IAB_PURPOSE",
+          "name": "Create a personalised ads profile",
+          "description": "A profile can be built about you and your interests to show you personalised ads that are relevant to you."
+        },
+        {
+          "_id": "5f2285ef22eeb81b1348f3a9",
+          "type": "IAB_PURPOSE",
+          "name": "Select personalised ads",
+          "description": "Personalised ads can be shown to you based on a profile about you."
+        },
+        {
+          "_id": "5f2285ef22eeb81b1348f3af",
+          "type": "IAB_PURPOSE",
+          "name": "Create a personalised content profile",
+          "description": "A profile can be built about you and your interests to show you personalised content that is relevant to you."
+        },
+        {
+          "_id": "5f2285ef22eeb81b1348f3b5",
+          "type": "IAB_PURPOSE",
+          "name": "Select personalised content",
+          "description": "Personalised content can be shown to you based on a profile about you."
+        },
+        {
+          "_id": "5f2285ef22eeb81b1348f3bb",
+          "type": "IAB_PURPOSE",
+          "name": "Measure ad performance",
+          "description": "The performance and effectiveness of ads that you see or interact with can be measured."
+        },
+        {
+          "_id": "5f2285ef22eeb81b1348f3c7",
+          "type": "IAB_PURPOSE",
+          "name": "Apply market research to generate audience insights",
+          "description": "Market research can be used to learn more about the audiences who visit sites/apps and view ads."
+        },
+        {
+          "_id": "5f2285ef22eeb81b1348f3cd",
+          "type": "IAB_PURPOSE",
+          "name": "Develop and improve products",
+          "description": "Your data can be used to improve existing systems and software, and to develop new products"
+        },
+        {
+          "_id": "5e37fc3e973acf1e955b8966",
+          "name": "Use precise geolocation data",
+          "description": "Your precise geolocation data can be used in support of one or more purposes. This means your location can be accurate to within several meters."
+        }
+      ],
+      "site_id": 10589,
+      "language": "en"
+    }
+  },
+}

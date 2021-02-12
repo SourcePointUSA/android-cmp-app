@@ -48,18 +48,18 @@ class ResponseManagerImplTest {
         result.t.message.assertEquals("uuid object is null")
     }
 
-//    @Test
+    @Test
     fun `GIVEN a response without message RETURN a Left object`() = runBlocking<Unit> {
         val sut = ResponseManager.create(JsonConverter.create())
         val resp = Response.Builder() //
             .code(200)
-            .body("unified_wrapper/with_message_null.json".jsonFile2String().toResponseBody("application/json".toMediaTypeOrNull()))
+            .body("unified_wrapper_resp/with_message_null.json".jsonFile2String().toResponseBody("application/json".toMediaTypeOrNull()))
             .message("OK")
             .protocol(Protocol.HTTP_1_1)
             .request(Request.Builder().url("http://localhost/").build())
             .build()
         val result = sut.parseResponse(resp) as Either.Left
-        result.t.message!!.contains("We have [0] inst. of Message.").assertEquals(true)
+        result.t.message!!.contains("message object is null").assertEquals(true)
     }
 
     @Test
@@ -68,7 +68,7 @@ class ResponseManagerImplTest {
         val sut = ResponseManager.create(jsonConverter)
         val resp = Response.Builder() //
             .code(200)
-            .body("unified_wrapper/with_message_null.json".jsonFile2String().toResponseBody("application/json".toMediaTypeOrNull()))
+            .body("unified_wrapper_resp/with_message_null.json".jsonFile2String().toResponseBody("application/json".toMediaTypeOrNull()))
             .message("OK")
             .protocol(Protocol.HTTP_1_1)
             .request(Request.Builder().url("http://localhost/").build())

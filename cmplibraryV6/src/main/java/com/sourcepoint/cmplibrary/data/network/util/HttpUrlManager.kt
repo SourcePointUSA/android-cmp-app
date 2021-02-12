@@ -13,7 +13,8 @@ internal interface HttpUrlManager {
     fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl
-    fun urlLocalTest(): HttpUrl
+    fun urlURenderingAppProd(): HttpUrl
+    fun urlURenderingAppLocal(): HttpUrl
 }
 
 /**
@@ -23,6 +24,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 
     private const val message = "wrapper/v1/unified/message"
     private const val spHost = "cdn.privacy-mgmt.com"
+    private const val spHostProd = "notice.sp-prod.net"
 
     val inAppLocalUrlMessage: HttpUrl = HttpUrl.Builder()
         .scheme("http")
@@ -77,6 +79,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .build()
 
     override fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl {
+        // https://notice.sp-prod.net?preload_message=true
         // TODO tests are missing
         return HttpUrl.Builder()
             .scheme("https")
@@ -96,7 +99,15 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    override fun urlLocalTest(): HttpUrl {
+    override fun urlURenderingAppProd(): HttpUrl {
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(spHostProd)
+            .addQueryParameter("preload_message", "true")
+            .build()
+    }
+
+    override fun urlURenderingAppLocal(): HttpUrl {
         // "http://192.168.1.11:8080/?preload_message=true"
         return HttpUrl.Builder()
             .scheme("http")
