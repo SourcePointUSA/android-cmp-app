@@ -11,7 +11,7 @@ import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test
 
-class ConsentLibDelegateTest {
+class SpConsentLibDelegateTest {
 
     private val campaign = Campaign(
         22,

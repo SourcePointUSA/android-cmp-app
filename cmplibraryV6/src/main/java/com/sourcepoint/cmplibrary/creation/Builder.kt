@@ -2,8 +2,8 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
 import android.content.Context
-import com.sourcepoint.cmplibrary.ConsentLib
-import com.sourcepoint.cmplibrary.ConsentLibImpl
+import com.sourcepoint.cmplibrary.SpConsentLib
+import com.sourcepoint.cmplibrary.SpConsentLibImpl
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.create
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -70,7 +70,7 @@ class Builder {
 
     //    @Suppress("UNCHECKED_CAST")
 //    fun <T : ConsentLib> build(clazz: Class<out T>): T {
-    fun build(): ConsentLib {
+    fun build(): SpConsentLib {
 
         val activityWeakRef: WeakReference<Activity> = weakReference ?: failParam("context")
         val appCtx: Context = activityWeakRef.get()?.applicationContext ?: failParam("context")
@@ -91,7 +91,7 @@ class Builder {
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 
-        return ConsentLibImpl(
+        return SpConsentLibImpl(
             urlManager,
             account,
             pmTab,

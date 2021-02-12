@@ -23,7 +23,7 @@ import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.model.toMessageReq
 import com.sourcepoint.cmplibrary.util.* //ktlint-disable
 
-internal class ConsentLibImpl(
+internal class SpConsentLibImpl(
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     internal val campaign: Campaign,
     internal val pPrivacyManagerTab: PrivacyManagerTabK,
@@ -34,7 +34,7 @@ internal class ConsentLibImpl(
     internal val service: Service,
     private val viewManager: ViewsManager,
     private val executor: ExecutorManager
-) : ConsentLib {
+) : SpConsentLib {
 
     override var spClient: SpClient? = null
     private val nativeMsgClient by lazy { NativeMsgDelegate() }

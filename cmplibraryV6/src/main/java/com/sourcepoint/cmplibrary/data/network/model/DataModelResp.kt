@@ -19,7 +19,7 @@ data class MessageResp(
     val message: JSONObject,
     val uuid: String,
     val meta: String,
-    val userConsent: UserConsent
+    val spUserConsent: SpUserConsent
 //    val gdpr: Gdpr? = null,
 //    val ccpa: Ccpa? = null
 )
@@ -28,6 +28,7 @@ sealed class CampaignResp(
     val uuid: String? = null,
     val meta: String? = null,
     val message: JSONObject? = null
+//    val applies: Boolean = false
 )
 
 class Gdpr(
@@ -35,7 +36,7 @@ class Gdpr(
     meta: String? = null,
     message: JSONObject? = null,
     val gdprApplies: Boolean = false,
-    val userConsent: GDPRUserConsent? = null
+    val userConsent: SPGDPRConsent? = null
 ) : CampaignResp(uuid, meta, message)
 
 class Ccpa(
@@ -43,7 +44,7 @@ class Ccpa(
     meta: String,
     message: JSONObject,
     val ccpaApplies: Boolean = false,
-    val userConsent: CCPAUserConsent
+    val userConsent: SPCCPAConsents
 ) : CampaignResp(uuid, meta, message)
 
 data class MessageGdprResp(

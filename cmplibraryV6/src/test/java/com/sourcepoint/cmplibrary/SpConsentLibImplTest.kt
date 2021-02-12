@@ -23,7 +23,7 @@ import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 
-class ConsentLibImplTest {
+class SpConsentLibImplTest {
 
     var campaign = Campaign(22, 7639, "tcfv2.mobile.webview", "122058")
     @MockK
@@ -52,14 +52,14 @@ class ConsentLibImplTest {
 
     @Test(expected = MissingClientException::class)
     fun `CALLING loadMessage() with a null SpGDPRClient THROWS a MissingClientException`() {
-        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
+        val sut = SpConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
         sut.loadMessage()
 //        verify(exactly = 1) { service.getMessage(any(), any(), any()) }
     }
 
 //    @Test
     fun `CALLING loadMessage() verify that getMessage is called exactly 1 time`() {
-        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
+        val sut = SpConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
         sut.spClient = spClient
         sut.loadMessage()
 //        verify(exactly = 1) { service.getMessage(any(), any(), any()) }
@@ -88,7 +88,7 @@ class ConsentLibImplTest {
         val mockService = MockService(
             getNativeMessageLogic = { _, pSuccess, _ -> pSuccess.invoke(NativeMessageResp(JSONObject(dtJson))) }
         )
-        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, MockExecutorManager())
+        val sut = SpConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, MockExecutorManager())
         sut.spClient = spClient
 
         val nm = mockk<NativeMessage>()

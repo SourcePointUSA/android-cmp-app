@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary
 import android.view.View
 import com.sourcepoint.cmplibrary.core.layout.NativeMessage
 
-interface ConsentLib {
+interface SpConsentLib {
 
     var spClient: SpClient?
 

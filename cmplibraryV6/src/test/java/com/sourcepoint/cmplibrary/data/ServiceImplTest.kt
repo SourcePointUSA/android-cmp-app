@@ -45,7 +45,7 @@ class ServiceImplTest {
 
     @Test
     fun `GIVEN a success from NetworkClient VERIFY that saveAppliedLegislation is called`() {
-        val mr = MessageResp(legislation = Legislation.GDPR, message = JSONObject(), uuid = "", meta = "", userConsent = mockk())
+        val mr = MessageResp(legislation = Legislation.GDPR, message = JSONObject(), uuid = "", meta = "", spUserConsent = mockk())
         val nc = MockNetworkClient(
             logicUnifiedMess = { _, success, _ -> success(umr) }
         )

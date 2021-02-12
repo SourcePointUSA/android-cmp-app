@@ -69,3 +69,11 @@ internal inline fun <B, C> Either<B>.fold(ifLeft: (Throwable) -> C, ifRight: (B)
     is Right -> ifRight(r)
     is Left -> ifLeft(t)
 }
+
+/**
+ * @return the results if applied on a [Right] instance or null if applied on a [Left]
+ */
+internal inline fun <B> Either<B>.getOrNull(): B? = when (this) {
+    is Right -> r
+    is Left -> null
+}

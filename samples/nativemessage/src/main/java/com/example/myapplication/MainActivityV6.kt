@@ -11,12 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.sourcepoint.cmplibrary.model.Campaign
-import com.sourcepoint.cmplibrary.ConsentLib
+import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SPMessage
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.delegate.ConsentLibDelegate
-import com.sourcepoint.cmplibrary.data.network.model.CCPAUserConsent
-import com.sourcepoint.cmplibrary.data.network.model.GDPRUserConsent
+import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsents
+import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
 import com.sourcepoint.gdpr_cmplibrary.* // ktint-disable
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.model.ActionType
@@ -137,15 +137,15 @@ class MainActivityV6 : AppCompatActivity() {
         }
     }
 
-    inner class LocalClient(private val gdpr : ConsentLib) : SpClient {
+    inner class LocalClient(private val gdpr : SpConsentLib) : SpClient {
 
         override fun onMessageReady(message: SPMessage) {
         }
 
-        override fun onConsentReady(consent: CCPAUserConsent) {
+        override fun onConsentReady(consent: SPCCPAConsents) {
         }
 
-        override fun onConsentReady(c: GDPRUserConsent) {}
+        override fun onConsentReady(c: SPGDPRConsent) {}
 
         override fun onUIFinished(v: View) {
            gdpr.removeView(v)

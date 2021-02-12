@@ -2,9 +2,9 @@ package com.sourcepoint.cmplibrary.data.network.model
 
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 
-sealed class UserConsent
+sealed class SpUserConsent
 
-data class GDPRUserConsent(
+data class SPGDPRConsent(
     var acceptedCategories: List<Any> = listOf(),
     var acceptedVendors: List<Any> = listOf(),
     var specialFeatures: List<Any> = listOf(),
@@ -12,18 +12,11 @@ data class GDPRUserConsent(
     var euconsent: String = "",
     var tcData: DeferredMap = DeferredMap(false),
     var vendorsGrants: DeferredMap = DeferredMap(false)
-) : UserConsent()
+) : SpUserConsent()
 
-data class CCPAUserConsent(
-    var status: CCPAStatus = CCPAStatus.REJECTED_NONE,
+data class SPCCPAConsents(
+    var status: String? = null,
     var rejectedVendors: List<Any> = listOf(),
     var rejectedCategories: List<Any> = listOf(),
     var uspstring: String = ""
-) : UserConsent()
-
-enum class CCPAStatus(val state: String) {
-    REJECTED_NONE("rejectedNone"),
-    REJECTED_SOME("rejectedSome"),
-    REJECTED_ALL("rejectedAll"),
-    CONSENTED_ALL("consentedAll")
-}
+) : SpUserConsent()

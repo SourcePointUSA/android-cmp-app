@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.util
 
+import com.sourcepoint.cmplibrary.assertEquals
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
@@ -46,5 +47,15 @@ class FoldEitherTest {
 
         verify(exactly = 1) { rightFun(any()) }
         verify(exactly = 0) { leftFun(any()) }
+    }
+
+    @Test
+    fun `GIVEN an Either obj EXECUTE getOrNull`() {
+
+        val left = Either.Left(RuntimeException())
+        val right = Either.Right(1)
+
+        right.getOrNull().assertEquals(1)
+        left.getOrNull().assertEquals(null)
     }
 }
