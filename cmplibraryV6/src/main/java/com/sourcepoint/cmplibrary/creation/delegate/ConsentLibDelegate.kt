@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.creation.delegate
 
 import android.app.Activity
-import com.sourcepoint.cmplibrary.ConsentLib
+import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.creation.makeConsentLib
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
@@ -12,11 +12,11 @@ class ConsentLibDelegate(
     private val campaign: Campaign
 ) {
 
-    private lateinit var lib: ConsentLib
+    private lateinit var libSp: SpConsentLib
 
-    operator fun getValue(thisRef: Activity, property: KProperty<*>): ConsentLib {
-        if (!this::lib.isInitialized) {
-            lib = makeConsentLib(
+    operator fun getValue(thisRef: Activity, property: KProperty<*>): SpConsentLib {
+        if (!this::libSp.isInitialized) {
+            libSp = makeConsentLib(
                 propertyName = campaign.propertyName,
                 context = thisRef,
                 pmId = campaign.pmId,
@@ -25,6 +25,6 @@ class ConsentLibDelegate(
                 privacyManagerTab = privacyManagerTab
             )
         }
-        return lib
+        return libSp
     }
 }

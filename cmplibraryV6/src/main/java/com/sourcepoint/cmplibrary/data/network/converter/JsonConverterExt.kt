@@ -15,7 +15,7 @@ internal fun String.toUnifiedMessageRespDto(): UnifiedMessageResp {
     return UnifiedMessageResp(list)
 }
 
-internal fun DeferredMap.toUserConsent(legislation: Legislation): UserConsent {
+internal fun DeferredMap.toUserConsent(legislation: Legislation): SpUserConsent {
     return when (legislation) {
         Legislation.GDPR -> this.toGDPRUserConsent()
         Legislation.CCPA -> this.toCCPAUserConsent()

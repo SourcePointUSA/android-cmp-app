@@ -36,6 +36,7 @@ android {
     sourceSets{
         val sharedRes = "${project.rootDir.path}/ui-test-util/jsonFiles"
         getByName("test").resources.srcDir(sharedRes)
+        getByName("androidTest").resources.srcDir(sharedRes)
         getByName("main").resources.srcDir("${projectDir.path}/files")
 
     }

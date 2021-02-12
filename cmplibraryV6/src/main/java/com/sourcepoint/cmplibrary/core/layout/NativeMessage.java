@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sourcepoint.cmplibrary.ConsentLib;
+import com.sourcepoint.cmplibrary.SpConsentLib;
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction;
 import com.sourcepoint.cmplibrary.model.ActionType;
 
@@ -56,12 +56,12 @@ public class NativeMessage extends RelativeLayout {
 //        setBody(findViewById(R.id.MsgBody));
     }
 
-    public void setOnclickAction(ActionButton actionButton, ConsentLib consentLib){
+    public void setOnclickAction(ActionButton actionButton, SpConsentLib spConsentLib){
 //        actionButton.button.setOnClickListener(_v -> consentLib.onAction(new ConsentAction(actionButton.choiceType, String.valueOf(actionButton.choiceId),false, null)));
-        actionButton.button.setOnClickListener(_v -> triggerAction(actionButton, consentLib));
+        actionButton.button.setOnClickListener(_v -> triggerAction(actionButton, spConsentLib));
     }
 
-    private void triggerAction(ActionButton actionButton, ConsentLib consentLib){
+    private void triggerAction(ActionButton actionButton, SpConsentLib spConsentLib){
         ConsentAction action = null;//new ConsentAction(actionButton.choiceType, String.valueOf(actionButton.choiceId),false, null);
 //        consentLib.onAction(action);
         if(client != null){
@@ -82,11 +82,11 @@ public class NativeMessage extends RelativeLayout {
         }
     }
 
-    public void setCallBacks(ConsentLib consentLib) {
-        setOnclickAction(getAcceptAll(), consentLib);
-        setOnclickAction(getRejectAll(), consentLib);
-        setOnclickAction(getShowOptions(), consentLib);
-        setOnclickAction(getCancel(), consentLib);
+    public void setCallBacks(SpConsentLib spConsentLib) {
+        setOnclickAction(getAcceptAll(), spConsentLib);
+        setOnclickAction(getRejectAll(), spConsentLib);
+        setOnclickAction(getShowOptions(), spConsentLib);
+        setOnclickAction(getCancel(), spConsentLib);
     }
 
     public void setAttributes(NativeMessageAttrs attrs){

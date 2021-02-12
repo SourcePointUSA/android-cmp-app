@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_UUID_
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.EU_CONSENT_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.META_DATA_KEY
-import com.sourcepoint.cmplibrary.data.network.model.Ccpa
 
 /**
  * Factory method to create an instance of a [DataStorage] using its implementation
@@ -82,10 +81,6 @@ private class DataStorageImpl(
             .edit()
             .putString("applied_legislation", value)
             .apply()
-    }
-
-    override fun saveCcpa(ccpa: Ccpa) {
-        TODO("Not yet implemented")
     }
 
     override fun getTcData(): DeferredMap {

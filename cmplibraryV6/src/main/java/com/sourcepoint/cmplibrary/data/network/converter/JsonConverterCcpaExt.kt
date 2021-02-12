@@ -2,9 +2,8 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
-import com.sourcepoint.cmplibrary.data.network.model.CCPAStatus
-import com.sourcepoint.cmplibrary.data.network.model.CCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.Ccpa
+import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsents
 import org.json.JSONObject
 
 internal fun DeferredMap.toCCPA(): Ccpa? {
@@ -40,14 +39,7 @@ internal fun MutableMap<String, Any>.toCCPA(): Ccpa? {
     }
 }
 
-internal fun String.toCCPAStatus(): CCPAStatus {
-    return CCPAStatus
-        .values()
-        .find { it.state == this }
-        ?: fail("CCPAStatus[$this] not valid!!!")
-}
-
-internal fun DeferredMap.toCCPAUserConsent(): CCPAUserConsent {
+internal fun DeferredMap.toCCPAUserConsent(): SPCCPAConsents {
     val userConsentMap = (this as? DeferredMap) ?: failParam("CCPAUserConsent")
 
     val rejectedCategories = (userConsentMap["rejectedCategories"] as? Iterable<Any?>)
@@ -58,11 +50,12 @@ internal fun DeferredMap.toCCPAUserConsent(): CCPAUserConsent {
         ?.filterNotNull()
         ?: failParam("rejectedVendors")
 
-    val status = (userConsentMap["status"] as? String)?.toCCPAStatus() ?: fail("CCPAStatus cannot be null!!!")
+    val status: String = (userConsentMap["status"] as? String)
+        ?: fail("CCPAStatus cannot be null!!!")
 
     val uspstring = (userConsentMap["uspstring"] as? String) ?: ""
 
-    return CCPAUserConsent(
+    return SPCCPAConsents(
         rejectedCategories = rejectedCategories,
         rejectedVendors = rejectedVendors,
         status = status,

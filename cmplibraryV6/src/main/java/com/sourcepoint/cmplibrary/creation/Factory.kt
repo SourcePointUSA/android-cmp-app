@@ -2,8 +2,8 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
 import android.content.Context
-import com.sourcepoint.cmplibrary.ConsentLib
-import com.sourcepoint.cmplibrary.ConsentLibImpl
+import com.sourcepoint.cmplibrary.SpConsentLib
+import com.sourcepoint.cmplibrary.SpConsentLibImpl
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.create
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -32,7 +32,7 @@ fun makeConsentLib(
     pmId: String,
     context: Activity,
     privacyManagerTab: PrivacyManagerTabK
-): ConsentLib {
+): SpConsentLib {
 
     val account = Campaign(accountId, propertyId, propertyName, pmId)
     val appCtx: Context = context.applicationContext
@@ -51,7 +51,7 @@ fun makeConsentLib(
     val execManager = ExecutorManager.create(appCtx)
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 
-    return ConsentLibImpl(
+    return SpConsentLibImpl(
         urlManager, account, privacyManagerTab, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager
     )
 }

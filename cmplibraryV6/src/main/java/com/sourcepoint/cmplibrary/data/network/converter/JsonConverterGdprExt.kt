@@ -2,9 +2,9 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
-import com.sourcepoint.cmplibrary.data.network.model.GDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 import com.sourcepoint.cmplibrary.data.network.model.MessageGdprResp
+import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
 import org.json.JSONObject
 
 internal fun DeferredMap.toGDPR(): Gdpr? {
@@ -51,30 +51,34 @@ internal fun DeferredMap.toMessageGdprResp(): MessageGdprResp {
     )
 }
 
-internal fun DeferredMap.toGDPRUserConsent(): GDPRUserConsent {
+internal fun DeferredMap.toGDPRUserConsent(): SPGDPRConsent {
 
     val userConsentMap = (this as? DeferredMap) ?: failParam("GDPRUserConsent")
 
     val acceptedCategories = (userConsentMap["acceptedCategories"] as? Iterable<Any?>)
         ?.filterNotNull()
+        ?.sortedBy { it.hashCode() }
         ?: failParam("acceptedCategories")
 
     val acceptedVendors = (userConsentMap["acceptedVendors"] as? Iterable<Any?>)
         ?.filterNotNull()
+        ?.sortedBy { it.hashCode() }
         ?: failParam("acceptedVendors")
 
     val legIntCategories = (userConsentMap["legIntCategories"] as? Iterable<Any?>)
         ?.filterNotNull()
+        ?.sortedBy { it.hashCode() }
         ?: failParam("legIntCategories")
 
     val specialFeatures = (userConsentMap["specialFeatures"] as? Iterable<Any?>)?.filterNotNull()
+        ?.sortedBy { it.hashCode() }
         ?: failParam("specialFeatures")
 
     val tcData = (userConsentMap["TCData"] as? DeferredMap) ?: DeferredMap(false)
     val vendorsGrants = (userConsentMap["grants"] as? DeferredMap) ?: DeferredMap(false)
     val euconsent = (userConsentMap["euconsent"] as? String) ?: ""
 
-    return GDPRUserConsent(
+    return SPGDPRConsent(
         acceptedCategories = acceptedCategories,
         acceptedVendors = acceptedVendors,
         legIntCategories = legIntCategories,

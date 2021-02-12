@@ -4,7 +4,7 @@ import android.R
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
-import com.sourcepoint.cmplibrary.ConsentLibImpl
+import com.sourcepoint.cmplibrary.SpConsentLibImpl
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.util.ViewsManagerImpl.IDS.idsSet
@@ -18,7 +18,7 @@ internal interface ViewsManager {
     val isViewInLayout: Boolean
 
     fun showView(view: View)
-    fun createWebView(lib: ConsentLibImpl, jsReceiverDelegate: ConsentLibImpl.JSReceiverDelegate): IConsentWebView?
+    fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate): IConsentWebView?
     fun removeView(view: View)
     fun removeAllViews()
     fun dispose()
@@ -93,7 +93,7 @@ private class ViewsManagerImpl(
         println("ids =====================================")
     }
 
-    override fun createWebView(lib: ConsentLibImpl, jsReceiverDelegate: ConsentLibImpl.JSReceiverDelegate): ConsentWebView? {
+    override fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate): ConsentWebView? {
         return weakReference.get()?.let {
             ConsentWebView(
                 context = it,
