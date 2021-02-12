@@ -18,16 +18,9 @@ class JsonConverterImplTest {
 
     @Test
     fun `GIVEN a response RETURN a Right(MessageResp)`() {
-        val json = "unified_wrapper/response_gdpr_and_ccpa.json".file2String()
+        val json = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String()
         val output: Either<UnifiedMessageResp> = sut.toUnifiedMessageResp(json)
         (output as? Either.Right).assertNotNull()
-    }
-
-//    @Test(expected = InvalidResponseWebMessageException::class)
-    fun `GIVEN a CCPA json resp with an invalid CCPAStatus THROWS an exception`() {
-        val json = "unified_wrapper/ccpa_mess_wrong_status.json".file2String()
-//        val left = sut.toUnifiedMessageResp(json) as Either.Left
-//        throw left.t
     }
 
     @Test
@@ -38,20 +31,6 @@ class JsonConverterImplTest {
             m.msgJSON.get("name").assertEquals("GDPR Native Message")
             (m.msgJSON.get("title") as JSONObject).get("text").assertEquals("Personalised Ads")
             (m.msgJSON.get("body") as JSONObject).get("text").assertEquals("GDPR - Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.")
-        }
-    }
-
-//    @Test
-    fun `GIVEN a list of json RETURN a always Right(MessageResp)`() {
-        val jsonList = "unified_wrapper/full_resp.txt".file2List()
-        jsonList.forEachIndexed { index, s ->
-            print("========= TEST toMessageResp [$index]: ")
-            when (val output = sut.toUnifiedMessageResp(s)) {
-                is Either.Left -> throw output.t
-                is Either.Right -> {
-                }
-            }
-            println("success ============")
         }
     }
 

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.util.Either
 import io.mockk.mockk
 
 internal class MockService(
@@ -18,6 +19,7 @@ internal class MockService(
     override fun getNativeMessage(messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {
         getNativeMessageLogic?.invoke(messageReq, success, error)
     }
+
     override val preference: SharedPreferences = mockk()
     override fun clearInternalData() {}
     override fun clearAll() {}
@@ -27,8 +29,8 @@ internal class MockService(
     override fun saveMetaData(value: String) {}
     override fun saveConsentUuid(value: String) {}
     override fun saveAppliedLegislation(value: String) {}
-    override fun saveGdpr(gdpr: Gdpr) { }
-    override fun saveCcpa(ccpa: Ccpa) { }
+    override fun saveCcpa(ccpa: Ccpa) {}
+    override fun saveGdpr(gdpr: Gdpr) {}
 
     override fun getTcData(): DeferredMap = DeferredMap(false)
     override fun getAuthId(): String = ""
@@ -36,12 +38,6 @@ internal class MockService(
     override fun getMetaData(): String = ""
     override fun getConsentUuid(): String = ""
     override fun getAppliedLegislation(): String = ""
-
-    override fun getGdpr(): Gdpr {
-        TODO("Not yet implemented")
-    }
-
-    override fun getCcpa(): Ccpa {
-        TODO("Not yet implemented")
-    }
+    override fun getCcpa(): Either<Ccpa> = Either.Left(RuntimeException())
+    override fun getGdpr(): Either<Gdpr> = Either.Left(RuntimeException())
 }

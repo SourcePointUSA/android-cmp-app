@@ -4,10 +4,8 @@ import android.content.Context
 import com.sourcepoint.cmplibrary.core.layout.NativeMessage
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
-import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.MissingClientException
 import com.sourcepoint.cmplibrary.model.Campaign

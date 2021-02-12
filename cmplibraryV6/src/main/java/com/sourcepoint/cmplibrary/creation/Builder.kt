@@ -7,6 +7,8 @@ import com.sourcepoint.cmplibrary.ConsentLibImpl
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.create
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
@@ -81,7 +83,9 @@ class Builder {
         val connManager = ConnectionManager.create(appCtx)
         val responseManager = ResponseManager.create(jsonConverter)
         val networkClient = networkClient(OkHttpClient(), responseManager)
-        val dataStorage = DataStorage.create(appCtx)
+        val dataStorageGdpr = DataStorageGdpr.create(appCtx)
+        val dataStorageCcpa = DataStorageCcpa.create(appCtx)
+        val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
         val service: Service = Service.create(networkClient, dataStorage)
         val viewManager = ViewsManager.create(activityWeakRef, connManager)
         val execManager = ExecutorManager.create(appCtx)

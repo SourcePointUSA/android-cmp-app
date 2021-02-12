@@ -314,6 +314,21 @@ class MissingClientException @JvmOverloads constructor(
 }
 
 /**
+ * This exception is thrown when a property is missing
+ */
+class MissingPropertyException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = ExceptionCodes("MISSING_LOCAL_PROPERTY")
+}
+
+/**
  * This exception is thrown when a the current thread is not the MainThread
  */
 class ExecutionInTheWrongThreadException @JvmOverloads constructor(

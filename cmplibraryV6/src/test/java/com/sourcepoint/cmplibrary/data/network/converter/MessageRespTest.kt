@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
+import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import org.junit.Test
@@ -25,19 +26,11 @@ class MessageRespTest {
     )
 
     @Test
-    fun `parse response`() {
-        val jsonContent = "unified_wrapper/full_resp.json".jsonFile2String()
+    fun `tree`() {
+        val uMessage = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()
+        val bean = JSON.std.mapFrom(uMessage)
 
-        val json1 = JSON.std.asString(req)
-        val ob = JSON.std.anyFrom(jsonContent)
-        val map = JSON.std.mapFrom(jsonContent)
-        val json = JSON.std.asString((map.get("gdpr") as DeferredMap).get("message"))
-
-        val gdpr = (map["gdpr"] as DeferredMap)
-        val uuid = (gdpr["uuid"] as? String)
-        val message = JSON.std.asString(gdpr["message"])
-        val userConsent = JSON.std.beanFrom(GDPRUserConsent::class.java, JSON.std.asString(gdpr["userConsent"] as DeferredMap))
-
-        println()
+        val r = (bean["gdpr"] as DeferredMap).toGDPR()
+        bean.assertNotNull()
     }
 }

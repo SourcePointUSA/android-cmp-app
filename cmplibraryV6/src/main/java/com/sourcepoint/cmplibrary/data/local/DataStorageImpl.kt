@@ -10,16 +10,25 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.EU_CONSENT_KE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.META_DATA_KEY
 import com.sourcepoint.cmplibrary.data.network.model.Ccpa
-import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 
 /**
  * Factory method to create an instance of a [DataStorage] using its implementation
  * @param context is the client application context
  * @return an instance of the [DataStorageImpl] implementation
  */
-internal fun DataStorage.Companion.create(context: Context): DataStorage = DataStorageImpl(context)
+internal fun DataStorage.Companion.create(
+    context: Context,
+    dsGdpr: DataStorageGdpr,
+    dsCcpa: DataStorageCcpa
+): DataStorage = DataStorageImpl(context, dsGdpr, dsCcpa)
 
-private class DataStorageImpl(context: Context) : DataStorage {
+private class DataStorageImpl(
+    context: Context,
+    dsGdpr: DataStorageGdpr,
+    dsCcpa: DataStorageCcpa
+) : DataStorage,
+    DataStorageGdpr by dsGdpr,
+    DataStorageCcpa by dsCcpa {
 
     override val preference: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
@@ -75,10 +84,6 @@ private class DataStorageImpl(context: Context) : DataStorage {
             .apply()
     }
 
-    override fun saveGdpr(gdpr: Gdpr) {
-        TODO("Not yet implemented")
-    }
-
     override fun saveCcpa(ccpa: Ccpa) {
         TODO("Not yet implemented")
     }
@@ -110,14 +115,6 @@ private class DataStorageImpl(context: Context) : DataStorage {
 
     override fun getAppliedLegislation(): String {
         return preference.getString("applied_legislation", "")!!
-    }
-
-    override fun getGdpr(): Gdpr {
-        TODO("Not yet implemented")
-    }
-
-    override fun getCcpa(): Ccpa {
-        TODO("Not yet implemented")
     }
 
     override fun clearInternalData() {
