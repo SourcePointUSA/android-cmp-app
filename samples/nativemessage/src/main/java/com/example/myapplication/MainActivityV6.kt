@@ -14,6 +14,7 @@ import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SPMessage
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.core.layout.NativeMessageK
 import com.sourcepoint.cmplibrary.creation.delegate.ConsentLibDelegate
 import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsents
 import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
@@ -77,8 +78,12 @@ class MainActivityV6 : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.i(TAG, "init");
-        consentLib.loadMessage()
-//        consentLib.loadMessage(buildNativeMessage())
+//        consentLib.loadMessage()
+        consentLib.loadMessage(buildNativeMessageK())
+    }
+
+    private fun buildNativeMessageK(): NativeMessageK {
+        return NativeMessageK(this)
     }
 
     private fun buildNativeMessage(): NativeMessage {

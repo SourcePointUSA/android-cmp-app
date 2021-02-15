@@ -5,6 +5,7 @@ import android.view.View
 import com.sourcepoint.cmplibrary.core.layout.NativeMessage
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageAttrs
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
+import com.sourcepoint.cmplibrary.core.layout.NativeMessageK
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
@@ -86,6 +87,28 @@ internal class SpConsentLibImpl(
                 executor.executeOnMain {
                     /** configuring onClickListener and set the parameters */
                     nativeMessage.setAttributes(NativeMessageAttrs(jsonResult, pLogger))
+                    /** set the action callback */
+                    nativeMessage.setActionClient(nativeMsgClient)
+                    /** calling the client */
+                    spClient?.onUIReady(nativeMessage)
+                }
+            },
+            { throwable -> pLogger.error(throwable.toConsentLibException()) }
+        )
+    }
+    override fun loadMessage(nativeMessage: NativeMessageK) {
+        checkMainThread("loadMessage")
+        throwsExceptionIfClientNoSet()
+
+
+
+        service.getNativeMessageK(
+            campaign.toMessageReq(),
+            { messageResp ->
+                val jsonResult = messageResp.msgJSON
+                executor.executeOnMain {
+                    /** configuring onClickListener and set the parameters */
+                    nativeMessage.setAttributes(messageResp)
                     /** set the action callback */
                     nativeMessage.setActionClient(nativeMsgClient)
                     /** calling the client */

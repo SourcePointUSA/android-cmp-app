@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary
 
 import android.view.View
 import com.sourcepoint.cmplibrary.core.layout.NativeMessage
+import com.sourcepoint.cmplibrary.core.layout.NativeMessageK
 
 interface SpConsentLib {
 
@@ -10,6 +11,7 @@ interface SpConsentLib {
     fun loadMessage()
     fun loadMessage(authId: String)
     fun loadMessage(nativeMessage: NativeMessage)
+    fun loadMessage(nativeMessage: NativeMessageK)
 
     fun loadGDPRPrivacyManager()
     fun loadCCPAPrivacyManager()

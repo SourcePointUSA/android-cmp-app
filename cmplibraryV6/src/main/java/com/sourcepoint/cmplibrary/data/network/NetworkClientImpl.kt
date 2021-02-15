@@ -58,8 +58,20 @@ private class NetworkClientImpl(
         success: (NativeMessageResp) -> Unit,
         error: (Throwable) -> Unit
     ) {
+
+        val bodyContent = """
+            {
+                "accountId": 22,
+                "propertyId": 7094,
+                "propertyHref": "https://tcfv2.mobile.demo",
+                "requestUUID": "test",
+                "meta": "{}",
+                "alwaysDisplayDNS": false
+              }
+        """.trimIndent()
+
         val mediaType = MediaType.parse("application/json")
-        val body: RequestBody = RequestBody.create(mediaType, bodyString)
+        val body: RequestBody = RequestBody.create(mediaType, bodyContent)
 
         val request: Request = Request.Builder()
             .url(urlManager.inAppUrlNativeMessage)
@@ -75,6 +87,46 @@ private class NetworkClientImpl(
                 onResponse { _, r ->
                     responseManager
                         .parseNativeMessRes(r)
+                        .map { success(it) }
+                        .executeOnLeft { error(it) }
+                }
+            }
+    }
+
+    override fun getNativeMessageK(
+        messageReq: MessageReq,
+        success: (NativeMessageRespK) -> Unit,
+        error: (Throwable) -> Unit
+    ) {
+
+        val bodyContent = """
+            {
+                "accountId": 22,
+                "propertyId": 7094,
+                "propertyHref": "https://tcfv2.mobile.demo",
+                "requestUUID": "test",
+                "meta": "{}",
+                "alwaysDisplayDNS": false
+              }
+        """.trimIndent()
+
+        val mediaType = MediaType.parse("application/json")
+        val body: RequestBody = RequestBody.create(mediaType, bodyContent)
+
+        val request: Request = Request.Builder()
+            .url(urlManager.inAppUrlNativeMessage)
+            .post(body)
+            .build()
+
+        httpClient
+            .newCall(request)
+            .enqueue {
+                onFailure { _, exception ->
+                    error(exception)
+                }
+                onResponse { _, r ->
+                    responseManager
+                        .parseNativeMessResK(r)
                         .map { success(it) }
                         .executeOnLeft { error(it) }
                 }

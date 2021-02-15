@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="default_title">Default title</string>
-    <string name="default_message_body">Default message body</string>
+    <string name="default_title">Title</string>
+    <string name="default_message_body">message body</string>
     <string name="agree_label">Agree</string>
     <string name="cancel_label">X</string>
     <string name="reject_all_label">Reject All</string>
