@@ -2,11 +2,11 @@ package com.sourcepoint.cmplibrary.core.layout.nat
 
 import android.content.Context
 import android.util.AttributeSet
-import com.sourcepoint.cmplibrary.core.layout.ActionButtonK
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
-import com.sourcepoint.cmplibrary.core.layout.json.NativeMessageDto
+import com.sourcepoint.cmplibrary.core.layout.model.ActionButton
+import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 
-abstract class NativeMessageCustom : NativeMessageAbstract {
+internal abstract class NativeMessageCustomImpl : NativeMessage {
 
     constructor(context: Context) : super(context) {
         initialize()
@@ -22,10 +22,10 @@ abstract class NativeMessageCustom : NativeMessageAbstract {
 
     override lateinit var client: NativeMessageClient
 
-    override lateinit var cancelAb: ActionButtonK
-    override lateinit var acceptAllAb: ActionButtonK
-    override lateinit var showOptionsAb: ActionButtonK
-    override lateinit var rejectAllAb: ActionButtonK
+    override lateinit var cancelAb: ActionButton
+    override lateinit var acceptAllAb: ActionButton
+    override lateinit var showOptionsAb: ActionButton
+    override lateinit var rejectAllAb: ActionButton
 
     override fun setAttributes(attr: NativeMessageDto) {
     }

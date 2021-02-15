@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.core.layout.json
+package com.sourcepoint.cmplibrary.core.layout.model
 
 class NativeMessageDto {
     var actions: List<ActionDto> = emptyList()

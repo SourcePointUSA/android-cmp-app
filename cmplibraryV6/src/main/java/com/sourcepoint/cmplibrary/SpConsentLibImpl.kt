@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary
 import android.content.Context
 import android.view.View
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
-import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageAbstract
+import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
@@ -74,7 +74,7 @@ internal class SpConsentLibImpl(
         )
     }
 
-    override fun loadMessage(nativeMessage: NativeMessageAbstract) {
+    override fun loadMessage(nativeMessage: NativeMessage) {
         checkMainThread("loadMessage")
         throwsExceptionIfClientNoSet()
 

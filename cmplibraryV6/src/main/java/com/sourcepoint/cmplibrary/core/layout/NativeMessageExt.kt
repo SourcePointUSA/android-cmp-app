@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.core.layout
 import android.graphics.Color
 import android.view.View
 import android.widget.TextView
-import com.sourcepoint.cmplibrary.core.layout.json.TextViewConfigDto
+import com.sourcepoint.cmplibrary.core.layout.model.TextViewConfigDto
 
 fun View.invisible() {
     visibility = View.INVISIBLE

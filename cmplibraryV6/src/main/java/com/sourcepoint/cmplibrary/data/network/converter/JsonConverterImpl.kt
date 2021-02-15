@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
-import com.sourcepoint.cmplibrary.core.layout.json.NativeMessageDto
+import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
