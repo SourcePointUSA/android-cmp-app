@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.stub
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 
 internal class MockNetworkClient(
@@ -17,4 +18,6 @@ internal class MockNetworkClient(
     override fun getNativeMessage(messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {
         logicNativeMess?.invoke(messageReq, success, error)
     }
+
+    override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
 }

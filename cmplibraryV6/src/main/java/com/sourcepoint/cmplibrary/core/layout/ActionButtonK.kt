@@ -9,7 +9,12 @@ data class ActionButtonK(
     var choiceId: String = "-1"
 )
 
-fun Button.toActionButtonK(): ActionButtonK {
-    visibility = View.INVISIBLE
+fun Button.toActionButtonK(listener : (ActionButtonK) -> Unit): ActionButtonK {
+//    visibility = View.INVISIBLE
     return ActionButtonK(this)
+        .also { ab ->
+        this.setOnClickListener { v ->
+            listener(ab)
+        }
+    }
 }
