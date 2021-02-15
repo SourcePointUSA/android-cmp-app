@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
+import com.sourcepoint.cmplibrary.core.layout.json.NativeMessageDto
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Legislation.CCPA
@@ -69,4 +70,7 @@ internal fun String.getAppliedLegislation(): Legislation {
 
 data class NativeMessageResp(
     val msgJSON: JSONObject
+)
+data class NativeMessageRespK(
+    val msgJSON: NativeMessageDto
 )

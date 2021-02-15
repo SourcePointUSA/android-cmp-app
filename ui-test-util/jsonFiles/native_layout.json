@@ -35,6 +35,33 @@
       "customFields": {},
       "choiceType": 11,
       "choiceId": 2956680
+    },
+    {
+      "text": "REJECT ALL",
+      "style": {
+        "fontFamily": "Arial",
+        "fontSize": 18,
+        "fontWeight": "400",
+        "color": "#85827e",
+        "backgroundColor": "#F6F4EE"
+      },
+      "customFields": {},
+      "choiceType": 13,
+      "choiceId": 2956681
+    },
+    {
+      "text": "Options",
+      "style": {
+        "fontFamily": "Arial",
+        "fontSize": 18,
+        "fontWeight": "400",
+        "color": "#007AFF",
+        "backgroundColor": "#ffffff"
+      },
+      "customFields": {},
+      "choiceType": 12,
+      "url": "https://notice.sp-prod.net/privacy-manager/index.html?&message_id=179657",
+      "choiceId": 2956682
     }
   ],
   "customFields": {}

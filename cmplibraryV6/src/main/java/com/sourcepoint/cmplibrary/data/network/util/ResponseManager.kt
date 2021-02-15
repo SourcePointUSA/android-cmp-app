@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.data.network.model.MessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.util.Either
 import okhttp3.Response
@@ -22,5 +23,6 @@ internal interface ResponseManager {
      * @return [Either] object
      */
     fun parseNativeMessRes(r: Response): Either<NativeMessageResp>
+    fun parseNativeMessResK(r: Response): Either<NativeMessageRespK>
     companion object
 }

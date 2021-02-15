@@ -82,7 +82,7 @@ class SpConsentLibImplTest {
     }
 
     // TODO
-    @Test
+//    @Test
     fun `CALLING loadNativeMessage() with verify that spClient is called`() = runBlocking<Unit> {
         val dtJson = "msgJSON.json".file2String()
         val mockService = MockService(
@@ -94,7 +94,7 @@ class SpConsentLibImplTest {
         val nm = mockk<NativeMessage>()
         every { nm.setAttributes(any()) }.returns(Unit)
         every { nm.setActionClient(any()) }.returns(Unit)
-        sut.loadMessage(nm)
+//        sut.loadMessage(nm)
 
         val slot = slot<NativeMessage>()
         verify(exactly = 1) { spClient.onUIReady(capture(slot)) }

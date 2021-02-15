@@ -5,6 +5,7 @@ import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.core.layout.json.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.ActionType
@@ -54,6 +55,12 @@ private class JsonConverterImpl : JsonConverter {
         val map: MutableMap<String, Any> = JSON.std.mapFrom(body)
         val msgJSON = (map["msgJSON"] as? DeferredMap) ?: fail("msgJSON")
         NativeMessageResp(msgJSON = JSONObject(JSON.std.asString(msgJSON)))
+    }
+
+    override fun toNativeMessageRespK(body: String): Either<NativeMessageRespK> = check {
+        val map: MutableMap<String, Any> = JSON.std.mapFrom(body)
+        val bean: NativeMessageDto = JSON.std.beanFrom(NativeMessageDto::class.java, JSON.std.asString(map["msgJSON"]))
+        NativeMessageRespK(msgJSON = bean)
     }
 
     override fun toNativeMessageDto(body: String): Either<NativeMessageDto> = check {

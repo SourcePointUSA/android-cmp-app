@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 
 /**
@@ -31,6 +32,13 @@ internal interface NetworkClient {
     fun getNativeMessage(
         messageReq: MessageReq,
         success: (NativeMessageResp) -> Unit,
+        error: (Throwable) -> Unit
+    )
+
+    // TODO verify if we need it
+    fun getNativeMessageK(
+        messageReq: MessageReq,
+        success: (NativeMessageRespK) -> Unit,
         error: (Throwable) -> Unit
     )
 }

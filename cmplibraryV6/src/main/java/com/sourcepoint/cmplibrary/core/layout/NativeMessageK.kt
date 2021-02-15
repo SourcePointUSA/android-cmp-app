@@ -5,10 +5,13 @@ import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.example.cmplibrary.R
+import com.sourcepoint.cmplibrary.core.layout.attribute.AttributeK
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
+import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.model.ActionType
-import kotlinx.android.synthetic.main.sample_native_message.view.*  // ktlint-disable
+import kotlinx.android.synthetic.main.sample_native_message.view.*
 
 class NativeMessageK : RelativeLayout {
 
@@ -50,5 +53,27 @@ class NativeMessageK : RelativeLayout {
             val action = ConsentAction(actionType = ActionType.REJECT_ALL, choiceId = this.choiceId, requestFromPm = false, saveAndExitVariables = null)
             button.setOnClickListener { client.onClickRejectAll(this@NativeMessageK, action) }
         }
+    }
+
+    fun setAttributes(att : NativeMessageRespK){
+
+    }
+
+//    fun setChildAttributes(v: ActionButtonK, attr: com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs.Action) {
+//        setChildAttributes(v.button, attr)
+//        v.choiceId = attr.choiceId
+//        v.choiceType = attr.choiceType
+//    }
+
+    fun setChildAttributes(v: TextView, attr: AttributeK) {
+        v.visibility = View.VISIBLE
+        v.text = attr.text
+        v.setTextColor(attr.style.color)
+        v.textSize = attr.style.fontSize.toFloat()
+        v.setBackgroundColor(attr.style.backgroundColor)
+    }
+
+    fun setActionClient(pClient: NativeMessageClient) {
+        client = pClient
     }
 }
