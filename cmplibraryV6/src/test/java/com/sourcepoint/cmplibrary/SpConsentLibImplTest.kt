@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary
 
 import android.content.Context
-import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageAbstract
+import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
@@ -91,12 +91,12 @@ class SpConsentLibImplTest {
         val sut = SpConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, MockExecutorManager())
         sut.spClient = spClient
 
-        val nm = mockk<NativeMessageAbstract>()
+        val nm = mockk<NativeMessage>()
         every { nm.setAttributes(any()) }.returns(Unit)
         every { nm.setActionClient(any()) }.returns(Unit)
 //        sut.loadMessage(nm)
 
-        val slot = slot<NativeMessageAbstract>()
+        val slot = slot<NativeMessage>()
         verify(exactly = 1) { spClient.onUIReady(capture(slot)) }
         slot.captured
     }

@@ -14,9 +14,9 @@ import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SPMessage
 import com.sourcepoint.cmplibrary.SpClient
-import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageAbstract
-import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageK
-import com.sourcepoint.cmplibrary.core.layout.nat.createNativeMessage
+import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
+import com.sourcepoint.cmplibrary.core.layout.createCustomNativeMessage
+import com.sourcepoint.cmplibrary.core.layout.createDefaultNativeMessage
 import com.sourcepoint.cmplibrary.creation.delegate.ConsentLibDelegate
 import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsents
 import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
@@ -81,29 +81,28 @@ class MainActivityV6 : AppCompatActivity() {
         super.onResume()
         Log.i(TAG, "init");
 //        consentLib.loadMessage()
-        consentLib.loadMessage(buildNativeMessageK())
-//        val nm = buildNativeMessageLocal()
-//        consentLib.loadMessage(nm)
+//        consentLib.loadMessage(buildNativeMessageV6())
+        consentLib.loadMessage(buildNativeMessageV6Local())
 
     }
 
-    private fun buildNativeMessageK(): NativeMessageAbstract {
-        return NativeMessageK(this)
+    private fun buildNativeMessageV6(): NativeMessage {
+        return createDefaultNativeMessage(this)
     }
 
-    private fun buildNativeMessage(): NativeMessage {
-        return NativeMessage(this)
+    private fun buildNativeMessage(): com.sourcepoint.gdpr_cmplibrary.NativeMessage {
+        return com.sourcepoint.gdpr_cmplibrary.NativeMessage(this)
     }
 
-    private fun buildNativeMessageLocal(): NativeMessageAbstract {
-        return createNativeMessage(
+    private fun buildNativeMessageV6Local(): NativeMessage {
+        return createCustomNativeMessage(
             activity = this,
             layout = R.layout.custom_layout_cl,
             accept = R.id.accept_all_cl,
             reject = R.id.reject_all_cl,
             body = R.id.body_cl,
             title = R.id.title_cl,
-            close = R.id.cancel_cl,
+            cancel = R.id.cancel_cl,
             show = R.id.show_options_cl
         )
 
@@ -121,8 +120,8 @@ class MainActivityV6 : AppCompatActivity() {
 
     }
 
-    private fun buildNativeMessageConstraintLayout(): NativeMessage {
-        return object : NativeMessage(this) {
+    private fun buildNativeMessageConstraintLayout(): com.sourcepoint.gdpr_cmplibrary.NativeMessage {
+        return object : com.sourcepoint.gdpr_cmplibrary.NativeMessage(this) {
             override fun init() {
                 // set your layout
                 View.inflate(context, R.layout.custom_layout_cl, this)
@@ -146,8 +145,8 @@ class MainActivityV6 : AppCompatActivity() {
         }
     }
 
-    private fun buildNativeMessageRelativeLayout(): NativeMessage {
-        return object : NativeMessage(this) {
+    private fun buildNativeMessageRelativeLayout(): com.sourcepoint.gdpr_cmplibrary.NativeMessage {
+        return object : com.sourcepoint.gdpr_cmplibrary.NativeMessage(this) {
             override fun init() {
                 // set your layout
                 View.inflate(context, R.layout.custom_layout, this)

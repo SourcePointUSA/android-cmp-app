@@ -3,13 +3,13 @@ package com.sourcepoint.cmplibrary.core.layout.nat
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.RelativeLayout
-import com.sourcepoint.cmplibrary.core.layout.ActionButtonK
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
-import com.sourcepoint.cmplibrary.core.layout.json.NativeMessageDto
+import com.sourcepoint.cmplibrary.core.layout.model.ActionButton
+import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.ActionType
 
-abstract class NativeMessageAbstract : RelativeLayout {
+abstract class NativeMessage : RelativeLayout {
 
     constructor(context: Context) : super(context)
 
@@ -19,11 +19,12 @@ abstract class NativeMessageAbstract : RelativeLayout {
 
     abstract var client: NativeMessageClient
 
-    abstract var cancelAb: ActionButtonK
-    abstract var acceptAllAb: ActionButtonK
-    abstract var showOptionsAb: ActionButtonK
-    abstract var rejectAllAb: ActionButtonK
-    abstract val actionsMap: MutableMap<Int, ActionButtonK>
+    abstract var cancelAb: ActionButton
+    abstract var acceptAllAb: ActionButton
+    abstract var showOptionsAb: ActionButton
+    abstract var rejectAllAb: ActionButton
+
+    internal val actionsMap: MutableMap<Int, ActionButton> = mutableMapOf()
 
     abstract fun initialize()
 
@@ -33,23 +34,23 @@ abstract class NativeMessageAbstract : RelativeLayout {
         client = pClient
     }
 
-    internal open fun onCancel(ab: ActionButtonK) {
+    internal open fun onCancel(ab: ActionButton) {
         val action = ConsentAction(actionType = ActionType.MSG_CANCEL, choiceId = ab.choiceId, requestFromPm = false, saveAndExitVariables = null)
-        client.onClickCancel(this@NativeMessageAbstract, action)
+        client.onClickCancel(this@NativeMessage, action)
     }
 
-    internal open fun onAcceptAll(ab: ActionButtonK) {
+    internal open fun onAcceptAll(ab: ActionButton) {
         val action = ConsentAction(actionType = ActionType.ACCEPT_ALL, choiceId = ab.choiceId, requestFromPm = false, saveAndExitVariables = null)
-        client.onClickAcceptAll(this@NativeMessageAbstract, action)
+        client.onClickAcceptAll(this@NativeMessage, action)
     }
 
-    internal open fun onRejectAll(ab: ActionButtonK) {
+    internal open fun onRejectAll(ab: ActionButton) {
         val action = ConsentAction(actionType = ActionType.REJECT_ALL, choiceId = ab.choiceId, requestFromPm = false, saveAndExitVariables = null)
-        client.onClickRejectAll(this@NativeMessageAbstract, action)
+        client.onClickRejectAll(this@NativeMessage, action)
     }
 
-    internal open fun onShowOptionsAb(ab: ActionButtonK) {
+    internal open fun onShowOptionsAb(ab: ActionButton) {
         val action = ConsentAction(actionType = ActionType.SHOW_OPTIONS, choiceId = ab.choiceId, requestFromPm = false, saveAndExitVariables = null)
-        client.onClickShowOptions(this@NativeMessageAbstract, action)
+        client.onClickShowOptions(this@NativeMessage, action)
     }
 }

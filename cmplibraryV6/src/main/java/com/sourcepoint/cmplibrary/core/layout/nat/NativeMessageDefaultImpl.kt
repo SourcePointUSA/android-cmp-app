@@ -6,12 +6,14 @@ import android.util.AttributeSet
 import android.view.View
 import com.example.cmplibrary.R
 import com.sourcepoint.cmplibrary.core.layout.* // ktlint-disable
-import com.sourcepoint.cmplibrary.core.layout.json.NativeMessageDto
-import com.sourcepoint.cmplibrary.core.layout.json.toTextViewConfigDto
+import com.sourcepoint.cmplibrary.core.layout.model.ActionButton
+import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
+import com.sourcepoint.cmplibrary.core.layout.model.toActionButton
+import com.sourcepoint.cmplibrary.core.layout.model.toTextViewConfigDto
 import com.sourcepoint.cmplibrary.model.ActionType.* // ktlint-disable
 import kotlinx.android.synthetic.main.sample_native_message_v6.view.* // ktlint-disable
 
-open class NativeMessageK : NativeMessageAbstract {
+internal class NativeMessageDefaultImpl : NativeMessage {
 
     constructor(context: Context) : super(context) {
         initialize()
@@ -27,11 +29,10 @@ open class NativeMessageK : NativeMessageAbstract {
 
     override lateinit var client: NativeMessageClient
 
-    override lateinit var cancelAb: ActionButtonK
-    override lateinit var acceptAllAb: ActionButtonK
-    override lateinit var showOptionsAb: ActionButtonK
-    override lateinit var rejectAllAb: ActionButtonK
-    override val actionsMap: MutableMap<Int, ActionButtonK> = mutableMapOf()
+    override lateinit var cancelAb: ActionButton
+    override lateinit var acceptAllAb: ActionButton
+    override lateinit var showOptionsAb: ActionButton
+    override lateinit var rejectAllAb: ActionButton
 
     override fun initialize() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -39,16 +40,16 @@ open class NativeMessageK : NativeMessageAbstract {
         }
         View.inflate(context, R.layout.sample_native_message_v6, this)
         if (!this::cancelAb.isInitialized) {
-            cancelAb = cancel_btn.toActionButtonK(MSG_CANCEL, ::onCancel, actionsMap)
+            cancelAb = cancel_btn.toActionButton(MSG_CANCEL, ::onCancel, actionsMap)
         }
         if (!this::acceptAllAb.isInitialized) {
-            acceptAllAb = accept_all_btn.toActionButtonK(ACCEPT_ALL, ::onAcceptAll, actionsMap)
+            acceptAllAb = accept_all_btn.toActionButton(ACCEPT_ALL, ::onAcceptAll, actionsMap)
         }
         if (!this::showOptionsAb.isInitialized) {
-            showOptionsAb = show_options_btn.toActionButtonK(SHOW_OPTIONS, ::onShowOptionsAb, actionsMap)
+            showOptionsAb = show_options_btn.toActionButton(SHOW_OPTIONS, ::onShowOptionsAb, actionsMap)
         }
         if (!this::rejectAllAb.isInitialized) {
-            rejectAllAb = reject_all_btn.toActionButtonK(REJECT_ALL, ::onRejectAll, actionsMap)
+            rejectAllAb = reject_all_btn.toActionButton(REJECT_ALL, ::onRejectAll, actionsMap)
         }
         title_tv.invisible()
         msg_body_tv.invisible()
@@ -61,7 +62,7 @@ open class NativeMessageK : NativeMessageAbstract {
         attr.title?.let { title_tv.config(it) }
         attr.body?.let { msg_body_tv.config(it) }
         attr.actions.forEach { actionDto ->
-            val s: ActionButtonK? = actionsMap[actionDto.choiceType]
+            val s: ActionButton? = actionsMap[actionDto.choiceType]
             actionDto.choiceId?.let { s?.choiceId = it.toString() }
             actionDto.choiceType?.let { s?.choiceType = it }
             s?.button?.let { btn ->
