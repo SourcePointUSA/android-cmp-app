@@ -5,7 +5,7 @@ import android.view.View
 import com.sourcepoint.cmplibrary.core.layout.NativeMessage
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageAttrs
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
-import com.sourcepoint.cmplibrary.core.layout.NativeMessageK
+import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageAbstract
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
@@ -96,7 +96,7 @@ internal class SpConsentLibImpl(
             { throwable -> pLogger.error(throwable.toConsentLibException()) }
         )
     }
-    override fun loadMessage(nativeMessage: NativeMessageK) {
+    override fun loadMessage(nativeMessage: NativeMessageAbstract) {
         checkMainThread("loadMessage")
         throwsExceptionIfClientNoSet()
 
