@@ -15,7 +15,6 @@ import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SPMessage
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageAbstract
-import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageCustom
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageK
 import com.sourcepoint.cmplibrary.core.layout.nat.createNativeMessage
 import com.sourcepoint.cmplibrary.creation.delegate.ConsentLibDelegate
@@ -82,8 +81,10 @@ class MainActivityV6 : AppCompatActivity() {
         super.onResume()
         Log.i(TAG, "init");
 //        consentLib.loadMessage()
-//        consentLib.loadMessage(buildNativeMessageK())
-        consentLib.loadMessage(buildNativeMessageLocal())
+        consentLib.loadMessage(buildNativeMessageK())
+//        val nm = buildNativeMessageLocal()
+//        consentLib.loadMessage(nm)
+
     }
 
     private fun buildNativeMessageK(): NativeMessageAbstract {
@@ -108,12 +109,12 @@ class MainActivityV6 : AppCompatActivity() {
 
     }
 
-    var view : View? = null
+    var localView : View? = null
     override fun onBackPressed() {
 
-        view?.let {
+        localView?.let {
             consentLib.removeView(it)
-            view = null
+            localView = null
         }?: kotlin.run {
             super.onBackPressed()
         }
@@ -168,15 +169,15 @@ class MainActivityV6 : AppCompatActivity() {
         override fun onConsentReady(consent: SPCCPAConsents) {
         }
 
-        override fun onConsentReady(c: SPGDPRConsent) {}
+        override fun onConsentReady(consent: SPGDPRConsent) {}
 
-        override fun onUIFinished(v: View) {
-           gdpr.removeView(v)
+        override fun onUIFinished(view: View) {
+           gdpr.removeView(view)
         }
 
-        override fun onUIReady(v: View) {
-            view = v
-            gdpr.showView(v)
+        override fun onUIReady(view: View) {
+            localView = view
+            gdpr.showView(view)
         }
 
         override fun onError(error: ConsentLibExceptionK) {

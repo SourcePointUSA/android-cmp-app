@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
-import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CONSENT_UUID_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
 import com.sourcepoint.cmplibrary.data.network.converter.toGDPR
@@ -67,8 +67,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         const val KEY_GDPR = "key_gdpr"
     }
 
-
-
     override val preference: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
@@ -88,7 +86,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             ?.toGDPR()
             ?: fail("Gdpr")
     }
-
 
     override fun saveTcData(deferredMap: DeferredMap) {
         val spEditor = preference.edit()

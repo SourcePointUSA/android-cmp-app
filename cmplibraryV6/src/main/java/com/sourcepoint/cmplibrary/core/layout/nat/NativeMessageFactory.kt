@@ -7,6 +7,8 @@ import android.widget.Button
 import com.sourcepoint.cmplibrary.core.layout.ActionButtonK
 import com.sourcepoint.cmplibrary.core.layout.invisible
 import com.sourcepoint.cmplibrary.core.layout.toActionButtonK
+import com.sourcepoint.cmplibrary.model.ActionType
+import kotlinx.android.synthetic.main.sample_native_message_v6.view.*
 
 fun createNativeMessage(
     activity: Activity,
@@ -17,7 +19,7 @@ fun createNativeMessage(
     show: Int,
     title: Int,
     body: Int
-) : NativeMessageAbstract {
+): NativeMessageAbstract {
 
     return object : NativeMessageCustom(activity) {
 
@@ -25,28 +27,28 @@ fun createNativeMessage(
         override lateinit var acceptAllAb: ActionButtonK
         override lateinit var showOptionsAb: ActionButtonK
         override lateinit var rejectAllAb: ActionButtonK
+        override val actionsMap: MutableMap<Int, ActionButtonK> = mutableMapOf()
 
-        override fun init() {
+        override fun initialize() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 id = View.generateViewId()
             }
             val groupView = View.inflate(context, layout, this)
 
             if (!this::cancelAb.isInitialized) {
-                cancelAb = groupView.findViewById<Button>(close).toActionButtonK(::onCancel)
+                cancelAb = cancel_btn.toActionButtonK(ActionType.MSG_CANCEL, ::onCancel)
             }
             if (!this::acceptAllAb.isInitialized) {
-                acceptAllAb = groupView.findViewById<Button>(accept).toActionButtonK(::onAcceptAll)
+                acceptAllAb = accept_all_btn.toActionButtonK(ActionType.ACCEPT_ALL, ::onAcceptAll)
             }
             if (!this::showOptionsAb.isInitialized) {
-                showOptionsAb = groupView.findViewById<Button>(show).toActionButtonK(::onShowOptionsAb)
+                showOptionsAb = show_options_btn.toActionButtonK(ActionType.SHOW_OPTIONS, ::onShowOptionsAb)
             }
             if (!this::rejectAllAb.isInitialized) {
-                rejectAllAb = groupView.findViewById<Button>(reject).toActionButtonK(::onRejectAll)
+                rejectAllAb = reject_all_btn.toActionButtonK(ActionType.REJECT_ALL, ::onRejectAll)
             }
             groupView.findViewById<Button>(title).invisible()
             groupView.findViewById<Button>(body).invisible()
         }
     }
-
 }

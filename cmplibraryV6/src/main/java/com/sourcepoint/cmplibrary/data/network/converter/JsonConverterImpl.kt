@@ -60,7 +60,7 @@ private class JsonConverterImpl : JsonConverter {
     override fun toNativeMessageRespK(body: String): Either<NativeMessageRespK> = check {
         val map: MutableMap<String, Any> = JSON.std.mapFrom(body)
         val bean: NativeMessageDto = JSON.std.beanFrom(NativeMessageDto::class.java, JSON.std.asString(map["msgJSON"]))
-        NativeMessageRespK(msgJSON = bean)
+        NativeMessageRespK(msg = bean)
     }
 
     override fun toNativeMessageDto(body: String): Either<NativeMessageDto> = check {

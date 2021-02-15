@@ -40,4 +40,7 @@ internal class MockService(
     override fun getAppliedLegislation(): String = ""
     override fun getCcpa(): Either<Ccpa> = Either.Left(RuntimeException())
     override fun getGdpr(): Either<Gdpr> = Either.Left(RuntimeException())
+
+    override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {
+    }
 }

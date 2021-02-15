@@ -4,7 +4,7 @@ import com.fasterxml.jackson.jr.ob.JSON
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertNull
-import com.sourcepoint.cmplibrary.core.layout.json.Style
+import com.sourcepoint.cmplibrary.core.layout.json.StyleDto
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.file2List
@@ -103,7 +103,7 @@ class JsonConverterImplTest {
     }
 
     fun checkStyle(
-        style: Style,
+        style: StyleDto,
         fontFamily: String,
         fontSize: Int,
         fontWeight: String,

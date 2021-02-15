@@ -2,8 +2,6 @@ package com.sourcepoint.cmplibrary
 
 import android.content.Context
 import android.view.View
-import com.sourcepoint.cmplibrary.core.layout.NativeMessage
-import com.sourcepoint.cmplibrary.core.layout.NativeMessageAttrs
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageAbstract
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
@@ -22,7 +20,7 @@ import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.model.toMessageReq
-import com.sourcepoint.cmplibrary.util.* //ktlint-disable
+import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 
 internal class SpConsentLibImpl(
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
@@ -76,39 +74,16 @@ internal class SpConsentLibImpl(
         )
     }
 
-    override fun loadMessage(nativeMessage: NativeMessage) {
-        checkMainThread("loadMessage")
-        throwsExceptionIfClientNoSet()
-
-        service.getNativeMessage(
-            campaign.toMessageReq(),
-            { messageResp ->
-                val jsonResult = messageResp.msgJSON
-                executor.executeOnMain {
-                    /** configuring onClickListener and set the parameters */
-                    nativeMessage.setAttributes(NativeMessageAttrs(jsonResult, pLogger))
-                    /** set the action callback */
-                    nativeMessage.setActionClient(nativeMsgClient)
-                    /** calling the client */
-                    spClient?.onUIReady(nativeMessage)
-                }
-            },
-            { throwable -> pLogger.error(throwable.toConsentLibException()) }
-        )
-    }
     override fun loadMessage(nativeMessage: NativeMessageAbstract) {
         checkMainThread("loadMessage")
         throwsExceptionIfClientNoSet()
 
-
-
         service.getNativeMessageK(
             campaign.toMessageReq(),
             { messageResp ->
-                val jsonResult = messageResp.msgJSON
                 executor.executeOnMain {
                     /** configuring onClickListener and set the parameters */
-                    nativeMessage.setAttributes(messageResp)
+                    nativeMessage.setAttributes(messageResp.msg)
                     /** set the action callback */
                     nativeMessage.setActionClient(nativeMsgClient)
                     /** calling the client */
