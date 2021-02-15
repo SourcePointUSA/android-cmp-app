@@ -57,7 +57,7 @@ class NativeMessageActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.i(TAG, "init");
-        buildGDPRConsentLib().run(buildNativeMessageConstraintLayout());
+        buildGDPRConsentLib().run(buildNativeMessage());
 
 
     }

@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.core.layout.attribute
 
-import java.util.*
+import java.util.* // ktlint-disable
 
 data class AttributeK(
     val text: String,

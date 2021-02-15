@@ -1,39 +1,50 @@
 package com.sourcepoint.cmplibrary.core.layout.json
 
 class NativeMessageDto {
-    var actions: List<Action>? = null
-    var body: Body? = null
-    var customFields: CustomFields? = null
+    var actions: List<ActionDto> = emptyList()
+    var body: TextViewConfigDto? = null
+    var customFields: CustomFieldsDto? = null
     var name: String? = null
-    var title: Title? = null
+    var title: TextViewConfigDto? = null
 }
 
-class Action {
+class ActionDto {
     var choiceId: Int? = null
     var choiceType: Int? = null
-    var customFields: CustomFields? = null
-    var style: Style? = null
+    var customFields: CustomFieldsDto? = null
+    var style: StyleDto? = null
     var text: String? = null
 }
 
-class Body {
-    var customFields: CustomFields? = null
-    var style: Style? = null
+fun ActionDto.toTextViewConfigDto() = TextViewConfigDto(
+    customFields = customFields,
+    style = style,
+    text = text
+)
+
+data class TextViewConfigDto(
+    var customFields: CustomFieldsDto? = null,
+    var style: StyleDto? = null,
     var text: String? = null
-}
+)
 
-class CustomFields
+class CustomFieldsDto
 
-class Style {
-    var backgroundColor: String? = null
-    var color: String? = null
-    var fontFamily: String? = null
-    var fontSize: Int? = null
+class StyleDto(
+    private var pBackgroundColor: String? = null,
+    var color: String? = null,
+    var fontFamily: String? = null,
+    var fontSize: Int? = null,
     var fontWeight: String? = null
-}
+) {
 
-class Title {
-    var customFields: CustomFields? = null
-    var style: Style? = null
-    var text: String? = null
+    var backgroundColor: String? = null
+        get() = field
+            ?.let { getSixDigitHexValue(it) }
+
+    private fun getSixDigitHexValue(colorString: String): String? {
+        return if (colorString.length == 4)
+            colorString.replace("#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])".toRegex(), "#$1$1$2$2$3$3")
+        else colorString
+    }
 }

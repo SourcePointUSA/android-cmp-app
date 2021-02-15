@@ -72,5 +72,5 @@ data class NativeMessageResp(
     val msgJSON: JSONObject
 )
 data class NativeMessageRespK(
-    val msgJSON: NativeMessageDto
+    val msg: NativeMessageDto
 )
