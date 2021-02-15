@@ -81,8 +81,8 @@ class MainActivityV6 : AppCompatActivity() {
         super.onResume()
         Log.i(TAG, "init");
 //        consentLib.loadMessage()
-//        consentLib.loadMessage(buildNativeMessageV6())
-        consentLib.loadMessage(buildNativeMessageV6Local())
+        consentLib.loadMessage(buildNativeMessageV6())
+//        consentLib.loadMessage(buildNativeMessageV6Local())
 
     }
 
@@ -100,8 +100,8 @@ class MainActivityV6 : AppCompatActivity() {
             layout = R.layout.custom_layout_cl,
             accept = R.id.accept_all_cl,
             reject = R.id.reject_all_cl,
-            body = R.id.body_cl,
-            title = R.id.title_cl,
+            pBody = R.id.body_cl,
+            pTitle = R.id.title_cl,
             cancel = R.id.cancel_cl,
             show = R.id.show_options_cl
         )
