@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Build
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import com.sourcepoint.cmplibrary.core.layout.model.ActionButton
 import com.sourcepoint.cmplibrary.core.layout.model.toActionButton
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
@@ -20,8 +21,8 @@ fun createCustomNativeMessage(
     accept: Int,
     reject: Int,
     show: Int,
-    title: Int,
-    body: Int
+    pTitle: Int,
+    pBody: Int
 ): NativeMessage {
 
     return object : NativeMessageCustomImpl(activity) {
@@ -30,6 +31,8 @@ fun createCustomNativeMessage(
         override lateinit var acceptAllAb: ActionButton
         override lateinit var showOptionsAb: ActionButton
         override lateinit var rejectAllAb: ActionButton
+        override lateinit var title: TextView
+        override lateinit var body: TextView
 
         override fun initialize() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -52,6 +55,12 @@ fun createCustomNativeMessage(
             if (!this::rejectAllAb.isInitialized) {
                 rejectAllAb = groupView.findViewById<Button>(reject)
                     .toActionButton(ActionType.REJECT_ALL, ::onRejectAll, visibilityType = View.VISIBLE)
+            }
+            if (!this::title.isInitialized) {
+                title = groupView.findViewById(pTitle)
+            }
+            if (!this::body.isInitialized) {
+                body = groupView.findViewById<Button>(pBody)
             }
         }
     }

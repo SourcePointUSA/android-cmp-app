@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import android.widget.TextView
 import com.example.cmplibrary.R
 import com.sourcepoint.cmplibrary.core.layout.* // ktlint-disable
 import com.sourcepoint.cmplibrary.core.layout.model.ActionButton
@@ -18,21 +19,21 @@ internal class NativeMessageDefaultImpl : NativeMessage {
     constructor(context: Context) : super(context) {
         initialize()
     }
-
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initialize()
     }
-
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initialize()
     }
 
     override lateinit var client: NativeMessageClient
-
     override lateinit var cancelAb: ActionButton
     override lateinit var acceptAllAb: ActionButton
     override lateinit var showOptionsAb: ActionButton
     override lateinit var rejectAllAb: ActionButton
+
+    override lateinit var title: TextView
+    override lateinit var body: TextView
 
     override fun initialize() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -51,8 +52,8 @@ internal class NativeMessageDefaultImpl : NativeMessage {
         if (!this::rejectAllAb.isInitialized) {
             rejectAllAb = reject_all_btn.toActionButton(REJECT_ALL, ::onRejectAll, actionsMap)
         }
-        title_tv.invisible()
-        msg_body_tv.invisible()
+        title = title_tv.apply { invisible() }
+        body = msg_body_tv.apply { invisible() }
     }
 
     /**
