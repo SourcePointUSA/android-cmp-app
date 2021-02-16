@@ -24,16 +24,16 @@ import com.sourcepoint.cmplibrary.model.toMessageReq
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 
 internal class SpConsentLibImpl(
-    private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     internal val campaign: Campaign,
     internal val pPrivacyManagerTab: PrivacyManagerTabK,
     internal val context: Context,
     internal val pLogger: Logger,
     internal val pJsonConverter: JsonConverter,
-    private val pConnectionManager: ConnectionManager,
     internal val service: Service,
+    internal val executor: ExecutorManager,
+    private val pConnectionManager: ConnectionManager,
     private val viewManager: ViewsManager,
-    private val executor: ExecutorManager
+    private val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 ) : SpConsentLib {
 
     override var spClient: SpClient? = null
@@ -155,7 +155,7 @@ internal class SpConsentLibImpl(
 
         override fun onError(view: View, error: Throwable) {
             pLogger.i("ConsentLibImpl", "js ===================== msg onError [$error]  ===========================")
-            throw error
+//            throw error
         }
 
         override fun onAction(view: View, actionData: String) {

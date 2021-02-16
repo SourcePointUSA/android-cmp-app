@@ -2,9 +2,6 @@ package com.sourcepoint.cmplibrary.core.layout.nat
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.Button
-import android.widget.RelativeLayout
-import android.widget.TextView
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.model.ActionButton
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto

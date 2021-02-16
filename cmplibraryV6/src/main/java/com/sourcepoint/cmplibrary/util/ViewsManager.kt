@@ -99,7 +99,8 @@ private class ViewsManagerImpl(
                 context = it,
                 connectionManager = connectionManager,
                 jsClientLib = jsReceiverDelegate,
-                logger = lib.pLogger
+                logger = lib.pLogger,
+                executorManager = lib.executor
             )
         }
     }

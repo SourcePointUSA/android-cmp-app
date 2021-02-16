@@ -52,6 +52,15 @@ fun makeConsentLib(
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 
     return SpConsentLibImpl(
-        urlManager, account, privacyManagerTab, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager
+        urlManager = urlManager,
+        campaign = account,
+        pPrivacyManagerTab = privacyManagerTab,
+        context = appCtx,
+        pLogger = logger,
+        pJsonConverter = jsonConverter,
+        pConnectionManager = connManager,
+        service = service,
+        viewManager = viewManager,
+        executor = execManager
     )
 }
