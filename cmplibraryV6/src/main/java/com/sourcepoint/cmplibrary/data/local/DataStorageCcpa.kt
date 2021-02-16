@@ -13,6 +13,7 @@ internal interface DataStorageCcpa {
     val preference: SharedPreferences
     fun saveCcpa(ccpa: Ccpa)
     fun getCcpa(): Either<Ccpa>
+    var ccpaApplies: Boolean
     companion object
 }
 
@@ -24,6 +25,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
 
     companion object {
         const val KEY_CCPA = "key_ccpa"
+        const val KEY_CCPA_APPLIES = "key_ccpa_applies"
     }
 
     override val preference: SharedPreferences by lazy {
@@ -45,6 +47,15 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             ?.toCCPA()
             ?: fail("Ccpa")
     }
+
+    override var ccpaApplies: Boolean
+        get() = preference.getBoolean(KEY_CCPA_APPLIES, false)
+        set(value) {
+            preference
+                .edit()
+                .putBoolean(KEY_CCPA_APPLIES, value)
+                .apply()
+        }
 
     private fun fail(param: String): Nothing = throw RuntimeException("$param not fund in local storage.")
 }

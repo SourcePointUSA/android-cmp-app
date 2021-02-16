@@ -2,9 +2,9 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
+import com.sourcepoint.cmplibrary.data.network.model.GDPRConsent
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 import com.sourcepoint.cmplibrary.data.network.model.MessageGdprResp
-import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
 import org.json.JSONObject
 
 internal fun DeferredMap.toGDPR(): Gdpr? {
@@ -51,7 +51,7 @@ internal fun DeferredMap.toMessageGdprResp(): MessageGdprResp {
     )
 }
 
-internal fun DeferredMap.toGDPRUserConsent(): SPGDPRConsent {
+internal fun DeferredMap.toGDPRUserConsent(): GDPRConsent {
 
     val userConsentMap = (this as? DeferredMap) ?: failParam("GDPRUserConsent")
 
@@ -78,7 +78,7 @@ internal fun DeferredMap.toGDPRUserConsent(): SPGDPRConsent {
     val vendorsGrants = (userConsentMap["grants"] as? DeferredMap) ?: DeferredMap(false)
     val euconsent = (userConsentMap["euconsent"] as? String) ?: ""
 
-    return SPGDPRConsent(
+    return GDPRConsent(
         acceptedCategories = acceptedCategories,
         acceptedVendors = acceptedVendors,
         legIntCategories = legIntCategories,
