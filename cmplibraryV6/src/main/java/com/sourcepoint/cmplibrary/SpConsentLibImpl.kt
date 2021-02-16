@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
+import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageInternal
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
@@ -83,9 +84,9 @@ internal class SpConsentLibImpl(
             { messageResp ->
                 executor.executeOnMain {
                     /** configuring onClickListener and set the parameters */
-                    nativeMessage.setAttributes(messageResp.msg)
+                    (nativeMessage as? NativeMessageInternal)?.setAttributes(messageResp.msg)
                     /** set the action callback */
-                    nativeMessage.setActionClient(nativeMsgClient)
+                    (nativeMessage as? NativeMessageInternal)?.setActionClient(nativeMsgClient)
                     /** calling the client */
                     spClient?.onUIReady(nativeMessage)
                 }

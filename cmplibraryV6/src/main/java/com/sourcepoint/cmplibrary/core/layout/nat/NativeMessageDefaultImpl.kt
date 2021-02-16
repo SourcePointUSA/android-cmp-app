@@ -15,7 +15,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.toTextViewConfigDto
 import com.sourcepoint.cmplibrary.model.ActionType.* // ktlint-disable
 import kotlinx.android.synthetic.main.sample_native_message_v6.view.* // ktlint-disable
 
-internal class NativeMessageDefaultImpl : NativeMessage {
+internal class NativeMessageDefaultImpl : NativeMessageInternal {
 
     constructor(context: Context) : super(context) {
         initialize()

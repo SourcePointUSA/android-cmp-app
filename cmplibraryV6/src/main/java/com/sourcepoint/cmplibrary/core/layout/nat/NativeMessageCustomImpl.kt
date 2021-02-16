@@ -15,7 +15,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.toTextViewConfigDto
 import com.sourcepoint.cmplibrary.model.ActionType
 import kotlinx.android.synthetic.main.sample_native_message_v6.view.*
 
-internal abstract class NativeMessageCustomImpl : NativeMessage {
+internal abstract class NativeMessageCustomImpl : NativeMessageInternal {
 
     constructor(context: Context) : super(context) {
         initialize()
