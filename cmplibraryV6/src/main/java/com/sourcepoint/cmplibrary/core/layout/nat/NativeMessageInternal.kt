@@ -11,7 +11,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.ActionType
 
-abstract class NativeMessageInternal : RelativeLayout {
+abstract class NativeMessageInternal : NativeMessage {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -22,14 +22,6 @@ abstract class NativeMessageInternal : RelativeLayout {
     abstract var acceptAllAb: ActionButton
     abstract var showOptionsAb: ActionButton
     abstract var rejectAllAb: ActionButton
-
-    abstract var title: TextView
-    abstract var body: TextView
-
-    abstract var cancelBtn: Button
-    abstract var acceptAllBtn: Button
-    abstract var showOptionsBtn: Button
-    abstract var rejectAllBtn: Button
 
     internal val actionsMap: MutableMap<Int, ActionButton> = mutableMapOf()
 
