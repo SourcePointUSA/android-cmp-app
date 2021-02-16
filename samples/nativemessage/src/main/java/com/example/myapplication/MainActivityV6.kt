@@ -77,8 +77,8 @@ class MainActivityV6 : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.i(TAG, "init");
-        consentLib.loadMessage(buildNativeMessageV6())
-//        consentLib.loadMessage(buildNativeMessageV6Local())
+//        consentLib.loadMessage(buildNativeMessageV6())
+        consentLib.loadMessage(buildNativeMessageV6Local())
     }
 
     override fun onDestroy() {

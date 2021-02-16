@@ -11,7 +11,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.ActionType
 
-abstract class NativeMessage : RelativeLayout {
+abstract class NativeMessageInternal : RelativeLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -43,21 +43,21 @@ abstract class NativeMessage : RelativeLayout {
 
     internal open fun onCancel(ab: ActionButton) {
         val action = ConsentAction(actionType = ActionType.MSG_CANCEL, choiceId = ab.choiceId, requestFromPm = false, saveAndExitVariables = null)
-        client.onClickCancel(this@NativeMessage, action)
+        client.onClickCancel(this@NativeMessageInternal, action)
     }
 
     internal open fun onAcceptAll(ab: ActionButton) {
         val action = ConsentAction(actionType = ActionType.ACCEPT_ALL, choiceId = ab.choiceId, requestFromPm = false, saveAndExitVariables = null)
-        client.onClickAcceptAll(this@NativeMessage, action)
+        client.onClickAcceptAll(this@NativeMessageInternal, action)
     }
 
     internal open fun onRejectAll(ab: ActionButton) {
         val action = ConsentAction(actionType = ActionType.REJECT_ALL, choiceId = ab.choiceId, requestFromPm = false, saveAndExitVariables = null)
-        client.onClickRejectAll(this@NativeMessage, action)
+        client.onClickRejectAll(this@NativeMessageInternal, action)
     }
 
     internal open fun onShowOptionsAb(ab: ActionButton) {
         val action = ConsentAction(actionType = ActionType.SHOW_OPTIONS, choiceId = ab.choiceId, requestFromPm = false, saveAndExitVariables = null)
-        client.onClickShowOptions(this@NativeMessage, action)
+        client.onClickShowOptions(this@NativeMessageInternal, action)
     }
 }
