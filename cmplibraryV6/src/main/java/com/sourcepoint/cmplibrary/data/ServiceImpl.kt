@@ -2,9 +2,7 @@ package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
-import com.sourcepoint.cmplibrary.data.network.model.MessageReq
-import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
-import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 
 /**
  * Factory method to create an instance of a [Service] using its implementation
@@ -26,8 +24,13 @@ private class ServiceImpl(
         nc.getMessage(
             messageReq,
             { messageResp ->
+                messageResp.campaigns.forEach {
+                    when (it) {
+                        is Gdpr -> ds.saveGdpr(it)
+                        is Ccpa -> ds.saveCcpa(it)
+                    }
+                }
                 pSuccess(messageResp)
-//                saveAppliedLegislation(messageResp.legislation.name)
             },
             pError
         )

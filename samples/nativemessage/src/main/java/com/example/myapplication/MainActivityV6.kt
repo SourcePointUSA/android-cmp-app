@@ -17,7 +17,6 @@ import com.sourcepoint.cmplibrary.core.layout.createCustomNativeMessage
 import com.sourcepoint.cmplibrary.core.layout.createDefaultNativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.creation.delegate.ConsentLibDelegate
-import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
@@ -121,7 +120,7 @@ class MainActivityV6 : AppCompatActivity() {
             gdpr.showView(view)
         }
 
-        override fun onError(error: ConsentLibExceptionK) {
+        override fun onError(error: Throwable) {
             error.printStackTrace()
         }
 

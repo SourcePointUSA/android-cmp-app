@@ -14,6 +14,7 @@ internal interface HttpUrlManager {
     fun urlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl
     fun urlURenderingAppProd(): HttpUrl
+    fun urlURenderingAppStage(): HttpUrl
     fun urlURenderingAppLocal(): HttpUrl
 }
 
@@ -25,6 +26,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
     private const val message = "wrapper/v1/unified/message"
     private const val spHost = "cdn.privacy-mgmt.com"
     private const val spHostProd = "notice.sp-prod.net"
+    private const val spHostStage = "notice.sp-stage.net"
 
     val inAppLocalUrlMessage: HttpUrl = HttpUrl.Builder()
         .scheme("http")
@@ -103,6 +105,14 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         return HttpUrl.Builder()
             .scheme("https")
             .host(spHostProd)
+            .addQueryParameter("preload_message", "true")
+            .build()
+    }
+
+    override fun urlURenderingAppStage(): HttpUrl {
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(spHostStage)
             .addQueryParameter("preload_message", "true")
             .build()
     }

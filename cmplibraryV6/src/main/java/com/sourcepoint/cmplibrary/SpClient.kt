@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary
 
 import android.view.View
-import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.SPConsents
 
@@ -18,7 +17,7 @@ interface SpClient {
     fun onAction(view: View, actionType: ActionType)
     fun onUIFinished(view: View)
     fun onConsentReady(consent: SPConsents)
-    fun onError(error: ConsentLibExceptionK)
+    fun onError(error: Throwable)
 }
 
 class SPMessage

@@ -79,7 +79,7 @@ public class MainActivityV6 extends AppCompatActivity {
         }
 
         @Override
-        public void onError(@NotNull ConsentLibExceptionK error) {
+        public void onError(@NotNull Throwable error) {
             Log.e(TAG, "Something went wrong");
         }
 
