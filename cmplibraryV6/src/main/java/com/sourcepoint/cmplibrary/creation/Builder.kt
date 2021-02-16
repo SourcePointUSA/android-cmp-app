@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
+import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.campaign.create
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.create
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -90,6 +92,7 @@ class Builder {
         val viewManager = ViewsManager.create(activityWeakRef, connManager)
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
+        val campaignManager: CampaignManager = CampaignManager.create(dataStorage)
 
         return SpConsentLibImpl(
             urlManager = urlManager,
@@ -101,7 +104,9 @@ class Builder {
             pConnectionManager = connManager,
             service = service,
             viewManager = viewManager,
-            executor = execManager
+            executor = execManager,
+            dataStorage = dataStorage,
+            campaignManager = campaignManager
         )
 
 //        return when (clazz) {

@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.exception.GenericSDKException
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.Campaign
-import com.sourcepoint.cmplibrary.model.toMessageReq
+import com.sourcepoint.cmplibrary.model.toMessageReqMock
 import com.sourcepoint.cmplibrary.stub.MockNetworkClient
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -64,7 +64,7 @@ class ServiceImplTest {
         every { errorMock(any()) }.answers { }
 
         val sut = Service.create(nc, ds)
-        sut.getMessage(nativeCampaign.toMessageReq(), successMock, errorMock)
+        sut.getMessage(nativeCampaign.toMessageReqMock(), successMock, errorMock)
 
         verify(exactly = 0) { ds.saveAppliedLegislation(Legislation.GDPR.name) }
         verify(exactly = 0) { successMock(any()) }

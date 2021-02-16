@@ -2,15 +2,17 @@ package com.sourcepoint.cmplibrary
 
 import android.content.Context
 import android.view.View
+import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageInternal
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
+import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
-import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.GenericSDKException
@@ -20,7 +22,7 @@ import com.sourcepoint.cmplibrary.exception.RenderingAppException
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
-import com.sourcepoint.cmplibrary.model.toMessageReq
+import com.sourcepoint.cmplibrary.model.toMessageReqMock
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 
 internal class SpConsentLibImpl(
@@ -33,6 +35,8 @@ internal class SpConsentLibImpl(
     internal val executor: ExecutorManager,
     private val pConnectionManager: ConnectionManager,
     private val viewManager: ViewsManager,
+    private val dataStorage: DataStorage,
+    private val campaignManager: CampaignManager,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 ) : SpConsentLib {
 
@@ -44,7 +48,7 @@ internal class SpConsentLibImpl(
         checkMainThread("loadMessage")
         throwsExceptionIfClientNoSet()
         service.getMessage(
-            messageReq = campaign.toMessageReq(),
+            messageReq = campaign.toMessageReqMock(),
             pSuccess = { messageResp -> },
             pError = { throwable -> }
         )
@@ -57,15 +61,15 @@ internal class SpConsentLibImpl(
         if (viewManager.isViewInLayout) return
 
         service.getMessage(
-            messageReq = campaign.toMessageReq(),
+            messageReq = campaign.toMessageReqMock(),
             pSuccess = { messageResp ->
                 executor.executeOnMain {
                     val webView = viewManager.createWebView(this, JSReceiverDelegate())
                     (webView as? ConsentWebView)?.let {
-                        it.settings
+                        // TODO we have to choose which one to show, GDPR or CCPA?
                         val mess = messageResp.campaigns.first().message
 //                        val mess = messageResp.campaigns.last().message
-                        it.loadConsentUIFromUrl(urlManager.urlURenderingAppLocal(), mess!!)
+                        it.loadConsentUIFromUrl(urlManager.urlURenderingAppStage(), mess!!)
                     } ?: throw RuntimeException("webView is not a ConsentWebView")
                 }
             },
@@ -80,7 +84,7 @@ internal class SpConsentLibImpl(
         throwsExceptionIfClientNoSet()
 
         service.getNativeMessageK(
-            campaign.toMessageReq(),
+            campaign.toMessageReqMock(),
             { messageResp ->
                 executor.executeOnMain {
                     /** configuring onClickListener and set the parameters */
@@ -98,13 +102,13 @@ internal class SpConsentLibImpl(
     override fun loadGDPRPrivacyManager() {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientNoSet()
-        val webView = viewManager.createWebView(this, JSReceiverDelegate())
-        val pmConfig = PmUrlConfig(
-            consentUUID = "89b2d14b-70ee-4344-8cc2-1b7b281d0f2d",
-            siteId = "7639",
-            messageId = campaign.pmId
-        )
-        webView?.loadConsentUIFromUrl(urlManager.urlPm(pmConfig))
+        val pmConfig = campaignManager.getPmGDPRConfig()
+        pmConfig
+            .map {
+                val webView = viewManager.createWebView(this, JSReceiverDelegate())
+                webView?.loadConsentUIFromUrl(urlManager.urlPm(it))
+            }
+            .executeOnLeft { fail("GDPR Privacy Manager config is missing!!") }
     }
 
     override fun loadCCPAPrivacyManager() {
@@ -131,8 +135,8 @@ internal class SpConsentLibImpl(
     inner class JSReceiverDelegate : JSClientLib {
         //
         override fun onConsentUIReady(view: View, isFromPM: Boolean) {
-            pLogger.i("ConsentLibImpl", "js ===================== msg [onConsentUIReady]  ===========================")
-            view.let { viewManager.showView(it) } ?: throw GenericSDKException(description = "WebView is null")
+            // TODO what consent is ready? GDPR or CCPA?
+            view.let { viewManager.showView(it) }
         }
 
         override fun log(view: View, tag: String?, msg: String?) {
@@ -155,10 +159,11 @@ internal class SpConsentLibImpl(
 
         override fun onError(view: View, error: Throwable) {
             pLogger.i("ConsentLibImpl", "js ===================== msg onError [$error]  ===========================")
-//            throw error
+            spClient?.onError(error)
         }
 
         override fun onAction(view: View, actionData: String) {
+            /** spClient is called from [onActionFromWebViewClient] */
             pJsonConverter
                 .toConsentAction(actionData)
                 .map { onActionFromWebViewClient(it, view) }

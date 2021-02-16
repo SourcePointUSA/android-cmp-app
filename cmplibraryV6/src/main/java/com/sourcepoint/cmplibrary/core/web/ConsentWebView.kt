@@ -80,7 +80,10 @@ internal class ConsentWebView(
             /**
              * adding the parameter [sp.loadMessage] needed by the webpage to trigger the loadMessage event
              */
-            val obj = message.put("name", "sp.loadMessage")
+            val obj = message.apply {
+                put("name", "sp.loadMessage")
+                put("fromNativeSDK", true)
+            }
             view.loadUrl("javascript: window.postMessage($obj);")
         }
         loadUrl(url.toString())

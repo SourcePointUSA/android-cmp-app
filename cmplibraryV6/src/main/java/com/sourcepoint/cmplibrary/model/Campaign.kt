@@ -9,7 +9,7 @@ data class Campaign(
     @JvmField val pmId: String
 )
 
-fun Campaign.toMessageReq(): MessageReq {
+fun Campaign.toMessageReqMock(): MessageReq {
 
     return MessageReq(
         requestUUID = "test",

@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
+import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.campaign.create
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.create
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -16,6 +18,7 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.util.ConnectionManager
@@ -50,6 +53,9 @@ fun makeConsentLib(
     val viewManager = ViewsManager.create(WeakReference<Activity>(context), connManager)
     val execManager = ExecutorManager.create(appCtx)
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
+    val campaignManager: CampaignManager = CampaignManager.create(dataStorage).apply {
+        addCampaign(Legislation.GDPR, account)
+    }
 
     return SpConsentLibImpl(
         urlManager = urlManager,
@@ -61,6 +67,8 @@ fun makeConsentLib(
         pConnectionManager = connManager,
         service = service,
         viewManager = viewManager,
-        executor = execManager
+        executor = execManager,
+        dataStorage = dataStorage,
+        campaignManager = campaignManager
     )
 }
