@@ -2,8 +2,8 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
+import com.sourcepoint.cmplibrary.data.network.model.CCPAConsent
 import com.sourcepoint.cmplibrary.data.network.model.Ccpa
-import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsents
 import org.json.JSONObject
 
 internal fun DeferredMap.toCCPA(): Ccpa? {
@@ -39,7 +39,7 @@ internal fun MutableMap<String, Any>.toCCPA(): Ccpa? {
     }
 }
 
-internal fun DeferredMap.toCCPAUserConsent(): SPCCPAConsents {
+internal fun DeferredMap.toCCPAUserConsent(): CCPAConsent {
     val userConsentMap = (this as? DeferredMap) ?: failParam("CCPAUserConsent")
 
     val rejectedCategories = (userConsentMap["rejectedCategories"] as? Iterable<Any?>)
@@ -55,7 +55,7 @@ internal fun DeferredMap.toCCPAUserConsent(): SPCCPAConsents {
 
     val uspstring = (userConsentMap["uspstring"] as? String) ?: ""
 
-    return SPCCPAConsents(
+    return CCPAConsent(
         rejectedCategories = rejectedCategories,
         rejectedVendors = rejectedVendors,
         status = status,

@@ -13,6 +13,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPA
 import com.sourcepoint.cmplibrary.data.network.converter.toGDPR
+import com.sourcepoint.cmplibrary.util.userConsents
 import org.junit.Test
 import org.junit.runner.RunWith
 

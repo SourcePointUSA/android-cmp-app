@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
-import com.sourcepoint.cmplibrary.exception.Legislation
 
 internal fun String.toUnifiedMessageRespDto(): UnifiedMessageResp {
     val map: MutableMap<String, Any> = JSON.std.mapFrom(this)
@@ -15,9 +14,12 @@ internal fun String.toUnifiedMessageRespDto(): UnifiedMessageResp {
     return UnifiedMessageResp(list)
 }
 
-internal fun DeferredMap.toUserConsent(legislation: Legislation): SpUserConsent {
-    return when (legislation) {
-        Legislation.GDPR -> this.toGDPRUserConsent()
-        Legislation.CCPA -> this.toCCPAUserConsent()
-    }
-}
+// internal fun DeferredMap.toUserConsent(legislation: Legislation): SpConsent {
+//    SpConsent(
+//
+//    )
+//    return when (legislation) {
+//        Legislation.GDPR -> this.toGDPRUserConsent()
+//        Legislation.CCPA -> this.toCCPAUserConsent()
+//    }
+// }

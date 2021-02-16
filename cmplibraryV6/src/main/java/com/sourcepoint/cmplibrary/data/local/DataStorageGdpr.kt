@@ -9,6 +9,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_K
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CONSENT_UUID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
 import com.sourcepoint.cmplibrary.data.network.converter.toGDPR
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
@@ -16,7 +17,11 @@ import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 
 internal interface DataStorageGdpr {
+
     val preference: SharedPreferences
+
+    var gdprApplies: Boolean
+
     fun saveGdpr(gdpr: Gdpr)
     fun getGdpr(): Either<Gdpr>
 
@@ -54,6 +59,7 @@ internal interface DataStorageGdpr {
         const val DEFAULT_META_DATA = "{}"
         val DEFAULT_AUTH_ID: String? = null
         const val IABTCF_KEY_PREFIX = "IABTCF_"
+        const val KEY_GDPR_APPLIES = "key_ccpa_applies"
     }
 }
 
@@ -70,6 +76,15 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     override val preference: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
+
+    override var gdprApplies: Boolean
+        get() = preference.getBoolean(KEY_GDPR_APPLIES, false)
+        set(value) {
+            preference
+                .edit()
+                .putBoolean(KEY_GDPR_APPLIES, value)
+                .apply()
+        }
 
     override fun saveGdpr(gdpr: Gdpr) {
 

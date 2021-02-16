@@ -43,4 +43,7 @@ internal class MockService(
 
     override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {
     }
+
+    override var gdprApplies: Boolean = false
+    override var ccpaApplies: Boolean = false
 }
