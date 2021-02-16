@@ -92,16 +92,16 @@ class Builder {
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 
         return SpConsentLibImpl(
-            urlManager,
-            account,
-            pmTab,
-            appCtx,
-            logger,
-            jsonConverter,
-            connManager,
-            service,
-            viewManager,
-            execManager
+            urlManager = urlManager,
+            campaign = account,
+            pPrivacyManagerTab = pmTab,
+            context = appCtx,
+            pLogger = logger,
+            pJsonConverter = jsonConverter,
+            pConnectionManager = connManager,
+            service = service,
+            viewManager = viewManager,
+            executor = execManager
         )
 
 //        return when (clazz) {

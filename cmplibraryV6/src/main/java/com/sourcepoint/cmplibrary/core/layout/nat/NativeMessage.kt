@@ -5,11 +5,6 @@ import android.util.AttributeSet
 import android.widget.Button
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
-import com.sourcepoint.cmplibrary.core.layout.model.ActionButton
-import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
-import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.ActionType
 
 abstract class NativeMessage : RelativeLayout {
 
@@ -23,5 +18,4 @@ abstract class NativeMessage : RelativeLayout {
     abstract var acceptAllBtn: Button
     abstract var showOptionsBtn: Button
     abstract var rejectAllBtn: Button
-
 }

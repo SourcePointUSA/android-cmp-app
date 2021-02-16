@@ -79,7 +79,8 @@ class MainActivityV6 : AppCompatActivity() {
         Log.i(TAG, "init");
         val nm = buildNativeMessageV6()
 //        val nm = buildNativeMessageV6Local()
-        consentLib.loadMessage(nm)
+//        consentLib.loadMessage(nm)
+        consentLib.loadMessage()
     }
 
     override fun onDestroy() {
