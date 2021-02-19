@@ -92,6 +92,7 @@ internal class ConsentWebView(
 
     override fun loadConsentUIFromUrl(url: HttpUrl): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
+        spWebViewClient.onPageFinishedLambda = { _, _ -> }
         loadUrl(url.toString())
         true
     }
