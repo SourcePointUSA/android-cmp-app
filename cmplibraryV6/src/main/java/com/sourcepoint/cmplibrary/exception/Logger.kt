@@ -12,6 +12,14 @@ interface Logger {
     fun error(e: ConsentLibExceptionK)
 
     /**
+     * Send an {@link #ERROR} log message.
+     * @param tag Used to identify the source of a log message.  It usually identifies
+     *        the class or activity where the log call occurs.
+     * @param msg The message you would like logged.
+     */
+    fun e(tag: String, msg: String)
+
+    /**
      * The [i] method receives contains the logic to communicate with the server
      * it is used only in debug
      * @param tag Used to identify the source of a log message.

@@ -51,7 +51,7 @@ private class ErrorMessageManagerImpl(
     val legislation: Legislation = Legislation.GDPR
 ) : ErrorMessageManager {
     override fun build(exception: ConsentLibExceptionK): String {
-        val campaign: CampaignTemplate? = campaignManager.getAppliedCampaign().getOrNull()
+        val campaign: CampaignTemplate? = campaignManager.getAppliedCampaign().getOrNull()?.second
         return """
             {
                 "code" : "${exception.code.code}",

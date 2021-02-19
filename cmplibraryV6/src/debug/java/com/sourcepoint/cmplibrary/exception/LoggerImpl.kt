@@ -50,11 +50,13 @@ private class LoggerImpl(
     val info: (tag: String, msg: String) -> Unit = { tag, msg -> Log.i(tag, msg) },
     val debug: (tag: String, msg: String) -> Unit = { tag, msg -> Log.d(tag, msg) },
     val verbose: (tag: String, msg: String) -> Unit = { tag, msg -> Log.v(tag, msg) },
+    val pError: (tag: String, msg: String) -> Unit = { tag, msg -> Log.e(tag, msg) },
     val networkClient: OkHttpClient,
     val errorMessageManager: ErrorMessageManager,
     val url: String
 ) : Logger {
     override fun error(e: ConsentLibExceptionK) { /* No log in debug */ }
+    override fun e(tag: String, msg: String) = pError(tag, msg)
     override fun i(tag: String, msg: String) = info(tag, msg)
     override fun d(tag: String, msg: String) = debug(tag, msg)
     override fun v(tag: String, msg: String) = verbose(tag, msg)

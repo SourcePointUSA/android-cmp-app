@@ -6,10 +6,10 @@ import android.preference.PreferenceManager
 import com.fasterxml.jackson.jr.ob.JSON
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
-import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CONSENT_UUID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_CONSENT_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
@@ -35,7 +35,7 @@ internal interface DataStorageGdpr {
     fun saveConsentUuid(value: String)
     fun saveAppliedLegislation(value: String)
     fun saveGdprConsentResp(value: String)
-    fun saveCcpaConsentResp(value: String)
+    fun saveGdprMessage(value: String)
 
     /** fetch data */
     fun getTcData(): DeferredMap
@@ -45,7 +45,7 @@ internal interface DataStorageGdpr {
     fun getConsentUuid(): String
     fun getAppliedLegislation(): String
     fun getGdprConsentResp(): String
-    fun getCcpaConsentResp(): String
+    fun getGdprMessage(): String?
 
     fun clearInternalData()
     fun clearAll()
@@ -65,9 +65,9 @@ internal interface DataStorageGdpr {
         const val DEFAULT_META_DATA = "{}"
         val DEFAULT_AUTH_ID: String? = null
         const val IABTCF_KEY_PREFIX = "IABTCF_"
-        const val KEY_GDPR_APPLIES = "key_ccpa_applies"
+        const val KEY_GDPR_APPLIES = "key_gdpr_applies"
         const val GDPR_CONSENT_RESP = "gdpr_consent_resp"
-        const val CCPA_CONSENT_RESP = "ccpa_consent_resp"
+        const val GDPR_JSON_MESSAGE = "gdpr_json_message"
     }
 }
 
@@ -160,10 +160,10 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .apply()
     }
 
-    override fun saveCcpaConsentResp(value: String) {
+    override fun saveGdprMessage(value: String) {
         preference
             .edit()
-            .putString(CCPA_CONSENT_RESP, value)
+            .putString(GDPR_JSON_MESSAGE, value)
             .apply()
     }
 
@@ -207,8 +207,8 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         return preference.getString(GDPR_CONSENT_RESP, "")!!
     }
 
-    override fun getCcpaConsentResp(): String {
-        return preference.getString(CCPA_CONSENT_RESP, "")!!
+    override fun getGdprMessage(): String? {
+        return preference.getString(GDPR_JSON_MESSAGE, null)
     }
 
     override fun clearInternalData() {

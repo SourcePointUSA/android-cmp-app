@@ -10,10 +10,18 @@ import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 
 internal interface DataStorageCcpa {
+
     val preference: SharedPreferences
-    fun saveCcpa(ccpa: Ccpa)
-    fun getCcpa(): Either<Ccpa>
     var ccpaApplies: Boolean
+
+    fun saveCcpa(ccpa: Ccpa)
+    fun saveCcpaConsentResp(value: String)
+    fun saveCcpaMessage(value: String)
+
+    fun getCcpa(): Either<Ccpa>
+    fun getCcpaConsentResp(): String
+    fun getCcpaMessage(): String?
+
     companion object
 }
 
@@ -26,6 +34,8 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
     companion object {
         const val KEY_CCPA = "key_ccpa"
         const val KEY_CCPA_APPLIES = "key_ccpa_applies"
+        const val CCPA_CONSENT_RESP = "ccpa_consent_resp"
+        const val CCPA_JSON_MESSAGE = "ccpa_json_message"
     }
 
     override val preference: SharedPreferences by lazy {
@@ -56,6 +66,28 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
                 .putBoolean(KEY_CCPA_APPLIES, value)
                 .apply()
         }
+
+    override fun saveCcpaConsentResp(value: String) {
+        preference
+            .edit()
+            .putString(CCPA_CONSENT_RESP, value)
+            .apply()
+    }
+
+    override fun saveCcpaMessage(value: String) {
+        preference
+            .edit()
+            .putString(CCPA_JSON_MESSAGE, value)
+            .apply()
+    }
+
+    override fun getCcpaConsentResp(): String {
+        return preference.getString(CCPA_CONSENT_RESP, "")!!
+    }
+
+    override fun getCcpaMessage(): String? {
+        return preference.getString(CCPA_JSON_MESSAGE, null)
+    }
 
     private fun fail(param: String): Nothing = throw RuntimeException("$param not fund in local storage.")
 }
