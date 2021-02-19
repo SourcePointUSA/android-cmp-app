@@ -38,7 +38,7 @@ private class ConsentManagerImpl(
 
     override fun buildGdprConsentReq(action: ConsentAction): Either<JSONObject> = check {
         campaignManager
-            .getCampaign(Legislation.GDPR)
+            .getCampaignTemplate(Legislation.GDPR)
             .flatMap { campaign -> dataStorage.getGdpr().map { Pair(campaign, it) } }
             .map { pair ->
                 val gdpr = pair.first

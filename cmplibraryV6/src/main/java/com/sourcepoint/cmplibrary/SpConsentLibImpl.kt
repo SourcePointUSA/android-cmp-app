@@ -10,9 +10,7 @@ import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageInternal
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
-import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
@@ -33,7 +31,6 @@ internal class SpConsentLibImpl(
     internal val executor: ExecutorManager,
     private val pConnectionManager: ConnectionManager,
     private val viewManager: ViewsManager,
-    private val dataStorage: DataStorage,
     private val campaignManager: CampaignManager,
     private val consentManager: ConsentManager,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton
@@ -64,12 +61,17 @@ internal class SpConsentLibImpl(
             pSuccess = { messageResp ->
                 executor.executeOnMain {
                     val webView = viewManager.createWebView(this, JSReceiverDelegate())
-                    (webView as? ConsentWebView)?.let {
-                        // TODO we have to choose which one to show, GDPR or CCPA?
-                        val mess = messageResp.campaigns.find { m -> m.message != null }!!.message
-                        if (!consentManager.hasGdprConsent()) {
-                            it.loadConsentUIFromUrl(urlManager.urlURenderingAppStage(), mess!!)
-                        }
+                    (webView as? ConsentWebView)?.let { wv ->
+                        messageResp
+                            .campaigns
+                            .mapNotNull { it.message }
+                            .firstOrNull()
+                            ?.let { jsonMessages ->
+                                if (!consentManager.hasGdprConsent()) {
+                                    wv.loadConsentUIFromUrl(urlManager.urlURenderingAppStage(), jsonMessages)
+                                }
+                            }
+                            ?: run { logMess("{message json} is null for all the legislations") }
                     } ?: throw RuntimeException("webView is not a ConsentWebView")
                 }
             },
@@ -108,7 +110,7 @@ internal class SpConsentLibImpl(
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
                 webView?.loadConsentUIFromUrl(urlManager.urlPm(it))
             }
-            .executeOnLeft { fail("GDPR Privacy Manager config is missing!!") }
+            .executeOnLeft { logMess("PmUrlConfig is null") }
     }
 
     override fun loadCCPAPrivacyManager() {
@@ -140,25 +142,22 @@ internal class SpConsentLibImpl(
         }
 
         override fun log(view: View, tag: String?, msg: String?) {
-            pLogger.i("ConsentLibImpl", "js =================== $msg")
+            logMess("$tag $msg")
         }
 
         override fun log(view: View, msg: String?) {
-            pLogger.i("ConsentLibImpl", "js =================== $msg")
+            logMess("$msg")
         }
 
         override fun onError(view: View, errorMessage: String) {
-            pLogger.i("ConsentLibImpl", "js ===================== msg errorMessage [$errorMessage]  ===========================")
             spClient?.onError(GenericSDKException(description = errorMessage))
             pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
         }
 
         override fun onNoIntentActivitiesFoundFor(view: View, url: String) {
-            pLogger.i("ConsentLibImpl", "js ===================== msg url [$url]  ===========================")
         }
 
         override fun onError(view: View, error: Throwable) {
-            pLogger.i("ConsentLibImpl", "js ===================== msg onError [$error]  ===========================")
             spClient?.onError(error)
         }
 
@@ -212,6 +211,8 @@ internal class SpConsentLibImpl(
             }
         }
     }
+
+    private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, "========>  $mess")
 
     /**
      * Delegate used by the [NativeMessage] to catch events performed by the user

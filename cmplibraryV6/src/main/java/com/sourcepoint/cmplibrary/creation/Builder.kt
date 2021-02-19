@@ -101,7 +101,6 @@ class Builder {
             service = service,
             viewManager = viewManager,
             executor = execManager,
-            dataStorage = dataStorage,
             campaignManager = campaignManager,
             consentManager = consentManager
         )
