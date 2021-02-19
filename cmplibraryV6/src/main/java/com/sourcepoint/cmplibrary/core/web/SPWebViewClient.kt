@@ -37,7 +37,7 @@ internal class SPWebViewClient(
         try {
             view.loadUrl("javascript:" + "js_receiver.js".file2String())
             /** make it crash if [onPageFinishedLambda] is null!!! */
-            onPageFinishedLambda!!.invoke(view, url)
+            onPageFinishedLambda?.invoke(view, url)
         } catch (e: Throwable) {
             onError(WebViewException(cause = e, description = "Unable to load jsReceiver into ConasentLibWebview."))
         }
