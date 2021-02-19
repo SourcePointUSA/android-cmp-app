@@ -2,15 +2,9 @@ package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
-import com.sourcepoint.cmplibrary.exception.GenericSDKException
-import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.Campaign
-import com.sourcepoint.cmplibrary.model.toMessageReqMock
-import com.sourcepoint.cmplibrary.stub.MockNetworkClient
 import io.mockk.MockKAnnotations
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 
@@ -56,18 +50,18 @@ class ServiceImplTest {
 //        verify(exactly = 0) { errorMock(any()) }
     }
 
-    @Test
-    fun `GIVEN an error from NetworkClient VERIFY that saveAppliedLegislation is NOT called`() {
-        val nc = MockNetworkClient(
-            logicUnifiedMess = { _, _, error -> error(GenericSDKException(description = "tests")) }
-        )
-        every { errorMock(any()) }.answers { }
-
-        val sut = Service.create(nc, ds)
-        sut.getMessage(nativeCampaign.toMessageReqMock(), successMock, errorMock)
-
-        verify(exactly = 0) { ds.saveAppliedLegislation(Legislation.GDPR.name) }
-        verify(exactly = 0) { successMock(any()) }
-        verify(exactly = 1) { errorMock(any()) }
-    }
+//    @Test
+//    fun `GIVEN an error from NetworkClient VERIFY that saveAppliedLegislation is NOT called`() {
+//        val nc = MockNetworkClient(
+//            logicUnifiedMess = { _, _, error -> error(GenericSDKException(description = "tests")) }
+//        )
+//        every { errorMock(any()) }.answers { }
+//
+//        val sut = Service.create(nc, ds)
+//        sut.getMessage(nativeCampaign.toMessageReqMock(), successMock, errorMock)
+//
+//        verify(exactly = 0) { ds.saveAppliedLegislation(Legislation.GDPR.name) }
+//        verify(exactly = 0) { successMock(any()) }
+//        verify(exactly = 1) { errorMock(any()) }
+//    }
 }

@@ -3,33 +3,39 @@ package com.sourcepoint.cmplibrary.data.network.model
 import com.fasterxml.jackson.jr.ob.JSON
 import com.sourcepoint.cmplibrary.exception.Legislation
 
-data class MessageReq(
+internal data class MessageReq(
     val requestUUID: String,
     val campaigns: Campaigns
 )
 
-data class Campaigns(
-    val gdpr: GdprReq,
-    val ccpa: CcpaReq
+internal data class Campaigns(
+    val gdpr: GdprReq? = null,
+    val ccpa: CcpaReq? = null
 )
 
-data class GdprReq(
+internal data class GdprReq(
     val accountId: Int,
     val propertyHref: String,
     val propertyId: Int,
-    val targetingParams: String = """{"location": "${Legislation.GDPR.name}"}"""
+    val targetingParams: String = JSON.std.asString(TargetingParams(Legislation.GDPR.name, "EU"))
 )
 
-data class Location(val location: String)
+internal class TargetingParams(
+    val legislation: String,
+    val location: String
+) {
+    override fun toString(): String {
+        return JSON.std.asString(this)
+    }
+}
 
-data class CcpaReq(
+internal data class CcpaReq(
     val accountId: Int,
     val propertyHref: String,
     val propertyId: Int,
-    val alwaysDisplayDNS: Boolean = false,
-    val targetingParams: String = """{"location": "${Legislation.CCPA.name}"}"""
+    val targetingParams: String = JSON.std.asString(TargetingParams(Legislation.CCPA.name, "US"))
 )
 
-fun MessageReq.toBodyRequest(): String {
+internal fun MessageReq.toBodyRequest(): String {
     return JSON.std.asString(this)
 }

@@ -4,8 +4,10 @@ import android.content.SharedPreferences
 import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.util.Either
 import io.mockk.mockk
+import org.json.JSONObject
 
 internal class MockService(
     private val getMessageLogic: ((messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
@@ -21,6 +23,12 @@ internal class MockService(
     }
 
     override val preference: SharedPreferences = mockk()
+
+    override fun sendConsent(consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit) {}
+    override fun saveGdprConsentResp(value: String) {}
+    override fun saveCcpaConsentResp(value: String) {}
+    override fun getGdprConsentResp(): String = "{}"
+    override fun getCcpaConsentResp(): String = "{}"
     override fun clearInternalData() {}
     override fun clearAll() {}
     override fun saveTcData(deferredMap: DeferredMap) {}

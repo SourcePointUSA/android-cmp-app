@@ -1,5 +1,9 @@
 package com.sourcepoint.cmplibrary.exception
 
+import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.model.CampaignTemplate
+import com.sourcepoint.cmplibrary.util.getOrNull
+
 /**
  * Class in charge of building an error message
  */
@@ -32,31 +36,28 @@ data class ClientInfo(
 /**
  * Factory method for creating an instance of [ErrorMessageManager]
  */
-fun createErrorManager(
-    accountId: Int,
-    propertyId: Int,
-    propertyHref: String,
+internal fun createErrorManager(
+    campaignManager: CampaignManager,
     clientInfo: ClientInfo,
     legislation: Legislation = Legislation.GDPR
-): ErrorMessageManager = ErrorMessageManagerImpl(accountId, propertyId, propertyHref, clientInfo, legislation)
+): ErrorMessageManager = ErrorMessageManagerImpl(campaignManager, clientInfo, legislation)
 
 /**
  * Implementation class of [ErrorMessageManager]
  */
 private class ErrorMessageManagerImpl(
-    val accountId: Int,
-    val propertyId: Int,
-    val propertyHref: String,
+    val campaignManager: CampaignManager,
     val clientInfo: ClientInfo,
     val legislation: Legislation = Legislation.GDPR
 ) : ErrorMessageManager {
     override fun build(exception: ConsentLibExceptionK): String {
+        val campaign: CampaignTemplate? = campaignManager.getAppliedCampaign().getOrNull()
         return """
             {
                 "code" : "${exception.code.code}",
-                "accountId" : "$accountId",
-                "propertyHref" : "$propertyHref",
-                "propertyId" : "$propertyId",
+                "accountId" : "${campaign?.accountId}",
+                "propertyHref" : "${campaign?.propertyName}",
+                "propertyId" : "${campaign?.propertyId}",
                 "description" : "${exception.description}",
                 "clientVersion" : "${clientInfo.clientVersion}",
                 "OSVersion" : "${clientInfo.osVersion}",

@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary
 import android.content.Context
 import android.view.View
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageInternal
@@ -20,13 +21,10 @@ import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.MissingClientException
 import com.sourcepoint.cmplibrary.exception.RenderingAppException
 import com.sourcepoint.cmplibrary.model.ActionType
-import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
-import com.sourcepoint.cmplibrary.model.toMessageReqMock
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 
 internal class SpConsentLibImpl(
-    internal val campaign: Campaign,
     internal val pPrivacyManagerTab: PrivacyManagerTabK,
     internal val context: Context,
     internal val pLogger: Logger,
@@ -37,6 +35,7 @@ internal class SpConsentLibImpl(
     private val viewManager: ViewsManager,
     private val dataStorage: DataStorage,
     private val campaignManager: CampaignManager,
+    private val consentManager: ConsentManager,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton
 ) : SpConsentLib {
 
@@ -48,7 +47,7 @@ internal class SpConsentLibImpl(
         checkMainThread("loadMessage")
         throwsExceptionIfClientNoSet()
         service.getMessage(
-            messageReq = campaign.toMessageReqMock(),
+            messageReq = campaignManager.getMessageReq(),
             pSuccess = { messageResp -> },
             pError = { throwable -> }
         )
@@ -61,15 +60,16 @@ internal class SpConsentLibImpl(
         if (viewManager.isViewInLayout) return
 
         service.getMessage(
-            messageReq = campaign.toMessageReqMock(),
+            messageReq = campaignManager.getMessageReq(),
             pSuccess = { messageResp ->
                 executor.executeOnMain {
                     val webView = viewManager.createWebView(this, JSReceiverDelegate())
                     (webView as? ConsentWebView)?.let {
                         // TODO we have to choose which one to show, GDPR or CCPA?
-                        val mess = messageResp.campaigns.first().message
-//                        val mess = messageResp.campaigns.last().message
-                        it.loadConsentUIFromUrl(urlManager.urlURenderingAppStage(), mess!!)
+                        val mess = messageResp.campaigns.find { m -> m.message != null }!!.message
+                        if (!consentManager.hasGdprConsent()) {
+                            it.loadConsentUIFromUrl(urlManager.urlURenderingAppStage(), mess!!)
+                        }
                     } ?: throw RuntimeException("webView is not a ConsentWebView")
                 }
             },
@@ -84,7 +84,7 @@ internal class SpConsentLibImpl(
         throwsExceptionIfClientNoSet()
 
         service.getNativeMessageK(
-            campaign.toMessageReqMock(),
+            campaignManager.getMessageReq(),
             { messageResp ->
                 executor.executeOnMain {
                     /** configuring onClickListener and set the parameters */
@@ -140,11 +140,11 @@ internal class SpConsentLibImpl(
         }
 
         override fun log(view: View, tag: String?, msg: String?) {
-            pLogger.i("ConsentLibImpl", "js =================== log")
+            pLogger.i("ConsentLibImpl", "js =================== $msg")
         }
 
         override fun log(view: View, msg: String?) {
-            pLogger.i("ConsentLibImpl", "js =================== log")
+            pLogger.i("ConsentLibImpl", "js =================== $msg")
         }
 
         override fun onError(view: View, errorMessage: String) {
@@ -184,22 +184,29 @@ internal class SpConsentLibImpl(
         executor.executeOnMain {
             spClient?.onAction(view, action.actionType)
             when (action.actionType) {
-                ActionType.ACCEPT_ALL -> {
-                    view.let { spClient?.onUIFinished(it) }
-                }
                 ActionType.MSG_CANCEL -> {
-                    view.let { spClient?.onUIFinished(it) }
-                }
-                ActionType.SAVE_AND_EXIT -> {
                     view.let { spClient?.onUIFinished(it) }
                 }
                 ActionType.SHOW_OPTIONS -> {
                     view.let { spClient?.onUIFinished(it) }
                 }
-                ActionType.REJECT_ALL -> {
+                ActionType.PM_DISMISS -> {
                     view.let { spClient?.onUIFinished(it) }
                 }
-                ActionType.PM_DISMISS -> {
+                ActionType.ACCEPT_ALL,
+                ActionType.SAVE_AND_EXIT,
+                ActionType.REJECT_ALL -> {
+                    consentManager.buildGdprConsentReq(action)
+                        .map { consentReq ->
+                            service.sendConsent(
+                                consentReq,
+                                { consentResp -> consentManager.saveGdprConsent(consentResp.content) },
+                                { throwable -> pLogger.error(throwable.toConsentLibException()) }
+                            )
+                        }
+                        .executeOnLeft {
+                            throw it
+                        }
                     view.let { spClient?.onUIFinished(it) }
                 }
             }

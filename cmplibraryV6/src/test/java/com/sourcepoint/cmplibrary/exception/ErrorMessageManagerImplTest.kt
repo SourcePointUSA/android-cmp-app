@@ -1,7 +1,15 @@
 package com.sourcepoint.cmplibrary.exception
 
+import android.app.Activity
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.model.CampaignTemplate
+import com.sourcepoint.cmplibrary.util.Either
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import org.json.JSONException
+import org.junit.Before
 import org.junit.Test
 
 class ErrorMessageManagerImplTest {
@@ -14,8 +22,26 @@ class ErrorMessageManagerImplTest {
         deviceFamily = "android",
         osVersion = "30"
     )
+    private val gdpr = CampaignTemplate(
+        accountId = 22,
+        propertyId = 100,
+        propertyName = "http://dev.local",
+        pmId = "404472"
+    )
 
-    internal val sut by lazy { createErrorManager(accountId, propertyId, propertyHref, client) }
+    @MockK
+    internal lateinit var campaignManager: CampaignManager
+
+    internal val sut by lazy { createErrorManager(campaignManager, client) }
+
+    @MockK
+    private lateinit var context: Activity
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
+        every { campaignManager.getAppliedCampaign() }.returns(Either.Right(gdpr))
+    }
 
     @Test
     fun `GIVEN a ResourceNotFoundException VERIFY the generated message`() {

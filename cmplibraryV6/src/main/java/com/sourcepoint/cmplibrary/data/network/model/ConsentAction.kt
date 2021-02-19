@@ -8,7 +8,8 @@ data class ConsentAction(
     val privacyManagerId: String? = null,
     val pmTab: String? = null,
     val requestFromPm: Boolean,
-    val saveAndExitVariables: JSONObject? = null,
+    val saveAndExitVariables: JSONObject = JSONObject(),
+    val pubData: JSONObject = JSONObject(),
     val consentLanguage: String? = null,
     val actionType: ActionType
 )

@@ -16,13 +16,19 @@ import com.sourcepoint.cmplibrary.core.layout.createCustomNativeMessage
 import com.sourcepoint.cmplibrary.core.layout.createDefaultNativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.creation.delegate.ConsentLibDelegate
-import com.sourcepoint.cmplibrary.creation.makeConsentLib
 import com.sourcepoint.cmplibrary.model.*
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainActivityV6 : AppCompatActivity() {
+class MainActivityNativeV6 : AppCompatActivity() {
 
     private val TAG = "**MainActivity"
+
+    private val nativeCampaign = Campaign(
+        accountId = 22,
+        propertyId = 7094,
+        propertyName = "tcfv2.mobile.demo",
+        pmId = "179657"
+    )
 
     private val gdpr = GDPRCampaign(
         accountId = 22,
@@ -131,7 +137,7 @@ class MainActivityV6 : AppCompatActivity() {
         }
 
         override fun onAction(view: View, actionType: ActionType) {
-            Toast.makeText(this@MainActivityV6, "Action[${actionType.name}]", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivityNativeV6, "Action[${actionType.name}]", Toast.LENGTH_SHORT).show()
         }
     }
 

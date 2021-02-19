@@ -31,22 +31,22 @@ abstract class NativeMessageInternal : NativeMessage {
     }
 
     internal open fun onCancel(ab: ActionButton) {
-        val action = ConsentAction(actionType = ActionType.MSG_CANCEL, choiceId = ab.choiceId, requestFromPm = false, saveAndExitVariables = null)
+        val action = ConsentAction(actionType = ActionType.MSG_CANCEL, choiceId = ab.choiceId, requestFromPm = false)
         client.onClickCancel(this@NativeMessageInternal, action)
     }
 
     internal open fun onAcceptAll(ab: ActionButton) {
-        val action = ConsentAction(actionType = ActionType.ACCEPT_ALL, choiceId = ab.choiceId, requestFromPm = false, saveAndExitVariables = null)
+        val action = ConsentAction(actionType = ActionType.ACCEPT_ALL, choiceId = ab.choiceId, requestFromPm = false)
         client.onClickAcceptAll(this@NativeMessageInternal, action)
     }
 
     internal open fun onRejectAll(ab: ActionButton) {
-        val action = ConsentAction(actionType = ActionType.REJECT_ALL, choiceId = ab.choiceId, requestFromPm = false, saveAndExitVariables = null)
+        val action = ConsentAction(actionType = ActionType.REJECT_ALL, choiceId = ab.choiceId, requestFromPm = false)
         client.onClickRejectAll(this@NativeMessageInternal, action)
     }
 
     internal open fun onShowOptionsAb(ab: ActionButton) {
-        val action = ConsentAction(actionType = ActionType.SHOW_OPTIONS, choiceId = ab.choiceId, requestFromPm = false, saveAndExitVariables = null)
+        val action = ConsentAction(actionType = ActionType.SHOW_OPTIONS, choiceId = ab.choiceId, requestFromPm = false)
         client.onClickShowOptions(this@NativeMessageInternal, action)
     }
 }

@@ -24,10 +24,10 @@ internal fun MutableMap<String, Any>.toCCPA(): Ccpa? {
         val uuid = (it["uuid"] as? String) ?: failParam("uuid")
         val meta = (it["meta"] as? String) ?: failParam("meta")
         val ccpaApplies = (it["ccpaApplies"] as? Boolean) ?: failParam("meta")
-        val message = (it["message"] as? DeferredMap) ?: failParam("message")
+        val message = (it["message"] as? DeferredMap) // ?: failParam("message")
         val userConsentMap = (it["userConsent"] as? DeferredMap) ?: failParam("userConsent")
 
-        val messageObj = JSONObject(JSON.std.asString(message))
+        val messageObj = message?.let { m -> JSONObject(JSON.std.asString(m)) }
 
         Ccpa(
             uuid = uuid,

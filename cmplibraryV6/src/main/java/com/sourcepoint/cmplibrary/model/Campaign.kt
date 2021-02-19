@@ -1,6 +1,9 @@
 package com.sourcepoint.cmplibrary.model
 
-import com.sourcepoint.cmplibrary.data.network.model.*  // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.CcpaReq
+import com.sourcepoint.cmplibrary.data.network.model.GdprReq
+import com.sourcepoint.cmplibrary.data.network.model.TargetingParams
+import com.sourcepoint.cmplibrary.exception.Legislation
 
 data class Campaign(
     @JvmField val accountId: Int,
@@ -9,21 +12,47 @@ data class Campaign(
     @JvmField val pmId: String
 )
 
-fun Campaign.toMessageReqMock(): MessageReq {
+open class CampaignTemplate(
+    open val accountId: Int,
+    open val propertyId: Int,
+    open val propertyName: String,
+    open val pmId: String
+)
 
-    return MessageReq(
-        requestUUID = "test",
-        campaigns = Campaigns(
-            gdpr = GdprReq(
-                accountId = 22,
-                propertyId = 10589,
-                propertyHref = "https://unified.mobile.demo",
-            ),
-            ccpa = CcpaReq(
-                accountId = 22,
-                propertyId = 10589,
-                propertyHref = "https://unified.mobile.demo"
-            )
-        )
+class GDPRCampaign(
+    @JvmField override val accountId: Int,
+    @JvmField override val propertyId: Int,
+    @JvmField override val propertyName: String,
+    @JvmField override val pmId: String
+) : CampaignTemplate(accountId, propertyId, propertyName, pmId)
+
+class CCPACampaign(
+    @JvmField override val accountId: Int,
+    @JvmField override val propertyId: Int,
+    @JvmField override val propertyName: String,
+    @JvmField override val pmId: String
+) : CampaignTemplate(accountId, propertyId, propertyName, pmId)
+
+internal fun CampaignTemplate.toGdprReq(location: String): GdprReq {
+    return GdprReq(
+        accountId = accountId,
+        propertyId = propertyId,
+        propertyHref = propertyName,
+        targetingParams = TargetingParams(
+            legislation = Legislation.GDPR.name,
+            location = location
+        ).toString(),
+    )
+}
+
+internal fun CampaignTemplate.toCcpaReq(location: String): CcpaReq {
+    return CcpaReq(
+        accountId = accountId,
+        propertyId = propertyId,
+        propertyHref = propertyName,
+        targetingParams = TargetingParams(
+            legislation = Legislation.CCPA.name,
+            location = location
+        ).toString(),
     )
 }

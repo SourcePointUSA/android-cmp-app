@@ -1,0 +1,106 @@
+{
+  "accountId": 22,
+  "propertyId": 7639,
+  "propertyHref": "https://tcfv2.mobile.webview",
+  "privacyManagerId": "122058",
+  "uuid": "355cfbe3-7339-449c-a4b3-01eb57a5043b",
+  "meta": "{\"resolved\":true,\"mmsCookies\":[\"_sp_v1_uid=1:993:f81f4266-59a3-4356-917a-bdac91b5d1ff;\",\"_sp_v1_data=2:0:1613638178:0:0:-1:0:0:0:_:-1;\",\"_sp_v1_ss=null;\",\"_sp_v1_opt=1:;\",\"_sp_v1_consent=1!1:1:-1:-1:-1:-1;\",\"_sp_v1_stage=;\",\"_sp_v1_csv=;\",\"_sp_v1_lt=1:;\"],\"messageId\":\"407177\"}",
+  "actionType": 11,
+  "requestFromPM": true,
+  "pmSaveAndExitVariables": {
+    "privacyManagerId": "122058",
+    "lan": "EN",
+    "categories": [
+      {
+        "_id": "5e87321eb31ef52cd96cc552",
+        "type": "IAB_PURPOSE",
+        "iabId": 1,
+        "consent": true,
+        "legInt": false
+      },
+      {
+        "_id": "5e87321eb31ef52cd96cc553",
+        "type": "IAB_PURPOSE",
+        "iabId": 2,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5e87321eb31ef52cd96cc554",
+        "type": "IAB_PURPOSE",
+        "iabId": 3,
+        "consent": true,
+        "legInt": false
+      },
+      {
+        "_id": "5e87321eb31ef52cd96cc555",
+        "type": "IAB_PURPOSE",
+        "iabId": 4,
+        "consent": true,
+        "legInt": false
+      },
+      {
+        "_id": "5e87321eb31ef52cd96cc556",
+        "type": "IAB_PURPOSE",
+        "iabId": 5,
+        "consent": true,
+        "legInt": false
+      },
+      {
+        "_id": "5e87321eb31ef52cd96cc558",
+        "type": "IAB_PURPOSE",
+        "iabId": 6,
+        "consent": true,
+        "legInt": false
+      },
+      {
+        "_id": "5e87321eb31ef52cd96cc559",
+        "type": "IAB_PURPOSE",
+        "iabId": 7,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5e87321eb31ef52cd96cc55a",
+        "type": "IAB_PURPOSE",
+        "iabId": 8,
+        "consent": true,
+        "legInt": false
+      },
+      {
+        "_id": "5e87321eb31ef52cd96cc55b",
+        "type": "IAB_PURPOSE",
+        "iabId": 9,
+        "consent": true,
+        "legInt": false
+      },
+      {
+        "_id": "5e87321eb31ef52cd96cc55c",
+        "type": "IAB_PURPOSE",
+        "iabId": 10,
+        "consent": true,
+        "legInt": false
+      }
+    ],
+    "vendors": [
+      {
+        "_id": "5e37fc3e56a5e60e003a7124",
+        "vendorType": "IAB",
+        "iabId": 15,
+        "consent": true,
+        "legInt": true
+      },
+      {
+        "_id": "5e4a5fbf26de4a77922b38a6",
+        "vendorType": "CUSTOM",
+        "iabId": null,
+        "consent": true,
+        "legInt": false
+      }
+    ],
+    "specialFeatures": []
+  },
+  "pubData": {},
+  "consentLanguage": "EN",
+  "requestUUID": "8f00cf6e-77ca-4ce3-9df6-78da4a19c8a0"
+}

@@ -5,6 +5,8 @@ import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
+import org.json.JSONObject
 
 internal class MockNetworkClient(
     private val logicUnifiedMess: ((messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
@@ -20,4 +22,6 @@ internal class MockNetworkClient(
     }
 
     override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
+    override fun sendConsent(consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit) {
+    }
 }

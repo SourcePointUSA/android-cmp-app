@@ -10,6 +10,7 @@ import okhttp3.HttpUrl
 internal interface HttpUrlManager {
     val inAppUrlMessage: HttpUrl
     val inAppUrlNativeMessage: HttpUrl
+    val sendConsentUrl: HttpUrl
     fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl
@@ -45,6 +46,15 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .host(spHost)
             .addPathSegments("wrapper/tcfv2/v1/gdpr")
             .addPathSegments("native-message")
+            .addQueryParameter("inApp", "true")
+            .build()
+
+    override val sendConsentUrl: HttpUrl
+        get() = HttpUrl.Builder()
+            .scheme("https")
+            .host(spHost)
+            .addPathSegments("wrapper/tcfv2/v1/gdpr")
+            .addPathSegments("consent")
             .addQueryParameter("inApp", "true")
             .build()
 

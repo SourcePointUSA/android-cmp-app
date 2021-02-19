@@ -43,7 +43,7 @@ class Gdpr(
 class Ccpa(
     uuid: String,
     meta: String,
-    message: JSONObject,
+    message: JSONObject? = null,
     val ccpaApplies: Boolean = false,
     val userConsent: CCPAConsent
 ) : CampaignResp(uuid, meta, message)
