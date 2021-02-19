@@ -7,7 +7,6 @@ import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
-import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
 import com.sourcepoint.cmplibrary.model.toCcpaReq
 import com.sourcepoint.cmplibrary.model.toGdprReq
@@ -16,7 +15,6 @@ import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.getOrNull
 
 internal interface CampaignManager {
-    fun addCampaign(legislation: Legislation, campaign: Campaign)
     fun addCampaign(legislation: Legislation, campaign: CampaignTemplate)
 
     fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>>
@@ -35,12 +33,7 @@ private class CampaignManagerImpl(
     val dataStorage: DataStorage
 ) : CampaignManager {
 
-    private val map = mutableMapOf<String, Campaign>()
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
-
-    override fun addCampaign(legislation: Legislation, campaign: Campaign) {
-        map[legislation.name] = campaign
-    }
 
     override fun addCampaign(legislation: Legislation, campaign: CampaignTemplate) {
         mapTemplate[legislation.name] = campaign
@@ -51,7 +44,7 @@ private class CampaignManagerImpl(
     }
 
     override fun getPmGDPRConfig(): Either<PmUrlConfig> = check {
-        val gdpr: Campaign = map[Legislation.GDPR.name] ?: fail("Privacy manager url config is missing!!!")
+        val gdpr: CampaignTemplate = mapTemplate[Legislation.GDPR.name] ?: fail("Privacy manager url config is missing!!!")
 
         val gdprConfig = dataStorage.getGdpr().getOrNull() ?: fail("Privacy manager url config is missing!!!")
         PmUrlConfig(
