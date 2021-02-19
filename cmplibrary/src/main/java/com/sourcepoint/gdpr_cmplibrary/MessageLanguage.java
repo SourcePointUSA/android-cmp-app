@@ -46,8 +46,16 @@ public enum MessageLanguage {
     public static String[] names() {
         return Arrays.toString(MessageLanguage.values()).replaceAll("^.|.$", "").split(", ");
     }
-    public static String getName(String name) {
-        return name;
+    
+    /**
+     * Returns the internal String representation for this {@link MessageLanguage}. Note that this language String
+     * approximates the ISO 639 language String where possible. When comparing this to your system locale, you should
+     * heed the advice in {@link Locale#getLanguage()}.
+     *
+     * @return An ISO 639 language String, but uppercase. Never null, never empty
+     */
+    public String getLanguage() {
+        return language;
     }
 
     public static MessageLanguage findByName(String name){
