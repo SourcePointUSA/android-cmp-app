@@ -1,0 +1,15 @@
+{
+  "accountId": 22,
+  "propertyId": 7639,
+  "propertyHref": "https://tcfv2.mobile.webview",
+  "privacyManagerId": "122058",
+  "uuid": "355cfbe3-7339-449c-a4b3-01eb57a5043b",
+  "meta": "{\"resolved\":true,\"mmsCookies\":[\"_sp_v1_uid=1:271:3eaf08b5-88a8-459a-906e-28a77d9eb20b;\",\"_sp_v1_csv=1;\",\"_sp_v1_lt=1:msg|true:;\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbKKBjLyQAyD2lidGKVUEDOvNCcHyC4BK6iurVWKBQAW54XRMAAAAA%3D%3D;\",\"_sp_v1_opt=1:;\",\"_sp_v1_data=2:273278:1613638105:0:1:0:1:0:0:72a61b07-9933-4968-9ac2-84528707387a:407177;\"],\"messageId\":\"407177\"}",
+  "actionType": 11,
+  "requestFromPM": false,
+  "choiceId": "3108755",
+  "pmSaveAndExitVariables": {},
+  "pubData": {},
+  "consentLanguage": "EN",
+  "requestUUID": "ed985e27-e216-451f-a69d-3f4e42ac49c1"
+}

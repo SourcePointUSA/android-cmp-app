@@ -24,10 +24,10 @@ internal fun MutableMap<String, Any>.toGDPR(): Gdpr? {
     return map.let {
         val uuid = (it["uuid"] as? String) ?: failParam("uuid")
         val meta = (it["meta"] as? String) ?: failParam("meta")
-        val message = (it["message"] as? DeferredMap) ?: failParam("message")
+        val message = (it["message"] as? DeferredMap)
         val userConsentMap = (it["userConsent"] as? DeferredMap) ?: failParam("userConsent")
 
-        val messageObj = JSONObject(JSON.std.asString(message))
+        val messageObj = message?.let { JSONObject(JSON.std.asString(it)) }
 
         Gdpr(
             uuid = uuid,

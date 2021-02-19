@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.creation.delegate
 import android.app.Activity
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
-import com.sourcepoint.cmplibrary.model.Campaign
+import com.sourcepoint.cmplibrary.model.GDPRCampaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
@@ -13,7 +13,7 @@ import org.junit.Test
 
 class SpConsentLibDelegateTest {
 
-    private val campaign = Campaign(
+    private val campaign = GDPRCampaign(
         22,
         7639,
         "tcfv2.mobile.webview",
@@ -43,7 +43,7 @@ class SpConsentLibDelegateTest {
     @Test
     fun `VERIFY that the delegate with a tab is null`() {
 
-        val delegate = ConsentLibDelegate(campaign = campaign)
+        val delegate = ConsentLibDelegate(gdpr = campaign)
         val sut1 = delegate.getValue(context, mockk())
         val sut2 = delegate.getValue(context, mockk())
 

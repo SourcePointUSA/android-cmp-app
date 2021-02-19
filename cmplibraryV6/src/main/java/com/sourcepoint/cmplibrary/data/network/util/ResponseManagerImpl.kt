@@ -1,10 +1,11 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
-import android.accounts.NetworkErrorException
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
+import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
@@ -29,38 +30,50 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
      * @return an [Either] object of a [MessageResp] type parameter
      */
     override fun parseResponse(r: Response): Either<UnifiedMessageResp> = check {
+        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         if (r.isSuccessful) {
-            val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
             when (val either: Either<UnifiedMessageResp> = jsonConverter.toUnifiedMessageResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }
         } else {
-            throw NetworkErrorException("$r")
+            throw InvalidRequestException(description = body)
         }
     }
 
     override fun parseNativeMessRes(r: Response): Either<NativeMessageResp> = check {
+        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         if (r.isSuccessful) {
-            val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
             when (val either: Either<NativeMessageResp> = jsonConverter.toNativeMessageResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }
         } else {
-            throw NetworkErrorException("$r")
+            throw InvalidRequestException(description = body)
         }
     }
 
     override fun parseNativeMessResK(r: Response): Either<NativeMessageRespK> = check {
+        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         if (r.isSuccessful) {
-            val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
             when (val either: Either<NativeMessageRespK> = jsonConverter.toNativeMessageRespK(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }
         } else {
-            throw NetworkErrorException("$r")
+            throw InvalidRequestException(description = body)
+        }
+    }
+
+    override fun parseConsentRes(r: Response): Either<ConsentResp> = check {
+        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        if (r.isSuccessful) {
+            when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body)) {
+                is Either.Right -> either.r
+                is Either.Left -> throw either.t
+            }
+        } else {
+            throw InvalidRequestException(description = body)
         }
     }
 

@@ -3,14 +3,15 @@ package com.sourcepoint.cmplibrary.data.network
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
-import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
-import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
-import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.util.executeOnLeft
 import com.sourcepoint.cmplibrary.util.map
-import okhttp3.* // ktlint-disable
+import okhttp3.MediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import org.json.JSONObject
 
 internal fun createNetworkClient(
     httpClient: OkHttpClient,
@@ -98,7 +99,7 @@ private class NetworkClientImpl(
         success: (NativeMessageRespK) -> Unit,
         error: (Throwable) -> Unit
     ) {
-
+        // TODO adapt unified wrapper logic
         val bodyContent = """
             {
                 "accountId": 22,
@@ -133,24 +134,31 @@ private class NetworkClientImpl(
             }
     }
 
-    val bodyString = """
-        {
-            "requestUUID": "test",
-            "campaigns": {
-                "gdpr": {
-                    "accountId": 22,
-                    "propertyId": 10589,
-                    "propertyHref": "https://unified.mobile.demo",
-                    "targetingParams": "{\"location\": \"GDPR\"}"
-                },
-                "ccpa": {
-                    "alwaysDisplayDNS": false,
-                    "accountId": 22,
-                    "propertyId": 10589,
-                    "propertyHref": "https://unified.mobile.demo",
-                    "targetingParams": "{\"location\": \"CCPA\"}"
+    override fun sendConsent(
+        consentReq: JSONObject,
+        success: (ConsentResp) -> Unit,
+        error: (Throwable) -> Unit
+    ) {
+        val mediaType = MediaType.parse("application/json")
+        val body: RequestBody = RequestBody.create(mediaType, consentReq.toString())
+
+        val request: Request = Request.Builder()
+            .url(urlManager.sendConsentUrl)
+            .post(body)
+            .build()
+
+        httpClient
+            .newCall(request)
+            .enqueue {
+                onFailure { _, exception ->
+                    error(exception)
+                }
+                onResponse { _, r ->
+                    responseManager
+                        .parseConsentRes(r)
+                        .map { success(it) }
+                        .executeOnLeft { error(it) }
                 }
             }
-        }
-    """.trimIndent()
+    }
 }

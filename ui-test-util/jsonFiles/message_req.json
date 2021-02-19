@@ -3,16 +3,15 @@
   "campaigns": {
     "gdpr": {
       "accountId": 22,
-      "propertyId": 10589,
       "propertyHref": "https://unified.mobile.demo",
-      "targetingParams": "{\"location\": \"GDPR\"}"
+      "propertyId": 10589,
+      "targetingParams": "{\"legislation\":\"GDPR\",\"location\":\"EU\"}"
     },
     "ccpa": {
-      "alwaysDisplayDNS": false,
       "accountId": 22,
-      "propertyId": 10589,
       "propertyHref": "https://unified.mobile.demo",
-      "targetingParams": "{\"location\": \"CCPA\"}"
+      "propertyId": 10589,
+      "targetingParams": "{\"legislation\":\"CCPA\",\"location\":\"US\"}"
     }
   }
 }

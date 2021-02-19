@@ -20,59 +20,7 @@ class BuilderTest {
     @Test(expected = RuntimeException::class)
     fun `A context object is MISSING an exception is THROWN`() {
         Builder()
-            .setAccountId(1)
-            .setPmId("1")
             // .setContext(context)
-            .setPropertyId(1)
-            .setPropertyName("a")
-            .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
-            .build()
-    }
-
-    @Test(expected = RuntimeException::class)
-    fun `A pmId is MISSING an exception is THROWN`() {
-        Builder()
-            .setAccountId(1)
-            // .setPmId("1")
-            .setContext(context)
-            .setPropertyId(1)
-            .setPropertyName("a")
-            .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
-            .build()
-    }
-
-    @Test(expected = RuntimeException::class)
-    fun `An accountId is MISSING an exception is THROWN`() {
-        Builder()
-            // .setAccountId(1)
-            .setPmId("1")
-            .setContext(context)
-            .setPropertyId(1)
-            .setPropertyName("a")
-            .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
-            .build()
-    }
-
-    @Test(expected = RuntimeException::class)
-    fun `A propertyId is MISSING an exception is THROWN`() {
-        Builder()
-            .setAccountId(1)
-            .setPmId("1")
-            .setContext(context)
-            // .setPropertyId(1)
-            .setPropertyName("a")
-            .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
-            .build()
-    }
-
-    @Test(expected = RuntimeException::class)
-    fun `A propertyName is MISSING an exception is THROWN`() {
-        Builder()
-            .setAccountId(1)
-            .setPmId("1")
-            .setContext(context)
-            .setPropertyId(1)
-            // .setPropertyName("a")
             .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
             .build()
     }
@@ -80,11 +28,7 @@ class BuilderTest {
     @Test
     fun `A privacyManagerTab is MISSING NOTHING happened`() {
         Builder()
-            .setAccountId(1)
-            .setPmId("1")
             .setContext(context)
-            .setPropertyId(1)
-            .setPropertyName("a")
             // .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
             .build()
     }

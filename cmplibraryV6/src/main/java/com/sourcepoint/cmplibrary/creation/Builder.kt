@@ -6,6 +6,8 @@ import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.campaign.create
+import com.sourcepoint.cmplibrary.consent.ConsentManager
+import com.sourcepoint.cmplibrary.consent.create
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.create
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -18,7 +20,9 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
-import com.sourcepoint.cmplibrary.model.Campaign
+import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.model.CCPACampaign
+import com.sourcepoint.cmplibrary.model.GDPRCampaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ExecutorManager
@@ -29,37 +33,27 @@ import java.lang.ref.WeakReference
 
 class Builder {
 
-    private var accountId: Int? = null
-    private var propertyName: String? = null
+    private var ccpa: CCPACampaign? = null
+    private var gdpr: GDPRCampaign? = null
     private var authId: String? = null
-    private var propertyId: Int? = null
-    private var pmId: String? = null
     private var weakReference: WeakReference<Activity>? = null
     private var ott: Boolean = false
     private var privacyManagerTab: PrivacyManagerTabK? = null
 
-    fun setAccountId(accountId: Int) = apply {
-        this.accountId = accountId
+    fun setGdprCampaign(gdpr: GDPRCampaign) = apply {
+        this.gdpr = gdpr
     }
 
     fun isOtt(ott: Boolean) = apply {
         this.ott = ott
     }
 
-    fun setPropertyName(property: String) = apply {
-        this.propertyName = property
+    fun setCCPACampaign(ccpa: CCPACampaign) = apply {
+        this.ccpa = ccpa
     }
 
     fun setAuthId(authId: String) = apply {
         this.authId = authId
-    }
-
-    fun setPmId(pmId: String) = apply {
-        this.pmId = pmId
-    }
-
-    fun setPropertyId(propertyId: Int) = apply {
-        this.propertyId = propertyId
     }
 
     fun setContext(context: Activity) = apply {
@@ -76,27 +70,29 @@ class Builder {
 
         val activityWeakRef: WeakReference<Activity> = weakReference ?: failParam("context")
         val appCtx: Context = activityWeakRef.get()?.applicationContext ?: failParam("context")
-        val account = createAccount()
         val client = createClientInfo()
-        val errorManager = errorMessageManager(account, client)
+        val dataStorageGdpr = DataStorageGdpr.create(appCtx)
+        val dataStorageCcpa = DataStorageCcpa.create(appCtx)
+        val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
+        val campaignManager: CampaignManager = CampaignManager.create(dataStorage).apply {
+            gdpr?.let { addCampaign(Legislation.GDPR, it) }
+            ccpa?.let { addCampaign(Legislation.CCPA, it) }
+        }
+        val errorManager = errorMessageManager(campaignManager, client)
         val logger = createLogger(errorManager)
         val pmTab = privacyManagerTab ?: PrivacyManagerTabK.FEATURES
         val jsonConverter = JsonConverter.create()
         val connManager = ConnectionManager.create(appCtx)
         val responseManager = ResponseManager.create(jsonConverter)
         val networkClient = networkClient(OkHttpClient(), responseManager)
-        val dataStorageGdpr = DataStorageGdpr.create(appCtx)
-        val dataStorageCcpa = DataStorageCcpa.create(appCtx)
-        val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
         val service: Service = Service.create(networkClient, dataStorage)
         val viewManager = ViewsManager.create(activityWeakRef, connManager)
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
-        val campaignManager: CampaignManager = CampaignManager.create(dataStorage)
+        val consentManager: ConsentManager = ConsentManager.create(campaignManager, dataStorage)
 
         return SpConsentLibImpl(
             urlManager = urlManager,
-            campaign = account,
             pPrivacyManagerTab = pmTab,
             context = appCtx,
             pLogger = logger,
@@ -106,7 +102,8 @@ class Builder {
             viewManager = viewManager,
             executor = execManager,
             dataStorage = dataStorage,
-            campaignManager = campaignManager
+            campaignManager = campaignManager,
+            consentManager = consentManager
         )
 
 //        return when (clazz) {
@@ -130,15 +127,6 @@ class Builder {
 //            }
 //            else -> fail(clazz.name)
 //        }
-    }
-
-    private fun createAccount(): Campaign {
-        return Campaign(
-            propertyId = propertyId ?: failParam("propertyId"),
-            propertyName = propertyName ?: failParam("property"),
-            accountId = accountId ?: failParam("accountId"),
-            pmId = pmId ?: failParam("pmId"),
-        )
     }
 
     private fun fail(m: String): Nothing = throw RuntimeException("Invalid class exception. $m is not an available option.")

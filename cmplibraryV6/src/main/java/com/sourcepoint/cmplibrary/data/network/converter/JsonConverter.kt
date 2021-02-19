@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.util.Either
 
 /**
@@ -20,6 +21,8 @@ internal interface JsonConverter {
 
     fun toNativeMessageResp(body: String): Either<NativeMessageResp>
     fun toNativeMessageRespK(body: String): Either<NativeMessageRespK>
+
+    fun toConsentResp(body: String): Either<ConsentResp>
 
     fun toNativeMessageDto(body: String): Either<NativeMessageDto>
 

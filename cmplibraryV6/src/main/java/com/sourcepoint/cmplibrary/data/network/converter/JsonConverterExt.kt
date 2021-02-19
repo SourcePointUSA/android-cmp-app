@@ -14,6 +14,16 @@ internal fun String.toUnifiedMessageRespDto(): UnifiedMessageResp {
     return UnifiedMessageResp(list)
 }
 
+internal fun String.toUnifiedMessageRespDto2(): UnifiedMessageResp {
+    val map: MutableMap<String, Any> = JSON.std.mapFrom(this)
+
+    val list = mutableListOf<CampaignResp>()
+    (map["gdpr"] as? DeferredMap)?.toGDPR()?.also { list.add(it) }
+    (map["ccpa"] as? DeferredMap)?.toCCPA()?.also { list.add(it) }
+
+    return UnifiedMessageResp(list)
+}
+
 // internal fun DeferredMap.toUserConsent(legislation: Legislation): SpConsent {
 //    SpConsent(
 //

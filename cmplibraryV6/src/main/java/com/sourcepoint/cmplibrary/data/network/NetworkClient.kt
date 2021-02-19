@@ -4,6 +4,8 @@ import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
+import org.json.JSONObject
 
 /**
  * Component used to handle the network request
@@ -39,6 +41,12 @@ internal interface NetworkClient {
     fun getNativeMessageK(
         messageReq: MessageReq,
         success: (NativeMessageRespK) -> Unit,
+        error: (Throwable) -> Unit
+    )
+
+    fun sendConsent(
+        consentReq: JSONObject,
+        success: (ConsentResp) -> Unit,
         error: (Throwable) -> Unit
     )
 }

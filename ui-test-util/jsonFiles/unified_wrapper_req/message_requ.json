@@ -1,0 +1,17 @@
+{
+  "requestUUID": "test",
+  "campaigns": {
+    "gdpr": {
+      "accountId": 22,
+      "propertyId": 10589,
+      "propertyHref": "https://unified.mobile.demo",
+      "targetingParams": "{\"legislation\": \"GDPR\", \"location\": \"EU\"}"
+    },
+    "ccpa": {
+      "accountId": 22,
+      "propertyId": 10589,
+      "propertyHref": "https://unified.mobile.demo",
+      "targetingParams": "{\"legislation\": \"CCPA\", \"location\": \"US\"}"
+    }
+  }
+}

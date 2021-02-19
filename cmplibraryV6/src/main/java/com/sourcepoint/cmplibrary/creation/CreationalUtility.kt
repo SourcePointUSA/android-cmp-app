@@ -2,12 +2,12 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.os.Build
 import com.example.cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.createNetworkClient
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.Campaign
 import okhttp3.OkHttpClient
 
 internal fun createClientInfo(): ClientInfo {
@@ -18,11 +18,9 @@ internal fun createClientInfo(): ClientInfo {
     )
 }
 
-internal fun errorMessageManager(a: Campaign, client: ClientInfo): ErrorMessageManager {
+internal fun errorMessageManager(campaignManager: CampaignManager, client: ClientInfo): ErrorMessageManager {
     return createErrorManager(
-        accountId = a.accountId,
-        propertyId = a.propertyId,
-        propertyHref = "http://dev.local",
+        campaignManager = campaignManager,
         clientInfo = client,
         legislation = Legislation.GDPR
     )

@@ -5,14 +5,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
-import com.sourcepoint.cmplibrary.model.SPConsents;
 import com.sourcepoint.cmplibrary.SPMessage;
 import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.SpConsentLib;
 import com.sourcepoint.cmplibrary.creation.Builder;
-import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK;
 import com.sourcepoint.cmplibrary.model.ActionType;
-import com.sourcepoint.cmplibrary.model.Campaign;
+import com.sourcepoint.cmplibrary.model.CCPACampaign;
+import com.sourcepoint.cmplibrary.model.GDPRCampaign;
+import com.sourcepoint.cmplibrary.model.SPConsents;
 import com.sourcepoint.example_app.core.DataProvider;
 import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
@@ -25,11 +25,18 @@ public class MainActivityV6 extends AppCompatActivity {
 
     private static final String TAG = "**MainActivity";
 
-    private final Campaign campaign = new Campaign(
+    private final GDPRCampaign gdpr = new GDPRCampaign(
             22,
-            7639,
-            "tcfv2.mobile.webview",
-            "122058"
+            10589,
+            "https://unified.mobile.demo",
+            "404472"
+    );
+
+    private final CCPACampaign ccpa = new CCPACampaign(
+            22,
+            10589,
+            "https://unified.mobile.demo",
+            "404472"
     );
 
     private SpConsentLib gdprConsent = null;
@@ -42,10 +49,8 @@ public class MainActivityV6 extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         gdprConsent = new Builder()
-                .setAccountId(campaign.accountId)
-                .setPropertyName(campaign.propertyName)
-                .setPropertyId(campaign.propertyId)
-                .setPmId(campaign.pmId)
+                .setGdprCampaign(gdpr)
+                .setCCPACampaign(ccpa)
                 .setContext(this)
                 .setAuthId(Objects.requireNonNull(dataProvider.getValue().getAuthId()))
                 .build();
@@ -66,7 +71,7 @@ public class MainActivityV6 extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(view!= null){
+        if (view != null) {
             gdprConsent.removeView(view);
         }
     }

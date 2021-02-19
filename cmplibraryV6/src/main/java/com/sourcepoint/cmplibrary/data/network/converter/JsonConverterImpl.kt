@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.util.Either
@@ -61,6 +62,10 @@ private class JsonConverterImpl : JsonConverter {
         val map: MutableMap<String, Any> = JSON.std.mapFrom(body)
         val bean: NativeMessageDto = JSON.std.beanFrom(NativeMessageDto::class.java, JSON.std.asString(map["msgJSON"]))
         NativeMessageRespK(msg = bean)
+    }
+
+    override fun toConsentResp(body: String): Either<ConsentResp> = check {
+        ConsentResp(JSONObject(body))
     }
 
     override fun toNativeMessageDto(body: String): Either<NativeMessageDto> = check {

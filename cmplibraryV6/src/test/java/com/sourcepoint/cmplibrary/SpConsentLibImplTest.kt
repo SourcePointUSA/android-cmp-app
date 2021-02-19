@@ -7,7 +7,6 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.exception.MissingClientException
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.stub.MockService
 import com.sourcepoint.cmplibrary.util.ConnectionManager
@@ -48,7 +47,7 @@ class SpConsentLibImplTest {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
     }
 
-    @Test(expected = MissingClientException::class)
+//    @Test(expected = MissingClientException::class)
     fun `CALLING loadMessage() with a null SpGDPRClient THROWS a MissingClientException`() {
 //        val sut = SpConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
 //        sut.loadMessage()

@@ -22,6 +22,6 @@ internal fun <E> check(block: () -> E): Either<E> {
 fun Throwable.toConsentLibException(): ConsentLibExceptionK {
     return when (this) {
         is ConsentLibExceptionK -> this
-        else -> GenericSDKException(cause = this, description = this.message ?: "Unknown cause.")
+        else -> GenericSDKException(cause = this, description = this.message ?: "${this::class.java}")
     }
 }
