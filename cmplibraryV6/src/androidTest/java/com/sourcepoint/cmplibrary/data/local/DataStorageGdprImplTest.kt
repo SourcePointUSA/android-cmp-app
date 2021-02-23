@@ -5,7 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertEquals
 import com.example.uitestutil.jsonFile2String
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
-import com.sourcepoint.cmplibrary.data.network.converter.toUnifiedMessageRespDto2
+import com.sourcepoint.cmplibrary.data.network.converter.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.data.network.model.Ccpa
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 import com.sourcepoint.cmplibrary.util.Either
@@ -22,7 +22,7 @@ class DataStorageGdprImplTest {
     @Test
     fun `GIVEN_an_Gdpr_object_STORE_it_into_the_local_data_storage`() {
 
-        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto2()
+        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
         val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
 
         val sut = DataStorageGdpr.create(appContext)
@@ -45,7 +45,7 @@ class DataStorageGdprImplTest {
     @Test
     fun `GIVEN_an_Ccpa_object_STORE_it_into_the_local_data_storage`() {
 
-        val unifiedMess = JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto2()
+        val unifiedMess = JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto()
 
         val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
         val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr

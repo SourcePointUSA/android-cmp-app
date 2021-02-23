@@ -20,6 +20,7 @@ internal interface DataStorageCcpa {
     fun getCcpa(): Either<Ccpa>
     fun getCcpaConsentResp(): String
     fun getCcpaMessage(): String?
+    fun clearCcpaConsent()
 
     companion object
 }
@@ -86,6 +87,13 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
 
     override fun getCcpaMessage(): String? {
         return preference.getString(CCPA_JSON_MESSAGE, null)
+    }
+
+    override fun clearCcpaConsent() {
+        preference
+            .edit()
+            .putString(CCPA_CONSENT_RESP, "")
+            .apply()
     }
 
     private fun fail(param: String): Nothing = throw RuntimeException("$param not fund in local storage.")

@@ -6,11 +6,11 @@ import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONObject
 
-internal fun String.toUnifiedMessageRespDto2(): UnifiedMessageResp {
-    return JSONObject(this).toUnifiedMessageRespDto2()
+internal fun String.toUnifiedMessageRespDto(): UnifiedMessageResp {
+    return JSONObject(this).toUnifiedMessageRespDto()
 }
 
-internal fun JSONObject.toUnifiedMessageRespDto2(): UnifiedMessageResp {
+internal fun JSONObject.toUnifiedMessageRespDto(): UnifiedMessageResp {
     val map: Map<String, Any?> = this.toTreeMap()
 
     val list = mutableListOf<CampaignResp>()
@@ -18,15 +18,8 @@ internal fun JSONObject.toUnifiedMessageRespDto2(): UnifiedMessageResp {
     map.getMap("gdpr")?.toGDPR()?.also { list.add(it) }
     map.getMap("ccpa")?.toCCPA()?.also { list.add(it) }
 
-    return UnifiedMessageResp(list)
+    return UnifiedMessageResp(
+        campaigns = list,
+        thisContent = this
+    )
 }
-
-// internal fun DeferredMap.toUserConsent(legislation: Legislation): SpConsent {
-//    SpConsent(
-//
-//    )
-//    return when (legislation) {
-//        Legislation.GDPR -> this.toGDPRUserConsent()
-//        Legislation.CCPA -> this.toCCPAUserConsent()
-//    }
-// }

@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
@@ -18,14 +17,19 @@ class JsonConverterImplTest {
 
     @Test
     fun `GIVEN a response RETURN a Right(MessageResp)`() {
+
         val json = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String()
-        val output: Either<UnifiedMessageResp> = sut.toUnifiedMessageResp(json)
-        (output as? Either.Right).assertNotNull()
+        val testMap = JSONObject(json).toTreeMap()
+
+        val output: UnifiedMessageResp = (sut.toUnifiedMessageResp(json) as Either.Right).r
+        output.thisContent!!.toTreeMap().assertEquals(testMap)
     }
 
     @Test
     fun `GIVEN a native_message_resp RETURN a Right(NativeMessageResp)`() {
         val json = "native_message_resp.json".file2String()
+        val testMap = JSONObject(json).toTreeMap()
+
         val output: Either<NativeMessageResp> = sut.toNativeMessageResp(json)
         (output as Either.Right).r.also { m ->
             m.msgJSON.get("name").assertEquals("GDPR Native Message")

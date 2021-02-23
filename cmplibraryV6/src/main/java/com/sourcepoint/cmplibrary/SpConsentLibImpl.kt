@@ -130,6 +130,7 @@ internal class SpConsentLibImpl(
     override fun dispose() {
         executor.dispose()
         viewManager.removeAllViews()
+        campaignManager.clearConsents()
     }
 
     //    /** Start Receiver methods */

@@ -2,25 +2,38 @@ package com.sourcepoint.cmplibrary.campaign
 
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
+import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
+import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
+import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.Campaigns
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
-import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
 import com.sourcepoint.cmplibrary.model.toCcpaReq
 import com.sourcepoint.cmplibrary.model.toGdprReq
+import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.getOrNull
+import org.json.JSONObject
 
 internal interface CampaignManager {
+
     fun addCampaign(legislation: Legislation, campaign: CampaignTemplate)
 
     fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>>
     fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate>
     fun getPmGDPRConfig(): Either<PmUrlConfig>
     fun getMessageReq(): MessageReq
+
+    fun getGDPRConsent(): Either<GDPRConsent>
+    fun getCCPAConsent(): Either<CCPAConsent>
+
+    fun saveGDPRConsent(consent: GDPRConsent)
+    fun saveCCPAConsent(consent: CCPAConsent)
+
+    fun clearConsents()
 
     companion object
 }
@@ -33,6 +46,11 @@ private class CampaignManagerImpl(
     val dataStorage: DataStorage
 ) : CampaignManager {
 
+    companion object {
+        private var gdprConsent: GDPRConsent? = null
+        private var ccpaConsent: CCPAConsent? = null
+    }
+
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
 
     override fun addCampaign(legislation: Legislation, campaign: CampaignTemplate) {
@@ -44,7 +62,8 @@ private class CampaignManagerImpl(
     }
 
     override fun getPmGDPRConfig(): Either<PmUrlConfig> = check {
-        val gdpr: CampaignTemplate = mapTemplate[Legislation.GDPR.name] ?: fail("Privacy manager url config is missing!!!")
+        val gdpr: CampaignTemplate = mapTemplate[Legislation.GDPR.name]
+            ?: fail("Privacy manager url config is missing!!!")
 
         val gdprConfig = dataStorage.getGdpr().getOrNull() ?: fail("Privacy manager url config is missing!!!")
         PmUrlConfig(
@@ -75,5 +94,40 @@ private class CampaignManagerImpl(
                 ccpa = ccpa?.toCcpaReq(location)
             )
         )
+    }
+
+    override fun getGDPRConsent(): Either<GDPRConsent> = check {
+        gdprConsent ?: dataStorage
+            .getGdprConsentResp()
+            .also { if (it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
+            .let { JSONObject(it) }
+            .toTreeMap()
+            .toGDPRUserConsent()
+    }
+
+    override fun getCCPAConsent(): Either<CCPAConsent> = check {
+        ccpaConsent ?: dataStorage
+            .getCcpaConsentResp()
+            .also { if (it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
+            .let { JSONObject(it) }
+            .toTreeMap()
+            .toCCPAUserConsent()
+    }
+
+    override fun saveGDPRConsent(consent: GDPRConsent) {
+        gdprConsent = consent
+        dataStorage.saveGdprConsentResp(consent.thisContent.toString())
+    }
+
+    override fun saveCCPAConsent(consent: CCPAConsent) {
+        ccpaConsent = consent
+        dataStorage.saveCcpaConsentResp(consent.thisContent.toString())
+    }
+
+    override fun clearConsents() {
+        gdprConsent = null
+        ccpaConsent = null
+        dataStorage.clearGdprConsent()
+        dataStorage.clearCcpaConsent()
     }
 }
