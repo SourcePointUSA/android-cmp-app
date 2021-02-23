@@ -55,6 +55,9 @@ internal class MockService(
     override fun saveCcpaMessage(value: String) {}
     override fun getCcpaMessage(): String? = null
 
+    override fun clearGdprConsent() {}
+    override fun clearCcpaConsent() {}
+
     override var gdprApplies: Boolean = false
     override var ccpaApplies: Boolean = false
 }

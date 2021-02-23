@@ -27,12 +27,12 @@ internal fun JsonConverter.Companion.create(): JsonConverter = JsonConverterImpl
 private class JsonConverterImpl : JsonConverter {
 
     override fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp> = check {
-        body.toUnifiedMessageRespDto2()
+        body.toUnifiedMessageRespDto()
     }
 
-    override fun toConsentAction(json: String): Either<ConsentAction> = check {
+    override fun toConsentAction(body: String): Either<ConsentAction> = check {
 
-        val map: Map<String, Any?> = JSONObject(json).toTreeMap()
+        val map: Map<String, Any?> = JSONObject(body).toTreeMap()
 
         val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } } ?: fail("actionType")
         val choiceId = (map["choiceId"] as? String)

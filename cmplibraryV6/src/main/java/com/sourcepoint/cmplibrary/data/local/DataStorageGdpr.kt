@@ -46,6 +46,7 @@ internal interface DataStorageGdpr {
     fun getGdprConsentResp(): String
     fun getGdprMessage(): String?
 
+    fun clearGdprConsent()
     fun clearInternalData()
     fun clearAll()
 
@@ -222,6 +223,13 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
 
     override fun clearAll() {
         preference.edit().clear().apply()
+    }
+
+    override fun clearGdprConsent() {
+        preference
+            .edit()
+            .putString(GDPR_CONSENT_RESP, "")
+            .apply()
     }
 
     private fun fail(param: String): Nothing = throw RuntimeException("$param not fund in local storage.")

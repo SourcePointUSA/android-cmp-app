@@ -12,7 +12,8 @@ import java.util.* // ktlint-disable
  * ================================== Unified wrapper =======================================
  */
 data class UnifiedMessageResp(
-    val campaigns: List<CampaignResp> = emptyList()
+    val campaigns: List<CampaignResp> = emptyList(),
+    val thisContent: JSONObject? = null
 )
 
 sealed class CampaignResp(

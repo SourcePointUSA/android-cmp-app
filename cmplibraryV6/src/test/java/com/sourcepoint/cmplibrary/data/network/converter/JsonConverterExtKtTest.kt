@@ -16,7 +16,7 @@ class JsonConverterExtKtTest {
 
     @Test
     fun `GIVEN a Gdpr json string PARSE to Gdpr Obj`() {
-        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto2()
+        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
 
         val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
         gdpr.run {
@@ -39,7 +39,7 @@ class JsonConverterExtKtTest {
 
     @Test
     fun `GIVEN a Ccpa json string PARSE to Ccpa Obj`() {
-        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto2()
+        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
         val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
         ccpa.run {
             ccpaApplies.assertEquals(true)
@@ -52,7 +52,7 @@ class JsonConverterExtKtTest {
 
     @Test
     fun `GIVEN a consent Ccpa json string PARSE to CcpaConsent Obj`() {
-        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto2()
+        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
         val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
         ccpa.run {
             ccpaApplies.assertEquals(true)
