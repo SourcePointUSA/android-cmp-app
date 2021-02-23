@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
-import com.fasterxml.jackson.jr.ob.impl.DeferredMap
+import org.json.JSONObject
 
 data class SPGDPRConsent(
     val consent: GDPRConsent,
@@ -17,13 +17,15 @@ data class GDPRConsent(
     var specialFeatures: List<Any> = listOf(),
     var legIntCategories: List<Any> = listOf(),
     var euconsent: String = "",
-    var tcData: DeferredMap = DeferredMap(false),
-    var vendorsGrants: DeferredMap = DeferredMap(false)
+    var tcData: Map<String, Any?> = emptyMap(),
+    var vendorsGrants: Map<String, Any?> = emptyMap(),
+    val thisContent: JSONObject = JSONObject()
 )
 
 data class CCPAConsent(
     var status: String? = null,
     var rejectedVendors: List<Any> = listOf(),
     var rejectedCategories: List<Any> = listOf(),
-    var uspstring: String = ""
+    var uspstring: String = "",
+    val thisContent: JSONObject = JSONObject()
 )

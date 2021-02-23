@@ -1,25 +1,22 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
-import com.fasterxml.jackson.jr.ob.JSON
-import com.fasterxml.jackson.jr.ob.impl.DeferredMap
-import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
-
-internal fun String.toUnifiedMessageRespDto(): UnifiedMessageResp {
-    val map: MutableMap<String, Any> = JSON.std.mapFrom(this)
-
-    val list = mutableListOf<CampaignResp>()
-    (map["gdpr"] as? DeferredMap)?.toGDPR()?.also { list.add(it) }
-    (map["ccpa"] as? DeferredMap)?.toCCPA()?.also { list.add(it) }
-
-    return UnifiedMessageResp(list)
-}
+import com.sourcepoint.cmplibrary.data.network.model.CampaignResp
+import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.model.getMap
+import com.sourcepoint.cmplibrary.model.toTreeMap
+import org.json.JSONObject
 
 internal fun String.toUnifiedMessageRespDto2(): UnifiedMessageResp {
-    val map: MutableMap<String, Any> = JSON.std.mapFrom(this)
+    return JSONObject(this).toUnifiedMessageRespDto2()
+}
+
+internal fun JSONObject.toUnifiedMessageRespDto2(): UnifiedMessageResp {
+    val map: Map<String, Any?> = this.toTreeMap()
 
     val list = mutableListOf<CampaignResp>()
-    (map["gdpr"] as? DeferredMap)?.toGDPR()?.also { list.add(it) }
-    (map["ccpa"] as? DeferredMap)?.toCCPA()?.also { list.add(it) }
+
+    map.getMap("gdpr")?.toGDPR()?.also { list.add(it) }
+    map.getMap("ccpa")?.toCCPA()?.also { list.add(it) }
 
     return UnifiedMessageResp(list)
 }

@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.fasterxml.jackson.jr.ob.JSON
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPA
 import com.sourcepoint.cmplibrary.data.network.model.Ccpa
 import com.sourcepoint.cmplibrary.util.Either
@@ -44,7 +43,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
 
     override fun saveCcpa(ccpa: Ccpa) {
 
-        val json = JSON.std.asString(ccpa)
+        val json = ccpa.thisContent.toString()
 
         preference
             .edit()

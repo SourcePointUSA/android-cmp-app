@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.model
 import com.sourcepoint.cmplibrary.data.network.model.CcpaReq
 import com.sourcepoint.cmplibrary.data.network.model.GdprReq
 import com.sourcepoint.cmplibrary.data.network.model.TargetingParams
+import com.sourcepoint.cmplibrary.data.network.model.toJsonObjStringify
 import com.sourcepoint.cmplibrary.exception.Legislation
 
 data class Campaign(
@@ -41,7 +42,7 @@ internal fun CampaignTemplate.toGdprReq(location: String): GdprReq {
         targetingParams = TargetingParams(
             legislation = Legislation.GDPR.name,
             location = location
-        ).toString(),
+        ).toJsonObjStringify(),
     )
 }
 
@@ -53,6 +54,6 @@ internal fun CampaignTemplate.toCcpaReq(location: String): CcpaReq {
         targetingParams = TargetingParams(
             legislation = Legislation.CCPA.name,
             location = location
-        ).toString(),
+        ).toJsonObjStringify(),
     )
 }

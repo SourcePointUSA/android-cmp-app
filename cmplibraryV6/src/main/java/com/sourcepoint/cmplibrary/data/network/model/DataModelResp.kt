@@ -15,46 +15,30 @@ data class UnifiedMessageResp(
     val campaigns: List<CampaignResp> = emptyList()
 )
 
-data class MessageResp(
-    val legislation: Legislation,
-    val message: JSONObject,
-    val uuid: String,
-    val meta: String
-//    val spUserConsent: SpConsent
-//    val gdpr: Gdpr? = null,
-//    val ccpa: Ccpa? = null
-)
-
 sealed class CampaignResp(
     val uuid: String? = null,
     val meta: String? = null,
-    val message: JSONObject? = null
-//    val applies: Boolean = false
+    val message: JSONObject? = null,
+    val thisContent: JSONObject = JSONObject()
 )
 
 class Gdpr(
+    thisContent: JSONObject,
     uuid: String? = null,
     meta: String? = null,
     message: JSONObject? = null,
     val gdprApplies: Boolean = false,
     val userConsent: GDPRConsent? = null
-) : CampaignResp(uuid, meta, message)
+) : CampaignResp(uuid, meta, message, thisContent)
 
 class Ccpa(
+    thisContent: JSONObject,
     uuid: String,
     meta: String,
     message: JSONObject? = null,
     val ccpaApplies: Boolean = false,
     val userConsent: CCPAConsent
-) : CampaignResp(uuid, meta, message)
-
-data class MessageGdprResp(
-    val categories: String,
-    val language: String,
-    val message_choice: String,
-    val message_json: String,
-    val site_id: String
-)
+) : CampaignResp(uuid, meta, message, thisContent)
 
 internal fun String.getAppliedLegislation(): Legislation {
     return when (this.toLowerCase(Locale.getDefault())) {

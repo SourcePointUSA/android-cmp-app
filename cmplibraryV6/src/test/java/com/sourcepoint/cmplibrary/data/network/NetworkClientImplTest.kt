@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockCall
 import com.sourcepoint.cmplibrary.util.Either
@@ -46,12 +47,20 @@ class NetworkClientImplTest {
             gdpr = GdprReq(
                 accountId = 22,
                 propertyId = 7639,
-                propertyHref = "https://tcfv2.mobile.webview"
+                propertyHref = "https://tcfv2.mobile.webview",
+                targetingParams = TargetingParams(
+                    legislation = Legislation.GDPR.name,
+                    location = "EU"
+                ).toJsonObjStringify()
             ),
             ccpa = CcpaReq(
                 accountId = 22,
                 propertyId = 7639,
-                propertyHref = "https://tcfv2.mobile.webview"
+                propertyHref = "https://tcfv2.mobile.webview",
+                targetingParams = TargetingParams(
+                    legislation = Legislation.CCPA.name,
+                    location = "US"
+                ).toJsonObjStringify()
             )
         )
     )
@@ -74,7 +83,7 @@ class NetworkClientImplTest {
 
         /** capture the Request and test the parameters */
         slot.captured.run {
-            readText().assertEquals(req.toBodyRequest())
+            readText().assertEquals(req.toJsonObject().toString())
             url.toString().assertEquals("http://192.168.1.11:3000/wrapper/v1/unified/message?env=localProd&inApp=true")
             method.assertEquals("POST")
             url.queryParameter("env").assertEquals("localProd")

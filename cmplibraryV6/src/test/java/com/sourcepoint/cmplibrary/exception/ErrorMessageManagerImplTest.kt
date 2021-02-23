@@ -40,7 +40,7 @@ class ErrorMessageManagerImplTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
-        every { campaignManager.getAppliedCampaign() }.returns(Either.Right(gdpr))
+        every { campaignManager.getAppliedCampaign() }.returns(Either.Right(Pair(Legislation.GDPR, gdpr)))
     }
 
     @Test

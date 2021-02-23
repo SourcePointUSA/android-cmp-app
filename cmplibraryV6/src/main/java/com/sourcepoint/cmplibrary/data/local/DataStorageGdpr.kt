@@ -3,8 +3,6 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.fasterxml.jackson.jr.ob.JSON
-import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CONSENT_UUID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
@@ -17,6 +15,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.toGDPR
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
+import java.util.* // ktlint-disable
 
 internal interface DataStorageGdpr {
 
@@ -28,7 +27,7 @@ internal interface DataStorageGdpr {
     fun getGdpr(): Either<Gdpr>
 
     /** store data */
-    fun saveTcData(deferredMap: DeferredMap)
+    fun saveTcData(deferredMap: Map<String, Any?>)
     fun saveAuthId(value: String)
     fun saveEuConsent(value: String)
     fun saveMetaData(value: String)
@@ -38,7 +37,7 @@ internal interface DataStorageGdpr {
     fun saveGdprMessage(value: String)
 
     /** fetch data */
-    fun getTcData(): DeferredMap
+    fun getTcData(): Map<String, Any?>
     fun getAuthId(): String
     fun getEuConsent(): String
     fun getMetaData(): String
@@ -96,7 +95,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
 
     override fun saveGdpr(gdpr: Gdpr) {
 
-        val json = JSON.std.asString(gdpr)
+        val json = gdpr.thisContent.toString()
 
         preference
             .edit()
@@ -110,7 +109,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             ?: fail("Gdpr")
     }
 
-    override fun saveTcData(deferredMap: DeferredMap) {
+    override fun saveTcData(deferredMap: Map<String, Any?>) {
         val spEditor = preference.edit()
         deferredMap.forEach { entry ->
             when (val value = entry.value) {
@@ -174,8 +173,8 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .apply()
     }
 
-    override fun getTcData(): DeferredMap {
-        val res = DeferredMap(false)
+    override fun getTcData(): Map<String, Any?> {
+        val res = TreeMap<String, Any?>()
         val map: Map<String, *> = preference.all
         map
             .filter { it.key.startsWith(IABTCF_KEY_PREFIX) }

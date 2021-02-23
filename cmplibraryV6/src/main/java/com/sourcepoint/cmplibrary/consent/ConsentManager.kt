@@ -59,7 +59,11 @@ private class ConsentManagerImpl(
                     put("requestUUID", uuid)
                     put("consentLanguage", action.consentLanguage ?: Locale.getDefault().language.toUpperCase())
                 }
-            }.getOrNull() ?: fail("Error trying to build body to send consents.")
+            }
+            .executeOnLeft {
+                fail("Error trying to build body to send consents.", it)
+            }
+            .getOrNull() ?: fail("Error trying to build body to send consents.")
     }
 
     override fun getGdprConsent(): Either<GDPRConsent> {

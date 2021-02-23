@@ -66,12 +66,8 @@ dependencies {
     implementation(Libs.kotlinxCoroutinesCore)
     implementation(Libs.kotlinReflect)
 
-    // gson
-    api(Libs.jacksonJr)
-
     // Unfortunately we depend on a outdated version of okhttp due to its support to older versions of Android
     //noinspection GradleDependency
-//    api(project(":cmplibrary"))
     api ("com.squareup.okhttp3:okhttp:3.12.10")
 
     testImplementation (Libs.mockk)

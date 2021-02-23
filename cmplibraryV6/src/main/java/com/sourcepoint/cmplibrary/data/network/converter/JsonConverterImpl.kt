@@ -1,8 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
-import com.fasterxml.jackson.jr.ob.JSON
-import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
+import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
@@ -10,6 +9,8 @@ import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.ActionType
+import com.sourcepoint.cmplibrary.model.getMap
+import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
@@ -26,12 +27,12 @@ internal fun JsonConverter.Companion.create(): JsonConverter = JsonConverterImpl
 private class JsonConverterImpl : JsonConverter {
 
     override fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp> = check {
-        body.toUnifiedMessageRespDto()
+        body.toUnifiedMessageRespDto2()
     }
 
     override fun toConsentAction(json: String): Either<ConsentAction> = check {
 
-        val map: MutableMap<String, Any> = JSON.std.mapFrom(json)
+        val map: Map<String, Any?> = JSONObject(json).toTreeMap()
 
         val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } } ?: fail("actionType")
         val choiceId = (map["choiceId"] as? String)
@@ -53,23 +54,31 @@ private class JsonConverterImpl : JsonConverter {
     }
 
     override fun toNativeMessageResp(body: String): Either<NativeMessageResp> = check {
-        val map: MutableMap<String, Any> = JSON.std.mapFrom(body)
-        val msgJSON = (map["msgJSON"] as? DeferredMap) ?: fail("msgJSON")
-        NativeMessageResp(msgJSON = JSONObject(JSON.std.asString(msgJSON)))
+        val map: Map<String, Any?> = JSONObject(body).toTreeMap()
+        val msgJSON = map.getMap("msgJSON") ?: fail("msgJSON")
+        NativeMessageResp(msgJSON = JSONObject(msgJSON))
     }
 
     override fun toNativeMessageRespK(body: String): Either<NativeMessageRespK> = check {
-        val map: MutableMap<String, Any> = JSON.std.mapFrom(body)
-        val bean: NativeMessageDto = JSON.std.beanFrom(NativeMessageDto::class.java, JSON.std.asString(map["msgJSON"]))
+        val map: Map<String, Any?> = JSONObject(body).toTreeMap()
+        val bean: NativeMessageDto = map.getMap("msgJSON")!!.toNativeMessageDto()
         NativeMessageRespK(msg = bean)
     }
 
     override fun toConsentResp(body: String): Either<ConsentResp> = check {
-        ConsentResp(JSONObject(body))
+        val obj = JSONObject(body)
+        val map: Map<String, Any?> = JSONObject(body).toTreeMap()
+        map.getMap("userConsent")?.let { it.toGDPRUserConsent() }
+        obj.get("userConsent")
+        ConsentResp(
+            content = JSONObject(body),
+            userConsent = obj["userConsent"].toString(),
+
+        )
     }
 
     override fun toNativeMessageDto(body: String): Either<NativeMessageDto> = check {
-        JSON.std.beanFrom(NativeMessageDto::class.java, body)
+        JSONObject(body).toTreeMap().toNativeMessageDto()
     }
 
     /**

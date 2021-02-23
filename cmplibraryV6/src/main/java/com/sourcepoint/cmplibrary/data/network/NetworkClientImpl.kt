@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.util.executeOnLeft
 import com.sourcepoint.cmplibrary.util.map
 import okhttp3.MediaType
@@ -31,7 +32,7 @@ private class NetworkClientImpl(
         pError: (Throwable) -> Unit
     ) {
         val mediaType = MediaType.parse("application/json")
-        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest()) // bodyString)
+        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
 
         val request: Request = Request.Builder()
             .url(urlManager.inAppUrlMessage)
@@ -135,6 +136,7 @@ private class NetworkClientImpl(
     }
 
     override fun sendConsent(
+        legislation: Legislation,
         consentReq: JSONObject,
         success: (ConsentResp) -> Unit,
         error: (Throwable) -> Unit

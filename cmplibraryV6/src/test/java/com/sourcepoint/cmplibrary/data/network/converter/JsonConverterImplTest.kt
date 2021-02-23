@@ -1,11 +1,11 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
-import com.fasterxml.jackson.jr.ob.JSON
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertNull
-import com.sourcepoint.cmplibrary.core.layout.model.StyleDto
-import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.file2List
 import com.sourcepoint.cmplibrary.util.file2String
@@ -83,39 +83,8 @@ class JsonConverterImplTest {
     @Test
     fun `GIVEN a native layout dataset  RETURN a Right(NativeMessageModel)`() {
         val json = "native_layout.json".file2String()
+        val testMap = JSONObject(json).toTreeMap()
         val nm = (sut.toNativeMessageDto(json) as Either.Right).r
-        nm.name.assertEquals("GDPR Native Message")
-        nm.title!!.also {
-            it.text.assertEquals("Personalised Ads")
-            checkStyle(it.style!!, "Arial", 28, "800", "#353331", "#fff")
-        }
-        nm.body!!.also {
-            it.text!!.contains("GDPR - Lorem ipsum dolor").assertEquals(true)
-            checkStyle(it.style!!, "Arial", 28, "800", "#353331", "#fff")
-            JSON.std.asString(it.customFields).assertEquals("{}")
-        }
-        nm.actions!![0].run {
-            choiceId!!.assertEquals(2956680)
-            choiceType!!.assertEquals(11)
-            checkStyle(style!!, "Arial", 18, "700", "#ffffff", "#ff0d00")
-        }
-        JSON.std.asString(nm.customFields).assertEquals("{}")
-    }
-
-    fun checkStyle(
-        style: StyleDto,
-        fontFamily: String,
-        fontSize: Int,
-        fontWeight: String,
-        color: String,
-        backgroundColor: String
-    ) {
-        style.run {
-            fontFamily.assertEquals(fontFamily)
-            fontSize.assertEquals(fontSize)
-            fontWeight.assertEquals(fontWeight)
-            color.assertEquals(color)
-            backgroundColor.assertEquals(backgroundColor)
-        }
+        nm.thisContent.assertEquals(testMap)
     }
 }

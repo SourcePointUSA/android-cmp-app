@@ -1,20 +1,23 @@
 package com.sourcepoint.cmplibrary.core.layout.model
 
-class NativeMessageDto {
-    var actions: List<ActionDto> = emptyList()
-    var body: TextViewConfigDto? = null
-    var customFields: CustomFieldsDto? = null
-    var name: String? = null
-    var title: TextViewConfigDto? = null
-}
+import org.json.JSONObject
 
-class ActionDto {
-    var choiceId: Int? = null
-    var choiceType: Int? = null
-    var customFields: CustomFieldsDto? = null
-    var style: StyleDto? = null
+class NativeMessageDto(
+    val actions: List<ActionDto> = emptyList(),
+    val body: TextViewConfigDto? = null,
+    val customFields: JSONObject = JSONObject(),
+    val name: String? = null,
+    val title: TextViewConfigDto? = null,
+    val thisContent: Map<String, Any?>
+)
+
+class ActionDto(
+    var choiceId: Int? = null,
+    var choiceType: Int? = null,
+    var customFields: JSONObject? = null,
+    var style: StyleDto? = null,
     var text: String? = null
-}
+)
 
 fun ActionDto.toTextViewConfigDto() = TextViewConfigDto(
     customFields = customFields,
@@ -23,24 +26,20 @@ fun ActionDto.toTextViewConfigDto() = TextViewConfigDto(
 )
 
 data class TextViewConfigDto(
-    var customFields: CustomFieldsDto? = null,
+    var customFields: JSONObject? = null,
     var style: StyleDto? = null,
     var text: String? = null
 )
 
-class CustomFieldsDto
-
 class StyleDto(
-    private var pBackgroundColor: String? = null,
-    var color: String? = null,
-    var fontFamily: String? = null,
-    var fontSize: Int? = null,
-    var fontWeight: String? = null
+    pBackgroundColor: String? = null,
+    val color: String? = null,
+    val fontFamily: String? = null,
+    val fontSize: Int? = null,
+    val fontWeight: String? = null
 ) {
 
-    var backgroundColor: String? = null
-        get() = field
-            ?.let { getSixDigitHexValue(it) }
+    val backgroundColor: String? = pBackgroundColor?.let { getSixDigitHexValue(it) }
 
     private fun getSixDigitHexValue(colorString: String): String? {
         return if (colorString.length == 4)

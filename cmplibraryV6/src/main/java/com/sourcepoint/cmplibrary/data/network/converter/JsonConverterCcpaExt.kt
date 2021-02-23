@@ -1,46 +1,44 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
-import com.fasterxml.jackson.jr.ob.JSON
-import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.model.CCPAConsent
 import com.sourcepoint.cmplibrary.data.network.model.Ccpa
+import com.sourcepoint.cmplibrary.model.getFieldValue
+import com.sourcepoint.cmplibrary.model.getMap
+import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONObject
 
-internal fun DeferredMap.toCCPA(): Ccpa? {
-    val map: MutableMap<String, Any> = this
-    return map.toCCPA()
-}
-
 internal fun String.toCCPA(): Ccpa? {
-    val map: MutableMap<String, Any> = JSON.std.mapFrom(this)
+    val map: Map<String, Any?> = JSONObject(this).toTreeMap()
     return map.toCCPA()
 }
 
-internal fun MutableMap<String, Any>.toCCPA(): Ccpa? {
+internal fun Map<String, Any?>.toCCPA(): Ccpa? {
 
-    val map: MutableMap<String, Any> = this
+    val map: Map<String, Any?> = this
 
     return map.let {
-        val uuid = (it["uuid"] as? String) ?: failParam("uuid")
-        val meta = (it["meta"] as? String) ?: failParam("meta")
-        val ccpaApplies = (it["ccpaApplies"] as? Boolean) ?: failParam("meta")
-        val message = (it["message"] as? DeferredMap) // ?: failParam("message")
-        val userConsentMap = (it["userConsent"] as? DeferredMap) ?: failParam("userConsent")
 
-        val messageObj = message?.let { m -> JSONObject(JSON.std.asString(m)) }
+        val uuid = it.getFieldValue<String>("uuid") ?: failParam("uuid")
+        val meta = it.getFieldValue<String>("meta") ?: failParam("meta")
+        val ccpaApplies = it.getFieldValue<Boolean>("ccpaApplies") ?: failParam("meta")
+        val message = it.getMap("message")
+        val userConsentMap = it.getMap("userConsent") ?: failParam("userConsent")
+
+        val messageObj = message?.let { map -> JSONObject(map) }
 
         Ccpa(
             uuid = uuid,
             userConsent = userConsentMap.toCCPAUserConsent(),
             meta = meta,
             ccpaApplies = ccpaApplies,
-            message = messageObj
+            message = messageObj,
+            thisContent = JSONObject(map)
         )
     }
 }
 
-internal fun DeferredMap.toCCPAUserConsent(): CCPAConsent {
-    val userConsentMap = (this as? DeferredMap) ?: failParam("CCPAUserConsent")
+internal fun Map<String, Any?>.toCCPAUserConsent(): CCPAConsent {
+    val userConsentMap = this
 
     val rejectedCategories = (userConsentMap["rejectedCategories"] as? Iterable<Any?>)
         ?.filterNotNull()
@@ -59,6 +57,7 @@ internal fun DeferredMap.toCCPAUserConsent(): CCPAConsent {
         rejectedCategories = rejectedCategories,
         rejectedVendors = rejectedVendors,
         status = status,
-        uspstring = uspstring
+        uspstring = uspstring,
+        thisContent = JSONObject(this)
     )
 }
