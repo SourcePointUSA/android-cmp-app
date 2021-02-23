@@ -4,14 +4,15 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertEquals
 import com.example.uitestutil.jsonFile2String
-import com.fasterxml.jackson.jr.ob.JSON
-import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
-import com.sourcepoint.cmplibrary.data.network.converter.toCCPA
-import com.sourcepoint.cmplibrary.data.network.converter.toGDPR
+import com.sourcepoint.cmplibrary.data.network.converter.toUnifiedMessageRespDto2
+import com.sourcepoint.cmplibrary.data.network.model.Ccpa
+import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 import com.sourcepoint.cmplibrary.util.Either
+import org.json.JSONObject
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.* //ktlint-disable
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class DataStorageGdprImplTest {
@@ -21,8 +22,8 @@ class DataStorageGdprImplTest {
     @Test
     fun `GIVEN_an_Gdpr_object_STORE_it_into_the_local_data_storage`() {
 
-        val unifiedMess = JSON.std.mapFrom("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String())
-        val gdpr = (unifiedMess["gdpr"] as DeferredMap).toGDPR()!!
+        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto2()
+        val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
 
         val sut = DataStorageGdpr.create(appContext)
         sut.saveGdpr(gdpr)
@@ -44,8 +45,10 @@ class DataStorageGdprImplTest {
     @Test
     fun `GIVEN_an_Ccpa_object_STORE_it_into_the_local_data_storage`() {
 
-        val unifiedMess = JSON.std.mapFrom("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String())
-        val ccpa = (unifiedMess["ccpa"] as DeferredMap).toCCPA()!!
+        val unifiedMess = JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto2()
+
+        val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
+        val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
 
         val sut = DataStorageCcpa.create(appContext)
         sut.saveCcpa(ccpa)
@@ -69,7 +72,7 @@ class DataStorageGdprImplTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val storage = DataStorageGdpr.create(appContext).apply { clearAll() }
-        val map = DeferredMap(true)
+        val map = TreeMap<String, String>()
         (1..10).forEach { map["IABTCF_$it"] = "$it" }
         storage.saveTcData(map)
         val output = storage.getTcData()
@@ -111,7 +114,7 @@ class DataStorageGdprImplTest {
         storage.getTcData().assertEquals(getMap())
     }
 
-    private fun getMap(): DeferredMap {
-        return DeferredMap(false).apply { this["${IABTCF_KEY_PREFIX}key"] = "value" }
+    private fun getMap(): TreeMap<String, String> {
+        return TreeMap<String, String>().apply { this["${IABTCF_KEY_PREFIX}key"] = "value" }
     }
 }

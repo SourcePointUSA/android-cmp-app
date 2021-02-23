@@ -82,7 +82,7 @@ class MainActivityV6 : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.i(TAG, "init");
-        val nm = buildNativeMessageV6()
+//        val nm = buildNativeMessageV6()
 //        val nm = buildNativeMessageV6Local()
 //        consentLib.loadMessage(nm)
         consentLib.loadMessage()

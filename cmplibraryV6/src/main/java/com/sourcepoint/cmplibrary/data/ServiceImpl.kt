@@ -2,7 +2,12 @@ package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
-import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
+import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.Legislation.CCPA
+import com.sourcepoint.cmplibrary.exception.Legislation.GDPR
+import org.json.JSONObject
 
 /**
  * Factory method to create an instance of a [Service] using its implementation
@@ -41,9 +46,40 @@ private class ServiceImpl(
             messageReq,
             { nativeMessageResp ->
                 success(nativeMessageResp)
+                nativeMessageResp.msgJSON
                 // TODO save the data into the local storage
             },
-            ::error
+            error
+        )
+    }
+
+    override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {
+        nc.getNativeMessageK(
+            messageReq,
+            { nativeMessageResp ->
+                success(nativeMessageResp)
+                nativeMessageResp.msg
+                // TODO save the data into the local storage
+            },
+            error
+        )
+    }
+
+    override fun sendConsent(legislation: Legislation, consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit) {
+        nc.sendConsent(
+            legislation,
+            consentReq,
+            { consentResp ->
+                success(consentResp.copy(legislation = legislation))
+                // TODO save the consent into the local storage
+                when (legislation) {
+                    GDPR -> {
+                    }
+                    CCPA -> {
+                    }
+                }
+            },
+            error
         )
     }
 }

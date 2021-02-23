@@ -1,10 +1,10 @@
 package com.sourcepoint.cmplibrary.stub
 
 import android.content.SharedPreferences
-import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.util.Either
 import io.mockk.mockk
 import org.json.JSONObject
@@ -24,14 +24,14 @@ internal class MockService(
 
     override val preference: SharedPreferences = mockk()
 
-    override fun sendConsent(consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit) {}
+    override fun sendConsent(legislation: Legislation, consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit) {}
     override fun saveGdprConsentResp(value: String) {}
     override fun saveCcpaConsentResp(value: String) {}
     override fun getGdprConsentResp(): String = "{}"
     override fun getCcpaConsentResp(): String = "{}"
     override fun clearInternalData() {}
     override fun clearAll() {}
-    override fun saveTcData(deferredMap: DeferredMap) {}
+    override fun saveTcData(deferredMap: Map<String, Any?>) {}
     override fun saveAuthId(value: String) {}
     override fun saveEuConsent(value: String) {}
     override fun saveMetaData(value: String) {}
@@ -40,7 +40,7 @@ internal class MockService(
     override fun saveCcpa(ccpa: Ccpa) {}
     override fun saveGdpr(gdpr: Gdpr) {}
 
-    override fun getTcData(): DeferredMap = DeferredMap(false)
+    override fun getTcData(): Map<String, Any?> = emptyMap()
     override fun getAuthId(): String = ""
     override fun getEuConsent(): String = ""
     override fun getMetaData(): String = ""
@@ -49,8 +49,11 @@ internal class MockService(
     override fun getCcpa(): Either<Ccpa> = Either.Left(RuntimeException())
     override fun getGdpr(): Either<Gdpr> = Either.Left(RuntimeException())
 
-    override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {
-    }
+    override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
+    override fun saveGdprMessage(value: String) {}
+    override fun getGdprMessage(): String? = null
+    override fun saveCcpaMessage(value: String) {}
+    override fun getCcpaMessage(): String? = null
 
     override var gdprApplies: Boolean = false
     override var ccpaApplies: Boolean = false

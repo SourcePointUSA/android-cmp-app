@@ -5,15 +5,15 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertNotNull
 import com.example.uitestutil.assertNull
 import com.example.uitestutil.jsonFile2String
-import com.fasterxml.jackson.jr.ob.JSON
-import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.data.network.converter.toCCPA
-import com.sourcepoint.cmplibrary.data.network.converter.toGDPR
+import com.sourcepoint.cmplibrary.data.network.converter.toUnifiedMessageRespDto2
+import com.sourcepoint.cmplibrary.data.network.model.Ccpa
+import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 import com.sourcepoint.cmplibrary.util.userConsents
+import org.json.JSONObject
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -32,8 +32,9 @@ class SpUtilsTest {
             gdpr.assertNull()
         }
 
-        val unifiedMess = JSON.std.mapFrom("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String())
-        val gdpr = (unifiedMess["gdpr"] as DeferredMap).toGDPR()!!
+        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto2()
+        val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
+
         dataStorage.saveGdpr(gdpr)
 
         userConsents(appCtx).run {
@@ -53,8 +54,9 @@ class SpUtilsTest {
             gdpr.assertNull()
         }
 
-        val unifiedMess = JSON.std.mapFrom("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String())
-        val ccpa = (unifiedMess["ccpa"] as DeferredMap).toCCPA()!!
+        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto2()
+        val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
+
         dataStorage.saveCcpa(ccpa)
 
         userConsents(appCtx).run {
@@ -74,9 +76,10 @@ class SpUtilsTest {
             gdpr.assertNull()
         }
 
-        val unifiedMess = JSON.std.mapFrom("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String())
-        val ccpa = (unifiedMess["ccpa"] as DeferredMap).toCCPA()!!
-        val gdpr = (unifiedMess["gdpr"] as DeferredMap).toGDPR()!!
+        val unifiedMess = JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto2()
+
+        val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
+        val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
         dataStorage.saveGdpr(gdpr)
         dataStorage.saveCcpa(ccpa)
 

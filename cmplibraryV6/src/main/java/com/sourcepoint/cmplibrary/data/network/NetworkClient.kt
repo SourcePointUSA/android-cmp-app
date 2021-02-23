@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
+import com.sourcepoint.cmplibrary.exception.Legislation
 import org.json.JSONObject
 
 /**
@@ -45,8 +46,9 @@ internal interface NetworkClient {
     )
 
     fun sendConsent(
+        legislation: Legislation,
         consentReq: JSONObject,
         success: (ConsentResp) -> Unit,
-        error: (Throwable) -> Unit
+        error: (Throwable) -> Unit,
     )
 }

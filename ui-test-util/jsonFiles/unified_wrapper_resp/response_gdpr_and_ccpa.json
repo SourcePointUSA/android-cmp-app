@@ -469,7 +469,6 @@
   },
   "ccpa": {
     "uuid": "9c027fb5-9dde-4d07-9f79-bbb316489b9c",
-    "applies": true,
     "ccpaApplies": true,
     "meta": "{\"mmsCookies\":[\"_sp_v1_uid=1:608:84b4e9d7-4dde-4eda-82ab-284a9aeb9fed\",\"_sp_v1_csv=1\",\"_sp_v1_lt=1:\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbLKK83J0YlRSkVil4AlqmtrlXTgyqKRGXkghkFtLC59OCWUYgEO1mB4eQAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_data=2:289044:1613636576:0:1:0:1:0:0:885b0124-dbce-4102-b017-e602962a39ed:-1\"],\"messageId\":425813,\"dnsDisplayed\":true}",
     "userConsent": {

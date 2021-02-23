@@ -14,10 +14,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
-import com.sourcepoint.cmplibrary.exception.GenericSDKException
-import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.exception.MissingClientException
-import com.sourcepoint.cmplibrary.exception.RenderingAppException
+import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
@@ -97,7 +94,9 @@ internal class SpConsentLibImpl(
                     spClient?.onUIReady(nativeMessage)
                 }
             },
-            { throwable -> pLogger.error(throwable.toConsentLibException()) }
+            { throwable ->
+                pLogger.error(throwable.toConsentLibException())
+            }
         )
     }
 
@@ -195,9 +194,11 @@ internal class SpConsentLibImpl(
                 ActionType.ACCEPT_ALL,
                 ActionType.SAVE_AND_EXIT,
                 ActionType.REJECT_ALL -> {
+                    view.let { spClient?.onUIFinished(it) }
                     consentManager.buildGdprConsentReq(action)
                         .map { consentReq ->
                             service.sendConsent(
+                                Legislation.GDPR,
                                 consentReq,
                                 { consentResp -> consentManager.saveGdprConsent(consentResp.content) },
                                 { throwable -> pLogger.error(throwable.toConsentLibException()) }
@@ -220,24 +221,31 @@ internal class SpConsentLibImpl(
     inner class NativeMsgDelegate : NativeMessageClient {
 
         override fun onClickAcceptAll(view: View, ca: ConsentAction) {
-            spClient?.onAction(view, ActionType.ACCEPT_ALL)
+//            spClient?.onAction(view, ActionType.ACCEPT_ALL)
+            onActionFromWebViewClient(ca, view)
         }
 
         override fun onClickRejectAll(view: View, ca: ConsentAction) {
-            spClient?.onAction(view, ActionType.REJECT_ALL)
+//            spClient?.onAction(view, ActionType.REJECT_ALL)
+            onActionFromWebViewClient(ca, view)
         }
 
-        override fun onPmDismiss(view: View, ca: ConsentAction) {}
+        override fun onPmDismiss(view: View, ca: ConsentAction) {
+            onActionFromWebViewClient(ca, view)
+        }
 
         override fun onClickShowOptions(view: View, ca: ConsentAction) {
-            spClient?.onAction(view, ActionType.SHOW_OPTIONS)
+//            spClient?.onAction(view, ActionType.SHOW_OPTIONS)
+            onActionFromWebViewClient(ca, view)
         }
 
         override fun onClickCancel(view: View, ca: ConsentAction) {
-            spClient?.onAction(view, ActionType.MSG_CANCEL)
+//            spClient?.onAction(view, ActionType.MSG_CANCEL)
+            onActionFromWebViewClient(ca, view)
         }
 
         override fun onDefaultAction(view: View, ca: ConsentAction) {
+            onActionFromWebViewClient(ca, view)
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.data.network.model.consent
 
-import com.fasterxml.jackson.jr.ob.JSON
 import org.json.JSONObject
 
 data class ConsentReq(
@@ -20,5 +19,22 @@ data class ConsentReq(
 )
 
 fun ConsentReq.toBodyRequest(): String {
-    return JSON.std.asString(this)
+    return JSONObject()
+        .apply {
+            put("uuid", uuid)
+            put("choiceId", choiceId)
+            put("consentLanguage", consentLanguage)
+            put("meta", meta)
+            put("propertyHref", propertyHref)
+            put("privacyManagerId", privacyManagerId)
+            put("requestUUID", requestUUID)
+            put("accountId", accountId)
+            put("actionType", actionType)
+            put("propertyId", propertyId)
+            put("requestFromPM", requestFromPM)
+            put("pubData", pubData)
+            put("pmSaveAndExitVariables", pmSaveAndExitVariables)
+        }
+        .toString()
+//    return JSON.std.asString(this)
 }

@@ -1,36 +1,31 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
-import com.fasterxml.jackson.jr.ob.JSON
-import com.fasterxml.jackson.jr.ob.impl.DeferredMap
-import com.sourcepoint.cmplibrary.assertNotNull
-import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
-import org.junit.Test
+import com.sourcepoint.cmplibrary.exception.Legislation
 
 class MessageRespTest {
 
-    val req = MessageReq(
+    private val req: MessageReq = MessageReq(
         requestUUID = "test",
         campaigns = Campaigns(
             gdpr = GdprReq(
                 accountId = 22,
                 propertyId = 7639,
-                propertyHref = "https://tcfv2.mobile.webview"
+                propertyHref = "https://tcfv2.mobile.webview",
+                targetingParams = TargetingParams(
+                    legislation = Legislation.GDPR.name,
+                    location = "EU"
+                ).toJsonObjStringify()
             ),
             ccpa = CcpaReq(
                 accountId = 22,
                 propertyId = 7639,
-                propertyHref = "https://tcfv2.mobile.webview"
+                propertyHref = "https://tcfv2.mobile.webview",
+                targetingParams = TargetingParams(
+                    legislation = Legislation.CCPA.name,
+                    location = "US"
+                ).toJsonObjStringify()
             )
         )
     )
-
-    @Test
-    fun `tree`() {
-        val uMessage = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()
-        val bean = JSON.std.mapFrom(uMessage)
-
-        val r = (bean["gdpr"] as DeferredMap).toGDPR()
-        bean.assertNotNull()
-    }
 }

@@ -13,3 +13,7 @@ internal fun failParam(param: String): Nothing {
 internal fun fail(message: String): Nothing {
     throw InvalidResponseWebMessageException(description = message)
 }
+
+internal fun fail(message: String, throwable: Throwable): Nothing {
+    throw InvalidResponseWebMessageException(description = message, cause = throwable)
+}

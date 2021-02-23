@@ -1,59 +1,42 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
-import com.fasterxml.jackson.jr.ob.JSON
-import com.fasterxml.jackson.jr.ob.impl.DeferredMap
 import com.sourcepoint.cmplibrary.data.network.model.GDPRConsent
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
-import com.sourcepoint.cmplibrary.data.network.model.MessageGdprResp
+import com.sourcepoint.cmplibrary.model.getFieldValue
+import com.sourcepoint.cmplibrary.model.getMap
+import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONObject
 
-internal fun DeferredMap.toGDPR(): Gdpr? {
-    val map: MutableMap<String, Any> = this
-    return map.toGDPR()
-}
-
 internal fun String.toGDPR(): Gdpr? {
-    val map: MutableMap<String, Any> = JSON.std.mapFrom(this)
+    val map: Map<String, Any?> = JSONObject(this).toTreeMap()
     return map.toGDPR()
 }
 
-internal fun MutableMap<String, Any>.toGDPR(): Gdpr? {
+internal fun Map<String, Any?>.toGDPR(): Gdpr {
 
-    val map: MutableMap<String, Any> = this
+    val map: Map<String, Any?> = this
 
     return map.let {
-        val uuid = (it["uuid"] as? String) ?: failParam("uuid")
-        val meta = (it["meta"] as? String) ?: failParam("meta")
-        val message = (it["message"] as? DeferredMap)
-        val userConsentMap = (it["userConsent"] as? DeferredMap) ?: failParam("userConsent")
+        val uuid = it.getFieldValue<String>("uuid") ?: failParam("uuid")
+        val meta = it.getFieldValue<String>("meta") ?: failParam("meta")
+        val message = it.getMap("message")
+        val userConsentMap = it.getMap("userConsent") ?: failParam("userConsent")
 
-        val messageObj = message?.let { JSONObject(JSON.std.asString(it)) }
+        val messageObj = message?.let { map -> JSONObject(map) }
 
         Gdpr(
             uuid = uuid,
             userConsent = userConsentMap.toGDPRUserConsent(),
             meta = meta,
-            message = messageObj
+            message = messageObj,
+            thisContent = JSONObject(map)
         )
     }
 }
 
-internal fun DeferredMap.toMessageGdprResp(): MessageGdprResp {
-    return MessageGdprResp(
-        message_json = (this["message_json"] as? DeferredMap).let { m -> JSON.std.asString(m) }
-            ?: failParam("message_json"),
-        categories = (this["categories"] as? Iterable<Any?>).let { m -> JSON.std.asString(m) }
-            ?: failParam("categories"),
-        language = (this["language"] as? String).let { m -> JSON.std.asString(m) } ?: failParam("language"),
-        message_choice = (this["message_choice"] as? Iterable<Any?>).let { m -> JSON.std.asString(m) }
-            ?: failParam("message_choice"),
-        site_id = (this["site_id"] as? Int).let { m -> JSON.std.asString(m) } ?: failParam("site_id"),
-    )
-}
+internal fun Map<String, Any?>.toGDPRUserConsent(): GDPRConsent {
 
-internal fun DeferredMap.toGDPRUserConsent(): GDPRConsent {
-
-    val userConsentMap = (this as? DeferredMap) ?: failParam("GDPRUserConsent")
+    val userConsentMap = this
 
     val acceptedCategories = (userConsentMap["acceptedCategories"] as? Iterable<Any?>)
         ?.filterNotNull()
@@ -74,11 +57,12 @@ internal fun DeferredMap.toGDPRUserConsent(): GDPRConsent {
         ?.sortedBy { it.hashCode() }
         ?: failParam("specialFeatures")
 
-    val tcData = (userConsentMap["TCData"] as? DeferredMap) ?: DeferredMap(false)
-    val vendorsGrants = (userConsentMap["grants"] as? DeferredMap) ?: DeferredMap(false)
+    val tcData = (userConsentMap["TCData"] as? Map<String, Any?>) ?: emptyMap<String, Any?>()
+    val vendorsGrants = (userConsentMap["grants"] as? Map<String, Any?>) ?: emptyMap<String, Any?>()
     val euconsent = (userConsentMap["euconsent"] as? String) ?: ""
 
     return GDPRConsent(
+        thisContent = JSONObject(this),
         acceptedCategories = acceptedCategories,
         acceptedVendors = acceptedVendors,
         legIntCategories = legIntCategories,
