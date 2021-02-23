@@ -125,4 +125,32 @@ class CampaignManagerTest {
 
         verify(exactly = 0) { dataStorage.getCcpaConsentResp() }
     }
+
+    @Test
+    fun `VERIFY that getCCPAConsent AND getGDPRConsent GETS cleared with null values`() {
+
+        sut.saveCCPAConsent(null)
+        sut.saveGDPRConsent(null)
+
+        (sut.getCCPAConsent() as? Either.Left).assertNotNull()
+        (sut.getGDPRConsent() as? Either.Left).assertNotNull()
+
+        verify(exactly = 1) { dataStorage.getGdprConsentResp() }
+        verify(exactly = 1) { dataStorage.getCcpaConsentResp() }
+    }
+
+    @Test
+    fun `VERIFY that getCCPAConsent AND getGDPRConsent GETS cleared calling clearConsents`() {
+
+        sut.saveCCPAConsent(ccpa)
+        sut.saveGDPRConsent(gdpr)
+
+        sut.clearConsents()
+
+        (sut.getCCPAConsent() as? Either.Left)
+        (sut.getGDPRConsent() as? Either.Left)
+
+        verify(exactly = 1) { dataStorage.getGdprConsentResp() }
+        verify(exactly = 1) { dataStorage.getCcpaConsentResp() }
+    }
 }

@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data
 
+import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
@@ -13,32 +14,46 @@ import org.json.JSONObject
  * Factory method to create an instance of a [Service] using its implementation
  * @param nc is an instance of [NetworkClient]
  * @param ds is an instance of [DataStorage]
+ * @param cm is an instance of [CampaignManager]
  * @return an instance of the [ServiceImpl] implementation
  */
-internal fun Service.Companion.create(nc: NetworkClient, ds: DataStorage): Service = ServiceImpl(nc, ds)
+internal fun Service.Companion.create(
+    nc: NetworkClient,
+    ds: DataStorage,
+    cm: CampaignManager
+): Service = ServiceImpl(nc, ds, cm)
 
 /**
  * Implementation os the [Service] interface
  */
 private class ServiceImpl(
     private val nc: NetworkClient,
-    private val ds: DataStorage
+    private val ds: DataStorage,
+    private val cm: CampaignManager
 ) : Service, NetworkClient by nc, DataStorage by ds {
 
     override fun getMessage(messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) {
         nc.getMessage(
             messageReq,
             { messageResp ->
-                messageResp.campaigns.forEach {
-                    when (it) {
-                        is Gdpr -> ds.saveGdpr(it)
-                        is Ccpa -> ds.saveCcpa(it)
-                    }
-                }
+                messageResp.campaigns.forEach { storeCampaignData(it) }
                 pSuccess(messageResp)
             },
             pError
         )
+    }
+
+    private fun storeCampaignData(cr: CampaignResp) {
+        when (cr) {
+            is Gdpr -> {
+                ds.saveGdpr(cr)
+                cr.userConsent?.let { uc -> cm.saveGDPRConsent(uc) }
+            }
+            is Ccpa -> {
+                ds.saveCcpa(cr)
+                cr.userConsent.let { uc -> cm.saveCCPAConsent(uc) }
+            }
+        }
     }
 
     override fun getNativeMessage(messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {
