@@ -30,8 +30,8 @@ internal interface CampaignManager {
     fun getGDPRConsent(): Either<GDPRConsent>
     fun getCCPAConsent(): Either<CCPAConsent>
 
-    fun saveGDPRConsent(consent: GDPRConsent)
-    fun saveCCPAConsent(consent: CCPAConsent)
+    fun saveGDPRConsent(consent: GDPRConsent?)
+    fun saveCCPAConsent(consent: CCPAConsent?)
 
     fun clearConsents()
 
@@ -108,20 +108,20 @@ private class CampaignManagerImpl(
     override fun getCCPAConsent(): Either<CCPAConsent> = check {
         ccpaConsent ?: dataStorage
             .getCcpaConsentResp()
-            .also { if (it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
+            .also { if (it.isBlank()) fail("CCPAConsent is not saved in the the storage!!") }
             .let { JSONObject(it) }
             .toTreeMap()
             .toCCPAUserConsent()
     }
 
-    override fun saveGDPRConsent(consent: GDPRConsent) {
+    override fun saveGDPRConsent(consent: GDPRConsent?) {
         gdprConsent = consent
-        dataStorage.saveGdprConsentResp(consent.thisContent.toString())
+        dataStorage.saveGdprConsentResp(consent?.let { it.thisContent.toString() } ?: "")
     }
 
-    override fun saveCCPAConsent(consent: CCPAConsent) {
+    override fun saveCCPAConsent(consent: CCPAConsent?) {
         ccpaConsent = consent
-        dataStorage.saveCcpaConsentResp(consent.thisContent.toString())
+        dataStorage.saveCcpaConsentResp(consent?.let { it.thisContent.toString() } ?: "")
     }
 
     override fun clearConsents() {

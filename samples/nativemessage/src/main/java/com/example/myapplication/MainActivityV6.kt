@@ -61,6 +61,12 @@ class MainActivityV6 : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.consent).setOnClickListener { consentLib.loadGDPRPrivacyManager() }
+
+        consent.setOnLongClickListener {
+            consentLib.dispose()
+            onBackPressed()
+            true
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
