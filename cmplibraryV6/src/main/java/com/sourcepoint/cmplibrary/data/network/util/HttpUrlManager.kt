@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import okhttp3.HttpUrl
 
@@ -10,7 +11,10 @@ import okhttp3.HttpUrl
 internal interface HttpUrlManager {
     val inAppUrlMessage: HttpUrl
     val inAppUrlNativeMessage: HttpUrl
-    val sendConsentUrl: HttpUrl
+    val sendConsentUrlOld: HttpUrl
+    val sendGdprConsentUrl: HttpUrl
+    val sendCcpaConsentUrl: HttpUrl
+    fun sendConsentUrl(legislation: Legislation): HttpUrl
     fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl
@@ -49,13 +53,37 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("inApp", "true")
             .build()
 
-    override val sendConsentUrl: HttpUrl
+    override val sendConsentUrlOld: HttpUrl
         get() = HttpUrl.Builder()
             .scheme("https")
             .host(spHost)
             .addPathSegments("wrapper/tcfv2/v1/gdpr")
             .addPathSegments("consent")
             .addQueryParameter("inApp", "true")
+            .build()
+
+    override val sendGdprConsentUrl: HttpUrl
+        get() = HttpUrl.Builder()
+            .scheme("http")
+            .host("192.168.1.11")
+            .port(3000)
+            .addPathSegments("wrapper/tcfv2/v1/gdpr")
+            .addPathSegments("consent")
+            .addQueryParameter("env", "localProd")
+            .addQueryParameter("inApp", "true")
+            .addQueryParameter("sdkVersion", "AndroidLocal")
+            .build()
+
+    override val sendCcpaConsentUrl: HttpUrl
+        get() = HttpUrl.Builder()
+            .scheme("http")
+            .host("192.168.1.11")
+            .port(3000)
+            .addPathSegments("wrapper/tcfv2/v1/ccpa")
+            .addPathSegments("consent")
+            .addQueryParameter("env", "localProd")
+            .addQueryParameter("inApp", "true")
+            .addQueryParameter("sdkVersion", "AndroidLocal")
             .build()
 
     override fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
@@ -135,6 +163,13 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .port(8080)
             .addQueryParameter("preload_message", "true")
             .build()
+    }
+
+    override fun sendConsentUrl(legislation: Legislation): HttpUrl {
+        return when (legislation) {
+            Legislation.GDPR -> sendGdprConsentUrl
+            Legislation.CCPA -> sendCcpaConsentUrl
+        }
     }
 }
 

@@ -20,6 +20,7 @@ internal interface JsonConverter {
     fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp>
 
     fun toNativeMessageResp(body: String): Either<NativeMessageResp>
+
     fun toNativeMessageRespK(body: String): Either<NativeMessageRespK>
 
     fun toConsentResp(body: String): Either<ConsentResp>
@@ -27,5 +28,6 @@ internal interface JsonConverter {
     fun toNativeMessageDto(body: String): Either<NativeMessageDto>
 
     fun toConsentAction(json: String): Either<ConsentAction>
+
     companion object
 }
