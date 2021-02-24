@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.core.web
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
@@ -11,12 +12,14 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.util.*  //ktlint-disable
 import okhttp3.HttpUrl
 import org.json.JSONObject
 
+@SuppressLint("ViewConstructor")
 internal class ConsentWebView(
     context: Context,
     private val jsClientLib: JSClientLib,
@@ -74,7 +77,7 @@ internal class ConsentWebView(
         }
     }
 
-    override fun loadConsentUIFromUrl(url: HttpUrl, message: JSONObject): Either<Boolean> = check {
+    private fun loadConsentUIFromUrl(url: HttpUrl, message: JSONObject): Boolean {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.onPageFinishedLambda = { view, url ->
             /**
@@ -87,7 +90,7 @@ internal class ConsentWebView(
             view.loadUrl("javascript: window.postMessage($obj);")
         }
         loadUrl(url.toString())
-        true
+        return true
     }
 
     override fun loadConsentUIFromUrl(url: HttpUrl): Either<Boolean> = check {
@@ -96,6 +99,20 @@ internal class ConsentWebView(
         loadUrl(url.toString())
         true
     }
+
+    override fun loadConsentUI(messageResp: UnifiedMessageResp, url: HttpUrl): Either<Boolean> = check {
+        messageResp
+            .campaigns
+            .mapNotNull { it.message }
+            .firstOrNull()
+            ?.let { jsonMessages -> loadConsentUIFromUrl(url, jsonMessages) }
+            ?: run {
+                logMess("{message json} is null for all the legislations")
+                false
+            }
+    }
+
+    private fun logMess(mess: String) = logger.d(this::class.java.simpleName, "========>  $mess")
 
     inner class JSClientWebViewImpl : JSClientWebView {
 

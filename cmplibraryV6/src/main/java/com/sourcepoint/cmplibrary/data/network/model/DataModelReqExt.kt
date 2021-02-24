@@ -29,6 +29,8 @@ internal fun CampaignReq.toJsonObject(): JSONObject {
             put("propertyHref", propertyHref)
             put("propertyId", propertyId)
             put("targetingParams", targetingParams)
+            put("meta", meta)
+            put("uuid", uuid)
         }
 }
 

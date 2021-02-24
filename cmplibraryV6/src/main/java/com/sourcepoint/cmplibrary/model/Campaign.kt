@@ -34,7 +34,11 @@ class CCPACampaign(
     @JvmField override val pmId: String
 ) : CampaignTemplate(accountId, propertyId, propertyName, pmId)
 
-internal fun CampaignTemplate.toGdprReq(location: String): GdprReq {
+internal fun CampaignTemplate.toGdprReq(
+    location: String,
+    uuid: String? = null,
+    meta: String? = null
+): GdprReq {
     return GdprReq(
         accountId = accountId,
         propertyId = propertyId,
@@ -43,10 +47,16 @@ internal fun CampaignTemplate.toGdprReq(location: String): GdprReq {
             legislation = Legislation.GDPR.name,
             location = location
         ).toJsonObjStringify(),
+        uuid = uuid,
+        meta = meta
     )
 }
 
-internal fun CampaignTemplate.toCcpaReq(location: String): CcpaReq {
+internal fun CampaignTemplate.toCcpaReq(
+    location: String,
+    uuid: String? = null,
+    meta: String? = null
+): CcpaReq {
     return CcpaReq(
         accountId = accountId,
         propertyId = propertyId,
@@ -55,5 +65,7 @@ internal fun CampaignTemplate.toCcpaReq(location: String): CcpaReq {
             legislation = Legislation.CCPA.name,
             location = location
         ).toJsonObjStringify(),
+        uuid = uuid,
+        meta = meta
     )
 }

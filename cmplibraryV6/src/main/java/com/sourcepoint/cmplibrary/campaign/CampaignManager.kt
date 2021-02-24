@@ -33,6 +33,8 @@ internal interface CampaignManager {
     fun saveGDPRConsent(consent: GDPRConsent?)
     fun saveCCPAConsent(consent: CCPAConsent?)
 
+    fun parseRenderingMessage()
+
     fun clearConsents()
 
     companion object
@@ -86,12 +88,17 @@ private class CampaignManagerImpl(
     override fun getMessageReq(): MessageReq {
         val gdpr: CampaignTemplate? = mapTemplate[Legislation.GDPR.name]
         val ccpa: CampaignTemplate? = mapTemplate[Legislation.CCPA.name]
+        val gdprUuid = dataStorage.getGdpr().getOrNull()?.uuid
+        val gdprMeta = dataStorage.getGdpr().getOrNull()?.meta
+        val ccpaUuid = dataStorage.getCcpa().getOrNull()?.uuid
+        val ccpaMeta = dataStorage.getCcpa().getOrNull()?.meta
+        // TODO this is a test location
         val location = "EU"
         return MessageReq(
             requestUUID = "test",
             campaigns = Campaigns(
-                gdpr = gdpr?.toGdprReq(location),
-                ccpa = ccpa?.toCcpaReq(location)
+                gdpr = gdpr?.toGdprReq(location = location, uuid = gdprUuid, meta = gdprMeta),
+                ccpa = ccpa?.toCcpaReq(location = location, uuid = ccpaUuid, meta = ccpaMeta)
             )
         )
     }
@@ -122,6 +129,9 @@ private class CampaignManagerImpl(
     override fun saveCCPAConsent(consent: CCPAConsent?) {
         ccpaConsent = consent
         dataStorage.saveCcpaConsentResp(consent?.let { it.thisContent.toString() } ?: "")
+    }
+
+    override fun parseRenderingMessage() {
     }
 
     override fun clearConsents() {

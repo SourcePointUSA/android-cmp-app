@@ -3,6 +3,10 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_APPLIES
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPA
 import com.sourcepoint.cmplibrary.data.network.model.Ccpa
 import com.sourcepoint.cmplibrary.util.Either
@@ -22,7 +26,12 @@ internal interface DataStorageCcpa {
     fun getCcpaMessage(): String?
     fun clearCcpaConsent()
 
-    companion object
+    companion object {
+        const val KEY_CCPA = "key_ccpa"
+        const val KEY_CCPA_APPLIES = "key_ccpa_applies"
+        const val CCPA_CONSENT_RESP = "ccpa_consent_resp"
+        const val CCPA_JSON_MESSAGE = "ccpa_json_message"
+    }
 }
 
 internal fun DataStorageCcpa.Companion.create(
@@ -30,13 +39,6 @@ internal fun DataStorageCcpa.Companion.create(
 ): DataStorageCcpa = DataStorageCcpaImpl(context)
 
 private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
-
-    companion object {
-        const val KEY_CCPA = "key_ccpa"
-        const val KEY_CCPA_APPLIES = "key_ccpa_applies"
-        const val CCPA_CONSENT_RESP = "ccpa_consent_resp"
-        const val CCPA_JSON_MESSAGE = "ccpa_json_message"
-    }
 
     override val preference: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)

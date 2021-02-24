@@ -33,7 +33,7 @@ android {
         }
     }
 
-    sourceSets{
+    sourceSets {
         val sharedRes = "${project.rootDir.path}/ui-test-util/jsonFiles"
         getByName("test").resources.srcDir(sharedRes)
         getByName("androidTest").resources.srcDir(sharedRes)
@@ -68,9 +68,9 @@ dependencies {
 
     // Unfortunately we depend on a outdated version of okhttp due to its support to older versions of Android
     //noinspection GradleDependency
-    api ("com.squareup.okhttp3:okhttp:3.12.10")
+    api("com.squareup.okhttp3:okhttp:3.12.10")
 
-    testImplementation (Libs.mockk)
+    testImplementation(Libs.mockk)
     testImplementation(Libs.mockwebserver)
 
 }
