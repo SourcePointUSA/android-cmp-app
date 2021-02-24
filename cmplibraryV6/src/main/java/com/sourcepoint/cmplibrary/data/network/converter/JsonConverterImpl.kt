@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
@@ -36,6 +37,7 @@ private class JsonConverterImpl : JsonConverter {
 
         val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } } ?: fail("actionType")
         val choiceId = (map["choiceId"] as? String)
+        val legislation = (map["legislation"] as? String) ?: "GDPR" // fail("legislation")
         val privacyManagerId = (map["privacyManagerId"] as? String)
         val pmTab = (map["pmTab"] as? String)
         val requestFromPm = (map["requestFromPm"] as? Boolean) ?: fail("requestFromPm")
@@ -49,7 +51,8 @@ private class JsonConverterImpl : JsonConverter {
             pmTab = pmTab,
             requestFromPm = requestFromPm,
             saveAndExitVariables = saveAndExitVariables,
-            consentLanguage = consentLanguage
+            consentLanguage = consentLanguage,
+            legislation = Legislation.valueOf(legislation)
         )
     }
 

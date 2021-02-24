@@ -15,6 +15,13 @@ class HttpUrlManagerTest {
     }
 
     @Test
+    fun `GIVEN an consent HttpUrl CHECK the output URL`() {
+        val sut = HttpUrlManagerSingleton.sendGdprConsentUrl
+        val url = sut.toString()
+        url.assertEquals("http://192.168.1.11:3000/wrapper/tcfv2/v1/gdpr/consent?env=localProd&inApp=true&sdkVersion=AndroidLocal")
+    }
+
+    @Test
     fun `GIVEN an HttpUrl nativeMessage CHECK the output URL`() {
         val sut = HttpUrlManagerSingleton.inAppUrlNativeMessage
         val url = sut.toString()

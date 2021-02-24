@@ -145,7 +145,7 @@ private class NetworkClientImpl(
         val body: RequestBody = RequestBody.create(mediaType, consentReq.toString())
 
         val request: Request = Request.Builder()
-            .url(urlManager.sendConsentUrl)
+            .url(urlManager.sendConsentUrl(legislation))
             .post(body)
             .build()
 

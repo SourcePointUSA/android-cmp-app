@@ -188,7 +188,7 @@ internal class SpConsentLibImpl(
                     consentManager.buildGdprConsentReq(action)
                         .map { consentReq ->
                             service.sendConsent(
-                                Legislation.GDPR,
+                                action.legislation,
                                 consentReq,
                                 { consentResp -> consentManager.saveGdprConsent(consentResp.content) },
                                 { throwable -> pLogger.error(throwable.toConsentLibException()) }

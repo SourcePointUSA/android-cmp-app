@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.model.ActionButton
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.ActionType
 
 abstract class NativeMessageInternal : NativeMessage {
@@ -31,22 +32,42 @@ abstract class NativeMessageInternal : NativeMessage {
     }
 
     internal open fun onCancel(ab: ActionButton) {
-        val action = ConsentAction(actionType = ActionType.MSG_CANCEL, choiceId = ab.choiceId, requestFromPm = false)
+        val action = ConsentAction(
+            actionType = ActionType.MSG_CANCEL,
+            choiceId = ab.choiceId,
+            requestFromPm = false,
+            legislation = Legislation.GDPR
+        )
         client.onClickCancel(this@NativeMessageInternal, action)
     }
 
     internal open fun onAcceptAll(ab: ActionButton) {
-        val action = ConsentAction(actionType = ActionType.ACCEPT_ALL, choiceId = ab.choiceId, requestFromPm = false)
+        val action = ConsentAction(
+            actionType = ActionType.ACCEPT_ALL,
+            choiceId = ab.choiceId,
+            requestFromPm = false,
+            legislation = Legislation.GDPR
+        )
         client.onClickAcceptAll(this@NativeMessageInternal, action)
     }
 
     internal open fun onRejectAll(ab: ActionButton) {
-        val action = ConsentAction(actionType = ActionType.REJECT_ALL, choiceId = ab.choiceId, requestFromPm = false)
+        val action = ConsentAction(
+            actionType = ActionType.REJECT_ALL,
+            choiceId = ab.choiceId,
+            requestFromPm = false,
+            legislation = Legislation.GDPR
+        )
         client.onClickRejectAll(this@NativeMessageInternal, action)
     }
 
     internal open fun onShowOptionsAb(ab: ActionButton) {
-        val action = ConsentAction(actionType = ActionType.SHOW_OPTIONS, choiceId = ab.choiceId, requestFromPm = false)
+        val action = ConsentAction(
+            actionType = ActionType.SHOW_OPTIONS,
+            choiceId = ab.choiceId,
+            requestFromPm = false,
+            legislation = Legislation.GDPR
+        )
         client.onClickShowOptions(this@NativeMessageInternal, action)
     }
 }
