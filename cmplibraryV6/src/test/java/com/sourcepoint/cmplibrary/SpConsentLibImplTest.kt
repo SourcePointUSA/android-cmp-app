@@ -1,6 +1,8 @@
 package com.sourcepoint.cmplibrary
 
 import android.content.Context
+import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
@@ -8,6 +10,7 @@ import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.Campaign
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.stub.MockService
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ExecutorManager
@@ -23,22 +26,37 @@ import org.junit.Test
 class SpConsentLibImplTest {
 
     var campaign = Campaign(22, 7639, "tcfv2.mobile.webview", "122058")
+
     @MockK
     private lateinit var appCtx: Context
+
     @MockK
     private lateinit var logger: Logger
+
     @MockK
     private lateinit var jsonConverter: JsonConverter
+
     @MockK
     private lateinit var connManager: ConnectionManager
+
     @MockK
     private lateinit var viewManager: ViewsManager
+
+    @MockK
+    private lateinit var campaignManager: CampaignManager
+
+    @MockK
+    private lateinit var consentManager: ConsentManager
+
     @MockK
     private lateinit var execManager: ExecutorManager
+
     @MockK
     private lateinit var spClient: SpClient
+
     @MockK
     private lateinit var urlManager: HttpUrlManager
+
     @MockK
     private lateinit var service: Service
 
@@ -47,19 +65,19 @@ class SpConsentLibImplTest {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
     }
 
-//    @Test(expected = MissingClientException::class)
+    //    @Test(expected = MissingClientException::class)
     fun `CALLING loadMessage() with a null SpGDPRClient THROWS a MissingClientException`() {
 //        val sut = SpConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
 //        sut.loadMessage()
 //        verify(exactly = 1) { service.getMessage(any(), any(), any()) }
     }
 
-//    @Test
+    @Test
     fun `CALLING loadMessage() verify that getMessage is called exactly 1 time`() {
-//        val sut = SpConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
-//        sut.spClient = spClient
-//        sut.loadMessage()
-//        verify(exactly = 1) { service.getMessage(any(), any(), any()) }
+        val sut = createLib()
+        sut.spClient = spClient
+        sut.loadMessage()
+        verify(exactly = 1) { service.getMessage(any(), any(), any()) }
     }
 
     @Test
@@ -97,4 +115,18 @@ class SpConsentLibImplTest {
         verify(exactly = 1) { spClient.onUIReady(capture(slot)) }
         slot.captured
     }
+
+    internal fun createLib() = SpConsentLibImpl(
+        pPrivacyManagerTab = PrivacyManagerTabK.FEATURES,
+        urlManager = urlManager,
+        context = appCtx,
+        campaignManager = campaignManager,
+        consentManager = consentManager,
+        executor = execManager,
+        viewManager = viewManager,
+        service = service,
+        pConnectionManager = connManager,
+        pJsonConverter = jsonConverter,
+        pLogger = logger
+    )
 }

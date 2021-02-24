@@ -67,11 +67,11 @@ private class ConsentManagerImpl(
     }
 
     override fun getGdprConsent(): Either<GDPRConsent> {
-        TODO("Not yet implemented")
+        return campaignManager.getGDPRConsent()
     }
 
     override fun getCcpaConsent(): Either<CCPAConsent> {
-        TODO("Not yet implemented")
+        return campaignManager.getCCPAConsent()
     }
 
     override fun saveGdprConsent(value: JSONObject) {

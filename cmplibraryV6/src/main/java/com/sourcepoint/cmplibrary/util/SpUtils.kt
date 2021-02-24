@@ -3,18 +3,26 @@
 package com.sourcepoint.cmplibrary.util
 
 import android.content.Context
+import com.sourcepoint.cmplibrary.SpCacheObjet.fetchOrStore
+import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.campaign.create
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsent
 import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.SPConsents
 
 fun userConsents(context: Context): SPConsents {
-    val dataStorageGdpr = DataStorageGdpr.create(context)
-    val dataStorageCcpa = DataStorageCcpa.create(context)
-    return userConsents(dataStorageGdpr, dataStorageCcpa)
+
+    val dataStorageGdpr = fetchOrStore(DataStorageGdpr::class.java) { DataStorageGdpr.create(context) }
+    val dataStorageCcpa = fetchOrStore(DataStorageCcpa::class.java) { DataStorageCcpa.create(context) }
+    val dataStorage = fetchOrStore(DataStorage::class.java) { DataStorage.create(context, dataStorageGdpr, dataStorageCcpa) }
+    val campaignManager: CampaignManager = fetchOrStore(CampaignManager::class.java) { CampaignManager.create(dataStorage) }
+
+    return userConsents(campaignManager)
 }
 
 fun gdprApplies(context: Context): Boolean {
@@ -42,20 +50,19 @@ fun clearAllData(context: Context) {
 }
 
 internal fun userConsents(
-    dataStorageGdpr: DataStorageGdpr,
-    dataStorageCcpa: DataStorageCcpa
+    campaignManager: CampaignManager
 ): SPConsents {
 
     return SPConsents(
-        ccpa = dataStorageCcpa.getCcpa().map { it.userConsent }.getOrNull()?.let {
+        ccpa = campaignManager.getCCPAConsent().getOrNull()?.let {
             SPCCPAConsent(
-                applies = dataStorageCcpa.ccpaApplies,
+                applies = campaignManager.isAppliedCampaign(Legislation.GDPR),
                 consent = it
             )
         },
-        gdpr = dataStorageGdpr.getGdpr().map { it.userConsent }.getOrNull()?.let {
+        gdpr = campaignManager.getGDPRConsent().getOrNull()?.let {
             SPGDPRConsent(
-                applies = dataStorageGdpr.gdprApplies,
+                applies = campaignManager.isAppliedCampaign(Legislation.CCPA),
                 consent = it
             )
         }
