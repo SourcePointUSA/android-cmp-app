@@ -36,7 +36,7 @@ internal class SPWebViewClient(
         super.onPageFinished(view, url)
         timer.cancel()
         try {
-            view.loadUrl("javascript:" + "js_receiver.js".file2String())
+            view.loadUrl("javascript:" + "gdpr_js_receiver.js".file2String())
             /** make it crash if [onPageFinishedLambda] is null!!! */
             onPageFinishedLambda?.invoke(view, url) ?: fail("========> SPWebViewClient.onPageFinishedLambda is null!!!")
         } catch (e: Throwable) {

@@ -17,6 +17,7 @@ function getQueryParam(paramName, url) {
 function actionFromMessage(payload) {
     var actionPayload = payload.actions && payload.actions.length && payload.actions[0] && payload.actions[0].data ? payload.actions[0].data : {};
     return {
+        legislation: "GDPR",
         name: payload.name,
         actionType: actionPayload.type,
         choiceId: String(actionPayload.choice_id),

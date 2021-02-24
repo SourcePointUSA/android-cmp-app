@@ -38,7 +38,7 @@ internal class SpConsentLibImpl(
     /** Start Client's methods */
     override fun loadMessage(authId: String) {
         checkMainThread("loadMessage")
-        throwsExceptionIfClientNoSet()
+        throwsExceptionIfClientIsNull()
         service.getMessage(
             messageReq = campaignManager.getMessageReq(),
             pSuccess = { messageResp -> },
@@ -48,7 +48,7 @@ internal class SpConsentLibImpl(
 
     override fun loadMessage() {
         checkMainThread("loadMessage")
-        throwsExceptionIfClientNoSet()
+        throwsExceptionIfClientIsNull()
 
         if (viewManager.isViewInLayout) return
 
@@ -68,7 +68,7 @@ internal class SpConsentLibImpl(
 
     override fun loadMessage(nativeMessage: NativeMessage) {
         checkMainThread("loadMessage")
-        throwsExceptionIfClientNoSet()
+        throwsExceptionIfClientIsNull()
 
         service.getNativeMessageK(
             campaignManager.getMessageReq(),
@@ -90,7 +90,7 @@ internal class SpConsentLibImpl(
 
     override fun loadGDPRPrivacyManager() {
         checkMainThread("loadPrivacyManager")
-        throwsExceptionIfClientNoSet()
+        throwsExceptionIfClientIsNull()
         val pmConfig = campaignManager.getPmGDPRConfig()
         pmConfig
             .map {
@@ -102,7 +102,7 @@ internal class SpConsentLibImpl(
 
     override fun loadCCPAPrivacyManager() {
         checkMainThread("loadPrivacyManager")
-        throwsExceptionIfClientNoSet()
+        throwsExceptionIfClientIsNull()
     }
 
     override fun showView(view: View) {
@@ -160,7 +160,7 @@ internal class SpConsentLibImpl(
 
     /** End Receiver methods */
 
-    private fun throwsExceptionIfClientNoSet() {
+    private fun throwsExceptionIfClientIsNull() {
         spClient ?: throw MissingClientException(description = "spClient instance is missing")
     }
 

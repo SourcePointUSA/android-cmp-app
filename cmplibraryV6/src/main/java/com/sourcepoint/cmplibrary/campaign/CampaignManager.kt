@@ -22,6 +22,8 @@ internal interface CampaignManager {
 
     fun addCampaign(legislation: Legislation, campaign: CampaignTemplate)
 
+    fun isAppliedCampaign(legislation: Legislation): Boolean
+
     fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>>
     fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate>
     fun getPmGDPRConfig(): Either<PmUrlConfig>
@@ -73,6 +75,11 @@ private class CampaignManagerImpl(
             siteId = "7639",
             messageId = gdpr.pmId
         )
+    }
+
+    override fun isAppliedCampaign(legislation: Legislation): Boolean {
+        TODO("Not yet implemented")
+        return true
     }
 
     override fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>> = check {
