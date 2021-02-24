@@ -4,7 +4,7 @@ import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.exception.Legislation
 import org.junit.Test
 
-class DataModelReqExtKtTest {
+class DataModelReqExtTest {
 
     private val req: MessageReq = MessageReq(
         requestUUID = "test",

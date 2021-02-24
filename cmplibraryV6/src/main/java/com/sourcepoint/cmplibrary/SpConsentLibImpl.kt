@@ -7,14 +7,13 @@ import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageInternal
-import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
-import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
+import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
@@ -57,24 +56,13 @@ internal class SpConsentLibImpl(
             messageReq = campaignManager.getMessageReq(),
             pSuccess = { messageResp ->
                 executor.executeOnMain {
+                    /** create a instance of WebView */
                     val webView = viewManager.createWebView(this, JSReceiverDelegate())
-                    (webView as? ConsentWebView)?.let { wv ->
-                        messageResp
-                            .campaigns
-                            .mapNotNull { it.message }
-                            .firstOrNull()
-                            ?.let { jsonMessages ->
-                                if (!consentManager.hasGdprConsent()) {
-                                    wv.loadConsentUIFromUrl(urlManager.urlURenderingAppStage(), jsonMessages)
-                                }
-                            }
-                            ?: run { logMess("{message json} is null for all the legislations") }
-                    } ?: throw RuntimeException("webView is not a ConsentWebView")
+                    /** inject the message into the WebView */
+                    webView?.loadConsentUI(messageResp, urlManager.urlURenderingAppStage())
                 }
             },
-            pError = { throwable ->
-                spClient?.onError(throwable.toConsentLibException())
-            }
+            pError = { throwable -> spClient?.onError(throwable.toConsentLibException()) }
         )
     }
 
@@ -196,6 +184,7 @@ internal class SpConsentLibImpl(
                 ActionType.SAVE_AND_EXIT,
                 ActionType.REJECT_ALL -> {
                     view.let { spClient?.onUIFinished(it) }
+                    // TODO GDPR or CCPA?
                     consentManager.buildGdprConsentReq(action)
                         .map { consentReq ->
                             service.sendConsent(
@@ -222,12 +211,10 @@ internal class SpConsentLibImpl(
     inner class NativeMsgDelegate : NativeMessageClient {
 
         override fun onClickAcceptAll(view: View, ca: ConsentAction) {
-//            spClient?.onAction(view, ActionType.ACCEPT_ALL)
             onActionFromWebViewClient(ca, view)
         }
 
         override fun onClickRejectAll(view: View, ca: ConsentAction) {
-//            spClient?.onAction(view, ActionType.REJECT_ALL)
             onActionFromWebViewClient(ca, view)
         }
 
@@ -236,12 +223,10 @@ internal class SpConsentLibImpl(
         }
 
         override fun onClickShowOptions(view: View, ca: ConsentAction) {
-//            spClient?.onAction(view, ActionType.SHOW_OPTIONS)
             onActionFromWebViewClient(ca, view)
         }
 
         override fun onClickCancel(view: View, ca: ConsentAction) {
-//            spClient?.onAction(view, ActionType.MSG_CANCEL)
             onActionFromWebViewClient(ca, view)
         }
 
