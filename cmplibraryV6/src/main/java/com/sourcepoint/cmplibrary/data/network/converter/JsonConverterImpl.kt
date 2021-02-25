@@ -37,7 +37,7 @@ private class JsonConverterImpl : JsonConverter {
 
         val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } } ?: fail("actionType")
         val choiceId = (map["choiceId"] as? String)
-        val legislation = (map["legislation"] as? String) ?: "GDPR" // fail("legislation")
+        val legislation = (map["legislation"] as? String) ?: "GDPR" // fail("legislation") // TODO In case of PM we don't receive this value!!!!
         val privacyManagerId = (map["privacyManagerId"] as? String)
         val pmTab = (map["pmTab"] as? String)
         val requestFromPm = (map["requestFromPm"] as? Boolean) ?: fail("requestFromPm")
