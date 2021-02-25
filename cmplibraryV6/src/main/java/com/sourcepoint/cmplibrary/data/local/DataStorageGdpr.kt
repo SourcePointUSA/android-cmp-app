@@ -11,10 +11,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
-import com.sourcepoint.cmplibrary.data.network.converter.toGDPR
-import com.sourcepoint.cmplibrary.data.network.model.Gdpr
-import com.sourcepoint.cmplibrary.util.Either
-import com.sourcepoint.cmplibrary.util.check
 import java.util.* // ktlint-disable
 
 internal interface DataStorageGdpr {
@@ -23,8 +19,8 @@ internal interface DataStorageGdpr {
 
     var gdprApplies: Boolean
 
-    fun saveGdpr(gdpr: Gdpr)
-    fun getGdpr(): Either<Gdpr>
+    fun saveGdpr(value: String)
+    fun getGdpr(): String?
 
     /** store data */
     fun saveTcData(deferredMap: Map<String, Any?>)
@@ -44,7 +40,7 @@ internal interface DataStorageGdpr {
     fun getConsentUuid(): String
     fun getAppliedLegislation(): String
     fun getGdprConsentResp(): String
-    fun getGdprMessage(): String?
+    fun getGdprMessage(): String
 
     fun clearGdprConsent()
     fun clearInternalData()
@@ -94,20 +90,15 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 .apply()
         }
 
-    override fun saveGdpr(gdpr: Gdpr) {
-
-        val json = gdpr.thisContent.toString()
-
+    override fun saveGdpr(value: String) {
         preference
             .edit()
-            .putString(KEY_GDPR, json)
+            .putString(KEY_GDPR, value)
             .apply()
     }
 
-    override fun getGdpr(): Either<Gdpr> = check {
-        preference.getString(KEY_GDPR, null)
-            ?.toGDPR()
-            ?: fail("Gdpr")
+    override fun getGdpr(): String? {
+        return preference.getString(KEY_GDPR, null)
     }
 
     override fun saveTcData(deferredMap: Map<String, Any?>) {
@@ -207,8 +198,8 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         return preference.getString(GDPR_CONSENT_RESP, "")!!
     }
 
-    override fun getGdprMessage(): String? {
-        return preference.getString(GDPR_JSON_MESSAGE, null)
+    override fun getGdprMessage(): String {
+        return preference.getString(GDPR_JSON_MESSAGE, "")!!
     }
 
     override fun clearInternalData() {

@@ -1,13 +1,18 @@
 package com.sourcepoint.cmplibrary.campaign
 
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.assertFalse
 import com.sourcepoint.cmplibrary.assertNotNull
+import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.data.network.model.CCPAConsent
 import com.sourcepoint.cmplibrary.data.network.model.Ccpa
 import com.sourcepoint.cmplibrary.data.network.model.GDPRConsent
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
+import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.model.CCPACampaign
+import com.sourcepoint.cmplibrary.model.GDPRCampaign
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.file2String
 import io.mockk.MockKAnnotations
@@ -24,15 +29,21 @@ class CampaignManagerTest {
     private lateinit var dataStorage: DataStorage
 
     @MockK
-    private lateinit var gdpr: GDPRConsent
+    private lateinit var gdprConsent: GDPRConsent
 
     @MockK
-    private lateinit var ccpa: CCPAConsent
+    private lateinit var ccpaConsent: CCPAConsent
+
+    @MockK
+    private lateinit var gdpr: GDPRCampaign
+
+    @MockK
+    private lateinit var ccpa: CCPACampaign
 
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
-        every { gdpr.thisContent }.returns(JSONObject())
+        every { gdprConsent.thisContent }.returns(JSONObject())
         sut.clearConsents()
     }
 
@@ -41,7 +52,7 @@ class CampaignManagerTest {
     @Test
     fun `GIVEN a GDPRConsent CHECK that is properly stored`() {
 
-        sut.saveGDPRConsent(gdpr)
+        sut.saveGDPRConsent(gdprConsent)
 
         verify(exactly = 1) { dataStorage.saveGdprConsentResp(any()) }
         verify(exactly = 0) { dataStorage.getGdprConsentResp() }
@@ -50,11 +61,11 @@ class CampaignManagerTest {
     @Test
     fun `CHECK that getGDPRConsent RETURNS a GDPRConsent from cache`() {
 
-        sut.saveGDPRConsent(gdpr)
+        sut.saveGDPRConsent(gdprConsent)
         (sut.getGDPRConsent() as? Either.Right)
             .assertNotNull()
             .let { it!!.r }
-            .assertEquals(gdpr)
+            .assertEquals(gdprConsent)
 
         verify(exactly = 1) { dataStorage.saveGdprConsentResp(any()) }
         verify(exactly = 0) { dataStorage.getGdprConsentResp() }
@@ -76,7 +87,7 @@ class CampaignManagerTest {
     @Test
     fun `GIVEN a CCPAConsent CHECK that is properly stored`() {
 
-        sut.saveCCPAConsent(ccpa)
+        sut.saveCCPAConsent(ccpaConsent)
 
         verify(exactly = 1) { dataStorage.saveCcpaConsentResp(any()) }
         verify(exactly = 0) { dataStorage.getCcpaConsentResp() }
@@ -85,11 +96,11 @@ class CampaignManagerTest {
     @Test
     fun `CHECK that getCCPAConsent RETURNS a CCPAConsent from cache`() {
 
-        sut.saveCCPAConsent(ccpa)
+        sut.saveCCPAConsent(ccpaConsent)
         (sut.getCCPAConsent() as? Either.Right)
             .assertNotNull()
             .let { it!!.r }
-            .assertEquals(ccpa)
+            .assertEquals(ccpaConsent)
 
         verify(exactly = 1) { dataStorage.saveCcpaConsentResp(any()) }
         verify(exactly = 0) { dataStorage.getCcpaConsentResp() }
@@ -112,12 +123,12 @@ class CampaignManagerTest {
     fun `VERIFY that getCCPAConsent AND getGDPRConsent RETUN static objects`() {
 
         val sut1 = CampaignManager.create(dataStorage).apply {
-            saveCCPAConsent(ccpa)
-            saveGDPRConsent(gdpr)
+            saveCCPAConsent(ccpaConsent)
+            saveGDPRConsent(gdprConsent)
         }
         val sut2 = CampaignManager.create(dataStorage).apply {
-            saveCCPAConsent(ccpa)
-            saveGDPRConsent(gdpr)
+            saveCCPAConsent(ccpaConsent)
+            saveGDPRConsent(gdprConsent)
         }
 
         (sut1.getGDPRConsent() as Either.Right).r.assertEquals((sut2.getGDPRConsent() as Either.Right).r)
@@ -142,15 +153,63 @@ class CampaignManagerTest {
     @Test
     fun `VERIFY that getCCPAConsent AND getGDPRConsent GETS cleared calling clearConsents`() {
 
-        sut.saveCCPAConsent(ccpa)
-        sut.saveGDPRConsent(gdpr)
+        sut.run {
+            saveCCPAConsent(ccpaConsent)
+            saveGDPRConsent(gdprConsent)
+        }
 
         sut.clearConsents()
 
-        (sut.getCCPAConsent() as? Either.Left)
-        (sut.getGDPRConsent() as? Either.Left)
+        (sut.getCCPAConsent() as? Either.Left).assertNotNull()
+        (sut.getGDPRConsent() as? Either.Left).assertNotNull()
 
         verify(exactly = 1) { dataStorage.getGdprConsentResp() }
         verify(exactly = 1) { dataStorage.getCcpaConsentResp() }
+    }
+
+    @Test
+    fun `GIVEN a gdpr applied campaign RETURN a gdpr type`() {
+        every { dataStorage.getGdprMessage() }.returns("GDPR")
+        sut.run {
+            addCampaign(Legislation.CCPA, ccpa)
+            addCampaign(Legislation.GDPR, gdpr)
+        }
+        val pairOutput = sut.getAppliedCampaign()
+
+        (pairOutput as Either.Right).r.first.assertEquals(Legislation.GDPR)
+    }
+
+    @Test
+    fun `GIVEN a ccpa applied campaign RETURN a ccpa type`() {
+        every { dataStorage.getCcpaMessage() }.returns("CCPA")
+        sut.run {
+            addCampaign(Legislation.CCPA, ccpa)
+            addCampaign(Legislation.GDPR, gdpr)
+        }
+        val pairOutput = sut.getAppliedCampaign()
+
+        (pairOutput as Either.Right).r.first.assertEquals(Legislation.CCPA)
+    }
+
+    @Test
+    fun `GIVEN a gdpr applied campaign RETURN true passing GPDR as parameter`() {
+        every { dataStorage.getGdprMessage() }.returns("GDPR")
+        sut.run {
+            addCampaign(Legislation.CCPA, ccpa)
+            addCampaign(Legislation.GDPR, gdpr)
+        }
+        sut.isAppliedCampaign(Legislation.GDPR).assertTrue()
+        sut.isAppliedCampaign(Legislation.CCPA).assertFalse()
+    }
+
+    @Test
+    fun `GIVEN a ccpa applied campaign RETURN true passing CCPA as parameter`() {
+        every { dataStorage.getCcpaMessage() }.returns("CCPA")
+        sut.run {
+            addCampaign(Legislation.CCPA, ccpa)
+            addCampaign(Legislation.GDPR, gdpr)
+        }
+        sut.isAppliedCampaign(Legislation.CCPA).assertTrue()
+        sut.isAppliedCampaign(Legislation.GDPR).assertFalse()
     }
 }

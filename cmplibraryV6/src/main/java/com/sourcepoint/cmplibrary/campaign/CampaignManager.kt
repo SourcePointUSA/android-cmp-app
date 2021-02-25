@@ -1,8 +1,10 @@
 package com.sourcepoint.cmplibrary.campaign
 
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
+import com.sourcepoint.cmplibrary.data.network.converter.toGDPR
 import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.Campaigns
@@ -16,6 +18,7 @@ import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.getOrNull
+import com.sourcepoint.cmplibrary.util.map
 import org.json.JSONObject
 
 internal interface CampaignManager {
@@ -24,6 +27,8 @@ internal interface CampaignManager {
 
     fun isAppliedCampaign(legislation: Legislation): Boolean
 
+    fun getGdpr(): Either<Gdpr>
+    fun getCcpa(): Either<Ccpa>
     fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>>
     fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate>
     fun getPmGDPRConfig(): Either<PmUrlConfig>
@@ -32,6 +37,8 @@ internal interface CampaignManager {
     fun getGDPRConsent(): Either<GDPRConsent>
     fun getCCPAConsent(): Either<CCPAConsent>
 
+    fun saveGdpr(gdpr: Gdpr)
+    fun saveCcpa(ccpa: Ccpa)
     fun saveGDPRConsent(consent: GDPRConsent?)
     fun saveCCPAConsent(consent: CCPAConsent?)
 
@@ -61,15 +68,23 @@ private class CampaignManagerImpl(
         mapTemplate[legislation.name] = campaign
     }
 
+    override fun getGdpr(): Either<Gdpr> = check {
+        dataStorage.getGdpr()?.toGDPR() ?: fail("GDPR is not stored in memory!!!")
+    }
+
+    override fun getCcpa(): Either<Ccpa> = check {
+        dataStorage.getCcpa()?.toCCPA() ?: fail("CCPA is not stored in memory!!!")
+    }
+
     override fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate> = check {
-        mapTemplate[legislation.name] ?: fail("${legislation.name} Campain is not missing!!!")
+        mapTemplate[legislation.name] ?: fail("${legislation.name} Campain is missing!!!")
     }
 
     override fun getPmGDPRConfig(): Either<PmUrlConfig> = check {
         val gdpr: CampaignTemplate = mapTemplate[Legislation.GDPR.name]
             ?: fail("Privacy manager url config is missing!!!")
 
-        val gdprConfig = dataStorage.getGdpr().getOrNull() ?: fail("Privacy manager url config is missing!!!")
+        val gdprConfig = dataStorage.getGdpr()?.toGDPR() ?: fail("Privacy manager url config is missing!!!")
         PmUrlConfig(
             consentUUID = gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
             siteId = "7639",
@@ -78,16 +93,18 @@ private class CampaignManagerImpl(
     }
 
     override fun isAppliedCampaign(legislation: Legislation): Boolean {
-        TODO("Not yet implemented")
-        return true
+        return getAppliedCampaign()
+            .map { it.first == legislation }
+            .getOrNull()
+            ?: false
     }
 
     override fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>> = check {
         when {
             dataStorage
-                .getGdprMessage() != null -> Pair(Legislation.GDPR, mapTemplate[Legislation.GDPR.name]!!)
+                .getGdprMessage().isNotBlank() -> Pair(Legislation.GDPR, mapTemplate[Legislation.GDPR.name]!!)
             dataStorage
-                .getCcpaMessage() != null -> Pair(Legislation.CCPA, mapTemplate[Legislation.CCPA.name]!!)
+                .getCcpaMessage().isNotBlank() -> Pair(Legislation.CCPA, mapTemplate[Legislation.CCPA.name]!!)
             else -> throw MissingPropertyException(description = "Inconsistent Legislation!!!")
         }
     }
@@ -95,10 +112,15 @@ private class CampaignManagerImpl(
     override fun getMessageReq(): MessageReq {
         val gdpr: CampaignTemplate? = mapTemplate[Legislation.GDPR.name]
         val ccpa: CampaignTemplate? = mapTemplate[Legislation.CCPA.name]
-        val gdprUuid = dataStorage.getGdpr().getOrNull()?.uuid
-        val gdprMeta = dataStorage.getGdpr().getOrNull()?.meta
-        val ccpaUuid = dataStorage.getCcpa().getOrNull()?.uuid
-        val ccpaMeta = dataStorage.getCcpa().getOrNull()?.meta
+        val storedGdpr = dataStorage.getGdpr()?.toGDPR()
+        val storedCcpa = dataStorage.getCcpa()?.toCCPA()
+
+        val gdprUuid = storedGdpr?.uuid
+        val gdprMeta = storedGdpr?.meta
+
+        val ccpaUuid = storedCcpa?.uuid
+        val ccpaMeta = storedCcpa?.meta
+
         // TODO this is a test location
         val location = "EU"
         return MessageReq(
@@ -128,14 +150,22 @@ private class CampaignManagerImpl(
             .toCCPAUserConsent()
     }
 
+    override fun saveGdpr(gdpr: Gdpr) {
+        dataStorage.saveGdpr(gdpr.thisContent.toString())
+    }
+
+    override fun saveCcpa(ccpa: Ccpa) {
+        dataStorage.saveCcpa(ccpa.thisContent.toString())
+    }
+
     override fun saveGDPRConsent(consent: GDPRConsent?) {
         gdprConsent = consent
-        dataStorage.saveGdprConsentResp(consent?.let { it.thisContent.toString() } ?: "")
+        dataStorage.saveGdprConsentResp(consent?.thisContent?.toString() ?: "")
     }
 
     override fun saveCCPAConsent(consent: CCPAConsent?) {
         ccpaConsent = consent
-        dataStorage.saveCcpaConsentResp(consent?.let { it.thisContent.toString() } ?: "")
+        dataStorage.saveCcpaConsentResp(consent?.thisContent?.toString() ?: "")
     }
 
     override fun parseRenderingMessage() {

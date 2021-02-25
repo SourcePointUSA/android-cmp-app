@@ -16,18 +16,13 @@ import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.SPConsents
 
 fun userConsents(context: Context): SPConsents {
-
-    val dataStorageGdpr = fetchOrStore(DataStorageGdpr::class.java) { DataStorageGdpr.create(context) }
-    val dataStorageCcpa = fetchOrStore(DataStorageCcpa::class.java) { DataStorageCcpa.create(context) }
-    val dataStorage = fetchOrStore(DataStorage::class.java) { DataStorage.create(context, dataStorageGdpr, dataStorageCcpa) }
-    val campaignManager: CampaignManager = fetchOrStore(CampaignManager::class.java) { CampaignManager.create(dataStorage) }
-
-    return userConsents(campaignManager)
+    val cm: CampaignManager = createStorage(context)
+    return userConsents(cm)
 }
 
 fun gdprApplies(context: Context): Boolean {
-    val dataStorageGdpr = DataStorageGdpr.create(context)
-    return dataStorageGdpr
+    val cm: CampaignManager = createStorage(context)
+    return cm
         .getGdpr()
         .getOrNull()
         ?.gdprApplies
@@ -35,8 +30,8 @@ fun gdprApplies(context: Context): Boolean {
 }
 
 fun ccpaApplies(context: Context): Boolean {
-    val dataStorageGdpr = DataStorageCcpa.create(context)
-    return dataStorageGdpr
+    val cm: CampaignManager = createStorage(context)
+    return cm
         .getCcpa()
         .getOrNull()
         ?.ccpaApplies
@@ -67,4 +62,11 @@ internal fun userConsents(
             )
         }
     )
+}
+
+internal fun createStorage(context: Context): CampaignManager {
+    val dataStorageGdpr = fetchOrStore(DataStorageGdpr::class.java) { DataStorageGdpr.create(context) }
+    val dataStorageCcpa = fetchOrStore(DataStorageCcpa::class.java) { DataStorageCcpa.create(context) }
+    val dataStorage = fetchOrStore(DataStorage::class.java) { DataStorage.create(context, dataStorageGdpr, dataStorageCcpa) }
+    return fetchOrStore(CampaignManager::class.java) { CampaignManager.create(dataStorage) }
 }
