@@ -31,15 +31,15 @@ internal fun ConsentManager.Companion.create(
 ): ConsentManager = ConsentManagerImpl(campaignManager, dataStorage, uuid)
 
 private class ConsentManagerImpl(
-    val campaignManager: CampaignManager,
-    val dataStorage: DataStorage,
+    val cm: CampaignManager,
+    val ds: DataStorage,
     val uuid: String = UUID.randomUUID().toString()
 ) : ConsentManager {
 
     override fun buildGdprConsentReq(action: ConsentAction): Either<JSONObject> = check {
-        campaignManager
+        cm
             .getCampaignTemplate(Legislation.GDPR)
-            .flatMap { campaign -> dataStorage.getGdpr().map { Pair(campaign, it) } }
+            .flatMap { campaign -> cm.getGdpr().map { Pair(campaign, it) } }
             .map { pair ->
                 val gdpr = pair.first
                 val gdprConfig = pair.second
@@ -67,22 +67,22 @@ private class ConsentManagerImpl(
     }
 
     override fun getGdprConsent(): Either<GDPRConsent> {
-        return campaignManager.getGDPRConsent()
+        return cm.getGDPRConsent()
     }
 
     override fun getCcpaConsent(): Either<CCPAConsent> {
-        return campaignManager.getCCPAConsent()
+        return cm.getCCPAConsent()
     }
 
     override fun saveGdprConsent(value: JSONObject) {
-        dataStorage.saveGdprConsentResp(value.toString())
+        ds.saveGdprConsentResp(value.toString())
     }
 
     override fun saveCcpaConsent(value: JSONObject) {
-        dataStorage.saveCcpaConsentResp(value.toString())
+        ds.saveCcpaConsentResp(value.toString())
     }
 
-    override fun hasGdprConsent(): Boolean = dataStorage.getGdprConsentResp().isNotBlank()
+    override fun hasGdprConsent(): Boolean = ds.getGdprConsentResp().isNotBlank()
 
-    override fun hasCcpaConsent(): Boolean = dataStorage.getGdprConsentResp().isNotBlank()
+    override fun hasCcpaConsent(): Boolean = ds.getGdprConsentResp().isNotBlank()
 }

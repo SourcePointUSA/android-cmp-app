@@ -7,23 +7,19 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONS
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_APPLIES
-import com.sourcepoint.cmplibrary.data.network.converter.toCCPA
-import com.sourcepoint.cmplibrary.data.network.model.Ccpa
-import com.sourcepoint.cmplibrary.util.Either
-import com.sourcepoint.cmplibrary.util.check
 
 internal interface DataStorageCcpa {
 
     val preference: SharedPreferences
     var ccpaApplies: Boolean
 
-    fun saveCcpa(ccpa: Ccpa)
+    fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
     fun saveCcpaMessage(value: String)
 
-    fun getCcpa(): Either<Ccpa>
+    fun getCcpa(): String?
     fun getCcpaConsentResp(): String
-    fun getCcpaMessage(): String?
+    fun getCcpaMessage(): String
     fun clearCcpaConsent()
 
     companion object {
@@ -44,20 +40,15 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    override fun saveCcpa(ccpa: Ccpa) {
-
-        val json = ccpa.thisContent.toString()
-
+    override fun saveCcpa(value: String) {
         preference
             .edit()
-            .putString(KEY_CCPA, json)
+            .putString(KEY_CCPA, value)
             .apply()
     }
 
-    override fun getCcpa(): Either<Ccpa> = check {
-        preference.getString(KEY_CCPA, null)
-            ?.toCCPA()
-            ?: fail("Ccpa")
+    override fun getCcpa(): String? {
+        return preference.getString(KEY_CCPA, null)
     }
 
     override var ccpaApplies: Boolean
@@ -87,8 +78,8 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         return preference.getString(CCPA_CONSENT_RESP, "")!!
     }
 
-    override fun getCcpaMessage(): String? {
-        return preference.getString(CCPA_JSON_MESSAGE, null)
+    override fun getCcpaMessage(): String {
+        return preference.getString(CCPA_JSON_MESSAGE, "")!!
     }
 
     override fun clearCcpaConsent() {

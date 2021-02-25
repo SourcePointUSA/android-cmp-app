@@ -5,29 +5,24 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
-import com.sourcepoint.cmplibrary.data.network.model.Ccpa
-import com.sourcepoint.cmplibrary.data.network.model.Gdpr
-import com.sourcepoint.cmplibrary.util.Either
-import com.sourcepoint.cmplibrary.util.Either.Left
-import com.sourcepoint.cmplibrary.util.Either.Right
 import io.mockk.mockk
 
 internal class MockDataStorage : DataStorage {
 
-    var eitherGdpr: Either<Gdpr> = Left(RuntimeException())
-    var eitherCcpa: Either<Ccpa> = Left(RuntimeException())
+    var gdprVal: String? = null
+    var ccpaVal: String? = null
     var tcDataMap: Map<String, Any?> = emptyMap()
     var storage: MutableMap<String, Any> = mutableMapOf()
 
     override val preference: SharedPreferences = mockk()
     override var gdprApplies: Boolean = false
 
-    override fun saveGdpr(gdpr: Gdpr) {
-        eitherGdpr = Right(gdpr)
+    override fun saveGdpr(value: String) {
+        gdprVal = value
     }
 
-    override fun getGdpr(): Either<Gdpr> {
-        return eitherGdpr
+    override fun getGdpr(): String? {
+        return gdprVal
     }
 
     override fun saveTcData(deferredMap: Map<String, Any?>) {
@@ -90,13 +85,13 @@ internal class MockDataStorage : DataStorage {
         return storage[DataStorageGdpr.GDPR_CONSENT_RESP] as? String ?: ""
     }
 
-    override fun getGdprMessage(): String? {
-        return storage[DataStorageGdpr.GDPR_JSON_MESSAGE] as? String
+    override fun getGdprMessage(): String {
+        return (storage[DataStorageGdpr.GDPR_JSON_MESSAGE] as? String) ?: ""
     }
 
     override fun clearInternalData() {
-        eitherGdpr = Left(RuntimeException())
-        eitherCcpa = Left(RuntimeException())
+        gdprVal = null
+        ccpaVal = null
         tcDataMap = emptyMap()
         storage = mutableMapOf()
     }
@@ -109,11 +104,11 @@ internal class MockDataStorage : DataStorage {
         storage[DataStorageGdpr.GDPR_CONSENT_RESP] = ""
     }
 
-    override fun saveCcpa(ccpa: Ccpa) {
-        eitherCcpa = Right(ccpa)
+    override fun saveCcpa(value: String) {
+        ccpaVal = value
     }
 
-    override fun getCcpa(): Either<Ccpa> = eitherCcpa
+    override fun getCcpa(): String? = ccpaVal
 
     override var ccpaApplies: Boolean = false
 
@@ -129,8 +124,8 @@ internal class MockDataStorage : DataStorage {
         return storage[CCPA_CONSENT_RESP] as? String ?: ""
     }
 
-    override fun getCcpaMessage(): String? {
-        return storage[CCPA_JSON_MESSAGE] as? String?
+    override fun getCcpaMessage(): String {
+        return (storage[CCPA_JSON_MESSAGE] as? String?) ?: ""
     }
 
     override fun clearCcpaConsent() {

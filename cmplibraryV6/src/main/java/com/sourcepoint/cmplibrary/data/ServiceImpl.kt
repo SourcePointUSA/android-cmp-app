@@ -3,11 +3,15 @@ package com.sourcepoint.cmplibrary.data
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
+import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
+import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Legislation.CCPA
 import com.sourcepoint.cmplibrary.exception.Legislation.GDPR
+import com.sourcepoint.cmplibrary.model.getMap
+import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONObject
 
 /**
@@ -30,30 +34,28 @@ private class ServiceImpl(
     private val nc: NetworkClient,
     private val ds: DataStorage,
     private val cm: CampaignManager
-) : Service, NetworkClient by nc, DataStorage by ds {
+) : Service, NetworkClient by nc, CampaignManager by cm {
 
     override fun getMessage(messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) {
         nc.getMessage(
             messageReq,
             { messageResp ->
-                messageResp.campaigns.forEach { storeCampaignData(it) }
+                messageResp.campaigns.forEach { cr ->
+                    when (cr) {
+                        is Gdpr -> {
+                            cm.saveGdpr(cr)
+                            cr.userConsent?.let { uc -> cm.saveGDPRConsent(uc) }
+                        }
+                        is Ccpa -> {
+                            cm.saveCcpa(cr)
+                            cr.userConsent.let { uc -> cm.saveCCPAConsent(uc) }
+                        }
+                    }
+                }
                 pSuccess(messageResp)
             },
             pError
         )
-    }
-
-    private fun storeCampaignData(cr: CampaignResp) {
-        when (cr) {
-            is Gdpr -> {
-                ds.saveGdpr(cr)
-                cr.userConsent?.let { uc -> cm.saveGDPRConsent(uc) }
-            }
-            is Ccpa -> {
-                ds.saveCcpa(cr)
-                cr.userConsent.let { uc -> cm.saveCCPAConsent(uc) }
-            }
-        }
     }
 
     override fun getNativeMessage(messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {
@@ -86,11 +88,20 @@ private class ServiceImpl(
             consentReq,
             { consentResp ->
                 success(consentResp.copy(legislation = legislation))
-                // TODO save the consent into the local storage
                 when (legislation) {
                     GDPR -> {
+                        consentResp.content
+                            .toTreeMap()
+                            .getMap("userConsent")
+                            ?.toGDPRUserConsent()
+                            ?.let { cm.saveGDPRConsent(it) }
                     }
                     CCPA -> {
+                        consentResp.content
+                            .toTreeMap()
+                            .getMap("userConsent")
+                            ?.toCCPAUserConsent()
+                            ?.let { cm.saveCCPAConsent(it) }
                     }
                 }
             },

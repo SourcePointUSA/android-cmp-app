@@ -5,6 +5,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertNotNull
 import com.example.uitestutil.assertNull
 import com.example.uitestutil.jsonFile2String
+import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.campaign.create
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
@@ -26,6 +28,7 @@ class SpUtilsTest {
         val dataStorageGdpr = DataStorageGdpr.create(appCtx)
         val dataStorageCcpa = DataStorageCcpa.create(appCtx)
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
+        val campaignManager: CampaignManager = CampaignManager.create(dataStorage)
 
         userConsents(appCtx).run {
             ccpa.assertNull()
@@ -35,7 +38,7 @@ class SpUtilsTest {
         val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
         val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
 
-        dataStorage.saveGdpr(gdpr)
+        campaignManager.saveGdpr(gdpr)
 
         userConsents(appCtx).run {
             ccpa.assertNull()
@@ -48,6 +51,7 @@ class SpUtilsTest {
         val dataStorageGdpr = DataStorageGdpr.create(appCtx)
         val dataStorageCcpa = DataStorageCcpa.create(appCtx)
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
+        val campaignManager: CampaignManager = CampaignManager.create(dataStorage)
 
         userConsents(appCtx).run {
             ccpa.assertNull()
@@ -57,7 +61,7 @@ class SpUtilsTest {
         val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
         val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
 
-        dataStorage.saveCcpa(ccpa)
+        campaignManager.saveCcpa(ccpa)
 
         userConsents(appCtx).run {
             ccpa.assertNotNull()
@@ -70,6 +74,7 @@ class SpUtilsTest {
         val dataStorageGdpr = DataStorageGdpr.create(appCtx)
         val dataStorageCcpa = DataStorageCcpa.create(appCtx)
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
+        val campaignManager: CampaignManager = CampaignManager.create(dataStorage)
 
         userConsents(appCtx).run {
             ccpa.assertNull()
@@ -80,8 +85,8 @@ class SpUtilsTest {
 
         val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
         val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
-        dataStorage.saveGdpr(gdpr)
-        dataStorage.saveCcpa(ccpa)
+        campaignManager.saveGdpr(gdpr)
+        campaignManager.saveCcpa(ccpa)
 
         userConsents(appCtx).run {
             ccpa.assertNotNull()
