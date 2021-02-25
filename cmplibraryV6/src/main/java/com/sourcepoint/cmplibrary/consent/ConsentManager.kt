@@ -45,6 +45,8 @@ private class ConsentManagerImpl(
                 val gdprConfig = pair.second
 
                 JSONObject().apply {
+                    put("pmSaveAndExitVariables", action.saveAndExitVariables)
+                    put("requestFromPM", action.requestFromPm)
                     put("accountId", gdpr.accountId)
                     put("propertyId", gdpr.propertyId)
                     put("propertyHref", "https://${gdpr.propertyName}")
@@ -52,12 +54,10 @@ private class ConsentManagerImpl(
                     put("uuid", gdprConfig.uuid ?: failParam("gdprConfig.uuid"))
                     put("meta", gdprConfig.meta)
                     put("actionType", action.actionType.code)
-                    put("requestFromPM", action.requestFromPm)
                     put("choiceId", action.choiceId)
-                    put("pmSaveAndExitVariables", action.saveAndExitVariables)
                     put("pubData", action.pubData)
                     put("requestUUID", uuid)
-                    put("consentLanguage", action.consentLanguage ?: Locale.getDefault().language.toUpperCase())
+                    put("consentLanguage", action.consentLanguage ?: Locale.getDefault().language.toUpperCase(Locale.getDefault()))
                 }
             }
             .executeOnLeft {

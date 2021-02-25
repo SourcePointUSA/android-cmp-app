@@ -1,5 +1,3 @@
-import kotlin.String
-
 object Libs {
     const val kotlinxCoroutinesCore: String = "org.jetbrains.kotlinx:kotlinx-coroutines-core:" + Versions.coroutinesVersion
     const val kotlinReflect: String = "org.jetbrains.kotlin:kotlin-reflect:" + Versions.kotlinVersion
@@ -7,6 +5,9 @@ object Libs {
     const val jacksonJr: String = "com.fasterxml.jackson.jr:jackson-jr-objects:" + Versions.jacksonJrVersion
     const val jacksonJrsTree: String = "com.fasterxml.jackson.jr:jackson-jr-stree:" + Versions.jacksonJrVersion
     const val mockwebserver = "com.squareup.okhttp3:mockwebserver:${Versions.mockWSVersion}"
+    const val robolectric = "org.robolectric:robolectric:${Versions.robolectricVersion}"
+    const val testCore = "androidx.test:core:${Versions.androidxTestVersion}"
+    const val okHttp = "com.squareup.okhttp3:okhttp:${Versions.okHttpVersion}"
 }
 
 

@@ -68,7 +68,7 @@ dependencies {
 
     // Unfortunately we depend on a outdated version of okhttp due to its support to older versions of Android
     //noinspection GradleDependency
-    api("com.squareup.okhttp3:okhttp:3.12.10")
+    api(Libs.okHttp)
 
     testImplementation(Libs.mockk)
     testImplementation(Libs.mockwebserver)
