@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import okhttp3.OkHttpClient;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -73,7 +75,7 @@ public class GDPRConsentLibTest {
     ArgumentCaptor<Runnable> lambdaCaptor;
 
     private ConsentLibBuilder builderMock(int accountId, String propertyName, int propertyId, String pmId, Activity activity){
-        ConsentLibBuilder b = new ConsentLibBuilder(accountId, propertyName, propertyId, pmId, activity){
+        ConsentLibBuilder b = new ConsentLibBuilder(accountId, propertyName, propertyId, pmId, activity, new OkHttpClient()){
             @Override
             public SourcePointClient getSourcePointClient(){
                 return sourcePointClientMock;

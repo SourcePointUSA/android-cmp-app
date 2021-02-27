@@ -13,6 +13,8 @@ import org.robolectric.RobolectricTestRunner;
 
 import java.lang.reflect.Field;
 
+import okhttp3.OkHttpClient;
+
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -32,7 +34,7 @@ public class ConsentLibBuilderTest {
     private PropertyConfig defaultConfig = new PropertyConfig(22, 1234,"mobile.demo", "1234");
 
     private ConsentLibBuilder spyBuilder(PropertyConfig config){
-        ConsentLibBuilder spy =  spy(new ConsentLibBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId, activityMock));
+        ConsentLibBuilder spy =  spy(new ConsentLibBuilder(config.accountId, config.propertyName, config.propertyId, config.pmId, activityMock, new OkHttpClient()));
         // mocking dependencies...
         doReturn(storeClientMock).when(spy).getStoreClient();
         doReturn(sourcePointClientMock).when(spy).getSourcePointClient();
@@ -83,7 +85,7 @@ public class ConsentLibBuilderTest {
 
     @Test
     public void ConsentLibBuilder(){
-        ConsentLibBuilder builder = new ConsentLibBuilder(defaultConfig.accountId, defaultConfig.propertyName, defaultConfig.propertyId, defaultConfig.pmId, activityMock);
+        ConsentLibBuilder builder = new ConsentLibBuilder(defaultConfig.accountId, defaultConfig.propertyName, defaultConfig.propertyId, defaultConfig.pmId, activityMock, new OkHttpClient());
         assertEquals(builder.propertyConfig.accountId, defaultConfig.accountId);
         assertEquals(builder.propertyConfig.propertyId, defaultConfig.propertyId);
         assertEquals(builder.propertyConfig.propertyName, defaultConfig.propertyName);

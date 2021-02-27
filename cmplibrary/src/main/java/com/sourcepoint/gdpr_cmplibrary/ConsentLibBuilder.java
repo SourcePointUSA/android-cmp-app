@@ -1,7 +1,6 @@
 package com.sourcepoint.gdpr_cmplibrary;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.CountDownTimer;
@@ -50,18 +49,20 @@ public class ConsentLibBuilder {
     PropertyConfig propertyConfig;
     private Context context;
     private Logger logger = null;
+    private OkHttpClient okHttpClient;
 
-    ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Context context) {
-        init(accountId, property, propertyId , pmId , context);
+    ConsentLibBuilder(Integer accountId, String property, Integer propertyId , String pmId , Context context, OkHttpClient okHttpClient) {
+        init(accountId, property, propertyId , pmId , context, okHttpClient);
     }
 
-    private void init(Integer accountId, String propertyName, Integer propertyId , String pmId , Context context){
+    private void init(Integer accountId, String propertyName, Integer propertyId , String pmId , Context context, OkHttpClient okHttpClient){
         //TODO: add a constructor method that takes PropertyConfig class as parameter
         propertyConfig = new PropertyConfig(accountId, propertyId, propertyName, pmId);
         stagingCampaign = false;
         shouldCleanConsentOnError = true;
         messageTimeOut = DEFAULT_MESSAGE_TIMEOUT;
         this.context = context.getApplicationContext();
+        this.okHttpClient = okHttpClient;
         logger = initLogger(accountId, propertyId);
     }
 
@@ -80,7 +81,7 @@ public class ConsentLibBuilder {
         String osVersion = String.valueOf(Build.VERSION.SDK_INT);
         ClientInfo ci = new ClientInfo(BuildConfig.VERSION_NAME, osVersion, Build.MODEL);
         return LoggerFactory.createLogger(
-                new OkHttpClient(),
+                okHttpClient,
                 ErrorMessageManagerKt.createErrorManager(
                         accountId,
                         propertyId,
@@ -254,7 +255,7 @@ public class ConsentLibBuilder {
     }
 
     protected SourcePointClient getSourcePointClient(){
-        return new SourcePointClient(new OkHttpClient(), spClientConfig() , getConnectivityManager(), logger);
+        return new SourcePointClient(okHttpClient, spClientConfig() , getConnectivityManager(), logger);
     }
 
     private SourcePointClientConfig spClientConfig(){

@@ -153,7 +153,14 @@ public class GDPRConsentLib implements IGDPRConsentLib{
      * @return a new instance of GDPRConsentLib.Builder
      */
     public static ConsentLibBuilder newBuilder(Integer accountId, String property, Integer propertyId, String pmId, Context context) {
-        return new ConsentLibBuilder(accountId, property, propertyId, pmId, context);
+        return newBuilder(accountId, property, propertyId, pmId, context, new OkHttpClient());
+    }
+
+    /**
+     * @return a new instance of GDPRConsentLib.Builder, with the ability to use a shared instance of OkHttpClient() from the app.
+     */
+    public static ConsentLibBuilder newBuilder(Integer accountId, String property, Integer propertyId, String pmId, Context context, OkHttpClient okHttpClient) {
+        return new ConsentLibBuilder(accountId, property, propertyId, pmId, context, okHttpClient);
     }
 
     GDPRConsentLib(ConsentLibBuilder b) {
