@@ -23,7 +23,7 @@ internal class MockService(
     override fun getCcpa(): Either<Ccpa> = Either.Left(RuntimeException())
     override fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>> = Either.Left(RuntimeException())
     override fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate> = Either.Left(RuntimeException())
-    override fun getPmGDPRConfig(): Either<PmUrlConfig> = Either.Left(RuntimeException())
+    override fun getGdprPmConfig(): Either<PmUrlConfig> = Either.Left(RuntimeException())
     override fun getMessageReq(): MessageReq {
         TODO("Not yet implemented")
     }

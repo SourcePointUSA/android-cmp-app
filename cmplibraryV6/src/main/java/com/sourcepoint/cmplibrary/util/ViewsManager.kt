@@ -9,6 +9,7 @@ import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.util.ViewsManagerImpl.IDS.idsSet
 import java.lang.ref.WeakReference
+import java.util.*
 
 /**
  * Entity used to handle the views of the activity
@@ -21,7 +22,9 @@ internal interface ViewsManager {
     fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate): IConsentWebView?
     fun removeView(view: View)
     fun removeAllViews()
+    fun removeAllViewsExcept(pView: View)
     fun dispose()
+
     companion object
 }
 
@@ -41,7 +44,7 @@ private class ViewsManagerImpl(
 ) : ViewsManager {
 
     object IDS {
-        val idsSet = mutableSetOf<Int>()
+        val idsSet = LinkedHashSet<Int>()
     }
 
     val mainView: ViewGroup?
@@ -58,7 +61,7 @@ private class ViewsManagerImpl(
     }
 
     override fun showView(view: View) {
-        if (isViewInLayout) return
+//        if (isViewInLayout) return
         idsSet.add(view.id)
         if (view.parent == null) {
             mainView?.let {
@@ -72,6 +75,7 @@ private class ViewsManagerImpl(
                 }
             }
         }
+        removeAllViewsExcept(view)
         println("ids size [${idsSet.size}] === $idsSet")
         println("ids =====================================")
         println("ids =====================================")
@@ -88,6 +92,26 @@ private class ViewsManagerImpl(
             }
         }
         idsSet.clear()
+        println("ids size [${idsList.size}] === $idsList")
+        println("ids =====================================")
+        println("ids =====================================")
+    }
+
+    override fun removeAllViewsExcept(pView: View) {
+        val idsList = idsSet.toMutableList()
+        println("ids size [${idsList.size}] === $idsList")
+        idsList.forEach { id ->
+            mainView?.findViewById<View>(id)?.let { view ->
+                if (pView != view) {
+                    mainView?.run {
+                        post {
+                            this.removeView(view)
+                            idsSet.remove(id)
+                        }
+                    }
+                }
+            }
+        }
         println("ids size [${idsList.size}] === $idsList")
         println("ids =====================================")
         println("ids =====================================")

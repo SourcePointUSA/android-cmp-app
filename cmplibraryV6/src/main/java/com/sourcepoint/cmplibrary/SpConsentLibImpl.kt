@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageInternal
+import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
@@ -91,7 +92,7 @@ internal class SpConsentLibImpl(
     override fun loadGDPRPrivacyManager() {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientIsNull()
-        val pmConfig = campaignManager.getPmGDPRConfig()
+        val pmConfig = campaignManager.getGdprPmConfig()
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
@@ -175,7 +176,7 @@ internal class SpConsentLibImpl(
                     view.let { spClient?.onUIFinished(it) }
                 }
                 ActionType.SHOW_OPTIONS -> {
-                    view.let { spClient?.onUIFinished(it) }
+                    showOption(action, view)
                 }
                 ActionType.PM_DISMISS -> {
                     view.let { spClient?.onUIFinished(it) }
@@ -197,7 +198,25 @@ internal class SpConsentLibImpl(
                         .executeOnLeft {
                             throw it
                         }
+                    viewManager.removeAllViewsExcept(view)
                     view.let { spClient?.onUIFinished(it) }
+                }
+            }
+        }
+    }
+
+    private fun showOption(action: ConsentAction, view: View) {
+        when(action.legislation){
+            Legislation.GDPR -> {
+                campaignManager.getGdprPmConfig().map { pmUrlConfig ->
+                    viewManager
+                        .createWebView(this, JSReceiverDelegate())
+                        .also { it?.loadConsentUIFromUrl(urlManager.urlPm(pmUrlConfig)) }
+                }
+            }
+            Legislation.CCPA -> {
+                campaignManager.getCcpaPmConfig().map { pmUrlConfig ->
+                    (view as? IConsentWebView)?.loadConsentUIFromUrl(urlManager.urlPm(pmUrlConfig))
                 }
             }
         }

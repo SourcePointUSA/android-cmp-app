@@ -31,7 +31,8 @@ internal interface CampaignManager {
     fun getCcpa(): Either<Ccpa>
     fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>>
     fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate>
-    fun getPmGDPRConfig(): Either<PmUrlConfig>
+    fun getGdprPmConfig(): Either<PmUrlConfig>
+    fun getCcpaPmConfig(): Either<PmUrlConfig>
     fun getMessageReq(): MessageReq
 
     fun getGDPRConsent(): Either<GDPRConsent>
@@ -80,7 +81,7 @@ private class CampaignManagerImpl(
         mapTemplate[legislation.name] ?: fail("${legislation.name} Campain is missing!!!")
     }
 
-    override fun getPmGDPRConfig(): Either<PmUrlConfig> = check {
+    override fun getGdprPmConfig(): Either<PmUrlConfig> = check {
         val gdpr: CampaignTemplate = mapTemplate[Legislation.GDPR.name]
             ?: fail("Privacy manager url config is missing!!!")
 
@@ -89,6 +90,18 @@ private class CampaignManagerImpl(
             consentUUID = gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
             siteId = "7639",
             messageId = gdpr.pmId
+        )
+    }
+
+    override fun getCcpaPmConfig(): Either<PmUrlConfig> = check {
+        val ccpa: CampaignTemplate = mapTemplate[Legislation.CCPA.name]
+            ?: fail("Privacy manager url config is missing!!!")
+
+        val ccpaConfig = dataStorage.getCcpa()?.toCCPA() ?: fail("Privacy manager url config is missing!!!")
+        PmUrlConfig(
+            consentUUID = ccpaConfig.uuid ?: fail("consentUUID cannot be null!!!"),
+            siteId = "7639",
+            messageId = ccpa.pmId
         )
     }
 
