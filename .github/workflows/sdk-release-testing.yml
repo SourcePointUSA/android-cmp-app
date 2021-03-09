@@ -3,11 +3,11 @@ name: SDK Release - Test workflow
 on:
   push:
     branches:  [ sp-6304_bintray_replacement ] #[ release/* ]
-    paths:
-      - '!*.yml'
-      - '!README.md'
-      - '!CHANGELOG.md'
-      - '!samples/metaapp/gradle.properties'
+#    paths:
+#      - '!*.yml'
+#      - '!README.md'
+#      - '!CHANGELOG.md'
+#      - '!samples/metaapp/gradle.properties'
 
 jobs:
   build:
