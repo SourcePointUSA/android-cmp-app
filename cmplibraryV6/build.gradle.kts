@@ -1,7 +1,5 @@
 plugins {
     id("com.android.library")
-    id("maven-publish")
-    id("com.jfrog.bintray")
     kotlin("android")
     kotlin("android.extensions")
 }
@@ -63,4 +61,4 @@ dependencies {
     androidTestImplementation("junit:junit:4.13")
 }
 
-apply(from = "${rootDir}/gradleutils/publish-android.gradle")
+apply(from = "${rootDir}/scripts/publish-mavencentral.gradle")
