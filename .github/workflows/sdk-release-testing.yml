@@ -16,9 +16,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Assemble
-        run: |
-          ./gradlew cmplibrary:assemble
+#      - name: Assemble
+#        run: |
+#          ./gradlew cmplibrary:assemble
 #      - name: Get current time
 #        uses: 1466587594/get-current-time@v2
 #        id: current-time
@@ -62,7 +62,7 @@ jobs:
         run: |
           sudo bash -c "echo '$SIGNING_SECRET_KEY_RING_FILE_CONTENT' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
       - name: Release build
-        run: ./gradlew okhttp-socket-ext:assemble :datalayer:assemble
+        run: ./gradlew cmplibrary:assemble
       - name: Source jar and dokka
         run: ./gradlew androidSourcesJar javadocJar
       - name: Publish to MavenCentral
