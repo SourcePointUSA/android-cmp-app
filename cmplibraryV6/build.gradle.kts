@@ -61,4 +61,4 @@ dependencies {
     androidTestImplementation("junit:junit:4.13")
 }
 
-apply(from = "${rootDir}/scripts/publish-mavencentral.gradle")
+//apply(from = "${rootDir}/scripts/publish-mavencentral.gradle")
