@@ -202,7 +202,7 @@ We'll update this list over time, if you have any questions feel free to open an
 
 # Development
 ## How to build the `cmplibrary` module from source
-Note: skip this step and jump to next section if you already have the compiled the compiled `cmplibrary-release.aar` binary.
+Note: skip this step and jump to next section if you already have the compiled `cmplibrary-release.aar` binary.
 
 * Clone and open `android-cmp-app` project in Android Studio
 * Build the project
