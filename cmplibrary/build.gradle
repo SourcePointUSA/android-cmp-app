@@ -43,7 +43,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // kotlin
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"

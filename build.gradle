@@ -7,20 +7,11 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter {
-//            Include only the following libs from bintray
-//            content {
-//                // https://youtrack.jetbrains.com/issue/IDEA-261387
-//                includeModule("org.jetbrains.trove4j", "trove4j")
-//                includeModule("org.koin", "core")
-//                includeModule("org.koin", "koin-core")
-//                includeModule("org.koin", "koin-core-ext")
-//                includeModule("org.koin", "koin-android")
-//                includeModule("org.koin", "koin-java")
-//                includeModule("org.koin", "koin-test")
-//                includeModule("org.jetbrains.kotlinx", "kotlinx-html-jvm")
-//                includeModule("com.soywiz.korlibs.korte", "korte-jvm")
-//            }
+        // https://youtrack.jetbrains.com/issue/IDEA-261387
+        // includeModule("org.jetbrains.trove4j", "trove4j")
+        maven {
+            url "https://nexus.pentaho.org/content/groups/omni"
+            artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
         }
     }
     dependencies {
@@ -29,7 +20,7 @@ buildscript {
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
         classpath 'com.palantir:jacoco-coverage:0.2.1'
 
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:1.4.20"
+//        classpath "org.jetbrains.dokka:dokka-gradle-plugin:1.4.20"
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0" // original
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -49,20 +40,11 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter {
-//            Include only the following libs from bintray
-//            content {
-//                // https://youtrack.jetbrains.com/issue/IDEA-261387
-//                includeModule("org.jetbrains.trove4j", "trove4j")
-//                includeModule("org.koin", "core")
-//                includeModule("org.koin", "koin-core")
-//                includeModule("org.koin", "koin-core-ext")
-//                includeModule("org.koin", "koin-android")
-//                includeModule("org.koin", "koin-java")
-//                includeModule("org.koin", "koin-test")
-//                includeModule("org.jetbrains.kotlinx", "kotlinx-html-jvm")
-//                includeModule("com.soywiz.korlibs.korte", "korte-jvm")
-//            }
+        // https://youtrack.jetbrains.com/issue/IDEA-261387
+        // includeModule("org.jetbrains.trove4j", "trove4j")
+        maven {
+            url "https://nexus.pentaho.org/content/groups/omni"
+            artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
         }
     }
 }
