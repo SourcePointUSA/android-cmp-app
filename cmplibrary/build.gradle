@@ -3,12 +3,12 @@ def VERSION_NAME = "5.3.12"
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
 
 apply plugin: 'io.github.dryrum.update-changelog'
 apply plugin: "io.github.dryrum.replace-in-file"
 apply plugin: "io.github.dryrum.git-utils"
+
+apply from: rootDir.path + '/scripts/publish-mavencentral.gradle'
 
 group = "com.sourcepoint.cmplibrary"
 version = VERSION_NAME
@@ -69,8 +69,6 @@ task versionTxt{
         new File(projectDir, "version.txt").text = "$VERSION_NAME"
     }
 }
-
-apply from: '../gradleutils/publish-android.gradle'
 
 changeLogConfig {
     changeLogPath = rootDir.path + "/CHANGELOG.md"
