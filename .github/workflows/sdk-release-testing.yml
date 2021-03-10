@@ -2,7 +2,7 @@ name: SDK Release - Test workflow
 
 on:
   push:
-    branches:  [ sp-6304_bintray_replacement ] #[ release/* ]
+    branches:  [ disabled ] #[ release/* ]
 #    paths:
 #      - '!*.yml'
 #      - '!README.md'
