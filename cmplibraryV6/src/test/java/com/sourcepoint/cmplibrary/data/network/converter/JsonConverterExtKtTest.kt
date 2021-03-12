@@ -15,6 +15,14 @@ import kotlin.collections.ArrayList
 class JsonConverterExtKtTest {
 
     @Test
+    fun `GIVEN a unified response json string PARSE to UnifiedMessageResp1230 Obj`() {
+        val unifiedMess = "unified_w_campaigns_list/campaigns_list.json".jsonFile2String().toUnifiedMessageRespDto1203()
+
+
+        println()
+    }
+
+    @Test
     fun `GIVEN a Gdpr json string PARSE to Gdpr Obj`() {
         val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
 
