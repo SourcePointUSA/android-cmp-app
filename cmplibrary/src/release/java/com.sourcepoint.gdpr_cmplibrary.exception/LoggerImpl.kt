@@ -2,6 +2,7 @@
 
 package com.sourcepoint.gdpr_cmplibrary.exception
 
+import com.example.gdpr_cmplibrary.BuildConfig
 import com.sourcepoint.gdpr_cmplibrary.enqueue
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
@@ -21,12 +22,27 @@ internal fun createLogger(
 ): Logger = LoggerImpl(networkClient, errorMessageManager, url)
 
 /**
+ * Factory method used to create an instance of the [Logger] interface for debug purpose
+ * @param networkClient network client
+ * @param errorMessageManager entity used to build the network request body
+ * @param url server url
+ */
+internal fun createLogger4Testing(
+    info : (tag : String, msg : String) -> Unit,
+    debug : (tag : String, msg : String) -> Unit,
+    verbose : (tag : String, msg : String) -> Unit,
+    networkClient: OkHttpClient,
+    errorMessageManager: ErrorMessageManager,
+    url: String,
+): Logger = createLogger(networkClient, errorMessageManager, url)
+
+/**
  * Implementation of [Logger]
  */
 private class LoggerImpl(
     val networkClient: OkHttpClient,
     val errorMessageManager: ErrorMessageManager,
-    val url: String,
+    val url: String
 ) : Logger {
     override fun error(e: ConsentLibExceptionK) {
         val mediaType = MediaType.parse("application/json")
@@ -38,4 +54,7 @@ private class LoggerImpl(
 
         networkClient.newCall(request).enqueue { }
     }
+    override fun i(tag : String, msg : String) { }
+    override fun d(tag : String, msg : String) { }
+    override fun v(tag : String, msg : String) { }
 }

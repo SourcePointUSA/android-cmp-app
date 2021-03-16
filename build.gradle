@@ -3,11 +3,14 @@
 buildscript {
 
     ext.kotlin_version = '1.4.10'
-    
+
     repositories {
         google()
-        jcenter()
         mavenCentral()
+        maven {
+            url "https://nexus.pentaho.org/content/groups/omni"
+            artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
@@ -15,27 +18,29 @@ buildscript {
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
         classpath 'com.palantir:jacoco-coverage:0.2.1'
 
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-
-        def cdVersion = "0.6.1"
-        classpath "io.github.dryrum:git-utils:$cdVersion"
-        classpath "io.github.dryrum:update-changelog:$cdVersion"
-        classpath "io.github.dryrum:replace-in-file:$cdVersion"
-        classpath "io.github.dryrum:bump-version-code:$cdVersion"
     }
 }
 
 plugins {
-    id 'digital.wup.android-maven-publish' version '3.6.2'
-    id "com.jfrog.bintray" version "1.8.4"
+    id 'io.github.dryrum.update-changelog' version '0.6.3'
+    id 'io.github.dryrum.replace-in-file' version '0.6.3'
+    id 'io.github.dryrum.git-utils' version '0.6.3'
+    id 'io.github.dryrum.bump-version-code' version '0.6.3'
 }
+
+apply plugin: 'io.codearte.nexus-staging'
 
 allprojects {
     repositories {
         google()
-        jcenter()
         mavenCentral()
+        maven {
+            url "https://nexus.pentaho.org/content/groups/omni"
+            artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
+        }
     }
 }
 

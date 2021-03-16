@@ -1,17 +1,18 @@
-def VERSION_NAME = "5.3.12"
+def VERSION_NAME = "5.3.13"
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
 
 apply plugin: 'io.github.dryrum.update-changelog'
 apply plugin: "io.github.dryrum.replace-in-file"
 apply plugin: "io.github.dryrum.git-utils"
 
+
 group = "com.sourcepoint.cmplibrary"
 version = VERSION_NAME
+
+apply from: rootDir.path + '/scripts/publish-mavencentral.gradle'
 
 android {
     compileSdkVersion 28
@@ -43,7 +44,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // kotlin
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
@@ -69,8 +69,6 @@ task versionTxt{
         new File(projectDir, "version.txt").text = "$VERSION_NAME"
     }
 }
-
-apply from: '../gradleutils/publish-android.gradle'
 
 changeLogConfig {
     changeLogPath = rootDir.path + "/CHANGELOG.md"
