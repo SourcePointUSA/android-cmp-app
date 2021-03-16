@@ -1,4 +1,4 @@
-def VERSION_NAME = "5.3.12"
+def VERSION_NAME = "5.3.13"
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'

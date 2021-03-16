@@ -1,3 +1,6 @@
+## 5.3.13 (March, 75, 2021)
+* Removed all the bintray dependencies [#326](https://github.com/SourcePointUSA/android-cmp-app/pull/326)
+
 ## 5.3.12 (January, 21, 2021)
 * Added a feature to overwrite default privacy manager tab. You can now configure tab which loads with privacy manager by using the method `.setPrivacyManagerTab` in the builder. [#311](https://github.com/SourcePointUSA/android-cmp-app/pull/311)
 * Added a new NativeMessage example to make the easier usage of the native message capability. [#315](https://github.com/SourcePointUSA/android-cmp-app/pull/315)
