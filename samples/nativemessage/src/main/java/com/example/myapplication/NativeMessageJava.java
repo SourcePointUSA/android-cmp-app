@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.appcompat.app.AppCompatActivity;
+import com.sourcepoint.cmplibrary.MyClass;
 import com.sourcepoint.gdpr_cmplibrary.GDPRConsentLib;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessage;
 import com.sourcepoint.gdpr_cmplibrary.NativeMessageAttrs;
@@ -54,6 +55,7 @@ public class NativeMessageJava extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         buildGDPRConsentLib().run(buildNativeMessage());
+        MyClass.methodName();
     }
 
     @Override

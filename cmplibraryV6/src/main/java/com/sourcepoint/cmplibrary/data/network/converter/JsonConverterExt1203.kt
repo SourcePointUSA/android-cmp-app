@@ -22,8 +22,8 @@ internal fun JSONObject.toUnifiedMessageRespDto1203(): UnifiedMessageResp1230 {
     return UnifiedMessageResp1230(list)
 }
 
-fun Map<String, Any?>.toCampaignResp1203() : CampaignResp1203? {
-    return when(getFieldValue<String>("type")?.toUpperCase()){
+fun Map<String, Any?>.toCampaignResp1203(): CampaignResp1203? {
+    return when (getFieldValue<String>("type")?.toUpperCase()) {
         Legislation.GDPR.name -> Gdpr1203(
             thisContent = JSONObject(this),
             applies = false,

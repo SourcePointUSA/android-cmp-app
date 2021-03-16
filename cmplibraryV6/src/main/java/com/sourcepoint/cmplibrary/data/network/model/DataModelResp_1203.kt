@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.data.network.model
 import com.sourcepoint.cmplibrary.exception.Legislation
 import org.json.JSONObject
 
-
 class UnifiedMessageResp1230(
     val list: List<CampaignResp1203> = emptyList()
 )
@@ -29,5 +28,3 @@ class Ccpa1203(
     message: JSONObject? = null,
     userConsent: JSONObject? = null
 ) : CampaignResp1203(thisContent, Legislation.CCPA.name, applies, message, userConsent)
-
-

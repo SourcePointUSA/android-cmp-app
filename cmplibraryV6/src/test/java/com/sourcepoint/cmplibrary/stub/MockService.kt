@@ -6,7 +6,7 @@ import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
 import com.sourcepoint.cmplibrary.util.Either
-import com.sourcepoint.cmplibrary.util.Either.*
+import com.sourcepoint.cmplibrary.util.Either.*  // ktlint-disable
 import org.json.JSONObject
 
 internal class MockService(

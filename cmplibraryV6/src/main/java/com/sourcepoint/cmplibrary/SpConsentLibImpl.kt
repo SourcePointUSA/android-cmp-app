@@ -206,7 +206,7 @@ internal class SpConsentLibImpl(
     }
 
     private fun showOption(action: ConsentAction, view: View) {
-        when(action.legislation){
+        when (action.legislation) {
             Legislation.GDPR -> {
                 campaignManager.getGdprPmConfig().map { pmUrlConfig ->
                     viewManager

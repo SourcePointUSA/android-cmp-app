@@ -9,7 +9,7 @@ import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.util.ViewsManagerImpl.IDS.idsSet
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.* // ktlint-disable
 
 /**
  * Entity used to handle the views of the activity
