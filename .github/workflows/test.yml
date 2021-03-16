@@ -31,7 +31,7 @@ jobs:
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: running unit tests
-        run: ./gradlew test --quiet --build-cache
+        run: ./gradlew test
   ui-test-app:
     runs-on: macos-latest
     steps:
