@@ -53,18 +53,31 @@ internal class SpConsentLibImpl(
 
         if (viewManager.isViewInLayout) return
 
-        service.getMessage(
+        service.getMessage1203(
             messageReq = campaignManager.getMessageReq(),
             pSuccess = { messageResp ->
                 executor.executeOnMain {
                     /** create a instance of WebView */
                     val webView = viewManager.createWebView(this, JSReceiverDelegate())
                     /** inject the message into the WebView */
-                    webView?.loadConsentUI(messageResp, urlManager.urlURenderingAppStage())
+                    println(messageResp)
+//                    webView?.loadConsentUI(messageResp, urlManager.urlURenderingAppStage())
                 }
             },
             pError = { throwable -> spClient?.onError(throwable.toConsentLibException()) }
         )
+//        service.getMessage(
+//            messageReq = campaignManager.getMessageReq(),
+//            pSuccess = { messageResp ->
+//                executor.executeOnMain {
+//                    /** create a instance of WebView */
+//                    val webView = viewManager.createWebView(this, JSReceiverDelegate())
+//                    /** inject the message into the WebView */
+//                    webView?.loadConsentUI(messageResp, urlManager.urlURenderingAppStage())
+//                }
+//            },
+//            pError = { throwable -> spClient?.onError(throwable.toConsentLibException()) }
+//        )
     }
 
     override fun loadMessage(nativeMessage: NativeMessage) {

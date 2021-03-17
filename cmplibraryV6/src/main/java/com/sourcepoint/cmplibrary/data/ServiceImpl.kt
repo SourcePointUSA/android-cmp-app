@@ -36,6 +36,17 @@ private class ServiceImpl(
     private val cm: CampaignManager
 ) : Service, NetworkClient by nc, CampaignManager by cm {
 
+    override fun getMessage1203(messageReq: MessageReq, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit) {
+        nc.getMessage1203(
+            messageReq,
+            { messageResp ->
+                // TODO save the data into the cache
+                pSuccess(messageResp)
+            },
+            pError
+        )
+    }
+
     override fun getMessage(messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) {
         nc.getMessage(
             messageReq,

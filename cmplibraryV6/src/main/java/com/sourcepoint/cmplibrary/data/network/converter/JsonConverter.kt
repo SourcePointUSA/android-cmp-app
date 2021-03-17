@@ -1,10 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
-import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
-import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
-import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
-import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.*
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.util.Either
 
@@ -18,6 +15,8 @@ internal interface JsonConverter {
      */
 
     fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp>
+
+    fun toUnifiedMessageResp1203(body: String): Either<UnifiedMessageResp1203>
 
     fun toNativeMessageResp(body: String): Either<NativeMessageResp>
 

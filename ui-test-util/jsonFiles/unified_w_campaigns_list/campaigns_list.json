@@ -498,6 +498,7 @@
           }
         ]
       },
+      "messageMetaData": {},
       "userConsent": {
         "rejectedCategories": [
           "abc"
@@ -1008,6 +1009,7 @@
           }
         ]
       },
+      "messageMetaData": {},
       "userConsent": {
         "euconsent": "abc",
         "grants": {},

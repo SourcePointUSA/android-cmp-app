@@ -1,10 +1,12 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.assertFalse
 import com.sourcepoint.cmplibrary.assertNotNull
+import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
-import com.sourcepoint.cmplibrary.data.network.model.Ccpa
-import com.sourcepoint.cmplibrary.data.network.model.Gdpr
+import com.sourcepoint.cmplibrary.data.network.model.*
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONArray
 import org.json.JSONObject
@@ -18,7 +20,29 @@ class JsonConverterExtKtTest {
     fun `GIVEN a unified response json string PARSE to UnifiedMessageResp1230 Obj`() {
         val unifiedMess = "unified_w_campaigns_list/campaigns_list.json".jsonFile2String().toUnifiedMessageRespDto1203()
 
-        println()
+        unifiedMess.list.size.assertEquals(2)
+
+        val gdpr = unifiedMess.list[1] as Gdpr1203
+        val ccpa = unifiedMess.list[0] as Ccpa1203
+
+        gdpr.run {
+            type.assertEquals(Legislation.GDPR.name)
+            applies.assertTrue()
+            userConsent.tcData.assertNotNull()
+            userConsent.euConsent.assertEquals("abc")
+        }
+
+        ccpa.run {
+            type.assertEquals(Legislation.CCPA.name)
+            applies.assertTrue()
+            userConsent.also {
+                it.rejectedCategories.size.assertEquals(1)
+                it.rejectedVendors.size.assertEquals(1)
+                it.rejectedAll.assertFalse()
+                it.status.assertEquals("rejectedSoome")
+                it.uspstring.assertEquals("abc")
+            }
+        }
     }
 
     @Test

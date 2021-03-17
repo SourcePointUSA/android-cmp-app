@@ -10,6 +10,7 @@ import okhttp3.HttpUrl
  */
 internal interface HttpUrlManager {
     val inAppUrlMessage: HttpUrl
+    val inAppUrlMessage1203: HttpUrl
     val inAppUrlNativeMessage: HttpUrl
     val sendConsentUrlOld: HttpUrl
     val sendGdprConsentUrl: HttpUrl
@@ -40,6 +41,12 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addPathSegments(message)
         .addQueryParameter("env", "localProd")
         .addQueryParameter("inApp", "true")
+        .build()
+
+    override val inAppUrlMessage1203: HttpUrl = HttpUrl.Builder()
+        .scheme("https")
+        .host("fake-wrapper-api.herokuapp.com")
+        .addPathSegments("all/v1/multi-campaign")
         .build()
 
     override val inAppUrlMessage: HttpUrl = inAppLocalUrlMessage

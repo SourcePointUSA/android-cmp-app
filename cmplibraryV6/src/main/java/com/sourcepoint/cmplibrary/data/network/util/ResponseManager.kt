@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp1203
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.util.Either
 import okhttp3.Response
@@ -18,6 +19,8 @@ internal interface ResponseManager {
      * @return [Either] object
      */
     fun parseResponse(r: Response): Either<UnifiedMessageResp>
+
+    fun parseResponse1203(r: Response): Either<UnifiedMessageResp1203>
 
     /**
      * @param r http response

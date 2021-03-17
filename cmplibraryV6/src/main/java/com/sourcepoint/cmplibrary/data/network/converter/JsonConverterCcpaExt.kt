@@ -38,26 +38,27 @@ internal fun Map<String, Any?>.toCCPA(): Ccpa? {
 }
 
 internal fun Map<String, Any?>.toCCPAUserConsent(): CCPAConsent {
-    val userConsentMap = this
 
-    val rejectedCategories = (userConsentMap["rejectedCategories"] as? Iterable<Any?>)
+    val rejectedCategories = getFieldValue<Iterable<Any?>>("rejectedCategories")
         ?.filterNotNull()
-        ?: failParam("rejectedCategories")
+        ?: failParam("Ccpa  rejectedCategories")
 
-    val rejectedVendors = (userConsentMap["rejectedVendors"] as? Iterable<Any?>)
+    val rejectedVendors = getFieldValue<Iterable<Any?>>("rejectedVendors")
         ?.filterNotNull()
-        ?: failParam("rejectedVendors")
+        ?: failParam("Ccpa  rejectedVendors")
 
-    val status: String = (userConsentMap["status"] as? String)
+    val status: String = getFieldValue<String>("status")
         ?: fail("CCPAStatus cannot be null!!!")
 
-    val uspstring = (userConsentMap["uspstring"] as? String) ?: ""
+    val uspString : String = getFieldValue("USPString") ?: failParam("Ccpa USPString")
+    val rejectedAll : Boolean = getFieldValue("rejectedAll") ?: true
 
     return CCPAConsent(
         rejectedCategories = rejectedCategories,
         rejectedVendors = rejectedVendors,
+        rejectedAll = rejectedAll,
         status = status,
-        uspstring = uspstring,
+        uspstring = uspString,
         thisContent = JSONObject(this)
     )
 }
