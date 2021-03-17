@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network
 
-import com.sourcepoint.cmplibrary.data.network.model.*
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.exception.Legislation

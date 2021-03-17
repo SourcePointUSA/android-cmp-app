@@ -33,6 +33,7 @@ internal interface CampaignManager {
     fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate>
     fun getGdprPmConfig(): Either<PmUrlConfig>
     fun getCcpaPmConfig(): Either<PmUrlConfig>
+
     fun getMessageReq(): MessageReq
 
     fun getGDPRConsent(): Either<GDPRConsent>

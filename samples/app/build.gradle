@@ -41,10 +41,6 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation project(':cmplibraryV6')
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.3.6'
-//    implementation project(':cmplibrary')
-
     // kotlin
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
@@ -52,6 +48,8 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation project(':cmplibraryV6')
+    implementation project(':cmplibrary')
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
