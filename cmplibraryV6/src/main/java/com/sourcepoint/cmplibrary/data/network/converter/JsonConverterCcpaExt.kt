@@ -50,7 +50,7 @@ internal fun Map<String, Any?>.toCCPAUserConsent(): CCPAConsent {
     val status: String = getFieldValue<String>("status")
         ?: fail("CCPAStatus cannot be null!!!")
 
-    val uspString : String = getFieldValue("USPString") ?: failParam("Ccpa USPString")
+    val uspString : String = getFieldValue("USPString") ?: ""//failParam("Ccpa USPString")
     val rejectedAll : Boolean = getFieldValue("rejectedAll") ?: true
 
     return CCPAConsent(

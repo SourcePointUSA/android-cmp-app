@@ -12,7 +12,9 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import com.sourcepoint.cmplibrary.data.network.model.CampaignResp1203
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp1203
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.util.*  //ktlint-disable
@@ -110,6 +112,10 @@ internal class ConsentWebView(
                 logMess("{message json} is null for all the legislations")
                 false
             }
+    }
+
+    override fun loadConsentUI(messageResp: CampaignResp1203, url: HttpUrl): Either<Boolean> = check {
+        loadConsentUIFromUrl(url, messageResp.message)
     }
 
     private fun logMess(mess: String) = logger.d(this::class.java.simpleName, "========>  $mess")

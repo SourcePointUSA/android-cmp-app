@@ -11,7 +11,9 @@ import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.model.CampaignResp1203
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
+import com.sourcepoint.cmplibrary.data.network.model.GDPRConsent1203
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
@@ -60,8 +62,7 @@ internal class SpConsentLibImpl(
                     /** create a instance of WebView */
                     val webView = viewManager.createWebView(this, JSReceiverDelegate())
                     /** inject the message into the WebView */
-                    println(messageResp)
-//                    webView?.loadConsentUI(messageResp, urlManager.urlURenderingAppStage())
+                    webView?.loadConsentUI(messageResp.list.first(), urlManager.urlURenderingAppProd())
                 }
             },
             pError = { throwable -> spClient?.onError(throwable.toConsentLibException()) }
@@ -134,45 +135,6 @@ internal class SpConsentLibImpl(
 //        viewManager.removeAllViews()
         campaignManager.clearConsents()
     }
-
-    //    /** Start Receiver methods */
-    inner class JSReceiverDelegate : JSClientLib {
-        //
-        override fun onConsentUIReady(view: View, isFromPM: Boolean) {
-            // TODO what consent is ready? GDPR or CCPA?
-            view.let { viewManager.showView(it) }
-        }
-
-        override fun log(view: View, tag: String?, msg: String?) {
-            logMess("$tag $msg")
-        }
-
-        override fun log(view: View, msg: String?) {
-            logMess("$msg")
-        }
-
-        override fun onError(view: View, errorMessage: String) {
-            spClient?.onError(GenericSDKException(description = errorMessage))
-            pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
-        }
-
-        override fun onNoIntentActivitiesFoundFor(view: View, url: String) {
-        }
-
-        override fun onError(view: View, error: Throwable) {
-            spClient?.onError(error)
-        }
-
-        override fun onAction(view: View, actionData: String) {
-            /** spClient is called from [onActionFromWebViewClient] */
-            pJsonConverter
-                .toConsentAction(actionData)
-                .map { onActionFromWebViewClient(it, view) }
-                .executeOnLeft { throw it }
-        }
-    }
-
-    /** End Receiver methods */
 
     private fun throwsExceptionIfClientIsNull() {
         spClient ?: throw MissingClientException(description = "spClient instance is missing")
@@ -266,4 +228,43 @@ internal class SpConsentLibImpl(
             onActionFromWebViewClient(ca, view)
         }
     }
+
+    //    /** Start Receiver methods */
+    inner class JSReceiverDelegate : JSClientLib {
+        //
+        override fun onConsentUIReady(view: View, isFromPM: Boolean) {
+            // TODO what consent is ready? GDPR or CCPA?
+            view.let { viewManager.showView(it) }
+        }
+
+        override fun log(view: View, tag: String?, msg: String?) {
+            logMess("$tag $msg")
+        }
+
+        override fun log(view: View, msg: String?) {
+            logMess("$msg")
+        }
+
+        override fun onError(view: View, errorMessage: String) {
+            spClient?.onError(GenericSDKException(description = errorMessage))
+            pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
+        }
+
+        override fun onNoIntentActivitiesFoundFor(view: View, url: String) {
+        }
+
+        override fun onError(view: View, error: Throwable) {
+            spClient?.onError(error)
+        }
+
+        override fun onAction(view: View, actionData: String) {
+            /** spClient is called from [onActionFromWebViewClient] */
+            pJsonConverter
+                .toConsentAction(actionData)
+                .map { onActionFromWebViewClient(it, view) }
+                .executeOnLeft { throw it }
+        }
+    }
+
+    /** End Receiver methods */
 }
