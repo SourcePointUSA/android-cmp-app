@@ -14,7 +14,7 @@ internal fun SpTimer.Companion.create(executorManager: ExecutorManager): SpTimer
 
 private class SpTimerImpl(val executorManager: ExecutorManager) : SpTimer {
 
-    val timer = Timer()
+    var timer = Timer()
 
     override fun executeDelay(delay: Long, block: () -> Unit) {
         timer.scheduleAtFixedRate(
@@ -31,5 +31,6 @@ private class SpTimerImpl(val executorManager: ExecutorManager) : SpTimer {
 
     override fun cancel() {
         timer.cancel()
+        timer = Timer()
     }
 }

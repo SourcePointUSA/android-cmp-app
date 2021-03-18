@@ -13,13 +13,13 @@ import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.CampaignResp1203
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
-import com.sourcepoint.cmplibrary.data.network.model.GDPRConsent1203
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
+import java.util.*
 
 internal class SpConsentLibImpl(
     internal val pPrivacyManagerTab: PrivacyManagerTabK,
@@ -59,10 +59,14 @@ internal class SpConsentLibImpl(
             messageReq = campaignManager.getMessageReq(),
             pSuccess = { messageResp ->
                 executor.executeOnMain {
+                    val campaignList = messageResp.list
+                    if(campaignList.isEmpty()) return@executeOnMain
+                    val firstCampaign2Process = campaignList.first()
+                    val remainingCampaigns : Queue<CampaignResp1203> = LinkedList(campaignList.drop(1))
                     /** create a instance of WebView */
-                    val webView = viewManager.createWebView(this, JSReceiverDelegate())
+                    val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
                     /** inject the message into the WebView */
-                    webView?.loadConsentUI(messageResp.list.first(), urlManager.urlURenderingAppProd())
+                    webView?.loadConsentUI(firstCampaign2Process, urlManager.urlURenderingAppStage())
                 }
             },
             pError = { throwable -> spClient?.onError(throwable.toConsentLibException()) }
@@ -230,7 +234,7 @@ internal class SpConsentLibImpl(
     }
 
     //    /** Start Receiver methods */
-    inner class JSReceiverDelegate : JSClientLib {
+    inner class JSReceiverDelegate() : JSClientLib {
         //
         override fun onConsentUIReady(view: View, isFromPM: Boolean) {
             // TODO what consent is ready? GDPR or CCPA?
@@ -255,6 +259,14 @@ internal class SpConsentLibImpl(
 
         override fun onError(view: View, error: Throwable) {
             spClient?.onError(error)
+        }
+
+        override fun onAction(view: IConsentWebView, actionData: String, nextCampaign: CampaignResp1203) {
+            executor.executeOnMain {
+                view.loadConsentUI(nextCampaign, urlManager.urlURenderingAppProd())
+            }
+            /** spClient is called from [onActionFromWebViewClient] */
+            (view as? View)?.let { onAction(view, actionData) }
         }
 
         override fun onAction(view: View, actionData: String) {

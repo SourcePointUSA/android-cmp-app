@@ -20,6 +20,7 @@ import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.util.*  //ktlint-disable
 import okhttp3.HttpUrl
 import org.json.JSONObject
+import java.util.*
 
 @SuppressLint("ViewConstructor")
 internal class ConsentWebView(
@@ -27,7 +28,8 @@ internal class ConsentWebView(
     private val jsClientLib: JSClientLib,
     private val logger: Logger,
     private val connectionManager: ConnectionManager,
-    private val executorManager: ExecutorManager
+    private val executorManager: ExecutorManager,
+    private val campaignQueue: Queue<CampaignResp1203> = LinkedList()
 ) : WebView(context), IConsentWebView {
 
     init {
@@ -130,7 +132,10 @@ internal class ConsentWebView(
 
         @JavascriptInterface
         override fun onAction(actionData: String) {
-            jsClientLib.onAction(this@ConsentWebView, actionData)
+            when(val campaign: CampaignResp1203? = campaignQueue.poll()){
+                null -> jsClientLib.onAction(this@ConsentWebView, actionData)
+                else -> jsClientLib.onAction(this@ConsentWebView, actionData, campaign)
+            }
         }
 
         @JavascriptInterface
