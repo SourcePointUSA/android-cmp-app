@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.stub
 
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
-import com.sourcepoint.cmplibrary.data.network.model.*
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.exception.Legislation
 import org.json.JSONObject

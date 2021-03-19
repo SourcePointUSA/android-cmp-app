@@ -21,7 +21,7 @@ internal interface ViewsManager {
 
     fun showView(view: View)
     fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate): IConsentWebView?
-    fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate, campaignQueue : Queue<CampaignResp1203>): IConsentWebView?
+    fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate, campaignQueue: Queue<CampaignResp1203>): IConsentWebView?
     fun removeView(view: View)
     fun removeAllViews()
     fun removeAllViewsExcept(pView: View)
@@ -58,13 +58,14 @@ private class ViewsManagerImpl(
             post { this.removeView(view) }
         }
         println("ids size [${idsSet.size}] === $idsSet")
-        println("ids =====================================")
+        println("ids removeView ${idsSet}===============================")
         println("ids =====================================")
     }
 
     override fun showView(view: View) {
 //        if (isViewInLayout) return
         idsSet.add(view.id)
+        println("ids showView ${idsSet}===============================")
         if (view.parent == null) {
             mainView?.let {
                 it.post {
@@ -76,10 +77,11 @@ private class ViewsManagerImpl(
                     it.addView(view)
                 }
             }
+        }else{
+            println("ids ============== view.parent != null")
         }
         removeAllViewsExcept(view)
         println("ids size [${idsSet.size}] === $idsSet")
-        println("ids =====================================")
         println("ids =====================================")
     }
 
@@ -95,7 +97,6 @@ private class ViewsManagerImpl(
         }
         idsSet.clear()
         println("ids size [${idsList.size}] === $idsList")
-        println("ids =====================================")
         println("ids =====================================")
     }
 

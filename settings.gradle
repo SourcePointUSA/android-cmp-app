@@ -1,7 +1,7 @@
 include ":cmplibrary"
 include ":cmplibraryV6"
 
-//include ":app"
+include ":app"
 //include ":authexample"
 //include ":metaapp"
 include ":nativemessage"
@@ -9,7 +9,7 @@ include ":nativemessage"
 include ":ui-test-util"
 
 project(':ui-test-util').projectDir = new File(settingsDir, "ui-test-util")
-//project(':app').projectDir = new File(settingsDir, "samples/app")
+project(':app').projectDir = new File(settingsDir, "samples/app")
 //project(':metaapp').projectDir = new File(settingsDir, "samples/metaapp")
 //project(':authexample').projectDir = new File(settingsDir, "samples/authexample")
 project(':nativemessage').projectDir = new File(settingsDir, "samples/nativemessage")

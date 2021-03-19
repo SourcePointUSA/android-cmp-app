@@ -9,7 +9,7 @@ internal interface JSClientLib {
     fun onError(view: View, errorMessage: String)
     fun onConsentUIReady(view: View, isFromPM: Boolean)
     fun onAction(view: View, actionData: String)
-    fun onAction(view: IConsentWebView, actionData: String, nextCampaign : CampaignResp1203)
+    fun onAction(view: IConsentWebView, actionData: String, nextCampaign: CampaignResp1203)
     fun onNoIntentActivitiesFoundFor(view: View, url: String)
     fun onError(view: View, error: Throwable)
     companion object

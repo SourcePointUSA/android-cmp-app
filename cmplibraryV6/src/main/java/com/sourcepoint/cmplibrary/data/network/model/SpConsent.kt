@@ -26,7 +26,7 @@ data class CCPAConsent(
     val status: String? = null,
     val rejectedVendors: List<Any> = listOf(),
     val rejectedCategories: List<Any> = listOf(),
-    val rejectedAll : Boolean,
+    val rejectedAll: Boolean,
     val uspstring: String = "",
     val thisContent: JSONObject = JSONObject()
 )

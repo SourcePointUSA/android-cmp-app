@@ -66,7 +66,7 @@ internal fun String.toGDPR1203(): Gdpr? {
 
 internal fun Map<String, Any?>.toGDPRUserConsent1203(): GDPRConsent1203 {
 
-    val tcData : Map<String, Any?> = getMap("TCData")?: emptyMap()
+    val tcData: Map<String, Any?> = getMap("TCData") ?: emptyMap()
     val vendorsGrants = getMap("grants") ?: failParam("grants")
     val euConsent = getFieldValue<String>("euconsent") ?: failParam("euconsent")
 

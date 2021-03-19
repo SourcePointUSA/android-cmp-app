@@ -18,6 +18,8 @@ internal interface HttpUrlManager {
     fun sendConsentUrl(legislation: Legislation): HttpUrl
     fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlPm(pmConf: PmUrlConfig): HttpUrl
+    fun urlPmGdpr(): HttpUrl
+    fun urlPmCcpa(): HttpUrl
     fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl
     fun urlURenderingAppProd(): HttpUrl
     fun urlURenderingAppStage(): HttpUrl
@@ -124,6 +126,10 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("site_id", pmConf.siteId)
         .addQueryParameter("message_id", pmConf.messageId)
         .build()
+
+    override fun urlPmGdpr(): HttpUrl = HttpUrl.parse("https://cdn.privacy-mgmt.com/privacy-manager/index.html?consentLanguage=&site_id=7639&message_id=122058&consentUUID=170ea8dc-54e4-4f65-9914-6abe83106225")!!
+
+    override fun urlPmCcpa(): HttpUrl = HttpUrl.parse("https://ccpa-inapp-pm.sp-prod.net?ccpa_origin=https://ccpa-service.sp-prod.net&privacy_manager_id=5df9105bcf42027ce707bb43&ccpaUUID=76c950be-45be-40ce-878b-c7bcf091722d&site_id=6099")!!
 
     override fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl {
         // https://notice.sp-prod.net?preload_message=true

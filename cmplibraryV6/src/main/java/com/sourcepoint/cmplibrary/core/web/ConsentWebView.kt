@@ -12,15 +12,17 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import com.sourcepoint.cmplibrary.data.network.converter.toConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.CampaignResp1203
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
-import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp1203
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
+import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.util.*  //ktlint-disable
 import okhttp3.HttpUrl
 import org.json.JSONObject
-import java.util.*
+import java.util.* // ktlint-disable
 
 @SuppressLint("ViewConstructor")
 internal class ConsentWebView(
@@ -50,9 +52,9 @@ internal class ConsentWebView(
     }
 
     private fun setup() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            id = View.generateViewId()
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            id = View.generateViewId()
+//        }
         enableDebug()
         setStyle()
         webChromeClient = chromeClient
@@ -81,7 +83,7 @@ internal class ConsentWebView(
         }
     }
 
-    private fun loadConsentUIFromUrl(url: HttpUrl, message: JSONObject): Boolean {
+    private fun loadConsentUIFromUrl(url: HttpUrl, message: JSONObject, legislation: Legislation): Boolean {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.onPageFinishedLambda = { view, url ->
             /**
@@ -91,7 +93,8 @@ internal class ConsentWebView(
                 put("name", "sp.loadMessage")
                 put("fromNativeSDK", true)
             }
-            view.loadUrl("javascript: window.postMessage($obj);")
+
+            view.loadUrl("javascript: window.spLegislation = '${legislation.name}'; window.postMessage($obj);")
         }
         loadUrl(url.toString())
         return true
@@ -109,15 +112,15 @@ internal class ConsentWebView(
             .campaigns
             .mapNotNull { it.message }
             .firstOrNull()
-            ?.let { jsonMessages -> loadConsentUIFromUrl(url, jsonMessages) }
+            ?.let { jsonMessages -> loadConsentUIFromUrl(url, jsonMessages, Legislation.GDPR) }
             ?: run {
                 logMess("{message json} is null for all the legislations")
                 false
             }
     }
 
-    override fun loadConsentUI(messageResp: CampaignResp1203, url: HttpUrl): Either<Boolean> = check {
-        loadConsentUIFromUrl(url, messageResp.message)
+    override fun loadConsentUI(messageResp: CampaignResp1203, url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
+        loadConsentUIFromUrl(url, messageResp.message, legislation)
     }
 
     private fun logMess(mess: String) = logger.d(this::class.java.simpleName, "========>  $mess")
@@ -132,10 +135,15 @@ internal class ConsentWebView(
 
         @JavascriptInterface
         override fun onAction(actionData: String) {
-            when(val campaign: CampaignResp1203? = campaignQueue.poll()){
-                null -> jsClientLib.onAction(this@ConsentWebView, actionData)
-                else -> jsClientLib.onAction(this@ConsentWebView, actionData, campaign)
+            checkWorkerThread("ConsentWebView on action")
+            val action = actionData.toConsentAction()
+            if (action.actionType != ActionType.SHOW_OPTIONS && campaignQueue.isNotEmpty()) {
+                val campaign: CampaignResp1203 = campaignQueue.poll()
+                jsClientLib.onAction(this@ConsentWebView, actionData, campaign)
+            } else{
+                jsClientLib.onAction(this@ConsentWebView, actionData)
             }
+
         }
 
         @JavascriptInterface

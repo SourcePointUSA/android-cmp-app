@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
-import com.sourcepoint.cmplibrary.data.network.model.*
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.exception.Legislation
@@ -38,7 +38,7 @@ private class JsonConverterImpl : JsonConverter {
 
         val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } } ?: fail("actionType")
         val choiceId = (map["choiceId"] as? String)
-        val legislation = (map["legislation"] as? String) ?: "GDPR" // fail("legislation") // TODO In case of PM we don't receive this value!!!!
+        val legislation = (map["legislation"] as? String) ?: "CCPA" // fail("legislation") // TODO In case of PM we don't receive this value!!!!
         val privacyManagerId = (map["privacyManagerId"] as? String)
         val pmTab = (map["pmTab"] as? String)
         val requestFromPm = (map["requestFromPm"] as? Boolean) ?: fail("requestFromPm")
