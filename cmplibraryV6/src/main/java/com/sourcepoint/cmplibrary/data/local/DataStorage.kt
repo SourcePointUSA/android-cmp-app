@@ -4,6 +4,11 @@ import android.content.SharedPreferences
 
 internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
 
+    companion object {
+        const val LOCAL_STATE = "key_local_state"
+    }
+
     override val preference: SharedPreferences
-    companion object
+    fun saveLocalState(localState: String)
+    fun getLocalState(): String?
 }

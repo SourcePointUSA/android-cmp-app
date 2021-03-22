@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
 
 /**
  * Factory method to create an instance of a [DataStorage] using its implementation
@@ -25,6 +26,17 @@ private class DataStorageImpl(
 
     override val preference: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
+    }
+
+    override fun saveLocalState(localState: String) {
+        preference
+            .edit()
+            .putString(LOCAL_STATE, localState)
+            .apply()
+    }
+
+    override fun getLocalState(): String? {
+        return preference.getString(LOCAL_STATE, null)
     }
 
     companion object

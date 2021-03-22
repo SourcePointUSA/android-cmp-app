@@ -20,10 +20,10 @@ class JsonConverterExtKtTest {
     fun `GIVEN a unified response json string PARSE to UnifiedMessageResp1230 Obj`() {
         val unifiedMess = "unified_w_campaigns_list/campaigns_list.json".jsonFile2String().toUnifiedMessageRespDto1203()
 
-        unifiedMess.list.size.assertEquals(2)
+        unifiedMess.campaigns.size.assertEquals(2)
 
-        val gdpr = unifiedMess.list[1] as Gdpr1203
-        val ccpa = unifiedMess.list[0] as Ccpa1203
+        val gdpr = unifiedMess.campaigns[1] as Gdpr1203
+        val ccpa = unifiedMess.campaigns[0] as Ccpa1203
 
         gdpr.run {
             type.assertEquals(Legislation.GDPR.name)

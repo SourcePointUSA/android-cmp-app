@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.data.network.model
 
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
-import com.sourcepoint.cmplibrary.data.network.converter.toGDPR
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
@@ -16,11 +15,12 @@ internal fun String.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
 
 internal fun JSONObject.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
     val map: Map<String, Any?> = this.toTreeMap()
+    val localState = map.getFieldValue<String>("localState") ?: ""
     val list = map
         .getFieldValue<List<Map<String, Any?>>>("campaigns")
         ?.mapNotNull { it.toCampaignResp1203() }
         ?: emptyList()
-    return UnifiedMessageResp1203(list)
+    return UnifiedMessageResp1203(campaigns = list, localState = localState)
 }
 
 fun Map<String, Any?>.toCampaignResp1203(): CampaignResp1203? {
@@ -31,7 +31,12 @@ fun Map<String, Any?>.toCampaignResp1203(): CampaignResp1203? {
     }
 }
 
-private fun Map<String, Any?>.toCCPA1203(): CampaignResp1203? {
+internal fun String.toCCPA1203(): Ccpa1203? {
+    val map: Map<String, Any?> = JSONObject(this).toTreeMap()
+    return map.toCCPA1203()
+}
+
+private fun Map<String, Any?>.toCCPA1203(): Ccpa1203? {
 
     val message = getMap("message")?.toJSONObj() ?: failParam("message")
     val messageMetaData = getMap("messageMetaData")?.toJSONObj() ?: failParam("messageMetaData")
@@ -59,9 +64,9 @@ internal fun Map<String, Any?>.toGDPR1203(): Gdpr1203 {
     )
 }
 
-internal fun String.toGDPR1203(): Gdpr? {
+internal fun String.toGDPR1203(): Gdpr1203? {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
-    return map.toGDPR()
+    return map.toGDPR1203()
 }
 
 internal fun Map<String, Any?>.toGDPRUserConsent1203(): GDPRConsent1203 {

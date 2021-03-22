@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Message
-import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -140,10 +139,9 @@ internal class ConsentWebView(
             if (action.actionType != ActionType.SHOW_OPTIONS && campaignQueue.isNotEmpty()) {
                 val campaign: CampaignResp1203 = campaignQueue.poll()
                 jsClientLib.onAction(this@ConsentWebView, actionData, campaign)
-            } else{
+            } else {
                 jsClientLib.onAction(this@ConsentWebView, actionData)
             }
-
         }
 
         @JavascriptInterface

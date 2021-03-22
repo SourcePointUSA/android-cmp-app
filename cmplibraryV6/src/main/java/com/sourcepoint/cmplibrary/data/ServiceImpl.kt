@@ -23,16 +23,14 @@ import org.json.JSONObject
  */
 internal fun Service.Companion.create(
     nc: NetworkClient,
-    ds: DataStorage,
     cm: CampaignManager
-): Service = ServiceImpl(nc, ds, cm)
+): Service = ServiceImpl(nc, cm)
 
 /**
  * Implementation os the [Service] interface
  */
 private class ServiceImpl(
     private val nc: NetworkClient,
-    private val ds: DataStorage,
     private val cm: CampaignManager
 ) : Service, NetworkClient by nc, CampaignManager by cm {
 
@@ -41,6 +39,7 @@ private class ServiceImpl(
             messageReq,
             { messageResp ->
                 // TODO save the data into the cache
+                cm.saveUnifiedMessageResp1203(messageResp)
                 pSuccess(messageResp)
             },
             pError

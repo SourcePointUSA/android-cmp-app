@@ -58,14 +58,13 @@ private class ViewsManagerImpl(
             post { this.removeView(view) }
         }
         println("ids size [${idsSet.size}] === $idsSet")
-        println("ids removeView ${idsSet}===============================")
+        println("ids removeView $idsSet===============================")
         println("ids =====================================")
     }
 
     override fun showView(view: View) {
-//        if (isViewInLayout) return
         idsSet.add(view.id)
-        println("ids showView ${idsSet}===============================")
+        println("ids showView $idsSet===============================")
         if (view.parent == null) {
             mainView?.let {
                 it.post {
@@ -77,7 +76,7 @@ private class ViewsManagerImpl(
                     it.addView(view)
                 }
             }
-        }else{
+        } else {
             println("ids ============== view.parent != null")
         }
         removeAllViewsExcept(view)

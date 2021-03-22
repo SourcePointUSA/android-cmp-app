@@ -7,7 +7,6 @@ import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
-import com.sourcepoint.cmplibrary.util.Either
 import org.json.JSONObject
 
 internal fun String.toUnifiedMessageRespDto(): UnifiedMessageResp {

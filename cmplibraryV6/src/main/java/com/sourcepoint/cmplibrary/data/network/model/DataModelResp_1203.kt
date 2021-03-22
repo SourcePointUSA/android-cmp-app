@@ -4,7 +4,8 @@ import com.sourcepoint.cmplibrary.exception.Legislation
 import org.json.JSONObject
 
 data class UnifiedMessageResp1203(
-    val list: List<CampaignResp1203> = emptyList()
+    val campaigns: List<CampaignResp1203> = emptyList(),
+    val localState: String = ""
 )
 
 abstract class CampaignResp1203 {

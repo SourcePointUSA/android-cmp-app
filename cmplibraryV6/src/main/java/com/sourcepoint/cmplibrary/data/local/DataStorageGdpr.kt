@@ -20,7 +20,9 @@ internal interface DataStorageGdpr {
     var gdprApplies: Boolean
 
     fun saveGdpr(value: String)
+    fun saveGdpr1203(value: String)
     fun getGdpr(): String?
+    fun getGdpr1203(): String?
 
     /** store data */
     fun saveTcData(deferredMap: Map<String, Any?>)
@@ -75,6 +77,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
 
     companion object {
         const val KEY_GDPR = "key_gdpr"
+        const val KEY_GDPR_1203 = "key_gdpr_1203"
     }
 
     override val preference: SharedPreferences by lazy {
@@ -97,8 +100,19 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .apply()
     }
 
+    override fun saveGdpr1203(value: String) {
+        preference
+            .edit()
+            .putString(KEY_GDPR_1203, value)
+            .apply()
+    }
+
     override fun getGdpr(): String? {
         return preference.getString(KEY_GDPR, null)
+    }
+
+    override fun getGdpr1203(): String? {
+        return preference.getString(KEY_GDPR_1203, null)
     }
 
     override fun saveTcData(deferredMap: Map<String, Any?>) {
