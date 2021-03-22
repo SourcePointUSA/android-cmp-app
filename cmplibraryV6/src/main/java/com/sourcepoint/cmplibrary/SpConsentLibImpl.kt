@@ -113,8 +113,6 @@ internal class SpConsentLibImpl(
     override fun loadGDPRPrivacyManager() {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientIsNull()
-        val webView = viewManager.createWebView(this, JSReceiverDelegate())
-        webView?.loadConsentUIFromUrl(urlManager.urlPmGdpr())
         val pmConfig = campaignManager.getGdprPmConfig()
         pmConfig
             .map {
