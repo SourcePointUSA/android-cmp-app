@@ -20,8 +20,8 @@ internal interface DataStorageGdpr {
     var gdprApplies: Boolean
 
     fun saveGdpr(value: String)
-    fun saveGdpr1203(value: String)
     fun getGdpr(): String?
+    fun saveGdpr1203(value: String)
     fun getGdpr1203(): String?
 
     /** store data */

@@ -38,7 +38,6 @@ private class ServiceImpl(
         nc.getMessage1203(
             messageReq,
             { messageResp ->
-                // TODO save the data into the cache
                 cm.saveUnifiedMessageResp1203(messageResp)
                 pSuccess(messageResp)
             },

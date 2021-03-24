@@ -37,9 +37,10 @@ private class ConsentManagerImpl(
 ) : ConsentManager {
 
     override fun buildGdprConsentReq(action: ConsentAction): Either<JSONObject> = check {
+        val localState : String? = ds.getLocalState()
         cm
             .getCampaignTemplate(Legislation.GDPR)
-            .flatMap { campaign -> cm.getGdpr().map { Pair(campaign, it) } }
+            .flatMap { campaign -> cm.getGdpr1203().map { Pair(campaign, it) } }
             .map { pair ->
                 val gdpr = pair.first
                 val gdprConfig = pair.second
@@ -51,8 +52,8 @@ private class ConsentManagerImpl(
                     put("propertyId", gdpr.propertyId)
                     put("propertyHref", "https://${gdpr.propertyName}")
                     put("privacyManagerId", gdpr.pmId)
-                    put("uuid", gdprConfig.uuid ?: failParam("gdprConfig.uuid"))
-                    put("meta", gdprConfig.meta)
+                    put("uuid", gdprConfig.consentUUID)
+                    put("meta", localState)
                     put("actionType", action.actionType.code)
                     put("choiceId", action.choiceId)
                     put("pubData", action.pubData)

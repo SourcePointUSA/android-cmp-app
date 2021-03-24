@@ -72,7 +72,10 @@ internal class SpConsentLibImpl(
                     webView?.loadConsentUI(firstCampaign2Process, urlManager.urlURenderingAppStage(), legislation)
                 }
             },
-            pError = { throwable -> spClient?.onError(throwable.toConsentLibException()) }
+            pError = { throwable ->
+                (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
+                spClient?.onError(throwable.toConsentLibException())
+            }
         )
 //        service.getMessage(
 //            messageReq = campaignManager.getMessageReq(),
@@ -105,6 +108,7 @@ internal class SpConsentLibImpl(
                 }
             },
             { throwable ->
+                (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
                 pLogger.error(throwable.toConsentLibException())
             }
         )
