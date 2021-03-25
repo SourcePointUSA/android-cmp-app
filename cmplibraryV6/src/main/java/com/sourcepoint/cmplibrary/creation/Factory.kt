@@ -53,11 +53,11 @@ fun makeConsentLib(
     val connManager = ConnectionManager.create(appCtx)
     val responseManager = ResponseManager.create(jsonConverter)
     val networkClient = networkClient(OkHttpClient(), responseManager)
-    val service: Service = Service.create(networkClient, campaignManager)
     val viewManager = ViewsManager.create(WeakReference<Activity>(context), connManager)
     val execManager = ExecutorManager.create(appCtx)
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
     val consentManager: ConsentManager = ConsentManager.create(campaignManager, dataStorage)
+    val service: Service = Service.create(networkClient, campaignManager, consentManager, urlManager)
 
     return SpConsentLibImpl(
         urlManager = urlManager,

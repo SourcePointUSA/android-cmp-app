@@ -1,4 +1,4 @@
-package com.sourcepoint.example_app.core
+package com.sourcepoint.app.v6.core
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -12,7 +12,7 @@ interface DataProvider {
 
 fun DataProvider.Companion.create(context: Context) : DataProvider = DataProviderImpl(context)
 
-private class DataProviderImpl(val context: Context) : DataProvider{
+private class DataProviderImpl(val context: Context) : DataProvider {
 
     val sharedPref: SharedPreferences by lazy {
         context.getSharedPreferences("myshared", Context.MODE_PRIVATE)

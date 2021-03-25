@@ -1,7 +1,7 @@
-package com.sourcepoint.example_app.di
+package com.sourcepoint.app.v6.di
 
-import com.sourcepoint.example_app.core.DataProvider
-import com.sourcepoint.example_app.core.create
+import com.sourcepoint.app.v6.core.DataProvider
+import com.sourcepoint.app.v6.core.create
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 

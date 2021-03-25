@@ -1,4 +1,4 @@
-package com.sourcepoint.example_app;
+package com.sourcepoint.app.v6;
 
 import org.json.JSONException;
 import org.json.JSONObject;

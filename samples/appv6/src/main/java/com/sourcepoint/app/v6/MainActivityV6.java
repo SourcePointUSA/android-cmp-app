@@ -1,4 +1,4 @@
-package com.sourcepoint.example_app;
+package com.sourcepoint.app.v6;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,7 +9,7 @@ import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.SpConsentLib;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
 import com.sourcepoint.cmplibrary.model.*;
-import com.sourcepoint.example_app.core.DataProvider;
+import com.sourcepoint.app.v6.core.DataProvider;
 import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,8 +72,7 @@ public class MainActivityV6 extends AppCompatActivity {
 
         @Override
         public void onConsentReady(@NotNull SPConsents c) {
-            for (String line : c.getGdpr().toString().split("\n"))
-                Log.i(TAG, line);
+            System.out.println(c);
         }
 
         @Override

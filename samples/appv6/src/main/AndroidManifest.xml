@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.sourcepoint.example_app">
+          package="com.sourcepoint.app.v6">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 

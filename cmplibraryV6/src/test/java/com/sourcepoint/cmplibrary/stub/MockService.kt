@@ -7,7 +7,6 @@ import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.Either.*  // ktlint-disable
-import org.json.JSONObject
 
 internal class MockService(
     private val getMessageLogic: ((messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
@@ -18,7 +17,7 @@ internal class MockService(
     override fun getMessage1203(messageReq: MessageReq, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit) {}
     override fun getNativeMessage(messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {}
     override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
-    override fun sendConsent(legislation: Legislation, consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit) {}
+    override fun sendConsent(action: ConsentAction, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit) {}
     override fun addCampaign(legislation: Legislation, campaign: CampaignTemplate) {}
     override fun isAppliedCampaign(legislation: Legislation): Boolean = false
     override fun getGdpr(): Either<Gdpr> = Left(RuntimeException())

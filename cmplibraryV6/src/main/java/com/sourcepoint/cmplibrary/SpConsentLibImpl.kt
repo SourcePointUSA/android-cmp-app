@@ -11,14 +11,14 @@ import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.model.CampaignResp1203
-import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
+import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
+import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
+import com.sourcepoint.cmplibrary.data.network.model.*
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.ActionType
+import com.sourcepoint.cmplibrary.model.*
 import com.sourcepoint.cmplibrary.model.ActionType.SHOW_OPTIONS
-import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import java.util.* // ktlint-disable
 
@@ -172,21 +172,23 @@ internal class SpConsentLibImpl(
                 ActionType.SAVE_AND_EXIT,
                 ActionType.REJECT_ALL -> {
                     view.let { spClient?.onUIFinished(it) }
-                    // TODO GDPR or CCPA?
-                    consentManager.buildGdprConsentReq(action)
-                        .map { consentReq ->
-                            service.sendConsent(
-                                action.legislation,
-                                consentReq,
-                                { consentResp -> consentManager.saveGdprConsent(consentResp.content) },
-                                { throwable -> pLogger.error(throwable.toConsentLibException()) }
-                            )
+                    service.sendConsent(
+                        action,
+                        { consentResp ->
+                            val map: Map<String, Any?> = consentResp.content.toTreeMap()
+                            map.getMap("userConsent").also {
+                                when (action.legislation) {
+                                    Legislation.GDPR -> it?.toGDPRUserConsent()?.let { spClient?.onConsentReady(SPConsents(gdpr = SPGDPRConsent(consent = it, applies = true), )) }
+                                    Legislation.CCPA -> it?.toCCPAUserConsent()?.let { spClient?.onConsentReady(SPConsents(ccpa = SPCCPAConsent(consent = it, applies = true), )) }
+                                }
+                            }
+                            consentManager.saveGdprConsent(consentResp.content)
+                        },
+                        { throwable ->
+                            spClient?.onError(throwable)
+                            pLogger.error(throwable.toConsentLibException())
                         }
-                        .executeOnLeft {
-                            it.printStackTrace()
-//                            throw it
-                        }
-                    viewManager.removeAllViewsExcept(view)
+                    )
                     view.let { spClient?.onUIFinished(it) }
                 }
             }

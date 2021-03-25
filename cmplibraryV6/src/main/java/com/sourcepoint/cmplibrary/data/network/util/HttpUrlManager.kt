@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
-import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import okhttp3.HttpUrl
 
@@ -12,10 +11,11 @@ internal interface HttpUrlManager {
     val inAppUrlMessage: HttpUrl
     val inAppUrlMessage1203: HttpUrl
     val inAppUrlNativeMessage: HttpUrl
-    val sendConsentUrlOld: HttpUrl
     val sendGdprConsentUrl: HttpUrl
+    val sendLocalGdprConsentUrl: HttpUrl
     val sendCcpaConsentUrl: HttpUrl
-    fun sendConsentUrl(legislation: Legislation): HttpUrl
+//    fun sendConsentUrl(legislation: Legislation, actionType: String): HttpUrl
+    fun sendCcpaConsentUrl(actionType: Int): HttpUrl
     fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlPmGdpr(): HttpUrl
@@ -62,16 +62,16 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("inApp", "true")
             .build()
 
-    override val sendConsentUrlOld: HttpUrl
+    // https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/consent?inApp=true
+    override val sendGdprConsentUrl: HttpUrl
         get() = HttpUrl.Builder()
             .scheme("https")
             .host(spHost)
-            .addPathSegments("wrapper/tcfv2/v1/gdpr")
-            .addPathSegments("consent")
+            .addPathSegments("wrapper/tcfv2/v1/gdpr/consent")
             .addQueryParameter("inApp", "true")
             .build()
 
-    override val sendGdprConsentUrl: HttpUrl
+    override val sendLocalGdprConsentUrl: HttpUrl
         get() = HttpUrl.Builder()
             .scheme("http")
             .host("192.168.1.11")
@@ -84,16 +84,18 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
 
     override val sendCcpaConsentUrl: HttpUrl
-        get() = HttpUrl.Builder()
-            .scheme("http")
-            .host("192.168.1.11")
-            .port(3000)
-            .addPathSegments("wrapper/tcfv2/v1/ccpa")
-            .addPathSegments("consent")
-            .addQueryParameter("env", "localProd")
-            .addQueryParameter("inApp", "true")
-            .addQueryParameter("sdkVersion", "AndroidLocal")
-            .build()
+        get() {
+            return HttpUrl.Builder()
+                .scheme("http")
+                .host("192.168.1.11")
+                .port(3000)
+                .addPathSegments("wrapper/tcfv2/v1/ccpa")
+                .addPathSegments("consent")
+                .addQueryParameter("env", "localProd")
+                .addQueryParameter("inApp", "true")
+                .addQueryParameter("sdkVersion", "AndroidLocal")
+                .build()
+        }
 
     override fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
         .scheme("https")
@@ -178,11 +180,21 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    override fun sendConsentUrl(legislation: Legislation): HttpUrl {
-        return when (legislation) {
-            Legislation.GDPR -> sendGdprConsentUrl
-            Legislation.CCPA -> sendCcpaConsentUrl
-        }
+//    override fun sendConsentUrl(legislation: Legislation, actionType: String): HttpUrl {
+//        return when (legislation) {
+//            Legislation.GDPR -> sendGdprConsentUrl
+//            Legislation.CCPA -> sendCcpaConsentUrl(actionType)
+//        }
+//    }
+
+    override fun sendCcpaConsentUrl(actionType: Int): HttpUrl {
+        // https://wrapper-api.sp-prod.net/ccpa/consent/{action}
+
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host("wrapper-api.sp-prod.net")
+            .addPathSegments("ccpa/consent/$actionType")
+            .build()
     }
 }
 

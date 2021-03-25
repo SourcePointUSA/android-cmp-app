@@ -3,8 +3,6 @@ package com.sourcepoint.cmplibrary.stub
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
-import com.sourcepoint.cmplibrary.exception.Legislation
-import org.json.JSONObject
 
 internal class MockNetworkClient(
     private val logicUnifiedMess: ((messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
@@ -25,6 +23,6 @@ internal class MockNetworkClient(
     }
 
     override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
-    override fun sendConsent(legislation: Legislation, consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit) {
+    override fun sendConsent(action: ConsentAction, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit) {
     }
 }

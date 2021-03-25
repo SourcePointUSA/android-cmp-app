@@ -7,7 +7,7 @@ apply from: rootDir.path + '/gradleutils/test_config.gradle'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.sourcepoint.example_app"
+        applicationId "com.sourcepoint.app.v6"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 2

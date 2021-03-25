@@ -71,13 +71,14 @@ private class JsonConverterImpl : JsonConverter {
 
     override fun toConsentResp(body: String): Either<ConsentResp> = check {
         val obj = JSONObject(body)
-        val map: Map<String, Any?> = JSONObject(body).toTreeMap()
-        map.getMap("userConsent")?.let { it.toGDPRUserConsent() }
+        // TODO do we need it?
+//        val map: Map<String, Any?> = JSONObject(body).toTreeMap()
+//        map.getMap("userConsent")?.let { it.toGDPRUserConsent().thisContent.to }
+//        map.getMap("userConsent")?.let { it.toCCPAUserConsent() }
         obj.get("userConsent")
         ConsentResp(
             content = JSONObject(body),
             userConsent = obj["userConsent"].toString(),
-
         )
     }
 
