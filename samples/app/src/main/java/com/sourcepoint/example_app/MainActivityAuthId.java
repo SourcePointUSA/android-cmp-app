@@ -7,7 +7,7 @@ import android.webkit.WebViewClient;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.sourcepoint.example_app.core.DataProvider;
-//import com.sourcepoint.gdpr_cmplibrary.WebViewUtils;
+import com.sourcepoint.gdpr_cmplibrary.WebViewUtils;
 
 import kotlin.Lazy;
 
@@ -31,8 +31,7 @@ public class MainActivityAuthId extends AppCompatActivity {
         wv.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
-
-//                WebViewUtils.setAuthId(authId, view);
+                WebViewUtils.setAuthId(authId, view);
             }
         });
 

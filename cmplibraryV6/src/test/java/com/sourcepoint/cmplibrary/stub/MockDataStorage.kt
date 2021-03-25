@@ -131,4 +131,28 @@ internal class MockDataStorage : DataStorage {
     override fun clearCcpaConsent() {
         storage[CCPA_CONSENT_RESP] = ""
     }
+
+    override fun saveLocalState(localState: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getLocalState(): String? {
+        TODO("Not yet implemented")
+    }
+
+    override fun saveGdpr1203(value: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getGdpr1203(): String? {
+        TODO("Not yet implemented")
+    }
+
+    override fun saveCcpa1203(value: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getCcpa1203(): String? {
+        TODO("Not yet implemented")
+    }
 }

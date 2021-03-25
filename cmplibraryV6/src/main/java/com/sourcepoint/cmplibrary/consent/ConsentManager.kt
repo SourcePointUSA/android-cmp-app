@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.consent
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.data.network.model.CCPAConsent
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.GDPRConsent
@@ -37,7 +36,7 @@ private class ConsentManagerImpl(
 ) : ConsentManager {
 
     override fun buildGdprConsentReq(action: ConsentAction): Either<JSONObject> = check {
-        val localState : String? = ds.getLocalState()
+        val localState: String? = ds.getLocalState()
         cm
             .getCampaignTemplate(Legislation.GDPR)
             .flatMap { campaign -> cm.getGdpr1203().map { Pair(campaign, it) } }

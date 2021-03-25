@@ -31,7 +31,7 @@ jobs:
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: Build test artifact
-        run: ./gradlew cmplibrary:build cmplibraryV6:build
+        run: ./gradlew cmplibrary:build cmplibraryV6:build appv6:assemble
       - name: Unit Tests cmplibrary
         run: ./gradlew cmplibrary:test
       - name: Unit Tests cmplibraryV6
@@ -48,7 +48,7 @@ jobs:
         with:
           name: 'unit-tests-report-v6'
           path: cmplibraryV6/build/reports/*
-  ui-test-app:
+  ui-test-app-appv6:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -70,7 +70,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew app:connectedDebugAndroidTest cmplibraryV6:connectedAndroidTest
+          script: ./gradlew appv6:connectedDebugAndroidTest cmplibraryV6:connectedAndroidTest #app:connectedDebugAndroidTest
       - name: 'Publish Example-app Test Report'
         if: always()
         uses: actions/upload-artifact@v2-preview
