@@ -1,19 +1,19 @@
-package com.sourcepoint.example_app
+package com.sourcepoint.app.v6
 
 import android.webkit.CookieManager
 import com.example.uitestutil.*
-import com.sourcepoint.example_app.TestData.ACCEPT
-import com.sourcepoint.example_app.TestData.ACCEPT_ALL
-import com.sourcepoint.example_app.TestData.CONSENT_LIST
-import com.sourcepoint.example_app.TestData.FEATURES
-import com.sourcepoint.example_app.TestData.MESSAGE
-import com.sourcepoint.example_app.TestData.OPTIONS
-import com.sourcepoint.example_app.TestData.PARTIAL_CONSENT_LIST
-import com.sourcepoint.example_app.TestData.PRIVACY_MANAGER
-import com.sourcepoint.example_app.TestData.PURPOSES
-import com.sourcepoint.example_app.TestData.REJECT
-import com.sourcepoint.example_app.TestData.REJECT_ALL
-import com.sourcepoint.example_app.TestData.SAVE_AND_EXIT
+import com.sourcepoint.app.v6.TestData.ACCEPT
+import com.sourcepoint.app.v6.TestData.ACCEPT_ALL
+import com.sourcepoint.app.v6.TestData.CONSENT_LIST
+import com.sourcepoint.app.v6.TestData.FEATURES
+import com.sourcepoint.app.v6.TestData.MESSAGE
+import com.sourcepoint.app.v6.TestData.OPTIONS
+import com.sourcepoint.app.v6.TestData.PARTIAL_CONSENT_LIST
+import com.sourcepoint.app.v6.TestData.PRIVACY_MANAGER
+import com.sourcepoint.app.v6.TestData.PURPOSES
+import com.sourcepoint.app.v6.TestData.REJECT
+import com.sourcepoint.app.v6.TestData.REJECT_ALL
+import com.sourcepoint.app.v6.TestData.SAVE_AND_EXIT
 
 class TestUseCase {
 

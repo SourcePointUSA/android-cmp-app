@@ -7,6 +7,8 @@ import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.Either.*  // ktlint-disable
+import okhttp3.HttpUrl
+import org.json.JSONObject
 
 internal class MockService(
     private val getMessageLogic: ((messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
@@ -43,4 +45,7 @@ internal class MockService(
     override fun saveGdpr1203(gdpr: Gdpr1203) {}
     override fun saveCcpa1203(ccpa: Ccpa1203) {}
     override fun saveUnifiedMessageResp1203(unifiedMessageResp: UnifiedMessageResp1203) {}
+    override fun sendConsent(consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit, url: HttpUrl) {
+        TODO("Not yet implemented")
+    }
 }
