@@ -25,14 +25,6 @@ class ExampleAppV6Tests {
     private val d = 1000L
 
     @Test
-    fun loading() = runBlocking<Unit> {
-
-        scenario = launchActivity()
-
-        delay(2000)
-    }
-
-    @Test
     fun GIVEN_a_camapignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
         scenario = launchActivity()
