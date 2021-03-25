@@ -6,6 +6,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapOptionWebView
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
@@ -22,6 +23,14 @@ class ExampleAppV6Tests {
     }
 
     private val d = 1000L
+
+    @Test
+    fun loading() = runBlocking<Unit> {
+
+        scenario = launchActivity()
+
+        delay(2000)
+    }
 
     @Test
     fun GIVEN_a_camapignList_ACCEPT_all_legislation() = runBlocking<Unit> {
