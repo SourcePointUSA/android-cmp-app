@@ -76,14 +76,17 @@ private class ConsentManagerImpl(
                     put("propertyId", gdpr.propertyId)
                     put("propertyHref", "https://${gdpr.propertyName}")
                     put("privacyManagerId", gdpr.pmId)
-                    put("uuid", gdprConfig.consentUUID?:"lkhasdgflkhahslkf")
+                    put("uuid", gdprConfig.consentUUID ?: "lkhasdgflkhahslkf")
                     put("meta", localState)
                     put("actionType", action.actionType.code)
                     put("choiceId", action.choiceId)
                     put("pubData", action.pubData)
                     put("requestUUID", uuid)
-                    put("consentLanguage", action.consentLanguage
-                        ?: Locale.getDefault().language.toUpperCase(Locale.getDefault()))
+                    put(
+                        "consentLanguage",
+                        action.consentLanguage
+                            ?: Locale.getDefault().language.toUpperCase(Locale.getDefault())
+                    )
                 }
             }
             .executeOnLeft {
@@ -110,7 +113,6 @@ private class ConsentManagerImpl(
                     put("meta", localState)
                     put("pubData", action.pubData)
                     put("requestUUID", "asdfjhaDFJKl")
-
                 }
             }
             .executeOnLeft {

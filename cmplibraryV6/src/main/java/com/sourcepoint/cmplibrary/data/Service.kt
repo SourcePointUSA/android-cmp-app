@@ -4,7 +4,6 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
-import org.json.JSONObject
 
 /**
  * Encapsulates the logic to fetch the data from the server, using the [NetworkClient], and

@@ -13,11 +13,11 @@ import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
-import com.sourcepoint.cmplibrary.data.network.model.*
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.*
+import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ActionType.SHOW_OPTIONS
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import java.util.* // ktlint-disable
@@ -178,8 +178,8 @@ internal class SpConsentLibImpl(
                             val map: Map<String, Any?> = consentResp.content.toTreeMap()
                             map.getMap("userConsent").also {
                                 when (action.legislation) {
-                                    Legislation.GDPR -> it?.toGDPRUserConsent()?.let { spClient?.onConsentReady(SPConsents(gdpr = SPGDPRConsent(consent = it, applies = true), )) }
-                                    Legislation.CCPA -> it?.toCCPAUserConsent()?.let { spClient?.onConsentReady(SPConsents(ccpa = SPCCPAConsent(consent = it, applies = true), )) }
+                                    Legislation.GDPR -> it?.toGDPRUserConsent()?.let { spClient?.onConsentReady(SPConsents(gdpr = SPGDPRConsent(consent = it, applies = true),)) }
+                                    Legislation.CCPA -> it?.toCCPAUserConsent()?.let { spClient?.onConsentReady(SPConsents(ccpa = SPCCPAConsent(consent = it, applies = true),)) }
                                 }
                             }
                             consentManager.saveGdprConsent(consentResp.content)

@@ -7,7 +7,7 @@ import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.executeOnLeft
 import com.sourcepoint.cmplibrary.util.map
-import okhttp3.*
+import okhttp3.* // ktlint-disable
 import org.json.JSONObject
 
 internal fun createNetworkClient(

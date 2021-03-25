@@ -9,7 +9,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
-import com.sourcepoint.cmplibrary.exception.Legislation.*
+import com.sourcepoint.cmplibrary.exception.Legislation.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.executeOnLeft
