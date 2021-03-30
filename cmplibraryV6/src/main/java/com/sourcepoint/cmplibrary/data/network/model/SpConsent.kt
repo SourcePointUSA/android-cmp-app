@@ -23,10 +23,11 @@ data class GDPRConsent(
 )
 
 data class CCPAConsent(
-    val status: String? = null,
-    val rejectedVendors: List<Any> = listOf(),
     val rejectedCategories: List<Any> = listOf(),
+    val rejectedVendors: List<Any> = listOf(),
     val rejectedAll: Boolean,
+    val status: String? = null,
+    val signedLspa: Boolean = false,
     val uspstring: String = "",
     val thisContent: JSONObject = JSONObject()
 )

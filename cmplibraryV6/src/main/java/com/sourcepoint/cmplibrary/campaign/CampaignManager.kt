@@ -11,10 +11,9 @@ import com.sourcepoint.cmplibrary.data.network.model.Campaigns
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
-import com.sourcepoint.cmplibrary.model.CampaignTemplate
+import com.sourcepoint.cmplibrary.model.*
 import com.sourcepoint.cmplibrary.model.toCcpaReq
 import com.sourcepoint.cmplibrary.model.toGdprReq
-import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.getOrNull
@@ -39,6 +38,7 @@ internal interface CampaignManager {
     fun getCcpaPmConfig(): Either<PmUrlConfig>
 
     fun getMessageReq(): MessageReq
+    fun getUnifiedMessageReq(): UnifiedMessageRequest
 
     fun getGDPRConsent(): Either<GDPRConsent>
     fun getCCPAConsent(): Either<CCPAConsent>
@@ -137,7 +137,15 @@ private class CampaignManagerImpl(
         getGdpr1203().map { campaigns.add(it) }
         getCcpa1203().map { campaigns.add(it) }
         val localState: String = dataStorage.getLocalState() ?: ""
-        UnifiedMessageResp1203(campaigns = campaigns, localState = localState)
+        val propertyId: Int = dataStorage.getPropertyId()
+        val propertyPriorityData: String? = dataStorage.getPropertyPriorityData()
+        UnifiedMessageResp1203(
+            campaigns = campaigns,
+            localState = localState,
+            propertyId = propertyId,
+            propertyPriorityData = propertyPriorityData?.let { JSONObject(it) } ?: JSONObject(),
+            thisContent = JSONObject()
+        )
     }
 
     override fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>> = check {
@@ -170,6 +178,32 @@ private class CampaignManagerImpl(
                 gdpr = gdpr?.toGdprReq(location = location, uuid = gdprUuid, meta = gdprMeta),
                 ccpa = ccpa?.toCcpaReq(location = location, uuid = ccpaUuid, meta = ccpaMeta)
             )
+        )
+    }
+
+    override fun getUnifiedMessageReq(): UnifiedMessageRequest {
+        val gdpr: CampaignTemplate? = mapTemplate[Legislation.GDPR.name]
+        val ccpa: CampaignTemplate? = mapTemplate[Legislation.CCPA.name]
+        val storedGdpr = dataStorage.getGdpr()?.toGDPR()
+        val storedCcpa = dataStorage.getCcpa()?.toCCPA()
+
+        val gdprUuid = storedGdpr?.uuid
+        val gdprMeta = storedGdpr?.meta
+
+        val ccpaUuid = storedCcpa?.uuid
+        val ccpaMeta = storedCcpa?.meta
+
+        // TODO this is a test location
+        val location = "EU"
+        return UnifiedMessageRequest(
+            requestUUID = "test",
+            propertyHref = gdpr?.propertyName ?: "",
+            accountId = gdpr?.accountId ?: 1,
+            campaigns = Campaigns(
+                gdpr = gdpr?.toGdprReq(location = location, uuid = gdprUuid, meta = gdprMeta),
+                ccpa = ccpa?.toCcpaReq(location = location, uuid = ccpaUuid, meta = ccpaMeta)
+            ),
+            consentLanguage = MessageLanguage.ENGLISH
         )
     }
 

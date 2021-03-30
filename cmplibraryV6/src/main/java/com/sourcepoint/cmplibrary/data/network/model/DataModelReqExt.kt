@@ -2,8 +2,26 @@ package com.sourcepoint.cmplibrary.data.network.model
 
 import org.json.JSONObject
 
+internal fun UnifiedMessageRequest.toBodyRequest(): String {
+    return toJsonObject().toString()
+}
+
 internal fun MessageReq.toBodyRequest(): String {
     return toJsonObject().toString()
+}
+
+internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
+    return JSONObject()
+        .apply {
+            put("requestUUID", requestUUID)
+            put("propertyHref", propertyHref)
+            put("accountId", accountId)
+            put("idfaStatus", idfaStatus)
+            put("campaigns", campaigns.toJsonObject())
+            put("consentLanguage", consentLanguage.value)
+            put("campaignEnv", campaignEnv)
+            put("includeData", includeData.toJsonObject())
+        }
 }
 
 internal fun MessageReq.toJsonObject(): JSONObject {
@@ -41,4 +59,14 @@ internal fun TargetingParams.toJsonObjStringify(): String {
             put("location", location)
         }
         .toString()
+}
+
+internal fun IncludeData.toJsonObject(): JSONObject {
+    return JSONObject()
+        .apply {
+            put("actions", JSONObject().apply { put("type", actions.type) })
+            put("cookies", JSONObject().apply { put("type", cookies.type) })
+            put("customVendorsResponse", JSONObject().apply { put("type", customVendorsResponse.type) })
+            put("localState", JSONObject().apply { put("type", localState.type) })
+        }
 }

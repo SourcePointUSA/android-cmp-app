@@ -20,27 +20,35 @@ class JsonConverterExtKtTest {
     fun `GIVEN a unified response json string PARSE to UnifiedMessageResp1230 Obj`() {
         val unifiedMess = "unified_w_campaigns_list/campaigns_list.json".jsonFile2String().toUnifiedMessageRespDto1203()
 
-        unifiedMess.campaigns.size.assertEquals(2)
+        unifiedMess.run {
+            campaigns.size.assertEquals(2)
+            propertyId.assertEquals(3949)
+            propertyPriorityData.toTreeMap().assertEquals(propertyPriorityDataTest.toTreeMap())
+            localState.assertEquals(localStateTest)
+        }
 
-        val gdpr = unifiedMess.campaigns[1] as Gdpr1203
-        val ccpa = unifiedMess.campaigns[0] as Ccpa1203
+        val gdpr = unifiedMess.campaigns[0] as Gdpr1203
+        val ccpa = unifiedMess.campaigns[1] as Ccpa1203
 
         gdpr.run {
             type.assertEquals(Legislation.GDPR.name)
             applies.assertTrue()
-            userConsent.tcData.assertNotNull()
-            userConsent.euConsent.assertEquals("abc")
+            userConsent.also {
+                it.tcData.assertNotNull()
+                it.euConsent.contains("CPD0nOZPD0nOZHIABCENBTCgAAAAAH").assertTrue()
+            }
         }
 
         ccpa.run {
             type.assertEquals(Legislation.CCPA.name)
-            applies.assertTrue()
+            applies.assertFalse()
             userConsent.also {
-                it.rejectedCategories.size.assertEquals(1)
-                it.rejectedVendors.size.assertEquals(1)
+                it.rejectedCategories.size.assertEquals(0)
+                it.rejectedVendors.size.assertEquals(0)
+                it.status.assertEquals("rejectedNone")
                 it.rejectedAll.assertFalse()
-                it.status.assertEquals("rejectedSoome")
-                it.uspstring.assertEquals("abc")
+                it.signedLspa.assertFalse()
+                it.uspstring.assertEquals("1---")
             }
         }
     }
@@ -190,3 +198,23 @@ class JsonConverterExtKtTest {
 //        return list
 //    }
 }
+
+private val propertyPriorityDataTest = JSONObject(
+    """
+    {
+      "stage_message_limit": 1,
+      "site_id": 3949,
+      "public_campaign_type_priority": [
+        4,
+        1,
+        2,
+        3
+      ],
+      "multi_campaign_enabled": false,
+      "stage_campaign_type_priority": [],
+      "public_message_limit": 3
+    }
+    """.trimIndent()
+)
+
+private val localStateTest = "{\"gdpr\":{\"mmsCookies\":[\"_sp_v1_uid=1:156:653c7e59-d8de-47af-b122-b8aaca1e8ef2\",\"_sp_v1_data=2:2356:1617027907:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbKKBjLyQAyD2lidGKVUEDOvNCcHyC4BK6iurVWKBQAW54XRMAAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_consent=1!-1:-1:-1:-1:-1:-1\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"uuid\":\"52ff72dc-c17b-4bf8-9128-4c5bb337d4e8\",\"propertyId\":3949,\"messageId\":12223},\"ccpa\":{\"mmsCookies\":[\"_sp_v1_uid=1:964:3a21519b-581b-4302-b517-2630f4907ac1\",\"_sp_v1_data=2:2358:1617027907:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbKKBjLyQAyD2lidGKVUEDOvNCcHyC4BK6iurVWKBQAW54XRMAAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_consent=1!-1:-1:-1:-1:-1:-1\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"uuid\":\"7b85be47-75b3-4105-99af-0dd5497ca08f\",\"dnsDisplayed\":true,\"status\":\"rejectedNone\",\"propertyId\":3949,\"messageId\":12224}}"

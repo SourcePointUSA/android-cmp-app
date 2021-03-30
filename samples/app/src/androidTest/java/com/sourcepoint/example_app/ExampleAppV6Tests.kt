@@ -31,7 +31,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class ExampleAppV6Tests {
 
-    lateinit var scenario: ActivityScenario<MainActivityV6>
+    lateinit var scenario: ActivityScenario<MainActivity>
 
     @After
     fun cleanup() {

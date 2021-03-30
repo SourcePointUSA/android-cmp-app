@@ -9,6 +9,7 @@ import okhttp3.HttpUrl
  */
 internal interface HttpUrlManager {
     val inAppUrlMessage: HttpUrl
+    val inAppUrlMessageStage: HttpUrl
     val inAppUrlMessage1203: HttpUrl
     val inAppUrlNativeMessage: HttpUrl
     val sendGdprConsentUrl: HttpUrl
@@ -51,7 +52,20 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addPathSegments("all/v1/multi-campaign")
         .build()
 
-    override val inAppUrlMessage: HttpUrl = inAppLocalUrlMessage
+    // https://cdn.sp-stage.net/wrapper/v2/messages?env=stage
+    override val inAppUrlMessage: HttpUrl = HttpUrl.Builder()
+        .scheme("https")
+        .host("cdn.sp-stage.net")
+        .addPathSegments("wrapper/v2/messages")
+        .addQueryParameter("env", "localProd")
+        .build()
+
+    override val inAppUrlMessageStage: HttpUrl = HttpUrl.Builder()
+        .scheme("https")
+        .host("cdn.sp-stage.net")
+        .addPathSegments("wrapper/v2/messages")
+        .addQueryParameter("env", "stage")
+        .build()
 
     override val inAppUrlNativeMessage: HttpUrl
         get() = HttpUrl.Builder()

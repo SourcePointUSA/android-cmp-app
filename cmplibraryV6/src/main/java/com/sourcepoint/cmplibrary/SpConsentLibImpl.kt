@@ -56,11 +56,11 @@ internal class SpConsentLibImpl(
 
         if (viewManager.isViewInLayout) return
 
-        service.getMessage1203(
-            messageReq = campaignManager.getMessageReq(),
+        service.getUnifiedMessage(
+            messageReq = campaignManager.getUnifiedMessageReq(),
             pSuccess = { messageResp ->
                 val campaignList = messageResp.campaigns
-                if (campaignList.isEmpty()) return@getMessage1203
+                if (campaignList.isEmpty()) return@getUnifiedMessage
                 val firstCampaign2Process = campaignList.first()
                 val remainingCampaigns: Queue<CampaignResp1203> = LinkedList(campaignList.drop(1))
                 executor.executeOnMain {

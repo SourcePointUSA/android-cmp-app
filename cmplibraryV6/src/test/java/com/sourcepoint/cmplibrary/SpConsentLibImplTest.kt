@@ -77,7 +77,7 @@ class SpConsentLibImplTest {
         val sut = createLib()
         sut.spClient = spClient
         sut.loadMessage()
-        verify(exactly = 1) { service.getMessage1203(any(), any(), any()) }
+        verify(exactly = 1) { service.getUnifiedMessage(any(), any(), any()) }
     }
 
     @Test

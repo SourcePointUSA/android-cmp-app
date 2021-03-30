@@ -132,7 +132,7 @@ internal class MockDataStorage : DataStorage {
         storage[CCPA_CONSENT_RESP] = ""
     }
 
-    override fun saveLocalState(localState: String) {
+    override fun saveLocalState(value: String) {
         TODO("Not yet implemented")
     }
 
@@ -153,6 +153,22 @@ internal class MockDataStorage : DataStorage {
     }
 
     override fun getCcpa1203(): String? {
+        TODO("Not yet implemented")
+    }
+
+    override fun savePropertyId(value: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun savePropertyPriorityData(value: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getPropertyId(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun getPropertyPriorityData(): String? {
         TODO("Not yet implemented")
     }
 }

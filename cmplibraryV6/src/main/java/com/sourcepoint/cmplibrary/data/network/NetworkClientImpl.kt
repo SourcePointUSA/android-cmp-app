@@ -22,6 +22,34 @@ private class NetworkClientImpl(
     private val responseManager: ResponseManager = ResponseManager.create(JsonConverter.create())
 ) : NetworkClient {
 
+    override fun getUnifiedMessage(
+        messageReq: UnifiedMessageRequest,
+        pSuccess: (UnifiedMessageResp1203) -> Unit,
+        pError: (Throwable) -> Unit
+    ) {
+        val mediaType = MediaType.parse("application/json")
+        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
+
+        val request: Request = Request.Builder()
+            .url(urlManager.inAppUrlMessageStage)
+            .post(body)
+            .build()
+
+        httpClient
+            .newCall(request)
+            .enqueue {
+                onFailure { _, exception ->
+                    pError(exception)
+                }
+                onResponse { _, r ->
+                    responseManager
+                        .parseResponse1203(r)
+                        .map { pSuccess(it) }
+                        .executeOnLeft { pError(it) }
+                }
+            }
+    }
+
     override fun getMessage1203(
         messageReq: MessageReq,
         pSuccess: (UnifiedMessageResp1203) -> Unit,

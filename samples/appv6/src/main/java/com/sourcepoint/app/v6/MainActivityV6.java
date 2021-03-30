@@ -22,14 +22,14 @@ public class MainActivityV6 extends AppCompatActivity {
     private final GDPRCampaign gdpr = new GDPRCampaign(
             22,
             10589,
-            "https://unified.mobile.demo",
+            "http://sid-multi-campaign.com",
             "404472"
     );
 
     private final CCPACampaign ccpa = new CCPACampaign(
             22,
             10589,
-            "https://unified.mobile.demo",
+            "http://sid-multi-campaign.com",
             "404472"
     );
 

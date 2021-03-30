@@ -48,4 +48,10 @@ internal class MockService(
     override fun sendConsent(consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit, url: HttpUrl) {
         TODO("Not yet implemented")
     }
+
+    override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit) {}
+
+    override fun getUnifiedMessageReq(): UnifiedMessageRequest {
+        TODO("Not yet implemented")
+    }
 }

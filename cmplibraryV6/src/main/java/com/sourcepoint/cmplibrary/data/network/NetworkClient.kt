@@ -29,6 +29,12 @@ internal interface NetworkClient {
         pError: (Throwable) -> Unit
     )
 
+    fun getUnifiedMessage(
+        messageReq: UnifiedMessageRequest,
+        pSuccess: (UnifiedMessageResp1203) -> Unit,
+        pError: (Throwable) -> Unit
+    )
+
     /**
      * Requesting a native message object to the server
      * @param messageReq request content to send into the body

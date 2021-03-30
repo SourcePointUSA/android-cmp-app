@@ -16,11 +16,19 @@ internal fun String.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
 internal fun JSONObject.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
     val map: Map<String, Any?> = this.toTreeMap()
     val localState = map.getFieldValue<String>("localState") ?: ""
+    val propertyPriorityData = map.getMap("propertyPriorityData")?.toJSONObj() ?: failParam("propertyPriorityData")
+    val propertyId = map.getFieldValue<Int>("propertyId") ?: -1
     val list = map
         .getFieldValue<List<Map<String, Any?>>>("campaigns")
         ?.mapNotNull { it.toCampaignResp1203() }
         ?: emptyList()
-    return UnifiedMessageResp1203(campaigns = list, localState = localState)
+    return UnifiedMessageResp1203(
+        thisContent = this,
+        campaigns = list,
+        localState = localState,
+        propertyId = propertyId,
+        propertyPriorityData = propertyPriorityData
+    )
 }
 
 fun Map<String, Any?>.toCampaignResp1203(): CampaignResp1203? {

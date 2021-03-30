@@ -41,6 +41,17 @@ private class ServiceImpl(
     private val urlManager: HttpUrlManager
 ) : Service, NetworkClient by nc, CampaignManager by campaignManager {
 
+    override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit) {
+        nc.getUnifiedMessage(
+            messageReq,
+            { messageResp ->
+                campaignManager.saveUnifiedMessageResp1203(messageResp)
+                pSuccess(messageResp)
+            },
+            pError
+        )
+    }
+
     override fun getMessage1203(messageReq: MessageReq, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit) {
         nc.getMessage1203(
             messageReq,

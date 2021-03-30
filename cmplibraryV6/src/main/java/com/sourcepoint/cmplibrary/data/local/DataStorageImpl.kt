@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_ID
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_PRIORITY_DATA
 
 /**
  * Factory method to create an instance of a [DataStorage] using its implementation
@@ -28,15 +30,37 @@ private class DataStorageImpl(
         PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    override fun saveLocalState(localState: String) {
+    override fun saveLocalState(value: String) {
         preference
             .edit()
-            .putString(LOCAL_STATE, localState)
+            .putString(LOCAL_STATE, value)
             .apply()
     }
 
     override fun getLocalState(): String? {
         return preference.getString(LOCAL_STATE, null)
+    }
+
+    override fun savePropertyId(value: Int) {
+        preference
+            .edit()
+            .putInt(PROPERTY_ID, value)
+            .apply()
+    }
+
+    override fun savePropertyPriorityData(value: String) {
+        preference
+            .edit()
+            .putString(PROPERTY_PRIORITY_DATA, value)
+            .apply()
+    }
+
+    override fun getPropertyId(): Int {
+        return preference.getInt(PROPERTY_ID, -1)
+    }
+
+    override fun getPropertyPriorityData(): String? {
+        return preference.getString(PROPERTY_PRIORITY_DATA, null)
     }
 
     companion object
