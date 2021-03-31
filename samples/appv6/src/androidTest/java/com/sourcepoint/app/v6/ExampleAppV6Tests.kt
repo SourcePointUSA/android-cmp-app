@@ -4,6 +4,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapOptionWebView
 import kotlinx.coroutines.delay
@@ -31,7 +32,7 @@ class ExampleAppV6Tests {
 
         wr { tapAcceptOnWebView() }
         wr { tapOptionWebView() }
-        wr { tapAcceptOnWebView() }
+        wr { tapAcceptCcpaOnWebView() }
     }
 
 /*

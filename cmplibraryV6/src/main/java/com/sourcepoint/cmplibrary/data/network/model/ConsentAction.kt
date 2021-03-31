@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.model
 
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.ActionType
+import com.sourcepoint.cmplibrary.model.MessageLanguage
 import org.json.JSONObject
 
 data class ConsentAction(
@@ -13,5 +14,5 @@ data class ConsentAction(
     val pmTab: String? = null,
     val privacyManagerId: String? = null,
     val choiceId: String? = null,
-    val consentLanguage: String? = null,
+    val consentLanguage: String? = MessageLanguage.ENGLISH.value,
 )

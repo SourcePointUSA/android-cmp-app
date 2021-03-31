@@ -14,6 +14,7 @@ import com.sourcepoint.app.v6.TestData.PURPOSES
 import com.sourcepoint.app.v6.TestData.REJECT
 import com.sourcepoint.app.v6.TestData.REJECT_ALL
 import com.sourcepoint.app.v6.TestData.SAVE_AND_EXIT
+import com.sourcepoint.app.v6.TestData.ZUSTIMMEN
 
 class TestUseCase {
 
@@ -84,7 +85,11 @@ class TestUseCase {
         }
 
         fun tapAcceptOnWebView() {
-            performClickOnWebViewByContent(ACCEPT)
+            performClickOnWebViewByContent(ZUSTIMMEN)
+        }
+
+        fun tapAcceptCcpaOnWebView() {
+            performClickOnWebViewByContent("Do Not Sell")
         }
 
         fun setFocusOnLayoutActivity() {

@@ -70,22 +70,19 @@ private class ConsentManagerImpl(
 //                }
 
                 JSONObject().apply {
-                    put("pmSaveAndExitVariables", action.saveAndExitVariables)
-                    put("requestFromPM", action.requestFromPm)
-                    put("accountId", gdpr.accountId)
                     put("propertyId", gdpr.propertyId)
                     put("propertyHref", "https://${gdpr.propertyName}")
-                    put("privacyManagerId", gdpr.pmId)
-                    put("meta", localState)
+                    put("accountId", gdpr.accountId)
                     put("actionType", action.actionType.code)
                     put("choiceId", action.choiceId)
-                    put("pubData", action.pubData)
+                    put("requestFromPM", action.requestFromPm)
+                    put("privacyManagerId", gdpr.pmId)
                     put("requestUUID", uuid)
-                    put(
-                        "consentLanguage",
-                        action.consentLanguage
-                            ?: Locale.getDefault().language.toUpperCase(Locale.getDefault())
-                    )
+                    put("pmSaveAndExitVariables", action.saveAndExitVariables)
+                    put("localState", localState)
+                    put("pubData", action.pubData)
+                    put("consentLanguage", action.consentLanguage)
+                    put("uuid", "")
                 }
             }
             .executeOnLeft {
