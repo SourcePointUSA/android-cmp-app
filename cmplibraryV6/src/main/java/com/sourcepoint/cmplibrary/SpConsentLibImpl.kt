@@ -9,18 +9,22 @@ import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageInternal
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
+import com.sourcepoint.cmplibrary.core.web.JSReceiver
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
-import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.CampaignResp1203
+import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
+import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsent
+import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
-import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.ActionType.SHOW_OPTIONS
-import com.sourcepoint.cmplibrary.util.* // ktlint-disable
-import java.util.* // ktlint-disable
+import com.sourcepoint.cmplibrary.util.* //ktlint-disable
+import java.util.* //ktlint-disable
 
 internal class SpConsentLibImpl(
     internal val pPrivacyManagerTab: PrivacyManagerTabK,
@@ -69,7 +73,13 @@ internal class SpConsentLibImpl(
 
                     /** inject the message into the WebView */
                     val legislation = Legislation.valueOf(firstCampaign2Process.type.toUpperCase())
-                    webView?.loadConsentUI(firstCampaign2Process, urlManager.urlURenderingAppStage(), legislation)
+                    firstCampaign2Process.message
+                        ?.let {
+                            webView?.loadConsentUI(it, urlManager.urlURenderingAppStage(), legislation)
+                        }
+                        ?: run {
+                            pLogger.d(this@SpConsentLibImpl.javaClass.name, "${firstCampaign2Process.type} has message null!!!")
+                        }
                 }
             },
             pError = { throwable ->
@@ -77,18 +87,6 @@ internal class SpConsentLibImpl(
                 spClient?.onError(throwable.toConsentLibException())
             }
         )
-//        service.getMessage(
-//            messageReq = campaignManager.getMessageReq(),
-//            pSuccess = { messageResp ->
-//                executor.executeOnMain {
-//                    /** create a instance of WebView */
-//                    val webView = viewManager.createWebView(this, JSReceiverDelegate())
-//                    /** inject the message into the WebView */
-//                    webView?.loadConsentUI(messageResp, urlManager.urlURenderingAppStage())
-//                }
-//            },
-//            pError = { throwable -> spClient?.onError(throwable.toConsentLibException()) }
-//        )
     }
 
     override fun loadMessage(nativeMessage: NativeMessage) {
@@ -217,7 +215,7 @@ internal class SpConsentLibImpl(
         }
     }
 
-    private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, "========>  $mess")
+    private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, "$mess")
 
     /**
      * Delegate used by the [NativeMessage] to catch events performed by the user
@@ -257,11 +255,11 @@ internal class SpConsentLibImpl(
         }
 
         override fun log(view: View, tag: String?, msg: String?) {
-            logMess("$tag $msg")
+            logMess("JSReceiverDelegate log(view, tag, msg): $tag $msg")
         }
 
         override fun log(view: View, msg: String?) {
-            logMess("$msg")
+            logMess("JSReceiverDelegate log(view, msg): $msg")
         }
 
         override fun onError(view: View, errorMessage: String) {
@@ -286,7 +284,13 @@ internal class SpConsentLibImpl(
                         onActionFromWebViewClient(ca, iConsentWebView)
                         if (ca.actionType != SHOW_OPTIONS) {
                             val legislation = Legislation.valueOf(nextCampaign.type.toUpperCase())
-                            executor.executeOnMain { iConsentWebView.loadConsentUI(nextCampaign, urlManager.urlURenderingAppProd(), legislation) }
+                            nextCampaign.message
+                                ?.let {
+                                    executor.executeOnMain { iConsentWebView.loadConsentUI(it, urlManager.urlURenderingAppProd(), legislation) }
+                                }
+                                ?: run {
+                                    pLogger.d(JSReceiver.javaClass.name, "${nextCampaign.type} has message null!!!")
+                                }
                         }
                     }
                     .executeOnLeft { throw it }

@@ -11,7 +11,7 @@ import com.sourcepoint.cmplibrary.data.network.model.Campaigns
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
-import com.sourcepoint.cmplibrary.model.*
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.toCcpaReq
 import com.sourcepoint.cmplibrary.model.toGdprReq
 import com.sourcepoint.cmplibrary.util.Either

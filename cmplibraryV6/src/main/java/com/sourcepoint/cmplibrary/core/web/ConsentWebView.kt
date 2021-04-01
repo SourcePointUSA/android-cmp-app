@@ -91,6 +91,10 @@ internal class ConsentWebView(
             val obj = message.apply {
                 put("name", "sp.loadMessage")
                 put("fromNativeSDK", true)
+                /*
+                "name": "sp.loadMessage",
+                "fromNativeSDK": true
+                 */
             }
 
             view.loadUrl("javascript: window.spLegislation = '${legislation.name}'; window.postMessage($obj);")
@@ -113,22 +117,22 @@ internal class ConsentWebView(
             .firstOrNull()
             ?.let { jsonMessages -> loadConsentUIFromUrl(url, jsonMessages, Legislation.GDPR) }
             ?: run {
-                logMess("{message json} is null for all the legislations")
+                logMess("loadConsentUI: {message json} is null for all the legislations")
                 false
             }
     }
 
-    override fun loadConsentUI(messageResp: CampaignResp1203, url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
-        loadConsentUIFromUrl(url, messageResp.message, legislation)
+    override fun loadConsentUI(messageResp: JSONObject, url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
+        loadConsentUIFromUrl(url, messageResp, legislation)
     }
 
-    private fun logMess(mess: String) = logger.d(this::class.java.simpleName, "========>  $mess")
+    private fun logMess(mess: String) = logger.d(this::class.java.simpleName, "$mess")
 
     inner class JSClientWebViewImpl : JSClientWebView {
 
         @JavascriptInterface
         override fun onConsentUIReady(isFromPM: Boolean) {
-            logger.i("ConsentWebView", "js =================== onConsentUIReady")
+            logger.i("ConsentWebView", "JSClientWebViewImpl onConsentUIReady: isFromPM[$isFromPM]")
             jsClientLib.onConsentUIReady(this@ConsentWebView, isFromPM)
         }
 

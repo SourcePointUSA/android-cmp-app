@@ -57,14 +57,10 @@ private class ViewsManagerImpl(
         mainView?.run {
             post { this.removeView(view) }
         }
-        println("ids size [${idsSet.size}] === $idsSet")
-        println("ids removeView $idsSet===============================")
-        println("ids =====================================")
     }
 
     override fun showView(view: View) {
         idsSet.add(view.id)
-        println("ids showView $idsSet===============================")
         if (view.parent == null) {
             mainView?.let {
                 it.post {
@@ -76,17 +72,12 @@ private class ViewsManagerImpl(
                     it.addView(view)
                 }
             }
-        } else {
-            println("ids ============== view.parent != null")
         }
         removeAllViewsExcept(view)
-        println("ids size [${idsSet.size}] === $idsSet")
-        println("ids =====================================")
     }
 
     override fun removeAllViews() {
         val idsList = idsSet.toMutableList()
-        println("ids size [${idsList.size}] === $idsList")
         idsList.forEach { id ->
             mainView?.findViewById<View>(id)?.let { view ->
                 mainView?.run {
@@ -95,13 +86,10 @@ private class ViewsManagerImpl(
             }
         }
         idsSet.clear()
-        println("ids size [${idsList.size}] === $idsList")
-        println("ids =====================================")
     }
 
     override fun removeAllViewsExcept(pView: View) {
         val idsList = idsSet.toMutableList()
-        println("ids size [${idsList.size}] === $idsList")
         idsList.forEach { id ->
             mainView?.findViewById<View>(id)?.let { view ->
                 if (pView != view) {
@@ -114,9 +102,6 @@ private class ViewsManagerImpl(
                 }
             }
         }
-        println("ids size [${idsList.size}] === $idsList")
-        println("ids =====================================")
-        println("ids =====================================")
     }
 
     override fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate): ConsentWebView? {

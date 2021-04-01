@@ -7,6 +7,9 @@ import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toJSONObj
 import com.sourcepoint.cmplibrary.model.toTreeMap
+import com.sourcepoint.cmplibrary.util.Either
+import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.map
 import org.json.JSONObject
 
 internal fun String.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
@@ -18,10 +21,17 @@ internal fun JSONObject.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
     val localState = map.getFieldValue<String>("localState") ?: ""
     val propertyPriorityData = map.getMap("propertyPriorityData")?.toJSONObj() ?: failParam("propertyPriorityData")
     val propertyId = map.getFieldValue<Int>("propertyId") ?: -1
-    val list = map
+
+    val listEither: List<Either<CampaignResp1203?>> = map
         .getFieldValue<List<Map<String, Any?>>>("campaigns")
-        ?.mapNotNull { it.toCampaignResp1203() }
+        ?.map { check { it.toCampaignResp1203() } }
         ?: emptyList()
+
+    val list = listEither.fold(mutableListOf<CampaignResp1203>()) { acc, elem ->
+        elem.map { content -> content?.let { acc.add(content) } }
+        acc
+    }
+
     return UnifiedMessageResp1203(
         thisContent = this,
         campaigns = list,
@@ -31,7 +41,7 @@ internal fun JSONObject.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
     )
 }
 
-fun Map<String, Any?>.toCampaignResp1203(): CampaignResp1203? {
+internal fun Map<String, Any?>.toCampaignResp1203(): CampaignResp1203? {
     return when (getFieldValue<String>("type")?.toUpperCase() ?: failParam("type")) {
         Legislation.GDPR.name -> this.toGDPR1203()
         Legislation.CCPA.name -> this.toCCPA1203()
@@ -46,8 +56,8 @@ internal fun String.toCCPA1203(): Ccpa1203? {
 
 private fun Map<String, Any?>.toCCPA1203(): Ccpa1203? {
 
-    val message = getMap("message")?.toJSONObj() ?: failParam("message")
-    val messageMetaData = getMap("messageMetaData")?.toJSONObj() ?: failParam("messageMetaData")
+    val message = getMap("message")?.toJSONObj()
+    val messageMetaData = getMap("messageMetaData")?.toJSONObj()
 
     return Ccpa1203(
         thisContent = JSONObject(this),
@@ -60,8 +70,8 @@ private fun Map<String, Any?>.toCCPA1203(): Ccpa1203? {
 
 internal fun Map<String, Any?>.toGDPR1203(): Gdpr1203 {
 
-    val message = getMap("message")?.toJSONObj() ?: failParam("message")
-    val messageMetaData = getMap("messageMetaData")?.toJSONObj() ?: failParam("messageMetaData")
+    val message = getMap("message")?.toJSONObj()
+    val messageMetaData = getMap("messageMetaData")?.toJSONObj()
 
     return Gdpr1203(
         thisContent = JSONObject(this),
