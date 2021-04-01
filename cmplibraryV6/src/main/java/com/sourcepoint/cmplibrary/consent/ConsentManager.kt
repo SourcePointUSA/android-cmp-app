@@ -75,7 +75,7 @@ private class ConsentManagerImpl(
                     put("accountId", gdpr.accountId)
                     put("actionType", action.actionType.code)
                     put("choiceId", action.choiceId)
-                    put("requestFromPM", action.requestFromPm)
+                    put("requestFromPM", true) // action.requestFromPm)
                     put("privacyManagerId", gdpr.pmId)
                     put("requestUUID", uuid)
                     put("pmSaveAndExitVariables", action.saveAndExitVariables)
