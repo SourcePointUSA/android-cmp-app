@@ -5,9 +5,9 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
+import com.sourcepoint.cmplibrary.core.web.CampaignModel
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
-import com.sourcepoint.cmplibrary.data.network.model.CampaignResp1203
 import com.sourcepoint.cmplibrary.util.ViewsManagerImpl.IDS.idsSet
 import java.lang.ref.WeakReference
 import java.util.* // ktlint-disable
@@ -21,7 +21,7 @@ internal interface ViewsManager {
 
     fun showView(view: View)
     fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate): IConsentWebView?
-    fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate, campaignQueue: Queue<CampaignResp1203>): IConsentWebView?
+    fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate, campaignQueue: Queue<CampaignModel>): IConsentWebView?
     fun removeView(view: View)
     fun removeAllViews()
     fun removeAllViewsExcept(pView: View)
@@ -116,7 +116,7 @@ private class ViewsManagerImpl(
         }
     }
 
-    override fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate, campaignQueue: Queue<CampaignResp1203>): IConsentWebView? {
+    override fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate, campaignQueue: Queue<CampaignModel>): IConsentWebView? {
         return weakReference.get()?.let {
             ConsentWebView(
                 context = it,

@@ -82,7 +82,7 @@ private class ConsentManagerImpl(
                     put("localState", localState)
                     put("pubData", action.pubData)
                     put("consentLanguage", action.consentLanguage)
-                    put("uuid", "")
+                    put("uuid", uuid)
                 }
             }
             .executeOnLeft {
@@ -105,7 +105,7 @@ private class ConsentManagerImpl(
                     put("accountId", ccpa.accountId)
                     put("propertyId", ccpa.propertyId)
                     put("privacyManagerId", ccpa.pmId)
-                    put("meta", localState)
+                    put("localState", localState)
                     put("pubData", action.pubData)
                     put("requestUUID", "asdfjhaDFJKl")
                 }

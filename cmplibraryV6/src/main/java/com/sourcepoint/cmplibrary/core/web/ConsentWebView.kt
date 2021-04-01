@@ -12,15 +12,12 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.data.network.converter.toConsentAction
-import com.sourcepoint.cmplibrary.data.network.model.CampaignResp1203
-import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.util.*  //ktlint-disable
 import okhttp3.HttpUrl
-import org.json.JSONObject
 import java.util.* // ktlint-disable
 
 @SuppressLint("ViewConstructor")
@@ -30,7 +27,7 @@ internal class ConsentWebView(
     private val logger: Logger,
     private val connectionManager: ConnectionManager,
     private val executorManager: ExecutorManager,
-    private val campaignQueue: Queue<CampaignResp1203> = LinkedList()
+    private val campaignQueue: Queue<CampaignModel> = LinkedList()
 ) : WebView(context), IConsentWebView {
 
     init {
@@ -82,13 +79,14 @@ internal class ConsentWebView(
         }
     }
 
-    private fun loadConsentUIFromUrl(url: HttpUrl, message: JSONObject, legislation: Legislation): Boolean {
+    private fun loadConsentUIFromUrl(url: HttpUrl, campaignModel: CampaignModel): Boolean {
+        val legislation: Legislation = campaignModel.type
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.onPageFinishedLambda = { view, url ->
             /**
              * adding the parameter [sp.loadMessage] needed by the webpage to trigger the loadMessage event
              */
-            val obj = message.apply {
+            val obj = campaignModel.message.apply {
                 put("name", "sp.loadMessage")
                 put("fromNativeSDK", true)
                 /*
@@ -110,20 +108,8 @@ internal class ConsentWebView(
         true
     }
 
-    override fun loadConsentUI(messageResp: UnifiedMessageResp, url: HttpUrl): Either<Boolean> = check {
-        messageResp
-            .campaigns
-            .mapNotNull { it.message }
-            .firstOrNull()
-            ?.let { jsonMessages -> loadConsentUIFromUrl(url, jsonMessages, Legislation.GDPR) }
-            ?: run {
-                logMess("loadConsentUI: {message json} is null for all the legislations")
-                false
-            }
-    }
-
-    override fun loadConsentUI(messageResp: JSONObject, url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
-        loadConsentUIFromUrl(url, messageResp, legislation)
+    override fun loadConsentUI(messageResp: CampaignModel, url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
+        loadConsentUIFromUrl(url, messageResp)
     }
 
     private fun logMess(mess: String) = logger.d(this::class.java.simpleName, "$mess")
@@ -141,7 +127,7 @@ internal class ConsentWebView(
             checkWorkerThread("ConsentWebView on action")
             val action = actionData.toConsentAction()
             if (action.actionType != ActionType.SHOW_OPTIONS && campaignQueue.isNotEmpty()) {
-                val campaign: CampaignResp1203 = campaignQueue.poll()
+                val campaign: CampaignModel = campaignQueue.poll()
                 jsClientLib.onAction(this@ConsentWebView, actionData, campaign)
             } else {
                 jsClientLib.onAction(this@ConsentWebView, actionData)

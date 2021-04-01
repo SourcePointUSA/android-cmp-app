@@ -1,0 +1,15 @@
+{
+  "consents": {
+    "USPString": "1---",
+    "rejectedAll": false,
+    "rejectedCategories": [],
+    "rejectedVendors": [],
+    "signedLspa": false,
+    "status": "rejectedNone"
+  },
+  "accountId": 22,
+  "propertyId": 4122,
+  "localState": "{\"gdpr\":{\"mmsCookies\":[\"_sp_v1_uid=1:246:719930aa-abfd-43df-8bf1-09ab100e1150\",\"_sp_v1_data=2:3284:1617289819:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RyiuOUbIyqFWKBQCq7errDgAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"uuid\":\"f828b882-cd44-43d7-b404-f996011cef5c\",\"propertyId\":4122,\"messageId\":13201},\"ccpa\":{\"mmsCookies\":[\"_sp_v1_uid=1:164:987d216e-cebe-412e-a99e-5b1cc248b373\",\"_sp_v1_data=2:3286:1617289819:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RyiuOUbIyqFWKBQCq7errDgAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"uuid\":\"e3d0573e-4bf9-4188-a5be-00e7e22c8735\",\"dnsDisplayed\":true,\"status\":\"rejectedNone\",\"propertyId\":4122,\"messageId\":13203}}",
+  "pubData": {},
+  "requestUUID": "asdfjhaDFJKl"
+}

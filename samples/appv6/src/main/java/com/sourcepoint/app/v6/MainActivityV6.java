@@ -21,15 +21,15 @@ public class MainActivityV6 extends AppCompatActivity {
 
     private final GDPRCampaign gdpr = new GDPRCampaign(
             22,
-            4082,
-            "http://dan.multicampaign.com",
+            4122,
+            "http://carm.uw.con",
             "404472"
     );
 
     private final CCPACampaign ccpa = new CCPACampaign(
             22,
-            4082,
-            "http://dan.multicampaign.com",
+            4122,
+            "http://carm.uw.con",
             "404472"
     );
 

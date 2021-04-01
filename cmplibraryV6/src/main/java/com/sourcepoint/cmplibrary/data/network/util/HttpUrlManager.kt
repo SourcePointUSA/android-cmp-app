@@ -13,6 +13,7 @@ internal interface HttpUrlManager {
     val inAppUrlMessage1203: HttpUrl
     val inAppUrlNativeMessage: HttpUrl
     val sendGdprConsentUrl: HttpUrl
+    val sendGdprConsentUrlStage: HttpUrl
     val sendLocalGdprConsentUrl: HttpUrl
     val sendCcpaConsentUrl: HttpUrl
 //    fun sendConsentUrl(legislation: Legislation, actionType: String): HttpUrl
@@ -78,11 +79,15 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 
     // https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/consent?inApp=true
     override val sendGdprConsentUrl: HttpUrl
+        get() = sendGdprConsentUrlStage
+
+    override val sendGdprConsentUrlStage: HttpUrl
         get() = HttpUrl.Builder()
             .scheme("https")
-            .host(spHost)
+            .host("cdn.sp-stage.net")
             .addPathSegments("wrapper/tcfv2/v1/gdpr/consent")
             .addQueryParameter("inApp", "true")
+            .addQueryParameter("env", "stage")
             .build()
 
     override val sendLocalGdprConsentUrl: HttpUrl
@@ -206,7 +211,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 
         return HttpUrl.Builder()
             .scheme("https")
-            .host("wrapper-api.sp-prod.net")
+            .host("wrapper-api.sp-stage.net")
             .addPathSegments("ccpa/consent/$actionType")
             .build()
     }

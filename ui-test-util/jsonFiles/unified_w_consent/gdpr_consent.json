@@ -1,0 +1,15 @@
+{
+  "propertyId": 4122,
+  "propertyHref": "http://carm.uw.con",
+  "accountId": 22,
+  "actionType": 11,
+  "choiceId": "36092",
+  "requestFromPM": false,
+  "privacyManagerId": "404472",
+  "requestUUID": "6b05a52b-3116-4acd-b3e5-7e3a34272dfa",
+  "pmSaveAndExitVariables": {},
+  "localState": "{\"gdpr\":{\"mmsCookies\":[\"_sp_v1_uid=1:136:ca3f7bb4-0011-4825-b36d-0ad34de2d491\",\"_sp_v1_data=2:3284:1617289177:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RyiuOUbIyqFWKBQCq7errDgAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"uuid\":\"38d44c39-f2e1-4fc0-be29-f26c6bc0dd37\",\"propertyId\":4122,\"messageId\":13201}}",
+  "pubData": {},
+  "consentLanguage": "DE",
+  "uuid": "aaa"
+}

@@ -7,9 +7,9 @@ import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageInternal
+import com.sourcepoint.cmplibrary.core.web.CampaignModel
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
-import com.sourcepoint.cmplibrary.core.web.JSReceiver
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
@@ -65,21 +65,25 @@ internal class SpConsentLibImpl(
             pSuccess = { messageResp ->
                 val campaignList = messageResp.campaigns
                 if (campaignList.isEmpty()) return@getUnifiedMessage
-                val firstCampaign2Process = campaignList.first()
-                val remainingCampaigns: Queue<CampaignResp1203> = LinkedList(campaignList.drop(1))
+
+                val partition: Pair<List<CampaignResp1203>, List<CampaignResp1203>> = campaignList.partition { it.message != null }
+                val list = partition.first.map {
+                    CampaignModel(
+                        message = it.message!!,
+                        messageMetaData = it.messageMetaData!!,
+                        type = Legislation.valueOf(it.type)
+                    )
+                }
+                if(list.isEmpty()) return@getUnifiedMessage
+                val firstCampaign2Process = list.first()
+                val remainingCampaigns: Queue<CampaignModel> = LinkedList(list.drop(1))
                 executor.executeOnMain {
                     /** create a instance of WebView */
                     val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
 
                     /** inject the message into the WebView */
-                    val legislation = Legislation.valueOf(firstCampaign2Process.type.toUpperCase())
-                    firstCampaign2Process.message
-                        ?.let {
-                            webView?.loadConsentUI(it, urlManager.urlURenderingAppStage(), legislation)
-                        }
-                        ?: run {
-                            pLogger.d(this@SpConsentLibImpl.javaClass.name, "${firstCampaign2Process.type} has message null!!!")
-                        }
+                    val legislation = firstCampaign2Process.type
+                    webView?.loadConsentUI(firstCampaign2Process, urlManager.urlURenderingAppStage(), legislation)
                 }
             },
             pError = { throwable ->
@@ -176,8 +180,8 @@ internal class SpConsentLibImpl(
                             val map: Map<String, Any?> = consentResp.content.toTreeMap()
                             map.getMap("userConsent").also {
                                 when (action.legislation) {
-                                    Legislation.GDPR -> it?.toGDPRUserConsent()?.let { spClient?.onConsentReady(SPConsents(gdpr = SPGDPRConsent(consent = it, applies = true),)) }
-                                    Legislation.CCPA -> it?.toCCPAUserConsent()?.let { spClient?.onConsentReady(SPConsents(ccpa = SPCCPAConsent(consent = it, applies = true),)) }
+                                    Legislation.GDPR -> it?.toGDPRUserConsent()?.let { spClient?.onConsentReady(SPConsents(gdpr = SPGDPRConsent(consent = it, applies = true), )) }
+                                    Legislation.CCPA -> it?.toCCPAUserConsent()?.let { spClient?.onConsentReady(SPConsents(ccpa = SPCCPAConsent(consent = it, applies = true), )) }
                                 }
                             }
                             consentManager.saveGdprConsent(consentResp.content)
@@ -274,7 +278,7 @@ internal class SpConsentLibImpl(
             spClient?.onError(error)
         }
 
-        override fun onAction(iConsentWebView: IConsentWebView, actionData: String, nextCampaign: CampaignResp1203) {
+        override fun onAction(iConsentWebView: IConsentWebView, actionData: String, nextCampaign: CampaignModel) {
             /** spClient is called from [onActionFromWebViewClient] */
             (iConsentWebView as? View)?.let {
                 /** spClient is called from [onActionFromWebViewClient] */
@@ -283,14 +287,8 @@ internal class SpConsentLibImpl(
                     .map { ca ->
                         onActionFromWebViewClient(ca, iConsentWebView)
                         if (ca.actionType != SHOW_OPTIONS) {
-                            val legislation = Legislation.valueOf(nextCampaign.type.toUpperCase())
-                            nextCampaign.message
-                                ?.let {
-                                    executor.executeOnMain { iConsentWebView.loadConsentUI(it, urlManager.urlURenderingAppProd(), legislation) }
-                                }
-                                ?: run {
-                                    pLogger.d(JSReceiver.javaClass.name, "${nextCampaign.type} has message null!!!")
-                                }
+                            val legislation = nextCampaign.type
+                            executor.executeOnMain { iConsentWebView.loadConsentUI(nextCampaign, urlManager.urlURenderingAppProd(), legislation) }
                         }
                     }
                     .executeOnLeft { throw it }
