@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
+import com.sourcepoint.cmplibrary.data.network.util.Env
 
 /**
  * Encapsulates the logic to fetch the data from the server, using the [NetworkClient], and
@@ -12,9 +13,10 @@ import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 internal interface Service : NetworkClient, CampaignManager {
 
     fun sendConsent(
-        action: ConsentAction,
+        consentAction: ConsentAction,
         success: (ConsentResp) -> Unit,
         error: (Throwable) -> Unit,
+        env: Env
     )
 
     companion object

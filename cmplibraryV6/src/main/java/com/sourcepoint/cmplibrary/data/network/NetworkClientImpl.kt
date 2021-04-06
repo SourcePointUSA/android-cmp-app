@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
+import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.util.executeOnLeft
 import com.sourcepoint.cmplibrary.util.map
 import okhttp3.* // ktlint-disable
@@ -13,25 +14,29 @@ import org.json.JSONObject
 internal fun createNetworkClient(
     httpClient: OkHttpClient,
     urlManager: HttpUrlManager,
+    logger: Logger,
     responseManager: ResponseManager
-): NetworkClient = NetworkClientImpl(httpClient, urlManager, responseManager)
+): NetworkClient = NetworkClientImpl(httpClient, urlManager, logger, responseManager)
 
 private class NetworkClientImpl(
     private val httpClient: OkHttpClient = OkHttpClient(),
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
-    private val responseManager: ResponseManager = ResponseManager.create(JsonConverter.create())
+    private val logger: Logger,
+    private val responseManager: ResponseManager = ResponseManager.create(JsonConverter.create()),
 ) : NetworkClient {
 
     override fun getUnifiedMessage(
         messageReq: UnifiedMessageRequest,
         pSuccess: (UnifiedMessageResp1203) -> Unit,
-        pError: (Throwable) -> Unit
+        pError: (Throwable) -> Unit,
+        env: Env
     ) {
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
+        val url = urlManager.inAppUrlMessage(env).also { logger.i(NetworkClientImpl::class.java.name, "url getUnifiedMessage [$it]") }
 
         val request: Request = Request.Builder()
-            .url(urlManager.inAppUrlMessageStage)
+            .url(url)
             .post(body)
             .build()
 
@@ -59,7 +64,7 @@ private class NetworkClientImpl(
         val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
 
         val request: Request = Request.Builder()
-            .url(urlManager.inAppUrlMessage1203)
+//            .url(urlManager.inAppUrlMessage1203)
             .post(body)
             .build()
 
@@ -81,13 +86,14 @@ private class NetworkClientImpl(
     override fun getMessage(
         messageReq: MessageReq,
         pSuccess: (UnifiedMessageResp) -> Unit,
-        pError: (Throwable) -> Unit
+        pError: (Throwable) -> Unit,
+        env: Env
     ) {
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
-
+        val url = urlManager.inAppUrlMessage(env).also { logger.i(NetworkClientImpl::class.java.name, "url getMessage [$it]") }
         val request: Request = Request.Builder()
-            .url(urlManager.inAppUrlMessage)
+            .url(url)
             .post(body)
             .build()
 
@@ -128,7 +134,7 @@ private class NetworkClientImpl(
         val body: RequestBody = RequestBody.create(mediaType, bodyContent)
 
         val request: Request = Request.Builder()
-            .url(urlManager.inAppUrlNativeMessage)
+//            .url(urlManager.inAppUrlNativeMessage)
             .post(body)
             .build()
 
@@ -168,7 +174,7 @@ private class NetworkClientImpl(
         val body: RequestBody = RequestBody.create(mediaType, bodyContent)
 
         val request: Request = Request.Builder()
-            .url(urlManager.inAppUrlNativeMessage)
+//            .url(urlManager.inAppUrlNativeMessage)
             .post(body)
             .build()
 
@@ -191,10 +197,14 @@ private class NetworkClientImpl(
         consentReq: JSONObject,
         success: (ConsentResp) -> Unit,
         error: (Throwable) -> Unit,
-        url: HttpUrl
+        env: Env,
+        consentAction: ConsentAction
     ) {
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, consentReq.toString())
+        val url = urlManager
+            .sendConsentUrl(legislation = consentAction.legislation, env = env, actionType = consentAction.actionType)
+            .also { logger.i(NetworkClientImpl::class.java.name, "url getUnifiedMessage [$it]") }
 
         val request: Request = Request.Builder()
             .url(url)

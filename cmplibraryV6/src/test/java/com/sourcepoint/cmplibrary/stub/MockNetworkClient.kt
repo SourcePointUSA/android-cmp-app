@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.stub
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
-import okhttp3.HttpUrl
+import com.sourcepoint.cmplibrary.data.network.util.Env
 import org.json.JSONObject
 
 internal class MockNetworkClient(
@@ -13,7 +13,7 @@ internal class MockNetworkClient(
     private val logicNativeMess: ((messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) -> Unit)? = null
 ) : NetworkClient {
 
-    override fun getMessage(messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) {
+    override fun getMessage(messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit, stage: Env) {
         logicUnifiedMess?.invoke(messageReq, pSuccess, pError)
     }
 
@@ -21,7 +21,7 @@ internal class MockNetworkClient(
         logicUnifiedMess1203?.invoke(messageReq, pSuccess, pError)
     }
 
-    override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit) {
+    override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit, env: Env) {
         logicUnifiedMess2?.invoke(messageReq, pSuccess, pError)
     }
 
@@ -30,7 +30,5 @@ internal class MockNetworkClient(
     }
 
     override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
-    override fun sendConsent(consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit, url: HttpUrl) {
-        TODO("Not yet implemented")
-    }
+    override fun sendConsent(consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit, env: Env, consentAction: ConsentAction) {}
 }

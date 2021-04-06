@@ -34,10 +34,11 @@ internal fun createLogger(errorMessageManager: ErrorMessageManager): Logger {
     )
 }
 
-internal fun networkClient(netClient: OkHttpClient, responseManage: ResponseManager): NetworkClient {
+internal fun networkClient(netClient: OkHttpClient, responseManage: ResponseManager, logger: Logger): NetworkClient {
     return createNetworkClient(
         httpClient = netClient,
         responseManager = responseManage,
-        urlManager = HttpUrlManagerSingleton
+        urlManager = HttpUrlManagerSingleton,
+        logger = logger
     )
 }

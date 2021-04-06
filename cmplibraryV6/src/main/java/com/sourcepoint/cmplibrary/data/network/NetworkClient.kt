@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.data.network
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
-import okhttp3.HttpUrl
+import com.sourcepoint.cmplibrary.data.network.util.Env
 import org.json.JSONObject
 
 /**
@@ -20,7 +20,8 @@ internal interface NetworkClient {
     fun getMessage(
         messageReq: MessageReq,
         pSuccess: (UnifiedMessageResp) -> Unit,
-        pError: (Throwable) -> Unit
+        pError: (Throwable) -> Unit,
+        stage: Env
     )
 
     fun getMessage1203(
@@ -32,7 +33,8 @@ internal interface NetworkClient {
     fun getUnifiedMessage(
         messageReq: UnifiedMessageRequest,
         pSuccess: (UnifiedMessageResp1203) -> Unit,
-        pError: (Throwable) -> Unit
+        pError: (Throwable) -> Unit,
+        env: Env
     )
 
     /**
@@ -59,6 +61,7 @@ internal interface NetworkClient {
         consentReq: JSONObject,
         success: (ConsentResp) -> Unit,
         error: (Throwable) -> Unit,
-        url: HttpUrl,
+        env: Env,
+        consentAction: ConsentAction
     )
 }

@@ -8,13 +8,14 @@ import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
+import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
-import com.sourcepoint.cmplibrary.exception.Legislation.* // ktlint-disable
+import com.sourcepoint.cmplibrary.exception.Legislation.CCPA
+import com.sourcepoint.cmplibrary.exception.Legislation.GDPR
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.executeOnLeft
 import com.sourcepoint.cmplibrary.util.getOrNull
-import okhttp3.HttpUrl
 
 /**
  * Factory method to create an instance of a [Service] using its implementation
@@ -41,18 +42,28 @@ private class ServiceImpl(
     private val urlManager: HttpUrlManager
 ) : Service, NetworkClient by nc, CampaignManager by campaignManager {
 
-    override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit) {
+    override fun getUnifiedMessage(
+        messageReq: UnifiedMessageRequest,
+        pSuccess: (UnifiedMessageResp1203) -> Unit,
+        pError: (Throwable) -> Unit,
+        env: Env
+    ) {
         nc.getUnifiedMessage(
             messageReq,
-            { messageResp ->
+            pSuccess = { messageResp ->
                 campaignManager.saveUnifiedMessageResp1203(messageResp)
                 pSuccess(messageResp)
             },
-            pError
+            pError = pError,
+            env = env
         )
     }
 
-    override fun getMessage1203(messageReq: MessageReq, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit) {
+    override fun getMessage1203(
+        messageReq: MessageReq,
+        pSuccess: (UnifiedMessageResp1203) -> Unit,
+        pError: (Throwable) -> Unit
+    ) {
         nc.getMessage1203(
             messageReq,
             { messageResp ->
@@ -63,10 +74,15 @@ private class ServiceImpl(
         )
     }
 
-    override fun getMessage(messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) {
+    override fun getMessage(
+        messageReq: MessageReq,
+        pSuccess: (UnifiedMessageResp) -> Unit,
+        pError: (Throwable) -> Unit,
+        stage: Env
+    ) {
         nc.getMessage(
             messageReq,
-            { messageResp ->
+            pSuccess = { messageResp ->
                 messageResp.campaigns.forEach { cr ->
                     when (cr) {
                         is Gdpr -> {
@@ -81,11 +97,16 @@ private class ServiceImpl(
                 }
                 pSuccess(messageResp)
             },
-            pError
+            pError = pError,
+            stage = stage
         )
     }
 
-    override fun getNativeMessage(messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {
+    override fun getNativeMessage(
+        messageReq: MessageReq,
+        success: (NativeMessageResp) -> Unit,
+        error: (Throwable) -> Unit
+    ) {
         nc.getNativeMessage(
             messageReq,
             { nativeMessageResp ->
@@ -97,7 +118,11 @@ private class ServiceImpl(
         )
     }
 
-    override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {
+    override fun getNativeMessageK(
+        messageReq: MessageReq,
+        success: (NativeMessageRespK) -> Unit,
+        error: (Throwable) -> Unit
+    ) {
         nc.getNativeMessageK(
             messageReq,
             { nativeMessageResp ->
@@ -109,22 +134,23 @@ private class ServiceImpl(
         )
     }
 
-    override fun sendConsent(action: ConsentAction, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit) {
+    override fun sendConsent(
+        consentAction: ConsentAction,
+        success: (ConsentResp) -> Unit,
+        error: (Throwable) -> Unit,
+        env: Env
+    ) {
 
-        val url: HttpUrl = when (action.legislation) {
-            CCPA -> urlManager.sendCcpaConsentUrl(actionType = action.actionType.code)
-            GDPR -> urlManager.sendGdprConsentUrl
-        }
-
-        val request = consentManager.buildConsentReq(action)
+        val request = consentManager.buildConsentReq(consentAction)
             .executeOnLeft { error(it) }
             .getOrNull() ?: return
 
         nc.sendConsent(
-            request,
-            { consentResp ->
-                success(consentResp.copy(legislation = action.legislation))
-                when (action.legislation) {
+            consentAction = consentAction,
+            consentReq = request,
+            success = { consentResp ->
+                success(consentResp.copy(legislation = consentAction.legislation))
+                when (consentAction.legislation) {
                     GDPR -> {
                         consentResp.content
                             .toTreeMap()
@@ -141,9 +167,8 @@ private class ServiceImpl(
                     }
                 }
             },
-            error,
-            url,
-
+            error = error,
+            env = env
         )
     }
 }

@@ -1,6 +1,10 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
+import com.sourcepoint.cmplibrary.data.network.util.Env.PROD
+import com.sourcepoint.cmplibrary.data.network.util.Env.STAGE
+import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import okhttp3.HttpUrl
 
@@ -8,21 +12,24 @@ import okhttp3.HttpUrl
  * Component responsible of building and providing the URLs
  */
 internal interface HttpUrlManager {
-    val inAppUrlMessage: HttpUrl
-    val inAppUrlMessageStage: HttpUrl
-    val inAppUrlMessage1203: HttpUrl
-    val inAppUrlNativeMessage: HttpUrl
-    val sendGdprConsentUrl: HttpUrl
-    val sendGdprConsentUrlStage: HttpUrl
-    val sendLocalGdprConsentUrl: HttpUrl
-    val sendCcpaConsentUrl: HttpUrl
+    //    val inAppUrlMessageStage: HttpUrl
+//    val inAppUrlMessageProd: HttpUrl
+//    val inAppUrlMessage1203: HttpUrl
+//    val inAppUrlNativeMessage: HttpUrl
+//    val sendGdprConsentUrl: HttpUrl
+//    val sendGdprConsentUrlStage: HttpUrl
+//    val sendLocalGdprConsentUrl: HttpUrl
+//    val sendCcpaConsentUrl: HttpUrl
 //    fun sendConsentUrl(legislation: Legislation, actionType: String): HttpUrl
-    fun sendCcpaConsentUrl(actionType: Int): HttpUrl
+    fun sendConsentUrl(actionType: ActionType, env: Env, legislation: Legislation): HttpUrl
+    fun inAppUrlMessage(env: Env): HttpUrl
+
     fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlPm(pmConf: PmUrlConfig): HttpUrl
     fun urlPmGdpr(): HttpUrl
     fun urlPmCcpa(): HttpUrl
     fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl
+    fun urlURenderingApp(env: Env): HttpUrl
     fun urlURenderingAppProd(): HttpUrl
     fun urlURenderingAppStage(): HttpUrl
     fun urlURenderingAppLocal(): HttpUrl
@@ -47,28 +54,35 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("inApp", "true")
         .build()
 
-    override val inAppUrlMessage1203: HttpUrl = HttpUrl.Builder()
+    val inAppUrlMessage1203: HttpUrl = HttpUrl.Builder()
         .scheme("https")
         .host("fake-wrapper-api.herokuapp.com")
         .addPathSegments("all/v1/multi-campaign")
         .build()
 
     // https://cdn.sp-stage.net/wrapper/v2/messages?env=stage
-    override val inAppUrlMessage: HttpUrl = HttpUrl.Builder()
-        .scheme("https")
-        .host("cdn.sp-stage.net")
-        .addPathSegments("wrapper/v2/messages")
-        .addQueryParameter("env", "localProd")
-        .build()
+//    override val inAppUrlMessage: HttpUrl = HttpUrl.Builder()
+//        .scheme("https")
+//        .host("cdn.sp-stage.net")
+//        .addPathSegments("wrapper/v2/messages")
+//        .addQueryParameter("env", "localProd")
+//        .build()
 
-    override val inAppUrlMessageStage: HttpUrl = HttpUrl.Builder()
+    val inAppUrlMessageStage: HttpUrl = HttpUrl.Builder()
         .scheme("https")
         .host("cdn.sp-stage.net")
         .addPathSegments("wrapper/v2/messages")
         .addQueryParameter("env", "stage")
         .build()
 
-    override val inAppUrlNativeMessage: HttpUrl
+    val inAppUrlMessageProd: HttpUrl = HttpUrl.Builder()
+        .scheme("https")
+        .host("cdn.sp-stage.net") // TODO do we have prod env??
+        .addPathSegments("wrapper/v2/messages")
+        .addQueryParameter("env", "stage")
+        .build()
+
+    val inAppUrlNativeMessage: HttpUrl
         get() = HttpUrl.Builder()
             .scheme("https")
             .host(spHost)
@@ -78,10 +92,10 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
 
     // https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/consent?inApp=true
-    override val sendGdprConsentUrl: HttpUrl
+    val sendGdprConsentUrl: HttpUrl
         get() = sendGdprConsentUrlStage
 
-    override val sendGdprConsentUrlStage: HttpUrl
+    val sendGdprConsentUrlStage: HttpUrl
         get() = HttpUrl.Builder()
             .scheme("https")
             .host("cdn.sp-stage.net")
@@ -90,7 +104,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("env", "stage")
             .build()
 
-    override val sendLocalGdprConsentUrl: HttpUrl
+    val sendLocalGdprConsentUrl: HttpUrl
         get() = HttpUrl.Builder()
             .scheme("http")
             .host("192.168.1.11")
@@ -102,7 +116,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("sdkVersion", "AndroidLocal")
             .build()
 
-    override val sendCcpaConsentUrl: HttpUrl
+    val sendCcpaConsentUrl: HttpUrl
         get() {
             return HttpUrl.Builder()
                 .scheme("http")
@@ -173,6 +187,11 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
+    override fun urlURenderingApp(env: Env): HttpUrl = when (env) {
+        STAGE -> urlURenderingAppStage()
+        PROD -> urlURenderingAppProd()
+    }
+
     override fun urlURenderingAppProd(): HttpUrl {
         return HttpUrl.Builder()
             .scheme("https")
@@ -206,7 +225,12 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 //        }
 //    }
 
-    override fun sendCcpaConsentUrl(actionType: Int): HttpUrl {
+    override fun inAppUrlMessage(env: Env): HttpUrl = when (env) {
+        STAGE -> inAppUrlMessageStage
+        PROD -> inAppUrlMessageProd
+    }
+
+    fun sendCcpaConsentUrlStage(actionType: Int): HttpUrl {
         // https://wrapper-api.sp-prod.net/ccpa/consent/{action}
 
         return HttpUrl.Builder()
@@ -215,9 +239,41 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addPathSegments("ccpa/consent/$actionType")
             .build()
     }
+
+    fun sendCcpaConsentUrlProd(actionType: Int): HttpUrl {
+        // https://wrapper-api.sp-prod.net/ccpa/consent/{action}
+
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host("wrapper-api.sp-stage.net") // TODO do we have prod?
+            .addPathSegments("ccpa/consent/$actionType")
+            .build()
+    }
+
+    override fun sendConsentUrl(actionType: ActionType, env: Env, legislation: Legislation): HttpUrl {
+        return when (legislation) {
+            Legislation.CCPA -> {
+                when (env) {
+                    PROD -> sendCcpaConsentUrlStage(actionType = actionType.code)
+                    STAGE -> sendCcpaConsentUrlProd(actionType = actionType.code)
+                }
+            }
+            Legislation.GDPR -> {
+                when (env) {
+                    PROD -> sendGdprConsentUrl
+                    STAGE -> sendGdprConsentUrlStage
+                }
+            }
+        }
+    }
 }
 
 enum class UrlLegislation(val segment: String) {
     GDPR("segment_gdpr"),
     CCPA("segment_ccpa")
+}
+
+enum class Env {
+    STAGE,
+    PROD
 }

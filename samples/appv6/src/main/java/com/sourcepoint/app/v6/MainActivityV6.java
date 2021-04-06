@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.SPMessage;
 import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.SpConsentLib;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
+import com.sourcepoint.cmplibrary.data.network.util.Env;
 import com.sourcepoint.cmplibrary.model.*;
 import com.sourcepoint.app.v6.core.DataProvider;
 import kotlin.Lazy;
@@ -41,7 +42,7 @@ public class MainActivityV6 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        gdprConsent = FactoryKt.makeConsentLib(gdpr, ccpa, this, PrivacyManagerTabK.FEATURES);
+        gdprConsent = FactoryKt.makeConsentLibEnv(gdpr, ccpa, this, PrivacyManagerTabK.FEATURES, Env.PROD);
         gdprConsent.setSpClient(new LocalClient());
         findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadGDPRPrivacyManager());
     }

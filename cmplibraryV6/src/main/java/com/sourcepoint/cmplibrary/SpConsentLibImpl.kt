@@ -18,6 +18,7 @@ import com.sourcepoint.cmplibrary.data.network.model.CampaignResp1203
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsent
 import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
+import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
@@ -37,7 +38,8 @@ internal class SpConsentLibImpl(
     private val viewManager: ViewsManager,
     private val campaignManager: CampaignManager,
     private val consentManager: ConsentManager,
-    private val urlManager: HttpUrlManager = HttpUrlManagerSingleton
+    private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
+    private val env: Env = Env.PROD
 ) : SpConsentLib {
 
     override var spClient: SpClient? = null
@@ -50,7 +52,8 @@ internal class SpConsentLibImpl(
         service.getMessage(
             messageReq = campaignManager.getMessageReq(),
             pSuccess = { messageResp -> },
-            pError = { throwable -> }
+            pError = { throwable -> },
+            stage = env
         )
     }
 
@@ -74,7 +77,7 @@ internal class SpConsentLibImpl(
                         type = Legislation.valueOf(it.type)
                     )
                 }
-                if(list.isEmpty()) return@getUnifiedMessage
+                if (list.isEmpty()) return@getUnifiedMessage
                 val firstCampaign2Process = list.first()
                 val remainingCampaigns: Queue<CampaignModel> = LinkedList(list.drop(1))
                 executor.executeOnMain {
@@ -83,13 +86,14 @@ internal class SpConsentLibImpl(
 
                     /** inject the message into the WebView */
                     val legislation = firstCampaign2Process.type
-                    webView?.loadConsentUI(firstCampaign2Process, urlManager.urlURenderingAppStage(), legislation)
+                    webView?.loadConsentUI(firstCampaign2Process, urlManager.urlURenderingApp(env), legislation)
                 }
             },
             pError = { throwable ->
                 (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
                 spClient?.onError(throwable.toConsentLibException())
-            }
+            },
+            env = env
         )
     }
 
@@ -175,21 +179,23 @@ internal class SpConsentLibImpl(
                 ActionType.REJECT_ALL -> {
                     view.let { spClient?.onUIFinished(it) }
                     service.sendConsent(
-                        action,
-                        { consentResp ->
+                        consentAction = action,
+                        success = { consentResp ->
                             val map: Map<String, Any?> = consentResp.content.toTreeMap()
                             map.getMap("userConsent").also {
                                 when (action.legislation) {
-                                    Legislation.GDPR -> it?.toGDPRUserConsent()?.let { spClient?.onConsentReady(SPConsents(gdpr = SPGDPRConsent(consent = it, applies = true), )) }
-                                    Legislation.CCPA -> it?.toCCPAUserConsent()?.let { spClient?.onConsentReady(SPConsents(ccpa = SPCCPAConsent(consent = it, applies = true), )) }
+                                    Legislation.GDPR -> it?.toGDPRUserConsent()?.let { spClient?.onConsentReady(SPConsents(gdpr = SPGDPRConsent(consent = it, applies = true),)) }
+                                    Legislation.CCPA -> it?.toCCPAUserConsent()?.let { spClient?.onConsentReady(SPConsents(ccpa = SPCCPAConsent(consent = it, applies = true),)) }
                                 }
                             }
                             consentManager.saveGdprConsent(consentResp.content)
                         },
-                        { throwable ->
+                        error = { throwable ->
                             spClient?.onError(throwable)
                             pLogger.error(throwable.toConsentLibException())
-                        }
+                            throwable.printStackTrace()
+                        },
+                        env = env
                     )
                     view.let { spClient?.onUIFinished(it) }
                 }
@@ -288,7 +294,7 @@ internal class SpConsentLibImpl(
                         onActionFromWebViewClient(ca, iConsentWebView)
                         if (ca.actionType != SHOW_OPTIONS) {
                             val legislation = nextCampaign.type
-                            executor.executeOnMain { iConsentWebView.loadConsentUI(nextCampaign, urlManager.urlURenderingAppProd(), legislation) }
+                            executor.executeOnMain { iConsentWebView.loadConsentUI(nextCampaign, urlManager.urlURenderingApp(env), legislation) }
                         }
                     }
                     .executeOnLeft { throw it }

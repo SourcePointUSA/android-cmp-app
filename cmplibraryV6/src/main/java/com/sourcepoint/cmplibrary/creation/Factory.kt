@@ -16,6 +16,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
+import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
@@ -35,7 +36,26 @@ fun makeConsentLib(
     gdpr: GDPRCampaign? = null,
     ccpa: CCPACampaign? = null,
     context: Activity,
-    privacyManagerTab: PrivacyManagerTabK
+    privacyManagerTab: PrivacyManagerTabK,
+): SpConsentLib {
+    return makeConsentLibEnv(
+        gdpr = gdpr,
+        ccpa = ccpa,
+        context = context,
+        privacyManagerTab = privacyManagerTab,
+        env = Env.PROD
+    )
+}
+
+/**
+ * Use only for test!!!
+ */
+fun makeConsentLibEnv(
+    gdpr: GDPRCampaign? = null,
+    ccpa: CCPACampaign? = null,
+    context: Activity,
+    privacyManagerTab: PrivacyManagerTabK,
+    env: Env
 ): SpConsentLib {
 
     val appCtx: Context = context.applicationContext
@@ -52,7 +72,7 @@ fun makeConsentLib(
     val jsonConverter = JsonConverter.create()
     val connManager = ConnectionManager.create(appCtx)
     val responseManager = ResponseManager.create(jsonConverter)
-    val networkClient = networkClient(OkHttpClient(), responseManager)
+    val networkClient = networkClient(OkHttpClient(), responseManager, logger)
     val viewManager = ViewsManager.create(WeakReference<Activity>(context), connManager)
     val execManager = ExecutorManager.create(appCtx)
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
@@ -70,52 +90,7 @@ fun makeConsentLib(
         viewManager = viewManager,
         executor = execManager,
         campaignManager = campaignManager,
-        consentManager = consentManager
+        consentManager = consentManager,
+        env = env
     )
 }
-
-// fun makeConsentLib(
-//    accountId: Int,
-//    propertyName: String,
-//    propertyId: Int,
-//    pmId: String,
-//    context: Activity,
-//    privacyManagerTab: PrivacyManagerTabK
-// ): SpConsentLib {
-//
-//    val account = Campaign(accountId, propertyId, propertyName, pmId)
-//    val appCtx: Context = context.applicationContext
-//    val client = createClientInfo()
-//    val errorManager = errorMessageManager(account, client)
-//    val logger = createLogger(errorManager)
-//    val jsonConverter = JsonConverter.create()
-//    val connManager = ConnectionManager.create(appCtx)
-//    val responseManager = ResponseManager.create(jsonConverter)
-//    val networkClient = networkClient(OkHttpClient(), responseManager)
-//    val dataStorageGdpr = DataStorageGdpr.create(appCtx)
-//    val dataStorageCcpa = DataStorageCcpa.create(appCtx)
-//    val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
-//    val service: Service = Service.create(networkClient, dataStorage)
-//    val viewManager = ViewsManager.create(WeakReference<Activity>(context), connManager)
-//    val execManager = ExecutorManager.create(appCtx)
-//    val urlManager: HttpUrlManager = HttpUrlManagerSingleton
-//    val campaignManager: CampaignManager = CampaignManager.create(dataStorage).apply {
-//        addCampaign(Legislation.GDPR, account)
-//    }
-//    val consentManager : ConsentManager = ConsentManager.create(campaignManager, dataStorage)
-
-//    return SpConsentLibImpl(
-//        urlManager = urlManager,
-//        pPrivacyManagerTab = privacyManagerTab,
-//        context = appCtx,
-//        pLogger = logger,
-//        pJsonConverter = jsonConverter,
-//        pConnectionManager = connManager,
-//        service = service,
-//        viewManager = viewManager,
-//        executor = execManager,
-//        dataStorage = dataStorage,
-//        campaignManager = campaignManager,
-//        consentManager = consentManager
-//    )
-// }
