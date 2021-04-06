@@ -5,6 +5,7 @@ import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestData.ACCEPT
 import com.sourcepoint.app.v6.TestData.ACCEPT_ALL
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST
+import com.sourcepoint.app.v6.TestData.EINSTELLUNGEN
 import com.sourcepoint.app.v6.TestData.FEATURES
 import com.sourcepoint.app.v6.TestData.MESSAGE
 import com.sourcepoint.app.v6.TestData.OPTIONS
@@ -61,7 +62,7 @@ class TestUseCase {
         }
 
         fun tapOptionWebView() {
-            performClickOnWebViewByContent(OPTIONS)
+            performClickOnWebViewByContent(EINSTELLUNGEN)
         }
 
         fun tapAcceptAllOnWebView() {

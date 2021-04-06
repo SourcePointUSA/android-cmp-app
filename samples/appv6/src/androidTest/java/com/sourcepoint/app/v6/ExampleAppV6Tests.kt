@@ -4,6 +4,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapOptionWebView
@@ -31,7 +32,16 @@ class ExampleAppV6Tests {
         scenario = launchActivity()
 
         wr { tapAcceptOnWebView() }
+        wr { tapAcceptCcpaOnWebView() }
+    }
+
+    @Test
+    fun GIVEN_a_camapignList_tap_SETTINGS_all_legislation() = runBlocking<Unit> {
+
+        scenario = launchActivity()
+
         wr { tapOptionWebView() }
+        wr { tapAcceptAllOnWebView() }
         wr { tapAcceptCcpaOnWebView() }
     }
 

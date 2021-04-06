@@ -10,6 +10,7 @@ object TestData {
     var ZUSTIMMEN = "Zustimmen"
     var REJECT = "Reject"
     var OPTIONS = "Options"
+    var EINSTELLUNGEN = "Einstellungen"
     var ACCEPT_ALL = "Accept All"
     var REJECT_ALL = "Reject All"
     var SAVE_AND_EXIT = "Save & Exit"
