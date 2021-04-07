@@ -22,16 +22,18 @@ internal interface HttpUrlManager {
 //    val sendCcpaConsentUrl: HttpUrl
 //    fun sendConsentUrl(legislation: Legislation, actionType: String): HttpUrl
     fun sendConsentUrl(actionType: ActionType, env: Env, legislation: Legislation): HttpUrl
-    fun inAppUrlMessage(env: Env): HttpUrl
+    fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig?): HttpUrl
+    fun inAppMessageUrl(env: Env): HttpUrl
+    fun urlURenderingApp(env: Env): HttpUrl
 
     fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
-    fun urlPm(pmConf: PmUrlConfig): HttpUrl
-    fun urlPmGdpr(): HttpUrl
-    fun urlPmCcpa(): HttpUrl
-    fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl
-    fun urlURenderingApp(env: Env): HttpUrl
-    fun urlURenderingAppProd(): HttpUrl
-    fun urlURenderingAppStage(): HttpUrl
+//    fun urlPm(pmConf: PmUrlConfig): HttpUrl
+
+    //    fun urlPmGdpr(): HttpUrl
+//    fun urlPmCcpa(): HttpUrl
+//    fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl
+//    fun urlURenderingAppProd(): HttpUrl
+//    fun urlURenderingAppStage(): HttpUrl
     fun urlURenderingAppLocal(): HttpUrl
 }
 
@@ -146,7 +148,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("message_id", pmConf.messageId)
         .build()
 
-    override fun urlPm(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
+    fun urlPm(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
         .scheme("https")
         .host(spHost)
         .addPathSegments("privacy-manager")
@@ -162,11 +164,11 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("message_id", pmConf.messageId)
         .build()
 
-    override fun urlPmGdpr(): HttpUrl = HttpUrl.parse("https://cdn.privacy-mgmt.com/privacy-manager/index.html?consentLanguage=&site_id=7639&message_id=122058&consentUUID=170ea8dc-54e4-4f65-9914-6abe83106225")!!
+    fun urlPmGdpr(): HttpUrl = HttpUrl.parse("https://cdn.privacy-mgmt.com/privacy-manager/index.html?consentLanguage=&site_id=7639&message_id=122058&consentUUID=170ea8dc-54e4-4f65-9914-6abe83106225")!!
 
-    override fun urlPmCcpa(): HttpUrl = HttpUrl.parse("https://ccpa-inapp-pm.sp-prod.net?ccpa_origin=https://ccpa-service.sp-prod.net&privacy_manager_id=5df9105bcf42027ce707bb43&ccpaUUID=76c950be-45be-40ce-878b-c7bcf091722d&site_id=6099")!!
+    fun urlPmCcpa(): HttpUrl = HttpUrl.parse("https://ccpa-inapp-pm.sp-prod.net?ccpa_origin=https://ccpa-service.sp-prod.net&privacy_manager_id=5df9105bcf42027ce707bb43&ccpaUUID=76c950be-45be-40ce-878b-c7bcf091722d&site_id=6099")!!
 
-    override fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl {
+    fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl {
         // https://notice.sp-prod.net?preload_message=true
         // TODO tests are missing
         return HttpUrl.Builder()
@@ -192,7 +194,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         PROD -> urlURenderingAppProd()
     }
 
-    override fun urlURenderingAppProd(): HttpUrl {
+    fun urlURenderingAppProd(): HttpUrl {
         return HttpUrl.Builder()
             .scheme("https")
             .host(spHostProd)
@@ -200,7 +202,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    override fun urlURenderingAppStage(): HttpUrl {
+    fun urlURenderingAppStage(): HttpUrl {
         return HttpUrl.Builder()
             .scheme("https")
             .host(spHostStage)
@@ -225,7 +227,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 //        }
 //    }
 
-    override fun inAppUrlMessage(env: Env): HttpUrl = when (env) {
+    override fun inAppMessageUrl(env: Env): HttpUrl = when (env) {
         STAGE -> inAppUrlMessageStage
         PROD -> inAppUrlMessageProd
     }
@@ -258,7 +260,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
                         .scheme("https")
                         .host("fake-wrapper-api.herokuapp.com")
                         .addPathSegments("all/v1/consent/$actionType")
-                        .build() //sendCcpaConsentUrlStage(actionType = actionType.code)
+                        .build() // sendCcpaConsentUrlStage(actionType = actionType.code)
                     STAGE -> sendCcpaConsentUrlProd(actionType = actionType.code)
                 }
             }
@@ -270,11 +272,16 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
                         .addPathSegments("all/v1/gdpr-consent")
                         .addQueryParameter("inApp", "true")
                         .addQueryParameter("env", "stage")
-                        .build()//sendGdprConsentUrl
+                        .build() // sendGdprConsentUrl
                     STAGE -> sendGdprConsentUrlStage
                 }
             }
         }
+    }
+
+    override fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig?): HttpUrl = when (env) {
+        STAGE -> inAppUrlMessageStage
+        PROD -> inAppUrlMessageProd
     }
 }
 

@@ -127,7 +127,7 @@ internal class SpConsentLibImpl(
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
-                webView?.loadConsentUIFromUrl(urlManager.urlPm(it))
+                webView?.loadConsentUIFromUrl(urlManager.pmUrl(legislation = Legislation.GDPR, pmConfig = it, env = env))
             }
             .executeOnLeft { logMess("PmUrlConfig is null") }
     }
@@ -210,7 +210,7 @@ internal class SpConsentLibImpl(
                 viewManager.removeView(iConsentWebView)
                 campaignManager.getGdprPmConfig()
                     .map { pmUrlConfig ->
-                        iConsentWebView.loadConsentUIFromUrl(urlManager.urlPm(pmUrlConfig))
+                        iConsentWebView.loadConsentUIFromUrl(urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env))
                     }
                     .executeOnLeft { it.printStackTrace() }
             }
@@ -218,7 +218,7 @@ internal class SpConsentLibImpl(
                 viewManager.removeView(iConsentWebView)
                 campaignManager.getCcpaPmConfig()
                     .map { pmUrlConfig ->
-                        iConsentWebView.loadConsentUIFromUrl(urlManager.urlPm(pmUrlConfig))
+                        iConsentWebView.loadConsentUIFromUrl(urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env))
                     }
                     .executeOnLeft { it.printStackTrace() }
             }
