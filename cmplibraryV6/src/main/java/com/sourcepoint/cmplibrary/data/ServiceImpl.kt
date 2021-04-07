@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
-import com.sourcepoint.cmplibrary.consent.ConsentManager
+import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
@@ -22,15 +22,15 @@ import com.sourcepoint.cmplibrary.util.getOrNull
  * @param nc is an instance of [NetworkClient]
  * @param ds is an instance of [DataStorage]
  * @param campaignManager is an instance of [CampaignManager]
- * @param consentManager is an instance of [ConsentManager]
+ * @param consentManagerUtils is an instance of [ConsentManagerUtils]
  * @return an instance of the [ServiceImpl] implementation
  */
 internal fun Service.Companion.create(
     nc: NetworkClient,
     campaignManager: CampaignManager,
-    consentManager: ConsentManager,
+    consentManagerUtils: ConsentManagerUtils,
     urlManager: HttpUrlManager
-): Service = ServiceImpl(nc, campaignManager, consentManager, urlManager)
+): Service = ServiceImpl(nc, campaignManager, consentManagerUtils, urlManager)
 
 /**
  * Implementation os the [Service] interface
@@ -38,7 +38,7 @@ internal fun Service.Companion.create(
 private class ServiceImpl(
     private val nc: NetworkClient,
     private val campaignManager: CampaignManager,
-    private val consentManager: ConsentManager,
+    private val consentManagerUtils: ConsentManagerUtils,
     private val urlManager: HttpUrlManager
 ) : Service, NetworkClient by nc, CampaignManager by campaignManager {
 
@@ -141,7 +141,7 @@ private class ServiceImpl(
         env: Env
     ) {
 
-        val request = consentManager.buildConsentReq(consentAction)
+        val request = consentManagerUtils.buildConsentReq(consentAction)
             .executeOnLeft { error(it) }
             .getOrNull() ?: return
 

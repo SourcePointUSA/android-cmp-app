@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.SpConsentLibImpl
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.campaign.create
 import com.sourcepoint.cmplibrary.consent.ConsentManager
+import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.consent.create
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.create
@@ -76,8 +77,9 @@ fun makeConsentLibEnv(
     val viewManager = ViewsManager.create(WeakReference<Activity>(context), connManager)
     val execManager = ExecutorManager.create(appCtx)
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
-    val consentManager: ConsentManager = ConsentManager.create(campaignManager, dataStorage)
-    val service: Service = Service.create(networkClient, campaignManager, consentManager, urlManager)
+    val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage)
+    val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, urlManager)
+    val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils)
 
     return SpConsentLibImpl(
         urlManager = urlManager,
@@ -90,6 +92,7 @@ fun makeConsentLibEnv(
         viewManager = viewManager,
         executor = execManager,
         campaignManager = campaignManager,
+        consentManagerUtils = consentManagerUtils,
         consentManager = consentManager,
         env = env
     )

@@ -55,7 +55,7 @@ class ExampleAppV6Tests {
         wr { tapRejectOnWebView() }                 // chooseAction(REJECT);
         wr { checkMainWebViewDisplayed() }          // Assert.assertTrue(checkMainWebViewDisplayed());
         wr { clickOnReviewConsent() }               // clickOnReviewConsent();
-        wr { tapAcceptAllOnWebView() }              // chooseAction(ACCEPT_ALL);
+        wr { tapAcceptAllOnWebView() }              // chooseAGIVEN_a_camapignList_tap_SETTINGS_all_legislationction(ACCEPT_ALL);
         wr { checkMainWebViewDisplayed() }          // Assert.assertTrue(checkMainWebViewDisplayed());
         wr { clickOnReviewConsent() }               // clickOnReviewConsent();
         wr { checkConsentIsSelected() }             // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));

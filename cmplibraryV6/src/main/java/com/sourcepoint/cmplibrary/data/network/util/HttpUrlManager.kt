@@ -279,9 +279,9 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         }
     }
 
-    override fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig?): HttpUrl = when (env) {
-        STAGE -> inAppUrlMessageStage
-        PROD -> inAppUrlMessageProd
+    override fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig?): HttpUrl = when (legislation) {
+        Legislation.GDPR -> urlPmGdpr()//urlUWPm(pmConfig!!, UrlLegislation.valueOf(legislation.name))
+        Legislation.CCPA -> urlPmCcpa()//urlUWPm(pmConfig!!, UrlLegislation.valueOf(legislation.name))
     }
 }
 

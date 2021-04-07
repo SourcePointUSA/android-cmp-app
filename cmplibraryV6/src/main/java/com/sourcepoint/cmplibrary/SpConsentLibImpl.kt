@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
+import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageInternal
@@ -37,6 +38,7 @@ internal class SpConsentLibImpl(
     private val pConnectionManager: ConnectionManager,
     private val viewManager: ViewsManager,
     private val campaignManager: CampaignManager,
+    private val consentManagerUtils: ConsentManagerUtils,
     private val consentManager: ConsentManager,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     private val env: Env = Env.PROD
@@ -178,6 +180,10 @@ internal class SpConsentLibImpl(
                 ActionType.SAVE_AND_EXIT,
                 ActionType.REJECT_ALL -> {
                     view.let { spClient?.onUIFinished(it) }
+                    consentManager.enqueueConsent(
+                        consentAction = action,
+                        env = env
+                    )
                     service.sendConsent(
                         consentAction = action,
                         success = { consentResp ->
@@ -188,7 +194,7 @@ internal class SpConsentLibImpl(
                                     Legislation.CCPA -> it?.toCCPAUserConsent()?.let { spClient?.onConsentReady(SPConsents(ccpa = SPCCPAConsent(consent = it, applies = true),)) }
                                 }
                             }
-                            consentManager.saveGdprConsent(consentResp.content)
+                            consentManagerUtils.saveGdprConsent(consentResp.content)
                         },
                         error = { throwable ->
                             spClient?.onError(throwable)
@@ -207,7 +213,7 @@ internal class SpConsentLibImpl(
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
         when (action.legislation) {
             Legislation.GDPR -> {
-                viewManager.removeView(iConsentWebView)
+                viewManager.removeView(view)
                 campaignManager.getGdprPmConfig()
                     .map { pmUrlConfig ->
                         iConsentWebView.loadConsentUIFromUrl(urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env))
@@ -215,7 +221,7 @@ internal class SpConsentLibImpl(
                     .executeOnLeft { it.printStackTrace() }
             }
             Legislation.CCPA -> {
-                viewManager.removeView(iConsentWebView)
+                viewManager.removeView(view)
                 campaignManager.getCcpaPmConfig()
                     .map { pmUrlConfig ->
                         iConsentWebView.loadConsentUIFromUrl(urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env))
