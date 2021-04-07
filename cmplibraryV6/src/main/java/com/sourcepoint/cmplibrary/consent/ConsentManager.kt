@@ -4,7 +4,7 @@ import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.SPConsents
-import java.util.*
+import java.util.* //ktlint-disable
 
 internal interface ConsentManager {
 
@@ -37,11 +37,11 @@ private class ConsentManagerImpl(
         consentAction: ConsentAction,
         env: Env
     ) {
-
     }
 
     override fun sendConsent(
         success: (SPConsents) -> Unit,
-        error: (Throwable) -> Unit) {
+        error: (Throwable) -> Unit
+    ) {
     }
 }
