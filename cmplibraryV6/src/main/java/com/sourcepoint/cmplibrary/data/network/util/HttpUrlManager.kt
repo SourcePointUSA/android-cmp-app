@@ -254,13 +254,23 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         return when (legislation) {
             Legislation.CCPA -> {
                 when (env) {
-                    PROD -> sendCcpaConsentUrlStage(actionType = actionType.code)
+                    PROD -> HttpUrl.Builder()
+                        .scheme("https")
+                        .host("fake-wrapper-api.herokuapp.com")
+                        .addPathSegments("all/v1/consent/$actionType")
+                        .build() //sendCcpaConsentUrlStage(actionType = actionType.code)
                     STAGE -> sendCcpaConsentUrlProd(actionType = actionType.code)
                 }
             }
             Legislation.GDPR -> {
                 when (env) {
-                    PROD -> sendGdprConsentUrl
+                    PROD -> HttpUrl.Builder()
+                        .scheme("https")
+                        .host("fake-wrapper-api.herokuapp.com")
+                        .addPathSegments("all/v1/gdpr-consent")
+                        .addQueryParameter("inApp", "true")
+                        .addQueryParameter("env", "stage")
+                        .build()//sendGdprConsentUrl
                     STAGE -> sendGdprConsentUrlStage
                 }
             }
