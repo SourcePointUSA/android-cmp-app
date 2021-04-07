@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
+import com.sourcepoint.cmplibrary.util.Either
 import org.json.JSONObject
 
 /**
@@ -64,4 +65,10 @@ internal interface NetworkClient {
         env: Env,
         consentAction: ConsentAction
     )
+
+    fun sendConsent(
+        consentReq: JSONObject,
+        env: Env,
+        consentAction: ConsentAction
+    ): Either<ConsentResp>
 }

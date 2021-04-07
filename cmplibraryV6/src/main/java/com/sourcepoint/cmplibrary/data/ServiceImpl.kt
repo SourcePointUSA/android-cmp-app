@@ -14,6 +14,8 @@ import com.sourcepoint.cmplibrary.exception.Legislation.CCPA
 import com.sourcepoint.cmplibrary.exception.Legislation.GDPR
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
+import com.sourcepoint.cmplibrary.util.* //ktlint-disable
+import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.executeOnLeft
 import com.sourcepoint.cmplibrary.util.getOrNull
 
@@ -132,6 +134,14 @@ private class ServiceImpl(
             },
             error
         )
+    }
+
+    override fun sendConsent(consentAction: ConsentAction, env: Env): Either<ConsentResp> {
+        return consentManagerUtils.buildConsentReq(consentAction)
+            .flatMap {
+                nc.sendConsent(it, env, consentAction)
+            }
+            .executeOnLeft { error(it) }
     }
 
     override fun sendConsent(

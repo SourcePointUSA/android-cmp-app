@@ -10,6 +10,7 @@ import java.util.regex.Pattern
 internal interface ExecutorManager {
     fun executeOnMain(block: () -> Unit)
     fun executeOnWorkerThread(block: () -> Unit)
+    fun executeOnSingleThread(block: () -> Unit)
     fun dispose()
     companion object
 }
@@ -24,6 +25,7 @@ internal fun ExecutorManager.Companion.create(context: Context): ExecutorManager
 private class ExecutorManagerImpl(val context: Context) : ExecutorManager {
 
     private val executor = Executors.newFixedThreadPool(getNumCores())
+    private val singleThreadExecutor = Executors.newSingleThreadExecutor()
 
     override fun executeOnMain(block: () -> Unit) {
         val mainLooper = context.mainLooper
@@ -36,6 +38,11 @@ private class ExecutorManagerImpl(val context: Context) : ExecutorManager {
 
     override fun dispose() {
         executor.shutdown()
+        singleThreadExecutor.shutdown()
+    }
+
+    override fun executeOnSingleThread(block: () -> Unit) {
+        singleThreadExecutor.execute(block)
     }
 
     private fun getNumCores(): Int {

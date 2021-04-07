@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary
 
 import android.content.Context
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.data.Service
@@ -44,6 +45,9 @@ class SpConsentLibImplTest {
 
     @MockK
     private lateinit var campaignManager: CampaignManager
+
+    @MockK
+    private lateinit var consentManager: ConsentManager
 
     @MockK
     private lateinit var consentManagerUtils: ConsentManagerUtils
@@ -121,7 +125,8 @@ class SpConsentLibImplTest {
         urlManager = urlManager,
         context = appCtx,
         campaignManager = campaignManager,
-        consentManager = consentManagerUtils,
+        consentManager = consentManager,
+        consentManagerUtils = consentManagerUtils,
         executor = execManager,
         viewManager = viewManager,
         service = service,

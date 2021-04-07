@@ -13,12 +13,8 @@ import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
-import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.CampaignResp1203
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
-import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsent
-import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
@@ -68,6 +64,7 @@ internal class SpConsentLibImpl(
         service.getUnifiedMessage(
             messageReq = campaignManager.getUnifiedMessageReq(),
             pSuccess = { messageResp ->
+                // TODO handle this in another object
                 val campaignList = messageResp.campaigns
                 if (campaignList.isEmpty()) return@getUnifiedMessage
 
@@ -159,78 +156,6 @@ internal class SpConsentLibImpl(
         spClient ?: throw MissingClientException(description = "spClient instance is missing")
     }
 
-    /**
-     * Receive the action performed by the user from the WebView
-     */
-    internal fun onActionFromWebViewClient(action: ConsentAction, iConsentWebView: IConsentWebView) {
-        val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
-        executor.executeOnMain {
-            spClient?.onAction(view, action.actionType)
-            when (action.actionType) {
-                ActionType.MSG_CANCEL -> {
-                    view.let { spClient?.onUIFinished(it) }
-                }
-                SHOW_OPTIONS -> {
-                    showOption(action, iConsentWebView)
-                }
-                ActionType.PM_DISMISS -> {
-                    view.let { spClient?.onUIFinished(it) }
-                }
-                ActionType.ACCEPT_ALL,
-                ActionType.SAVE_AND_EXIT,
-                ActionType.REJECT_ALL -> {
-                    view.let { spClient?.onUIFinished(it) }
-                    consentManager.enqueueConsent(
-                        consentAction = action,
-                        env = env
-                    )
-                    service.sendConsent(
-                        consentAction = action,
-                        success = { consentResp ->
-                            val map: Map<String, Any?> = consentResp.content.toTreeMap()
-                            map.getMap("userConsent").also {
-                                when (action.legislation) {
-                                    Legislation.GDPR -> it?.toGDPRUserConsent()?.let { spClient?.onConsentReady(SPConsents(gdpr = SPGDPRConsent(consent = it, applies = true),)) }
-                                    Legislation.CCPA -> it?.toCCPAUserConsent()?.let { spClient?.onConsentReady(SPConsents(ccpa = SPCCPAConsent(consent = it, applies = true),)) }
-                                }
-                            }
-                            consentManagerUtils.saveGdprConsent(consentResp.content)
-                        },
-                        error = { throwable ->
-                            spClient?.onError(throwable)
-                            pLogger.error(throwable.toConsentLibException())
-                            throwable.printStackTrace()
-                        },
-                        env = env
-                    )
-                    view.let { spClient?.onUIFinished(it) }
-                }
-            }
-        }
-    }
-
-    private fun showOption(action: ConsentAction, iConsentWebView: IConsentWebView) {
-        val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
-        when (action.legislation) {
-            Legislation.GDPR -> {
-                viewManager.removeView(view)
-                campaignManager.getGdprPmConfig()
-                    .map { pmUrlConfig ->
-                        iConsentWebView.loadConsentUIFromUrl(urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env))
-                    }
-                    .executeOnLeft { it.printStackTrace() }
-            }
-            Legislation.CCPA -> {
-                viewManager.removeView(view)
-                campaignManager.getCcpaPmConfig()
-                    .map { pmUrlConfig ->
-                        iConsentWebView.loadConsentUIFromUrl(urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env))
-                    }
-                    .executeOnLeft { it.printStackTrace() }
-            }
-        }
-    }
-
     private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, "$mess")
 
     /**
@@ -314,8 +239,70 @@ internal class SpConsentLibImpl(
                 .toConsentAction(actionData)
                 .map { onActionFromWebViewClient(it, iConsentWebView) }
                 .executeOnLeft { throw it }
+                .also {
+                    consentManager.sendConsent(
+                        success = { spConsents ->
+                            executor.executeOnMain {
+                                spClient?.onConsentReady(spConsents)
+                            }
+                        },
+                        error = { throwable -> throwable.printStackTrace() }
+                    )
+                }
+                .also {
+                    view.let { spClient?.onUIFinished(view) }
+                }
         }
     }
 
     /** End Receiver methods */
+
+    /**
+     * Receive the action performed by the user from the WebView
+     */
+    internal fun onActionFromWebViewClient(action: ConsentAction, iConsentWebView: IConsentWebView) {
+        val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
+        executor.executeOnMain {
+            spClient?.onAction(view, action.actionType)
+            when (action.actionType) {
+                ActionType.MSG_CANCEL -> {
+                    view.let { spClient?.onUIFinished(it) }
+                }
+                SHOW_OPTIONS -> {
+                    showOption(action, iConsentWebView)
+                }
+                ActionType.PM_DISMISS -> {
+                    view.let { spClient?.onUIFinished(it) }
+                }
+                ActionType.ACCEPT_ALL,
+                ActionType.SAVE_AND_EXIT,
+                ActionType.REJECT_ALL -> {
+                    view.let { spClient?.onUIFinished(it) }
+                    consentManager.enqueueConsent(consentAction = action)
+                }
+            }
+        }
+    }
+
+    private fun showOption(action: ConsentAction, iConsentWebView: IConsentWebView) {
+        val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
+        when (action.legislation) {
+            Legislation.GDPR -> {
+                viewManager.removeView(view)
+                campaignManager.getGdprPmConfig()
+                    .map { pmUrlConfig ->
+                        iConsentWebView.loadConsentUIFromUrl(urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env))
+                    }
+                    .executeOnLeft { it.printStackTrace() }
+            }
+            Legislation.CCPA -> {
+                viewManager.removeView(view)
+                campaignManager.getCcpaPmConfig()
+                    .map { pmUrlConfig ->
+                        iConsentWebView.loadConsentUIFromUrl(urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env))
+                    }
+                    .executeOnLeft { it.printStackTrace() }
+            }
+        }
+    }
 }

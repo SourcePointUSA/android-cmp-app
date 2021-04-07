@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.executeOnLeft
 import com.sourcepoint.cmplibrary.util.map
 import okhttp3.* // ktlint-disable
@@ -191,6 +192,28 @@ private class NetworkClientImpl(
                         .executeOnLeft { error(it) }
                 }
             }
+    }
+
+    override fun sendConsent(
+        consentReq: JSONObject,
+        env: Env,
+        consentAction: ConsentAction
+    ): Either<ConsentResp> {
+
+        val mediaType = MediaType.parse("application/json")
+        val body: RequestBody = RequestBody.create(mediaType, consentReq.toString())
+        val url = urlManager
+            .sendConsentUrl(legislation = consentAction.legislation, env = env, actionType = consentAction.actionType)
+            .also { logger.i(NetworkClientImpl::class.java.name, "url getUnifiedMessage [$it]") }
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        return responseManager.parseConsentRes(response)
     }
 
     override fun sendConsent(

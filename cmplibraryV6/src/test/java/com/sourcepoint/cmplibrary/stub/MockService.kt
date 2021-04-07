@@ -50,4 +50,12 @@ internal class MockService(
     override fun getUnifiedMessageReq(): UnifiedMessageRequest {
         TODO("Not yet implemented")
     }
+
+    override fun sendConsent(consentAction: ConsentAction, env: Env): Either<ConsentResp> {
+        TODO("Not yet implemented")
+    }
+
+    override fun sendConsent(consentReq: JSONObject, env: Env, consentAction: ConsentAction): Either<ConsentResp> {
+        TODO("Not yet implemented")
+    }
 }

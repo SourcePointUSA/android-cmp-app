@@ -11,5 +11,9 @@ class MockExecutorManager : ExecutorManager {
         block()
     }
 
+    override fun executeOnSingleThread(block: () -> Unit) {
+        block()
+    }
+
     override fun dispose() { }
 }

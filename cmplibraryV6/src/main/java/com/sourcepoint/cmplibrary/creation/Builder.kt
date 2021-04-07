@@ -17,6 +17,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
+import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
@@ -91,7 +92,7 @@ class Builder {
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
         val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage)
         val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, urlManager)
-        val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils)
+        val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, Env.PROD, logger, execManager)
 
         return SpConsentLibImpl(
             urlManager = urlManager,
