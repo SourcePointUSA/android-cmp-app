@@ -60,7 +60,7 @@ private class ConsentManagerUtilsImpl(
                 val gdpr = pair.first
                 JSONObject().apply {
 //                    put("propertyId", gdpr.propertyId)
-                    put("propertyHref", "https://${gdpr.propertyName}")
+                    put("propertyHref", gdpr.propertyName)
                     put("accountId", gdpr.accountId)
                     put("actionType", action.actionType.code)
                     put("choiceId", action.choiceId)

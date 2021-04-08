@@ -82,7 +82,7 @@ internal class ConsentWebView(
     private fun loadConsentUIFromUrl(url: HttpUrl, campaignModel: CampaignModel): Boolean {
         val legislation: Legislation = campaignModel.type
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
-        spWebViewClient.onPageFinishedLambda = { view, url ->
+        spWebViewClient.onPageFinishedLambda = { view, _ ->
             /**
              * adding the parameter [sp.loadMessage] needed by the webpage to trigger the loadMessage event
              */
@@ -101,9 +101,9 @@ internal class ConsentWebView(
         return true
     }
 
-    override fun loadConsentUIFromUrl(url: HttpUrl): Either<Boolean> = check {
+    override fun loadConsentUIFromUrl(url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
-        spWebViewClient.onPageFinishedLambda = { _, _ -> }
+        spWebViewClient.onPageFinishedLambda = { view, url -> }
         loadUrl(url.toString())
         true
     }

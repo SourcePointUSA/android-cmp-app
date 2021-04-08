@@ -38,7 +38,7 @@ public class MainActivityV6 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        gdprConsent = FactoryKt.makeConsentLibEnv(spProperty, this, PrivacyManagerTabK.FEATURES, Env.PROD);
+        gdprConsent = FactoryKt.makeConsentLibEnv(spProperty, this, PrivacyManagerTabK.FEATURES, Env.STAGE);
         gdprConsent.setSpClient(new LocalClient());
         findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadGDPRPrivacyManager());
     }

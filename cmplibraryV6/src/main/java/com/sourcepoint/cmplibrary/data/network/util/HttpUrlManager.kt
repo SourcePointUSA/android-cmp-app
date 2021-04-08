@@ -97,6 +97,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
     val sendGdprConsentUrl: HttpUrl
         get() = sendGdprConsentUrlStage
 
+//    https://cdn.sp-stage.net/wrapper/v2/messages/gdpr/11?env=stage
     val sendGdprConsentUrlStage: HttpUrl
         get() = HttpUrl.Builder()
             .scheme("https")
@@ -243,12 +244,22 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
     }
 
     fun sendCcpaConsentUrlProd(actionType: Int): HttpUrl {
-        // https://wrapper-api.sp-prod.net/ccpa/consent/{action}
-
+        // https://cdn.sp-stage.net/wrapper/v2/messages/ccpa/11?env=stage
         return HttpUrl.Builder()
             .scheme("https")
-            .host("wrapper-api.sp-stage.net") // TODO do we have prod?
-            .addPathSegments("ccpa/consent/$actionType")
+            .host("cdn.sp-stage.net")
+            .addPathSegments("wrapper/v2/messages/ccpa/$actionType")
+            .addQueryParameter("env", "stage")
+            .build()
+    }
+//    https://cdn.sp-stage.net/wrapper/v2/messages/gdpr/:actionType?env=stage
+    fun sendGdprConsentUrlProd(actionType: Int): HttpUrl {
+        // https://cdn.sp-stage.net/wrapper/v2/messages/ccpa/11?env=stage
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host("cdn.sp-stage.net")
+            .addPathSegments("wrapper/v2/messages/gdpr/$actionType")
+            .addQueryParameter("env", "stage")
             .build()
     }
 
@@ -273,7 +284,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
                         .addQueryParameter("inApp", "true")
                         .addQueryParameter("env", "stage")
                         .build() // sendGdprConsentUrl
-                    STAGE -> sendGdprConsentUrlStage
+                    STAGE -> sendGdprConsentUrlProd(actionType = actionType.code)
                 }
             }
         }
