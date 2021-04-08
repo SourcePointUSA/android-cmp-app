@@ -51,7 +51,6 @@ class NetworkClientImplTest {
         campaigns = Campaigns(
             gdpr = GdprReq(
                 accountId = 22,
-                propertyId = 7639,
                 propertyHref = "https://tcfv2.mobile.webview",
                 targetingParams = TargetingParams(
                     legislation = Legislation.GDPR.name,
@@ -60,7 +59,6 @@ class NetworkClientImplTest {
             ),
             ccpa = CcpaReq(
                 accountId = 22,
-                propertyId = 7639,
                 propertyHref = "https://tcfv2.mobile.webview",
                 targetingParams = TargetingParams(
                     legislation = Legislation.CCPA.name,

@@ -6,6 +6,13 @@ import com.sourcepoint.cmplibrary.data.network.model.TargetingParams
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObjStringify
 import com.sourcepoint.cmplibrary.exception.Legislation
 
+data class SpProperty(
+    @JvmField val accountId: Int,
+    @JvmField val propertyName: String,
+    @JvmField val gdprPmId: String?,
+    @JvmField val ccpaPmId: String?
+)
+
 data class Campaign(
     @JvmField val accountId: Int,
     @JvmField val propertyId: Int,
@@ -13,26 +20,26 @@ data class Campaign(
     @JvmField val pmId: String
 )
 
-open class CampaignTemplate(
+internal open class CampaignTemplate(
     open val accountId: Int,
-    open val propertyId: Int,
+//    open val propertyId: Int,
     open val propertyName: String,
     open val pmId: String
 )
 
-class GDPRCampaign(
+internal class GDPRCampaign(
     @JvmField override val accountId: Int,
-    @JvmField override val propertyId: Int,
+//    @JvmField override val propertyId: Int,
     @JvmField override val propertyName: String,
     @JvmField override val pmId: String
-) : CampaignTemplate(accountId, propertyId, propertyName, pmId)
+) : CampaignTemplate(accountId, propertyName, pmId)
 
-class CCPACampaign(
+internal class CCPACampaign(
     @JvmField override val accountId: Int,
-    @JvmField override val propertyId: Int,
+//    @JvmField override val propertyId: Int,
     @JvmField override val propertyName: String,
     @JvmField override val pmId: String
-) : CampaignTemplate(accountId, propertyId, propertyName, pmId)
+) : CampaignTemplate(accountId, propertyName, pmId)
 
 internal fun CampaignTemplate.toGdprReq(
     location: String,
@@ -41,7 +48,7 @@ internal fun CampaignTemplate.toGdprReq(
 ): GdprReq {
     return GdprReq(
         accountId = accountId,
-        propertyId = propertyId,
+//        propertyId = propertyId,
         propertyHref = propertyName,
         targetingParams = TargetingParams(
             legislation = Legislation.GDPR.name,
@@ -59,7 +66,7 @@ internal fun CampaignTemplate.toCcpaReq(
 ): CcpaReq {
     return CcpaReq(
         accountId = accountId,
-        propertyId = propertyId,
+//        propertyId = propertyId,
         propertyHref = propertyName,
         targetingParams = TargetingParams(
             legislation = Legislation.CCPA.name,

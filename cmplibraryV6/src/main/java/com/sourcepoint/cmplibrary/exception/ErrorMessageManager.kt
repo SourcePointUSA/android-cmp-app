@@ -57,7 +57,6 @@ private class ErrorMessageManagerImpl(
                 "code" : "${exception.code.code}",
                 "accountId" : "${campaign?.accountId}",
                 "propertyHref" : "${campaign?.propertyName}",
-                "propertyId" : "${campaign?.propertyId}",
                 "description" : "${exception.description}",
                 "clientVersion" : "${clientInfo.clientVersion}",
                 "OSVersion" : "${clientInfo.osVersion}",

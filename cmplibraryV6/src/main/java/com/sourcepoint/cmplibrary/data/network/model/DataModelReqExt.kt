@@ -45,7 +45,7 @@ internal fun CampaignReq.toJsonObject(): JSONObject {
         .apply {
             put("accountId", accountId)
             put("propertyHref", propertyHref)
-            put("propertyId", propertyId)
+//            put("propertyId", propertyId)
             put("targetingParams", targetingParams)
             put("meta", meta)
             put("uuid", uuid)

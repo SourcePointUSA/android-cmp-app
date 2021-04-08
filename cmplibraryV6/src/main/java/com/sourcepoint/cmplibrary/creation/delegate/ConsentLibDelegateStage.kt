@@ -4,15 +4,13 @@ import android.app.Activity
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.creation.makeConsentLibEnv
 import com.sourcepoint.cmplibrary.data.network.util.Env
-import com.sourcepoint.cmplibrary.model.CCPACampaign
-import com.sourcepoint.cmplibrary.model.GDPRCampaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.SpProperty
 import kotlin.reflect.KProperty
 
 class ConsentLibDelegateStage(
     private val privacyManagerTab: PrivacyManagerTabK = PrivacyManagerTabK.PURPOSES,
-    private val gdpr: GDPRCampaign? = null,
-    private val ccpa: CCPACampaign? = null,
+    private val spProperty: SpProperty,
 ) {
 
     private lateinit var libSp: SpConsentLib
@@ -20,8 +18,7 @@ class ConsentLibDelegateStage(
     operator fun getValue(thisRef: Activity, property: KProperty<*>): SpConsentLib {
         if (!this::libSp.isInitialized) {
             libSp = makeConsentLibEnv(
-                gdpr = gdpr,
-                ccpa = ccpa,
+                spProperty = spProperty,
                 context = thisRef,
                 privacyManagerTab = privacyManagerTab,
                 env = Env.STAGE

@@ -17,6 +17,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
+import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
@@ -26,6 +27,7 @@ import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.SpProperty
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ExecutorManager
 import com.sourcepoint.cmplibrary.util.ViewsManager
@@ -34,14 +36,12 @@ import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
 
 fun makeConsentLib(
-    gdpr: GDPRCampaign? = null,
-    ccpa: CCPACampaign? = null,
+    spProperty: SpProperty,
     context: Activity,
     privacyManagerTab: PrivacyManagerTabK,
 ): SpConsentLib {
     return makeConsentLibEnv(
-        gdpr = gdpr,
-        ccpa = ccpa,
+        spProperty = spProperty,
         context = context,
         privacyManagerTab = privacyManagerTab,
         env = Env.PROD
@@ -52,8 +52,7 @@ fun makeConsentLib(
  * Use only for test!!!
  */
 fun makeConsentLibEnv(
-    gdpr: GDPRCampaign? = null,
-    ccpa: CCPACampaign? = null,
+    spProperty: SpProperty,
     context: Activity,
     privacyManagerTab: PrivacyManagerTabK,
     env: Env
@@ -65,8 +64,13 @@ fun makeConsentLibEnv(
     val dataStorageCcpa = DataStorageCcpa.create(appCtx)
     val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
     val campaignManager: CampaignManager = CampaignManager.create(dataStorage).apply {
-        gdpr?.let { addCampaign(Legislation.GDPR, it) }
-        ccpa?.let { addCampaign(Legislation.CCPA, it) }
+        spProperty.also { spp ->
+            spp.gdprPmId?.let { addCampaign(Legislation.GDPR, GDPRCampaign(spp.accountId, spp.propertyName, it)) }
+            spp.ccpaPmId?.let { addCampaign(Legislation.CCPA, CCPACampaign(spp.accountId, spp.propertyName, it)) }
+            if (spp.gdprPmId == null && spp.ccpaPmId == null) {
+                fail("You must have either the GDPR or the CCPA Privacy Manager Id!!!")
+            }
+        }
     }
     val errorManager = errorMessageManager(campaignManager, client)
     val logger = createLogger(errorManager)

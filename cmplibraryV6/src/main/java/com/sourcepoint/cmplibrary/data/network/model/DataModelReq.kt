@@ -15,7 +15,7 @@ internal data class Campaigns(
 internal interface CampaignReq {
     val accountId: Int
     val propertyHref: String
-    val propertyId: Int
+//    val propertyId: Int
     val targetingParams: String
     val uuid: String?
     val meta: String?
@@ -24,7 +24,7 @@ internal interface CampaignReq {
 internal data class GdprReq(
     override val accountId: Int,
     override val propertyHref: String,
-    override val propertyId: Int,
+//    override val propertyId: Int,
     override val targetingParams: String,
     override val uuid: String? = null,
     override val meta: String? = null
@@ -33,7 +33,7 @@ internal data class GdprReq(
 internal data class CcpaReq(
     override val accountId: Int,
     override val propertyHref: String,
-    override val propertyId: Int,
+//    override val propertyId: Int,
     override val targetingParams: String,
     override val uuid: String? = null,
     override val meta: String? = null

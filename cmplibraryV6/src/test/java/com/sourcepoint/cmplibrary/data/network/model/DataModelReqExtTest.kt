@@ -11,7 +11,6 @@ class DataModelReqExtTest {
         campaigns = Campaigns(
             gdpr = GdprReq(
                 accountId = 22,
-                propertyId = 7639,
                 propertyHref = "https://tcfv2.mobile.webview",
                 targetingParams = TargetingParams(
                     legislation = Legislation.GDPR.name,
@@ -20,7 +19,6 @@ class DataModelReqExtTest {
             ),
             ccpa = CcpaReq(
                 accountId = 22,
-                propertyId = 7639,
                 propertyHref = "https://tcfv2.mobile.webview",
                 targetingParams = TargetingParams(
                     legislation = Legislation.CCPA.name,
@@ -40,7 +38,6 @@ class DataModelReqExtTest {
 
         gdpr.run {
             contains("22").assertTrue()
-            contains("7639").assertTrue()
             contains("https://tcfv2.mobile.webview").assertTrue()
             contains("EU").assertTrue()
             contains("GDPR").assertTrue()
@@ -48,7 +45,6 @@ class DataModelReqExtTest {
 
         ccpa.run {
             contains("22").assertTrue()
-            contains("7639").assertTrue()
             contains("https://tcfv2.mobile.webview").assertTrue()
             contains("US").assertTrue()
             contains("CCPA").assertTrue()
@@ -61,7 +57,6 @@ class DataModelReqExtTest {
 
         sut.run {
             contains("22").assertTrue()
-            contains("7639").assertTrue()
             contains("https://tcfv2.mobile.webview").assertTrue()
             contains("US").assertTrue()
             contains("CCPA").assertTrue()

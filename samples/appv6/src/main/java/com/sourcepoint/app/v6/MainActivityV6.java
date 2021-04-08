@@ -14,23 +14,19 @@ import com.sourcepoint.app.v6.core.DataProvider;
 import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.koin.java.KoinJavaComponent.inject;
 
 public class MainActivityV6 extends AppCompatActivity {
 
     private static final String TAG = "**MainActivity";
 
-    private final GDPRCampaign gdpr = new GDPRCampaign(
+    private final SpProperty spProperty = new SpProperty(
             22,
-            4122,
             "http://carm.uw.con",
-            "404472"
-    );
-
-    private final CCPACampaign ccpa = new CCPACampaign(
-            22,
-            4122,
-            "http://carm.uw.con",
+            "404472",
             "404472"
     );
 
@@ -42,7 +38,7 @@ public class MainActivityV6 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        gdprConsent = FactoryKt.makeConsentLibEnv(gdpr, ccpa, this, PrivacyManagerTabK.FEATURES, Env.PROD);
+        gdprConsent = FactoryKt.makeConsentLibEnv(spProperty, this, PrivacyManagerTabK.FEATURES, Env.PROD);
         gdprConsent.setSpClient(new LocalClient());
         findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadGDPRPrivacyManager());
     }

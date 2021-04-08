@@ -35,7 +35,6 @@ class MessageReqTest {
         campaigns = Campaigns(
             gdpr = GdprReq(
                 accountId = 22,
-                propertyId = 10589,
                 propertyHref = "https://unified.mobile.demo",
                 targetingParams = TargetingParams(
                     legislation = Legislation.GDPR.name,
@@ -44,7 +43,6 @@ class MessageReqTest {
             ),
             ccpa = CcpaReq(
                 accountId = 22,
-                propertyId = 10589,
                 propertyHref = "https://unified.mobile.demo",
                 targetingParams = TargetingParams(
                     legislation = Legislation.CCPA.name,

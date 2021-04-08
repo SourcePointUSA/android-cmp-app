@@ -59,7 +59,7 @@ private class ConsentManagerUtilsImpl(
             .map { pair ->
                 val gdpr = pair.first
                 JSONObject().apply {
-                    put("propertyId", gdpr.propertyId)
+//                    put("propertyId", gdpr.propertyId)
                     put("propertyHref", "https://${gdpr.propertyName}")
                     put("accountId", gdpr.accountId)
                     put("actionType", action.actionType.code)
@@ -92,7 +92,7 @@ private class ConsentManagerUtilsImpl(
                 JSONObject().apply {
                     put("consents", ccpaConfig.userConsent.thisContent)
                     put("accountId", ccpa.accountId)
-                    put("propertyId", ccpa.propertyId)
+//                    put("propertyId", ccpa.propertyId)
                     put("privacyManagerId", ccpa.pmId)
                     put("localState", localState)
                     put("pubData", action.pubData)
@@ -138,7 +138,7 @@ private class ConsentManagerUtilsImpl(
 //                }
 
                 JSONObject().apply {
-                    put("propertyId", gdpr.propertyId)
+//                    put("propertyId", gdpr.propertyId)
                     put("propertyHref", "https://${gdpr.propertyName}")
                     put("accountId", gdpr.accountId)
                     put("actionType", action.actionType.code)
@@ -171,7 +171,7 @@ private class ConsentManagerUtilsImpl(
                 JSONObject().apply {
                     put("consents", ccpaConfig.userConsent.thisContent)
                     put("accountId", ccpa.accountId)
-                    put("propertyId", ccpa.propertyId)
+//                    put("propertyId", ccpa.propertyId)
                     put("privacyManagerId", ccpa.pmId)
                     put("localState", localState)
                     put("pubData", action.pubData)

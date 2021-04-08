@@ -10,7 +10,6 @@ class MessageRespTest {
         campaigns = Campaigns(
             gdpr = GdprReq(
                 accountId = 22,
-                propertyId = 7639,
                 propertyHref = "https://tcfv2.mobile.webview",
                 targetingParams = TargetingParams(
                     legislation = Legislation.GDPR.name,
@@ -19,7 +18,6 @@ class MessageRespTest {
             ),
             ccpa = CcpaReq(
                 accountId = 22,
-                propertyId = 7639,
                 propertyHref = "https://tcfv2.mobile.webview",
                 targetingParams = TargetingParams(
                     legislation = Legislation.CCPA.name,

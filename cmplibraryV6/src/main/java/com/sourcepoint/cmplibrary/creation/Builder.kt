@@ -26,6 +26,7 @@ import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.SpProperty
 import com.sourcepoint.cmplibrary.util.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ExecutorManager
 import com.sourcepoint.cmplibrary.util.ViewsManager
@@ -35,23 +36,14 @@ import java.lang.ref.WeakReference
 
 class Builder {
 
-    private var ccpa: CCPACampaign? = null
-    private var gdpr: GDPRCampaign? = null
+    private var spProperty: SpProperty? = null
     private var authId: String? = null
     private var weakReference: WeakReference<Activity>? = null
     private var ott: Boolean = false
     private var privacyManagerTab: PrivacyManagerTabK? = null
 
-    fun setGdprCampaign(gdpr: GDPRCampaign) = apply {
-        this.gdpr = gdpr
-    }
-
     fun isOtt(ott: Boolean) = apply {
         this.ott = ott
-    }
-
-    fun setCCPACampaign(ccpa: CCPACampaign) = apply {
-        this.ccpa = ccpa
     }
 
     fun setAuthId(authId: String) = apply {
@@ -77,8 +69,10 @@ class Builder {
         val dataStorageCcpa = DataStorageCcpa.create(appCtx)
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
         val campaignManager: CampaignManager = CampaignManager.create(dataStorage).apply {
-            gdpr?.let { addCampaign(Legislation.GDPR, it) }
-            ccpa?.let { addCampaign(Legislation.CCPA, it) }
+            spProperty.also { spp ->
+                spp?.gdprPmId?.let { addCampaign(Legislation.GDPR, GDPRCampaign(spp.accountId, spp.propertyName, it)) }
+                spp?.ccpaPmId?.let { addCampaign(Legislation.CCPA, CCPACampaign(spp.accountId, spp.propertyName, it)) }
+            }
         }
         val errorManager = errorMessageManager(campaignManager, client)
         val logger = createLogger(errorManager)
