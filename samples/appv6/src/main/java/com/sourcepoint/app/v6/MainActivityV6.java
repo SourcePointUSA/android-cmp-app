@@ -73,7 +73,7 @@ public class MainActivityV6 extends AppCompatActivity {
 
         @Override
         public void onConsentReady(@NotNull SPConsents c) {
-            System.out.println("onConsentReady: "+c);
+            System.out.println("onConsentReady: " + c);
         }
 
         @Override

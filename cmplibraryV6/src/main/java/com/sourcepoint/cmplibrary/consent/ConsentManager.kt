@@ -6,12 +6,14 @@ import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsent
 import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
+import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.SPConsents
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
+import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.Either.Left
 import com.sourcepoint.cmplibrary.util.Either.Right
 import com.sourcepoint.cmplibrary.util.ExecutorManager
@@ -64,25 +66,29 @@ private class ConsentManagerImpl(
                 val action = consentQueue.poll()
                 when (val either = service.sendConsent(action, env)) {
                     is Right -> {
-                        val map: Map<String, Any?> = either.r.content.toTreeMap()
-                        map.getMap("userConsent").also {
-                            when (action.legislation) {
-                                Legislation.GDPR -> it?.toGDPRUserConsent()?.let { gdprConsent ->
-                                    logger.d(ConsentManagerImpl::class.java.name, "GDPR consent resp $it")
-                                    sPConsents = sPConsents.copy(gdpr = SPGDPRConsent(consent = gdprConsent, applies = true))
-                                }
-                                Legislation.CCPA -> it?.toCCPAUserConsent()?.let { ccpaConsent ->
-                                    logger.d(ConsentManagerImpl::class.java.name, "CCPA consent resp $it")
-                                    sPConsents = sPConsents.copy(ccpa = SPCCPAConsent(consent = ccpaConsent, applies = true))
-                                }
-                            }
-                        }
+                        sPConsents = responseHandler(either, action, sPConsents)
                         consentManagerUtils.saveGdprConsent(either.r.content)
                     }
                     is Left -> error(either.t)
                 }
             }
+            /** send the final response to the client */
             success(sPConsents)
         }
     }
+}
+
+internal fun responseHandler(either: Right<ConsentResp>, action: ConsentAction, sPConsents: SPConsents): SPConsents {
+    val map: Map<String, Any?> = either.r.content.toTreeMap()
+    return map.getMap("userConsent")
+        ?.let {
+            when (action.legislation) {
+                Legislation.GDPR -> it.toGDPRUserConsent().let { gdprConsent ->
+                    sPConsents.copy(gdpr = SPGDPRConsent(consent = gdprConsent, applies = true))
+                }
+                Legislation.CCPA -> it.toCCPAUserConsent().let { ccpaConsent ->
+                    sPConsents.copy(ccpa = SPCCPAConsent(consent = ccpaConsent, applies = true))
+                }
+            }
+        } ?: sPConsents
 }
