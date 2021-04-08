@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.consent
 
 import com.sourcepoint.cmplibrary.data.Service
-import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
@@ -20,21 +19,13 @@ import com.sourcepoint.cmplibrary.util.ExecutorManager
 import java.util.* //ktlint-disable
 
 internal interface ConsentManager {
-    var localState: String?
-    fun enqueueConsent(consentAction: ConsentAction)
-    fun sendConsent(
-        success: (SPConsents) -> Unit,
-        error: (Throwable) -> Unit
-    )
-
-
     var localStateStatus: LocalStateStatus
     fun enqueueConsent2(consentAction: ConsentAction)
     fun sendConsent2(
         action: ConsentAction,
         localState: String
     )
-
+    val enqueuedActions: Int
     var sPConsentsSuccess: ((SPConsents) -> Unit)?
     var sPConsentsError: ((Throwable) -> Unit)?
 
@@ -65,34 +56,36 @@ private class ConsentManagerImpl(
             changeLocalState(value)
         }
     private val consentQueue2: Queue<ConsentAction> = LinkedList()
+    override val enqueuedActions: Int
+        get() = consentQueue2.size
 
-    override var localState: String? = null
+//    override var localState: String? = null
     private val consentQueue: Queue<ConsentAction> = LinkedList()
 
-    override fun enqueueConsent(consentAction: ConsentAction) {
-        consentQueue.offer(consentAction)
-    }
-
-    override fun sendConsent(
-        success: (SPConsents) -> Unit,
-        error: (Throwable) -> Unit
-    ) {
-        executorManager.executeOnSingleThread {
-            var sPConsents = SPConsents()
-            while (!consentQueue.isEmpty()) {
-                val action = consentQueue.poll()
-                when (val either = service.sendConsent(action, env)) {
-                    is Right -> {
-                        sPConsents = responseHandler(either, action, sPConsents)
-                        consentManagerUtils.saveGdprConsent(either.r.content)
-                    }
-                    is Left -> error(either.t)
-                }
-            }
-            /** send the final response to the client */
-            success(sPConsents)
-        }
-    }
+//    override fun enqueueConsent(consentAction: ConsentAction) {
+//        consentQueue.offer(consentAction)
+//    }
+//
+//    override fun sendConsent(
+//        success: (SPConsents) -> Unit,
+//        error: (Throwable) -> Unit
+//    ) {
+//        executorManager.executeOnSingleThread {
+//            var sPConsents = SPConsents()
+//            while (!consentQueue.isEmpty()) {
+//                val action = consentQueue.poll()
+//                when (val either = service.sendConsent(action, env)) {
+//                    is Right -> {
+//                        sPConsents = responseHandler(either, action, sPConsents)
+//                        consentManagerUtils.saveGdprConsent(either.r.content)
+//                    }
+//                    is Left -> error(either.t)
+//                }
+//            }
+//            /** send the final response to the client */
+//            success(sPConsents)
+//        }
+//    }
 
     override fun enqueueConsent2(consentAction: ConsentAction) {
         consentQueue2.offer(consentAction)
@@ -123,7 +116,7 @@ private class ConsentManagerImpl(
         executorManager.executeOnSingleThread {
             when (val either = service.sendConsent(localState, action, env)) {
                 is Right -> {
-                    val updatedLocalState = LocalStateStatus.Present(localState)
+                    val updatedLocalState = LocalStateStatus.Present(either.r.localState)
                     val sPConsents = responseHandler(either, action)
                     sPConsentsSuccess?.invoke(sPConsents)
                     consentManagerUtils.saveGdprConsent(either.r.content)

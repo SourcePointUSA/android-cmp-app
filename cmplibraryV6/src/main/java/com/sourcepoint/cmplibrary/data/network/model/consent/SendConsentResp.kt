@@ -7,6 +7,6 @@ data class ConsentResp(
     val content: JSONObject,
     val userConsent: String?,
     val uuid: String,
-    val localState : String,
+    val localState: String,
     var legislation: Legislation? = null
 )

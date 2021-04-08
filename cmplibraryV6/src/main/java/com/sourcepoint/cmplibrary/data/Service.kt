@@ -26,7 +26,7 @@ internal interface Service : NetworkClient, CampaignManager {
     ): Either<ConsentResp>
 
     fun sendConsent(
-        localState : String,
+        localState: String,
         consentAction: ConsentAction,
         env: Env
     ): Either<ConsentResp>

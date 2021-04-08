@@ -19,11 +19,12 @@ import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
-import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.* //ktlint-disable
+import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.ActionType.SHOW_OPTIONS
-import com.sourcepoint.cmplibrary.util.* //ktlint-disable
-import java.util.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.util.* // ktlint-disable
+import java.util.* // ktlint-disable
 
 internal class SpConsentLibImpl(
     internal val pPrivacyManagerTab: PrivacyManagerTabK,
@@ -45,12 +46,12 @@ internal class SpConsentLibImpl(
     private val nativeMsgClient by lazy { NativeMsgDelegate() }
 
     init {
-        consentManager.sPConsentsSuccess = {spConsents ->
+        consentManager.sPConsentsSuccess = { spConsents ->
             executor.executeOnMain {
                 spClient?.onConsentReady(spConsents)
             }
         }
-        consentManager.sPConsentsError = {throwable ->
+        consentManager.sPConsentsError = { throwable ->
             throwable.printStackTrace()
             executor.executeOnMain {
                 spClient?.onError(throwable)
@@ -255,19 +256,9 @@ internal class SpConsentLibImpl(
                 .toConsentAction(actionData)
                 .map { onActionFromWebViewClient(it, iConsentWebView) }
                 .executeOnLeft { throw it }
-                .also {
-//                    consentManager.sendConsent(
-//                        success = { spConsents ->
-//                            executor.executeOnMain {
-//                                spClient?.onConsentReady(spConsents)
-//                            }
-//                        },
-//                        error = { throwable -> throwable.printStackTrace() }
-//                    )
-                }
-                .also {
-                    view.let { spClient?.onUIFinished(view) }
-                }
+            executor.executeOnMain {
+                view.let { spClient?.onUIFinished(view) }
+            }
         }
     }
 

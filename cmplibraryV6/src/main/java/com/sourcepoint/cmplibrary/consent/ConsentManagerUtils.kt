@@ -13,9 +13,9 @@ import org.json.JSONObject
 import java.util.* // ktlint-disable
 
 internal interface ConsentManagerUtils {
-    fun buildConsentReq(action: ConsentAction, localState : String): Either<JSONObject>
-    fun buildGdprConsentReq(action: ConsentAction, localState : String): Either<JSONObject>
-    fun buildCcpaConsentReq(action: ConsentAction, localState : String): Either<JSONObject>
+    fun buildConsentReq(action: ConsentAction, localState: String): Either<JSONObject>
+    fun buildGdprConsentReq(action: ConsentAction, localState: String): Either<JSONObject>
+    fun buildCcpaConsentReq(action: ConsentAction, localState: String): Either<JSONObject>
 
     fun buildConsentReq(action: ConsentAction): Either<JSONObject>
     fun buildGdprConsentReq(action: ConsentAction): Either<JSONObject>
@@ -52,7 +52,7 @@ private class ConsentManagerUtilsImpl(
     }
 
     override fun buildGdprConsentReq(action: ConsentAction, localState: String): Either<JSONObject> = check {
-        logger.d(ConsentManagerUtilsImpl::class.java.name,"localState[$localState]")
+        logger.d(ConsentManagerUtilsImpl::class.java.name, "localState[$localState]")
         cm
             .getCampaignTemplate(Legislation.GDPR)
             .flatMap { campaign -> cm.getGdpr1203().map { Pair(campaign, it) } }
@@ -81,7 +81,7 @@ private class ConsentManagerUtilsImpl(
     }
 
     override fun buildCcpaConsentReq(action: ConsentAction, localState: String): Either<JSONObject> = check {
-        logger.d(ConsentManagerUtilsImpl::class.java.name,"localState[$localState]")
+        logger.d(ConsentManagerUtilsImpl::class.java.name, "localState[$localState]")
         cm
             .getCampaignTemplate(Legislation.CCPA)
             .flatMap { campaign -> cm.getCcpa1203().map { Pair(campaign, it) } }
