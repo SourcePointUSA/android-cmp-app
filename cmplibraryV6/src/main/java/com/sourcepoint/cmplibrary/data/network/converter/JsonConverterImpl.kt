@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.ActionType
+import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.Either
@@ -36,9 +37,11 @@ private class JsonConverterImpl : JsonConverter {
 
         val map: Map<String, Any?> = JSONObject(body).toTreeMap()
 
-        val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } } ?: fail("actionType")
+        val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } }
+            ?: fail("actionType")
         val choiceId = (map["choiceId"] as? String)
-        val legislation = (map["legislation"] as? String) ?: "CCPA" // fail("legislation") // TODO In case of PM we don't receive this value!!!!
+        val legislation = (map["legislation"] as? String)
+            ?: "CCPA" // fail("legislation") // TODO In case of PM we don't receive this value!!!!
         val privacyManagerId = (map["privacyManagerId"] as? String)
         val pmTab = (map["pmTab"] as? String)
         val requestFromPm = (map["requestFromPm"] as? Boolean) ?: fail("requestFromPm")
@@ -71,13 +74,14 @@ private class JsonConverterImpl : JsonConverter {
 
     override fun toConsentResp(body: String): Either<ConsentResp> = check {
         val obj = JSONObject(body)
-        // TODO do we need it?
-//        val map: Map<String, Any?> = JSONObject(body).toTreeMap()
-//        map.getMap("userConsent")?.let { it.toGDPRUserConsent().thisContent.to }
-//        map.getMap("userConsent")?.let { it.toCCPAUserConsent() }
+        val map: Map<String, Any?> = JSONObject(body).toTreeMap()
+        val localState = map.getFieldValue<String>("localState") ?: "invalid"
+        val uuid = map.getFieldValue<String>("uuid") ?: "invalid"
         obj.get("userConsent")
         ConsentResp(
             content = JSONObject(body),
+            localState = localState,
+            uuid = uuid,
             userConsent = obj["userConsent"].toString(),
         )
     }

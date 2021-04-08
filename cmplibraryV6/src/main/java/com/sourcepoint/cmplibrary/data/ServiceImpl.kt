@@ -136,8 +136,23 @@ private class ServiceImpl(
         )
     }
 
-    override fun sendConsent(consentAction: ConsentAction, env: Env): Either<ConsentResp> {
+    override fun sendConsent(
+        consentAction: ConsentAction,
+        env: Env
+    ): Either<ConsentResp> {
         return consentManagerUtils.buildConsentReq(consentAction)
+            .flatMap {
+                nc.sendConsent(it, env, consentAction)
+            }
+            .executeOnLeft { error(it) }
+    }
+
+    override fun sendConsent(
+        localState: String,
+        consentAction: ConsentAction,
+        env: Env
+    ): Either<ConsentResp> {
+        return consentManagerUtils.buildConsentReq(consentAction, localState)
             .flatMap {
                 nc.sendConsent(it, env, consentAction)
             }

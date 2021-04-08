@@ -90,7 +90,7 @@ class Builder {
         val viewManager = ViewsManager.create(activityWeakRef, connManager)
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
-        val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage)
+        val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
         val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, urlManager)
         val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, Env.PROD, logger, execManager)
 

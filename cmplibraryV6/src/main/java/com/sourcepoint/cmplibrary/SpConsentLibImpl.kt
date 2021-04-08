@@ -5,6 +5,7 @@ import android.view.View
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
+import com.sourcepoint.cmplibrary.consent.LocalStateStatus
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageInternal
@@ -43,6 +44,20 @@ internal class SpConsentLibImpl(
     override var spClient: SpClient? = null
     private val nativeMsgClient by lazy { NativeMsgDelegate() }
 
+    init {
+        consentManager.sPConsentsSuccess = {spConsents ->
+            executor.executeOnMain {
+                spClient?.onConsentReady(spConsents)
+            }
+        }
+        consentManager.sPConsentsError = {throwable ->
+            throwable.printStackTrace()
+            executor.executeOnMain {
+                spClient?.onError(throwable)
+            }
+        }
+    }
+
     /** Start Client's methods */
     override fun loadMessage(authId: String) {
         checkMainThread("loadMessage")
@@ -64,6 +79,7 @@ internal class SpConsentLibImpl(
         service.getUnifiedMessage(
             messageReq = campaignManager.getUnifiedMessageReq(),
             pSuccess = { messageResp ->
+                consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
                 // TODO handle this in another object
                 val campaignList = messageResp.campaigns
                 if (campaignList.isEmpty()) return@getUnifiedMessage
@@ -240,14 +256,14 @@ internal class SpConsentLibImpl(
                 .map { onActionFromWebViewClient(it, iConsentWebView) }
                 .executeOnLeft { throw it }
                 .also {
-                    consentManager.sendConsent(
-                        success = { spConsents ->
-                            executor.executeOnMain {
-                                spClient?.onConsentReady(spConsents)
-                            }
-                        },
-                        error = { throwable -> throwable.printStackTrace() }
-                    )
+//                    consentManager.sendConsent(
+//                        success = { spConsents ->
+//                            executor.executeOnMain {
+//                                spClient?.onConsentReady(spConsents)
+//                            }
+//                        },
+//                        error = { throwable -> throwable.printStackTrace() }
+//                    )
                 }
                 .also {
                     view.let { spClient?.onUIFinished(view) }
@@ -278,7 +294,7 @@ internal class SpConsentLibImpl(
                 ActionType.SAVE_AND_EXIT,
                 ActionType.REJECT_ALL -> {
                     view.let { spClient?.onUIFinished(it) }
-                    consentManager.enqueueConsent(consentAction = action)
+                    consentManager.enqueueConsent2(consentAction = action)
                 }
             }
         }
