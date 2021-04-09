@@ -57,7 +57,7 @@ internal class ConsentWebView(
 //        }
         enableDebug()
         setStyle()
-        settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK;
+        settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
         webChromeClient = chromeClient
         addJavascriptInterface(JSClientWebViewImpl(), "JSReceiver")
         spWebViewClient = SPWebViewClient(
@@ -117,7 +117,6 @@ internal class ConsentWebView(
                 window.spLegislation = '${legislation.name}'; 
                 window.postMessage($obj);
             """.trimIndent()
-
         }
         loadUrl(url.toString())
         true

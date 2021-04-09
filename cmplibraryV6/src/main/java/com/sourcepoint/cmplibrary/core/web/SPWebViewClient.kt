@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.core.web
 import android.graphics.Bitmap
 import android.net.http.SslError
 import android.webkit.*  //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.Logger
@@ -42,12 +41,15 @@ internal class SPWebViewClient(
                 ?.let {
                     view.loadUrl(it())
                 }
-                ?:let {
+                ?: let {
                     view.loadUrl("javascript:" + "js_receiver.js".file2String())
-                    logger.d(SPWebViewClient::class.java.name, """
+                    logger.d(
+                        SPWebViewClient::class.java.name,
+                        """
                         jsReceiverConfig is null!! 
                         This means that the Legislation is not set and cannot deciding which is the correct link GDPR or CCPA?
-                    """.trimIndent())
+                        """.trimIndent()
+                    )
                 }
         } catch (e: Throwable) {
             onError(WebViewException(cause = e, description = "Unable to load jsReceiver into ConasentLibWebview."))
