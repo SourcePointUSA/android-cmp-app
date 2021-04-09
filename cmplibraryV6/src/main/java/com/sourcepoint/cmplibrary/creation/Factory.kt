@@ -39,21 +39,6 @@ import java.lang.ref.WeakReference
 fun makeConsentLib(
     spProperty: SpProperty,
     context: Activity,
-    privacyManagerTab: PrivacyManagerTabK,
-): SpConsentLib {
-    return makeConsentLibEnv(
-        spProperty = spProperty,
-        context = context,
-        privacyManagerTab = privacyManagerTab
-    )
-}
-
-/**
- * Use only for test!!!
- */
-fun makeConsentLibEnv(
-    spProperty: SpProperty,
-    context: Activity,
     privacyManagerTab: PrivacyManagerTabK
 ): SpConsentLib {
 

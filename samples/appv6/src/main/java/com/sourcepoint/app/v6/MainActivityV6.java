@@ -14,9 +14,6 @@ import com.sourcepoint.app.v6.core.DataProvider;
 import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.koin.java.KoinJavaComponent.inject;
 
 public class MainActivityV6 extends AppCompatActivity {
@@ -39,7 +36,7 @@ public class MainActivityV6 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        gdprConsent = FactoryKt.makeConsentLibEnv(spProperty, this, PrivacyManagerTabK.FEATURES);
+        gdprConsent = FactoryKt.makeConsentLib(spProperty, this, PrivacyManagerTabK.FEATURES);
         gdprConsent.setSpClient(new LocalClient());
         findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadGDPRPrivacyManager());
     }

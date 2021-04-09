@@ -8,8 +8,10 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Message
+import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
@@ -54,6 +56,8 @@ internal class ConsentWebView(
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
 //            id = View.generateViewId()
 //        }
+
+        setLayerType(View.LAYER_TYPE_HARDWARE, null);
         enableDebug()
         setStyle()
         webChromeClient = chromeClient
