@@ -6,6 +6,7 @@ import android.webkit.*  //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
+import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.WebViewException
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.util.loadLinkOnExternalBrowser
@@ -15,10 +16,11 @@ internal class SPWebViewClient(
     private val onError: (ConsentLibExceptionK) -> Unit,
     private val onNoIntentActivitiesFoundFor: (String) -> Unit,
     private val timer: SpTimer,
+    private val logger: Logger,
     private val messageTimeout: Long = 10000
 ) : WebViewClient() {
 
-    var onPageFinishedLambda: ((view: WebView, url: String?) -> Unit)? = null
+    var jsReceiverConfig: (() -> String)? = null
 
     companion object {
         val TAG = SPWebViewClient::class.simpleName
@@ -36,9 +38,17 @@ internal class SPWebViewClient(
         super.onPageFinished(view, url)
         timer.cancel()
         try {
-            view.loadUrl("javascript:" + "js_receiver.js".file2String())
-            /** make it crash if [onPageFinishedLambda] is null!!! */
-            onPageFinishedLambda?.invoke(view, url) ?: fail("onPageFinished: SPWebViewClient.onPageFinishedLambda is null!!!")
+            jsReceiverConfig
+                ?.let {
+                    view.loadUrl(it())
+                }
+                ?:let {
+                    view.loadUrl("javascript:" + "js_receiver.js".file2String())
+                    logger.d(SPWebViewClient::class.java.name, """
+                        jsReceiverConfig is null!! 
+                        This means that the Legislation is not set and cannot deciding which is the correct link GDPR or CCPA?
+                    """.trimIndent())
+                }
         } catch (e: Throwable) {
             onError(WebViewException(cause = e, description = "Unable to load jsReceiver into ConasentLibWebview."))
         }

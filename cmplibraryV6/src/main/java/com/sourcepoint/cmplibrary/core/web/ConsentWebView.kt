@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Message
-import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
@@ -58,12 +57,14 @@ internal class ConsentWebView(
 //        }
         enableDebug()
         setStyle()
+        settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK;
         webChromeClient = chromeClient
         addJavascriptInterface(JSClientWebViewImpl(), "JSReceiver")
         spWebViewClient = SPWebViewClient(
             wv = this,
             onError = { jsClientLib.onError(this@ConsentWebView, it) },
             onNoIntentActivitiesFoundFor = { jsClientLib.onNoIntentActivitiesFoundFor(this@ConsentWebView, it) },
+            logger = logger,
             timer = SpTimer.create(executorManager)
         )
         webViewClient = spWebViewClient
@@ -84,10 +85,22 @@ internal class ConsentWebView(
         }
     }
 
-    private fun loadConsentUIFromUrl(url: HttpUrl, campaignModel: CampaignModel): Boolean {
+    override fun loadConsentUIFromUrl(url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
+        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
+        spWebViewClient.jsReceiverConfig = {
+            """
+                javascript: window.spLegislation = '${legislation.name}';                 
+                ${"js_receiver.js".file2String()};
+            """.trimIndent()
+        }
+        loadUrl(url.toString())
+        true
+    }
+
+    override fun loadConsentUI(campaignModel: CampaignModel, url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
         val legislation: Legislation = campaignModel.type
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
-        spWebViewClient.onPageFinishedLambda = { view, _ ->
+        spWebViewClient.jsReceiverConfig = {
             /**
              * adding the parameter [sp.loadMessage] needed by the webpage to trigger the loadMessage event
              */
@@ -99,27 +112,16 @@ internal class ConsentWebView(
                 "fromNativeSDK": true
                  */
             }
+            """
+                javascript: ${"js_receiver.js".file2String()};
+                window.spLegislation = '${legislation.name}'; 
+                window.postMessage($obj);
+            """.trimIndent()
 
-            view.loadUrl("javascript: window.spLegislation = '${legislation.name}'; window.postMessage($obj);")
-        }
-        loadUrl(url.toString())
-        return true
-    }
-
-    override fun loadConsentUIFromUrl(url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
-        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
-        spWebViewClient.onPageFinishedLambda = { view, url ->
-            println()
         }
         loadUrl(url.toString())
         true
     }
-
-    override fun loadConsentUI(messageResp: CampaignModel, url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
-        loadConsentUIFromUrl(url, messageResp)
-    }
-
-    private fun logMess(mess: String) = logger.d(this::class.java.simpleName, "$mess")
 
     inner class JSClientWebViewImpl : JSClientWebView {
 

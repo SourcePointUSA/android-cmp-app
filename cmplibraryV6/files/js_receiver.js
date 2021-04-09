@@ -31,6 +31,7 @@ function actionFromMessage(payload) {
 
 function actionFromPM(payload) {
     return {
+        legislation: window.spLegislation,
         name: payload.name,
         actionType: payload.actionType,
         choiceId: null,
