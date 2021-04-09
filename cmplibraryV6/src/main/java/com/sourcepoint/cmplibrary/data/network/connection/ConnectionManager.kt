@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.util
+package com.sourcepoint.cmplibrary.data.network.connection
 
 interface ConnectionManager {
     val isConnected: Boolean

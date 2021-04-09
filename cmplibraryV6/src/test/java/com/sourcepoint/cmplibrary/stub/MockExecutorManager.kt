@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.stub
 
-import com.sourcepoint.cmplibrary.util.ExecutorManager
+import com.sourcepoint.cmplibrary.core.ExecutorManager
 
 class MockExecutorManager : ExecutorManager {
     override fun executeOnMain(block: () -> Unit) {

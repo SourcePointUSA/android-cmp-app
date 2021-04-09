@@ -5,6 +5,8 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertEquals
 import com.example.uitestutil.assertNotEquals
+import com.sourcepoint.cmplibrary.core.ExecutorManager
+import com.sourcepoint.cmplibrary.core.create
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -10,7 +10,6 @@ import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockCall
 import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK
@@ -86,7 +85,7 @@ class NetworkClientImplTest {
         /** capture the Request and test the parameters */
 //        slot.captured.run {
 //            readText().assertEquals(req.toJsonObject().toString())
-            // TODO to fix
+        // TODO to fix
 //            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages?env=localProd")
 //            method.assertEquals("POST")
 //            url.queryParameter("env").assertEquals("localProd")

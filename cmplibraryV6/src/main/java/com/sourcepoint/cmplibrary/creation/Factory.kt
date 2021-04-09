@@ -9,12 +9,16 @@ import com.sourcepoint.cmplibrary.campaign.create
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.consent.create
+import com.sourcepoint.cmplibrary.core.ExecutorManager
+import com.sourcepoint.cmplibrary.core.create
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.create
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
+import com.sourcepoint.cmplibrary.data.network.connection.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.converter.fail
@@ -27,8 +31,6 @@ import com.sourcepoint.cmplibrary.model.CCPACampaign
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.model.SpProperty
-import com.sourcepoint.cmplibrary.util.ConnectionManager
-import com.sourcepoint.cmplibrary.util.ExecutorManager
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
 import okhttp3.OkHttpClient

@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.util
+package com.sourcepoint.cmplibrary.core
 
 import android.content.Context
 import android.os.Handler

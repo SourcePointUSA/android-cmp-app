@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.consent
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
@@ -12,7 +13,6 @@ import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.SPConsents
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
-import com.sourcepoint.cmplibrary.util.ExecutorManager
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

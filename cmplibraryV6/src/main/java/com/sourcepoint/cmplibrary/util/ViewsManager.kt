@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.SpConsentLibImpl
 import com.sourcepoint.cmplibrary.core.web.CampaignModel
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.util.ViewsManagerImpl.IDS.idsSet
 import java.lang.ref.WeakReference
 import java.util.* // ktlint-disable

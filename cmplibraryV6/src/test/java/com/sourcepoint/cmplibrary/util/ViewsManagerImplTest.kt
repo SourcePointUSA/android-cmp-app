@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.util
 
 import android.app.Activity
 import com.sourcepoint.cmplibrary.assertNull
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import org.junit.Before

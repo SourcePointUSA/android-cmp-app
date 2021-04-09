@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.core.web
 
-import com.sourcepoint.cmplibrary.util.ExecutorManager
+import com.sourcepoint.cmplibrary.core.ExecutorManager
 import java.util.*  //ktlint-disable
 
 internal interface SpTimer {
