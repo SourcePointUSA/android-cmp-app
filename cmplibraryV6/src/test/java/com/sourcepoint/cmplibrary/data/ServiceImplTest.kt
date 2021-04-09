@@ -24,7 +24,6 @@ class ServiceImplTest {
 
     private val nativeCampaign = Campaign(
         accountId = 22,
-        propertyId = 7094,
         propertyName = "tcfv2.mobile.demo",
         pmId = "179657"
     )

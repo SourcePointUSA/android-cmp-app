@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertFalse
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertTrue
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.data.network.model.CCPAConsent
@@ -13,7 +14,6 @@ import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
-import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.file2String
 import io.mockk.MockKAnnotations
 import io.mockk.every

@@ -1,9 +1,9 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
-import com.sourcepoint.cmplibrary.util.Either
 
 /**
  * Component used to convert the response body of the message call to its DTO

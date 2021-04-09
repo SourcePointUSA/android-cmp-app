@@ -4,7 +4,7 @@ import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
-import com.sourcepoint.cmplibrary.util.Either
+import com.sourcepoint.cmplibrary.core.Either
 import org.json.JSONObject
 
 /**
@@ -18,19 +18,6 @@ internal interface NetworkClient {
      * @param pSuccess success callback
      * @param pError error callback
      */
-    fun getMessage(
-        messageReq: MessageReq,
-        pSuccess: (UnifiedMessageResp) -> Unit,
-        pError: (Throwable) -> Unit,
-        stage: Env
-    )
-
-    fun getMessage1203(
-        messageReq: MessageReq,
-        pSuccess: (UnifiedMessageResp1203) -> Unit,
-        pError: (Throwable) -> Unit
-    )
-
     fun getUnifiedMessage(
         messageReq: UnifiedMessageRequest,
         pSuccess: (UnifiedMessageResp1203) -> Unit,

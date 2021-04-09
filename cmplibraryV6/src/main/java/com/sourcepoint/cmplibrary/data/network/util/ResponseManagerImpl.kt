@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
@@ -8,7 +9,6 @@ import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp1203
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
-import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.Response
 

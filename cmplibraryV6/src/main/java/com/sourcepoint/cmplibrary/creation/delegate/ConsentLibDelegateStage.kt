@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.creation.delegate
 import android.app.Activity
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.creation.makeConsentLibEnv
-import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.model.SpProperty
 import kotlin.reflect.KProperty
@@ -20,8 +19,7 @@ class ConsentLibDelegateStage(
             libSp = makeConsentLibEnv(
                 spProperty = spProperty,
                 context = thisRef,
-                privacyManagerTab = privacyManagerTab,
-                env = Env.STAGE
+                privacyManagerTab = privacyManagerTab
             )
         }
         return libSp

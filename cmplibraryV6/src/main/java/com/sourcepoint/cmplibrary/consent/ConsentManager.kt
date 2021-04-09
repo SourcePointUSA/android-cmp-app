@@ -1,5 +1,7 @@
 package com.sourcepoint.cmplibrary.consent
 
+import com.sourcepoint.cmplibrary.core.Either.Left
+import com.sourcepoint.cmplibrary.core.Either.Right
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
@@ -13,8 +15,6 @@ import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.SPConsents
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
-import com.sourcepoint.cmplibrary.util.Either.Left
-import com.sourcepoint.cmplibrary.util.Either.Right
 import com.sourcepoint.cmplibrary.util.ExecutorManager
 import java.util.* //ktlint-disable
 

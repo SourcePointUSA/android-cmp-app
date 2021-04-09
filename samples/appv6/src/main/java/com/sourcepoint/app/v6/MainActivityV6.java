@@ -26,6 +26,7 @@ public class MainActivityV6 extends AppCompatActivity {
     private final SpProperty spProperty = new SpProperty(
             22,
             "http://carm.uw.con",
+            Env.STAGE,
             "404472",
             "404472"
     );
@@ -38,7 +39,7 @@ public class MainActivityV6 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        gdprConsent = FactoryKt.makeConsentLibEnv(spProperty, this, PrivacyManagerTabK.FEATURES, Env.STAGE);
+        gdprConsent = FactoryKt.makeConsentLibEnv(spProperty, this, PrivacyManagerTabK.FEATURES);
         gdprConsent.setSpClient(new LocalClient());
         findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadGDPRPrivacyManager());
     }

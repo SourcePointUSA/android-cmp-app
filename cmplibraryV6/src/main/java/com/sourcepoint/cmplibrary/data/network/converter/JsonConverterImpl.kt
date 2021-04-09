@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
@@ -10,7 +11,6 @@ import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
-import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
 

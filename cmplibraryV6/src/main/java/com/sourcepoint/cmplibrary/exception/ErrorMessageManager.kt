@@ -1,8 +1,8 @@
 package com.sourcepoint.cmplibrary.exception
 
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
-import com.sourcepoint.cmplibrary.util.getOrNull
 
 /**
  * Class in charge of building an error message

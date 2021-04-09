@@ -6,9 +6,11 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.consent.LocalStateStatus
+import com.sourcepoint.cmplibrary.core.executeOnLeft
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageInternal
+import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.core.web.CampaignModel
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
@@ -16,6 +18,7 @@ import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.CampaignResp1203
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
+import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp1203
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
@@ -45,6 +48,22 @@ internal class SpConsentLibImpl(
     override var spClient: SpClient? = null
     private val nativeMsgClient by lazy { NativeMsgDelegate() }
 
+    companion object {
+        fun UnifiedMessageResp1203.toCampaignModelList(): List<CampaignModel> {
+            val campaignList = this.campaigns
+            if (campaignList.isEmpty()) return emptyList()
+
+            val partition: Pair<List<CampaignResp1203>, List<CampaignResp1203>> = campaignList.partition { it.message != null }
+            return partition.first.map {
+                CampaignModel(
+                    message = it.message!!,
+                    messageMetaData = it.messageMetaData!!,
+                    type = Legislation.valueOf(it.type)
+                )
+            }
+        }
+    }
+
     init {
         consentManager.sPConsentsSuccess = { spConsents ->
             executor.executeOnMain {
@@ -63,12 +82,7 @@ internal class SpConsentLibImpl(
     override fun loadMessage(authId: String) {
         checkMainThread("loadMessage")
         throwsExceptionIfClientIsNull()
-        service.getMessage(
-            messageReq = campaignManager.getMessageReq(),
-            pSuccess = { messageResp -> },
-            pError = { throwable -> },
-            stage = env
-        )
+        // TODO
     }
 
     override fun loadMessage() {
@@ -81,18 +95,7 @@ internal class SpConsentLibImpl(
             messageReq = campaignManager.getUnifiedMessageReq(),
             pSuccess = { messageResp ->
                 consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
-                // TODO handle this in another object
-                val campaignList = messageResp.campaigns
-                if (campaignList.isEmpty()) return@getUnifiedMessage
-
-                val partition: Pair<List<CampaignResp1203>, List<CampaignResp1203>> = campaignList.partition { it.message != null }
-                val list = partition.first.map {
-                    CampaignModel(
-                        message = it.message!!,
-                        messageMetaData = it.messageMetaData!!,
-                        type = Legislation.valueOf(it.type)
-                    )
-                }
+                val list: List<CampaignModel> = messageResp.toCampaignModelList()
                 if (list.isEmpty()) return@getUnifiedMessage
                 val firstCampaign2Process = list.first()
                 val remainingCampaigns: Queue<CampaignModel> = LinkedList(list.drop(1))
@@ -178,36 +181,25 @@ internal class SpConsentLibImpl(
     /**
      * Delegate used by the [NativeMessage] to catch events performed by the user
      */
+    // TODO in progress
     inner class NativeMsgDelegate : NativeMessageClient {
 
-        override fun onClickAcceptAll(view: View, ca: ConsentAction) {
-//            onActionFromWebViewClient(ca, view)
-        }
+        override fun onClickAcceptAll(view: View, ca: ConsentAction) { }
 
-        override fun onClickRejectAll(view: View, ca: ConsentAction) {
-//            onActionFromWebViewClient(ca, view)
-        }
+        override fun onClickRejectAll(view: View, ca: ConsentAction) { }
 
-        override fun onPmDismiss(view: View, ca: ConsentAction) {
-//            onActionFromWebViewClient(ca, view)
-        }
+        override fun onPmDismiss(view: View, ca: ConsentAction) { }
 
-        override fun onClickShowOptions(view: View, ca: ConsentAction) {
-//            onActionFromWebViewClient(ca, view)
-        }
+        override fun onClickShowOptions(view: View, ca: ConsentAction) { }
 
-        override fun onClickCancel(view: View, ca: ConsentAction) {
-//            onActionFromWebViewClient(ca, view)
-        }
+        override fun onClickCancel(view: View, ca: ConsentAction) { }
 
-        override fun onDefaultAction(view: View, ca: ConsentAction) {
-//            onActionFromWebViewClient(ca, view)
-        }
+        override fun onDefaultAction(view: View, ca: ConsentAction) { }
     }
 
-    //    /** Start Receiver methods */
-    inner class JSReceiverDelegate() : JSClientLib {
-        //
+    /** Start Receiver methods */
+    inner class JSReceiverDelegate : JSClientLib {
+
         override fun onConsentUIReady(view: View, isFromPM: Boolean) {
             executor.executeOnMain { spClient?.onUIReady(view) }
         }

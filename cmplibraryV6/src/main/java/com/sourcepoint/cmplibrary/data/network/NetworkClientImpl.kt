@@ -1,14 +1,14 @@
 package com.sourcepoint.cmplibrary.data.network
 
+import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.core.executeOnLeft
+import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.util.Either
-import com.sourcepoint.cmplibrary.util.executeOnLeft
-import com.sourcepoint.cmplibrary.util.map
 import okhttp3.* // ktlint-disable
 import org.json.JSONObject
 
@@ -56,62 +56,62 @@ private class NetworkClientImpl(
             }
     }
 
-    override fun getMessage1203(
-        messageReq: MessageReq,
-        pSuccess: (UnifiedMessageResp1203) -> Unit,
-        pError: (Throwable) -> Unit
-    ) {
-        val mediaType = MediaType.parse("application/json")
-        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
+//    override fun getMessage1203(
+//        messageReq: MessageReq,
+//        pSuccess: (UnifiedMessageResp1203) -> Unit,
+//        pError: (Throwable) -> Unit
+//    ) {
+//        val mediaType = MediaType.parse("application/json")
+//        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
+//
+//        val request: Request = Request.Builder()
+// //            .url(urlManager.inAppUrlMessage1203)
+//            .post(body)
+//            .build()
+//
+//        httpClient
+//            .newCall(request)
+//            .enqueue {
+//                onFailure { _, exception ->
+//                    pError(exception)
+//                }
+//                onResponse { _, r ->
+//                    responseManager
+//                        .parseResponse1203(r)
+//                        .map { pSuccess(it) }
+//                        .executeOnLeft { pError(it) }
+//                }
+//            }
+//    }
 
-        val request: Request = Request.Builder()
-//            .url(urlManager.inAppUrlMessage1203)
-            .post(body)
-            .build()
-
-        httpClient
-            .newCall(request)
-            .enqueue {
-                onFailure { _, exception ->
-                    pError(exception)
-                }
-                onResponse { _, r ->
-                    responseManager
-                        .parseResponse1203(r)
-                        .map { pSuccess(it) }
-                        .executeOnLeft { pError(it) }
-                }
-            }
-    }
-
-    override fun getMessage(
-        messageReq: MessageReq,
-        pSuccess: (UnifiedMessageResp) -> Unit,
-        pError: (Throwable) -> Unit,
-        env: Env
-    ) {
-        val mediaType = MediaType.parse("application/json")
-        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
-        val url = urlManager.inAppMessageUrl(env).also { logger.i(NetworkClientImpl::class.java.name, "url getMessage [$it]") }
-        val request: Request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-
-        httpClient
-            .newCall(request)
-            .enqueue {
-                onFailure { _, exception ->
-                    pError(exception)
-                }
-                onResponse { _, r ->
-                    responseManager
-                        .parseResponse(r)
-                        .map { pSuccess(it) }
-                        .executeOnLeft { pError(it) }
-                }
-            }
-    }
+//    override fun getMessage(
+//        messageReq: MessageReq,
+//        pSuccess: (UnifiedMessageResp) -> Unit,
+//        pError: (Throwable) -> Unit,
+//        env: Env
+//    ) {
+//        val mediaType = MediaType.parse("application/json")
+//        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
+//        val url = urlManager.inAppMessageUrl(env).also { logger.i(NetworkClientImpl::class.java.name, "url getMessage [$it]") }
+//        val request: Request = Request.Builder()
+//            .url(url)
+//            .post(body)
+//            .build()
+//
+//        httpClient
+//            .newCall(request)
+//            .enqueue {
+//                onFailure { _, exception ->
+//                    pError(exception)
+//                }
+//                onResponse { _, r ->
+//                    responseManager
+//                        .parseResponse(r)
+//                        .map { pSuccess(it) }
+//                        .executeOnLeft { pError(it) }
+//                }
+//            }
+//    }
 
     // TODO verify if we need it
     override fun getNativeMessage(
@@ -123,7 +123,6 @@ private class NetworkClientImpl(
         val bodyContent = """
             {
                 "accountId": 22,
-                "propertyId": 7094,
                 "propertyHref": "https://tcfv2.mobile.demo",
                 "requestUUID": "test",
                 "meta": "{}",
@@ -163,7 +162,6 @@ private class NetworkClientImpl(
         val bodyContent = """
             {
                 "accountId": 22,
-                "propertyId": 7094,
                 "propertyHref": "https://tcfv2.mobile.demo",
                 "requestUUID": "test",
                 "meta": "{}",

@@ -18,7 +18,6 @@ import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
@@ -43,8 +42,7 @@ fun makeConsentLib(
     return makeConsentLibEnv(
         spProperty = spProperty,
         context = context,
-        privacyManagerTab = privacyManagerTab,
-        env = Env.PROD
+        privacyManagerTab = privacyManagerTab
     )
 }
 
@@ -54,8 +52,7 @@ fun makeConsentLib(
 fun makeConsentLibEnv(
     spProperty: SpProperty,
     context: Activity,
-    privacyManagerTab: PrivacyManagerTabK,
-    env: Env
+    privacyManagerTab: PrivacyManagerTabK
 ): SpConsentLib {
 
     val appCtx: Context = context.applicationContext
@@ -83,7 +80,7 @@ fun makeConsentLibEnv(
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
     val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
     val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, urlManager)
-    val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, env, logger, execManager)
+    val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, spProperty.environment, logger, execManager)
 
     return SpConsentLibImpl(
         urlManager = urlManager,
@@ -98,6 +95,6 @@ fun makeConsentLibEnv(
         campaignManager = campaignManager,
         consentManagerUtils = consentManagerUtils,
         consentManager = consentManager,
-        env = env
+        env = spProperty.environment
     )
 }

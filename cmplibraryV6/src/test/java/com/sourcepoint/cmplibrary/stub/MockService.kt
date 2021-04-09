@@ -1,13 +1,13 @@
 package com.sourcepoint.cmplibrary.stub
 
+import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.core.Either.Left
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
-import com.sourcepoint.cmplibrary.util.Either
-import com.sourcepoint.cmplibrary.util.Either.Left
 import org.json.JSONObject
 
 internal class MockService(
@@ -15,8 +15,6 @@ internal class MockService(
     private val getNativeMessageLogic: ((messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) -> Unit)? = null
 ) : Service {
 
-    override fun getMessage(messageReq: MessageReq, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit, stage: Env) {}
-    override fun getMessage1203(messageReq: MessageReq, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit) {}
     override fun getNativeMessage(messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {}
     override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
     override fun addCampaign(legislation: Legislation, campaign: CampaignTemplate) {}
@@ -48,10 +46,6 @@ internal class MockService(
     override fun sendConsent(consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit, env: Env, consentAction: ConsentAction) {}
     override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit, env: Env) {}
     override fun getUnifiedMessageReq(): UnifiedMessageRequest {
-        TODO("Not yet implemented")
-    }
-
-    override fun sendConsent(consentAction: ConsentAction, env: Env): Either<ConsentResp> {
         TODO("Not yet implemented")
     }
 

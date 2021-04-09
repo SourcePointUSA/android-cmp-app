@@ -5,6 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertEquals
 import com.example.uitestutil.assertNull
 import com.example.uitestutil.jsonFile2String
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
@@ -15,7 +16,6 @@ import com.sourcepoint.cmplibrary.data.network.model.Gdpr
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
-import com.sourcepoint.cmplibrary.util.Either
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test

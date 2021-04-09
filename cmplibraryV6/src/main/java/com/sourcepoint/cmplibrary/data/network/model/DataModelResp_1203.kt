@@ -5,7 +5,6 @@ import org.json.JSONObject
 
 internal data class UnifiedMessageResp1203(
     val thisContent: JSONObject,
-    val propertyId: Int = -1,
     val propertyPriorityData: JSONObject = JSONObject(),
     val campaigns: List<CampaignResp1203> = emptyList(),
     val localState: String = "",

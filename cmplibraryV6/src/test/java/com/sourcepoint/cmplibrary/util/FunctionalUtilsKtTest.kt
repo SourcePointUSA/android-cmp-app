@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.util
 
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.GenericSDKException
 import com.sourcepoint.cmplibrary.exception.MissingClientException

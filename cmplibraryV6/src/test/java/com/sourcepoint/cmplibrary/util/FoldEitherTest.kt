@@ -1,6 +1,9 @@
 package com.sourcepoint.cmplibrary.util
 
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.core.fold
+import com.sourcepoint.cmplibrary.core.getOrNull
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify

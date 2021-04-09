@@ -3,8 +3,8 @@ package com.sourcepoint.cmplibrary.exception
 import android.app.Activity
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
-import com.sourcepoint.cmplibrary.util.Either
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -16,7 +16,6 @@ class ErrorMessageManagerImplTest {
 
     private val accountId = 22
     private val propertyHref = "http://dev.local"
-    private val propertyId = 100
     private val client = ClientInfo(
         clientVersion = "5.X.X",
         deviceFamily = "android",

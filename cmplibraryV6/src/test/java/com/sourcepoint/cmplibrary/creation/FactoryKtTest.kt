@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
 import com.sourcepoint.cmplibrary.assertNotNull
+import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.model.SpProperty
 import io.mockk.MockKAnnotations
@@ -22,7 +23,7 @@ class FactoryKtTest {
     @Test
     fun `CREATE a new instance of ConsentLib`() {
         makeConsentLib(
-            spProperty = SpProperty(22, "asfa", "asdf", "DF"),
+            spProperty = SpProperty(22, "asfa", Env.STAGE, "asdf", "DF"),
             privacyManagerTab = PrivacyManagerTabK.FEATURES,
             context = context,
         ).assertNotNull()

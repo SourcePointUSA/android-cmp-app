@@ -12,28 +12,12 @@ import okhttp3.HttpUrl
  * Component responsible of building and providing the URLs
  */
 internal interface HttpUrlManager {
-    //    val inAppUrlMessageStage: HttpUrl
-//    val inAppUrlMessageProd: HttpUrl
-//    val inAppUrlMessage1203: HttpUrl
-//    val inAppUrlNativeMessage: HttpUrl
-//    val sendGdprConsentUrl: HttpUrl
-//    val sendGdprConsentUrlStage: HttpUrl
-//    val sendLocalGdprConsentUrl: HttpUrl
-//    val sendCcpaConsentUrl: HttpUrl
-//    fun sendConsentUrl(legislation: Legislation, actionType: String): HttpUrl
     fun sendConsentUrl(actionType: ActionType, env: Env, legislation: Legislation): HttpUrl
     fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig?): HttpUrl
     fun inAppMessageUrl(env: Env): HttpUrl
     fun urlURenderingApp(env: Env): HttpUrl
 
     fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
-//    fun urlPm(pmConf: PmUrlConfig): HttpUrl
-
-    //    fun urlPmGdpr(): HttpUrl
-//    fun urlPmCcpa(): HttpUrl
-//    fun urlUWPm(pmConf: PmUrlConfig, urlLegislation: UrlLegislation): HttpUrl
-//    fun urlURenderingAppProd(): HttpUrl
-//    fun urlURenderingAppStage(): HttpUrl
     fun urlURenderingAppLocal(): HttpUrl
 }
 
@@ -46,15 +30,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
     private const val spHost = "cdn.privacy-mgmt.com"
     private const val spHostProd = "notice.sp-prod.net"
     private const val spHostStage = "notice.sp-stage.net"
-
-    val inAppLocalUrlMessage: HttpUrl = HttpUrl.Builder()
-        .scheme("http")
-        .host("192.168.1.11")
-        .port(3000)
-        .addPathSegments(message)
-        .addQueryParameter("env", "localProd")
-        .addQueryParameter("inApp", "true")
-        .build()
 
     val inAppUrlMessage1203: HttpUrl = HttpUrl.Builder()
         .scheme("https")

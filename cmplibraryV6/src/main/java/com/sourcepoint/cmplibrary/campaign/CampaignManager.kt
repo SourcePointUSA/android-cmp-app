@@ -1,5 +1,8 @@
 package com.sourcepoint.cmplibrary.campaign
 
+import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.core.getOrNull
+import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.converter.fail
@@ -14,10 +17,7 @@ import com.sourcepoint.cmplibrary.exception.MissingPropertyException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.toCcpaReq
 import com.sourcepoint.cmplibrary.model.toGdprReq
-import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.getOrNull
-import com.sourcepoint.cmplibrary.util.map
 import org.json.JSONObject
 
 internal interface CampaignManager {
@@ -137,12 +137,10 @@ private class CampaignManagerImpl(
         getGdpr1203().map { campaigns.add(it) }
         getCcpa1203().map { campaigns.add(it) }
         val localState: String = dataStorage.getLocalState() ?: ""
-        val propertyId: Int = dataStorage.getPropertyId()
         val propertyPriorityData: String? = dataStorage.getPropertyPriorityData()
         UnifiedMessageResp1203(
             campaigns = campaigns,
             localState = localState,
-            propertyId = propertyId,
             propertyPriorityData = propertyPriorityData?.let { JSONObject(it) } ?: JSONObject(),
             thisContent = JSONObject()
         )

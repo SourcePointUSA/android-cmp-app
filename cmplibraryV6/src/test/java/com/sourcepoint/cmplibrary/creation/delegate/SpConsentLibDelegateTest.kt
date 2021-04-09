@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.creation.delegate
 import android.app.Activity
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
+import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.model.SpProperty
 import io.mockk.MockKAnnotations
@@ -16,6 +17,7 @@ class SpConsentLibDelegateTest {
     private val campaign = SpProperty(
         22,
         "tcfv2.mobile.webview",
+        Env.STAGE,
         "122058",
         "122058"
     )

@@ -1,11 +1,11 @@
 package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
-import com.sourcepoint.cmplibrary.util.Either
 
 /**
  * Encapsulates the logic to fetch the data from the server, using the [NetworkClient], and
@@ -19,11 +19,6 @@ internal interface Service : NetworkClient, CampaignManager {
         error: (Throwable) -> Unit,
         env: Env
     )
-
-    fun sendConsent(
-        consentAction: ConsentAction,
-        env: Env
-    ): Either<ConsentResp>
 
     fun sendConsent(
         localState: String,

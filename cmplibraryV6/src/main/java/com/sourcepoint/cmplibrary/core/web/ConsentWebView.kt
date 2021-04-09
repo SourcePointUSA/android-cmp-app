@@ -11,6 +11,7 @@ import android.os.Message
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.toConsentAction
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
@@ -103,7 +104,9 @@ internal class ConsentWebView(
 
     override fun loadConsentUIFromUrl(url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
-        spWebViewClient.onPageFinishedLambda = { view, url -> }
+        spWebViewClient.onPageFinishedLambda = { view, url ->
+            println()
+        }
         loadUrl(url.toString())
         true
     }

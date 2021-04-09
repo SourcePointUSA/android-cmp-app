@@ -1,6 +1,11 @@
 package com.sourcepoint.cmplibrary.consent
 
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.core.* //ktlint-disable
+import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.core.executeOnLeft
+import com.sourcepoint.cmplibrary.core.flatMap
+import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.CCPAConsent
@@ -59,7 +64,6 @@ private class ConsentManagerUtilsImpl(
             .map { pair ->
                 val gdpr = pair.first
                 JSONObject().apply {
-//                    put("propertyId", gdpr.propertyId)
                     put("propertyHref", gdpr.propertyName)
                     put("accountId", gdpr.accountId)
                     put("actionType", action.actionType.code)
@@ -92,7 +96,6 @@ private class ConsentManagerUtilsImpl(
                 JSONObject().apply {
                     put("consents", ccpaConfig.userConsent.thisContent)
                     put("accountId", ccpa.accountId)
-//                    put("propertyId", ccpa.propertyId)
                     put("privacyManagerId", ccpa.pmId)
                     put("localState", localState)
                     put("pubData", action.pubData)
@@ -122,7 +125,6 @@ private class ConsentManagerUtilsImpl(
                 val gdprConfig = pair.second
 
 //                {
-//                    "propertyId": 7639,
 //                    "propertyHref": "https://tcfv2.mobile.webview",
 //                    "accountId": 22,
 //                    "actionType": 11,
@@ -138,7 +140,6 @@ private class ConsentManagerUtilsImpl(
 //                }
 
                 JSONObject().apply {
-//                    put("propertyId", gdpr.propertyId)
                     put("propertyHref", "https://${gdpr.propertyName}")
                     put("accountId", gdpr.accountId)
                     put("actionType", action.actionType.code)
@@ -171,7 +172,6 @@ private class ConsentManagerUtilsImpl(
                 JSONObject().apply {
                     put("consents", ccpaConfig.userConsent.thisContent)
                     put("accountId", ccpa.accountId)
-//                    put("propertyId", ccpa.propertyId)
                     put("privacyManagerId", ccpa.pmId)
                     put("localState", localState)
                     put("pubData", action.pubData)

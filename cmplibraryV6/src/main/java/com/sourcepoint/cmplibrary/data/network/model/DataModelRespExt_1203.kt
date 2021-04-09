@@ -1,5 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
+import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.exception.Legislation
@@ -7,9 +9,7 @@ import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toJSONObj
 import com.sourcepoint.cmplibrary.model.toTreeMap
-import com.sourcepoint.cmplibrary.util.Either
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.map
 import org.json.JSONObject
 
 internal fun String.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
@@ -20,7 +20,6 @@ internal fun JSONObject.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
     val map: Map<String, Any?> = this.toTreeMap()
     val localState = map.getFieldValue<String>("localState") ?: ""
     val propertyPriorityData = map.getMap("propertyPriorityData")?.toJSONObj() ?: failParam("propertyPriorityData")
-    val propertyId = map.getFieldValue<Int>("propertyId") ?: -1
 
     val listEither: List<Either<CampaignResp1203?>> = map
         .getFieldValue<List<Map<String, Any?>>>("campaigns")
@@ -36,7 +35,6 @@ internal fun JSONObject.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
         thisContent = this,
         campaigns = list,
         localState = localState,
-        propertyId = propertyId,
         propertyPriorityData = propertyPriorityData
     )
 }

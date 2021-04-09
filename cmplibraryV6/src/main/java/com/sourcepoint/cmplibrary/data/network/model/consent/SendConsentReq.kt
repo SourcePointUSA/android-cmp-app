@@ -12,7 +12,6 @@ data class ConsentReq(
     val requestUUID: String,
     val accountId: Int,
     val actionType: Int,
-    val propertyId: Int,
     val requestFromPM: Boolean,
     val pubData: JSONObject = JSONObject(),
     val pmSaveAndExitVariables: JSONObject = JSONObject()
@@ -30,7 +29,6 @@ fun ConsentReq.toBodyRequest(): String {
             put("requestUUID", requestUUID)
             put("accountId", accountId)
             put("actionType", actionType)
-            put("propertyId", propertyId)
             put("requestFromPM", requestFromPM)
             put("pubData", pubData)
             put("pmSaveAndExitVariables", pmSaveAndExitVariables)

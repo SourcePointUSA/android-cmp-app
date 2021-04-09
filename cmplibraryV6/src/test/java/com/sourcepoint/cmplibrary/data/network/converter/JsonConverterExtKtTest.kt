@@ -22,7 +22,6 @@ class JsonConverterExtKtTest {
 
         unifiedMess.run {
             campaigns.size.assertEquals(2)
-            propertyId.assertEquals(3949)
             propertyPriorityData.toTreeMap().assertEquals(propertyPriorityDataTest.toTreeMap())
             localState.assertEquals(localStateTest)
         }
