@@ -56,8 +56,6 @@ internal class ConsentWebView(
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
 //            id = View.generateViewId()
 //        }
-
-        setLayerType(View.LAYER_TYPE_HARDWARE, null);
         enableDebug()
         setStyle()
         webChromeClient = chromeClient
