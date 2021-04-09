@@ -31,6 +31,6 @@ class ATest {
 
         scenario = launchActivity()
 
-        wr(5000) { tapAcceptOnWebView() }
+        wr(5000) { tapOptionWebView() }
     }
 }
