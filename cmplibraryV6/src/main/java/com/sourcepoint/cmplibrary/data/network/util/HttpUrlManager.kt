@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.util.Env.PROD
 import com.sourcepoint.cmplibrary.data.network.util.Env.STAGE
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.ActionType
-import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.PMTab
 import okhttp3.HttpUrl
 
 /**
@@ -94,20 +94,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("sdkVersion", "AndroidLocal")
             .build()
 
-    val sendCcpaConsentUrl: HttpUrl
-        get() {
-            return HttpUrl.Builder()
-                .scheme("http")
-                .host("192.168.1.11")
-                .port(3000)
-                .addPathSegments("wrapper/tcfv2/v1/ccpa")
-                .addPathSegments("consent")
-                .addQueryParameter("env", "localProd")
-                .addQueryParameter("inApp", "true")
-                .addQueryParameter("sdkVersion", "AndroidLocal")
-                .build()
-        }
-
     override fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
         .scheme("https")
         .host(spHost)
@@ -116,7 +102,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("consentLanguage", pmConf.consentLanguage)
         .addQueryParameter("consentUUID", pmConf.consentUUID)
         .apply {
-            if (pmConf.pmTab != PrivacyManagerTabK.DEFAULT) {
+            if (pmConf.pmTab != PMTab.DEFAULT) {
                 addQueryParameter("pmTab", pmConf.pmTab.key)
             }
         }
@@ -132,7 +118,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("consentLanguage", pmConf.consentLanguage)
         .addQueryParameter("consentUUID", pmConf.consentUUID)
         .apply {
-            if (pmConf.pmTab != PrivacyManagerTabK.DEFAULT) {
+            if (pmConf.pmTab != PMTab.DEFAULT) {
                 addQueryParameter("pmTab", pmConf.pmTab.key)
             }
         }
@@ -156,7 +142,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("consentLanguage", pmConf.consentLanguage)
             .addQueryParameter("consentUUID", pmConf.consentUUID)
             .apply {
-                if (pmConf.pmTab != PrivacyManagerTabK.DEFAULT) {
+                if (pmConf.pmTab != PMTab.DEFAULT) {
                     addQueryParameter("pmTab", pmConf.pmTab.key)
                 }
             }

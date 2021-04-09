@@ -196,7 +196,7 @@ private class NetworkClientImpl(
         consentReq: JSONObject,
         env: Env,
         consentAction: ConsentAction
-    ): Either<ConsentResp> {
+    ): Either<ConsentResp> = com.sourcepoint.cmplibrary.util.check {
 
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, consentReq.toString())
@@ -211,7 +211,7 @@ private class NetworkClientImpl(
 
         val response = httpClient.newCall(request).execute()
 
-        return responseManager.parseConsentRes(response)
+        responseManager.parseConsentRes(response)
     }
 
     override fun sendConsent(
@@ -240,7 +240,7 @@ private class NetworkClientImpl(
                 }
                 onResponse { _, r ->
                     responseManager
-                        .parseConsentRes(r)
+                        .parseConsentResEither(r)
                         .map { success(it) }
                         .executeOnLeft { error(it) }
                 }

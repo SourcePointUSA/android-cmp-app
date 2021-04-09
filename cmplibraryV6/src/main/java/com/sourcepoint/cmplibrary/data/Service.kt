@@ -14,6 +14,7 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 internal interface Service : NetworkClient, CampaignManager {
 
     fun sendConsent(
+        localState: String,
         consentAction: ConsentAction,
         success: (ConsentResp) -> Unit,
         error: (Throwable) -> Unit,

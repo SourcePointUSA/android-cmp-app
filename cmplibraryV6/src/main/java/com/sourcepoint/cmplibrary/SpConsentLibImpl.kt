@@ -27,12 +27,11 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.ActionType.SHOW_OPTIONS
-import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import java.util.* // ktlint-disable
 
 internal class SpConsentLibImpl(
-    internal val pPrivacyManagerTab: PrivacyManagerTabK,
     internal val context: Context,
     internal val pLogger: Logger,
     internal val pJsonConverter: JsonConverter,
@@ -44,7 +43,7 @@ internal class SpConsentLibImpl(
     private val consentManagerUtils: ConsentManagerUtils,
     private val consentManager: ConsentManager,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
-    private val env: Env = Env.PROD
+    private val env: Env = Env.STAGE
 ) : SpConsentLib {
 
     override var spClient: SpClient? = null
@@ -96,7 +95,7 @@ internal class SpConsentLibImpl(
         service.getUnifiedMessage(
             messageReq = campaignManager.getUnifiedMessageReq(),
             pSuccess = { messageResp ->
-                consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
+                consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState, env = env)
                 val list: List<CampaignModel> = messageResp.toCampaignModelList()
                 if (list.isEmpty()) return@getUnifiedMessage
                 val firstCampaign2Process = list.first()
@@ -141,7 +140,7 @@ internal class SpConsentLibImpl(
         )
     }
 
-    override fun loadGDPRPrivacyManager() {
+    override fun loadGDPRPrivacyManager(pmId: String, pmTab: PMTab) {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientIsNull()
         val pmConfig = campaignManager.getGdprPmConfig()
@@ -153,7 +152,7 @@ internal class SpConsentLibImpl(
             .executeOnLeft { logMess("PmUrlConfig is null") }
     }
 
-    override fun loadCCPAPrivacyManager() {
+    override fun loadCCPAPrivacyManager(pmId: String, pmTab: PMTab) {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientIsNull()
     }
@@ -279,7 +278,8 @@ internal class SpConsentLibImpl(
                 ActionType.SAVE_AND_EXIT,
                 ActionType.REJECT_ALL -> {
                     view.let { spClient?.onUIFinished(it) }
-                    consentManager.enqueueConsent2(consentAction = action)
+                    val env = campaignManager.getEnv(action.legislation)
+                    consentManager.enqueueConsent2(consentAction = action, env = env)
                 }
             }
         }

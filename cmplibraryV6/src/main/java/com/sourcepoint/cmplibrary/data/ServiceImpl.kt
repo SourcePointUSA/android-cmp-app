@@ -61,49 +61,6 @@ private class ServiceImpl(
         )
     }
 
-//    override fun getMessage1203(
-//        messageReq: MessageReq,
-//        pSuccess: (UnifiedMessageResp1203) -> Unit,
-//        pError: (Throwable) -> Unit
-//    ) {
-//        nc.getMessage1203(
-//            messageReq,
-//            { messageResp ->
-//                campaignManager.saveUnifiedMessageResp1203(messageResp)
-//                pSuccess(messageResp)
-//            },
-//            pError
-//        )
-//    }
-
-//    override fun getMessage(
-//        messageReq: MessageReq,
-//        pSuccess: (UnifiedMessageResp) -> Unit,
-//        pError: (Throwable) -> Unit,
-//        stage: Env
-//    ) {
-//        nc.getMessage(
-//            messageReq,
-//            pSuccess = { messageResp ->
-//                messageResp.campaigns.forEach { cr ->
-//                    when (cr) {
-//                        is Gdpr -> {
-//                            campaignManager.saveGdpr(cr)
-//                            cr.userConsent?.let { uc -> campaignManager.saveGDPRConsent(uc) }
-//                        }
-//                        is Ccpa -> {
-//                            campaignManager.saveCcpa(cr)
-//                            cr.userConsent.let { uc -> campaignManager.saveCCPAConsent(uc) }
-//                        }
-//                    }
-//                }
-//                pSuccess(messageResp)
-//            },
-//            pError = pError,
-//            stage = stage
-//        )
-//    }
-
     override fun getNativeMessage(
         messageReq: MessageReq,
         success: (NativeMessageResp) -> Unit,
@@ -141,7 +98,7 @@ private class ServiceImpl(
         consentAction: ConsentAction,
         env: Env
     ): Either<ConsentResp> {
-        return consentManagerUtils.buildConsentReq(consentAction, localState)
+        return consentManagerUtils.buildConsentReq(consentAction, localState, null)
             .flatMap {
                 nc.sendConsent(it, env, consentAction)
             }
@@ -149,13 +106,14 @@ private class ServiceImpl(
     }
 
     override fun sendConsent(
+        localState: String,
         consentAction: ConsentAction,
         success: (ConsentResp) -> Unit,
         error: (Throwable) -> Unit,
         env: Env
     ) {
 
-        val request = consentManagerUtils.buildConsentReq(consentAction)
+        val request = consentManagerUtils.buildConsentReq(consentAction, localState, null)
             .executeOnLeft { error(it) }
             .getOrNull() ?: return
 

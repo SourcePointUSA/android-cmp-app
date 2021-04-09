@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.model
 
-enum class PrivacyManagerTabK(val key: String) {
+enum class PMTab(val key: String) {
     DEFAULT(""),
     PURPOSES("purposes"),
     VENDORS("vendors"),

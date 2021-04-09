@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
-import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.PMTab
 import org.junit.Test
 
 class HttpUrlManagerTest {
@@ -32,7 +32,7 @@ class HttpUrlManagerTest {
     fun `GIVEN pmId and `() {
         val config = PmUrlConfig(
             consentUUID = "89b2d14b-70ee-4344-8cc2-1b7b281d0f2d",
-            pmTab = PrivacyManagerTabK.DEFAULT,
+            pmTab = PMTab.DEFAULT,
             messageId = "122058",
             siteId = "7639"
         )
@@ -46,7 +46,7 @@ class HttpUrlManagerTest {
     fun `GIVEN an OTT and `() {
         val config = PmUrlConfig(
             consentUUID = "3c7c3e22-0aac-4941-b97d-8e70b73b91c7",
-            pmTab = PrivacyManagerTabK.DEFAULT,
+            pmTab = PMTab.DEFAULT,
             messageId = "122058",
             siteId = "7639"
         )

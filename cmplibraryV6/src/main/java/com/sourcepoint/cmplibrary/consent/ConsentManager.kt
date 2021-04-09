@@ -20,11 +20,13 @@ import java.util.* //ktlint-disable
 
 internal interface ConsentManager {
     var localStateStatus: LocalStateStatus
-    fun enqueueConsent2(consentAction: ConsentAction)
+    fun enqueueConsent2(consentAction: ConsentAction, env: Env)
     fun sendConsent2(
         action: ConsentAction,
-        localState: String
+        localState: String,
+        env: Env
     )
+
     val enqueuedActions: Int
     var sPConsentsSuccess: ((SPConsents) -> Unit)?
     var sPConsentsError: ((Throwable) -> Unit)?
@@ -35,16 +37,14 @@ internal interface ConsentManager {
 internal fun ConsentManager.Companion.create(
     service: Service,
     consentManagerUtils: ConsentManagerUtils,
-    env: Env,
     logger: Logger,
     executorManager: ExecutorManager
-): ConsentManager = ConsentManagerImpl(service, consentManagerUtils, logger, env, executorManager)
+): ConsentManager = ConsentManagerImpl(service, consentManagerUtils, logger, executorManager)
 
 private class ConsentManagerImpl(
     private val service: Service,
     private val consentManagerUtils: ConsentManagerUtils,
     private val logger: Logger,
-    private val env: Env,
     private val executorManager: ExecutorManager
 ) : ConsentManager {
 
@@ -53,57 +53,33 @@ private class ConsentManagerImpl(
     override var localStateStatus: LocalStateStatus = LocalStateStatus.Absent
         set(value) {
             field = value
-            changeLocalState(value)
+            when (value) {
+                is LocalStateStatus.Present -> changeLocalState(value, value.env)
+                LocalStateStatus.Absent,
+                LocalStateStatus.Consumed -> return
+            }
         }
-    private val consentQueue2: Queue<ConsentAction> = LinkedList()
+    private val consentQueue2: Queue<Pair<ConsentAction, Env>> = LinkedList()
     override val enqueuedActions: Int
         get() = consentQueue2.size
 
-//    override var localState: String? = null
-    private val consentQueue: Queue<ConsentAction> = LinkedList()
-
-//    override fun enqueueConsent(consentAction: ConsentAction) {
-//        consentQueue.offer(consentAction)
-//    }
-//
-//    override fun sendConsent(
-//        success: (SPConsents) -> Unit,
-//        error: (Throwable) -> Unit
-//    ) {
-//        executorManager.executeOnSingleThread {
-//            var sPConsents = SPConsents()
-//            while (!consentQueue.isEmpty()) {
-//                val action = consentQueue.poll()
-//                when (val either = service.sendConsent(action, env)) {
-//                    is Right -> {
-//                        sPConsents = responseHandler(either, action, sPConsents)
-//                        consentManagerUtils.saveGdprConsent(either.r.content)
-//                    }
-//                    is Left -> error(either.t)
-//                }
-//            }
-//            /** send the final response to the client */
-//            success(sPConsents)
-//        }
-//    }
-
-    override fun enqueueConsent2(consentAction: ConsentAction) {
-        consentQueue2.offer(consentAction)
+    override fun enqueueConsent2(consentAction: ConsentAction, env: Env) {
+        consentQueue2.offer(consentAction to env)
         val lState: LocalStateStatus.Present? = localStateStatus as? LocalStateStatus.Present
         if (lState != null) {
             val localState = lState.value
-            val action = consentQueue2.poll()
-            sendConsent2(action, localState)
+            val pair = consentQueue2.poll()
+            sendConsent2(pair.first, localState, pair.second)
         }
     }
 
-    fun changeLocalState(newState: LocalStateStatus) {
+    fun changeLocalState(newState: LocalStateStatus, env: Env) {
         when (newState) {
             is LocalStateStatus.Present -> {
                 if (consentQueue2.isNotEmpty()) {
                     val localState = newState.value
-                    val action = consentQueue2.poll()
-                    sendConsent2(action, localState)
+                    val pair = consentQueue2.poll()
+                    sendConsent2(pair.first, localState, pair.second)
                     localStateStatus = LocalStateStatus.Consumed
                 }
             }
@@ -112,11 +88,11 @@ private class ConsentManagerImpl(
         }
     }
 
-    override fun sendConsent2(action: ConsentAction, localState: String) {
+    override fun sendConsent2(action: ConsentAction, localState: String, env: Env) {
         executorManager.executeOnSingleThread {
             when (val either = service.sendConsent(localState, action, env)) {
                 is Right -> {
-                    val updatedLocalState = LocalStateStatus.Present(either.r.localState)
+                    val updatedLocalState = LocalStateStatus.Present(either.r.localState, env)
                     val sPConsents = responseHandler(either, action)
                     sPConsentsSuccess?.invoke(sPConsents)
                     consentManagerUtils.saveGdprConsent(either.r.content)
@@ -129,7 +105,7 @@ private class ConsentManagerImpl(
 }
 
 sealed class LocalStateStatus {
-    data class Present(val value: String) : LocalStateStatus()
+    data class Present(val value: String, val env: Env) : LocalStateStatus()
     object Absent : LocalStateStatus()
     object Consumed : LocalStateStatus()
 }

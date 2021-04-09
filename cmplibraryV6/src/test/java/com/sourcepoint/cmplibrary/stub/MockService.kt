@@ -15,6 +15,10 @@ internal class MockService(
     private val getNativeMessageLogic: ((messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) -> Unit)? = null
 ) : Service {
 
+    override fun getEnv(legislation: Legislation): Env {
+        TODO("Not yet implemented")
+    }
+
     override fun getNativeMessage(messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {}
     override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
     override fun addCampaign(legislation: Legislation, campaign: CampaignTemplate) {}
@@ -42,7 +46,7 @@ internal class MockService(
     override fun saveGdpr1203(gdpr: Gdpr1203) {}
     override fun saveCcpa1203(ccpa: Ccpa1203) {}
     override fun saveUnifiedMessageResp1203(unifiedMessageResp: UnifiedMessageResp1203) {}
-    override fun sendConsent(consentAction: ConsentAction, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit, env: Env) {}
+    override fun sendConsent(localState: String, consentAction: ConsentAction, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit, env: Env) {}
     override fun sendConsent(consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit, env: Env, consentAction: ConsentAction) {}
     override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit, env: Env) {}
     override fun getUnifiedMessageReq(): UnifiedMessageRequest {

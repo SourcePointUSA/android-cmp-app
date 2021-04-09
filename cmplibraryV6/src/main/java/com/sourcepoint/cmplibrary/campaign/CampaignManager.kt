@@ -12,6 +12,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.Campaigns
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
+import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -23,6 +24,8 @@ import org.json.JSONObject
 internal interface CampaignManager {
 
     fun addCampaign(legislation: Legislation, campaign: CampaignTemplate)
+
+    fun getEnv(legislation: Legislation): Env
 
     fun isAppliedCampaign(legislation: Legislation): Boolean
     fun getUnifiedMessageResp1203(): Either<UnifiedMessageResp1203>
@@ -77,6 +80,10 @@ private class CampaignManagerImpl(
         mapTemplate[legislation.name] = campaign
     }
 
+    override fun getEnv(legislation: Legislation): Env {
+        return mapTemplate[legislation.name]?.env ?: Env.STAGE
+    }
+
     override fun getGdpr(): Either<Gdpr> = check {
         dataStorage.getGdpr()?.toGDPR() ?: fail("GDPR is not stored in memory!!!")
     }
@@ -107,7 +114,7 @@ private class CampaignManagerImpl(
         PmUrlConfig(
             consentUUID = "", // gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
             siteId = "7639",
-            messageId = gdpr.pmId
+            messageId = "" // gdpr.pmId
         )
     }
 
@@ -121,7 +128,7 @@ private class CampaignManagerImpl(
         PmUrlConfig(
             consentUUID = "", // ccpaConfig.uuid ?: fail("consentUUID cannot be null!!!"),
             siteId = "7639",
-            messageId = ccpa.pmId
+            messageId = "" // ccpa.pmId
         )
     }
 
