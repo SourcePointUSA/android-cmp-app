@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
-import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import org.junit.Before
@@ -21,7 +21,7 @@ class BuilderTest {
     fun `A context object is MISSING an exception is THROWN`() {
         Builder()
             // .setContext(context)
-            .setPrivacyManagerTab(PMTab.FEATURES)
+            .setPrivacyManagerTab(PrivacyManagerTabK.FEATURES)
             .build()
     }
 

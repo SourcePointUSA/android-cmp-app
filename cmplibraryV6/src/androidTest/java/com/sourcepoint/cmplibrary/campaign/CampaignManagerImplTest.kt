@@ -28,12 +28,14 @@ class CampaignManagerImplTest {
 
     private val gdpr = GDPRCampaign(
         accountId = 22,
-        propertyName = "https://unified.mobile.demo"
+        propertyName = "https://unified.mobile.demo",
+        pmId = "404472"
     )
 
     private val ccpa = CCPACampaign(
         accountId = 22,
-        propertyName = "https://unified.mobile.demo"
+        propertyName = "https://unified.mobile.demo",
+        pmId = "404472"
     )
 
     private val ds by lazy {

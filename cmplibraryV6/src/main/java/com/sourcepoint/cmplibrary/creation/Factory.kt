@@ -21,6 +21,7 @@ import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.connection.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
+import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
@@ -28,15 +29,17 @@ import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
-import com.sourcepoint.cmplibrary.model.SpConfig
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.SpProperty
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
 
 fun makeConsentLib(
-    spConfig: SpConfig,
-    context: Activity
+    spProperty: SpProperty,
+    context: Activity,
+    privacyManagerTab: PrivacyManagerTabK
 ): SpConsentLib {
 
     val appCtx: Context = context.applicationContext
@@ -45,18 +48,11 @@ fun makeConsentLib(
     val dataStorageCcpa = DataStorageCcpa.create(appCtx)
     val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
     val campaignManager: CampaignManager = CampaignManager.create(dataStorage).apply {
-        spConfig.also { spp ->
-            spp.campaigns.forEach {
-                when (it.legislation) {
-                    Legislation.GDPR -> addCampaign(
-                        it.legislation,
-                        GDPRCampaign(spp.accountId, spp.propertyName, it.environment)
-                    )
-                    Legislation.CCPA -> addCampaign(
-                        it.legislation,
-                        CCPACampaign(spp.accountId, spp.propertyName, it.environment)
-                    )
-                }
+        spProperty.also { spp ->
+            spp.gdprPmId?.let { addCampaign(Legislation.GDPR, GDPRCampaign(spp.accountId, spp.propertyName, it)) }
+            spp.ccpaPmId?.let { addCampaign(Legislation.CCPA, CCPACampaign(spp.accountId, spp.propertyName, it)) }
+            if (spp.gdprPmId == null && spp.ccpaPmId == null) {
+                fail("You must have either the GDPR or the CCPA Privacy Manager Id!!!")
             }
         }
     }
@@ -71,19 +67,21 @@ fun makeConsentLib(
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
     val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
     val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, urlManager)
-    val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, logger, execManager)
+    val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, spProperty.environment, logger, execManager)
 
     return SpConsentLibImpl(
+        urlManager = urlManager,
+        pPrivacyManagerTab = privacyManagerTab,
         context = appCtx,
         pLogger = logger,
         pJsonConverter = jsonConverter,
-        service = service,
-        executor = execManager,
         pConnectionManager = connManager,
+        service = service,
         viewManager = viewManager,
+        executor = execManager,
         campaignManager = campaignManager,
         consentManagerUtils = consentManagerUtils,
         consentManager = consentManager,
-        urlManager = urlManager
+        env = spProperty.environment
     )
 }

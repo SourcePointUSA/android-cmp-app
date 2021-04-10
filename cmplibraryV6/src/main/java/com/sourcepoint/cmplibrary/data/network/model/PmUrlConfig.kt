@@ -1,9 +1,9 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
-import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 
 data class PmUrlConfig(
-    val pmTab: PMTab = PMTab.PURPOSES,
+    val pmTab: PrivacyManagerTabK = PrivacyManagerTabK.PURPOSES,
     val consentLanguage: String = "",
     val consentUUID: String,
     val siteId: String,

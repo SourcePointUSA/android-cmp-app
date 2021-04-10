@@ -24,49 +24,49 @@ class MainActivityV6 : AppCompatActivity() {
 
     private val TAG = "**MainActivity"
 
-//    private val gdpr = GDPRCampaign(
-//        accountId = 22,
-//        propertyId = 10589,
-//        propertyName = "https://unified.mobile.demo",
-//        pmId = "404472"
-//    )
-//
-//    private val ccpa = CCPACampaign(
-//        accountId = 22,
-//        propertyId = 10589,
-//        propertyName = "https://unified.mobile.demo",
-//        pmId = "404472"
-//    )
-//
-//    private val consentLib by ConsentLibDelegate(
-//        gdpr = gdpr,
-//        ccpa = ccpa,
-//        privacyManagerTab = PrivacyManagerTabK.FEATURES
-//    )
+    private val gdpr = GDPRCampaign(
+        accountId = 22,
+        propertyId = 10589,
+        propertyName = "https://unified.mobile.demo",
+        pmId = "404472"
+    )
+
+    private val ccpa = CCPACampaign(
+        accountId = 22,
+        propertyId = 10589,
+        propertyName = "https://unified.mobile.demo",
+        pmId = "404472"
+    )
+
+    private val consentLib by ConsentLibDelegate(
+        gdpr = gdpr,
+        ccpa = ccpa,
+        privacyManagerTab = PrivacyManagerTabK.FEATURES
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-//        consentLib.spClient = LocalClient(consentLib)
+        consentLib.spClient = LocalClient(consentLib)
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
 
-//        consent.setOnClickListener {
-//            consentLib.loadGDPRPrivacyManager()
-//        }
-//
-//        findViewById<View>(R.id.consent).setOnClickListener { consentLib.loadGDPRPrivacyManager() }
-//
-//        consent.setOnLongClickListener {
-//            consentLib.dispose()
-//            onBackPressed()
-//            true
-//        }
+        consent.setOnClickListener {
+            consentLib.loadGDPRPrivacyManager()
+        }
+
+        findViewById<View>(R.id.consent).setOnClickListener { consentLib.loadGDPRPrivacyManager() }
+
+        consent.setOnLongClickListener {
+            consentLib.dispose()
+            onBackPressed()
+            true
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -91,12 +91,12 @@ class MainActivityV6 : AppCompatActivity() {
 //        val nm = buildNativeMessageV6()
 //        val nm = buildNativeMessageV6Local()
 //        consentLib.loadMessage(nm)
-//        consentLib.loadMessage()
+        consentLib.loadMessage()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-//        consentLib.dispose()
+        consentLib.dispose()
     }
 
     private fun buildNativeMessageV6Local(): NativeMessage {

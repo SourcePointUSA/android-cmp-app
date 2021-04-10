@@ -7,19 +7,13 @@ import com.sourcepoint.cmplibrary.data.network.model.toJsonObjStringify
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation
 
-data class SpConfig(
+data class SpProperty(
     @JvmField val accountId: Int,
     @JvmField val propertyName: String,
-    @JvmField val campaigns: Array<SpCampaign>
-)
-
-data class SpCampaign(
-    @JvmField val legislation: Legislation,
     @JvmField val environment: Env,
-    @JvmField val targetingParams: Array<TargetingParam>
+    @JvmField val gdprPmId: String?,
+    @JvmField val ccpaPmId: String?
 )
-
-data class TargetingParam(val key: String, val value: String)
 
 data class Campaign(
     @JvmField val accountId: Int,
@@ -30,20 +24,20 @@ data class Campaign(
 internal open class CampaignTemplate(
     open val accountId: Int,
     open val propertyName: String,
-    open val env: Env
+    open val pmId: String
 )
 
 internal class GDPRCampaign(
     @JvmField override val accountId: Int,
     @JvmField override val propertyName: String,
-    @JvmField override val env: Env
-) : CampaignTemplate(accountId, propertyName, env)
+    @JvmField override val pmId: String
+) : CampaignTemplate(accountId, propertyName, pmId)
 
 internal class CCPACampaign(
     @JvmField override val accountId: Int,
     @JvmField override val propertyName: String,
-    @JvmField override val env: Env
-) : CampaignTemplate(accountId, propertyName, env)
+    @JvmField override val pmId: String
+) : CampaignTemplate(accountId, propertyName, pmId)
 
 internal fun CampaignTemplate.toGdprReq(
     location: String,

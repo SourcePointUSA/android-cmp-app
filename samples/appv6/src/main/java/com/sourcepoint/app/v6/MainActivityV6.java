@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.SpConsentLib;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
 import com.sourcepoint.cmplibrary.data.network.util.Env;
-import com.sourcepoint.cmplibrary.exception.Legislation;
 import com.sourcepoint.cmplibrary.model.*;
 import com.sourcepoint.app.v6.core.DataProvider;
 import kotlin.Lazy;
@@ -21,22 +20,12 @@ public class MainActivityV6 extends AppCompatActivity {
 
     private static final String TAG = "**MainActivity";
 
-    private final SpCampaign gdprCampaign = new SpCampaign(
-            Legislation.GDPR,
-            Env.STAGE,
-            new TargetingParam[]{new TargetingParam("location", "EU")}
-    );
-
-    private final SpCampaign ccpaCamapign = new SpCampaign(
-            Legislation.CCPA,
-            Env.STAGE,
-            new TargetingParam[]{new TargetingParam("location", "EU")}
-    );
-
-    private final SpConfig spConfig = new SpConfig(
+    private final SpProperty spProperty = new SpProperty(
             22,
             "http://carm.uw.con",
-            new SpCampaign[]{gdprCampaign, ccpaCamapign}
+            Env.STAGE,
+            "404472",
+            "404472"
     );
 
     private SpConsentLib gdprConsent = null;
@@ -47,9 +36,9 @@ public class MainActivityV6 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        gdprConsent = FactoryKt.makeConsentLib(spConfig, this);
+        gdprConsent = FactoryKt.makeConsentLib(spProperty, this, PrivacyManagerTabK.FEATURES);
         gdprConsent.setSpClient(new LocalClient());
-        findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadGDPRPrivacyManager("", PMTab.DEFAULT));
+        findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadGDPRPrivacyManager());
     }
 
     @Override

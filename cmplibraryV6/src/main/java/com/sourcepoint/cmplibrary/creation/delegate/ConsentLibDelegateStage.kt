@@ -3,13 +3,13 @@ package com.sourcepoint.cmplibrary.creation.delegate
 import android.app.Activity
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.creation.makeConsentLib
-import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.SpConfig
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.SpProperty
 import kotlin.reflect.KProperty
 
 class ConsentLibDelegateStage(
-    private val privacyManagerTab: PMTab = PMTab.PURPOSES,
-    private val spConfig: SpConfig,
+    private val privacyManagerTab: PrivacyManagerTabK = PrivacyManagerTabK.PURPOSES,
+    private val spProperty: SpProperty,
 ) {
 
     private lateinit var libSp: SpConsentLib
@@ -17,8 +17,9 @@ class ConsentLibDelegateStage(
     operator fun getValue(thisRef: Activity, property: KProperty<*>): SpConsentLib {
         if (!this::libSp.isInitialized) {
             libSp = makeConsentLib(
-                spConfig = spConfig,
-                context = thisRef
+                spProperty = spProperty,
+                context = thisRef,
+                privacyManagerTab = privacyManagerTab
             )
         }
         return libSp

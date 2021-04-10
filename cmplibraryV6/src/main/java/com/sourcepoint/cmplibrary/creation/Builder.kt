@@ -29,8 +29,8 @@ import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
-import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.SpConfig
+import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.SpProperty
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
 import okhttp3.OkHttpClient
@@ -38,11 +38,11 @@ import java.lang.ref.WeakReference
 
 class Builder {
 
-    private var spConfig: SpConfig? = null
+    private var spProperty: SpProperty? = null
     private var authId: String? = null
     private var weakReference: WeakReference<Activity>? = null
     private var ott: Boolean = false
-    private var privacyManagerTab: PMTab? = null
+    private var privacyManagerTab: PrivacyManagerTabK? = null
 
     fun isOtt(ott: Boolean) = apply {
         this.ott = ott
@@ -56,7 +56,7 @@ class Builder {
         this.weakReference = WeakReference(context)
     }
 
-    fun setPrivacyManagerTab(privacyManagerTab: PMTab) = apply {
+    fun setPrivacyManagerTab(privacyManagerTab: PrivacyManagerTabK) = apply {
         this.privacyManagerTab = privacyManagerTab
     }
 
@@ -71,24 +71,14 @@ class Builder {
         val dataStorageCcpa = DataStorageCcpa.create(appCtx)
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
         val campaignManager: CampaignManager = CampaignManager.create(dataStorage).apply {
-            spConfig.also { spp ->
-                spp?.campaigns?.forEach {
-                    when (it.legislation) {
-                        Legislation.GDPR -> addCampaign(
-                            it.legislation,
-                            GDPRCampaign(spp.accountId, spp.propertyName, it.environment)
-                        )
-                        Legislation.CCPA -> addCampaign(
-                            it.legislation,
-                            CCPACampaign(spp.accountId, spp.propertyName, it.environment)
-                        )
-                    }
-                }
+            spProperty.also { spp ->
+                spp?.gdprPmId?.let { addCampaign(Legislation.GDPR, GDPRCampaign(spp.accountId, spp.propertyName, it)) }
+                spp?.ccpaPmId?.let { addCampaign(Legislation.CCPA, CCPACampaign(spp.accountId, spp.propertyName, it)) }
             }
         }
         val errorManager = errorMessageManager(campaignManager, client)
         val logger = createLogger(errorManager)
-        val pmTab = privacyManagerTab ?: PMTab.FEATURES
+        val pmTab = privacyManagerTab ?: PrivacyManagerTabK.FEATURES
         val jsonConverter = JsonConverter.create()
         val connManager = ConnectionManager.create(appCtx)
         val responseManager = ResponseManager.create(jsonConverter)
@@ -98,20 +88,21 @@ class Builder {
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
         val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
         val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, urlManager)
-        val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, logger, execManager)
+        val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, Env.PROD, logger, execManager)
 
         return SpConsentLibImpl(
+            urlManager = urlManager,
+            pPrivacyManagerTab = pmTab,
             context = appCtx,
             pLogger = logger,
             pJsonConverter = jsonConverter,
-            service = service,
-            executor = execManager,
             pConnectionManager = connManager,
+            service = service,
             viewManager = viewManager,
+            executor = execManager,
             campaignManager = campaignManager,
-            consentManagerUtils = consentManagerUtils,
             consentManager = consentManager,
-            urlManager = urlManager
+            consentManagerUtils = consentManagerUtils
         )
 
 //        return when (clazz) {

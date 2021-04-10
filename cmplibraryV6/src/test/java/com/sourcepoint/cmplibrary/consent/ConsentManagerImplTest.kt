@@ -68,6 +68,7 @@ class ConsentManagerImplTest {
         ConsentManager.create(
             service = service,
             consentManagerUtils = consentManagerUtils,
+            env = Env.PROD,
             logger = logger,
             executorManager = MockExecutorManager()
         )
@@ -83,7 +84,7 @@ class ConsentManagerImplTest {
         consentManager.sPConsentsSuccess = sPSuccessMock
         consentManager.sPConsentsError = sPErrorMock
 
-        consentManager.localStateStatus = LocalStateStatus.Present("localStateTest", Env.STAGE)
+        consentManager.localStateStatus = LocalStateStatus.Present("localStateTest")
 
         verify(exactly = 0) { service.sendConsent(any(), any(), any<Env>()) }
         verify(exactly = 0) { sPSuccessMock.invoke(any()) }
@@ -98,8 +99,8 @@ class ConsentManagerImplTest {
         consentManager.sPConsentsSuccess = { spConsents -> sPSuccessMock(spConsents) }
         consentManager.sPConsentsError = { throwable -> sPErrorMock(throwable) }
 
-        consentManager.localStateStatus = LocalStateStatus.Present("localState_test", Env.STAGE)
-        consentManager.enqueueConsent2(consentAction, Env.STAGE)
+        consentManager.localStateStatus = LocalStateStatus.Present("localState_test")
+        consentManager.enqueueConsent2(consentAction)
 
         verify(exactly = 1) { service.sendConsent(any(), any(), any<Env>()) }
         verify(exactly = 1) { consentManagerUtils.saveGdprConsent(any()) }
@@ -118,8 +119,8 @@ class ConsentManagerImplTest {
         consentManager.sPConsentsSuccess = { spConsents -> sPSuccessMock(spConsents) }
         consentManager.sPConsentsError = { throwable -> sPErrorMock(throwable) }
 
-        consentManager.localStateStatus = LocalStateStatus.Present("localState_test", Env.STAGE)
-        repeat(times) { consentManager.enqueueConsent2(consentAction, Env.STAGE) }
+        consentManager.localStateStatus = LocalStateStatus.Present("localState_test")
+        repeat(times) { consentManager.enqueueConsent2(consentAction) }
 
         verify(exactly = times) { service.sendConsent(any(), any(), any<Env>()) }
         verify(exactly = times) { sPSuccessMock.invoke(any()) }
@@ -137,8 +138,8 @@ class ConsentManagerImplTest {
         consentManager.sPConsentsSuccess = { spConsents -> sPSuccessMock(spConsents) }
         consentManager.sPConsentsError = { throwable -> sPErrorMock(throwable) }
 
-        consentManager.localStateStatus = LocalStateStatus.Present("localState_test", Env.STAGE)
-        repeat(times) { consentManager.enqueueConsent2(consentAction, Env.STAGE) }
+        consentManager.localStateStatus = LocalStateStatus.Present("localState_test")
+        repeat(times) { consentManager.enqueueConsent2(consentAction) }
 
         verify(exactly = times) { service.sendConsent(any(), any(), any<Env>()) }
         verify(exactly = 0) { sPSuccessMock.invoke(any()) }
@@ -161,6 +162,7 @@ class ConsentManagerImplTest {
         val consentManager = ConsentManager.create(
             service = service,
             consentManagerUtils = consentManagerUtils,
+            env = Env.PROD,
             logger = logger,
             executorManager = re
         )
@@ -171,13 +173,13 @@ class ConsentManagerImplTest {
         every { service.sendConsent(any(), any(), any<Env>()) }.returns(Either.Right(consentResp))
 
         val job = launch {
-            launch { consentManager.enqueueConsent2(consentAction, Env.STAGE) }
-            launch { consentManager.enqueueConsent2(consentAction, Env.STAGE) }
-            launch { consentManager.enqueueConsent2(consentAction, Env.STAGE) }
+            launch { consentManager.enqueueConsent2(consentAction) }
+            launch { consentManager.enqueueConsent2(consentAction) }
+            launch { consentManager.enqueueConsent2(consentAction) }
         }
         job.join()
         consentManager.enqueuedActions.assertEquals(3)
-        consentManager.localStateStatus = LocalStateStatus.Present("localState_test", Env.STAGE)
+        consentManager.localStateStatus = LocalStateStatus.Present("localState_test")
         consentManager.enqueuedActions.assertEquals(0)
         verify(exactly = 3) { service.sendConsent(any(), any(), any<Env>()) }
         verify(exactly = 3) { sPSuccessMock.invoke(any()) }
@@ -200,6 +202,7 @@ class ConsentManagerImplTest {
         val consentManager = ConsentManager.create(
             service = service,
             consentManagerUtils = consentManagerUtils,
+            env = Env.PROD,
             logger = logger,
             executorManager = re
         )
@@ -208,11 +211,11 @@ class ConsentManagerImplTest {
         consentManager.sPConsentsError = { throwable -> sPErrorMock(throwable) }
 
         every { service.sendConsent(any(), any(), any<Env>()) }.returns(Either.Right(consentResp))
-        consentManager.localStateStatus = LocalStateStatus.Present("localState_test", Env.STAGE)
+        consentManager.localStateStatus = LocalStateStatus.Present("localState_test")
         val job = launch {
-            launch { consentManager.enqueueConsent2(consentAction, Env.STAGE) }
-            launch { consentManager.enqueueConsent2(consentAction, Env.STAGE) }
-            launch { consentManager.enqueueConsent2(consentAction, Env.STAGE) }
+            launch { consentManager.enqueueConsent2(consentAction) }
+            launch { consentManager.enqueueConsent2(consentAction) }
+            launch { consentManager.enqueueConsent2(consentAction) }
         }
         job.join()
         consentManager.enqueuedActions.assertEquals(0)
