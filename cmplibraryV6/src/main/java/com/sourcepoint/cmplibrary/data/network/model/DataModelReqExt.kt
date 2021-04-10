@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
+import com.sourcepoint.cmplibrary.model.TargetingParam
 import org.json.JSONObject
 
 internal fun UnifiedMessageRequest.toBodyRequest(): String {
@@ -43,19 +44,25 @@ internal fun Campaigns.toJsonObject(): JSONObject {
 internal fun CampaignReq.toJsonObject(): JSONObject {
     return JSONObject()
         .apply {
-            put("accountId", accountId)
-            put("propertyHref", propertyHref)
             put("targetingParams", targetingParams)
-            put("meta", meta)
-            put("uuid", uuid)
+            put("campaignEnv", campaignEnv.name.toLowerCase())
         }
 }
 
-internal fun TargetingParams.toJsonObjStringify(): String {
+// internal fun TargetingParams.toJsonObjStringify(): String {
+//    return JSONObject()
+//        .apply {
+//            put("location", location)
+//        }
+//        .toString()
+// }
+
+internal fun Array<TargetingParam>.toJsonObjStringify(): String {
     return JSONObject()
         .apply {
-            put("legislation", legislation)
-            put("location", location)
+            this@toJsonObjStringify.forEach {
+                put(it.key, it.value)
+            }
         }
         .toString()
 }

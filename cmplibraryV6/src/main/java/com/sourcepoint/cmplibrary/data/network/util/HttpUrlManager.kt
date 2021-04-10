@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.util.Env.PROD
 import com.sourcepoint.cmplibrary.data.network.util.Env.STAGE
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.ActionType
-import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.PMTab
 import okhttp3.HttpUrl
 
 /**
@@ -116,7 +116,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("consentLanguage", pmConf.consentLanguage)
         .addQueryParameter("consentUUID", pmConf.consentUUID)
         .apply {
-            if (pmConf.pmTab != PrivacyManagerTabK.DEFAULT) {
+            if (pmConf.pmTab != PMTab.DEFAULT) {
                 addQueryParameter("pmTab", pmConf.pmTab.key)
             }
         }
@@ -132,7 +132,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("consentLanguage", pmConf.consentLanguage)
         .addQueryParameter("consentUUID", pmConf.consentUUID)
         .apply {
-            if (pmConf.pmTab != PrivacyManagerTabK.DEFAULT) {
+            if (pmConf.pmTab != PMTab.DEFAULT) {
                 addQueryParameter("pmTab", pmConf.pmTab.key)
             }
         }
@@ -156,7 +156,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("consentLanguage", pmConf.consentLanguage)
             .addQueryParameter("consentUUID", pmConf.consentUUID)
             .apply {
-                if (pmConf.pmTab != PrivacyManagerTabK.DEFAULT) {
+                if (pmConf.pmTab != PMTab.DEFAULT) {
                     addQueryParameter("pmTab", pmConf.pmTab.key)
                 }
             }
@@ -279,4 +279,9 @@ enum class UrlLegislation(val segment: String) {
 enum class Env {
     STAGE,
     PROD
+}
+
+enum class CampaignEnv {
+    STAGE,
+    PUBLIC
 }

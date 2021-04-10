@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.campaign
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertEquals
-import com.example.uitestutil.assertNull
 import com.example.uitestutil.jsonFile2String
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -13,6 +12,7 @@ import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.data.network.model.Ccpa
 import com.sourcepoint.cmplibrary.data.network.model.Gdpr
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
@@ -29,13 +29,15 @@ class CampaignManagerImplTest {
     private val gdpr = GDPRCampaign(
         accountId = 22,
         propertyName = "https://unified.mobile.demo",
-        pmId = "404472"
+        campaignEnv = CampaignEnv.STAGE,
+        targetingParams = emptyArray()
     )
 
     private val ccpa = CCPACampaign(
         accountId = 22,
         propertyName = "https://unified.mobile.demo",
-        pmId = "404472"
+        campaignEnv = CampaignEnv.STAGE,
+        targetingParams = emptyArray()
     )
 
     private val ds by lazy {
@@ -64,12 +66,8 @@ class CampaignManagerImplTest {
         val output = sut.getMessageReq()
 
         output.campaigns.ccpa!!.run {
-            meta.assertNull()
-            uuid.assertNull()
         }
         output.campaigns.gdpr!!.run {
-            meta.assertNull()
-            uuid.assertNull()
         }
     }
 
@@ -96,12 +94,8 @@ class CampaignManagerImplTest {
         val output = sut.getMessageReq()
 
         output.campaigns.ccpa!!.run {
-            meta.assertEquals(ccpaLocal.meta)
-            uuid.assertEquals(ccpaLocal.uuid)
         }
         output.campaigns.gdpr!!.run {
-            meta.assertEquals(gdprLocal.meta)
-            uuid.assertEquals(gdprLocal.uuid)
         }
     }
 

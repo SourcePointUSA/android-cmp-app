@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
+import com.sourcepoint.cmplibrary.model.SpConfig
 import org.json.JSONObject
 
 internal class MockService(
@@ -42,7 +43,6 @@ internal class MockService(
     override fun saveGdpr1203(gdpr: Gdpr1203) {}
     override fun saveCcpa1203(ccpa: Ccpa1203) {}
     override fun saveUnifiedMessageResp1203(unifiedMessageResp: UnifiedMessageResp1203) {}
-    override fun sendConsent(consentAction: ConsentAction, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit, env: Env) {}
     override fun sendConsent(consentReq: JSONObject, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit, env: Env, consentAction: ConsentAction) {}
     override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit, env: Env) {}
     override fun getUnifiedMessageReq(): UnifiedMessageRequest {
@@ -53,7 +53,15 @@ internal class MockService(
         TODO("Not yet implemented")
     }
 
-    override fun sendConsent(localState: String, consentAction: ConsentAction, env: Env): Either<ConsentResp> {
+    override fun sendConsent(localState: String, consentAction: ConsentAction, env: Env, pmId: String?): Either<ConsentResp> {
         TODO("Not yet implemented")
     }
+
+    override fun sendConsent(localState: String, consentAction: ConsentAction, success: (ConsentResp) -> Unit, error: (Throwable) -> Unit, env: Env, pmId: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override var spCampaignConfig: SpConfig
+        get() = TODO("Not yet implemented")
+        set(value) {}
 }

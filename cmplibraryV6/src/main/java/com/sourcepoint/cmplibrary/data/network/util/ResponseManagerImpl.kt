@@ -78,9 +78,21 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
         }
     }
 
-    override fun parseConsentRes(r: Response): Either<ConsentResp> = check {
+    override fun parseConsentResEither(r: Response): Either<ConsentResp> = check {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         if (r.isSuccessful) {
+            when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body)) {
+                is Either.Right -> either.r
+                is Either.Left -> throw either.t
+            }
+        } else {
+            throw InvalidRequestException(description = body)
+        }
+    }
+
+    override fun parseConsentRes(r: Response): ConsentResp {
+        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        return if (r.isSuccessful) {
             when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t

@@ -30,6 +30,7 @@ internal interface ResponseManager {
 
     fun parseNativeMessResK(r: Response): Either<NativeMessageRespK>
 
-    fun parseConsentRes(r: Response): Either<ConsentResp>
+    fun parseConsentResEither(r: Response): Either<ConsentResp>
+    fun parseConsentRes(r: Response): ConsentResp
     companion object
 }

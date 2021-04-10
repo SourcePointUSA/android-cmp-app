@@ -5,11 +5,13 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.model.TargetingParam
 import com.sourcepoint.cmplibrary.stub.MockCall
 import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK
@@ -47,20 +49,16 @@ class NetworkClientImplTest {
         requestUUID = "test",
         campaigns = Campaigns(
             gdpr = GdprReq(
-                accountId = 22,
-                propertyHref = "https://tcfv2.mobile.webview",
-                targetingParams = TargetingParams(
-                    legislation = Legislation.GDPR.name,
-                    location = "EU"
-                ).toJsonObjStringify()
+                targetingParams = Array(1){
+                    TargetingParam("location", "EU")
+                }.toJsonObjStringify(),
+                campaignEnv = CampaignEnv.STAGE
             ),
             ccpa = CcpaReq(
-                accountId = 22,
-                propertyHref = "https://tcfv2.mobile.webview",
-                targetingParams = TargetingParams(
-                    legislation = Legislation.CCPA.name,
-                    location = "US"
-                ).toJsonObjStringify()
+                targetingParams = Array(1){
+                    TargetingParam("location", "US")
+                }.toJsonObjStringify(),
+                campaignEnv = CampaignEnv.STAGE
             )
         )
     )

@@ -1,7 +1,9 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.model.TargetingParam
 
 class MessageRespTest {
 
@@ -9,20 +11,16 @@ class MessageRespTest {
         requestUUID = "test",
         campaigns = Campaigns(
             gdpr = GdprReq(
-                accountId = 22,
-                propertyHref = "https://tcfv2.mobile.webview",
-                targetingParams = TargetingParams(
-                    legislation = Legislation.GDPR.name,
-                    location = "EU"
-                ).toJsonObjStringify()
+                targetingParams = Array(1){
+                    TargetingParam("location", "EU")
+                }.toJsonObjStringify(),
+                campaignEnv = CampaignEnv.STAGE
             ),
             ccpa = CcpaReq(
-                accountId = 22,
-                propertyHref = "https://tcfv2.mobile.webview",
-                targetingParams = TargetingParams(
-                    legislation = Legislation.CCPA.name,
-                    location = "US"
-                ).toJsonObjStringify()
+                targetingParams = Array(1){
+                    TargetingParam("location", "US")
+                }.toJsonObjStringify(),
+                campaignEnv = CampaignEnv.STAGE
             )
         )
     )

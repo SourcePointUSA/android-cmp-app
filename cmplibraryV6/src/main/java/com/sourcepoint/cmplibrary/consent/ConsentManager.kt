@@ -114,7 +114,7 @@ private class ConsentManagerImpl(
 
     override fun sendConsent2(action: ConsentAction, localState: String) {
         executorManager.executeOnSingleThread {
-            when (val either = service.sendConsent(localState, action, env)) {
+            when (val either = service.sendConsent(localState, action, env, null)) {
                 is Right -> {
                     val updatedLocalState = LocalStateStatus.Present(either.r.localState)
                     val sPConsents = responseHandler(either, action)

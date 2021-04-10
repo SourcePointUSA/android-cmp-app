@@ -9,6 +9,7 @@ import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.util.check
 import okhttp3.* // ktlint-disable
 import org.json.JSONObject
 
@@ -55,63 +56,6 @@ private class NetworkClientImpl(
                 }
             }
     }
-
-//    override fun getMessage1203(
-//        messageReq: MessageReq,
-//        pSuccess: (UnifiedMessageResp1203) -> Unit,
-//        pError: (Throwable) -> Unit
-//    ) {
-//        val mediaType = MediaType.parse("application/json")
-//        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
-//
-//        val request: Request = Request.Builder()
-// //            .url(urlManager.inAppUrlMessage1203)
-//            .post(body)
-//            .build()
-//
-//        httpClient
-//            .newCall(request)
-//            .enqueue {
-//                onFailure { _, exception ->
-//                    pError(exception)
-//                }
-//                onResponse { _, r ->
-//                    responseManager
-//                        .parseResponse1203(r)
-//                        .map { pSuccess(it) }
-//                        .executeOnLeft { pError(it) }
-//                }
-//            }
-//    }
-
-//    override fun getMessage(
-//        messageReq: MessageReq,
-//        pSuccess: (UnifiedMessageResp) -> Unit,
-//        pError: (Throwable) -> Unit,
-//        env: Env
-//    ) {
-//        val mediaType = MediaType.parse("application/json")
-//        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
-//        val url = urlManager.inAppMessageUrl(env).also { logger.i(NetworkClientImpl::class.java.name, "url getMessage [$it]") }
-//        val request: Request = Request.Builder()
-//            .url(url)
-//            .post(body)
-//            .build()
-//
-//        httpClient
-//            .newCall(request)
-//            .enqueue {
-//                onFailure { _, exception ->
-//                    pError(exception)
-//                }
-//                onResponse { _, r ->
-//                    responseManager
-//                        .parseResponse(r)
-//                        .map { pSuccess(it) }
-//                        .executeOnLeft { pError(it) }
-//                }
-//            }
-//    }
 
     // TODO verify if we need it
     override fun getNativeMessage(
@@ -196,7 +140,7 @@ private class NetworkClientImpl(
         consentReq: JSONObject,
         env: Env,
         consentAction: ConsentAction
-    ): Either<ConsentResp> {
+    ): Either<ConsentResp> = check {
 
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, consentReq.toString())
@@ -211,7 +155,7 @@ private class NetworkClientImpl(
 
         val response = httpClient.newCall(request).execute()
 
-        return responseManager.parseConsentRes(response)
+        responseManager.parseConsentRes(response)
     }
 
     override fun sendConsent(
@@ -240,7 +184,7 @@ private class NetworkClientImpl(
                 }
                 onResponse { _, r ->
                     responseManager
-                        .parseConsentRes(r)
+                        .parseConsentResEither(r)
                         .map { success(it) }
                         .executeOnLeft { error(it) }
                 }

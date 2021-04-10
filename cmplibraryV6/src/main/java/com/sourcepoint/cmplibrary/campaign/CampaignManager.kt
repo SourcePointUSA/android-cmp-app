@@ -22,6 +22,7 @@ import org.json.JSONObject
 
 internal interface CampaignManager {
 
+    var spCampaignConfig: SpConfig
     fun addCampaign(legislation: Legislation, campaign: CampaignTemplate)
 
     fun isAppliedCampaign(legislation: Legislation): Boolean
@@ -71,6 +72,7 @@ private class CampaignManagerImpl(
         private var ccpaConsent: CCPAConsent? = null
     }
 
+    override lateinit var spCampaignConfig: SpConfig
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
 
     override fun addCampaign(legislation: Legislation, campaign: CampaignTemplate) {
@@ -107,7 +109,7 @@ private class CampaignManagerImpl(
         PmUrlConfig(
             consentUUID = "", // gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
             siteId = "7639",
-            messageId = gdpr.pmId
+            messageId = "" // gdpr.env
         )
     }
 
@@ -121,7 +123,7 @@ private class CampaignManagerImpl(
         PmUrlConfig(
             consentUUID = "", // ccpaConfig.uuid ?: fail("consentUUID cannot be null!!!"),
             siteId = "7639",
-            messageId = ccpa.pmId
+            messageId = "" // ccpa.env
         )
     }
 
@@ -173,8 +175,8 @@ private class CampaignManagerImpl(
         return MessageReq(
             requestUUID = "test",
             campaigns = Campaigns(
-                gdpr = gdpr?.toGdprReq(location = location, uuid = gdprUuid, meta = gdprMeta),
-                ccpa = ccpa?.toCcpaReq(location = location, uuid = ccpaUuid, meta = ccpaMeta)
+                gdpr = gdpr?.toGdprReq(targetingParams = gdpr.targetingParams, campaignEnv = gdpr.campaignEnv),
+                ccpa = ccpa?.toCcpaReq(targetingParams = ccpa.targetingParams, campaignEnv = ccpa.campaignEnv)
             )
         )
     }
@@ -185,21 +187,15 @@ private class CampaignManagerImpl(
         val storedGdpr = dataStorage.getGdpr()?.toGDPR()
         val storedCcpa = dataStorage.getCcpa()?.toCCPA()
 
-        val gdprUuid = storedGdpr?.uuid
-        val gdprMeta = storedGdpr?.meta
-
-        val ccpaUuid = storedCcpa?.uuid
-        val ccpaMeta = storedCcpa?.meta
-
         // TODO this is a test location
         val location = "EU"
         return UnifiedMessageRequest(
             requestUUID = "test",
-            propertyHref = gdpr?.propertyName ?: "",
-            accountId = gdpr?.accountId ?: 1,
+            propertyHref = spCampaignConfig.propertyName,
+            accountId = spCampaignConfig.accountId,
             campaigns = Campaigns(
-                gdpr = gdpr?.toGdprReq(location = location, uuid = gdprUuid, meta = gdprMeta),
-                ccpa = ccpa?.toCcpaReq(location = location, uuid = ccpaUuid, meta = ccpaMeta)
+                gdpr = gdpr?.toGdprReq(targetingParams = gdpr.targetingParams, campaignEnv = gdpr.campaignEnv),
+                ccpa = ccpa?.toCcpaReq(targetingParams = ccpa.targetingParams, campaignEnv = ccpa.campaignEnv)
             ),
             consentLanguage = MessageLanguage.ENGLISH
         )

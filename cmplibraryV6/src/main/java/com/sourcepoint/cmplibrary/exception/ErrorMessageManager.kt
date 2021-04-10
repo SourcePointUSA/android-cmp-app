@@ -1,8 +1,6 @@
 package com.sourcepoint.cmplibrary.exception
 
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
-import com.sourcepoint.cmplibrary.core.getOrNull
-import com.sourcepoint.cmplibrary.model.CampaignTemplate
 
 /**
  * Class in charge of building an error message
@@ -51,12 +49,12 @@ private class ErrorMessageManagerImpl(
     val legislation: Legislation = Legislation.GDPR
 ) : ErrorMessageManager {
     override fun build(exception: ConsentLibExceptionK): String {
-        val campaign: CampaignTemplate? = campaignManager.getAppliedCampaign().getOrNull()?.second
+        val spConf = campaignManager.spCampaignConfig
         return """
             {
                 "code" : "${exception.code.code}",
-                "accountId" : "${campaign?.accountId}",
-                "propertyHref" : "${campaign?.propertyName}",
+                "accountId" : "${spConf.accountId}",
+                "propertyHref" : "${spConf.propertyName}",
                 "description" : "${exception.description}",
                 "clientVersion" : "${clientInfo.clientVersion}",
                 "OSVersion" : "${clientInfo.osVersion}",

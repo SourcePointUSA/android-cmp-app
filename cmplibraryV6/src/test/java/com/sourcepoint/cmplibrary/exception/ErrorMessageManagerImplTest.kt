@@ -4,6 +4,7 @@ import android.app.Activity
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -22,9 +23,8 @@ class ErrorMessageManagerImplTest {
         osVersion = "30"
     )
     private val gdpr = CampaignTemplate(
-        accountId = 22,
-        propertyName = "http://dev.local",
-        pmId = "404472"
+        targetingParams = emptyArray(),
+        campaignEnv = CampaignEnv.STAGE
     )
 
     @MockK

@@ -2,18 +2,23 @@ package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.data.network.model.CcpaReq
 import com.sourcepoint.cmplibrary.data.network.model.GdprReq
-import com.sourcepoint.cmplibrary.data.network.model.TargetingParams
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObjStringify
-import com.sourcepoint.cmplibrary.data.network.util.Env
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.Legislation
 
-data class SpProperty(
+data class SpConfig(
     @JvmField val accountId: Int,
     @JvmField val propertyName: String,
-    @JvmField val environment: Env,
-    @JvmField val gdprPmId: String?,
-    @JvmField val ccpaPmId: String?
+    @JvmField val campaigns: Array<SpCampaign>
 )
+
+data class SpCampaign(
+    @JvmField val legislation: Legislation,
+    @JvmField val environment: CampaignEnv,
+    @JvmField val targetingParams: Array<TargetingParam>
+)
+
+data class TargetingParam(val key: String, val value: String)
 
 data class Campaign(
     @JvmField val accountId: Int,
@@ -22,53 +27,36 @@ data class Campaign(
 )
 
 internal open class CampaignTemplate(
-    open val accountId: Int,
-    open val propertyName: String,
-    open val pmId: String
+    open val campaignEnv: CampaignEnv,
+    open val targetingParams: Array<TargetingParam>
 )
 
 internal class GDPRCampaign(
-    @JvmField override val accountId: Int,
-    @JvmField override val propertyName: String,
-    @JvmField override val pmId: String
-) : CampaignTemplate(accountId, propertyName, pmId)
+    @JvmField override val campaignEnv: CampaignEnv,
+    @JvmField override val targetingParams: Array<TargetingParam>
+) : CampaignTemplate(campaignEnv, targetingParams)
 
 internal class CCPACampaign(
-    @JvmField override val accountId: Int,
-    @JvmField override val propertyName: String,
-    @JvmField override val pmId: String
-) : CampaignTemplate(accountId, propertyName, pmId)
+    @JvmField override val campaignEnv: CampaignEnv,
+    @JvmField override val targetingParams: Array<TargetingParam>
+) : CampaignTemplate(campaignEnv, targetingParams)
 
 internal fun CampaignTemplate.toGdprReq(
-    location: String,
-    uuid: String? = null,
-    meta: String? = null
+    targetingParams: Array<TargetingParam>,
+    campaignEnv: CampaignEnv
 ): GdprReq {
     return GdprReq(
-        accountId = accountId,
-        propertyHref = propertyName,
-        targetingParams = TargetingParams(
-            legislation = Legislation.GDPR.name,
-            location = location
-        ).toJsonObjStringify(),
-        uuid = uuid,
-        meta = meta
+        targetingParams = targetingParams.toJsonObjStringify(),
+        campaignEnv = campaignEnv
     )
 }
 
 internal fun CampaignTemplate.toCcpaReq(
-    location: String,
-    uuid: String? = null,
-    meta: String? = null
+    targetingParams: Array<TargetingParam>,
+    campaignEnv: CampaignEnv
 ): CcpaReq {
     return CcpaReq(
-        accountId = accountId,
-        propertyHref = propertyName,
-        targetingParams = TargetingParams(
-            legislation = Legislation.CCPA.name,
-            location = location
-        ).toJsonObjStringify(),
-        uuid = uuid,
-        meta = meta
+        targetingParams = targetingParams.toJsonObjStringify(),
+        campaignEnv = campaignEnv
     )
 }

@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 
 internal data class MessageReq(
@@ -13,33 +14,24 @@ internal data class Campaigns(
 )
 
 internal interface CampaignReq {
-    val accountId: Int
-    val propertyHref: String
     val targetingParams: String
-    val uuid: String?
-    val meta: String?
+    val campaignEnv: CampaignEnv
 }
 
 internal data class GdprReq(
-    override val accountId: Int,
-    override val propertyHref: String,
     override val targetingParams: String,
-    override val uuid: String? = null,
-    override val meta: String? = null
+    override val campaignEnv: CampaignEnv
 ) : CampaignReq
 
 internal data class CcpaReq(
-    override val accountId: Int,
-    override val propertyHref: String,
     override val targetingParams: String,
-    override val uuid: String? = null,
-    override val meta: String? = null
+    override val campaignEnv: CampaignEnv
 ) : CampaignReq
 
-internal class TargetingParams(
-    val legislation: String,
-    val location: String
-)
+// internal class TargetingParams(
+//    val legislation: String,
+//    val location: String
+// )
 
 internal data class UnifiedMessageRequest(
     val accountId: Int,

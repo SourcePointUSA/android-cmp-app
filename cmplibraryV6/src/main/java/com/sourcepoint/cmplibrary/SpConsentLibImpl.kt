@@ -27,12 +27,11 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.ActionType.SHOW_OPTIONS
-import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
+import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import java.util.* // ktlint-disable
 
 internal class SpConsentLibImpl(
-    internal val pPrivacyManagerTab: PrivacyManagerTabK,
     internal val context: Context,
     internal val pLogger: Logger,
     internal val pJsonConverter: JsonConverter,
@@ -141,7 +140,7 @@ internal class SpConsentLibImpl(
         )
     }
 
-    override fun loadGDPRPrivacyManager() {
+    override fun loadGDPRPrivacyManager(pmId: String, pmTab: PMTab) {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientIsNull()
         val pmConfig = campaignManager.getGdprPmConfig()
@@ -153,7 +152,7 @@ internal class SpConsentLibImpl(
             .executeOnLeft { logMess("PmUrlConfig is null") }
     }
 
-    override fun loadCCPAPrivacyManager() {
+    override fun loadCCPAPrivacyManager(pmId: String, pmTab: PMTab) {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientIsNull()
     }

@@ -13,7 +13,6 @@ import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.Campaign
-import com.sourcepoint.cmplibrary.model.PrivacyManagerTabK
 import com.sourcepoint.cmplibrary.stub.MockService
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.file2String
@@ -121,7 +120,6 @@ class SpConsentLibImplTest {
     }
 
     internal fun createLib() = SpConsentLibImpl(
-        pPrivacyManagerTab = PrivacyManagerTabK.FEATURES,
         urlManager = urlManager,
         context = appCtx,
         campaignManager = campaignManager,
