@@ -16,6 +16,7 @@ import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
+import com.sourcepoint.cmplibrary.model.TargetingParam
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
@@ -27,17 +28,13 @@ class CampaignManagerImplTest {
     private val appContext by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
 
     private val gdpr = GDPRCampaign(
-        accountId = 22,
-        propertyName = "https://unified.mobile.demo",
         campaignEnv = CampaignEnv.STAGE,
-        targetingParams = emptyArray()
+        targetingParams = arrayOf(TargetingParam("location", "EU"))
     )
 
     private val ccpa = CCPACampaign(
-        accountId = 22,
-        propertyName = "https://unified.mobile.demo",
         campaignEnv = CampaignEnv.STAGE,
-        targetingParams = emptyArray()
+        targetingParams = arrayOf(TargetingParam("location", "EU"))
     )
 
     private val ds by lazy {

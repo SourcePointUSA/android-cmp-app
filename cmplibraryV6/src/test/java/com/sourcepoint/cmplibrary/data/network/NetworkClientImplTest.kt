@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
-import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.TargetingParam
 import com.sourcepoint.cmplibrary.stub.MockCall
@@ -49,13 +48,13 @@ class NetworkClientImplTest {
         requestUUID = "test",
         campaigns = Campaigns(
             gdpr = GdprReq(
-                targetingParams = Array(1){
+                targetingParams = Array(1) {
                     TargetingParam("location", "EU")
                 }.toJsonObjStringify(),
                 campaignEnv = CampaignEnv.STAGE
             ),
             ccpa = CcpaReq(
-                targetingParams = Array(1){
+                targetingParams = Array(1) {
                     TargetingParam("location", "US")
                 }.toJsonObjStringify(),
                 campaignEnv = CampaignEnv.STAGE

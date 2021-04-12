@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.data.network.model
 
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
-import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.TargetingParam
 import org.junit.Test
 
@@ -12,13 +11,13 @@ class DataModelReqExtTest {
         requestUUID = "test",
         campaigns = Campaigns(
             gdpr = GdprReq(
-                targetingParams = Array(1){
+                targetingParams = Array(1) {
                     TargetingParam("location", "EU")
                 }.toJsonObjStringify(),
                 campaignEnv = CampaignEnv.STAGE
             ),
             ccpa = CcpaReq(
-                targetingParams = Array(1){
+                targetingParams = Array(1) {
                     TargetingParam("location", "US")
                 }.toJsonObjStringify(),
                 campaignEnv = CampaignEnv.STAGE
@@ -35,17 +34,13 @@ class DataModelReqExtTest {
         reqObj.contains("test").assertTrue()
 
         gdpr.run {
-            contains("22").assertTrue()
-            contains("https://tcfv2.mobile.webview").assertTrue()
+            contains("stage").assertTrue()
             contains("EU").assertTrue()
-            contains("GDPR").assertTrue()
         }
 
         ccpa.run {
-            contains("22").assertTrue()
-            contains("https://tcfv2.mobile.webview").assertTrue()
+            contains("stage").assertTrue()
             contains("US").assertTrue()
-            contains("CCPA").assertTrue()
         }
     }
 
@@ -54,10 +49,8 @@ class DataModelReqExtTest {
         val sut = req.campaigns.ccpa!!.toJsonObject().toString()
 
         sut.run {
-            contains("22").assertTrue()
-            contains("https://tcfv2.mobile.webview").assertTrue()
+            contains("stage").assertTrue()
             contains("US").assertTrue()
-            contains("CCPA").assertTrue()
         }
     }
 
@@ -67,7 +60,6 @@ class DataModelReqExtTest {
 
         sut.run {
             contains("US").assertTrue()
-            contains("CCPA").assertTrue()
         }
     }
 }

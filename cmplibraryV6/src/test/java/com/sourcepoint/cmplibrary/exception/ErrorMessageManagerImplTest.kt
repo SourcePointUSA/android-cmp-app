@@ -1,11 +1,13 @@
 package com.sourcepoint.cmplibrary.exception
 
-import android.app.Activity
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
-import com.sourcepoint.cmplibrary.model.CampaignTemplate
+import com.sourcepoint.cmplibrary.model.GDPRCampaign
+import com.sourcepoint.cmplibrary.model.SpCampaign
+import com.sourcepoint.cmplibrary.model.SpConfig
+import com.sourcepoint.cmplibrary.model.TargetingParam
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -22,9 +24,19 @@ class ErrorMessageManagerImplTest {
         deviceFamily = "android",
         osVersion = "30"
     )
-    private val gdpr = CampaignTemplate(
-        targetingParams = emptyArray(),
-        campaignEnv = CampaignEnv.STAGE
+
+    private val gdprTemplate = GDPRCampaign(CampaignEnv.STAGE, arrayOf(TargetingParam("location", "EU")))
+
+    private val gdpr = SpCampaign(
+        legislation = Legislation.GDPR,
+        environment = CampaignEnv.STAGE,
+        targetingParams = arrayOf(TargetingParam("location", "EU"))
+    )
+
+    private val spConfig = SpConfig(
+        accountId = 22,
+        propertyName = "http://dev.local",
+        campaigns = arrayOf(gdpr)
     )
 
     @MockK
@@ -32,13 +44,11 @@ class ErrorMessageManagerImplTest {
 
     internal val sut by lazy { createErrorManager(campaignManager, client) }
 
-    @MockK
-    private lateinit var context: Activity
-
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
-        every { campaignManager.getAppliedCampaign() }.returns(Either.Right(Pair(Legislation.GDPR, gdpr)))
+        every { campaignManager.getAppliedCampaign() }.returns(Either.Right(Pair(Legislation.GDPR, gdprTemplate)))
+        every { campaignManager.spCampaignConfig }.returns(spConfig)
     }
 
     @Test
