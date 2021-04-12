@@ -45,17 +45,9 @@ internal fun CampaignReq.toJsonObject(): JSONObject {
     return JSONObject()
         .apply {
             put("targetingParams", targetingParams)
-            put("campaignEnv", campaignEnv.name.toLowerCase())
+            put("campaignEnv", campaignEnv.value)
         }
 }
-
-// internal fun TargetingParams.toJsonObjStringify(): String {
-//    return JSONObject()
-//        .apply {
-//            put("location", location)
-//        }
-//        .toString()
-// }
 
 internal fun Array<TargetingParam>.toJsonObjStringify(): String {
     return JSONObject()

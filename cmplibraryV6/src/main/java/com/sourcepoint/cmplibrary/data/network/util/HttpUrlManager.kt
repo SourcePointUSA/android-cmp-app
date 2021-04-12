@@ -281,7 +281,7 @@ enum class Env {
     PROD
 }
 
-enum class CampaignEnv {
-    STAGE,
-    PUBLIC
+enum class CampaignEnv(val value : String) {
+    STAGE("stage"),
+    PUBLIC("prod")
 }

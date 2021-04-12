@@ -184,8 +184,6 @@ private class CampaignManagerImpl(
     override fun getUnifiedMessageReq(): UnifiedMessageRequest {
         val gdpr: CampaignTemplate? = mapTemplate[Legislation.GDPR.name]
         val ccpa: CampaignTemplate? = mapTemplate[Legislation.CCPA.name]
-        val storedGdpr = dataStorage.getGdpr()?.toGDPR()
-        val storedCcpa = dataStorage.getCcpa()?.toCCPA()
 
         // TODO this is a test location
         val location = "EU"
