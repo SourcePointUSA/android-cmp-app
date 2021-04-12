@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.ActionType
+import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONObject
@@ -34,13 +35,12 @@ internal fun String.toConsentAction(): ConsentAction {
     val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } }
         ?: fail("actionType")
     val choiceId = (map["choiceId"] as? String)
-    val legislation = (map["legislation"] as? String)
-        ?: "CCPA" // fail("legislation") // TODO In case of PM we don't receive this value!!!!
-    val privacyManagerId = (map["privacyManagerId"] as? String)
+    val legislation = map.getFieldValue<String>("legislation") ?: "CCPA"
+    val privacyManagerId = (map["pmId"] as? String) ?: (map["localPmId"] as? String)
     val pmTab = (map["pmTab"] as? String)
-    val requestFromPm = (map["requestFromPm"] as? Boolean) ?: fail("requestFromPm")
-    val saveAndExitVariables = (map["saveAndExitVariables"] as? String)?.let { JSONObject(it) } ?: JSONObject()
-    val consentLanguage = (map["consentLanguage"] as? String) ?: "EN"
+    val requestFromPm = map.getFieldValue<Boolean>("requestFromPm") ?: false
+    val saveAndExitVariables = map.getMap("saveAndExitVariables")?.let { JSONObject(it) } ?: JSONObject()
+    val consentLanguage = map.getFieldValue<String>("consentLanguage") ?: "EN"
 
     return ConsentAction(
         actionType = actionType,

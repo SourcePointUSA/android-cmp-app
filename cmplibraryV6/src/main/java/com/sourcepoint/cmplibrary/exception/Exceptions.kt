@@ -209,6 +209,21 @@ class InvalidLocalDataException @JvmOverloads constructor(
 }
 
 /**
+ * This exception is thrown when the propertyName is not properly formatted
+ */
+class InvalidArgumentException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = CodeList.INVALID_LOCAL_DATA
+}
+
+/**
  * This exception is thrown when we receive a request timeout
  */
 class ConnectionTimeoutException @JvmOverloads constructor(

@@ -6,5 +6,6 @@ import okhttp3.HttpUrl
 
 internal interface IConsentWebView {
     fun loadConsentUIFromUrl(url: HttpUrl, legislation: Legislation): Either<Boolean>
+    fun loadConsentUIFromUrl(url: HttpUrl, legislation: Legislation, pmId: String?): Either<Boolean>
     fun loadConsentUI(campaignModel: CampaignModel, url: HttpUrl, legislation: Legislation): Either<Boolean>
 }

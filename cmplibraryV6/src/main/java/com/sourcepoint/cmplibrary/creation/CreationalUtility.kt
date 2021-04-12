@@ -42,3 +42,5 @@ internal fun networkClient(netClient: OkHttpClient, responseManage: ResponseMana
         logger = logger
     )
 }
+
+internal val validPattern = "^[a-zA-Z.:/0-9-]*$".toRegex()

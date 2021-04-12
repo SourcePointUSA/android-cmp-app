@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
+import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.SpConfig
 import org.json.JSONObject
 
@@ -24,7 +25,7 @@ internal class MockService(
     override fun getCcpa(): Either<Ccpa> = Left(RuntimeException())
     override fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>> = Left(RuntimeException())
     override fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate> = Left(RuntimeException())
-    override fun getGdprPmConfig(): Either<PmUrlConfig> = Left(RuntimeException())
+    override fun getGdprPmConfig(pmId: String?, pmTab: PMTab): Either<PmUrlConfig> = Left(RuntimeException())
     override fun getMessageReq(): MessageReq {
         TODO("Not yet implemented")
     }
@@ -36,7 +37,7 @@ internal class MockService(
     override fun saveCCPAConsent(consent: CCPAConsent?) {}
     override fun parseRenderingMessage() {}
     override fun clearConsents() {}
-    override fun getCcpaPmConfig(): Either<PmUrlConfig> = Left(RuntimeException())
+    override fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = Left(RuntimeException())
     override fun getUnifiedMessageResp1203(): Either<UnifiedMessageResp1203> = Left(RuntimeException())
     override fun getGdpr1203(): Either<Gdpr1203> = Left(RuntimeException())
     override fun getCcpa1203(): Either<Ccpa1203> = Left(RuntimeException())

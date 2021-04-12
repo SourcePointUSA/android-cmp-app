@@ -13,7 +13,7 @@ import okhttp3.HttpUrl
  */
 internal interface HttpUrlManager {
     fun sendConsentUrl(actionType: ActionType, env: Env, legislation: Legislation): HttpUrl
-    fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig?): HttpUrl
+    fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig): HttpUrl
     fun inAppMessageUrl(env: Env): HttpUrl
     fun urlURenderingApp(env: Env): HttpUrl
 
@@ -140,7 +140,20 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("message_id", pmConf.messageId)
         .build()
 
-    fun urlPmGdpr(): HttpUrl = HttpUrl.parse("https://cdn.privacy-mgmt.com/privacy-manager/index.html?consentLanguage=&site_id=7639&message_id=122058&consentUUID=170ea8dc-54e4-4f65-9914-6abe83106225")!!
+    // https://notice.sp-stage.net/privacy-manager/index.html?message_id=12595
+    private fun urlPmGdpr(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
+        .scheme("https")
+        .host("notice.sp-stage.net")
+        .addPathSegments("privacy-manager/index.html")
+        .addQueryParameter("pmTab", pmConf.pmTab.key)
+        .addQueryParameter("message_id", "12595")
+        .apply {
+            pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
+            pmConf.consentLanguage?.let { addQueryParameter("consentUUID", it) }
+            pmConf.siteId?.let { addQueryParameter("site_id", it) }
+            pmConf.messageId?.let { addQueryParameter("message_id", it) }
+        }
+        .build()
 
     fun urlPmCcpa(): HttpUrl = HttpUrl.parse("https://ccpa-inapp-pm.sp-prod.net?ccpa_origin=https://ccpa-service.sp-prod.net&privacy_manager_id=5df9105bcf42027ce707bb43&ccpaUUID=76c950be-45be-40ce-878b-c7bcf091722d&site_id=6099")!!
 
@@ -265,8 +278,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         }
     }
 
-    override fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig?): HttpUrl = when (legislation) {
-        Legislation.GDPR -> urlPmGdpr() // urlUWPm(pmConfig!!, UrlLegislation.valueOf(legislation.name))
+    override fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig): HttpUrl = when (legislation) {
+        Legislation.GDPR -> urlPmGdpr(pmConfig)
         Legislation.CCPA -> urlPmCcpa() // urlUWPm(pmConfig!!, UrlLegislation.valueOf(legislation.name))
     }
 }

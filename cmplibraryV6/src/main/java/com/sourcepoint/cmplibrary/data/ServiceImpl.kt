@@ -103,7 +103,6 @@ private class ServiceImpl(
             .flatMap {
                 nc.sendConsent(it, env, consentAction)
             }
-            .executeOnLeft { error(it) }
     }
 
     override fun sendConsent(

@@ -31,6 +31,7 @@ function actionFromMessage(payload) {
 
 function actionFromPM(payload) {
     return {
+        localPmId: window.localPmId,
         legislation: window.spLegislation,
         name: payload.name,
         actionType: payload.actionType,

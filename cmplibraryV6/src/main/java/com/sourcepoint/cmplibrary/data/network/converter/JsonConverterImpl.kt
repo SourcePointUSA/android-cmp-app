@@ -34,30 +34,7 @@ private class JsonConverterImpl : JsonConverter {
     }
 
     override fun toConsentAction(body: String): Either<ConsentAction> = check {
-
-        val map: Map<String, Any?> = JSONObject(body).toTreeMap()
-
-        val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } }
-            ?: fail("actionType")
-        val choiceId = (map["choiceId"] as? String)
-        val legislation = (map["legislation"] as? String)
-            ?: "CCPA" // fail("legislation") // TODO In case of PM we don't receive this value!!!!
-        val privacyManagerId = (map["privacyManagerId"] as? String)
-        val pmTab = (map["pmTab"] as? String)
-        val requestFromPm = (map["requestFromPm"] as? Boolean) ?: fail("requestFromPm")
-        val saveAndExitVariables = (map["saveAndExitVariables"] as? String)?.let { JSONObject(it) } ?: JSONObject()
-        val consentLanguage = (map["consentLanguage"] as? String) ?: "EN"
-
-        ConsentAction(
-            actionType = actionType,
-            choiceId = choiceId,
-            privacyManagerId = privacyManagerId,
-            pmTab = pmTab,
-            requestFromPm = requestFromPm,
-            saveAndExitVariables = saveAndExitVariables,
-            consentLanguage = consentLanguage,
-            legislation = Legislation.valueOf(legislation)
-        )
+        body.toConsentAction()
     }
 
     override fun toNativeMessageResp(body: String): Either<NativeMessageResp> = check {

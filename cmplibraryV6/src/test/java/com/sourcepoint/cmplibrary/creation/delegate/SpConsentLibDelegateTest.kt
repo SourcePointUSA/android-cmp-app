@@ -16,7 +16,8 @@ class SpConsentLibDelegateTest {
     private val campaign = SpConfig(
         22,
         "tcfv2.mobile.webview",
-        emptyArray()
+        emptyArray(),
+
     )
 
     @MockK

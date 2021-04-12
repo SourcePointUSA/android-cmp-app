@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary
 
 import android.view.View
 import com.sourcepoint.cmplibrary.model.ActionType
-import com.sourcepoint.cmplibrary.model.SPConsents
+import com.sourcepoint.cmplibrary.consent.SPConsents
 
 interface SpClient {
     /**

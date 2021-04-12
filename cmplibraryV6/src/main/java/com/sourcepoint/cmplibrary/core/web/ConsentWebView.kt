@@ -97,6 +97,20 @@ internal class ConsentWebView(
         true
     }
 
+    override fun loadConsentUIFromUrl(url: HttpUrl, legislation: Legislation, pmId: String?): Either<Boolean> = check {
+        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
+        spWebViewClient.jsReceiverConfig = {
+            val sb = StringBuffer()
+            sb.append("""
+                javascript: window.spLegislation = '${legislation.name}'; window.localPmId ='$pmId';
+                ${"js_receiver.js".file2String()};
+            """.trimIndent())
+            sb.toString()
+        }
+        loadUrl(url.toString())
+        true
+    }
+
     override fun loadConsentUI(campaignModel: CampaignModel, url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
         val legislation: Legislation = campaignModel.type
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")

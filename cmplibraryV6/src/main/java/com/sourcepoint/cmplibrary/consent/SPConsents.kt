@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.model
+package com.sourcepoint.cmplibrary.consent
 
 import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsent
 import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent

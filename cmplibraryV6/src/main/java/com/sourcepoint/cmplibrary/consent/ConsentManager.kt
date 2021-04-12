@@ -13,7 +13,6 @@ import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.SPConsents
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import java.util.* //ktlint-disable
@@ -59,34 +58,6 @@ private class ConsentManagerImpl(
     override val enqueuedActions: Int
         get() = consentQueue2.size
 
-//    override var localState: String? = null
-    private val consentQueue: Queue<ConsentAction> = LinkedList()
-
-//    override fun enqueueConsent(consentAction: ConsentAction) {
-//        consentQueue.offer(consentAction)
-//    }
-//
-//    override fun sendConsent(
-//        success: (SPConsents) -> Unit,
-//        error: (Throwable) -> Unit
-//    ) {
-//        executorManager.executeOnSingleThread {
-//            var sPConsents = SPConsents()
-//            while (!consentQueue.isEmpty()) {
-//                val action = consentQueue.poll()
-//                when (val either = service.sendConsent(action, env)) {
-//                    is Right -> {
-//                        sPConsents = responseHandler(either, action, sPConsents)
-//                        consentManagerUtils.saveGdprConsent(either.r.content)
-//                    }
-//                    is Left -> error(either.t)
-//                }
-//            }
-//            /** send the final response to the client */
-//            success(sPConsents)
-//        }
-//    }
-
     override fun enqueueConsent2(consentAction: ConsentAction) {
         consentQueue2.offer(consentAction)
         val lState: LocalStateStatus.Present? = localStateStatus as? LocalStateStatus.Present
@@ -114,7 +85,7 @@ private class ConsentManagerImpl(
 
     override fun sendConsent2(action: ConsentAction, localState: String) {
         executorManager.executeOnSingleThread {
-            when (val either = service.sendConsent(localState, action, env, null)) {
+            when (val either = service.sendConsent(localState, action, env, action.privacyManagerId)) {
                 is Right -> {
                     val updatedLocalState = LocalStateStatus.Present(either.r.localState)
                     val sPConsents = responseHandler(either, action)
@@ -128,25 +99,10 @@ private class ConsentManagerImpl(
     }
 }
 
-sealed class LocalStateStatus {
+internal sealed class LocalStateStatus {
     data class Present(val value: String) : LocalStateStatus()
     object Absent : LocalStateStatus()
     object Consumed : LocalStateStatus()
-}
-
-internal fun responseHandler(either: Right<ConsentResp>, action: ConsentAction, sPConsents: SPConsents): SPConsents {
-    val map: Map<String, Any?> = either.r.content.toTreeMap()
-    return map.getMap("userConsent")
-        ?.let {
-            when (action.legislation) {
-                Legislation.GDPR -> it.toGDPRUserConsent().let { gdprConsent ->
-                    sPConsents.copy(gdpr = SPGDPRConsent(consent = gdprConsent, applies = true))
-                }
-                Legislation.CCPA -> it.toCCPAUserConsent().let { ccpaConsent ->
-                    sPConsents.copy(ccpa = SPCCPAConsent(consent = ccpaConsent, applies = true))
-                }
-            }
-        } ?: sPConsents
 }
 
 internal fun responseHandler(either: Right<ConsentResp>, action: ConsentAction): SPConsents {

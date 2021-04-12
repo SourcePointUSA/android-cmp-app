@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.cmplibrary.SPMessage;
 import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.SpConsentLib;
+import com.sourcepoint.cmplibrary.consent.SPConsents;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv;
 import com.sourcepoint.cmplibrary.exception.Legislation;
@@ -39,8 +40,11 @@ public class MainActivityV6 extends AppCompatActivity {
 
     private final SpConfig spConfig = new SpConfig(
             22,
-            "http://carm.uw.con",
-            new SpCampaign[]{gdprCampaign, ccpaCamapign}
+            "carm.uw.con",
+            new SpCampaign[]{
+                    ccpaCamapign,
+                    gdprCampaign
+            }
     );
 
     private SpConsentLib gdprConsent = null;
@@ -53,7 +57,7 @@ public class MainActivityV6 extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         gdprConsent = FactoryKt.makeConsentLib(spConfig, this);
         gdprConsent.setSpClient(new LocalClient());
-        findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadGDPRPrivacyManager("", PMTab.DEFAULT));
+        findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadGDPRPrivacyManager("12595", PMTab.PURPOSES));
     }
 
     @Override

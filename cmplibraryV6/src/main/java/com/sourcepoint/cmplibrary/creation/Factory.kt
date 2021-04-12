@@ -26,6 +26,7 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
+import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
@@ -47,6 +48,11 @@ fun makeConsentLib(
     val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
     val campaignManager: CampaignManager = CampaignManager.create(dataStorage).apply {
         this.spCampaignConfig = spConfig
+        if(!spConfig.propertyName.contains(validPattern)){
+            throw InvalidArgumentException(description = """
+                PropertyName can only include letters, numbers, '.', ':', '-' and '/'. (string) passed is invalid
+            """.trimIndent())
+        }
         spConfig.also { spp ->
             spp.campaigns.forEach {
                 when (it.legislation) {

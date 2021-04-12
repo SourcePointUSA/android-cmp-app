@@ -143,11 +143,15 @@ internal class SpConsentLibImpl(
     override fun loadGDPRPrivacyManager(pmId: String, pmTab: PMTab) {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientIsNull()
-        val pmConfig = campaignManager.getGdprPmConfig()
+        val pmConfig = campaignManager.getGdprPmConfig(pmId, pmTab)
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
-                webView?.loadConsentUIFromUrl(urlManager.pmUrl(legislation = Legislation.GDPR, pmConfig = it, env = env), Legislation.GDPR)
+                webView?.loadConsentUIFromUrl(
+                    url = urlManager.pmUrl(legislation = Legislation.GDPR, pmConfig = it, env = env),
+                    legislation = Legislation.GDPR,
+                    pmId = it.messageId
+                )
             }
             .executeOnLeft { logMess("PmUrlConfig is null") }
     }
@@ -185,17 +189,17 @@ internal class SpConsentLibImpl(
     // TODO in progress
     inner class NativeMsgDelegate : NativeMessageClient {
 
-        override fun onClickAcceptAll(view: View, ca: ConsentAction) { }
+        override fun onClickAcceptAll(view: View, ca: ConsentAction) {}
 
-        override fun onClickRejectAll(view: View, ca: ConsentAction) { }
+        override fun onClickRejectAll(view: View, ca: ConsentAction) {}
 
-        override fun onPmDismiss(view: View, ca: ConsentAction) { }
+        override fun onPmDismiss(view: View, ca: ConsentAction) {}
 
-        override fun onClickShowOptions(view: View, ca: ConsentAction) { }
+        override fun onClickShowOptions(view: View, ca: ConsentAction) {}
 
-        override fun onClickCancel(view: View, ca: ConsentAction) { }
+        override fun onClickCancel(view: View, ca: ConsentAction) {}
 
-        override fun onDefaultAction(view: View, ca: ConsentAction) { }
+        override fun onDefaultAction(view: View, ca: ConsentAction) {}
     }
 
     /** Start Receiver methods */
@@ -289,18 +293,19 @@ internal class SpConsentLibImpl(
         when (action.legislation) {
             Legislation.GDPR -> {
                 viewManager.removeView(view)
-                campaignManager.getGdprPmConfig()
+                campaignManager.getGdprPmConfig(action.privacyManagerId, PMTab.DEFAULT)
                     .map { pmUrlConfig ->
                         iConsentWebView.loadConsentUIFromUrl(
-                            urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env),
-                            action.legislation
+                            url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env),
+                            legislation = action.legislation,
+                            pmId = action.privacyManagerId
                         )
                     }
                     .executeOnLeft { it.printStackTrace() }
             }
             Legislation.CCPA -> {
                 viewManager.removeView(view)
-                campaignManager.getCcpaPmConfig()
+                campaignManager.getCcpaPmConfig(action.privacyManagerId)
                     .map { pmUrlConfig ->
                         iConsentWebView.loadConsentUIFromUrl(
                             urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env),

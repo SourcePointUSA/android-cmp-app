@@ -35,8 +35,8 @@ internal interface CampaignManager {
     fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>>
     fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate>
 
-    fun getGdprPmConfig(): Either<PmUrlConfig>
-    fun getCcpaPmConfig(): Either<PmUrlConfig>
+    fun getGdprPmConfig(pmId: String?, pmTab: PMTab): Either<PmUrlConfig>
+    fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig>
 
     fun getMessageReq(): MessageReq
     fun getUnifiedMessageReq(): UnifiedMessageRequest
@@ -99,7 +99,7 @@ private class CampaignManagerImpl(
         mapTemplate[legislation.name] ?: fail("${legislation.name} Campain is missing!!!")
     }
 
-    override fun getGdprPmConfig(): Either<PmUrlConfig> = check {
+    override fun getGdprPmConfig(pmId: String?, pmTab: PMTab): Either<PmUrlConfig> = check {
         val gdpr: CampaignTemplate = mapTemplate[Legislation.GDPR.name]
             ?: fail("===> Privacy manager url config is missing!!! GDPR user config is missing.")
 
@@ -107,13 +107,15 @@ private class CampaignManagerImpl(
             ?: fail("===> Privacy manager url config is missing!!! GDPR object is missing from DataStorage.")
 
         PmUrlConfig(
-            consentUUID = "", // gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
-            siteId = "7639",
-            messageId = "" // gdpr.env
+            consentUUID = null,//gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
+            siteId = null,
+            messageId = pmId,
+            consentLanguage = null,
+            pmTab = pmTab
         )
     }
 
-    override fun getCcpaPmConfig(): Either<PmUrlConfig> = check {
+    override fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = check {
         val ccpa: CampaignTemplate = mapTemplate[Legislation.CCPA.name]
             ?: fail("===> Privacy manager url config is missing!!! CCPA user config is missing.")
 
@@ -121,9 +123,10 @@ private class CampaignManagerImpl(
             ?: fail("===> Privacy manager url config is missing!!! CCPA object is missing from DataStorage.")
 
         PmUrlConfig(
-            consentUUID = "", // ccpaConfig.uuid ?: fail("consentUUID cannot be null!!!"),
-            siteId = "7639",
-            messageId = "" // ccpa.env
+            consentUUID = null, // ccpaConfig.uuid ?: fail("consentUUID cannot be null!!!"),
+            siteId = null,
+            messageId = pmId,
+            consentLanguage = null
         )
     }
 

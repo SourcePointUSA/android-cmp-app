@@ -15,7 +15,7 @@ internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
     return JSONObject()
         .apply {
             put("requestUUID", requestUUID)
-            put("propertyHref", propertyHref)
+            put("propertyHref", "http://$propertyHref")
             put("accountId", accountId)
             put("idfaStatus", idfaStatus)
             put("campaigns", campaigns.toJsonObject())

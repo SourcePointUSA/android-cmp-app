@@ -12,10 +12,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.sourcepoint.cmplibrary.SPMessage
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
+import com.sourcepoint.cmplibrary.consent.SPConsents
 import com.sourcepoint.cmplibrary.core.layout.createCustomNativeMessage
 import com.sourcepoint.cmplibrary.core.layout.createDefaultNativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
-import com.sourcepoint.cmplibrary.creation.delegate.ConsentLibDelegate
 import com.sourcepoint.cmplibrary.model.*
 import kotlinx.android.synthetic.main.content_main.*
 
