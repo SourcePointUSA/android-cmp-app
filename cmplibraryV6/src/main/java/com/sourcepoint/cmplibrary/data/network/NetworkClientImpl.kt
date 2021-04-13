@@ -155,7 +155,7 @@ private class NetworkClientImpl(
 
         val response = httpClient.newCall(request).execute()
 
-        responseManager.parseConsentRes(response)
+        responseManager.parseConsentRes(response, consentAction.legislation)
     }
 
     override fun sendConsent(
@@ -184,7 +184,7 @@ private class NetworkClientImpl(
                 }
                 onResponse { _, r ->
                     responseManager
-                        .parseConsentResEither(r)
+                        .parseConsentResEither(r, consentAction.legislation)
                         .map { success(it) }
                         .executeOnLeft { error(it) }
                 }

@@ -107,8 +107,8 @@ class Builder {
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
         val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
-        val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, urlManager)
-        val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, Env.PROD, logger, execManager)
+        val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, dataStorage, logger)
+        val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, Env.PROD, logger, dataStorage, execManager)
 
         return SpConsentLibImpl(
             urlManager = urlManager,

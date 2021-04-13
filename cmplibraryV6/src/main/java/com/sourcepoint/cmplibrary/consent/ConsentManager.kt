@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.core.Either.Left
 import com.sourcepoint.cmplibrary.core.Either.Right
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.Service
+import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
@@ -25,6 +26,7 @@ internal interface ConsentManager {
         localState: String
     )
     val enqueuedActions: Int
+    val gdprUuid: String?
     var sPConsentsSuccess: ((SPConsents) -> Unit)?
     var sPConsentsError: ((Throwable) -> Unit)?
 
@@ -36,14 +38,16 @@ internal fun ConsentManager.Companion.create(
     consentManagerUtils: ConsentManagerUtils,
     env: Env,
     logger: Logger,
+    dataStorage: DataStorage,
     executorManager: ExecutorManager
-): ConsentManager = ConsentManagerImpl(service, consentManagerUtils, logger, env, executorManager)
+): ConsentManager = ConsentManagerImpl(service, consentManagerUtils, logger, env, dataStorage, executorManager)
 
 private class ConsentManagerImpl(
     private val service: Service,
     private val consentManagerUtils: ConsentManagerUtils,
     private val logger: Logger,
     private val env: Env,
+    private val dataStorage: DataStorage,
     private val executorManager: ExecutorManager
 ) : ConsentManager {
 
@@ -57,6 +61,9 @@ private class ConsentManagerImpl(
     private val consentQueue2: Queue<ConsentAction> = LinkedList()
     override val enqueuedActions: Int
         get() = consentQueue2.size
+
+    override val gdprUuid: String?
+        get() = dataStorage.getGdprConsentUuid()
 
     override fun enqueueConsent2(consentAction: ConsentAction) {
         consentQueue2.offer(consentAction)

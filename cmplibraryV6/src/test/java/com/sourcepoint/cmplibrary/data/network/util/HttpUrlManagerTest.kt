@@ -32,10 +32,10 @@ class HttpUrlManagerTest {
     fun `GIVEN pmId and `() {
         val config = PmUrlConfig(
             pmTab = PMTab.DEFAULT,
+            consentLanguage = "EN",
             consentUUID = "89b2d14b-70ee-4344-8cc2-1b7b281d0f2d",
             siteId = "7639",
-            messageId = "122058",
-            consentLanguage = "EN"
+            messageId = "122058"
         )
         val sut = HttpUrlManagerSingleton.urlPm(config)
         val url = sut.toString()
@@ -47,10 +47,10 @@ class HttpUrlManagerTest {
     fun `GIVEN an OTT and `() {
         val config = PmUrlConfig(
             pmTab = PMTab.DEFAULT,
+            consentLanguage = "EN",
             consentUUID = "3c7c3e22-0aac-4941-b97d-8e70b73b91c7",
             siteId = "7639",
-            messageId = "122058",
-            consentLanguage = "EN"
+            messageId = "122058"
         )
         val sut = HttpUrlManagerSingleton.ottUrlPm(config)
         val url = sut.toString()

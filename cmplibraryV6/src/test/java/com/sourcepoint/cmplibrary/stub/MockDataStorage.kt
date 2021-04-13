@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.stub
 
 import android.content.SharedPreferences
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
@@ -41,7 +42,7 @@ internal class MockDataStorage : DataStorage {
         storage[DataStorageGdpr.META_DATA_KEY] = value
     }
 
-    override fun saveConsentUuid(value: String) {
+    override fun saveGdprConsentUuid(value: String) {
         storage[DataStorageGdpr.CONSENT_UUID_KEY] = value
     }
 
@@ -73,7 +74,7 @@ internal class MockDataStorage : DataStorage {
         return storage[DataStorageGdpr.META_DATA_KEY] as? String ?: ""
     }
 
-    override fun getConsentUuid(): String {
+    override fun getGdprConsentUuid(): String? {
         return storage[DataStorageGdpr.CONSENT_UUID_KEY] as? String ?: ""
     }
 
@@ -106,6 +107,10 @@ internal class MockDataStorage : DataStorage {
 
     override fun saveCcpa(value: String) {
         ccpaVal = value
+    }
+
+    override fun saveCcpaConsentUuid(value: String) {
+        storage[DataStorageCcpa.CONSENT_CCPA_UUID_KEY] = value
     }
 
     override fun getCcpa(): String? = ccpaVal

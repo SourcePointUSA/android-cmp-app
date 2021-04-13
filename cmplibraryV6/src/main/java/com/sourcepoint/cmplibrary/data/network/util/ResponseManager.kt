@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.data.network.model.NativeMessageRespK
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp1203
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
+import com.sourcepoint.cmplibrary.exception.Legislation
 import okhttp3.Response
 
 /**
@@ -30,7 +31,7 @@ internal interface ResponseManager {
 
     fun parseNativeMessResK(r: Response): Either<NativeMessageRespK>
 
-    fun parseConsentResEither(r: Response): Either<ConsentResp>
-    fun parseConsentRes(r: Response): ConsentResp
+    fun parseConsentResEither(r: Response, legislation: Legislation): Either<ConsentResp>
+    fun parseConsentRes(r: Response, legislation: Legislation): ConsentResp
     companion object
 }

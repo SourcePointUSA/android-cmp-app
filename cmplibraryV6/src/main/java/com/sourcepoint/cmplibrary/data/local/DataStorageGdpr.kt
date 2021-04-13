@@ -29,7 +29,7 @@ internal interface DataStorageGdpr {
     fun saveAuthId(value: String)
     fun saveEuConsent(value: String)
     fun saveMetaData(value: String)
-    fun saveConsentUuid(value: String)
+    fun saveGdprConsentUuid(value: String)
     fun saveAppliedLegislation(value: String)
     fun saveGdprConsentResp(value: String)
     fun saveGdprMessage(value: String)
@@ -39,7 +39,7 @@ internal interface DataStorageGdpr {
     fun getAuthId(): String
     fun getEuConsent(): String
     fun getMetaData(): String
-    fun getConsentUuid(): String
+    fun getGdprConsentUuid(): String?
     fun getAppliedLegislation(): String
     fun getGdprConsentResp(): String
     fun getGdprMessage(): String
@@ -151,7 +151,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .apply()
     }
 
-    override fun saveConsentUuid(value: String) {
+    override fun saveGdprConsentUuid(value: String) {
         preference
             .edit()
             .putString(CONSENT_UUID_KEY, value)
@@ -200,8 +200,8 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         return preference.getString(META_DATA_KEY, "")!!
     }
 
-    override fun getConsentUuid(): String {
-        return preference.getString(CONSENT_UUID_KEY, "")!!
+    override fun getGdprConsentUuid(): String? {
+        return preference.getString(CONSENT_UUID_KEY, null)
     }
 
     override fun getAppliedLegislation(): String {

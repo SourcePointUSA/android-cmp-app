@@ -34,7 +34,7 @@ class DataStorageGdprImplTest {
         val storage = DataStorageGdpr.create(appContext).apply { clearAll() }
 
         storage.saveAuthId("auth")
-        storage.saveConsentUuid("uuid")
+        storage.saveGdprConsentUuid("uuid")
         storage.saveEuConsent("eu")
         storage.saveMetaData("meta")
         storage.saveAppliedLegislation("GDPR")
@@ -42,7 +42,7 @@ class DataStorageGdprImplTest {
         storage.saveTcData(getMap())
 
         storage.getAuthId().assertEquals("auth")
-        storage.getConsentUuid().assertEquals("uuid")
+        storage.getGdprConsentUuid().assertEquals("uuid")
         storage.getEuConsent().assertEquals("eu")
         storage.getMetaData().assertEquals("meta")
         storage.getAppliedLegislation().assertEquals("GDPR")
@@ -53,7 +53,7 @@ class DataStorageGdprImplTest {
 
         /** clearInternalData delete only these prefs */
         storage.getAuthId().assertEquals("")
-        storage.getConsentUuid().assertEquals("")
+        storage.getGdprConsentUuid().assertEquals("")
         storage.getEuConsent().assertEquals("")
         storage.getMetaData().assertEquals("")
 

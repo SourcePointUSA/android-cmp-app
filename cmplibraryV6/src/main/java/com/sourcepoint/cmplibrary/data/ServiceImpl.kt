@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
+import com.sourcepoint.cmplibrary.core.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.executeOnLeft
 import com.sourcepoint.cmplibrary.core.flatMap
@@ -13,9 +14,9 @@ import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
-import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.exception.Legislation.CCPA
 import com.sourcepoint.cmplibrary.exception.Legislation.GDPR
+import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 
@@ -31,8 +32,9 @@ internal fun Service.Companion.create(
     nc: NetworkClient,
     campaignManager: CampaignManager,
     consentManagerUtils: ConsentManagerUtils,
-    urlManager: HttpUrlManager
-): Service = ServiceImpl(nc, campaignManager, consentManagerUtils, urlManager)
+    dataStorage: DataStorage,
+    logger: Logger
+): Service = ServiceImpl(nc, campaignManager, consentManagerUtils, dataStorage, logger)
 
 /**
  * Implementation os the [Service] interface
@@ -41,7 +43,8 @@ private class ServiceImpl(
     private val nc: NetworkClient,
     private val campaignManager: CampaignManager,
     private val consentManagerUtils: ConsentManagerUtils,
-    private val urlManager: HttpUrlManager
+    private val dataStorage: DataStorage,
+    private val logger: Logger
 ) : Service, NetworkClient by nc, CampaignManager by campaignManager {
 
     override fun getUnifiedMessage(
@@ -102,6 +105,13 @@ private class ServiceImpl(
         return consentManagerUtils.buildConsentReq(consentAction, localState, pmId)
             .flatMap {
                 nc.sendConsent(it, env, consentAction)
+            }
+            .executeOnRight {
+                when (it.legislation) {
+                    GDPR -> dataStorage.saveGdprConsentUuid(it.uuid)
+                    CCPA -> dataStorage.saveCcpaConsentResp(it.uuid)
+                }
+                logger.d(this::class.java.name, "uuid[$it]")
             }
     }
 

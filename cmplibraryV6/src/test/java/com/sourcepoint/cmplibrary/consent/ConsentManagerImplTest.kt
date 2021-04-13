@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.Service
+import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
@@ -41,6 +42,9 @@ class ConsentManagerImplTest {
     private lateinit var logger: Logger
 
     @MockK
+    private lateinit var dataStorage: DataStorage
+
+    @MockK
     private lateinit var successMock: (UnifiedMessageResp) -> Unit
 
     @MockK
@@ -69,6 +73,7 @@ class ConsentManagerImplTest {
             consentManagerUtils = consentManagerUtils,
             env = Env.PROD,
             logger = logger,
+            dataStorage = dataStorage,
             executorManager = MockExecutorManager()
         )
     }
@@ -163,6 +168,7 @@ class ConsentManagerImplTest {
             consentManagerUtils = consentManagerUtils,
             env = Env.PROD,
             logger = logger,
+            dataStorage = dataStorage,
             executorManager = re
         )
 
@@ -203,6 +209,7 @@ class ConsentManagerImplTest {
             consentManagerUtils = consentManagerUtils,
             env = Env.PROD,
             logger = logger,
+            dataStorage = dataStorage,
             executorManager = re
         )
 

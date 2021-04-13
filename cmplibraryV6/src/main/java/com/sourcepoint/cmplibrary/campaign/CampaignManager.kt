@@ -106,12 +106,14 @@ private class CampaignManagerImpl(
         val gdprConfig = dataStorage.getGdpr1203()?.toGDPR1203()
             ?: fail("===> Privacy manager url config is missing!!! GDPR object is missing from DataStorage.")
 
+        val uuid = dataStorage.getGdprConsentUuid()
+
         PmUrlConfig(
-            consentUUID = null, // gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
-            siteId = null,
-            messageId = pmId,
+            pmTab = pmTab, // gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
             consentLanguage = null,
-            pmTab = pmTab
+            consentUUID = uuid,
+            siteId = null,
+            messageId = pmId
         )
     }
 
@@ -122,11 +124,13 @@ private class CampaignManagerImpl(
         val ccpaConfig = dataStorage.getCcpa1203()?.toCCPA1203()
             ?: fail("===> Privacy manager url config is missing!!! CCPA object is missing from DataStorage.")
 
+        val uuid = dataStorage.getGdprConsentUuid()
+
         PmUrlConfig(
-            consentUUID = null, // ccpaConfig.uuid ?: fail("consentUUID cannot be null!!!"),
+            consentLanguage = null, // ccpaConfig.uuid ?: fail("consentUUID cannot be null!!!"),
+            consentUUID = null,
             siteId = null,
-            messageId = pmId,
-            consentLanguage = null
+            messageId = pmId
         )
     }
 

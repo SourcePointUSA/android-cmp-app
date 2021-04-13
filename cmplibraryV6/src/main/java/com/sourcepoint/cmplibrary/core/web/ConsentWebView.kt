@@ -57,7 +57,7 @@ internal class ConsentWebView(
 //        }
         enableDebug()
         setStyle()
-        settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+        settings.cacheMode = WebSettings.LOAD_DEFAULT
         webChromeClient = chromeClient
         addJavascriptInterface(JSClientWebViewImpl(), "JSReceiver")
         spWebViewClient = SPWebViewClient(
@@ -110,6 +110,7 @@ internal class ConsentWebView(
             sb.toString()
         }
         loadUrl(url.toString())
+        logger.d(this::class.java.name, "1234 pmUrl[$url]")
         true
     }
 

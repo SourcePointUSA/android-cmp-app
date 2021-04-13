@@ -9,6 +9,7 @@ import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp1203
 import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.Response
 
@@ -78,10 +79,10 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
         }
     }
 
-    override fun parseConsentResEither(r: Response): Either<ConsentResp> = check {
+    override fun parseConsentResEither(r: Response, legislation: Legislation): Either<ConsentResp> = check {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         if (r.isSuccessful) {
-            when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body)) {
+            when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body, legislation)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }
@@ -90,10 +91,10 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
         }
     }
 
-    override fun parseConsentRes(r: Response): ConsentResp {
+    override fun parseConsentRes(r: Response, legislation: Legislation): ConsentResp {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         return if (r.isSuccessful) {
-            when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body)) {
+            when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body, legislation)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }

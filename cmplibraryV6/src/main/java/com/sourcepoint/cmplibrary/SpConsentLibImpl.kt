@@ -293,7 +293,7 @@ internal class SpConsentLibImpl(
         when (action.legislation) {
             Legislation.GDPR -> {
                 viewManager.removeView(view)
-                campaignManager.getGdprPmConfig(action.privacyManagerId, PMTab.DEFAULT)
+                campaignManager.getGdprPmConfig(action.privacyManagerId, PMTab.PURPOSES)
                     .map { pmUrlConfig ->
                         iConsentWebView.loadConsentUIFromUrl(
                             url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env),

@@ -149,7 +149,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("message_id", "12595")
         .apply {
             pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
-            pmConf.consentLanguage?.let { addQueryParameter("consentUUID", it) }
+            pmConf.consentUUID?.let { addQueryParameter("consentUUID", it) }
             pmConf.siteId?.let { addQueryParameter("site_id", it) }
             pmConf.messageId?.let { addQueryParameter("message_id", it) }
         }
