@@ -101,10 +101,12 @@ internal class ConsentWebView(
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             val sb = StringBuffer()
-            sb.append("""
+            sb.append(
+                """
                 javascript: window.spLegislation = '${legislation.name}'; window.localPmId ='$pmId';
                 ${"js_receiver.js".file2String()};
-            """.trimIndent())
+                """.trimIndent()
+            )
             sb.toString()
         }
         loadUrl(url.toString())

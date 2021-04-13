@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
@@ -52,7 +53,7 @@ class JsonConverterImplTest {
             it.consentLanguage.assertEquals("EN")
             it.saveAndExitVariables.toString() assertEquals (JSONObject().toString())
             it.requestFromPm.assertEquals(false)
-            it.privacyManagerId.assertNull()
+            it.privacyManagerId.assertNotNull()
         }
     }
 
@@ -64,7 +65,6 @@ class JsonConverterImplTest {
             it.actionType.name.assertEquals("REJECT_ALL")
             it.choiceId.assertNull()
             it.consentLanguage.assertEquals("EN")
-            it.saveAndExitVariables.toString() assertEquals (JSONObject().toString())
             it.requestFromPm.assertEquals(true)
             it.privacyManagerId.assertNull()
         }

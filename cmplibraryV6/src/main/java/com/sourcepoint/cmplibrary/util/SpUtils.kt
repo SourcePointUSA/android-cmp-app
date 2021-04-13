@@ -6,6 +6,7 @@ import android.content.Context
 import com.sourcepoint.cmplibrary.SpCacheObjet.fetchOrStore
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.campaign.create
+import com.sourcepoint.cmplibrary.consent.SPConsents
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
@@ -14,7 +15,6 @@ import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsent
 import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
 import com.sourcepoint.cmplibrary.exception.Legislation
-import com.sourcepoint.cmplibrary.consent.SPConsents
 
 fun userConsents(context: Context): SPConsents {
     val cm: CampaignManager = createStorage(context)

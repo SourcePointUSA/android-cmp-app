@@ -75,9 +75,11 @@ class Builder {
             spConfig.also { spp ->
                 spp?.let {
                     if (!it.propertyName.contains(validPattern)) {
-                        throw InvalidArgumentException(description = """
+                        throw InvalidArgumentException(
+                            description = """
                 PropertyName can only include letters, numbers, '.', ':', '-' and '/'. (string) passed is invalid
-            """.trimIndent())
+                            """.trimIndent()
+                        )
                     }
                 }
                 spp?.campaigns?.forEach {

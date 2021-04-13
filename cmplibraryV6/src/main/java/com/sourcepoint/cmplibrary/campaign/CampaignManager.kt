@@ -107,7 +107,7 @@ private class CampaignManagerImpl(
             ?: fail("===> Privacy manager url config is missing!!! GDPR object is missing from DataStorage.")
 
         PmUrlConfig(
-            consentUUID = null,//gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
+            consentUUID = null, // gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
             siteId = null,
             messageId = pmId,
             consentLanguage = null,

@@ -48,10 +48,12 @@ fun makeConsentLib(
     val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
     val campaignManager: CampaignManager = CampaignManager.create(dataStorage).apply {
         this.spCampaignConfig = spConfig
-        if(!spConfig.propertyName.contains(validPattern)){
-            throw InvalidArgumentException(description = """
+        if (!spConfig.propertyName.contains(validPattern)) {
+            throw InvalidArgumentException(
+                description = """
                 PropertyName can only include letters, numbers, '.', ':', '-' and '/'. (string) passed is invalid
-            """.trimIndent())
+                """.trimIndent()
+            )
         }
         spConfig.also { spp ->
             spp.campaigns.forEach {

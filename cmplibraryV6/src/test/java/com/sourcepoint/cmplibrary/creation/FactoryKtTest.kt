@@ -21,7 +21,7 @@ class FactoryKtTest {
     @Test
     fun `CREATE a new instance of ConsentLib`() {
         makeConsentLib(
-            spConfig = SpConfig(22, "asfa", emptyArray(), ),
+            spConfig = SpConfig(22, "asfa", emptyArray(),),
             context = context,
         ).assertNotNull()
     }

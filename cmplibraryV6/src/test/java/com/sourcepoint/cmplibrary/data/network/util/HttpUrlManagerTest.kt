@@ -34,12 +34,12 @@ class HttpUrlManagerTest {
             pmTab = PMTab.DEFAULT,
             consentUUID = "89b2d14b-70ee-4344-8cc2-1b7b281d0f2d",
             siteId = "7639",
-            messageId = "",
+            messageId = "122058",
             consentLanguage = "EN"
         )
         val sut = HttpUrlManagerSingleton.urlPm(config)
         val url = sut.toString()
-        val expected = "https://cdn.privacy-mgmt.com/privacy-manager/index.html?consentLanguage=&consentUUID=89b2d14b-70ee-4344-8cc2-1b7b281d0f2d&site_id=7639&message_id=122058"
+        val expected = "https://cdn.privacy-mgmt.com/privacy-manager/index.html?consentLanguage=EN&consentUUID=89b2d14b-70ee-4344-8cc2-1b7b281d0f2d&site_id=7639&message_id=122058"
         url.assertEquals(expected)
     }
 
@@ -49,12 +49,12 @@ class HttpUrlManagerTest {
             pmTab = PMTab.DEFAULT,
             consentUUID = "3c7c3e22-0aac-4941-b97d-8e70b73b91c7",
             siteId = "7639",
-            messageId = "",
+            messageId = "122058",
             consentLanguage = "EN"
         )
         val sut = HttpUrlManagerSingleton.ottUrlPm(config)
         val url = sut.toString()
-        val expected = "https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?consentLanguage=&consentUUID=3c7c3e22-0aac-4941-b97d-8e70b73b91c7&site_id=7639&message_id=122058"
+        val expected = "https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?consentLanguage=EN&consentUUID=3c7c3e22-0aac-4941-b97d-8e70b73b91c7&site_id=7639&message_id=122058"
         url.assertEquals(expected)
     }
 }
