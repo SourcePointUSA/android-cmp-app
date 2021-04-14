@@ -8,7 +8,7 @@ import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.model.NativeMessageRespK
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp1203
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.Response
 
@@ -30,10 +30,10 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
      * @param r http response
      * @return an [Either] object of a [MessageResp] type parameter
      */
-    override fun parseResponse1203(r: Response): Either<UnifiedMessageResp1203> = check {
+    override fun parseResponse1203(r: Response): Either<UnifiedMessageResp> = check {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         if (r.isSuccessful) {
-            when (val either: Either<UnifiedMessageResp1203> = jsonConverter.toUnifiedMessageResp1203(body)) {
+            when (val either: Either<UnifiedMessageResp> = jsonConverter.toUnifiedMessageResp1203(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }

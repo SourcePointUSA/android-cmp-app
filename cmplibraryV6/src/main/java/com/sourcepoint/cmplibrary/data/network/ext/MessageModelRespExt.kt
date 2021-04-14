@@ -4,11 +4,11 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.Legislation
-import com.sourcepoint.cmplibrary.model.CampaignResp1203
-import com.sourcepoint.cmplibrary.model.Ccpa1203
-import com.sourcepoint.cmplibrary.model.GDPRConsent1203
-import com.sourcepoint.cmplibrary.model.Gdpr1203
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp1203
+import com.sourcepoint.cmplibrary.model.CampaignResp
+import com.sourcepoint.cmplibrary.model.Ccpa
+import com.sourcepoint.cmplibrary.model.GDPRConsent
+import com.sourcepoint.cmplibrary.model.Gdpr
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toCCPAUserConsent
@@ -17,26 +17,26 @@ import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
 
-internal fun String.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
+internal fun String.toUnifiedMessageRespDto1203(): UnifiedMessageResp {
     return JSONObject(this).toUnifiedMessageRespDto1203()
 }
 
-internal fun JSONObject.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
+internal fun JSONObject.toUnifiedMessageRespDto1203(): UnifiedMessageResp {
     val map: Map<String, Any?> = this.toTreeMap()
     val localState = map.getFieldValue<String>("localState") ?: ""
     val propertyPriorityData = map.getMap("propertyPriorityData")?.toJSONObj() ?: failParam("propertyPriorityData")
 
-    val listEither: List<Either<CampaignResp1203?>> = map
+    val listEither: List<Either<CampaignResp?>> = map
         .getFieldValue<List<Map<String, Any?>>>("campaigns")
         ?.map { check { it.toCampaignResp1203() } }
         ?: emptyList()
 
-    val list = listEither.fold(mutableListOf<CampaignResp1203>()) { acc, elem ->
+    val list = listEither.fold(mutableListOf<CampaignResp>()) { acc, elem ->
         elem.map { content -> content?.let { acc.add(content) } }
         acc
     }
 
-    return UnifiedMessageResp1203(
+    return UnifiedMessageResp(
         thisContent = this,
         campaigns = list,
         localState = localState,
@@ -44,7 +44,7 @@ internal fun JSONObject.toUnifiedMessageRespDto1203(): UnifiedMessageResp1203 {
     )
 }
 
-internal fun Map<String, Any?>.toCampaignResp1203(): CampaignResp1203? {
+internal fun Map<String, Any?>.toCampaignResp1203(): CampaignResp? {
     return when (getFieldValue<String>("type")?.toUpperCase() ?: failParam("type")) {
         Legislation.GDPR.name -> this.toGDPR1203()
         Legislation.CCPA.name -> this.toCCPA1203()
@@ -52,17 +52,17 @@ internal fun Map<String, Any?>.toCampaignResp1203(): CampaignResp1203? {
     }
 }
 
-internal fun String.toCCPA1203(): Ccpa1203? {
+internal fun String.toCCPA1203(): Ccpa? {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
     return map.toCCPA1203()
 }
 
-private fun Map<String, Any?>.toCCPA1203(): Ccpa1203? {
+private fun Map<String, Any?>.toCCPA1203(): Ccpa? {
 
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
 
-    return Ccpa1203(
+    return Ccpa(
         thisContent = JSONObject(this),
         applies = getFieldValue<Boolean>("applies") ?: false,
         message = message,
@@ -71,12 +71,12 @@ private fun Map<String, Any?>.toCCPA1203(): Ccpa1203? {
     )
 }
 
-internal fun Map<String, Any?>.toGDPR1203(): Gdpr1203 {
+internal fun Map<String, Any?>.toGDPR1203(): Gdpr {
 
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
 
-    return Gdpr1203(
+    return Gdpr(
         thisContent = JSONObject(this),
         applies = getFieldValue<Boolean>("applies") ?: false,
         message = message,
@@ -85,18 +85,18 @@ internal fun Map<String, Any?>.toGDPR1203(): Gdpr1203 {
     )
 }
 
-internal fun String.toGDPR1203(): Gdpr1203? {
+internal fun String.toGDPR1203(): Gdpr? {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
     return map.toGDPR1203()
 }
 
-internal fun Map<String, Any?>.toGDPRUserConsent1203(): GDPRConsent1203 {
+internal fun Map<String, Any?>.toGDPRUserConsent1203(): GDPRConsent {
 
     val tcData: Map<String, Any?> = getMap("TCData") ?: emptyMap()
     val vendorsGrants = getMap("grants") ?: failParam("grants")
     val euConsent = getFieldValue<String>("euconsent") ?: failParam("euconsent")
 
-    return GDPRConsent1203(
+    return GDPRConsent(
         thisContent = JSONObject(this),
         tcData = tcData,
         vendorsGrants = vendorsGrants,

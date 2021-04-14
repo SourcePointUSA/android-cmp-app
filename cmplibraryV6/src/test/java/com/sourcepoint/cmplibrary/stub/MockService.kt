@@ -32,13 +32,13 @@ internal class MockService(
     override fun parseRenderingMessage() {}
     override fun clearConsents() {}
     override fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = Left(RuntimeException())
-    override fun getUnifiedMessageResp1203(): Either<UnifiedMessageResp1203> = Left(RuntimeException())
-    override fun getGdpr1203(): Either<Gdpr1203> = Left(RuntimeException())
-    override fun getCcpa1203(): Either<Ccpa1203> = Left(RuntimeException())
-    override fun saveGdpr1203(gdpr: Gdpr1203) {}
-    override fun saveCcpa1203(ccpa: Ccpa1203) {}
-    override fun saveUnifiedMessageResp1203(unifiedMessageResp: UnifiedMessageResp1203) {}
-    override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit, env: Env) {}
+    override fun getUnifiedMessageResp1203(): Either<UnifiedMessageResp> = Left(RuntimeException())
+    override fun getGdpr1203(): Either<Gdpr> = Left(RuntimeException())
+    override fun getCcpa1203(): Either<Ccpa> = Left(RuntimeException())
+    override fun saveGdpr1203(gdpr: Gdpr) {}
+    override fun saveCcpa1203(ccpa: Ccpa) {}
+    override fun saveUnifiedMessageResp1203(unifiedMessageResp: UnifiedMessageResp) {}
+    override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit, env: Env) {}
     override fun getUnifiedMessageReq(): UnifiedMessageRequest {
         TODO("Not yet implemented")
     }
@@ -51,7 +51,7 @@ internal class MockService(
         TODO("Not yet implemented")
     }
 
-    override var spCampaignConfig: SpConfig
+    override var spConfig: SpConfig
         get() = TODO("Not yet implemented")
         set(value) {}
 }

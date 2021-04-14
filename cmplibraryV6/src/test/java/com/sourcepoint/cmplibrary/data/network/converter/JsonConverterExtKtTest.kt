@@ -7,8 +7,8 @@ import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
 import com.sourcepoint.cmplibrary.data.network.ext.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Legislation
-import com.sourcepoint.cmplibrary.model.Ccpa1203
-import com.sourcepoint.cmplibrary.model.Gdpr1203
+import com.sourcepoint.cmplibrary.model.Ccpa
+import com.sourcepoint.cmplibrary.model.Gdpr
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONArray
 import org.json.JSONObject
@@ -28,8 +28,8 @@ class JsonConverterExtKtTest {
             localState.assertEquals(localStateTest)
         }
 
-        val gdpr = unifiedMess.campaigns[0] as Gdpr1203
-        val ccpa = unifiedMess.campaigns[1] as Ccpa1203
+        val gdpr = unifiedMess.campaigns[0] as Gdpr
+        val ccpa = unifiedMess.campaigns[1] as Ccpa
 
         gdpr.run {
             type.assertEquals(Legislation.GDPR.name)

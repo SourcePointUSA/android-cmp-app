@@ -7,13 +7,13 @@ import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.ext.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
-import com.sourcepoint.cmplibrary.model.Ccpa1203
+import com.sourcepoint.cmplibrary.model.Ccpa
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
-import com.sourcepoint.cmplibrary.model.Gdpr1203
-import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
-import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
+import com.sourcepoint.cmplibrary.model.Gdpr
+import com.sourcepoint.cmplibrary.model.exposed.*
 import com.sourcepoint.cmplibrary.util.file2String
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -40,6 +40,31 @@ class CampaignManagerTest {
     @MockK
     private lateinit var ccpa: CCPACampaign
 
+    private val gdprCampaign = SpCampaign(
+        Legislation.GDPR,
+        CampaignEnv.PUBLIC,
+        arrayOf(
+            TargetingParam("location", "EU")
+        )
+    )
+
+    private val ccpaCamapign = SpCampaign(
+        Legislation.CCPA,
+        CampaignEnv.PUBLIC,
+        arrayOf(
+            TargetingParam("location", "EU")
+        )
+    )
+
+    private val spConfig = SpConfig(
+        22,
+        "carm.uw.con",
+        arrayOf(
+            ccpaCamapign,
+            gdprCampaign
+        )
+    )
+
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
@@ -47,7 +72,7 @@ class CampaignManagerTest {
         sut.clearConsents()
     }
 
-    private val sut by lazy { CampaignManager.create(dataStorage) }
+    private val sut by lazy { CampaignManager.create(dataStorage, spConfig) }
 
     @Test
     fun `GIVEN a GDPRConsent CHECK that is properly stored`() {
@@ -74,7 +99,7 @@ class CampaignManagerTest {
     @Test
     fun `CHECK that getGDPRConsent RETURNS a GDPRConsent from the dataStorage`() {
         val unifiedResp = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String().toUnifiedMessageRespDto1203()
-        val gdprTest = unifiedResp.campaigns.find { it is Gdpr1203 } as Gdpr1203
+        val gdprTest = unifiedResp.campaigns.find { it is Gdpr } as Gdpr
 
         every { dataStorage.getGdprConsentResp() }.returns(gdprTest.userConsent.thisContent.toString())
 
@@ -108,7 +133,7 @@ class CampaignManagerTest {
     @Test
     fun `CHECK that getCCPAConsent RETURNS a CCPAConsent from the dataStorage`() {
         val unifiedResp = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String().toUnifiedMessageRespDto1203()
-        val ccpaTest = unifiedResp.campaigns.find { it is Ccpa1203 } as Ccpa1203
+        val ccpaTest = unifiedResp.campaigns.find { it is Ccpa } as Ccpa
 
         every { dataStorage.getCcpaConsentResp() }.returns(ccpaTest.userConsent.thisContent.toString())
 
@@ -121,11 +146,11 @@ class CampaignManagerTest {
     @Test
     fun `VERIFY that getCCPAConsent AND getGDPRConsent RETUN static objects`() {
 
-        val sut1 = CampaignManager.create(dataStorage).apply {
+        val sut1 = CampaignManager.create(dataStorage, spConfig).apply {
             saveCCPAConsent(ccpaConsent)
             saveGDPRConsent(gdprConsent)
         }
-        val sut2 = CampaignManager.create(dataStorage).apply {
+        val sut2 = CampaignManager.create(dataStorage, spConfig).apply {
             saveCCPAConsent(ccpaConsent)
             saveGDPRConsent(gdprConsent)
         }

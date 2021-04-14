@@ -7,11 +7,11 @@ import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import org.json.JSONObject
 
 internal class MockNetworkClient(
-    private val logicUnifiedMess2: ((messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
+    private val logicUnifiedMess2: ((messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
     private val logicNativeMess: ((messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) -> Unit)? = null
 ) : NetworkClient {
 
-    override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp1203) -> Unit, pError: (Throwable) -> Unit, env: Env) {
+    override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit, env: Env) {
         logicUnifiedMess2?.invoke(messageReq, pSuccess, pError)
     }
 

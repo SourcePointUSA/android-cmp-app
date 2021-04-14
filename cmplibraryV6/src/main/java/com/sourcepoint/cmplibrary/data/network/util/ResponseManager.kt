@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.model.NativeMessageRespK
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp1203
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import okhttp3.Response
 
 /**
@@ -18,7 +18,7 @@ internal interface ResponseManager {
      * @param r http response
      * @return [Either] object
      */
-    fun parseResponse1203(r: Response): Either<UnifiedMessageResp1203>
+    fun parseResponse1203(r: Response): Either<UnifiedMessageResp>
 
     /**
      * @param r http response

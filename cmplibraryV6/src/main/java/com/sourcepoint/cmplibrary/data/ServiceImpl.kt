@@ -15,7 +15,7 @@ import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.MessageReq
 import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp1203
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 
 /**
  * Factory method to create an instance of a [Service] using its implementation
@@ -46,7 +46,7 @@ private class ServiceImpl(
 
     override fun getUnifiedMessage(
         messageReq: UnifiedMessageRequest,
-        pSuccess: (UnifiedMessageResp1203) -> Unit,
+        pSuccess: (UnifiedMessageResp) -> Unit,
         pError: (Throwable) -> Unit,
         env: Env
     ) {

@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
-import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.consent.LocalStateStatus
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
@@ -16,16 +15,15 @@ import com.sourcepoint.cmplibrary.core.web.CampaignModel
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
-import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.CampaignResp1203
+import com.sourcepoint.cmplibrary.model.CampaignResp
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp1203
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.SHOW_OPTIONS
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
@@ -37,10 +35,8 @@ internal class SpConsentLibImpl(
     internal val pJsonConverter: JsonConverter,
     internal val service: Service,
     internal val executor: ExecutorManager,
-    private val pConnectionManager: ConnectionManager,
     private val viewManager: ViewsManager,
     private val campaignManager: CampaignManager,
-    private val consentManagerUtils: ConsentManagerUtils,
     private val consentManager: ConsentManager,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     private val env: Env = Env.PROD
@@ -50,11 +46,11 @@ internal class SpConsentLibImpl(
     private val nativeMsgClient by lazy { NativeMsgDelegate() }
 
     companion object {
-        fun UnifiedMessageResp1203.toCampaignModelList(): List<CampaignModel> {
+        fun UnifiedMessageResp.toCampaignModelList(): List<CampaignModel> {
             val campaignList = this.campaigns
             if (campaignList.isEmpty()) return emptyList()
 
-            val partition: Pair<List<CampaignResp1203>, List<CampaignResp1203>> = campaignList.partition { it.message != null }
+            val partition: Pair<List<CampaignResp>, List<CampaignResp>> = campaignList.partition { it.message != null }
             return partition.first.map {
                 CampaignModel(
                     message = it.message!!,

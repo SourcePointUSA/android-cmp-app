@@ -6,7 +6,7 @@ import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.MessageReq
 import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp1203
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import org.json.JSONObject
 
 /**
@@ -22,7 +22,7 @@ internal interface NetworkClient {
      */
     fun getUnifiedMessage(
         messageReq: UnifiedMessageRequest,
-        pSuccess: (UnifiedMessageResp1203) -> Unit,
+        pSuccess: (UnifiedMessageResp) -> Unit,
         pError: (Throwable) -> Unit,
         env: Env
     )

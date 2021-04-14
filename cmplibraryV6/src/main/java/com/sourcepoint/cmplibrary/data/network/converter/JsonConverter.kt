@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp1203
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 
 /**
  * Component used to convert the response body of the message call to its DTO
@@ -16,7 +16,7 @@ internal interface JsonConverter {
      * @return [Either] object contain either a DTO or an [Throwable]
      */
 
-    fun toUnifiedMessageResp1203(body: String): Either<UnifiedMessageResp1203>
+    fun toUnifiedMessageResp1203(body: String): Either<UnifiedMessageResp>
 
     fun toNativeMessageResp(body: String): Either<NativeMessageResp>
 

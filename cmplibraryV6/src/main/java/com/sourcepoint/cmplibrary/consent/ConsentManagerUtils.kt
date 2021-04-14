@@ -60,8 +60,8 @@ private class ConsentManagerUtilsImpl(
             .map { pair ->
                 val gdpr = pair.first
                 JSONObject().apply {
-                    put("propertyHref", cm.spCampaignConfig.propertyName)
-                    put("accountId", cm.spCampaignConfig.accountId)
+                    put("propertyHref", cm.spConfig.propertyName)
+                    put("accountId", cm.spConfig.accountId)
                     put("actionType", action.actionType.code)
                     put("choiceId", action.choiceId)
                     put("requestFromPM", action.requestFromPm)
@@ -91,7 +91,7 @@ private class ConsentManagerUtilsImpl(
 
                 JSONObject().apply {
                     put("consents", ccpaConfig.userConsent.thisContent)
-                    put("accountId", cm.spCampaignConfig.accountId)
+                    put("accountId", cm.spConfig.accountId)
                     put("privacyManagerId", pmId)
                     put("localState", localState)
                     put("pubData", action.pubData)

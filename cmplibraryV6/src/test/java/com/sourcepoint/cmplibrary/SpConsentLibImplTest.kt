@@ -120,16 +120,14 @@ class SpConsentLibImplTest {
     }
 
     internal fun createLib() = SpConsentLibImpl(
-        urlManager = urlManager,
         context = appCtx,
-        campaignManager = campaignManager,
-        consentManager = consentManager,
-        consentManagerUtils = consentManagerUtils,
+        pLogger = logger,
+        pJsonConverter = jsonConverter,
+        service = service,
         executor = execManager,
         viewManager = viewManager,
-        service = service,
-        pConnectionManager = connManager,
-        pJsonConverter = jsonConverter,
-        pLogger = logger
+        campaignManager = campaignManager,
+        consentManager = consentManager,
+        urlManager = urlManager
     )
 }
