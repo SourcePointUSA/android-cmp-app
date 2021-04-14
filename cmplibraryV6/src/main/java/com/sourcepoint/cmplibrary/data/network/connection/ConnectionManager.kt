@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.connection
 
-interface ConnectionManager {
+internal interface ConnectionManager {
     val isConnected: Boolean
     companion object
 }

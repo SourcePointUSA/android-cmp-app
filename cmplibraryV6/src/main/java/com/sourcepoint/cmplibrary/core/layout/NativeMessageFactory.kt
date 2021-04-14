@@ -10,8 +10,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.toActionButton
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageCustomImpl
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageDefaultImpl
-import com.sourcepoint.cmplibrary.model.ActionType
-import kotlinx.android.synthetic.main.sample_native_message_v6.view.*
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
 
 fun createDefaultNativeMessage(activity: Activity): NativeMessage = NativeMessageDefaultImpl(activity)
 

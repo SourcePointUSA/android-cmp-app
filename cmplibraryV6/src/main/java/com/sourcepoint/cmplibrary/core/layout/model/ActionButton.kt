@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.core.layout.model
 
 import android.view.View
 import android.widget.Button
-import com.sourcepoint.cmplibrary.model.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
 
 data class ActionButton(
     var button: Button,

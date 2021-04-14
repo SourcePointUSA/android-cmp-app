@@ -6,7 +6,6 @@ import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CONSENT_CCPA_UUID_KEY
-import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_1203
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_APPLIES
 
@@ -15,13 +14,11 @@ internal interface DataStorageCcpa {
     val preference: SharedPreferences
     var ccpaApplies: Boolean
 
-    fun saveCcpa(value: String)
     fun saveCcpa1203(value: String)
     fun saveCcpaConsentResp(value: String)
     fun saveCcpaConsentUuid(value: String)
     fun saveCcpaMessage(value: String)
 
-    fun getCcpa(): String?
     fun getCcpa1203(): String?
     fun getCcpaConsentResp(): String
     fun getCcpaMessage(): String
@@ -49,22 +46,11 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    override fun saveCcpa(value: String) {
-        preference
-            .edit()
-            .putString(KEY_CCPA, value)
-            .apply()
-    }
-
     override fun saveCcpa1203(value: String) {
         preference
             .edit()
             .putString(KEY_CCPA_1203, value)
             .apply()
-    }
-
-    override fun getCcpa(): String? {
-        return preference.getString(KEY_CCPA, null)
     }
 
     override fun getCcpa1203(): String? {

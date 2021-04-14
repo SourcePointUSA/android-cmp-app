@@ -7,7 +7,7 @@ import org.json.JSONObject
  * REQUEST
  */
 
-data class ConsentReq(
+internal data class ConsentReq(
     val uuid: String,
     val choiceId: String,
     val consentLanguage: String,
@@ -22,7 +22,7 @@ data class ConsentReq(
     val pmSaveAndExitVariables: JSONObject = JSONObject()
 )
 
-fun ConsentReq.toBodyRequest(): String {
+internal fun ConsentReq.toBodyRequest(): String {
     return JSONObject()
         .apply {
             put("uuid", uuid)
@@ -45,7 +45,7 @@ fun ConsentReq.toBodyRequest(): String {
  * RESPONSE
  */
 
-data class ConsentResp(
+internal data class ConsentResp(
     val content: JSONObject,
     val userConsent: String?,
     val uuid: String,

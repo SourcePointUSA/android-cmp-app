@@ -19,8 +19,6 @@ internal interface DataStorageGdpr {
 
     var gdprApplies: Boolean
 
-    fun saveGdpr(value: String)
-    fun getGdpr(): String?
     fun saveGdpr1203(value: String)
     fun getGdpr1203(): String?
 
@@ -93,22 +91,11 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 .apply()
         }
 
-    override fun saveGdpr(value: String) {
-        preference
-            .edit()
-            .putString(KEY_GDPR, value)
-            .apply()
-    }
-
     override fun saveGdpr1203(value: String) {
         preference
             .edit()
             .putString(KEY_GDPR_1203, value)
             .apply()
-    }
-
-    override fun getGdpr(): String? {
-        return preference.getString(KEY_GDPR, null)
     }
 
     override fun getGdpr1203(): String? {

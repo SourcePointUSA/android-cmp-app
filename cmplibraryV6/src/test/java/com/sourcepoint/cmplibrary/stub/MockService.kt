@@ -7,6 +7,9 @@ import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import org.json.JSONObject
 
 internal class MockService(
@@ -25,8 +28,6 @@ internal class MockService(
     }
     override fun getGDPRConsent(): Either<GDPRConsent> = Left(RuntimeException())
     override fun getCCPAConsent(): Either<CCPAConsent> = Left(RuntimeException())
-    override fun saveGdpr(gdpr: Gdpr) {}
-    override fun saveCcpa(ccpa: Ccpa) {}
     override fun saveGDPRConsent(consent: GDPRConsent?) {}
     override fun saveCCPAConsent(consent: CCPAConsent?) {}
     override fun parseRenderingMessage() {}

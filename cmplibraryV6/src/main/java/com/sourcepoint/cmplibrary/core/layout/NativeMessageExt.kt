@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.TextView
 import com.sourcepoint.cmplibrary.core.layout.model.TextViewConfigDto
 
-fun View.invisible() {
+internal fun View.invisible() {
     visibility = View.INVISIBLE
 }
 

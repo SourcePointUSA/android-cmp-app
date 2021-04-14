@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.model
 
-enum class MessageLanguage(val value: String) {
+internal enum class MessageLanguage(val value: String) {
     BULGARIAN("BG"),
     CATALAN("CA"),
     CHINESE("ZH"),

@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 /**
  * Class in charge of building an error message
  */
-interface ErrorMessageManager {
+internal interface ErrorMessageManager {
     /**
      * The build method receives a ConsentLibExceptionK object and build out of it the message to sent to the server.
      * @param exception instance of [ConsentLibExceptionK]
@@ -25,7 +25,7 @@ enum class Legislation {
 /**
  * Class used to group the client information
  */
-data class ClientInfo(
+internal data class ClientInfo(
     val clientVersion: String,
     val osVersion: String,
     val deviceFamily: String

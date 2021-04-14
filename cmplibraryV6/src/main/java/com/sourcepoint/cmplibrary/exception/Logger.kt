@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.exception
 /**
  * Class used to send message contain the error details to the server
  */
-interface Logger {
+internal interface Logger {
     /**
      * The [error] method receives contains the logic to communicate with the server
      * it is used only in production

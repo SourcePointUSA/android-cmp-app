@@ -9,7 +9,7 @@ import android.net.NetworkInfo
  * @param context is the client application context
  * @return an instance of the [ConnectionManagerImpl] implementation
  */
-fun ConnectionManager.Companion.create(context: Context): ConnectionManager = ConnectionManagerImpl(context)
+internal fun ConnectionManager.Companion.create(context: Context): ConnectionManager = ConnectionManagerImpl(context)
 
 private class ConnectionManagerImpl(context: Context) : ConnectionManager {
     private val cm by lazy {

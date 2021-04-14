@@ -11,7 +11,7 @@ import okhttp3.OkHttpClient
  * @param errorMessageManager entity used to build the network request body
  * @param url server url
  */
-fun createLogger(
+internal fun createLogger(
     networkClient: OkHttpClient,
     errorMessageManager: ErrorMessageManager,
     url: String,

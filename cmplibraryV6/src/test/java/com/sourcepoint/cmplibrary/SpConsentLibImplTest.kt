@@ -25,7 +25,7 @@ import org.junit.Test
 
 class SpConsentLibImplTest {
 
-    var campaign = Campaign(22, "tcfv2.mobile.webview", "122058")
+    internal var campaign = Campaign(22, "tcfv2.mobile.webview", "122058")
 
     @MockK
     private lateinit var appCtx: Context

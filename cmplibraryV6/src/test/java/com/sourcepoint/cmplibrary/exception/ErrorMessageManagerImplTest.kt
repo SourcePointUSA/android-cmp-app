@@ -5,9 +5,9 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
-import com.sourcepoint.cmplibrary.model.SpCampaign
-import com.sourcepoint.cmplibrary.model.SpConfig
-import com.sourcepoint.cmplibrary.model.TargetingParam
+import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

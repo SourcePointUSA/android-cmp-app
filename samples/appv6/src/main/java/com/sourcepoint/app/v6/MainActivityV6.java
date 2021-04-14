@@ -4,10 +4,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
-import com.sourcepoint.cmplibrary.SPMessage;
 import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.SpConsentLib;
-import com.sourcepoint.cmplibrary.consent.SPConsents;
+import com.sourcepoint.cmplibrary.model.exposed.*;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv;
 import com.sourcepoint.cmplibrary.exception.Legislation;
@@ -15,6 +14,7 @@ import com.sourcepoint.cmplibrary.model.*;
 import com.sourcepoint.app.v6.core.DataProvider;
 import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -75,7 +75,7 @@ public class MainActivityV6 extends AppCompatActivity {
     class LocalClient implements SpClient {
 
         @Override
-        public void onMessageReady(@NotNull SPMessage message) {
+        public void onMessageReady(@NotNull JSONObject message) {
 
         }
 

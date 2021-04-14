@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
 import com.sourcepoint.cmplibrary.assertNotNull
-import com.sourcepoint.cmplibrary.model.SpConfig
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import org.junit.Before

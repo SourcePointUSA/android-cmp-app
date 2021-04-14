@@ -1,6 +1,11 @@
-package com.sourcepoint.cmplibrary.model
+package com.sourcepoint.cmplibrary.model.exposed
 
 import org.json.JSONObject
+
+data class SPConsents(
+    val gdpr: SPGDPRConsent? = null,
+    val ccpa: SPCCPAConsent? = null
+)
 
 data class SPGDPRConsent(
     val consent: GDPRConsent,

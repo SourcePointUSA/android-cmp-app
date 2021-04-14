@@ -7,7 +7,7 @@ import android.net.Uri
 import android.os.Handler
 import android.webkit.WebView
 
-fun Context.loadLinkOnExternalBrowser(
+internal fun Context.loadLinkOnExternalBrowser(
     url: String,
     onNoIntentActivitiesFound: (url: String) -> Unit
 ) {
@@ -20,7 +20,7 @@ fun Context.loadLinkOnExternalBrowser(
         onNoIntentActivitiesFound(url)
 }
 
-fun WebView.getLinkUrl(testResult: WebView.HitTestResult): String {
+internal fun WebView.getLinkUrl(testResult: WebView.HitTestResult): String {
     if (doesLinkContainImage(testResult)) {
         val handler = Handler()
         val message = handler.obtainMessage()
@@ -30,6 +30,6 @@ fun WebView.getLinkUrl(testResult: WebView.HitTestResult): String {
     return testResult.extra ?: ""
 }
 
-fun doesLinkContainImage(testResult: WebView.HitTestResult): Boolean {
+internal fun doesLinkContainImage(testResult: WebView.HitTestResult): Boolean {
     return testResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
 }

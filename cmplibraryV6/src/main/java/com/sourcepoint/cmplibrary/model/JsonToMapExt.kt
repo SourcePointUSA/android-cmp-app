@@ -5,26 +5,26 @@ import org.json.JSONObject
 import java.util.* // ktlint-disable
 import kotlin.collections.ArrayList
 
-fun JSONObject.toTreeMap(): Map<String, Any?> {
+internal fun JSONObject.toTreeMap(): Map<String, Any?> {
     return when (this) {
         JSONObject.NULL -> TreeMap()
         else -> toMap(this)
     }
 }
 
-fun Map<String, Any?>.getMap(key: String): Map<String, Any?>? {
+internal fun Map<String, Any?>.getMap(key: String): Map<String, Any?>? {
     return this[key] as? Map<String, Any?>
 }
 
-fun Map<String, Any?>.getList(key: String): List<Map<String, Any?>>? {
+internal fun Map<String, Any?>.getList(key: String): List<Map<String, Any?>>? {
     return this[key] as? List<Map<String, Any?>>
 }
 
-fun Map<String, Any?>.toJSONObj(): JSONObject {
+internal fun Map<String, Any?>.toJSONObj(): JSONObject {
     return JSONObject(this)
 }
 
-fun <T> Map<String, Any?>.getFieldValue(key: String): T? {
+internal fun <T> Map<String, Any?>.getFieldValue(key: String): T? {
     return this[key] as? T
 }
 

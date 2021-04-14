@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
-import com.sourcepoint.cmplibrary.model.TargetingParam
+import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import org.json.JSONObject
 
 internal fun UnifiedMessageRequest.toBodyRequest(): String {

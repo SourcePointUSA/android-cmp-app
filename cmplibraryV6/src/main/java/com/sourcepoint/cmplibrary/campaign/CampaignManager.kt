@@ -11,6 +11,9 @@ import com.sourcepoint.cmplibrary.data.network.model.MessageReq
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.model.toCcpaReq
 import com.sourcepoint.cmplibrary.model.toGDPRUserConsent
@@ -40,8 +43,6 @@ internal interface CampaignManager {
     fun getGDPRConsent(): Either<GDPRConsent>
     fun getCCPAConsent(): Either<CCPAConsent>
 
-    fun saveGdpr(gdpr: Gdpr)
-    fun saveCcpa(ccpa: Ccpa)
     fun saveGdpr1203(gdpr: Gdpr1203)
     fun saveCcpa1203(ccpa: Ccpa1203)
     fun saveGDPRConsent(consent: GDPRConsent?)
@@ -202,14 +203,6 @@ private class CampaignManagerImpl(
             .let { JSONObject(it) }
             .toTreeMap()
             .toCCPAUserConsent()
-    }
-
-    override fun saveGdpr(gdpr: Gdpr) {
-        dataStorage.saveGdpr(gdpr.thisContent.toString())
-    }
-
-    override fun saveCcpa(ccpa: Ccpa) {
-        dataStorage.saveCcpa(ccpa.thisContent.toString())
     }
 
     override fun saveGdpr1203(gdpr: Gdpr1203) {

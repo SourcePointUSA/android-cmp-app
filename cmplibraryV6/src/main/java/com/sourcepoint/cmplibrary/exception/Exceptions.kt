@@ -4,7 +4,7 @@ package com.sourcepoint.cmplibrary.exception
  * Generic exception class for common lib errors
  * @param isConsumed is used to know if the [Throwable] has been logged already
  */
-sealed class ConsentLibExceptionK(
+internal sealed class ConsentLibExceptionK(
     var isConsumed: Boolean = false,
     val description: String,
     cause: Throwable? = null
@@ -15,7 +15,7 @@ sealed class ConsentLibExceptionK(
 /**
  * This exception is thrown when the response from getting the message is invalid
  */
-class InvalidResponseWebMessageException @JvmOverloads constructor(
+internal class InvalidResponseWebMessageException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -30,7 +30,7 @@ class InvalidResponseWebMessageException @JvmOverloads constructor(
 /**
  * This exception is thrown when we receive a 500 status code in the network response
  */
-class InternalServerException @JvmOverloads constructor(
+internal class InternalServerException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -45,7 +45,7 @@ class InternalServerException @JvmOverloads constructor(
 /**
  * This exception is thrown when in the WebView a problem has occurred
  */
-class WebViewException @JvmOverloads constructor(
+internal class WebViewException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -60,7 +60,7 @@ class WebViewException @JvmOverloads constructor(
 /**
  * This exception is thrown when the WebView cannot load the url received
  */
-class UrlLoadingException @JvmOverloads constructor(
+internal class UrlLoadingException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -75,7 +75,7 @@ class UrlLoadingException @JvmOverloads constructor(
 /**
  * This exception is thrown when the event payload coming from the webview is invalid
  */
-class InvalidEventPayloadException @JvmOverloads constructor(
+internal class InvalidEventPayloadException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -90,7 +90,7 @@ class InvalidEventPayloadException @JvmOverloads constructor(
 /**
  * This exception is thrown when a not expected event payloads is received
  */
-class InvalidOnActionEventPayloadException @JvmOverloads constructor(
+internal class InvalidOnActionEventPayloadException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -105,7 +105,7 @@ class InvalidOnActionEventPayloadException @JvmOverloads constructor(
 /**
  * This exception is thrown when a JS on error is called
  */
-class RenderingAppException @JvmOverloads constructor(
+internal class RenderingAppException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false,
@@ -121,7 +121,7 @@ class RenderingAppException @JvmOverloads constructor(
 /**
  * This exception is thrown when some resource cannot be found locally
  */
-class ResourceNotFoundException @JvmOverloads constructor(
+internal class ResourceNotFoundException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -136,7 +136,7 @@ class ResourceNotFoundException @JvmOverloads constructor(
 /**
  * This exception is thrown when the response from getting the web message is invalid
  */
-class InvalidResponseException @JvmOverloads constructor(
+internal class InvalidResponseException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -151,7 +151,7 @@ class InvalidResponseException @JvmOverloads constructor(
 /**
  * This exception is thrown when the response from getting the native message is invalid
  */
-class InvalidResponseNativeMessageException @JvmOverloads constructor(
+internal class InvalidResponseNativeMessageException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -166,7 +166,7 @@ class InvalidResponseNativeMessageException @JvmOverloads constructor(
 /**
  * This exception is thrown when the response from posting consent is invalid
  */
-class InvalidResponseConsentException @JvmOverloads constructor(
+internal class InvalidResponseConsentException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -181,7 +181,7 @@ class InvalidResponseConsentException @JvmOverloads constructor(
 /**
  * This exception is thrown when the response from posting custom consent is invalid
  */
-class InvalidResponseCustomConsent @JvmOverloads constructor(
+internal class InvalidResponseCustomConsent @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -196,7 +196,7 @@ class InvalidResponseCustomConsent @JvmOverloads constructor(
 /**
  * This exception is thrown when some resource cannot be found locally
  */
-class InvalidLocalDataException @JvmOverloads constructor(
+internal class InvalidLocalDataException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -211,7 +211,7 @@ class InvalidLocalDataException @JvmOverloads constructor(
 /**
  * This exception is thrown when the propertyName is not properly formatted
  */
-class InvalidArgumentException @JvmOverloads constructor(
+internal class InvalidArgumentException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -226,7 +226,7 @@ class InvalidArgumentException @JvmOverloads constructor(
 /**
  * This exception is thrown when we receive a request timeout
  */
-class ConnectionTimeoutException @JvmOverloads constructor(
+internal class ConnectionTimeoutException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -241,7 +241,7 @@ class ConnectionTimeoutException @JvmOverloads constructor(
 /**
  * This exception is thrown when we don't have connection
  */
-class NoInternetConnectionException @JvmOverloads constructor(
+internal class NoInternetConnectionException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -256,7 +256,7 @@ class NoInternetConnectionException @JvmOverloads constructor(
 /**
  * This exception is thrown when a generic network request error occurred
  */
-class GenericNetworkRequestException @JvmOverloads constructor(
+internal class GenericNetworkRequestException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -271,7 +271,7 @@ class GenericNetworkRequestException @JvmOverloads constructor(
 /**
  * This exception is thrown when a generic error occurred
  */
-class GenericSDKException @JvmOverloads constructor(
+internal class GenericSDKException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -286,7 +286,7 @@ class GenericSDKException @JvmOverloads constructor(
 /**
  * This exception is thrown when the SDK doesn't have all the necessary data to perform a request.
  */
-class InvalidRequestException @JvmOverloads constructor(
+internal class InvalidRequestException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -301,7 +301,7 @@ class InvalidRequestException @JvmOverloads constructor(
 /**
  * This exception is thrown when a generic error occurred
  */
-class UnableToLoadJSReceiverException @JvmOverloads constructor(
+internal class UnableToLoadJSReceiverException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -316,7 +316,7 @@ class UnableToLoadJSReceiverException @JvmOverloads constructor(
 /**
  * This exception is thrown when a the client is missing
  */
-class MissingClientException @JvmOverloads constructor(
+internal class MissingClientException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -331,7 +331,7 @@ class MissingClientException @JvmOverloads constructor(
 /**
  * This exception is thrown when a property is missing
  */
-class MissingPropertyException @JvmOverloads constructor(
+internal class MissingPropertyException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -346,7 +346,7 @@ class MissingPropertyException @JvmOverloads constructor(
 /**
  * This exception is thrown when a the current thread is not the MainThread
  */
-class ExecutionInTheWrongThreadException @JvmOverloads constructor(
+internal class ExecutionInTheWrongThreadException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false

@@ -8,10 +8,11 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.ConsentResp
-import com.sourcepoint.cmplibrary.model.SPCCPAConsent
-import com.sourcepoint.cmplibrary.model.SPGDPRConsent
+import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
+import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.model.exposed.SPGDPRConsent
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.model.toGDPRUserConsent

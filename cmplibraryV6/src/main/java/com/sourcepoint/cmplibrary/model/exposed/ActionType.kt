@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.model
+package com.sourcepoint.cmplibrary.model.exposed
 
 enum class ActionType(val code: Int) {
     SHOW_OPTIONS(12),

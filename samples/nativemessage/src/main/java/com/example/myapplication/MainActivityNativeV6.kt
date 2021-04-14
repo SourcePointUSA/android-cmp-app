@@ -9,15 +9,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.sourcepoint.cmplibrary.SPMessage
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
-import com.sourcepoint.cmplibrary.consent.SPConsents
+import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.core.layout.createCustomNativeMessage
 import com.sourcepoint.cmplibrary.core.layout.createDefaultNativeMessage
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
-import com.sourcepoint.cmplibrary.model.*
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import kotlinx.android.synthetic.main.content_main.*
+import org.json.JSONObject
 
 class MainActivityNativeV6 : AppCompatActivity() {
 
@@ -118,7 +118,7 @@ class MainActivityNativeV6 : AppCompatActivity() {
 
     inner class LocalClient(private val gdpr: SpConsentLib) : SpClient {
 
-        override fun onMessageReady(message: SPMessage) {
+        override fun onMessageReady(message: JSONObject) {
         }
 
         override fun onConsentReady(consent: SPConsents) {

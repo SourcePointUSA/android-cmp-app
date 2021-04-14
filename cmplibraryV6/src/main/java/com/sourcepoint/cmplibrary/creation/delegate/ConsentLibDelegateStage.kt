@@ -4,7 +4,7 @@ import android.app.Activity
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.creation.makeConsentLib
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.SpConfig
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import kotlin.reflect.KProperty
 
 class ConsentLibDelegateStage(

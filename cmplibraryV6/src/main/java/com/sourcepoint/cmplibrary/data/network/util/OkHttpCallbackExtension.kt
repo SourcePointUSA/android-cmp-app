@@ -8,11 +8,11 @@ import java.io.IOException
 /**
  * Utility extension used to avoid boilerplate
  */
-fun Call.enqueue(block: OkHttpCallbackImpl.() -> Unit) {
+internal fun Call.enqueue(block: OkHttpCallbackImpl.() -> Unit) {
     enqueue(OkHttpCallbackImpl().apply(block))
 }
 
-class OkHttpCallbackImpl : Callback {
+internal class OkHttpCallbackImpl : Callback {
 
     private var onFailure_: ((call: Call, exception: IOException) -> Unit)? = null
     private var onResponse_: ((call: Call, r: Response) -> Unit)? = null

@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.exception
 /**
  * These codes are use to categorize an exception occurred
  */
-object CodeList {
+internal object CodeList {
     val INVALID_LOCAL_DATA = ExceptionCodes("sp_metric_invalid_local_data")
     val INVALID_RESPONSE_WEB_MESSAGE = ExceptionCodes("sp_metric_invalid_response_web_message")
     val INVALID_RESPONSE_NATIVE_MESSAGE = ExceptionCodes("sp_metric_invalid_response_native_message")
@@ -22,4 +22,4 @@ object CodeList {
     val INVALID_REQUEST_ERROR = ExceptionCodes("sp_metric_invalid_request_error")
 }
 
-inline class ExceptionCodes(val code: String)
+internal inline class ExceptionCodes(val code: String)

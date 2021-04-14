@@ -18,14 +18,6 @@ internal class MockDataStorage : DataStorage {
     override val preference: SharedPreferences = mockk()
     override var gdprApplies: Boolean = false
 
-    override fun saveGdpr(value: String) {
-        gdprVal = value
-    }
-
-    override fun getGdpr(): String? {
-        return gdprVal
-    }
-
     override fun saveTcData(deferredMap: Map<String, Any?>) {
         this.tcDataMap = deferredMap
     }
@@ -105,15 +97,9 @@ internal class MockDataStorage : DataStorage {
         storage[DataStorageGdpr.GDPR_CONSENT_RESP] = ""
     }
 
-    override fun saveCcpa(value: String) {
-        ccpaVal = value
-    }
-
     override fun saveCcpaConsentUuid(value: String) {
         storage[DataStorageCcpa.CONSENT_CCPA_UUID_KEY] = value
     }
-
-    override fun getCcpa(): String? = ccpaVal
 
     override var ccpaApplies: Boolean = false
 

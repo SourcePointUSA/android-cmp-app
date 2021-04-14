@@ -12,7 +12,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.ActionButton
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.core.layout.model.toActionButton
 import com.sourcepoint.cmplibrary.core.layout.model.toTextViewConfigDto
-import com.sourcepoint.cmplibrary.model.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import kotlinx.android.synthetic.main.sample_native_message_v6.view.*
 
 internal abstract class NativeMessageCustomImpl : NativeMessageInternal {

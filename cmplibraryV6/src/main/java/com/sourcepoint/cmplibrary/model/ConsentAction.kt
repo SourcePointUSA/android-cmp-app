@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import org.json.JSONObject
 
 data class ConsentAction(
