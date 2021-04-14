@@ -9,12 +9,11 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.ext.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.Legislation
-import com.sourcepoint.cmplibrary.model.CCPACampaign
-import com.sourcepoint.cmplibrary.model.GDPRCampaign
-import com.sourcepoint.cmplibrary.model.TargetingParam
+import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test

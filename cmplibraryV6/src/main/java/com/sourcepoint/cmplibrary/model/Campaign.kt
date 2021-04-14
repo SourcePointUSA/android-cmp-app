@@ -1,8 +1,6 @@
 package com.sourcepoint.cmplibrary.model
 
-import com.sourcepoint.cmplibrary.data.network.model.CcpaReq
-import com.sourcepoint.cmplibrary.data.network.model.GdprReq
-import com.sourcepoint.cmplibrary.data.network.model.toJsonObjStringify
+import com.sourcepoint.cmplibrary.data.network.ext.toJsonObjStringify
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 

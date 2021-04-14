@@ -1,11 +1,12 @@
 package com.sourcepoint.cmplibrary.data.network
 
-import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.MessageReq
-import com.sourcepoint.cmplibrary.model.ConsentResp
-import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.data.network.util.Env
+import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.ConsentResp
+import com.sourcepoint.cmplibrary.model.MessageReq
+import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp1203
 import org.json.JSONObject
 
 /**

@@ -4,7 +4,7 @@ import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.data.network.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.file2List
 import com.sourcepoint.cmplibrary.util.file2String

@@ -7,13 +7,15 @@ import com.sourcepoint.cmplibrary.core.executeOnRight
 import com.sourcepoint.cmplibrary.core.flatMap
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
-import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation.CCPA
 import com.sourcepoint.cmplibrary.exception.Legislation.GDPR
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
+import com.sourcepoint.cmplibrary.model.MessageReq
+import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp1203
 
 /**
  * Factory method to create an instance of a [Service] using its implementation

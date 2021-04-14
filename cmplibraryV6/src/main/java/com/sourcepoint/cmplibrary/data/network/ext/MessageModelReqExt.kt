@@ -1,5 +1,10 @@
-package com.sourcepoint.cmplibrary.data.network.model
+package com.sourcepoint.cmplibrary.data.network.ext
 
+import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.CampaignReq
+import com.sourcepoint.cmplibrary.model.Campaigns
+import com.sourcepoint.cmplibrary.model.MessageReq
+import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import org.json.JSONObject
 

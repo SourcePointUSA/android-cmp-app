@@ -1,9 +1,14 @@
-package com.sourcepoint.cmplibrary.data.network.model
+package com.sourcepoint.cmplibrary.data.network.ext
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.model.CampaignResp1203
+import com.sourcepoint.cmplibrary.model.Ccpa1203
+import com.sourcepoint.cmplibrary.model.GDPRConsent1203
+import com.sourcepoint.cmplibrary.model.Gdpr1203
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp1203
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toCCPAUserConsent

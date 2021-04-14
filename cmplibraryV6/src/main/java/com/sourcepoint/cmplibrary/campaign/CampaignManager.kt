@@ -5,12 +5,12 @@ import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.Campaigns
-import com.sourcepoint.cmplibrary.data.network.model.MessageReq
+import com.sourcepoint.cmplibrary.data.network.ext.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.Campaigns
+import com.sourcepoint.cmplibrary.model.MessageReq
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig

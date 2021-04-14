@@ -1,7 +1,11 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
-import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.ext.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
+import com.sourcepoint.cmplibrary.model.Campaigns
+import com.sourcepoint.cmplibrary.model.CcpaReq
+import com.sourcepoint.cmplibrary.model.GdprReq
+import com.sourcepoint.cmplibrary.model.MessageReq
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 
 class MessageRespTest {

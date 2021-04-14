@@ -18,14 +18,14 @@ import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.model.CampaignResp1203
-import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp1203
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.CampaignResp1203
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp1203
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.SHOW_OPTIONS
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable

@@ -11,7 +11,9 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.ext.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.Ccpa1203
+import com.sourcepoint.cmplibrary.model.Gdpr1203
 import com.sourcepoint.cmplibrary.util.userConsents
 import org.json.JSONObject
 import org.junit.Test

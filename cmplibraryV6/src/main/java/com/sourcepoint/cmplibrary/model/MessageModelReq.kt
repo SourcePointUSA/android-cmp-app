@@ -1,7 +1,6 @@
-package com.sourcepoint.cmplibrary.data.network.model
+package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 
 internal data class MessageReq(
     val requestUUID: String,

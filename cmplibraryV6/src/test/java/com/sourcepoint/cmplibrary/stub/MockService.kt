@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.stub
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.Either.Left
 import com.sourcepoint.cmplibrary.data.Service
-import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable

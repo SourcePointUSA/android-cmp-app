@@ -1,7 +1,8 @@
-package com.sourcepoint.cmplibrary.data.network.model
+package com.sourcepoint.cmplibrary.data.network.ext
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.model.getAppliedLegislation
 import org.junit.Test
 
 class DataModelRespKtTest {

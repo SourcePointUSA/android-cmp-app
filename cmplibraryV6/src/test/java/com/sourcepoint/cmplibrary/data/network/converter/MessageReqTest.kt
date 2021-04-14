@@ -1,12 +1,15 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
 // import com.fasterxml.jackson.jr.ob.JSON
-import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.ext.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
+import com.sourcepoint.cmplibrary.model.Campaigns
+import com.sourcepoint.cmplibrary.model.CcpaReq
+import com.sourcepoint.cmplibrary.model.GdprReq
+import com.sourcepoint.cmplibrary.model.MessageReq
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import com.sourcepoint.cmplibrary.util.file2String
 import org.junit.Test
-import java.util.* // ktlint-disable
 
 class MessageReqTest {
 

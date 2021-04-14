@@ -6,10 +6,12 @@ import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorage
-import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.ext.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
+import com.sourcepoint.cmplibrary.model.Ccpa1203
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
+import com.sourcepoint.cmplibrary.model.Gdpr1203
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
 import com.sourcepoint.cmplibrary.util.file2String
