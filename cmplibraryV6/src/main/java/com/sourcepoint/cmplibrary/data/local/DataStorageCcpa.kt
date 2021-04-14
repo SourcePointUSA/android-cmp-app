@@ -25,7 +25,9 @@ internal interface DataStorageCcpa {
     fun getCcpa1203(): String?
     fun getCcpaConsentResp(): String
     fun getCcpaMessage(): String
+    fun getCcpaConsentUuid(): String?
     fun clearCcpaConsent()
+    fun clearAll()
 
     companion object {
         const val KEY_CCPA = "key_ccpa"
@@ -107,11 +109,19 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         return preference.getString(CCPA_JSON_MESSAGE, "")!!
     }
 
+    override fun getCcpaConsentUuid(): String? {
+        return preference.getString(CONSENT_CCPA_UUID_KEY, null)
+    }
+
     override fun clearCcpaConsent() {
         preference
             .edit()
             .putString(CCPA_CONSENT_RESP, "")
             .apply()
+    }
+
+    override fun clearAll() {
+        preference.edit().clear().apply()
     }
 
     private fun fail(param: String): Nothing = throw RuntimeException("$param not fund in local storage.")

@@ -1,7 +1,5 @@
 package com.sourcepoint.cmplibrary.data.network
 
-import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
@@ -19,19 +17,17 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.junit.Before
 import org.junit.Test
-import java.lang.RuntimeException
-import kotlin.coroutines.suspendCoroutine
 
 class NetworkClientImplTest {
 
     @MockK
     lateinit var okHttp: OkHttpClient
 
-    @MockK
-    private lateinit var successMock: (UnifiedMessageResp) -> Unit
-
-    @MockK
-    private lateinit var errorMock: (Throwable) -> Unit
+//    @MockK
+//    private lateinit var successMock: (UnifiedMessageResp) -> Unit
+//
+//    @MockK
+//    private lateinit var errorMock: (Throwable) -> Unit
 
     @MockK
     private lateinit var responseManager: ResponseManager
@@ -94,7 +90,7 @@ class NetworkClientImplTest {
         /** preconditions */
         val mockCall = MockCall(logicResponseCB = { cb -> cb.onResponse(mockk(), mockk()) })
         every { okHttp.newCall(any()) }.returns(mockCall)
-        every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
+//        every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
 
         /** execution */
 //        sut.getMessage(messageReq = req, pSuccess = { successMock(it) }, pError = { errorMock(it) }, stage = Env.STAGE)
@@ -109,7 +105,7 @@ class NetworkClientImplTest {
         /** preconditions */
         val mockCall = MockCall(logicResponseCB = { cb -> cb.onResponse(mockk(), mockk()) })
         every { okHttp.newCall(any()) }.returns(mockCall)
-        every { responseManager.parseResponse(any()) }.returns(Either.Left(mockk()))
+//        every { responseManager.parseResponse(any()) }.returns(Either.Left(mockk()))
 
         /** execution */
 //        sut.getMessage(messageReq = req, pSuccess = { successMock(it) }, pError = { errorMock(it) }, stage = Env.STAGE)
@@ -124,7 +120,7 @@ class NetworkClientImplTest {
         /** preconditions */
         val mockCall = MockCall(logicResponseCB = { cb -> cb.onFailure(mockk(), mockk()) })
         every { okHttp.newCall(any()) }.returns(mockCall)
-        every { responseManager.parseResponse(any()) }.returns(Either.Left(mockk()))
+//        every { responseManager.parseResponse(any()) }.returns(Either.Left(mockk()))
 
         /** execution */
 //        sut.getMessage(messageReq = req, pSuccess = { successMock(it) }, pError = { errorMock(it) }, stage = Env.STAGE)
@@ -146,15 +142,15 @@ class NetworkClientImplTest {
             logger = logger
         )
 
-        val res = sut.getMessage(messageReq = req)
-
-        val output = (res as Either.Right<UnifiedMessageResp>).r
+//        val res: Either<UnifiedMessageResp> = sut.getMessage(messageReq = req)
+//
+//        val output = (res as Either.Right<UnifiedMessageResp>).r
     }
 
     //    @Test
     fun `GIVEN a UWReq Object VERIFY that the output is a Right`() = runBlocking<Unit> {
 
-        every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
+//        every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
 
         val sut = createNetworkClient(
             httpClient = OkHttpClient(),
@@ -163,15 +159,15 @@ class NetworkClientImplTest {
             logger = logger
         )
 
-        val res = sut.getMessage(messageReq = req)
+//        val res = sut.getMessage(messageReq = req)
 
-        val output = (res as Either.Right<UnifiedMessageResp>).r
+//        val output = (res as Either.Right<UnifiedMessageResp>).r
     }
 
     //    @Test
     fun `GIVEN an exception VERIFY that the output is a Left`() = runBlocking<Unit> {
 
-        every { responseManager.parseResponse(any()) }.returns(Either.Left(RuntimeException("test")))
+//        every { responseManager.parseResponse(any()) }.returns(Either.Left(RuntimeException("test")))
 
         val sut = createNetworkClient(
             httpClient = OkHttpClient(),
@@ -180,18 +176,9 @@ class NetworkClientImplTest {
             logger = logger
         )
 
-        val res = sut.getMessage(messageReq = req)
+//        val res = sut.getMessage(messageReq = req)
 
-        val output = (res as Either.Left).t
-        output.message.assertEquals("test")
-    }
-
-    private suspend fun NetworkClient.getMessage(messageReq: MessageReq) = suspendCoroutine<Either<UnifiedMessageResp>> {
-//        getMessage(
-//            messageReq,
-//            { messageResp -> it.resume(Either.Right(messageResp)) },
-//            { throwable -> it.resume(Either.Left(throwable)) },
-//            Env.STAGE
-//        )
+//        val output = (res as Either.Left).t
+//        output.message.assertEquals("test")
     }
 }

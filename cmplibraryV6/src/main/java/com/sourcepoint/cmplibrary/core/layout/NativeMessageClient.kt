@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.core.layout
 
 import android.view.View
-import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.ConsentAction
 
 interface NativeMessageClient {
 

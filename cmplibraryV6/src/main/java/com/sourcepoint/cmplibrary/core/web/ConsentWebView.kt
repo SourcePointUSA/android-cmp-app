@@ -15,11 +15,11 @@ import android.webkit.WebView
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.converter.toConsentAction
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.ActionType
+import com.sourcepoint.cmplibrary.model.toConsentAction
 import com.sourcepoint.cmplibrary.util.*  //ktlint-disable
 import okhttp3.HttpUrl
 import java.util.* // ktlint-disable

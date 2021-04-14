@@ -5,13 +5,12 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
-import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
-import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
-import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ActionType
+import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -43,12 +42,6 @@ class ConsentManagerImplTest {
 
     @MockK
     private lateinit var dataStorage: DataStorage
-
-    @MockK
-    private lateinit var successMock: (UnifiedMessageResp) -> Unit
-
-    @MockK
-    private lateinit var errorMock: (Throwable) -> Unit
 
     private val consentResp = ConsentResp(
         uuid = "uuid_test",
@@ -104,12 +97,11 @@ class ConsentManagerImplTest {
         consentManager.sPConsentsError = { throwable -> sPErrorMock(throwable) }
 
         consentManager.localStateStatus = LocalStateStatus.Present("localState_test")
-        consentManager.enqueueConsent2(consentAction)
+        consentManager.enqueueConsent(consentAction)
 
         verify(exactly = 1) { service.sendConsent(any(), any(), any(), any()) }
         verify(exactly = 1) { sPSuccessMock.invoke(any()) }
         verify(exactly = 0) { sPErrorMock.invoke(any()) }
-        verify(exactly = 1) { consentManagerUtils.saveGdprConsent(any()) }
     }
 
     @Test
@@ -124,7 +116,7 @@ class ConsentManagerImplTest {
         consentManager.sPConsentsError = { throwable -> sPErrorMock(throwable) }
 
         consentManager.localStateStatus = LocalStateStatus.Present("localState_test")
-        repeat(times) { consentManager.enqueueConsent2(consentAction) }
+        repeat(times) { consentManager.enqueueConsent(consentAction) }
 
         verify(exactly = times) { service.sendConsent(any(), any(), any(), any()) }
         verify(exactly = times) { sPSuccessMock.invoke(any()) }
@@ -143,7 +135,7 @@ class ConsentManagerImplTest {
         consentManager.sPConsentsError = { throwable -> sPErrorMock(throwable) }
 
         consentManager.localStateStatus = LocalStateStatus.Present("localState_test")
-        repeat(times) { consentManager.enqueueConsent2(consentAction) }
+        repeat(times) { consentManager.enqueueConsent(consentAction) }
 
         verify(exactly = times) { service.sendConsent(any(), any(), any(), any()) }
         verify(exactly = 0) { sPSuccessMock.invoke(any()) }
@@ -178,9 +170,9 @@ class ConsentManagerImplTest {
         every { service.sendConsent(any(), any(), any(), any()) }.returns(Either.Right(consentResp))
 
         val job = launch {
-            launch { consentManager.enqueueConsent2(consentAction) }
-            launch { consentManager.enqueueConsent2(consentAction) }
-            launch { consentManager.enqueueConsent2(consentAction) }
+            launch { consentManager.enqueueConsent(consentAction) }
+            launch { consentManager.enqueueConsent(consentAction) }
+            launch { consentManager.enqueueConsent(consentAction) }
         }
         job.join()
         consentManager.enqueuedActions.assertEquals(3)
@@ -219,9 +211,9 @@ class ConsentManagerImplTest {
         every { service.sendConsent(any(), any(), any(), any()) }.returns(Either.Right(consentResp))
         consentManager.localStateStatus = LocalStateStatus.Present("localState_test")
         val job = launch {
-            launch { consentManager.enqueueConsent2(consentAction) }
-            launch { consentManager.enqueueConsent2(consentAction) }
-            launch { consentManager.enqueueConsent2(consentAction) }
+            launch { consentManager.enqueueConsent(consentAction) }
+            launch { consentManager.enqueueConsent(consentAction) }
+            launch { consentManager.enqueueConsent(consentAction) }
         }
         job.join()
         consentManager.enqueuedActions.assertEquals(0)

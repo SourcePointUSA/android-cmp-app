@@ -52,54 +52,54 @@ class JsonConverterExtKtTest {
         }
     }
 
-    @Test
-    fun `GIVEN a Gdpr json string PARSE to Gdpr Obj`() {
-        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
+//    @Test
+//    fun `GIVEN a Gdpr json string PARSE to Gdpr Obj`() {
+//        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
+//
+//        val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
+//        gdpr.run {
+//            gdprApplies.assertEquals(false)
+//            userConsent.assertNotNull()
+//            message.assertNotNull()
+//            meta.assertNotNull()
+//            uuid.assertEquals("a42f93fc-282c-422d-89f2-841e04d9217f")
+//        }
+//
+//        val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
+//        ccpa.run {
+//            ccpaApplies.assertEquals(true)
+//            userConsent.assertNotNull()
+//            message.assertNotNull()
+//            meta.assertNotNull()
+//            uuid.assertEquals("9c027fb5-9dde-4d07-9f79-bbb316489b9c")
+//        }
+//    }
 
-        val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
-        gdpr.run {
-            gdprApplies.assertEquals(false)
-            userConsent.assertNotNull()
-            message.assertNotNull()
-            meta.assertNotNull()
-            uuid.assertEquals("a42f93fc-282c-422d-89f2-841e04d9217f")
-        }
+//    @Test
+//    fun `GIVEN a Ccpa json string PARSE to Ccpa Obj`() {
+//        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
+//        val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
+//        ccpa.run {
+//            ccpaApplies.assertEquals(true)
+//            userConsent.assertNotNull()
+//            message.assertNotNull()
+//            meta.assertNotNull()
+//            uuid.assertEquals("9c027fb5-9dde-4d07-9f79-bbb316489b9c")
+//        }
+//    }
 
-        val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
-        ccpa.run {
-            ccpaApplies.assertEquals(true)
-            userConsent.assertNotNull()
-            message.assertNotNull()
-            meta.assertNotNull()
-            uuid.assertEquals("9c027fb5-9dde-4d07-9f79-bbb316489b9c")
-        }
-    }
-
-    @Test
-    fun `GIVEN a Ccpa json string PARSE to Ccpa Obj`() {
-        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
-        val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
-        ccpa.run {
-            ccpaApplies.assertEquals(true)
-            userConsent.assertNotNull()
-            message.assertNotNull()
-            meta.assertNotNull()
-            uuid.assertEquals("9c027fb5-9dde-4d07-9f79-bbb316489b9c")
-        }
-    }
-
-    @Test
-    fun `GIVEN a consent Ccpa json string PARSE to CcpaConsent Obj`() {
-        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
-        val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
-        ccpa.run {
-            ccpaApplies.assertEquals(true)
-            userConsent.assertNotNull()
-            message.assertNotNull()
-            meta.assertNotNull()
-            uuid.assertEquals("9c027fb5-9dde-4d07-9f79-bbb316489b9c")
-        }
-    }
+//    @Test
+//    fun `GIVEN a consent Ccpa json string PARSE to CcpaConsent Obj`() {
+//        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
+//        val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
+//        ccpa.run {
+//            ccpaApplies.assertEquals(true)
+//            userConsent.assertNotNull()
+//            message.assertNotNull()
+//            meta.assertNotNull()
+//            uuid.assertEquals("9c027fb5-9dde-4d07-9f79-bbb316489b9c")
+//        }
+//    }
 
     @Test
     fun `GIVEN a Gdpr user consent json PARSE to GdprConsent Obj`() {

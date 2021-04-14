@@ -5,9 +5,9 @@ import android.util.AttributeSet
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.model.ActionButton
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
-import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.ActionType
+import com.sourcepoint.cmplibrary.model.ConsentAction
 
 abstract class NativeMessageInternal : NativeMessage {
 

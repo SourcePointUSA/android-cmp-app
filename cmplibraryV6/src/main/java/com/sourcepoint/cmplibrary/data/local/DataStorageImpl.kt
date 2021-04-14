@@ -63,5 +63,9 @@ private class DataStorageImpl(
         return preference.getString(PROPERTY_PRIORITY_DATA, null)
     }
 
+    override fun clearAll() {
+        preference.edit().clear().apply()
+    }
+
     companion object
 }

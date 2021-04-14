@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
 import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.model.CCPAConsent
 import org.json.JSONObject
 
 internal data class UnifiedMessageResp1203(

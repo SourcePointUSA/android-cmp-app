@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.model
+package com.sourcepoint.cmplibrary.model
 
 import org.json.JSONObject
 

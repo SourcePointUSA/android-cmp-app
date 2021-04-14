@@ -1,8 +1,8 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import org.junit.Test
 
 class HttpUrlManagerTest {

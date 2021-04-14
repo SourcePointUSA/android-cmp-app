@@ -3,10 +3,10 @@ package com.sourcepoint.cmplibrary.data.network.model
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
-import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
+import com.sourcepoint.cmplibrary.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.model.toJSONObj
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check

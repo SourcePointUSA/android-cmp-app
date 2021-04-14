@@ -53,7 +53,7 @@ class DataStorageGdprImplTest {
 
         /** clearInternalData delete only these prefs */
         storage.getAuthId().assertEquals("")
-        storage.getGdprConsentUuid().assertEquals("")
+        storage.getGdprConsentUuid().assertEquals(null)
         storage.getEuConsent().assertEquals("")
         storage.getMetaData().assertEquals("")
 

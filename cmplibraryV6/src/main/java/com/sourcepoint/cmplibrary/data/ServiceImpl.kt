@@ -2,23 +2,18 @@ package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
-import com.sourcepoint.cmplibrary.core.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.core.executeOnLeft
+import com.sourcepoint.cmplibrary.core.executeOnRight
 import com.sourcepoint.cmplibrary.core.flatMap
-import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
-import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
-import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation.CCPA
 import com.sourcepoint.cmplibrary.exception.Legislation.GDPR
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.getMap
-import com.sourcepoint.cmplibrary.model.toTreeMap
+import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.ConsentResp
 
 /**
  * Factory method to create an instance of a [Service] using its implementation
@@ -64,6 +59,31 @@ private class ServiceImpl(
         )
     }
 
+    override fun sendConsent(
+        localState: String,
+        consentAction: ConsentAction,
+        env: Env,
+        pmId: String?
+    ): Either<ConsentResp> {
+        return consentManagerUtils.buildConsentReq(consentAction, localState, pmId)
+            .flatMap {
+                nc.sendConsent(it, env, consentAction)
+            }
+            .executeOnRight {
+                when (it.legislation) {
+                    GDPR -> {
+                        dataStorage.saveGdprConsentResp(it.content.toString())
+                        dataStorage.saveGdprConsentUuid(it.uuid)
+                    }
+                    CCPA -> {
+                        dataStorage.saveCcpaConsentResp(it.content.toString())
+                        dataStorage.saveCcpaConsentUuid(it.uuid)
+                    }
+                }
+                logger.d(this::class.java.name, "uuid[$it]")
+            }
+    }
+
     override fun getNativeMessage(
         messageReq: MessageReq,
         success: (NativeMessageResp) -> Unit,
@@ -93,65 +113,6 @@ private class ServiceImpl(
                 // TODO save the data into the local storage
             },
             error
-        )
-    }
-
-    override fun sendConsent(
-        localState: String,
-        consentAction: ConsentAction,
-        env: Env,
-        pmId: String?
-    ): Either<ConsentResp> {
-        return consentManagerUtils.buildConsentReq(consentAction, localState, pmId)
-            .flatMap {
-                nc.sendConsent(it, env, consentAction)
-            }
-            .executeOnRight {
-                when (it.legislation) {
-                    GDPR -> dataStorage.saveGdprConsentUuid(it.uuid)
-                    CCPA -> dataStorage.saveCcpaConsentResp(it.uuid)
-                }
-                logger.d(this::class.java.name, "uuid[$it]")
-            }
-    }
-
-    override fun sendConsent(
-        localState: String,
-        consentAction: ConsentAction,
-        success: (ConsentResp) -> Unit,
-        error: (Throwable) -> Unit,
-        env: Env,
-        pmId: String?
-    ) {
-
-        val request = consentManagerUtils.buildConsentReq(consentAction, localState, pmId)
-            .executeOnLeft { error(it) }
-            .getOrNull() ?: return
-
-        nc.sendConsent(
-            consentAction = consentAction,
-            consentReq = request,
-            success = { consentResp ->
-                success(consentResp.copy(legislation = consentAction.legislation))
-                when (consentAction.legislation) {
-                    GDPR -> {
-                        consentResp.content
-                            .toTreeMap()
-                            .getMap("userConsent")
-                            ?.toGDPRUserConsent()
-                            ?.let { campaignManager.saveGDPRConsent(it) }
-                    }
-                    CCPA -> {
-                        consentResp.content
-                            .toTreeMap()
-                            .getMap("userConsent")
-                            ?.toCCPAUserConsent()
-                            ?.let { campaignManager.saveCCPAConsent(it) }
-                    }
-                }
-            },
-            error = error,
-            env = env
         )
     }
 }

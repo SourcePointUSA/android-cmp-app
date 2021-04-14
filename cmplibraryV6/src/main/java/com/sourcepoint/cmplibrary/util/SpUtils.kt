@@ -12,9 +12,9 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsent
-import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
 import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.model.SPCCPAConsent
+import com.sourcepoint.cmplibrary.model.SPGDPRConsent
 
 fun userConsents(context: Context): SPConsents {
     val cm: CampaignManager = createStorage(context)
@@ -23,20 +23,22 @@ fun userConsents(context: Context): SPConsents {
 
 fun gdprApplies(context: Context): Boolean {
     val cm: CampaignManager = createStorage(context)
-    return cm
-        .getGdpr()
-        .getOrNull()
-        ?.gdprApplies
-        ?: false
+//    return cm
+//        .getGdpr()
+//        .getOrNull()
+//        ?.gdprApplies
+//        ?: false
+    return false
 }
 
 fun ccpaApplies(context: Context): Boolean {
     val cm: CampaignManager = createStorage(context)
-    return cm
-        .getCcpa()
-        .getOrNull()
-        ?.ccpaApplies
-        ?: false
+//    return cm
+//        .getCcpa()
+//        .getOrNull()
+//        ?.ccpaApplies
+//        ?: false
+    return false
 }
 
 fun clearAllData(context: Context) {

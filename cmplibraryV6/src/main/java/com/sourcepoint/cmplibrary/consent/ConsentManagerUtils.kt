@@ -8,11 +8,11 @@ import com.sourcepoint.cmplibrary.core.flatMap
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.data.network.model.CCPAConsent
-import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
-import com.sourcepoint.cmplibrary.data.network.model.GDPRConsent
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.model.CCPAConsent
+import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.GDPRConsent
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -23,8 +23,6 @@ internal interface ConsentManagerUtils {
     fun buildGdprConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject>
     fun buildCcpaConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject>
 
-    fun saveGdprConsent(value: JSONObject)
-    fun saveCcpaConsent(value: JSONObject)
     fun getGdprConsent(): Either<GDPRConsent>
     fun getCcpaConsent(): Either<CCPAConsent>
     fun hasGdprConsent(): Boolean
@@ -112,14 +110,6 @@ private class ConsentManagerUtilsImpl(
 
     override fun getCcpaConsent(): Either<CCPAConsent> {
         return cm.getCCPAConsent()
-    }
-
-    override fun saveGdprConsent(value: JSONObject) {
-        ds.saveGdprConsentResp(value.toString())
-    }
-
-    override fun saveCcpaConsent(value: JSONObject) {
-        ds.saveCcpaConsentResp(value.toString())
     }
 
     override fun hasGdprConsent(): Boolean = ds.getGdprConsentResp().isNotBlank()

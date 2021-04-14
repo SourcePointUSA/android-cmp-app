@@ -2,9 +2,10 @@ package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.MessageReq
-import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
+import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.model.ConsentAction
 import org.json.JSONObject
 
 /**
@@ -25,6 +26,12 @@ internal interface NetworkClient {
         env: Env
     )
 
+    fun sendConsent(
+        consentReq: JSONObject,
+        env: Env,
+        consentAction: ConsentAction
+    ): Either<ConsentResp>
+
     /**
      * Requesting a native message object to the server
      * @param messageReq request content to send into the body
@@ -44,18 +51,4 @@ internal interface NetworkClient {
         success: (NativeMessageRespK) -> Unit,
         error: (Throwable) -> Unit
     )
-
-    fun sendConsent(
-        consentReq: JSONObject,
-        success: (ConsentResp) -> Unit,
-        error: (Throwable) -> Unit,
-        env: Env,
-        consentAction: ConsentAction
-    )
-
-    fun sendConsent(
-        consentReq: JSONObject,
-        env: Env,
-        consentAction: ConsentAction
-    ): Either<ConsentResp>
 }

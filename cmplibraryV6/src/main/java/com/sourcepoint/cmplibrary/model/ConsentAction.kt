@@ -1,8 +1,6 @@
-package com.sourcepoint.cmplibrary.data.network.model
+package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.exception.Legislation
-import com.sourcepoint.cmplibrary.model.ActionType
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import org.json.JSONObject
 
 data class ConsentAction(

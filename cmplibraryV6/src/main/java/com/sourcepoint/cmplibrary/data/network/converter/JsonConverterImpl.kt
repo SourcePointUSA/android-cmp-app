@@ -4,12 +4,9 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.exception.Legislation
-import com.sourcepoint.cmplibrary.model.getFieldValue
-import com.sourcepoint.cmplibrary.model.getMap
-import com.sourcepoint.cmplibrary.model.toTreeMap
+import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
 
@@ -23,10 +20,6 @@ internal fun JsonConverter.Companion.create(): JsonConverter = JsonConverterImpl
  * Implementation of the [JsonConverter] interface
  */
 private class JsonConverterImpl : JsonConverter {
-
-    override fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp> = check {
-        body.toUnifiedMessageRespDto()
-    }
 
     override fun toUnifiedMessageResp1203(body: String): Either<UnifiedMessageResp1203> = check {
         body.toUnifiedMessageRespDto1203()

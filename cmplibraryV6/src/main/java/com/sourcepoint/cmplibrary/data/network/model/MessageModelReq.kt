@@ -28,11 +28,6 @@ internal data class CcpaReq(
     override val campaignEnv: CampaignEnv
 ) : CampaignReq
 
-// internal class TargetingParams(
-//    val legislation: String,
-//    val location: String
-// )
-
 internal data class UnifiedMessageRequest(
     val accountId: Int,
     val propertyHref: String,

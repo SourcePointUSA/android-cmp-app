@@ -1,11 +1,11 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
-import com.sourcepoint.cmplibrary.data.network.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.data.network.util.Env.PROD
 import com.sourcepoint.cmplibrary.data.network.util.Env.STAGE
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.ActionType
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import okhttp3.HttpUrl
 
 /**

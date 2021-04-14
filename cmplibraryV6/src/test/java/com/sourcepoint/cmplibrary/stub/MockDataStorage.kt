@@ -176,4 +176,8 @@ internal class MockDataStorage : DataStorage {
     override fun getPropertyPriorityData(): String? {
         TODO("Not yet implemented")
     }
+
+    override fun getCcpaConsentUuid(): String? {
+        TODO("Not yet implemented")
+    }
 }

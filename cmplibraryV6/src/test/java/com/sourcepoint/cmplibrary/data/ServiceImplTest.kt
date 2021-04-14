@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.data.local.DataStorage
-import com.sourcepoint.cmplibrary.data.network.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.Campaign
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
@@ -13,14 +12,14 @@ class ServiceImplTest {
     @MockK
     private lateinit var ds: DataStorage
 
-    @MockK
-    private lateinit var umr: UnifiedMessageResp
+//    @MockK
+//    private lateinit var umr: UnifiedMessageResp
 
-    @MockK
-    private lateinit var successMock: (UnifiedMessageResp) -> Unit
-
-    @MockK
-    private lateinit var errorMock: (Throwable) -> Unit
+//    @MockK
+//    private lateinit var successMock: (UnifiedMessageResp) -> Unit
+//
+//    @MockK
+//    private lateinit var errorMock: (Throwable) -> Unit
 
     private val nativeCampaign = Campaign(
         accountId = 22,

@@ -6,9 +6,10 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.* // ktlint-disable
 import org.json.JSONObject
@@ -156,38 +157,5 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseConsentRes(response, consentAction.legislation)
-    }
-
-    override fun sendConsent(
-        consentReq: JSONObject,
-        success: (ConsentResp) -> Unit,
-        error: (Throwable) -> Unit,
-        env: Env,
-        consentAction: ConsentAction
-    ) {
-        val mediaType = MediaType.parse("application/json")
-        val body: RequestBody = RequestBody.create(mediaType, consentReq.toString())
-        val url = urlManager
-            .sendConsentUrl(legislation = consentAction.legislation, env = env, actionType = consentAction.actionType)
-            .also { logger.i(NetworkClientImpl::class.java.name, "url getUnifiedMessage [$it]") }
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-
-        httpClient
-            .newCall(request)
-            .enqueue {
-                onFailure { _, exception ->
-                    error(exception)
-                }
-                onResponse { _, r ->
-                    responseManager
-                        .parseConsentResEither(r, consentAction.legislation)
-                        .map { success(it) }
-                        .executeOnLeft { error(it) }
-                }
-            }
     }
 }

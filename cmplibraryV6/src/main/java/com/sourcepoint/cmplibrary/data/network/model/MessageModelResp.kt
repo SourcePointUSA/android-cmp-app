@@ -5,16 +5,14 @@ import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Legislation.CCPA
 import com.sourcepoint.cmplibrary.exception.Legislation.GDPR
+import com.sourcepoint.cmplibrary.model.CCPAConsent
+import com.sourcepoint.cmplibrary.model.GDPRConsent
 import org.json.JSONObject
 import java.util.* // ktlint-disable
 
 /**
  * ================================== Unified wrapper =======================================
  */
-data class UnifiedMessageResp(
-    val campaigns: List<CampaignResp> = emptyList(),
-    val thisContent: JSONObject? = null
-)
 
 sealed class CampaignResp(
     val uuid: String? = null,

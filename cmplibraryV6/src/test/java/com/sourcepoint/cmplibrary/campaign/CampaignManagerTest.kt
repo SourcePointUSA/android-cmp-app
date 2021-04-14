@@ -6,14 +6,12 @@ import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorage
-import com.sourcepoint.cmplibrary.data.network.converter.toUnifiedMessageRespDto
-import com.sourcepoint.cmplibrary.data.network.model.CCPAConsent
-import com.sourcepoint.cmplibrary.data.network.model.Ccpa
-import com.sourcepoint.cmplibrary.data.network.model.GDPRConsent
-import com.sourcepoint.cmplibrary.data.network.model.Gdpr
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
+import com.sourcepoint.cmplibrary.model.CCPAConsent
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
+import com.sourcepoint.cmplibrary.model.GDPRConsent
 import com.sourcepoint.cmplibrary.util.file2String
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -73,15 +71,14 @@ class CampaignManagerTest {
 
     @Test
     fun `CHECK that getGDPRConsent RETURNS a GDPRConsent from the dataStorage`() {
-        val unifiedResp = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String().toUnifiedMessageRespDto()
-        val gdprTest = unifiedResp.campaigns.find { it is Gdpr } as Gdpr
+        val unifiedResp = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String().toUnifiedMessageRespDto1203()
+        val gdprTest = unifiedResp.campaigns.find { it is Gdpr1203 } as Gdpr1203
 
-        every { dataStorage.getGdprConsentResp() }.returns(gdprTest.userConsent!!.thisContent.toString())
+        every { dataStorage.getGdprConsentResp() }.returns(gdprTest.userConsent.thisContent.toString())
 
         (sut.getGDPRConsent() as? Either.Right).assertNotNull()
 
         verify(exactly = 0) { dataStorage.saveGdprConsentResp(any()) }
-        verify(exactly = 1) { dataStorage.getGdprConsentResp() }
     }
 
     @Test
@@ -108,8 +105,8 @@ class CampaignManagerTest {
 
     @Test
     fun `CHECK that getCCPAConsent RETURNS a CCPAConsent from the dataStorage`() {
-        val unifiedResp = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String().toUnifiedMessageRespDto()
-        val ccpaTest = unifiedResp.campaigns.find { it is Ccpa } as Ccpa
+        val unifiedResp = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String().toUnifiedMessageRespDto1203()
+        val ccpaTest = unifiedResp.campaigns.find { it is Ccpa1203 } as Ccpa1203
 
         every { dataStorage.getCcpaConsentResp() }.returns(ccpaTest.userConsent.thisContent.toString())
 

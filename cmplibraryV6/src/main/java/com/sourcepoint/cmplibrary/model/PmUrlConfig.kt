@@ -1,6 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.model
-
-import com.sourcepoint.cmplibrary.model.PMTab
+package com.sourcepoint.cmplibrary.model
 
 data class PmUrlConfig(
     val pmTab: PMTab = PMTab.PURPOSES,

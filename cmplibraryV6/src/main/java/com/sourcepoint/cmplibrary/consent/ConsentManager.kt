@@ -5,28 +5,29 @@ import com.sourcepoint.cmplibrary.core.Either.Right
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
-import com.sourcepoint.cmplibrary.data.network.converter.toCCPAUserConsent
-import com.sourcepoint.cmplibrary.data.network.converter.toGDPRUserConsent
-import com.sourcepoint.cmplibrary.data.network.model.ConsentAction
-import com.sourcepoint.cmplibrary.data.network.model.SPCCPAConsent
-import com.sourcepoint.cmplibrary.data.network.model.SPGDPRConsent
-import com.sourcepoint.cmplibrary.data.network.model.consent.ConsentResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.ConsentResp
+import com.sourcepoint.cmplibrary.model.SPCCPAConsent
+import com.sourcepoint.cmplibrary.model.SPGDPRConsent
 import com.sourcepoint.cmplibrary.model.getMap
+import com.sourcepoint.cmplibrary.model.toCCPAUserConsent
+import com.sourcepoint.cmplibrary.model.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import java.util.* //ktlint-disable
 
 internal interface ConsentManager {
     var localStateStatus: LocalStateStatus
-    fun enqueueConsent2(consentAction: ConsentAction)
-    fun sendConsent2(
+    fun enqueueConsent(consentAction: ConsentAction)
+    fun sendConsent(
         action: ConsentAction,
         localState: String
     )
     val enqueuedActions: Int
     val gdprUuid: String?
+    val ccpaUuid: String?
     var sPConsentsSuccess: ((SPConsents) -> Unit)?
     var sPConsentsError: ((Throwable) -> Unit)?
 
@@ -65,13 +66,16 @@ private class ConsentManagerImpl(
     override val gdprUuid: String?
         get() = dataStorage.getGdprConsentUuid()
 
-    override fun enqueueConsent2(consentAction: ConsentAction) {
+    override val ccpaUuid: String?
+        get() = dataStorage.getCcpaConsentUuid()
+
+    override fun enqueueConsent(consentAction: ConsentAction) {
         consentQueue2.offer(consentAction)
         val lState: LocalStateStatus.Present? = localStateStatus as? LocalStateStatus.Present
         if (lState != null) {
             val localState = lState.value
             val action = consentQueue2.poll()
-            sendConsent2(action, localState)
+            sendConsent(action, localState)
         }
     }
 
@@ -81,7 +85,7 @@ private class ConsentManagerImpl(
                 if (consentQueue2.isNotEmpty()) {
                     val localState = newState.value
                     val action = consentQueue2.poll()
-                    sendConsent2(action, localState)
+                    sendConsent(action, localState)
                     localStateStatus = LocalStateStatus.Consumed
                 }
             }
@@ -90,14 +94,13 @@ private class ConsentManagerImpl(
         }
     }
 
-    override fun sendConsent2(action: ConsentAction, localState: String) {
+    override fun sendConsent(action: ConsentAction, localState: String) {
         executorManager.executeOnSingleThread {
             when (val either = service.sendConsent(localState, action, env, action.privacyManagerId)) {
                 is Right -> {
                     val updatedLocalState = LocalStateStatus.Present(either.r.localState)
                     val sPConsents = responseHandler(either, action)
                     sPConsentsSuccess?.invoke(sPConsents)
-                    consentManagerUtils.saveGdprConsent(either.r.content)
                     this.localStateStatus = updatedLocalState
                 }
                 is Left -> sPConsentsError?.invoke(either.t)
