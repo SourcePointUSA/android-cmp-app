@@ -17,11 +17,11 @@ import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
 
-internal fun String.toUnifiedMessageRespDto1203(): UnifiedMessageResp {
-    return JSONObject(this).toUnifiedMessageRespDto1203()
+internal fun String.toUnifiedMessageRespDto(): UnifiedMessageResp {
+    return JSONObject(this).toUnifiedMessageRespDto()
 }
 
-internal fun JSONObject.toUnifiedMessageRespDto1203(): UnifiedMessageResp {
+internal fun JSONObject.toUnifiedMessageRespDto(): UnifiedMessageResp {
     val map: Map<String, Any?> = this.toTreeMap()
     val localState = map.getFieldValue<String>("localState") ?: ""
     val propertyPriorityData = map.getMap("propertyPriorityData")?.toJSONObj() ?: failParam("propertyPriorityData")
@@ -46,18 +46,18 @@ internal fun JSONObject.toUnifiedMessageRespDto1203(): UnifiedMessageResp {
 
 internal fun Map<String, Any?>.toCampaignResp1203(): CampaignResp? {
     return when (getFieldValue<String>("type")?.toUpperCase() ?: failParam("type")) {
-        Legislation.GDPR.name -> this.toGDPR1203()
-        Legislation.CCPA.name -> this.toCCPA1203()
+        Legislation.GDPR.name -> this.toGDPR()
+        Legislation.CCPA.name -> this.toCCPA()
         else -> null
     }
 }
 
-internal fun String.toCCPA1203(): Ccpa? {
+internal fun String.toCCPA(): Ccpa? {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
-    return map.toCCPA1203()
+    return map.toCCPA()
 }
 
-private fun Map<String, Any?>.toCCPA1203(): Ccpa? {
+private fun Map<String, Any?>.toCCPA(): Ccpa? {
 
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
@@ -71,7 +71,7 @@ private fun Map<String, Any?>.toCCPA1203(): Ccpa? {
     )
 }
 
-internal fun Map<String, Any?>.toGDPR1203(): Gdpr {
+internal fun Map<String, Any?>.toGDPR(): Gdpr {
 
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
@@ -85,9 +85,9 @@ internal fun Map<String, Any?>.toGDPR1203(): Gdpr {
     )
 }
 
-internal fun String.toGDPR1203(): Gdpr? {
+internal fun String.toGDPR(): Gdpr? {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
-    return map.toGDPR1203()
+    return map.toGDPR()
 }
 
 internal fun Map<String, Any?>.toGDPRUserConsent1203(): GDPRConsent {

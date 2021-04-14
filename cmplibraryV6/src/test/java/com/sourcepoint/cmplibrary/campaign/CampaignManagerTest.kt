@@ -13,7 +13,7 @@ import com.sourcepoint.cmplibrary.model.CCPACampaign
 import com.sourcepoint.cmplibrary.model.Ccpa
 import com.sourcepoint.cmplibrary.model.GDPRCampaign
 import com.sourcepoint.cmplibrary.model.Gdpr
-import com.sourcepoint.cmplibrary.model.exposed.*
+import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -98,7 +98,7 @@ class CampaignManagerTest {
 
     @Test
     fun `CHECK that getGDPRConsent RETURNS a GDPRConsent from the dataStorage`() {
-        val unifiedResp = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String().toUnifiedMessageRespDto1203()
+        val unifiedResp = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String().toUnifiedMessageRespDto()
         val gdprTest = unifiedResp.campaigns.find { it is Gdpr } as Gdpr
 
         every { dataStorage.getGdprConsentResp() }.returns(gdprTest.userConsent.thisContent.toString())
@@ -132,7 +132,7 @@ class CampaignManagerTest {
 
     @Test
     fun `CHECK that getCCPAConsent RETURNS a CCPAConsent from the dataStorage`() {
-        val unifiedResp = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String().toUnifiedMessageRespDto1203()
+        val unifiedResp = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String().toUnifiedMessageRespDto()
         val ccpaTest = unifiedResp.campaigns.find { it is Ccpa } as Ccpa
 
         every { dataStorage.getCcpaConsentResp() }.returns(ccpaTest.userConsent.thisContent.toString())

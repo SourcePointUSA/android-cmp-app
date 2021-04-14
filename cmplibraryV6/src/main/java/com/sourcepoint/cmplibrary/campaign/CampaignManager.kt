@@ -31,8 +31,8 @@ internal interface CampaignManager {
     fun isAppliedCampaign(legislation: Legislation): Boolean
     fun getUnifiedMessageResp1203(): Either<UnifiedMessageResp>
 
-    fun getGdpr1203(): Either<Gdpr>
-    fun getCcpa1203(): Either<Ccpa>
+    fun getGdpr(): Either<Gdpr>
+    fun getCcpa(): Either<Ccpa>
     fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>>
     fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate>
 
@@ -103,12 +103,12 @@ private class CampaignManagerImpl(
         mapTemplate[legislation.name] = campaign
     }
 
-    override fun getGdpr1203(): Either<Gdpr> = check {
-        dataStorage.getGdpr1203()?.toGDPR1203() ?: fail("GDPR is not stored in memory!!!")
+    override fun getGdpr(): Either<Gdpr> = check {
+        dataStorage.getGdpr1203()?.toGDPR() ?: fail("GDPR is not stored in memory!!!")
     }
 
-    override fun getCcpa1203(): Either<Ccpa> = check {
-        dataStorage.getCcpa1203()?.toCCPA1203() ?: fail("CCPA is not stored in memory!!!")
+    override fun getCcpa(): Either<Ccpa> = check {
+        dataStorage.getCcpa1203()?.toCCPA() ?: fail("CCPA is not stored in memory!!!")
     }
 
     override fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate> = check {
@@ -119,7 +119,7 @@ private class CampaignManagerImpl(
         val gdpr: CampaignTemplate = mapTemplate[Legislation.GDPR.name]
             ?: fail("===> Privacy manager url config is missing!!! GDPR user config is missing.")
 
-        val gdprConfig = dataStorage.getGdpr1203()?.toGDPR1203()
+        val gdprConfig = dataStorage.getGdpr1203()?.toGDPR()
             ?: fail("===> Privacy manager url config is missing!!! GDPR object is missing from DataStorage.")
 
         val uuid = dataStorage.getGdprConsentUuid()
@@ -137,7 +137,7 @@ private class CampaignManagerImpl(
         val ccpa: CampaignTemplate = mapTemplate[Legislation.CCPA.name]
             ?: fail("===> Privacy manager url config is missing!!! CCPA user config is missing.")
 
-        val ccpaConfig = dataStorage.getCcpa1203()?.toCCPA1203()
+        val ccpaConfig = dataStorage.getCcpa1203()?.toCCPA()
             ?: fail("===> Privacy manager url config is missing!!! CCPA object is missing from DataStorage.")
 
         val uuid = dataStorage.getGdprConsentUuid()
@@ -159,8 +159,8 @@ private class CampaignManagerImpl(
 
     override fun getUnifiedMessageResp1203(): Either<UnifiedMessageResp> = check {
         val campaigns = mutableListOf<CampaignResp>()
-        getGdpr1203().map { campaigns.add(it) }
-        getCcpa1203().map { campaigns.add(it) }
+        getGdpr().map { campaigns.add(it) }
+        getCcpa().map { campaigns.add(it) }
         val localState: String = dataStorage.getLocalState() ?: ""
         val propertyPriorityData: String? = dataStorage.getPropertyPriorityData()
         UnifiedMessageResp(

@@ -20,7 +20,7 @@ class JsonConverterExtKtTest {
 
     @Test
     fun `GIVEN a unified response json string PARSE to UnifiedMessageResp1230 Obj`() {
-        val unifiedMess = "unified_w_campaigns_list/campaigns_list.json".jsonFile2String().toUnifiedMessageRespDto1203()
+        val unifiedMess = "unified_w_campaigns_list/campaigns_list.json".jsonFile2String().toUnifiedMessageRespDto()
 
         unifiedMess.run {
             campaigns.size.assertEquals(2)

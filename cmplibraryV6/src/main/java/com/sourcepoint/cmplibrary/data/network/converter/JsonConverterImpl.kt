@@ -21,8 +21,8 @@ internal fun JsonConverter.Companion.create(): JsonConverter = JsonConverterImpl
  */
 private class JsonConverterImpl : JsonConverter {
 
-    override fun toUnifiedMessageResp1203(body: String): Either<UnifiedMessageResp> = check {
-        body.toUnifiedMessageRespDto1203()
+    override fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp> = check {
+        body.toUnifiedMessageRespDto()
     }
 
     override fun toConsentAction(body: String): Either<ConsentAction> = check {

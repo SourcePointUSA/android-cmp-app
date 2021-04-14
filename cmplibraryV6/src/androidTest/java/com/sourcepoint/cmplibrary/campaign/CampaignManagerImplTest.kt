@@ -9,7 +9,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.data.network.ext.toUnifiedMessageRespDto1203
+import com.sourcepoint.cmplibrary.data.network.ext.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.CCPACampaign
@@ -98,7 +98,7 @@ class CampaignManagerImplTest {
     @Test
     fun `GIVEN_a_ds_with_a_resp_saved_RETURN_a_MessageRequest_with_meta_and_uuid_null`() {
         // create a message response DTO
-        val unifiedMess = JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto1203()
+        val unifiedMess = JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto()
 
         // store the message response dto as we already did the first call getMessage
         // this means that we already have in memory the GDPR and CCPA campaign
@@ -126,7 +126,7 @@ class CampaignManagerImplTest {
     @Test
     fun `GIVEN_an_Gdpr_object_STORE_it_into_the_local_data_storage`() {
 
-        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto1203()
+        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
         val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
 
         val dataStorageGdpr = DataStorageGdpr.create(appContext)
@@ -150,7 +150,7 @@ class CampaignManagerImplTest {
     @Test
     fun `GIVEN_an_Ccpa_object_STORE_it_into_the_local_data_storage`() {
 
-        val unifiedMess = JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto1203()
+        val unifiedMess = JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto()
 
         val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
         val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
@@ -161,7 +161,7 @@ class CampaignManagerImplTest {
         val sut = CampaignManager.create(dataStorage, spConfig)
 
         sut.saveCcpa1203(ccpa)
-        val res = sut.getCcpa1203()
+        val res = sut.getCcpa()
 
         (res as Either.Right).r.run {
             userConsent.let { uc ->

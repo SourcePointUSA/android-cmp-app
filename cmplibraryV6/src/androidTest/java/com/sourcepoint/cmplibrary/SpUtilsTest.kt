@@ -11,7 +11,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.data.network.ext.toUnifiedMessageRespDto1203
+import com.sourcepoint.cmplibrary.data.network.ext.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.Ccpa
@@ -66,7 +66,7 @@ class SpUtilsTest {
             gdpr.assertNull()
         }
 
-        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto1203()
+        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
         val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
 
         campaignManager.saveGdpr1203(gdpr)
@@ -89,7 +89,7 @@ class SpUtilsTest {
             gdpr.assertNull()
         }
 
-        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto1203()
+        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
         val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
 
         campaignManager.saveCcpa1203(ccpa)
@@ -112,7 +112,7 @@ class SpUtilsTest {
             gdpr.assertNull()
         }
 
-        val unifiedMess = JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto1203()
+        val unifiedMess = JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto()
 
         val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
         val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr

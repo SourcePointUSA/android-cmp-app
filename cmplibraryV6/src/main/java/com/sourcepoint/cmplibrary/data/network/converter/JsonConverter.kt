@@ -16,7 +16,7 @@ internal interface JsonConverter {
      * @return [Either] object contain either a DTO or an [Throwable]
      */
 
-    fun toUnifiedMessageResp1203(body: String): Either<UnifiedMessageResp>
+    fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp>
 
     fun toNativeMessageResp(body: String): Either<NativeMessageResp>
 

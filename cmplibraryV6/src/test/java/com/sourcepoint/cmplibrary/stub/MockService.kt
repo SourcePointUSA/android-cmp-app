@@ -33,8 +33,8 @@ internal class MockService(
     override fun clearConsents() {}
     override fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = Left(RuntimeException())
     override fun getUnifiedMessageResp1203(): Either<UnifiedMessageResp> = Left(RuntimeException())
-    override fun getGdpr1203(): Either<Gdpr> = Left(RuntimeException())
-    override fun getCcpa1203(): Either<Ccpa> = Left(RuntimeException())
+    override fun getGdpr(): Either<Gdpr> = Left(RuntimeException())
+    override fun getCcpa(): Either<Ccpa> = Left(RuntimeException())
     override fun saveGdpr1203(gdpr: Gdpr) {}
     override fun saveCcpa1203(ccpa: Ccpa) {}
     override fun saveUnifiedMessageResp1203(unifiedMessageResp: UnifiedMessageResp) {}

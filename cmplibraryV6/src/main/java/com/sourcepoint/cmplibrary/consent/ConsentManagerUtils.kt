@@ -56,7 +56,7 @@ private class ConsentManagerUtilsImpl(
         logger.d(ConsentManagerUtilsImpl::class.java.name, "localState[$localState]")
         cm
             .getCampaignTemplate(Legislation.GDPR)
-            .flatMap { campaign -> cm.getGdpr1203().map { Pair(campaign, it) } }
+            .flatMap { campaign -> cm.getGdpr().map { Pair(campaign, it) } }
             .map { pair ->
                 val gdpr = pair.first
                 JSONObject().apply {
@@ -84,7 +84,7 @@ private class ConsentManagerUtilsImpl(
         logger.d(ConsentManagerUtilsImpl::class.java.name, "localState[$localState]")
         cm
             .getCampaignTemplate(Legislation.CCPA)
-            .flatMap { campaign -> cm.getCcpa1203().map { Pair(campaign, it) } }
+            .flatMap { campaign -> cm.getCcpa().map { Pair(campaign, it) } }
             .map { pair ->
                 val ccpa = pair.first
                 val ccpaConfig = pair.second
