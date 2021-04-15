@@ -57,7 +57,11 @@ public class MainActivityV6 extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         gdprConsent = FactoryKt.makeConsentLib(spConfig, this, MessageLanguage.ENGLISH);
         gdprConsent.setSpClient(new LocalClient());
-        findViewById(R.id.review_consents).setOnClickListener(_v -> gdprConsent.loadGDPRPrivacyManager("12595", PMTab.PURPOSES));
+        findViewById(R.id.review_consents).setOnClickListener(_v ->
+                gdprConsent.loadGDPRPrivacyManager(
+                        "12595"//""13111"
+                        , PMTab.PURPOSES
+                ));
     }
 
     @Override

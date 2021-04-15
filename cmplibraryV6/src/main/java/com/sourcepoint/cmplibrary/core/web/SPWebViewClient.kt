@@ -85,6 +85,7 @@ internal class SPWebViewClient(
     }
 
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+        logger.d(this::class.java.name, "1234 shouldOverrideUrlLoading progress ${wv.progress} url[$url}")
         wv.context.loadLinkOnExternalBrowser(url) {
             onNoIntentActivitiesFoundFor(it)
         }
@@ -98,7 +99,7 @@ internal class SPWebViewClient(
 
     override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
         super.onReceivedHttpError(view, request, errorResponse)
-        logger.e(this::class.java.name, "1234 onReceivedHttpError progress ${errorResponse.toString()}")
+        logger.e(this::class.java.name, "1234 onReceivedHttpError progress $errorResponse")
     }
 
     override fun onPageCommitVisible(view: WebView?, url: String?) {

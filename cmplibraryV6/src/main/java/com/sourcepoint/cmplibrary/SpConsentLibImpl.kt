@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary
 
 import android.content.Context
 import android.view.View
-import android.webkit.WebView
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.LocalStateStatus
