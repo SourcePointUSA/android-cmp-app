@@ -61,6 +61,10 @@ class TestUseCase {
             performClickPMTabSelected(PURPOSES)
         }
 
+        fun clickPMTabSelectedFeatures() {
+            performClickPMTabSelected(FEATURES)
+        }
+
         fun tapOptionWebView() {
             performClickOnWebViewByContent(EINSTELLUNGEN)
         }

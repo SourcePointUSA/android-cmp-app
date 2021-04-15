@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.ext
+package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.CampaignReq

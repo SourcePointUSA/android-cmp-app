@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
-import com.sourcepoint.cmplibrary.data.network.ext.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
@@ -13,6 +12,7 @@ import com.sourcepoint.cmplibrary.model.CcpaReq
 import com.sourcepoint.cmplibrary.model.GdprReq
 import com.sourcepoint.cmplibrary.model.MessageReq
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
+import com.sourcepoint.cmplibrary.model.ext.* // ktlint-disable
 import com.sourcepoint.cmplibrary.stub.MockCall
 import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK

@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.ext
+package com.sourcepoint.cmplibrary.model.ext
 
 import org.junit.Test
 

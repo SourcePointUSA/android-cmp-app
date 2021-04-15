@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
+import okhttp3.HttpUrl
 import org.json.JSONObject
 import java.util.* // ktlint-disable
 
@@ -21,7 +22,7 @@ internal data class UnifiedMessageResp(
 internal abstract class CampaignResp {
     abstract val thisContent: JSONObject
     abstract val type: String
-    abstract val url: String
+    abstract val url: HttpUrl
     abstract val applies: Boolean
     abstract val message: JSONObject?
     abstract val messageMetaData: JSONObject?
@@ -32,9 +33,9 @@ internal data class Gdpr(
     override val applies: Boolean = false,
     override val message: JSONObject? = null,
     override val messageMetaData: JSONObject? = null,
+    override val url: HttpUrl,
+    val userConsent: GDPRConsent,
     override val type: String = Legislation.GDPR.name,
-    override val url: String = "url rendering app",
-    val userConsent: GDPRConsent
 ) : CampaignResp()
 
 internal data class Ccpa(
@@ -42,9 +43,9 @@ internal data class Ccpa(
     override val applies: Boolean = false,
     override val message: JSONObject? = null,
     override val messageMetaData: JSONObject? = null,
+    override val url: HttpUrl,
+    val userConsent: CCPAConsent,
     override val type: String = Legislation.CCPA.name,
-    override val url: String = "url rendering app",
-    val userConsent: CCPAConsent
 ) : CampaignResp()
 
 internal data class GDPRConsent(

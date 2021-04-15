@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.ext
+package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv

@@ -4,6 +4,11 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkPMTabSelectedFeatures
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkPMTabSelectedPurposes
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnReviewConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickPMTabSelectedFeatures
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickPMTabSelectedPurposes
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
@@ -43,6 +48,18 @@ class ExampleAppV6Tests {
         wr { tapOptionWebView() }
         wr { tapAcceptAllOnWebView() }
         wr { tapAcceptCcpaOnWebView() }
+    }
+
+    @Test
+    fun GIVEN_consent_accept_all() = runBlocking<Unit> {
+
+        scenario = launchActivity()
+
+        wr { tapAcceptOnWebView() }
+        wr { tapAcceptCcpaOnWebView() }
+        wr(times = 50) { clickOnReviewConsent() }
+        wr(times = 50) { clickPMTabSelectedFeatures() }
+        wr(times = 50) { clickPMTabSelectedPurposes() }
     }
 
 /*

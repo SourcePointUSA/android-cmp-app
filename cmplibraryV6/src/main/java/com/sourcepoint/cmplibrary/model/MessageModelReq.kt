@@ -30,9 +30,10 @@ internal data class CcpaReq(
 internal data class UnifiedMessageRequest(
     val accountId: Int,
     val propertyHref: String,
-    val consentLanguage: MessageLanguage,
     val campaigns: Campaigns,
     val includeData: IncludeData = IncludeData(),
+    val consentLanguage: MessageLanguage = MessageLanguage.ENGLISH,
+    val hasCSP: Boolean = true,
     val campaignEnv: String = "prod",
     val idfaStatus: String? = null,
     val requestUUID: String? = null

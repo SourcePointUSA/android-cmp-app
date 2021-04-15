@@ -5,11 +5,11 @@ import com.sourcepoint.cmplibrary.assertFalse
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
-import com.sourcepoint.cmplibrary.data.network.ext.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.Ccpa
 import com.sourcepoint.cmplibrary.model.Gdpr
 import com.sourcepoint.cmplibrary.model.toTreeMap
+import com.sourcepoint.cmplibrary.model.toUnifiedMessageRespDto
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Test
@@ -20,7 +20,7 @@ class JsonConverterExtKtTest {
 
     @Test
     fun `GIVEN a unified response json string PARSE to UnifiedMessageResp1230 Obj`() {
-        val unifiedMess = "unified_w_campaigns_list/campaigns_list.json".jsonFile2String().toUnifiedMessageRespDto()
+        val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
 
         unifiedMess.run {
             campaigns.size.assertEquals(2)
@@ -36,7 +36,7 @@ class JsonConverterExtKtTest {
             applies.assertTrue()
             userConsent.also {
                 it.tcData.assertNotNull()
-                it.euConsent.contains("CPD0nOZPD0nOZHIABCENBTCgAAAAAH").assertTrue()
+                it.euConsent.contains("CPEpDOrPEpDOrHIABCENBVCgAAAAAH_AAAYgAAAOQA").assertTrue()
             }
         }
 
@@ -49,7 +49,7 @@ class JsonConverterExtKtTest {
                 it.status.assertEquals("rejectedNone")
                 it.rejectedAll.assertFalse()
                 it.signedLspa.assertFalse()
-                it.uspstring.assertEquals("1---")
+                it.uspstring.assertEquals("")
             }
         }
     }
@@ -202,20 +202,23 @@ class JsonConverterExtKtTest {
 
 private val propertyPriorityDataTest = JSONObject(
     """
-    {
-      "stage_message_limit": 1,
-      "site_id": 3949,
-      "public_campaign_type_priority": [
-        4,
-        1,
-        2,
-        3
-      ],
-      "multi_campaign_enabled": false,
-      "stage_campaign_type_priority": [],
-      "public_message_limit": 3
-    }
+        {
+          "stage_message_limit": 1,
+          "site_id": 4122,
+          "public_campaign_type_priority": [
+            1,
+            2
+          ],
+          "multi_campaign_enabled": true,
+          "stage_campaign_type_priority": [
+            2,
+            1,
+            2,
+            1
+          ],
+          "public_message_limit": 3
+        }
     """.trimIndent()
 )
 
-private val localStateTest = "{\"gdpr\":{\"mmsCookies\":[\"_sp_v1_uid=1:156:653c7e59-d8de-47af-b122-b8aaca1e8ef2\",\"_sp_v1_data=2:2356:1617027907:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbKKBjLyQAyD2lidGKVUEDOvNCcHyC4BK6iurVWKBQAW54XRMAAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_consent=1!-1:-1:-1:-1:-1:-1\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"uuid\":\"52ff72dc-c17b-4bf8-9128-4c5bb337d4e8\",\"propertyId\":3949,\"messageId\":12223},\"ccpa\":{\"mmsCookies\":[\"_sp_v1_uid=1:964:3a21519b-581b-4302-b517-2630f4907ac1\",\"_sp_v1_data=2:2358:1617027907:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbKKBjLyQAyD2lidGKVUEDOvNCcHyC4BK6iurVWKBQAW54XRMAAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_consent=1!-1:-1:-1:-1:-1:-1\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"uuid\":\"7b85be47-75b3-4105-99af-0dd5497ca08f\",\"dnsDisplayed\":true,\"status\":\"rejectedNone\",\"propertyId\":3949,\"messageId\":12224}}"
+private val localStateTest = "{\"gdpr\":{\"mmsCookies\":[\"_sp_v1_uid=1:205:744ddc28-691d-412c-bdc8-8b41a58a0303\",\"_sp_v1_data=2:3284:1618474707:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RyiuOUbIyqFWKBQCq7errDgAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"uuid\":\"73c123e2-a66b-47ee-9a7f-b3d7413be960\",\"propertyId\":4122,\"messageId\":13201},\"ccpa\":{\"mmsCookies\":[\"_sp_v1_uid=1:743:d4b85270-f8c1-4fa3-9f70-4f0ba74528ef\",\"_sp_v1_data=2:3286:1618474707:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RyiuOUbIyqFWKBQCq7errDgAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"uuid\":\"3d4264ae-3eef-4cd5-9064-10dc336e05dd\",\"dnsDisplayed\":true,\"propertyId\":4122,\"messageId\":13203}}"

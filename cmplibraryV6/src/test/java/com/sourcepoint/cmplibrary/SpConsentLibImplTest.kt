@@ -12,14 +12,10 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.Campaign
-import com.sourcepoint.cmplibrary.model.NativeMessageResp
-import com.sourcepoint.cmplibrary.stub.MockService
 import com.sourcepoint.cmplibrary.util.ViewsManager
-import com.sourcepoint.cmplibrary.util.file2String
 import io.mockk.*  //ktlint-disable
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.runBlocking
-import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 
@@ -102,10 +98,10 @@ class SpConsentLibImplTest {
     // TODO
 //    @Test
     fun `CALLING loadNativeMessage() with verify that spClient is called`() = runBlocking<Unit> {
-        val dtJson = "msgJSON.json".file2String()
-        val mockService = MockService(
-            getNativeMessageLogic = { _, pSuccess, _ -> pSuccess.invoke(NativeMessageResp(JSONObject(dtJson))) }
-        )
+//        val dtJson = "msgJSON.json".file2String()
+//        val mockService = MockService(
+//            getNativeMessageLogic = { _, pSuccess, _ -> pSuccess.invoke(NativeMessageResp(JSONObject(dtJson))) }
+//        )
 //        val sut = SpConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, MockExecutorManager())
 //        sut.spClient = spClient
 //

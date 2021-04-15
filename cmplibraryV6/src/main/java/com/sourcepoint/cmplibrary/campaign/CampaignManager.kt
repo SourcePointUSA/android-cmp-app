@@ -6,7 +6,6 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.data.network.ext.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
@@ -26,6 +25,7 @@ import org.json.JSONObject
 internal interface CampaignManager {
 
     val spConfig: SpConfig
+    val messageLanguage: MessageLanguage
     fun addCampaign(legislation: Legislation, campaign: CampaignTemplate)
 
     fun isAppliedCampaign(legislation: Legislation): Boolean
@@ -60,12 +60,14 @@ internal interface CampaignManager {
 
 internal fun CampaignManager.Companion.create(
     dataStorage: DataStorage,
-    spConfig: SpConfig
-): CampaignManager = CampaignManagerImpl(dataStorage, spConfig)
+    spConfig: SpConfig,
+    messageLanguage: MessageLanguage
+): CampaignManager = CampaignManagerImpl(dataStorage, spConfig, messageLanguage)
 
 private class CampaignManagerImpl(
     val dataStorage: DataStorage,
-    override val spConfig: SpConfig
+    override val spConfig: SpConfig,
+    override val messageLanguage: MessageLanguage
 ) : CampaignManager {
 
     companion object {
@@ -200,8 +202,6 @@ private class CampaignManagerImpl(
         val gdpr: CampaignTemplate? = mapTemplate[Legislation.GDPR.name]
         val ccpa: CampaignTemplate? = mapTemplate[Legislation.CCPA.name]
 
-        // TODO this is a test location
-        val location = "EU"
         return UnifiedMessageRequest(
             requestUUID = "test",
             propertyHref = spConfig.propertyName,
@@ -210,7 +210,7 @@ private class CampaignManagerImpl(
                 gdpr = gdpr?.toGdprReq(targetingParams = gdpr.targetingParams, campaignEnv = gdpr.campaignEnv),
                 ccpa = ccpa?.toCcpaReq(targetingParams = ccpa.targetingParams, campaignEnv = ccpa.campaignEnv)
             ),
-            consentLanguage = MessageLanguage.ENGLISH
+            consentLanguage = messageLanguage
         )
     }
 

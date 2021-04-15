@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
-import com.sourcepoint.cmplibrary.data.network.ext.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.ext.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.model.Campaigns
 import com.sourcepoint.cmplibrary.model.CcpaReq

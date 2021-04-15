@@ -1,8 +1,8 @@
 package com.sourcepoint.cmplibrary.model
 
-import com.sourcepoint.cmplibrary.data.network.ext.toJsonObjStringify
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
+import com.sourcepoint.cmplibrary.model.ext.toJsonObjStringify
 
 internal data class Campaign(
     @JvmField val accountId: Int,

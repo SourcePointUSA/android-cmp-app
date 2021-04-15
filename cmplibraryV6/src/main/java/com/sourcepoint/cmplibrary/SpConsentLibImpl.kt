@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary
 
 import android.content.Context
 import android.view.View
+import android.webkit.WebView
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.LocalStateStatus
@@ -20,9 +21,8 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.CampaignResp
-import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.SHOW_OPTIONS
@@ -55,7 +55,8 @@ internal class SpConsentLibImpl(
                 CampaignModel(
                     message = it.message!!,
                     messageMetaData = it.messageMetaData!!,
-                    type = Legislation.valueOf(it.type)
+                    type = Legislation.valueOf(it.type),
+                    url = it.url
                 )
             }
         }
@@ -102,7 +103,8 @@ internal class SpConsentLibImpl(
 
                     /** inject the message into the WebView */
                     val legislation = firstCampaign2Process.type
-                    webView?.loadConsentUI(firstCampaign2Process, urlManager.urlURenderingApp(env), legislation)
+                    val url = firstCampaign2Process.url // urlManager.urlURenderingApp(env)//
+                    webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                 }
             },
             pError = { throwable ->
@@ -143,6 +145,7 @@ internal class SpConsentLibImpl(
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
+//                pLogger.d(this::class.java.name, "1234 load pm progress ${(webView as WebView).progress}")
                 webView?.loadConsentUIFromUrl(
                     url = urlManager.pmUrl(legislation = Legislation.GDPR, pmConfig = it, env = env),
                     legislation = Legislation.GDPR,
@@ -235,7 +238,8 @@ internal class SpConsentLibImpl(
                         onActionFromWebViewClient(ca, iConsentWebView)
                         if (ca.actionType != SHOW_OPTIONS) {
                             val legislation = nextCampaign.type
-                            executor.executeOnMain { iConsentWebView.loadConsentUI(nextCampaign, urlManager.urlURenderingApp(env), legislation) }
+                            val url = nextCampaign.url
+                            executor.executeOnMain { iConsentWebView.loadConsentUI(nextCampaign, url, legislation) }
                         }
                     }
                     .executeOnLeft { throw it }
