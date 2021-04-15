@@ -38,6 +38,7 @@ internal class SPWebViewClient(
         super.onPageFinished(view, url)
         timer.cancel()
         logger.d(this::class.java.name, "1234 onPageFinished progress ${wv.progress}")
+        logger.d(this::class.java.name, "1234 ==========================================")
         try {
             jsReceiverConfig
                 ?.let {

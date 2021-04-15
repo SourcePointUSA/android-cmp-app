@@ -40,7 +40,7 @@ public class MainActivityV6 extends AppCompatActivity {
 
     private final SpConfig spConfig = new SpConfig(
             22,
-            "carm.uw.con",
+            "carm.uw.con",//"mobile.multicampaign.demo",//
             new SpCampaign[]{
                     ccpaCamapign,
                     gdprCampaign
