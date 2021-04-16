@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.sourcepoint.example_app.MainActivity">
+    android:layout_height="match_parent">
 
     <Button
         android:id="@+id/review_consents"
@@ -30,6 +29,15 @@
             app:layout_constraintStart_toStartOf="@id/review_consents"
             app:layout_constraintEnd_toEndOf="@id/review_consents"
             app:layout_constraintTop_toBottomOf="@id/review_consents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <Button
+            android:id="@+id/review_consents_ccpa"
+            android:text="@string/review_consents_ccpa"
+            app:layout_constraintStart_toStartOf="@id/review_consents"
+            app:layout_constraintEnd_toEndOf="@id/review_consents"
+            app:layout_constraintBottom_toTopOf="@id/review_consents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

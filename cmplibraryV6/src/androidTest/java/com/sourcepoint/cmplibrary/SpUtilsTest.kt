@@ -15,6 +15,7 @@ import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.Ccpa
 import com.sourcepoint.cmplibrary.model.Gdpr
+import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
@@ -59,7 +60,7 @@ class SpUtilsTest {
         val dataStorageGdpr = DataStorageGdpr.create(appCtx)
         val dataStorageCcpa = DataStorageCcpa.create(appCtx)
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
-        val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig)
+        val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH)
 
         userConsents(appCtx, spConfig).run {
             ccpa.assertNull()
@@ -69,7 +70,7 @@ class SpUtilsTest {
         val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
         val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
 
-        campaignManager.saveGdpr1203(gdpr)
+        campaignManager.saveGdpr(gdpr)
 
         userConsents(appCtx, spConfig).run {
             ccpa.assertNull()
@@ -82,7 +83,7 @@ class SpUtilsTest {
         val dataStorageGdpr = DataStorageGdpr.create(appCtx)
         val dataStorageCcpa = DataStorageCcpa.create(appCtx)
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
-        val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig)
+        val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH)
 
         userConsents(appCtx, spConfig).run {
             ccpa.assertNull()
@@ -92,7 +93,7 @@ class SpUtilsTest {
         val unifiedMess = "unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String().toUnifiedMessageRespDto()
         val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
 
-        campaignManager.saveCcpa1203(ccpa)
+        campaignManager.saveCcpa(ccpa)
 
         userConsents(appCtx, spConfig).run {
             ccpa.assertNotNull()
@@ -105,7 +106,7 @@ class SpUtilsTest {
         val dataStorageGdpr = DataStorageGdpr.create(appCtx)
         val dataStorageCcpa = DataStorageCcpa.create(appCtx)
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
-        val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig)
+        val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH)
 
         userConsents(appCtx, spConfig).run {
             ccpa.assertNull()
@@ -116,8 +117,8 @@ class SpUtilsTest {
 
         val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
         val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
-        campaignManager.saveGdpr1203(gdpr)
-        campaignManager.saveCcpa1203(ccpa)
+        campaignManager.saveGdpr(gdpr)
+        campaignManager.saveCcpa(ccpa)
 
         userConsents(appCtx, spConfig).run {
             ccpa.assertNotNull()

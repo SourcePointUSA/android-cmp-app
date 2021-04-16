@@ -62,6 +62,11 @@ public class MainActivityV6 extends AppCompatActivity {
                         "12595"//""13111"
                         , PMTab.PURPOSES
                 ));
+        findViewById(R.id.review_consents_ccpa).setOnClickListener(_v ->
+                gdprConsent.loadCCPAPrivacyManager(
+                        "14754"//""13111"
+                        , PMTab.PURPOSES
+                ));
     }
 
     @Override

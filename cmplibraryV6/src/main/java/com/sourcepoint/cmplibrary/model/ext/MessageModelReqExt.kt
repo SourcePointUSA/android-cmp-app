@@ -3,16 +3,11 @@ package com.sourcepoint.cmplibrary.model.ext
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.CampaignReq
 import com.sourcepoint.cmplibrary.model.Campaigns
-import com.sourcepoint.cmplibrary.model.MessageReq
 import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import org.json.JSONObject
 
 internal fun UnifiedMessageRequest.toBodyRequest(): String {
-    return toJsonObject().toString()
-}
-
-internal fun MessageReq.toBodyRequest(): String {
     return toJsonObject().toString()
 }
 
@@ -27,14 +22,6 @@ internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
             put("consentLanguage", consentLanguage.value)
             put("campaignEnv", campaignEnv)
             put("includeData", includeData.toJsonObject())
-        }
-}
-
-internal fun MessageReq.toJsonObject(): JSONObject {
-    return JSONObject()
-        .apply {
-            put("requestUUID", requestUUID)
-            put("campaigns", campaigns.toJsonObject())
         }
 }
 

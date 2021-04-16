@@ -58,8 +58,8 @@ class ExampleAppV6Tests {
         wr { tapAcceptOnWebView() }
         wr { tapAcceptCcpaOnWebView() }
         wr(times = 50) { clickOnReviewConsent() }
-        wr(times = 50) { clickPMTabSelectedFeatures() }
-        wr(times = 50) { clickPMTabSelectedPurposes() }
+//        wr(times = 50) { clickPMTabSelectedFeatures() }
+//        wr(times = 50) { clickPMTabSelectedPurposes() }
     }
 
 /*

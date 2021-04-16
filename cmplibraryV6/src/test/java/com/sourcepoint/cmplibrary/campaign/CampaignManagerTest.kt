@@ -32,10 +32,10 @@ class CampaignManagerTest {
     private lateinit var ccpaConsent: CCPAConsent
 
     @MockK
-    private lateinit var gdpr: GDPRCampaign
+    private lateinit var gdpr: CampaignTemplate
 
     @MockK
-    private lateinit var ccpa: CCPACampaign
+    private lateinit var ccpa: CampaignTemplate
 
     private val gdprCampaign = SpCampaign(
         Legislation.GDPR,
@@ -69,7 +69,7 @@ class CampaignManagerTest {
         sut.clearConsents()
     }
 
-    private val sut by lazy { CampaignManager.create(dataStorage, spConfig) }
+    private val sut by lazy { CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH) }
 
     @Test
     fun `GIVEN a GDPRConsent CHECK that is properly stored`() {
@@ -143,11 +143,11 @@ class CampaignManagerTest {
     @Test
     fun `VERIFY that getCCPAConsent AND getGDPRConsent RETUN static objects`() {
 
-        val sut1 = CampaignManager.create(dataStorage, spConfig).apply {
+        val sut1 = CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH).apply {
             saveCCPAConsent(ccpaConsent)
             saveGDPRConsent(gdprConsent)
         }
-        val sut2 = CampaignManager.create(dataStorage, spConfig).apply {
+        val sut2 = CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH).apply {
             saveCCPAConsent(ccpaConsent)
             saveGDPRConsent(gdprConsent)
         }

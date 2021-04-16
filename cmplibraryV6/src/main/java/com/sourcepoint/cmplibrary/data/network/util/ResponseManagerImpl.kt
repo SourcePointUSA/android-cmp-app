@@ -30,7 +30,7 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
      * @param r http response
      * @return an [Either] object of a [MessageResp] type parameter
      */
-    override fun parseResponse1203(r: Response): Either<UnifiedMessageResp> = check {
+    override fun parseResponse(r: Response): Either<UnifiedMessageResp> = check {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         if (r.isSuccessful) {
             when (val either: Either<UnifiedMessageResp> = jsonConverter.toUnifiedMessageResp(body)) {

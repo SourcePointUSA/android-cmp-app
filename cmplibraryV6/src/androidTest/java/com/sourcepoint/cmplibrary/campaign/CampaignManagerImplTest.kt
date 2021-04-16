@@ -11,14 +11,10 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.Legislation
-import com.sourcepoint.cmplibrary.model.CCPACampaign
-import com.sourcepoint.cmplibrary.model.Ccpa
-import com.sourcepoint.cmplibrary.model.GDPRCampaign
-import com.sourcepoint.cmplibrary.model.Gdpr
+import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
-import com.sourcepoint.cmplibrary.model.toUnifiedMessageRespDto
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
@@ -29,14 +25,16 @@ class CampaignManagerImplTest {
 
     private val appContext by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
 
-    private val gdpr = GDPRCampaign(
+    private val gdpr = CampaignTemplate(
         campaignEnv = CampaignEnv.STAGE,
-        targetingParams = arrayOf(TargetingParam("location", "EU"))
+        targetingParams = arrayOf(TargetingParam("location", "EU")),
+        legislation = Legislation.GDPR
     )
 
-    private val ccpa = CCPACampaign(
+    private val ccpa = CampaignTemplate(
         campaignEnv = CampaignEnv.STAGE,
-        targetingParams = arrayOf(TargetingParam("location", "EU"))
+        targetingParams = arrayOf(TargetingParam("location", "EU")),
+        legislation = Legislation.CCPA
     )
 
     private val ds by lazy {
@@ -71,7 +69,7 @@ class CampaignManagerImplTest {
     )
 
     private val cm by lazy {
-        CampaignManager.create(ds, spConfig)
+        CampaignManager.create(ds, spConfig, MessageLanguage.ENGLISH)
     }
 
     @Before
@@ -82,17 +80,17 @@ class CampaignManagerImplTest {
     @Test
     fun `GIVEN_an_empty_ds_RETURN_a_MessageRequest_with_meta_and_uuid_null`() {
 
-        val sut = CampaignManager.create(ds, spConfig).apply {
+        val sut = CampaignManager.create(ds, spConfig, MessageLanguage.ENGLISH).apply {
             addCampaign(Legislation.GDPR, gdpr)
             addCampaign(Legislation.CCPA, ccpa)
         }
 
-        val output = sut.getMessageReq()
+//        val output = sut.getMessageReq()
 
-        output.campaigns.ccpa!!.run {
-        }
-        output.campaigns.gdpr!!.run {
-        }
+//        output.campaigns.ccpa!!.run {
+//        }
+//        output.campaigns.gdpr!!.run {
+//        }
     }
 
     @Test
@@ -105,22 +103,22 @@ class CampaignManagerImplTest {
         val ccpaLocal = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
         val gdprLocal = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
         cm.run {
-            saveCcpa1203(ccpaLocal)
-            saveGdpr1203(gdprLocal)
+            saveCcpa(ccpaLocal)
+            saveGdpr(gdprLocal)
         }
 
         // execute the test
-        val sut = CampaignManager.create(ds, spConfig).apply {
+        val sut = CampaignManager.create(ds, spConfig, MessageLanguage.ENGLISH).apply {
             addCampaign(Legislation.GDPR, gdpr)
             addCampaign(Legislation.CCPA, ccpa)
         }
 
-        val output = sut.getMessageReq()
+//        val output = sut.getMessageReq()
 
-        output.campaigns.ccpa!!.run {
-        }
-        output.campaigns.gdpr!!.run {
-        }
+//        output.campaigns.ccpa!!.run {
+//        }
+//        output.campaigns.gdpr!!.run {
+//        }
     }
 
     @Test
@@ -132,9 +130,9 @@ class CampaignManagerImplTest {
         val dataStorageGdpr = DataStorageGdpr.create(appContext)
         val dataStorageCcpa = DataStorageCcpa.create(appContext)
         val dataStorage = DataStorage.create(appContext, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
-        val sut = CampaignManager.create(dataStorage, spConfig)
+        val sut = CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH)
 
-        sut.saveGdpr1203(gdpr)
+        sut.saveGdpr(gdpr)
 //        val res = sut.getGdpr()
 
 //        (res as Either.Right).r.run {
@@ -158,9 +156,9 @@ class CampaignManagerImplTest {
         val dataStorageGdpr = DataStorageGdpr.create(appContext)
         val dataStorageCcpa = DataStorageCcpa.create(appContext)
         val dataStorage = DataStorage.create(appContext, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
-        val sut = CampaignManager.create(dataStorage, spConfig)
+        val sut = CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH)
 
-        sut.saveCcpa1203(ccpa)
+        sut.saveCcpa(ccpa)
         val res = sut.getCcpa()
 
         (res as Either.Right).r.run {

@@ -7,21 +7,19 @@ import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import org.json.JSONObject
 
 internal class MockNetworkClient(
-    private val logicUnifiedMess2: ((messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
-    private val logicNativeMess: ((messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) -> Unit)? = null
+    private val logicUnifiedMess: ((messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit) -> Unit)? = null,
 ) : NetworkClient {
 
     override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit, env: Env) {
-        logicUnifiedMess2?.invoke(messageReq, pSuccess, pError)
+        logicUnifiedMess?.invoke(messageReq, pSuccess, pError)
     }
 
-    override fun getNativeMessage(messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {
-        logicNativeMess?.invoke(messageReq, success, error)
+    override fun getNativeMessage(messageReq: UnifiedMessageRequest, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {
     }
 
     override fun sendConsent(consentReq: JSONObject, env: Env, consentAction: ConsentAction): Either<ConsentResp> {
         TODO("Not yet implemented")
     }
 
-    override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
+    override fun getNativeMessageK(messageReq: UnifiedMessageRequest, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
 }

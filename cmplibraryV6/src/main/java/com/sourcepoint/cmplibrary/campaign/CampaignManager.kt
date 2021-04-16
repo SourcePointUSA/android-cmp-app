@@ -11,14 +11,11 @@ import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.Campaigns
-import com.sourcepoint.cmplibrary.model.MessageReq
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.toCCPAUserConsent
-import com.sourcepoint.cmplibrary.model.toCcpaReq
 import com.sourcepoint.cmplibrary.model.toGDPRUserConsent
-import com.sourcepoint.cmplibrary.model.toGdprReq
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
 
@@ -29,7 +26,7 @@ internal interface CampaignManager {
     fun addCampaign(legislation: Legislation, campaign: CampaignTemplate)
 
     fun isAppliedCampaign(legislation: Legislation): Boolean
-    fun getUnifiedMessageResp1203(): Either<UnifiedMessageResp>
+    fun getUnifiedMessageResp(): Either<UnifiedMessageResp>
 
     fun getGdpr(): Either<Gdpr>
     fun getCcpa(): Either<Ccpa>
@@ -39,17 +36,16 @@ internal interface CampaignManager {
     fun getGdprPmConfig(pmId: String?, pmTab: PMTab): Either<PmUrlConfig>
     fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig>
 
-    fun getMessageReq(): MessageReq
     fun getUnifiedMessageReq(): UnifiedMessageRequest
 
     fun getGDPRConsent(): Either<GDPRConsent>
     fun getCCPAConsent(): Either<CCPAConsent>
 
-    fun saveGdpr1203(gdpr: Gdpr)
-    fun saveCcpa1203(ccpa: Ccpa)
+    fun saveGdpr(gdpr: Gdpr)
+    fun saveCcpa(ccpa: Ccpa)
     fun saveGDPRConsent(consent: GDPRConsent?)
     fun saveCCPAConsent(consent: CCPAConsent?)
-    fun saveUnifiedMessageResp1203(unifiedMessageResp: UnifiedMessageResp)
+    fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp)
 
     fun parseRenderingMessage()
 
@@ -90,11 +86,11 @@ private class CampaignManagerImpl(
                 when (it.legislation) {
                     Legislation.GDPR -> addCampaign(
                         it.legislation,
-                        GDPRCampaign(it.environment, it.targetingParams)
+                        CampaignTemplate(it.environment, it.targetingParams, it.legislation)
                     )
                     Legislation.CCPA -> addCampaign(
                         it.legislation,
-                        CCPACampaign(it.environment, it.targetingParams)
+                        CampaignTemplate(it.environment, it.targetingParams, it.legislation)
                     )
                 }
             }
@@ -159,7 +155,7 @@ private class CampaignManagerImpl(
             ?: false
     }
 
-    override fun getUnifiedMessageResp1203(): Either<UnifiedMessageResp> = check {
+    override fun getUnifiedMessageResp(): Either<UnifiedMessageResp> = check {
         val campaigns = mutableListOf<CampaignResp>()
         getGdpr().map { campaigns.add(it) }
         getCcpa().map { campaigns.add(it) }
@@ -183,33 +179,20 @@ private class CampaignManagerImpl(
         }
     }
 
-    override fun getMessageReq(): MessageReq {
-        val gdpr: CampaignTemplate? = mapTemplate[Legislation.GDPR.name]
-        val ccpa: CampaignTemplate? = mapTemplate[Legislation.CCPA.name]
-
-        // TODO this is a test location
-        val location = "EU"
-        return MessageReq(
-            requestUUID = "test",
-            campaigns = Campaigns(
-                gdpr = gdpr?.toGdprReq(targetingParams = gdpr.targetingParams, campaignEnv = gdpr.campaignEnv),
-                ccpa = ccpa?.toCcpaReq(targetingParams = ccpa.targetingParams, campaignEnv = ccpa.campaignEnv)
-            )
-        )
-    }
-
     override fun getUnifiedMessageReq(): UnifiedMessageRequest {
-        val gdpr: CampaignTemplate? = mapTemplate[Legislation.GDPR.name]
-        val ccpa: CampaignTemplate? = mapTemplate[Legislation.CCPA.name]
+        val campaigns = mutableListOf<CampaignReq>()
+        mapTemplate[Legislation.GDPR.name]
+            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignEnv = it.campaignEnv) }
+            ?.let { campaigns.add(it) }
+        mapTemplate[Legislation.CCPA.name]
+            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignEnv = it.campaignEnv) }
+            ?.let { campaigns.add(it) }
 
         return UnifiedMessageRequest(
             requestUUID = "test",
             propertyHref = spConfig.propertyName,
             accountId = spConfig.accountId,
-            campaigns = Campaigns(
-                gdpr = gdpr?.toGdprReq(targetingParams = gdpr.targetingParams, campaignEnv = gdpr.campaignEnv),
-                ccpa = ccpa?.toCcpaReq(targetingParams = ccpa.targetingParams, campaignEnv = ccpa.campaignEnv)
-            ),
+            campaigns = Campaigns(list = campaigns),
             consentLanguage = messageLanguage
         )
     }
@@ -232,11 +215,11 @@ private class CampaignManagerImpl(
             .toCCPAUserConsent()
     }
 
-    override fun saveGdpr1203(gdpr: Gdpr) {
+    override fun saveGdpr(gdpr: Gdpr) {
         dataStorage.saveGdpr1203(gdpr.thisContent.toString())
     }
 
-    override fun saveCcpa1203(ccpa: Ccpa) {
+    override fun saveCcpa(ccpa: Ccpa) {
         dataStorage.saveCcpa1203(ccpa.thisContent.toString())
     }
 
@@ -250,7 +233,7 @@ private class CampaignManagerImpl(
         dataStorage.saveCcpaConsentResp(consent?.thisContent?.toString() ?: "")
     }
 
-    override fun saveUnifiedMessageResp1203(unifiedMessageResp: UnifiedMessageResp) {
+    override fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp) {
         dataStorage.saveLocalState(unifiedMessageResp.localState)
         val map = JSONObject(unifiedMessageResp.localState).toTreeMap()
         // save GDPR uuid
@@ -265,8 +248,8 @@ private class CampaignManagerImpl(
             .campaigns
             .forEach {
                 when (it) {
-                    is Gdpr -> saveGdpr1203(it)
-                    is Ccpa -> saveCcpa1203(it)
+                    is Gdpr -> saveGdpr(it)
+                    is Ccpa -> saveCcpa(it)
                 }
             }
     }

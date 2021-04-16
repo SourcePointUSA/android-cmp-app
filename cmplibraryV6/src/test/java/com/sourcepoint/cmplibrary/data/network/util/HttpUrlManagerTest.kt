@@ -8,6 +8,18 @@ import org.junit.Test
 class HttpUrlManagerTest {
 
     @Test
+    fun `GIVEN a STAGE env RETURN the stage link`() {
+        val sut = HttpUrlManagerSingleton.inAppMessageUrl(Env.STAGE).toString()
+        sut.assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages?env=stage")
+    }
+
+    @Test
+    fun `GIVEN a PROD env RETURN the prod link`() {
+        val sut = HttpUrlManagerSingleton.inAppMessageUrl(Env.PROD).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages?env=localProd")
+    }
+
+    @Test
     fun `GIVEN an HttpUrl unifiedWrapper CHECK the output URL`() {
         val sut = HttpUrlManagerSingleton.inAppUrlMessageStage
         val url = sut.toString()

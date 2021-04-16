@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
-import com.sourcepoint.cmplibrary.model.MessageReq
 import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.ext.toBodyRequest
@@ -39,7 +38,8 @@ private class NetworkClientImpl(
     ) {
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
-        val url = urlManager.inAppMessageUrl(env).also { logger.i(NetworkClientImpl::class.java.name, "url getUnifiedMessage [$it]") }
+        val url = urlManager.inAppMessageUrl(env)
+            .also { logger.i(NetworkClientImpl::class.java.name, "url getUnifiedMessage [$it]") }
 
         val request: Request = Request.Builder()
             .url(url)
@@ -54,16 +54,38 @@ private class NetworkClientImpl(
                 }
                 onResponse { _, r ->
                     responseManager
-                        .parseResponse1203(r)
+                        .parseResponse(r)
                         .map { pSuccess(it) }
                         .executeOnLeft { pError(it) }
                 }
             }
     }
 
+    override fun sendConsent(
+        consentReq: JSONObject,
+        env: Env,
+        consentAction: ConsentAction
+    ): Either<ConsentResp> = check {
+
+        val mediaType = MediaType.parse("application/json")
+        val body: RequestBody = RequestBody.create(mediaType, consentReq.toString())
+        val url = urlManager
+            .sendConsentUrl(legislation = consentAction.legislation, env = env, actionType = consentAction.actionType)
+            .also { logger.i(NetworkClientImpl::class.java.name, "url getUnifiedMessage [$it]") }
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseConsentRes(response, consentAction.legislation)
+    }
+
     // TODO verify if we need it
     override fun getNativeMessage(
-        messageReq: MessageReq,
+        messageReq: UnifiedMessageRequest,
         success: (NativeMessageResp) -> Unit,
         error: (Throwable) -> Unit
     ) {
@@ -102,7 +124,7 @@ private class NetworkClientImpl(
     }
 
     override fun getNativeMessageK(
-        messageReq: MessageReq,
+        messageReq: UnifiedMessageRequest,
         success: (NativeMessageRespK) -> Unit,
         error: (Throwable) -> Unit
     ) {
@@ -138,27 +160,5 @@ private class NetworkClientImpl(
                         .executeOnLeft { error(it) }
                 }
             }
-    }
-
-    override fun sendConsent(
-        consentReq: JSONObject,
-        env: Env,
-        consentAction: ConsentAction
-    ): Either<ConsentResp> = check {
-
-        val mediaType = MediaType.parse("application/json")
-        val body: RequestBody = RequestBody.create(mediaType, consentReq.toString())
-        val url = urlManager
-            .sendConsentUrl(legislation = consentAction.legislation, env = env, actionType = consentAction.actionType)
-            .also { logger.i(NetworkClientImpl::class.java.name, "url getUnifiedMessage [$it]") }
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-
-        responseManager.parseConsentRes(response, consentAction.legislation)
     }
 }

@@ -1,22 +1,18 @@
 package com.sourcepoint.cmplibrary.data.network
 
-import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converter.create
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
+import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
-import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.Campaigns
-import com.sourcepoint.cmplibrary.model.CcpaReq
-import com.sourcepoint.cmplibrary.model.GdprReq
-import com.sourcepoint.cmplibrary.model.MessageReq
-import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
-import com.sourcepoint.cmplibrary.model.ext.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.model.ext.toJsonObject
+import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockCall
+import com.sourcepoint.cmplibrary.uwMessDataTest
 import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.junit.Before
@@ -27,11 +23,11 @@ class NetworkClientImplTest {
     @MockK
     lateinit var okHttp: OkHttpClient
 
-//    @MockK
-//    private lateinit var successMock: (UnifiedMessageResp) -> Unit
-//
-//    @MockK
-//    private lateinit var errorMock: (Throwable) -> Unit
+    @MockK
+    private lateinit var successMock: (UnifiedMessageResp) -> Unit
+
+    @MockK
+    private lateinit var errorMock: (Throwable) -> Unit
 
     @MockK
     private lateinit var responseManager: ResponseManager
@@ -44,24 +40,6 @@ class NetworkClientImplTest {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
     }
 
-    private val req = MessageReq(
-        requestUUID = "test",
-        campaigns = Campaigns(
-            gdpr = GdprReq(
-                targetingParams = Array(1) {
-                    TargetingParam("location", "EU")
-                }.toJsonObjStringify(),
-                campaignEnv = CampaignEnv.STAGE
-            ),
-            ccpa = CcpaReq(
-                targetingParams = Array(1) {
-                    TargetingParam("location", "US")
-                }.toJsonObjStringify(),
-                campaignEnv = CampaignEnv.STAGE
-            )
-        )
-    )
-
     private val sut by lazy {
         createNetworkClient(
             httpClient = okHttp,
@@ -71,22 +49,40 @@ class NetworkClientImplTest {
         )
     }
 
+//    val umr = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String().toUnifiedMessageRespDto()
+
     @Test
-    fun `GIVEN a UWReq Object VERIFY the okHttp generated request`() {
+    fun `GIVEN a UWReq Object in PROD VERIFY the okHttp generated the PROD request`() {
         /** execution */
-//        sut.getMessage(messageReq = req, pSuccess = { successMock(it) }, pError = { errorMock(it) }, stage = Env.STAGE)
+        sut.getUnifiedMessage(messageReq = uwMessDataTest, pSuccess = { successMock(it) }, pError = { errorMock(it) }, env = Env.PROD)
 
         val slot = slot<Request>()
-//        verify(exactly = 1) { okHttp.newCall(capture(slot)) }
+        verify(exactly = 1) { okHttp.newCall(capture(slot)) }
 
         /** capture the Request and test the parameters */
-//        slot.captured.run {
-//            readText().assertEquals(req.toJsonObject().toString())
-        // TODO to fix
-//            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages?env=localProd")
-//            method.assertEquals("POST")
-//            url.queryParameter("env").assertEquals("localProd")
-//        }
+        slot.captured.run {
+            readText().assertEquals(uwMessDataTest.toJsonObject().toString())
+            url.toString().assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages?env=localProd")
+            method.assertEquals("POST")
+            url.queryParameter("env").assertEquals("localProd")
+        }
+    }
+
+    @Test
+    fun `GIVEN a UWReq Object in STAGE VERIFY the okHttp generated the STAGE request`() {
+        /** execution */
+        sut.getUnifiedMessage(messageReq = uwMessDataTest, pSuccess = { successMock(it) }, pError = { errorMock(it) }, env = Env.STAGE)
+
+        val slot = slot<Request>()
+        verify(exactly = 1) { okHttp.newCall(capture(slot)) }
+
+        /** capture the Request and test the parameters */
+        slot.captured.run {
+            readText().assertEquals(uwMessDataTest.toJsonObject().toString())
+            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages?env=stage")
+            method.assertEquals("POST")
+            url.queryParameter("env").assertEquals("stage")
+        }
     }
 
     @Test
@@ -94,14 +90,14 @@ class NetworkClientImplTest {
         /** preconditions */
         val mockCall = MockCall(logicResponseCB = { cb -> cb.onResponse(mockk(), mockk()) })
         every { okHttp.newCall(any()) }.returns(mockCall)
-//        every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
+        every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
 
         /** execution */
-//        sut.getMessage(messageReq = req, pSuccess = { successMock(it) }, pError = { errorMock(it) }, stage = Env.STAGE)
+        sut.getUnifiedMessage(messageReq = uwMessDataTest, pSuccess = { successMock(it) }, pError = { errorMock(it) }, env = Env.STAGE)
 
         /** verify that the right callback is invoked */
-//        verify(exactly = 1) { successMock(any()) }
-//        verify(exactly = 0) { errorMock(any()) }
+        verify(exactly = 1) { successMock(any()) }
+        verify(exactly = 0) { errorMock(any()) }
     }
 
     @Test
@@ -109,14 +105,14 @@ class NetworkClientImplTest {
         /** preconditions */
         val mockCall = MockCall(logicResponseCB = { cb -> cb.onResponse(mockk(), mockk()) })
         every { okHttp.newCall(any()) }.returns(mockCall)
-//        every { responseManager.parseResponse(any()) }.returns(Either.Left(mockk()))
+        every { responseManager.parseResponse(any()) }.returns(Either.Left(mockk()))
 
         /** execution */
-//        sut.getMessage(messageReq = req, pSuccess = { successMock(it) }, pError = { errorMock(it) }, stage = Env.STAGE)
+        sut.getUnifiedMessage(messageReq = uwMessDataTest, pSuccess = { successMock(it) }, pError = { errorMock(it) }, env = Env.STAGE)
 
         /** verify that the right callback is invoked */
-//        verify(exactly = 0) { successMock(any()) }
-//        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 0) { successMock(any()) }
+        verify(exactly = 1) { errorMock(any()) }
     }
 
     @Test
@@ -124,65 +120,13 @@ class NetworkClientImplTest {
         /** preconditions */
         val mockCall = MockCall(logicResponseCB = { cb -> cb.onFailure(mockk(), mockk()) })
         every { okHttp.newCall(any()) }.returns(mockCall)
-//        every { responseManager.parseResponse(any()) }.returns(Either.Left(mockk()))
+        every { responseManager.parseResponse(any()) }.returns(Either.Left(mockk()))
 
         /** execution */
-//        sut.getMessage(messageReq = req, pSuccess = { successMock(it) }, pError = { errorMock(it) }, stage = Env.STAGE)
+        sut.getUnifiedMessage(messageReq = uwMessDataTest, pSuccess = { successMock(it) }, pError = { errorMock(it) }, env = Env.STAGE)
 
         /** verify that the right callback is invoked */
-//        verify(exactly = 0) { successMock(any()) }
-//        verify(exactly = 1) { errorMock(any()) }
-    }
-
-    //    @Test
-    fun `GIVEN a UWReq Object and a real endpoint VERIFY that the output is a Right`() = runBlocking<Unit> {
-
-        val responseManager = ResponseManager.create(JsonConverter.create())
-
-        val sut = createNetworkClient(
-            httpClient = OkHttpClient(),
-            responseManager = responseManager,
-            urlManager = HttpUrlManagerSingleton,
-            logger = logger
-        )
-
-//        val res: Either<UnifiedMessageResp> = sut.getMessage(messageReq = req)
-//
-//        val output = (res as Either.Right<UnifiedMessageResp>).r
-    }
-
-    //    @Test
-    fun `GIVEN a UWReq Object VERIFY that the output is a Right`() = runBlocking<Unit> {
-
-//        every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
-
-        val sut = createNetworkClient(
-            httpClient = OkHttpClient(),
-            responseManager = responseManager,
-            urlManager = HttpUrlManagerSingleton,
-            logger = logger
-        )
-
-//        val res = sut.getMessage(messageReq = req)
-
-//        val output = (res as Either.Right<UnifiedMessageResp>).r
-    }
-
-    //    @Test
-    fun `GIVEN an exception VERIFY that the output is a Left`() = runBlocking<Unit> {
-
-//        every { responseManager.parseResponse(any()) }.returns(Either.Left(RuntimeException("test")))
-
-        val sut = createNetworkClient(
-            httpClient = OkHttpClient(),
-            responseManager = responseManager,
-            urlManager = HttpUrlManagerSingleton,
-            logger = logger
-        )
-
-//        val res = sut.getMessage(messageReq = req)
-
-//        val output = (res as Either.Left).t
-//        output.message.assertEquals("test")
+        verify(exactly = 0) { successMock(any()) }
+        verify(exactly = 1) { errorMock(any()) }
     }
 }

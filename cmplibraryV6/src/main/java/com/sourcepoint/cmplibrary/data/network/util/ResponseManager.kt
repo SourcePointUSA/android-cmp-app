@@ -18,7 +18,7 @@ internal interface ResponseManager {
      * @param r http response
      * @return [Either] object
      */
-    fun parseResponse1203(r: Response): Either<UnifiedMessageResp>
+    fun parseResponse(r: Response): Either<UnifiedMessageResp>
 
     /**
      * @param r http response

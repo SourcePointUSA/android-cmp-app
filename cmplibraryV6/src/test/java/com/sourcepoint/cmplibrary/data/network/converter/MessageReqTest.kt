@@ -2,12 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 // import com.fasterxml.jackson.jr.ob.JSON
 import com.sourcepoint.cmplibrary.model.ext.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
-import com.sourcepoint.cmplibrary.model.Campaigns
-import com.sourcepoint.cmplibrary.model.CcpaReq
-import com.sourcepoint.cmplibrary.model.GdprReq
-import com.sourcepoint.cmplibrary.model.MessageReq
-import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
+import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import org.junit.Test
 
 class MessageReqTest {
@@ -32,24 +27,6 @@ class MessageReqTest {
       }
     }
      */
-
-    internal val req = MessageReq(
-        requestUUID = "test",
-        campaigns = Campaigns(
-            gdpr = GdprReq(
-                targetingParams = Array(1) {
-                    TargetingParam("location", "EU")
-                }.toJsonObjStringify(),
-                campaignEnv = CampaignEnv.STAGE
-            ),
-            ccpa = CcpaReq(
-                targetingParams = Array(1) {
-                    TargetingParam("location", "US")
-                }.toJsonObjStringify(),
-                campaignEnv = CampaignEnv.STAGE
-            )
-        )
-    )
 
     @Test
     fun `GIVEN an Request obj CHECK the output`() {

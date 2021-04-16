@@ -12,19 +12,16 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import org.json.JSONObject
 
 internal class MockService(
-    private val getNativeMessageLogic: ((messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) -> Unit)? = null
+    private val getNativeMessageLogic: ((messageReq: UnifiedMessageRequest, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) -> Unit)? = null
 ) : Service {
 
-    override fun getNativeMessage(messageReq: MessageReq, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {}
-    override fun getNativeMessageK(messageReq: MessageReq, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
+    override fun getNativeMessage(messageReq: UnifiedMessageRequest, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {}
+    override fun getNativeMessageK(messageReq: UnifiedMessageRequest, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
     override fun addCampaign(legislation: Legislation, campaign: CampaignTemplate) {}
     override fun isAppliedCampaign(legislation: Legislation): Boolean = false
     override fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>> = Left(RuntimeException())
     override fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate> = Left(RuntimeException())
     override fun getGdprPmConfig(pmId: String?, pmTab: PMTab): Either<PmUrlConfig> = Left(RuntimeException())
-    override fun getMessageReq(): MessageReq {
-        TODO("Not yet implemented")
-    }
     override fun getGDPRConsent(): Either<GDPRConsent> = Left(RuntimeException())
     override fun getCCPAConsent(): Either<CCPAConsent> = Left(RuntimeException())
     override fun saveGDPRConsent(consent: GDPRConsent?) {}
@@ -32,12 +29,12 @@ internal class MockService(
     override fun parseRenderingMessage() {}
     override fun clearConsents() {}
     override fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = Left(RuntimeException())
-    override fun getUnifiedMessageResp1203(): Either<UnifiedMessageResp> = Left(RuntimeException())
+    override fun getUnifiedMessageResp(): Either<UnifiedMessageResp> = Left(RuntimeException())
     override fun getGdpr(): Either<Gdpr> = Left(RuntimeException())
     override fun getCcpa(): Either<Ccpa> = Left(RuntimeException())
-    override fun saveGdpr1203(gdpr: Gdpr) {}
-    override fun saveCcpa1203(ccpa: Ccpa) {}
-    override fun saveUnifiedMessageResp1203(unifiedMessageResp: UnifiedMessageResp) {}
+    override fun saveGdpr(gdpr: Gdpr) {}
+    override fun saveCcpa(ccpa: Ccpa) {}
+    override fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp) {}
     override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit, env: Env) {}
     override fun getUnifiedMessageReq(): UnifiedMessageRequest {
         TODO("Not yet implemented")
@@ -54,4 +51,7 @@ internal class MockService(
     override var spConfig: SpConfig
         get() = TODO("Not yet implemented")
         set(value) {}
+
+    override val messageLanguage: MessageLanguage
+        get() = TODO("Not yet implemented")
 }

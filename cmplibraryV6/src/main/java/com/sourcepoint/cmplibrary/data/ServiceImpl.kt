@@ -13,7 +13,6 @@ import com.sourcepoint.cmplibrary.exception.Legislation.GDPR
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
-import com.sourcepoint.cmplibrary.model.MessageReq
 import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 
@@ -53,7 +52,7 @@ private class ServiceImpl(
         nc.getUnifiedMessage(
             messageReq,
             pSuccess = { messageResp ->
-                campaignManager.saveUnifiedMessageResp1203(messageResp)
+                campaignManager.saveUnifiedMessageResp(messageResp)
                 pSuccess(messageResp)
             },
             pError = pError,
@@ -87,7 +86,7 @@ private class ServiceImpl(
     }
 
     override fun getNativeMessage(
-        messageReq: MessageReq,
+        messageReq: UnifiedMessageRequest,
         success: (NativeMessageResp) -> Unit,
         error: (Throwable) -> Unit
     ) {
@@ -103,7 +102,7 @@ private class ServiceImpl(
     }
 
     override fun getNativeMessageK(
-        messageReq: MessageReq,
+        messageReq: UnifiedMessageRequest,
         success: (NativeMessageRespK) -> Unit,
         error: (Throwable) -> Unit
     ) {

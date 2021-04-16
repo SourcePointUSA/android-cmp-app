@@ -94,7 +94,7 @@ class TestUseCase {
         }
 
         fun tapAcceptCcpaOnWebView() {
-            performClickOnWebViewByContent("Do Not Sell")
+            performClickOnWebViewByContent(ACCEPT_ALL)
         }
 
         fun setFocusOnLayoutActivity() {

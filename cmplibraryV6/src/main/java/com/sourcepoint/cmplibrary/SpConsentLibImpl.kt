@@ -119,7 +119,7 @@ internal class SpConsentLibImpl(
         throwsExceptionIfClientIsNull()
 
         service.getNativeMessageK(
-            campaignManager.getMessageReq(),
+            campaignManager.getUnifiedMessageReq(),
             { messageResp ->
                 executor.executeOnMain {
                     /** configuring onClickListener and set the parameters */
@@ -144,7 +144,6 @@ internal class SpConsentLibImpl(
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
-//                pLogger.d(this::class.java.name, "1234 load pm progress ${(webView as WebView).progress}")
                 webView?.loadConsentUIFromUrl(
                     url = urlManager.pmUrl(legislation = Legislation.GDPR, pmConfig = it, env = env),
                     legislation = Legislation.GDPR,
@@ -155,8 +154,19 @@ internal class SpConsentLibImpl(
     }
 
     override fun loadCCPAPrivacyManager(pmId: String, pmTab: PMTab) {
-        checkMainThread("loadPrivacyManager")
+        checkMainThread("loadCCPAPrivacyManager")
         throwsExceptionIfClientIsNull()
+        val pmConfig = campaignManager.getCcpaPmConfig(pmId)
+        pmConfig
+            .map {
+                val webView = viewManager.createWebView(this, JSReceiverDelegate())
+                webView?.loadConsentUIFromUrl(
+                    url = urlManager.pmUrl(legislation = Legislation.CCPA, pmConfig = it, env = env),
+                    legislation = Legislation.CCPA,
+                    pmId = it.messageId
+                )
+            }
+            .executeOnLeft { logMess("PmUrlConfig is null") }
     }
 
     override fun showView(view: View) {
@@ -307,8 +317,9 @@ internal class SpConsentLibImpl(
                 campaignManager.getCcpaPmConfig(action.privacyManagerId)
                     .map { pmUrlConfig ->
                         iConsentWebView.loadConsentUIFromUrl(
-                            urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env),
-                            action.legislation
+                            url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env),
+                            legislation = action.legislation,
+                            pmId = action.privacyManagerId
                         )
                     }
                     .executeOnLeft { it.printStackTrace() }

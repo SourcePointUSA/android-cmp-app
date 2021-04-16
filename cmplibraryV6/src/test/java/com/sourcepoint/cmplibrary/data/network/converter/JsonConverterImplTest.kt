@@ -5,6 +5,9 @@ import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.model.NativeMessageResp
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.toConsentAction
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.file2List
 import com.sourcepoint.cmplibrary.util.file2String
@@ -21,8 +24,8 @@ class JsonConverterImplTest {
         val json = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String()
         val testMap = JSONObject(json).toTreeMap()
 
-//        val output: UnifiedMessageResp = (sut.toUnifiedMessageResp(json) as Either.Right).r
-//        output.thisContent!!.toTreeMap().assertEquals(testMap)
+        val output: UnifiedMessageResp = (sut.toUnifiedMessageResp(json) as Either.Right).r
+        output.thisContent.toTreeMap().assertEquals(testMap)
     }
 
     @Test
@@ -39,7 +42,12 @@ class JsonConverterImplTest {
     }
 
     @Test
-    fun `GIVEN a string RETURN a Left(MessageResp)`() {
+    fun `GIVEN an action sequence RETURN a (ConsentAction)`() {
+        "action/gdpr_first_layer_accept_all.json".file2String().toConsentAction().actionType.assertEquals(ActionType.ACCEPT_ALL)
+        "action/gdpr_first_layer_show_option.json".file2String().toConsentAction().actionType.assertEquals(ActionType.SHOW_OPTIONS)
+        "action/gdpr_pm_accept_all.json".file2String().toConsentAction().actionType.assertEquals(ActionType.ACCEPT_ALL)
+        "action/gdpr_pm_reject_all.json".file2String().toConsentAction().actionType.assertEquals(ActionType.REJECT_ALL)
+        "action/gdpr_pm_save_and_exit.json".file2String().toConsentAction().actionType.assertEquals(ActionType.SAVE_AND_EXIT)
     }
 
     @Test

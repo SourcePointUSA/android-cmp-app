@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import com.sourcepoint.cmplibrary.model.ext.toJsonObjStringify
 
@@ -12,35 +13,17 @@ internal data class Campaign(
 
 internal open class CampaignTemplate(
     open val campaignEnv: CampaignEnv,
-    open val targetingParams: Array<TargetingParam>
+    open val targetingParams: Array<TargetingParam>,
+    open val legislation: Legislation
 )
 
-internal class GDPRCampaign(
-    @JvmField override val campaignEnv: CampaignEnv,
-    @JvmField override val targetingParams: Array<TargetingParam>
-) : CampaignTemplate(campaignEnv, targetingParams)
-
-internal class CCPACampaign(
-    @JvmField override val campaignEnv: CampaignEnv,
-    @JvmField override val targetingParams: Array<TargetingParam>
-) : CampaignTemplate(campaignEnv, targetingParams)
-
-internal fun CampaignTemplate.toGdprReq(
+internal fun CampaignTemplate.toCampaignReqImpl(
     targetingParams: Array<TargetingParam>,
     campaignEnv: CampaignEnv
-): GdprReq {
-    return GdprReq(
+): CampaignReqImpl {
+    return CampaignReqImpl(
         targetingParams = targetingParams.toJsonObjStringify(),
-        campaignEnv = campaignEnv
-    )
-}
-
-internal fun CampaignTemplate.toCcpaReq(
-    targetingParams: Array<TargetingParam>,
-    campaignEnv: CampaignEnv
-): CcpaReq {
-    return CcpaReq(
-        targetingParams = targetingParams.toJsonObjStringify(),
-        campaignEnv = campaignEnv
+        campaignEnv = campaignEnv,
+        legislation = legislation
     )
 }

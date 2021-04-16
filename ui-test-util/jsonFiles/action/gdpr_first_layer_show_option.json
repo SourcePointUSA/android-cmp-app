@@ -1,0 +1,11 @@
+{
+  "legislation": "GDPR",
+  "name": "sp.hideMessage",
+  "actionType": 12,
+  "choiceId": "36091",
+  "requestFromPm": false,
+  "pmId": "12595",
+  "pmTab": null,
+  "saveAndExitVariables": {},
+  "consentLanguage": "DE"
+}

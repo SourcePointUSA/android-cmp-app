@@ -52,11 +52,11 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("env", "stage")
         .build()
 
-    val inAppUrlMessageProd: HttpUrl = HttpUrl.Builder()
+    private val inAppUrlMessageProd: HttpUrl = HttpUrl.Builder()
         .scheme("https")
-        .host("cdn.sp-stage.net") // TODO do we have prod env??
+        .host("cdn.privacy-mgmt.com")
         .addPathSegments("wrapper/v2/messages")
-        .addQueryParameter("env", "stage")
+        .addQueryParameter("env", "localProd")
         .build()
 
     val inAppUrlNativeMessage: HttpUrl

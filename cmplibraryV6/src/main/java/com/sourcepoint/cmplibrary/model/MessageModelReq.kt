@@ -1,30 +1,23 @@
 package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
+import com.sourcepoint.cmplibrary.exception.Legislation
 
-internal data class MessageReq(
-    val requestUUID: String,
-    val campaigns: Campaigns
-)
-
-internal data class Campaigns(
-    val gdpr: CampaignReq? = null,
-    val ccpa: CampaignReq? = null
-)
+internal data class Campaigns(val list: List<CampaignReq> = emptyList()) {
+    val gdpr: CampaignReq? = list.find { it.legislation == Legislation.GDPR }
+    val ccpa: CampaignReq? = list.find { it.legislation == Legislation.CCPA }
+}
 
 internal interface CampaignReq {
     val targetingParams: String
     val campaignEnv: CampaignEnv
+    val legislation: Legislation
 }
 
-internal data class GdprReq(
+internal data class CampaignReqImpl(
     override val targetingParams: String,
-    override val campaignEnv: CampaignEnv
-) : CampaignReq
-
-internal data class CcpaReq(
-    override val targetingParams: String,
-    override val campaignEnv: CampaignEnv
+    override val campaignEnv: CampaignEnv,
+    override val legislation: Legislation
 ) : CampaignReq
 
 internal data class UnifiedMessageRequest(

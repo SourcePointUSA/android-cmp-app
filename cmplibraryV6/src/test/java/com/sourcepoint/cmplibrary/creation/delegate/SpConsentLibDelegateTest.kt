@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.creation.delegate
 import android.app.Activity
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
+import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import io.mockk.MockKAnnotations
@@ -31,7 +32,7 @@ class SpConsentLibDelegateTest {
     @Test
     fun `VERIFY that the delegate with a tab is not null`() {
 
-        val delegate = ConsentLibDelegate(campaign, PMTab.FEATURES)
+        val delegate = ConsentLibDelegate(campaign, PMTab.FEATURES, MessageLanguage.ENGLISH)
         val sut1 = delegate.getValue(context, mockk())
         val sut2 = delegate.getValue(context, mockk())
 
@@ -43,7 +44,7 @@ class SpConsentLibDelegateTest {
     @Test
     fun `VERIFY that the delegate with a tab is null`() {
 
-        val delegate = ConsentLibDelegate(campaign)
+        val delegate = ConsentLibDelegate(campaign, PMTab.PURPOSES, MessageLanguage.ENGLISH)
         val sut1 = delegate.getValue(context, mockk())
         val sut2 = delegate.getValue(context, mockk())
 

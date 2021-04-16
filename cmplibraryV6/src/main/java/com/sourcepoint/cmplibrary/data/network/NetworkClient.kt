@@ -4,7 +4,6 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
-import com.sourcepoint.cmplibrary.model.MessageReq
 import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import org.json.JSONObject
@@ -41,14 +40,14 @@ internal interface NetworkClient {
      */
     // TODO verify if we need it
     fun getNativeMessage(
-        messageReq: MessageReq,
+        messageReq: UnifiedMessageRequest,
         success: (NativeMessageResp) -> Unit,
         error: (Throwable) -> Unit
     )
 
     // TODO verify if we need it
     fun getNativeMessageK(
-        messageReq: MessageReq,
+        messageReq: UnifiedMessageRequest,
         success: (NativeMessageRespK) -> Unit,
         error: (Throwable) -> Unit
     )

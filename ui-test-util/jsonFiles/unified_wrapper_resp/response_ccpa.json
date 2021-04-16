@@ -20,6 +20,7 @@
     {
       "type": "CCPA",
       "applies": false,
+      "url": "https://cdn.sp-stage.net/index.html?consentUUID=f9515cea-a8a7-4309-967f-472271f60c50&message_id=14754&consentLanguage=EN&preload_message=true",
       "userConsent": {
         "rejectedCategories": [],
         "rejectedVendors": [],
@@ -32,95 +33,140 @@
       "message": {
         "message_json": {
           "type": "Notice",
-          "name": "Do Not Sell Button      ",
-          "settings": {
-            "showVeil": false,
-            "type": "inline",
-            "type_settings": {
-              "targetType": "id",
-              "targetName": "do-not-sell-button"
-            },
-            "lockScroll": false,
-            "height": {
-              "type": "px",
-              "value": 38
-            },
-            "padding": {
-              "paddingLeft": 0,
-              "paddingRight": 0,
-              "paddingTop": 0,
-              "paddingBottom": 0
-            },
-            "width": {
-              "type": "px",
-              "value": 145
-            },
-            "background": "transparent",
-            "showClose": false,
-            "border": {
-              "borderWidth": 0,
-              "borderColor": "#000000",
-              "borderTopLeftRadius": 0,
-              "borderTopRightRadius": 0,
-              "borderBottomLeftRadius": 0,
-              "borderBottomRightRadius": 0,
-              "borderStyle": "solid"
-            }
-          },
+          "name": "template test ccpa system                              ",
+          "settings": {},
           "children": [
             {
+              "type": "Stacks",
+              "name": "Stacks",
+              "settings": {},
+              "children": []
+            },
+            {
               "type": "Button",
-              "name": "Do Not Sell Button",
+              "name": "Accept_All",
               "settings": {
-                "background": "#cecece",
-                "font": {
-                  "fontSize": 14,
-                  "fontWeight": "600",
-                  "color": "#000000",
-                  "fontFamily": "arial, helvetica, sans-serif"
-                },
-                "margin": {
-                  "marginLeft": 0,
-                  "marginRight": 0,
-                  "marginTop": 0,
-                  "marginBottom": 0
-                },
-                "text": "Do Not Sell",
                 "choice_option": {
                   "type": 11,
                   "data": {
-                    "button_text": "1576610022378",
+                    "button_text": "1618501818520",
                     "consent_origin": "https://ccpa.sp-stage.net",
                     "consent_language": "EN"
                   }
-                }
+                },
+                "languages": {
+                  "EN": {
+                    "text": "Accept All"
+                  }
+                },
+                "text": "Accept All"
+              },
+              "children": []
+            },
+            {
+              "type": "Button",
+              "name": "reject_all",
+              "settings": {
+                "choice_option": {
+                  "type": 13,
+                  "data": {
+                    "button_text": "1618501836860",
+                    "consent_origin": "https://ccpa.sp-stage.net",
+                    "consent_language": "EN"
+                  }
+                },
+                "languages": {
+                  "EN": {
+                    "text": "Reject All"
+                  }
+                },
+                "text": "Reject All"
+              },
+              "children": []
+            },
+            {
+              "type": "Button",
+              "name": "show_pm",
+              "settings": {
+                "choice_option": {
+                  "type": 12,
+                  "data": {
+                    "button_text": "1618501904175",
+                    "privacy_manager_iframe_url": "https://ccpa-pm-dev.sp-prod.net?privacy_manager_id=5fda645724fb840012eb20cc",
+                    "consent_origin": "https://ccpa.sp-stage.net"
+                  }
+                },
+                "languages": {
+                  "EN": {
+                    "text": "Show PM"
+                  }
+                },
+                "text": "Show PM"
+              },
+              "children": []
+            },
+            {
+              "type": "Button",
+              "name": "save_ext",
+              "settings": {
+                "choice_option": {
+                  "type": "SE",
+                  "data": {
+                    "button_text": "1618501873876",
+                    "consent_origin": "https://ccpa.sp-stage.net",
+                    "consent_language": "EN"
+                  }
+                },
+                "languages": {
+                  "EN": {
+                    "text": "Save and Exit"
+                  }
+                },
+                "text": "Save and Exit"
               },
               "children": []
             }
           ],
+          "compliance_status": false,
+          "is_system_template": true,
+          "is_draft": true,
+          "messageCategory": "ccpa",
+          "messageSubCategory": "notice",
           "compliance_list": []
         },
         "message_choice": [
           {
-            "choice_id": 36095,
+            "choice_id": 38712,
             "type": 15,
             "iframe_url": null,
             "button_text": "Dismiss"
           },
           {
-            "choice_id": 36096,
+            "choice_id": 38713,
             "type": 11,
             "iframe_url": null,
-            "button_text": "1576610022378"
+            "button_text": "1618501818520"
+          },
+          {
+            "choice_id": 38714,
+            "type": 13,
+            "iframe_url": null,
+            "button_text": "1618501836860"
+          },
+          {
+            "choice_id": 38715,
+            "type": 12,
+            "iframe_url": "https://ccpa-pm-dev.sp-prod.net?privacy_manager_id=5fda645724fb840012eb20cc",
+            "button_text": "1618501904175"
           }
         ],
         "site_id": 4122
       },
       "messageMetaData": {
-        "messageId": 13203,
-        "prtnUUID": "1d991280-2e07-49b2-945a-923a8fe51589",
+        "messageId": 14754,
+        "prtnUUID": "3dee6675-bbe5-48f8-8ccc-61160e47bc78",
         "msgDescription": "",
-        "bucket": 615,
+        "bucket": 794,
         "categoryId": 2,
         "subCategoryId": 1
       },
@@ -146,5 +192,5 @@
       ]
     }
   ],
-  "localState": "{\"ccpa\":{\"mmsCookies\":[\"_sp_v1_uid=1:615:1830d4cb-6621-4d79-9f2d-448d9c56a578\",\"_sp_v1_data=2:3286:1618392566:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RyiuOUbIyqFWKBQCq7errDgAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"uuid\":\"f842db8b-a120-4989-b2ce-2f7dc48d5b87\",\"dnsDisplayed\":true,\"status\":\"rejectedNone\",\"propertyId\":4122,\"messageId\":13203}}"
+  "localState": "{\"ccpa\":{\"mmsCookies\":[\"_sp_v1_uid=1:794:313e6c70-6cee-4378-b192-0f754aaf3bc1\",\"_sp_v1_data=2:4943:1618576634:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RyiuOUbIyqFWKBQCq7errDgAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"uuid\":\"f9515cea-a8a7-4309-967f-472271f60c50\",\"dnsDisplayed\":true,\"propertyId\":4122,\"messageId\":14754}}"
 }
