@@ -6,6 +6,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.SpConsentLib;
+import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
 import com.sourcepoint.cmplibrary.model.exposed.*;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv;
@@ -47,6 +48,13 @@ public class MainActivityV6 extends AppCompatActivity {
             }
     );
 
+    private final SpConfig spConfig2 = new SpConfigDataBuilder()
+            .addAccountId(22)
+            .addPropertyName("carm.uw.con")
+            .addCampaign(Legislation.CCPA, CampaignEnv.PUBLIC, "{\"location\":\"EU\"}")
+            .addCampaign(Legislation.GDPR, CampaignEnv.PUBLIC, "{\"location\":\"EU\"}")
+            .build();
+
     private SpConsentLib gdprConsent = null;
 
     private final Lazy<DataProvider> dataProvider = inject(DataProvider.class);
@@ -55,7 +63,7 @@ public class MainActivityV6 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        gdprConsent = FactoryKt.makeConsentLib(spConfig, this, MessageLanguage.ENGLISH);
+        gdprConsent = FactoryKt.makeConsentLib(spConfig2, this, MessageLanguage.ENGLISH);
         gdprConsent.setSpClient(new LocalClient());
         findViewById(R.id.review_consents).setOnClickListener(_v ->
                 gdprConsent.loadGDPRPrivacyManager(
