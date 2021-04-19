@@ -48,11 +48,14 @@ public class MainActivityV6 extends AppCompatActivity {
             }
     );
 
+    private final TargetingParam[] targetingParamsGdpr = new TargetingParam[]{new TargetingParam("location", "EU")};
+    private final TargetingParam[] targetingParamsCcpa = new TargetingParam[]{new TargetingParam("location", "EU")};
+
     private final SpConfig spConfig2 = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("carm.uw.con")
-            .addCampaign(Legislation.CCPA, CampaignEnv.PUBLIC, "{\"location\":\"EU\"}")
-            .addCampaign(Legislation.GDPR, CampaignEnv.PUBLIC, "{\"location\":\"EU\"}")
+            .addCampaign(Legislation.CCPA, CampaignEnv.PUBLIC, targetingParamsGdpr)
+            .addCampaign(Legislation.GDPR, CampaignEnv.PUBLIC, targetingParamsCcpa)
             .build();
 
     private SpConsentLib gdprConsent = null;
