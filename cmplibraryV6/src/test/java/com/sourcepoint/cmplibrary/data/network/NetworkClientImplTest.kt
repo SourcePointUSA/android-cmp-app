@@ -5,16 +5,21 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
+import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.ext.toJsonObject
+import com.sourcepoint.cmplibrary.model.toConsentAction
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockCall
+import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.uwMessDataTest
-import io.mockk.* // ktlint-disable
+import io.mockk.* //ktlint-disable
 import io.mockk.impl.annotations.MockK
+import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 
@@ -128,5 +133,41 @@ class NetworkClientImplTest {
         /** verify that the right callback is invoked */
         verify(exactly = 0) { successMock(any()) }
         verify(exactly = 1) { errorMock(any()) }
+    }
+
+    @Test
+    fun `GIVEN a GDPR consentAction Object in STAGE VERIFY the okHttp generated the STAGE request`() {
+        val consentAction = "action/gdpr_pm_accept_all.json".file2String().toConsentAction()
+        val mockResp = mockResponse("https://mock.com", uwMessDataTest.toJsonObject().toString())
+        val mockCall = mockk<Call>()
+        val slot = slot<Request>()
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.returns(mockResp)
+
+        sut.sendConsent(JSONObject(), Env.STAGE, consentAction)
+
+        verify(exactly = 1) { responseManager.parseConsentRes(mockResp, Legislation.GDPR) }
+        verify(exactly = 1) { okHttp.newCall(capture(slot)) }
+        /** capture the Request and test the parameters */
+        slot.captured.run {
+            readText().assertEquals("{}")
+            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages/gdpr/11?env=stage")
+            method.assertEquals("POST")
+            url.queryParameter("env").assertEquals("stage")
+        }
+    }
+
+    @Test
+    fun `GIVEN a creash in the responseManager RETURN a Left`() {
+        val consentAction = "action/gdpr_pm_accept_all.json".file2String().toConsentAction()
+        val mockResp = mockResponse("https://mock.com", uwMessDataTest.toJsonObject().toString())
+        val mockCall = mockk<Call>()
+        val slot = slot<Request>()
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.returns(mockResp)
+        every { responseManager.parseConsentRes(any(), any()) }.throws(RuntimeException("parse"))
+
+        val left = sut.sendConsent(JSONObject(), Env.STAGE, consentAction) as Either.Left
+        left.t.message.assertEquals("parse")
     }
 }

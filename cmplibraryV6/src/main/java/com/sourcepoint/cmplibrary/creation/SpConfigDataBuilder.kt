@@ -44,7 +44,7 @@ class SpConfigDataBuilder {
     fun addCampaign(
         legislation: Legislation,
         env: CampaignEnv,
-        params : Array<TargetingParam>
+        params: Array<TargetingParam>
     ): SpConfigDataBuilder = apply {
         campaigns.add(SpCampaign(legislation, env, params))
     }
