@@ -28,17 +28,15 @@ internal data class UnifiedMessageRequest(
     val consentLanguage: MessageLanguage = MessageLanguage.ENGLISH,
     val hasCSP: Boolean = true,
     val campaignEnv: String = "prod",
-    val idfaStatus: String? = null,
+    val localState: String? = null,
     val requestUUID: String? = null
 )
 
-data class Actions(val type: String)
-data class Cookies(val type: String)
-data class CustomVendorsResponse(val type: String)
 data class LocalState(val type: String)
+data class TCData(val type: String)
+data class MessageMetaData(val type: String)
 data class IncludeData(
-    val actions: Actions = Actions("RecordString"),
-    val cookies: Cookies = Cookies("RecordString"),
-    val customVendorsResponse: CustomVendorsResponse = CustomVendorsResponse("RecordString"),
+    val tCData: TCData = TCData("RecordString"),
+    val messageMetaData: MessageMetaData = MessageMetaData("RecordString"),
     val localState: LocalState = LocalState("string")
 )

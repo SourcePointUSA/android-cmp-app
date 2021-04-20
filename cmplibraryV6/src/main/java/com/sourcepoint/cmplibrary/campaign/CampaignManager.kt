@@ -193,7 +193,8 @@ private class CampaignManagerImpl(
             propertyHref = spConfig.propertyName,
             accountId = spConfig.accountId,
             campaigns = Campaigns(list = campaigns),
-            consentLanguage = messageLanguage
+            consentLanguage = messageLanguage,
+            localState = dataStorage.getLocalState()
         )
     }
 
@@ -217,10 +218,12 @@ private class CampaignManagerImpl(
 
     override fun saveGdpr(gdpr: Gdpr) {
         dataStorage.saveGdpr1203(gdpr.thisContent.toString())
+        dataStorage.saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
     }
 
     override fun saveCcpa(ccpa: Ccpa) {
         dataStorage.saveCcpa1203(ccpa.thisContent.toString())
+        dataStorage.saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
     }
 
     override fun saveGDPRConsent(consent: GDPRConsent?) {
@@ -244,6 +247,8 @@ private class CampaignManagerImpl(
         map.getMap("ccpa")
             ?.getFieldValue<String>("uuid")
             ?.let { dataStorage.saveCcpaConsentUuid(it) }
+        map.getFieldValue<String>("localState")?.let { dataStorage.saveLocalState(it) }
+        // save campaigns and consents
         unifiedMessageResp
             .campaigns
             .forEach {

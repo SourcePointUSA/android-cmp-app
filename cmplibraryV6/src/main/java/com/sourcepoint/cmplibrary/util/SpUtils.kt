@@ -11,7 +11,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -56,13 +55,11 @@ internal fun userConsents(
     return SPConsents(
         ccpa = campaignManager.getCCPAConsent().getOrNull()?.let {
             SPCCPAConsent(
-                applies = campaignManager.isAppliedCampaign(Legislation.GDPR),
                 consent = it
             )
         },
         gdpr = campaignManager.getGDPRConsent().getOrNull()?.let {
             SPGDPRConsent(
-                applies = campaignManager.isAppliedCampaign(Legislation.CCPA),
                 consent = it
             )
         }

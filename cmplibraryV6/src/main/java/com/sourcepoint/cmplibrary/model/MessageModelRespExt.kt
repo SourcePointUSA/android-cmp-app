@@ -52,13 +52,13 @@ private fun Map<String, Any?>.toCCPA(): Ccpa? {
 
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
-    val url = getFieldValue<String>("url") ?: failParam("CCPA url")
+    val url = getFieldValue<String>("url")
 
     return Ccpa(
         thisContent = JSONObject(this),
         applies = getFieldValue<Boolean>("applies") ?: false,
         message = message,
-        url = HttpUrl.parse(url)!!,
+        url = url?.let { HttpUrl.parse(it) },
         messageMetaData = messageMetaData,
         userConsent = getMap("userConsent")?.toCCPAUserConsent() ?: failParam("CCPAUserConsent")
     )
@@ -68,13 +68,13 @@ internal fun Map<String, Any?>.toGDPR(): Gdpr {
 
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
-    val url = getFieldValue<String>("url") ?: failParam("GDPR url")
+    val url = getFieldValue<String>("url")
 
     return Gdpr(
         thisContent = JSONObject(this),
         applies = getFieldValue<Boolean>("applies") ?: false,
         message = message,
-        url = HttpUrl.parse(url)!!,
+        url = url?.let { HttpUrl.parse(it) },
         messageMetaData = messageMetaData,
         userConsent = getMap("userConsent")?.toGDPRUserConsent1203() ?: failParam("GDPRUserConsent")
     )

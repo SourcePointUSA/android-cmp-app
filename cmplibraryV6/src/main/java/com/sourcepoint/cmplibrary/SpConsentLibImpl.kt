@@ -45,17 +45,26 @@ internal class SpConsentLibImpl(
     private val nativeMsgClient by lazy { NativeMsgDelegate() }
 
     companion object {
-        fun UnifiedMessageResp.toCampaignModelList(): List<CampaignModel> {
+        fun UnifiedMessageResp.toCampaignModelList(logger: Logger): List<CampaignModel> {
             val campaignList = this.campaigns
             if (campaignList.isEmpty()) return emptyList()
 
-            val partition: Pair<List<CampaignResp>, List<CampaignResp>> = campaignList.partition { it.message != null }
+            val partition: Pair<List<CampaignResp>, List<CampaignResp>> = campaignList
+                .partition { it.message != null && it.url != null }
+            logger.d(
+                this::class.java.name,
+                """
+                partitions: 
+                    with Null message[${partition.second.size}]
+                    with Not Null message[${partition.first.size}]
+                """.trimIndent()
+            )
             return partition.first.map {
                 CampaignModel(
                     message = it.message!!,
                     messageMetaData = it.messageMetaData!!,
                     type = Legislation.valueOf(it.type),
-                    url = it.url
+                    url = it.url!!
                 )
             }
         }
@@ -92,7 +101,7 @@ internal class SpConsentLibImpl(
             messageReq = campaignManager.getUnifiedMessageReq(),
             pSuccess = { messageResp ->
                 consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
-                val list: List<CampaignModel> = messageResp.toCampaignModelList()
+                val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
                 if (list.isEmpty()) return@getUnifiedMessage
                 val firstCampaign2Process = list.first()
                 val remainingCampaigns: Queue<CampaignModel> = LinkedList(list.drop(1))

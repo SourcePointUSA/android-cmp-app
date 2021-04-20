@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.consent
 import com.sourcepoint.cmplibrary.core.Either.Left
 import com.sourcepoint.cmplibrary.core.Either.Right
 import com.sourcepoint.cmplibrary.core.ExecutorManager
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.util.Env
@@ -26,6 +27,7 @@ internal interface ConsentManager {
         action: ConsentAction,
         localState: String
     )
+
     val enqueuedActions: Int
     val gdprUuid: String?
     val ccpaUuid: String?
@@ -100,7 +102,7 @@ private class ConsentManagerImpl(
             when (val either = service.sendConsent(localState, action, env, action.privacyManagerId)) {
                 is Right -> {
                     val updatedLocalState = LocalStateStatus.Present(either.r.localState)
-                    val sPConsents = responseHandler(either, action)
+                    val sPConsents = responseHandler(either, action, consentManagerUtils)
                     sPConsentsSuccess?.invoke(sPConsents)
                     this.localStateStatus = updatedLocalState
                 }
@@ -116,16 +118,24 @@ internal sealed class LocalStateStatus {
     object Consumed : LocalStateStatus()
 }
 
-internal fun responseHandler(either: Right<ConsentResp>, action: ConsentAction): SPConsents {
+internal fun responseHandler(either: Right<ConsentResp>, action: ConsentAction, consentManagerUtils: ConsentManagerUtils): SPConsents {
     val map: Map<String, Any?> = either.r.content.toTreeMap()
     return map.getMap("userConsent")
         ?.let {
             when (action.legislation) {
                 Legislation.GDPR -> it.toGDPRUserConsent().let { gdprConsent ->
-                    SPConsents(gdpr = SPGDPRConsent(consent = gdprConsent, applies = true))
+                    val ccpaCached = consentManagerUtils.getCcpaConsent().getOrNull()
+                    SPConsents(
+                        gdpr = SPGDPRConsent(consent = gdprConsent),
+                        ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
+                    )
                 }
                 Legislation.CCPA -> it.toCCPAUserConsent().let { ccpaConsent ->
-                    SPConsents(ccpa = SPCCPAConsent(consent = ccpaConsent, applies = true))
+                    val gdprCached = consentManagerUtils.getGdprConsent().getOrNull()
+                    SPConsents(
+                        gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
+                        ccpa = SPCCPAConsent(consent = ccpaConsent)
+                    )
                 }
             }
         } ?: SPConsents()

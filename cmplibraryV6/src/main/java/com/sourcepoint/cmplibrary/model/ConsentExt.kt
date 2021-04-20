@@ -37,23 +37,21 @@ internal fun String.toConsentAction(): ConsentAction {
 internal fun Map<String, Any?>.toCCPAUserConsent(): CCPAConsent {
 
     val rejectedCategories = getFieldValue<Iterable<Any?>>("rejectedCategories")
-        ?.filterNotNull()
+        ?.filterIsInstance(String::class.java)
         ?: failParam("Ccpa  rejectedCategories")
 
     val rejectedVendors = getFieldValue<Iterable<Any?>>("rejectedVendors")
-        ?.filterNotNull()
+        ?.filterIsInstance(String::class.java)
         ?: failParam("Ccpa  rejectedVendors")
 
     val status: String = getFieldValue<String>("status")
         ?: fail("CCPAStatus cannot be null!!!")
 
     val uspString: String = getFieldValue("USPString") ?: "" // failParam("Ccpa USPString")
-    val rejectedAll: Boolean = getFieldValue("rejectedAll") ?: true
 
     return CCPAConsent(
         rejectedCategories = rejectedCategories,
         rejectedVendors = rejectedVendors,
-        rejectedAll = rejectedAll,
         status = status,
         uspstring = uspString,
         thisContent = JSONObject(this)
@@ -63,7 +61,7 @@ internal fun Map<String, Any?>.toCCPAUserConsent(): CCPAConsent {
 internal fun Map<String, Any?>.toGDPRUserConsent(): GDPRConsent {
 
     val userConsentMap = this
-
+    /*
     val acceptedCategories = (userConsentMap["acceptedCategories"] as? Iterable<Any?>)
         ?.filterNotNull()
         ?.sortedBy { it.hashCode() }
@@ -82,17 +80,23 @@ internal fun Map<String, Any?>.toGDPRUserConsent(): GDPRConsent {
     val specialFeatures = (userConsentMap["specialFeatures"] as? Iterable<Any?>)?.filterNotNull()
         ?.sortedBy { it.hashCode() }
         ?: emptyList()
-
-    val tcData = (userConsentMap["TCData"] as? Map<String, Any?>) ?: emptyMap<String, Any?>()
-    val vendorsGrants = (userConsentMap["grants"] as? Map<String, Any?>) ?: emptyMap<String, Any?>()
+    */
+    val tcData: Map<String, Any?> = (userConsentMap["TCData"] as? Map<String, Any?>) ?: emptyMap<String, Any?>()
+    val vg = (userConsentMap["grants"] as? Map<String, Any?>) ?: emptyMap<String, Any?>()
+    val vendorsGrants = vg.map {
+        Pair(
+            it.key,
+            ((it.value as? Map<String, Any?>)?.get("purposeGrants") as? Map<String, Boolean>) ?: emptyMap()
+        )
+    }.toMap()
     val euconsent = (userConsentMap["euconsent"] as? String) ?: ""
 
     return GDPRConsent(
         thisContent = JSONObject(this),
-        acceptedCategories = acceptedCategories,
-        acceptedVendors = acceptedVendors,
-        legIntCategories = legIntCategories,
-        specialFeatures = specialFeatures,
+//        acceptedCategories = acceptedCategories,
+//        acceptedVendors = acceptedVendors,
+//        legIntCategories = legIntCategories,
+//        specialFeatures = specialFeatures,
         tcData = tcData,
         vendorsGrants = vendorsGrants,
         euconsent = euconsent

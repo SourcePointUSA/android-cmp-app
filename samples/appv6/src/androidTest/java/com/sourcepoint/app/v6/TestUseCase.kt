@@ -66,7 +66,7 @@ class TestUseCase {
         }
 
         fun tapOptionWebView() {
-            performClickOnWebViewByContent(EINSTELLUNGEN)
+            performClickOnWebViewByContent(OPTIONS)
         }
 
         fun tapAcceptAllOnWebView() {
@@ -90,7 +90,7 @@ class TestUseCase {
         }
 
         fun tapAcceptOnWebView() {
-            performClickOnWebViewByContent(ZUSTIMMEN)
+            performClickOnWebViewByContent(ACCEPT_ALL)
         }
 
         fun tapAcceptCcpaOnWebView() {

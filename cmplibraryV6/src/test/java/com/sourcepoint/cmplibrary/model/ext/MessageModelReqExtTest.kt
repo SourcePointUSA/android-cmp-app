@@ -15,9 +15,7 @@ class MessageModelReqExtTest {
             getFieldValue<String>("requestUUID").assertEquals("test")
             getFieldValue<String>("propertyHref").assertEquals("http://com.test")
             getFieldValue<Int>("accountId").assertEquals(1)
-            getFieldValue<String>("idfaStatus").assertEquals("idf")
             getFieldValue<String>("consentLanguage").assertEquals("EN")
-            getFieldValue<String>("campaignEnv").assertEquals("stage")
         }
     }
 

@@ -71,6 +71,7 @@ private class ServiceImpl(
                 nc.sendConsent(it, env, consentAction)
             }
             .executeOnRight {
+                dataStorage.saveLocalState(it.localState)
                 when (it.legislation) {
                     GDPR -> {
                         dataStorage.saveGdprConsentResp(it.content.toString())

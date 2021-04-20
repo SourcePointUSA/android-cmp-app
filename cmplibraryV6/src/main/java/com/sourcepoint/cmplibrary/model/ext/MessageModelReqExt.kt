@@ -17,10 +17,9 @@ internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
             put("requestUUID", requestUUID)
             put("propertyHref", "http://$propertyHref")
             put("accountId", accountId)
-            put("idfaStatus", idfaStatus)
             put("campaigns", campaigns.toJsonObject())
             put("consentLanguage", consentLanguage.value)
-            put("campaignEnv", campaignEnv)
+            put("localState", localState)
             put("includeData", includeData.toJsonObject())
         }
 }
@@ -54,9 +53,8 @@ internal fun Array<TargetingParam>.toJsonObjStringify(): String {
 internal fun IncludeData.toJsonObject(): JSONObject {
     return JSONObject()
         .apply {
-            put("actions", JSONObject().apply { put("type", actions.type) })
-            put("cookies", JSONObject().apply { put("type", cookies.type) })
-            put("customVendorsResponse", JSONObject().apply { put("type", customVendorsResponse.type) })
+            put("messageMetaData", JSONObject().apply { put("type", messageMetaData.type) })
+            put("TCData", JSONObject().apply { put("type", tCData.type) })
             put("localState", JSONObject().apply { put("type", localState.type) })
         }
 }

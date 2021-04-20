@@ -33,6 +33,5 @@ internal val uwMessDataTest = UnifiedMessageRequest(
     campaignEnv = CampaignEnv.STAGE.value,
     accountId = 1,
     hasCSP = true,
-    idfaStatus = "idf",
     includeData = IncludeData()
 )

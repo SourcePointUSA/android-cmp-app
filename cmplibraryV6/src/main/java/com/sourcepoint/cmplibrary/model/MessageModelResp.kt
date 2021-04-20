@@ -22,7 +22,7 @@ internal data class UnifiedMessageResp(
 internal abstract class CampaignResp {
     abstract val thisContent: JSONObject
     abstract val type: String
-    abstract val url: HttpUrl
+    abstract val url: HttpUrl?
     abstract val applies: Boolean
     abstract val message: JSONObject?
     abstract val messageMetaData: JSONObject?
@@ -33,7 +33,7 @@ internal data class Gdpr(
     override val applies: Boolean = false,
     override val message: JSONObject? = null,
     override val messageMetaData: JSONObject? = null,
-    override val url: HttpUrl,
+    override val url: HttpUrl?,
     val userConsent: GDPRConsent,
     override val type: String = Legislation.GDPR.name,
 ) : CampaignResp()
@@ -43,7 +43,7 @@ internal data class Ccpa(
     override val applies: Boolean = false,
     override val message: JSONObject? = null,
     override val messageMetaData: JSONObject? = null,
-    override val url: HttpUrl,
+    override val url: HttpUrl?,
     val userConsent: CCPAConsent,
     override val type: String = Legislation.CCPA.name,
 ) : CampaignResp()
