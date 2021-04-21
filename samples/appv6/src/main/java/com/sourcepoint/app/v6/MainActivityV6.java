@@ -112,6 +112,11 @@ public class MainActivityV6 extends AppCompatActivity {
         }
 
         @Override
+        public void onConsentReady(@NotNull String consent) {
+            System.out.println("onConsentReady String: " + consent);
+        }
+
+        @Override
         public void onUIFinished(@NotNull View v) {
             gdprConsent.removeView(v);
         }

@@ -29,3 +29,10 @@ data class CCPAConsent(
     val uspstring: String = "",
     val thisContent: JSONObject = JSONObject()
 )
+
+internal fun SPConsents.toJsonObject(): JSONObject {
+    return JSONObject().apply {
+        put("gdpr", gdpr?.consent?.thisContent)
+        put("ccpa", ccpa?.consent?.thisContent)
+    }
+}

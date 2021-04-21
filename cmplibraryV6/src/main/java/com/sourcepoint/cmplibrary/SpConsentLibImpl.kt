@@ -25,6 +25,7 @@ import com.sourcepoint.cmplibrary.model.CampaignResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.SHOW_OPTIONS
+import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import java.util.* // ktlint-disable
 
@@ -72,8 +73,12 @@ internal class SpConsentLibImpl(
 
     init {
         consentManager.sPConsentsSuccess = { spConsents ->
+            val spConsentString = spConsents.toJsonObject().toString()
             executor.executeOnMain {
-                spClient?.onConsentReady(spConsents)
+                spClient?.also {
+                    it.onConsentReady(spConsents)
+                    it.onConsentReady(spConsentString)
+                }
             }
         }
         consentManager.sPConsentsError = { throwable ->
