@@ -41,7 +41,7 @@ public class MainActivityV6 extends AppCompatActivity {
 
     private final SpConfig spConfig = new SpConfig(
             22,
-            "carm.uw.con",//"mobile.multicampaign.demo",//
+            "mobile.multicampaign.demo",//"carm.uw.con",//
             new SpCampaign[]{
                     ccpaCamapign,
                     gdprCampaign
@@ -69,14 +69,16 @@ public class MainActivityV6 extends AppCompatActivity {
         gdprConsent = FactoryKt.makeConsentLib(spConfig2, this, MessageLanguage.ENGLISH);
         gdprConsent.setSpClient(new LocalClient());
         findViewById(R.id.review_consents).setOnClickListener(_v ->
-                gdprConsent.loadGDPRPrivacyManager(
-                        "12595"//""13111"
-                        , PMTab.PURPOSES
+                gdprConsent.loadPrivacyManager(
+                        "13111",
+                        PMTab.PURPOSES,
+                        Legislation.GDPR
                 ));
         findViewById(R.id.review_consents_ccpa).setOnClickListener(_v ->
-                gdprConsent.loadCCPAPrivacyManager(
-                        "14754"//""13111"
-                        , PMTab.PURPOSES
+                gdprConsent.loadPrivacyManager(
+                        "13111",
+                        PMTab.PURPOSES,
+                        Legislation.CCPA
                 ));
     }
 
@@ -92,7 +94,7 @@ public class MainActivityV6 extends AppCompatActivity {
         gdprConsent.dispose();
     }
 
-    class LocalClient implements SpClient {
+    class LocalClient extends SpClient {
 
         @Override
         public void onMessageReady(@NotNull JSONObject message) {

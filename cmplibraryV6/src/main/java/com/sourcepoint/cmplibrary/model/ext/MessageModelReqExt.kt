@@ -53,8 +53,8 @@ internal fun Array<TargetingParam>.toJsonObjStringify(): String {
 internal fun IncludeData.toJsonObject(): JSONObject {
     return JSONObject()
         .apply {
-            put("messageMetaData", JSONObject().apply { put("type", messageMetaData.type) })
-            put("TCData", JSONObject().apply { put("type", tCData.type) })
+            put("messageMetaData", JSONObject().apply { put("type", messageMetaData?.type) })
+            put("TCData", JSONObject().apply { put("type", tCData?.type) })
             put("localState", JSONObject().apply { put("type", localState.type) })
         }
 }

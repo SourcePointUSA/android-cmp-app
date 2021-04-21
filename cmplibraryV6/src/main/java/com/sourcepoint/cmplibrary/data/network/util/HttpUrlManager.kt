@@ -146,7 +146,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .host("notice.sp-stage.net")
         .addPathSegments("privacy-manager/index.html")
         .addQueryParameter("pmTab", pmConf.pmTab.key)
-        .addQueryParameter("message_id", "12595")
+        .addQueryParameter("message_id", pmConf.messageId)
         .apply {
             pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
             pmConf.consentUUID?.let { addQueryParameter("consentUUID", it) }

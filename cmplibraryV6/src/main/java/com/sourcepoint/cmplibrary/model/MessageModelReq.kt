@@ -24,7 +24,11 @@ internal data class UnifiedMessageRequest(
     val accountId: Int,
     val propertyHref: String,
     val campaigns: Campaigns,
-    val includeData: IncludeData = IncludeData(),
+    val includeData: IncludeData = IncludeData(
+        tCData = TCData("RecordString"),
+        messageMetaData = MessageMetaData("RecordString"),
+        localState = LocalState("string")
+    ),
     val consentLanguage: MessageLanguage = MessageLanguage.ENGLISH,
     val hasCSP: Boolean = true,
     val campaignEnv: String = "prod",
@@ -36,7 +40,7 @@ data class LocalState(val type: String)
 data class TCData(val type: String)
 data class MessageMetaData(val type: String)
 data class IncludeData(
-    val tCData: TCData = TCData("RecordString"),
-    val messageMetaData: MessageMetaData = MessageMetaData("RecordString"),
-    val localState: LocalState = LocalState("string")
+    val localState: LocalState,
+    val tCData: TCData? = null,
+    val messageMetaData: MessageMetaData? = null
 )

@@ -146,32 +146,16 @@ internal class SpConsentLibImpl(
         )
     }
 
-    override fun loadGDPRPrivacyManager(pmId: String, pmTab: PMTab) {
+    override fun loadPrivacyManager(pmId: String, pmTab: PMTab, legislation: Legislation) {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientIsNull()
-        val pmConfig = campaignManager.getGdprPmConfig(pmId, pmTab)
+        val pmConfig = campaignManager.getPmConfig(legislation, pmId, pmTab)
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
                 webView?.loadConsentUIFromUrl(
                     url = urlManager.pmUrl(legislation = Legislation.GDPR, pmConfig = it, env = env),
                     legislation = Legislation.GDPR,
-                    pmId = it.messageId
-                )
-            }
-            .executeOnLeft { logMess("PmUrlConfig is null") }
-    }
-
-    override fun loadCCPAPrivacyManager(pmId: String, pmTab: PMTab) {
-        checkMainThread("loadCCPAPrivacyManager")
-        throwsExceptionIfClientIsNull()
-        val pmConfig = campaignManager.getCcpaPmConfig(pmId)
-        pmConfig
-            .map {
-                val webView = viewManager.createWebView(this, JSReceiverDelegate())
-                webView?.loadConsentUIFromUrl(
-                    url = urlManager.pmUrl(legislation = Legislation.CCPA, pmConfig = it, env = env),
-                    legislation = Legislation.CCPA,
                     pmId = it.messageId
                 )
             }
@@ -308,10 +292,10 @@ internal class SpConsentLibImpl(
 
     private fun showOption(action: ConsentAction, iConsentWebView: IConsentWebView) {
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
-        when (action.legislation) {
+        when (val l = action.legislation) {
             Legislation.GDPR -> {
                 viewManager.removeView(view)
-                campaignManager.getGdprPmConfig(action.privacyManagerId, PMTab.PURPOSES)
+                campaignManager.getPmConfig(l, action.privacyManagerId, PMTab.PURPOSES)
                     .map { pmUrlConfig ->
                         iConsentWebView.loadConsentUIFromUrl(
                             url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env),
@@ -323,7 +307,7 @@ internal class SpConsentLibImpl(
             }
             Legislation.CCPA -> {
                 viewManager.removeView(view)
-                campaignManager.getCcpaPmConfig(action.privacyManagerId)
+                campaignManager.getPmConfig(legislation = l, pmId = action.privacyManagerId, pmTab = null)
                     .map { pmUrlConfig ->
                         iConsentWebView.loadConsentUIFromUrl(
                             url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env),
