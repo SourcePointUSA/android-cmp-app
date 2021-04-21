@@ -1,5 +1,4 @@
 include ":cmplibrary"
-include ":cmplibraryV6"
 
 include ":app"
 include ":authexample"
