@@ -133,6 +133,22 @@ class MetaAppTestCases {
             performSpinnerItemSelection(resId = R.id.spinner_message_language, contentDescription = messageLanguage)
         }
 
+        fun addPMTabFeaturesPropertyDetails(pmTab : String){
+            val accountId = "22"
+            val propertyId = "7639"
+            val propertyName = "tcfv2.mobile.webview"
+            val pmId = "122058"
+
+            insertTextByResId(propId = R.id.etAccountID, text = accountId)
+            insertTextByResId(propId = R.id.etPropertyId, text = propertyId)
+            insertTextByResId(propId = R.id.etPropertyName, text = propertyName)
+            insertTextByResId(propId = R.id.etPMId, text = pmId)
+            val messageLanguage = ENGLISH;
+            performSpinnerItemSelection(resId = R.id.spinner_message_language, contentDescription = messageLanguage)
+
+            performSpinnerItemSelection(resId = R.id.spinner_pm_tab, contentDescription = pmTab)
+        }
+
         fun checkNativeMessageDisplayed() {
             isDisplayedAllOf(R.id.Title)
         }
@@ -189,6 +205,10 @@ class MetaAppTestCases {
 
         fun tapAcceptAllOnWebView() {
             performClickOnWebViewByContent(ACCEPT_ALL)
+        }
+
+        fun tapAcceptOnWebView() {
+            performClickOnWebViewByContent(ACCEPT)
         }
 
         fun tapAcceptAllFrenchOnWebView() {
@@ -264,12 +284,14 @@ class MetaAppTestCases {
         }
 
         fun selectNativeMessageConsentList() {
+            clickPMTabSelectedPurposes()
             NATIVE_MESSAGE_CONSENT_LIST.forEach { consent ->
                 checkConsentWebView(consent)
             }
         }
 
         fun selectPartialConsentList() {
+            clickPMTabSelectedPurposes()
             PARTIAL_CONSENT_LIST.forEach { consent ->
                 checkConsentWebView(consent)
             }
@@ -295,6 +317,10 @@ class MetaAppTestCases {
 
         fun checkPMTabSelectedPurposes() {
             checkPMTabSelected(PURPOSES)
+        }
+
+        fun clickPMTabSelectedPurposes() {
+            performClickPMTabSelected(PURPOSES)
         }
     }
 }

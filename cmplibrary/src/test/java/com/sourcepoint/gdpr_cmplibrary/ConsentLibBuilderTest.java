@@ -172,6 +172,15 @@ public class ConsentLibBuilderTest {
     }
 
     @Test
+    public void setPmTab() {
+        String [] pmtabs = PrivacyManagerTab.tabNames();
+        for (String tabName : pmtabs ){
+            defaultBuilder.setPrivacyManagerTab(PrivacyManagerTab.findTabByName(tabName));
+            assertEquals(PrivacyManagerTab.findTabByName(tabName).pmTab, defaultBuilder.pmTab);
+        }
+    }
+
+    @Test
     public void setTargetingParamString() throws Exception {
         defaultBuilder.setTargetingParam("key", "stringValue");
 

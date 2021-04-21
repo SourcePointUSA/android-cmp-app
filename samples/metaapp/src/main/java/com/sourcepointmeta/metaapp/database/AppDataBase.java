@@ -61,6 +61,7 @@ public abstract class AppDataBase extends RoomDatabase {
                 .addMigrations(MIGRATION_4_5)
                 .addMigrations(MIGRATION_5_6)
                 .addMigrations(MIGRATION_6_7)
+                .addMigrations(MIGRATION_7_8)
                 .build();
     }
 
@@ -165,6 +166,23 @@ public abstract class AppDataBase extends RoomDatabase {
             //copy the data
             database.execSQL(
                     "INSERT INTO property_new (id, accountId, propertyId, property, pmId, staging, isNative, authId) SELECT id, accountId, propertyId, property, pmId, staging, isNative, authId  FROM property");
+
+
+            database.execSQL("DROP TABLE property");
+
+            database.execSQL("ALTER TABLE property_new RENAME TO property");
+        }
+    };
+
+    private static final Migration MIGRATION_7_8 = new Migration(7,8) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL(
+                    "CREATE TABLE property_new (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `accountId` INTEGER NOT NULL, `propertyId` INTEGER NOT NULL, `property` TEXT, `pmId` TEXT, `staging` INTEGER NOT NULL, `isNative` INTEGER NOT NULL,`authId` TEXT, `message_language` TEXT, `pm_tab` TEXT)");
+            //copy the data
+            database.execSQL(
+                    "INSERT INTO property_new (id, accountId, propertyId, property, pmId, staging, isNative, message_language,authId) SELECT id, accountId, propertyId, property, pmId, staging, isNative, message_language, authId  FROM property");
 
 
             database.execSQL("DROP TABLE property");

@@ -23,8 +23,8 @@ public interface PropertyListDao {
     long insert(Property property);
 
 
-    @Query("UPDATE Property SET accountId= :accountID, propertyId= :propertyID ,property= :propertyName, pmId= :pmID ,staging= :isStaging, isNative= :isNativeMessage , authId= :authId , message_language= :messageLanguage  WHERE id= :id ")
-    int update(int accountID, int propertyID, String propertyName, String pmID, boolean isStaging, boolean isNativeMessage, String authId, String messageLanguage,long id);
+    @Query("UPDATE Property SET accountId= :accountID, propertyId= :propertyID ,property= :propertyName, pmId= :pmID ,staging= :isStaging, isNative= :isNativeMessage , authId= :authId , message_language= :messageLanguage , pm_tab= :pmTab  WHERE id= :id ")
+    int update(int accountID, int propertyID, String propertyName, String pmID, boolean isStaging, boolean isNativeMessage, String authId, String messageLanguage, String pmTab, long id);
 
     @Query("SELECT * FROM Property WHERE id= :ID")
     LiveData<Property> getPropertyByID(long ID);
@@ -49,9 +49,10 @@ public interface PropertyListDao {
            "AND pmId= :pmID " +
            "AND authId= :authId " +
            "AND message_language= :messageLanguage " +
+           "AND pm_tab= :pmTab " +
            "AND staging= :isStaging " +
            "AND isNative= :isNativeMessage ")
-   List<TargetingParameterList> getPropertyWithDetails(int accountID, int propertyID, String propertyName, String pmID, boolean isStaging, boolean isNativeMessage, String authId, String messageLanguage, String keyList, String valueList);
+   List<TargetingParameterList> getPropertyWithDetails(int accountID, int propertyID, String propertyName, String pmID, boolean isStaging, boolean isNativeMessage, String authId, String messageLanguage, String pmTab, String keyList, String valueList);
 
     @Query( "SELECT count(*) FROM Property as P LEFT JOIN 'targeting_param' as TP on P.id=TP.refID WHERE " +
             "P.accountId= :accountID " +
@@ -62,8 +63,9 @@ public interface PropertyListDao {
             "AND P.isNative= :isNativeMessage " +
             "AND P.authId= :authId " +
             "AND P.message_language= :messageLanguage " +
+            "AND pm_tab= :pmTab " +
             "AND TP.id  IS NULL")
-   int getPropertyWithDetails(int accountID, int propertyID, String propertyName, String pmID, boolean isStaging, boolean isNativeMessage, String authId, String messageLanguage);
+   int getPropertyWithDetails(int accountID, int propertyID, String propertyName, String pmID, boolean isStaging, boolean isNativeMessage, String authId, String messageLanguage, String pmTab);
 
     @Query("DELETE FROM Property WHERE id= :id")
     int deleteProperty(long id);

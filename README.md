@@ -1,12 +1,12 @@
 ![Test](https://github.com/SourcePointUSA/android-cmp-app/workflows/Test/badge.svg?branch=develop)
 
-# How to Install ![Bintray](https://img.shields.io/bintray/v/sourcepoint/sourcepoint/cmplibrary)
+# How to Install ![Maven Central](https://img.shields.io/maven-central/v/com.sourcepoint.cmplibrary/cmplibrary)
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
 
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.3.11'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:5.3.13'
 }
 ```
 
@@ -70,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 ```
+
+## Loading the Privacy Manager on demand
+You can load the Privacy Manager (that UI with the toggles) any time programatically by calling the `.showPM()` method. The SDK will follow the same exact same lifecycle as with the 1st layer consent message. First calling the delegate method `onConsentUIReady` when the PM is ready and then calling `onConsentReady` after the user takes an action.
 
 ## OTT
 If you're working on a Android compatible OTT environment, when building the SDK make sure to call the builder method `.setIsOTT(true)`.
@@ -199,7 +202,7 @@ We'll update this list over time, if you have any questions feel free to open an
 
 # Development
 ## How to build the `cmplibrary` module from source
-Note: skip this step and jump to next section if you already have the compiled the compiled `cmplibrary-release.aar` binary.
+Note: skip this step and jump to next section if you already have the compiled `cmplibrary-release.aar` binary.
 
 * Clone and open `android-cmp-app` project in Android Studio
 * Build the project
