@@ -110,6 +110,7 @@ internal class ConsentWebView(
             )
             sb.toString()
         }
+        logger.d(this::class.java.name, "loadConsentUIFromUrl legislation[$legislation], pmId[$pmId], url[$url]")
         loadUrl(url.toString())
         true
     }

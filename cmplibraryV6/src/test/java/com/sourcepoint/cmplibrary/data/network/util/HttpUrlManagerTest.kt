@@ -51,6 +51,23 @@ class HttpUrlManagerTest {
     }
 
     @Test
+    fun `GIVEN a pmConfig RETURN the CCPA URL`() {
+        val pmConfig = PmUrlConfig(
+            pmTab = null,
+            consentLanguage = null,
+            consentUUID = "uuid",
+            messageId = "111",
+            siteId = null
+        )
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, Legislation.CCPA, pmConfig)
+        sut.run {
+            toString().contains("ccpa-notice.sp-stage.net").assertTrue()
+            queryParameter("message_id").assertEquals("111")
+            queryParameter("consentUUID").assertEquals("uuid")
+        }
+    }
+
+    @Test
     fun `GIVEN a STAGE env RETURN the stage link`() {
         val sut = HttpUrlManagerSingleton.inAppMessageUrl(Env.STAGE).toString()
         sut.assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages?env=stage")
@@ -81,21 +98,6 @@ class HttpUrlManagerTest {
         val sut = HttpUrlManagerSingleton.inAppUrlNativeMessage
         val url = sut.toString()
         url.assertEquals("https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/native-message?inApp=true")
-    }
-
-    @Test
-    fun `GIVEN pmId and `() {
-        val config = PmUrlConfig(
-            pmTab = PMTab.DEFAULT,
-            consentLanguage = "EN",
-            consentUUID = "89b2d14b-70ee-4344-8cc2-1b7b281d0f2d",
-            siteId = "7639",
-            messageId = "122058"
-        )
-//        val sut = HttpUrlManagerSingleton.urlPm(config)
-//        val url = sut.toString()
-//        val expected = "https://cdn.privacy-mgmt.com/privacy-manager/index.html?consentLanguage=EN&consentUUID=89b2d14b-70ee-4344-8cc2-1b7b281d0f2d&site_id=7639&message_id=122058"
-//        url.assertEquals(expected)
     }
 
     @Test

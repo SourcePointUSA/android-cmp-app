@@ -157,8 +157,8 @@ internal class SpConsentLibImpl(
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
                 webView?.loadConsentUIFromUrl(
-                    url = urlManager.pmUrl(legislation = Legislation.GDPR, pmConfig = it, env = env),
-                    legislation = Legislation.GDPR,
+                    url = urlManager.pmUrl(legislation = legislation, pmConfig = it, env = env),
+                    legislation = legislation,
                     pmId = it.messageId
                 )
             }

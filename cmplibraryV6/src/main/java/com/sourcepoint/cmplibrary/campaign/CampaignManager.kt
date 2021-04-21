@@ -120,14 +120,7 @@ private class CampaignManagerImpl(
     }
 
     fun getGdprPmConfig(pmId: String?, pmTab: PMTab): Either<PmUrlConfig> = check {
-        val gdpr: CampaignTemplate = mapTemplate[Legislation.GDPR.name]
-            ?: fail("===> Privacy manager url config is missing!!! GDPR user config is missing.")
-
-        val gdprConfig = dataStorage.getGdpr1203()?.toGDPR()
-            ?: fail("===> Privacy manager url config is missing!!! GDPR object is missing from DataStorage.")
-
         val uuid = dataStorage.getGdprConsentUuid()
-
         PmUrlConfig(
             pmTab = pmTab, // gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
             consentLanguage = null,
@@ -138,17 +131,10 @@ private class CampaignManagerImpl(
     }
 
     fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = check {
-        val ccpa: CampaignTemplate = mapTemplate[Legislation.CCPA.name]
-            ?: fail("===> Privacy manager url config is missing!!! CCPA user config is missing.")
-
-        val ccpaConfig = dataStorage.getCcpa1203()?.toCCPA()
-            ?: fail("===> Privacy manager url config is missing!!! CCPA object is missing from DataStorage.")
-
-        val uuid = dataStorage.getGdprConsentUuid()
-
+        val uuid = dataStorage.getCcpaConsentUuid()
         PmUrlConfig(
             consentLanguage = null, // ccpaConfig.uuid ?: fail("consentUUID cannot be null!!!"),
-            consentUUID = null,
+            consentUUID = uuid,
             siteId = null,
             messageId = pmId
         )

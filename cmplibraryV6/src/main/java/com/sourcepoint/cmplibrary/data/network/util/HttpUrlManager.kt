@@ -59,7 +59,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 
     override fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig): HttpUrl = when (legislation) {
         Legislation.GDPR -> urlPmGdpr(pmConfig)
-        Legislation.CCPA -> urlPmCcpa(pmConfig) // urlUWPm(pmConfig!!, UrlLegislation.valueOf(legislation.name))
+        Legislation.CCPA -> urlPmCcpa(pmConfig)
     }
 
     override fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
@@ -71,7 +71,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("consentUUID", pmConf.consentUUID)
         .apply {
             if (pmConf.pmTab != PMTab.DEFAULT) {
-                addQueryParameter("pmTab", pmConf.pmTab.key)
+                addQueryParameter("pmTab", pmConf.pmTab?.key)
             }
         }
         .addQueryParameter("site_id", pmConf.siteId)
@@ -118,7 +118,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .scheme("https")
         .host("notice.sp-stage.net")
         .addPathSegments("privacy-manager/index.html")
-        .addQueryParameter("pmTab", pmConf.pmTab.key)
+        .addQueryParameter("pmTab", pmConf.pmTab?.key)
         .apply {
             pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
             pmConf.consentUUID?.let { addQueryParameter("consentUUID", it) }
@@ -128,15 +128,13 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .build()
 
     private fun urlPmCcpa(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
-        // https://notice.sp-stage.net/privacy-manager/index.html?message_id=<PM_ID>
+        // https://ccpa-notice.sp-stage.net/ccpa_pm/index.html?message_id=14777
         .scheme("https")
-        .host("notice.sp-stage.net")
-        .addPathSegments("privacy-manager/index.html")
-        .addQueryParameter("pmTab", pmConf.pmTab.key)
+        .host("ccpa-notice.sp-stage.net")
+        .addPathSegments("ccpa_pm/index.html")
         .apply {
             pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
             pmConf.consentUUID?.let { addQueryParameter("consentUUID", it) }
-            pmConf.siteId?.let { addQueryParameter("site_id", it) }
             pmConf.messageId?.let { addQueryParameter("message_id", it) }
         }
         .build()

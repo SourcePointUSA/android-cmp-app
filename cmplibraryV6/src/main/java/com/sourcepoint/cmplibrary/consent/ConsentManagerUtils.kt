@@ -11,8 +11,11 @@ import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.IncludeData
+import com.sourcepoint.cmplibrary.model.LocalState
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
+import com.sourcepoint.cmplibrary.model.ext.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -82,26 +85,15 @@ private class ConsentManagerUtilsImpl(
 
     override fun buildCcpaConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject> = check {
         logger.d(ConsentManagerUtilsImpl::class.java.name, "localState[$localState]")
-        cm
-            .getCampaignTemplate(Legislation.CCPA)
-            .flatMap { campaign -> cm.getCcpa().map { Pair(campaign, it) } }
-            .map { pair ->
-                val ccpa = pair.first
-                val ccpaConfig = pair.second
-
-                JSONObject().apply {
-                    put("consents", ccpaConfig.userConsent.thisContent)
-                    put("accountId", cm.spConfig.accountId)
-                    put("privacyManagerId", pmId)
-                    put("localState", localState)
-                    put("pubData", action.pubData)
-                    put("requestUUID", uuid)
-                }
-            }
-            .executeOnLeft {
-                fail("Error trying to build the ccpa body to send consents.", it)
-            }
-            .getOrNull() ?: fail("Error trying to build the ccpa body to send consents.")
+        JSONObject().apply {
+            put("accountId", cm.spConfig.accountId)
+            put("privacyManagerId", pmId)
+            put("localState", localState)
+            put("pubData", action.pubData)
+            put("requestUUID", uuid)
+            put("pmSaveAndExitVariables", action.saveAndExitVariables)
+            put("includeData", IncludeData(localState = LocalState("string")).toJsonObject())
+        }
     }
 
     override fun getGdprConsent(): Either<GDPRConsent> {

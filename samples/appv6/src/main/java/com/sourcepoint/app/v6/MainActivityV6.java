@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
-import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.SpConsentLib;
 import com.sourcepoint.cmplibrary.UnitySpClient;
 import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
@@ -14,6 +13,7 @@ import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv;
 import com.sourcepoint.cmplibrary.exception.Legislation;
 import com.sourcepoint.cmplibrary.model.*;
 import com.sourcepoint.app.v6.core.DataProvider;
+import com.sourcepoint.cmplibrary.util.SpUtils;
 import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -59,7 +59,7 @@ public class MainActivityV6 extends AppCompatActivity {
             .addCampaign(Legislation.GDPR, CampaignEnv.PUBLIC, targetingParamsCcpa)
             .build();
 
-    private SpConsentLib gdprConsent = null;
+    private SpConsentLib spConsentLib = null;
 
     private final Lazy<DataProvider> dataProvider = inject(DataProvider.class);
 
@@ -67,32 +67,35 @@ public class MainActivityV6 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        gdprConsent = FactoryKt.makeConsentLib(spConfig2, this, MessageLanguage.ENGLISH);
-        gdprConsent.setSpClient(new LocalClient());
+        spConsentLib = FactoryKt.makeConsentLib(spConfig2, this, MessageLanguage.ENGLISH);
+        spConsentLib.setSpClient(new LocalClient());
         findViewById(R.id.review_consents).setOnClickListener(_v ->
-                gdprConsent.loadPrivacyManager(
+                spConsentLib.loadPrivacyManager(
                         "13111",
                         PMTab.PURPOSES,
                         Legislation.GDPR
                 ));
         findViewById(R.id.review_consents_ccpa).setOnClickListener(_v ->
-                gdprConsent.loadPrivacyManager(
-                        "13154",
+                spConsentLib.loadPrivacyManager(
+                        "14967",
                         PMTab.PURPOSES,
                         Legislation.CCPA
                 ));
+        findViewById(R.id.clear_all).setOnClickListener(_v ->
+                SpUtils.clearAllData(this)
+        );
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        gdprConsent.loadMessage();
+        spConsentLib.loadMessage();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        gdprConsent.dispose();
+        spConsentLib.dispose();
     }
 
     class LocalClient implements UnitySpClient {
@@ -119,12 +122,12 @@ public class MainActivityV6 extends AppCompatActivity {
 
         @Override
         public void onUIFinished(@NotNull View v) {
-            gdprConsent.removeView(v);
+            spConsentLib.removeView(v);
         }
 
         @Override
         public void onUIReady(@NotNull View v) {
-            gdprConsent.showView(v);
+            spConsentLib.showView(v);
         }
 
         @Override
