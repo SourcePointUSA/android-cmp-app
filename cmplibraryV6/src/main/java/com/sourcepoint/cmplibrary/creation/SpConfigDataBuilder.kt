@@ -49,6 +49,10 @@ class SpConfigDataBuilder {
         campaigns.add(SpCampaign(legislation, env, params))
     }
 
+    fun addCampaign(campaign: SpCampaign): SpConfigDataBuilder = apply {
+        campaigns.add(campaign)
+    }
+
     fun build(): SpConfig {
         return SpConfig(
             accountId,

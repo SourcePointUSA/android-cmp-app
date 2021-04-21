@@ -6,6 +6,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.SpConsentLib;
+import com.sourcepoint.cmplibrary.UnitySpClient;
 import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
 import com.sourcepoint.cmplibrary.model.exposed.*;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
@@ -76,7 +77,7 @@ public class MainActivityV6 extends AppCompatActivity {
                 ));
         findViewById(R.id.review_consents_ccpa).setOnClickListener(_v ->
                 gdprConsent.loadPrivacyManager(
-                        "13111",
+                        "13154",
                         PMTab.PURPOSES,
                         Legislation.CCPA
                 ));
@@ -94,7 +95,7 @@ public class MainActivityV6 extends AppCompatActivity {
         gdprConsent.dispose();
     }
 
-    class LocalClient extends SpClient {
+    class LocalClient implements UnitySpClient {
 
         @Override
         public void onMessageReady(@NotNull JSONObject message) {

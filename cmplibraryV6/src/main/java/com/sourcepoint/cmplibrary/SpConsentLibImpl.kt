@@ -75,10 +75,8 @@ internal class SpConsentLibImpl(
         consentManager.sPConsentsSuccess = { spConsents ->
             val spConsentString = spConsents.toJsonObject().toString()
             executor.executeOnMain {
-                spClient?.also {
-                    it.onConsentReady(spConsents)
-                    it.onConsentReady(spConsentString)
-                }
+                spClient?.onConsentReady(spConsents)
+                (spClient as? UnitySpClient)?.onConsentReady(spConsentString)
             }
         }
         consentManager.sPConsentsError = { throwable ->

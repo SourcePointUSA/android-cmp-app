@@ -59,7 +59,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 
     override fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig): HttpUrl = when (legislation) {
         Legislation.GDPR -> urlPmGdpr(pmConfig)
-        Legislation.CCPA -> urlPmCcpa() // urlUWPm(pmConfig!!, UrlLegislation.valueOf(legislation.name))
+        Legislation.CCPA -> urlPmCcpa(pmConfig) // urlUWPm(pmConfig!!, UrlLegislation.valueOf(legislation.name))
     }
 
     override fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
@@ -127,7 +127,19 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         }
         .build()
 
-    private fun urlPmCcpa(): HttpUrl = HttpUrl.parse("https://ccpa-inapp-pm.sp-prod.net?ccpa_origin=https://ccpa-service.sp-prod.net&privacy_manager_id=5df9105bcf42027ce707bb43&ccpaUUID=76c950be-45be-40ce-878b-c7bcf091722d&site_id=6099")!!
+    private fun urlPmCcpa(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
+        // https://notice.sp-stage.net/privacy-manager/index.html?message_id=<PM_ID>
+        .scheme("https")
+        .host("notice.sp-stage.net")
+        .addPathSegments("privacy-manager/index.html")
+        .addQueryParameter("pmTab", pmConf.pmTab.key)
+        .apply {
+            pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
+            pmConf.consentUUID?.let { addQueryParameter("consentUUID", it) }
+            pmConf.siteId?.let { addQueryParameter("site_id", it) }
+            pmConf.messageId?.let { addQueryParameter("message_id", it) }
+        }
+        .build()
 
     private fun sendCcpaConsentUrlProd(actionType: Int): HttpUrl {
         // https://cdn.sp-stage.net/wrapper/v2/messages/ccpa/11?env=stage

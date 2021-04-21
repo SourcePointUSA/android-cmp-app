@@ -13,7 +13,6 @@ internal fun String.toConsentAction(): ConsentAction {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
 
     val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } }
-        ?: fail("actionType")
     val choiceId = (map["choiceId"] as? String)
     val legislation = map.getFieldValue<String>("legislation") ?: "CCPA"
     val privacyManagerId = (map["pmId"] as? String) ?: (map["localPmId"] as? String)
@@ -23,7 +22,7 @@ internal fun String.toConsentAction(): ConsentAction {
     val consentLanguage = map.getFieldValue<String>("consentLanguage") ?: "EN"
 
     return ConsentAction(
-        actionType = actionType,
+        actionType = actionType ?: ActionType.ACCEPT_ALL,
         choiceId = choiceId,
         privacyManagerId = privacyManagerId,
         pmTab = pmTab,
