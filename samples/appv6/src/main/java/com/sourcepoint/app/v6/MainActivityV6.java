@@ -41,7 +41,7 @@ public class MainActivityV6 extends AppCompatActivity {
 
     private final SpConfig spConfig = new SpConfig(
             22,
-            "mobile.multicampaign.demo",//"carm.uw.con",//
+            "mobile.multicampaign.demo",
             new SpCampaign[]{
                     ccpaCamapign,
                     gdprCampaign
@@ -53,7 +53,7 @@ public class MainActivityV6 extends AppCompatActivity {
 
     private final SpConfig spConfig2 = new SpConfigDataBuilder()
             .addAccountId(22)
-            .addPropertyName("mobile.multicampaign.demo")//("carm.uw.con")//
+            .addPropertyName("mobile.multicampaign.demo")
             .addCampaign(Legislation.CCPA, CampaignEnv.PUBLIC, targetingParamsGdpr)
             .addCampaign(Legislation.GDPR, CampaignEnv.PUBLIC, targetingParamsCcpa)
             .build();

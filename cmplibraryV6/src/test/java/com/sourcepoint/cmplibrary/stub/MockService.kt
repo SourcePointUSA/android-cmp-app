@@ -21,14 +21,12 @@ internal class MockService(
     override fun isAppliedCampaign(legislation: Legislation): Boolean = false
     override fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>> = Left(RuntimeException())
     override fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate> = Left(RuntimeException())
-    override fun getGdprPmConfig(pmId: String?, pmTab: PMTab): Either<PmUrlConfig> = Left(RuntimeException())
     override fun getGDPRConsent(): Either<GDPRConsent> = Left(RuntimeException())
     override fun getCCPAConsent(): Either<CCPAConsent> = Left(RuntimeException())
     override fun saveGDPRConsent(consent: GDPRConsent?) {}
     override fun saveCCPAConsent(consent: CCPAConsent?) {}
     override fun parseRenderingMessage() {}
     override fun clearConsents() {}
-    override fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = Left(RuntimeException())
     override fun getUnifiedMessageResp(): Either<UnifiedMessageResp> = Left(RuntimeException())
     override fun getGdpr(): Either<Gdpr> = Left(RuntimeException())
     override fun getCcpa(): Either<Ccpa> = Left(RuntimeException())
@@ -37,6 +35,10 @@ internal class MockService(
     override fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp) {}
     override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit, env: Env) {}
     override fun getUnifiedMessageReq(): UnifiedMessageRequest {
+        TODO("Not yet implemented")
+    }
+
+    override fun getPmConfig(legislation: Legislation, pmId: String?, pmTab: PMTab?): Either<PmUrlConfig> {
         TODO("Not yet implemented")
     }
 
