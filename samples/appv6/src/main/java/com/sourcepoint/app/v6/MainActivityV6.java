@@ -41,7 +41,7 @@ public class MainActivityV6 extends AppCompatActivity {
     private final SpConfig spConfig2 = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-//            .addCampaign(gdprCampaign)
+            .addCampaign(gdprCampaign)
             .addCampaign(ccpaCamapign)
             .build();
 

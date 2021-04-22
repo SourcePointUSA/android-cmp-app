@@ -115,6 +115,7 @@ internal class SpConsentLibImpl(
                     /** inject the message into the WebView */
                     val legislation = firstCampaign2Process.type
                     val url = firstCampaign2Process.url // urlManager.urlURenderingApp(env)//
+                    pLogger.i(this::class.java.name, "loadMessage appUrl [$url]")
                     webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                 }
             },
@@ -303,7 +304,7 @@ internal class SpConsentLibImpl(
                 campaignManager.getPmConfig(l, action.privacyManagerId, PMTab.PURPOSES)
                     .map { pmUrlConfig ->
                         val url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env)
-                            .also { pLogger.i(this::class.java.name, "_sendConsent showOption pmUrl [$it]") }
+                            .also { pLogger.i(this::class.java.name, "_showOption showOption pmUrl [$it]") }
                         iConsentWebView.loadConsentUIFromUrl(
                             url = url,
                             legislation = action.legislation,
@@ -317,7 +318,7 @@ internal class SpConsentLibImpl(
                 campaignManager.getPmConfig(legislation = l, pmId = action.privacyManagerId, pmTab = null)
                     .map { pmUrlConfig ->
                         val url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env)
-                        .also { pLogger.i(this::class.java.name, "_sendConsent showOption pmUrl [$it]") }
+                            .also { pLogger.i(this::class.java.name, "_showOption showOption pmUrl [$it]") }
                         iConsentWebView.loadConsentUIFromUrl(
                             url = url,
                             legislation = action.legislation,

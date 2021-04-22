@@ -136,6 +136,7 @@ internal class ConsentWebView(
                 window.postMessage($obj);
             """.trimIndent()
         }
+        logger.d(this::class.java.name, "loadConsentUIFromUrl legislation[$legislation], url[$url]")
         loadUrl(url.toString())
         true
     }
