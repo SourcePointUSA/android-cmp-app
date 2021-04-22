@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
@@ -85,11 +86,11 @@ private class CampaignManagerImpl(
                 when (it.legislation) {
                     Legislation.GDPR -> addCampaign(
                         it.legislation,
-                        CampaignTemplate(it.environment, it.targetingParams, it.legislation)
+                        CampaignTemplate(CampaignEnv.PUBLIC, it.targetingParams, it.legislation)
                     )
                     Legislation.CCPA -> addCampaign(
                         it.legislation,
-                        CampaignTemplate(it.environment, it.targetingParams, it.legislation)
+                        CampaignTemplate(CampaignEnv.PUBLIC, it.targetingParams, it.legislation)
                     )
                 }
             }

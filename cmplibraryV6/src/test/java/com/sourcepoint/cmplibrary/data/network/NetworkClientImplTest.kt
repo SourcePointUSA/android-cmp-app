@@ -94,8 +94,10 @@ class NetworkClientImplTest {
     fun `GIVEN a Right Object from parseResponse VERIFY the success callback is called`() {
         /** preconditions */
         val mockCall = MockCall(logicResponseCB = { cb -> cb.onResponse(mockk(), mockk()) })
+        val res = mockk<UnifiedMessageResp>()
+        every { res.thisContent }.returns(JSONObject())
         every { okHttp.newCall(any()) }.returns(mockCall)
-        every { responseManager.parseResponse(any()) }.returns(Either.Right(mockk()))
+        every { responseManager.parseResponse(any()) }.returns(Either.Right(res))
 
         /** execution */
         sut.getUnifiedMessage(messageReq = uwMessDataTest, pSuccess = { successMock(it) }, pError = { errorMock(it) }, env = Env.STAGE)

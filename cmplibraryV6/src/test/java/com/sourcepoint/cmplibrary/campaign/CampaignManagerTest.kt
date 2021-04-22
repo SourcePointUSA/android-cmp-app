@@ -6,11 +6,11 @@ import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorage
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
+import com.sourcepoint.cmplibrary.model.ext.toJsonObjStringify
 import com.sourcepoint.cmplibrary.util.file2String
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -39,24 +39,18 @@ class CampaignManagerTest {
 
     private val gdprCampaign = SpCampaign(
         Legislation.GDPR,
-        CampaignEnv.PUBLIC,
-        arrayOf(
-            TargetingParam("location", "EU")
-        )
+        listOf(TargetingParam("location", "EU"))
     )
 
     private val ccpaCamapign = SpCampaign(
         Legislation.CCPA,
-        CampaignEnv.PUBLIC,
-        arrayOf(
-            TargetingParam("location", "EU")
-        )
+        listOf(TargetingParam("location", "EU"))
     )
 
     private val spConfig = SpConfig(
         22,
         "carm.uw.con",
-        arrayOf(
+        listOf(
             ccpaCamapign,
             gdprCampaign
         )

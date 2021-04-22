@@ -154,10 +154,12 @@ internal class SpConsentLibImpl(
         throwsExceptionIfClientIsNull()
         val pmConfig = campaignManager.getPmConfig(legislation, pmId, pmTab)
         pmConfig
-            .map {
+            .map { it ->
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
+                val url = urlManager.pmUrl(legislation = legislation, pmConfig = it, env = env)
+                    .also { pLogger.i(this::class.java.name, "_sendConsent pmUrl [$it]") }
                 webView?.loadConsentUIFromUrl(
-                    url = urlManager.pmUrl(legislation = legislation, pmConfig = it, env = env),
+                    url = url,
                     legislation = legislation,
                     pmId = it.messageId
                 )
@@ -300,8 +302,10 @@ internal class SpConsentLibImpl(
                 viewManager.removeView(view)
                 campaignManager.getPmConfig(l, action.privacyManagerId, PMTab.PURPOSES)
                     .map { pmUrlConfig ->
+                        val url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env)
+                            .also { pLogger.i(this::class.java.name, "_sendConsent showOption pmUrl [$it]") }
                         iConsentWebView.loadConsentUIFromUrl(
-                            url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env),
+                            url = url,
                             legislation = action.legislation,
                             pmId = action.privacyManagerId
                         )
@@ -312,8 +316,10 @@ internal class SpConsentLibImpl(
                 viewManager.removeView(view)
                 campaignManager.getPmConfig(legislation = l, pmId = action.privacyManagerId, pmTab = null)
                     .map { pmUrlConfig ->
+                        val url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env)
+                        .also { pLogger.i(this::class.java.name, "_sendConsent showOption pmUrl [$it]") }
                         iConsentWebView.loadConsentUIFromUrl(
-                            url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env),
+                            url = url,
                             legislation = action.legislation,
                             pmId = action.privacyManagerId
                         )

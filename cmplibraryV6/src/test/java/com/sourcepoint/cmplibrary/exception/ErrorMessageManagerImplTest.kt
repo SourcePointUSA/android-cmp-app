@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.model.CampaignTemplate
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
+import com.sourcepoint.cmplibrary.model.ext.toJsonObjStringify
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -25,18 +26,17 @@ class ErrorMessageManagerImplTest {
         osVersion = "30"
     )
 
-    private val gdprTemplate = CampaignTemplate(CampaignEnv.STAGE, arrayOf(TargetingParam("location", "EU")), Legislation.GDPR)
+    private val gdprTemplate = CampaignTemplate(CampaignEnv.STAGE, listOf(TargetingParam("location", "EU")), Legislation.GDPR)
 
     private val gdpr = SpCampaign(
         legislation = Legislation.GDPR,
-        environment = CampaignEnv.STAGE,
-        targetingParams = arrayOf(TargetingParam("location", "EU"))
+        targetingParams = listOf(TargetingParam("location", "EU"))
     )
 
     private val spConfig = SpConfig(
         accountId = 22,
         propertyName = "http://dev.local",
-        campaigns = arrayOf(gdpr)
+        campaigns = listOf(gdpr)
     )
 
     @MockK

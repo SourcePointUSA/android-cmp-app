@@ -9,16 +9,12 @@ import com.sourcepoint.cmplibrary.model.ext.toJsonObjStringify
 internal val campaigns = Campaigns(
     list = listOf(
         CampaignReqImpl(
-            targetingParams = Array(1) {
-                TargetingParam("location", "EU")
-            }.toJsonObjStringify(),
+            targetingParams = listOf(TargetingParam("location", "EU")).toJsonObjStringify(),
             campaignEnv = CampaignEnv.STAGE,
             legislation = Legislation.GDPR
         ),
         CampaignReqImpl(
-            targetingParams = Array(1) {
-                TargetingParam("location", "US")
-            }.toJsonObjStringify(),
+            targetingParams = listOf(TargetingParam("location", "US")).toJsonObjStringify(),
             campaignEnv = CampaignEnv.STAGE,
             legislation = Legislation.CCPA
         )

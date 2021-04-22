@@ -11,7 +11,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.Legislation
 import com.sourcepoint.cmplibrary.model.Ccpa
 import com.sourcepoint.cmplibrary.model.Gdpr
@@ -32,24 +31,18 @@ class SpUtilsTest {
 
     private val gdprCampaign = SpCampaign(
         Legislation.GDPR,
-        CampaignEnv.PUBLIC,
-        arrayOf(
-            TargetingParam("location", "EU")
-        )
+        listOf(TargetingParam("location", "EU"))
     )
 
     private val ccpaCamapign = SpCampaign(
         Legislation.CCPA,
-        CampaignEnv.PUBLIC,
-        arrayOf(
-            TargetingParam("location", "EU")
-        )
+        listOf(TargetingParam("location", "EU"))
     )
 
     private val spConfig = SpConfig(
         22,
         "carm.uw.con",
-        arrayOf(
+        listOf(
             ccpaCamapign,
             gdprCampaign
         )

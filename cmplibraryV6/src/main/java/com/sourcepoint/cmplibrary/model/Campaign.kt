@@ -13,12 +13,12 @@ internal data class Campaign(
 
 internal open class CampaignTemplate(
     open val campaignEnv: CampaignEnv,
-    open val targetingParams: Array<TargetingParam>,
+    open val targetingParams: List<TargetingParam>,
     open val legislation: Legislation
 )
 
 internal fun CampaignTemplate.toCampaignReqImpl(
-    targetingParams: Array<TargetingParam>,
+    targetingParams: List<TargetingParam>,
     campaignEnv: CampaignEnv
 ): CampaignReqImpl {
     return CampaignReqImpl(

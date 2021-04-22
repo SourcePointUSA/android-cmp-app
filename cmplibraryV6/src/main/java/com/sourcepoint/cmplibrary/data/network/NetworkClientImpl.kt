@@ -38,8 +38,9 @@ private class NetworkClientImpl(
     ) {
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
+        logger.i(NetworkClientImpl::class.java.name, "_getUnifiedMessage body [$messageReq]")
         val url = urlManager.inAppMessageUrl(env)
-            .also { logger.i(NetworkClientImpl::class.java.name, "url getUnifiedMessage [$it]") }
+            .also { logger.i(NetworkClientImpl::class.java.name, "_getUnifiedMessage url [$it]") }
 
         val request: Request = Request.Builder()
             .url(url)
@@ -55,7 +56,10 @@ private class NetworkClientImpl(
                 onResponse { _, r ->
                     responseManager
                         .parseResponse(r)
-                        .map { pSuccess(it) }
+                        .map {
+                            logger.i(NetworkClientImpl::class.java.name, "_getUnifiedMessage response [${it.thisContent}]")
+                            pSuccess(it)
+                        }
                         .executeOnLeft { pError(it) }
                 }
             }
@@ -69,9 +73,10 @@ private class NetworkClientImpl(
 
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, consentReq.toString())
+        logger.i(NetworkClientImpl::class.java.name, "_sendConsent body [${consentReq}]")
         val url = urlManager
             .sendConsentUrl(legislation = consentAction.legislation, env = env, actionType = consentAction.actionType)
-            .also { logger.i(NetworkClientImpl::class.java.name, "url getUnifiedMessage [$it]") }
+            .also { logger.i(NetworkClientImpl::class.java.name, "_sendConsent url [$it]") }
 
         val request: Request = Request.Builder()
             .url(url)
@@ -81,6 +86,7 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseConsentRes(response, consentAction.legislation)
+            .also { logger.i(NetworkClientImpl::class.java.name, "_sendConsent response [$it]") }
     }
 
     // TODO verify if we need it

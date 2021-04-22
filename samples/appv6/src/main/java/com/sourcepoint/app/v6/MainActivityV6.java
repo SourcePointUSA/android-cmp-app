@@ -18,6 +18,10 @@ import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.koin.java.KoinJavaComponent.inject;
 
 public class MainActivityV6 extends AppCompatActivity {
@@ -26,37 +30,19 @@ public class MainActivityV6 extends AppCompatActivity {
 
     private final SpCampaign gdprCampaign = new SpCampaign(
             Legislation.GDPR,
-            CampaignEnv.PUBLIC,
-            new TargetingParam[]{
-                    new TargetingParam("location", "EU")
-            }
+            Arrays.asList(new TargetingParam("location", "EU"))
     );
 
     private final SpCampaign ccpaCamapign = new SpCampaign(
             Legislation.CCPA,
-            CampaignEnv.PUBLIC,
-            new TargetingParam[]{
-                    new TargetingParam("location", "EU")
-            }
+            Arrays.asList(new TargetingParam("location", "EU"))
     );
-
-    private final SpConfig spConfig = new SpConfig(
-            22,
-            "mobile.multicampaign.demo",
-            new SpCampaign[]{
-                    ccpaCamapign,
-                    gdprCampaign
-            }
-    );
-
-    private final TargetingParam[] targetingParamsGdpr = new TargetingParam[]{new TargetingParam("location", "EU")};
-    private final TargetingParam[] targetingParamsCcpa = new TargetingParam[]{new TargetingParam("location", "EU")};
 
     private final SpConfig spConfig2 = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addCampaign(Legislation.CCPA, CampaignEnv.PUBLIC, targetingParamsGdpr)
-            .addCampaign(Legislation.GDPR, CampaignEnv.PUBLIC, targetingParamsCcpa)
+//            .addCampaign(gdprCampaign)
+            .addCampaign(ccpaCamapign)
             .build();
 
     private SpConsentLib spConsentLib = null;

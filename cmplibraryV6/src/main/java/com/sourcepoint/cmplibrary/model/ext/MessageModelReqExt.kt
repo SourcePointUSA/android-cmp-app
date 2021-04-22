@@ -40,7 +40,7 @@ internal fun CampaignReq.toJsonObject(): JSONObject {
         }
 }
 
-internal fun Array<TargetingParam>.toJsonObjStringify(): String {
+internal fun List<TargetingParam>.toJsonObjStringify(): String {
     return JSONObject()
         .apply {
             this@toJsonObjStringify.forEach {

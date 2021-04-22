@@ -37,16 +37,15 @@ class SpConfigDataBuilder {
                 acc.add(TargetingParam(elem.key, (elem.value as? String) ?: ""))
                 acc
             }
-            .toTypedArray()
-        campaigns.add(SpCampaign(legislation, env, array))
+        campaigns.add(SpCampaign(legislation, array))
     }
 
     fun addCampaign(
         legislation: Legislation,
         env: CampaignEnv,
-        params: Array<TargetingParam>
+        params: List<TargetingParam>
     ): SpConfigDataBuilder = apply {
-        campaigns.add(SpCampaign(legislation, env, params))
+        campaigns.add(SpCampaign(legislation, params))
     }
 
     fun addCampaign(campaign: SpCampaign): SpConfigDataBuilder = apply {
@@ -57,7 +56,7 @@ class SpConfigDataBuilder {
         return SpConfig(
             accountId,
             propertyName,
-            campaigns.toTypedArray()
+            campaigns
         )
     }
 }

@@ -27,13 +27,13 @@ class CampaignManagerImplTest {
 
     private val gdpr = CampaignTemplate(
         campaignEnv = CampaignEnv.STAGE,
-        targetingParams = arrayOf(TargetingParam("location", "EU")),
+        targetingParams = listOf(TargetingParam("location", "EU")),
         legislation = Legislation.GDPR
     )
 
     private val ccpa = CampaignTemplate(
         campaignEnv = CampaignEnv.STAGE,
-        targetingParams = arrayOf(TargetingParam("location", "EU")),
+        targetingParams = listOf(TargetingParam("location", "EU")),
         legislation = Legislation.CCPA
     )
 
@@ -45,24 +45,20 @@ class CampaignManagerImplTest {
 
     private val gdprCampaign = SpCampaign(
         Legislation.GDPR,
-        CampaignEnv.PUBLIC,
-        arrayOf(
+        listOf(
             TargetingParam("location", "EU")
         )
     )
 
     private val ccpaCamapign = SpCampaign(
         Legislation.CCPA,
-        CampaignEnv.PUBLIC,
-        arrayOf(
-            TargetingParam("location", "EU")
-        )
+        listOf(TargetingParam("location", "EU"))
     )
 
     private val spConfig = SpConfig(
         22,
         "carm.uw.con",
-        arrayOf(
+        listOf(
             ccpaCamapign,
             gdprCampaign
         )
