@@ -125,7 +125,7 @@ private class CampaignManagerImpl(
         PmUrlConfig(
             pmTab = pmTab, // gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
             consentLanguage = null,
-            consentUUID = uuid,
+            uuid = uuid,
             siteId = null,
             messageId = pmId
         )
@@ -135,7 +135,7 @@ private class CampaignManagerImpl(
         val uuid = dataStorage.getCcpaConsentUuid()
         PmUrlConfig(
             consentLanguage = null, // ccpaConfig.uuid ?: fail("consentUUID cannot be null!!!"),
-            consentUUID = uuid,
+            uuid = uuid,
             siteId = null,
             messageId = pmId
         )

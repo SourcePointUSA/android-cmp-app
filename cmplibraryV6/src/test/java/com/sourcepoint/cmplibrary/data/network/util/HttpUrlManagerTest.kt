@@ -15,7 +15,7 @@ class HttpUrlManagerTest {
         val pmConfig = PmUrlConfig(
             pmTab = PMTab.PURPOSES,
             consentLanguage = "EN",
-            consentUUID = "uuid",
+            uuid = "uuid",
             messageId = "111",
             siteId = "000"
         )
@@ -35,7 +35,7 @@ class HttpUrlManagerTest {
         val pmConfig = PmUrlConfig(
             pmTab = PMTab.FEATURES,
             consentLanguage = null,
-            consentUUID = null,
+            uuid = null,
             messageId = null,
             siteId = null
         )
@@ -55,7 +55,7 @@ class HttpUrlManagerTest {
         val pmConfig = PmUrlConfig(
             pmTab = null,
             consentLanguage = null,
-            consentUUID = "uuid",
+            uuid = "uuid",
             messageId = "111",
             siteId = null
         )
@@ -80,32 +80,11 @@ class HttpUrlManagerTest {
     }
 
     @Test
-    fun `GIVEN an HttpUrl unifiedWrapper CHECK the output URL`() {
-        val sut = HttpUrlManagerSingleton.inAppUrlMessageStage
-        val url = sut.toString()
-        url.assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages?env=stage")
-    }
-
-    @Test
-    fun `GIVEN an consent HttpUrl CHECK the output URL`() {
-        val sut = HttpUrlManagerSingleton.sendLocalGdprConsentUrl
-        val url = sut.toString()
-        url.assertEquals("http://192.168.1.11:3000/wrapper/tcfv2/v1/gdpr/consent?env=localProd&inApp=true&sdkVersion=AndroidLocal")
-    }
-
-    @Test
-    fun `GIVEN an HttpUrl nativeMessage CHECK the output URL`() {
-        val sut = HttpUrlManagerSingleton.inAppUrlNativeMessage
-        val url = sut.toString()
-        url.assertEquals("https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/native-message?inApp=true")
-    }
-
-    @Test
     fun `GIVEN an OTT and `() {
         val config = PmUrlConfig(
             pmTab = PMTab.DEFAULT,
             consentLanguage = "EN",
-            consentUUID = "3c7c3e22-0aac-4941-b97d-8e70b73b91c7",
+            uuid = "3c7c3e22-0aac-4941-b97d-8e70b73b91c7",
             siteId = "7639",
             messageId = "122058"
         )

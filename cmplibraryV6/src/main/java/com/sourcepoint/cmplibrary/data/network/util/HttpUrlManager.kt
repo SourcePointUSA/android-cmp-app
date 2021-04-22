@@ -34,23 +34,13 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         return when (legislation) {
             Legislation.CCPA -> {
                 when (env) {
-                    PROD -> HttpUrl.Builder()
-                        .scheme("https")
-                        .host("fake-wrapper-api.herokuapp.com")
-                        .addPathSegments("all/v1/consent/$actionType")
-                        .build() // sendCcpaConsentUrlStage(actionType = actionType.code)
+                    PROD -> sendCcpaConsentUrlProd(actionType = actionType.code)
                     STAGE -> sendCcpaConsentUrlProd(actionType = actionType.code)
                 }
             }
             Legislation.GDPR -> {
                 when (env) {
-                    PROD -> HttpUrl.Builder()
-                        .scheme("https")
-                        .host("fake-wrapper-api.herokuapp.com")
-                        .addPathSegments("all/v1/gdpr-consent")
-                        .addQueryParameter("inApp", "true")
-                        .addQueryParameter("env", "stage")
-                        .build() // sendGdprConsentUrl
+                    PROD -> sendGdprConsentUrlProd(actionType = actionType.code)
                     STAGE -> sendGdprConsentUrlProd(actionType = actionType.code)
                 }
             }
@@ -62,13 +52,27 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         Legislation.CCPA -> urlPmCcpa(pmConfig)
     }
 
+    private val inAppUrlMessageStage: HttpUrl = HttpUrl.Builder()
+        .scheme("https")
+        .host("cdn.sp-stage.net")
+        .addPathSegments("wrapper/v2/get_messages")
+        .addQueryParameter("env", "stage")
+        .build()
+
+    private val inAppUrlMessageProd: HttpUrl = HttpUrl.Builder()
+        .scheme("https")
+        .host("cdn.privacy-mgmt.com")
+        .addPathSegments("wrapper/v2/get_messages")
+        .addQueryParameter("env", "localProd")
+        .build()
+
     override fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
         .scheme("https")
         .host(spHost)
         .addPathSegments("privacy-manager-ott")
         .addPathSegments("index.html")
         .addQueryParameter("consentLanguage", pmConf.consentLanguage)
-        .addQueryParameter("consentUUID", pmConf.consentUUID)
+        .addQueryParameter("consentUUID", pmConf.uuid)
         .apply {
             if (pmConf.pmTab != PMTab.DEFAULT) {
                 addQueryParameter("pmTab", pmConf.pmTab?.key)
@@ -78,41 +82,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("message_id", pmConf.messageId)
         .build()
 
-    val inAppUrlMessageStage: HttpUrl = HttpUrl.Builder()
-        .scheme("https")
-        .host("cdn.sp-stage.net")
-        .addPathSegments("wrapper/v2/messages")
-        .addQueryParameter("env", "stage")
-        .build()
-
-    private val inAppUrlMessageProd: HttpUrl = HttpUrl.Builder()
-        .scheme("https")
-        .host("cdn.privacy-mgmt.com")
-        .addPathSegments("wrapper/v2/messages")
-        .addQueryParameter("env", "localProd")
-        .build()
-
-    val inAppUrlNativeMessage: HttpUrl
-        get() = HttpUrl.Builder()
-            .scheme("https")
-            .host(spHost)
-            .addPathSegments("wrapper/tcfv2/v1/gdpr")
-            .addPathSegments("native-message")
-            .addQueryParameter("inApp", "true")
-            .build()
-
-    val sendLocalGdprConsentUrl: HttpUrl
-        get() = HttpUrl.Builder()
-            .scheme("http")
-            .host("192.168.1.11")
-            .port(3000)
-            .addPathSegments("wrapper/tcfv2/v1/gdpr")
-            .addPathSegments("consent")
-            .addQueryParameter("env", "localProd")
-            .addQueryParameter("inApp", "true")
-            .addQueryParameter("sdkVersion", "AndroidLocal")
-            .build()
-
     private fun urlPmGdpr(pmConf: PmUrlConfig): HttpUrl = HttpUrl.Builder()
         // https://notice.sp-stage.net/privacy-manager/index.html?message_id=<PM_ID>
         .scheme("https")
@@ -121,7 +90,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("pmTab", pmConf.pmTab?.key)
         .apply {
             pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
-            pmConf.consentUUID?.let { addQueryParameter("consentUUID", it) }
+            pmConf.uuid?.let { addQueryParameter("consentUUID", it) }
             pmConf.siteId?.let { addQueryParameter("site_id", it) }
             pmConf.messageId?.let { addQueryParameter("message_id", it) }
         }
@@ -134,35 +103,30 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addPathSegments("ccpa_pm/index.html")
         .apply {
             pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
-            pmConf.consentUUID?.let { addQueryParameter("consentUUID", it) }
+            pmConf.uuid?.let { addQueryParameter("ccpaUUID", it) }
             pmConf.messageId?.let { addQueryParameter("message_id", it) }
         }
         .build()
 
     private fun sendCcpaConsentUrlProd(actionType: Int): HttpUrl {
-        // https://cdn.sp-stage.net/wrapper/v2/messages/ccpa/11?env=stage
+        // https://cdn.sp-stage.net/wrapper/v2/messages/ccpa/choice/11?env=stage
         return HttpUrl.Builder()
             .scheme("https")
             .host("cdn.sp-stage.net")
-            .addPathSegments("wrapper/v2/messages/ccpa/$actionType")
+            .addPathSegments("wrapper/v2/messages/ccpa/choice/$actionType")
             .addQueryParameter("env", "stage")
             .build()
     }
 
     private fun sendGdprConsentUrlProd(actionType: Int): HttpUrl {
-        // https://cdn.sp-stage.net/wrapper/v2/messages/gdpr/:actionType?env=stage
+        // https://cdn.sp-stage.net/wrapper/v2/messages/gdpr/choice/:actionType?env=stage
         return HttpUrl.Builder()
             .scheme("https")
             .host("cdn.sp-stage.net")
-            .addPathSegments("wrapper/v2/messages/gdpr/$actionType")
+            .addPathSegments("wrapper/v2/messages/gdpr/choice/$actionType")
             .addQueryParameter("env", "stage")
             .build()
     }
-}
-
-enum class UrlLegislation(val segment: String) {
-    GDPR("segment_gdpr"),
-    CCPA("segment_ccpa")
 }
 
 enum class Env {

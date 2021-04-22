@@ -93,7 +93,7 @@ internal class ConsentWebView(
                 ${"js_receiver.js".file2String()};
             """.trimIndent()
         }
-        logger.d(this::class.java.name, "1234 onLoadResource progress ${this.progress}")
+//        logger.d(this::class.java.name, "1234 onLoadResource progress ${this.progress}")
         loadUrl(url.toString())
         true
     }

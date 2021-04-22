@@ -94,7 +94,7 @@ internal class SPWebViewClient(
 
     override fun onLoadResource(view: WebView?, url: String?) {
         super.onLoadResource(view, url)
-        logger.d(this::class.java.name, "1234 onLoadResource progress ${wv.progress} link[$url]")
+//        logger.d(this::class.java.name, "1234 onLoadResource progress ${wv.progress} link[$url]")
     }
 
     override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
