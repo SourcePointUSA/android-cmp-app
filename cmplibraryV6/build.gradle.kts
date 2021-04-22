@@ -2,12 +2,16 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("android.extensions")
+    id("io.github.dryrum.update-changelog")
+    id("io.github.dryrum.replace-in-file")
+    id("io.github.dryrum.git-utils")
 }
 
 apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
 apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
+apply(from = "${project.rootDir.path}/scripts/publish-mavencentral.gradle")
 
-val versionLib = project.property("VERSION_NAME_V6") as String
+val versionLib = project.property("VERSION_NAME") as String
 
 group = "com.sourcepoint.cmplibrary"
 version = versionLib
@@ -75,4 +79,35 @@ dependencies {
 
 }
 
-//apply(from = "${rootDir}/scripts/publish-mavencentral.gradle")
+tasks.register("versionTxt") {
+    group = "release-utility"
+    doLast {
+        val version = project.property("VERSION_NAME") as String
+        File(projectDir, "version.txt").writeText(version)
+    }
+}
+
+addCommitPushConfig {
+    fileList = listOf(
+        "${rootDir.path}/CHANGELOG.md",
+        "${rootDir.path}/README.md"
+    )
+}
+
+replaceInFile {
+    val versionName = project.property("VERSION_NAME") as String
+    docs {
+        create("doc") {
+            path = "${rootDir.path}/README.md"
+            find = "com.sourcepoint.cmplibrary:cmplibrary:(\\d)+\\.(\\d)+\\.(\\d)+"
+            replaceWith = "com.sourcepoint.cmplibrary:cmplibrary:$versionName"
+        }
+    }
+}
+
+changeLogConfig {
+    val versionName = project.property("VERSION_NAME") as String
+    changeLogPath = rootDir.path + "/CHANGELOG.md"
+    content = file(  "${rootDir.path}/${project.name}/release_note.txt").readText()
+    version = versionName
+}

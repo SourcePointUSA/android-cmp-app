@@ -63,7 +63,7 @@ class HttpUrlManagerTest {
         sut.run {
             toString().contains("ccpa-notice.sp-stage.net").assertTrue()
             queryParameter("message_id").assertEquals("111")
-            queryParameter("consentUUID").assertEquals("uuid")
+            queryParameter("ccpaUUID").assertEquals("uuid")
         }
     }
 

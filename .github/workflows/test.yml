@@ -31,17 +31,9 @@ jobs:
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: Build test artifact
-        run: ./gradlew cmplibrary:build cmplibraryV6:build appv6:assemble
-      - name: Unit Tests cmplibrary
-        run: ./gradlew cmplibrary:test
+        run: ./gradlew cmplibraryV6:build appv6:assemble
       - name: Unit Tests cmplibraryV6
         run: ./gradlew cmplibraryV6:test
-      - name: 'Publish Unit tests Report cmplibrary'
-        if: always()
-        uses: actions/upload-artifact@v2-preview
-        with:
-          name: 'unit-tests-report'
-          path: cmplibrary/build/reports/*
       - name: 'Publish Unit tests Report cmplibraryV6'
         if: always()
         uses: actions/upload-artifact@v2-preview

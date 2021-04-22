@@ -55,14 +55,16 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
     private val inAppUrlMessageStage: HttpUrl = HttpUrl.Builder()
         .scheme("https")
         .host("cdn.sp-stage.net")
-        .addPathSegments("wrapper/v2/get_messages")
+//        .addPathSegments("wrapper/v2/get_messages")
+        .addPathSegments("wrapper/v2/messages")
         .addQueryParameter("env", "stage")
         .build()
 
     private val inAppUrlMessageProd: HttpUrl = HttpUrl.Builder()
         .scheme("https")
         .host("cdn.privacy-mgmt.com")
-        .addPathSegments("wrapper/v2/get_messages")
+//        .addPathSegments("wrapper/v2/get_messages")
+        .addPathSegments("wrapper/v2/messages")
         .addQueryParameter("env", "localProd")
         .build()
 
@@ -113,7 +115,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         return HttpUrl.Builder()
             .scheme("https")
             .host("cdn.sp-stage.net")
-            .addPathSegments("wrapper/v2/messages/ccpa/choice/$actionType")
+//            .addPathSegments("wrapper/v2/messages/ccpa/choice/$actionType")
+            .addPathSegments("wrapper/v2/messages/ccpa/$actionType")
             .addQueryParameter("env", "stage")
             .build()
     }
@@ -123,7 +126,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         return HttpUrl.Builder()
             .scheme("https")
             .host("cdn.sp-stage.net")
-            .addPathSegments("wrapper/v2/messages/gdpr/choice/$actionType")
+//            .addPathSegments("wrapper/v2/messages/gdpr/choice/$actionType")
+            .addPathSegments("wrapper/v2/messages/gdpr/$actionType")
             .addQueryParameter("env", "stage")
             .build()
     }
