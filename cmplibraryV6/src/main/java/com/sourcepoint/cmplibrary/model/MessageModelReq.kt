@@ -33,6 +33,7 @@ internal data class UnifiedMessageRequest(
     val hasCSP: Boolean = true,
     val campaignEnv: String = "prod",
     val localState: String? = null,
+    val authId: String? = null,
     val requestUUID: String? = null
 )
 

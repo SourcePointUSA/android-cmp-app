@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Message
+import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
@@ -52,9 +53,9 @@ internal class ConsentWebView(
     }
 
     private fun setup() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//            id = View.generateViewId()
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            id = View.generateViewId()
+        }
         enableDebug()
         setStyle()
         settings.cacheMode = WebSettings.LOAD_DEFAULT
@@ -145,7 +146,7 @@ internal class ConsentWebView(
 
         @JavascriptInterface
         override fun onConsentUIReady(isFromPM: Boolean) {
-            logger.i("ConsentWebView", "JSClientWebViewImpl onConsentUIReady: isFromPM[$isFromPM]")
+            logger.i(this::class.java.name, "JSClientWebViewImpl onConsentUIReady: isFromPM[$isFromPM]")
             jsClientLib.onConsentUIReady(this@ConsentWebView, isFromPM)
         }
 
@@ -174,6 +175,7 @@ internal class ConsentWebView(
         @JavascriptInterface
         override fun onError(errorMessage: String) {
             jsClientLib.onError(this@ConsentWebView, errorMessage)
+            logger.i(this::class.java.name, "JSClientWebViewImpl onError[$errorMessage]")
         }
     }
 }

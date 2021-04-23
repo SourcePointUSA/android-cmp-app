@@ -1,6 +1,20 @@
 package com.sourcepoint.app.v6
 
 object TestData {
+
+    val CONSENT_LIST_2 = listOf(
+        "Store and/or access information on a device",
+        "Select basic ads",
+        "Create a personalised ads profile",
+        "Select personalised ads",
+        "Create a personalised content profile",
+        "Select personalised content",
+        "Measure ad performance",
+        "Measure content performance",
+        "Apply market research to generate audience insights",
+        "Develop and improve products"
+    )
+
     var CONSENT_LIST = arrayOf("Store and/or access information on a device", "Create a personalised ads profile", "Select personalised ads",
         "Create a personalised content profile", "Select personalised content", "Measure content performance", "Apply market research to generate audience insights",
         "Develop and improve products")

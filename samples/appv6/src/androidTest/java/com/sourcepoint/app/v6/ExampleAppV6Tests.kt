@@ -4,29 +4,36 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
-import com.sourcepoint.app.v6.TestUseCase.Companion.checkPMTabSelectedFeatures
-import com.sourcepoint.app.v6.TestUseCase.Companion.checkPMTabSelectedPurposes
-import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnReviewConsent
-import com.sourcepoint.app.v6.TestUseCase.Companion.clickPMTabSelectedFeatures
-import com.sourcepoint.app.v6.TestUseCase.Companion.clickPMTabSelectedPurposes
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCcpaReviewConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapAllConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapToEnableAllConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapOptionWebView
-import kotlinx.coroutines.delay
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableAllConsent
+import com.sourcepoint.app.v6.core.DataProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.koin.core.context.loadKoinModules
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class ExampleAppV6Tests {
 
-    lateinit var scenario: ActivityScenario<MainActivityV6>
+    lateinit var scenario: ActivityScenario<MainActivityV6Kt>
 
     @After
     fun cleanup() {
-        if(this::scenario.isLateinit) scenario.close()
+        if (this::scenario.isLateinit) scenario.close()
     }
 
     private val d = 1000L
@@ -51,15 +58,52 @@ class ExampleAppV6Tests {
     }
 
     @Test
-    fun GIVEN_consent_accept_all() = runBlocking<Unit> {
+    fun GIVEN_consent_USING_pms() = runBlocking<Unit> {
 
         scenario = launchActivity()
 
         wr { tapAcceptOnWebView() }
         wr { tapAcceptCcpaOnWebView() }
-        wr(times = 50) { clickOnReviewConsent() }
-//        wr(times = 50) { clickPMTabSelectedFeatures() }
-//        wr(times = 50) { clickPMTabSelectedPurposes() }
+        wr { clickOnGdprReviewConsent() }
+        wr { tapAcceptAllOnWebView() }
+        wr { clickOnCcpaReviewConsent() }
+        wr { tapAcceptAllOnWebView() }
+    }
+
+    @Test
+    fun SAVE_AND_EXIT_action() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(uuid = null, url = "", onlyPm = false))
+
+        scenario = launchActivity()
+
+        wr { tapAcceptOnWebView() }
+        wr { tapAcceptCcpaOnWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr { tapAcceptAllOnWebView() }
+        wr(d = 200) { clickOnGdprReviewConsent() }
+        wr { tapToDisableAllConsent() }
+        wr { tapSaveAndExitWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr { checkAllConsentsOff() }
+    }
+
+    @Test
+    fun SAVE_AND_EXIT_action_2() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(uuid = null, url = "", onlyPm = false))
+
+        scenario = launchActivity()
+
+        wr { tapRejectOnWebView() }
+        wr { tapAcceptCcpaOnWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr { tapRejectOnWebView() }
+        wr{ clickOnGdprReviewConsent() }
+        wr { tapToEnableAllConsent() }
+        wr { tapSaveAndExitWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr { checkAllConsentsOn() }
     }
 
 /*
@@ -217,5 +261,17 @@ class ExampleAppV6Tests {
         wr { checkConsentIsNotSelected() }                  //  Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
     }
     */
+
+    private fun mockModule(uuid: String?, url: String, onlyPm: Boolean = false): Module {
+        return module(override = true) {
+            single<DataProvider> {
+                object : DataProvider {
+                    override val authId = uuid
+                    override val url = url
+                    override val onlyPm: Boolean = onlyPm
+                }
+            }
+        }
+    }
 
 }

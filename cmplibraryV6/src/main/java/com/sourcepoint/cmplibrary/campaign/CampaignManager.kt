@@ -37,6 +37,7 @@ internal interface CampaignManager {
     fun getPmConfig(legislation: Legislation, pmId: String?, pmTab: PMTab?): Either<PmUrlConfig>
 
     fun getUnifiedMessageReq(): UnifiedMessageRequest
+    fun getUnifiedMessageReq(authId: String?): UnifiedMessageRequest
 
     fun getGDPRConsent(): Either<GDPRConsent>
     fun getCCPAConsent(): Either<CCPAConsent>
@@ -173,6 +174,10 @@ private class CampaignManagerImpl(
     }
 
     override fun getUnifiedMessageReq(): UnifiedMessageRequest {
+        return getUnifiedMessageReq(null)
+    }
+
+    override fun getUnifiedMessageReq(authId: String?): UnifiedMessageRequest {
         val campaigns = mutableListOf<CampaignReq>()
         mapTemplate[Legislation.GDPR.name]
             ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignEnv = it.campaignEnv) }
@@ -187,7 +192,8 @@ private class CampaignManagerImpl(
             accountId = spConfig.accountId,
             campaigns = Campaigns(list = campaigns),
             consentLanguage = messageLanguage,
-            localState = dataStorage.getLocalState()
+            localState = dataStorage.getLocalState(),
+            authId = authId
         )
     }
 

@@ -109,7 +109,7 @@ class TestUseCase {
 
         fun checkConsentAsSelectedFromPartialConsentList() {
             PARTIAL_CONSENT_LIST.forEach { consent ->
-                setCheckBoxTrue(consent)
+                tapOnToggle(consent)
             }
         }
 

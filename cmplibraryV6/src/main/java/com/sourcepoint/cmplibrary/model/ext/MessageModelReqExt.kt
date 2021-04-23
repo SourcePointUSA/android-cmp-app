@@ -20,6 +20,7 @@ internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
             put("campaigns", campaigns.toJsonObject())
             put("consentLanguage", consentLanguage.value)
             put("localState", localState)
+            put("authId", authId)
             put("includeData", includeData.toJsonObject())
         }
 }

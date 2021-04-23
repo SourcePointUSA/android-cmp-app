@@ -62,7 +62,7 @@ jobs:
         run: |
           sudo bash -c "echo '$SIGNING_SECRET_KEY_RING_FILE_CONTENT' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
       - name: Release build
-        run: ./gradlew cmplibrary:assemble
+        run: ./gradlew cmplibraryV6:assemble
       - name: Source jar and dokka
         run: ./gradlew androidSourcesJar javadocJar
       - name: Publish to MavenCentral

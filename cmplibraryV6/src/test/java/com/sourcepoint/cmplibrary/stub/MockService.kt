@@ -50,6 +50,10 @@ internal class MockService(
         TODO("Not yet implemented")
     }
 
+    override fun getUnifiedMessageReq(authId: String?): UnifiedMessageRequest {
+        TODO("Not yet implemented")
+    }
+
     override var spConfig: SpConfig
         get() = TODO("Not yet implemented")
         set(value) {}

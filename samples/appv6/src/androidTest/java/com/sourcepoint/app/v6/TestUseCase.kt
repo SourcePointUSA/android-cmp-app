@@ -5,7 +5,7 @@ import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestData.ACCEPT
 import com.sourcepoint.app.v6.TestData.ACCEPT_ALL
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST
-import com.sourcepoint.app.v6.TestData.EINSTELLUNGEN
+import com.sourcepoint.app.v6.TestData.CONSENT_LIST_2
 import com.sourcepoint.app.v6.TestData.FEATURES
 import com.sourcepoint.app.v6.TestData.MESSAGE
 import com.sourcepoint.app.v6.TestData.OPTIONS
@@ -15,7 +15,6 @@ import com.sourcepoint.app.v6.TestData.PURPOSES
 import com.sourcepoint.app.v6.TestData.REJECT
 import com.sourcepoint.app.v6.TestData.REJECT_ALL
 import com.sourcepoint.app.v6.TestData.SAVE_AND_EXIT
-import com.sourcepoint.app.v6.TestData.ZUSTIMMEN
 
 class TestUseCase {
 
@@ -33,12 +32,46 @@ class TestUseCase {
             }
         }
 
-        fun checkMainWebViewDisplayed() {
-            isDisplayedAllOfByResId(resId = R.id.review_consents)
+        fun tapToEnableAllConsent() {
+            CONSENT_LIST_2.forEach { consent ->
+                tapOnToggle(property = consent, tapOnlyWhen = false)
+            }
         }
 
-        fun clickOnReviewConsent() {
-            performClickByIdCompletelyDisplayed(resId = R.id.review_consents)
+        fun tapAllConsent() {
+            CONSENT_LIST_2.forEach { consent ->
+                tapOnToggle(property = consent)
+            }
+        }
+
+        fun tapToDisableAllConsent() {
+            CONSENT_LIST_2.forEach { consent ->
+                tapOnToggle(property = consent, tapOnlyWhen = true)
+            }
+        }
+
+        fun checkAllConsentsOn() {
+            CONSENT_LIST_2.forEach { consent ->
+                checkConsentState(consent, true)
+            }
+        }
+
+        fun checkAllConsentsOff() {
+            CONSENT_LIST_2.forEach { consent ->
+                checkConsentState(consent, false)
+            }
+        }
+
+        fun checkMainWebViewDisplayed() {
+            isDisplayedAllOfByResId(resId = R.id.review_consents_gdpr)
+        }
+
+        fun clickOnGdprReviewConsent() {
+            performClickById(resId = R.id.review_consents_gdpr)
+        }
+
+        fun clickOnCcpaReviewConsent() {
+            performClickById(resId = R.id.review_consents_ccpa)
         }
 
         fun openAuthIdActivity() {
@@ -90,7 +123,7 @@ class TestUseCase {
         }
 
         fun tapAcceptOnWebView() {
-            performClickOnWebViewByContent(ACCEPT_ALL)
+            performClickOnWebViewByContent(ACCEPT)
         }
 
         fun tapAcceptCcpaOnWebView() {
@@ -119,7 +152,18 @@ class TestUseCase {
 
         fun checkConsentAsSelectedFromPartialConsentList() {
             PARTIAL_CONSENT_LIST.forEach { consent ->
-                setCheckBoxTrue(consent)
+                tapOnToggle(consent)
+            }
+        }
+        fun checkConsentAsSelectedConsentList() {
+            CONSENT_LIST.forEach { consent ->
+                tapOnToggle(consent)
+            }
+        }
+
+        fun setConsent() {
+            CONSENT_LIST.forEach { consent ->
+                tapOnToggle(consent)
             }
         }
 

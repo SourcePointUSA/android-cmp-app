@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.core.web
 import android.graphics.Bitmap
 import android.net.http.SslError
 import android.webkit.*  //ktlint-disable
+import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.WebViewException
@@ -15,7 +16,7 @@ internal class SPWebViewClient(
     private val onNoIntentActivitiesFoundFor: (String) -> Unit,
     private val timer: SpTimer,
     private val logger: Logger,
-    private val messageTimeout: Long = 1000
+    private val messageTimeout: Long = 3000
 ) : WebViewClient() {
 
     var jsReceiverConfig: (() -> String)? = null
@@ -26,11 +27,11 @@ internal class SPWebViewClient(
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         super.onPageStarted(view, url, favicon)
+        logger.d(this::class.java.name, "1234 ==========================================")
         logger.d(this::class.java.name, "1234 onPageStarted...")
         timer.executeDelay(messageTimeout) {
-//            onError(ConnectionTimeoutException(description = "A timeout has occurred when loading the message"))
-//            view?.stopLoading()
-            logger.d(this::class.java.name, "1234 executedDelay progress ${wv.progress}")
+            onError(ConnectionTimeoutException(description = "A timeout has occurred when loading the message"))
+            view?.stopLoading()
         }
     }
 

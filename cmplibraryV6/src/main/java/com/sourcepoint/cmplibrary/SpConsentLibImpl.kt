@@ -91,7 +91,35 @@ internal class SpConsentLibImpl(
     override fun loadMessage(authId: String) {
         checkMainThread("loadMessage")
         throwsExceptionIfClientIsNull()
-        // TODO
+
+        if (viewManager.isViewInLayout) return
+
+        service.getUnifiedMessage(
+            messageReq = campaignManager.getUnifiedMessageReq(authId),
+            pSuccess = { messageResp ->
+                consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
+                val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
+                if (list.isEmpty()) return@getUnifiedMessage
+                val firstCampaign2Process = list.first()
+                val remainingCampaigns: Queue<CampaignModel> = LinkedList(list.drop(1))
+                Thread.sleep(300)
+                executor.executeOnMain {
+                    /** create a instance of WebView */
+                    val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
+
+                    /** inject the message into the WebView */
+                    val legislation = firstCampaign2Process.type
+                    val url = firstCampaign2Process.url // urlManager.urlURenderingApp(env)//
+                    pLogger.i(this::class.java.name, "loadMessage appUrl [$url]")
+                    webView?.loadConsentUI(firstCampaign2Process, url, legislation)
+                }
+            },
+            pError = { throwable ->
+                (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
+                spClient?.onError(throwable.toConsentLibException())
+            },
+            env = env
+        )
     }
 
     override fun loadMessage() {

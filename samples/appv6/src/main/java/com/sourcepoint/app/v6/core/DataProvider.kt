@@ -7,15 +7,24 @@ import java.util.*
 interface DataProvider {
     val authId : String?
     val url : String
+    val onlyPm : Boolean
     companion object
 }
 
-fun DataProvider.Companion.create(context: Context) : DataProvider = DataProviderImpl(context)
+fun DataProvider.Companion.create(context: Context, authId : String?) : DataProvider = DataProviderImpl(context, authId)
 
-private class DataProviderImpl(val context: Context) : DataProvider {
+private class DataProviderImpl(val context: Context, val pAuthId : String?) : DataProvider {
 
     val sharedPref: SharedPreferences by lazy {
         context.getSharedPreferences("myshared", Context.MODE_PRIVATE)
+    }
+
+    override val onlyPm: Boolean = false
+
+    init {
+        pAuthId?.let {
+            sharedPref.edit().putString(AUTH_ID_KEY, it).apply()
+        }
     }
 
     companion object{

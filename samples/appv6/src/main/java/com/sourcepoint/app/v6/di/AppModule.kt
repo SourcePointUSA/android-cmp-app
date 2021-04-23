@@ -7,6 +7,6 @@ import org.koin.dsl.module
 
 val appModule = module {
     single<DataProvider> {
-        DataProvider.create(androidApplication())
+        DataProvider.create(androidApplication(), "123456")
     }
 }

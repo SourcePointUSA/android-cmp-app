@@ -67,7 +67,7 @@ class NetworkClientImplTest {
         /** capture the Request and test the parameters */
         slot.captured.run {
             readText().assertEquals(uwMessDataTest.toJsonObject().toString())
-            url.toString().assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages?env=localProd")
+            url.toString().assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/get_messages?env=localProd")
             method.assertEquals("POST")
             url.queryParameter("env").assertEquals("localProd")
         }
@@ -84,7 +84,7 @@ class NetworkClientImplTest {
         /** capture the Request and test the parameters */
         slot.captured.run {
             readText().assertEquals(uwMessDataTest.toJsonObject().toString())
-            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages?env=stage")
+            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/v2/get_messages?env=stage")
             method.assertEquals("POST")
             url.queryParameter("env").assertEquals("stage")
         }
@@ -153,7 +153,7 @@ class NetworkClientImplTest {
         /** capture the Request and test the parameters */
         slot.captured.run {
             readText().assertEquals("{}")
-            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages/gdpr/11?env=stage")
+            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages/choice/gdpr/11?env=stage")
             method.assertEquals("POST")
             url.queryParameter("env").assertEquals("stage")
         }

@@ -12,12 +12,14 @@
             android:supportsRtl="true"
             android:name=".App"
             android:theme="@style/AppTheme">
-        <activity android:name=".MainActivityV6">
+        <activity android:name=".MainActivityV6Kt">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".MainActivityV6">
         </activity>
         <activity android:name=".MainActivityAuthId">
         </activity>

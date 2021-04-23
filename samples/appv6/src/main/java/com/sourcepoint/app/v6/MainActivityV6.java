@@ -1,5 +1,6 @@
 package com.sourcepoint.app.v6;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,7 +10,6 @@ import com.sourcepoint.cmplibrary.UnitySpClient;
 import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
 import com.sourcepoint.cmplibrary.model.exposed.*;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv;
 import com.sourcepoint.cmplibrary.exception.Legislation;
 import com.sourcepoint.cmplibrary.model.*;
 import com.sourcepoint.app.v6.core.DataProvider;
@@ -18,9 +18,7 @@ import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -55,7 +53,7 @@ public class MainActivityV6 extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         spConsentLib = FactoryKt.makeConsentLib(spConfig2, this, MessageLanguage.ENGLISH);
         spConsentLib.setSpClient(new LocalClient());
-        findViewById(R.id.review_consents).setOnClickListener(_v ->
+        findViewById(R.id.review_consents_gdpr).setOnClickListener(_v ->
                 spConsentLib.loadPrivacyManager(
                         "13111",
                         PMTab.PURPOSES,
@@ -69,6 +67,9 @@ public class MainActivityV6 extends AppCompatActivity {
                 ));
         findViewById(R.id.clear_all).setOnClickListener(_v ->
                 SpUtils.clearAllData(this)
+        );
+        findViewById(R.id.auth_id_activity).setOnClickListener(_v ->
+                startActivity(new Intent(this, MainActivityAuthId.class))
         );
     }
 
