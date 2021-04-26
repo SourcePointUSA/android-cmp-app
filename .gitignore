@@ -70,3 +70,5 @@ projectFilesBackup/
 fastlane/report.xml
 
 service-account.json
+
+cmplibrary/*

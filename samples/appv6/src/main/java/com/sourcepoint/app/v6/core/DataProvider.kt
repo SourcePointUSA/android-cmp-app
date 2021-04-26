@@ -34,7 +34,7 @@ private class DataProviderImpl(val context: Context, val pAuthId : String?) : Da
     override val url: String
         get() = "https://carmelo-iriti.github.io/authid.github.io"
 
-    override val authId: String?
+    override val authId: String
         get() {
             if (!sharedPref.contains(AUTH_ID_KEY)) {
                 val uniqueID = UUID.randomUUID().toString()

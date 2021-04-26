@@ -68,7 +68,9 @@ class MainActivityV6Kt : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (!dataProvider.onlyPm) {
-            spConsentLib.loadMessage()
+            dataProvider.authId?.let {
+                spConsentLib.loadMessage(it)
+            } ?: spConsentLib.loadMessage()
         }
     }
 
