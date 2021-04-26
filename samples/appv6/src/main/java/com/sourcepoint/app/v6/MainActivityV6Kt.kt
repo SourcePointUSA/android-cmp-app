@@ -68,9 +68,7 @@ class MainActivityV6Kt : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (!dataProvider.onlyPm) {
-            dataProvider.authId?.let {
-                spConsentLib.loadMessage(it)
-            } ?: spConsentLib.loadMessage()
+            spConsentLib.loadMessage()
         }
     }
 
@@ -86,11 +84,11 @@ class MainActivityV6Kt : AppCompatActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
-            println("onConsentReady: $consent")
+            Log.i(TAG, "onConsentReady: $consent")
         }
 
         override fun onConsentReady(consent: String) {
-            println("onConsentReady String: $consent")
+            Log.i(TAG, "onConsentReady: $consent")
         }
 
         override fun onUIFinished(view: View) {

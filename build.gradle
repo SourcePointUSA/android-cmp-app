@@ -11,6 +11,7 @@ buildscript {
             url "https://nexus.pentaho.org/content/groups/omni"
             artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
         }
+        maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'}
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
@@ -41,6 +42,7 @@ allprojects {
             url "https://nexus.pentaho.org/content/groups/omni"
             artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
         }
+        maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'}
     }
 }
 

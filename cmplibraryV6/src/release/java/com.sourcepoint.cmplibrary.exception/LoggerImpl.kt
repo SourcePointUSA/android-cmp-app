@@ -18,7 +18,11 @@ internal fun createLogger(
     networkClient: OkHttpClient,
     errorMessageManager: ErrorMessageManager,
     url: String
-): Logger = LoggerImpl(networkClient, errorMessageManager, url)
+): Logger = LoggerImpl(
+    networkClient = networkClient,
+    errorMessageManager = errorMessageManager,
+    url = url
+)
 
 /**
  * Factory method used to create an instance of the [Logger] interface for debug purpose
@@ -33,7 +37,11 @@ internal fun createLogger4Testing(
     networkClient: OkHttpClient,
     errorMessageManager: ErrorMessageManager,
     url: String,
-): Logger = createLogger(networkClient, errorMessageManager, url)
+): Logger = LoggerImpl(
+    networkClient = networkClient,
+    errorMessageManager = errorMessageManager,
+    url = url
+)
 
 /**
  * Implementation of [Logger]
