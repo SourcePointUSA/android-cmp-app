@@ -7,9 +7,9 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
-import com.sourcepoint.cmplibrary.exception.CampaignType
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking

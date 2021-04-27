@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Build and test
         run: |
-          ./gradlew cmplibraryV6:build
+          ./gradlew cmplibrary:build
       - name: Get current time
         uses: 1466587594/get-current-time@v2
         id: current-time
@@ -26,12 +26,12 @@ jobs:
           format: (MMMM, DD, YYYY)
       - name: Set version lib into VERSION_NAME variable
         run: |
-          ./gradlew cmplibraryV6:versionTxt
+          ./gradlew cmplibrary:versionTxt
           echo "VERSION_NAME=$(cat app/version.txt)" >> $GITHUB_ENV
       - name: Update CHANGELOG.md
-        run: ./gradlew cmplibraryV6:changeLogUpdate
+        run: ./gradlew cmplibrary:changeLogUpdate
       - name: Update README.md
-        run: ./gradlew cmplibraryV6:replaceInFile
+        run: ./gradlew cmplibrary:replaceInFile
       - name: Read Release Note
         id: release_note
         uses: juliangruber/read-file-action@v1
@@ -62,7 +62,7 @@ jobs:
         run: |
           sudo bash -c "echo '$SIGNING_SECRET_KEY_RING_FILE_CONTENT' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
       - name: Release build
-        run: ./gradlew cmplibraryV6:assemble
+        run: ./gradlew cmplibrary:assemble
       - name: Source jar and dokka
         run: ./gradlew androidSourcesJar javadocJar
       - name: Publish to MavenCentral

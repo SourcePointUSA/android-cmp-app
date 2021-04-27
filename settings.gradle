@@ -1,5 +1,5 @@
-include ":cmplibraryV6"
-include ":appv6"
+include ":cmplibrary"
+include ":app"
 include ":ui-test-util"
 project(':ui-test-util').projectDir = new File(settingsDir, "ui-test-util")
-project(':appv6').projectDir = new File(settingsDir, "samples/appv6")
+project(':app').projectDir = new File(settingsDir, "samples/app")

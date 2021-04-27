@@ -31,16 +31,16 @@ jobs:
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: Build test artifact
-        run: ./gradlew cmplibraryV6:build appv6:assemble
-      - name: Unit Tests cmplibraryV6
-        run: ./gradlew cmplibraryV6:test
-      - name: 'Publish Unit tests Report cmplibraryV6'
+        run: ./gradlew cmplibrary:build app:assemble
+      - name: Unit Tests cmplibrary
+        run: ./gradlew cmplibrary:test
+      - name: 'Publish Unit tests Report cmplibrary'
         if: always()
         uses: actions/upload-artifact@v2-preview
         with:
           name: 'unit-tests-report-v6'
-          path: cmplibraryV6/build/reports/*
-  ui-test-app-appv6:
+          path: cmplibrary/build/reports/*
+  ui-test-app-app:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -58,23 +58,23 @@ jobs:
             !~/cache/exclude
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-      - name: run Example app and cmplibraryV6 UI tests
+      - name: run Example app and cmplibrary UI tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew appv6:connectedDebugAndroidTest cmplibraryV6:connectedAndroidTest #app:connectedDebugAndroidTest
+          script: ./gradlew app:connectedDebugAndroidTest cmplibrary:connectedAndroidTest
       - name: 'Publish Example-app Test Report'
         if: always()
         uses: actions/upload-artifact@v2-preview
         with:
           name: 'example-app-test-report'
           path: samples/app/build/reports/androidTests/*
-      - name: 'Publish cmplibraryV6 Test Report'
+      - name: 'Publish cmplibrary Test Report'
         if: always()
         uses: actions/upload-artifact@v2-preview
         with:
-          name: 'cmplibraryV6-test-report'
-          path: cmplibraryV6/build/reports/androidTests/*
+          name: 'cmplibrary-test-report'
+          path: cmplibrary/build/reports/androidTests/*
   ui-test-metaapp:
     runs-on: macos-latest
     steps:
@@ -93,14 +93,3 @@ jobs:
             !~/cache/exclude
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-#      - name: run MetaApp tests
-#        uses: reactivecircus/android-emulator-runner@v2
-#        with:
-#          api-level: 29
-#          script: ./gradlew :metaapp:connectedDebugAndroidTest
-#      - name: 'Publish Metaapp Test Report'
-#        if: always()
-#        uses: actions/upload-artifact@v2-preview
-#        with:
-#          name: 'metaap-test-report'
-#          path: samples/metaapp/build/reports/androidTests/*

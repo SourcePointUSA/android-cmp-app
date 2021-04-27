@@ -2,9 +2,9 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
-import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.model.NativeMessageRespK

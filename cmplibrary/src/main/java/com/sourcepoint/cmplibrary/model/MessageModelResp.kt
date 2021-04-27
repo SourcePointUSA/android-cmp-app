@@ -1,8 +1,8 @@
 package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
-import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import okhttp3.HttpUrl
 import org.json.JSONObject
