@@ -6,12 +6,12 @@ buildscript {
 
     repositories {
         google()
+        maven { url "https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/"}
         mavenCentral()
         maven {
             url "https://nexus.pentaho.org/content/groups/omni"
             artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
         }
-        maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'}
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
@@ -37,12 +37,12 @@ apply plugin: 'io.codearte.nexus-staging'
 allprojects {
     repositories {
         google()
+        maven { url "https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/" }
         mavenCentral()
         maven {
             url "https://nexus.pentaho.org/content/groups/omni"
             artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
         }
-        maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'}
     }
 }
 

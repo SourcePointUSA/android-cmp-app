@@ -31,6 +31,5 @@ class ATest {
 
         scenario = launchActivity()
 
-        delay(5000)
     }
 }

@@ -63,8 +63,6 @@ android {
 }
 
 dependencies {
-    implementation(fileTree(mapOf("include" to "*.jar", "dir" to "libs")))
-
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
     implementation(Libs.kotlinReflect)
