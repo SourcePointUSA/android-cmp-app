@@ -7,7 +7,7 @@ import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.util.Env
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentAction
@@ -122,15 +122,15 @@ internal fun responseHandler(either: Right<ConsentResp>, action: ConsentAction, 
     val map: Map<String, Any?> = either.r.content.toTreeMap()
     return map.getMap("userConsent")
         ?.let {
-            when (action.legislation) {
-                Legislation.GDPR -> it.toGDPRUserConsent().let { gdprConsent ->
+            when (action.campaignType) {
+                CampaignType.GDPR -> it.toGDPRUserConsent().let { gdprConsent ->
                     val ccpaCached = consentManagerUtils.getCcpaConsent().getOrNull()
                     SPConsents(
                         gdpr = SPGDPRConsent(consent = gdprConsent),
                         ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
                     )
                 }
-                Legislation.CCPA -> it.toCCPAUserConsent().let { ccpaConsent ->
+                CampaignType.CCPA -> it.toCCPAUserConsent().let { ccpaConsent ->
                     val gdprCached = consentManagerUtils.getGdprConsent().getOrNull()
                     SPConsents(
                         gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },

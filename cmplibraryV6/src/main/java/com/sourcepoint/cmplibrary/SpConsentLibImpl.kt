@@ -64,7 +64,7 @@ internal class SpConsentLibImpl(
                 CampaignModel(
                     message = it.message!!,
                     messageMetaData = it.messageMetaData!!,
-                    type = Legislation.valueOf(it.type),
+                    type = CampaignType.valueOf(it.type),
                     url = it.url!!
                 )
             }
@@ -178,18 +178,18 @@ internal class SpConsentLibImpl(
         )
     }
 
-    override fun loadPrivacyManager(pmId: String, pmTab: PMTab, legislation: Legislation) {
+    override fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType) {
         checkMainThread("loadPrivacyManager")
         throwsExceptionIfClientIsNull()
-        val pmConfig = campaignManager.getPmConfig(legislation, pmId, pmTab)
+        val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab)
         pmConfig
             .map { it ->
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
-                val url = urlManager.pmUrl(legislation = legislation, pmConfig = it, env = env)
+                val url = urlManager.pmUrl(campaignType = campaignType, pmConfig = it, env = env)
                     .also { pLogger.i(this::class.java.name, "_sendConsent pmUrl [$it]") }
                 webView?.loadConsentUIFromUrl(
                     url = url,
-                    legislation = legislation,
+                    campaignType = campaignType,
                     pmId = it.messageId
                 )
             }
@@ -326,30 +326,30 @@ internal class SpConsentLibImpl(
 
     private fun showOption(action: ConsentAction, iConsentWebView: IConsentWebView) {
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
-        when (val l = action.legislation) {
-            Legislation.GDPR -> {
+        when (val l = action.campaignType) {
+            CampaignType.GDPR -> {
                 viewManager.removeView(view)
                 campaignManager.getPmConfig(l, action.privacyManagerId, PMTab.PURPOSES)
                     .map { pmUrlConfig ->
-                        val url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env)
+                        val url = urlManager.pmUrl(campaignType = action.campaignType, pmConfig = pmUrlConfig, env = env)
                             .also { pLogger.i(this::class.java.name, "_showOption showOption pmUrl [$it]") }
                         iConsentWebView.loadConsentUIFromUrl(
                             url = url,
-                            legislation = action.legislation,
+                            campaignType = action.campaignType,
                             pmId = action.privacyManagerId
                         )
                     }
                     .executeOnLeft { it.printStackTrace() }
             }
-            Legislation.CCPA -> {
+            CampaignType.CCPA -> {
                 viewManager.removeView(view)
-                campaignManager.getPmConfig(legislation = l, pmId = action.privacyManagerId, pmTab = null)
+                campaignManager.getPmConfig(campaignType = l, pmId = action.privacyManagerId, pmTab = null)
                     .map { pmUrlConfig ->
-                        val url = urlManager.pmUrl(legislation = action.legislation, pmConfig = pmUrlConfig, env = env)
+                        val url = urlManager.pmUrl(campaignType = action.campaignType, pmConfig = pmUrlConfig, env = env)
                             .also { pLogger.i(this::class.java.name, "_showOption showOption pmUrl [$it]") }
                         iConsentWebView.loadConsentUIFromUrl(
                             url = url,
-                            legislation = action.legislation,
+                            campaignType = action.campaignType,
                             pmId = action.privacyManagerId
                         )
                     }

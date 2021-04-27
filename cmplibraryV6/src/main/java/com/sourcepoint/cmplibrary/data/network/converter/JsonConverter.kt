@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
@@ -22,7 +22,7 @@ internal interface JsonConverter {
 
     fun toNativeMessageRespK(body: String): Either<NativeMessageRespK>
 
-    fun toConsentResp(body: String, legislation: Legislation): Either<ConsentResp>
+    fun toConsentResp(body: String, campaignType: CampaignType): Either<ConsentResp>
 
     fun toNativeMessageDto(body: String): Either<NativeMessageDto>
 

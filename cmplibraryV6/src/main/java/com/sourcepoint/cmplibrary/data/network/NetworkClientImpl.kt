@@ -75,7 +75,7 @@ private class NetworkClientImpl(
         val body: RequestBody = RequestBody.create(mediaType, consentReq.toString())
         logger.i(NetworkClientImpl::class.java.name, "_sendConsent body [$consentReq]")
         val url = urlManager
-            .sendConsentUrl(legislation = consentAction.legislation, env = env, actionType = consentAction.actionType)
+            .sendConsentUrl(campaignType = consentAction.campaignType, env = env, actionType = consentAction.actionType)
             .also { logger.i(NetworkClientImpl::class.java.name, "_sendConsent url [$it]") }
 
         val request: Request = Request.Builder()
@@ -85,7 +85,7 @@ private class NetworkClientImpl(
 
         val response = httpClient.newCall(request).execute()
 
-        responseManager.parseConsentRes(response, consentAction.legislation)
+        responseManager.parseConsentRes(response, consentAction.campaignType)
             .also { logger.i(NetworkClientImpl::class.java.name, "_sendConsent response [$it]") }
     }
 

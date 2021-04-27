@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import okhttp3.HttpUrl
 import org.json.JSONObject
@@ -35,7 +35,7 @@ internal data class Gdpr(
     override val messageMetaData: JSONObject? = null,
     override val url: HttpUrl?,
     val userConsent: GDPRConsent,
-    override val type: String = Legislation.GDPR.name,
+    override val type: String = CampaignType.GDPR.name,
 ) : CampaignResp()
 
 internal data class Ccpa(
@@ -45,7 +45,7 @@ internal data class Ccpa(
     override val messageMetaData: JSONObject? = null,
     override val url: HttpUrl?,
     val userConsent: CCPAConsent,
-    override val type: String = Legislation.CCPA.name,
+    override val type: String = CampaignType.CCPA.name,
 ) : CampaignResp()
 
 internal data class GDPRConsent(
@@ -55,10 +55,10 @@ internal data class GDPRConsent(
     val thisContent: JSONObject = JSONObject()
 )
 
-internal fun String.getAppliedLegislation(): Legislation {
+internal fun String.getAppliedLegislation(): CampaignType {
     return when (this.toLowerCase(Locale.getDefault())) {
-        "gdpr" -> Legislation.GDPR
-        "ccpa" -> Legislation.CCPA
+        "gdpr" -> CampaignType.GDPR
+        "ccpa" -> CampaignType.CCPA
         else -> throw InvalidResponseWebMessageException(description = "Invalid Legislation type")
     }
 }

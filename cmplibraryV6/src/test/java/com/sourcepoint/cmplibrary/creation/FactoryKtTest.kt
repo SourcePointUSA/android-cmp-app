@@ -23,7 +23,7 @@ class FactoryKtTest {
     fun `CREATE a new instance of ConsentLib`() {
         makeConsentLib(
             spConfig = SpConfig(22, "asfa", emptyList(),),
-            context = context,
+            activity = context,
             messageLanguage = MessageLanguage.ENGLISH
         ).assertNotNull()
     }

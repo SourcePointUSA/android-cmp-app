@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.assertTrue
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import org.junit.Test
@@ -19,7 +19,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = "000"
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, Legislation.GDPR, pmConfig)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig)
         sut.run {
             toString().contains("notice.sp-stage.net").assertTrue()
             queryParameter("pmTab").assertEquals("purposes")
@@ -39,7 +39,7 @@ class HttpUrlManagerTest {
             messageId = null,
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, Legislation.GDPR, pmConfig)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig)
         sut.run {
             toString().contains("notice.sp-stage.net").assertTrue()
             queryParameter("pmTab").assertEquals("features")
@@ -59,7 +59,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, Legislation.CCPA, pmConfig)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.CCPA, pmConfig)
         sut.run {
             toString().contains("ccpa-notice.sp-stage.net").assertTrue()
             queryParameter("message_id").assertEquals("111")

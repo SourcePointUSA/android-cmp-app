@@ -8,7 +8,7 @@ import com.sourcepoint.cmplibrary.core.flatMap
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.IncludeData
@@ -49,16 +49,16 @@ private class ConsentManagerUtilsImpl(
 ) : ConsentManagerUtils {
 
     override fun buildConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject> {
-        return when (action.legislation) {
-            Legislation.GDPR -> buildGdprConsentReq(action, localState, pmId)
-            Legislation.CCPA -> buildCcpaConsentReq(action, localState, pmId)
+        return when (action.campaignType) {
+            CampaignType.GDPR -> buildGdprConsentReq(action, localState, pmId)
+            CampaignType.CCPA -> buildCcpaConsentReq(action, localState, pmId)
         }
     }
 
     override fun buildGdprConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject> = check {
         logger.d(ConsentManagerUtilsImpl::class.java.name, "localState[$localState]")
         cm
-            .getCampaignTemplate(Legislation.GDPR)
+            .getCampaignTemplate(CampaignType.GDPR)
             .flatMap { campaign -> cm.getGdpr().map { Pair(campaign, it) } }
             .map { pair ->
                 val gdpr = pair.first

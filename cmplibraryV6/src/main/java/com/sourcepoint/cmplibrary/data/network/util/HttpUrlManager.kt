@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.data.network.util.Env.PROD
 import com.sourcepoint.cmplibrary.data.network.util.Env.STAGE
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
@@ -13,8 +13,8 @@ import okhttp3.HttpUrl
  */
 internal interface HttpUrlManager {
     fun inAppMessageUrl(env: Env): HttpUrl
-    fun sendConsentUrl(actionType: ActionType, env: Env, legislation: Legislation): HttpUrl
-    fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig): HttpUrl
+    fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl
+    fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig): HttpUrl
     fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
 }
 
@@ -30,15 +30,15 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         PROD -> inAppUrlMessageProd
     }
 
-    override fun sendConsentUrl(actionType: ActionType, env: Env, legislation: Legislation): HttpUrl {
-        return when (legislation) {
-            Legislation.CCPA -> {
+    override fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl {
+        return when (campaignType) {
+            CampaignType.CCPA -> {
                 when (env) {
                     PROD -> sendCcpaConsentUrlProd(actionType = actionType.code)
                     STAGE -> sendCcpaConsentUrlProd(actionType = actionType.code)
                 }
             }
-            Legislation.GDPR -> {
+            CampaignType.GDPR -> {
                 when (env) {
                     PROD -> sendGdprConsentUrlProd(actionType = actionType.code)
                     STAGE -> sendGdprConsentUrlProd(actionType = actionType.code)
@@ -47,9 +47,9 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         }
     }
 
-    override fun pmUrl(env: Env, legislation: Legislation, pmConfig: PmUrlConfig): HttpUrl = when (legislation) {
-        Legislation.GDPR -> urlPmGdpr(pmConfig)
-        Legislation.CCPA -> urlPmCcpa(pmConfig)
+    override fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig): HttpUrl = when (campaignType) {
+        CampaignType.GDPR -> urlPmGdpr(pmConfig)
+        CampaignType.CCPA -> urlPmCcpa(pmConfig)
     }
 
     private val inAppUrlMessageStage: HttpUrl = HttpUrl.Builder()

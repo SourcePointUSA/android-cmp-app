@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import com.sourcepoint.cmplibrary.model.ext.toJsonObjStringify
 
@@ -14,7 +14,7 @@ internal data class Campaign(
 internal open class CampaignTemplate(
     open val campaignEnv: CampaignEnv,
     open val targetingParams: List<TargetingParam>,
-    open val legislation: Legislation
+    open val campaignType: CampaignType
 )
 
 internal fun CampaignTemplate.toCampaignReqImpl(
@@ -24,6 +24,6 @@ internal fun CampaignTemplate.toCampaignReqImpl(
     return CampaignReqImpl(
         targetingParams = targetingParams.toJsonObjStringify(),
         campaignEnv = campaignEnv,
-        legislation = legislation
+        campaignType = campaignType
     )
 }

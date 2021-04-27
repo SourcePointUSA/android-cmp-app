@@ -25,10 +25,10 @@ class ErrorMessageManagerImplTest {
         osVersion = "30"
     )
 
-    private val gdprTemplate = CampaignTemplate(CampaignEnv.STAGE, listOf(TargetingParam("location", "EU")), Legislation.GDPR)
+    private val gdprTemplate = CampaignTemplate(CampaignEnv.STAGE, listOf(TargetingParam("location", "EU")), CampaignType.GDPR)
 
     private val gdpr = SpCampaign(
-        legislation = Legislation.GDPR,
+        campaignType = CampaignType.GDPR,
         targetingParams = listOf(TargetingParam("location", "EU"))
     )
 
@@ -46,7 +46,7 @@ class ErrorMessageManagerImplTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
-        every { campaignManager.getAppliedCampaign() }.returns(Either.Right(Pair(Legislation.GDPR, gdprTemplate)))
+        every { campaignManager.getAppliedCampaign() }.returns(Either.Right(Pair(CampaignType.GDPR, gdprTemplate)))
         every { campaignManager.spConfig }.returns(spConfig)
     }
 
@@ -65,7 +65,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -87,7 +87,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -109,7 +109,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -131,7 +131,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -153,7 +153,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -175,7 +175,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -197,7 +197,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -219,7 +219,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -241,7 +241,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -263,7 +263,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -285,7 +285,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -307,7 +307,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -329,7 +329,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -351,7 +351,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -373,7 +373,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -395,7 +395,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 
@@ -417,7 +417,7 @@ class ErrorMessageManagerImplTest {
                 "clientVersion" : "${client.clientVersion}",
                 "OSVersion" : "${client.osVersion}",
                 "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${Legislation.GDPR.name}"
+                "legislation" : "${CampaignType.GDPR.name}"
             }
         """.trimIndent()
 

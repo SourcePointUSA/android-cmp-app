@@ -8,7 +8,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.Campaigns
@@ -24,17 +24,17 @@ internal interface CampaignManager {
 
     val spConfig: SpConfig
     val messageLanguage: MessageLanguage
-    fun addCampaign(legislation: Legislation, campaign: CampaignTemplate)
+    fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate)
 
-    fun isAppliedCampaign(legislation: Legislation): Boolean
+    fun isAppliedCampaign(campaignType: CampaignType): Boolean
     fun getUnifiedMessageResp(): Either<UnifiedMessageResp>
 
     fun getGdpr(): Either<Gdpr>
     fun getCcpa(): Either<Ccpa>
-    fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>>
-    fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate>
+    fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>>
+    fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate>
 
-    fun getPmConfig(legislation: Legislation, pmId: String?, pmTab: PMTab?): Either<PmUrlConfig>
+    fun getPmConfig(campaignType: CampaignType, pmId: String?, pmTab: PMTab?): Either<PmUrlConfig>
 
     fun getUnifiedMessageReq(): UnifiedMessageRequest
     fun getUnifiedMessageReq(authId: String?): UnifiedMessageRequest
@@ -84,22 +84,22 @@ private class CampaignManagerImpl(
         }
         spConfig.also { spp ->
             spp.campaigns.forEach {
-                when (it.legislation) {
-                    Legislation.GDPR -> addCampaign(
-                        it.legislation,
-                        CampaignTemplate(CampaignEnv.PUBLIC, it.targetingParams, it.legislation)
+                when (it.campaignType) {
+                    CampaignType.GDPR -> addCampaign(
+                        it.campaignType,
+                        CampaignTemplate(CampaignEnv.PUBLIC, it.targetingParams, it.campaignType)
                     )
-                    Legislation.CCPA -> addCampaign(
-                        it.legislation,
-                        CampaignTemplate(CampaignEnv.PUBLIC, it.targetingParams, it.legislation)
+                    CampaignType.CCPA -> addCampaign(
+                        it.campaignType,
+                        CampaignTemplate(CampaignEnv.PUBLIC, it.targetingParams, it.campaignType)
                     )
                 }
             }
         }
     }
 
-    override fun addCampaign(legislation: Legislation, campaign: CampaignTemplate) {
-        mapTemplate[legislation.name] = campaign
+    override fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate) {
+        mapTemplate[campaignType.name] = campaign
     }
 
     override fun getGdpr(): Either<Gdpr> = check {
@@ -110,14 +110,14 @@ private class CampaignManagerImpl(
         dataStorage.getCcpa1203()?.toCCPA() ?: fail("CCPA is not stored in memory!!!")
     }
 
-    override fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate> = check {
-        mapTemplate[legislation.name] ?: fail("${legislation.name} Campain is missing!!!")
+    override fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate> = check {
+        mapTemplate[campaignType.name] ?: fail("${campaignType.name} Campain is missing!!!")
     }
 
-    override fun getPmConfig(legislation: Legislation, pmId: String?, pmTab: PMTab?): Either<PmUrlConfig> {
-        return when (legislation) {
-            Legislation.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES)
-            Legislation.CCPA -> getCcpaPmConfig(pmId)
+    override fun getPmConfig(campaignType: CampaignType, pmId: String?, pmTab: PMTab?): Either<PmUrlConfig> {
+        return when (campaignType) {
+            CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES)
+            CampaignType.CCPA -> getCcpaPmConfig(pmId)
         }
     }
 
@@ -142,9 +142,9 @@ private class CampaignManagerImpl(
         )
     }
 
-    override fun isAppliedCampaign(legislation: Legislation): Boolean {
+    override fun isAppliedCampaign(campaignType: CampaignType): Boolean {
         return getAppliedCampaign()
-            .map { it.first == legislation }
+            .map { it.first == campaignType }
             .getOrNull()
             ?: false
     }
@@ -163,12 +163,12 @@ private class CampaignManagerImpl(
         )
     }
 
-    override fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>> = check {
+    override fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>> = check {
         when {
             dataStorage
-                .getGdprMessage().isNotBlank() -> Pair(Legislation.GDPR, mapTemplate[Legislation.GDPR.name]!!)
+                .getGdprMessage().isNotBlank() -> Pair(CampaignType.GDPR, mapTemplate[CampaignType.GDPR.name]!!)
             dataStorage
-                .getCcpaMessage().isNotBlank() -> Pair(Legislation.CCPA, mapTemplate[Legislation.CCPA.name]!!)
+                .getCcpaMessage().isNotBlank() -> Pair(CampaignType.CCPA, mapTemplate[CampaignType.CCPA.name]!!)
             else -> throw MissingPropertyException(description = "Inconsistent Legislation!!!")
         }
     }
@@ -179,10 +179,10 @@ private class CampaignManagerImpl(
 
     override fun getUnifiedMessageReq(authId: String?): UnifiedMessageRequest {
         val campaigns = mutableListOf<CampaignReq>()
-        mapTemplate[Legislation.GDPR.name]
+        mapTemplate[CampaignType.GDPR.name]
             ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignEnv = it.campaignEnv) }
             ?.let { campaigns.add(it) }
-        mapTemplate[Legislation.CCPA.name]
+        mapTemplate[CampaignType.CCPA.name]
             ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignEnv = it.campaignEnv) }
             ?.let { campaigns.add(it) }
 

@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 
 data class SpConfig(
     @JvmField val accountId: Int,
@@ -9,7 +9,7 @@ data class SpConfig(
 )
 
 data class SpCampaign(
-    @JvmField val legislation: Legislation,
+    @JvmField val campaignType: CampaignType,
     @JvmField internal val targetingParams: List<TargetingParam>
 )
 

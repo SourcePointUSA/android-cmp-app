@@ -16,7 +16,7 @@ import android.webkit.WebView
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
@@ -86,11 +86,11 @@ internal class ConsentWebView(
         }
     }
 
-    override fun loadConsentUIFromUrl(url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
+    override fun loadConsentUIFromUrl(url: HttpUrl, campaignType: CampaignType): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             """
-                javascript: window.spLegislation = '${legislation.name}';                 
+                javascript: window.spLegislation = '${campaignType.name}';                 
                 ${"js_receiver.js".file2String()};
             """.trimIndent()
         }
@@ -99,25 +99,25 @@ internal class ConsentWebView(
         true
     }
 
-    override fun loadConsentUIFromUrl(url: HttpUrl, legislation: Legislation, pmId: String?): Either<Boolean> = check {
+    override fun loadConsentUIFromUrl(url: HttpUrl, campaignType: CampaignType, pmId: String?): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             val sb = StringBuffer()
             sb.append(
                 """
-                javascript: window.spLegislation = '${legislation.name}'; window.localPmId ='$pmId';
+                javascript: window.spLegislation = '${campaignType.name}'; window.localPmId ='$pmId';
                 ${"js_receiver.js".file2String()};
                 """.trimIndent()
             )
             sb.toString()
         }
-        logger.d(this::class.java.name, "loadConsentUIFromUrl legislation[$legislation], pmId[$pmId], url[$url]")
+        logger.d(this::class.java.name, "loadConsentUIFromUrl legislation[$campaignType], pmId[$pmId], url[$url]")
         loadUrl(url.toString())
         true
     }
 
-    override fun loadConsentUI(campaignModel: CampaignModel, url: HttpUrl, legislation: Legislation): Either<Boolean> = check {
-        val legislation: Legislation = campaignModel.type
+    override fun loadConsentUI(campaignModel: CampaignModel, url: HttpUrl, campaignType: CampaignType): Either<Boolean> = check {
+        val campaignType: CampaignType = campaignModel.type
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             /**
@@ -133,11 +133,11 @@ internal class ConsentWebView(
             }
             """
                 javascript: ${"js_receiver.js".file2String()};
-                window.spLegislation = '${legislation.name}'; 
+                window.spLegislation = '${campaignType.name}'; 
                 window.postMessage($obj);
             """.trimIndent()
         }
-        logger.d(this::class.java.name, "loadConsentUIFromUrl legislation[$legislation], url[$url]")
+        logger.d(this::class.java.name, "loadConsentUIFromUrl legislation[$campaignType], url[$url]")
         loadUrl(url.toString())
         true
     }

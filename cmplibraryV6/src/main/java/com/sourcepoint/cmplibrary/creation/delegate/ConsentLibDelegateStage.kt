@@ -20,7 +20,7 @@ class ConsentLibDelegateStage(
         if (!this::libSp.isInitialized) {
             libSp = makeConsentLib(
                 spConfig = spConfig,
-                context = thisRef,
+                activity = thisRef,
                 messageLanguage = messageLanguage
             )
         }

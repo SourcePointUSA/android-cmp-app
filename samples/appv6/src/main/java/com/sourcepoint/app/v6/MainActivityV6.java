@@ -10,7 +10,7 @@ import com.sourcepoint.cmplibrary.UnitySpClient;
 import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
 import com.sourcepoint.cmplibrary.model.exposed.*;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
-import com.sourcepoint.cmplibrary.exception.Legislation;
+import com.sourcepoint.cmplibrary.exception.CampaignType;
 import com.sourcepoint.cmplibrary.model.*;
 import com.sourcepoint.app.v6.core.DataProvider;
 import com.sourcepoint.cmplibrary.util.SpUtils;
@@ -27,20 +27,20 @@ public class MainActivityV6 extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
 
     private final SpCampaign gdprCampaign = new SpCampaign(
-            Legislation.GDPR,
+            CampaignType.GDPR,
             Arrays.asList(new TargetingParam("location", "EU"))
     );
 
     private final SpCampaign ccpaCamapign = new SpCampaign(
-            Legislation.CCPA,
+            CampaignType.CCPA,
             Arrays.asList(new TargetingParam("location", "EU"))
     );
 
-    private final SpConfig spConfig2 = new SpConfigDataBuilder()
+    private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addCampaign(gdprCampaign)
-            .addCampaign(ccpaCamapign)
+            .addCampaign(CampaignType.GDPR)
+            .addCampaign(CampaignType.CCPA)
             .build();
 
     private SpConsentLib spConsentLib = null;
@@ -51,19 +51,23 @@ public class MainActivityV6 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        spConsentLib = FactoryKt.makeConsentLib(spConfig2, this, MessageLanguage.ENGLISH);
+        spConsentLib = FactoryKt.makeConsentLib(
+                spConfig,
+                this,
+                MessageLanguage.ENGLISH
+        );
         spConsentLib.setSpClient(new LocalClient());
         findViewById(R.id.review_consents_gdpr).setOnClickListener(_v ->
                 spConsentLib.loadPrivacyManager(
                         "13111",
                         PMTab.PURPOSES,
-                        Legislation.GDPR
+                        CampaignType.GDPR
                 ));
         findViewById(R.id.review_consents_ccpa).setOnClickListener(_v ->
                 spConsentLib.loadPrivacyManager(
                         "14967",
                         PMTab.PURPOSES,
-                        Legislation.CCPA
+                        CampaignType.CCPA
                 ));
         findViewById(R.id.clear_all).setOnClickListener(_v ->
                 SpUtils.clearAllData(this)

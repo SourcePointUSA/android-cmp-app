@@ -4,7 +4,7 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.Either.Left
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.util.Env
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
@@ -17,10 +17,10 @@ internal class MockService(
 
     override fun getNativeMessage(messageReq: UnifiedMessageRequest, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {}
     override fun getNativeMessageK(messageReq: UnifiedMessageRequest, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
-    override fun addCampaign(legislation: Legislation, campaign: CampaignTemplate) {}
-    override fun isAppliedCampaign(legislation: Legislation): Boolean = false
-    override fun getAppliedCampaign(): Either<Pair<Legislation, CampaignTemplate>> = Left(RuntimeException())
-    override fun getCampaignTemplate(legislation: Legislation): Either<CampaignTemplate> = Left(RuntimeException())
+    override fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate) {}
+    override fun isAppliedCampaign(campaignType: CampaignType): Boolean = false
+    override fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>> = Left(RuntimeException())
+    override fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate> = Left(RuntimeException())
     override fun getGDPRConsent(): Either<GDPRConsent> = Left(RuntimeException())
     override fun getCCPAConsent(): Either<CCPAConsent> = Left(RuntimeException())
     override fun saveGDPRConsent(consent: GDPRConsent?) {}
@@ -38,7 +38,7 @@ internal class MockService(
         TODO("Not yet implemented")
     }
 
-    override fun getPmConfig(legislation: Legislation, pmId: String?, pmTab: PMTab?): Either<PmUrlConfig> {
+    override fun getPmConfig(campaignType: CampaignType, pmId: String?, pmTab: PMTab?): Either<PmUrlConfig> {
         TODO("Not yet implemented")
     }
 

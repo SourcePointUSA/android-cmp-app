@@ -10,7 +10,7 @@ import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.UnitySpClient
 import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder
 import com.sourcepoint.cmplibrary.creation.makeConsentLib
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
@@ -20,24 +20,24 @@ import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import com.sourcepoint.cmplibrary.util.clearAllData
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
-import org.koin.java.KoinJavaComponent
 
 class MainActivityV6Kt : AppCompatActivity() {
 
     private val gdprCampaign = SpCampaign(
-        Legislation.GDPR,
+        CampaignType.GDPR,
         listOf(TargetingParam("location", "EU"))
     )
     private val ccpaCamapign = SpCampaign(
-        Legislation.CCPA,
+        CampaignType.CCPA,
         listOf(TargetingParam("location", "EU"))
     )
-    private val spConfig2 = SpConfigDataBuilder()
+    private val spConfig = SpConfigDataBuilder()
         .addAccountId(22)
         .addPropertyName("mobile.multicampaign.demo")
-        .addCampaign(gdprCampaign)
-        .addCampaign(ccpaCamapign)
+        .addCampaign(CampaignType.GDPR)
+        .addCampaign(CampaignType.CCPA)
         .build()
+
     private lateinit var spConsentLib: SpConsentLib
 
     private val dataProvider by inject<DataProvider>()
@@ -45,20 +45,24 @@ class MainActivityV6Kt : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        spConsentLib = makeConsentLib(spConfig2, this, MessageLanguage.ENGLISH)
+        spConsentLib = makeConsentLib(
+            spConfig = spConfig,
+            activity = this,
+            messageLanguage = MessageLanguage.ENGLISH
+        )
         spConsentLib.spClient = LocalClient()
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
                 "13111",
                 PMTab.PURPOSES,
-                Legislation.GDPR
+                CampaignType.GDPR
             )
         }
         findViewById<View>(R.id.review_consents_ccpa).setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
                 "14967",
                 PMTab.PURPOSES,
-                Legislation.CCPA
+                CampaignType.CCPA
             )
         }
         findViewById<View>(R.id.clear_all).setOnClickListener { _v: View? -> clearAllData(this) }

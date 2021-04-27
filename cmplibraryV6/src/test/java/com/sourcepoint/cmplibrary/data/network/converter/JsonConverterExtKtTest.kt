@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.assertFalse
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.Ccpa
 import com.sourcepoint.cmplibrary.model.Gdpr
 import com.sourcepoint.cmplibrary.model.toTreeMap
@@ -32,7 +32,7 @@ class JsonConverterExtKtTest {
         val ccpa = unifiedMess.campaigns[1] as Ccpa
 
         gdpr.run {
-            type.assertEquals(Legislation.GDPR.name)
+            type.assertEquals(CampaignType.GDPR.name)
             applies.assertTrue()
             userConsent.also {
                 it.tcData.assertNotNull()
@@ -41,7 +41,7 @@ class JsonConverterExtKtTest {
         }
 
         ccpa.run {
-            type.assertEquals(Legislation.CCPA.name)
+            type.assertEquals(CampaignType.CCPA.name)
             applies.assertFalse()
             userConsent.also {
                 it.rejectedCategories.size.assertEquals(0)

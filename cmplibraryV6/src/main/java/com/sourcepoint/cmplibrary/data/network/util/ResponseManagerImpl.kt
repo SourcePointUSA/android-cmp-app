@@ -4,7 +4,7 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.model.NativeMessageRespK
@@ -66,10 +66,10 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
         }
     }
 
-    override fun parseConsentResEither(r: Response, legislation: Legislation): Either<ConsentResp> = check {
+    override fun parseConsentResEither(r: Response, campaignType: CampaignType): Either<ConsentResp> = check {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         if (r.isSuccessful) {
-            when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body, legislation)) {
+            when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body, campaignType)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }
@@ -78,10 +78,10 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
         }
     }
 
-    override fun parseConsentRes(r: Response, legislation: Legislation): ConsentResp {
+    override fun parseConsentRes(r: Response, campaignType: CampaignType): ConsentResp {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         return if (r.isSuccessful) {
-            when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body, legislation)) {
+            when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body, campaignType)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }

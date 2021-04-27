@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.creation
 
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
@@ -24,8 +23,7 @@ class SpConfigDataBuilder {
     }
 
     fun addCampaign(
-        legislation: Legislation,
-        env: CampaignEnv,
+        campaignType: CampaignType,
         targetingParams: String
     ): SpConfigDataBuilder = apply {
 
@@ -37,15 +35,20 @@ class SpConfigDataBuilder {
                 acc.add(TargetingParam(elem.key, (elem.value as? String) ?: ""))
                 acc
             }
-        campaigns.add(SpCampaign(legislation, array))
+        campaigns.add(SpCampaign(campaignType, array))
     }
 
     fun addCampaign(
-        legislation: Legislation,
-        env: CampaignEnv,
+        campaignType: CampaignType
+    ): SpConfigDataBuilder = apply {
+        campaigns.add(SpCampaign(campaignType, emptyList()))
+    }
+
+    fun addCampaign(
+        campaignType: CampaignType,
         params: List<TargetingParam>
     ): SpConfigDataBuilder = apply {
-        campaigns.add(SpCampaign(legislation, params))
+        campaigns.add(SpCampaign(campaignType, params))
     }
 
     fun addCampaign(campaign: SpCampaign): SpConfigDataBuilder = apply {

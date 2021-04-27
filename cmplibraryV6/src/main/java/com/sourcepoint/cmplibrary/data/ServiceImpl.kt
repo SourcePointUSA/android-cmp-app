@@ -8,8 +8,8 @@ import com.sourcepoint.cmplibrary.core.flatMap
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.util.Env
-import com.sourcepoint.cmplibrary.exception.Legislation.CCPA
-import com.sourcepoint.cmplibrary.exception.Legislation.GDPR
+import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
+import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
@@ -72,7 +72,7 @@ private class ServiceImpl(
             }
             .executeOnRight {
                 dataStorage.saveLocalState(it.localState)
-                when (it.legislation) {
+                when (it.campaignType) {
                     GDPR -> {
                         dataStorage.saveGdprConsentResp(it.content.toString())
                         dataStorage.saveGdprConsentUuid(it.uuid)

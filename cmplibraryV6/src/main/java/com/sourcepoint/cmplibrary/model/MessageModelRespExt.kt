@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.model
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.HttpUrl
 import org.json.JSONObject
@@ -37,8 +37,8 @@ internal fun JSONObject.toUnifiedMessageRespDto(): UnifiedMessageResp {
 
 internal fun Map<String, Any?>.toCampaignResp(): CampaignResp? {
     return when (getFieldValue<String>("type")?.toUpperCase() ?: failParam("type")) {
-        Legislation.GDPR.name -> this.toGDPR()
-        Legislation.CCPA.name -> this.toCCPA()
+        CampaignType.GDPR.name -> this.toGDPR()
+        CampaignType.CCPA.name -> this.toCCPA()
         else -> null
     }
 }

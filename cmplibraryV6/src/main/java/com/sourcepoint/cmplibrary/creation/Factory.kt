@@ -35,11 +35,11 @@ import java.lang.ref.WeakReference
 
 fun makeConsentLib(
     spConfig: SpConfig,
-    context: Activity,
+    activity: Activity,
     messageLanguage: MessageLanguage
 ): SpConsentLib {
 
-    val appCtx: Context = context.applicationContext
+    val appCtx: Context = activity.applicationContext
     val client = createClientInfo()
     val dataStorageGdpr = DataStorageGdpr.create(appCtx)
     val dataStorageCcpa = DataStorageCcpa.create(appCtx)
@@ -51,7 +51,7 @@ fun makeConsentLib(
     val connManager = ConnectionManager.create(appCtx)
     val responseManager = ResponseManager.create(jsonConverter)
     val networkClient = networkClient(OkHttpClient(), responseManager, logger)
-    val viewManager = ViewsManager.create(WeakReference<Activity>(context), connManager)
+    val viewManager = ViewsManager.create(WeakReference<Activity>(activity), connManager)
     val execManager = ExecutorManager.create(appCtx)
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
     val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)

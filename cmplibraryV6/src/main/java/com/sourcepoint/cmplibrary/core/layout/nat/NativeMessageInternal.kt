@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.model.ActionButton
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 
@@ -36,7 +36,7 @@ abstract class NativeMessageInternal : NativeMessage {
             actionType = ActionType.MSG_CANCEL,
             choiceId = ab.choiceId,
             requestFromPm = false,
-            legislation = Legislation.GDPR
+            campaignType = CampaignType.GDPR
         )
         client.onClickCancel(this@NativeMessageInternal, action)
     }
@@ -46,7 +46,7 @@ abstract class NativeMessageInternal : NativeMessage {
             actionType = ActionType.ACCEPT_ALL,
             choiceId = ab.choiceId,
             requestFromPm = false,
-            legislation = Legislation.GDPR
+            campaignType = CampaignType.GDPR
         )
         client.onClickAcceptAll(this@NativeMessageInternal, action)
     }
@@ -56,7 +56,7 @@ abstract class NativeMessageInternal : NativeMessage {
             actionType = ActionType.REJECT_ALL,
             choiceId = ab.choiceId,
             requestFromPm = false,
-            legislation = Legislation.GDPR
+            campaignType = CampaignType.GDPR
         )
         client.onClickRejectAll(this@NativeMessageInternal, action)
     }
@@ -66,7 +66,7 @@ abstract class NativeMessageInternal : NativeMessage {
             actionType = ActionType.SHOW_OPTIONS,
             choiceId = ab.choiceId,
             requestFromPm = false,
-            legislation = Legislation.GDPR
+            campaignType = CampaignType.GDPR
         )
         client.onClickShowOptions(this@NativeMessageInternal, action)
     }

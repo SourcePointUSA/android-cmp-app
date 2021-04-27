@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -17,12 +17,12 @@ class BuilderTest {
     private lateinit var context: Activity
 
     private val gdprCampaign = SpCampaign(
-        Legislation.GDPR,
+        CampaignType.GDPR,
         listOf(TargetingParam("location", "EU"))
     )
 
     private val ccpaCamapign = SpCampaign(
-        Legislation.CCPA,
+        CampaignType.CCPA,
         listOf(TargetingParam("location", "EU"))
     )
 

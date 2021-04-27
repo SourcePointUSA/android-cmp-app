@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.ext.toJsonObject
@@ -148,7 +148,7 @@ class NetworkClientImplTest {
 
         sut.sendConsent(JSONObject(), Env.STAGE, consentAction)
 
-        verify(exactly = 1) { responseManager.parseConsentRes(mockResp, Legislation.GDPR) }
+        verify(exactly = 1) { responseManager.parseConsentRes(mockResp, CampaignType.GDPR) }
         verify(exactly = 1) { okHttp.newCall(capture(slot)) }
         /** capture the Request and test the parameters */
         slot.captured.run {

@@ -9,7 +9,7 @@ import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -58,7 +58,7 @@ class ResponseManagerImplTest {
         val jsonConverter = mockk<JsonConverter>()
         val sut = ResponseManager.create(jsonConverter)
         val resp = mockResponse(code = 500, message = "error", url = "https://mock.com", body = "{}")
-        sut.parseConsentRes(resp, Legislation.GDPR)
+        sut.parseConsentRes(resp, CampaignType.GDPR)
     }
 
     @Test(expected = java.lang.RuntimeException::class)
@@ -66,7 +66,7 @@ class ResponseManagerImplTest {
         val jsonConverter = mockk<JsonConverter>().also { every { it.toConsentResp(any(), any()) }.throws(RuntimeException("test")) }
         val sut = ResponseManager.create(jsonConverter)
         val resp = mockResponse(url = "https://mock.com", body = "{}")
-        sut.parseConsentRes(resp, Legislation.GDPR)
+        sut.parseConsentRes(resp, CampaignType.GDPR)
     }
 
     @Test(expected = InvalidResponseWebMessageException::class)
@@ -79,6 +79,6 @@ class ResponseManagerImplTest {
             .protocol(Protocol.HTTP_1_1)
             .request(Request.Builder().url("http://localhost/").build())
             .build()
-        sut.parseConsentRes(resp, Legislation.GDPR)
+        sut.parseConsentRes(resp, CampaignType.GDPR)
     }
 }

@@ -11,7 +11,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.Ccpa
 import com.sourcepoint.cmplibrary.model.Gdpr
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -30,12 +30,12 @@ class SpUtilsTest {
     private val appCtx by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
 
     private val gdprCampaign = SpCampaign(
-        Legislation.GDPR,
+        CampaignType.GDPR,
         listOf(TargetingParam("location", "EU"))
     )
 
     private val ccpaCamapign = SpCampaign(
-        Legislation.CCPA,
+        CampaignType.CCPA,
         listOf(TargetingParam("location", "EU"))
     )
 

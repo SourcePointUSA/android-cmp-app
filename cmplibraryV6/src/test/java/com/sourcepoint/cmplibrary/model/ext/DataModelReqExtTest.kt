@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.getAppliedLegislation
 import org.junit.Test
 
@@ -9,8 +9,8 @@ class DataModelReqExtTest {
 
     @Test
     fun `GIVEN a string EXTRACT the Legislation`() {
-        "gdpr".getAppliedLegislation().assertEquals(Legislation.GDPR)
-        "ccpa".getAppliedLegislation().assertEquals(Legislation.CCPA)
+        "gdpr".getAppliedLegislation().assertEquals(CampaignType.GDPR)
+        "ccpa".getAppliedLegislation().assertEquals(CampaignType.CCPA)
     }
 
     @Test(expected = Throwable::class)

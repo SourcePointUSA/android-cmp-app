@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.model
 
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ext.toJsonObject
 import org.json.JSONObject
 
@@ -53,5 +53,5 @@ internal data class ConsentResp(
     val userConsent: String?,
     val uuid: String,
     val localState: String,
-    var legislation: Legislation? = null
+    var campaignType: CampaignType? = null
 )

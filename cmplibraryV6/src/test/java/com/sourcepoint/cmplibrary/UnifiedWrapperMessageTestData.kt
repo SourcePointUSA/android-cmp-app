@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary
 
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import com.sourcepoint.cmplibrary.model.ext.toJsonObjStringify
@@ -11,12 +11,12 @@ internal val campaigns = Campaigns(
         CampaignReqImpl(
             targetingParams = listOf(TargetingParam("location", "EU")).toJsonObjStringify(),
             campaignEnv = CampaignEnv.STAGE,
-            legislation = Legislation.GDPR
+            campaignType = CampaignType.GDPR
         ),
         CampaignReqImpl(
             targetingParams = listOf(TargetingParam("location", "US")).toJsonObjStringify(),
             campaignEnv = CampaignEnv.STAGE,
-            legislation = Legislation.CCPA
+            campaignType = CampaignType.CCPA
         )
     )
 )

@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.model.NativeMessageRespK
@@ -28,7 +28,7 @@ internal interface ResponseManager {
 
     fun parseNativeMessResK(r: Response): Either<NativeMessageRespK>
 
-    fun parseConsentResEither(r: Response, legislation: Legislation): Either<ConsentResp>
-    fun parseConsentRes(r: Response, legislation: Legislation): ConsentResp
+    fun parseConsentResEither(r: Response, campaignType: CampaignType): Either<ConsentResp>
+    fun parseConsentRes(r: Response, campaignType: CampaignType): ConsentResp
     companion object
 }

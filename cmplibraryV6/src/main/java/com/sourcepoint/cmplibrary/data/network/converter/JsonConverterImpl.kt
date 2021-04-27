@@ -4,7 +4,7 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
@@ -40,7 +40,7 @@ private class JsonConverterImpl : JsonConverter {
         NativeMessageRespK(msg = bean)
     }
 
-    override fun toConsentResp(body: String, legislation: Legislation): Either<ConsentResp> = check {
+    override fun toConsentResp(body: String, campaignType: CampaignType): Either<ConsentResp> = check {
         val obj = JSONObject(body)
         val map: Map<String, Any?> = JSONObject(body).toTreeMap()
         val localState = map.getFieldValue<String>("localState") ?: "invalid"
@@ -51,7 +51,7 @@ private class JsonConverterImpl : JsonConverter {
             localState = localState,
             uuid = uuid,
             userConsent = obj["userConsent"].toString(),
-            legislation = legislation
+            campaignType = campaignType
         )
     }
 

@@ -10,7 +10,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
-import com.sourcepoint.cmplibrary.exception.Legislation
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -28,13 +28,13 @@ class CampaignManagerImplTest {
     private val gdpr = CampaignTemplate(
         campaignEnv = CampaignEnv.STAGE,
         targetingParams = listOf(TargetingParam("location", "EU")),
-        legislation = Legislation.GDPR
+        campaignType = CampaignType.GDPR
     )
 
     private val ccpa = CampaignTemplate(
         campaignEnv = CampaignEnv.STAGE,
         targetingParams = listOf(TargetingParam("location", "EU")),
-        legislation = Legislation.CCPA
+        campaignType = CampaignType.CCPA
     )
 
     private val ds by lazy {
@@ -44,14 +44,14 @@ class CampaignManagerImplTest {
     }
 
     private val gdprCampaign = SpCampaign(
-        Legislation.GDPR,
+        CampaignType.GDPR,
         listOf(
             TargetingParam("location", "EU")
         )
     )
 
     private val ccpaCamapign = SpCampaign(
-        Legislation.CCPA,
+        CampaignType.CCPA,
         listOf(TargetingParam("location", "EU"))
     )
 
@@ -77,8 +77,8 @@ class CampaignManagerImplTest {
     fun `GIVEN_an_empty_ds_RETURN_a_MessageRequest_with_meta_and_uuid_null`() {
 
         val sut = CampaignManager.create(ds, spConfig, MessageLanguage.ENGLISH).apply {
-            addCampaign(Legislation.GDPR, gdpr)
-            addCampaign(Legislation.CCPA, ccpa)
+            addCampaign(CampaignType.GDPR, gdpr)
+            addCampaign(CampaignType.CCPA, ccpa)
         }
 
 //        val output = sut.getMessageReq()
@@ -105,8 +105,8 @@ class CampaignManagerImplTest {
 
         // execute the test
         val sut = CampaignManager.create(ds, spConfig, MessageLanguage.ENGLISH).apply {
-            addCampaign(Legislation.GDPR, gdpr)
-            addCampaign(Legislation.CCPA, ccpa)
+            addCampaign(CampaignType.GDPR, gdpr)
+            addCampaign(CampaignType.CCPA, ccpa)
         }
 
 //        val output = sut.getMessageReq()

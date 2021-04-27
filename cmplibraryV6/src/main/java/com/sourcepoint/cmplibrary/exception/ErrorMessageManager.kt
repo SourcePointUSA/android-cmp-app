@@ -15,9 +15,9 @@ internal interface ErrorMessageManager {
 }
 
 /**
- * Library types list
+ * Type of configurable campaigns
  */
-enum class Legislation {
+enum class CampaignType {
     GDPR,
     CCPA
 }
@@ -37,8 +37,8 @@ internal data class ClientInfo(
 internal fun createErrorManager(
     campaignManager: CampaignManager,
     clientInfo: ClientInfo,
-    legislation: Legislation = Legislation.GDPR
-): ErrorMessageManager = ErrorMessageManagerImpl(campaignManager, clientInfo, legislation)
+    campaignType: CampaignType = CampaignType.GDPR
+): ErrorMessageManager = ErrorMessageManagerImpl(campaignManager, clientInfo, campaignType)
 
 /**
  * Implementation class of [ErrorMessageManager]
@@ -46,7 +46,7 @@ internal fun createErrorManager(
 private class ErrorMessageManagerImpl(
     val campaignManager: CampaignManager,
     val clientInfo: ClientInfo,
-    val legislation: Legislation = Legislation.GDPR
+    val campaignType: CampaignType = CampaignType.GDPR
 ) : ErrorMessageManager {
     override fun build(exception: ConsentLibExceptionK): String {
         val spConf = campaignManager.spConfig
@@ -59,7 +59,7 @@ private class ErrorMessageManagerImpl(
                 "clientVersion" : "${clientInfo.clientVersion}",
                 "OSVersion" : "${clientInfo.osVersion}",
                 "deviceFamily" : "${clientInfo.deviceFamily}",
-                "legislation" : "${legislation.name}"
+                "legislation" : "${campaignType.name}"
             }
         """.trimIndent()
     }

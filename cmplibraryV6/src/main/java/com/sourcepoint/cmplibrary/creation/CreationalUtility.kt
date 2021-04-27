@@ -22,7 +22,7 @@ internal fun errorMessageManager(campaignManager: CampaignManager, client: Clien
     return createErrorManager(
         campaignManager = campaignManager,
         clientInfo = client,
-        legislation = Legislation.GDPR
+        campaignType = CampaignType.GDPR
     )
 }
 
