@@ -1,29 +1,22 @@
 package com.sourcepoint.cmplibrary.creation.delegate
 
-import android.app.Activity
 import com.sourcepoint.cmplibrary.SpConsentLib
-import com.sourcepoint.cmplibrary.creation.makeConsentLib
-import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import kotlin.reflect.KProperty
+import com.sourcepoint.cmplibrary.creation.SpCmpBuilder
+
+fun spConsentLibLazy(dsl: SpCmpBuilder.() -> Unit): Lazy<SpConsentLib> = ConsentLibDelegate(dsl)
 
 class ConsentLibDelegate(
-    private val spConfig: SpConfig,
-    private val messageLanguage: MessageLanguage,
-    private val privacyManagerTab: PMTab = PMTab.PURPOSES
-) {
+    private val cmpDsl: SpCmpBuilder.() -> Unit
+) : Lazy<SpConsentLib> {
 
-    private lateinit var libSp: SpConsentLib
+    private var libSp: SpConsentLib? = null
 
-    operator fun getValue(thisRef: Activity, property: KProperty<*>): SpConsentLib {
-        if (!this::libSp.isInitialized) {
-            libSp = makeConsentLib(
-                spConfig = spConfig,
-                activity = thisRef,
-                messageLanguage = messageLanguage
-            )
+    override val value: SpConsentLib
+        get() = libSp ?: run {
+            val builder = SpCmpBuilder().apply(cmpDsl)
+            libSp = builder.build()
+            libSp!!
         }
-        return libSp
-    }
+
+    override fun isInitialized(): Boolean = libSp?.let { true } ?: run { false }
 }

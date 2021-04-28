@@ -7,47 +7,28 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.cmplibrary.UnitySpClient
-import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder
-import com.sourcepoint.cmplibrary.creation.spConsentLib
+import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.exposed.*
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
 class MainActivityV6Kt : AppCompatActivity() {
 
-    private val gdprCampaign = SpCampaign(
-        CampaignType.GDPR,
-        listOf(TargetingParam("location", "EU"))
-    )
-    private val ccpaCamapign = SpCampaign(
-        CampaignType.CCPA,
-        listOf(TargetingParam("location", "EU"))
-    )
-    private val spConfig = SpConfigDataBuilder()
-        .addAccountId(22)
-        .addPropertyName("mobile.multicampaign.demo")
-        .addCampaign(CampaignType.GDPR)
-        .addCampaign(CampaignType.CCPA)
-        .build()
-
-    //    private val spConsentLib by ConsentLibDelegate(spConfig, MessageLanguage.ENGLISH)
-
     private val dataProvider by inject<DataProvider>()
 
-    private val spConsentLib2 by lazy {
-        spConsentLib {
-            activity = this@MainActivityV6Kt
-            spClient = LocalClient()
-            privacyManagerTab = PMTab.FEATURES
-            config {
-                accountId = 22
-                propertyName = "mobile.multicampaign.demo"
-                + (CampaignType.CCPA to listOf(("location" to "US")))
-                + (CampaignType.GDPR to listOf(("location" to "EU")))
-            }
+    private val spConsentLib2 by spConsentLibLazy {
+        activity = this@MainActivityV6Kt
+        spClient = LocalClient()
+        privacyManagerTab = PMTab.FEATURES
+        config {
+            accountId = 22
+            propertyName = "mobile.multicampaign.demo"
+            +(CampaignType.CCPA to listOf(("location" to "US")))
+            +(CampaignType.GDPR to listOf(("location" to "EU")))
         }
     }
 

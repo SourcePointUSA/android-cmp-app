@@ -30,7 +30,9 @@ class SpCmpBuilder {
         if (!this::privacyManagerTab.isInitialized) genericFail("privacyManagerTab param must be initialised!!!")
         if (!this::activity.isInitialized) genericFail("activity param must be initialised!!!")
         if (!this::spConfig.isInitialized) genericFail("spConfig param must be initialised!!!")
-        if (!this::messageLanguage.isInitialized) { messageLanguage = MessageLanguage.ENGLISH }
+        if (!this::messageLanguage.isInitialized) {
+            messageLanguage = MessageLanguage.ENGLISH
+        }
 
         return makeConsentLib(
             spConfig = spConfig,
@@ -38,8 +40,4 @@ class SpCmpBuilder {
             messageLanguage = messageLanguage
         ).also { it.spClient = spClient }
     }
-}
-
-fun spConsentLib(dsl: SpCmpBuilder.() -> Unit): SpConsentLib {
-    return SpCmpBuilder().apply(dsl).build()
 }
