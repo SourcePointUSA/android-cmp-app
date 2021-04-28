@@ -6,17 +6,12 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepoint.app.v6.core.DataProvider
-import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.UnitySpClient
 import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder
-import com.sourcepoint.cmplibrary.creation.makeConsentLib
+import com.sourcepoint.cmplibrary.creation.spConsentLib
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
-import com.sourcepoint.cmplibrary.model.exposed.SPConsents
-import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
-import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
+import com.sourcepoint.cmplibrary.model.exposed.*
 import com.sourcepoint.cmplibrary.util.clearAllData
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
@@ -38,28 +33,36 @@ class MainActivityV6Kt : AppCompatActivity() {
         .addCampaign(CampaignType.CCPA)
         .build()
 
-    private lateinit var spConsentLib: SpConsentLib
+    //    private val spConsentLib by ConsentLibDelegate(spConfig, MessageLanguage.ENGLISH)
 
     private val dataProvider by inject<DataProvider>()
+
+    private val spConsentLib2 by lazy {
+        spConsentLib {
+            activity = this@MainActivityV6Kt
+            spClient = LocalClient()
+            privacyManagerTab = PMTab.FEATURES
+            config {
+                accountId = 22
+                propertyName = "mobile.multicampaign.demo"
+                + (CampaignType.CCPA to listOf(("location" to "US")))
+                + (CampaignType.GDPR to listOf(("location" to "EU")))
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        spConsentLib = makeConsentLib(
-            spConfig = spConfig,
-            activity = this,
-            messageLanguage = MessageLanguage.ENGLISH
-        )
-        spConsentLib.spClient = LocalClient()
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
-            spConsentLib.loadPrivacyManager(
+            spConsentLib2.loadPrivacyManager(
                 "13111",
                 PMTab.PURPOSES,
                 CampaignType.GDPR
             )
         }
         findViewById<View>(R.id.review_consents_ccpa).setOnClickListener { _v: View? ->
-            spConsentLib.loadPrivacyManager(
+            spConsentLib2.loadPrivacyManager(
                 "14967",
                 PMTab.PURPOSES,
                 CampaignType.CCPA
@@ -72,13 +75,13 @@ class MainActivityV6Kt : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (!dataProvider.onlyPm) {
-            spConsentLib.loadMessage()
+            spConsentLib2.loadMessage()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        spConsentLib.dispose()
+        spConsentLib2.dispose()
     }
 
     internal inner class LocalClient : UnitySpClient {
@@ -96,11 +99,11 @@ class MainActivityV6Kt : AppCompatActivity() {
         }
 
         override fun onUIFinished(view: View) {
-            spConsentLib.removeView(view)
+            spConsentLib2.removeView(view)
         }
 
         override fun onUIReady(view: View) {
-            spConsentLib.showView(view)
+            spConsentLib2.showView(view)
         }
 
         override fun onAction(view: View, actionType: ActionType) {

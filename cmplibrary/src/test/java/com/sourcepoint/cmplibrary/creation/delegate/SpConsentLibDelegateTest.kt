@@ -17,8 +17,7 @@ class SpConsentLibDelegateTest {
     private val campaign = SpConfig(
         22,
         "tcfv2.mobile.webview",
-        emptyList(),
-
+        emptyList()
     )
 
     @MockK
@@ -32,7 +31,7 @@ class SpConsentLibDelegateTest {
     @Test
     fun `VERIFY that the delegate with a tab is not null`() {
 
-        val delegate = ConsentLibDelegate(campaign, PMTab.FEATURES, MessageLanguage.ENGLISH)
+        val delegate = ConsentLibDelegate(spConfig = campaign, privacyManagerTab = PMTab.FEATURES, messageLanguage = MessageLanguage.ENGLISH)
         val sut1 = delegate.getValue(context, mockk())
         val sut2 = delegate.getValue(context, mockk())
 
@@ -44,7 +43,7 @@ class SpConsentLibDelegateTest {
     @Test
     fun `VERIFY that the delegate with a tab is null`() {
 
-        val delegate = ConsentLibDelegate(campaign, PMTab.PURPOSES, MessageLanguage.ENGLISH)
+        val delegate = ConsentLibDelegate(spConfig = campaign, privacyManagerTab = PMTab.PURPOSES, messageLanguage = MessageLanguage.ENGLISH)
         val sut1 = delegate.getValue(context, mockk())
         val sut2 = delegate.getValue(context, mockk())
 

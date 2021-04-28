@@ -10,8 +10,8 @@ import kotlin.reflect.KProperty
 
 class ConsentLibDelegate(
     private val spConfig: SpConfig,
-    private val privacyManagerTab: PMTab = PMTab.PURPOSES,
-    private val messageLanguage: MessageLanguage
+    private val messageLanguage: MessageLanguage,
+    private val privacyManagerTab: PMTab = PMTab.PURPOSES
 ) {
 
     private lateinit var libSp: SpConsentLib

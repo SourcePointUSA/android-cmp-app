@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
+import java.lang.RuntimeException
 
 /**
  * Util method to throws a [ConsentLibExceptionK] with a custom message
@@ -16,4 +17,8 @@ internal fun fail(message: String): Nothing {
 
 internal fun fail(message: String, throwable: Throwable): Nothing {
     throw InvalidResponseWebMessageException(description = message, cause = throwable)
+}
+
+internal fun genericFail(message: String): Nothing {
+    throw RuntimeException(message)
 }

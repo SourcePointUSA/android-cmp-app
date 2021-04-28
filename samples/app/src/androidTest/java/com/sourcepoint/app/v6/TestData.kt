@@ -10,7 +10,6 @@ object TestData {
         "Create a personalised content profile",
         "Select personalised content",
         "Measure ad performance",
-        "Measure content performance",
         "Apply market research to generate audience insights",
         "Develop and improve products"
     )

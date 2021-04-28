@@ -38,7 +38,7 @@ private class NetworkClientImpl(
     ) {
         val mediaType = MediaType.parse("application/json")
         val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
-        logger.i(NetworkClientImpl::class.java.name, "_getUnifiedMessage body [$messageReq]")
+        logger.i(NetworkClientImpl::class.java.name, "_getUnifiedMessage body [${messageReq.toBodyRequest()}]")
         val url = urlManager.inAppMessageUrl(env)
             .also { logger.i(NetworkClientImpl::class.java.name, "_getUnifiedMessage url [$it]") }
 

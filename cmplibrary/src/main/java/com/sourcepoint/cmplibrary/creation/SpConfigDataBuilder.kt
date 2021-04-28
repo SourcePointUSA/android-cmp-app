@@ -4,15 +4,25 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
+import com.sourcepoint.cmplibrary.model.exposed.toTParam
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONObject
 import kotlin.properties.Delegates
 
+@SpDSL
 class SpConfigDataBuilder {
 
     private val campaigns = mutableListOf<SpCampaign>()
-    private var accountId by Delegates.notNull<Int>()
-    private var propertyName by Delegates.notNull<String>()
+    var accountId by Delegates.notNull<Int>()
+    var propertyName by Delegates.notNull<String>()
+
+    operator fun CampaignType.unaryPlus() {
+        campaigns.add(SpCampaign(this, emptyList()))
+    }
+
+    operator fun Pair<CampaignType, List<Pair<String, String>>>.unaryPlus() {
+        campaigns.add(SpCampaign(this.first, this.second.map { it.toTParam() }))
+    }
 
     fun addAccountId(accountId: Int): SpConfigDataBuilder = apply {
         this.accountId = accountId

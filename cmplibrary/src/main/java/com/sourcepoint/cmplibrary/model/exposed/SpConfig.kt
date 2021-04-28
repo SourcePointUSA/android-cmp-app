@@ -14,3 +14,5 @@ data class SpCampaign(
 )
 
 data class TargetingParam(val key: String, val value: String)
+
+fun Pair<String, String>.toTParam() = TargetingParam(this.first, this.second)
