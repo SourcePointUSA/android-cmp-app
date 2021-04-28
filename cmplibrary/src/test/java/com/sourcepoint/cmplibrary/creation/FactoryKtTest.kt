@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test
 
@@ -22,9 +23,10 @@ class FactoryKtTest {
     @Test
     fun `CREATE a new instance of ConsentLib`() {
         makeConsentLib(
-            spConfig = SpConfig(22, "asfa", emptyList(),),
+            spConfig = SpConfig(22, "asfa", emptyList()),
             activity = context,
-            messageLanguage = MessageLanguage.ENGLISH
+            messageLanguage = MessageLanguage.ENGLISH,
+            spClient = mockk()
         ).assertNotNull()
     }
 }

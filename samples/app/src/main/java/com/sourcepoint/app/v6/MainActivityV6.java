@@ -45,9 +45,9 @@ public class MainActivityV6 extends AppCompatActivity {
         spConsentLib = FactoryKt.makeConsentLib(
                 spConfig,
                 this,
+                new LocalClient(),
                 MessageLanguage.ENGLISH
         );
-        spConsentLib.setSpClient(new LocalClient());
         findViewById(R.id.review_consents_gdpr).setOnClickListener(_v ->
                 spConsentLib.loadPrivacyManager(
                         "13111",

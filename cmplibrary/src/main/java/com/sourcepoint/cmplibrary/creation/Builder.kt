@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
 import android.content.Context
+import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
@@ -21,6 +22,7 @@ import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.connection.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
+import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
@@ -41,9 +43,14 @@ class Builder {
     private var weakReference: WeakReference<Activity>? = null
     private var ott: Boolean = false
     private var privacyManagerTab: PMTab? = null
+    private var spClient: SpClient? = null
 
     fun isOtt(ott: Boolean) = apply {
         this.ott = ott
+    }
+
+    fun setSpClient(spClient: SpClient) = apply {
+        this.spClient = spClient
     }
 
     fun setAuthId(authId: String) = apply {
@@ -97,7 +104,8 @@ class Builder {
             campaignManager = campaignManager,
             consentManager = consentManager,
             urlManager = urlManager,
-            env = Env.STAGE
+            env = Env.STAGE,
+            spClient = spClient ?: genericFail("SpClient must be set!!!")
         )
     }
 

@@ -1,6 +1,5 @@
 package com.sourcepoint.app.v6
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -50,7 +49,17 @@ class MainActivityV6Kt : AppCompatActivity() {
             )
         }
         findViewById<View>(R.id.clear_all).setOnClickListener { _v: View? -> clearAllData(this) }
-        findViewById<View>(R.id.auth_id_activity).setOnClickListener { _v: View? -> startActivity(Intent(this, MainActivityAuthId::class.java)) }
+        findViewById<View>(R.id.auth_id_activity).setOnClickListener { _v: View? ->
+//            startActivity(Intent(this, MainActivityAuthId::class.java))
+            spConsentLib2.customConsentGDPR(
+                consentUUID = "4ce617bd-adce-4355-8840-556544eae34b",
+                propertyId = 4245,
+                vendors = listOf("5fbe6f090d88c7d28d765e1e"),
+                categories = listOf("60657acc9c97c400122f21f3"),
+                legIntCategories = emptyList(),
+                success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
+            )
+        }
     }
 
     override fun onResume() {

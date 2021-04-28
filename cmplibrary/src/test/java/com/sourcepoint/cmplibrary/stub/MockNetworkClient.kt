@@ -21,5 +21,9 @@ internal class MockNetworkClient(
         TODO("Not yet implemented")
     }
 
+    override fun sendCustomConsent(customConsentReq: CustomConsentReq, env: Env): Either<CustomConsentResp> {
+        TODO("Not yet implemented")
+    }
+
     override fun getNativeMessageK(messageReq: UnifiedMessageRequest, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
 }

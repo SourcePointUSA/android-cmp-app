@@ -14,6 +14,7 @@ import okhttp3.HttpUrl
 internal interface HttpUrlManager {
     fun inAppMessageUrl(env: Env): HttpUrl
     fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl
+    fun sendCustomConsentUrl(env: Env): HttpUrl
     fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig): HttpUrl
     fun ottUrlPm(pmConf: PmUrlConfig): HttpUrl
 }
@@ -50,6 +51,17 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
     override fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig): HttpUrl = when (campaignType) {
         CampaignType.GDPR -> urlPmGdpr(pmConfig)
         CampaignType.CCPA -> urlPmCcpa(pmConfig)
+    }
+
+    override fun sendCustomConsentUrl(env: Env): HttpUrl {
+        // https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?inApp=true&env=stage
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host("cdn.sp-stage.net")
+            .addPathSegments("wrapper/tcfv2/v1/gdpr/custom-consent")
+            .addQueryParameter("env", "stage")
+            .addQueryParameter("inApp", "true")
+            .build()
     }
 
     private val inAppUrlMessageStage: HttpUrl = HttpUrl.Builder()

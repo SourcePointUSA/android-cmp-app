@@ -74,7 +74,6 @@ class SpConsentLibImplTest {
     @Test
     fun `CALLING loadMessage() verify that getMessage is called exactly 1 time`() {
         val sut = createLib()
-        sut.spClient = spClient
         sut.loadMessage()
         verify(exactly = 1) { service.getUnifiedMessage(any(), any(), any(), any()) }
     }
@@ -124,6 +123,7 @@ class SpConsentLibImplTest {
         viewManager = viewManager,
         campaignManager = campaignManager,
         consentManager = consentManager,
-        urlManager = urlManager
+        urlManager = urlManager,
+        spClient = spClient
     )
 }

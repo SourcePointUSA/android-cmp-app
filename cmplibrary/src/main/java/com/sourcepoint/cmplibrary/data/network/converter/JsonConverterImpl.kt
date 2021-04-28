@@ -55,6 +55,11 @@ private class JsonConverterImpl : JsonConverter {
         )
     }
 
+    override fun toCustomConsentResp(body: String): Either<CustomConsentResp> = check {
+        val obj = JSONObject(body)
+        CustomConsentResp(obj)
+    }
+
     override fun toNativeMessageDto(body: String): Either<NativeMessageDto> = check {
         JSONObject(body).toTreeMap().toNativeMessageDto()
     }

@@ -89,6 +89,28 @@ private class NetworkClientImpl(
             .also { logger.i(NetworkClientImpl::class.java.name, "_sendConsent response [$it]") }
     }
 
+    override fun sendCustomConsent(
+        customConsentReq: CustomConsentReq,
+        env: Env
+    ): Either<CustomConsentResp> = check {
+        val mediaType = MediaType.parse("application/json")
+        val body: RequestBody = RequestBody.create(mediaType, customConsentReq.toBodyRequest())
+        logger.i(NetworkClientImpl::class.java.name, "_sendConsent body [${customConsentReq.toBodyRequest()}]")
+        val url = urlManager
+            .sendCustomConsentUrl(env)
+            .also { logger.i(NetworkClientImpl::class.java.name, "_sendConsent url [$it]") }
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseCustomConsentRes(response)
+            .also { logger.i(NetworkClientImpl::class.java.name, "_sendConsent response [$it]") }
+    }
+
     // TODO verify if we need it
     override fun getNativeMessage(
         messageReq: UnifiedMessageRequest,

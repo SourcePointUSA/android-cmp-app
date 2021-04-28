@@ -38,6 +38,10 @@ internal class MockService(
         TODO("Not yet implemented")
     }
 
+    override fun sendCustomConsent(customConsentReq: CustomConsentReq, env: Env): Either<CustomConsentResp> {
+        TODO("Not yet implemented")
+    }
+
     override fun getPmConfig(campaignType: CampaignType, pmId: String?, pmTab: PMTab?): Either<PmUrlConfig> {
         TODO("Not yet implemented")
     }

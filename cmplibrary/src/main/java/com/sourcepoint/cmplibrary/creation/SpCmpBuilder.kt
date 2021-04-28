@@ -37,7 +37,8 @@ class SpCmpBuilder {
         return makeConsentLib(
             spConfig = spConfig,
             activity = activity,
-            messageLanguage = messageLanguage
-        ).also { it.spClient = spClient }
+            messageLanguage = messageLanguage,
+            spClient = spClient
+        )
     }
 }

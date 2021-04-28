@@ -32,6 +32,11 @@ internal interface NetworkClient {
         consentAction: ConsentAction
     ): Either<ConsentResp>
 
+    fun sendCustomConsent(
+        customConsentReq: CustomConsentReq,
+        env: Env
+    ): Either<CustomConsentResp>
+
     /**
      * Requesting a native message object to the server
      * @param messageReq request content to send into the body

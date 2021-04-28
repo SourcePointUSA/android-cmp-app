@@ -5,6 +5,7 @@ import android.view.View
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.LocalStateStatus
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
 import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
@@ -25,6 +26,7 @@ import com.sourcepoint.cmplibrary.model.CampaignResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.SHOW_OPTIONS
+import com.sourcepoint.cmplibrary.model.exposed.SPCustomConsents
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import java.util.* // ktlint-disable
@@ -38,11 +40,11 @@ internal class SpConsentLibImpl(
     private val viewManager: ViewsManager,
     private val campaignManager: CampaignManager,
     private val consentManager: ConsentManager,
+    private val spClient: SpClient,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     private val env: Env = Env.PROD
 ) : SpConsentLib {
 
-    override var spClient: SpClient? = null
     private val nativeMsgClient by lazy { NativeMsgDelegate() }
 
     companion object {
@@ -75,14 +77,14 @@ internal class SpConsentLibImpl(
         consentManager.sPConsentsSuccess = { spConsents ->
             val spConsentString = spConsents.toJsonObject().toString()
             executor.executeOnMain {
-                spClient?.onConsentReady(spConsents)
+                spClient.onConsentReady(spConsents)
                 (spClient as? UnitySpClient)?.onConsentReady(spConsentString)
             }
         }
         consentManager.sPConsentsError = { throwable ->
             throwable.printStackTrace()
             executor.executeOnMain {
-                spClient?.onError(throwable)
+                spClient.onError(throwable)
             }
         }
     }
@@ -116,7 +118,7 @@ internal class SpConsentLibImpl(
             },
             pError = { throwable ->
                 (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
-                spClient?.onError(throwable.toConsentLibException())
+                spClient.onError(throwable.toConsentLibException())
             },
             env = env
         )
@@ -149,7 +151,7 @@ internal class SpConsentLibImpl(
             },
             pError = { throwable ->
                 (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
-                spClient?.onError(throwable.toConsentLibException())
+                spClient.onError(throwable.toConsentLibException())
             },
             env = env
         )
@@ -168,7 +170,7 @@ internal class SpConsentLibImpl(
                     /** set the action callback */
                     (nativeMessage as? NativeMessageInternal)?.setActionClient(nativeMsgClient)
                     /** calling the client */
-                    spClient?.onUIReady(nativeMessage)
+                    spClient.onUIReady(nativeMessage)
                 }
             },
             { throwable ->
@@ -176,6 +178,34 @@ internal class SpConsentLibImpl(
                 pLogger.error(throwable.toConsentLibException())
             }
         )
+    }
+
+    override fun customConsentGDPR(
+        consentUUID: String,
+        propertyId: Int,
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>,
+        success: (SPCustomConsents) -> Unit,
+    ) {
+        val customConsentReq = CustomConsentReq(
+            consentUUID = consentUUID,
+            propertyId = propertyId,
+            categories = categories,
+            legIntCategories = legIntCategories,
+            vendors = vendors
+        )
+        executor.run {
+            executeOnWorkerThread {
+                val ccResp = service.sendCustomConsent(customConsentReq, env)
+                executeOnMain {
+                    when (ccResp) {
+                        is Either.Right -> success(ccResp.r.toSpCustomConsent())
+                        is Either.Left -> spClient.onError(ccResp.t)
+                    }
+                }
+            }
+        }
     }
 
     override fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType) {
@@ -241,7 +271,7 @@ internal class SpConsentLibImpl(
     inner class JSReceiverDelegate : JSClientLib {
 
         override fun onConsentUIReady(view: View, isFromPM: Boolean) {
-            executor.executeOnMain { spClient?.onUIReady(view) }
+            executor.executeOnMain { spClient.onUIReady(view) }
         }
 
         override fun log(view: View, tag: String?, msg: String?) {
@@ -253,7 +283,7 @@ internal class SpConsentLibImpl(
         }
 
         override fun onError(view: View, errorMessage: String) {
-            spClient?.onError(GenericSDKException(description = errorMessage))
+            spClient.onError(GenericSDKException(description = errorMessage))
             pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
         }
 
@@ -261,7 +291,7 @@ internal class SpConsentLibImpl(
         }
 
         override fun onError(view: View, error: Throwable) {
-            spClient?.onError(error)
+            spClient.onError(error)
         }
 
         override fun onAction(iConsentWebView: IConsentWebView, actionData: String, nextCampaign: CampaignModel) {
@@ -290,7 +320,7 @@ internal class SpConsentLibImpl(
                 .map { onActionFromWebViewClient(it, iConsentWebView) }
                 .executeOnLeft { throw it }
             executor.executeOnMain {
-                view.let { spClient?.onUIFinished(view) }
+                view.let { spClient.onUIFinished(view) }
             }
         }
     }
@@ -303,21 +333,21 @@ internal class SpConsentLibImpl(
     internal fun onActionFromWebViewClient(action: ConsentAction, iConsentWebView: IConsentWebView) {
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
         executor.executeOnMain {
-            spClient?.onAction(view, action.actionType)
+            spClient.onAction(view, action.actionType)
             when (action.actionType) {
                 ActionType.MSG_CANCEL -> {
-                    view.let { spClient?.onUIFinished(it) }
+                    view.let { spClient.onUIFinished(it) }
                 }
                 SHOW_OPTIONS -> {
                     showOption(action, iConsentWebView)
                 }
                 ActionType.PM_DISMISS -> {
-                    view.let { spClient?.onUIFinished(it) }
+                    view.let { spClient.onUIFinished(it) }
                 }
                 ActionType.ACCEPT_ALL,
                 ActionType.SAVE_AND_EXIT,
                 ActionType.REJECT_ALL -> {
-                    view.let { spClient?.onUIFinished(it) }
+                    view.let { spClient.onUIFinished(it) }
                     consentManager.enqueueConsent(consentAction = action)
                 }
             }

@@ -7,6 +7,10 @@ data class SPConsents(
     val ccpa: SPCCPAConsent? = null
 )
 
+data class SPCustomConsents(
+    val gdpr: JSONObject
+)
+
 data class SPGDPRConsent(
     val consent: GDPRConsent
 )

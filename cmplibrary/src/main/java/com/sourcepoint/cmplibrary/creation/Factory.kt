@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
 import android.content.Context
+import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
@@ -36,6 +37,7 @@ import java.lang.ref.WeakReference
 fun makeConsentLib(
     spConfig: SpConfig,
     activity: Activity,
+    spClient: SpClient,
     messageLanguage: MessageLanguage
 ): SpConsentLib {
 
@@ -68,6 +70,7 @@ fun makeConsentLib(
         campaignManager = campaignManager,
         consentManager = consentManager,
         urlManager = urlManager,
-        env = Env.STAGE
+        env = Env.STAGE,
+        spClient = spClient
     )
 }

@@ -5,9 +5,9 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
+import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
-import com.sourcepoint.cmplibrary.model.NativeMessageResp
-import com.sourcepoint.cmplibrary.model.NativeMessageRespK
+import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.Response
@@ -82,6 +82,18 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         return if (r.isSuccessful) {
             when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body, campaignType)) {
+                is Either.Right -> either.r
+                is Either.Left -> throw either.t
+            }
+        } else {
+            throw InvalidRequestException(description = body)
+        }
+    }
+
+    override fun parseCustomConsentRes(r: Response): CustomConsentResp {
+        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        return if (r.isSuccessful) {
+            when (val either: Either<CustomConsentResp> = jsonConverter.toCustomConsentResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }

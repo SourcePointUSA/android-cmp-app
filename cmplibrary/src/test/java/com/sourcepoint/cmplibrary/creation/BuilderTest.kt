@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
+import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
@@ -15,6 +16,8 @@ class BuilderTest {
 
     @MockK
     private lateinit var context: Activity
+    @MockK
+    private lateinit var spClient: SpClient
 
     private val gdprCampaign = SpCampaign(
         CampaignType.GDPR,
@@ -48,10 +51,19 @@ class BuilderTest {
             .build()
     }
 
+    @Test(expected = RuntimeException::class)
+    fun `A spClient object is MISSING an exception is THROWN`() {
+        Builder()
+            .setSpConfig(spConfig)
+            .setContext(context)
+            .build()
+    }
+
     @Test
     fun `A privacyManagerTab is MISSING NOTHING happened`() {
         Builder()
             .setSpConfig(spConfig)
+            .setSpClient(spClient)
             .setContext(context)
             .build()
     }
