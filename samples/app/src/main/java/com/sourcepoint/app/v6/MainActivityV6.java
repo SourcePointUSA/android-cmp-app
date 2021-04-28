@@ -5,36 +5,27 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
+import com.sourcepoint.app.v6.core.DataProvider;
 import com.sourcepoint.cmplibrary.SpConsentLib;
 import com.sourcepoint.cmplibrary.UnitySpClient;
-import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
-import com.sourcepoint.cmplibrary.model.exposed.*;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
+import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
 import com.sourcepoint.cmplibrary.exception.CampaignType;
-import com.sourcepoint.cmplibrary.model.*;
-import com.sourcepoint.app.v6.core.DataProvider;
+import com.sourcepoint.cmplibrary.model.MessageLanguage;
+import com.sourcepoint.cmplibrary.model.PMTab;
+import com.sourcepoint.cmplibrary.model.exposed.ActionType;
+import com.sourcepoint.cmplibrary.model.exposed.SPConsents;
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig;
 import com.sourcepoint.cmplibrary.util.SpUtils;
 import kotlin.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
-
-import java.util.Arrays;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
 public class MainActivityV6 extends AppCompatActivity {
 
     private static final String TAG = "**MainActivity";
-
-    private final SpCampaign gdprCampaign = new SpCampaign(
-            CampaignType.GDPR,
-            Arrays.asList(new TargetingParam("location", "EU"))
-    );
-
-    private final SpCampaign ccpaCamapign = new SpCampaign(
-            CampaignType.CCPA,
-            Arrays.asList(new TargetingParam("location", "EU"))
-    );
 
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
