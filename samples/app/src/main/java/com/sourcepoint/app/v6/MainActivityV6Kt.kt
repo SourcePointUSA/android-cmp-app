@@ -54,8 +54,8 @@ class MainActivityV6Kt : AppCompatActivity() {
             spConsentLib2.customConsentGDPR(
                 consentUUID = "4ce617bd-adce-4355-8840-556544eae34b",
                 propertyId = 4245,
-                vendors = listOf("5fbe6f090d88c7d28d765e1e"),
-                categories = listOf("60657acc9c97c400122f21f3"),
+                vendors = emptyList(),//listOf("5fbe6f090d88c7d28d765e1e"),
+                categories = emptyList(),//listOf("60657acc9c97c400122f21f3"),
                 legIntCategories = emptyList(),
                 success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
             )

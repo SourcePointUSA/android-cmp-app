@@ -5,8 +5,10 @@ import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.executeOnRight
 import com.sourcepoint.cmplibrary.core.flatMap
+import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
@@ -15,6 +17,8 @@ import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import org.json.JSONObject
 
 /**
  * Factory method to create an instance of a [Service] using its implementation
@@ -74,16 +78,26 @@ private class ServiceImpl(
                 dataStorage.saveLocalState(it.localState)
                 when (it.campaignType) {
                     GDPR -> {
-                        dataStorage.saveGdprConsentResp(it.content.toString())
+                        dataStorage.saveGdprConsentResp(it.userConsent ?: "")
                         dataStorage.saveGdprConsentUuid(it.uuid)
                     }
                     CCPA -> {
-                        dataStorage.saveCcpaConsentResp(it.content.toString())
+                        dataStorage.saveCcpaConsentResp(it.userConsent ?: "")
                         dataStorage.saveCcpaConsentUuid(it.uuid)
                     }
                 }
                 logger.d(this::class.java.name, "uuid[$it]")
             }
+    }
+
+    override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<SPConsents?> {
+        return nc.sendCustomConsent(customConsentReq, env)
+            .executeOnRight {
+                val savedConsent = JSONObject(dataStorage.getGdprConsentResp())
+                savedConsent.put("grants", it.content.get("grants"))
+                dataStorage.saveGdprConsentResp(savedConsent.toString())
+            }
+            .map { consentManagerUtils.getSpConsent() }
     }
 
     override fun getNativeMessage(

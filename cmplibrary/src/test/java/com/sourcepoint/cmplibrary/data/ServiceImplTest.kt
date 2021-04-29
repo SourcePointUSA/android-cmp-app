@@ -1,25 +1,32 @@
 package com.sourcepoint.cmplibrary.data
 
+import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
+import com.sourcepoint.cmplibrary.core.Either.Right
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.GenericSDKException
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.Campaign
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
-import com.sourcepoint.cmplibrary.model.toUnifiedMessageRespDto
+import com.sourcepoint.cmplibrary.model.*
 import com.sourcepoint.cmplibrary.stub.MockNetworkClient
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.uwMessDataTest
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import io.mockk.verify
+import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 
 class ServiceImplTest {
+
+    @MockK
+    private lateinit var ncMock: NetworkClient
 
     @MockK
     private lateinit var ds: DataStorage
@@ -80,5 +87,18 @@ class ServiceImplTest {
         verify(exactly = 0) { cm.saveUnifiedMessageResp(any()) }
         verify(exactly = 0) { successMock(any()) }
         verify(exactly = 1) { errorMock(any()) }
+    }
+
+    @Test
+    fun `GIVEN a custom consent UPDATE the stored consent`() {
+        val storedConsent = "custom_consent/stored_consent.json".file2String()
+        val newConsent = "custom_consent/new_consent.json".file2String()
+
+        every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
+        every { ds.getGdprConsentResp() }.returns(storedConsent)
+
+        val sut = Service.create(ncMock, cm, cmu, ds, logger)
+        val res = sut.sendCustomConsent(mockk(), Env.STAGE).getOrNull()!!
+        res.content.getJSONObject("grants").toTreeMap().assertEquals(JSONObject(newConsent).getJSONObject("grants").toTreeMap())
     }
 }

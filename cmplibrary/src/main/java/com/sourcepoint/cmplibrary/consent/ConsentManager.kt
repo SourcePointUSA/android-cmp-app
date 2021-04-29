@@ -102,7 +102,7 @@ private class ConsentManagerImpl(
             when (val either = service.sendConsent(localState, action, env, action.privacyManagerId)) {
                 is Right -> {
                     val updatedLocalState = LocalStateStatus.Present(either.r.localState)
-                    val sPConsents = responseHandler(either, action, consentManagerUtils)
+                    val sPConsents = responseConsentHandler(either, action, consentManagerUtils)
                     sPConsentsSuccess?.invoke(sPConsents)
                     this.localStateStatus = updatedLocalState
                 }
@@ -118,7 +118,7 @@ internal sealed class LocalStateStatus {
     object Consumed : LocalStateStatus()
 }
 
-internal fun responseHandler(either: Right<ConsentResp>, action: ConsentAction, consentManagerUtils: ConsentManagerUtils): SPConsents {
+internal fun responseConsentHandler(either: Right<ConsentResp>, action: ConsentAction, consentManagerUtils: ConsentManagerUtils): SPConsents {
     val map: Map<String, Any?> = either.r.content.toTreeMap()
     return map.getMap("userConsent")
         ?.let {

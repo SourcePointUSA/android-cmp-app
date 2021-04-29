@@ -13,8 +13,7 @@ import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.IncludeData
 import com.sourcepoint.cmplibrary.model.LocalState
-import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
-import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
+import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ext.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
@@ -30,6 +29,8 @@ internal interface ConsentManagerUtils {
     fun getCcpaConsent(): Either<CCPAConsent>
     fun hasGdprConsent(): Boolean
     fun hasCcpaConsent(): Boolean
+
+    fun getSpConsent(): SPConsents?
 
     companion object
 }
@@ -94,6 +95,15 @@ private class ConsentManagerUtilsImpl(
             put("pmSaveAndExitVariables", action.saveAndExitVariables)
             put("includeData", IncludeData(localState = LocalState("string")).toJsonObject())
         }
+    }
+
+    override fun getSpConsent(): SPConsents? {
+        val gdprCached = getGdprConsent().getOrNull()
+        val ccpaCached = getCcpaConsent().getOrNull()
+        return SPConsents(
+            gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
+            ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
+        )
     }
 
     override fun getGdprConsent(): Either<GDPRConsent> {

@@ -26,7 +26,7 @@ import com.sourcepoint.cmplibrary.model.CampaignResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.SHOW_OPTIONS
-import com.sourcepoint.cmplibrary.model.exposed.SPCustomConsents
+import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import java.util.* // ktlint-disable
@@ -186,7 +186,7 @@ internal class SpConsentLibImpl(
         vendors: List<String>,
         categories: List<String>,
         legIntCategories: List<String>,
-        success: (SPCustomConsents) -> Unit,
+        success: (SPConsents?) -> Unit,
     ) {
         val customConsentReq = CustomConsentReq(
             consentUUID = consentUUID,
@@ -197,10 +197,10 @@ internal class SpConsentLibImpl(
         )
         executor.run {
             executeOnWorkerThread {
-                val ccResp = service.sendCustomConsent(customConsentReq, env)
+                val ccResp = service.sendCustomConsentServ(customConsentReq, env)
                 executeOnMain {
                     when (ccResp) {
-                        is Either.Right -> success(ccResp.r.toSpCustomConsent())
+                        is Either.Right -> success(ccResp.r ?: SPConsents())
                         is Either.Left -> spClient.onError(ccResp.t)
                     }
                 }
