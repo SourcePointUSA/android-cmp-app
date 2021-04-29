@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
 import android.content.Context
+import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
@@ -60,6 +61,8 @@ fun makeConsentLib(
     val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, dataStorage, logger)
     val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, Env.STAGE, logger, dataStorage, execManager)
 
+    val env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD
+
     return SpConsentLibImpl(
         context = appCtx,
         pLogger = logger,
@@ -70,7 +73,7 @@ fun makeConsentLib(
         campaignManager = campaignManager,
         consentManager = consentManager,
         urlManager = urlManager,
-        env = Env.STAGE,
+        env = env,
         spClient = spClient
     )
 }

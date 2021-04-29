@@ -29,10 +29,12 @@ android {
     buildTypes {
         getByName("debug") {
             buildConfigField("String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\"")
+            buildConfigField("String", "SDK_ENV", "\"STAGE\"")
         }
         getByName("release") {
             isMinifyEnabled = false
             buildConfigField("String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\"")
+            buildConfigField("String", "SDK_ENV", "\"PROD\"")
         }
     }
 
