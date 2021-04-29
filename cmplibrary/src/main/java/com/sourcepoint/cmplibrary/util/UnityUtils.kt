@@ -8,6 +8,6 @@ fun targetingParamArrayToList(array: Array<TargetingParam>): List<TargetingParam
     return array.toList()
 }
 
-fun throwableToException(throwable: Throwable)  {
+fun throwableToException(throwable: Throwable) {
     throw java.lang.Exception(throwable)
 }
