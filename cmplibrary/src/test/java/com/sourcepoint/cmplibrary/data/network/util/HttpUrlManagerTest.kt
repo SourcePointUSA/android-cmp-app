@@ -88,7 +88,7 @@ class HttpUrlManagerTest {
             siteId = "7639",
             messageId = "122058"
         )
-        val sut = HttpUrlManagerSingleton.ottUrlPm(config)
+        val sut = HttpUrlManagerSingleton.ottUrlPm(config, Env.PROD)
         val url = sut.toString()
         val expected = "https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?consentLanguage=EN&consentUUID=3c7c3e22-0aac-4941-b97d-8e70b73b91c7&site_id=7639&message_id=122058"
         url.assertEquals(expected)
