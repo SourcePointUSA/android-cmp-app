@@ -2,18 +2,31 @@ package com.sourcepoint.app.v6.core
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import java.util.*
 
 interface DataProvider {
     val authId : String?
     val url : String
     val onlyPm : Boolean
+    val gdprPmId : String
+    val spConfig : SpConfig
     companion object
 }
 
-fun DataProvider.Companion.create(context: Context, authId : String?) : DataProvider = DataProviderImpl(context, authId)
+fun DataProvider.Companion.create(
+    context: Context,
+    spConfig : SpConfig,
+    gdprPmId : String,
+    authId : String?
+) : DataProvider = DataProviderImpl(context, spConfig, gdprPmId, authId)
 
-private class DataProviderImpl(val context: Context, val pAuthId : String?) : DataProvider {
+private class DataProviderImpl(
+    val context: Context,
+    override val spConfig : SpConfig,
+    override val gdprPmId : String,
+    val pAuthId : String?
+) : DataProvider {
 
     val sharedPref: SharedPreferences by lazy {
         context.getSharedPreferences("myshared", Context.MODE_PRIVATE)

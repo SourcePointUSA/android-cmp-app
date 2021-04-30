@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.cmplibrary.UnitySpClient
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
+import com.sourcepoint.cmplibrary.creation.makeConsentLib
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -16,20 +18,17 @@ import com.sourcepoint.cmplibrary.util.clearAllData
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
-class MainActivityV6Kt : AppCompatActivity() {
+class MainActivity4test : AppCompatActivity() {
 
     private val dataProvider by inject<DataProvider>()
 
-    private val spConsentLib2 by spConsentLibLazy {
-        activity = this@MainActivityV6Kt
-        spClient = LocalClient()
-        privacyManagerTab = PMTab.FEATURES
-        config {
-            accountId = 22
-            propertyName = "mobile.multicampaign.demo"
-//            +(CampaignType.CCPA to listOf(("location" to "US")))
-            +(CampaignType.GDPR)// to listOf(("location" to "EU")))
-        }
+    private val spConsentLib2 by lazy {
+        makeConsentLib(
+            spConfig = dataProvider.spConfig,
+            activity = this@MainActivity4test,
+            messageLanguage = MessageLanguage.ENGLISH,
+            spClient = LocalClient()
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +36,7 @@ class MainActivityV6Kt : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
             spConsentLib2.loadPrivacyManager(
-                "488393",
+                dataProvider.gdprPmId,
                 PMTab.PURPOSES,
                 CampaignType.GDPR
             )
@@ -55,7 +54,7 @@ class MainActivityV6Kt : AppCompatActivity() {
         }
         findViewById<View>(R.id.custom_consent).setOnClickListener { _v: View? ->
             spConsentLib2.customConsentGDPR(
-                consentUUID = "f63e0dba-a87c-465b-8352-916815124666",
+                consentUUID = "e8a49973-0b51-4575-8eda-d1fc9db81697",
                 propertyId = 16893,
                 vendors = emptyList(),//listOf("5fbe6f090d88c7d28d765e1e"),
                 categories = emptyList(),//listOf("60657acc9c97c400122f21f3"),

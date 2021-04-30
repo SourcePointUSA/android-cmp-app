@@ -5,14 +5,24 @@ import org.junit.Assert
 import kotlin.jvm.Throws
 
 @Throws(Throwable::class)
-suspend fun wr(d: Long = 200, times: Int = 30, task: () -> Unit) {
+suspend fun wr(
+    d: Long = 200,
+    times: Int = 30,
+    backup: (() -> Unit)? = null,
+    task: () -> Unit
+) {
     var res: TestRes.NotVerified = TestRes.NotVerified(RuntimeException("Condition Not initialized!"))
     delay(d)
     repeat(times) {
         delay(250)
         when (val t = checkCondition(task)) {
             TestRes.Verified -> return
-            is TestRes.NotVerified -> res = t
+            is TestRes.NotVerified -> {
+                if(it == (times * 0.65).toInt() || it == (times * 0.85).toInt()) {
+                    backup?.invoke()
+                }
+                res = t
+            }
         }
 
     }

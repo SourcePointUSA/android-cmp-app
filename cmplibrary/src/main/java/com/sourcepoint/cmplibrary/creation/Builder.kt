@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
 import android.content.Context
+import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
@@ -73,6 +74,8 @@ class Builder {
 //    fun <T : ConsentLib> build(clazz: Class<out T>): T {
     fun build(): SpConsentLib {
 
+        val env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD
+
         val activityWeakRef: WeakReference<Activity> = weakReference ?: failParam("context")
         val appCtx: Context = activityWeakRef.get()?.applicationContext ?: failParam("context")
         val client = createClientInfo()
@@ -92,7 +95,7 @@ class Builder {
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
         val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
         val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, dataStorage, logger)
-        val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, Env.PROD, logger, dataStorage, execManager)
+        val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, env, logger, dataStorage, execManager)
 
         return SpConsentLibImpl(
             context = appCtx,
@@ -104,7 +107,7 @@ class Builder {
             campaignManager = campaignManager,
             consentManager = consentManager,
             urlManager = urlManager,
-            env = Env.STAGE,
+            env = env,
             spClient = spClient ?: genericFail("SpClient must be set!!!")
         )
     }

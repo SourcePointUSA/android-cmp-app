@@ -73,3 +73,7 @@ class SpConfigDataBuilder {
         )
     }
 }
+
+fun config(dsl: SpConfigDataBuilder.() -> Unit): SpConfig {
+    return SpConfigDataBuilder().apply(dsl).build()
+}

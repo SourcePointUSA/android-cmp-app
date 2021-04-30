@@ -42,6 +42,8 @@ fun makeConsentLib(
     messageLanguage: MessageLanguage
 ): SpConsentLib {
 
+    val env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD
+
     val appCtx: Context = activity.applicationContext
     val client = createClientInfo()
     val dataStorageGdpr = DataStorageGdpr.create(appCtx)
@@ -59,9 +61,7 @@ fun makeConsentLib(
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
     val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
     val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, dataStorage, logger)
-    val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, Env.STAGE, logger, dataStorage, execManager)
-
-    val env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD
+    val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, env, logger, dataStorage, execManager)
 
     return SpConsentLibImpl(
         context = appCtx,

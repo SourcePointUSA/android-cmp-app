@@ -5,4 +5,5 @@
     <string name="authid_activity">AuthId activity</string>
     <string name="review_consents_ccpa">Review Consents CCPA</string>
     <string name="clear_all_data">Clear all data</string>
+    <string name="custom_consent">Custom consent</string>
 </resources>

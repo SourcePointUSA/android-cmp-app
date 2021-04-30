@@ -8,7 +8,7 @@ import com.sourcepoint.cmplibrary.core.flatMap
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
-import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
@@ -18,6 +18,7 @@ import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
 
 /**
@@ -90,14 +91,17 @@ private class ServiceImpl(
             }
     }
 
-    override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<SPConsents?> {
-        return nc.sendCustomConsent(customConsentReq, env)
-            .executeOnRight {
-                val savedConsent = JSONObject(dataStorage.getGdprConsentResp())
+    override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<SPConsents?> = check {
+        nc.sendCustomConsent(customConsentReq, env)
+            .map {
+                if (dataStorage.getGdprConsentResp().isEmpty()) {
+                    genericFail("CustomConsent cannot be executed. Consent is missing!!!")
+                }
+                val savedConsent = JSONObject()
                 savedConsent.put("grants", it.content.get("grants"))
                 dataStorage.saveGdprConsentResp(savedConsent.toString())
             }
-            .map { consentManagerUtils.getSpConsent() }
+        consentManagerUtils.getSpConsent()
     }
 
     override fun getNativeMessage(

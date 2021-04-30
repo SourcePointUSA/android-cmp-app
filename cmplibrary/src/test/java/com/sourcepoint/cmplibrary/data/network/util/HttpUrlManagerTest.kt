@@ -76,7 +76,7 @@ class HttpUrlManagerTest {
     @Test
     fun `GIVEN a PROD env RETURN the prod link`() {
         val sut = HttpUrlManagerSingleton.inAppMessageUrl(Env.PROD).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/get_messages?env=localProd")
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/get_messages?env=prod")
     }
 
     @Test

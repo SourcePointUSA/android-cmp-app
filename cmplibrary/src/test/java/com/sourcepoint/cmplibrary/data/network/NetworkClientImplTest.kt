@@ -67,9 +67,9 @@ class NetworkClientImplTest {
         /** capture the Request and test the parameters */
         slot.captured.run {
             readText().assertEquals(uwMessDataTest.toJsonObject().toString())
-            url.toString().assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/get_messages?env=localProd")
+            url.toString().assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/get_messages?env=prod")
             method.assertEquals("POST")
-            url.queryParameter("env").assertEquals("localProd")
+            url.queryParameter("env").assertEquals("prod")
         }
     }
 

@@ -119,7 +119,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 
 enum class Env(val host: String, val pmHostGdpr: String, val pmHostCcpa: String, val queryParam: String) {
     STAGE("cdn.sp-stage.net", "notice.sp-stage.net", "ccpa-notice.sp-stage.net", "stage"),
-    PROD("cdn.privacy-mgmt.com", "cdn.privacy-mgmt.com", "ccpa-inapp-pm.sp-prod.net", "localProd")
+    PRE_PROD("preprod-cdn.privacy-mgmt.com", "cdn.privacy-mgmt.com", "ccpa-inapp-pm.sp-prod.net", "stage"),
+    PROD("cdn.privacy-mgmt.com", "cdn.privacy-mgmt.com", "ccpa-inapp-pm.sp-prod.net", "prod")
 }
 
 enum class CampaignEnv(val value: String) {
