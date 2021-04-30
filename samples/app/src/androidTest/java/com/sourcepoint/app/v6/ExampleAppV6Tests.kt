@@ -50,8 +50,8 @@ class ExampleAppV6Tests {
 
         scenario = launchActivity()
 
-        wr { tapAcceptOnWebView() }
-        wr { tapAcceptCcpaOnWebView() }
+//        wr { tapAcceptOnWebView() }
+//        wr { tapAcceptCcpaOnWebView() }
     }
 
     @Test
@@ -61,9 +61,9 @@ class ExampleAppV6Tests {
 
         scenario = launchActivity()
 
-        wr { tapOptionWebView() }
-        wr { tapAcceptAllOnWebView() }
-        wr { tapAcceptCcpaOnWebView() }
+//        wr { tapOptionWebView() }
+//        wr { tapAcceptAllOnWebView() }
+//        wr { tapAcceptCcpaOnWebView() }
     }
 
 //    @Test
