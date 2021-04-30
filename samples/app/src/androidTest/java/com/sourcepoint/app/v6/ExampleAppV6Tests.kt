@@ -4,19 +4,10 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
-import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
-import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
-import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCcpaReviewConsent
-import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapAllConsent
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapToEnableAllConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapOptionWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableAllConsent
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -75,66 +66,66 @@ class ExampleAppV6Tests {
         wr { tapAcceptCcpaOnWebView() }
     }
 
-    @Test
-    fun GIVEN_consent_USING_gdpr_pm() = runBlocking<Unit> {
-
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111"))
-
-        scenario = launchActivity()
-
-        wr { tapAcceptOnWebView() }
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
-    }
-
-    @Test
-    fun GIVEN_a_gdpr_consent_ACCEPT_ALL() = runBlocking<Unit> {
-
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111"))
-
-        scenario = launchActivity()
-
-        wr { tapRejectOnWebView() }
+//    @Test
+//    fun GIVEN_consent_USING_gdpr_pm() = runBlocking<Unit> {
+//
+//        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111"))
+//
+//        scenario = launchActivity()
+//
+//        wr { tapAcceptOnWebView() }
 //        wr { clickOnGdprReviewConsent() }
 //        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
+//    }
+//
+//    @Test
+//    fun GIVEN_a_gdpr_consent_ACCEPT_ALL() = runBlocking<Unit> {
+//
+//        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111"))
+//
+//        scenario = launchActivity()
+//
+//        wr { tapRejectOnWebView() }
+////        wr { clickOnGdprReviewConsent() }
+////        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
+////        wr { checkAllConsentsOn() }
+//    }
+//
+//    @Test
+//    fun SAVE_AND_EXIT_action() = runBlocking<Unit> {
+//
+//        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111"))
+//
+//        scenario = launchActivity()
+//
+//        wr { tapAcceptOnWebView() }
+//        wr { tapAcceptCcpaOnWebView() }
+//        wr { clickOnGdprReviewConsent() }
+//        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
+//        wr { clickOnGdprReviewConsent() }
+//        wr { tapToDisableAllConsent() }
+//        wr { tapSaveAndExitWebView() }
+//        wr { clickOnGdprReviewConsent() }
+//        wr { checkAllConsentsOff() }
+//    }
+//
+//    @Test
+//    fun SAVE_AND_EXIT_action_2() = runBlocking<Unit> {
+//
+//        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111"))
+//
+//        scenario = launchActivity()
+//
+//        wr { tapRejectOnWebView() }
+//        wr { tapAcceptCcpaOnWebView() }
+//        wr { clickOnGdprReviewConsent() }
+//        wr(backup = { clickOnGdprReviewConsent() }) { tapRejectOnWebView() }
+//        wr { clickOnGdprReviewConsent() }
+//        wr { tapToEnableAllConsent() }
+//        wr { tapSaveAndExitWebView() }
+//        wr { clickOnGdprReviewConsent() }
 //        wr { checkAllConsentsOn() }
-    }
-
-    @Test
-    fun SAVE_AND_EXIT_action() = runBlocking<Unit> {
-
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111"))
-
-        scenario = launchActivity()
-
-        wr { tapAcceptOnWebView() }
-        wr { tapAcceptCcpaOnWebView() }
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
-        wr { clickOnGdprReviewConsent() }
-        wr { tapToDisableAllConsent() }
-        wr { tapSaveAndExitWebView() }
-        wr { clickOnGdprReviewConsent() }
-        wr { checkAllConsentsOff() }
-    }
-
-    @Test
-    fun SAVE_AND_EXIT_action_2() = runBlocking<Unit> {
-
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111"))
-
-        scenario = launchActivity()
-
-        wr { tapRejectOnWebView() }
-        wr { tapAcceptCcpaOnWebView() }
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { tapRejectOnWebView() }
-        wr { clickOnGdprReviewConsent() }
-        wr { tapToEnableAllConsent() }
-        wr { tapSaveAndExitWebView() }
-        wr { clickOnGdprReviewConsent() }
-        wr { checkAllConsentsOn() }
-    }
+//    }
 
 /*
     @Test
