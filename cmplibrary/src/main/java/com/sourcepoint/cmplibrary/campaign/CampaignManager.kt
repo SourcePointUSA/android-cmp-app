@@ -239,14 +239,14 @@ private class CampaignManagerImpl(
         dataStorage.saveLocalState(unifiedMessageResp.localState)
         val map = JSONObject(unifiedMessageResp.localState).toTreeMap()
         // save GDPR uuid
-        map.getMap("gdpr")
-            ?.getFieldValue<String>("uuid")
-            ?.let { dataStorage.saveGdprConsentUuid(it) }
+        map.getMap("gdpr")?.apply {
+            getFieldValue<String>("uuid")?.let { dataStorage.saveGdprConsentUuid(it) }
+            getFieldValue<Int>("propertyId")?.let { dataStorage.savePropertyId(it) }
+        }
         // save GDPR uuid
         map.getMap("ccpa")
             ?.getFieldValue<String>("uuid")
             ?.let { dataStorage.saveCcpaConsentUuid(it) }
-        map.getFieldValue<String>("localState")?.let { dataStorage.saveLocalState(it) }
         // save campaigns and consents
         unifiedMessageResp
             .campaigns

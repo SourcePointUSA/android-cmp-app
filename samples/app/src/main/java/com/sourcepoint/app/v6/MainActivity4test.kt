@@ -7,7 +7,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.cmplibrary.UnitySpClient
-import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.creation.makeConsentLib
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -54,11 +53,9 @@ class MainActivity4test : AppCompatActivity() {
         }
         findViewById<View>(R.id.custom_consent).setOnClickListener { _v: View? ->
             spConsentLib2.customConsentGDPR(
-                consentUUID = "e8a49973-0b51-4575-8eda-d1fc9db81697",
-                propertyId = 16893,
-                vendors = emptyList(),//listOf("5fbe6f090d88c7d28d765e1e"),
-                categories = emptyList(),//listOf("60657acc9c97c400122f21f3"),
-                legIntCategories = emptyList(),
+                vendors = emptyList(),
+                categories = emptyList(),
+                legIntCategories = emptyList(),//listOf("5fbe6f090d88c7d28d765e1e"),
                 success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
             )
         }

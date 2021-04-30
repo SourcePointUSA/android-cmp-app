@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.data.Service
+import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
@@ -34,6 +35,9 @@ class SpConsentLibImplTest {
 
     @MockK
     private lateinit var connManager: ConnectionManager
+
+    @MockK
+    private lateinit var dataStorage: DataStorage
 
     @MockK
     private lateinit var viewManager: ViewsManager
@@ -124,6 +128,7 @@ class SpConsentLibImplTest {
         campaignManager = campaignManager,
         consentManager = consentManager,
         urlManager = urlManager,
+        dataStorage = dataStorage,
         spClient = spClient
     )
 }

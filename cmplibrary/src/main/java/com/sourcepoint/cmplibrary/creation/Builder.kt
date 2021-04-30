@@ -107,6 +107,7 @@ class Builder {
             campaignManager = campaignManager,
             consentManager = consentManager,
             urlManager = urlManager,
+            dataStorage = dataStorage,
             env = env,
             spClient = spClient ?: genericFail("SpClient must be set!!!")
         )

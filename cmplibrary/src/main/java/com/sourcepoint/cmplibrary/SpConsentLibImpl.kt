@@ -16,6 +16,7 @@ import com.sourcepoint.cmplibrary.core.web.CampaignModel
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
+import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
@@ -40,6 +41,7 @@ internal class SpConsentLibImpl(
     private val viewManager: ViewsManager,
     private val campaignManager: CampaignManager,
     private val consentManager: ConsentManager,
+    private val dataStorage: DataStorage,
     private val spClient: SpClient,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     private val env: Env = Env.PROD
@@ -181,16 +183,14 @@ internal class SpConsentLibImpl(
     }
 
     override fun customConsentGDPR(
-        consentUUID: String,
-        propertyId: Int,
         vendors: List<String>,
         categories: List<String>,
         legIntCategories: List<String>,
         success: (SPConsents?) -> Unit,
     ) {
         val customConsentReq = CustomConsentReq(
-            consentUUID = consentUUID,
-            propertyId = propertyId,
+            consentUUID = dataStorage.getGdprConsentUuid()?:"",
+            propertyId = dataStorage.getPropertyId(),
             categories = categories,
             legIntCategories = legIntCategories,
             vendors = vendors

@@ -13,8 +13,6 @@ interface SpConsentLib {
     fun loadMessage(nativeMessage: NativeMessage)
 
     fun customConsentGDPR(
-        consentUUID: String,
-        propertyId: Int,
         vendors: List<String>,
         categories: List<String>,
         legIntCategories: List<String>,
