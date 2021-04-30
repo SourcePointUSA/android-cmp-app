@@ -18,7 +18,7 @@ suspend fun wr(
         when (val t = checkCondition(task)) {
             TestRes.Verified -> return
             is TestRes.NotVerified -> {
-                if(it == (times * 0.65).toInt() || it == (times * 0.85).toInt()) {
+                if(it % 5 == 0 && it > times / 2) {
                     backup?.invoke()
                 }
                 res = t

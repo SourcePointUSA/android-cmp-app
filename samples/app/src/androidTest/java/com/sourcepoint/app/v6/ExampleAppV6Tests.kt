@@ -76,18 +76,15 @@ class ExampleAppV6Tests {
     }
 
     @Test
-    fun GIVEN_consent_USING_pms() = runBlocking<Unit> {
+    fun GIVEN_consent_USING_gdpr_pm() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111"))
 
         scenario = launchActivity()
 
         wr { tapAcceptOnWebView() }
-        wr { tapAcceptCcpaOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
-        wr { clickOnCcpaReviewConsent() }
-        wr(backup = { clickOnCcpaReviewConsent() }) { tapAcceptAllOnWebView() }
     }
 
     @Test
@@ -97,9 +94,10 @@ class ExampleAppV6Tests {
 
         scenario = launchActivity()
 
-        wr { tapAcceptOnWebView() }
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
+        wr { tapRejectOnWebView() }
+//        wr { clickOnGdprReviewConsent() }
+//        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
+//        wr { checkAllConsentsOn() }
     }
 
     @Test

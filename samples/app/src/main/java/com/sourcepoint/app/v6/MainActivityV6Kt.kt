@@ -55,7 +55,7 @@ class MainActivityV6Kt : AppCompatActivity() {
         }
         findViewById<View>(R.id.custom_consent).setOnClickListener { _v: View? ->
             spConsentLib2.customConsentGDPR(
-                consentUUID = "f63e0dba-a87c-465b-8352-916815124666",
+                consentUUID = "aa4c167a-11a5-4115-b151-f932afb7d928",
                 propertyId = 16893,
                 vendors = emptyList(),//listOf("5fbe6f090d88c7d28d765e1e"),
                 categories = emptyList(),//listOf("60657acc9c97c400122f21f3"),
