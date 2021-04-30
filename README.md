@@ -30,11 +30,10 @@ Use the data builder to obtain a configuration for v6 (Unified SDK). This contai
 Create a client to receive the events from the Cmp SDK
 
 ```kotlin
-    internal inner class LocalClient : UnitySpClient {
+    internal inner class LocalClient : SpClient {
         override fun onMessageReady(message: JSONObject) {}
         override fun onError(error: Throwable) { }
         override fun onConsentReady(consent: SPConsents) { }
-        override fun onConsentReady(consent: String) { }
         override fun onAction(view: View, actionType: ActionType) { }
         override fun onUIFinished(view: View) {
             spConsentLib.removeView(view)
