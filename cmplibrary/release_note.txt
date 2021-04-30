@@ -1,1 +1,0 @@
-* Removed all the bintray dependencies [#326](https://github.com/SourcePointUSA/android-cmp-app/pull/326)

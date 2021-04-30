@@ -1,0 +1,53 @@
+{
+  "euconsent": "CPFaqCYPFaqCYHIABCENBXCsAP7AAAAAAAYgGMwAQGMgAAAAAAAA.YAAAAAAAAAAA",
+  "addtlConsent": "1~39",
+  "specialFeatures": [
+    "5fbe6ef80d88c7d28d7649af",
+    "5fbe6ef80d88c7d28d7649b0"
+  ],
+  "legIntCategories": [],
+  "grants": {
+    "5fbe6f050d88c7d28d765d47": {
+      "vendorGrant": true,
+      "purposeGrants": {
+        "60657acc9c97c400122f21f3": true,
+        "60657acc9c97c400122f21fa": true,
+        "60657acc9c97c400122f2200": true,
+        "60657acc9c97c400122f2206": true,
+        "60657acc9c97c400122f2218": true,
+        "60657acc9c97c400122f2224": true,
+        "60657acc9c97c400122f222a": true
+      }
+    },
+    "5fbe6f090d88c7d28d765e1e": {
+      "vendorGrant": true,
+      "purposeGrants": {
+        "60657acc9c97c400122f21f3": true
+      }
+    },
+    "5fbe6f0a0d88c7d28d765e25": {
+      "vendorGrant": true,
+      "purposeGrants": {
+        "60657acc9c97c400122f220c": true,
+        "60657acc9c97c400122f2212": true
+      }
+    }
+  },
+  "acceptedVendors": [
+    "5fbe6f090d88c7d28d765e1e",
+    "5fbe6f0a0d88c7d28d765e25",
+    "5fbe6f050d88c7d28d765d47"
+  ],
+  "acceptedCategories": [
+    "60657acc9c97c400122f21f3",
+    "60657acc9c97c400122f21fa",
+    "60657acc9c97c400122f2200",
+    "60657acc9c97c400122f2206",
+    "60657acc9c97c400122f220c",
+    "60657acc9c97c400122f2212",
+    "60657acc9c97c400122f2218",
+    "60657acc9c97c400122f2224",
+    "60657acc9c97c400122f222a"
+  ],
+  "consentedToAll": true
+}

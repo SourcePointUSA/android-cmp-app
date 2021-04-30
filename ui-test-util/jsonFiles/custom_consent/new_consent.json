@@ -1,0 +1,48 @@
+{
+  "consentUUID": "4ce617bd-adce-4355-8840-556544eae34b",
+  "specialFeatures": [],
+  "vendors": [
+    "5fbe6f090d88c7d28d765e1d",
+    "5fbe6f0a0d88c7d28d765e25"
+  ],
+  "categories": [
+    "60657acc9c97c400122f21f3",
+    "60657acc9c97c400122f21fa",
+    "60657acc9c97c400122f2200",
+    "60657acc9c97c400122f2206",
+    "60657acc9c97c400122f220c",
+    "60657acc9c97c400122f2212",
+    "60657acc9c97c400122f2218",
+    "60657acc9c97c400122f221e",
+    "60657acc9c97c400122f2224",
+    "60657acc9c97c400122f222a"
+  ],
+  "legIntCategories": [],
+  "grants": {
+    "5fbe6f050d88c7d28d765d47": {
+      "vendorGrant": false,
+      "purposeGrants": {
+        "60657acc9c97c400122f21f3": false,
+        "60657acc9c97c400122f21fa": false,
+        "60657acc9c97c400122f2200": false,
+        "60657acc9c97c400122f2206": false,
+        "60657acc9c97c400122f2218": false,
+        "60657acc9c97c400122f2224": false,
+        "60657acc9c97c400122f222a": false
+      }
+    },
+    "5fbe6f090d88c7d28d765e1e": {
+      "vendorGrant": false,
+      "purposeGrants": {
+        "60657acc9c97c400122f21f3": false
+      }
+    },
+    "5fbe6f0a0d88c7d28d765e25": {
+      "vendorGrant": true,
+      "purposeGrants": {
+        "60657acc9c97c400122f220c": true,
+        "60657acc9c97c400122f2212": true
+      }
+    }
+  }
+}

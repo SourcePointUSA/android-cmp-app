@@ -1,0 +1,39 @@
+{
+  "name": "sp.hideMessage",
+  "actionType": 13,
+  "choiceId": null,
+  "requestFromPm": true,
+  "pmId": null,
+  "pmTab": null,
+  "saveAndExitVariables": {
+    "privacyManagerId": "122058",
+    "lan": "EN",
+    "categories": [
+      {
+        "_id": "5e87321eb31ef52cd96cc553",
+        "type": "IAB_PURPOSE",
+        "iabId": 2,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5e87321eb31ef52cd96cc559",
+        "type": "IAB_PURPOSE",
+        "iabId": 7,
+        "consent": false,
+        "legInt": true
+      }
+    ],
+    "vendors": [
+      {
+        "_id": "5e37fc3e56a5e60e003a7124",
+        "vendorType": "IAB",
+        "iabId": 15,
+        "consent": false,
+        "legInt": true
+      }
+    ],
+    "specialFeatures": []
+  },
+  "consentLanguage": "EN"
+}

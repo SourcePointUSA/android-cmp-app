@@ -1,0 +1,228 @@
+package com.sourcepoint.cmplibrary.data.local
+
+import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CONSENT_UUID_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_CONSENT_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON_MESSAGE
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
+import java.util.* // ktlint-disable
+
+internal interface DataStorageGdpr {
+
+    val preference: SharedPreferences
+
+    var gdprApplies: Boolean
+
+    fun saveGdpr1203(value: String)
+    fun getGdpr1203(): String?
+
+    /** store data */
+    fun saveTcData(deferredMap: Map<String, Any?>)
+    fun saveAuthId(value: String)
+    fun saveEuConsent(value: String)
+    fun saveMetaData(value: String)
+    fun saveGdprConsentUuid(value: String)
+    fun saveAppliedLegislation(value: String)
+    fun saveGdprConsentResp(value: String)
+    fun saveGdprMessage(value: String)
+
+    /** fetch data */
+    fun getTcData(): Map<String, Any?>
+    fun getAuthId(): String
+    fun getEuConsent(): String
+    fun getMetaData(): String
+    fun getGdprConsentUuid(): String?
+    fun getAppliedLegislation(): String
+    fun getGdprConsentResp(): String
+    fun getGdprMessage(): String
+
+    fun clearGdprConsent()
+    fun clearInternalData()
+    fun clearAll()
+
+    companion object {
+        const val CONSENT_UUID_KEY = "sp.gdpr.consentUUID"
+        const val META_DATA_KEY = "sp.gdpr.metaData"
+        const val EU_CONSENT_KEY = "sp.gdpr.euconsent"
+        const val USER_CONSENT_KEY = "sp.gdpr.userConsent"
+        const val AUTH_ID_KEY = "sp.gdpr.authId"
+        const val DEFAULT_EMPTY_UUID = ""
+        const val CMP_SDK_ID_KEY = "IABTCF_CmpSdkID"
+        const val CMP_SDK_ID = 6
+        const val CMP_SDK_VERSION_KEY = "IABTCF_CmpSdkVersion"
+        const val CMP_SDK_VERSION = 2
+        const val DEFAULT_EMPTY_CONSENT_STRING = ""
+        const val DEFAULT_META_DATA = "{}"
+        val DEFAULT_AUTH_ID: String? = null
+        const val IABTCF_KEY_PREFIX = "IABTCF_"
+        const val KEY_GDPR_APPLIES = "key_gdpr_applies"
+        const val GDPR_CONSENT_RESP = "gdpr_consent_resp"
+        const val GDPR_JSON_MESSAGE = "gdpr_json_message"
+    }
+}
+
+internal fun DataStorageGdpr.Companion.create(
+    context: Context
+): DataStorageGdpr = DataStorageGdprImpl(context)
+
+private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
+
+    companion object {
+        const val KEY_GDPR = "key_gdpr"
+        const val KEY_GDPR_1203 = "key_gdpr_1203"
+    }
+
+    override val preference: SharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(context)
+    }
+
+    override var gdprApplies: Boolean
+        get() = preference.getBoolean(KEY_GDPR_APPLIES, false)
+        set(value) {
+            preference
+                .edit()
+                .putBoolean(KEY_GDPR_APPLIES, value)
+                .apply()
+        }
+
+    override fun saveGdpr1203(value: String) {
+        preference
+            .edit()
+            .putString(KEY_GDPR_1203, value)
+            .apply()
+    }
+
+    override fun getGdpr1203(): String? {
+        return preference.getString(KEY_GDPR_1203, null)
+    }
+
+    override fun saveTcData(deferredMap: Map<String, Any?>) {
+        val spEditor = preference.edit()
+        deferredMap.forEach { entry ->
+            when (val value = entry.value) {
+                is Int -> {
+                    spEditor.putInt(entry.key, value)
+                }
+                is String -> {
+                    spEditor.putString(entry.key, value)
+                }
+            }
+        }
+        spEditor.apply()
+    }
+
+    override fun saveAuthId(value: String) {
+        preference
+            .edit()
+            .putString(DataStorageGdpr.AUTH_ID_KEY, value)
+            .apply()
+    }
+
+    override fun saveEuConsent(value: String) {
+        preference
+            .edit()
+            .putString(EU_CONSENT_KEY, value)
+            .apply()
+    }
+
+    override fun saveMetaData(value: String) {
+        preference
+            .edit()
+            .putString(META_DATA_KEY, value)
+            .apply()
+    }
+
+    override fun saveGdprConsentUuid(value: String) {
+        preference
+            .edit()
+            .putString(CONSENT_UUID_KEY, value)
+            .apply()
+    }
+
+    override fun saveGdprConsentResp(value: String) {
+        preference
+            .edit()
+            .putString(GDPR_CONSENT_RESP, value)
+            .apply()
+    }
+
+    override fun saveGdprMessage(value: String) {
+        preference
+            .edit()
+            .putString(GDPR_JSON_MESSAGE, value)
+            .apply()
+    }
+
+    override fun saveAppliedLegislation(value: String) {
+        preference
+            .edit()
+            .putString("applied_legislation", value)
+            .apply()
+    }
+
+    override fun getTcData(): Map<String, Any?> {
+        val res = TreeMap<String, Any?>()
+        val map: Map<String, *> = preference.all
+        map
+            .filter { it.key.startsWith(IABTCF_KEY_PREFIX) }
+            .forEach { res[it.key] = it.value }
+        return res
+    }
+
+    override fun getAuthId(): String {
+        return preference.getString(AUTH_ID_KEY, "")!!
+    }
+
+    override fun getEuConsent(): String {
+        return preference.getString(EU_CONSENT_KEY, "")!!
+    }
+
+    override fun getMetaData(): String {
+        return preference.getString(META_DATA_KEY, "")!!
+    }
+
+    override fun getGdprConsentUuid(): String? {
+        return preference.getString(CONSENT_UUID_KEY, null)
+    }
+
+    override fun getAppliedLegislation(): String {
+        return preference.getString("applied_legislation", "")!!
+    }
+
+    override fun getGdprConsentResp(): String {
+        return preference.getString(GDPR_CONSENT_RESP, "")!!
+    }
+
+    override fun getGdprMessage(): String {
+        return preference.getString(GDPR_JSON_MESSAGE, "")!!
+    }
+
+    override fun clearInternalData() {
+        preference
+            .edit()
+            .remove(CONSENT_UUID_KEY)
+            .remove(META_DATA_KEY)
+            .remove(EU_CONSENT_KEY)
+            .remove(AUTH_ID_KEY)
+            .apply()
+    }
+
+    override fun clearAll() {
+        preference.edit().clear().apply()
+    }
+
+    override fun clearGdprConsent() {
+        preference
+            .edit()
+            .putString(GDPR_CONSENT_RESP, "")
+            .apply()
+    }
+
+    private fun fail(param: String): Nothing = throw RuntimeException("$param not fund in local storage.")
+}

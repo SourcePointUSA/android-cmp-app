@@ -1,12 +1,12 @@
 name: RELEASE
 on:
   push:
-    branches: [ master ]
-#    paths:
-#      - '!*.yml'
-#      - '!README.md'
-#      - '!CHANGELOG.md'
-#      - '!samples/metaapp/gradle.properties'
+    branches: [ master_disabled ]
+    paths:
+      - '!*.yml'
+      - '!README.md'
+      - '!CHANGELOG.md'
+      - '!samples/metaapp/gradle.properties'
 
 jobs:
   build:
