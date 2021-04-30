@@ -1,3 +1,6 @@
+## 6.0.0 (April, 120, 2021)
+
+
 ## 5.3.13 (March, 75, 2021)
 * Removed all the bintray dependencies [#326](https://github.com/SourcePointUSA/android-cmp-app/pull/326)
 
