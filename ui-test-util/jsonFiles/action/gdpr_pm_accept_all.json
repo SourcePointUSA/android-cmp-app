@@ -1,0 +1,930 @@
+{
+  "localPmId": "12595",
+  "legislation": "GDPR",
+  "name": "sp.hideMessage",
+  "actionType": 11,
+  "choiceId": null,
+  "requestFromPm": true,
+  "pmId": null,
+  "pmTab": null,
+  "saveAndExitVariables": {
+    "privacyManagerId": "12595",
+    "lan": "EN",
+    "categories": [
+      {
+        "_id": "5fc53e32e1b9c10012b0cec2",
+        "type": "IAB_PURPOSE",
+        "iabId": 2,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fc53e33e1b9c10012b0d0ac",
+        "type": "IAB_PURPOSE",
+        "iabId": 3,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fc53e33e1b9c10012b0d25d",
+        "type": "IAB_PURPOSE",
+        "iabId": 4,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fc53e33e1b9c10012b0d412",
+        "type": "IAB_PURPOSE",
+        "iabId": 5,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fc53e33e1b9c10012b0d509",
+        "type": "IAB_PURPOSE",
+        "iabId": 6,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fc53e33e1b9c10012b0d5ef",
+        "type": "IAB_PURPOSE",
+        "iabId": 7,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fc53e33e1b9c10012b0d821",
+        "type": "IAB_PURPOSE",
+        "iabId": 8,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fc53e34e1b9c10012b0d963",
+        "type": "IAB_PURPOSE",
+        "iabId": 9,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fc53e34e1b9c10012b0dadc",
+        "type": "IAB_PURPOSE",
+        "iabId": 10,
+        "consent": false,
+        "legInt": true
+      }
+    ],
+    "vendors": [
+      {
+        "_id": "5fbe6f040d88c7d28d76592f",
+        "vendorType": "IAB",
+        "iabId": 8,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765935",
+        "vendorType": "IAB",
+        "iabId": 14,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765945",
+        "vendorType": "IAB",
+        "iabId": 15,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765959",
+        "vendorType": "IAB",
+        "iabId": 23,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d76595f",
+        "vendorType": "IAB",
+        "iabId": 33,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765961",
+        "vendorType": "IAB",
+        "iabId": 31,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d76598b",
+        "vendorType": "IAB",
+        "iabId": 57,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765993",
+        "vendorType": "IAB",
+        "iabId": 63,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d7659bd",
+        "vendorType": "IAB",
+        "iabId": 86,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d7659cf",
+        "vendorType": "IAB",
+        "iabId": 100,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d7659d5",
+        "vendorType": "IAB",
+        "iabId": 104,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d7659df",
+        "vendorType": "IAB",
+        "iabId": 109,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d7659e9",
+        "vendorType": "IAB",
+        "iabId": 127,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a01",
+        "vendorType": "IAB",
+        "iabId": 138,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a0b",
+        "vendorType": "IAB",
+        "iabId": 142,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a11",
+        "vendorType": "IAB",
+        "iabId": 145,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a41",
+        "vendorType": "IAB",
+        "iabId": 179,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a46",
+        "vendorType": "IAB",
+        "iabId": 185,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a5b",
+        "vendorType": "IAB",
+        "iabId": 205,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a61",
+        "vendorType": "IAB",
+        "iabId": 203,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a63",
+        "vendorType": "IAB",
+        "iabId": 212,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a6b",
+        "vendorType": "IAB",
+        "iabId": 215,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a6d",
+        "vendorType": "IAB",
+        "iabId": 218,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a71",
+        "vendorType": "IAB",
+        "iabId": 231,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a81",
+        "vendorType": "IAB",
+        "iabId": 238,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a86",
+        "vendorType": "IAB",
+        "iabId": 240,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a87",
+        "vendorType": "IAB",
+        "iabId": 234,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a8b",
+        "vendorType": "IAB",
+        "iabId": 236,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765aa5",
+        "vendorType": "IAB",
+        "iabId": 261,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765aa7",
+        "vendorType": "IAB",
+        "iabId": 264,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765aa9",
+        "vendorType": "IAB",
+        "iabId": 256,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765ab3",
+        "vendorType": "IAB",
+        "iabId": 259,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765ab6",
+        "vendorType": "IAB",
+        "iabId": 263,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765abb",
+        "vendorType": "IAB",
+        "iabId": 265,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765abe",
+        "vendorType": "IAB",
+        "iabId": 273,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765ac3",
+        "vendorType": "IAB",
+        "iabId": 277,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765acd",
+        "vendorType": "IAB",
+        "iabId": 281,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765ade",
+        "vendorType": "IAB",
+        "iabId": 290,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765ae7",
+        "vendorType": "IAB",
+        "iabId": 310,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765af3",
+        "vendorType": "IAB",
+        "iabId": 318,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765af9",
+        "vendorType": "IAB",
+        "iabId": 323,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765afb",
+        "vendorType": "IAB",
+        "iabId": 319,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765aff",
+        "vendorType": "IAB",
+        "iabId": 331,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b33",
+        "vendorType": "IAB",
+        "iabId": 373,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b37",
+        "vendorType": "IAB",
+        "iabId": 378,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b46",
+        "vendorType": "IAB",
+        "iabId": 385,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b51",
+        "vendorType": "IAB",
+        "iabId": 394,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b59",
+        "vendorType": "IAB",
+        "iabId": 428,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b5e",
+        "vendorType": "IAB",
+        "iabId": 434,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b6b",
+        "vendorType": "IAB",
+        "iabId": 444,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b7f",
+        "vendorType": "IAB",
+        "iabId": 455,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b83",
+        "vendorType": "IAB",
+        "iabId": 469,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b97",
+        "vendorType": "IAB",
+        "iabId": 475,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b99",
+        "vendorType": "IAB",
+        "iabId": 468,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765bab",
+        "vendorType": "IAB",
+        "iabId": 498,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765bb1",
+        "vendorType": "IAB",
+        "iabId": 511,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765bc4",
+        "vendorType": "IAB",
+        "iabId": 528,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765bd6",
+        "vendorType": "IAB",
+        "iabId": 543,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765bf3",
+        "vendorType": "IAB",
+        "iabId": 578,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765bfc",
+        "vendorType": "IAB",
+        "iabId": 573,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c0f",
+        "vendorType": "IAB",
+        "iabId": 598,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c24",
+        "vendorType": "IAB",
+        "iabId": 610,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c2c",
+        "vendorType": "IAB",
+        "iabId": 613,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c2f",
+        "vendorType": "IAB",
+        "iabId": 621,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c43",
+        "vendorType": "IAB",
+        "iabId": 645,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c55",
+        "vendorType": "IAB",
+        "iabId": 656,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c58",
+        "vendorType": "IAB",
+        "iabId": 659,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c65",
+        "vendorType": "IAB",
+        "iabId": 664,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c75",
+        "vendorType": "IAB",
+        "iabId": 682,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c8b",
+        "vendorType": "IAB",
+        "iabId": 699,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765ca9",
+        "vendorType": "IAB",
+        "iabId": 714,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765cb3",
+        "vendorType": "IAB",
+        "iabId": 720,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765cb7",
+        "vendorType": "IAB",
+        "iabId": 724,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765cd5",
+        "vendorType": "IAB",
+        "iabId": 745,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765ce4",
+        "vendorType": "IAB",
+        "iabId": 749,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765ce9",
+        "vendorType": "IAB",
+        "iabId": 754,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765cfc",
+        "vendorType": "IAB",
+        "iabId": 762,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765d0e",
+        "vendorType": "IAB",
+        "iabId": 770,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765d31",
+        "vendorType": "IAB",
+        "iabId": 784,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765d42",
+        "vendorType": "IAB",
+        "iabId": 790,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765d51",
+        "vendorType": "IAB",
+        "iabId": 803,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765d53",
+        "vendorType": "IAB",
+        "iabId": 801,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765d93",
+        "vendorType": "IAB",
+        "iabId": 837,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765d96",
+        "vendorType": "IAB",
+        "iabId": 842,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765d97",
+        "vendorType": "IAB",
+        "iabId": 834,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765d99",
+        "vendorType": "IAB",
+        "iabId": 836,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765d9b",
+        "vendorType": "IAB",
+        "iabId": 845,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765dae",
+        "vendorType": "IAB",
+        "iabId": 851,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765db1",
+        "vendorType": "IAB",
+        "iabId": 850,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765dbb",
+        "vendorType": "IAB",
+        "iabId": 862,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765dd1",
+        "vendorType": "IAB",
+        "iabId": 876,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765de6",
+        "vendorType": "IAB",
+        "iabId": 882,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765dee",
+        "vendorType": "IAB",
+        "iabId": 878,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765df1",
+        "vendorType": "IAB",
+        "iabId": 884,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765dfd",
+        "vendorType": "IAB",
+        "iabId": 895,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765e0d",
+        "vendorType": "IAB",
+        "iabId": 905,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b1b",
+        "vendorType": "IAB",
+        "iabId": 354,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765a4f",
+        "vendorType": "IAB",
+        "iabId": 190,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b0b",
+        "vendorType": "IAB",
+        "iabId": 336,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c88",
+        "vendorType": "IAB",
+        "iabId": 678,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c89",
+        "vendorType": "IAB",
+        "iabId": 694,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c9a",
+        "vendorType": "IAB",
+        "iabId": 706,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765cd7",
+        "vendorType": "IAB",
+        "iabId": 738,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765cdc",
+        "vendorType": "IAB",
+        "iabId": 744,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765cdd",
+        "vendorType": "IAB",
+        "iabId": 746,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765d8e",
+        "vendorType": "IAB",
+        "iabId": 838,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765dd6",
+        "vendorType": "IAB",
+        "iabId": 872,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765e07",
+        "vendorType": "IAB",
+        "iabId": 898,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fce8b670d88c7d28d785909",
+        "vendorType": "IAB",
+        "iabId": 912,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c07",
+        "vendorType": "IAB",
+        "iabId": 590,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d7659c5",
+        "vendorType": "IAB",
+        "iabId": 93,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b2b",
+        "vendorType": "IAB",
+        "iabId": 365,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b3b",
+        "vendorType": "IAB",
+        "iabId": 384,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b66",
+        "vendorType": "IAB",
+        "iabId": 431,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b7d",
+        "vendorType": "IAB",
+        "iabId": 466,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765b9d",
+        "vendorType": "IAB",
+        "iabId": 484,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765bb3",
+        "vendorType": "IAB",
+        "iabId": 502,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f040d88c7d28d765c11",
+        "vendorType": "IAB",
+        "iabId": 599,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765d6b",
+        "vendorType": "IAB",
+        "iabId": 815,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fbe6f050d88c7d28d765dcf",
+        "vendorType": "IAB",
+        "iabId": 873,
+        "consent": false,
+        "legInt": true
+      },
+      {
+        "_id": "5fce8b670d88c7d28d785906",
+        "vendorType": "IAB",
+        "iabId": 911,
+        "consent": false,
+        "legInt": true
+      }
+    ],
+    "specialFeatures": []
+  },
+  "consentLanguage": "EN"
+}

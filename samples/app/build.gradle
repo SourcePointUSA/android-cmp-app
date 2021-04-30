@@ -7,7 +7,7 @@ apply from: rootDir.path + '/gradleutils/test_config.gradle'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.sourcepoint.example_app"
+        applicationId "com.sourcepoint.app.v6"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 2
@@ -39,7 +39,7 @@ android {
 
 dependencies {
 
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.aar'], dir: 'libs')
 
     // kotlin
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
@@ -49,6 +49,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation project(':cmplibrary')
+//    implementation 'com.sourcepoint.cmplibrary:cmplibrary:6.0.1-SNAPSHOT'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 

@@ -1,0 +1,43 @@
+{
+  "accountId": 22,
+  "propertyId": 7639,
+  "propertyHref": "https://tcfv2.mobile.webview",
+  "privacyManagerId": "122058",
+  "uuid": "355cfbe3-7339-449c-a4b3-01eb57a5043b",
+  "meta": "{\"resolved\":true,\"mmsCookies\":[\"_sp_v1_uid=1:993:f81f4266-59a3-4356-917a-bdac91b5d1ff;\",\"_sp_v1_csv=1;\",\"_sp_v1_lt=1:;\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbLKK83J0YlRSkVil4AlqmtrlWIBBrfP6SgAAAA%3D;\",\"_sp_v1_opt=1:;\",\"_sp_v1_data=2:273278:1613638361:0:1:0:1:0:0:72a61b07-9933-4968-9ac2-84528707387a:-1;\"],\"messageId\":\"407177\"}",
+  "actionType": 1,
+  "requestFromPM": true,
+  "pmSaveAndExitVariables": {
+    "privacyManagerId": "122058",
+    "lan": "EN",
+    "categories": [
+      {
+        "_id": "5e87321eb31ef52cd96cc552",
+        "type": "IAB_PURPOSE",
+        "iabId": 1,
+        "consent": true,
+        "legInt": false
+      },
+      {
+        "_id": "5e87321eb31ef52cd96cc554",
+        "type": "IAB_PURPOSE",
+        "iabId": 3,
+        "consent": true,
+        "legInt": false
+      }
+    ],
+    "vendors": [
+      {
+        "_id": "5e37fc3e56a5e60e003a7124",
+        "vendorType": "IAB",
+        "iabId": 15,
+        "consent": true,
+        "legInt": false
+      }
+    ],
+    "specialFeatures": []
+  },
+  "pubData": {},
+  "consentLanguage": "EN",
+  "requestUUID": "a366e923-971b-4387-b24b-5663ff2c9f2a"
+}

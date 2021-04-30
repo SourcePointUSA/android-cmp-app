@@ -4,11 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.sourcepoint.example_app.MainActivity">
+    android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/review_consents"
+        android:id="@+id/review_consents_gdpr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="148dp"
@@ -27,9 +26,36 @@
     <Button
             android:id="@+id/auth_id_activity"
             android:text="@string/authid_activity"
-            app:layout_constraintStart_toStartOf="@id/review_consents"
-            app:layout_constraintEnd_toEndOf="@id/review_consents"
-            app:layout_constraintTop_toBottomOf="@id/review_consents"
+            app:layout_constraintStart_toStartOf="@id/review_consents_gdpr"
+            app:layout_constraintEnd_toEndOf="@id/review_consents_gdpr"
+            app:layout_constraintTop_toBottomOf="@id/review_consents_gdpr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <Button
+            android:id="@+id/custom_consent"
+            android:text="@string/custom_consent"
+            app:layout_constraintStart_toStartOf="@id/review_consents_gdpr"
+            app:layout_constraintEnd_toEndOf="@id/review_consents_gdpr"
+            app:layout_constraintBottom_toTopOf="@id/clear_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <Button
+            android:id="@+id/clear_all"
+            android:text="@string/clear_all_data"
+            app:layout_constraintStart_toStartOf="@id/review_consents_gdpr"
+            app:layout_constraintEnd_toEndOf="@id/review_consents_gdpr"
+            app:layout_constraintBottom_toTopOf="@id/review_consents_ccpa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <Button
+            android:id="@+id/review_consents_ccpa"
+            android:text="@string/review_consents_ccpa"
+            app:layout_constraintStart_toStartOf="@id/review_consents_gdpr"
+            app:layout_constraintEnd_toEndOf="@id/review_consents_gdpr"
+            app:layout_constraintBottom_toTopOf="@id/review_consents_gdpr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
