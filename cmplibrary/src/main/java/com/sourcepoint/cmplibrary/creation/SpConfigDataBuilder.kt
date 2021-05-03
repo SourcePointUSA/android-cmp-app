@@ -1,6 +1,8 @@
 package com.sourcepoint.cmplibrary.creation
 
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
@@ -15,6 +17,8 @@ class SpConfigDataBuilder {
     private val campaigns = mutableListOf<SpCampaign>()
     var accountId by Delegates.notNull<Int>()
     var propertyName by Delegates.notNull<String>()
+    var messLanguage by Delegates.notNull<MessageLanguage>()
+    var pmTab by Delegates.notNull<PMTab>()
 
     operator fun CampaignType.unaryPlus() {
         campaigns.add(SpCampaign(this, emptyList()))
@@ -30,6 +34,14 @@ class SpConfigDataBuilder {
 
     fun addPropertyName(propertyName: String): SpConfigDataBuilder = apply {
         this.propertyName = propertyName
+    }
+
+    fun addPrivacyManagerTab(pmTab: PMTab) = apply {
+        this.pmTab = pmTab
+    }
+
+    fun addMessageLanguage(messLanguage: MessageLanguage) = apply {
+        this.messLanguage = messLanguage
     }
 
     fun addCampaign(
@@ -69,7 +81,9 @@ class SpConfigDataBuilder {
         return SpConfig(
             accountId,
             propertyName,
-            campaigns
+            campaigns,
+            pmTab,
+            messLanguage
         )
     }
 }

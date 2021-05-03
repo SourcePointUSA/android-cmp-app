@@ -52,7 +52,9 @@ class CampaignManagerTest {
         listOf(
             ccpaCamapign,
             gdprCampaign
-        )
+        ),
+        PMTab.PURPOSES,
+        MessageLanguage.ENGLISH
     )
 
     @Before

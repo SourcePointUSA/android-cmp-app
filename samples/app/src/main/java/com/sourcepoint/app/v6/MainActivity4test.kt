@@ -9,7 +9,6 @@ import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.cmplibrary.UnitySpClient
 import com.sourcepoint.cmplibrary.creation.makeConsentLib
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -25,7 +24,6 @@ class MainActivity4test : AppCompatActivity() {
         makeConsentLib(
             spConfig = dataProvider.spConfig,
             activity = this@MainActivity4test,
-            messageLanguage = MessageLanguage.ENGLISH,
             spClient = LocalClient()
         )
     }

@@ -35,6 +35,8 @@ public class MainActivityV6 extends AppCompatActivity {
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
+            .addPrivacyManagerTab(PMTab.FEATURES)
+            .addMessageLanguage(MessageLanguage.ENGLISH)
             .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
             .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
             .build();
@@ -50,8 +52,7 @@ public class MainActivityV6 extends AppCompatActivity {
         spConsentLib = FactoryKt.makeConsentLib(
                 spConfig,
                 this,
-                new LocalClient(),
-                MessageLanguage.ENGLISH
+                new LocalClient()
         );
         findViewById(R.id.review_consents_gdpr).setOnClickListener(_v ->
                 spConsentLib.loadPrivacyManager(
