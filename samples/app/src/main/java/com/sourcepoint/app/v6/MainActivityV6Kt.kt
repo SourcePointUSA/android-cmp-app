@@ -9,6 +9,7 @@ import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.cmplibrary.UnitySpClient
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -24,6 +25,7 @@ class MainActivityV6Kt : AppCompatActivity() {
         activity = this@MainActivityV6Kt
         spClient = LocalClient()
         privacyManagerTab = PMTab.FEATURES
+        messageLanguage = MessageLanguage.ENGLISH
         config {
             accountId = 22
             propertyName = "mobile.multicampaign.demo"

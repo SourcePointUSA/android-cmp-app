@@ -1,5 +1,15 @@
-## 6.0.0 (April, 120, 2021)
-
+## 6.0.0 (April, 30, 2021)
+* Multi-campaigns feature implemented
+* Codebase 100% kotlin
+* Kotlin - Lazy delegate + DSL for creation of the Cmp SDK object
+* Renaming method for PM from `run()` to `loadPrivacyManager()`
+* Java - New builder for creation of the Cmp SDK object
+* Improving Memory footprint reusing the WebViews as much as possible.
+* Added `dispose()` method to release the resources after the `onDestroy` callback gets called
+* Added client object to receive the events from the Cmp SDK
+* Removed all SAM interfaces with the same name `run()`
+* Fix issue - Multiple consent layers on top of each other [#330](https://github.com/SourcePointUSA/android-cmp-app/issues/330)
+* Complete refactor of the architecture to enhance its maintainability and testability
 
 ## 5.3.13 (March, 75, 2021)
 * Removed all the bintray dependencies [#326](https://github.com/SourcePointUSA/android-cmp-app/pull/326)
@@ -17,7 +27,7 @@
 * Fixed an issue that would prevent the Privacy Manager from showing the default tab set on the _Show Options_ action button. #269
 * Improved support to OTT. #277
 * Fixed an issue that caused the `consentLanguage` on the consent string to always be set to `EN` #279
-* Reduced memory footprint by instantianting the WebView only when needed #281
+* Reduced memory footprint by instantiating the WebView only when needed #281
 * Removed dependency on `ConstraingLayout`, making the project AndroidX friendly #284
 
 ## 5.3.9 (September, 9, 2020)

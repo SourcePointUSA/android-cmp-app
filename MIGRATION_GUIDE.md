@@ -1,4 +1,4 @@
-# Migrate to v6 (Unified SDK)
+# Migrate to v6 (Unified SDK) -- Java
 
 In this guide we will cover how to migrate your app to the latest version of Sourcepoint's SDK (v6).
 
@@ -7,8 +7,8 @@ In this guide we will cover how to migrate your app to the latest version of Sou
 Navigate to your build.gradle file and upgrade the `cmplibrary`:
 
 **v6 (Unified SDK)**
-```
-'com.sourcepoint.cmplibrary:cmplibrary:6.0.1-SNAPSHOT'
+```java
+implementation 'com.sourcepoint.cmplibrary:cmplibrary:<latest-version>'
 ```
 
 ## Remove out of date code from project
@@ -79,20 +79,6 @@ private final SpConfig spConfig = new SpConfigDataBuilder()
             .addCampaign(CampaignType.CCPA)
             .build();
 ```
-
-## Retrieve CMP SDK instance
-Create new library:
-```
-private SpConsentLib spConsentLib = null;
-```
-Add the following to `OnCreate`:
-```java
-spConsentLib = FactoryKt.makeConsentLib(
-                spConfig,   // config object
-                this,       // activity
-                MessageLanguage.ENGLISH //or desired language
-        );
-```
 ## Delegate Methods
 Previously, in order to receive events from the CMP SDK, you needed to provide multiple delegates/clients using the sets method available.
 
@@ -119,9 +105,20 @@ class LocalClient implements SpClient {
             spConsentLib.showView(v);  // add the view consent
         }
     }
-
-// set the client
-spConsentLib.setSpClient(new LocalClient());
+```
+## Retrieve CMP SDK instance
+Declare new library:
+```
+private SpConsentLib spConsentLib = null;
+```
+Add the following to `OnCreate`:
+```java
+spConsentLib = FactoryKt.makeConsentLib(
+                spConfig,   // config object
+                this,       // activity
+                new LocalClient(),
+                MessageLanguage.ENGLISH //or desired language
+        );
 ```
 ## Run the consent
 Call `loadMessage` inside `onResume`
@@ -164,18 +161,17 @@ findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib(
 ```
 **v6 (Unified SDK)**
 ```java
-        findViewById(R.id.review_consents_gdpr).setOnClickListener(_v ->
                 spConsentLib.loadPrivacyManager(
                         "10000", //PM id
                         PMTab.PURPOSES, //Initial PM tab to open
                         CampaignType.GDPR //Campaign type
-                ));
-        findViewById(R.id.review_consents_ccpa).setOnClickListener(_v ->
+                );
+
                 spConsentLib.loadPrivacyManager(
                         "20000",
                         PMTab.PURPOSES,
                         CampaignType.CCPA
-                ));
+                );
 ```
 
 # Summary
@@ -197,9 +193,9 @@ Below is a full example of the changes covered in this article:
         spConsentLib = FactoryKt.makeConsentLib(
                 spConfig,
                 this,
+                new LocalClient(),
                 MessageLanguage.ENGLISH
         );
-        spConsentLib.setSpClient(new LocalClient());
     }
 
     @Override
