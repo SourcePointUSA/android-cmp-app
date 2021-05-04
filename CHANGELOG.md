@@ -1,3 +1,6 @@
+## 6.0.0 (May, 124, 2021)
+* PmTam and MessageLanguage have been moved inside the SpConfig object
+
 ## 6.0.0 (April, 30, 2021)
 * Multi-campaigns feature implemented
 * Codebase 100% kotlin

@@ -1,0 +1,1 @@
+* PmTam and MessageLanguage have been moved inside the SpConfig object

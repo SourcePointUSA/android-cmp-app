@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.creation
 
-import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
@@ -18,7 +17,7 @@ class SpConfigDataBuilder {
     private val campaigns = mutableListOf<SpCampaign>()
     var accountId by Delegates.notNull<Int>()
     var propertyName by Delegates.notNull<String>()
-    var messLanguage : MessageLanguage = MessageLanguage.ENGLISH
+    var messLanguage: MessageLanguage = MessageLanguage.ENGLISH
     var pmTab: PMTab = PMTab.FEATURES
 
     operator fun CampaignType.unaryPlus() {

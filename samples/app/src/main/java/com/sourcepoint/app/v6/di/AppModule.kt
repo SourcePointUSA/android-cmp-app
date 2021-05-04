@@ -47,7 +47,7 @@ val appModule = module {
                 pmTab = PMTab.FEATURES
                 messLanguage = MessageLanguage.ENGLISH
                 +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
+//                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
         } else {
             config {
