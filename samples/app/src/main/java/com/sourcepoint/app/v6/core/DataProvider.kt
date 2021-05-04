@@ -10,6 +10,7 @@ interface DataProvider {
     val url : String
     val onlyPm : Boolean
     val gdprPmId : String
+    val ccpaPmId : String
     val spConfig : SpConfig
     companion object
 }
@@ -18,13 +19,21 @@ fun DataProvider.Companion.create(
     context: Context,
     spConfig : SpConfig,
     gdprPmId : String,
+    ccpaPmId : String,
     authId : String?
-) : DataProvider = DataProviderImpl(context, spConfig, gdprPmId, authId)
+) : DataProvider = DataProviderImpl(
+    context = context,
+    spConfig = spConfig,
+    gdprPmId = gdprPmId,
+    ccpaPmId = ccpaPmId,
+    pAuthId = authId
+)
 
 private class DataProviderImpl(
     val context: Context,
     override val spConfig : SpConfig,
     override val gdprPmId : String,
+    override val ccpaPmId : String,
     val pAuthId : String?
 ) : DataProvider {
 

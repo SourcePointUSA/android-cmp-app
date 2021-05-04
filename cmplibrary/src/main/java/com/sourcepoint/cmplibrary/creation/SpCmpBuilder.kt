@@ -12,12 +12,10 @@ import java.lang.ref.WeakReference
 @SpDSL
 class SpCmpBuilder {
 
-    private lateinit var spConfig: SpConfig
+    lateinit var spConfig: SpConfig
     var authId: String? = null
     lateinit var weakReference: WeakReference<Activity>
     var ott: Boolean = false
-    lateinit var privacyManagerTab: PMTab
-    lateinit var messageLanguage: MessageLanguage
     lateinit var activity: Activity
     lateinit var spClient: SpClient
 
@@ -27,12 +25,8 @@ class SpCmpBuilder {
 
     internal fun build(): SpConsentLib {
 
-        if (!this::privacyManagerTab.isInitialized) genericFail("privacyManagerTab param must be initialised!!!")
         if (!this::activity.isInitialized) genericFail("activity param must be initialised!!!")
         if (!this::spConfig.isInitialized) genericFail("spConfig param must be initialised!!!")
-        if (!this::messageLanguage.isInitialized) {
-            messageLanguage = MessageLanguage.ENGLISH
-        }
 
         return makeConsentLib(
             spConfig = spConfig,

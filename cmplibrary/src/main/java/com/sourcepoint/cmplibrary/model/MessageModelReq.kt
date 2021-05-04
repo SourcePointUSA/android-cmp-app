@@ -9,13 +9,13 @@ internal data class Campaigns(val list: List<CampaignReq> = emptyList()) {
 }
 
 internal interface CampaignReq {
-    val targetingParams: String
+    val targetingParams: String?
     val campaignEnv: CampaignEnv
     val campaignType: CampaignType
 }
 
 internal data class CampaignReqImpl(
-    override val targetingParams: String,
+    override val targetingParams: String?,
     override val campaignEnv: CampaignEnv,
     override val campaignType: CampaignType
 ) : CampaignReq

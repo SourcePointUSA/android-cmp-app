@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
-public class MainActivityV6 extends AppCompatActivity {
+public class MainActivityJava extends AppCompatActivity {
 
     private static final String TAG = "**MainActivity";
 

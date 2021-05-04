@@ -18,13 +18,13 @@ Use the factory method to obtain a lazy configuration for v6 (Unified SDK). This
 Kotlin
 ```kotlin
     private val spConsentLib by spConsentLibLazy {
-        activity = this@MainActivityV6Kt
+        activity = this@MainActivityKotlin
         spClient = LocalClient()
-        privacyManagerTab = PMTab.FEATURES
-        messageLanguage = MessageLanguage.ENGLISH
         config {
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
+            pmTab = PMTab.FEATURES
+            messLanguage = MessageLanguage.ENGLISH
             +CampaignType.CCPA
             +CampaignType.GDPR
         }
@@ -38,6 +38,8 @@ Java
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
+            .addPrivacyManagerTab(PMTab.FEATURES)
+            .addMessageLanguage(MessageLanguage.ENGLISH)
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
             .build();
@@ -51,8 +53,7 @@ Java
         spConsentLib = FactoryKt.makeConsentLib(
                 spConfig,
                 this,
-                new LocalClient(),
-                MessageLanguage.ENGLISH
+                new LocalClient()
         );
     }
 ```
@@ -175,15 +176,16 @@ Kotlin
 ```kotlin
 
     private val spConsentLib by spConsentLibLazy {
-        activity = this@MainActivityV6Kt
-        spClient = LocalClient()
-        privacyManagerTab = PMTab.FEATURES
-        config {
-            accountId = 22
-            propertyName = "mobile.multicampaign.demo"
-            +(CampaignType.CCPA to listOf(("location" to "US")))
-            +(CampaignType.GDPR)// to listOf(("location" to "EU")))
-        }
+            activity = this@MainActivityKotlin
+            spClient = LocalClient()
+            config {
+                accountId = 22
+                propertyName = "mobile.multicampaign.demo"
+                pmTab = PMTab.FEATURES
+                messLanguage = MessageLanguage.ENGLISH
+                +(CampaignType.GDPR)
+                +(CampaignType.CCPA to listOf(("location" to "US")))
+            }
     }
 
     override fun onResume() {
@@ -216,8 +218,10 @@ Java
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addCampaign(CampaignType.GDPR)
-            .addCampaign(CampaignType.CCPA)
+            .addPrivacyManagerTab(PMTab.FEATURES)
+            .addMessageLanguage(MessageLanguage.ENGLISH)
+            .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
+            .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
             .build();
 
     private SpConsentLib spConsentLib = null;
@@ -229,8 +233,7 @@ Java
         spConsentLib = FactoryKt.makeConsentLib(
                 spConfig,
                 this,
-                new LocalClient(),
-                MessageLanguage.ENGLISH
+                new LocalClient()
         );
     }
 
@@ -289,12 +292,13 @@ Targeting params allow you to set arbitrary key/value pairs. These key/value pai
 Kotlin: customize a unity plus operator to add a list of targeting parameters per campaign type.
 ```kotlin
     private val spConsentLib by spConsentLibLazy {
-        activity = this@MainActivityV6Kt
+        activity = this@MainActivityKotlin
         spClient = LocalClient()
-        privacyManagerTab = PMTab.FEATURES
         config {
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
+            pmTab = PMTab.FEATURES
+            messLanguage = MessageLanguage.ENGLISH
             +(CampaignType.GDPR to listOf(("location" to "EU")))
             +(CampaignType.CCPA to listOf(("location" to "US")))
         }
@@ -305,6 +309,8 @@ Java: Use `addCampaign` method to add a list of targeting parameters per campaig
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
+            .addPrivacyManagerTab(PMTab.FEATURES)
+            .addMessageLanguage(MessageLanguage.ENGLISH)
             .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
             .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
             .build();

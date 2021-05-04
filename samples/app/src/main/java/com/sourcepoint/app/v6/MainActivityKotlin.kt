@@ -17,21 +17,22 @@ import com.sourcepoint.cmplibrary.util.clearAllData
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
-class MainActivityV6Kt : AppCompatActivity() {
+class MainActivityKotlin : AppCompatActivity() {
 
     private val dataProvider by inject<DataProvider>()
 
     private val spConsentLib by spConsentLibLazy {
-        activity = this@MainActivityV6Kt
+        activity = this@MainActivityKotlin
         spClient = LocalClient()
-        privacyManagerTab = PMTab.FEATURES
-        messageLanguage = MessageLanguage.ENGLISH
-        config {
-            accountId = 22
-            propertyName = "mobile.multicampaign.demo"
-            +(CampaignType.CCPA to listOf(("location" to "US")))
-            +(CampaignType.GDPR)// to listOf(("location" to "EU")))
-        }
+        spConfig = dataProvider.spConfig
+//        config {
+//            accountId = 22
+//            propertyName = "mobile.multicampaign.demo"
+//            pmTab = PMTab.FEATURES
+//            messLanguage = MessageLanguage.ENGLISH
+//            +(CampaignType.GDPR)
+//            +(CampaignType.CCPA to listOf(("location" to "US")))
+//        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,14 +40,14 @@ class MainActivityV6Kt : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
-                "488393",
+                dataProvider.gdprPmId,
                 PMTab.PURPOSES,
                 CampaignType.GDPR
             )
         }
         findViewById<View>(R.id.review_consents_ccpa).setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
-                "14967",
+                dataProvider.ccpaPmId,
                 PMTab.PURPOSES,
                 CampaignType.CCPA
             )
