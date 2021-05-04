@@ -12,13 +12,10 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.Ccpa
-import com.sourcepoint.cmplibrary.model.Gdpr
-import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.*
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
-import com.sourcepoint.cmplibrary.model.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.util.userConsents
 import org.json.JSONObject
 import org.junit.Test
@@ -45,7 +42,9 @@ class SpUtilsTest {
         listOf(
             ccpaCamapign,
             gdprCampaign
-        )
+        ),
+        PMTab.FEATURES,
+        MessageLanguage.ENGLISH
     )
 
     @Test

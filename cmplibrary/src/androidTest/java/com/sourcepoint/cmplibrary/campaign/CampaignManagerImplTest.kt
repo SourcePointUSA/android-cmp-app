@@ -61,7 +61,9 @@ class CampaignManagerImplTest {
         listOf(
             ccpaCamapign,
             gdprCampaign
-        )
+        ),
+        PMTab.FEATURES,
+        MessageLanguage.ENGLISH
     )
 
     private val cm by lazy {
