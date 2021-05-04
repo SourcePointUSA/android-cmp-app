@@ -28,7 +28,6 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
@@ -38,8 +37,7 @@ import java.lang.ref.WeakReference
 fun makeConsentLib(
     spConfig: SpConfig,
     activity: Activity,
-    spClient: SpClient,
-    messageLanguage: MessageLanguage
+    spClient: SpClient
 ): SpConsentLib {
 
     val env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD
@@ -49,7 +47,7 @@ fun makeConsentLib(
     val dataStorageGdpr = DataStorageGdpr.create(appCtx)
     val dataStorageCcpa = DataStorageCcpa.create(appCtx)
     val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
-    val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig, messageLanguage)
+    val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig, spConfig.messageLanguage)
     val errorManager = errorMessageManager(campaignManager, client)
     val logger = createLogger(errorManager)
     val jsonConverter = JsonConverter.create()

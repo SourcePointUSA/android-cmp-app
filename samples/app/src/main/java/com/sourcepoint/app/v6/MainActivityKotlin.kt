@@ -17,36 +17,37 @@ import com.sourcepoint.cmplibrary.util.clearAllData
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
-class MainActivityV6Kt : AppCompatActivity() {
+class MainActivityKotlin : AppCompatActivity() {
 
     private val dataProvider by inject<DataProvider>()
 
-    private val spConsentLib2 by spConsentLibLazy {
-        activity = this@MainActivityV6Kt
+    private val spConsentLib by spConsentLibLazy {
+        activity = this@MainActivityKotlin
         spClient = LocalClient()
-        privacyManagerTab = PMTab.FEATURES
-        messageLanguage = MessageLanguage.ENGLISH
-        config {
-            accountId = 22
-            propertyName = "mobile.multicampaign.demo"
+        spConfig = dataProvider.spConfig
+//        config {
+//            accountId = 22
+//            propertyName = "mobile.multicampaign.demo"
+//            pmTab = PMTab.FEATURES
+//            messLanguage = MessageLanguage.ENGLISH
+//            +(CampaignType.GDPR)
 //            +(CampaignType.CCPA to listOf(("location" to "US")))
-            +(CampaignType.GDPR)// to listOf(("location" to "EU")))
-        }
+//        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
-            spConsentLib2.loadPrivacyManager(
-                "488393",
+            spConsentLib.loadPrivacyManager(
+                dataProvider.gdprPmId,
                 PMTab.PURPOSES,
                 CampaignType.GDPR
             )
         }
         findViewById<View>(R.id.review_consents_ccpa).setOnClickListener { _v: View? ->
-            spConsentLib2.loadPrivacyManager(
-                "14967",
+            spConsentLib.loadPrivacyManager(
+                dataProvider.ccpaPmId,
                 PMTab.PURPOSES,
                 CampaignType.CCPA
             )
@@ -56,7 +57,7 @@ class MainActivityV6Kt : AppCompatActivity() {
             startActivity(Intent(this, MainActivityAuthId::class.java))
         }
         findViewById<View>(R.id.custom_consent).setOnClickListener { _v: View? ->
-            spConsentLib2.customConsentGDPR(
+            spConsentLib.customConsentGDPR(
                 vendors = listOf("5ff4d000a228633ac048be41"),
                 categories = listOf("608bad95d08d3112188e0e36", "608bad95d08d3112188e0e2f"),
                 legIntCategories = emptyList(),
@@ -68,13 +69,13 @@ class MainActivityV6Kt : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (!dataProvider.onlyPm) {
-            spConsentLib2.loadMessage()
+            spConsentLib.loadMessage()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        spConsentLib2.dispose()
+        spConsentLib.dispose()
     }
 
     internal inner class LocalClient : UnitySpClient {
@@ -92,11 +93,11 @@ class MainActivityV6Kt : AppCompatActivity() {
         }
 
         override fun onUIFinished(view: View) {
-            spConsentLib2.removeView(view)
+            spConsentLib.removeView(view)
         }
 
         override fun onUIReady(view: View) {
-            spConsentLib2.showView(view)
+            spConsentLib.showView(view)
         }
 
         override fun onAction(view: View, actionType: ActionType) {

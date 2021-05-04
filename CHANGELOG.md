@@ -11,7 +11,7 @@
 * Fix issue - Multiple consent layers on top of each other [#330](https://github.com/SourcePointUSA/android-cmp-app/issues/330)
 * Complete refactor of the architecture to enhance its maintainability and testability
 
-## 5.3.13 (March, 75, 2021)
+## 5.3.13 (March, 15, 2021)
 * Removed all the bintray dependencies [#326](https://github.com/SourcePointUSA/android-cmp-app/pull/326)
 
 ## 5.3.12 (January, 21, 2021)

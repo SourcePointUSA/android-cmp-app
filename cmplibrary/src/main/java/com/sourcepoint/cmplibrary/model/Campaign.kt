@@ -22,7 +22,7 @@ internal fun CampaignTemplate.toCampaignReqImpl(
     campaignEnv: CampaignEnv
 ): CampaignReqImpl {
     return CampaignReqImpl(
-        targetingParams = targetingParams.toJsonObjStringify(),
+        targetingParams = if (targetingParams.isEmpty()) null else targetingParams.toJsonObjStringify(),
         campaignEnv = campaignEnv,
         campaignType = campaignType
     )

@@ -1,0 +1,1 @@
+* PmTab and MessageLanguage variables have been moved inside the SpConfig object

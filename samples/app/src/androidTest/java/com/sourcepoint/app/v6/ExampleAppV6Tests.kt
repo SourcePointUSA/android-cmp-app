@@ -46,7 +46,7 @@ class ExampleAppV6Tests {
     @Test
     fun GIVEN_a_camapignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111"))
+        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111", ccpaPmId = "13111"))
 
         scenario = launchActivity()
 
@@ -57,7 +57,7 @@ class ExampleAppV6Tests {
     @Test
     fun GIVEN_a_camapignList_tap_SETTINGS_all_legislation() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111"))
+        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111", ccpaPmId = "13111"))
 
         scenario = launchActivity()
 
@@ -286,6 +286,7 @@ class ExampleAppV6Tests {
     private fun mockModule(
         spConfig: SpConfig,
         gdprPmId: String,
+        ccpaPmId: String,
         uuid: String? = null,
         url: String = "",
         onlyPm: Boolean = false
@@ -298,6 +299,7 @@ class ExampleAppV6Tests {
                     override val onlyPm: Boolean = onlyPm
                     override val spConfig: SpConfig = spConfig
                     override val gdprPmId: String = gdprPmId
+                    override val ccpaPmId: String = ccpaPmId
                 }
             }
         }
