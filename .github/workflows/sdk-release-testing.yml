@@ -2,7 +2,7 @@ name: SDK Release - Test workflow
 
 on:
   push:
-    branches:  [ unified-v6.0.1 ] #[ release/* ]
+    branches:  [ disabled ] #[ release/* ]
 #    paths:
 #      - '!*.yml'
 #      - '!README.md'
