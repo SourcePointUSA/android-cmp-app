@@ -5,6 +5,8 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
+import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
@@ -35,7 +37,9 @@ class ErrorMessageManagerImplTest {
     private val spConfig = SpConfig(
         accountId = 22,
         propertyName = "http://dev.local",
-        campaigns = listOf(gdpr)
+        campaigns = listOf(gdpr),
+        pmTab = PMTab.PURPOSES,
+        messageLanguage = MessageLanguage.ENGLISH
     )
 
     @MockK

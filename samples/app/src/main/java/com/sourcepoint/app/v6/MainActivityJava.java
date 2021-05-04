@@ -16,22 +16,29 @@ import com.sourcepoint.cmplibrary.model.PMTab;
 import com.sourcepoint.cmplibrary.model.exposed.ActionType;
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents;
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig;
+import com.sourcepoint.cmplibrary.model.exposed.TargetingParam;
 import com.sourcepoint.cmplibrary.util.SpUtils;
 import kotlin.Lazy;
+import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.koin.java.KoinJavaComponent.inject;
 
-public class MainActivityV6 extends AppCompatActivity {
+public class MainActivityJava extends AppCompatActivity {
 
     private static final String TAG = "**MainActivity";
 
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addCampaign(CampaignType.GDPR)
-            .addCampaign(CampaignType.CCPA)
+            .addPrivacyManagerTab(PMTab.FEATURES)
+            .addMessageLanguage(MessageLanguage.ENGLISH)
+            .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
+            .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
             .build();
 
     private SpConsentLib spConsentLib = null;
@@ -45,8 +52,7 @@ public class MainActivityV6 extends AppCompatActivity {
         spConsentLib = FactoryKt.makeConsentLib(
                 spConfig,
                 this,
-                new LocalClient(),
-                MessageLanguage.ENGLISH
+                new LocalClient()
         );
         findViewById(R.id.review_consents_gdpr).setOnClickListener(_v ->
                 spConsentLib.loadPrivacyManager(
@@ -65,6 +71,14 @@ public class MainActivityV6 extends AppCompatActivity {
         );
         findViewById(R.id.auth_id_activity).setOnClickListener(_v ->
                 startActivity(new Intent(this, MainActivityAuthId.class))
+        );
+        findViewById(R.id.custom_consent).setOnClickListener(_v ->
+                spConsentLib.customConsentGDPR(
+                        Arrays.asList("5ff4d000a228633ac048be41"),
+                        Arrays.asList("608bad95d08d3112188e0e36", "608bad95d08d3112188e0e2f"),
+                        new ArrayList<>(),
+                        (SPConsents) -> {  return Unit.INSTANCE;  }
+                )
         );
     }
 

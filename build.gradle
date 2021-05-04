@@ -7,6 +7,7 @@ buildscript {
     repositories {
         google()
         maven { url "https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/"}
+//        maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
         mavenCentral()
         maven {
             url "https://nexus.pentaho.org/content/groups/omni"
@@ -26,10 +27,10 @@ buildscript {
 }
 
 plugins {
-    id 'io.github.dryrum.update-changelog' version '0.6.3'
-    id 'io.github.dryrum.replace-in-file' version '0.6.3'
-    id 'io.github.dryrum.git-utils' version '0.6.3'
-    id 'io.github.dryrum.bump-version-code' version '0.6.3'
+    id 'io.github.dryrum.update-changelog' version '0.6.4'
+    id 'io.github.dryrum.replace-in-file' version '0.6.4'
+    id 'io.github.dryrum.git-utils' version '0.6.4'
+    id 'io.github.dryrum.bump-version-code' version '0.6.4'
 }
 
 apply plugin: 'io.codearte.nexus-staging'
@@ -38,6 +39,7 @@ allprojects {
     repositories {
         google()
         maven { url "https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/" }
+//        maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
         mavenCentral()
         maven {
             url "https://nexus.pentaho.org/content/groups/omni"
