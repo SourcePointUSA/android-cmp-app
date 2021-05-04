@@ -1,6 +1,3 @@
-## 6.0.0 (May, 124, 2021)
-* PmTam and MessageLanguage have been moved inside the SpConfig object
-
 ## 6.0.0 (April, 30, 2021)
 * Multi-campaigns feature implemented
 * Codebase 100% kotlin
@@ -14,7 +11,7 @@
 * Fix issue - Multiple consent layers on top of each other [#330](https://github.com/SourcePointUSA/android-cmp-app/issues/330)
 * Complete refactor of the architecture to enhance its maintainability and testability
 
-## 5.3.13 (March, 75, 2021)
+## 5.3.13 (March, 15, 2021)
 * Removed all the bintray dependencies [#326](https://github.com/SourcePointUSA/android-cmp-app/pull/326)
 
 ## 5.3.12 (January, 21, 2021)
