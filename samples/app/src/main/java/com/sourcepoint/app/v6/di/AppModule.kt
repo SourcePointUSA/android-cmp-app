@@ -1,7 +1,6 @@
 package com.sourcepoint.app.v6.di
 
 import android.content.Context
-import com.sourcepoint.app.v6.BuildConfig
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.core.create
 import com.sourcepoint.cmplibrary.creation.config
@@ -15,11 +14,13 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.util.* // ktlint-disable
 
+const val PROD = true
+
 val appModule = module {
 
     single<DataProvider> {
-        val gdprPmId = if (BuildConfig.DEBUG) "13111" else "488393"
-        val ccpaPmId = if (BuildConfig.DEBUG) "14967" else "14967"
+        val gdprPmId = if (PROD) "488393" else "13111"
+        val ccpaPmId = if (PROD) "14967" else "14967"
         DataProvider.create(
             context = androidApplication(),
             spConfig = get(),
@@ -40,14 +41,13 @@ val appModule = module {
     }
 
     single<SpConfig> {
-        if (BuildConfig.DEBUG) {
+        if (PROD) {
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
                 pmTab = PMTab.FEATURES
                 messLanguage = MessageLanguage.ENGLISH
                 +(CampaignType.GDPR)
-//                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
         } else {
             config {
@@ -56,7 +56,9 @@ val appModule = module {
                 pmTab = PMTab.FEATURES
                 messLanguage = MessageLanguage.ENGLISH
                 +(CampaignType.GDPR)
+                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
+
         }
     }
 }
