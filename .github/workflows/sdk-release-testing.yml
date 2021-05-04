@@ -26,7 +26,7 @@ jobs:
           format: (MMMM, DD, YYYY)
       - name: Print date
         run: |
-          echo ${{ steps.current-time.outputs.formattedTime }}
+          echo "${{ steps.current-time.outputs.formattedTime }}"
 #          echo "VERSION_NAME=$(cat app/version.txt)" >> $GITHUB_ENV
 #      - name: Update CHANGELOG.md
 #        run: ./gradlew cmplibrary:changeLogUpdate
