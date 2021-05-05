@@ -9,7 +9,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.Ccpa
 import com.sourcepoint.cmplibrary.model.Gdpr
 import com.sourcepoint.cmplibrary.model.toTreeMap
-import com.sourcepoint.cmplibrary.model.toUnifiedMessageRespDto
+import com.sourcepoint.cmplibrary.model.ext.toUnifiedMessageRespDto
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Test

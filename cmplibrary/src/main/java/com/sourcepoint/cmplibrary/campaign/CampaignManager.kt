@@ -15,8 +15,10 @@ import com.sourcepoint.cmplibrary.model.Campaigns
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import com.sourcepoint.cmplibrary.model.toCCPAUserConsent
-import com.sourcepoint.cmplibrary.model.toGDPRUserConsent
+import com.sourcepoint.cmplibrary.model.ext.toCCPA
+import com.sourcepoint.cmplibrary.model.ext.toGDPR
+import com.sourcepoint.cmplibrary.model.ext.toCCPAUserConsent
+import com.sourcepoint.cmplibrary.model.ext.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
 

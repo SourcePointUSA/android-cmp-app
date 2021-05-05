@@ -9,7 +9,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.ext.toJsonObject
-import com.sourcepoint.cmplibrary.model.toConsentAction
+import com.sourcepoint.cmplibrary.model.ext.toConsentAction
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockCall
 import com.sourcepoint.cmplibrary.util.file2String

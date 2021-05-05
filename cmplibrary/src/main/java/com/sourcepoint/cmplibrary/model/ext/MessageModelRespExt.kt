@@ -1,9 +1,15 @@
-package com.sourcepoint.cmplibrary.model
+package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.*
+import com.sourcepoint.cmplibrary.model.CampaignResp
+import com.sourcepoint.cmplibrary.model.Ccpa
+import com.sourcepoint.cmplibrary.model.GDPRConsent
+import com.sourcepoint.cmplibrary.model.Gdpr
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.HttpUrl
 import org.json.JSONObject
