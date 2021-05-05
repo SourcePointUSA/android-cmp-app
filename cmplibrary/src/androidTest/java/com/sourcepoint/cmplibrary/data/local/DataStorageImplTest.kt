@@ -39,5 +39,4 @@ class DataStorageImplTest {
             getPropertyId().assertEquals(100)
         }
     }
-
 }
