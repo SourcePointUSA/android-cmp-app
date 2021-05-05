@@ -7,7 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.cmplibrary.UnitySpClient
-import com.sourcepoint.cmplibrary.creation.makeConsentLib
+import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
@@ -20,26 +20,24 @@ class MainActivity4test : AppCompatActivity() {
 
     private val dataProvider by inject<DataProvider>()
 
-    private val spConsentLib2 by lazy {
-        makeConsentLib(
-            spConfig = dataProvider.spConfig,
-            activity = this@MainActivity4test,
-            spClient = LocalClient()
-        )
+    private val spConsentLib by spConsentLibLazy {
+        activity = this@MainActivity4test
+        spClient = LocalClient()
+        spConfig = dataProvider.spConfig
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
-            spConsentLib2.loadPrivacyManager(
+            spConsentLib.loadPrivacyManager(
                 dataProvider.gdprPmId,
                 PMTab.PURPOSES,
                 CampaignType.GDPR
             )
         }
         findViewById<View>(R.id.review_consents_ccpa).setOnClickListener { _v: View? ->
-            spConsentLib2.loadPrivacyManager(
+            spConsentLib.loadPrivacyManager(
                 "14967",
                 PMTab.PURPOSES,
                 CampaignType.CCPA
@@ -50,7 +48,7 @@ class MainActivity4test : AppCompatActivity() {
             startActivity(Intent(this, MainActivityAuthId::class.java))
         }
         findViewById<View>(R.id.custom_consent).setOnClickListener { _v: View? ->
-            spConsentLib2.customConsentGDPR(
+            spConsentLib.customConsentGDPR(
                 vendors = emptyList(),
                 categories = emptyList(),
                 legIntCategories = emptyList(),//listOf("5fbe6f090d88c7d28d765e1e"),
@@ -62,13 +60,13 @@ class MainActivity4test : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (!dataProvider.onlyPm) {
-            spConsentLib2.loadMessage()
+            spConsentLib.loadMessage()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        spConsentLib2.dispose()
+        spConsentLib.dispose()
     }
 
     internal inner class LocalClient : UnitySpClient {
@@ -86,11 +84,11 @@ class MainActivity4test : AppCompatActivity() {
         }
 
         override fun onUIFinished(view: View) {
-            spConsentLib2.removeView(view)
+            spConsentLib.removeView(view)
         }
 
         override fun onUIReady(view: View) {
-            spConsentLib2.showView(view)
+            spConsentLib.showView(view)
         }
 
         override fun onAction(view: View, actionType: ActionType) {
