@@ -1,9 +1,14 @@
-package com.sourcepoint.cmplibrary.model
+package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.CampaignResp
+import com.sourcepoint.cmplibrary.model.Ccpa
+import com.sourcepoint.cmplibrary.model.Gdpr
+import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.HttpUrl
 import org.json.JSONObject
@@ -76,25 +81,11 @@ internal fun Map<String, Any?>.toGDPR(): Gdpr {
         message = message,
         url = url?.let { HttpUrl.parse(it) },
         messageMetaData = messageMetaData,
-        userConsent = getMap("userConsent")?.toGDPRUserConsent1203() ?: failParam("GDPRUserConsent")
+        userConsent = getMap("userConsent")?.toGDPRUserConsent() ?: failParam("GDPRUserConsent")
     )
 }
 
 internal fun String.toGDPR(): Gdpr? {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
     return map.toGDPR()
-}
-
-internal fun Map<String, Any?>.toGDPRUserConsent1203(): GDPRConsent {
-
-    val tcData: Map<String, Any?> = getMap("TCData") ?: emptyMap()
-    val vendorsGrants = getMap("grants") ?: failParam("grants")
-    val euConsent = getFieldValue<String>("euconsent") ?: failParam("euconsent")
-
-    return GDPRConsent(
-        thisContent = JSONObject(this),
-        tcData = tcData,
-        vendorsGrants = vendorsGrants,
-        euConsent = euConsent
-    )
 }

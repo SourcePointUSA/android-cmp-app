@@ -72,9 +72,11 @@ private void removeView(View view) {
 Use the data builder to obtain a configuration for v6 (Unified SDK). This contains your organization's account information and includes the type of campaigns that will be run on this property. This object will be called when you instantiate your CMP SDK.
 
 ```java
-private final SpConfig spConfig = new SpConfigDataBuilder()
+    private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
+            .addPrivacyManagerTab(PMTab.FEATURES)               //or desired tab
+            .addMessageLanguage(MessageLanguage.ENGLISH)        //or desired language
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
             .build();
@@ -116,8 +118,7 @@ Add the following to `OnCreate`:
 spConsentLib = FactoryKt.makeConsentLib(
                 spConfig,   // config object
                 this,       // activity
-                new LocalClient(),
-                MessageLanguage.ENGLISH //or desired language
+                new LocalClient()
         );
 ```
 ## Run the consent
@@ -157,7 +158,7 @@ Replace `showPM` with the Privacy Managers that will be shown for each campaign
 
 **Original version**
 ```java
-findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib().showPm());
+                buildGDPRConsentLib().showPm();
 ```
 **v6 (Unified SDK)**
 ```java
@@ -177,9 +178,11 @@ findViewById(R.id.review_consents).setOnClickListener(_v -> buildGDPRConsentLib(
 # Summary
 Below is a full example of the changes covered in this article:
 ```java
-	private final SpConfig spConfig = new SpConfigDataBuilder()
+    private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
+            .addPrivacyManagerTab(PMTab.FEATURES)
+            .addMessageLanguage(MessageLanguage.ENGLISH)
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
             .build();
@@ -193,8 +196,7 @@ Below is a full example of the changes covered in this article:
         spConsentLib = FactoryKt.makeConsentLib(
                 spConfig,
                 this,
-                new LocalClient(),
-                MessageLanguage.ENGLISH
+                new LocalClient()
         );
     }
 

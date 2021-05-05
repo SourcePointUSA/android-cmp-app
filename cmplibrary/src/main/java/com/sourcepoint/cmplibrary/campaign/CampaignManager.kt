@@ -15,8 +15,10 @@ import com.sourcepoint.cmplibrary.model.Campaigns
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import com.sourcepoint.cmplibrary.model.toCCPAUserConsent
-import com.sourcepoint.cmplibrary.model.toGDPRUserConsent
+import com.sourcepoint.cmplibrary.model.ext.toCCPA
+import com.sourcepoint.cmplibrary.model.ext.toCCPAUserConsent
+import com.sourcepoint.cmplibrary.model.ext.toGDPR
+import com.sourcepoint.cmplibrary.model.ext.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
 
@@ -103,11 +105,11 @@ private class CampaignManagerImpl(
     }
 
     override fun getGdpr(): Either<Gdpr> = check {
-        dataStorage.getGdpr1203()?.toGDPR() ?: fail("GDPR is not stored in memory!!!")
+        dataStorage.getGdpr()?.toGDPR() ?: fail("GDPR is not stored in memory!!!")
     }
 
     override fun getCcpa(): Either<Ccpa> = check {
-        dataStorage.getCcpa1203()?.toCCPA() ?: fail("CCPA is not stored in memory!!!")
+        dataStorage.getCcpa()?.toCCPA() ?: fail("CCPA is not stored in memory!!!")
     }
 
     override fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate> = check {
@@ -216,12 +218,12 @@ private class CampaignManagerImpl(
     }
 
     override fun saveGdpr(gdpr: Gdpr) {
-        dataStorage.saveGdpr1203(gdpr.thisContent.toString())
+        dataStorage.saveGdpr(gdpr.thisContent.toString())
         dataStorage.saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
     }
 
     override fun saveCcpa(ccpa: Ccpa) {
-        dataStorage.saveCcpa1203(ccpa.thisContent.toString())
+        dataStorage.saveCcpa(ccpa.thisContent.toString())
         dataStorage.saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
     }
 

@@ -14,13 +14,11 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.util.* // ktlint-disable
 
-const val PROD = true
-
 val appModule = module {
 
     single<DataProvider> {
-        val gdprPmId = if (PROD) "488393" else "13111"
-        val ccpaPmId = if (PROD) "14967" else "14967"
+        val gdprPmId = if (get(qualifier = named("prod"))) "13111" else "13111"
+        val ccpaPmId = if (get(qualifier = named("prod"))) "14967" else "14967"
         DataProvider.create(
             context = androidApplication(),
             spConfig = get(),
@@ -41,7 +39,7 @@ val appModule = module {
     }
 
     single<SpConfig> {
-        if (PROD) {
+        if (get(qualifier = named("prod"))) {
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
@@ -61,4 +59,6 @@ val appModule = module {
 
         }
     }
+
+    single(qualifier = named("prod")) { true }
 }

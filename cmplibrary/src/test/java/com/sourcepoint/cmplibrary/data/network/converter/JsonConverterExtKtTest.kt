@@ -8,8 +8,8 @@ import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2S
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.Ccpa
 import com.sourcepoint.cmplibrary.model.Gdpr
+import com.sourcepoint.cmplibrary.model.ext.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.model.toTreeMap
-import com.sourcepoint.cmplibrary.model.toUnifiedMessageRespDto
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Test
@@ -36,7 +36,7 @@ class JsonConverterExtKtTest {
             applies.assertTrue()
             userConsent.also {
                 it.tcData.assertNotNull()
-                it.euConsent.contains("CPEpDOrPEpDOrHIABCENBVCgAAAAAH_AAAYgAAAOQA").assertTrue()
+                it.euconsent.contains("CPEpDOrPEpDOrHIABCENBVCgAAAAAH_AAAYgAAAOQA").assertTrue()
             }
         }
 

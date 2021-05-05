@@ -6,6 +6,8 @@ import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.ext.toConsentAction
+import com.sourcepoint.cmplibrary.model.ext.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
 
