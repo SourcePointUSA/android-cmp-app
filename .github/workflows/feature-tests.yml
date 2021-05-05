@@ -2,14 +2,9 @@ name: Feature tests
 on:
   push:
     branches: [ "*tests*" ]
-#    paths:
-#      - '!README.md'
-#      - '!release_note.txt'
-#      - '!samples/nativemessage/*'
-  pull_request:
-#    branches: [ develop ]
-#    paths:
-#      - '!README.md'
+    paths:
+      - '!README.md'
+      - '!release_note.txt'
 #      - '!samples/nativemessage/*'
 jobs:
   unit-test-cmplib:
