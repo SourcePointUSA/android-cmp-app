@@ -2,8 +2,8 @@ name: Feature tests
 on:
   push:
     branches: [ "*tests*" ]
-    paths:
-      - '!README.md'
+#    paths:
+#      - '!README.md'
 #      - '!release_note.txt'
 #      - '!samples/nativemessage/*'
 
