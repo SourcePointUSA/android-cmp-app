@@ -2,13 +2,13 @@ name: Feature tests
 on:
   push:
     branches: [ "*tests*" ]
-#    paths:
-#      - '!README.md'
+    paths:
+      - '!README.md'
 #      - '!release_note.txt'
 #      - '!samples/nativemessage/*'
 
 jobs:
-  unit-test-cmplib:
+  UI-and-Unit-test-cmplib:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2

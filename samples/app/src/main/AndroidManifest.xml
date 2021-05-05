@@ -12,7 +12,7 @@
             android:supportsRtl="true"
             android:name=".App"
             android:theme="@style/AppTheme">
-        <activity android:name=".MainActivityKotlin">
+        <activity android:name=".MainActivityJava">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -21,7 +21,7 @@
         </activity>
         <activity android:name=".MainActivity4test">
         </activity>
-        <activity android:name=".MainActivityJava">
+        <activity android:name=".MainActivityKotlin">
         </activity>
         <activity android:name=".MainActivityAuthId">
         </activity>
