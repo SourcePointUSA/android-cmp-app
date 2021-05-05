@@ -105,11 +105,11 @@ private class CampaignManagerImpl(
     }
 
     override fun getGdpr(): Either<Gdpr> = check {
-        dataStorage.getGdpr1203()?.toGDPR() ?: fail("GDPR is not stored in memory!!!")
+        dataStorage.getGdpr()?.toGDPR() ?: fail("GDPR is not stored in memory!!!")
     }
 
     override fun getCcpa(): Either<Ccpa> = check {
-        dataStorage.getCcpa1203()?.toCCPA() ?: fail("CCPA is not stored in memory!!!")
+        dataStorage.getCcpa()?.toCCPA() ?: fail("CCPA is not stored in memory!!!")
     }
 
     override fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate> = check {
@@ -218,12 +218,12 @@ private class CampaignManagerImpl(
     }
 
     override fun saveGdpr(gdpr: Gdpr) {
-        dataStorage.saveGdpr1203(gdpr.thisContent.toString())
+        dataStorage.saveGdpr(gdpr.thisContent.toString())
         dataStorage.saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
     }
 
     override fun saveCcpa(ccpa: Ccpa) {
-        dataStorage.saveCcpa1203(ccpa.thisContent.toString())
+        dataStorage.saveCcpa(ccpa.thisContent.toString())
         dataStorage.saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
     }
 

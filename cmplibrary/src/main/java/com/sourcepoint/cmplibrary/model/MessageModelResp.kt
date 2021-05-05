@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
 import okhttp3.HttpUrl
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -47,13 +48,6 @@ internal data class Ccpa(
     val userConsent: CCPAConsent,
     override val type: String = CampaignType.CCPA.name,
 ) : CampaignResp()
-
-internal data class GDPRConsent(
-    var euConsent: String = "",
-    var tcData: Map<String, Any?> = emptyMap(),
-    var vendorsGrants: Map<String, Any?> = emptyMap(),
-    val thisContent: JSONObject = JSONObject()
-)
 
 internal fun String.getAppliedLegislation(): CampaignType {
     return when (this.toLowerCase(Locale.getDefault())) {

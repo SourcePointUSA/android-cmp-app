@@ -38,7 +38,7 @@ class DataStorageGdprImplTest {
         storage.saveEuConsent("eu")
         storage.saveMetaData("meta")
         storage.saveAppliedLegislation("GDPR")
-        storage.saveGdpr1203("{\"type\":\"GDPR\"}")
+        storage.saveGdpr("{\"type\":\"GDPR\"}")
         storage.saveTcData(getMap())
 
         storage.getAuthId().assertEquals("auth")
@@ -46,7 +46,7 @@ class DataStorageGdprImplTest {
         storage.getEuConsent().assertEquals("eu")
         storage.getMetaData().assertEquals("meta")
         storage.getAppliedLegislation().assertEquals("GDPR")
-        storage.getGdpr1203().assertEquals("{\"type\":\"GDPR\"}")
+        storage.getGdpr().assertEquals("{\"type\":\"GDPR\"}")
         storage.getTcData().assertEquals(getMap())
 
         storage.clearInternalData()
@@ -60,7 +60,7 @@ class DataStorageGdprImplTest {
         /** clearInternalData DOES NOT delete these prefs */
         storage.getAppliedLegislation().assertEquals("GDPR")
         storage.getTcData().assertEquals(getMap())
-        storage.getGdpr1203().assertEquals("{\"type\":\"GDPR\"}")
+        storage.getGdpr().assertEquals("{\"type\":\"GDPR\"}")
     }
 
     private fun getMap(): TreeMap<String, String> {

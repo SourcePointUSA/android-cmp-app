@@ -131,19 +131,19 @@ internal class MockDataStorage : DataStorage {
         TODO("Not yet implemented")
     }
 
-    override fun saveGdpr1203(value: String) {
+    override fun saveGdpr(value: String) {
         TODO("Not yet implemented")
     }
 
-    override fun getGdpr1203(): String? {
+    override fun getGdpr(): String? {
         TODO("Not yet implemented")
     }
 
-    override fun saveCcpa1203(value: String) {
+    override fun saveCcpa(value: String) {
         TODO("Not yet implemented")
     }
 
-    override fun getCcpa1203(): String? {
+    override fun getCcpa(): String? {
         TODO("Not yet implemented")
     }
 

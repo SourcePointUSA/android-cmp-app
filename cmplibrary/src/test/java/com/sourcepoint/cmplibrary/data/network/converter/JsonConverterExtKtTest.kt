@@ -36,7 +36,7 @@ class JsonConverterExtKtTest {
             applies.assertTrue()
             userConsent.also {
                 it.tcData.assertNotNull()
-                it.euConsent.contains("CPEpDOrPEpDOrHIABCENBVCgAAAAAH_AAAYgAAAOQA").assertTrue()
+                it.euconsent.contains("CPEpDOrPEpDOrHIABCENBVCgAAAAAH_AAAYgAAAOQA").assertTrue()
             }
         }
 

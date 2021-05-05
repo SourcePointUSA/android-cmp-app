@@ -6,6 +6,7 @@ on:
       - '!README.md'
       - '!release_note.txt'
 #      - '!samples/nativemessage/*'
+
 jobs:
   unit-test-cmplib:
     runs-on: macos-latest
@@ -33,3 +34,14 @@ jobs:
         with:
           name: 'unit-tests-report-v6'
           path: cmplibrary/build/reports/*
+      - name: UI cmplibrary tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew cmplibrary:connectedAndroidTest
+      - name: 'Publish UI cmplibrary Test Report'
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: 'cmplibrary-test-report'
+          path: cmplibrary/build/reports/androidTests/*
