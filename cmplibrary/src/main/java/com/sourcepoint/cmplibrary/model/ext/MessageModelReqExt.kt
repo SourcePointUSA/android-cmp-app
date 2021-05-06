@@ -26,11 +26,18 @@ internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
 }
 
 internal fun Campaigns.toJsonObject(): JSONObject {
-    return JSONObject()
-        .apply {
-            put("gdpr", gdpr?.toJsonObject())
-            put("ccpa", ccpa?.toJsonObject())
+    return JSONObject().also { cm ->
+        list.map {
+            cm.put(
+                it.campaignType.name.toLowerCase(),
+                JSONObject()
+                    .apply {
+                        put("targetingParams", it.targetingParams)
+                        put("campaignEnv", it.campaignEnv.value)
+                    }
+            )
         }
+    }
 }
 
 internal fun CampaignReq.toJsonObject(): JSONObject {

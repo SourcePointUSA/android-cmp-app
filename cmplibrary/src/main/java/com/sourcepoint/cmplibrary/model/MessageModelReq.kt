@@ -3,10 +3,7 @@ package com.sourcepoint.cmplibrary.model
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 
-internal data class Campaigns(val list: List<CampaignReq> = emptyList()) {
-    val gdpr: CampaignReq? = list.find { it.campaignType == CampaignType.GDPR }
-    val ccpa: CampaignReq? = list.find { it.campaignType == CampaignType.CCPA }
-}
+internal data class Campaigns(val list: List<CampaignReq> = emptyList())
 
 internal interface CampaignReq {
     val targetingParams: String?
