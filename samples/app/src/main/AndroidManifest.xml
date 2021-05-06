@@ -20,8 +20,6 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".MainActivity4test">
-        </activity>
         <activity android:name=".MainActivityJava">
         </activity>
         <activity android:name=".MainActivityAuthId">

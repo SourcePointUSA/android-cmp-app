@@ -31,7 +31,7 @@ import org.koin.dsl.module
 @RunWith(AndroidJUnit4ClassRunner::class)
 class ExampleAppV6Tests {
 
-    lateinit var scenario: ActivityScenario<MainActivity4test>
+    lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
     @After
     fun cleanup() {
