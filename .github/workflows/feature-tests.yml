@@ -1,7 +1,7 @@
 name: Feature tests
 on:
   push:
-    branches: [ "*tests*" ]
+    branches: disabled #[ "*tests*" ]
 #    paths:
 #      - '!README.md'
 #      - '!release_note.txt'
