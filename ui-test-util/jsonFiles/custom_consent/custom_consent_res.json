@@ -1,0 +1,37 @@
+{
+  "consentUUID": "efa60209-e605-45a2-b306-5897c7a41875",
+  "specialFeatures": [],
+  "vendors": [],
+  "categories": [
+    "608bad95d08d3112188e0e36",
+    "608bad95d08d3112188e0e2f"
+  ],
+  "legIntCategories": [],
+  "grants": {
+    "5fbe6f050d88c7d28d765d47": {
+      "vendorGrant": false,
+      "purposeGrants": {
+        "60657acc9c97c400122f21f3": false,
+        "60657acc9c97c400122f21fa": false,
+        "60657acc9c97c400122f2200": false,
+        "60657acc9c97c400122f2206": false,
+        "60657acc9c97c400122f2218": false,
+        "60657acc9c97c400122f2224": false,
+        "60657acc9c97c400122f222a": false
+      }
+    },
+    "5fbe6f090d88c7d28d765e1e": {
+      "vendorGrant": false,
+      "purposeGrants": {
+        "60657acc9c97c400122f21f3": false
+      }
+    },
+    "5fbe6f0a0d88c7d28d765e25": {
+      "vendorGrant": false,
+      "purposeGrants": {
+        "60657acc9c97c400122f220c": false,
+        "60657acc9c97c400122f2212": false
+      }
+    }
+  }
+}

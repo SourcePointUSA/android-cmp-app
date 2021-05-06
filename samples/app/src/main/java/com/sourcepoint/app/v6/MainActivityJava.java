@@ -13,10 +13,7 @@ import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
 import com.sourcepoint.cmplibrary.exception.CampaignType;
 import com.sourcepoint.cmplibrary.model.MessageLanguage;
 import com.sourcepoint.cmplibrary.model.PMTab;
-import com.sourcepoint.cmplibrary.model.exposed.ActionType;
-import com.sourcepoint.cmplibrary.model.exposed.SPConsents;
-import com.sourcepoint.cmplibrary.model.exposed.SpConfig;
-import com.sourcepoint.cmplibrary.model.exposed.TargetingParam;
+import com.sourcepoint.cmplibrary.model.exposed.*;
 import com.sourcepoint.cmplibrary.util.SpUtils;
 import kotlin.Lazy;
 import kotlin.Unit;
@@ -25,6 +22,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -35,10 +33,10 @@ public class MainActivityJava extends AppCompatActivity {
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addPrivacyManagerTab(PMTab.FEATURES)
             .addMessageLanguage(MessageLanguage.ENGLISH)
-            .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
-            .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
+            .addCampaign(new SpCampaign(CampaignType.GDPR, Collections.emptyList()))
+            .addCampaign(CampaignType.GDPR)
+//            .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
             .build();
 
     private SpConsentLib spConsentLib = null;
@@ -56,7 +54,7 @@ public class MainActivityJava extends AppCompatActivity {
         );
         findViewById(R.id.review_consents_gdpr).setOnClickListener(_v ->
                 spConsentLib.loadPrivacyManager(
-                        "13111",
+                        "488393",//"13111",
                         PMTab.PURPOSES,
                         CampaignType.GDPR
                 ));
