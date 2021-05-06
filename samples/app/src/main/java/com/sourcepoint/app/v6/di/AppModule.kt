@@ -17,7 +17,7 @@ import java.util.* // ktlint-disable
 val appModule = module {
 
     single<DataProvider> {
-        val gdprPmId = if (get(qualifier = named("prod"))) "13111" else "13111"
+        val gdprPmId = if (get(qualifier = named("prod"))) "488393" else "13111"
         val ccpaPmId = if (get(qualifier = named("prod"))) "14967" else "14967"
         DataProvider.create(
             context = androidApplication(),
@@ -43,7 +43,6 @@ val appModule = module {
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
-                pmTab = PMTab.FEATURES
                 messLanguage = MessageLanguage.ENGLISH
                 +(CampaignType.GDPR)
             }
@@ -51,14 +50,13 @@ val appModule = module {
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
-                pmTab = PMTab.FEATURES
                 messLanguage = MessageLanguage.ENGLISH
                 +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
+//                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
 
         }
     }
 
-    single(qualifier = named("prod")) { true }
+    single(qualifier = named("prod")) { false }
 }

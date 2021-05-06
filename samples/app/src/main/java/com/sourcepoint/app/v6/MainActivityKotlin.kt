@@ -28,7 +28,6 @@ class MainActivityKotlin : AppCompatActivity() {
 //        config {
 //            accountId = 22
 //            propertyName = "mobile.multicampaign.demo"
-//            pmTab = PMTab.FEATURES
 //            messLanguage = MessageLanguage.ENGLISH
 //            +(CampaignType.GDPR)
 //            +(CampaignType.CCPA to listOf(("location" to "US")))

@@ -23,7 +23,6 @@ Kotlin
         config {
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
-            pmTab = PMTab.FEATURES
             messLanguage = MessageLanguage.ENGLISH
             +CampaignType.CCPA
             +CampaignType.GDPR
@@ -38,7 +37,6 @@ Java
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addPrivacyManagerTab(PMTab.FEATURES)
             .addMessageLanguage(MessageLanguage.ENGLISH)
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
@@ -181,7 +179,6 @@ Kotlin
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
-                pmTab = PMTab.FEATURES
                 messLanguage = MessageLanguage.ENGLISH
                 +(CampaignType.GDPR)
                 +(CampaignType.CCPA to listOf(("location" to "US")))
@@ -218,7 +215,6 @@ Java
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addPrivacyManagerTab(PMTab.FEATURES)
             .addMessageLanguage(MessageLanguage.ENGLISH)
             .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
             .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
@@ -297,7 +293,6 @@ Kotlin: customize a unity plus operator to add a list of targeting parameters pe
         config {
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
-            pmTab = PMTab.FEATURES
             messLanguage = MessageLanguage.ENGLISH
             +(CampaignType.GDPR to listOf(("location" to "EU")))
             +(CampaignType.CCPA to listOf(("location" to "US")))
@@ -309,7 +304,6 @@ Java: Use `addCampaign` method to add a list of targeting parameters per campaig
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addPrivacyManagerTab(PMTab.FEATURES)
             .addMessageLanguage(MessageLanguage.ENGLISH)
             .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
             .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))

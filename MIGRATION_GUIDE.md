@@ -75,7 +75,6 @@ Use the data builder to obtain a configuration for v6 (Unified SDK). This contai
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addPrivacyManagerTab(PMTab.FEATURES)               //or desired tab
             .addMessageLanguage(MessageLanguage.ENGLISH)        //or desired language
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
@@ -181,7 +180,6 @@ Below is a full example of the changes covered in this article:
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addPrivacyManagerTab(PMTab.FEATURES)
             .addMessageLanguage(MessageLanguage.ENGLISH)
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
