@@ -9,7 +9,6 @@ import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.cmplibrary.UnitySpClient
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -18,6 +17,10 @@ import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
 class MainActivityKotlin : AppCompatActivity() {
+
+    companion object {
+        private const val TAG = "**MainActivity"
+    }
 
     private val dataProvider by inject<DataProvider>()
 
@@ -28,12 +31,12 @@ class MainActivityKotlin : AppCompatActivity() {
 //        config {
 //            accountId = 22
 //            propertyName = "mobile.multicampaign.demo"
-//            pmTab = PMTab.FEATURES
 //            messLanguage = MessageLanguage.ENGLISH
 //            +(CampaignType.GDPR)
 //            +(CampaignType.CCPA to listOf(("location" to "US")))
 //        }
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,8 +61,8 @@ class MainActivityKotlin : AppCompatActivity() {
         }
         findViewById<View>(R.id.custom_consent).setOnClickListener { _v: View? ->
             spConsentLib.customConsentGDPR(
-                vendors = listOf("5ff4d000a228633ac048be41"),
-                categories = listOf("608bad95d08d3112188e0e36", "608bad95d08d3112188e0e2f"),
+                vendors = listOf("5fbe6f050d88c7d28d765d47"),
+                categories = listOf("60657acc9c97c400122f21f3"),
                 legIntCategories = emptyList(),
                 success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
             )
@@ -103,9 +106,5 @@ class MainActivityKotlin : AppCompatActivity() {
         override fun onAction(view: View, actionType: ActionType) {
             Log.i(TAG, "ActionType: $actionType")
         }
-    }
-
-    companion object {
-        private const val TAG = "**MainActivity"
     }
 }

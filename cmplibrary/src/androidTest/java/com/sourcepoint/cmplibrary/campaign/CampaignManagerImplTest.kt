@@ -15,6 +15,7 @@ import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
+import com.sourcepoint.cmplibrary.model.ext.toUnifiedMessageRespDto
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test

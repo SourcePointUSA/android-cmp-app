@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import org.junit.Test
 
 class HttpUrlManagerTest {
@@ -68,15 +69,39 @@ class HttpUrlManagerTest {
     }
 
     @Test
-    fun `GIVEN a STAGE env RETURN the stage link`() {
+    fun `GIVEN a STAGE env inAppMessageUrl RETURN the stage link`() {
         val sut = HttpUrlManagerSingleton.inAppMessageUrl(Env.STAGE).toString()
         sut.assertEquals("https://cdn.sp-stage.net/wrapper/v2/get_messages?env=stage")
     }
 
     @Test
-    fun `GIVEN a PROD env RETURN the prod link`() {
+    fun `GIVEN a PROD env inAppMessageUrl RETURN the prod link`() {
         val sut = HttpUrlManagerSingleton.inAppMessageUrl(Env.PROD).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/get_messages?env=prod")
+    }
+
+    @Test
+    fun `GIVEN a STAGE env sendConsentUrl RETURN the prod link`() {
+        val sut = HttpUrlManagerSingleton.sendConsentUrl(ActionType.ACCEPT_ALL, Env.STAGE, CampaignType.GDPR).toString()
+        sut.assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages/choice/gdpr/11?env=stage")
+    }
+
+    @Test
+    fun `GIVEN a PROD env sendConsentUrl RETURN the prod link`() {
+        val sut = HttpUrlManagerSingleton.sendConsentUrl(ActionType.REJECT_ALL, Env.PROD, CampaignType.CCPA).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages/choice/ccpa/13?env=prod")
+    }
+
+    @Test
+    fun `GIVEN a STAGE env sendCustomConsentUrl RETURN the prod link`() {
+        val sut = HttpUrlManagerSingleton.sendCustomConsentUrl(Env.STAGE).toString()
+        sut.assertEquals("https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?env=stage&inApp=true")
+    }
+
+    @Test
+    fun `GIVEN a PROD env sendCustomConsentUrl RETURN the prod link`() {
+        val sut = HttpUrlManagerSingleton.sendCustomConsentUrl(Env.PROD).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/custom-consent?env=prod&inApp=true")
     }
 
     @Test

@@ -1,6 +1,6 @@
 ![Test](https://github.com/SourcePointUSA/android-cmp-app/workflows/Test/badge.svg?branch=develop)
 
-# How to Install ![Maven Central](https://img.shields.io/maven-central/v/com.sourcepoint.cmplibrary/cmplibrary)
+# How to Install [![Maven Central](https://img.shields.io/maven-central/v/com.sourcepoint.cmplibrary/cmplibrary)](https://search.maven.org/search?q=g:com.sourcepoint.cmplibrary)
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
 
 ```
@@ -14,7 +14,6 @@ dependencies {
 ## Create new _Config_ object
 Use the factory method to obtain a lazy configuration for v6 (Unified SDK). This contains your organization's account information and includes the type of campaigns that will be run on this property. This object will be instantiated at the first usage of the CMP SDK.
 
-
 Kotlin
 ```kotlin
     private val spConsentLib by spConsentLibLazy {
@@ -23,7 +22,6 @@ Kotlin
         config {
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
-            pmTab = PMTab.FEATURES
             messLanguage = MessageLanguage.ENGLISH
             +CampaignType.CCPA
             +CampaignType.GDPR
@@ -38,7 +36,6 @@ Java
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addPrivacyManagerTab(PMTab.FEATURES)
             .addMessageLanguage(MessageLanguage.ENGLISH)
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
@@ -60,7 +57,6 @@ Java
 
 ## Delegate Methods
 Create a client to receive the events from the Cmp SDK
-
 
 Kotlin
 ```kotlin
@@ -181,7 +177,6 @@ Kotlin
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
-                pmTab = PMTab.FEATURES
                 messLanguage = MessageLanguage.ENGLISH
                 +(CampaignType.GDPR)
                 +(CampaignType.CCPA to listOf(("location" to "US")))
@@ -218,7 +213,6 @@ Java
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addPrivacyManagerTab(PMTab.FEATURES)
             .addMessageLanguage(MessageLanguage.ENGLISH)
             .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
             .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
@@ -297,7 +291,6 @@ Kotlin: customize a unity plus operator to add a list of targeting parameters pe
         config {
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
-            pmTab = PMTab.FEATURES
             messLanguage = MessageLanguage.ENGLISH
             +(CampaignType.GDPR to listOf(("location" to "EU")))
             +(CampaignType.CCPA to listOf(("location" to "US")))
@@ -309,7 +302,6 @@ Java: Use `addCampaign` method to add a list of targeting parameters per campaig
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addPrivacyManagerTab(PMTab.FEATURES)
             .addMessageLanguage(MessageLanguage.ENGLISH)
             .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
             .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))

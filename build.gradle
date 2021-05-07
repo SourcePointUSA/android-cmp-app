@@ -7,7 +7,7 @@ buildscript {
     repositories {
         google()
         maven { url "https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/"}
-//        maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
+        maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
         mavenCentral()
         maven {
             url "https://nexus.pentaho.org/content/groups/omni"
@@ -39,7 +39,7 @@ allprojects {
     repositories {
         google()
         maven { url "https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/" }
-//        maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
+        maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
         mavenCentral()
         maven {
             url "https://nexus.pentaho.org/content/groups/omni"

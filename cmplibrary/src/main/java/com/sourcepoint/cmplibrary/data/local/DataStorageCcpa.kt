@@ -6,7 +6,7 @@ import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CONSENT_CCPA_UUID_KEY
-import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_1203
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_APPLIES
 
 internal interface DataStorageCcpa {
@@ -14,12 +14,12 @@ internal interface DataStorageCcpa {
     val preference: SharedPreferences
     var ccpaApplies: Boolean
 
-    fun saveCcpa1203(value: String)
+    fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
     fun saveCcpaConsentUuid(value: String)
     fun saveCcpaMessage(value: String)
 
-    fun getCcpa1203(): String?
+    fun getCcpa(): String?
     fun getCcpaConsentResp(): String
     fun getCcpaMessage(): String
     fun getCcpaConsentUuid(): String?
@@ -28,7 +28,6 @@ internal interface DataStorageCcpa {
 
     companion object {
         const val KEY_CCPA = "key_ccpa"
-        const val KEY_CCPA_1203 = "key_ccpa_1203"
         const val KEY_CCPA_APPLIES = "key_ccpa_applies"
         const val CCPA_CONSENT_RESP = "ccpa_consent_resp"
         const val CCPA_JSON_MESSAGE = "ccpa_json_message"
@@ -46,15 +45,15 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    override fun saveCcpa1203(value: String) {
+    override fun saveCcpa(value: String) {
         preference
             .edit()
-            .putString(KEY_CCPA_1203, value)
+            .putString(KEY_CCPA, value)
             .apply()
     }
 
-    override fun getCcpa1203(): String? {
-        return preference.getString(KEY_CCPA_1203, null)
+    override fun getCcpa(): String? {
+        return preference.getString(KEY_CCPA, null)
     }
 
     override var ccpaApplies: Boolean

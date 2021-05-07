@@ -18,8 +18,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".MainActivity4test">
+
         </activity>
         <activity android:name=".MainActivityJava">
         </activity>

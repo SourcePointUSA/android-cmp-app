@@ -14,9 +14,9 @@ import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SPGDPRConsent
+import com.sourcepoint.cmplibrary.model.ext.toCCPAUserConsent
+import com.sourcepoint.cmplibrary.model.ext.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.model.getMap
-import com.sourcepoint.cmplibrary.model.toCCPAUserConsent
-import com.sourcepoint.cmplibrary.model.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import java.util.* //ktlint-disable
 

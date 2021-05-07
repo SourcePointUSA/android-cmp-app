@@ -4,13 +4,25 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCustomConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapOptionWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapSiteVendorsWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableAllConsent
 import com.sourcepoint.app.v6.core.DataProvider
+import com.sourcepoint.app.v6.di.customCategoriesData
+import com.sourcepoint.app.v6.di.customVendorDataList
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -23,30 +35,32 @@ import org.koin.dsl.module
 @RunWith(AndroidJUnit4ClassRunner::class)
 class ExampleAppV6Tests {
 
-    lateinit var scenario: ActivityScenario<MainActivity4test>
+    lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
     @After
     fun cleanup() {
         if (this::scenario.isLateinit) scenario.close()
     }
 
-    private val spConfFull = config {
-        accountId = 22
-        propertyName = "mobile.multicampaign.demo"
-        +(CampaignType.CCPA to listOf(("location" to "US")))
-        +(CampaignType.GDPR) //to listOf(("location" to "EU")))
-    }
+//    private val spConfFull = config {
+//        accountId = 22
+//        propertyName = "mobile.multicampaign.demo"
+//        +(CampaignType.CCPA to listOf(("location" to "US")))
+//        +(CampaignType.GDPR) //to listOf(("location" to "EU")))
+//    }
 
     private val spConfGdpr = config {
         accountId = 22
         propertyName = "mobile.multicampaign.demo"
+        pmTab = PMTab.FEATURES
+        messLanguage = MessageLanguage.ENGLISH
         +(CampaignType.GDPR)
     }
 
     @Test
     fun GIVEN_a_camapignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111", ccpaPmId = "13111"))
+        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111", ccpaPmId = "13111"))
 
         scenario = launchActivity()
 
@@ -54,60 +68,74 @@ class ExampleAppV6Tests {
 //        wr { tapAcceptCcpaOnWebView() }
     }
 
-    @Test
-    fun GIVEN_a_camapignList_tap_SETTINGS_all_legislation() = runBlocking<Unit> {
-
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111", ccpaPmId = "13111"))
-
-        scenario = launchActivity()
-
+//    @Test
+//    fun GIVEN_a_camapignList_tap_SETTINGS_all_legislation() = runBlocking<Unit> {
+//
+//        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111", ccpaPmId = "13111"))
+//
+//        scenario = launchActivity()
+//
 //        wr { tapOptionWebView() }
 //        wr { tapAcceptAllOnWebView() }
 //        wr { tapAcceptCcpaOnWebView() }
+//    }
+
+    @Test
+    fun GIVEN_consent_USING_gdpr_pm() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111"))
+
+        scenario = launchActivity()
+
+        wr { tapAcceptOnWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
     }
 
-//    @Test
-//    fun GIVEN_consent_USING_gdpr_pm() = runBlocking<Unit> {
-//
-//        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111"))
-//
-//        scenario = launchActivity()
-//
-//        wr { tapAcceptOnWebView() }
-//        wr { clickOnGdprReviewConsent() }
-//        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
-//    }
-//
-//    @Test
-//    fun GIVEN_a_gdpr_consent_ACCEPT_ALL() = runBlocking<Unit> {
-//
-//        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111"))
-//
-//        scenario = launchActivity()
-//
-//        wr { tapRejectOnWebView() }
-////        wr { clickOnGdprReviewConsent() }
-////        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
-////        wr { checkAllConsentsOn() }
-//    }
-//
-//    @Test
-//    fun SAVE_AND_EXIT_action() = runBlocking<Unit> {
-//
-//        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111"))
-//
-//        scenario = launchActivity()
-//
-//        wr { tapAcceptOnWebView() }
+    @Test
+    fun GIVEN_a_gdpr_consent_ACCEPT_ALL() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111"))
+
+        scenario = launchActivity()
+
+        wr { tapRejectOnWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
+    }
+
+    @Test
+    fun SAVE_AND_EXIT_action() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111"))
+
+        scenario = launchActivity()
+
+        wr { tapAcceptOnWebView() }
 //        wr { tapAcceptCcpaOnWebView() }
-//        wr { clickOnGdprReviewConsent() }
-//        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
-//        wr { clickOnGdprReviewConsent() }
-//        wr { tapToDisableAllConsent() }
-//        wr { tapSaveAndExitWebView() }
-//        wr { clickOnGdprReviewConsent() }
-//        wr { checkAllConsentsOff() }
-//    }
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { tapToDisableAllConsent() }
+        wr { tapSaveAndExitWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr { checkAllConsentsOff() }
+    }
+
+    @Test
+    fun customConsentAction() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111"))
+
+        scenario = launchActivity()
+
+        wr { tapRejectOnWebView() }
+        wr { clickOnCustomConsent() }
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkCustomCategoriesData() }
+        wr { tapSiteVendorsWebView() }
+        wr { checkCustomVendorDataList() }
+    }
 //
 //    @Test
 //    fun SAVE_AND_EXIT_action_2() = runBlocking<Unit> {
@@ -286,7 +314,7 @@ class ExampleAppV6Tests {
     private fun mockModule(
         spConfig: SpConfig,
         gdprPmId: String,
-        ccpaPmId: String,
+        ccpaPmId: String = "",
         uuid: String? = null,
         url: String = "",
         onlyPm: Boolean = false
@@ -300,6 +328,8 @@ class ExampleAppV6Tests {
                     override val spConfig: SpConfig = spConfig
                     override val gdprPmId: String = gdprPmId
                     override val ccpaPmId: String = ccpaPmId
+                    override val customVendorList: List<String> = customVendorDataList.map { it.first }
+                    override val customCategories: List<String> = customCategoriesData.map { it.first }
                 }
             }
         }

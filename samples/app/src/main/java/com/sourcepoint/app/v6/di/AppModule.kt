@@ -1,13 +1,11 @@
 package com.sourcepoint.app.v6.di
 
 import android.content.Context
-import com.sourcepoint.app.v6.BuildConfig
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.core.create
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
@@ -15,16 +13,21 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.util.* // ktlint-disable
 
+val customVendorDataList = listOf("5fbe6f050d88c7d28d765d47" to "Amazon Advertising")
+val customCategoriesData = listOf("60657acc9c97c400122f21f3" to "Store and/or access information on a device")
+
 val appModule = module {
 
     single<DataProvider> {
-        val gdprPmId = if (BuildConfig.DEBUG) "13111" else "488393"
-        val ccpaPmId = if (BuildConfig.DEBUG) "14967" else "14967"
+        val gdprPmId = if (get(qualifier = named("prod"))) "488393" else "13111"
+        val ccpaPmId = if (get(qualifier = named("prod"))) "14967" else "14967"
         DataProvider.create(
             context = androidApplication(),
             spConfig = get(),
             gdprPmId = gdprPmId,
             ccpaPmId = ccpaPmId,
+            customVendorList = customVendorDataList.map { it.first },
+            customCategories = customCategoriesData.map { it.first },
             authId = null //get(qualifier = named("authId")))
         )
     }
@@ -40,23 +43,24 @@ val appModule = module {
     }
 
     single<SpConfig> {
-        if (BuildConfig.DEBUG) {
+        if (get(qualifier = named("prod"))) {
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
-                pmTab = PMTab.FEATURES
                 messLanguage = MessageLanguage.ENGLISH
                 +(CampaignType.GDPR)
-//                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
         } else {
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
-                pmTab = PMTab.FEATURES
                 messLanguage = MessageLanguage.ENGLISH
                 +(CampaignType.GDPR)
+//                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
+
         }
     }
+
+    single(qualifier = named("prod")) { false }
 }
