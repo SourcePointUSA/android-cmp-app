@@ -61,8 +61,8 @@ class MainActivityKotlin : AppCompatActivity() {
         }
         findViewById<View>(R.id.custom_consent).setOnClickListener { _v: View? ->
             spConsentLib.customConsentGDPR(
-                vendors = listOf("5fbe6f050d88c7d28d765d47"),
-                categories = listOf("60657acc9c97c400122f21f3"),
+                vendors = dataProvider.customVendorList,
+                categories = dataProvider.customCategories,
                 legIntCategories = emptyList(),
                 success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
             )

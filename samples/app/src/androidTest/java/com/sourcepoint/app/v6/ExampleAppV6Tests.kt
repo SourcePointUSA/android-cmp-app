@@ -17,8 +17,8 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSiteVendorsWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableAllConsent
 import com.sourcepoint.app.v6.core.DataProvider
-import com.sourcepoint.app.v6.di.customCategoriesData
-import com.sourcepoint.app.v6.di.customVendorDataList
+import com.sourcepoint.app.v6.di.customCategoriesDataStage
+import com.sourcepoint.app.v6.di.customVendorDataListStage
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -328,8 +328,8 @@ class ExampleAppV6Tests {
                     override val spConfig: SpConfig = spConfig
                     override val gdprPmId: String = gdprPmId
                     override val ccpaPmId: String = ccpaPmId
-                    override val customVendorList: List<String> = customVendorDataList.map { it.first }
-                    override val customCategories: List<String> = customCategoriesData.map { it.first }
+                    override val customVendorList: List<String> = customVendorDataListStage.map { it.first }
+                    override val customCategories: List<String> = customCategoriesDataStage.map { it.first }
                 }
             }
         }

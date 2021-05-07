@@ -17,8 +17,8 @@ import com.sourcepoint.app.v6.TestData.REJECT_ALL
 import com.sourcepoint.app.v6.TestData.SAVE_AND_EXIT
 import com.sourcepoint.app.v6.TestData.SITE_VENDORS
 import com.sourcepoint.app.v6.TestData.VENDORS_LIST
-import com.sourcepoint.app.v6.di.customCategoriesData
-import com.sourcepoint.app.v6.di.customVendorDataList
+import com.sourcepoint.app.v6.di.customCategoriesDataStage
+import com.sourcepoint.app.v6.di.customVendorDataListStage
 
 class TestUseCase {
 
@@ -68,22 +68,22 @@ class TestUseCase {
 
         fun checkCustomCategoriesData() {
             // the customCategoriesData elements are enabled
-            customCategoriesData.map { it.second }.forEach { consent ->
+            customCategoriesDataStage.map { it.second }.forEach { consent ->
                 checkConsentState(consent, true)
             }
             // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
-            CONSENT_LIST_2.subtract(customCategoriesData.map { it.second }).forEach { consent ->
+            CONSENT_LIST_2.subtract(customCategoriesDataStage.map { it.second }).forEach { consent ->
                 checkConsentState(consent, false)
             }
         }
 
         fun checkCustomVendorDataList() {
             // the customVendorDataList elements are enabled
-            customVendorDataList.map { it.second }.forEach { consent ->
+            customVendorDataListStage.map { it.second }.forEach { consent ->
                 checkConsentState(consent, true)
             }
             // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
-            VENDORS_LIST.subtract(customVendorDataList.map { it.second }).forEach { consent ->
+            VENDORS_LIST.subtract(customVendorDataListStage.map { it.second }).forEach { consent ->
                 checkConsentState(consent, false)
             }
         }
