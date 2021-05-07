@@ -1,3 +1,7 @@
+## 6.0.2 (May, 07, 2021)
+* Improved test coverage
+* Fix unity compatibility issue
+
 ## 6.0.1 (May, 04, 2021)
 * PmTab and MessageLanguage variables have been moved inside the SpConfig object
 
