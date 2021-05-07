@@ -14,7 +14,6 @@ dependencies {
 ## Create new _Config_ object
 Use the factory method to obtain a lazy configuration for v6 (Unified SDK). This contains your organization's account information and includes the type of campaigns that will be run on this property. This object will be instantiated at the first usage of the CMP SDK.
 
-
 Kotlin
 ```kotlin
     private val spConsentLib by spConsentLibLazy {
@@ -58,7 +57,6 @@ Java
 
 ## Delegate Methods
 Create a client to receive the events from the Cmp SDK
-
 
 Kotlin
 ```kotlin
