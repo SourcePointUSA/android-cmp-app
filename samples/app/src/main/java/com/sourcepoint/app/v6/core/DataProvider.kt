@@ -6,35 +6,45 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import java.util.*
 
 interface DataProvider {
-    val authId : String?
-    val url : String
-    val onlyPm : Boolean
-    val gdprPmId : String
-    val ccpaPmId : String
-    val spConfig : SpConfig
+    val authId: String?
+    val url: String
+    val onlyPm: Boolean
+    val gdprPmId: String
+    val ccpaPmId: String
+    val spConfig: SpConfig
+    val customVendorList: List<String>
+    val customCategories: List<String>
+
     companion object
 }
 
 fun DataProvider.Companion.create(
     context: Context,
-    spConfig : SpConfig,
-    gdprPmId : String,
-    ccpaPmId : String,
-    authId : String?
-) : DataProvider = DataProviderImpl(
+    spConfig: SpConfig,
+    gdprPmId: String,
+    ccpaPmId: String,
+    customVendorList: List<String>,
+    customCategories: List<String>,
+    authId: String?
+): DataProvider = DataProviderImpl(
     context = context,
     spConfig = spConfig,
     gdprPmId = gdprPmId,
     ccpaPmId = ccpaPmId,
-    pAuthId = authId
+    pAuthId = authId,
+    customCategories = customCategories,
+    customVendorList = customVendorList
 )
 
 private class DataProviderImpl(
     val context: Context,
-    override val spConfig : SpConfig,
-    override val gdprPmId : String,
-    override val ccpaPmId : String,
-    val pAuthId : String?
+    override val spConfig: SpConfig,
+    override val customVendorList: List<String>,
+    override val customCategories: List<String>,
+    override val gdprPmId: String,
+    override val ccpaPmId: String,
+
+    val pAuthId: String?
 ) : DataProvider {
 
     val sharedPref: SharedPreferences by lazy {
@@ -49,7 +59,7 @@ private class DataProviderImpl(
         }
     }
 
-    companion object{
+    companion object {
         const val AUTH_ID_KEY = "MyAppsAuthId"
     }
 
