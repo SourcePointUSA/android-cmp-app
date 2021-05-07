@@ -6,16 +6,19 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCustomConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapOptionWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapSiteVendorsWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableAllConsent
 import com.sourcepoint.app.v6.core.DataProvider
+import com.sourcepoint.app.v6.di.customCategoriesData
+import com.sourcepoint.app.v6.di.customVendorDataList
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -127,12 +130,11 @@ class ExampleAppV6Tests {
         scenario = launchActivity()
 
         wr { tapRejectOnWebView() }
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
-        wr { tapSaveAndExitWebView() }
         wr { clickOnCustomConsent() }
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkCustomCategoriesData() }
+        wr { tapSiteVendorsWebView() }
+        wr { checkCustomVendorDataList() }
     }
 //
 //    @Test
@@ -326,6 +328,8 @@ class ExampleAppV6Tests {
                     override val spConfig: SpConfig = spConfig
                     override val gdprPmId: String = gdprPmId
                     override val ccpaPmId: String = ccpaPmId
+                    override val customVendorList: List<String> = customVendorDataList.map { it.first }
+                    override val customCategories: List<String> = customCategoriesData.map { it.first }
                 }
             }
         }
