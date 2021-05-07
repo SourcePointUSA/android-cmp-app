@@ -6,13 +6,15 @@ import com.sourcepoint.app.v6.core.create
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.util.* // ktlint-disable
+
+val customVendorDataList = listOf("5fbe6f050d88c7d28d765d47" to "Amazon Advertising")
+val customCategoriesData = listOf("60657acc9c97c400122f21f3" to "Store and/or access information on a device")
 
 val appModule = module {
 
@@ -24,6 +26,8 @@ val appModule = module {
             spConfig = get(),
             gdprPmId = gdprPmId,
             ccpaPmId = ccpaPmId,
+            customVendorList = customVendorDataList.map { it.first },
+            customCategories = customCategoriesData.map { it.first },
             authId = null //get(qualifier = named("authId")))
         )
     }

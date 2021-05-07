@@ -1,7 +1,7 @@
 package com.sourcepoint.app.v6
 
 import android.webkit.CookieManager
-import com.example.uitestutil.*
+import com.example.uitestutil.* //ktlint-disable
 import com.sourcepoint.app.v6.TestData.ACCEPT
 import com.sourcepoint.app.v6.TestData.ACCEPT_ALL
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST
@@ -15,6 +15,10 @@ import com.sourcepoint.app.v6.TestData.PURPOSES
 import com.sourcepoint.app.v6.TestData.REJECT
 import com.sourcepoint.app.v6.TestData.REJECT_ALL
 import com.sourcepoint.app.v6.TestData.SAVE_AND_EXIT
+import com.sourcepoint.app.v6.TestData.SITE_VENDORS
+import com.sourcepoint.app.v6.TestData.VENDORS_LIST
+import com.sourcepoint.app.v6.di.customCategoriesData
+import com.sourcepoint.app.v6.di.customVendorDataList
 
 class TestUseCase {
 
@@ -62,12 +66,38 @@ class TestUseCase {
             }
         }
 
+        fun checkCustomCategoriesData() {
+            // the customCategoriesData elements are enabled
+            customCategoriesData.map { it.second }.forEach { consent ->
+                checkConsentState(consent, true)
+            }
+            // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
+            CONSENT_LIST_2.subtract(customCategoriesData.map { it.second }).forEach { consent ->
+                checkConsentState(consent, false)
+            }
+        }
+
+        fun checkCustomVendorDataList() {
+            // the customVendorDataList elements are enabled
+            customVendorDataList.map { it.second }.forEach { consent ->
+                checkConsentState(consent, true)
+            }
+            // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
+            VENDORS_LIST.subtract(customVendorDataList.map { it.second }).forEach { consent ->
+                checkConsentState(consent, false)
+            }
+        }
+
         fun checkMainWebViewDisplayed() {
             isDisplayedAllOfByResId(resId = R.id.review_consents_gdpr)
         }
 
         fun clickOnGdprReviewConsent() {
             performClickById(resId = R.id.review_consents_gdpr)
+        }
+
+        fun clickOnCustomConsent() {
+            performClickById(resId = R.id.custom_consent)
         }
 
         fun clickOnCcpaReviewConsent() {
@@ -100,6 +130,10 @@ class TestUseCase {
 
         fun tapOptionWebView() {
             performClickOnWebViewByContent(OPTIONS)
+        }
+
+        fun tapSiteVendorsWebView() {
+            performClickPMTabSelected(SITE_VENDORS)
         }
 
         fun tapAcceptAllOnWebView() {

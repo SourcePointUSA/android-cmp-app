@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.core
 
 import android.content.Context
 import android.os.Handler
+import com.sourcepoint.cmplibrary.util.check
 import java.io.File
 import java.io.FileFilter
 import java.util.concurrent.Executors
@@ -33,7 +34,7 @@ private class ExecutorManagerImpl(val context: Context) : ExecutorManager {
     }
 
     override fun executeOnWorkerThread(block: () -> Unit) {
-        executor.execute(block)
+        check { executor.execute(block) }
     }
 
     override fun dispose() {
@@ -42,7 +43,7 @@ private class ExecutorManagerImpl(val context: Context) : ExecutorManager {
     }
 
     override fun executeOnSingleThread(block: () -> Unit) {
-        singleThreadExecutor.execute(block)
+        check { singleThreadExecutor.execute(block) }
     }
 
     private fun getNumCores(): Int {
