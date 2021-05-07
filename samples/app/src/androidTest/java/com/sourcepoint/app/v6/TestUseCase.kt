@@ -70,6 +70,10 @@ class TestUseCase {
             performClickById(resId = R.id.review_consents_gdpr)
         }
 
+        fun clickOnCustomConsent() {
+            performClickById(resId = R.id.custom_consent)
+        }
+
         fun clickOnCcpaReviewConsent() {
             performClickById(resId = R.id.review_consents_ccpa)
         }

@@ -6,6 +6,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCustomConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
@@ -116,6 +117,22 @@ class ExampleAppV6Tests {
         wr { tapSaveAndExitWebView() }
         wr { clickOnGdprReviewConsent() }
         wr { checkAllConsentsOff() }
+    }
+
+    @Test
+    fun customConsentAction() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111"))
+
+        scenario = launchActivity()
+
+        wr { tapRejectOnWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
+        wr { tapSaveAndExitWebView() }
+        wr { clickOnCustomConsent() }
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
     }
 //
 //    @Test
