@@ -11,7 +11,9 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCustomConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapOptionWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSiteVendorsWebView
@@ -42,13 +44,6 @@ class MainActivityKotlinTest {
         if (this::scenario.isLateinit) scenario.close()
     }
 
-//    private val spConfFull = config {
-//        accountId = 22
-//        propertyName = "mobile.multicampaign.demo"
-//        +(CampaignType.CCPA to listOf(("location" to "US")))
-//        +(CampaignType.GDPR) //to listOf(("location" to "EU")))
-//    }
-
     private val spConfGdpr = config {
         accountId = 22
         propertyName = "mobile.multicampaign.demo"
@@ -57,11 +52,12 @@ class MainActivityKotlinTest {
         +(CampaignType.GDPR)
     }
 
-    private val spConfCcpa = config {
+    private val spConf = config {
         accountId = 22
         propertyName = "mobile.multicampaign.demo"
         pmTab = PMTab.FEATURES
         messLanguage = MessageLanguage.ENGLISH
+        +(CampaignType.GDPR)
         +(CampaignType.CCPA)
     }
 
@@ -92,25 +88,26 @@ class MainActivityKotlinTest {
     @Test
     fun GIVEN_a_camapignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "13111", ccpaPmId = "13111"))
+        loadKoinModules(mockModule(spConfig = spConf, gdprPmId = "13111", ccpaPmId = "13111"))
 
         scenario = launchActivity()
 
-//        wr { tapAcceptOnWebView() }
-//        wr { tapAcceptCcpaOnWebView() }
+        wr { tapAcceptOnWebView() }
+        wr { tapAcceptCcpaOnWebView() }
     }
 
-//    @Test
-//    fun GIVEN_a_camapignList_tap_SETTINGS_all_legislation() = runBlocking<Unit> {
-//
-//        loadKoinModules(mockModule(spConfig = spConfFull, gdprPmId = "13111", ccpaPmId = "13111"))
-//
-//        scenario = launchActivity()
-//
-//        wr { tapOptionWebView() }
-//        wr { tapAcceptAllOnWebView() }
-//        wr { tapAcceptCcpaOnWebView() }
-//    }
+    @Test
+    fun GIVEN_a_camapignList_ACCEPT_all_legislation_from_option_button() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(spConfig = spConf, gdprPmId = "13111", ccpaPmId = "13111"))
+
+        scenario = launchActivity()
+
+        wr { tapOptionWebView() }
+        wr { tapAcceptAllOnWebView() }
+        wr { tapOptionWebView() }
+        wr { tapAcceptAllOnWebView() }
+    }
 
     @Test
     fun GIVEN_consent_USING_gdpr_pm() = runBlocking<Unit> {
@@ -168,180 +165,6 @@ class MainActivityKotlinTest {
         wr { tapSiteVendorsWebView() }
         wr { checkCustomVendorDataList() }
     }
-//
-//    @Test
-//    fun SAVE_AND_EXIT_action_2() = runBlocking<Unit> {
-//
-//        loadKoinModules(mockModule(spConfig = spConfFull, gdprPmId = "13111"))
-//
-//        scenario = launchActivity()
-//
-//        wr { tapRejectOnWebView() }
-//        wr { tapAcceptCcpaOnWebView() }
-//        wr { clickOnGdprReviewConsent() }
-//        wr(backup = { clickOnGdprReviewConsent() }) { tapRejectOnWebView() }
-//        wr { clickOnGdprReviewConsent() }
-//        wr { tapToEnableAllConsent() }
-//        wr { tapSaveAndExitWebView() }
-//        wr { clickOnGdprReviewConsent() }
-//        wr { checkAllConsentsOn() }
-//    }
-
-/*
-    @Test
-    fun checkAcceptActionFromDirectPrivacyManager() = runBlocking<Unit> {
-
-        scenario = launchActivity()
-
-        wr(d) { checkWebViewDisplayedForMessage() } // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        wr { tapRejectOnWebView() }                 // chooseAction(REJECT);
-        wr { checkMainWebViewDisplayed() }          // Assert.assertTrue(checkMainWebViewDisplayed());
-        wr { clickOnReviewConsent() }               // clickOnReviewConsent();
-        wr { tapAcceptAllOnWebView() }              // chooseAGIVEN_a_camapignList_tap_SETTINGS_all_legislationction(ACCEPT_ALL);
-        wr { checkMainWebViewDisplayed() }          // Assert.assertTrue(checkMainWebViewDisplayed());
-        wr { clickOnReviewConsent() }               // clickOnReviewConsent();
-        wr { checkConsentIsSelected() }             // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
-    }
-
-    @Test
-    fun checkAcceptActionFromPrivacyManager() = runBlocking<Unit> {
-
-        scenario = launchActivity()
-
-        wr(d) { checkWebViewDisplayedForMessage() }         // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE))
-        wr { tapOptionWebView() }                           // chooseAction(OPTIONS);
-        wr { clickPMTabSelectedPurposes() }
-        wr { checkConsentIsNotSelected() }                  // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-        wr { tapAcceptAllOnWebView() }                      // chooseAction(ACCEPT_ALL);
-        wr { checkMainWebViewDisplayed() }                  // Assert.assertTrue(checkMainWebViewDisplayed());
-        wr { clickOnReviewConsent() }                       // clickOnReviewConsent();
-        wr { clickPMTabSelectedPurposes() }
-        wr { checkConsentIsSelected() }                     // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
-    }
-
-    @Test
-    fun checkShowOptionsFromMessage() = runBlocking<Unit> {
-
-        scenario = launchActivity()
-
-        wr(d) { checkWebViewDisplayedForMessage() }     // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        wr { tapOptionWebView() }                       // chooseAction(OPTIONS);
-        wr { checkPMTabSelectedFeatures() }             // Assert.assertTrue(checkPMTabSelected(FEATURES));
-        wr { tapSaveAndExitWebView() }                  // chooseAction(SAVE_AND_EXIT);
-        wr { checkMainWebViewDisplayed() }              // Assert.assertTrue(checkMainWebViewDisplayed());
-        wr { clickOnReviewConsent() }                   // clickOnReviewConsent();
-        wr { checkPMTabSelectedPurposes() }             // Assert.assertTrue(checkPMTabSelected(PURPOSES));
-    }
-
-    @Test
-    fun checkSaveAndExitActionFromPrivacyManager() = runBlocking<Unit> {
-
-        scenario = launchActivity()
-
-        wr(d) { checkWebViewDisplayedForMessage() }              // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        wr { tapOptionWebView() }                                // chooseAction(OPTIONS);
-        wr { clickPMTabSelectedPurposes() }
-        wr { checkConsentIsNotSelected() }                       // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-        wr { tapRejectAllWebView() }                             // chooseAction(REJECT_ALL);
-        wr { checkMainWebViewDisplayed() }                       // Assert.assertTrue(checkMainWebViewDisplayed());
-        wr { clickOnReviewConsent() }                            // clickOnReviewConsent();
-        wr { clickPMTabSelectedPurposes() }
-        wr { checkConsentAsSelectedFromPartialConsentList() }   // selectConsents(PARTIAL_CONSENT_LIST);
-        wr { tapSaveAndExitWebView() }                           // chooseAction(SAVE_AND_EXIT);
-        wr { checkMainWebViewDisplayed() }                       // assert.assertTrue(checkMainWebViewDisplayed());
-        wr { clickOnReviewConsent() }                            // clickOnReviewConsent();
-        wr { checkPartialConsentIsSelected() }                   // Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
-    }
-
-    @Test
-    fun checkAcceptActionFromMessage() = runBlocking<Unit> {
-
-        scenario = launchActivity()
-
-        wr(d) { checkWebViewDisplayedForMessage() }          // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        wr { tapAcceptOnWebView() }                          // chooseAction(ACCEPT);
-        wr { checkMainWebViewDisplayed() }                   // Assert.assertTrue(checkMainWebViewDisplayed());
-        wr { setFocusOnLayoutActivity() }
-        wr { clickOnReviewConsent() }                        // clickOnReviewConsent();
-        wr { checkWebViewDisplayedForPrivacyManager() }      // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        wr { checkConsentIsSelected() }                    // Assert.assertTrue(checkConsentsAsSelected(CONSENT_LIST));
-    }
-
-    @Test
-    fun checkRejectActionFromDirectPrivacyManager() = runBlocking<Unit> {
-
-        scenario = launchActivity()
-
-        wr(d) { checkWebViewDisplayedForMessage() }  // Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        wr { tapRejectOnWebView() }                  // chooseAction(REJECT);
-        wr { checkMainWebViewDisplayed() }           // Assert.assertTrue(checkMainWebViewDisplayed());
-        wr { clickOnReviewConsent() }                // clickOnReviewConsent();
-//.checkWebViewDisplayedForPrivacyManager()         // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        wr { tapRejectAllWebView() }                 // chooseAction(REJECT_ALL);
-        wr { checkMainWebViewDisplayed() }           // Assert.assertTrue(checkMainWebViewDisplayed());
-        wr { clickOnReviewConsent() }               // clickOnReviewConsent();
-//.checkWebViewDisplayedForPrivacyManager()         // Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        wr { checkConsentIsNotSelected() }           // Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-    }
-
-    @Test
-    fun checkSaveAndExitActionFromDirectPrivacyManager() = runBlocking<Unit> {
-
-        scenario = launchActivity()
-
-        wr(d) { checkWebViewDisplayedForMessage() }              //   Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        wr { tapRejectOnWebView() }                              //   chooseAction(REJECT);
-        wr { checkMainWebViewDisplayed() }                       //   Assert.assertTrue(checkMainWebViewDisplayed());
-        wr { clickOnReviewConsent() }                            //   clickOnReviewConsent();
-        wr { checkWebViewDisplayedForPrivacyManager() }          //   Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        wr { checkConsentAsSelectedFromPartialConsentList() }    //   selectConsents(PARTIAL_CONSENT_LIST);
-        wr { tapSaveAndExitWebView() }                           //   chooseAction(SAVE_AND_EXIT);
-        wr { checkMainWebViewDisplayed() }                       //   Assert.assertTrue(checkMainWebViewDisplayed());
-        wr { setFocusOnLayoutActivity() }
-        wr { clickOnReviewConsent() }                            //   clickOnReviewConsent();
-        wr { checkPartialConsentIsSelected() }                   //   Assert.assertTrue(checkConsentsAsSelected(PARTIAL_CONSENT_LIST));
-    }
-
-    @Test
-    fun checkMessageDismiss() = runBlocking<Unit> {
-
-        scenario = launchActivity()
-
-        wr(d) { checkWebViewDisplayedForMessage() }          //  Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        wr { tapDismissWebView() }                           //  chooseDismiss();
-        wr { checkMainWebViewDisplayed() }                   //  Assert.assertTrue(checkMainWebViewDisplayed());
-    }
-
-    @Test
-    fun checkRejectActionFromMessage() = runBlocking<Unit> {
-
-        scenario = launchActivity()
-
-        wr(d) { checkWebViewDisplayedForMessage() }         //  Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        wr { tapRejectOnWebView() }                         //  chooseAction(REJECT);
-        wr { checkMainWebViewDisplayed() }                  //  Assert.assertTrue(checkMainWebViewDisplayed());
-        wr { clickOnReviewConsent() }                       //  clickOnReviewConsent();
-        wr { checkWebViewDisplayedForPrivacyManager() }     //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        wr { checkConsentIsNotSelected() }                  //  Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-    }
-
-    @Test
-    fun checkRejectActionFromPrivacyManager() = runBlocking<Unit> {
-
-        scenario = launchActivity()
-
-        wr(d) { checkWebViewDisplayedForMessage() }         //  Assert.assertTrue(checkWebViewDisplayedFor(MESSAGE));
-        wr { tapOptionWebView() }                           //  chooseAction(OPTIONS);
-        wr { checkWebViewDisplayedForPrivacyManager() }     //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        wr { clickPMTabSelectedPurposes() }
-        wr { checkConsentIsNotSelected() }                  //  Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-        wr { tapRejectAllWebView() }                        //  chooseAction(REJECT_ALL);
-        wr { checkMainWebViewDisplayed() }                  //  Assert.assertTrue(checkMainWebViewDisplayed());
-        wr { clickOnReviewConsent() }                       //  clickOnReviewConsent();
-        wr { checkWebViewDisplayedForPrivacyManager() }     //  Assert.assertTrue(checkWebViewDisplayedFor(PRIVACY_MANAGER));
-        wr { checkConsentIsNotSelected() }                  //  Assert.assertFalse(checkConsentsAsSelected(CONSENT_LIST));
-    }
-    */
 
     private fun mockModule(
         spConfig: SpConfig,
