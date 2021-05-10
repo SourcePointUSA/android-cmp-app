@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.model.ext
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.*
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent

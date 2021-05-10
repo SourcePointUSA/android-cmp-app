@@ -50,7 +50,7 @@ class JsonConverterImplTest {
     }
 
     @Test
-    fun `GIVEN a ACCEPT_ALL consent body resp RETURN a right object`(){
+    fun `GIVEN a ACCEPT_ALL consent body resp RETURN a right object`() {
         val json = "consent_resp/consent_accept_all.json".file2String()
         val testMap = JSONObject(json).toTreeMap()
 
@@ -59,7 +59,7 @@ class JsonConverterImplTest {
     }
 
     @Test
-    fun `GIVEN a REJECT_ALL consent body resp RETURN a right object`(){
+    fun `GIVEN a REJECT_ALL consent body resp RETURN a right object`() {
         val json = "consent_resp/consent_reject_all.json".file2String()
         val testMap = JSONObject(json).toTreeMap()
 
@@ -68,7 +68,7 @@ class JsonConverterImplTest {
     }
 
     @Test
-    fun `GIVEN a SAVE_AND_EXIT consent body resp RETURN a right object`(){
+    fun `GIVEN a SAVE_AND_EXIT consent body resp RETURN a right object`() {
         val json = "consent_resp/consent_save_and_exit.json".file2String()
         val testMap = JSONObject(json).toTreeMap()
 
@@ -77,7 +77,7 @@ class JsonConverterImplTest {
     }
 
     @Test
-    fun `GIVEN an invalid json EXECUTE toConsentResp and RETURN a Left object`(){
+    fun `GIVEN an invalid json EXECUTE toConsentResp and RETURN a Left object`() {
         val json = "{}"
         val testMap = JSONObject(json).toTreeMap()
 
