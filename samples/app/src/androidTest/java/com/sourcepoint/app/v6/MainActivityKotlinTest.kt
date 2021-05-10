@@ -33,7 +33,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 @RunWith(AndroidJUnit4ClassRunner::class)
-class ExampleAppV6Tests {
+class MainActivityKotlinTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
@@ -57,10 +57,42 @@ class ExampleAppV6Tests {
         +(CampaignType.GDPR)
     }
 
+    private val spConfCcpa = config {
+        accountId = 22
+        propertyName = "mobile.multicampaign.demo"
+        pmTab = PMTab.FEATURES
+        messLanguage = MessageLanguage.ENGLISH
+        +(CampaignType.CCPA)
+    }
+
+    @Test
+    fun GIVEN_a_gdpr_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "13111", ccpaPmId = "13111"))
+
+        scenario = launchActivity()
+
+        wr { tapAcceptOnWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
+    }
+
+    @Test
+    fun GIVEN_a_ccpa_campaign_SHOW_message_and_REJECT_ALL() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "13111", ccpaPmId = "13111"))
+
+        scenario = launchActivity()
+
+        wr { tapRejectOnWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
+    }
+
     @Test
     fun GIVEN_a_camapignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111", ccpaPmId = "13111"))
+        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "13111", ccpaPmId = "13111"))
 
         scenario = launchActivity()
 
@@ -71,7 +103,7 @@ class ExampleAppV6Tests {
 //    @Test
 //    fun GIVEN_a_camapignList_tap_SETTINGS_all_legislation() = runBlocking<Unit> {
 //
-//        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111", ccpaPmId = "13111"))
+//        loadKoinModules(mockModule(spConfig = spConfFull, gdprPmId = "13111", ccpaPmId = "13111"))
 //
 //        scenario = launchActivity()
 //
@@ -83,7 +115,7 @@ class ExampleAppV6Tests {
     @Test
     fun GIVEN_consent_USING_gdpr_pm() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111"))
+        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "13111"))
 
         scenario = launchActivity()
 
@@ -95,7 +127,7 @@ class ExampleAppV6Tests {
     @Test
     fun GIVEN_a_gdpr_consent_ACCEPT_ALL() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111"))
+        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "13111"))
 
         scenario = launchActivity()
 
@@ -109,7 +141,7 @@ class ExampleAppV6Tests {
     @Test
     fun SAVE_AND_EXIT_action() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111"))
+        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "13111"))
 
         scenario = launchActivity()
 
@@ -125,7 +157,7 @@ class ExampleAppV6Tests {
     @Test
     fun customConsentAction() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfGdpr, gdprPmId = "13111"))
+        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "13111"))
 
         scenario = launchActivity()
 
@@ -140,7 +172,7 @@ class ExampleAppV6Tests {
 //    @Test
 //    fun SAVE_AND_EXIT_action_2() = runBlocking<Unit> {
 //
-//        loadKoinModules(mockModule(onlyPm = false, spConfig = spConfFull, gdprPmId = "13111"))
+//        loadKoinModules(mockModule(spConfig = spConfFull, gdprPmId = "13111"))
 //
 //        scenario = launchActivity()
 //
@@ -317,14 +349,12 @@ class ExampleAppV6Tests {
         ccpaPmId: String = "",
         uuid: String? = null,
         url: String = "",
-        onlyPm: Boolean = false
     ): Module {
         return module(override = true) {
             single<DataProvider> {
                 object : DataProvider {
                     override val authId = uuid
                     override val url = url
-                    override val onlyPm: Boolean = onlyPm
                     override val spConfig: SpConfig = spConfig
                     override val gdprPmId: String = gdprPmId
                     override val ccpaPmId: String = ccpaPmId

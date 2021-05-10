@@ -8,7 +8,6 @@ import java.util.*
 interface DataProvider {
     val authId: String?
     val url: String
-    val onlyPm: Boolean
     val gdprPmId: String
     val ccpaPmId: String
     val spConfig: SpConfig
@@ -50,8 +49,6 @@ private class DataProviderImpl(
     val sharedPref: SharedPreferences by lazy {
         context.getSharedPreferences("myshared", Context.MODE_PRIVATE)
     }
-
-    override val onlyPm: Boolean = false
 
     init {
         pAuthId?.let {

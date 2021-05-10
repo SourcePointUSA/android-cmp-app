@@ -71,9 +71,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (!dataProvider.onlyPm) {
-            spConsentLib.loadMessage()
-        }
+        spConsentLib.loadMessage()
     }
 
     override fun onDestroy() {
