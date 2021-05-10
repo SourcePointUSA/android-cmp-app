@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.model.ext
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.*
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
@@ -33,7 +33,8 @@ internal fun String.toConsentAction(): ConsentAction {
         requestFromPm = requestFromPm,
         saveAndExitVariables = saveAndExitVariables,
         consentLanguage = consentLanguage,
-        campaignType = CampaignType.valueOf(legislation)
+        campaignType = CampaignType.valueOf(legislation),
+        thisContent = map.toJSONObj()
     )
 }
 

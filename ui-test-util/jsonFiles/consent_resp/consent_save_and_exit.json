@@ -1,0 +1,46 @@
+{
+  "uuid": "54149e43-d1a4-4208-a140-84070fe7e43d",
+  "localState": "{\"gdpr\":{\"mmsCookies\":[\"_sp_v1_uid=1:10:9f5b2f22-60da-4874-a54a-547f5cadd5be\",\"_sp_v1_data=2:5321:1620629529:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbKKBjLyQAyD2lidGKVUEDOvNCcHyC4BK6iurVWKBQAW54XRMAAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_consent=1!-1:-1:-1:-1:-1:-1\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"uuid\":\"54149e43-d1a4-4208-a140-84070fe7e43d\",\"propertyId\":4245,\"messageId\":14987}}",
+  "userConsent": {
+    "euconsent": "CPF-HNhPF-HNhHIABBENBZCgAIAAAAAAAAYgGMwAQGMgAAAAAAAA.YAAAAAAAAAAA",
+    "addtlConsent": "1~",
+    "specialFeatures": [],
+    "legIntCategories": [],
+    "grants": {
+      "5fbe6f050d88c7d28d765d47": {
+        "vendorGrant": false,
+        "purposeGrants": {
+          "60657acc9c97c400122f21f3": true,
+          "60657acc9c97c400122f21fa": false,
+          "60657acc9c97c400122f2200": false,
+          "60657acc9c97c400122f2206": false,
+          "60657acc9c97c400122f2218": false,
+          "60657acc9c97c400122f2224": false,
+          "60657acc9c97c400122f222a": false
+        }
+      },
+      "5fbe6f090d88c7d28d765e1e": {
+        "vendorGrant": true,
+        "purposeGrants": {
+          "60657acc9c97c400122f21f3": true
+        }
+      },
+      "5fbe6f0a0d88c7d28d765e25": {
+        "vendorGrant": false,
+        "purposeGrants": {
+          "60657acc9c97c400122f220c": false,
+          "60657acc9c97c400122f2212": false
+        }
+      }
+    },
+    "acceptedVendors": [
+      "5fbe6f090d88c7d28d765e1e",
+      "5fbe6f050d88c7d28d765d47"
+    ],
+    "acceptedCategories": [
+      "60657acc9c97c400122f21f3"
+    ],
+    "consentedToAll": false,
+    "rejectedAny": true
+  }
+}
