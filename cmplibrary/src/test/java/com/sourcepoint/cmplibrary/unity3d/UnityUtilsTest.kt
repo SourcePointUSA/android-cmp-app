@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.util
+package com.sourcepoint.cmplibrary.unity3d
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
