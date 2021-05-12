@@ -54,7 +54,6 @@ class CampaignManagerTest {
             ccpaCamapign,
             gdprCampaign
         ),
-        PMTab.PURPOSES,
         MessageLanguage.ENGLISH
     )
 

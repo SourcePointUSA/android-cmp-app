@@ -37,7 +37,6 @@ class BuilderTest {
             ccpaCamapign,
             gdprCampaign
         ),
-        PMTab.PURPOSES,
         MessageLanguage.ENGLISH
     )
 

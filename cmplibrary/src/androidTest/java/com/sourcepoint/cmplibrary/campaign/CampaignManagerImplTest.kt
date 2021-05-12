@@ -63,7 +63,6 @@ class CampaignManagerImplTest {
             ccpaCamapign,
             gdprCampaign
         ),
-        PMTab.FEATURES,
         MessageLanguage.ENGLISH
     )
 

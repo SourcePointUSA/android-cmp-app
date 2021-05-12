@@ -47,7 +47,6 @@ class MainActivityKotlinTest {
     private val spConfGdpr = config {
         accountId = 22
         propertyName = "mobile.multicampaign.demo"
-        pmTab = PMTab.FEATURES
         messLanguage = MessageLanguage.ENGLISH
         +(CampaignType.GDPR)
     }
@@ -55,7 +54,6 @@ class MainActivityKotlinTest {
     private val spConf = config {
         accountId = 22
         propertyName = "mobile.multicampaign.demo"
-        pmTab = PMTab.FEATURES
         messLanguage = MessageLanguage.ENGLISH
         +(CampaignType.GDPR)
         +(CampaignType.CCPA)

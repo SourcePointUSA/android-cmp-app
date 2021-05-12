@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.creation
 
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
@@ -18,7 +17,6 @@ class SpConfigDataBuilder {
     var accountId by Delegates.notNull<Int>()
     var propertyName by Delegates.notNull<String>()
     var messLanguage: MessageLanguage = MessageLanguage.ENGLISH
-    var pmTab: PMTab = PMTab.FEATURES
 
     operator fun CampaignType.unaryPlus() {
         campaigns.add(SpCampaign(this, emptyList()))
@@ -34,10 +32,6 @@ class SpConfigDataBuilder {
 
     fun addPropertyName(propertyName: String): SpConfigDataBuilder = apply {
         this.propertyName = propertyName
-    }
-
-    fun addPrivacyManagerTab(pmTab: PMTab) = apply {
-        this.pmTab = pmTab
     }
 
     fun addMessageLanguage(messLanguage: MessageLanguage) = apply {
@@ -82,7 +76,6 @@ class SpConfigDataBuilder {
             accountId,
             propertyName,
             campaigns,
-            pmTab,
             messLanguage
         )
     }

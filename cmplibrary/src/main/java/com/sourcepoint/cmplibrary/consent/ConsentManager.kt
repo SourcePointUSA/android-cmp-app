@@ -62,9 +62,9 @@ private class ConsentManagerImpl(
             field = value
             changeLocalState(value)
         }
-    private val consentQueue2: Queue<ConsentAction> = LinkedList()
+    private val consentQueue: Queue<ConsentAction> = LinkedList()
     override val enqueuedActions: Int
-        get() = consentQueue2.size
+        get() = consentQueue.size
 
     override val gdprUuid: String?
         get() = dataStorage.getGdprConsentUuid()
@@ -73,11 +73,11 @@ private class ConsentManagerImpl(
         get() = dataStorage.getCcpaConsentUuid()
 
     override fun enqueueConsent(consentAction: ConsentAction) {
-        consentQueue2.offer(consentAction)
+        consentQueue.offer(consentAction)
         val lState: LocalStateStatus.Present? = localStateStatus as? LocalStateStatus.Present
         if (lState != null) {
             val localState = lState.value
-            val action = consentQueue2.poll()
+            val action = consentQueue.poll()
             sendConsent(action, localState)
         }
     }
@@ -85,9 +85,9 @@ private class ConsentManagerImpl(
     fun changeLocalState(newState: LocalStateStatus) {
         when (newState) {
             is LocalStateStatus.Present -> {
-                if (consentQueue2.isNotEmpty()) {
+                if (consentQueue.isNotEmpty()) {
                     val localState = newState.value
-                    val action = consentQueue2.poll()
+                    val action = consentQueue.poll()
                     sendConsent(action, localState)
                     localStateStatus = LocalStateStatus.Consumed
                 }
