@@ -44,7 +44,6 @@ class SpUtilsTest {
             ccpaCamapign,
             gdprCampaign
         ),
-        PMTab.FEATURES,
         MessageLanguage.ENGLISH
     )
 
