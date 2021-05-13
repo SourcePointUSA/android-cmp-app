@@ -14,7 +14,6 @@ import org.junit.Test
 import java.lang.Exception
 
 class UnityUtilsTest {
-
     //region arrayToList unit-tests
     @Test
     fun `CALLING arrayToList with empty Array of TargetingParam RETURN empty List`() {
@@ -107,7 +106,6 @@ class UnityUtilsTest {
         val proxy = object : UnityCustomConsentGDPRProxy {
             override fun transferCustomConsentToUnitySide(spCustomConsentsJSON: String?) {
                 // In real use case UnityCustomConsentGDPRProxy is implemented c#-side
-//                println("I'm in proxy -> $spCustomConsentsJSON")
                 // TODO: make assert condition as delegate
                 spCustomConsentsJSON.assertNotNull()
                 spCustomConsentsJSON.assertEquals("{}")
@@ -131,7 +129,6 @@ class UnityUtilsTest {
         val proxy = object : UnityCustomConsentGDPRProxy {
             override fun transferCustomConsentToUnitySide(spCustomConsentsJSON: String?) {
                 // In real use case UnityCustomConsentGDPRProxy is implemented c#-side
-                println("1 I'm in proxy -> $spCustomConsentsJSON")
                 // TODO: make assert condition as delegate and move UnityCustomConsentGDPRProxy creation to fun
                 spCustomConsentsJSON.assertNotNull()
                 spCustomConsentsJSON?.contains(someValue)?.assertTrue()
