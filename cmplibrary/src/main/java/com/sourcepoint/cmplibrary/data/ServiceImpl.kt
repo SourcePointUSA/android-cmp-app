@@ -102,9 +102,9 @@ private class ServiceImpl(
                 if (dataStorage.getGdprConsentResp().isEmpty()) {
                     genericFail("CustomConsent cannot be executed. Consent is missing!!!")
                 }
-                val savedConsent = JSONObject()
-                savedConsent.put("grants", it.content.get("grants"))
-                dataStorage.saveGdprConsentResp(savedConsent.toString())
+                val existingConsent = JSONObject(dataStorage.getGdprConsentResp())
+                existingConsent.put("grants", it.content.get("grants"))
+                dataStorage.saveGdprConsentResp(existingConsent.toString())
             }
         consentManagerUtils.getSpConsent()
     }
