@@ -13,9 +13,10 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.GenericSDKException
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.ext.toUnifiedMessageRespDto
+import com.sourcepoint.cmplibrary.stub.MockDataStorage
 import com.sourcepoint.cmplibrary.stub.MockNetworkClient
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.uwMessDataTest
@@ -240,6 +241,26 @@ class ServiceImplTest {
 
         res.gdpr.assertNotNull()
         res.ccpa.assertNotNull()
+    }
+
+    @Test
+    fun `GIVEN a custom consent VERIFY that the grants are updated`() {
+        val dsStub = MockDataStorage()
+        // initial saved consent
+        val storedConsent = "custom_consent/stored_consent.json".file2String()
+        dsStub.saveGdprConsentResp(storedConsent)
+        // new custom consent result
+        val newConsent = "custom_consent/new_consent.json".file2String()
+
+        every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
+
+        val sut = Service.create(ncMock, cm, cmu, dsStub, logger)
+        sut.sendCustomConsentServ(mockk(), Env.STAGE).getOrNull()!!
+
+        // compare that the new consent get stored
+        val customStoredGrants = JSONObject(dsStub.getGdprConsentResp()).toTreeMap().getMap("grants")!!
+        val customGrants = JSONObject(newConsent).toTreeMap().getMap("grants")!!
+        customGrants.assertEquals(customStoredGrants)
     }
 
     @Test
