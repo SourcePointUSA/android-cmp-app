@@ -217,7 +217,7 @@ internal class SpConsentLibImpl(
             success = {
                 it?.let { spc ->
                     successCallback.transferCustomConsentToUnity(spc.toJsonObject().toString())
-                } ?: run { spClient.onError(RuntimeException("An error occurred during the custom consent request: SPConsent is null")) }
+                } ?: run { spClient.onError(RuntimeException("An error occurred during the custom consent request")) }
             }
         )
     }
