@@ -1,5 +1,5 @@
 package com.sourcepoint.cmplibrary.consent
 
 interface CustomConsentClient {
-    fun transferCustomConsentToUnitySide(spCustomConsentsJSON: String)
+    fun transferCustomConsentToUnity(spCustomConsentsJSON: String)
 }

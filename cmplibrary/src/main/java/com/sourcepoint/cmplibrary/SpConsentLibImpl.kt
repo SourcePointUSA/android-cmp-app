@@ -216,7 +216,7 @@ internal class SpConsentLibImpl(
             legIntCategories = legIntCategories.toList(),
             success = {
                 it?.let { spc ->
-                    successCallback.transferCustomConsentToUnitySide(spc.toJsonObject().toString())
+                    successCallback.transferCustomConsentToUnity(spc.toJsonObject().toString())
                 } ?: run { spClient.onError(RuntimeException("SPClient is null!")) }
             }
         )
