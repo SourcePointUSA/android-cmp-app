@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
+import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.consent.LocalStateStatus
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
@@ -206,6 +207,19 @@ internal class SpConsentLibImpl(
                 }
             }
         }
+    }
+
+    override fun customConsentGDPR(vendors: Array<String>, categories: Array<String>, legIntCategories: Array<String>, successCallback: CustomConsentClient) {
+        customConsentGDPR(
+            vendors = vendors.toList(),
+            categories = categories.toList(),
+            legIntCategories = legIntCategories.toList(),
+            success = {
+                it?.let { spc ->
+                    successCallback.transferCustomConsentToUnitySide(spc.toJsonObject().toString())
+                } ?: run { spClient.onError(RuntimeException("SPClient is null!")) }
+            }
+        )
     }
 
     override fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType) {
