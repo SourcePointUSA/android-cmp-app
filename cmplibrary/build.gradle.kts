@@ -62,6 +62,11 @@ android {
         unitTests.isReturnDefaultValues = true
         unitTests.isIncludeAndroidResources = true
     }
+
+    lintOptions {
+        // https://stackoverflow.com/questions/44751469/kotlin-extension-functions-suddenly-require-api-level-24/44752239
+        isAbortOnError = false
+    }
 }
 
 dependencies {
