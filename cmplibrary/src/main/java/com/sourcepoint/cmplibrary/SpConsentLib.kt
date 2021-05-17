@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary
 
 import android.view.View
+import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
@@ -17,6 +18,13 @@ interface SpConsentLib {
         categories: List<String>,
         legIntCategories: List<String>,
         success: (SPConsents?) -> Unit,
+    )
+
+    fun customConsentGDPR(
+        vendors: Array<String>,
+        categories: Array<String>,
+        legIntCategories: Array<String>,
+        successCallback: CustomConsentClient
     )
 
     fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType)
