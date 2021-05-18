@@ -44,7 +44,8 @@ class SpUtilsTest {
             ccpaCamapign,
             gdprCampaign
         ),
-        MessageLanguage.ENGLISH
+        MessageLanguage.ENGLISH,
+        3000
     )
 
     @Test

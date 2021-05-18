@@ -25,7 +25,7 @@ class ViewsManagerImplTest {
     @Test
     fun `EXECUTED the dispose() CHECK the weakReference is empty`() {
         val weakReference = WeakReference(activity)
-        val sut = ViewsManager.create(weakReference, connectionManager)
+        val sut = ViewsManager.create(weakReference, connectionManager, 3000)
         sut.dispose()
         weakReference.get().assertNull()
     }

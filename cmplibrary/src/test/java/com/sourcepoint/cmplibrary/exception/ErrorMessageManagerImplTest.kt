@@ -37,7 +37,8 @@ class ErrorMessageManagerImplTest {
         accountId = 22,
         propertyName = "http://dev.local",
         campaigns = listOf(gdpr),
-        messageLanguage = MessageLanguage.ENGLISH
+        messageLanguage = MessageLanguage.ENGLISH,
+        3000
     )
 
     @MockK

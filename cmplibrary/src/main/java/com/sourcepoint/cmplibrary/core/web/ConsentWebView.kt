@@ -30,6 +30,7 @@ internal class ConsentWebView(
     context: Context,
     private val jsClientLib: JSClientLib,
     private val logger: Logger,
+    private val messageTimeout: Long,
     private val connectionManager: ConnectionManager,
     private val executorManager: ExecutorManager,
     private val campaignQueue: Queue<CampaignModel> = LinkedList()
@@ -66,6 +67,7 @@ internal class ConsentWebView(
             onError = { jsClientLib.onError(this@ConsentWebView, it) },
             onNoIntentActivitiesFoundFor = { jsClientLib.onNoIntentActivitiesFoundFor(this@ConsentWebView, it) },
             logger = logger,
+            messageTimeout = messageTimeout,
             timer = SpTimer.create(executorManager)
         )
         webViewClient = spWebViewClient

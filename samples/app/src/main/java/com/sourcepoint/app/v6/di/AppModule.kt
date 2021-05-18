@@ -72,6 +72,7 @@ val appModule = module {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
                 messLanguage = MessageLanguage.ENGLISH
+                messageTimeout = 3000
                 +(CampaignType.GDPR)
 //                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
