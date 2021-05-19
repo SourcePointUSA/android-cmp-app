@@ -40,7 +40,7 @@ jobs:
         with:
           name: 'unit-tests-report-v6'
           path: cmplibrary/build/reports/*
-  integration-tests-cmplib:
+  integration-tests-app:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -58,10 +58,15 @@ jobs:
             !~/cache/exclude
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-      - name: Cmp integration tests
+      - name: Integration tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew cmplibrary:connectedAndroidTest
-
+          script: ./gradlew cmplibrary:connectedAndroidTest # app:connectedDebugAndroidTest
+      - name: 'Publish cmplibrary Test Report'
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: 'cmplibrary-test-report'
+          path: cmplibrary/build/reports/androidTests/*
 
