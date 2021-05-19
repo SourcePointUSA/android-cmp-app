@@ -12,7 +12,7 @@ on:
 #      - '!README.md'
 #      - '!samples/nativemessage/*'
 jobs:
-  ui-test-app-app:
+  ui-test-app:
     runs-on: ubuntu-latest
     env:
       PROJECT_ID: ${{ secrets.PROJECT_ID }}
