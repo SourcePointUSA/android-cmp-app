@@ -63,10 +63,5 @@ jobs:
         with:
           api-level: 29
           script: ./gradlew cmplibrary:connectedAndroidTest
-      - name: 'Publish cmp integration tests Report'
-        if: always()
-        uses: actions/upload-artifact@v2-preview
-        with:
-          name: 'cmplibrary-test-report'
-          path: cmplibrary/build/reports/androidTests/*
+
 
