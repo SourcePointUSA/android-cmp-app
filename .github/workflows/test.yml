@@ -40,7 +40,7 @@ jobs:
         with:
           name: 'unit-tests-report-v6'
           path: cmplibrary/build/reports/*
-  ui-test-app-app:
+  integration-tests-cmplib:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
