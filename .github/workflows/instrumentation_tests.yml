@@ -46,6 +46,7 @@ jobs:
           /opt/google-cloud-sdk/install.sh --quiet
           source /opt/google-cloud-sdk/path.bash.inc
           gcloud components update
+          gcloud config set disable_usage_reporting false
           gcloud config set project $PROJECT_ID
           echo $SERVICE_ACCOUNT > /tmp/service-account.json
           gcloud auth activate-service-account --key-file /tmp/service-account.json
