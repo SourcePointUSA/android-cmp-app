@@ -34,7 +34,10 @@ jobs:
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: Build test artifact
-        run: ./gradlew app:assembleDebug app:assembleDebugAndroidTest
+        run: |
+          ./gradlew app:assembleDebug app:assembleDebugAndroidTest
+          cp samples/app/build/outputs/apk/debug/app-debug.apk ./app-debug.apk
+          cp samples/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk ./app-debug-androidTest.apk
       - name: Run tests on Firebase Test Lab
         uses: asadmansr/Firebase-Test-Lab-Action@v1.0
         with:
