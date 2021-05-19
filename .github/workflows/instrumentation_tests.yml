@@ -47,7 +47,7 @@ jobs:
           source /opt/google-cloud-sdk/path.bash.inc
           gcloud components update
           gcloud config set disable_usage_reporting false
-          gcloud config set project ${{ secrets.PROJECT_ID }}
+          gcloud config set project "$PROJECT_ID"
           echo $SERVICE_ACCOUNT > /tmp/service-account.json
           gcloud auth activate-service-account --key-file /tmp/service-account.json
           cp samples/app/build/outputs/apk/debug/app-debug.apk ./app-debug.apk
