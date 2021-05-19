@@ -7,13 +7,13 @@ import java.util.*
 
 interface DataProvider {
     val authId: String?
+    val resetAll: Boolean
     val url: String
     val gdprPmId: String
     val ccpaPmId: String
     val spConfig: SpConfig
     val customVendorList: List<String>
     val customCategories: List<String>
-
     companion object
 }
 
@@ -42,7 +42,7 @@ private class DataProviderImpl(
     override val customCategories: List<String>,
     override val gdprPmId: String,
     override val ccpaPmId: String,
-
+    override val resetAll: Boolean = false,
     val pAuthId: String?
 ) : DataProvider {
 
