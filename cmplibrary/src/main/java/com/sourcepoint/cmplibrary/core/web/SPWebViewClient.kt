@@ -12,11 +12,11 @@ import com.sourcepoint.cmplibrary.util.loadLinkOnExternalBrowser
 
 internal class SPWebViewClient(
     val wv: WebView,
+    private val messageTimeout: Long,
     private val onError: (ConsentLibExceptionK) -> Unit,
     private val onNoIntentActivitiesFoundFor: (String) -> Unit,
     private val timer: SpTimer,
-    private val logger: Logger,
-    private val messageTimeout: Long = 3000
+    private val logger: Logger
 ) : WebViewClient() {
 
     var jsReceiverConfig: (() -> String)? = null

@@ -75,6 +75,7 @@ class Builder {
     fun build(): SpConsentLib {
 
         val env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD
+        val spc: SpConfig = spConfig ?: fail("spConfig")
 
         val activityWeakRef: WeakReference<Activity> = weakReference ?: failParam("context")
         val appCtx: Context = activityWeakRef.get()?.applicationContext ?: failParam("context")
@@ -82,7 +83,7 @@ class Builder {
         val dataStorageGdpr = DataStorageGdpr.create(appCtx)
         val dataStorageCcpa = DataStorageCcpa.create(appCtx)
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
-        val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig ?: fail("spConfig"), MessageLanguage.ENGLISH)
+        val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spc, MessageLanguage.ENGLISH)
         val errorManager = errorMessageManager(campaignManager, client)
         val logger = createLogger(errorManager)
         val pmTab = privacyManagerTab ?: PMTab.FEATURES
@@ -90,7 +91,7 @@ class Builder {
         val connManager = ConnectionManager.create(appCtx)
         val responseManager = ResponseManager.create(jsonConverter)
         val networkClient = networkClient(OkHttpClient(), responseManager, logger)
-        val viewManager = ViewsManager.create(activityWeakRef, connManager)
+        val viewManager = ViewsManager.create(activityWeakRef, connManager, spc.messageTimeout)
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
         val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)

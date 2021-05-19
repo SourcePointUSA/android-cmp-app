@@ -37,7 +37,8 @@ class BuilderTest {
             ccpaCamapign,
             gdprCampaign
         ),
-        MessageLanguage.ENGLISH
+        MessageLanguage.ENGLISH,
+        3000
     )
 
     @Before

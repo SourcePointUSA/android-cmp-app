@@ -34,6 +34,7 @@ public class MainActivityJava extends AppCompatActivity {
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
             .addMessageLanguage(MessageLanguage.ENGLISH)
+            .addMessageTimeout(3000)
             .addCampaign(new SpCampaign(CampaignType.GDPR, Collections.emptyList()))
             .addCampaign(CampaignType.GDPR)
 //            .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))

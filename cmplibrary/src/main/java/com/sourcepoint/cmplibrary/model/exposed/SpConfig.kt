@@ -8,6 +8,7 @@ data class SpConfig(
     @JvmField val propertyName: String,
     @JvmField val campaigns: List<SpCampaign>,
     @JvmField val messageLanguage: MessageLanguage,
+    @JvmField val messageTimeout: Long,
 
 )
 
