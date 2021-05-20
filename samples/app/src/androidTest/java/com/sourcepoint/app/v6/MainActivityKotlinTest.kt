@@ -83,7 +83,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
     }
 
-    @Test
+//    @Test
     fun GIVEN_a_campaignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConf, gdprPmId = "13111", ccpaPmId = "13111"))
