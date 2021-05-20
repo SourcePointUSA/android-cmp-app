@@ -84,7 +84,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_camapignList_ACCEPT_all_legislation() = runBlocking<Unit> {
+    fun GIVEN_a_campaignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConf, gdprPmId = "13111", ccpaPmId = "13111"))
 

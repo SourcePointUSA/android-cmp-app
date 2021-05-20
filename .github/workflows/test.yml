@@ -31,7 +31,7 @@ jobs:
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: Build test artifact
-        run: ./gradlew cmplibrary:build app:assemble
+        run: ./gradlew cmplibrary:build
       - name: Unit Tests cmplibrary
         run: ./gradlew cmplibrary:test
       - name: 'Publish Unit tests Report cmplibrary'
@@ -62,6 +62,6 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew cmplibrary:connectedAndroidTest # app:connectedDebugAndroidTest
+          script: ./gradlew cmplibrary:connectedAndroidTest
 
 
