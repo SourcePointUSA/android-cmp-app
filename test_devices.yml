@@ -1,0 +1,18 @@
+android-pixel-4:
+  type: instrumentation
+  app: app-debug.apk
+  test: app-debug-androidTest.apk
+  device:
+    - model: walleye
+      version: 29
+      locale: 'en'
+      orientation: portrait
+nexus_low_res:
+  type: instrumentation
+  app: app-debug.apk
+  test: app-debug-androidTest.apk
+  device:
+    - model: NexusLowRes
+      version: 29
+      locale: 'en'
+      orientation: portrait
