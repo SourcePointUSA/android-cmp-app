@@ -17,7 +17,7 @@ class SpConfigDataBuilder {
     var accountId by Delegates.notNull<Int>()
     var propertyName by Delegates.notNull<String>()
     var messLanguage: MessageLanguage = MessageLanguage.ENGLISH
-    var messageTimeout: Long = 3000
+    var messageTimeout: Long = 5000
 
     operator fun CampaignType.unaryPlus() {
         campaigns.add(SpCampaign(this, emptyList()))
