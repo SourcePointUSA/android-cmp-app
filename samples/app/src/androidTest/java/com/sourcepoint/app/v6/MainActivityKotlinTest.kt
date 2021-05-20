@@ -83,8 +83,8 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
     }
 
-    @Test
-    fun GIVEN_a_camapignList_ACCEPT_all_legislation() = runBlocking<Unit> {
+//    @Test
+    fun GIVEN_a_campaignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConf, gdprPmId = "13111", ccpaPmId = "13111"))
 
@@ -175,6 +175,7 @@ class MainActivityKotlinTest {
             single<DataProvider> {
                 object : DataProvider {
                     override val authId = uuid
+                    override val resetAll = true
                     override val url = url
                     override val spConfig: SpConfig = spConfig
                     override val gdprPmId: String = gdprPmId

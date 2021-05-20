@@ -40,6 +40,9 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(dataProvider.resetAll){
+            clearAllData(this)
+        }
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
