@@ -7,4 +7,5 @@ object Versions {
     const val robolectricVersion: String = "4.4"
     const val androidxTestVersion: String = "1.3.0"
     const val okHttpVersion: String = "3.12.10"
+    const val koinVersion: String = "2.0.1"
 }

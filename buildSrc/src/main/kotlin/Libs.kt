@@ -8,6 +8,10 @@ object Libs {
     const val robolectric = "org.robolectric:robolectric:${Versions.robolectricVersion}"
     const val testCore = "androidx.test:core:${Versions.androidxTestVersion}"
     const val okHttp = "com.squareup.okhttp3:okhttp:${Versions.okHttpVersion}"
+    const val koinCore = "org.koin:koin-core:${Versions.koinVersion}"
+    const val koinCoreExt = "org.koin:koin-core-ext:${Versions.koinVersion}"
+    const val koinTest = "org.koin:koin-test:${Versions.koinVersion}"
+    const val koinAndroid = "org.koin:koin-android:${Versions.koinVersion}"
 }
 
 
