@@ -17,7 +17,7 @@ android {
         minSdkVersion(16)
         targetSdkVersion(29)
         versionCode = 2
-        versionName = "1.0.0"
+        versionName = "${rootProject.project("cmplibrary").version}"
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
