@@ -30,11 +30,13 @@ android {
         getByName("debug") {
             buildConfigField("String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\"")
             buildConfigField("String", "SDK_ENV", "\"STAGE\"")
+            buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
         }
         getByName("release") {
             isMinifyEnabled = false
             buildConfigField("String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\"")
             buildConfigField("String", "SDK_ENV", "\"PROD\"")
+            buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
         }
     }
 
@@ -61,6 +63,11 @@ android {
         // https://stackoverflow.com/questions/49667567/android-org-json-jsonobject-returns-null-in-unit-tests/57592457#57592457
         unitTests.isReturnDefaultValues = true
         unitTests.isIncludeAndroidResources = true
+    }
+
+    lintOptions {
+        // https://stackoverflow.com/questions/44751469/kotlin-extension-functions-suddenly-require-api-level-24/44752239
+        isAbortOnError = false
     }
 }
 

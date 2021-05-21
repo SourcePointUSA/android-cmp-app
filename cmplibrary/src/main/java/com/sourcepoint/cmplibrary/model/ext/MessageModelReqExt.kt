@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.CampaignReq
 import com.sourcepoint.cmplibrary.model.Campaigns
 import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
@@ -38,14 +37,6 @@ internal fun Campaigns.toJsonObject(): JSONObject {
             )
         }
     }
-}
-
-internal fun CampaignReq.toJsonObject(): JSONObject {
-    return JSONObject()
-        .apply {
-            put("targetingParams", targetingParams)
-            put("campaignEnv", campaignEnv.value)
-        }
 }
 
 internal fun List<TargetingParam>.toJsonObjStringify(): String {

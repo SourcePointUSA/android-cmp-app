@@ -63,8 +63,8 @@ class CampaignManagerImplTest {
             ccpaCamapign,
             gdprCampaign
         ),
-        PMTab.FEATURES,
-        MessageLanguage.ENGLISH
+        MessageLanguage.ENGLISH,
+        3000
     )
 
     private val cm by lazy {

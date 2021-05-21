@@ -18,17 +18,17 @@ internal interface JsonConverter {
 
     fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp>
 
-    fun toNativeMessageResp(body: String): Either<NativeMessageResp>
-
-    fun toNativeMessageRespK(body: String): Either<NativeMessageRespK>
-
     fun toConsentResp(body: String, campaignType: CampaignType): Either<ConsentResp>
+
+    fun toConsentAction(body: String): Either<ConsentAction>
 
     fun toCustomConsentResp(body: String): Either<CustomConsentResp>
 
     fun toNativeMessageDto(body: String): Either<NativeMessageDto>
 
-    fun toConsentAction(body: String): Either<ConsentAction>
+    fun toNativeMessageResp(body: String): Either<NativeMessageResp>
+
+    fun toNativeMessageRespK(body: String): Either<NativeMessageRespK>
 
     companion object
 }

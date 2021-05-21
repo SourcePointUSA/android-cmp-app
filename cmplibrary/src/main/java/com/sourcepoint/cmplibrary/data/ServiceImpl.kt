@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
+import com.sourcepoint.cmplibrary.core.* // ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.executeOnRight
 import com.sourcepoint.cmplibrary.core.flatMap
@@ -70,8 +71,8 @@ private class ServiceImpl(
         consentAction: ConsentAction,
         env: Env,
         pmId: String?
-    ): Either<ConsentResp> {
-        return consentManagerUtils.buildConsentReq(consentAction, localState, pmId)
+    ): Either<ConsentResp> = check {
+        consentManagerUtils.buildConsentReq(consentAction, localState, pmId)
             .flatMap {
                 nc.sendConsent(it, env, consentAction)
             }
@@ -89,6 +90,10 @@ private class ServiceImpl(
                 }
                 logger.d(this::class.java.name, "uuid[$it]")
             }
+            .fold(
+                { throwable -> throw throwable },
+                { consentResp: ConsentResp -> consentResp }
+            )
     }
 
     override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<SPConsents?> = check {
@@ -97,9 +102,9 @@ private class ServiceImpl(
                 if (dataStorage.getGdprConsentResp().isEmpty()) {
                     genericFail("CustomConsent cannot be executed. Consent is missing!!!")
                 }
-                val savedConsent = JSONObject()
-                savedConsent.put("grants", it.content.get("grants"))
-                dataStorage.saveGdprConsentResp(savedConsent.toString())
+                val existingConsent = JSONObject(dataStorage.getGdprConsentResp())
+                existingConsent.put("grants", it.content.get("grants"))
+                dataStorage.saveGdprConsentResp(existingConsent.toString())
             }
         consentManagerUtils.getSpConsent()
     }

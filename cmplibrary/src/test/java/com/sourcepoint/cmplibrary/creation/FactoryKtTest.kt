@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.creation
 import android.app.Activity
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
@@ -24,7 +23,13 @@ class FactoryKtTest {
     @Test
     fun `CREATE a new instance of ConsentLib`() {
         makeConsentLib(
-            spConfig = SpConfig(22, "asfa", emptyList(), PMTab.PURPOSES, MessageLanguage.ENGLISH),
+            spConfig = SpConfig(
+                22,
+                "asfa",
+                emptyList(),
+                MessageLanguage.ENGLISH,
+                3000
+            ),
             activity = context,
             spClient = mockk()
         ).assertNotNull()

@@ -35,6 +35,7 @@ import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
+import java.util.concurrent.TimeUnit
 
 fun makeConsentLib4Java(
     spConfig: SpConfig,
@@ -45,6 +46,14 @@ fun makeConsentLib4Java(
 ): SpConsentLib {
 
     val env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD
+    val okHttpClient = spConfig.messageTimeout.let {
+        OkHttpClient.Builder()
+            .connectTimeout(it, TimeUnit.MILLISECONDS)
+            .writeTimeout(it, TimeUnit.MILLISECONDS)
+            .readTimeout(it, TimeUnit.MILLISECONDS)
+            .callTimeout(it, TimeUnit.MILLISECONDS)
+            .build()
+    }
 
     val appCtx: Context = activity.applicationContext
     val client = createClientInfo()
@@ -57,8 +66,8 @@ fun makeConsentLib4Java(
     val jsonConverter = JsonConverter.create()
     val connManager = ConnectionManager.create(appCtx)
     val responseManager = ResponseManager.create(jsonConverter)
-    val networkClient = networkClient(OkHttpClient(), responseManager, logger)
-    val viewManager = ViewsManager.create(WeakReference<Activity>(activity), connManager)
+    val networkClient = networkClient(okHttpClient, responseManager, logger)
+    val viewManager = ViewsManager.create(WeakReference<Activity>(activity), connManager, spConfig.messageTimeout)
     val execManager = ExecutorManager.create(appCtx)
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
     val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)

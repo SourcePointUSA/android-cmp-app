@@ -38,12 +38,18 @@ internal interface ViewsManager {
  */
 internal fun ViewsManager.Companion.create(
     actWeakReference: WeakReference<Activity>,
-    connectionManager: ConnectionManager
-): ViewsManager = ViewsManagerImpl(actWeakReference, connectionManager)
+    connectionManager: ConnectionManager,
+    messageTimeout: Long
+): ViewsManager = ViewsManagerImpl(
+    weakReference = actWeakReference,
+    connectionManager = connectionManager,
+    messageTimeout = messageTimeout
+)
 
 private class ViewsManagerImpl(
     val weakReference: WeakReference<Activity>,
-    val connectionManager: ConnectionManager
+    val connectionManager: ConnectionManager,
+    val messageTimeout: Long
 ) : ViewsManager {
 
     object IDS {
@@ -112,7 +118,8 @@ private class ViewsManagerImpl(
                 connectionManager = connectionManager,
                 jsClientLib = jsReceiverDelegate,
                 logger = lib.pLogger,
-                executorManager = lib.executor
+                executorManager = lib.executor,
+                messageTimeout = messageTimeout
             )
         }
     }
@@ -125,7 +132,8 @@ private class ViewsManagerImpl(
                 jsClientLib = jsReceiverDelegate,
                 logger = lib.pLogger,
                 executorManager = lib.executor,
-                campaignQueue = campaignQueue
+                campaignQueue = campaignQueue,
+                messageTimeout = messageTimeout
             )
         }
     }

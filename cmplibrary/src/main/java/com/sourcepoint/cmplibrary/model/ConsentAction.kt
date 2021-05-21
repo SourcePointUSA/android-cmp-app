@@ -14,4 +14,5 @@ data class ConsentAction(
     val privacyManagerId: String? = null,
     val choiceId: String? = null,
     val consentLanguage: String? = MessageLanguage.ENGLISH.value,
+    val thisContent: JSONObject = JSONObject()
 )

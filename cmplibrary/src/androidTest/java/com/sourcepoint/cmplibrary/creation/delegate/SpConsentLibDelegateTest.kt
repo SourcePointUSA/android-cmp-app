@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.MyDebugActivity
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import org.json.JSONObject
@@ -30,7 +29,6 @@ class SpConsentLibDelegateTest {
                 config {
                     accountId = 22
                     propertyName = "mobile.multicampaign.demo"
-                    pmTab = PMTab.FEATURES
                     messLanguage = MessageLanguage.ENGLISH
                     +(CampaignType.CCPA to listOf(("location" to "US")))
                     +(CampaignType.GDPR to listOf(("location" to "EU")))
@@ -56,7 +54,6 @@ class SpConsentLibDelegateTest {
                 config {
                     accountId = 22
                     propertyName = "mobile.multicampaign.demo"
-                    pmTab = PMTab.FEATURES
                     messLanguage = MessageLanguage.ENGLISH
                     +(CampaignType.CCPA to listOf(("location" to "US")))
                     +(CampaignType.GDPR to listOf(("location" to "EU")))

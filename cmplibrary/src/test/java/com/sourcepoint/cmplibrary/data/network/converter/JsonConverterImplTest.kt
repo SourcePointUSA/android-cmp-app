@@ -6,7 +6,6 @@ import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.ext.toConsentAction
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.file2List
@@ -29,6 +28,14 @@ class JsonConverterImplTest {
     }
 
     @Test
+    fun `GIVEN a response execute toUnifiedMessageResp and RETURN a Left object`() {
+
+        val json = "[]" // invalid json
+        val output: Throwable? = (sut.toUnifiedMessageResp(json) as? Either.Left)?.t
+        output.assertNotNull()
+    }
+
+    @Test
     fun `GIVEN a native_message_resp RETURN a Right(NativeMessageResp)`() {
         val json = "native_message_resp.json".file2String()
         val testMap = JSONObject(json).toTreeMap()
@@ -42,12 +49,39 @@ class JsonConverterImplTest {
     }
 
     @Test
-    fun `GIVEN an action sequence RETURN a (ConsentAction)`() {
-        "action/gdpr_first_layer_accept_all.json".file2String().toConsentAction().actionType.assertEquals(ActionType.ACCEPT_ALL)
-        "action/gdpr_first_layer_show_option.json".file2String().toConsentAction().actionType.assertEquals(ActionType.SHOW_OPTIONS)
-        "action/gdpr_pm_accept_all.json".file2String().toConsentAction().actionType.assertEquals(ActionType.ACCEPT_ALL)
-        "action/gdpr_pm_reject_all.json".file2String().toConsentAction().actionType.assertEquals(ActionType.REJECT_ALL)
-        "action/gdpr_pm_save_and_exit.json".file2String().toConsentAction().actionType.assertEquals(ActionType.SAVE_AND_EXIT)
+    fun `GIVEN a ACCEPT_ALL consent body resp RETURN a right object`() {
+        val json = "consent_resp/consent_accept_all.json".file2String()
+        val testMap = JSONObject(json).toTreeMap()
+
+        val output = (sut.toConsentAction(json) as Either.Right).r
+        output.thisContent.toTreeMap().assertEquals(testMap)
+    }
+
+    @Test
+    fun `GIVEN a REJECT_ALL consent body resp RETURN a right object`() {
+        val json = "consent_resp/consent_reject_all.json".file2String()
+        val testMap = JSONObject(json).toTreeMap()
+
+        val output = (sut.toConsentAction(json) as Either.Right).r
+        output.thisContent.toTreeMap().assertEquals(testMap)
+    }
+
+    @Test
+    fun `GIVEN a SAVE_AND_EXIT consent body resp RETURN a right object`() {
+        val json = "consent_resp/consent_save_and_exit.json".file2String()
+        val testMap = JSONObject(json).toTreeMap()
+
+        val output = (sut.toConsentAction(json) as Either.Right).r
+        output.thisContent.toTreeMap().assertEquals(testMap)
+    }
+
+    @Test
+    fun `GIVEN an invalid json EXECUTE toConsentResp and RETURN a Left object`() {
+        val json = "{}"
+        val testMap = JSONObject(json).toTreeMap()
+
+        val output = (sut.toUnifiedMessageResp(json) as? Either.Left)
+        output.assertNotNull()
     }
 
     @Test

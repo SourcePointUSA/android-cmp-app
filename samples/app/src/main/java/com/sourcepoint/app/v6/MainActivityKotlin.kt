@@ -40,6 +40,9 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(dataProvider.resetAll){
+            clearAllData(this)
+        }
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
@@ -61,8 +64,8 @@ class MainActivityKotlin : AppCompatActivity() {
         }
         findViewById<View>(R.id.custom_consent).setOnClickListener { _v: View? ->
             spConsentLib.customConsentGDPR(
-                vendors = listOf("5fbe6f050d88c7d28d765d47"),
-                categories = listOf("60657acc9c97c400122f21f3"),
+                vendors = dataProvider.customVendorList,
+                categories = dataProvider.customCategories,
                 legIntCategories = emptyList(),
                 success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
             )
@@ -71,9 +74,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (!dataProvider.onlyPm) {
-            spConsentLib.loadMessage()
-        }
+        spConsentLib.loadMessage()
     }
 
     override fun onDestroy() {

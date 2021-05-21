@@ -36,6 +36,7 @@ import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
+import java.util.concurrent.TimeUnit
 
 class Builder {
 
@@ -75,6 +76,15 @@ class Builder {
     fun build(): SpConsentLib {
 
         val env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD
+        val spc: SpConfig = spConfig ?: fail("spConfig")
+        val okHttpClient = spc.messageTimeout.let {
+            OkHttpClient.Builder()
+                .connectTimeout(it, TimeUnit.MILLISECONDS)
+                .writeTimeout(it, TimeUnit.MILLISECONDS)
+                .readTimeout(it, TimeUnit.MILLISECONDS)
+                .callTimeout(it, TimeUnit.MILLISECONDS)
+                .build()
+        }
 
         val activityWeakRef: WeakReference<Activity> = weakReference ?: failParam("context")
         val appCtx: Context = activityWeakRef.get()?.applicationContext ?: failParam("context")
@@ -82,15 +92,15 @@ class Builder {
         val dataStorageGdpr = DataStorageGdpr.create(appCtx)
         val dataStorageCcpa = DataStorageCcpa.create(appCtx)
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
-        val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig ?: fail("spConfig"), MessageLanguage.ENGLISH)
+        val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spc, MessageLanguage.ENGLISH)
         val errorManager = errorMessageManager(campaignManager, client)
         val logger = createLogger(errorManager)
         val pmTab = privacyManagerTab ?: PMTab.FEATURES
         val jsonConverter = JsonConverter.create()
         val connManager = ConnectionManager.create(appCtx)
         val responseManager = ResponseManager.create(jsonConverter)
-        val networkClient = networkClient(OkHttpClient(), responseManager, logger)
-        val viewManager = ViewsManager.create(activityWeakRef, connManager)
+        val networkClient = networkClient(okHttpClient, responseManager, logger)
+        val viewManager = ViewsManager.create(activityWeakRef, connManager, spc.messageTimeout)
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
         val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
