@@ -1,3 +1,19 @@
+## 6.0.3 (May, 21, 2021)
+* [SP-7094] OkHttp timeout configurable from builder [#355](https://sourcepoint.atlassian.net/browse/SP-7094)
+* [SP-7090] Upgraded android tools to v 4.1.3 [#354](https://sourcepoint.atlassian.net/browse/SP-7090)
+* [SP-7068] Improving ui-tests stability [#353](https://sourcepoint.atlassian.net/browse/SP-7068)
+* [SP-7061] Configurable timeout [#352](https://sourcepoint.atlassian.net/browse/SP-7061)
+* [SP-7006] Wrap of customConsentGDPR feature for Unity3d [#349](https://sourcepoint.atlassian.net/browse/SP-7006)
+* [SP-7053] Kotlin upgrade to v1.5.0 [#351](https://sourcepoint.atlassian.net/browse/SP-7053)
+* [SP-6963] CampaignManager unit-tests [#350](https://sourcepoint.atlassian.net/browse/SP-6963)
+* [SP-6968] MessageModelReqExt unit-tests [#348](https://sourcepoint.atlassian.net/browse/SP-6968)
+* [SP-6967] ConsentRespExt unit-tests [#347](https://sourcepoint.atlassian.net/browse/SP-6967)
+* [SP-6964] ConsentManager unit-tests [#346](https://sourcepoint.atlassian.net/browse/SP-6964)
+* [SP-6961] Service unit-tests [#345](https://sourcepoint.atlassian.net/browse/SP-6961)
+* [SP-6972] Ui tests for the multi-campaign flow [#344](https://sourcepoint.atlassian.net/browse/SP-6972)
+* [SP-6970] UI tests for the first layer message [#343](https://sourcepoint.atlassian.net/browse/SP-6970)
+* [SP-6960] JsonConverter tests [#342](https://sourcepoint.atlassian.net/browse/SP-6960)
+
 ## 6.0.2 (May, 07, 2021)
 * Improved test coverage
 * Fix unity compatibility issue
