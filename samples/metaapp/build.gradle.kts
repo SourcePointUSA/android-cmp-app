@@ -14,7 +14,7 @@ android {
     compileSdkVersion(29)
     defaultConfig {
         applicationId = "com.sourcepointmeta.metaapp"
-        minSdkVersion(16)
+        minSdkVersion(21)
         targetSdkVersion(29)
         versionCode = 2
         versionName = "${rootProject.project("cmplibrary").version}"
@@ -23,7 +23,7 @@ android {
     }
 
     buildTypes {
-        getByName("debug") { }
+//        getByName("debug") { }
         getByName("release") {
             isMinifyEnabled = false
         }
@@ -33,7 +33,7 @@ android {
         val sharedRes = "${project.rootDir.path}/ui-test-util/jsonFiles"
         getByName("test").resources.srcDir(sharedRes)
         getByName("androidTest").resources.srcDir(sharedRes)
-        getByName("main").resources.srcDir("${projectDir.path}/files")
+//        getByName("main").resources.srcDir("${projectDir.path}/files")
 
     }
 
