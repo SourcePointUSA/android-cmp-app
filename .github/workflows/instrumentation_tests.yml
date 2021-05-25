@@ -1,13 +1,13 @@
 name: Instrumentation Test - Firebase Test Lab
 on:
   push:
-    branches: [ develop ]
+    branches: [ sp-7054-meta-base-config ]
     paths:
       - '!README.md'
       - '!release_note.txt'
   #      - '!samples/nativemessage/*'
   pull_request:
-    branches: [ develop ]
+    branches: [ sp-7054-meta-base-config ]
 #    paths:
 #      - '!README.md'
 #      - '!samples/nativemessage/*'
@@ -38,9 +38,17 @@ jobs:
           ./gradlew app:assembleDebug app:assembleDebugAndroidTest
           cp samples/app/build/outputs/apk/debug/app-debug.apk ./app-debug.apk
           cp samples/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk ./app-debug-androidTest.apk
-      - name: Run tests on Firebase Test Lab
+          cp samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk ./metaapp-debug.apk
+          cp samples/metaapp/build/outputs/apk/androidTest/debug/metaapp-debug-androidTest.apk ./metaapp-debug-androidTest.apk
+      - name: Run tests SampleApp on Firebase Test Lab
         uses: asadmansr/Firebase-Test-Lab-Action@v1.0
         with:
-          arg-spec: 'test_devices.yml:nexus_low_res'
+          arg-spec: 'test_devices.yml:app-nexus_low_res'
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+      - name: Run tests SampleApp on Firebase Test Lab
+        uses: asadmansr/Firebase-Test-Lab-Action@v1.0
+        with:
+          arg-spec: 'test_devices.yml:metaapp-nexus_low_res'
         env:
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
