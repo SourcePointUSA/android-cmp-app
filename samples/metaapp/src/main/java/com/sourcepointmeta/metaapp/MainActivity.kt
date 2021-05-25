@@ -2,7 +2,7 @@ package com.sourcepointmeta.metaapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.sourcepointmeta.metaapp.ui.main.MainFragment
+import com.sourcepointmeta.metaapp.ui.MainFragment
 
 class MainActivity : AppCompatActivity() {
 
