@@ -2,9 +2,9 @@ name: Instrumentation Test - Firebase Test Lab
 on:
   push:
     branches: [ sp-7054-meta-base-config ]
-    paths:
-      - '!README.md'
-      - '!release_note.txt'
+#    paths:
+#      - '!README.md'
+#      - '!release_note.txt'
   #      - '!samples/nativemessage/*'
   pull_request:
     branches: [ sp-7054-meta-base-config ]
