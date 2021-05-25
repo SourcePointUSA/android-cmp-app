@@ -1,4 +1,4 @@
-name: Metaap Instrumentation Test - Firebase Test Lab
+name: Metaap UI Tests
 on:
   push:
     branches: [ develop ]
