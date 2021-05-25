@@ -1,4 +1,5 @@
 ![Test](https://github.com/SourcePointUSA/android-cmp-app/workflows/Test/badge.svg?branch=develop)
+[![Instrumentation Test - Firebase Test Lab](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/instrumentation_tests.yml/badge.svg)](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/instrumentation_tests.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.sourcepoint.cmplibrary/cmplibrary)](https://search.maven.org/search?q=g:com.sourcepoint.cmplibrary)
 
 # How to Install 
@@ -117,7 +118,7 @@ Java
     @Override
     protected void onResume() {
         super.onResume();
-        spConsentLib.loadMessage("<authId>");
+        spConsentLib.loadMessage();
     }
 ```
 ## Releasing resources

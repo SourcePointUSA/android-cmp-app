@@ -75,6 +75,5 @@ cmplibrary_old/*
 
 samples/app_old/*
 samples/authexample/*
-samples/metaapp/*
 samples/nativemessage/*
 sample-app.json

@@ -7,10 +7,19 @@ android-pixel-4:
       version: 29
       locale: 'en'
       orientation: portrait
-nexus_low_res:
+app-nexus_low_res:
   type: instrumentation
   app: app-debug.apk
   test: app-debug-androidTest.apk
+  device:
+    - model: NexusLowRes
+      version: 29
+      locale: 'en'
+      orientation: portrait
+metaapp-nexus_low_res:
+  type: instrumentation
+  app: metaapp-debug.apk
+  test: metaapp-debug-androidTest.apk
   device:
     - model: NexusLowRes
       version: 29

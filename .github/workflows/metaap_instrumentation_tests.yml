@@ -1,4 +1,4 @@
-name: SampleApp Instrumentation Test - Firebase Test Lab
+name: Metaap Instrumentation Test - Firebase Test Lab
 on:
   push:
     branches: [ develop ]
@@ -12,7 +12,7 @@ on:
 #      - '!README.md'
 #      - '!samples/nativemessage/*'
 jobs:
-  ui-test-app:
+  ui-test-metaapp:
     runs-on: ubuntu-latest
     env:
       PROJECT_ID: ${{ secrets.PROJECT_ID }}
@@ -35,12 +35,12 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: Build test artifact
         run: |
-          ./gradlew app:assembleDebug app:assembleDebugAndroidTest
-          cp samples/app/build/outputs/apk/debug/app-debug.apk ./app-debug.apk
-          cp samples/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk ./app-debug-androidTest.apk
-      - name: Run tests SampleApp on Firebase Test Lab
+          ./gradlew metaapp:assembleDebug metaapp:assembleDebugAndroidTest
+          cp samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk ./metaapp-debug.apk
+          cp samples/metaapp/build/outputs/apk/androidTest/debug/metaapp-debug-androidTest.apk ./metaapp-debug-androidTest.apk
+      - name: Run tests Metaapp on Firebase Test Lab
         uses: asadmansr/Firebase-Test-Lab-Action@v1.0
         with:
-          arg-spec: 'test_devices.yml:app-nexus_low_res'
+          arg-spec: 'test_devices.yml:metaapp-nexus_low_res'
         env:
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
