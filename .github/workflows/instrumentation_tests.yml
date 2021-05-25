@@ -46,7 +46,7 @@ jobs:
           arg-spec: 'test_devices.yml:app-nexus_low_res'
         env:
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
-      - name: Run tests SampleApp on Firebase Test Lab
+      - name: Run tests Metaapp on Firebase Test Lab
         uses: asadmansr/Firebase-Test-Lab-Action@v1.0
         with:
           arg-spec: 'test_devices.yml:metaapp-nexus_low_res'
