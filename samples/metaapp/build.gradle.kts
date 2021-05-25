@@ -67,23 +67,27 @@ dependencies {
 
     implementation(project(":cmplibrary"))
 
-    // Unfortunately we depend on a outdated version of okhttp due to its support to older versions of Android
-    //noinspection GradleDependency
-    api(Libs.okHttp)
+    api(Libs.okHttpLatest)
 
-    testImplementation(Libs.mockk)
-    testImplementation(Libs.mockwebserver)
-
-    implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
-//    implementation 'com.sourcepoint.cmplibrary:cmplibrary:6.0.1'
-    implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
+    // UI
+    implementation(Libs.androidxAppcompat)
+    implementation(Libs.androidxCore)
+    implementation(Libs.material)
+    implementation(Libs.constraintLayout)
+    implementation(Libs.vectorDrawable)
+    implementation(Libs.androidxLifLivedata)
+    implementation(Libs.androidxLifViewModel)
 
     // Koin
     implementation(Libs.koinCore)
     implementation(Libs.koinCoreExt)
-    androidTestImplementation(Libs.koinTest)
     implementation(Libs.koinAndroid)
+
+    // unit-test
+    testImplementation(Libs.mockk)
+    testImplementation(Libs.mockwebserver)
+
+    // integration-test
+    androidTestImplementation(Libs.koinTest)
 
 }
