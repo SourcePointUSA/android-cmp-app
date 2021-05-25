@@ -35,7 +35,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: Build test artifact
         run: |
-          ./gradlew app:assembleDebug app:assembleDebugAndroidTest
+          ./gradlew app:assembleDebug app:assembleDebugAndroidTest metaapp:assembleDebug metaapp:assembleDebugAndroidTest
           cp samples/app/build/outputs/apk/debug/app-debug.apk ./app-debug.apk
           cp samples/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk ./app-debug-androidTest.apk
           cp samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk ./metaapp-debug.apk
