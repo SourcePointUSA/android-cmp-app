@@ -85,13 +85,11 @@ private class LocalDataSourceImpl(
     }
 
     override suspend fun updateProperty(property: Property) {
-
     }
 
     override suspend fun deleteAll() {
         cQueries.deleteTargetingParameters()
         cQueries.deleteAllProperties()
-
     }
 
     override suspend fun deleteByPropertyName(name: String) {

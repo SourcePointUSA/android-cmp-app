@@ -2,7 +2,7 @@ package com.sourcepointmeta.metaapp.data.localdatasource
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.uitestutil.*
+import com.example.uitestutil.* // ktlint-disable
 import com.sourcepointmeta.metaapp.core.Either
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -78,7 +78,8 @@ class LocalDataSourceImplTest {
         ds.storeOrUpdateProperty(
             p.copy(
                 is_staging = true,
-                targetingParameters = p.targetingParameters.map { it.copy(value = "test") })
+                targetingParameters = p.targetingParameters.map { it.copy(value = "test") }
+            )
         )
         (ds.fetchPropertyByName(prop1.property_name) as Either.Right).r
             .targetingParameters
@@ -98,28 +99,25 @@ class LocalDataSourceImplTest {
 
         (ds.fetchTargetingParams("test") as? Either.Right)?.r!!.size.assertEquals(0)
 
-
-
-
         ds.storeOrUpdateProperty(prop1)
         val prop = (ds.fetchProperties() as Either.Right).r.first()
         ds.storeOrUpdateProperty(
             prop.copy(
                 is_staging = true,
-                targetingParameters = prop.targetingParameters.map { it.copy(value = "porcodio") })
+                targetingParameters = prop.targetingParameters.map { it.copy(value = "porcodio") }
+            )
         )
         (ds.fetchProperties() as Either.Right).r.first().is_staging.assertTrue()
         ds.storeOrUpdateProperty(
             prop.copy(
                 is_staging = false,
-                targetingParameters = prop.targetingParameters.map { it.copy(value = "porcodio") })
+                targetingParameters = prop.targetingParameters.map { it.copy(value = "porcodio") }
+            )
         )
         (ds.fetchProperties() as Either.Right).r.first().is_staging.assertFalse()
 
         val res = (ds.fetchProperties() as Either.Right).r
 
         res.first().targetingParameters.size.assertEquals(3)
-
     }
 }
-
