@@ -10,10 +10,12 @@ import kotlinx.coroutines.coroutineScope
 
 internal interface LocalDataSource {
     suspend fun fetchProperties(): Either<List<Property>>
+    suspend fun fetchPropertyByName(name: String): Either<Property>
     suspend fun fetchTargetingParams(propName: String): Either<List<TargetingParam>>
     suspend fun storeProperty(property: Property)
     suspend fun updateProperty(property: Property)
     suspend fun deleteAll()
+    suspend fun deleteByPropertyName(name: String)
 
     companion object
 }
@@ -39,6 +41,19 @@ private class LocalDataSourceImpl(
         }
     }
 
+    override suspend fun fetchPropertyByName(name: String): Either<Property> = coroutineScope {
+        check {
+            cQueries
+                .selectPropertyByName(name)
+                .executeAsOne()
+                .let { row ->
+                    val tp =
+                        cQueries.getTargetingParams(row.property_name).executeAsList().map { it.toTargetingParam() }
+                    row.toProperty(tp)
+                }
+        }
+    }
+
     override suspend fun fetchTargetingParams(propName: String): Either<List<TargetingParam>> = coroutineScope {
         check {
             cQueries.selectTargetingParametersByPropertyName(propName).executeAsList().map { it.toTargetingParam() }
@@ -49,7 +64,6 @@ private class LocalDataSourceImpl(
         cQueries.run {
             transaction {
                 insertProperty(
-                    id = property.id,
                     property_id = property.property_id,
                     pm_id = property.pm_id,
                     auth_Id = property.auth_Id,
@@ -75,7 +89,16 @@ private class LocalDataSourceImpl(
     }
 
     override suspend fun deleteAll() {
+        cQueries.deleteTargetingParameters()
         cQueries.deleteAllProperties()
+
+    }
+
+    override suspend fun deleteByPropertyName(name: String) {
+        cQueries.run {
+            deletePropertyByName(name)
+            deleteTargetingParameterByPropName(name)
+        }
     }
 }
 
@@ -86,7 +109,6 @@ private fun Targeting_param.toTargetingParam() = TargetingParam(
 )
 
 private fun Property_.toProperty(tp: List<TargetingParam>) = Property(
-    id = id,
     property_id = property_id,
     property_name = property_name,
     is_staging = is_staging != 0L,
