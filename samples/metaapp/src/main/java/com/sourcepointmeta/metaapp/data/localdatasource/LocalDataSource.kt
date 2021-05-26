@@ -12,7 +12,7 @@ internal interface LocalDataSource {
     suspend fun fetchProperties(): Either<List<Property>>
     suspend fun fetchPropertyByName(name: String): Either<Property>
     suspend fun fetchTargetingParams(propName: String): Either<List<TargetingParam>>
-    suspend fun storeProperty(property: Property)
+    suspend fun storeOrUpdateProperty(property: Property)
     suspend fun updateProperty(property: Property)
     suspend fun deleteAll()
     suspend fun deleteByPropertyName(name: String)
@@ -23,7 +23,7 @@ internal interface LocalDataSource {
 internal fun LocalDataSource.Companion.create(db: MetaAppDB): LocalDataSource = LocalDataSourceImpl(db)
 
 private class LocalDataSourceImpl(
-    private val db: MetaAppDB
+    db: MetaAppDB
 ) : LocalDataSource {
 
     val cQueries = db.campaignQueries
@@ -60,7 +60,7 @@ private class LocalDataSourceImpl(
         }
     }
 
-    override suspend fun storeProperty(property: Property) {
+    override suspend fun storeOrUpdateProperty(property: Property) {
         cQueries.run {
             transaction {
                 insertProperty(
