@@ -5,7 +5,9 @@ plugins {
     id("io.github.dryrum.update-changelog")
     id("io.github.dryrum.replace-in-file")
     id("io.github.dryrum.git-utils")
+    id("com.squareup.sqldelight")
 }
+
 
 apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
 apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
@@ -60,6 +62,12 @@ android {
     }
 }
 
+sqldelight {
+    database("MetaAppDB"){
+        packageName = "com.sourcepointmeta.metaapp.db"
+    }
+}
+
 dependencies {
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
@@ -82,6 +90,10 @@ dependencies {
     implementation(Libs.koinCore)
     implementation(Libs.koinCoreExt)
     implementation(Libs.koinAndroid)
+
+    // SQLDelight
+    implementation(Libs.sqlDelight)
+    implementation(Libs.sqlDelightCoroutines)
 
     // unit-test
     testImplementation(Libs.mockk)
