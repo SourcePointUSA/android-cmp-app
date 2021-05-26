@@ -25,7 +25,5 @@ class MainActivityTest {
         scenario = launchActivity()
 
         checkMessageDisplayed()
-
     }
-
 }
