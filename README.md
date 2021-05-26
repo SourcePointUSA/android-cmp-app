@@ -340,6 +340,16 @@ Java
             // ...
 ```
 
+## ProGuard
+
+Using ProGuard in your project you might need to add the following rules
+
+```editorconfig
+# Sourcepoint (CMP)
+-keep interface com.sourcepoint.** { *; }
+-keep class com.sourcepoint.** { *; }
+```
+
 ## Programmatically consenting the current user
 It's possible to programmatically consent the current user to a list of vendors, categories and legitimate interest categories by using the following method from the consentlib:
 Kotlin

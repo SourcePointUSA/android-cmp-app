@@ -8,8 +8,8 @@ on:
 #      - '!samples/nativemessage/*'
   pull_request:
     branches: [ develop ]
-#    paths:
-#      - '!README.md'
+    paths:
+      - '!README.md'
 #      - '!samples/nativemessage/*'
 jobs:
   unit-test-cmplib:
