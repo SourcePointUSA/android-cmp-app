@@ -13,8 +13,8 @@ fun PropertyItemView.bind(
     property_name.text = item.propertyName
     account_id.text = "${item.accountId}"
     message_type.text = item.messageType
-    chip_gdpr.isChecked = true
-    chip_ccpa.isChecked = false
+    chip_gdpr.isChecked = item.gdprEnabled
+    chip_ccpa.isChecked = item.ccpaEnabled
 }
 
 fun ChipGroup.addChip(content: String) {

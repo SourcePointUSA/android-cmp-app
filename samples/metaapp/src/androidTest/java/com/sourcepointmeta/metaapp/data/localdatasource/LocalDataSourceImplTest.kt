@@ -6,6 +6,7 @@ import com.example.uitestutil.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.core.Either
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,7 +32,7 @@ class LocalDataSourceImplTest {
         pmTab = null,
         is_staging = false,
         targetingParameters = tp,
-        statusCampaign = StatusCampaign("prop1"),
+        statusCampaignSet = setOf(StatusCampaign("prop1", CampaignType.GDPR, true)),
         messageType = "App"
     )
 
@@ -42,6 +43,11 @@ class LocalDataSourceImplTest {
 
     @Before
     fun setup() = runBlocking<Unit> {
+        ds.deleteAll()
+    }
+
+    @After
+    fun cleanUp() = runBlocking<Unit> {
         ds.deleteAll()
     }
 
@@ -126,16 +132,20 @@ class LocalDataSourceImplTest {
 
     @Test
     fun GIVEN_a_targeringparameter_SAVE_it_into_the_DB() = runBlocking<Unit> {
-        val prop3 = prop1.copy(statusCampaign = StatusCampaign(propertyName = prop1.propertyName, gdprEnabled = true))
+        val gdprState =
+            StatusCampaign(propertyName = prop1.propertyName, campaignType = CampaignType.GDPR, enabled = true)
+        val ccpaState =
+            StatusCampaign(propertyName = prop1.propertyName, campaignType = CampaignType.CCPA, enabled = false)
+        val prop3 = prop1.copy(statusCampaignSet = setOf(gdprState, ccpaState))
         ds.storeOrUpdateProperty(prop3)
         val sut = (ds.fetchPropertyByName(prop1.propertyName) as Either.Right).r
-        sut.statusCampaign.gdprEnabled.assertTrue()
-        sut.statusCampaign.ccpaEnabled.assertFalse()
+        sut.statusCampaignSet.first { it.campaignType == CampaignType.GDPR }.enabled.assertTrue()
+        sut.statusCampaignSet.first { it.campaignType == CampaignType.CCPA }.enabled.assertFalse()
 
-        val prop4 = prop3.copy(statusCampaign = StatusCampaign(propertyName = prop1.propertyName, gdprEnabled = false, ccpaEnabled = true))
+        val prop4 = prop3.copy(statusCampaignSet = setOf(gdprState.copy(enabled = false), ccpaState.copy(enabled = true)))
         ds.storeOrUpdateProperty(prop4)
         val sut1 = (ds.fetchPropertyByName(prop3.propertyName) as Either.Right).r
-        sut1.statusCampaign.gdprEnabled.assertFalse()
-        sut1.statusCampaign.ccpaEnabled.assertTrue()
+        sut1.statusCampaignSet.first { it.campaignType == CampaignType.GDPR }.enabled.assertFalse()
+        sut1.statusCampaignSet.first { it.campaignType == CampaignType.CCPA }.enabled.assertTrue()
     }
 }

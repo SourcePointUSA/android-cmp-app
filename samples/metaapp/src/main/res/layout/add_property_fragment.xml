@@ -42,7 +42,7 @@
                 android:hint="Property name"
                 app:helperText="Property name"
                 app:helperTextEnabled="true"
-                app:placeholderText="i.e. mobile.prop.com">
+                app:placeholderText="i.e. mobile.multicampaign.demo">
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/prop_name_ed"
                     android:maxLines="1"

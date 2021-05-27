@@ -41,9 +41,9 @@ apply plugin: 'io.codearte.nexus-staging'
 allprojects {
     repositories {
         google()
+        mavenCentral()
         maven { url "https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/" }
         maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
-        mavenCentral()
         maven { url 'https://www.jetbrains.com/intellij-repository/releases' }
         maven { url "https://jetbrains.bintray.com/intellij-third-party-dependencies" }
         maven {

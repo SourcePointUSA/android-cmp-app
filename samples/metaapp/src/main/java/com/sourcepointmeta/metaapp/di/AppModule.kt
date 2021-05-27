@@ -12,11 +12,11 @@ import org.koin.dsl.module
 val appModule = module {
 
     viewModel {
-        PropertyListViewModel()
+        PropertyListViewModel(dataSource = get())
     }
 
     viewModel {
-        AddUpdatePropertyViewModel()
+        AddUpdatePropertyViewModel(dataSource = get())
     }
 
     single { LocalDataSource.create(createDb(androidApplication())) }

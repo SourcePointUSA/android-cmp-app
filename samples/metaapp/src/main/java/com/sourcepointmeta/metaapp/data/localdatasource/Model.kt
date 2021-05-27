@@ -14,7 +14,7 @@ data class Property(
     val authId: String? = null,
     val messageLanguage: String? = null,
     val pmTab: String? = null,
-    val statusCampaign: StatusCampaign = StatusCampaign(propertyName = propertyName),
+    val statusCampaignSet: Set<StatusCampaign>,
     val timestamp: Long = Date().time
 )
 
@@ -27,6 +27,19 @@ data class MetaTargetingParam(
 
 data class StatusCampaign(
     val propertyName: String,
-    val gdprEnabled: Boolean = false,
-    val ccpaEnabled: Boolean = false
-)
+    val campaignType: CampaignType,
+    val enabled: Boolean = false
+) {
+    override fun hashCode(): Int {
+        var result = propertyName.hashCode()
+        result = 31 * result + campaignType.name.hashCode()
+        return result
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return (other as? StatusCampaign)?.let {
+            it.propertyName == this.propertyName &&
+                it.campaignType == this.campaignType
+        } ?: return false
+    }
+}
