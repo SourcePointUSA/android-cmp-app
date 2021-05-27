@@ -75,15 +75,16 @@
 
         </com.google.android.material.chip.ChipGroup>
 
-        <ImageButton
+        <Button
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 app:layout_constraintTop_toTopOf="@id/chip_group"
                 app:layout_constraintBottom_toBottomOf="@id/chip_group"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="@null"
-                android:src="@drawable/ic_baseline_arrow_right_24"
-        />
+                app:icon="@drawable/ic_baseline_arrow_right_24"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"/>
 
     </com.sourcepointmeta.metaapp.ui.component.PropertyItemView>
 

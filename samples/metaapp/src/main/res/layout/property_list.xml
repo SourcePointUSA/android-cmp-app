@@ -7,28 +7,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-<!--    <com.google.android.material.appbar.AppBarLayout-->
-<!--            android:id="@+id/app_bar"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            android:elevation="0dp">-->
-
-<!--        <androidx.appcompat.widget.Toolbar-->
-<!--                android:id="@+id/tool_bar"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="?attr/actionBarSize"-->
-<!--                android:paddingStart="12dp"-->
-<!--                android:paddingLeft="12dp"-->
-<!--                android:paddingEnd="12dp"-->
-<!--                android:paddingRight="12dp"-->
-<!--                app:contentInsetStart="0dp"-->
-<!--                app:navigationIcon="@drawable/ic_home_black_24dp"-->
-<!--                app:title="Metaapp" />-->
-<!--    </com.google.android.material.appbar.AppBarLayout>-->
-
-
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/property_list"
             android:layout_width="match_parent"
