@@ -60,4 +60,8 @@
         <item name="boxCollapsedPaddingTop">0dp</item>
     </style>
 
+    <style name="Widget.MaterialComponents.Toolbar.Primary.Sp" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">?attr/colorSurface</item>
+    </style>
+
 </resources>

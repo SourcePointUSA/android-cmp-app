@@ -5,11 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import kotlinx.android.synthetic.main.property_item.view.*
 
-class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.Vh>() {
+internal class PropertyAdapter() : RecyclerView.Adapter<PropertyAdapter.Vh>() {
 
     private var list = mutableListOf<PropertyDTO>()
+    var itemClickListener: ((PropertyDTO) -> Unit)? = null
+    var propertyChangedListener: ((Property) -> Unit)? = null
+    var demoProperty: ((propertyName: String) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Vh {
         val view = LayoutInflater.from(parent.context)
@@ -29,6 +33,19 @@ class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.Vh>() {
 
     private fun Vh.bind(iv: PropertyDTO, pos: Int) {
         (view.property_view_item as PropertyItemView).bind(iv)
+        view.run {
+            val p = list[pos].property
+            setOnClickListener { itemClickListener?.invoke(list[pos]) }
+            chip_gdpr.setOnCheckedChangeListener { _, isChecked ->
+                propertyChangedListener?.invoke(p.copy(statusCampaign = p.statusCampaign.copy(gdprEnabled = isChecked)))
+            }
+            chip_ccpa.setOnCheckedChangeListener { _, isChecked ->
+                propertyChangedListener?.invoke(p.copy(statusCampaign = p.statusCampaign.copy(ccpaEnabled = isChecked)))
+            }
+            play_demo_btn.setOnClickListener {
+                demoProperty?.invoke(p.propertyName)
+            }
+        }
     }
 
     fun addItems(newItems: List<PropertyDTO>) {
@@ -36,4 +53,11 @@ class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.Vh>() {
         list.addAll(newItems)
         notifyDataSetChanged()
     }
+
+    fun deleteItem(position: Int) {
+        list.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun getPropertyNameByPosition(position: Int) = list[position].propertyName
 }

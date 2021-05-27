@@ -111,5 +111,13 @@
     <string name="stage">Stage</string>
     <string name="prod">Prod</string>
     <string name="message_type">Message type</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="save">Save</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="review_consents">Review Consents GDPR</string>
+    <string name="source_point_logo">LOGO</string>
+    <string name="authid_activity">AuthId activity</string>
+    <string name="review_consents_ccpa">Review Consents CCPA</string>
+    <string name="clear_all_data">Clear all data</string>
+    <string name="custom_consent">Custom consent</string>
 </resources>
