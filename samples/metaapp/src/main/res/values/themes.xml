@@ -24,7 +24,7 @@
         <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
         <!--selection controls.-->
         <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimaryVariant">@color/purple_600</item>
         <item name="colorSecondary">@color/green_200</item>
         <item name="colorSecondaryVariant">@color/green_500</item>
         <!--colorBackground appears behind scrollable content and is used for the default window-->
@@ -63,10 +63,10 @@
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.MyTheme.BottomSheetDialog</item>
         <item name="navigationViewStyle">@style/Widget.MyTheme.NavigationView</item>
-        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
+        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Surface</item>
     </style>
     <style name="Base.Theme.MaterialThemeMetaapp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorSurface</item>
+        <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorPrimaryVariant</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
         <item name="android:navigationBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>

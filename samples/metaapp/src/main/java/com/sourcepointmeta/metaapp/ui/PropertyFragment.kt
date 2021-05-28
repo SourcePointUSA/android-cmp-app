@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
 import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
-import kotlinx.android.synthetic.main.property_list.*
+import kotlinx.android.synthetic.main.fragment_property_list.*
 
 class PropertyFragment : Fragment() {
 
@@ -32,7 +32,7 @@ class PropertyFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.property_list, container, false)
+        return inflater.inflate(R.layout.fragment_property_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,14 +40,14 @@ class PropertyFragment : Fragment() {
         property_list.layoutManager = GridLayoutManager(context, 1)
         property_list.adapter = adapter
         adapter.addItems(
-            listOf(
+            List(15) {
                 PropertyDTO(
                     campaignEnv = "stage",
                     propertyName = "mobile.demo.com",
-                    accountId = 22,
+                    accountId = it,
                     messageType = "Web-view"
                 )
-            )
+            }
         )
     }
 }
