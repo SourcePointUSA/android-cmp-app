@@ -67,20 +67,20 @@
                 android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-<!--    <com.google.android.material.textfield.TextInputLayout-->
-<!--            android:id="@+id/name_text_input"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/radio_group"-->
-<!--            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:hint="@string/message_type">-->
+    <!--    <com.google.android.material.textfield.TextInputLayout-->
+    <!--            android:id="@+id/name_text_input"-->
+    <!--            app:layout_constraintTop_toBottomOf="@id/radio_group"-->
+    <!--            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:hint="@string/message_type">-->
 
-<!--        <AutoCompleteTextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="@null"/>-->
+    <!--        <AutoCompleteTextView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:background="@null"/>-->
 
-<!--    </com.google.android.material.textfield.TextInputLayout>-->
+    <!--    </com.google.android.material.textfield.TextInputLayout>-->
 
     <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_layout_holiday_destination"
@@ -148,7 +148,7 @@
     </RadioGroup>
 
     <TextView
-            android:text="Camapigns"
+            android:text="Active Camapigns"
             android:id="@+id/campaigns_tv"
             app:layout_constraintTop_toBottomOf="@id/radio_group"
             app:layout_constraintStart_toStartOf="parent"
@@ -159,5 +159,70 @@
             android:layout_height="wrap_content"
             android:padding="3dp"
             android:textAppearance="?attr/textAppearanceSubtitle2"/>
+
+    <com.google.android.material.chip.Chip
+            android:id="@+id/chip_gdpr"
+            app:layout_constraintTop_toBottomOf="@id/campaigns_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GDPR"/>
+
+    <Button
+            android:id="@+id/btn_targeting_params_gdpr"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:layout_constraintTop_toTopOf="@id/chip_gdpr"
+            app:layout_constraintBottom_toBottomOf="@id/chip_gdpr"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:icon="@drawable/baseline_add_circle_outline_48"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/gdpr_chip_container"
+            app:layout_constraintTop_toTopOf="@id/chip_gdpr"
+            app:layout_constraintBottom_toBottomOf="@id/chip_gdpr"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="32dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.chip.Chip
+            android:id="@+id/chip_ccpa"
+            app:layout_constraintTop_toBottomOf="@id/gdpr_chip_container"
+            app:layout_constraintStart_toStartOf="parent"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CCPA"/>
+
+    <Button
+            android:id="@+id/btn_targeting_params_ccpa"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:layout_constraintTop_toTopOf="@id/chip_ccpa"
+            app:layout_constraintBottom_toBottomOf="@id/chip_ccpa"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:icon="@drawable/baseline_add_circle_outline_48"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
