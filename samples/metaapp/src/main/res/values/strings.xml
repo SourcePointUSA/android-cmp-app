@@ -106,4 +106,9 @@
     <string name="title_activity_tabbed">TabbedActivity</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+    <string name="add_prop_title">Add a new property</string>
+    <string name="new_prop_title">New property</string>
+    <string name="stage">Stage</string>
+    <string name="prod">Prod</string>
+    <string name="message_type">Message type</string>
 </resources>

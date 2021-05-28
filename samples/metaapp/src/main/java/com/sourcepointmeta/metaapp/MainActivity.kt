@@ -2,7 +2,8 @@ package com.sourcepointmeta.metaapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.sourcepointmeta.metaapp.ui.PropertyFragment
+import com.sourcepointmeta.metaapp.ui.AddPropertyFragment
+import com.sourcepointmeta.metaapp.ui.PropertyListFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,7 +12,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, PropertyFragment.newInstance())
+                .replace(R.id.container, AddPropertyFragment())
                 .commitNow()
         }
     }

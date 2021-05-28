@@ -15,18 +15,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:elevation="0dp">
 
-<!--        <androidx.appcompat.widget.Toolbar-->
-<!--                android:id="@+id/tool_bar"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="?attr/actionBarSize"-->
-<!--                android:paddingStart="12dp"-->
-<!--                android:paddingLeft="12dp"-->
-<!--                android:paddingEnd="12dp"-->
-<!--                android:paddingRight="12dp"-->
-<!--                app:contentInsetStart="0dp"-->
-<!--                app:navigationIcon="@drawable/ic_home_black_24dp"-->
-<!--                app:title="@string/app_name"/>-->
-
         <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/tool_bar"
                 android:layout_width="match_parent"

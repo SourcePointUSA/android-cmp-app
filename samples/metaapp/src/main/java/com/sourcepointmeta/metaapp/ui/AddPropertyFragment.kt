@@ -4,23 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
-import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
-import kotlinx.android.synthetic.main.fragment_property_list.*
+import kotlinx.android.synthetic.main.add_property_fragment.*
 
-class PropertyFragment : Fragment() {
+class AddPropertyFragment : Fragment() {
 
     companion object {
-        fun newInstance() = PropertyFragment()
+        fun newInstance() = PropertyListFragment()
     }
 
     private val adapter by lazy { PropertyAdapter() }
 
     private lateinit var viewModel: MainViewModel
+
+    val messageOption = listOf("WebView", "App")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,22 +33,14 @@ class PropertyFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_property_list, container, false)
+        return inflater.inflate(R.layout.add_property_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        property_list.layoutManager = GridLayoutManager(context, 1)
-        property_list.adapter = adapter
-        adapter.addItems(
-            List(15) {
-                PropertyDTO(
-                    campaignEnv = "stage",
-                    propertyName = "mobile.demo.com",
-                    accountId = it,
-                    messageType = "Web-view"
-                )
-            }
-        )
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(requireContext(), android.R.layout.select_dialog_item, messageOption)
+        message_type_autocomplete.setAdapter(adapter)
+        message_type_autocomplete.setText(messageOption.first())
+        message_type_autocomplete.threshold = 1
     }
 }
