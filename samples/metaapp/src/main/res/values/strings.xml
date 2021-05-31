@@ -111,4 +111,5 @@
     <string name="stage">Stage</string>
     <string name="prod">Prod</string>
     <string name="message_type">Message type</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>

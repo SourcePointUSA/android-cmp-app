@@ -49,5 +49,7 @@ class PropertyListFragment : Fragment() {
                 )
             }
         )
+        fab.setOnClickListener {
+        }
     }
 }

@@ -69,7 +69,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("site_id", pmConf.siteId)
         .addQueryParameter("message_id", pmConf.messageId)
         .build()
-// "https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html";
+
     private fun urlPmGdpr(pmConf: PmUrlConfig, env: Env): HttpUrl = HttpUrl.Builder()
         // https://notice.sp-stage.net/privacy-manager/index.html?message_id=<PM_ID>
         .scheme("https")

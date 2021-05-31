@@ -18,7 +18,6 @@ class SpConfigDataBuilder {
     var propertyName by Delegates.notNull<String>()
     var messLanguage: MessageLanguage = MessageLanguage.ENGLISH
     var messageTimeout: Long = 5000
-    var ott: Boolean = false
 
     operator fun CampaignType.unaryPlus() {
         campaigns.add(SpCampaign(this, emptyList()))
@@ -75,10 +74,6 @@ class SpConfigDataBuilder {
 
     fun addCampaign(campaign: SpCampaign): SpConfigDataBuilder = apply {
         campaigns.add(campaign)
-    }
-
-    fun enableOtt(): SpConfigDataBuilder = apply {
-        ott = true
     }
 
     fun build(): SpConfig {
