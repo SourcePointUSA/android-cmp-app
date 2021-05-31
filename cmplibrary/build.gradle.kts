@@ -32,6 +32,13 @@ android {
             buildConfigField("String", "SDK_ENV", "\"STAGE\"")
             buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
         }
+        create("preprod") {
+            initWith(getByName("debug"))
+            isMinifyEnabled = false
+            buildConfigField("String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\"")
+            buildConfigField("String", "SDK_ENV", "\"PROD\"")
+            buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
+        }
         getByName("release") {
             isMinifyEnabled = false
             buildConfigField("String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\"")

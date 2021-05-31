@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="3dp"
+        android:layout_margin="8dp"
+        android:clickable="true"
+        android:focusable="true">
+
+    <com.sourcepointmeta.metaapp.ui.component.PropertyItemView
+            android:id="@+id/property_view_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+        <TextView
+                tools:text="mobile.demo.com"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/property_name"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:padding="3dp"
+                android:textAppearance="?attr/textAppearanceHeadline6"/>
+        <TextView
+                tools:text="22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/account_id"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="3dp"
+                android:textAppearance="?attr/textAppearanceSubtitle2"/>
+        <TextView
+                tools:text="Web-view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/message_type"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/account_id"
+                android:padding="3dp"
+                android:textAppearance="?attr/textAppearanceSubtitle2"/>
+        <TextView
+                tools:text="stage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/campaign_env"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/account_id"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="3dp"
+                android:textAppearance="?attr/textAppearanceSubtitle2"/>
+
+        <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:chipSpacing="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/campaign_env"
+                app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.chip.Chip
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:id="@+id/chip_gdpr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GDPR" />
+
+            <com.google.android.material.chip.Chip
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:id="@+id/chip_ccpa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CCPA" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <Button
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:layout_constraintTop_toTopOf="@id/chip_group"
+                app:layout_constraintBottom_toBottomOf="@id/chip_group"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:icon="@drawable/ic_baseline_arrow_right_48"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"/>
+
+    </com.sourcepointmeta.metaapp.ui.component.PropertyItemView>
+
+</com.google.android.material.card.MaterialCardView>

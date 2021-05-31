@@ -7,4 +7,34 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="appbar_padding">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+
+    <dimen name="keyline_0">2dp</dimen>
+    <dimen name="keyline_1">4dp</dimen>
+    <dimen name="keyline_2">8dp</dimen>
+    <dimen name="keyline_4">16dp</dimen>
+    <dimen name="keyline_5">24dp</dimen>
+
+    <dimen name="component_label_horizontal_margin">@dimen/keyline_4</dimen>
+    <dimen name="elevation_default_top_app_bar">4dp</dimen>
+
+    <dimen name="mtrl_textinput_end_icon_margin_start">4dp</dimen>
+    <dimen name="mtrl_textinput_start_icon_margin_end">4dp</dimen>
+    <dimen name="design_textinput_caption_translate_y">5dp</dimen>
+
+    <dimen name="mtrl_textinput_counter_margin_start">16dp</dimen>
+
+    <dimen name="material_textinput_default_width">245dp</dimen>
+    <!-- Minimum width for text fields without a label. If a label is present,
+         minimum width should be 88dp. -->
+    <dimen name="material_textinput_min_width">56dp</dimen>
+    <dimen name="material_textinput_max_width">488dp</dimen>
+
+    <dimen name="mtrl_textinput_outline_box_expanded_padding">16dp</dimen>
+
+    <dimen name="mtrl_textinput_box_corner_radius_small">0dp</dimen>
+    <dimen name="mtrl_textinput_box_corner_radius_medium">4dp</dimen>
+    <dimen name="mtrl_textinput_box_stroke_width_default">1dp</dimen>
+    <dimen name="mtrl_textinput_box_stroke_width_focused">2dp</dimen>
+    <dimen name="mtrl_textinput_box_label_cutout_padding">4dp</dimen>
+
 </resources>
