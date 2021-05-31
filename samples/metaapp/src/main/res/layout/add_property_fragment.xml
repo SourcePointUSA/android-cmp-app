@@ -1,228 +1,242 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:elevation="0dp">
-
-        <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/tool_bar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:title="@string/add_prop_title"/>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/prop_name_container"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintTop_toBottomOf="@id/app_bar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:hint="Property name"
-            app:helperText="Property name"
-            app:helperTextEnabled="true"
-            app:placeholderText="i.e. mobile.prop.com">
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/prop_name"
-                android:maxLines="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/account_id_container"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/prop_name_container"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:hint="Acount Id"
-            app:helperText="Account Id"
-            app:helperTextEnabled="true"
-            app:placeholderText="i.e. 22">
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/account_id_tv"
-                android:maxLines="1"
-                android:inputType="number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!--    <com.google.android.material.textfield.TextInputLayout-->
-    <!--            android:id="@+id/name_text_input"-->
-    <!--            app:layout_constraintTop_toBottomOf="@id/radio_group"-->
-    <!--            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:hint="@string/message_type">-->
-
-    <!--        <AutoCompleteTextView-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:background="@null"/>-->
-
-    <!--    </com.google.android.material.textfield.TextInputLayout>-->
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_layout_holiday_destination"
-            app:layout_constraintTop_toBottomOf="@id/account_id_container"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:helperText="Property name"
-            app:helperTextEnabled="true"
-            app:placeholderText="i.e. mobile.prop.com"
-            android:hint="@string/message_type">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/message_type_autocomplete"
-                style="@style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:singleLine="true"
-                android:lines="1"
-                android:nextFocusDown="@+id/txv_holiday_num_of_nights"
-                android:imeOptions="actionNext"
-        />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <TextView
-            android:text="Campaign Enviroment"
-            app:layout_constraintTop_toBottomOf="@id/input_layout_holiday_destination"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/campaign_env_tv"
-            android:padding="3dp"
-            android:textAppearance="?attr/textAppearanceSubtitle2"/>
-
-    <RadioGroup
-            android:id="@+id/radio_group"
-            app:layout_constraintTop_toBottomOf="@id/campaign_env_tv"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:orientation="horizontal"
-            android:checkedButton="@+id/radio_stage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <RadioButton
-                android:id="@+id/radio_stage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/stage"/>
-        <RadioButton
-                android:id="@+id/radio_prod"
-                android:layout_marginStart="32dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/prod"/>
-    </RadioGroup>
-
-    <TextView
-            android:text="Active Camapigns"
-            android:id="@+id/campaigns_tv"
-            app:layout_constraintTop_toBottomOf="@id/radio_group"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="3dp"
-            android:textAppearance="?attr/textAppearanceSubtitle2"/>
-
-    <com.google.android.material.chip.Chip
-            android:id="@+id/chip_gdpr"
-            app:layout_constraintTop_toBottomOf="@id/campaigns_tv"
-            app:layout_constraintStart_toStartOf="parent"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="GDPR"/>
-
-    <Button
-            android:id="@+id/btn_targeting_params_gdpr"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            app:layout_constraintTop_toTopOf="@id/chip_gdpr"
-            app:layout_constraintBottom_toBottomOf="@id/chip_gdpr"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:icon="@drawable/baseline_add_circle_outline_48"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"/>
-
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/gdpr_chip_container"
-            app:layout_constraintTop_toTopOf="@id/chip_gdpr"
-            app:layout_constraintBottom_toBottomOf="@id/chip_gdpr"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="32dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:elevation="0dp">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/tool_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:title="@string/add_prop_title"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/prop_name_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toBottomOf="@id/app_bar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:hint="Property name"
+                app:helperText="Property name"
+                app:helperTextEnabled="true"
+                app:placeholderText="i.e. mobile.prop.com">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/prop_name"
+                    android:maxLines="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/account_id_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/prop_name_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:hint="Acount Id"
+                app:helperText="Account Id"
+                app:helperTextEnabled="true"
+                app:placeholderText="i.e. 22">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/account_id_tv"
+                    android:maxLines="1"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!--    <com.google.android.material.textfield.TextInputLayout-->
+        <!--            android:id="@+id/name_text_input"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/radio_group"-->
+        <!--            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:hint="@string/message_type">-->
+
+        <!--        <AutoCompleteTextView-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:background="@null"/>-->
+
+        <!--    </com.google.android.material.textfield.TextInputLayout>-->
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_layout_holiday_destination"
+                app:layout_constraintTop_toBottomOf="@id/account_id_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:helperText="Property name"
+                app:helperTextEnabled="true"
+                app:placeholderText="i.e. mobile.prop.com"
+                android:hint="@string/message_type">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/message_type_autocomplete"
+                    style="@style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:singleLine="true"
+                    android:lines="1"
+                    android:nextFocusDown="@+id/txv_holiday_num_of_nights"
+                    android:imeOptions="actionNext"
+            />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+                android:text="Campaign Enviroment"
+                app:layout_constraintTop_toBottomOf="@id/input_layout_holiday_destination"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/campaign_env_tv"
+                android:padding="3dp"
+                android:textAppearance="?attr/textAppearanceSubtitle2"/>
+
+        <RadioGroup
+                android:id="@+id/radio_group"
+                app:layout_constraintTop_toBottomOf="@id/campaign_env_tv"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:orientation="horizontal"
+                android:checkedButton="@+id/radio_stage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <RadioButton
+                    android:id="@+id/radio_stage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stage"/>
+            <RadioButton
+                    android:id="@+id/radio_prod"
+                    android:layout_marginStart="32dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/prod"/>
+        </RadioGroup>
+
+        <TextView
+                android:text="Active Camapigns"
+                android:id="@+id/campaigns_tv"
+                app:layout_constraintTop_toBottomOf="@id/radio_group"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dp"
+                android:textAppearance="?attr/textAppearanceSubtitle2"/>
+
+        <com.google.android.material.chip.Chip
+                android:id="@+id/chip_gdpr"
+                app:layout_constraintTop_toBottomOf="@id/campaigns_tv"
+                app:layout_constraintStart_toStartOf="parent"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GDPR"/>
+
+        <Button
+                android:id="@+id/btn_targeting_params_gdpr"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:layout_constraintTop_toTopOf="@id/chip_gdpr"
+                app:layout_constraintBottom_toBottomOf="@id/chip_gdpr"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:icon="@drawable/baseline_add_circle_outline_48"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"/>
+
+        <com.google.android.material.chip.ChipGroup
+                android:id="@+id/gdpr_chip_group"
+                app:layout_constraintTop_toBottomOf="@id/chip_gdpr"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        <com.google.android.material.chip.Chip
+                android:id="@+id/chip_ccpa"
+                app:layout_constraintTop_toBottomOf="@id/gdpr_chip_group"
+                app:layout_constraintStart_toStartOf="parent"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CCPA"/>
+
+        <Button
+                android:id="@+id/btn_targeting_params_ccpa"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:layout_constraintTop_toTopOf="@id/chip_ccpa"
+                app:layout_constraintBottom_toBottomOf="@id/chip_ccpa"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:icon="@drawable/baseline_add_circle_outline_48"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"/>
+
+        <com.google.android.material.chip.ChipGroup
+                android:id="@+id/ccpa_chip_group"
+                app:layout_constraintTop_toBottomOf="@id/chip_ccpa"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.chip.Chip
-            android:id="@+id/chip_ccpa"
-            app:layout_constraintTop_toBottomOf="@id/gdpr_chip_container"
-            app:layout_constraintStart_toStartOf="parent"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CCPA"/>
-
-    <Button
-            android:id="@+id/btn_targeting_params_ccpa"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            app:layout_constraintTop_toTopOf="@id/chip_ccpa"
-            app:layout_constraintBottom_toBottomOf="@id/chip_ccpa"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:icon="@drawable/baseline_add_circle_outline_48"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
