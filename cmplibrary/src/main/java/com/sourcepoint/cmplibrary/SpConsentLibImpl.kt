@@ -138,7 +138,10 @@ internal class SpConsentLibImpl(
             pSuccess = { messageResp ->
                 consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
                 val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
-                if (list.isEmpty()) return@getUnifiedMessage
+                if (list.isEmpty()) {
+                    consentManager.sendStoredConsentToClient()
+                    return@getUnifiedMessage
+                }
                 val firstCampaign2Process = list.first()
                 val remainingCampaigns: Queue<CampaignModel> = LinkedList(list.drop(1))
                 executor.executeOnMain {

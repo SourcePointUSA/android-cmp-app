@@ -18,11 +18,13 @@ import com.sourcepoint.cmplibrary.model.ext.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.model.ext.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
+import com.sourcepoint.cmplibrary.util.check
 import java.util.* //ktlint-disable
 
 internal interface ConsentManager {
     var localStateStatus: LocalStateStatus
     fun enqueueConsent(consentAction: ConsentAction)
+    fun sendStoredConsentToClient()
     fun sendConsent(
         action: ConsentAction,
         localState: String
@@ -94,6 +96,17 @@ private class ConsentManagerImpl(
             }
             LocalStateStatus.Absent,
             LocalStateStatus.Consumed -> return
+        }
+    }
+
+    override fun sendStoredConsentToClient() {
+        check {
+            val ccpaCached = consentManagerUtils.getCcpaConsent().getOrNull()
+            val gdprCached = consentManagerUtils.getGdprConsent().getOrNull()
+            SPConsents(
+                gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
+                ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
+            ).let { sPConsentsSuccess?.invoke(it) }
         }
     }
 
