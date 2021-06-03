@@ -1,3 +1,12 @@
+## 6.0.4 (June, 03, 2021)
+* [SP-7188](https://sourcepoint.atlassian.net/browse/SP-7188) no onConsentReady() response after second opening of app (#364)
+* [SP-7145](https://sourcepoint.atlassian.net/browse/SP-7145) Metaapp Property list (#363)
+* [SP-7140](https://sourcepoint.atlassian.net/browse/SP-7140) Components for production tests (#362)
+* [SP-7130](https://sourcepoint.atlassian.net/browse/SP-7130) Metaapp LocalDatasource with SQLDelight (#361)
+* [SP-7125](https://sourcepoint.atlassian.net/browse/SP-7125) Proguard rules (#360)
+* [SP-7119](https://sourcepoint.atlassian.net/browse/SP-7119) Docs for campaignEnv (#359)
+* [SP-7054](https://sourcepoint.atlassian.net/browse/SP-7054) Metaapp base config (#358)
+
 ## 6.0.3 (May, 21, 2021)
 * [SP-7094] OkHttp timeout configurable from builder [#355](https://sourcepoint.atlassian.net/browse/SP-7094)
 * [SP-7090] Upgraded android tools to v 4.1.3 [#354](https://sourcepoint.atlassian.net/browse/SP-7090)
