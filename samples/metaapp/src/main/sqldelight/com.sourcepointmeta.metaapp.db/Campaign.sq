@@ -1,0 +1,83 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE property (
+    property_name TEXT PRIMARY KEY,
+    account_id INTEGER NOT NULL,
+    is_staging INTEGER NOT NULL,
+    pm_id TEXT NOT NULL,
+    property_id INTEGER,
+    auth_Id TEXT,
+    message_language TEXT,
+    pm_tab TEXT
+);
+
+CREATE TABLE targeting_param (
+    key TEXT NOT NULL,
+    value TEXT NOT NULL,
+    property_name TEXT NOT NULL,
+    PRIMARY KEY(property_name,key),
+    FOREIGN KEY (property_name) REFERENCES property(property_name) ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- Properties
+
+selectAllProperties:
+SELECT *
+FROM property;
+
+deleteAllProperties:
+DELETE FROM property;
+
+deletePropertyByName:
+DELETE FROM property
+WHERE property.property_name = ?;
+
+selectPropertyByName:
+SELECT *
+FROM property
+WHERE property.property_name = ?;
+
+selectPropertyById:
+SELECT *
+FROM property
+WHERE property.property_id = ?;
+
+insertProperty:
+INSERT OR REPLACE INTO property (property_name, account_id, is_staging, pm_id, property_id, auth_Id, message_language, pm_tab)
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- TargetingParameters
+
+selectTargetingParametersByPropertyName:
+SELECT *
+FROM targeting_param
+WHERE targeting_param.property_name = ?;
+
+insertTargetingParameter:
+INSERT OR REPLACE INTO targeting_param (key, value, property_name)
+VALUES ( ?, ?, ?);
+
+deleteTargetingParameterByPropName:
+DELETE FROM targeting_param
+WHERE targeting_param.property_name = ?;
+
+deleteTargetingParameters:
+DELETE FROM targeting_param;

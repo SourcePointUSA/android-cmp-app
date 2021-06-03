@@ -34,12 +34,6 @@ jobs:
         run: ./gradlew cmplibrary:build
       - name: Unit Tests cmplibrary
         run: ./gradlew cmplibrary:test
-      - name: 'Publish Unit tests Report cmplibrary'
-        if: always()
-        uses: actions/upload-artifact@v2-preview
-        with:
-          name: 'unit-tests-report-v6'
-          path: cmplibrary/build/reports/*
   integration-tests-cmplib:
     runs-on: macos-latest
     steps:

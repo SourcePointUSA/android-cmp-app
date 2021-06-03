@@ -1,4 +1,6 @@
-![Test](https://github.com/SourcePointUSA/android-cmp-app/workflows/Test/badge.svg?branch=develop)
+[![Test](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/test.yml/badge.svg)](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/test.yml)
+[![SampleApp UI Tests](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/instrumentation_tests.yml/badge.svg)](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/instrumentation_tests.yml)
+[![Metaap UI Tests](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/metaap_instrumentation_tests.yml/badge.svg)](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/metaap_instrumentation_tests.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.sourcepoint.cmplibrary/cmplibrary)](https://search.maven.org/search?q=g:com.sourcepoint.cmplibrary)
 
 # How to Install 
@@ -117,7 +119,7 @@ Java
     @Override
     protected void onResume() {
         super.onResume();
-        spConsentLib.loadMessage("<authId>");
+        spConsentLib.loadMessage();
     }
 ```
 ## Releasing resources
@@ -309,6 +311,44 @@ Java: Use `addCampaign` method to add a list of targeting parameters per campaig
             .build();
 ```
 In this example 2 key/value pairs, "language":"fr" and "location":"EU/US", are passed to the campaign scenario.
+
+### Targeting parameters to target the right environment
+
+In order to select the campaign environment you should add the following targeting parameter for each campaign
+
+Kotlin
+
+```kotlin
+            // ...
+            +(CampaignType.GDPR to listOf(
+                // ...
+                ("campaignEnv" to "<YOUR ENV>")
+                // ...
+            ))
+            // ...
+```
+
+Java
+
+```java
+            // ...
+            .addCampaign(CampaignType.GDPR, Arrays.asList(
+                // ...
+                new TargetingParam("campaignEnv", "<YOUR ENV>")
+                // ...
+            ))
+            // ...
+```
+
+## ProGuard
+
+Using ProGuard in your project you might need to add the following rules
+
+```editorconfig
+# Sourcepoint (CMP)
+-keep interface com.sourcepoint.** { *; }
+-keep class com.sourcepoint.** { *; }
+```
 
 ## Programmatically consenting the current user
 It's possible to programmatically consent the current user to a list of vendors, categories and legitimate interest categories by using the following method from the consentlib:

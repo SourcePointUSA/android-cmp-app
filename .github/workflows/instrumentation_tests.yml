@@ -1,4 +1,4 @@
-name: Instrumentation Test - Firebase Test Lab
+name: SampleApp UI Tests
 on:
   push:
     branches: [ develop ]
@@ -38,9 +38,9 @@ jobs:
           ./gradlew app:assembleDebug app:assembleDebugAndroidTest
           cp samples/app/build/outputs/apk/debug/app-debug.apk ./app-debug.apk
           cp samples/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk ./app-debug-androidTest.apk
-      - name: Run tests on Firebase Test Lab
+      - name: Run tests SampleApp on Firebase Test Lab
         uses: asadmansr/Firebase-Test-Lab-Action@v1.0
         with:
-          arg-spec: 'test_devices.yml:nexus_low_res'
+          arg-spec: 'test_devices.yml:app-nexus_low_res'
         env:
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
