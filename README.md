@@ -403,18 +403,6 @@ We'll update this list over time, if you have any questions feel free to open an
 
 ---
 
-# Development
-## How to build the `cmplibrary` module from source
-Note: skip this step and jump to next section if you already have the compiled `cmplibrary-release.aar` binary.
-
-* Clone and open `android-cmp-app` project in Android Studio
-* Build the project
-* Open `Gradle` menu from right hand side menu in Android Studio and select `assemble` under `:cmplibrary > Tasks > assemble`
-<img width="747" alt="screen shot 2018-11-05 at 4 52 27 pm" src="https://user-images.githubusercontent.com/2576311/48029062-4c950000-e11b-11e8-8d6f-a50c9f37e25b.png">
-
-* Run the assemble task by selecting `android-cmp-app:cmplibrary [assemble]` (should be already selected) and clicking the build icon (or selecting Build > Make Project) from the menus.
-* The release version of the compiled binary should be under `cmplibrary/build/outputs/aar/cmplibrary-release.aar` directory. Copy this file and import it to your project using the steps below.
-
 # Artifact Release Process
 ## Release
 To publish new release artifact you need to do following:
