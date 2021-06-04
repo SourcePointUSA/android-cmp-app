@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.ui.BaseState.StateError
 import com.sourcepointmeta.metaapp.ui.BaseState.StateSuccess
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
@@ -61,6 +62,25 @@ class PropertyListFragment : Fragment() {
         adapter.demoProperty = { runDemo(it) }
 //        adapter.deletePropertyListener = { viewModel.deleteProperty(it) }
         itemTouchHelper.attachToRecyclerView(property_list)
+
+        adapter.addItems(
+            List(15) {
+                PropertyDTO(
+                    campaignEnv = "stage",
+                    propertyName = "$it-mobile.demo.com",
+                    accountId = it.toLong(),
+                    messageType = "Web-view",
+                    ccpaEnabled = true,
+                    gdprEnabled = true,
+                    property = Property(
+                        propertyName = "",
+                        accountId = 1L,
+                        pmId = "",
+                        messageType = ""
+                    )
+                )
+            }
+        )
     }
 
     override fun onResume() {
