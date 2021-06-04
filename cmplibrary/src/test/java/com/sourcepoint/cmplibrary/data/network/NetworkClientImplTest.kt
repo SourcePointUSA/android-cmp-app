@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network
 
+import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
@@ -86,9 +87,9 @@ class NetworkClientImplTest {
         /** capture the Request and test the parameters */
         slot.captured.run {
             readText().assertEquals(uwMessDataTest.toJsonObject().toString())
-            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/v2/get_messages?env=stage")
+            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/v2/get_messages?env=${BuildConfig.ENV_QUERY_PARAM}")
             method.assertEquals("POST")
-            url.queryParameter("env").assertEquals("stage")
+            url.queryParameter("env").assertEquals(BuildConfig.ENV_QUERY_PARAM)
         }
     }
 
@@ -155,9 +156,9 @@ class NetworkClientImplTest {
         /** capture the Request and test the parameters */
         slot.captured.run {
             readText().assertEquals("{}")
-            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages/choice/gdpr/11?env=stage")
+            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages/choice/gdpr/11?env=${BuildConfig.ENV_QUERY_PARAM}")
             method.assertEquals("POST")
-            url.queryParameter("env").assertEquals("stage")
+            url.queryParameter("env").assertEquals(BuildConfig.ENV_QUERY_PARAM)
         }
     }
 
@@ -199,9 +200,9 @@ class NetworkClientImplTest {
         /** capture the Request and test the parameters */
         slot.captured.run {
             readText().let { JSONObject(it).toTreeMap() }.assertEquals(request)
-            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?env=stage&inApp=true")
+            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?env=${BuildConfig.ENV_QUERY_PARAM}&inApp=true")
             method.assertEquals("POST")
-            url.queryParameter("env").assertEquals("stage")
+            url.queryParameter("env").assertEquals(BuildConfig.ENV_QUERY_PARAM)
         }
     }
 

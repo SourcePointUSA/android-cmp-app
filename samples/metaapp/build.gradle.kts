@@ -26,7 +26,9 @@ android {
     }
 
     buildTypes {
-//        getByName("debug") { }
+        getByName("debug") { }
+        create("localProd") { }
+        create("preprod") { }
         getByName("release") {
             isMinifyEnabled = false
         }
@@ -67,7 +69,7 @@ android {
 }
 
 sqldelight {
-    database("MetaAppDB"){
+    database("MetaAppDB") {
         packageName = "com.sourcepointmeta.metaapp.db"
     }
 }
