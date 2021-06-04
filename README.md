@@ -419,13 +419,23 @@ Note: skip this step and jump to next section if you already have the compiled `
 ## Release
 To publish new release artifact you need to do following:
 * Checkout `develop` branch and pull the latest commits.
+```
+git checkout develop
+git pull
+```
 * Create a new branch based on pure develop branch code named `release/x.y.z` where x.y.z stands for ordinal version of upcoming release. Push it to `origin`. 
+```
+git checkout -b release/x.y.z
+git push --set-upstream origin release/x.y.z
+```
 * Using your preffered text editor, go to `cmplibrary/grade.property` and upgrade `VERSION_NAME = x.y.z`. Don't forget to save the changes!
 * Then go to `cmplibrary/release_note.txt`, clear it and fulfill with description of every single commit pushed to `develop` branch since the last artifact release. Please, stick to style of description which appears in that file! This part will appear in changelog after artifact release will be accomplished.
-* Commit and push these two files **ONLY**. The commit message **must** be “release/x.y.z”
-
-**From now on, committing to `develop` branch is forbidden until successful artifact release.**		
-
+* Commit and push these two files **ONLY**. The commit message **MUST** be “release/x.y.z”. The reason of such strict rules relates to our automated release process; please, take a note that **from now on, committing to `develop` branch is forbidden until successful artifact release.**
+```
+git add .
+git commit -m “release/x.y.z”
+git push
+```
 * Go to your browser and create a new pull request from your `release/x.y.z` branch to `master` branch.
 * Hit `Squash and merge` button.
 * Go to `Actions` tab of github and wait patientfully unless release process ends. Regularly, it takes no longer than 5 minutes.
@@ -438,6 +448,12 @@ From now, you may count your release successful. Artifact will appear on Maven C
 ## Post-release
 However, after you have accomplished artifact release process, few more steps need to be done:
 * Checkout `master` branch and pull the commits.
+```
+git checkout master
+git pull
+```
 * Merge `master` branch to `develop` branch. Push this commit (which contains merged code).
-
+```
+git merge develop
+```
 Now post-release process is done and you have consistent solution. Enjoy!
