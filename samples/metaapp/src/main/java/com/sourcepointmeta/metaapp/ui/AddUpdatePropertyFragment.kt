@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.component.addChip
 import kotlinx.android.synthetic.main.add_property_fragment.* // ktlint-disable
@@ -21,6 +22,7 @@ class AddUpdatePropertyFragment : Fragment() {
     private val viewModel = AddUpdatePropertyViewModel()
 
     private val messageOption = listOf("WebView", "App")
+    private val messageLanguage = MessageLanguage.values()
 
     companion object {
         fun instance(propertyName: String) = AddUpdatePropertyFragment().apply {
