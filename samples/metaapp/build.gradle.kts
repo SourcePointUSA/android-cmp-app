@@ -66,6 +66,11 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+//    packagingOptions {
+//        exclude("META-INF/koin-core.kotlin_module")
+//        exclude("META-INF/koin-android_release.kotlin_module")
+//    }
 }
 
 sqldelight {
@@ -91,11 +96,14 @@ dependencies {
     implementation(Libs.vectorDrawable)
     implementation(Libs.androidxLifLivedata)
     implementation(Libs.androidxLifViewModel)
+    implementation("androidx.fragment:fragment-ktx:1.3.4")
+    implementation("androidx.core:core-ktx:1.5.0") // ext drawable
 
     // Koin
-    implementation(Libs.koinCore)
-    implementation(Libs.koinCoreExt)
+//    implementation(Libs.koinCore)
+//    implementation(Libs.koinCoreExt)
     implementation(Libs.koinAndroid)
+    implementation(Libs.koinViewModel)
 
     // SQLDelight
     implementation(Libs.sqlDelight)

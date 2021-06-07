@@ -1,28 +1,12 @@
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 CREATE TABLE property (
     property_name TEXT PRIMARY KEY,
     account_id INTEGER NOT NULL,
     is_staging INTEGER NOT NULL,
+    timestamp INTEGER NOT NULL,
     pm_id TEXT NOT NULL,
+    message_type TEXT NOT NULL,
     property_id INTEGER,
     auth_Id TEXT,
     message_language TEXT,
@@ -32,8 +16,9 @@ CREATE TABLE property (
 CREATE TABLE targeting_param (
     key TEXT NOT NULL,
     value TEXT NOT NULL,
+    campaign TEXT NOT NULL,
     property_name TEXT NOT NULL,
-    PRIMARY KEY(property_name,key),
+    PRIMARY KEY(property_name,key, campaign),
     FOREIGN KEY (property_name) REFERENCES property(property_name) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
@@ -41,7 +26,7 @@ CREATE TABLE targeting_param (
 
 selectAllProperties:
 SELECT *
-FROM property;
+FROM property ORDER BY property.timestamp DESC;
 
 deleteAllProperties:
 DELETE FROM property;
@@ -61,8 +46,8 @@ FROM property
 WHERE property.property_id = ?;
 
 insertProperty:
-INSERT OR REPLACE INTO property (property_name, account_id, is_staging, pm_id, property_id, auth_Id, message_language, pm_tab)
-VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO property (property_name, account_id, is_staging, timestamp, pm_id, message_type, property_id, auth_Id, message_language, pm_tab)
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- TargetingParameters
 
@@ -72,12 +57,41 @@ FROM targeting_param
 WHERE targeting_param.property_name = ?;
 
 insertTargetingParameter:
-INSERT OR REPLACE INTO targeting_param (key, value, property_name)
-VALUES ( ?, ?, ?);
+INSERT OR REPLACE INTO targeting_param (key, value, campaign, property_name)
+VALUES ( ?, ?, ?, ?);
 
 deleteTargetingParameterByPropName:
 DELETE FROM targeting_param
 WHERE targeting_param.property_name = ?;
 
+deleteTPByPropNameCampaignKey:
+DELETE FROM targeting_param
+WHERE targeting_param.property_name = ? AND targeting_param.campaign = ? AND targeting_param.key = ?;
+
 deleteTargetingParameters:
 DELETE FROM targeting_param;
+
+-- Campaign table
+CREATE TABLE status_campaign (
+    property_name TEXT NOT NULL,
+    gdpr_enabled INTEGER NOT NULL,
+    ccpa_enabled INTEGER NOT NULL,
+    PRIMARY KEY(property_name),
+    FOREIGN KEY (property_name) REFERENCES property(property_name) ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+selectStatusCampaignByPropertyName:
+SELECT *
+FROM status_campaign
+WHERE status_campaign.property_name = ?;
+
+deleteStatusCampaign:
+DELETE FROM status_campaign;
+
+deleteStatusCampaignByPropName:
+DELETE FROM status_campaign
+WHERE status_campaign.property_name = ?;
+
+insertStatusCampaign:
+INSERT OR REPLACE INTO status_campaign (property_name, gdpr_enabled, ccpa_enabled)
+VALUES ( ?, ?, ?);

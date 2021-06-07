@@ -80,6 +80,7 @@
         </com.google.android.material.chip.ChipGroup>
 
         <Button
+                android:id="@+id/play_demo_btn"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 app:layout_constraintTop_toTopOf="@id/chip_group"
                 app:layout_constraintBottom_toBottomOf="@id/chip_group"

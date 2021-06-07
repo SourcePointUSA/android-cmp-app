@@ -4,27 +4,34 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.core.addFragment
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
+import com.sourcepointmeta.metaapp.ui.BaseState.StateError
+import com.sourcepointmeta.metaapp.ui.BaseState.StateSuccess
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
 import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
+import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_property_list.*
+import org.koin.android.ext.android.inject
 
 class PropertyListFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = PropertyListFragment()
-    }
+    private val viewModel: PropertyListViewModel by inject()
 
     private val adapter by lazy { PropertyAdapter() }
-
-    private lateinit var viewModel: MainViewModel
+    private val itemTouchHelper by lazy { ItemTouchHelper(swipeToDeleteCallback) }
+    private val swipeToDeleteCallback: SwipeToDeleteCallback by lazy {
+        SwipeToDeleteCallback(requireContext()) { showDeleteDialog(it, adapter) }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -39,17 +46,81 @@ class PropertyListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         property_list.layoutManager = GridLayoutManager(context, 1)
         property_list.adapter = adapter
+        fab.setOnClickListener {
+            (activity as? AppCompatActivity)?.addFragment(R.id.container, AddUpdatePropertyFragment())
+        }
+        (activity as? AppCompatActivity)?.supportFragmentManager?.addOnBackStackChangedListener {
+            viewModel.fetchPropertyList()
+        }
+        adapter.itemClickListener = {
+            (activity as? AppCompatActivity)?.addFragment(
+                R.id.container,
+                AddUpdatePropertyFragment.instance(it.propertyName)
+            )
+        }
+        adapter.propertyChangedListener = { viewModel.updateProperty(it) }
+        adapter.demoProperty = { runDemo(it) }
+//        adapter.deletePropertyListener = { viewModel.deleteProperty(it) }
+        itemTouchHelper.attachToRecyclerView(property_list)
+
         adapter.addItems(
             List(15) {
                 PropertyDTO(
                     campaignEnv = "stage",
-                    propertyName = "mobile.demo.com",
-                    accountId = it,
-                    messageType = "Web-view"
+                    propertyName = "$it-mobile.demo.com",
+                    accountId = it.toLong(),
+                    messageType = "Web-view",
+                    ccpaEnabled = true,
+                    gdprEnabled = true,
+                    property = Property(
+                        propertyName = "",
+                        accountId = 1L,
+                        pmId = "",
+                        messageType = ""
+                    )
                 )
             }
         )
-        fab.setOnClickListener {
-        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchPropertyList()
+    }
+
+    private fun successState(it: StateSuccess) {
+        it.propertyList
+            .map {
+                val env = if (it.is_staging) "stage" else "prod"
+                PropertyDTO(
+                    campaignEnv = env,
+                    propertyName = it.propertyName,
+                    accountId = it.accountId,
+                    messageType = it.messageType,
+                    ccpaEnabled = it.statusCampaign.ccpaEnabled,
+                    gdprEnabled = it.statusCampaign.gdprEnabled,
+                    property = it
+                )
+            }
+            .let { adapter.addItems(it) }
+    }
+
+    private fun errorState(it: StateError) {
+    }
+
+    private fun showDeleteDialog(position: Int, adapter: PropertyAdapter) {
+        val propertyName = adapter.getPropertyNameByPosition(position)
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete Property $propertyName")
+            .setPositiveButton("Confirm") { _, _ ->
+                adapter.notifyItemChanged(position)
+                viewModel.deleteProperty(propertyName)
+            }
+            .setNegativeButton("Cancel") { _, _ -> adapter.notifyItemChanged(position) }
+            .show()
+    }
+
+    private fun runDemo(propertyName: String) {
+        // start demp
     }
 }
