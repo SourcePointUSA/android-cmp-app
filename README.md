@@ -403,14 +403,45 @@ We'll update this list over time, if you have any questions feel free to open an
 
 ---
 
-# Development
-## How to build the `cmplibrary` module from source
-Note: skip this step and jump to next section if you already have the compiled `cmplibrary-release.aar` binary.
-
-* Clone and open `android-cmp-app` project in Android Studio
-* Build the project
-* Open `Gradle` menu from right hand side menu in Android Studio and select `assemble` under `:cmplibrary > Tasks > assemble`
-<img width="747" alt="screen shot 2018-11-05 at 4 52 27 pm" src="https://user-images.githubusercontent.com/2576311/48029062-4c950000-e11b-11e8-8d6f-a50c9f37e25b.png">
-
-* Run the assemble task by selecting `android-cmp-app:cmplibrary [assemble]` (should be already selected) and clicking the build icon (or selecting Build > Make Project) from the menus.
-* The release version of the compiled binary should be under `cmplibrary/build/outputs/aar/cmplibrary-release.aar` directory. Copy this file and import it to your project using the steps below.
+# Artifact Release Process
+## Release
+To publish new release artifact you need to do following:
+* Checkout `develop` branch and pull the latest commits.
+```
+git checkout develop
+git pull
+```
+* Create a new branch based on pure develop branch code named `release/x.y.z` where x.y.z stands for ordinal version of upcoming release. Push it to `origin`. 
+```
+git checkout -b release/x.y.z
+git push --set-upstream origin release/x.y.z
+```
+* Using your preffered text editor, go to `cmplibrary/grade.property` and upgrade `VERSION_NAME = x.y.z`. Don't forget to save the changes!
+* Then go to `cmplibrary/release_note.txt`, clear it and fulfill with description of every single commit pushed to `develop` branch since the last artifact release. Please, stick to style of description which appears in that file! This part will appear in changelog after artifact release will be accomplished.
+* Commit and push these two files **ONLY**. The commit message **MUST** be “release/x.y.z”. The reason of such strict rules relates to our automated release process; please, take a note that **from now on, committing to `develop` branch is forbidden until successful artifact release.**
+```
+git add .
+git commit -m “release/x.y.z”
+git push
+```
+* Go to your browser and create a new pull request from your `release/x.y.z` branch to `master` branch.
+* Hit `Squash and merge` button.
+* Go to `Actions` tab of github and wait patientfully unless release process ends. Regularly, it takes no longer than 5 minutes.
+* Go to sonatype repository https://s01.oss.sonatype.org/
+* Log in with your credentials. Please take a note you should receive permission in order to access to SourcePoint repo.
+* Select artifact and click “close” then “confirm”
+* Refresh the page and click “release” then ”confirm”
+ 
+From now, you may count your release successful. Artifact will appear on Maven Central in few hours and must be already accesible on GitHub repository page.
+## Post-release
+However, after you have accomplished artifact release process, few more steps need to be done:
+* Checkout `master` branch and pull the commits.
+```
+git checkout master
+git pull
+```
+* Merge `master` branch to `develop` branch. Push this commit (which contains merged code).
+```
+git merge develop
+```
+Now post-release process is done and you have consistent solution. Enjoy!
