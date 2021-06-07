@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
+import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.assertTrue
@@ -71,7 +72,7 @@ class HttpUrlManagerTest {
     @Test
     fun `GIVEN a STAGE env inAppMessageUrl RETURN the stage link`() {
         val sut = HttpUrlManagerSingleton.inAppMessageUrl(Env.STAGE).toString()
-        sut.assertEquals("https://cdn.sp-stage.net/wrapper/v2/get_messages?env=stage")
+        sut.assertEquals("https://cdn.sp-stage.net/wrapper/v2/get_messages?env=${BuildConfig.ENV_QUERY_PARAM}")
     }
 
     @Test
@@ -83,7 +84,7 @@ class HttpUrlManagerTest {
     @Test
     fun `GIVEN a STAGE env sendConsentUrl RETURN the prod link`() {
         val sut = HttpUrlManagerSingleton.sendConsentUrl(ActionType.ACCEPT_ALL, Env.STAGE, CampaignType.GDPR).toString()
-        sut.assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages/choice/gdpr/11?env=stage")
+        sut.assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages/choice/gdpr/11?env=${BuildConfig.ENV_QUERY_PARAM}")
     }
 
     @Test
@@ -95,7 +96,7 @@ class HttpUrlManagerTest {
     @Test
     fun `GIVEN a STAGE env sendCustomConsentUrl RETURN the prod link`() {
         val sut = HttpUrlManagerSingleton.sendCustomConsentUrl(Env.STAGE).toString()
-        sut.assertEquals("https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?env=stage&inApp=true")
+        sut.assertEquals("https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?env=${BuildConfig.ENV_QUERY_PARAM}&inApp=true")
     }
 
     @Test
