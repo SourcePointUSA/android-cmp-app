@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
@@ -76,7 +77,8 @@ class PropertyListFragment : Fragment() {
                         propertyName = "",
                         accountId = 1L,
                         pmId = "",
-                        messageType = ""
+                        messageType = "",
+                        statusCampaignSet = emptySet()
                     )
                 )
             }
@@ -97,8 +99,8 @@ class PropertyListFragment : Fragment() {
                     propertyName = it.propertyName,
                     accountId = it.accountId,
                     messageType = it.messageType,
-                    ccpaEnabled = it.statusCampaign.ccpaEnabled,
-                    gdprEnabled = it.statusCampaign.gdprEnabled,
+                    ccpaEnabled = it.statusCampaignSet.find { s -> s.campaignType == CampaignType.CCPA }?.enabled ?: false,
+                    gdprEnabled = it.statusCampaignSet.find { s -> s.campaignType == CampaignType.GDPR }?.enabled ?: false,
                     property = it
                 )
             }

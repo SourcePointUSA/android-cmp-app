@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
+import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 import kotlinx.android.synthetic.main.property_item.view.*
 
 internal class PropertyAdapter() : RecyclerView.Adapter<PropertyAdapter.Vh>() {
@@ -37,10 +39,18 @@ internal class PropertyAdapter() : RecyclerView.Adapter<PropertyAdapter.Vh>() {
             val p = list[pos].property
             setOnClickListener { itemClickListener?.invoke(list[pos]) }
             chip_gdpr.setOnCheckedChangeListener { _, isChecked ->
-                propertyChangedListener?.invoke(p.copy(statusCampaign = p.statusCampaign.copy(gdprEnabled = isChecked)))
+                val editedSet = mutableSetOf<StatusCampaign>().apply {
+                    add(StatusCampaign(p.propertyName, CampaignType.GDPR, isChecked))
+                    addAll(p.statusCampaignSet)
+                }
+                propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
             }
             chip_ccpa.setOnCheckedChangeListener { _, isChecked ->
-                propertyChangedListener?.invoke(p.copy(statusCampaign = p.statusCampaign.copy(ccpaEnabled = isChecked)))
+                val editedSet = mutableSetOf<StatusCampaign>().apply {
+                    add(StatusCampaign(p.propertyName, CampaignType.CCPA, isChecked))
+                    addAll(p.statusCampaignSet)
+                }
+                propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
             }
             play_demo_btn.setOnClickListener {
                 demoProperty?.invoke(p.propertyName)
