@@ -13,7 +13,8 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.ui.component.addChip
@@ -28,6 +29,8 @@ class AddUpdatePropertyFragment : Fragment() {
     private val viewModel by inject<AddUpdatePropertyViewModel>()
 
     private val messageOption = listOf("WebView", "App")
+    private val messageLanguage = MessageLanguage.values()
+    private val pmTabs = PMTab.values()
 
     companion object {
         fun instance(propertyName: String) = AddUpdatePropertyFragment().apply {
