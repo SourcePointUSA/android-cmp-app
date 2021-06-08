@@ -78,7 +78,7 @@ private class LocalDataSourceImpl(
                             .executeAsList()
                             .map { it.toTargetingParam() }
                     val statusCampaign = cQueries.selectStatusCampaignByPropertyName(row.property_name)
-                        .executeAsOneOrNull()?.toStatusCampaign()  ?: throw RuntimeException()
+                        .executeAsOneOrNull()?.toStatusCampaign() ?: throw RuntimeException()
                     row.toProperty(tp, statusCampaign)
                 }
         }

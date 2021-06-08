@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp.ui
 
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +13,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
-import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.ui.BaseState.StateError
-import com.sourcepointmeta.metaapp.ui.BaseState.StateSuccess
+import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
 import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
@@ -31,10 +30,6 @@ class PropertyListFragment : Fragment() {
         SwipeToDeleteCallback(requireContext()) { showDeleteDialog(it, adapter) }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,6 +40,10 @@ class PropertyListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.liveData.observe(viewLifecycleOwner) {
+            if (it is StateSuccess) successState(it)
+            else if (it is StateError) errorState(it)
+        }
         property_list.layoutManager = GridLayoutManager(context, 1)
         property_list.adapter = adapter
         fab.setOnClickListener {
@@ -61,28 +60,7 @@ class PropertyListFragment : Fragment() {
         }
         adapter.propertyChangedListener = { viewModel.updateProperty(it) }
         adapter.demoProperty = { runDemo(it) }
-//        adapter.deletePropertyListener = { viewModel.deleteProperty(it) }
         itemTouchHelper.attachToRecyclerView(property_list)
-
-        adapter.addItems(
-            List(15) {
-                PropertyDTO(
-                    campaignEnv = "stage",
-                    propertyName = "$it-mobile.demo.com",
-                    accountId = it.toLong(),
-                    messageType = "Web-view",
-                    ccpaEnabled = true,
-                    gdprEnabled = true,
-                    property = Property(
-                        propertyName = "",
-                        accountId = 1L,
-                        pmId = "",
-                        messageType = "",
-                        statusCampaignSet = emptySet()
-                    )
-                )
-            }
-        )
     }
 
     override fun onResume() {
@@ -99,8 +77,10 @@ class PropertyListFragment : Fragment() {
                     propertyName = it.propertyName,
                     accountId = it.accountId,
                     messageType = it.messageType,
-                    ccpaEnabled = it.statusCampaignSet.find { s -> s.campaignType == CampaignType.CCPA }?.enabled ?: false,
-                    gdprEnabled = it.statusCampaignSet.find { s -> s.campaignType == CampaignType.GDPR }?.enabled ?: false,
+                    ccpaEnabled = it.statusCampaignSet.find { s -> s.campaignType == CampaignType.CCPA }?.enabled
+                        ?: false,
+                    gdprEnabled = it.statusCampaignSet.find { s -> s.campaignType == CampaignType.GDPR }?.enabled
+                        ?: false,
                     property = it
                 )
             }
@@ -108,6 +88,7 @@ class PropertyListFragment : Fragment() {
     }
 
     private fun errorState(it: StateError) {
+
     }
 
     private fun showDeleteDialog(position: Int, adapter: PropertyAdapter) {
@@ -123,6 +104,5 @@ class PropertyListFragment : Fragment() {
     }
 
     private fun runDemo(propertyName: String) {
-        // start demp
     }
 }
