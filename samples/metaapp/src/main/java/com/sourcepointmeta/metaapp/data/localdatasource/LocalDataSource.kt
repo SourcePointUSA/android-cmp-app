@@ -39,13 +39,13 @@ internal interface LocalDataSource {
             campaignStatus: StatusCampaign,
             list: List<MetaTargetingParam>
         ): Pair<CampaignType, List<TargetingParam>>? {
-            if (campaignType == CampaignType.GDPR && campaignStatus.gdprEnabled) {
+            if (campaignType == CampaignType.GDPR) {
                 return list
                     .filter { it.campaign == CampaignType.GDPR }
                     .map { TargetingParam(it.key, it.value) }
                     .let { Pair(CampaignType.GDPR, it) }
             }
-            if (campaignType == CampaignType.CCPA && campaignStatus.ccpaEnabled) {
+            if (campaignType == CampaignType.CCPA) {
                 return list
                     .filter { it.campaign == CampaignType.CCPA }
                     .map { TargetingParam(it.key, it.value) }
@@ -78,7 +78,7 @@ private class LocalDataSourceImpl(
                             .executeAsList()
                             .map { it.toTargetingParam() }
                     val statusCampaign = cQueries.selectStatusCampaignByPropertyName(row.property_name)
-                        .executeAsOneOrNull()?.toStatusCampaign() ?: StatusCampaign(row.property_name)
+                        .executeAsOneOrNull()?.toStatusCampaign() ?: throw RuntimeException()
                     row.toProperty(tp, statusCampaign)
                 }
         }
@@ -95,7 +95,7 @@ private class LocalDataSourceImpl(
                         .map { it.toTargetingParam() }
                 val statusCampaign = cQueries.selectStatusCampaignByPropertyName(row.property_name)
                     .executeAsOneOrNull()
-                    ?.toStatusCampaign() ?: StatusCampaign(row.property_name)
+                    ?.toStatusCampaign() ?: throw RuntimeException()
                 row.toProperty(tp, statusCampaign)
             }
     }
@@ -135,8 +135,8 @@ private class LocalDataSourceImpl(
                 }
                 insertStatusCampaign(
                     property_name = property.propertyName,
-                    gdpr_enabled = property.statusCampaign.gdprEnabled.toValueDB(),
-                    ccpa_enabled = property.statusCampaign.ccpaEnabled.toValueDB(),
+                    campaign_type = CampaignType.GDPR.name,
+                    enabled = 1,
                 )
                 fetchPropByName(property.propertyName)
             }
@@ -169,9 +169,9 @@ private class LocalDataSourceImpl(
                         propertyName = p.propertyName
                         messLanguage =
                             MessageLanguage.values().find { it.name == p.messageLanguage } ?: MessageLanguage.ENGLISH
-                        buildSPCampaign(CampaignType.GDPR, p.statusCampaign, p.targetingParameters)
+                        buildSPCampaign(CampaignType.GDPR, StatusCampaign("", CampaignType.GDPR, false), p.targetingParameters)
                             ?.let { spc -> addCampaign(spc.first, spc.second) }
-                        buildSPCampaign(CampaignType.GDPR, p.statusCampaign, p.targetingParameters)
+                        buildSPCampaign(CampaignType.GDPR, StatusCampaign("", CampaignType.GDPR, false), p.targetingParameters)
                             ?.let { spc -> addCampaign(spc.first, spc.second) }
                     }
                 }
@@ -197,7 +197,7 @@ private fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: S
     authId = auth_Id,
     pmId = pm_id,
     targetingParameters = tp,
-    statusCampaign = statusCampaign,
+    statusCampaignSet = setOf(statusCampaign),
     messageType = message_type,
     timestamp = timestamp
 )
@@ -207,8 +207,8 @@ private fun CampaignQueries.getTargetingParams(propName: String) =
 
 private fun Status_campaign.toStatusCampaign() = StatusCampaign(
     propertyName = property_name,
-    gdprEnabled = gdpr_enabled != 0L,
-    ccpaEnabled = ccpa_enabled != 0L,
+    enabled = enabled != 0L,
+    campaignType = CampaignType.GDPR,
 )
 
 private fun Boolean.toValueDB() = when (this) {
