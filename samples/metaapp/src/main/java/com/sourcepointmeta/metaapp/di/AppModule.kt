@@ -16,7 +16,7 @@ val appModule = module {
     }
 
     viewModel {
-        AddUpdatePropertyViewModel()
+        AddUpdatePropertyViewModel(get())
     }
 
     single { LocalDataSource.create(createDb(androidApplication())) }

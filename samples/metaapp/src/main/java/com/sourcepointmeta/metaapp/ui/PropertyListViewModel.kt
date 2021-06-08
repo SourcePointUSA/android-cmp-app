@@ -26,21 +26,6 @@ internal class PropertyListViewModel(
                 { /* handle the exception */ },
                 {
                     mutableLiveData.value = BaseState.StateSuccess(it)
-                    List(15) {
-                        Property(
-                            statusCampaignSet = setOf(StatusCampaign(campaignType = CampaignType.GDPR, enabled = true, propertyName = "abc")),
-                            propertyName = "abd  $it",
-                            messageType = "App",
-                            pmId = "",
-                            accountId = 22 + it.toLong(),
-                            is_staging = true,
-                            targetingParameters = emptyList(),
-                            messageLanguage = null,
-                            authId = null,
-                            propertyId = null,
-                            pmTab = null
-                        )
-                    }.let { mutableLiveData.value = BaseState.StateSuccess(it) }
                 }
             )
         }

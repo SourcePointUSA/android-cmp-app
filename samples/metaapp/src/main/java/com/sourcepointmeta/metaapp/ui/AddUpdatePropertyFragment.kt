@@ -10,21 +10,24 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.ui.component.addChip
-import kotlinx.android.synthetic.main.add_property_fragment.* // ktlint-disable
-import kotlinx.android.synthetic.main.add_targeting_parameter.* // ktlint-disable
+import com.sourcepointmeta.metaapp.ui.component.bind
+import com.sourcepointmeta.metaapp.ui.component.toProperty
+import kotlinx.android.synthetic.main.add_property_fragment.*
+import kotlinx.android.synthetic.main.add_targeting_parameter.*
+import org.koin.android.ext.android.inject
 
 class AddUpdatePropertyFragment : Fragment() {
 
-    private val viewModel = AddUpdatePropertyViewModel()
+    private val viewModel by inject<AddUpdatePropertyViewModel>()
 
     private val messageOption = listOf("WebView", "App")
-    private val messageLanguage = MessageLanguage.values()
-    private val pmTabs = PMTab.values()
 
     companion object {
         fun instance(propertyName: String) = AddUpdatePropertyFragment().apply {
@@ -32,10 +35,6 @@ class AddUpdatePropertyFragment : Fragment() {
                 putString("property_name", propertyName)
             }
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -49,25 +48,11 @@ class AddUpdatePropertyFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val messageOptionAdapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, messageOption)
-        message_type_autocomplete.setAdapter(messageOptionAdapter)
+        val adapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(requireContext(), android.R.layout.select_dialog_item, messageOption)
+        message_type_autocomplete.setAdapter(adapter)
         message_type_autocomplete.setText(messageOption.first())
         message_type_autocomplete.threshold = 1
-
-        val languages = messageLanguage.map { it.name }
-        val messageLanguageAdapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, languages)
-        message_language_autocomplete.setAdapter(messageLanguageAdapter)
-        message_language_autocomplete.setText(languages.first { it.startsWith("ENG") })
-        message_language_autocomplete.threshold = 1
-
-        val tabs = pmTabs.map { it.name }
-        val pmTabsAdapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, tabs)
-        pm_tab_autocomplete.setAdapter(pmTabsAdapter)
-        pm_tab_autocomplete.setText(tabs.first { it.startsWith("PUR") })
-        pm_tab_autocomplete.threshold = 1
 
         arguments?.getString("property_name")?.let { viewModel.fetchProperty(it) }
 
@@ -102,12 +87,23 @@ class AddUpdatePropertyFragment : Fragment() {
         }
 
         save_btn.setOnClickListener {
-            // viewModel.createProperty // add prop
-            propertySavedState()
+            viewModel.createProperty(add_property_layout.toProperty())
+        }
+
+        viewModel.liveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is BaseState.StatePropertySaved -> propertySavedState()
+                is BaseState.StateProperty -> add_property_layout.bind(it.property)
+                is BaseState.StateError -> errorState(it)
+                else -> {}
+            }
         }
     }
 
     private fun propertySavedState() {
         (activity as? AppCompatActivity)?.onBackPressed()
+    }
+
+    private fun errorState(it: BaseState.StateError) {
     }
 }
