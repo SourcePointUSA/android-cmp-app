@@ -6,7 +6,8 @@ import java.util.* // ktlint-disable
 data class Property(
     val propertyName: String,
     val accountId: Long,
-    val pmId: String,
+    val gdprPmId: String?,
+    val ccpaPmId: String?,
     val messageType: String,
     val is_staging: Boolean = false,
     val targetingParameters: List<MetaTargetingParam> = emptyList(),

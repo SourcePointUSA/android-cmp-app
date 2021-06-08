@@ -114,7 +114,6 @@ private class LocalDataSourceImpl(
             transactionWithResult {
                 insertProperty(
                     property_id = property.propertyId,
-                    pm_id = property.pmId,
                     auth_Id = property.authId,
                     message_language = property.messageLanguage,
                     pm_tab = property.pmTab,
@@ -122,7 +121,9 @@ private class LocalDataSourceImpl(
                     is_staging = if (property.is_staging) 1 else 0,
                     property_name = property.propertyName,
                     message_type = property.messageType,
-                    timestamp = property.timestamp
+                    timestamp = property.timestamp,
+                    ccpa_pm_id = property.ccpaPmId,
+                    gdpr_pm_id = property.gdprPmId
                 )
                 deleteTargetingParameterByPropName(property.propertyName)
                 property.targetingParameters.forEach {
@@ -206,11 +207,12 @@ private fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: S
     pmTab = pm_tab,
     messageLanguage = message_language,
     authId = auth_Id,
-    pmId = pm_id,
     targetingParameters = tp,
     statusCampaignSet = statusCampaign,
     messageType = message_type,
-    timestamp = timestamp
+    timestamp = timestamp,
+    gdprPmId = "1212",
+    ccpaPmId = "1313"
 )
 
 private fun CampaignQueries.getTargetingParams(propName: String) =

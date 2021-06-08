@@ -10,13 +10,10 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.ui.component.addChip
 import com.sourcepointmeta.metaapp.ui.component.bind
 import com.sourcepointmeta.metaapp.ui.component.toProperty
@@ -51,11 +48,26 @@ class AddUpdatePropertyFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(requireContext(), android.R.layout.select_dialog_item, messageOption)
-        message_type_autocomplete.setAdapter(adapter)
+
+        val messageOptionAdapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, messageOption)
+        message_type_autocomplete.setAdapter(messageOptionAdapter)
         message_type_autocomplete.setText(messageOption.first())
         message_type_autocomplete.threshold = 1
+
+        val languages = messageLanguage.map { it.name }
+        val messageLanguageAdapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, languages)
+        message_language_autocomplete.setAdapter(messageLanguageAdapter)
+        message_language_autocomplete.setText(languages.first { it.startsWith("ENG") })
+        message_language_autocomplete.threshold = 1
+
+        val tabs = pmTabs.map { it.name }
+        val pmTabsAdapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, tabs)
+        pm_tab_autocomplete.setAdapter(pmTabsAdapter)
+        pm_tab_autocomplete.setText(tabs.first { it.startsWith("PUR") })
+        pm_tab_autocomplete.threshold = 1
 
         arguments?.getString("property_name")?.let { viewModel.fetchProperty(it) }
 
@@ -90,7 +102,7 @@ class AddUpdatePropertyFragment : Fragment() {
         }
 
         save_btn.setOnClickListener {
-            viewModel.createProperty(add_property_layout.toProperty())
+            viewModel.createorUpdateProperty(add_property_layout.toProperty())
         }
 
         viewModel.liveData.observe(viewLifecycleOwner) {

@@ -1,12 +1,15 @@
+
+
 CREATE TABLE property (
     property_name TEXT PRIMARY KEY,
     account_id INTEGER NOT NULL,
     is_staging INTEGER NOT NULL,
     timestamp INTEGER NOT NULL,
-    pm_id TEXT NOT NULL,
     message_type TEXT NOT NULL,
     property_id INTEGER,
     auth_Id TEXT,
+    gdpr_pm_id TEXT,
+    ccpa_pm_id TEXT,
     message_language TEXT,
     pm_tab TEXT
 );
@@ -44,8 +47,8 @@ FROM property
 WHERE property.property_id = ?;
 
 insertProperty:
-INSERT OR REPLACE INTO property (property_name, account_id, is_staging, timestamp, pm_id, message_type, property_id, auth_Id, message_language, pm_tab)
-VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO property (property_name, account_id, is_staging, timestamp, message_type, property_id, auth_Id, gdpr_pm_id, ccpa_pm_id, message_language, pm_tab)
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- TargetingParameters
 

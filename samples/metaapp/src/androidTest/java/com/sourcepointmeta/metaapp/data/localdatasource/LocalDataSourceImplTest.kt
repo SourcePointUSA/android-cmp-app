@@ -26,14 +26,15 @@ class LocalDataSourceImplTest {
         accountId = 1,
         propertyName = "prop1",
         propertyId = 1,
-        pmId = "",
         authId = null,
         messageLanguage = null,
         pmTab = null,
         is_staging = false,
         targetingParameters = tp,
         statusCampaignSet = setOf(StatusCampaign("prop1", CampaignType.GDPR, true)),
-        messageType = "App"
+        messageType = "App",
+        gdprPmId = "1212",
+        ccpaPmId = "1313",
     )
 
     private val prop2 = prop1.copy(propertyName = "prop2", accountId = 2, propertyId = 2)

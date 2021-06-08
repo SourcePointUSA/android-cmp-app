@@ -32,6 +32,12 @@ internal fun AddPropertyLayout.bind(property: Property) {
     val (gdprTp, ccpaTp) = property.targetingParameters.partition { it.campaign == CampaignType.GDPR }
     gdprTp.forEach { gdpr_chip_group.addChip("${it.key}:${it.value}") }
     ccpaTp.forEach { ccpa_chip_group.addChip("${it.key}:${it.value}") }
+    message_language_autocomplete.setText(property.messageLanguage)
+    auth_id_ed.setText(property.authId)
+    pm_tab_autocomplete.setText(property.pmTab)
+    gdpr_pm_id_ed.setText(property.gdprPmId)
+    ccpa_pm_id_ed.setText(property.ccpaPmId)
+    message_language_autocomplete.setText(property.messageLanguage)
 }
 
 internal fun AddPropertyLayout.toProperty(): Property {
@@ -70,13 +76,14 @@ internal fun AddPropertyLayout.toProperty(): Property {
         propertyName = prop_name_ed.text.toString(),
         accountId = account_id_ed.text.toString().toLong(),
         propertyId = 1,
-        pmId = "",
-        authId = null,
-        messageLanguage = null,
-        pmTab = null,
+        authId = auth_id_ed.text.toString(),
+        messageLanguage = message_language_autocomplete.text.toString(),
+        pmTab = pm_tab_autocomplete.text.toString(),
         is_staging = radio_stage.isChecked,
         targetingParameters = ccpaTp + gdprTp,
         statusCampaignSet = setOf(gdprStatus, ccpaStatus),
-        messageType = message_type_autocomplete.text.toString()
+        messageType = message_type_autocomplete.text.toString(),
+        gdprPmId = gdpr_pm_id_ed.text.toString(),
+        ccpaPmId = ccpa_pm_id_ed.text.toString()
     )
 }

@@ -22,7 +22,7 @@ internal class AddUpdatePropertyViewModel(
     private val mutableLiveData by lazy { MutableLiveData<BaseState>() }
     val liveData: LiveData<BaseState> get() = mutableLiveData
 
-    fun createProperty(property: Property) {
+    fun createorUpdateProperty(property: Property) {
         viewModelScope.launch {
             when (withContext(workerDispatcher) { dataSource.storeOrUpdateProperty(property) }) {
                 is Either.Right -> {
