@@ -1,6 +1,5 @@
 package com.sourcepointmeta.metaapp.ui
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -88,7 +87,6 @@ class PropertyListFragment : Fragment() {
     }
 
     private fun errorState(it: StateError) {
-
     }
 
     private fun showDeleteDialog(position: Int, adapter: PropertyAdapter) {

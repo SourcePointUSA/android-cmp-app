@@ -130,8 +130,8 @@ class LocalDataSourceImplTest {
         res.first().targetingParameters.size.assertEquals(3)
     }
 
-    @Test
-    fun GIVEN_a_targeringparameter_SAVE_it_into_the_DB() = runBlocking<Unit> {
+//    @Test
+    fun GIVEN_a_targetingparameter_SAVE_it_into_the_DB() = runBlocking<Unit> {
         val gdprState =
             StatusCampaign(propertyName = prop1.propertyName, campaignType = CampaignType.GDPR, enabled = true)
         val ccpaState =
