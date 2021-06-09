@@ -35,8 +35,8 @@ internal fun AddPropertyLayout.bind(property: Property) {
     message_language_autocomplete.setText(property.messageLanguage)
     auth_id_ed.setText(property.authId)
     pm_tab_autocomplete.setText(property.pmTab)
-    gdpr_pm_id_ed.setText(property.gdprPmId)
-    ccpa_pm_id_ed.setText(property.ccpaPmId)
+    gdpr_pm_id_ed.setText(property.gdprPmId.toString())
+    ccpa_pm_id_ed.setText(property.ccpaPmId.toString())
     message_language_autocomplete.setText(property.messageLanguage)
 }
 
@@ -83,7 +83,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
         targetingParameters = ccpaTp + gdprTp,
         statusCampaignSet = setOf(gdprStatus, ccpaStatus),
         messageType = message_type_autocomplete.text.toString(),
-        gdprPmId = gdpr_pm_id_ed.text.toString(),
-        ccpaPmId = ccpa_pm_id_ed.text.toString()
+        gdprPmId = gdpr_pm_id_ed.text.toString().toLongOrNull(),
+        ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull()
     )
 }

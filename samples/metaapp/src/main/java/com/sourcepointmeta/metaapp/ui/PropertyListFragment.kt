@@ -83,8 +83,8 @@ class PropertyListFragment : Fragment() {
                     gdprEnabled = p.statusCampaignSet.find { s -> s.campaignType == CampaignType.GDPR }?.enabled
                         ?: false,
                     property = p,
-                    ccpaPmId = p.ccpaPmId ?: "",
-                    gdprPmId = p.gdprPmId ?: "",
+                    ccpaPmId = p.ccpaPmId?.toString() ?: "",
+                    gdprPmId = p.gdprPmId?.toString() ?: "",
                     pmTab = PMTab.values().find { it.name == p.pmTab } ?: PMTab.DEFAULT,
                     authId = p.authId ?: "",
                     messageLanguage = MessageLanguage.values().find { it.name == p.messageLanguage } ?: MessageLanguage.ENGLISH

@@ -28,10 +28,11 @@ internal interface LocalDataSource {
     suspend fun fetchPropertyByName(name: String): Either<Property>
     suspend fun fetchTargetingParams(propName: String): Either<List<MetaTargetingParam>>
     suspend fun storeOrUpdateProperty(property: Property): Either<Property>
+    suspend fun propertyCount(): Either<Int>
     suspend fun updateProperty(property: Property)
     suspend fun deleteAll()
     suspend fun deleteByPropertyName(name: String)
-    fun deleteTargetingParameter(propName: String, campaignType: CampaignType, key :String)
+    fun deleteTargetingParameter(propName: String, campaignType: CampaignType, key: String)
     fun getSPConfig(pName: String): Either<SpConfig>
 
     companion object {
@@ -109,6 +110,10 @@ private class LocalDataSourceImpl(
         }
     }
 
+    override suspend fun propertyCount(): Either<Int> = check {
+        cQueries.selectAllProperties().executeAsList().size
+    }
+
     override suspend fun storeOrUpdateProperty(property: Property): Either<Property> = coroutineScope {
         cQueries.run {
             transactionWithResult {
@@ -160,6 +165,7 @@ private class LocalDataSourceImpl(
         cQueries.run {
             deletePropertyByName(name)
             deleteTargetingParameterByPropName(name)
+            deleteStatusCampaignByPropName(name)
         }
     }
 
@@ -211,8 +217,8 @@ private fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: S
     statusCampaignSet = statusCampaign,
     messageType = message_type,
     timestamp = timestamp,
-    gdprPmId = "1212",
-    ccpaPmId = "1313"
+    gdprPmId = gdpr_pm_id,
+    ccpaPmId = ccpa_pm_id
 )
 
 private fun CampaignQueries.getTargetingParams(propName: String) =

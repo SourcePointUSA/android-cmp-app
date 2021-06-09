@@ -46,7 +46,7 @@ internal class AddUpdatePropertyViewModel(
         }
     }
 
-    fun deleteTargetingParam(propName : String, campaignType: CampaignType, c : Chip) {
+    fun deleteTargetingParam(propName: String, campaignType: CampaignType, c: Chip) {
         viewModelScope.launch(workerDispatcher) {
             val key = c.text.split(":")[0]
             dataSource.deleteTargetingParameter(propName, campaignType, key)

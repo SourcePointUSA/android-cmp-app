@@ -1,13 +1,13 @@
 package com.sourcepointmeta.metaapp.data.localdatasource
 
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import java.util.* // ktlint-disable
+import java.util.*
 
 data class Property(
     val propertyName: String,
     val accountId: Long,
-    val gdprPmId: String?,
-    val ccpaPmId: String?,
+    val gdprPmId: Long?,
+    val ccpaPmId: Long?,
     val messageType: String,
     val is_staging: Boolean = false,
     val targetingParameters: List<MetaTargetingParam> = emptyList(),

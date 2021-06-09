@@ -1,11 +1,9 @@
 package com.sourcepointmeta.metaapp.ui
 
 import androidx.lifecycle.* // ktlint-disable
-import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.core.fold
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

@@ -27,14 +27,14 @@ class LocalDataSourceImplTest {
         propertyName = "prop1",
         propertyId = 1,
         authId = null,
-        messageLanguage = null,
-        pmTab = null,
+        messageLanguage = "ENGLISH",
+        pmTab = "DEFAULT",
         is_staging = false,
         targetingParameters = tp,
         statusCampaignSet = setOf(StatusCampaign("prop1", CampaignType.GDPR, true)),
         messageType = "App",
-        gdprPmId = "1212",
-        ccpaPmId = "1313",
+        gdprPmId = 1212L,
+        ccpaPmId = 1313L,
     )
 
     private val prop2 = prop1.copy(propertyName = "prop2", accountId = 2, propertyId = 2)
@@ -131,7 +131,7 @@ class LocalDataSourceImplTest {
         res.first().targetingParameters.size.assertEquals(3)
     }
 
-//    @Test
+    @Test
     fun GIVEN_a_targetingparameter_SAVE_it_into_the_DB() = runBlocking<Unit> {
         val gdprState =
             StatusCampaign(propertyName = prop1.propertyName, campaignType = CampaignType.GDPR, enabled = true)
@@ -143,10 +143,26 @@ class LocalDataSourceImplTest {
         sut.statusCampaignSet.first { it.campaignType == CampaignType.GDPR }.enabled.assertTrue()
         sut.statusCampaignSet.first { it.campaignType == CampaignType.CCPA }.enabled.assertFalse()
 
-        val prop4 = prop3.copy(statusCampaignSet = setOf(gdprState.copy(enabled = false), ccpaState.copy(enabled = true)))
+        val prop4 =
+            prop3.copy(statusCampaignSet = setOf(gdprState.copy(enabled = false), ccpaState.copy(enabled = true)))
         ds.storeOrUpdateProperty(prop4)
         val sut1 = (ds.fetchPropertyByName(prop3.propertyName) as Either.Right).r
         sut1.statusCampaignSet.first { it.campaignType == CampaignType.GDPR }.enabled.assertFalse()
         sut1.statusCampaignSet.first { it.campaignType == CampaignType.CCPA }.enabled.assertTrue()
+    }
+
+    @Test
+    fun GIVEN_a_property_update_its_info() = runBlocking<Unit> {
+        val p = prop1.copy(authId = "athu")
+        repeat(2) { ds.storeOrUpdateProperty(p) }
+        (ds.propertyCount() as Either.Right).r.assertEquals(1)
+        ds.storeOrUpdateProperty(p.copy(gdprPmId = 111L, ccpaPmId = 222L, authId = "auth"))
+        (ds.propertyCount() as Either.Right).r.assertEquals(1)
+        val sut = (ds.fetchPropertyByName(prop1.propertyName) as Either.Right).r
+        sut.run {
+            gdprPmId.assertEquals(111L)
+            ccpaPmId.assertEquals(222L)
+            authId.assertEquals("auth")
+        }
     }
 }
