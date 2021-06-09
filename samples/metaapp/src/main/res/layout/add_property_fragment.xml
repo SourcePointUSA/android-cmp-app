@@ -124,7 +124,7 @@
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/gdpr_pm_id_ed"
                     android:maxLines="1"
-                    android:inputType="text"
+                    android:inputType="number"
                     android:nextFocusDown="@id/ccpa_pm_id_ed"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"/>
@@ -148,7 +148,7 @@
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ccpa_pm_id_ed"
                     android:maxLines="1"
-                    android:inputType="text"
+                    android:inputType="number"
                     android:nextFocusDown="@id/radio_stage"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"/>
@@ -191,7 +191,7 @@
                 app:helperText="Message Language"
                 app:helperTextEnabled="true"
                 app:placeholderText="i.e. English"
-                android:hint="@string/message_type">
+                android:hint="@string/message_language">
 
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/message_language_autocomplete"

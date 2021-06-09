@@ -112,6 +112,8 @@
     <string name="stage">Stage</string>
     <string name="prod">Prod</string>
     <string name="message_type">Message type</string>
+    <string name="message_language">Message Language</string>
+    <string name="error">Something went wrong</string>
     <string name="save">Save</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

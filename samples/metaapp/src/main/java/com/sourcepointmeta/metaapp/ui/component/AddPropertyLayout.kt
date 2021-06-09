@@ -6,9 +6,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepointmeta.metaapp.core.UIErrorCode
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
+import com.sourcepointmeta.metaapp.ui.BaseState
+import kotlinx.android.synthetic.main.add_property_fragment.*
 import kotlinx.android.synthetic.main.add_property_fragment.view.*
 
 class AddPropertyLayout : ConstraintLayout {
@@ -35,8 +38,8 @@ internal fun AddPropertyLayout.bind(property: Property) {
     message_language_autocomplete.setText(property.messageLanguage)
     auth_id_ed.setText(property.authId)
     pm_tab_autocomplete.setText(property.pmTab)
-    gdpr_pm_id_ed.setText(property.gdprPmId.toString())
-    ccpa_pm_id_ed.setText(property.ccpaPmId.toString())
+    gdpr_pm_id_ed.setText(property.gdprPmId?.toString()?:"")
+    ccpa_pm_id_ed.setText(property.ccpaPmId?.toString()?:"")
     message_language_autocomplete.setText(property.messageLanguage)
 }
 
@@ -74,7 +77,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
 
     return Property(
         propertyName = prop_name_ed.text.toString(),
-        accountId = account_id_ed.text.toString().toLong(),
+        accountId = account_id_ed.text.toString().toLongOrNull() ?: 0L,
         propertyId = 1,
         authId = auth_id_ed.text.toString(),
         messageLanguage = message_language_autocomplete.text.toString(),
@@ -86,4 +89,56 @@ internal fun AddPropertyLayout.toProperty(): Property {
         gdprPmId = gdpr_pm_id_ed.text.toString().toLongOrNull(),
         ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull()
     )
+}
+
+fun AddPropertyLayout.errorField(it: BaseState.StateErrorValidationField) = when (it.uiCode) {
+    UIErrorCode.PropertyName -> {
+        prop_name_ed.run {
+            requestFocus()
+            error = it.message
+        }
+    }
+    UIErrorCode.PmTab -> {
+        pm_tab_autocomplete.run {
+            requestFocus()
+            error = it.message
+        }
+    }
+    UIErrorCode.AccountId -> {
+        account_id_ed.run {
+            requestFocus()
+            error = it.message
+        }
+    }
+    UIErrorCode.MessageLanguage -> {
+        message_language_autocomplete.run {
+            requestFocus()
+            error = it.message
+        }
+    }
+    UIErrorCode.MessageType -> {
+        message_type_autocomplete.run {
+            requestFocus()
+            error = it.message
+        }
+    }
+    UIErrorCode.CcpaPmId -> {
+        ccpa_pm_id_ed.run {
+            requestFocus()
+            error = it.message
+        }
+    }
+    UIErrorCode.GdprPmId -> {
+        gdpr_pm_id_ed.run {
+            requestFocus()
+            error = it.message
+        }
+    }
+    UIErrorCode.AuthId -> {
+        auth_id_ed.run {
+            requestFocus()
+            error = it.message
+        }
+    }
+    else -> { }
 }

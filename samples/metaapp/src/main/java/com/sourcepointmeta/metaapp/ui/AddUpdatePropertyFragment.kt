@@ -16,6 +16,7 @@ import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.component.addChip
 import com.sourcepointmeta.metaapp.ui.component.bind
+import com.sourcepointmeta.metaapp.ui.component.errorField
 import com.sourcepointmeta.metaapp.ui.component.toProperty
 import kotlinx.android.synthetic.main.add_property_fragment.*
 import kotlinx.android.synthetic.main.add_targeting_parameter.*
@@ -25,11 +26,11 @@ class AddUpdatePropertyFragment : Fragment() {
 
     private val viewModel by inject<AddUpdatePropertyViewModel>()
 
-    private val messageOption = listOf("WebView", "App")
     private val messageLanguage = MessageLanguage.values()
     private val pmTabs = PMTab.values()
 
     companion object {
+        val MessageType = listOf("WebView", "App")
         fun instance(propertyName: String) = AddUpdatePropertyFragment().apply {
             arguments = Bundle().apply {
                 putString("property_name", propertyName)
@@ -50,9 +51,9 @@ class AddUpdatePropertyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val messageOptionAdapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, messageOption)
+            ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, MessageType)
         message_type_autocomplete.setAdapter(messageOptionAdapter)
-        message_type_autocomplete.setText(messageOption.first())
+        message_type_autocomplete.setText(MessageType.first())
         message_type_autocomplete.threshold = 1
 
         val languages = messageLanguage.map { it.name }
@@ -102,7 +103,7 @@ class AddUpdatePropertyFragment : Fragment() {
         }
 
         save_btn.setOnClickListener {
-            viewModel.createorUpdateProperty(add_property_layout.toProperty())
+            viewModel.createOrUpdateProperty(add_property_layout.toProperty())
         }
 
         viewModel.liveData.observe(viewLifecycleOwner) {
@@ -110,7 +111,8 @@ class AddUpdatePropertyFragment : Fragment() {
                 is BaseState.StatePropertySaved -> propertySavedState()
                 is BaseState.StateProperty -> add_property_layout.bind(it.property)
                 is BaseState.StateError -> errorState(it)
-                else -> {}
+                is BaseState.StateErrorValidationField -> add_property_layout.errorField(it)
+                else -> { }
             }
         }
     }
