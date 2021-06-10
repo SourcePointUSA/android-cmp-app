@@ -15,27 +15,27 @@ import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.component.addChip
-import kotlinx.android.synthetic.main.add_property_fragment.* // ktlint-disable
-import kotlinx.android.synthetic.main.add_targeting_parameter.* // ktlint-disable
+import com.sourcepointmeta.metaapp.ui.component.bind
+import com.sourcepointmeta.metaapp.ui.component.errorField
+import com.sourcepointmeta.metaapp.ui.component.toProperty
+import kotlinx.android.synthetic.main.add_property_fragment.*
+import kotlinx.android.synthetic.main.add_targeting_parameter.*
+import org.koin.android.ext.android.inject
 
 class AddUpdatePropertyFragment : Fragment() {
 
-    private val viewModel = AddUpdatePropertyViewModel()
+    private val viewModel by inject<AddUpdatePropertyViewModel>()
 
-    private val messageOption = listOf("WebView", "App")
     private val messageLanguage = MessageLanguage.values()
     private val pmTabs = PMTab.values()
 
     companion object {
+        val MessageType = listOf("WebView", "App")
         fun instance(propertyName: String) = AddUpdatePropertyFragment().apply {
             arguments = Bundle().apply {
                 putString("property_name", propertyName)
             }
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -49,10 +49,11 @@ class AddUpdatePropertyFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val messageOptionAdapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, messageOption)
+            ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, MessageType)
         message_type_autocomplete.setAdapter(messageOptionAdapter)
-        message_type_autocomplete.setText(messageOption.first())
+        message_type_autocomplete.setText(MessageType.first())
         message_type_autocomplete.threshold = 1
 
         val languages = messageLanguage.map { it.name }
@@ -102,12 +103,24 @@ class AddUpdatePropertyFragment : Fragment() {
         }
 
         save_btn.setOnClickListener {
-            // viewModel.createProperty // add prop
-            propertySavedState()
+            viewModel.createOrUpdateProperty(add_property_layout.toProperty())
+        }
+
+        viewModel.liveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is BaseState.StatePropertySaved -> propertySavedState()
+                is BaseState.StateProperty -> add_property_layout.bind(it.property)
+                is BaseState.StateError -> errorState(it)
+                is BaseState.StateErrorValidationField -> add_property_layout.errorField(it)
+                else -> { }
+            }
         }
     }
 
     private fun propertySavedState() {
         (activity as? AppCompatActivity)?.onBackPressed()
+    }
+
+    private fun errorState(it: BaseState.StateError) {
     }
 }

@@ -28,30 +28,27 @@ internal interface LocalDataSource {
     suspend fun fetchPropertyByName(name: String): Either<Property>
     suspend fun fetchTargetingParams(propName: String): Either<List<MetaTargetingParam>>
     suspend fun storeOrUpdateProperty(property: Property): Either<Property>
+    suspend fun propertyCount(): Either<Int>
     suspend fun updateProperty(property: Property)
     suspend fun deleteAll()
     suspend fun deleteByPropertyName(name: String)
+    fun deleteTargetingParameter(propName: String, campaignType: CampaignType, key: String)
     fun getSPConfig(pName: String): Either<SpConfig>
 
     companion object {
         fun buildSPCampaign(
             campaignType: CampaignType,
-            campaignStatus: StatusCampaign,
+            campaignStatus: Set<StatusCampaign>,
             list: List<MetaTargetingParam>
-        ): Pair<CampaignType, List<TargetingParam>>? {
-            if (campaignType == CampaignType.GDPR) {
-                return list
-                    .filter { it.campaign == CampaignType.GDPR }
+        ): List<TargetingParam>? {
+            val campaign: CampaignType? = campaignStatus
+                .firstOrNull { it.campaignType == campaignType && it.enabled }
+                ?.campaignType
+            return campaign?.let { ct ->
+                list
+                    .filter { it.campaign == ct }
                     .map { TargetingParam(it.key, it.value) }
-                    .let { Pair(CampaignType.GDPR, it) }
             }
-            if (campaignType == CampaignType.CCPA) {
-                return list
-                    .filter { it.campaign == CampaignType.CCPA }
-                    .map { TargetingParam(it.key, it.value) }
-                    .let { Pair(CampaignType.CCPA, it) }
-            }
-            return null
         }
     }
 }
@@ -77,9 +74,11 @@ private class LocalDataSourceImpl(
                         cQueries.getTargetingParams(row.property_name)
                             .executeAsList()
                             .map { it.toTargetingParam() }
-                    val statusCampaign = cQueries.selectStatusCampaignByPropertyName(row.property_name)
-                        .executeAsOneOrNull()?.toStatusCampaign() ?: throw RuntimeException()
-                    row.toProperty(tp, statusCampaign)
+                    val statusCampaignList = cQueries.selectStatusCampaignByPropertyName(row.property_name)
+                        .executeAsList()
+                        .map { it.toStatusCampaign() }
+                        .toSet()
+                    row.toProperty(tp, statusCampaignList)
                 }
         }
     }
@@ -93,10 +92,11 @@ private class LocalDataSourceImpl(
                     cQueries.getTargetingParams(row.property_name)
                         .executeAsList()
                         .map { it.toTargetingParam() }
-                val statusCampaign = cQueries.selectStatusCampaignByPropertyName(row.property_name)
-                    .executeAsOneOrNull()
-                    ?.toStatusCampaign() ?: throw RuntimeException()
-                row.toProperty(tp, statusCampaign)
+                val statusCampaignList = cQueries.selectStatusCampaignByPropertyName(row.property_name)
+                    .executeAsList()
+                    .map { it.toStatusCampaign() }
+                    .toSet()
+                row.toProperty(tp, statusCampaignList)
             }
     }
 
@@ -110,12 +110,15 @@ private class LocalDataSourceImpl(
         }
     }
 
+    override suspend fun propertyCount(): Either<Int> = check {
+        cQueries.selectAllProperties().executeAsList().size
+    }
+
     override suspend fun storeOrUpdateProperty(property: Property): Either<Property> = coroutineScope {
         cQueries.run {
             transactionWithResult {
                 insertProperty(
                     property_id = property.propertyId,
-                    pm_id = property.pmId,
                     auth_Id = property.authId,
                     message_language = property.messageLanguage,
                     pm_tab = property.pmTab,
@@ -123,8 +126,11 @@ private class LocalDataSourceImpl(
                     is_staging = if (property.is_staging) 1 else 0,
                     property_name = property.propertyName,
                     message_type = property.messageType,
-                    timestamp = property.timestamp
+                    timestamp = property.timestamp,
+                    ccpa_pm_id = property.ccpaPmId,
+                    gdpr_pm_id = property.gdprPmId
                 )
+                deleteTargetingParameterByPropName(property.propertyName)
                 property.targetingParameters.forEach {
                     insertTargetingParameter(
                         property_name = property.propertyName,
@@ -133,11 +139,14 @@ private class LocalDataSourceImpl(
                         campaign = it.campaign.name
                     )
                 }
-                insertStatusCampaign(
-                    property_name = property.propertyName,
-                    campaign_type = CampaignType.GDPR.name,
-                    enabled = 1,
-                )
+                property.statusCampaignSet.forEach { sc ->
+                    insertStatusCampaign(
+                        property_name = property.propertyName,
+                        campaign_type = sc.campaignType.name,
+                        enabled = sc.enabled.toValueDB(),
+                    )
+                }
+
                 fetchPropByName(property.propertyName)
             }
         }
@@ -156,7 +165,16 @@ private class LocalDataSourceImpl(
         cQueries.run {
             deletePropertyByName(name)
             deleteTargetingParameterByPropName(name)
+            deleteStatusCampaignByPropName(name)
         }
+    }
+
+    override fun deleteTargetingParameter(propName: String, campaignType: CampaignType, key: String) {
+        cQueries.deleteTPByPropNameCampaignKey(
+            property_name = propName,
+            campaign = campaignType.name,
+            key = key
+        )
     }
 
     override fun getSPConfig(pName: String): Either<SpConfig> {
@@ -169,10 +187,10 @@ private class LocalDataSourceImpl(
                         propertyName = p.propertyName
                         messLanguage =
                             MessageLanguage.values().find { it.name == p.messageLanguage } ?: MessageLanguage.ENGLISH
-                        buildSPCampaign(CampaignType.GDPR, StatusCampaign("", CampaignType.GDPR, false), p.targetingParameters)
-                            ?.let { spc -> addCampaign(spc.first, spc.second) }
-                        buildSPCampaign(CampaignType.GDPR, StatusCampaign("", CampaignType.GDPR, false), p.targetingParameters)
-                            ?.let { spc -> addCampaign(spc.first, spc.second) }
+                        buildSPCampaign(CampaignType.GDPR, p.statusCampaignSet, p.targetingParameters)
+                            ?.let { spc -> addCampaign(CampaignType.GDPR, spc) }
+                        buildSPCampaign(CampaignType.CCPA, p.statusCampaignSet, p.targetingParameters)
+                            ?.let { spc -> addCampaign(CampaignType.CCPA, spc) }
                     }
                 }
                 ?: throw RuntimeException("Inconsistent state! LocalDataSource.getSPConfig cannot have a SpConfig null!!!")
@@ -187,7 +205,7 @@ private fun Targeting_param.toTargetingParam() = MetaTargetingParam(
     campaign = CampaignType.values().find { it.name == campaign } ?: CampaignType.GDPR
 )
 
-private fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: StatusCampaign) = Property(
+private fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<StatusCampaign>) = Property(
     propertyId = property_id,
     propertyName = property_name,
     is_staging = is_staging != 0L,
@@ -195,11 +213,12 @@ private fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: S
     pmTab = pm_tab,
     messageLanguage = message_language,
     authId = auth_Id,
-    pmId = pm_id,
     targetingParameters = tp,
-    statusCampaignSet = setOf(statusCampaign),
+    statusCampaignSet = statusCampaign,
     messageType = message_type,
-    timestamp = timestamp
+    timestamp = timestamp,
+    gdprPmId = gdpr_pm_id,
+    ccpaPmId = ccpa_pm_id
 )
 
 private fun CampaignQueries.getTargetingParams(propName: String) =
@@ -207,8 +226,8 @@ private fun CampaignQueries.getTargetingParams(propName: String) =
 
 private fun Status_campaign.toStatusCampaign() = StatusCampaign(
     propertyName = property_name,
-    enabled = enabled != 0L,
-    campaignType = CampaignType.GDPR,
+    campaignType = CampaignType.valueOf(campaign_type),
+    enabled = enabled != 0L
 )
 
 private fun Boolean.toValueDB() = when (this) {

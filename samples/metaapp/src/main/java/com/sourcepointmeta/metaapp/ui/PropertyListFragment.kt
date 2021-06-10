@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
 import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
@@ -18,10 +20,12 @@ import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_property_list.*
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
 class PropertyListFragment : Fragment() {
 
     private val viewModel: PropertyListViewModel by inject()
+    private val clearDb: Boolean by inject(qualifier = named("clear_db"))
 
     private val adapter by lazy { PropertyAdapter() }
     private val itemTouchHelper by lazy { ItemTouchHelper(swipeToDeleteCallback) }
@@ -39,6 +43,10 @@ class PropertyListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (clearDb) {
+            viewModel.clearDB()
+        }
+
         viewModel.liveData.observe(viewLifecycleOwner) {
             if (it is StateSuccess) successState(it)
             else if (it is StateError) errorState(it)
@@ -69,18 +77,23 @@ class PropertyListFragment : Fragment() {
 
     private fun successState(it: StateSuccess) {
         it.propertyList
-            .map {
-                val env = if (it.is_staging) "stage" else "prod"
+            .map { p ->
+                val env = if (p.is_staging) "stage" else "prod"
                 PropertyDTO(
                     campaignEnv = env,
-                    propertyName = it.propertyName,
-                    accountId = it.accountId,
-                    messageType = it.messageType,
-                    ccpaEnabled = it.statusCampaignSet.find { s -> s.campaignType == CampaignType.CCPA }?.enabled
+                    propertyName = p.propertyName,
+                    accountId = p.accountId,
+                    messageType = p.messageType,
+                    ccpaEnabled = p.statusCampaignSet.find { s -> s.campaignType == CampaignType.CCPA }?.enabled
                         ?: false,
-                    gdprEnabled = it.statusCampaignSet.find { s -> s.campaignType == CampaignType.GDPR }?.enabled
+                    gdprEnabled = p.statusCampaignSet.find { s -> s.campaignType == CampaignType.GDPR }?.enabled
                         ?: false,
-                    property = it
+                    property = p,
+                    ccpaPmId = p.ccpaPmId?.toString() ?: "",
+                    gdprPmId = p.gdprPmId?.toString() ?: "",
+                    pmTab = PMTab.values().find { it.name == p.pmTab } ?: PMTab.DEFAULT,
+                    authId = p.authId ?: "",
+                    messageLanguage = MessageLanguage.values().find { it.name == p.messageLanguage } ?: MessageLanguage.ENGLISH
                 )
             }
             .let { adapter.addItems(it) }
