@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepointmeta.metaapp.DemoActivity
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
 import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
@@ -115,5 +117,11 @@ class PropertyListFragment : Fragment() {
     }
 
     private fun runDemo(propertyName: String) {
+        val bundle = Bundle()
+        bundle.putString("property_name", propertyName)
+        val i = Intent(activity, DemoActivity::class.java)
+        i.putExtras(bundle)
+        startActivity(i)
     }
+
 }

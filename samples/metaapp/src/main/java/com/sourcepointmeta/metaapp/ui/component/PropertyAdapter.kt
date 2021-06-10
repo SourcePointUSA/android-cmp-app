@@ -70,4 +70,6 @@ internal class PropertyAdapter() : RecyclerView.Adapter<PropertyAdapter.Vh>() {
     }
 
     fun getPropertyNameByPosition(position: Int) = list[position].propertyName
+
+    fun isGdprEnabled(propertyName: String) : Boolean = list.find { it.propertyName == propertyName }?.gdprEnabled == true ?: false
 }
