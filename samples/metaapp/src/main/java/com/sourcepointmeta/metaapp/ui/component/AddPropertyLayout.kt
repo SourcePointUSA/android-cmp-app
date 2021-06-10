@@ -38,8 +38,8 @@ internal fun AddPropertyLayout.bind(property: Property) {
     message_language_autocomplete.setText(property.messageLanguage)
     auth_id_ed.setText(property.authId)
     pm_tab_autocomplete.setText(property.pmTab)
-    gdpr_pm_id_ed.setText(property.gdprPmId?.toString()?:"")
-    ccpa_pm_id_ed.setText(property.ccpaPmId?.toString()?:"")
+    gdpr_pm_id_ed.setText(property.gdprPmId?.toString() ?: "")
+    ccpa_pm_id_ed.setText(property.ccpaPmId?.toString() ?: "")
     message_language_autocomplete.setText(property.messageLanguage)
 }
 

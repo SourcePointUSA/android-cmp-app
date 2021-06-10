@@ -7,10 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.material.chip.Chip
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.core.*
+import com.sourcepointmeta.metaapp.core.* // ktlint-disable
 import com.sourcepointmeta.metaapp.core.Either
 import com.sourcepointmeta.metaapp.core.flatMap
-import com.sourcepointmeta.metaapp.core.fold
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +45,6 @@ internal class AddUpdatePropertyViewModel(
                     }
                 }
         }
-
     }
 
     fun fetchProperty(propertyName: String) {
@@ -78,5 +76,4 @@ internal class AddUpdatePropertyViewModel(
             .flatMap { validateMessageLanguage(property) }
             .flatMap { validatePmTab(property) }
     }
-
 }

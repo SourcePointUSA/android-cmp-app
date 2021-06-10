@@ -42,4 +42,10 @@ internal class PropertyListViewModel(
         viewModelScope.launch(workerDispatcher) { dataSource.deleteByPropertyName(propertyName) }
         fetchPropertyList()
     }
+
+    fun clearDB() {
+        viewModelScope.launch(workerDispatcher) {
+            dataSource.deleteAll()
+        }
+    }
 }

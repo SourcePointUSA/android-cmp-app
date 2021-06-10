@@ -20,10 +20,12 @@ import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_property_list.*
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
 class PropertyListFragment : Fragment() {
 
     private val viewModel: PropertyListViewModel by inject()
+    private val clearDb: Boolean by inject(qualifier = named("clear_db"))
 
     private val adapter by lazy { PropertyAdapter() }
     private val itemTouchHelper by lazy { ItemTouchHelper(swipeToDeleteCallback) }
@@ -41,6 +43,10 @@ class PropertyListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (clearDb) {
+            viewModel.clearDB()
+        }
+
         viewModel.liveData.observe(viewLifecycleOwner) {
             if (it is StateSuccess) successState(it)
             else if (it is StateError) errorState(it)

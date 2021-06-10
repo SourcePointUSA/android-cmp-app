@@ -1,7 +1,7 @@
 package com.sourcepointmeta.metaapp.data.localdatasource
 
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import java.util.*
+import java.util.* // ktlint-disable
 
 data class Property(
     val propertyName: String,

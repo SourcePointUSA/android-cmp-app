@@ -1,8 +1,8 @@
 package com.sourcepointmeta.metaapp.core
 
-class MetaException(val uiCode : UIErrorCode, val errorMessage : String) : Throwable(errorMessage) {}
+class MetaException(val uiCode: UIErrorCode, val errorMessage: String) : Throwable(errorMessage)
 
-sealed class UIErrorCode{
+sealed class UIErrorCode {
     object PropertyName : UIErrorCode()
     object AccountId : UIErrorCode()
     object MessageType : UIErrorCode()

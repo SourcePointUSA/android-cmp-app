@@ -9,6 +9,7 @@ import com.sourcepointmeta.metaapp.ui.ValidationManager
 import com.sourcepointmeta.metaapp.ui.create
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val appModule = module {
@@ -24,4 +25,6 @@ val appModule = module {
     single { ValidationManager.create() }
 
     single { LocalDataSource.create(createDb(androidApplication())) }
+
+    single(qualifier = named("clear_db")) { false }
 }
