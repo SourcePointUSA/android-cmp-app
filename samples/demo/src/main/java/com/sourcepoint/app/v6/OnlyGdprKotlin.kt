@@ -55,7 +55,7 @@ class OnlyGdprKotlin : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        spConsentLib.loadMessage("100620211233")
+        spConsentLib.loadMessage()
     }
 
     override fun onDestroy() {

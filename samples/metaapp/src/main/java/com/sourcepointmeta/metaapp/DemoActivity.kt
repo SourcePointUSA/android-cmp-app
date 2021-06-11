@@ -29,19 +29,15 @@ class DemoActivity : AppCompatActivity() {
             ?: throw RuntimeException("extra property_name param is null!!!")
     }
 
-    private val gdprPmId by lazy {
-        property.gdprPmId
-    }
-
     private val property by lazy {
         val propName = intent.extras
             ?.getString("property_name") ?: ""
         dataSource.fetchPropertyByNameSync(propName)
     }
 
-    private val ccpaPmId by lazy {
-        property.ccpaPmId
-    }
+    private val gdprPmId by lazy { property.gdprPmId }
+    private val ccpaPmId by lazy { property.ccpaPmId }
+    private val authId by lazy { property.authId }
 
     private val spConsentLib by spConsentLibLazy {
         activity = this@DemoActivity
@@ -79,7 +75,9 @@ class DemoActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        spConsentLib.loadMessage()
+        authId
+            ?.let { spConsentLib.loadMessage(authId = it) }
+            ?: run { spConsentLib.loadMessage() }
 
     }
 
