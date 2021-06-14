@@ -78,7 +78,6 @@ class DemoActivity : AppCompatActivity() {
         authId
             ?.let { spConsentLib.loadMessage(authId = it) }
             ?: run { spConsentLib.loadMessage() }
-
     }
 
     override fun onDestroy() {

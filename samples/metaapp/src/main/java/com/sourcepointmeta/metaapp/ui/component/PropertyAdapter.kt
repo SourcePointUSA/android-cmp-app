@@ -15,7 +15,7 @@ internal class PropertyAdapter() : RecyclerView.Adapter<PropertyAdapter.Vh>() {
     private var list = mutableListOf<PropertyDTO>()
     var itemClickListener: ((PropertyDTO) -> Unit)? = null
     var propertyChangedListener: ((Property) -> Unit)? = null
-    var demoProperty: ((propertyName: String) -> Unit)? = null
+    var demoProperty: ((property: Property) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Vh {
         val view = LayoutInflater.from(parent.context)
@@ -43,6 +43,7 @@ internal class PropertyAdapter() : RecyclerView.Adapter<PropertyAdapter.Vh>() {
                     add(StatusCampaign(p.propertyName, CampaignType.GDPR, isChecked))
                     addAll(p.statusCampaignSet)
                 }
+                play_demo_group.saving = true
                 propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
             }
             chip_ccpa.setOnCheckedChangeListener { _, isChecked ->
@@ -50,10 +51,11 @@ internal class PropertyAdapter() : RecyclerView.Adapter<PropertyAdapter.Vh>() {
                     add(StatusCampaign(p.propertyName, CampaignType.CCPA, isChecked))
                     addAll(p.statusCampaignSet)
                 }
+                play_demo_group.saving = true
                 propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
             }
             play_demo_btn.setOnClickListener {
-                demoProperty?.invoke(p.propertyName)
+                demoProperty?.invoke(p)
             }
         }
     }
@@ -71,5 +73,22 @@ internal class PropertyAdapter() : RecyclerView.Adapter<PropertyAdapter.Vh>() {
 
     fun getPropertyNameByPosition(position: Int) = list[position].propertyName
 
-    fun isGdprEnabled(propertyName: String) : Boolean = list.find { it.propertyName == propertyName }?.gdprEnabled == true ?: false
+    fun isGdprEnabled(propertyName: String): Boolean =
+        list.find { it.propertyName == propertyName }?.gdprEnabled == true
+
+    fun savingProperty(propertyName: String, showLoading: Boolean) {
+        val position = list.indexOfFirst { it.propertyName == propertyName }
+        if (position != -1) {
+            list[position].saving = showLoading
+            notifyItemChanged(position)
+        }
+    }
+
+    fun updateProperty(property: PropertyDTO) {
+        val position = list.indexOfFirst { it.propertyName == property.propertyName }
+        if (position != -1) {
+            list[position] = property
+            notifyItemChanged(position)
+        }
+    }
 }
