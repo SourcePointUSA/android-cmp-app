@@ -49,34 +49,34 @@ class DemoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         clearAllData(this)
-        setContentView(R.layout.main_activity)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, DemoFragment())
-                .commitNow()
+        setContentView(R.layout.activity_demo)
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.container, DemoFragment())
+//                .commitNow()
+//        }
+
+        campaign_name.text = config.propertyName
+
+        review_consents_gdpr.setOnClickListener { _v: View? ->
+            spConsentLib.loadPrivacyManager(
+                gdprPmId?.toString() ?: "",
+                PMTab.PURPOSES,
+                CampaignType.GDPR
+            )
         }
 
-//        campaign_name.text = config.propertyName
-//
-//        review_consents_gdpr.setOnClickListener { _v: View? ->
-//            spConsentLib.loadPrivacyManager(
-//                gdprPmId?.toString() ?: "",
-//                PMTab.PURPOSES,
-//                CampaignType.GDPR
-//            )
-//        }
-//
-//        config.campaigns.find { it.campaignType == CampaignType.CCPA }
-//            ?.let { review_consents_ccpa.visibility = View.VISIBLE } ?: kotlin.run {
-//            review_consents_ccpa.visibility = View.GONE
-//        }
-//        review_consents_ccpa.setOnClickListener { _v: View? ->
-//            spConsentLib.loadPrivacyManager(
-//                ccpaPmId?.toString() ?: "",
-//                PMTab.PURPOSES,
-//                CampaignType.CCPA
-//            )
-//        }
+        config.campaigns.find { it.campaignType == CampaignType.CCPA }
+            ?.let { review_consents_ccpa.visibility = View.VISIBLE } ?: kotlin.run {
+            review_consents_ccpa.visibility = View.GONE
+        }
+        review_consents_ccpa.setOnClickListener { _v: View? ->
+            spConsentLib.loadPrivacyManager(
+                ccpaPmId?.toString() ?: "",
+                PMTab.PURPOSES,
+                CampaignType.CCPA
+            )
+        }
     }
 
     override fun onResume() {
