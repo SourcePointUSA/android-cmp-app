@@ -41,3 +41,8 @@ fun Property.toPropertyDTO(): PropertyDTO {
             ?: MessageLanguage.ENGLISH
     )
 }
+
+data class DemoActionItem(
+    val message : String,
+    val code : Int
+)

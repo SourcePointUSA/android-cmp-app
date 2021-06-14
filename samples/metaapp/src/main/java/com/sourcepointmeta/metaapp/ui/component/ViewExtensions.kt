@@ -5,6 +5,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.sourcepointmeta.metaapp.R
 import kotlinx.android.synthetic.main.add_property_fragment.view.*
+import kotlinx.android.synthetic.main.item_action_demo.view.*
 import kotlinx.android.synthetic.main.property_item.view.*
 import kotlinx.android.synthetic.main.property_item.view.chip_ccpa
 import kotlinx.android.synthetic.main.property_item.view.chip_gdpr
@@ -23,6 +24,10 @@ fun PropertyItemView.bind(
     chip_gdpr.isChecked = item.gdprEnabled
     chip_ccpa.isChecked = item.ccpaEnabled
     play_demo_group.saving = item.saving
+}
+
+fun DemoActionItemView.bind(item: DemoActionItem) {
+    action_item.text = item.message
 }
 
 fun ChipGroup.addChip(content: String) {

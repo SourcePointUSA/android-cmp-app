@@ -57,5 +57,5 @@
         <attr name="shapeStrokeColor" format="color"/>
         <attr name="shapeAppearanceAttr" format="reference"/>
     </declare-styleable>
-    
+
 </resources>

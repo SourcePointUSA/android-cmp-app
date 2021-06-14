@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.sourcepointmeta.metaapp.DemoActivity
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
 import com.sourcepointmeta.metaapp.data.localdatasource.Property

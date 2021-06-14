@@ -1,4 +1,4 @@
-package com.sourcepointmeta.metaapp
+package com.sourcepointmeta.metaapp.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +12,7 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.util.clearAllData
+import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import kotlinx.android.synthetic.main.activity_demo.*
@@ -48,29 +49,34 @@ class DemoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         clearAllData(this)
-        setContentView(R.layout.activity_demo)
-
-        campaign_name.text = config.propertyName
-
-        review_consents_gdpr.setOnClickListener { _v: View? ->
-            spConsentLib.loadPrivacyManager(
-                gdprPmId?.toString() ?: "",
-                PMTab.PURPOSES,
-                CampaignType.GDPR
-            )
+        setContentView(R.layout.main_activity)
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, DemoFragment())
+                .commitNow()
         }
 
-        config.campaigns.find { it.campaignType == CampaignType.CCPA }
-            ?.let { review_consents_ccpa.visibility = View.VISIBLE } ?: kotlin.run {
-            review_consents_ccpa.visibility = View.GONE
-        }
-        review_consents_ccpa.setOnClickListener { _v: View? ->
-            spConsentLib.loadPrivacyManager(
-                ccpaPmId?.toString() ?: "",
-                PMTab.PURPOSES,
-                CampaignType.CCPA
-            )
-        }
+//        campaign_name.text = config.propertyName
+//
+//        review_consents_gdpr.setOnClickListener { _v: View? ->
+//            spConsentLib.loadPrivacyManager(
+//                gdprPmId?.toString() ?: "",
+//                PMTab.PURPOSES,
+//                CampaignType.GDPR
+//            )
+//        }
+//
+//        config.campaigns.find { it.campaignType == CampaignType.CCPA }
+//            ?.let { review_consents_ccpa.visibility = View.VISIBLE } ?: kotlin.run {
+//            review_consents_ccpa.visibility = View.GONE
+//        }
+//        review_consents_ccpa.setOnClickListener { _v: View? ->
+//            spConsentLib.loadPrivacyManager(
+//                ccpaPmId?.toString() ?: "",
+//                PMTab.PURPOSES,
+//                CampaignType.CCPA
+//            )
+//        }
     }
 
     override fun onResume() {
