@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,15 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
-import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
+import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import kotlinx.android.synthetic.main.fragment_property_list.*
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
@@ -48,8 +47,12 @@ class PropertyListFragment : Fragment() {
         }
 
         viewModel.liveData.observe(viewLifecycleOwner) {
-            if (it is StateSuccess) successState(it)
-            else if (it is StateError) errorState(it)
+            when (it) {
+                is StatePropertyList -> successState(it)
+                is StateError -> errorState(it)
+                is StateProperty -> updateProperty(it)
+                is StateLoading -> savingProperty(it.propertyName, it.loading)
+            }
         }
         property_list.layoutManager = GridLayoutManager(context, 1)
         property_list.adapter = adapter
@@ -70,32 +73,18 @@ class PropertyListFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(property_list)
     }
 
+    private fun updateProperty(state: StateProperty) {
+        adapter.updateProperty(state.property.toPropertyDTO())
+    }
+
     override fun onResume() {
         super.onResume()
         viewModel.fetchPropertyList()
     }
 
-    private fun successState(it: StateSuccess) {
+    private fun successState(it: StatePropertyList) {
         it.propertyList
-            .map { p ->
-                val env = if (p.is_staging) "stage" else "prod"
-                PropertyDTO(
-                    campaignEnv = env,
-                    propertyName = p.propertyName,
-                    accountId = p.accountId,
-                    messageType = p.messageType,
-                    ccpaEnabled = p.statusCampaignSet.find { s -> s.campaignType == CampaignType.CCPA }?.enabled
-                        ?: false,
-                    gdprEnabled = p.statusCampaignSet.find { s -> s.campaignType == CampaignType.GDPR }?.enabled
-                        ?: false,
-                    property = p,
-                    ccpaPmId = p.ccpaPmId?.toString() ?: "",
-                    gdprPmId = p.gdprPmId?.toString() ?: "",
-                    pmTab = PMTab.values().find { it.name == p.pmTab } ?: PMTab.DEFAULT,
-                    authId = p.authId ?: "",
-                    messageLanguage = MessageLanguage.values().find { it.name == p.messageLanguage } ?: MessageLanguage.ENGLISH
-                )
-            }
+            .map { p -> p.toPropertyDTO() }
             .let { adapter.addItems(it) }
     }
 
@@ -114,6 +103,22 @@ class PropertyListFragment : Fragment() {
             .show()
     }
 
-    private fun runDemo(propertyName: String) {
+    private fun savingProperty(propertyName: String, showLoading: Boolean) {
+        adapter.savingProperty(propertyName, showLoading)
+    }
+
+    private fun runDemo(property: Property) {
+        if (property.hasActiveCampaign()) {
+            val bundle = Bundle()
+            bundle.putString("property_name", property.propertyName)
+            val i = Intent(activity, DemoActivity::class.java)
+            i.putExtras(bundle)
+            startActivity(i)
+        } else {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("You need at least one active campaign to run the demo.")
+                .setPositiveButton("OK", null)
+                .show()
+        }
     }
 }

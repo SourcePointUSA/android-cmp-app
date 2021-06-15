@@ -37,4 +37,10 @@
     <dimen name="mtrl_textinput_box_stroke_width_focused">2dp</dimen>
     <dimen name="mtrl_textinput_box_label_cutout_padding">4dp</dimen>
 
+    <dimen name="cat_toc_tall_toolbar_height">128dp</dimen>
+    <dimen name="cat_toc_short_toolbar_height">128dp</dimen>
+    <dimen name="cat_toc_toolbar_image_offset">16dp</dimen>
+    <dimen name="cat_toc_grid_divider_size">1dp</dimen>
+    <dimen name="cat_toc_item_size">180dp</dimen>
+
 </resources>

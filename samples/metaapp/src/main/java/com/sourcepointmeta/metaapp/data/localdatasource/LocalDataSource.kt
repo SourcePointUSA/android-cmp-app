@@ -26,6 +26,7 @@ internal interface LocalDataSource {
 
     suspend fun fetchProperties(): Either<List<Property>>
     suspend fun fetchPropertyByName(name: String): Either<Property>
+    fun fetchPropertyByNameSync(name: String): Property
     suspend fun fetchTargetingParams(propName: String): Either<List<MetaTargetingParam>>
     suspend fun storeOrUpdateProperty(property: Property): Either<Property>
     suspend fun propertyCount(): Either<Int>
@@ -102,6 +103,10 @@ private class LocalDataSourceImpl(
 
     override suspend fun fetchPropertyByName(name: String): Either<Property> = coroutineScope {
         fetchPropByName(name)
+    }
+
+    override fun fetchPropertyByNameSync(name: String): Property {
+        return fetchPropByName(name).getOrNull()!!
     }
 
     override suspend fun fetchTargetingParams(propName: String): Either<List<MetaTargetingParam>> = coroutineScope {

@@ -26,9 +26,17 @@ android {
     }
 
     buildTypes {
-        getByName("debug") { }
-        create("localProd") { }
-        create("preprod") { }
+        getByName("debug") {
+            applicationIdSuffix = ".debug"
+        }
+        create("localProd") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".localprod"
+        }
+        create("preprod") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".preprod"
+        }
         getByName("release") {
             isMinifyEnabled = false
         }

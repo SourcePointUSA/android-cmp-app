@@ -2,8 +2,10 @@ package com.sourcepointmeta.metaapp.ui
 
 import androidx.lifecycle.* // ktlint-disable
 import com.sourcepointmeta.metaapp.core.fold
+import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
+import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,14 +25,19 @@ internal class PropertyListViewModel(
             either.fold(
                 { /* handle the exception */ },
                 {
-                    mutableLiveData.value = BaseState.StateSuccess(it)
+                    mutableLiveData.value = StatePropertyList(it)
                 }
             )
         }
     }
 
     fun updateProperty(property: Property) {
-        viewModelScope.launch(workerDispatcher) { dataSource.storeOrUpdateProperty(property) }
+        viewModelScope.launch {
+            mutableLiveData.value = StateLoading(true, property.propertyName)
+            val newProp = withContext(workerDispatcher) { dataSource.storeOrUpdateProperty(property) }.getOrNull()
+            newProp?.let { mutableLiveData.value = StateProperty(it) }
+            mutableLiveData.value = StateLoading(false, property.propertyName)
+        }
     }
 
     fun deleteProperty(property: Property) {
