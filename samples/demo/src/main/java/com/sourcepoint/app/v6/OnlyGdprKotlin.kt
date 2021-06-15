@@ -21,8 +21,8 @@ class OnlyGdprKotlin : AppCompatActivity() {
         activity = this@OnlyGdprKotlin
         spClient = LocalClient()
         config {
-            accountId = 22
-            propertyName = "mobile.multicampaign.demo"
+            accountId = 296
+            propertyName = "kisskube.android"
             messLanguage = MessageLanguage.ENGLISH
             +(CampaignType.GDPR)
         }

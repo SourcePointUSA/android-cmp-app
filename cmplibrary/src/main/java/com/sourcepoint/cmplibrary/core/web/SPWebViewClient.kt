@@ -2,10 +2,13 @@ package com.sourcepoint.cmplibrary.core.web
 
 import android.graphics.Bitmap
 import android.net.http.SslError
+import android.os.Build
 import android.webkit.*  //ktlint-disable
+import com.sourcepoint.cmplibrary.exception.*
 import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.UrlLoadingException
 import com.sourcepoint.cmplibrary.exception.WebViewException
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.util.loadLinkOnExternalBrowser
@@ -27,8 +30,6 @@ internal class SPWebViewClient(
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         super.onPageStarted(view, url, favicon)
-        logger.d(this::class.java.name, "1234 ==========================================")
-        logger.d(this::class.java.name, "1234 onPageStarted...")
         timer.executeDelay(messageTimeout) {
             onError(ConnectionTimeoutException(description = "A timeout has occurred when loading the message"))
             view?.stopLoading()
@@ -38,8 +39,6 @@ internal class SPWebViewClient(
     override fun onPageFinished(view: WebView, url: String?) {
         super.onPageFinished(view, url)
         timer.cancel()
-        logger.d(this::class.java.name, "1234 onPageFinished progress ${wv.progress}")
-        logger.d(this::class.java.name, "1234 ==========================================")
         try {
             jsReceiverConfig
                 ?.let {
@@ -62,31 +61,26 @@ internal class SPWebViewClient(
 
     override fun onReceivedError(view: WebView, request: WebResourceRequest?, error: WebResourceError) {
         super.onReceivedError(view, request, error)
-        logger.d(this::class.java.name, "1234 onReceivedError progress ${wv.progress}")
         onError(WebViewException(description = error.toString()))
     }
 
     override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String?) {
         super.onReceivedError(view, errorCode, description, failingUrl)
-        logger.d(this::class.java.name, "1234 onReceivedError progress ${wv.progress}")
         onError(WebViewException(description = description))
     }
 
     override fun onReceivedSslError(view: WebView, handler: SslErrorHandler?, error: SslError) {
         super.onReceivedSslError(view, handler, error)
-        logger.d(this::class.java.name, "1234 onReceivedSslError progress ${wv.progress}")
         onError(WebViewException(description = error.toString()))
     }
 
     override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail?): Boolean {
         val message = "The WebView rendering process crashed!"
-        logger.d(this::class.java.name, "1234 onRenderProcessGone progress ${wv.progress}")
         onError(WebViewException(description = message))
         return false
     }
 
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-        logger.d(this::class.java.name, "1234 shouldOverrideUrlLoading progress ${wv.progress} url[$url}")
         wv.context.loadLinkOnExternalBrowser(url) {
             onNoIntentActivitiesFoundFor(it)
         }
@@ -95,16 +89,28 @@ internal class SPWebViewClient(
 
     override fun onLoadResource(view: WebView?, url: String?) {
         super.onLoadResource(view, url)
-//        logger.d(this::class.java.name, "1234 onLoadResource progress ${wv.progress} link[$url]")
     }
 
-    override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
+    override fun onReceivedHttpError(
+        view: WebView?,
+        request: WebResourceRequest?,
+        errorResponse: WebResourceResponse?
+    ) {
         super.onReceivedHttpError(view, request, errorResponse)
-        logger.e(this::class.java.name, "1234 onReceivedHttpError progress $errorResponse")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val nl = System.getProperty("line.separator")
+            val message = errorResponse?.responseHeaders!!.toList().fold(StringBuilder()) { acc, pair ->
+                acc.append("${pair.first}:${pair.second} $nl")
+                acc
+            }.toString()
+            val errMess = "Error loading SPWebViewClient $nl StatusCode ---> ${errorResponse.statusCode} $nl$message "
+            logger.e(this::class.java.name, errMess)
+            onError(UrlLoadingException(description = "The client failed to load the resource!!"))
+        }
+
     }
 
     override fun onPageCommitVisible(view: WebView?, url: String?) {
         super.onPageCommitVisible(view, url)
-        logger.d(this::class.java.name, "1234 onPageCommitVisible progress ${wv.progress}")
     }
 }
