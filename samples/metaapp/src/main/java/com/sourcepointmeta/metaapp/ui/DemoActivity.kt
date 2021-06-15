@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -58,24 +59,38 @@ class DemoActivity : AppCompatActivity() {
 
         campaign_name.text = config.propertyName
 
-        review_consents_gdpr.setOnClickListener { _v: View? ->
-            spConsentLib.loadPrivacyManager(
-                gdprPmId?.toString() ?: "",
-                PMTab.PURPOSES,
-                CampaignType.GDPR
-            )
+        config.campaigns.find { it.campaignType == CampaignType.CCPA }
+            ?.let { review_consents_ccpa.isEnabled = true } ?: kotlin.run {
+            review_consents_ccpa.isEnabled = false
         }
 
-        config.campaigns.find { it.campaignType == CampaignType.CCPA }
-            ?.let { review_consents_ccpa.visibility = View.VISIBLE } ?: kotlin.run {
-            review_consents_ccpa.visibility = View.GONE
+        config.campaigns.find { it.campaignType == CampaignType.GDPR }
+            ?.let { review_consents_gdpr.isEnabled = true } ?: kotlin.run {
+            review_consents_gdpr.isEnabled = false
         }
+
+        review_consents_gdpr.setOnClickListener { _v: View? ->
+            gdprPmId?.toString()
+                ?.let {
+                    spConsentLib.loadPrivacyManager(
+                        it,
+                        PMTab.PURPOSES,
+                        CampaignType.GDPR
+                    )
+                }
+                ?: pmNotValid()
+        }
+
         review_consents_ccpa.setOnClickListener { _v: View? ->
-            spConsentLib.loadPrivacyManager(
-                ccpaPmId?.toString() ?: "",
-                PMTab.PURPOSES,
-                CampaignType.CCPA
-            )
+            ccpaPmId?.toString()
+                ?.let {
+                    spConsentLib.loadPrivacyManager(
+                        it,
+                        PMTab.PURPOSES,
+                        CampaignType.CCPA
+                    )
+                }
+                ?: pmNotValid()
         }
     }
 
@@ -112,5 +127,12 @@ class DemoActivity : AppCompatActivity() {
         override fun onAction(view: View, actionType: ActionType) {
             Log.i(this::class.java.name, "ActionType: $actionType")
         }
+    }
+
+    private fun pmNotValid(){
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Privacy Manager Id is not valid")
+            .setPositiveButton("OK", null)
+            .show()
     }
 }
