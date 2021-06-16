@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.Build
 import android.webkit.*  //ktlint-disable
-import com.sourcepoint.cmplibrary.exception.*
 import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.Logger
@@ -107,7 +106,6 @@ internal class SPWebViewClient(
             logger.e(this::class.java.name, errMess)
             onError(UrlLoadingException(description = "The client failed to load the resource!!"))
         }
-
     }
 
     override fun onPageCommitVisible(view: WebView?, url: String?) {

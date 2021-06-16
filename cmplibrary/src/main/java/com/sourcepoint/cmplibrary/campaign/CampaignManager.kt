@@ -6,7 +6,6 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
@@ -89,11 +88,11 @@ private class CampaignManagerImpl(
                 when (it.campaignType) {
                     CampaignType.GDPR -> addCampaign(
                         it.campaignType,
-                        CampaignTemplate(CampaignEnv.PUBLIC, it.targetingParams, it.campaignType)
+                        CampaignTemplate(it.targetingParams, it.campaignType)
                     )
                     CampaignType.CCPA -> addCampaign(
                         it.campaignType,
-                        CampaignTemplate(CampaignEnv.PUBLIC, it.targetingParams, it.campaignType)
+                        CampaignTemplate(it.targetingParams, it.campaignType)
                     )
                 }
             }
@@ -182,10 +181,10 @@ private class CampaignManagerImpl(
     override fun getUnifiedMessageReq(authId: String?): UnifiedMessageRequest {
         val campaigns = mutableListOf<CampaignReq>()
         mapTemplate[CampaignType.GDPR.name]
-            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignEnv = it.campaignEnv) }
+            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams) }
             ?.let { campaigns.add(it) }
         mapTemplate[CampaignType.CCPA.name]
-            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignEnv = it.campaignEnv) }
+            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams) }
             ?.let { campaigns.add(it) }
 
         return UnifiedMessageRequest(

@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.model.Campaigns
 import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import org.json.JSONObject
+import java.util.* //ktlint-disable
 
 internal fun UnifiedMessageRequest.toBodyRequest(): String {
     return toJsonObject().toString()
@@ -28,12 +29,13 @@ internal fun Campaigns.toJsonObject(): JSONObject {
     return JSONObject().also { cm ->
         list.map {
             cm.put(
-                it.campaignType.name.toLowerCase(),
-                JSONObject()
-                    .apply {
-                        put("targetingParams", it.targetingParams)
-                        put("campaignEnv", it.campaignEnv.value)
+                it.campaignType.name.lowercase(Locale.getDefault()),
+                JSONObject().apply {
+                    it.targetingParamsList.forEach { tpCamp ->
+                        val tp: List<String> = tpCamp.split(":")
+                        put(tp.getOrNull(0), tp.getOrNull(1))
                     }
+                }
             )
         }
     }

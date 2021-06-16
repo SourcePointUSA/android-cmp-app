@@ -43,6 +43,6 @@ fun Property.toPropertyDTO(): PropertyDTO {
 }
 
 data class DemoActionItem(
-    val message : String,
-    val code : Int
+    val message: String,
+    val code: Int
 )

@@ -1,20 +1,17 @@
 package com.sourcepoint.cmplibrary.model
 
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 
 internal data class Campaigns(val list: List<CampaignReq> = emptyList())
 
 internal interface CampaignReq {
-    val targetingParams: String?
-    val campaignEnv: CampaignEnv
+    val targetingParamsList: List<String>
     val campaignType: CampaignType
 }
 
 internal data class CampaignReqImpl(
-    override val targetingParams: String?,
-    override val campaignEnv: CampaignEnv,
-    override val campaignType: CampaignType
+    override val campaignType: CampaignType,
+    override val targetingParamsList: List<String> = emptyList()
 ) : CampaignReq
 
 internal data class UnifiedMessageRequest(

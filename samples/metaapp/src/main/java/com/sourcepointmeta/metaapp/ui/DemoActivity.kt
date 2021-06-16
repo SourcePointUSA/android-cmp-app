@@ -129,7 +129,7 @@ class DemoActivity : AppCompatActivity() {
         }
     }
 
-    private fun pmNotValid(){
+    private fun pmNotValid() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Privacy Manager Id is not valid")
             .setPositiveButton("OK", null)
