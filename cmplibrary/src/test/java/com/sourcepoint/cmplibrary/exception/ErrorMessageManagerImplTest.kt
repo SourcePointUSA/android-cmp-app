@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.exception
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.model.CampaignTemplate
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
@@ -25,7 +26,7 @@ class ErrorMessageManagerImplTest {
         osVersion = "30"
     )
 
-    private val gdprTemplate = CampaignTemplate(listOf(TargetingParam("location", "EU")), CampaignType.GDPR)
+    private val gdprTemplate = CampaignTemplate(CampaignEnv.STAGE, listOf(TargetingParam("location", "EU")), CampaignType.GDPR)
 
     private val gdpr = SpCampaign(
         campaignType = CampaignType.GDPR,

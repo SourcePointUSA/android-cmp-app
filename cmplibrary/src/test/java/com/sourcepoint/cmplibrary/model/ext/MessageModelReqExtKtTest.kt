@@ -15,10 +15,12 @@ class MessageModelReqExtKtTest {
               "propertyHref": "http://com.test",
               "campaigns": {
                 "gdpr": {
-                  "location":"EU"
+                  "targetingParams": "{\"location\":\"EU\"}",
+                  "campaignEnv": "stage"
                 },
                 "ccpa": {
-                  "location":"EU"
+                  "targetingParams": "{\"location\":\"US\"}",
+                  "campaignEnv": "stage"
                 }
               },
               "consentLanguage": "EN",
