@@ -1,6 +1,5 @@
 package com.sourcepointmeta.metaapp.ui
 
-import android.content.res.TypedArray
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -51,7 +50,6 @@ class DemoFragment : Fragment() {
                 gridSpanCount
             )
         )
-
     }
 
     private fun calculateGridSpanCount(): Int {
@@ -65,5 +63,4 @@ class DemoFragment : Fragment() {
             GRID_SPAN_COUNT_MAX
         )
     }
-
 }

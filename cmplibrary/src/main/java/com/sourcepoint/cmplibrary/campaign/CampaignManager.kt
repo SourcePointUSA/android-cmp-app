@@ -87,14 +87,29 @@ private class CampaignManagerImpl(
         spConfig.also { spp ->
             spp.campaigns.forEach {
                 when (it.campaignType) {
-                    CampaignType.GDPR -> addCampaign(
-                        it.campaignType,
-                        CampaignTemplate(CampaignEnv.PUBLIC, it.targetingParams, it.campaignType)
-                    )
-                    CampaignType.CCPA -> addCampaign(
-                        it.campaignType,
-                        CampaignTemplate(CampaignEnv.PUBLIC, it.targetingParams, it.campaignType)
-                    )
+                    CampaignType.GDPR -> {
+                        val ce: CampaignEnv = it.targetingParams
+                            .find { c -> c.key == "campaignEnv" }
+                            ?.let { env ->
+                                CampaignEnv.values().find { t -> t.value == env.value }
+                            } ?: CampaignEnv.PUBLIC
+                        addCampaign(
+                            it.campaignType,
+                            CampaignTemplate(ce, it.targetingParams.filter { tp -> tp.key != "campaignEnv" }, it.campaignType)
+                        )
+                    }
+
+                    CampaignType.CCPA -> {
+                        val ce: CampaignEnv = it.targetingParams
+                            .find { c -> c.key == "campaignEnv" }
+                            ?.let { env ->
+                                CampaignEnv.values().find { t -> t.value == env.value }
+                            } ?: CampaignEnv.PUBLIC
+                        addCampaign(
+                            it.campaignType,
+                            CampaignTemplate(ce, it.targetingParams.filter { tp -> tp.key != "campaignEnv" }, it.campaignType)
+                        )
+                    }
                 }
             }
         }
