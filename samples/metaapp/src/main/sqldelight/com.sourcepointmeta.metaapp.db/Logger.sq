@@ -1,0 +1,37 @@
+
+
+
+CREATE TABLE meta_log (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    property_name TEXT NOT NULL,
+    timestamp INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    tag TEXT NOT NULL,
+    message TEXT NOT NULL,
+    log_session TEXT,
+    json_body TEXT,
+    status_req TEXT
+);
+-- Logs
+
+selectAllLogsByPropertyName:
+SELECT *
+FROM meta_log
+WHERE meta_log.property_name = ?
+ORDER BY meta_log.timestamp DESC;
+
+deleteAllLogs:
+DELETE FROM meta_log;
+
+deleteLogsByPropertyName:
+DELETE FROM meta_log
+WHERE meta_log.property_name = ?;
+
+insertLog:
+INSERT OR REPLACE INTO meta_log (id, property_name, timestamp, type, tag, message, log_session ,json_body, status_req)
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+lastInsertLog:
+SELECT *
+FROM meta_log
+WHERE meta_log.id = last_insert_rowid();

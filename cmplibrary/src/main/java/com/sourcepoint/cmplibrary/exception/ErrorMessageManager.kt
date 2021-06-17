@@ -11,7 +11,7 @@ internal interface ErrorMessageManager {
      * @param exception instance of [ConsentLibExceptionK]
      * @return the message which describe the error occurred
      */
-    fun build(exception: ConsentLibExceptionK): String
+    fun build(exception: RuntimeException): String
 }
 
 /**
@@ -48,9 +48,10 @@ private class ErrorMessageManagerImpl(
     val clientInfo: ClientInfo,
     val campaignType: CampaignType = CampaignType.GDPR
 ) : ErrorMessageManager {
-    override fun build(exception: ConsentLibExceptionK): String {
-        val spConf = campaignManager.spConfig
-        return """
+    override fun build(exception: RuntimeException): String {
+        return (exception as? ConsentLibExceptionK)?.let {
+            val spConf = campaignManager.spConfig
+            """
             {
                 "code" : "${exception.code.code}",
                 "accountId" : "${spConf.accountId}",
@@ -61,6 +62,7 @@ private class ErrorMessageManagerImpl(
                 "deviceFamily" : "${clientInfo.deviceFamily}",
                 "legislation" : "${campaignType.name}"
             }
-        """.trimIndent()
+            """.trimIndent()
+        } ?: ""
     }
 }

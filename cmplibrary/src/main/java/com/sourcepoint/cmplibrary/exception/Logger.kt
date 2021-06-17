@@ -1,15 +1,17 @@
 package com.sourcepoint.cmplibrary.exception
 
+import org.json.JSONObject
+
 /**
  * Class used to send message contain the error details to the server
  */
-internal interface Logger {
+interface Logger {
     /**
      * The [error] method receives contains the logic to communicate with the server
      * it is used only in production
      * @param e instance of [ConsentLibExceptionK]
      */
-    fun error(e: ConsentLibExceptionK)
+    fun error(e: RuntimeException)
 
     /**
      * Send an {@link #ERROR} log message.
@@ -45,5 +47,18 @@ internal interface Logger {
      * @param msg The message you would like logged.
      */
     fun v(tag: String, msg: String)
+
+    fun req(tag: String, url: String, type: String, body: String)
+
+    fun res(tag: String, msg: String, status: String, body: String)
+
+    fun actionWebApp(tag: String, msg: String, json: JSONObject?)
+
+    fun computation(tag: String, msg: String)
+
+    fun clientEvent(event: String, msg: String, content: String)
+
+    fun pm(tag: String, url: String, type: String, pmId: String?)
+
     companion object
 }

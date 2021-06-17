@@ -20,11 +20,11 @@ import com.sourcepointmeta.metaapp.ui.component.errorField
 import com.sourcepointmeta.metaapp.ui.component.toProperty
 import kotlinx.android.synthetic.main.add_property_fragment.*
 import kotlinx.android.synthetic.main.add_targeting_parameter.*
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AddUpdatePropertyFragment : Fragment() {
 
-    private val viewModel by inject<AddUpdatePropertyViewModel>()
+    private val viewModel by viewModel<AddUpdatePropertyViewModel>()
 
     private val messageLanguage = MessageLanguage.values()
     private val pmTabs = PMTab.values()

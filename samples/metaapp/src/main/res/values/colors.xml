@@ -59,6 +59,8 @@
     <color name="white_50">#ffffff</color>
 
 
+    <color name="black_50">#C8C8C8</color> <!--Color surface (dark)-->
+    <color name="black_400">#2E2E2E</color> <!--Color surface (dark)-->
     <color name="black_600">#1C1C1C</color> <!--Color surface (dark)-->
     <color name="black_800">#121212</color> <!--Color surface (dark)-->
     <!--Color on secondary (light), color on background (light),-->

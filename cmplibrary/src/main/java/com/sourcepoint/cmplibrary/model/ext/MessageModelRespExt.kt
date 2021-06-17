@@ -12,6 +12,7 @@ import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.HttpUrl
 import org.json.JSONObject
+import java.util.* // ktlint-disable
 
 internal fun String.toUnifiedMessageRespDto(): UnifiedMessageResp {
     return JSONObject(this).toUnifiedMessageRespDto()
@@ -41,7 +42,7 @@ internal fun JSONObject.toUnifiedMessageRespDto(): UnifiedMessageResp {
 }
 
 internal fun Map<String, Any?>.toCampaignResp(): CampaignResp? {
-    return when (getFieldValue<String>("type")?.toUpperCase() ?: failParam("type")) {
+    return when (getFieldValue<String>("type")?.uppercase(Locale.getDefault()) ?: failParam("type")) {
         CampaignType.GDPR.name -> this.toGDPR()
         CampaignType.CCPA.name -> this.toCCPA()
         else -> null

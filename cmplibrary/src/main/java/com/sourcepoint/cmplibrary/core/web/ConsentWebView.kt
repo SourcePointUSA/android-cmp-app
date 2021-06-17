@@ -18,6 +18,7 @@ import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.ext.toConsentAction
@@ -96,7 +97,7 @@ internal class ConsentWebView(
                 ${"js_receiver.js".file2String()};
             """.trimIndent()
         }
-//        logger.d(this::class.java.name, "1234 onLoadResource progress ${this.progress}")
+        logger.i("ConsentWebView", "loadConsentUIFromUrl${NL.t}legislation $campaignType${NL.t}{NL.t}url $url ")
         loadUrl(url.toString())
         true
     }
@@ -113,7 +114,6 @@ internal class ConsentWebView(
             )
             sb.toString()
         }
-        logger.d(this::class.java.name, "loadConsentUIFromUrl legislation[$campaignType], pmId[$pmId], url[$url]")
         loadUrl(url.toString())
         true
     }
@@ -139,7 +139,7 @@ internal class ConsentWebView(
                 window.postMessage($obj);
             """.trimIndent()
         }
-        logger.d(this::class.java.name, "loadConsentUIFromUrl legislation[$campaignType], url[$url]")
+        logger.i("ConsentWebView", "$campaignType loadConsentUIFromUrl${NL.t}url $url ")
         loadUrl(url.toString())
         true
     }
@@ -148,7 +148,6 @@ internal class ConsentWebView(
 
         @JavascriptInterface
         override fun onConsentUIReady(isFromPM: Boolean) {
-            logger.i(this::class.java.name, "JSClientWebViewImpl onConsentUIReady: isFromPM[$isFromPM]")
             jsClientLib.onConsentUIReady(this@ConsentWebView, isFromPM)
         }
 
@@ -177,7 +176,6 @@ internal class ConsentWebView(
         @JavascriptInterface
         override fun onError(errorMessage: String) {
             jsClientLib.onError(this@ConsentWebView, errorMessage)
-            logger.i(this::class.java.name, "JSClientWebViewImpl onError[$errorMessage]")
         }
     }
 }

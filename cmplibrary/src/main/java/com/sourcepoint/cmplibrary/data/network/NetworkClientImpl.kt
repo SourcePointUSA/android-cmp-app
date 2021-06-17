@@ -13,6 +13,7 @@ import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.ext.toBodyRequest
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.toConsentLibException
 import okhttp3.* // ktlint-disable
 import org.json.JSONObject
 
@@ -27,7 +28,7 @@ private class NetworkClientImpl(
     private val httpClient: OkHttpClient = OkHttpClient(),
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     private val logger: Logger,
-    private val responseManager: ResponseManager = ResponseManager.create(JsonConverter.create()),
+    private val responseManager: ResponseManager = ResponseManager.create(JsonConverter.create(), logger),
 ) : NetworkClient {
 
     override fun getUnifiedMessage(
@@ -37,10 +38,16 @@ private class NetworkClientImpl(
         env: Env
     ) {
         val mediaType = MediaType.parse("application/json")
-        val body: RequestBody = RequestBody.create(mediaType, messageReq.toBodyRequest())
-        logger.i(NetworkClientImpl::class.java.name, "_getUnifiedMessage body [${messageReq.toBodyRequest()}]")
+        val jsonBody = messageReq.toBodyRequest()
+        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
         val url = urlManager.inAppMessageUrl(env)
-            .also { logger.i(NetworkClientImpl::class.java.name, "_getUnifiedMessage url [$it]") }
+
+        logger.req(
+            tag = "UnifiedMessageReq",
+            url = url.toString(),
+            body = jsonBody,
+            type = "POST"
+        )
 
         val request: Request = Request.Builder()
             .url(url)
@@ -57,10 +64,11 @@ private class NetworkClientImpl(
                     responseManager
                         .parseResponse(r)
                         .map {
-                            logger.i(NetworkClientImpl::class.java.name, "_getUnifiedMessage response [${it.thisContent}]")
                             pSuccess(it)
                         }
-                        .executeOnLeft { pError(it) }
+                        .executeOnLeft {
+                            pError(it)
+                        }
                 }
             }
     }
@@ -72,11 +80,17 @@ private class NetworkClientImpl(
     ): Either<ConsentResp> = check {
 
         val mediaType = MediaType.parse("application/json")
-        val body: RequestBody = RequestBody.create(mediaType, consentReq.toString())
-        logger.i(NetworkClientImpl::class.java.name, "_sendConsent body [$consentReq]")
+        val jsonBody = consentReq.toString()
+        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
         val url = urlManager
             .sendConsentUrl(campaignType = consentAction.campaignType, env = env, actionType = consentAction.actionType)
-            .also { logger.i(NetworkClientImpl::class.java.name, "_sendConsent url [$it]") }
+
+        logger.req(
+            tag = "sendConsent",
+            url = url.toString(),
+            body = jsonBody,
+            type = "POST"
+        )
 
         val request: Request = Request.Builder()
             .url(url)
@@ -86,7 +100,6 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseConsentRes(response, consentAction.campaignType)
-            .also { logger.i(NetworkClientImpl::class.java.name, "_sendConsent response [$it]") }
     }
 
     override fun sendCustomConsent(
@@ -94,11 +107,16 @@ private class NetworkClientImpl(
         env: Env
     ): Either<CustomConsentResp> = check {
         val mediaType = MediaType.parse("application/json")
+        val jsonBody = customConsentReq.toBodyRequest()
         val body: RequestBody = RequestBody.create(mediaType, customConsentReq.toBodyRequest())
-        logger.i(NetworkClientImpl::class.java.name, "_sendConsent body [${customConsentReq.toBodyRequest()}]")
-        val url = urlManager
-            .sendCustomConsentUrl(env)
-            .also { logger.i(NetworkClientImpl::class.java.name, "_sendConsent url [$it]") }
+        val url = urlManager.sendCustomConsentUrl(env)
+
+        logger.req(
+            tag = "CustomConsentReq",
+            url = url.toString(),
+            body = jsonBody,
+            type = "POST"
+        )
 
         val request: Request = Request.Builder()
             .url(url)
@@ -108,7 +126,6 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseCustomConsentRes(response)
-            .also { logger.i(NetworkClientImpl::class.java.name, "_sendConsent response [$it]") }
     }
 
     // TODO verify if we need it

@@ -4,6 +4,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.create
 import com.sourcepointmeta.metaapp.data.localdatasource.createDb
 import com.sourcepointmeta.metaapp.ui.AddUpdatePropertyViewModel
+import com.sourcepointmeta.metaapp.ui.LogViewModel
 import com.sourcepointmeta.metaapp.ui.PropertyListViewModel
 import com.sourcepointmeta.metaapp.ui.ValidationManager
 import com.sourcepointmeta.metaapp.ui.create
@@ -14,17 +15,17 @@ import org.koin.dsl.module
 
 val appModule = module {
 
-    viewModel {
-        PropertyListViewModel(get())
-    }
+    viewModel { LogViewModel(get()) }
 
-    viewModel {
-        AddUpdatePropertyViewModel(get(), get())
-    }
+    viewModel { PropertyListViewModel(get()) }
+
+    viewModel { AddUpdatePropertyViewModel(get(), get()) }
 
     single { ValidationManager.create() }
 
-    single { LocalDataSource.create(createDb(androidApplication())) }
+    single { LocalDataSource.create(get()) }
+
+    single { createDb(androidApplication()) }
 
     single(qualifier = named("clear_db")) { false }
 }

@@ -46,3 +46,14 @@ data class DemoActionItem(
     val message: String,
     val code: Int
 )
+
+data class LogItem(
+    val id: Long?,
+    val status: String?,
+    val propertyName: String,
+    val timestamp: Long,
+    val type: String,
+    val tag: String,
+    val message: String,
+    val jsonBody: String? = null
+)
