@@ -94,11 +94,11 @@ class Builder {
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
         val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spc, MessageLanguage.ENGLISH)
         val errorManager = errorMessageManager(campaignManager, client)
-        val logger = createLogger(errorManager)
+        val logger = spc.logger ?: createLogger(errorManager)
         val pmTab = privacyManagerTab ?: PMTab.FEATURES
         val jsonConverter = JsonConverter.create()
         val connManager = ConnectionManager.create(appCtx)
-        val responseManager = ResponseManager.create(jsonConverter)
+        val responseManager = ResponseManager.create(jsonConverter, logger)
         val networkClient = networkClient(okHttpClient, responseManager, logger)
         val viewManager = ViewsManager.create(activityWeakRef, connManager, spc.messageTimeout)
         val execManager = ExecutorManager.create(appCtx)

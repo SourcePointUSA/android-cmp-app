@@ -10,25 +10,27 @@ import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource.Companion.buildSPCampaign
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import com.sourcepointmeta.metaapp.util.check
-import comsourcepointmetametaappdb.CampaignQueries
-import comsourcepointmetametaappdb.Property_
-import comsourcepointmetametaappdb.Status_campaign
-import comsourcepointmetametaappdb.Targeting_param
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
 import kotlin.RuntimeException
 
 internal interface LocalDataSource {
 
-    val update: Flow<List<Property>>
+    val propertyEvents: Flow<List<Property>>
+    val logEvents: Flow<MetaLog>
 
     suspend fun fetchProperties(): Either<List<Property>>
     suspend fun fetchPropertyByName(name: String): Either<Property>
     fun fetchPropertyByNameSync(name: String): Property
+    fun fetchLogsByPropertyName(propertyName: String): Either<List<MetaLog>>
     suspend fun fetchTargetingParams(propName: String): Either<List<MetaTargetingParam>>
     suspend fun storeOrUpdateProperty(property: Property): Either<Property>
+    suspend fun storeOrUpdateLog(log: MetaLog)
     suspend fun propertyCount(): Either<Int>
     suspend fun updateProperty(property: Property)
     suspend fun deleteAll()
@@ -61,9 +63,15 @@ private class LocalDataSourceImpl(
 ) : LocalDataSource {
 
     val cQueries = db.campaignQueries
+    val lQueries = db.loggerQueries
+
+    private val singleThreadDispatcher = Executors.newFixedThreadPool(1).asCoroutineDispatcher()
 
     val mutableFlow: MutableSharedFlow<List<Property>> = MutableSharedFlow()
-    override val update: Flow<List<Property>> = mutableFlow.asSharedFlow()
+    override val propertyEvents: Flow<List<Property>> = mutableFlow.asSharedFlow()
+
+    val mutableLogFlow: MutableSharedFlow<MetaLog> = MutableSharedFlow()
+    override val logEvents: Flow<MetaLog> = mutableLogFlow
 
     override suspend fun fetchProperties(): Either<List<Property>> = coroutineScope {
         check {
@@ -107,6 +115,12 @@ private class LocalDataSourceImpl(
 
     override fun fetchPropertyByNameSync(name: String): Property {
         return fetchPropByName(name).getOrNull()!!
+    }
+
+    override fun fetchLogsByPropertyName(propertyName: String): Either<List<MetaLog>> {
+        return check {
+            lQueries.selectAllLogsByPropertyName(propertyName).executeAsList().map { it.toMetaLog() }
+        }
     }
 
     override suspend fun fetchTargetingParams(propName: String): Either<List<MetaTargetingParam>> = coroutineScope {
@@ -157,6 +171,31 @@ private class LocalDataSourceImpl(
         }
     }
 
+    override suspend fun storeOrUpdateLog(log: MetaLog) = coroutineScope<Unit> {
+        launch(singleThreadDispatcher) {
+            log.run {
+                lQueries
+                    .insertLog(
+                        id = id,
+                        tag = tag,
+                        timestamp = timestamp,
+                        type = type,
+                        property_name = propertyName,
+                        message = message,
+                        json_body = jsonBody,
+                        log_session = logSession,
+                        status_req = statusReq
+                    )
+                lQueries
+                    .lastInsertLog()
+                    .executeAsList()
+                    .firstOrNull()
+                    ?.toMetaLog()
+                    ?.let { mutableLogFlow.emit(it) }
+            }
+        }
+    }
+
     override suspend fun updateProperty(property: Property) {
     }
 
@@ -201,41 +240,4 @@ private class LocalDataSourceImpl(
                 ?: throw RuntimeException("Inconsistent state! LocalDataSource.getSPConfig cannot have a SpConfig null!!!")
         }
     }
-}
-
-private fun Targeting_param.toTargetingParam() = MetaTargetingParam(
-    propertyName = property_name,
-    value = value,
-    key = key,
-    campaign = CampaignType.values().find { it.name == campaign } ?: CampaignType.GDPR
-)
-
-private fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<StatusCampaign>) = Property(
-    propertyId = property_id,
-    propertyName = property_name,
-    is_staging = is_staging != 0L,
-    accountId = account_id,
-    pmTab = pm_tab,
-    messageLanguage = message_language,
-    authId = auth_Id,
-    targetingParameters = tp,
-    statusCampaignSet = statusCampaign,
-    messageType = message_type,
-    timestamp = timestamp,
-    gdprPmId = gdpr_pm_id,
-    ccpaPmId = ccpa_pm_id
-)
-
-private fun CampaignQueries.getTargetingParams(propName: String) =
-    this.selectTargetingParametersByPropertyName(propName)
-
-private fun Status_campaign.toStatusCampaign() = StatusCampaign(
-    propertyName = property_name,
-    campaignType = CampaignType.valueOf(campaign_type),
-    enabled = enabled != 0L
-)
-
-private fun Boolean.toValueDB() = when (this) {
-    true -> 1L
-    false -> 0L
 }

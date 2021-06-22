@@ -61,6 +61,10 @@
         <!--Your custom type style here-->
     </style>
 
+    <style name="TextAppearance.MyTheme.Headline7" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <style name="TextAppearance.MyTheme.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
         <!--Your custom type style here-->
     </style>

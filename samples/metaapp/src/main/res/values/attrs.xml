@@ -20,6 +20,10 @@
     <!--Common attributes-->
     <attr name="colorFillColor" format="color"/>
     <attr name="colorStrokeColor" format="color"/>
+    <attr name="colorOddItem" format="color"/>
+    <attr name="colorEvenItem" format="color"/>
+
+    <attr format="reference" name="textAppearanceHeadline7"/>
 
     <!--Label view attributes-->
     <declare-styleable name="LabelLinkView">

@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
@@ -17,6 +16,7 @@ import com.sourcepoint.cmplibrary.model.ext.toJsonObject
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockCall
+import com.sourcepoint.cmplibrary.stub.MockLogger
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.uwMessDataTest
 import io.mockk.* //ktlint-disable
@@ -42,9 +42,6 @@ class NetworkClientImplTest {
     @MockK
     private lateinit var responseManager: ResponseManager
 
-    @MockK
-    private lateinit var logger: Logger
-
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
@@ -55,7 +52,7 @@ class NetworkClientImplTest {
             httpClient = okHttp,
             responseManager = responseManager,
             urlManager = HttpUrlManagerSingleton,
-            logger = logger
+            logger = MockLogger
         )
     }
 
@@ -115,7 +112,7 @@ class NetworkClientImplTest {
         /** preconditions */
         val mockCall = MockCall(logicResponseCB = { cb -> cb.onResponse(mockk(), mockk()) })
         every { okHttp.newCall(any()) }.returns(mockCall)
-        every { responseManager.parseResponse(any()) }.returns(Either.Left(mockk()))
+        every { responseManager.parseResponse(any()) }.returns(Either.Left(RuntimeException()))
 
         /** execution */
         sut.getUnifiedMessage(messageReq = uwMessDataTest, pSuccess = { successMock(it) }, pError = { errorMock(it) }, env = Env.STAGE)

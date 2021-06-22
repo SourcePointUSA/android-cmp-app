@@ -57,7 +57,6 @@ private class ConsentManagerUtilsImpl(
     }
 
     override fun buildGdprConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject> = check {
-        logger.d(ConsentManagerUtilsImpl::class.java.name, "localState[$localState]")
         cm
             .getCampaignTemplate(CampaignType.GDPR)
             .flatMap { campaign -> cm.getGdpr().map { Pair(campaign, it) } }
@@ -85,7 +84,6 @@ private class ConsentManagerUtilsImpl(
     }
 
     override fun buildCcpaConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject> = check {
-        logger.d(ConsentManagerUtilsImpl::class.java.name, "localState[$localState]")
         JSONObject().apply {
             put("accountId", cm.spConfig.accountId)
             put("privacyManagerId", pmId)

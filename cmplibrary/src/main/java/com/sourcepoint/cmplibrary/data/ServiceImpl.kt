@@ -88,7 +88,6 @@ private class ServiceImpl(
                         dataStorage.saveCcpaConsentUuid(it.uuid)
                     }
                 }
-                logger.d(this::class.java.name, "uuid[$it]")
             }
             .fold(
                 { throwable -> throw throwable },

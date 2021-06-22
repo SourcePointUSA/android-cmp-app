@@ -1,9 +1,12 @@
 package com.sourcepointmeta.metaapp.ui
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
@@ -16,11 +19,13 @@ import com.sourcepoint.cmplibrary.util.clearAllData
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
-import kotlinx.android.synthetic.main.activity_demo.*
+import com.sourcepointmeta.metaapp.logger.LoggerImpl
+import kotlinx.android.synthetic.main.activity_demo.* // ktlint-disable
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
+import java.util.* // ktlint-disable
 
-class DemoActivity : AppCompatActivity() {
+class DemoActivity : FragmentActivity() {
 
     private val dataSource by inject<LocalDataSource>()
 
@@ -29,6 +34,14 @@ class DemoActivity : AppCompatActivity() {
             ?.getString("property_name")
             ?.let { dataSource.getSPConfig(it).getOrNull() }
             ?: throw RuntimeException("extra property_name param is null!!!")
+    }
+
+    private val logger by lazy {
+        LoggerImpl(
+            propertyName = config.propertyName,
+            ds = dataSource,
+            session = "${property.propertyName}-${Date().time}"
+        )
     }
 
     private val property by lazy {
@@ -44,61 +57,66 @@ class DemoActivity : AppCompatActivity() {
     private val spConsentLib by spConsentLibLazy {
         activity = this@DemoActivity
         spClient = LocalClient()
-        spConfig = config
+        spConfig = config.copy(logger = logger)
     }
+
+    private val demoFr by lazy { DemoFragment.instance(config.propertyName) }
+    private val logFr by lazy { LogFragment.instance(config.propertyName) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         clearAllData(this)
         setContentView(R.layout.activity_demo)
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction()
-//                .replace(R.id.container, DemoFragment())
-//                .commitNow()
-//        }
 
-        campaign_name.text = config.propertyName
-
-        config.campaigns.find { it.campaignType == CampaignType.CCPA }
-            ?.let { review_consents_ccpa.isEnabled = true } ?: kotlin.run {
-            review_consents_ccpa.isEnabled = false
+        tool_bar.run {
+            title = config.propertyName
+            setNavigationOnClickListener { onBackPressed() }
         }
 
-        config.campaigns.find { it.campaignType == CampaignType.GDPR }
-            ?.let { review_consents_gdpr.isEnabled = true } ?: kotlin.run {
-            review_consents_gdpr.isEnabled = false
-        }
+        val pagerAdapter = ScreenSlidePagerAdapter(this)
+        pager.adapter = pagerAdapter
 
-        review_consents_gdpr.setOnClickListener { _v: View? ->
-            gdprPmId?.toString()
-                ?.let {
-                    spConsentLib.loadPrivacyManager(
-                        it,
-                        PMTab.PURPOSES,
-                        CampaignType.GDPR
-                    )
+        demoFr.demoListener = { action ->
+            pager.currentItem = 0
+            when (action) {
+                DemoFragment.DemoAction.GDPR_PM -> {
+                    gdprPmId?.toString()
+                        ?.let {
+                            spConsentLib.loadPrivacyManager(
+                                it,
+                                PMTab.PURPOSES,
+                                CampaignType.GDPR
+                            )
+                        }
+                        ?: pmNotValid()
                 }
-                ?: pmNotValid()
-        }
-
-        review_consents_ccpa.setOnClickListener { _v: View? ->
-            ccpaPmId?.toString()
-                ?.let {
-                    spConsentLib.loadPrivacyManager(
-                        it,
-                        PMTab.PURPOSES,
-                        CampaignType.CCPA
-                    )
+                DemoFragment.DemoAction.CCPA_PM -> {
+                    ccpaPmId?.toString()
+                        ?.let {
+                            spConsentLib.loadPrivacyManager(
+                                it,
+                                PMTab.PURPOSES,
+                                CampaignType.CCPA
+                            )
+                        }
+                        ?: pmNotValid()
                 }
-                ?: pmNotValid()
+                DemoFragment.DemoAction.LOG -> {
+                }
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        authId
-            ?.let { spConsentLib.loadMessage(authId = it) }
-            ?: run { spConsentLib.loadMessage() }
+        Handler().postDelayed(
+            {
+                authId
+                    ?.let { spConsentLib.loadMessage(authId = it) }
+                    ?: run { spConsentLib.loadMessage() }
+            },
+            400
+        )
     }
 
     override fun onDestroy() {
@@ -113,7 +131,6 @@ class DemoActivity : AppCompatActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
-            Log.i(this::class.java.name, "onConsentReady: $consent")
         }
 
         override fun onUIFinished(view: View) {
@@ -134,5 +151,27 @@ class DemoActivity : AppCompatActivity() {
             .setTitle("Privacy Manager Id is not valid")
             .setPositiveButton("OK", null)
             .show()
+    }
+
+    inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
+        override fun getItemCount(): Int = 2
+
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0 -> logFr
+                else -> demoFr
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        if (pager.currentItem == 0) {
+            // If the user is currently looking at the first step, allow the system to handle the
+            // Back button. This calls finish() on this activity and pops the back stack.
+            super.onBackPressed()
+        } else {
+            // Otherwise, select the previous step.
+            pager.currentItem = pager.currentItem - 1
+        }
     }
 }

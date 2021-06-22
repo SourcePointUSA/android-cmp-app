@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
+import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
@@ -18,13 +19,17 @@ import okhttp3.Response
  * @return an implementation of [ResponseManager]
  */
 internal fun ResponseManager.Companion.create(
-    jsonConverter: JsonConverter
-): ResponseManager = ResponseManagerImpl(jsonConverter)
+    jsonConverter: JsonConverter,
+    logger: Logger
+): ResponseManager = ResponseManagerImpl(jsonConverter, logger)
 
 /**
  * An implementation od the [ResponseManager] interface
  */
-private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseManager {
+private class ResponseManagerImpl(
+    val jsonConverter: JsonConverter,
+    val logger: Logger
+) : ResponseManager {
 
     /**
      * @param r http response
@@ -32,6 +37,14 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
      */
     override fun parseResponse(r: Response): Either<UnifiedMessageResp> = check {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code()
+        val mess = r.message()
+        logger.res(
+            tag = "UnifiedMessageResp",
+            msg = mess,
+            body = body,
+            status = status.toString()
+        )
         if (r.isSuccessful) {
             when (val either: Either<UnifiedMessageResp> = jsonConverter.toUnifiedMessageResp(body)) {
                 is Either.Right -> either.r
@@ -80,6 +93,14 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
 
     override fun parseConsentRes(r: Response, campaignType: CampaignType): ConsentResp {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code()
+        val mess = r.message()
+        logger.res(
+            tag = "ConsentResp",
+            msg = mess,
+            body = body,
+            status = status.toString()
+        )
         return if (r.isSuccessful) {
             when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body, campaignType)) {
                 is Either.Right -> either.r
@@ -92,6 +113,14 @@ private class ResponseManagerImpl(val jsonConverter: JsonConverter) : ResponseMa
 
     override fun parseCustomConsentRes(r: Response): CustomConsentResp {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code()
+        val mess = r.message()
+        logger.res(
+            tag = "CustomConsentResp",
+            msg = mess,
+            body = body,
+            status = status.toString()
+        )
         return if (r.isSuccessful) {
             when (val either: Either<CustomConsentResp> = jsonConverter.toCustomConsentResp(body)) {
                 is Either.Right -> either.r

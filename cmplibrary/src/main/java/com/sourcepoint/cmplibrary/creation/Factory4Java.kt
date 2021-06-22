@@ -65,7 +65,7 @@ fun makeConsentLib4Java(
     val logger = createLogger(errorManager)
     val jsonConverter = JsonConverter.create()
     val connManager = ConnectionManager.create(appCtx)
-    val responseManager = ResponseManager.create(jsonConverter)
+    val responseManager = ResponseManager.create(jsonConverter, logger)
     val networkClient = networkClient(okHttpClient, responseManager, logger)
     val viewManager = ViewsManager.create(WeakReference<Activity>(activity), connManager, spConfig.messageTimeout)
     val execManager = ExecutorManager.create(appCtx)
