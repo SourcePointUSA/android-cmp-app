@@ -13,7 +13,6 @@ import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.ext.toBodyRequest
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.toConsentLibException
 import okhttp3.* // ktlint-disable
 import org.json.JSONObject
 
