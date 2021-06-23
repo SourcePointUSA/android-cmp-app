@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.demo.DemoActivity"/>
+        <activity android:name=".ui.viewer.JsonViewerActivity"/>
         <meta-data
                 android:name="preloaded_fonts"
                 android:resource="@array/preloaded_fonts"/>

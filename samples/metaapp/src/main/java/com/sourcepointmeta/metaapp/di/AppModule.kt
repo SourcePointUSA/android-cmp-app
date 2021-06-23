@@ -8,6 +8,7 @@ import com.sourcepointmeta.metaapp.ui.eventlogs.LogViewModel
 import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListViewModel
 import com.sourcepointmeta.metaapp.ui.ValidationManager
 import com.sourcepointmeta.metaapp.ui.create
+import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -20,6 +21,8 @@ val appModule = module {
     viewModel { PropertyListViewModel(get()) }
 
     viewModel { AddUpdatePropertyViewModel(get(), get()) }
+
+    viewModel { JsonViewerViewModel(get()) }
 
     single { ValidationManager.create() }
 

@@ -28,6 +28,7 @@ internal interface LocalDataSource {
     suspend fun fetchPropertyByName(name: String): Either<Property>
     fun fetchPropertyByNameSync(name: String): Property
     fun fetchLogsByPropertyName(propertyName: String): Either<List<MetaLog>>
+    fun fetchLogById(id: Long): Either<MetaLog>
     suspend fun fetchTargetingParams(propName: String): Either<List<MetaTargetingParam>>
     suspend fun storeOrUpdateProperty(property: Property): Either<Property>
     suspend fun storeOrUpdateLog(log: MetaLog)
@@ -119,13 +120,29 @@ private class LocalDataSourceImpl(
 
     override fun fetchLogsByPropertyName(propertyName: String): Either<List<MetaLog>> {
         return check {
-            lQueries.selectAllLogsByPropertyName(propertyName).executeAsList().map { it.toMetaLog() }
+            lQueries
+                .selectAllLogsByPropertyName(propertyName)
+                .executeAsList()
+                .map { it.toMetaLog() }
+        }
+    }
+
+    override fun fetchLogById(id: Long): Either<MetaLog> {
+        return check {
+            lQueries.selectLogById(id)
+                .executeAsList()
+                .firstOrNull()
+                ?.toMetaLog()
+                ?: throw RuntimeException("Log with id[$id] not found!!!")
         }
     }
 
     override suspend fun fetchTargetingParams(propName: String): Either<List<MetaTargetingParam>> = coroutineScope {
         check {
-            cQueries.selectTargetingParametersByPropertyName(propName).executeAsList().map { it.toTargetingParam() }
+            cQueries
+                .selectTargetingParametersByPropertyName(propName)
+                .executeAsList()
+                .map { it.toTargetingParam() }
         }
     }
 

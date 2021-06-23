@@ -20,7 +20,7 @@ internal fun String.toUnifiedMessageRespDto(): UnifiedMessageResp {
 
 internal fun JSONObject.toUnifiedMessageRespDto(): UnifiedMessageResp {
     val map: Map<String, Any?> = this.toTreeMap()
-    val localState = map.getFieldValue<String>("localState") ?: ""
+    val localState = map.getMap("localState")?.toJSONObj() ?: JSONObject()
     val propertyPriorityData = map.getMap("propertyPriorityData")?.toJSONObj() ?: failParam("propertyPriorityData")
 
     val listEither: List<Either<CampaignResp?>> = map
@@ -36,7 +36,7 @@ internal fun JSONObject.toUnifiedMessageRespDto(): UnifiedMessageResp {
     return UnifiedMessageResp(
         thisContent = this,
         campaigns = list,
-        localState = localState,
+        localState = localState.toString(),
         propertyPriorityData = propertyPriorityData
     )
 }

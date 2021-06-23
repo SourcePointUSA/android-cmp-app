@@ -10,7 +10,7 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
 
     private var list = mutableListOf<LogItem>()
 
-    val lastIndex = list.lastIndex
+    var itemClickListener: ((LogItem) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Vh {
         val view = LayoutInflater.from(parent.context)
@@ -29,7 +29,10 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
     class Vh(val view: View) : RecyclerView.ViewHolder(view)
 
     private fun Vh.bind(iv: LogItem, pos: Int) {
-        (view as LogItemView).bind(iv, pos)
+        (view as LogItemView).run{
+            setOnClickListener { iv.jsonBody?.let { itemClickListener?.invoke(iv) } }
+            bind(iv, pos)
+        }
     }
 
     fun addItems(newItems: List<LogItem>) {

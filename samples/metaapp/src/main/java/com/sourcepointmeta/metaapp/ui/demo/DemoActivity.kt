@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp.ui.demo
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -21,11 +22,14 @@ import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
-import com.sourcepointmeta.metaapp.ui.logdetails.JsonViewerFragment
-import kotlinx.android.synthetic.main.activity_demo.* // ktlint-disable
+import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
+import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment
+import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.LOG_ID
+import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.TITLE
+import kotlinx.android.synthetic.main.activity_demo.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
-import java.util.* // ktlint-disable
+import java.util.*
 
 class DemoActivity : FragmentActivity() {
 
@@ -64,7 +68,6 @@ class DemoActivity : FragmentActivity() {
 
     private val demoFr by lazy { DemoFragment.instance(config.propertyName) }
     private val logFr by lazy { LogFragment.instance(config.propertyName) }
-    private val jsonViewer by lazy { JsonViewerFragment.instance(config.propertyName) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,18 +111,30 @@ class DemoActivity : FragmentActivity() {
                 }
             }
         }
+
+        logFr.logClickListener = {
+            intent.putExtra("run_demo", false)
+            val intent = Intent(baseContext, JsonViewerActivity::class.java)
+            intent.putExtra(LOG_ID, it.id?:-1L)
+            intent.putExtra(TITLE, "${it.type} - ${it.tag}")
+            startActivity(intent)
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        Handler().postDelayed(
-            {
-                authId
-                    ?.let { spConsentLib.loadMessage(authId = it) }
-                    ?: run { spConsentLib.loadMessage() }
-            },
-            400
-        )
+        if(intent.getBooleanExtra("run_demo", true)){
+
+            Handler().postDelayed(
+                {
+                    authId
+                        ?.let { spConsentLib.loadMessage(authId = it) }
+                        ?: run { spConsentLib.loadMessage() }
+                },
+                400
+            )
+        }
+        intent.putExtra("run_demo", true)
     }
 
     override fun onDestroy() {
@@ -157,13 +172,13 @@ class DemoActivity : FragmentActivity() {
     }
 
     inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
-        override fun getItemCount(): Int = 3
+
+        override fun getItemCount(): Int = 2
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> logFr
-                1 -> demoFr
-                else -> jsonViewer
+                else -> demoFr
             }
         }
     }

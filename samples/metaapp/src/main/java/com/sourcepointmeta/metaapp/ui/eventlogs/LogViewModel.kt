@@ -9,6 +9,7 @@ import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
 import com.sourcepointmeta.metaapp.ui.component.LogItem
 import com.sourcepointmeta.metaapp.ui.component.toLogItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -22,10 +23,8 @@ internal class LogViewModel(
     val liveData: LiveData<BaseState> get() = mutableLiveData
 
     val liveDataLog: LiveData<LogItem> get() = dataSource.logEvents
-        .asLiveData(viewModelScope.coroutineContext)
-        .map {
-            it.toLogItem()
-        }
+        .map { it.toLogItem()}
+        .asLiveData(workerDispatcher)
 
     fun fetchLogs(propertyName: String) {
         viewModelScope.launch {
