@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.BaseState
-import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
 import kotlinx.android.synthetic.main.activity_demo.*
 import kotlinx.android.synthetic.main.jsonviewer_layout.*
 import kotlinx.android.synthetic.main.jsonviewer_layout.tool_bar
@@ -42,7 +41,6 @@ class JsonViewerFragment : Fragment() {
         arguments?.getLong(LOG_ID)?.let { viewModel.fetchJson(it) }
         tool_bar.setNavigationOnClickListener { activity?.finish() }
         log_title.text = arguments?.getString(TITLE)
-
     }
 
     private fun stateHandler(state: BaseState) {

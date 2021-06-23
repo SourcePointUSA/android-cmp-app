@@ -13,12 +13,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
 import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
-import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
 import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
+import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
+import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
 import kotlinx.android.synthetic.main.fragment_property_list.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -112,11 +112,11 @@ class PropertyListFragment : Fragment() {
 
     private fun runDemo(property: Property) {
 //        if (property.hasActiveCampaign()) {
-            val bundle = Bundle()
-            bundle.putString("property_name", property.propertyName)
-            val i = Intent(activity, DemoActivity::class.java)
-            i.putExtras(bundle)
-            startActivity(i)
+        val bundle = Bundle()
+        bundle.putString("property_name", property.propertyName)
+        val i = Intent(activity, DemoActivity::class.java)
+        i.putExtras(bundle)
+        startActivity(i)
 //        } else {
 //            MaterialAlertDialogBuilder(requireContext())
 //                .setTitle("You need at least one active campaign to run the demo.")

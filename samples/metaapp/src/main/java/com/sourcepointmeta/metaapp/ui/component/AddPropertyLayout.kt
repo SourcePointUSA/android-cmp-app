@@ -7,7 +7,6 @@ import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.core.UIErrorCode
-import com.sourcepointmeta.metaapp.core.fold
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
@@ -116,7 +115,6 @@ internal fun AddPropertyLayout.toProperty(): Property {
         ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull()
     )
 }
-
 
 fun String.toTimeout(): Long = check { toLong() }.getOrNull() ?: 3000L
 

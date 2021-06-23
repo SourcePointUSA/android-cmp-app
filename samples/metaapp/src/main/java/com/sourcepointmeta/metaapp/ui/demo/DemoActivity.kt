@@ -23,13 +23,12 @@ import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
-import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.LOG_ID
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.TITLE
-import kotlinx.android.synthetic.main.activity_demo.*
+import kotlinx.android.synthetic.main.activity_demo.* //ktlint-disable
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
-import java.util.*
+import java.util.* //ktlint-disable
 
 class DemoActivity : FragmentActivity() {
 
@@ -115,7 +114,7 @@ class DemoActivity : FragmentActivity() {
         logFr.logClickListener = {
             intent.putExtra("run_demo", false)
             val intent = Intent(baseContext, JsonViewerActivity::class.java)
-            intent.putExtra(LOG_ID, it.id?:-1L)
+            intent.putExtra(LOG_ID, it.id ?: -1L)
             intent.putExtra(TITLE, "${it.type} - ${it.tag}")
             startActivity(intent)
         }
@@ -123,7 +122,7 @@ class DemoActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-        if(intent.getBooleanExtra("run_demo", true)){
+        if (intent.getBooleanExtra("run_demo", true)) {
 
             Handler().postDelayed(
                 {

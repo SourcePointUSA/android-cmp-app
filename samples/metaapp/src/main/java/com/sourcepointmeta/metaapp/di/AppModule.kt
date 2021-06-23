@@ -3,11 +3,11 @@ package com.sourcepointmeta.metaapp.di
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.create
 import com.sourcepointmeta.metaapp.data.localdatasource.createDb
-import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyViewModel
-import com.sourcepointmeta.metaapp.ui.eventlogs.LogViewModel
-import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListViewModel
 import com.sourcepointmeta.metaapp.ui.ValidationManager
 import com.sourcepointmeta.metaapp.ui.create
+import com.sourcepointmeta.metaapp.ui.eventlogs.LogViewModel
+import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyViewModel
+import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListViewModel
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel

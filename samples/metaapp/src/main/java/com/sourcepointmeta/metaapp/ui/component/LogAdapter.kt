@@ -29,7 +29,7 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
     class Vh(val view: View) : RecyclerView.ViewHolder(view)
 
     private fun Vh.bind(iv: LogItem, pos: Int) {
-        (view as LogItemView).run{
+        (view as LogItemView).run {
             setOnClickListener { iv.jsonBody?.let { itemClickListener?.invoke(iv) } }
             bind(iv, pos)
         }

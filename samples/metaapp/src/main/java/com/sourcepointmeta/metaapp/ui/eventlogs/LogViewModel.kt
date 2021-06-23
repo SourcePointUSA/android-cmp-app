@@ -3,7 +3,6 @@ package com.sourcepointmeta.metaapp.ui.eventlogs
 import androidx.lifecycle.* // ktlint-disable
 import com.sourcepointmeta.metaapp.core.fold
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
-import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
 import com.sourcepointmeta.metaapp.ui.component.LogItem
@@ -23,7 +22,7 @@ internal class LogViewModel(
     val liveData: LiveData<BaseState> get() = mutableLiveData
 
     val liveDataLog: LiveData<LogItem> get() = dataSource.logEvents
-        .map { it.toLogItem()}
+        .map { it.toLogItem() }
         .asLiveData(workerDispatcher)
 
     fun fetchLogs(propertyName: String) {

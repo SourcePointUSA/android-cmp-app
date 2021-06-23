@@ -3,7 +3,6 @@ package com.sourcepointmeta.metaapp.ui.viewer
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListFragment
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.LOG_ID
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.TITLE
 
