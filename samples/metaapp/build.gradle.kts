@@ -88,6 +88,9 @@ sqldelight {
 }
 
 dependencies {
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
+
+
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
     implementation(Libs.kotlinReflect)
@@ -106,6 +109,7 @@ dependencies {
     implementation(Libs.androidxLifViewModel)
     implementation("androidx.fragment:fragment-ktx:1.3.4")
     implementation("androidx.core:core-ktx:1.5.0") // ext drawable
+
 
     // Koin
 //    implementation(Libs.koinCore)

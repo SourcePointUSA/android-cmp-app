@@ -1,4 +1,4 @@
-package com.sourcepointmeta.metaapp.ui
+package com.sourcepointmeta.metaapp.ui.demo
 
 import android.os.Bundle
 import android.os.Handler
@@ -20,6 +20,8 @@ import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
+import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
+import com.sourcepointmeta.metaapp.ui.logdetails.JsonViewerFragment
 import kotlinx.android.synthetic.main.activity_demo.* // ktlint-disable
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
@@ -62,6 +64,7 @@ class DemoActivity : FragmentActivity() {
 
     private val demoFr by lazy { DemoFragment.instance(config.propertyName) }
     private val logFr by lazy { LogFragment.instance(config.propertyName) }
+    private val jsonViewer by lazy { JsonViewerFragment.instance(config.propertyName) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -154,12 +157,13 @@ class DemoActivity : FragmentActivity() {
     }
 
     inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
-        override fun getItemCount(): Int = 2
+        override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> logFr
-                else -> demoFr
+                1 -> demoFr
+                else -> jsonViewer
             }
         }
     }

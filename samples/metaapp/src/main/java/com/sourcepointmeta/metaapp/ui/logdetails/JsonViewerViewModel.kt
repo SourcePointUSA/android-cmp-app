@@ -1,16 +1,17 @@
-package com.sourcepointmeta.metaapp.ui
+package com.sourcepointmeta.metaapp.ui.logdetails
 
 import androidx.lifecycle.* // ktlint-disable
 import com.sourcepointmeta.metaapp.core.fold
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
+import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-internal class LogViewModel(
+internal class JsonViewerViewModel(
     private val dataSource: LocalDataSource,
     private val workerDispatcher: CoroutineContext = Dispatchers.IO
 ) : ViewModel() {
