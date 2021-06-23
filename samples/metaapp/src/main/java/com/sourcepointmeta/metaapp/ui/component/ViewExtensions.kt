@@ -7,6 +7,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
+import kotlinx.android.synthetic.main.add_property_fragment.view.*
 import kotlinx.android.synthetic.main.item_action_demo.view.*
 import kotlinx.android.synthetic.main.item_log.view.*
 import kotlinx.android.synthetic.main.property_item.view.*

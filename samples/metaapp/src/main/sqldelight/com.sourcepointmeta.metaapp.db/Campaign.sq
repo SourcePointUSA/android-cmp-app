@@ -10,7 +10,7 @@ CREATE TABLE property (
     is_staging INTEGER NOT NULL,
     timestamp INTEGER NOT NULL,
     message_type TEXT NOT NULL,
-    property_id INTEGER,
+    timeout INTEGER,
     auth_Id TEXT,
     gdpr_pm_id INTEGER,
     ccpa_pm_id INTEGER,
@@ -45,13 +45,8 @@ SELECT *
 FROM property
 WHERE property.property_name = ?;
 
-selectPropertyById:
-SELECT *
-FROM property
-WHERE property.property_id = ?;
-
 insertProperty:
-INSERT OR REPLACE INTO property (property_name, account_id, is_staging, timestamp, message_type, property_id, auth_Id, gdpr_pm_id, ccpa_pm_id, message_language, pm_tab)
+INSERT OR REPLACE INTO property (property_name, account_id, is_staging, timestamp, message_type, timeout, auth_Id, gdpr_pm_id, ccpa_pm_id, message_language, pm_tab)
 VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- TargetingParameters

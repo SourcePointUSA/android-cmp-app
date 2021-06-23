@@ -154,7 +154,7 @@ private class LocalDataSourceImpl(
         cQueries.run {
             transactionWithResult {
                 insertProperty(
-                    property_id = property.propertyId,
+                    timeout = property.timeout ?: 3000,
                     auth_Id = property.authId,
                     message_language = property.messageLanguage,
                     pm_tab = property.pmTab,
@@ -246,8 +246,10 @@ private class LocalDataSourceImpl(
                     config {
                         accountId = p.accountId.toInt()
                         propertyName = p.propertyName
-                        messLanguage =
-                            MessageLanguage.values().find { it.name == p.messageLanguage } ?: MessageLanguage.ENGLISH
+                        messageTimeout = p.timeout ?: 3000L
+                        messLanguage = MessageLanguage.values()
+                            .find { it.name == p.messageLanguage }
+                            ?: MessageLanguage.ENGLISH
                         buildSPCampaign(CampaignType.GDPR, p.statusCampaignSet, p.targetingParameters)
                             ?.let { spc -> addCampaign(CampaignType.GDPR, spc) }
                         buildSPCampaign(CampaignType.CCPA, p.statusCampaignSet, p.targetingParameters)

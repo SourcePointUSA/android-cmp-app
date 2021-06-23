@@ -71,7 +71,7 @@ private class ConsentManagerUtilsImpl(
                     put("privacyManagerId", pmId)
                     put("requestUUID", uuid)
                     put("pmSaveAndExitVariables", action.saveAndExitVariables)
-                    put("localState", localState)
+                    put("localState", JSONObject(localState))
                     put("pubData", action.pubData)
                     put("consentLanguage", action.consentLanguage)
                     put("uuid", uuid)

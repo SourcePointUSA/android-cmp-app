@@ -15,6 +15,8 @@
 
 -- BEGIN TRANSACTION;
 -- ALTER TABLE meta_log ADD COLUMN log_session TEXT;
+--     ALTER TABLE property DELETE COLUMN property_id;
+--     ALTER TABLE property ADD COLUMN timeout INTEGER;
 -- ALTER TABLE meta_log ADD COLUMN json_body TEXT;
 -- ALTER TABLE meta_log ADD COLUMN status_req TEXT;
 -- ALTER TABLE meta_log DROP COLUMN type;

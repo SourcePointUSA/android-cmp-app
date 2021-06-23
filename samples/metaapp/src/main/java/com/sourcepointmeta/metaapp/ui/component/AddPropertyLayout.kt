@@ -7,11 +7,13 @@ import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.core.UIErrorCode
+import com.sourcepointmeta.metaapp.core.fold
+import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 import com.sourcepointmeta.metaapp.ui.BaseState
-import kotlinx.android.synthetic.main.add_property_fragment.*
+import com.sourcepointmeta.metaapp.util.check
 import kotlinx.android.synthetic.main.add_property_fragment.view.*
 
 class AddPropertyLayout : ConstraintLayout {
@@ -46,6 +48,7 @@ internal fun AddPropertyLayout.bind(property: Property) {
     ccpaTp
         .filter { it.key != "campaignEnv" }
         .forEach { ccpa_chip_group.addChip("${it.key}:${it.value}") }
+    timeout_ed.setText("${property.timeout ?: 3000}")
 }
 
 internal fun AddPropertyLayout.toProperty(): Property {
@@ -101,7 +104,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
     return Property(
         propertyName = prop_name_ed.text.toString(),
         accountId = account_id_ed.text.toString().toLongOrNull() ?: 0L,
-        propertyId = 1,
+        timeout = timeout_ed.text.toString().toTimeout(),
         authId = auth_id_ed.text.toString(),
         messageLanguage = message_language_autocomplete.text.toString(),
         pmTab = pm_tab_autocomplete.text.toString(),
@@ -113,6 +116,9 @@ internal fun AddPropertyLayout.toProperty(): Property {
         ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull()
     )
 }
+
+
+fun String.toTimeout(): Long = check { toLong() }.getOrNull() ?: 3000L
 
 fun AddPropertyLayout.errorField(it: BaseState.StateErrorValidationField) = when (it.uiCode) {
     UIErrorCode.PropertyName -> {
