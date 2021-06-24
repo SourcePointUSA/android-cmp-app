@@ -84,11 +84,11 @@ fun LogItemView.bindComputation(item: LogItem, position: Int) {
 fun LogItemView.bindClientEvent(item: LogItem, position: Int) {
     log_title.text = "${item.type} - ${item.tag}"
     val errorObject = item.jsonBody?.let { check { JSONObject(it) }.getOrNull() } ?: JSONObject()
-    val title : String? = errorObject.getOrNull("title")
-    val stackTrace : String = errorObject.getOrNull("stackTrace") ?: ""
-    when(title){
-       null -> log_body.text = item.message
-       else ->  log_body.text = "$title - $stackTrace"
+    val title: String? = errorObject.getOrNull("title")
+    val stackTrace: String = errorObject.getOrNull("stackTrace") ?: ""
+    when (title) {
+        null -> log_body.text = item.message
+        else -> log_body.text = "$title - $stackTrace"
     }
     item.jsonBody
         ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }

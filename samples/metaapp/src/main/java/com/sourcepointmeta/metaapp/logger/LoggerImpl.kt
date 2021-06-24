@@ -166,7 +166,7 @@ internal class LoggerImpl(
 
     override fun clientEvent(event: String, msg: String, content: String) {
         loggerScope.launch {
-            if (!content.contains("sp.renderingAppError")){
+            if (!content.contains("sp.renderingAppError")) {
                 ds.storeOrUpdateLog(
                     MetaLog(
                         id = null,

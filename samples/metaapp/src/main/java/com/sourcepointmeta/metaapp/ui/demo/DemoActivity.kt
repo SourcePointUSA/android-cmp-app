@@ -194,7 +194,7 @@ class DemoActivity : FragmentActivity() {
         }
     }
 
-    fun SPConsents.getConsentedPurpose() : Set<String> = this.gdpr?.consent?.vendorsGrants
+    fun SPConsents.getConsentedPurpose(): Set<String> = this.gdpr?.consent?.vendorsGrants
         ?.flatMap { it.value.toList() }
         ?.filter { it.second }
         ?.map { it.first }
