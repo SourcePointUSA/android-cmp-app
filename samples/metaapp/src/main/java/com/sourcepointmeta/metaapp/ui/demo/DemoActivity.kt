@@ -26,7 +26,6 @@ import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.LOG_ID
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.TITLE
 import kotlinx.android.synthetic.main.activity_demo.* //ktlint-disable
-import org.json.JSONArray
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import java.util.* //ktlint-disable
@@ -149,12 +148,12 @@ class DemoActivity : FragmentActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
-            val consentedPurpose = JSONArray(consent.getConsentedPurpose())
-            logger.clientEvent(
-                event = "onConsentReady",
-                msg = "ConsentedPurpose",
-                content = consentedPurpose.toString()
-            )
+//            val consentedPurpose = JSONArray(consent.getConsentedPurpose())
+//            logger.clientEvent(
+//                event = "onConsentReady",
+//                msg = "ConsentedPurpose",
+//                content = consentedPurpose.toString()
+//            )
         }
 
         override fun onUIFinished(view: View) {
