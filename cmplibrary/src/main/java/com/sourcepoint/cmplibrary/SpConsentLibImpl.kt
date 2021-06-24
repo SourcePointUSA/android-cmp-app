@@ -275,16 +275,10 @@ internal class SpConsentLibImpl(
             .map { it ->
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
                 val url = urlManager.pmUrl(campaignType = campaignType, pmConfig = it, env = env)
-                pLogger.req(
-                    tag = "${campaignType.name} Privacy Manager",
-                    url = url.toString(),
-                    body = "pmId $pmId",
-                    type = "GET"
-                )
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
                     url = url.toString(),
-                    pmId = pmId,
+                    pmId = "pmId $pmId",
                     type = "GET"
                 )
                 webView?.loadConsentUIFromUrl(

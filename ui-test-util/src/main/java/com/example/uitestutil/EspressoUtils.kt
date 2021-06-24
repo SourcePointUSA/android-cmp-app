@@ -209,7 +209,7 @@ fun performClickOnWebViewByClass(classValue: String) {
 @Throws(Throwable::class)
 fun checkConsentState(consent: String, selected: Boolean) {
     onWebView()
-        .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent' and @aria-checked='$selected']/span[@class='slider round']"))
+        .withElement(findElement(Locator.XPATH, "//span[@aria-label='$consent' and @aria-checked='$selected' and @class='slider round']"))
         .perform(webScrollIntoView())
 }
 
@@ -230,7 +230,7 @@ fun performClickPMTabSelected(expected: String) {
 @Throws(Throwable::class)
 fun tapOnToggle(property: String) {
     onWebView()
-        .withElement(findElement(Locator.XPATH, "//label[@aria-label='$property']/span[@class='slider round']"))
+        .withElement(findElement(Locator.XPATH, "//span[@aria-label='$property'and @class='slider round']"))
         .perform(webScrollIntoView())
         .perform(webClick())
 }
@@ -238,7 +238,7 @@ fun tapOnToggle(property: String) {
 @Throws(Throwable::class)
 fun tapOnToggle(property: String, tapOnlyWhen : Boolean) {
     onWebView()
-        .withElement(findElement(Locator.XPATH, "//label[@aria-label='$property' and @aria-checked='$tapOnlyWhen']/span[@class='slider round']"))
+        .withElement(findElement(Locator.XPATH, "//span[@aria-label='$property'and @aria-checked='$tapOnlyWhen' and @class='slider round']"))
         .perform(webScrollIntoView())
         .perform(webClick())
 }

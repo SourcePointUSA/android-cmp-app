@@ -16,28 +16,20 @@ import java.util.* // ktlint-disable
 val customVendorDataListStage = listOf("5fbe6f050d88c7d28d765d47" to "Amazon Advertising")
 val customCategoriesDataStage = listOf("60657acc9c97c400122f21f3" to "Store and/or access information on a device")
 
-val customVendorDataListProd = listOf("5ff4d000a228633ac048be41" to "-")
+val customVendorDataListProd = listOf("5e7ced57b8e05c485246cce0" to "Unruly Group LLC")
 val customCategoriesDataProd = listOf(
-    "608bad95d08d3112188e0e29" to "-",
-    "608bad95d08d3112188e0e2f" to "-"
+    "608bad95d08d3112188e0e29" to "Store and/or access information on a device",
+    "608bad95d08d3112188e0e2f" to "Select basic ads"
 
 )
 
 val appModule = module {
 
     single<DataProvider> {
-        val gdprPmId = if (get(qualifier = named("prod"))) "488393" else "13111"
-        val ccpaPmId = if (get(qualifier = named("prod"))) "14967" else "14967"
-        val customVendorDataList = if (get(qualifier = named("prod"))) {
-            customVendorDataListProd.map { it.first }
-        } else {
-            customVendorDataListStage.map { it.first }
-        }
-        val customCategoriesData = if (get(qualifier = named("prod"))) {
-            customCategoriesDataProd.map { it.first }
-        } else {
-            customCategoriesDataStage.map { it.first }
-        }
+        val gdprPmId = "488393" // stage "13111"
+        val ccpaPmId = "509688" // "14967"
+        val customVendorDataList = customVendorDataListProd.map { it.first }
+        val customCategoriesData = customCategoriesDataProd.map { it.first }
         DataProvider.create(
             context = androidApplication(),
             spConfig = get(),
@@ -65,6 +57,7 @@ val appModule = module {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
                 messLanguage = MessageLanguage.ENGLISH
+                messageTimeout = 5000
                 +(CampaignType.GDPR)
             }
         } else {
@@ -72,7 +65,7 @@ val appModule = module {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
                 messLanguage = MessageLanguage.ENGLISH
-                messageTimeout = 3000
+                messageTimeout = 5000
                 +(CampaignType.GDPR)
 //                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
