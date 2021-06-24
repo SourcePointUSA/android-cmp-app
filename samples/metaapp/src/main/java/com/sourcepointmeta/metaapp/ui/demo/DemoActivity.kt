@@ -26,6 +26,7 @@ import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.LOG_ID
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.TITLE
 import kotlinx.android.synthetic.main.activity_demo.* //ktlint-disable
+import org.json.JSONArray
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import java.util.* //ktlint-disable
@@ -148,7 +149,12 @@ class DemoActivity : FragmentActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
-            println("consentedPurpose: ${consent.getConsentedPurpose()}")
+            val consentedPurpose = JSONArray(consent.getConsentedPurpose())
+            logger.clientEvent(
+                event = "onConsentReady",
+                msg = "ConsentedPurpose",
+                content = consentedPurpose.toString()
+            )
         }
 
         override fun onUIFinished(view: View) {
@@ -194,10 +200,9 @@ class DemoActivity : FragmentActivity() {
         }
     }
 
-    fun SPConsents.getConsentedPurpose(): Set<String> = this.gdpr?.consent?.vendorsGrants
-        ?.flatMap { it.value.toList() }
-        ?.filter { it.second }
-        ?.map { it.first }
-        ?.toSet()
-        ?: emptySet()
+    fun SPConsents.getConsentedPurpose(): Set<String> {
+        val all = this.gdpr?.consent?.vendorsGrants?.flatMap { it.value.toList() } ?: emptyList()
+        val rejected = all.filter { !it.second }
+        return all.map { it.first }.toSet() subtract rejected.map { it.first }.toSet()
+    }
 }

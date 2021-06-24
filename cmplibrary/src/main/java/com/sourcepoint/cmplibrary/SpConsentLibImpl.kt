@@ -80,12 +80,12 @@ internal class SpConsentLibImpl(
         consentManager.sPConsentsSuccess = { spConsents ->
             val spConsentString = spConsents.toJsonObject().toString()
             executor.executeOnMain {
-                spClient.onConsentReady(spConsents)
                 pLogger.clientEvent(
                     event = "onConsentReady",
                     msg = "onConsentReady",
                     content = spConsentString
                 )
+                spClient.onConsentReady(spConsents)
                 (spClient as? UnitySpClient)?.onConsentReady(spConsentString)
             }
         }
@@ -349,7 +349,7 @@ internal class SpConsentLibImpl(
                 .getOrNull()
                 ?.let {
                     pLogger.clientEvent(
-                        event = "onError",
+                        event = "log",
                         msg = "RenderingApp",
                         content = it
                     )
@@ -361,7 +361,7 @@ internal class SpConsentLibImpl(
                 .getOrNull()
                 ?.let {
                     pLogger.clientEvent(
-                        event = "onError",
+                        event = "log",
                         msg = "RenderingApp",
                         content = it
                     )
