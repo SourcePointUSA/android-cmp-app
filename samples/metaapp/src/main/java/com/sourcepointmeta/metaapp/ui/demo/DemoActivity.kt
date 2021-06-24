@@ -148,6 +148,7 @@ class DemoActivity : FragmentActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
+            println("consentedPurpose: ${consent.getConsentedPurpose()}")
         }
 
         override fun onUIFinished(view: View) {
@@ -192,4 +193,11 @@ class DemoActivity : FragmentActivity() {
             pager.currentItem = pager.currentItem - 1
         }
     }
+
+    fun SPConsents.getConsentedPurpose() : Set<String> = this.gdpr?.consent?.vendorsGrants
+        ?.flatMap { it.value.toList() }
+        ?.filter { it.second }
+        ?.map { it.first }
+        ?.toSet()
+        ?: emptySet()
 }

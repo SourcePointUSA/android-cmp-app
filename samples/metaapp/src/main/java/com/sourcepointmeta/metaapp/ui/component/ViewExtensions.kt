@@ -6,13 +6,16 @@ import android.view.View
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
+import com.sourcepointmeta.metaapp.util.check
 import kotlinx.android.synthetic.main.add_property_fragment.view.*
 import kotlinx.android.synthetic.main.item_action_demo.view.*
 import kotlinx.android.synthetic.main.item_log.view.*
 import kotlinx.android.synthetic.main.property_item.view.*
 import kotlinx.android.synthetic.main.property_item.view.chip_ccpa
 import kotlinx.android.synthetic.main.property_item.view.chip_gdpr
+import org.json.JSONObject
 
 fun PropertyItemView.bind(
     item: PropertyDTO
@@ -80,11 +83,19 @@ fun LogItemView.bindComputation(item: LogItem, position: Int) {
 
 fun LogItemView.bindClientEvent(item: LogItem, position: Int) {
     log_title.text = "${item.type} - ${item.tag}"
-    log_body.text = item.message
+    val errorObject = item.jsonBody?.let { check { JSONObject(it) }.getOrNull() } ?: JSONObject()
+    val title : String? = errorObject.getOrNull("title")
+    val stackTrace : String = errorObject.getOrNull("stackTrace") ?: ""
+    when(title){
+       null -> log_body.text = item.message
+       else ->  log_body.text = "$title - $stackTrace"
+    }
     item.jsonBody
         ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
         ?: run { log_body_1.visibility = View.GONE }
 }
+
+fun JSONObject.getOrNull(key: String): String? = if (has(key)) this.getString(key) else null
 
 fun LogItemView.bindClientError(item: LogItem, position: Int) {
     log_title.text = "${item.type} - ${item.tag}"

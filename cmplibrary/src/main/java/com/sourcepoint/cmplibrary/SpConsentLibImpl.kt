@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.consent.LocalStateStatus
+import com.sourcepoint.cmplibrary.core.*
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
@@ -31,6 +32,7 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
+import org.json.JSONObject
 import java.util.* // ktlint-disable
 
 internal class SpConsentLibImpl(
@@ -343,11 +345,27 @@ internal class SpConsentLibImpl(
         }
 
         override fun log(view: View, tag: String?, msg: String?) {
-            pLogger.i(tag ?: "JSReceiverDelegate", "RenderingApp log${NL.t}$msg")
+            check { JSONObject(msg).toString() }
+                .getOrNull()
+                ?.let {
+                    pLogger.clientEvent(
+                        event = "onError",
+                        msg = "RenderingApp",
+                        content = it
+                    )
+                }
         }
 
         override fun log(view: View, msg: String?) {
-            pLogger.i("JSReceiverDelegate", "RenderingApp log${NL.t}$msg")
+            check { JSONObject(msg).toString() }
+                .getOrNull()
+                ?.let {
+                    pLogger.clientEvent(
+                        event = "onError",
+                        msg = "RenderingApp",
+                        content = it
+                    )
+                }
         }
 
         override fun onError(view: View, errorMessage: String) {

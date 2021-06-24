@@ -16,16 +16,4 @@ class LogItemView : ConstraintLayout {
         attrs,
         defStyleAttr
     )
-
-    val lightItem: Drawable by lazy {
-        TypedValue().apply { context.theme.resolveAttribute(R.attr.colorOddItem, this, true) }
-            .data
-            .toDrawable()
-    }
-
-    val darkItem: Drawable by lazy {
-        TypedValue().apply { context.theme.resolveAttribute(R.attr.colorEvenItem, this, true) }
-            .data
-            .toDrawable()
-    }
 }
