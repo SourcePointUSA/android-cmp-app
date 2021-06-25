@@ -26,18 +26,10 @@ val customCategoriesDataProd = listOf(
 val appModule = module {
 
     single<DataProvider> {
-        val gdprPmId = if (get(qualifier = named("prod"))) "488393" else "13111"
-        val ccpaPmId = if (get(qualifier = named("prod"))) "509688" else "14967"
-        val customVendorDataList = if (get(qualifier = named("prod"))) {
-            customVendorDataListProd.map { it.first }
-        } else {
-            customVendorDataListStage.map { it.first }
-        }
-        val customCategoriesData = if (get(qualifier = named("prod"))) {
-            customCategoriesDataProd.map { it.first }
-        } else {
-            customCategoriesDataStage.map { it.first }
-        }
+        val gdprPmId = "488393" // stage "13111"
+        val ccpaPmId = "509688" // "14967"
+        val customVendorDataList = customVendorDataListProd.map { it.first }
+        val customCategoriesData = customCategoriesDataProd.map { it.first }
         DataProvider.create(
             context = androidApplication(),
             spConfig = get(),
@@ -65,6 +57,7 @@ val appModule = module {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
                 messLanguage = MessageLanguage.ENGLISH
+                messageTimeout = 5000
                 +(CampaignType.GDPR)
             }
         } else {
@@ -72,7 +65,7 @@ val appModule = module {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
                 messLanguage = MessageLanguage.ENGLISH
-                messageTimeout = 3000
+                messageTimeout = 5000
                 +(CampaignType.GDPR)
 //                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
