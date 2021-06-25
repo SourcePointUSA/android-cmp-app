@@ -133,6 +133,7 @@ internal class ConsentWebView(
                 "fromNativeSDK": true
                  */
             }
+            logger.i("ConsentWebView", "loadConsentUIFromUrl${NL.t}obj $obj ")
             """
                 javascript: ${"js_receiver.js".file2String()};
                 window.spLegislation = '${campaignType.name}'; 
