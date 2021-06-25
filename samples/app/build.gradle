@@ -20,16 +20,12 @@ android {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
     buildTypes {
-        debug{
-            applicationIdSuffix ".debug"
-        }
+        debug{}
         localProd{
             initWith debug
-            applicationIdSuffix ".localProd"
         }
         preprod{
             initWith debug
-            applicationIdSuffix ".preprod"
         }
         release {
             minifyEnabled false
