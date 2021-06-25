@@ -1,11 +1,14 @@
-package com.sourcepointmeta.metaapp.ui
+package com.sourcepointmeta.metaapp.ui.eventlogs
 
 import androidx.lifecycle.* // ktlint-disable
 import com.sourcepointmeta.metaapp.core.fold
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
-import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
+import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
+import com.sourcepointmeta.metaapp.ui.component.LogItem
+import com.sourcepointmeta.metaapp.ui.component.toLogItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -18,7 +21,9 @@ internal class LogViewModel(
     private val mutableLiveData by lazy { MutableLiveData<BaseState>() }
     val liveData: LiveData<BaseState> get() = mutableLiveData
 
-    val liveDataLog: LiveData<MetaLog> get() = dataSource.logEvents.asLiveData(viewModelScope.coroutineContext)
+    val liveDataLog: LiveData<LogItem> get() = dataSource.logEvents
+        .map { it.toLogItem() }
+        .asLiveData(workerDispatcher)
 
     fun fetchLogs(propertyName: String) {
         viewModelScope.launch {

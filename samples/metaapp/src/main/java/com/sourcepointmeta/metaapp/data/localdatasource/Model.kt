@@ -12,7 +12,7 @@ data class Property(
     val messageType: String,
     val is_staging: Boolean = false,
     val targetingParameters: List<MetaTargetingParam> = emptyList(),
-    val propertyId: Long? = null,
+    val timeout: Long? = null,
     val authId: String? = null,
     val messageLanguage: String? = null,
     val pmTab: String? = null,
@@ -66,7 +66,7 @@ fun Targeting_param.toTargetingParam() = MetaTargetingParam(
 )
 
 fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<StatusCampaign>) = Property(
-    propertyId = property_id,
+    timeout = timeout,
     propertyName = property_name,
     is_staging = is_staging != 0L,
     accountId = account_id,

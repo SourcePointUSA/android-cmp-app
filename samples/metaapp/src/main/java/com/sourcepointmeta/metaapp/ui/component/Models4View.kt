@@ -18,6 +18,7 @@ data class PropertyDTO(
     val gdprEnabled: Boolean,
     val ccpaEnabled: Boolean,
     val property: Property,
+    val timeout: Long?,
     var saving: Boolean = false
 )
 
@@ -38,7 +39,8 @@ fun Property.toPropertyDTO(): PropertyDTO {
         pmTab = PMTab.values().find { it.name == pmTab } ?: PMTab.DEFAULT,
         authId = authId ?: "",
         messageLanguage = MessageLanguage.values().find { it.name == messageLanguage }
-            ?: MessageLanguage.ENGLISH
+            ?: MessageLanguage.ENGLISH,
+        timeout = timeout
     )
 }
 

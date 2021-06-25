@@ -20,6 +20,11 @@ FROM meta_log
 WHERE meta_log.property_name = ?
 ORDER BY meta_log.timestamp DESC;
 
+selectLogById:
+SELECT *
+FROM meta_log
+WHERE meta_log.id = ?;
+
 deleteAllLogs:
 DELETE FROM meta_log;
 

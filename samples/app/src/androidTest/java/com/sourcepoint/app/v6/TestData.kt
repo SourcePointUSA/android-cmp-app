@@ -7,17 +7,17 @@ object TestData {
         "Select basic ads",
         "Create a personalised ads profile",
         "Select personalised ads",
-        "Create a personalised content profile",
-        "Select personalised content",
         "Measure ad performance",
+        "Measure content performance",
         "Apply market research to generate audience insights",
-        "Develop and improve products"
+        "Develop and improve products",
+        "Our Custom Purpose"
     )
 
     val VENDORS_LIST = listOf(
-        "Amazon Advertising",
-        "Acuityads",
-        "Digilant"
+        "Unruly Group LLC",
+        "QuarticON",
+        "Game Accounts"
     )
 
     var CONSENT_LIST = arrayOf("Store and/or access information on a device", "Create a personalised ads profile", "Select personalised ads",

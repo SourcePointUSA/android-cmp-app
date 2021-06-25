@@ -24,7 +24,7 @@ internal data class UnifiedMessageRequest(
     val includeData: IncludeData = IncludeData(
         tCData = TCData("RecordString"),
         messageMetaData = MessageMetaData("RecordString"),
-        localState = LocalState("string")
+        localState = LocalState("RecordString")
     ),
     val consentLanguage: MessageLanguage = MessageLanguage.ENGLISH,
     val hasCSP: Boolean = true,

@@ -1,4 +1,4 @@
-package com.sourcepointmeta.metaapp.ui
+package com.sourcepointmeta.metaapp.ui.property
 
 import android.os.Build
 import android.os.Bundle
@@ -14,6 +14,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.component.addChip
 import com.sourcepointmeta.metaapp.ui.component.bind
 import com.sourcepointmeta.metaapp.ui.component.errorField

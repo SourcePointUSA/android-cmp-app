@@ -1,4 +1,4 @@
-package com.sourcepointmeta.metaapp.ui
+package com.sourcepointmeta.metaapp.ui.demo
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,9 +11,8 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
-import com.sourcepointmeta.metaapp.ui.DemoFragment.DemoAction.CCPA_PM
-import com.sourcepointmeta.metaapp.ui.DemoFragment.DemoAction.GDPR_PM
-import kotlinx.android.synthetic.main.activity_demo.* // ktlint-disable
+import com.sourcepointmeta.metaapp.ui.demo.DemoFragment.DemoAction.CCPA_PM
+import com.sourcepointmeta.metaapp.ui.demo.DemoFragment.DemoAction.GDPR_PM
 import kotlinx.android.synthetic.main.demo_fragment_layout.* // ktlint-disable
 import org.koin.android.ext.android.inject
 

@@ -1,4 +1,4 @@
-package com.sourcepointmeta.metaapp.ui
+package com.sourcepointmeta.metaapp.ui.propertylist
 
 import android.content.Intent
 import android.os.Bundle
@@ -17,6 +17,8 @@ import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
 import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
+import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
+import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
 import kotlinx.android.synthetic.main.fragment_property_list.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -109,17 +111,17 @@ class PropertyListFragment : Fragment() {
     }
 
     private fun runDemo(property: Property) {
-        if (property.hasActiveCampaign()) {
-            val bundle = Bundle()
-            bundle.putString("property_name", property.propertyName)
-            val i = Intent(activity, DemoActivity::class.java)
-            i.putExtras(bundle)
-            startActivity(i)
-        } else {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle("You need at least one active campaign to run the demo.")
-                .setPositiveButton("OK", null)
-                .show()
-        }
+//        if (property.hasActiveCampaign()) {
+        val bundle = Bundle()
+        bundle.putString("property_name", property.propertyName)
+        val i = Intent(activity, DemoActivity::class.java)
+        i.putExtras(bundle)
+        startActivity(i)
+//        } else {
+//            MaterialAlertDialogBuilder(requireContext())
+//                .setTitle("You need at least one active campaign to run the demo.")
+//                .setPositiveButton("OK", null)
+//                .show()
+//        }
     }
 }

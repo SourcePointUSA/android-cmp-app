@@ -28,6 +28,7 @@ internal interface LocalDataSource {
     suspend fun fetchPropertyByName(name: String): Either<Property>
     fun fetchPropertyByNameSync(name: String): Property
     fun fetchLogsByPropertyName(propertyName: String): Either<List<MetaLog>>
+    fun fetchLogById(id: Long): Either<MetaLog>
     suspend fun fetchTargetingParams(propName: String): Either<List<MetaTargetingParam>>
     suspend fun storeOrUpdateProperty(property: Property): Either<Property>
     suspend fun storeOrUpdateLog(log: MetaLog)
@@ -119,13 +120,29 @@ private class LocalDataSourceImpl(
 
     override fun fetchLogsByPropertyName(propertyName: String): Either<List<MetaLog>> {
         return check {
-            lQueries.selectAllLogsByPropertyName(propertyName).executeAsList().map { it.toMetaLog() }
+            lQueries
+                .selectAllLogsByPropertyName(propertyName)
+                .executeAsList()
+                .map { it.toMetaLog() }
+        }
+    }
+
+    override fun fetchLogById(id: Long): Either<MetaLog> {
+        return check {
+            lQueries.selectLogById(id)
+                .executeAsList()
+                .firstOrNull()
+                ?.toMetaLog()
+                ?: throw RuntimeException("Log with id[$id] not found!!!")
         }
     }
 
     override suspend fun fetchTargetingParams(propName: String): Either<List<MetaTargetingParam>> = coroutineScope {
         check {
-            cQueries.selectTargetingParametersByPropertyName(propName).executeAsList().map { it.toTargetingParam() }
+            cQueries
+                .selectTargetingParametersByPropertyName(propName)
+                .executeAsList()
+                .map { it.toTargetingParam() }
         }
     }
 
@@ -137,7 +154,7 @@ private class LocalDataSourceImpl(
         cQueries.run {
             transactionWithResult {
                 insertProperty(
-                    property_id = property.propertyId,
+                    timeout = property.timeout ?: 3000,
                     auth_Id = property.authId,
                     message_language = property.messageLanguage,
                     pm_tab = property.pmTab,
@@ -229,8 +246,10 @@ private class LocalDataSourceImpl(
                     config {
                         accountId = p.accountId.toInt()
                         propertyName = p.propertyName
-                        messLanguage =
-                            MessageLanguage.values().find { it.name == p.messageLanguage } ?: MessageLanguage.ENGLISH
+                        messageTimeout = p.timeout ?: 3000L
+                        messLanguage = MessageLanguage.values()
+                            .find { it.name == p.messageLanguage }
+                            ?: MessageLanguage.ENGLISH
                         buildSPCampaign(CampaignType.GDPR, p.statusCampaignSet, p.targetingParameters)
                             ?.let { spc -> addCampaign(CampaignType.GDPR, spc) }
                         buildSPCampaign(CampaignType.CCPA, p.statusCampaignSet, p.targetingParameters)

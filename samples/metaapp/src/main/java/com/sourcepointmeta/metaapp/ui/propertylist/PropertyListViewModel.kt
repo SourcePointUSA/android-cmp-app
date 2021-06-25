@@ -1,10 +1,11 @@
-package com.sourcepointmeta.metaapp.ui
+package com.sourcepointmeta.metaapp.ui.propertylist
 
 import androidx.lifecycle.* // ktlint-disable
 import com.sourcepointmeta.metaapp.core.fold
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
+import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

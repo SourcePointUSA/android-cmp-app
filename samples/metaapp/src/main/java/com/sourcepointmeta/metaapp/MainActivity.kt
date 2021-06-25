@@ -2,7 +2,7 @@ package com.sourcepointmeta.metaapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.sourcepointmeta.metaapp.ui.PropertyListFragment
+import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListFragment
 
 class MainActivity : AppCompatActivity() {
 

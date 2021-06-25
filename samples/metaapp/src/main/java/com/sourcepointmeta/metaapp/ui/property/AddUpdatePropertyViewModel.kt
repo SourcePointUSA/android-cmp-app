@@ -1,4 +1,4 @@
-package com.sourcepointmeta.metaapp.ui
+package com.sourcepointmeta.metaapp.ui.property
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,6 +12,8 @@ import com.sourcepointmeta.metaapp.core.Either
 import com.sourcepointmeta.metaapp.core.flatMap
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
+import com.sourcepointmeta.metaapp.ui.BaseState
+import com.sourcepointmeta.metaapp.ui.ValidationManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

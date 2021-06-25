@@ -10,6 +10,7 @@ sealed class BaseState {
     data class StatePropertyList(val propertyList: List<Property>) : BaseState()
     data class StateLogList(val propertyList: List<MetaLog>) : BaseState()
     data class StateLoading(val loading: Boolean, val propertyName: String) : BaseState()
+    data class StateJson(val json: String) : BaseState()
     data class StateError(@StringRes val errorMessage: Int) : BaseState()
     data class StateErrorValidationField(val uiCode: UIErrorCode, val message: String) : BaseState()
     object StatePropertySaved : BaseState()

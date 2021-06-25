@@ -25,7 +25,7 @@ class LocalDataSourceImplTest {
     private val prop1 = Property(
         accountId = 1,
         propertyName = "prop1",
-        propertyId = 1,
+        timeout = 1,
         authId = null,
         messageLanguage = "ENGLISH",
         pmTab = "DEFAULT",
@@ -37,7 +37,7 @@ class LocalDataSourceImplTest {
         ccpaPmId = 1313L,
     )
 
-    private val prop2 = prop1.copy(propertyName = "prop2", accountId = 2, propertyId = 2)
+    private val prop2 = prop1.copy(propertyName = "prop2", accountId = 2, timeout = 2)
 
     private val db by lazy { createDb(appContext) }
     private val ds by lazy { LocalDataSource.create(db) }
