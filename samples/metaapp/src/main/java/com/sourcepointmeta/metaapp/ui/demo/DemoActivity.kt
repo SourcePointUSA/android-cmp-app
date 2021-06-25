@@ -149,12 +149,12 @@ class DemoActivity : FragmentActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
-            val consentedPurpose = JSONArray(consent.getConsentedPurpose())
-            logger.clientEvent(
-                event = "onConsentReady",
-                msg = "ConsentedPurpose",
-                content = consentedPurpose.toString()
-            )
+//            val consentedPurpose = JSONArray(consent.getConsentedPurpose())
+//            logger.clientEvent(
+//                event = "onConsentReady",
+//                msg = "ConsentedPurpose",
+//                content = consentedPurpose.toString()
+//            )
         }
 
         override fun onUIFinished(view: View) {
