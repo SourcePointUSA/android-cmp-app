@@ -62,7 +62,7 @@ private class ConsentManagerUtilsImpl(
                 .map { _ ->
                     val includeData = IncludeData(
                         tCData = TCData("RecordString"),
-                        localState = LocalState("string")
+                        localState = LocalState("RecordString")
                     )
                     JSONObject().apply {
                         put("propertyHref", cm.spConfig.propertyName)
