@@ -149,12 +149,20 @@ class DemoActivity : FragmentActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
-//            val consentedPurpose = JSONArray(consent.getConsentedPurpose())
-//            logger.clientEvent(
-//                event = "onConsentReady",
-//                msg = "ConsentedPurpose",
-//                content = consentedPurpose.toString()
-//            )
+            consent.gdpr?.consent?.consentedPurposes?.let {
+                logger.clientEvent(
+                    event = "onConsentReady",
+                    msg = "ConsentedPurpose",
+                    content = it.toString()
+                )
+            }
+            consent.gdpr?.consent?.consentedVendors?.let {
+                logger.clientEvent(
+                    event = "onConsentReady",
+                    msg = "ConsentedVendors",
+                    content = it.toString()
+                )
+            }
         }
 
         override fun onUIFinished(view: View) {
@@ -198,11 +206,5 @@ class DemoActivity : FragmentActivity() {
             // Otherwise, select the previous step.
             pager.currentItem = pager.currentItem - 1
         }
-    }
-
-    fun SPConsents.getConsentedPurpose(): Set<String> {
-        val all = this.gdpr?.consent?.vendorsGrants?.flatMap { it.value.toList() } ?: emptyList()
-        val rejected = all.filter { !it.second }
-        return all.map { it.first }.toSet() subtract rejected.map { it.first }.toSet()
     }
 }
