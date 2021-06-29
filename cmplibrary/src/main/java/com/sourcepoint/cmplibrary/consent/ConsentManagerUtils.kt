@@ -24,7 +24,7 @@ internal interface ConsentManagerUtils {
     fun buildGdprConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject>
     fun buildCcpaConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject>
 
-    fun getGdprConsent(): Either<GDPRConsent>
+    fun getGdprConsent(): Either<GDPRConsentInternal>
     fun getCcpaConsent(): Either<CCPAConsent>
     fun hasGdprConsent(): Boolean
     fun hasCcpaConsent(): Boolean
@@ -104,7 +104,7 @@ private class ConsentManagerUtilsImpl(
         )
     }
 
-    override fun getGdprConsent(): Either<GDPRConsent> {
+    override fun getGdprConsent(): Either<GDPRConsentInternal> {
         return cm.getGDPRConsent()
     }
 

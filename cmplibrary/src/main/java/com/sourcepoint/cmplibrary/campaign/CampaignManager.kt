@@ -17,7 +17,7 @@ import com.sourcepoint.cmplibrary.exception.MissingPropertyException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.Campaigns
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
-import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
@@ -41,12 +41,12 @@ internal interface CampaignManager {
     fun getUnifiedMessageReq(): UnifiedMessageRequest
     fun getUnifiedMessageReq(authId: String?): UnifiedMessageRequest
 
-    fun getGDPRConsent(): Either<GDPRConsent>
+    fun getGDPRConsent(): Either<GDPRConsentInternal>
     fun getCCPAConsent(): Either<CCPAConsent>
 
     fun saveGdpr(gdpr: Gdpr)
     fun saveCcpa(ccpa: Ccpa)
-    fun saveGDPRConsent(consent: GDPRConsent?)
+    fun saveGDPRConsent(consent: GDPRConsentInternal?)
     fun saveCCPAConsent(consent: CCPAConsent?)
     fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp)
 
@@ -70,7 +70,7 @@ private class CampaignManagerImpl(
 ) : CampaignManager {
 
     companion object {
-        private var gdprConsent: GDPRConsent? = null
+        private var gdprConsent: GDPRConsentInternal? = null
         private var ccpaConsent: CCPAConsent? = null
     }
 
@@ -214,7 +214,7 @@ private class CampaignManagerImpl(
         )
     }
 
-    override fun getGDPRConsent(): Either<GDPRConsent> = check {
+    override fun getGDPRConsent(): Either<GDPRConsentInternal> = check {
         gdprConsent ?: dataStorage
             .getGdprConsentResp()
             .also { if (it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
@@ -242,7 +242,7 @@ private class CampaignManagerImpl(
         dataStorage.saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
     }
 
-    override fun saveGDPRConsent(consent: GDPRConsent?) {
+    override fun saveGDPRConsent(consent: GDPRConsentInternal?) {
         gdprConsent = consent
         dataStorage.saveGdprConsentResp(consent?.thisContent?.toString() ?: "")
     }

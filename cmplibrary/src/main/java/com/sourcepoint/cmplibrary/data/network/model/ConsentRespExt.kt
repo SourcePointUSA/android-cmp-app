@@ -6,7 +6,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
-import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
@@ -63,7 +63,7 @@ internal fun Map<String, Any?>.toCCPAUserConsent(): CCPAConsent {
     )
 }
 
-internal fun Map<String, Any?>.toGDPRUserConsent(): GDPRConsent {
+internal fun Map<String, Any?>.toGDPRUserConsent(): GDPRConsentInternal {
 
     val tcData: Map<String, Any?> = getMap("TCData") ?: emptyMap()
     val vendorsGrants = getMap("grants")
@@ -91,12 +91,12 @@ internal fun Map<String, Any?>.toGDPRUserConsent(): GDPRConsent {
             )
         } ?: emptyList()
 
-    return GDPRConsent(
+    return GDPRConsentInternal(
         thisContent = JSONObject(this),
         tcData = tcData,
-        vendorsGrants = vendorsGrants,
+        grants = vendorsGrants,
         euconsent = euConsent,
-        acceptedPurposes = consentedPurposes,
+        acceptedCategories = consentedPurposes,
         acceptedVendors = consentedVendors
     )
 }
