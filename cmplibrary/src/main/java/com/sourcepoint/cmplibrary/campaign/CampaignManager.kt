@@ -6,6 +6,10 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
+import com.sourcepoint.cmplibrary.data.network.model.toCCPA
+import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
+import com.sourcepoint.cmplibrary.data.network.model.toGDPR
+import com.sourcepoint.cmplibrary.data.network.model.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
@@ -15,10 +19,6 @@ import com.sourcepoint.cmplibrary.model.Campaigns
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import com.sourcepoint.cmplibrary.model.ext.toCCPA
-import com.sourcepoint.cmplibrary.model.ext.toCCPAUserConsent
-import com.sourcepoint.cmplibrary.model.ext.toGDPR
-import com.sourcepoint.cmplibrary.model.ext.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
 

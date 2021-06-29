@@ -13,13 +13,16 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.component.addChip
 import com.sourcepointmeta.metaapp.ui.component.bind
 import com.sourcepointmeta.metaapp.ui.component.errorField
 import com.sourcepointmeta.metaapp.ui.component.toProperty
+import kotlinx.android.synthetic.main.activity_demo.*
 import kotlinx.android.synthetic.main.add_property_fragment.*
+import kotlinx.android.synthetic.main.add_property_fragment.tool_bar
 import kotlinx.android.synthetic.main.add_targeting_parameter.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -50,6 +53,11 @@ class AddUpdatePropertyFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        tool_bar.run {
+            title = "${getString(R.string.add_prop_title)} - ${BuildConfig.VERSION_NAME}"
+            setNavigationOnClickListener { activity?.onBackPressed() }
+        }
 
         val messageOptionAdapter: ArrayAdapter<String> =
             ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, MessageType)

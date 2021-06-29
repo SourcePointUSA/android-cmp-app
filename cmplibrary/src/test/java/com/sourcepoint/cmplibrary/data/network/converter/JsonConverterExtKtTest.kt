@@ -5,10 +5,10 @@ import com.sourcepoint.cmplibrary.assertFalse
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.TestUtilGson.Companion.jsonFile2String
+import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.Ccpa
 import com.sourcepoint.cmplibrary.model.Gdpr
-import com.sourcepoint.cmplibrary.model.ext.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONArray
 import org.json.JSONObject

@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.uwMessDataTest
 import org.json.JSONObject
@@ -26,11 +27,18 @@ class MessageModelReqExtKtTest {
               "consentLanguage": "EN",
               "requestUUID": "test",
               "includeData": {
-                "messageMetaData": {},
-                "localState": {
-                  "type": "string"
+                "customVendorsResponse": {
+                  "type": "RecordString"
                 },
-                "TCData": {}
+                "messageMetaData": {
+                  "type": "RecordString"
+                },
+                "localState": {
+                  "type": "RecordString"
+                },
+                "TCData": {
+                  "type": "RecordString"
+                }
               }
             }
         """.trimIndent()

@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.BaseState
 import kotlinx.android.synthetic.main.activity_demo.*
+import kotlinx.android.synthetic.main.add_property_fragment.*
 import kotlinx.android.synthetic.main.jsonviewer_layout.*
 import kotlinx.android.synthetic.main.jsonviewer_layout.tool_bar
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -39,8 +41,12 @@ class JsonViewerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.liveData.observe(viewLifecycleOwner, ::stateHandler)
         arguments?.getLong(LOG_ID)?.let { viewModel.fetchJson(it) }
-        tool_bar.setNavigationOnClickListener { activity?.finish() }
         log_title.text = arguments?.getString(TITLE)
+
+        tool_bar.run {
+            title = "${getString(R.string.json_analyzer_title)} - ${BuildConfig.VERSION_NAME}"
+            setNavigationOnClickListener { activity?.finish() }
+        }
     }
 
     private fun stateHandler(state: BaseState) {

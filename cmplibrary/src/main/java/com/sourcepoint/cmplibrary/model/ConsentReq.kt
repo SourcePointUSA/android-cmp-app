@@ -1,8 +1,8 @@
 package com.sourcepoint.cmplibrary.model
 
+import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SPCustomConsents
-import com.sourcepoint.cmplibrary.model.ext.toJsonObject
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -23,7 +23,7 @@ internal data class ConsentReq(
     val requestFromPM: Boolean,
     val pubData: JSONObject = JSONObject(),
     val pmSaveAndExitVariables: JSONObject = JSONObject(),
-    val includeData: IncludeData = IncludeData(localState = LocalState("string"))
+    val includeData: IncludeData = IncludeData()
 )
 
 internal fun ConsentReq.toBodyRequest(): String {

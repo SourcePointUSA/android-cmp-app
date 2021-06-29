@@ -17,6 +17,7 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.util.clearAllData
+import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
@@ -74,7 +75,7 @@ class DemoActivity : FragmentActivity() {
         setContentView(R.layout.activity_demo)
 
         tool_bar.run {
-            title = config.propertyName
+            title = "${BuildConfig.VERSION_NAME} - ${config.propertyName}"
             setNavigationOnClickListener { onBackPressed() }
         }
 

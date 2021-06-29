@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
@@ -48,6 +49,8 @@ class PropertyListFragment : Fragment() {
         if (clearDb) {
             viewModel.clearDB()
         }
+
+        tool_bar.title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
 
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
