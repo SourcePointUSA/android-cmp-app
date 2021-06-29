@@ -96,7 +96,7 @@ internal fun Map<String, Any?>.toGDPRUserConsent(): GDPRConsent {
         tcData = tcData,
         vendorsGrants = vendorsGrants,
         euconsent = euConsent,
-        consentedPurposes = consentedPurposes,
-        consentedVendors = consentedVendors
+        acceptedPurposes = consentedPurposes,
+        acceptedVendors = consentedVendors
     )
 }

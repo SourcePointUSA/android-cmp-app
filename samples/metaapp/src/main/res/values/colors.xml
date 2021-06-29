@@ -58,10 +58,16 @@
     <color name="green_status_600">#43A047</color> <!--Color error (light)-->
 
     <color name="blue_link_200">#90CAF9</color> <!--Color error (dark)-->
+    <color name="blue_link_400">#29B6F6</color> <!--Color error (dark)-->
     <color name="blue_link_600">#1E88E5</color> <!--Color error (light)-->
+    <color name="blue_link_800">#1565C0</color> <!--Color error (dark)-->
+<!--    <color name="blue_link_600">#1565C0</color> &lt;!&ndash;Color error (light)&ndash;&gt;-->
 
-    <color name="orange_200">#F48FB1</color> <!--Color error (dark)-->
-    <color name="orange_600">#D81B60</color> <!--Color error (light)-->
+    <color name="rose_200">#F48FB1</color> <!--Color error (dark)-->
+    <color name="rose_600">#D81B60</color> <!--Color error (light)-->
+
+    <color name="violet_200">#CE93D8</color> <!--Color error (dark)-->
+    <color name="violet_600">#8E24AA</color> <!--Color error (light)-->
 
     <!--Color surface (light), color on error (light), -->
     <!--color on surface (dark), color on surface (dark)-->

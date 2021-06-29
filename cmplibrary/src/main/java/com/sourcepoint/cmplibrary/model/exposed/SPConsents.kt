@@ -22,8 +22,8 @@ data class GDPRConsent(
     var euconsent: String = "",
     var tcData: Map<String, Any?> = emptyMap(),
     var vendorsGrants: Map<String, Map<String, Boolean>> = emptyMap(),
-    val consentedPurposes: List<String> = emptyList(),
-    val consentedVendors: List<String> = emptyList(),
+    val acceptedPurposes: List<String> = emptyList(),
+    val acceptedVendors: List<String> = emptyList(),
     val thisContent: JSONObject = JSONObject()
 )
 

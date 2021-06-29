@@ -149,14 +149,14 @@ class DemoActivity : FragmentActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
-            consent.gdpr?.consent?.consentedPurposes?.let {
+            consent.gdpr?.consent?.acceptedPurposes?.let {
                 logger.clientEvent(
                     event = "onConsentReady",
                     msg = "ConsentedPurpose",
                     content = it.toString()
                 )
             }
-            consent.gdpr?.consent?.consentedVendors?.let {
+            consent.gdpr?.consent?.acceptedVendors?.let {
                 logger.clientEvent(
                     event = "onConsentReady",
                     msg = "ConsentedVendors",

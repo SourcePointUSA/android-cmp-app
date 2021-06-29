@@ -26,6 +26,12 @@
     <attr name="colorErrorResponse" format="color"/>
     <attr name="webLink" format="color"/>
     <attr name="colorClientEvent" format="color"/>
+    <attr name="colorJsonKey" format="color"/>
+    <attr name="colorJsonValueText" format="color"/>
+    <attr name="colorJsonValueNumber" format="color"/>
+    <attr name="colorJsonValueUrl" format="color"/>
+    <attr name="colorJsonValueNull" format="color"/>
+    <attr name="colorJsonValueBraces" format="color"/>
 
     <attr format="reference" name="textAppearanceHeadline7"/>
 

@@ -48,8 +48,13 @@
         <item name="colorErrorResponse">@color/red_600</item>
 
         <item name="webLink">@color/blue_link_600</item>
-
-        <item name="colorClientEvent">@color/orange_600</item>
+        <item name="colorClientEvent">@color/rose_600</item>
+        <item name="colorJsonKey">@color/violet_600</item>
+        <item name="colorJsonValueText">@color/green_status_600</item>
+        <item name="colorJsonValueNumber">@color/blue_link_600</item>
+        <item name="colorJsonValueUrl">@color/blue_link_400</item>
+        <item name="colorJsonValueNull">@color/red_600</item>
+        <item name="colorJsonValueBraces">@color/black_400</item>
 
         <!--Material type attributes-->
         <item name="textAppearanceHeadline1">@style/TextAppearance.MyTheme.Headline1</item>
