@@ -44,6 +44,12 @@
 
         <item name="colorOddItem">@color/black_50</item>
         <item name="colorEvenItem">@color/white_50</item>
+        <item name="colorSuccessResponse">@color/green_status_600</item>
+        <item name="colorErrorResponse">@color/red_600</item>
+
+        <item name="webLink">@color/blue_link_600</item>
+
+        <item name="colorClientEvent">@color/orange_600</item>
 
         <!--Material type attributes-->
         <item name="textAppearanceHeadline1">@style/TextAppearance.MyTheme.Headline1</item>

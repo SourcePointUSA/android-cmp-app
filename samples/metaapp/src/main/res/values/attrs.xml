@@ -22,6 +22,10 @@
     <attr name="colorStrokeColor" format="color"/>
     <attr name="colorOddItem" format="color"/>
     <attr name="colorEvenItem" format="color"/>
+    <attr name="colorSuccessResponse" format="color"/>
+    <attr name="colorErrorResponse" format="color"/>
+    <attr name="webLink" format="color"/>
+    <attr name="colorClientEvent" format="color"/>
 
     <attr format="reference" name="textAppearanceHeadline7"/>
 
