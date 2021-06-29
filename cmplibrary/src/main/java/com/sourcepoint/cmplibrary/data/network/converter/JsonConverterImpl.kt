@@ -45,12 +45,12 @@ private class JsonConverterImpl : JsonConverter {
     override fun toConsentResp(body: String, campaignType: CampaignType): Either<ConsentResp> = check {
         val obj = JSONObject(body)
         val map: Map<String, Any?> = JSONObject(body).toTreeMap()
-        val localState = map.getFieldValue<String>("localState") ?: "invalid"
+        val localState = map.getMap("localState")?.toJSONObj() ?: JSONObject()
         val uuid = map.getFieldValue<String>("uuid") ?: "invalid"
         obj.get("userConsent")
         ConsentResp(
             content = JSONObject(body),
-            localState = localState,
+            localState = localState.toString(),
             uuid = uuid,
             userConsent = obj["userConsent"].toString(),
             campaignType = campaignType
