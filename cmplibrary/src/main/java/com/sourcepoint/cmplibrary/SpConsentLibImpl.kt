@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.consent.LocalStateStatus
+import com.sourcepoint.cmplibrary.core.* // ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
@@ -23,14 +24,15 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
+import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.CampaignResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
-import com.sourcepoint.cmplibrary.model.exposed.ActionType.SHOW_OPTIONS
+import com.sourcepoint.cmplibrary.model.exposed.ActionType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
+import org.json.JSONObject
 import java.util.* // ktlint-disable
 
 internal class SpConsentLibImpl(
@@ -57,14 +59,12 @@ internal class SpConsentLibImpl(
 
             val partition: Pair<List<CampaignResp>, List<CampaignResp>> = campaignList
                 .partition { it.message != null && it.url != null }
-            logger.d(
-                this::class.java.name,
-                """
-                partitions: 
-                    with Null message[${partition.second.size}]
-                    with Not Null message[${partition.first.size}]
-                """.trimIndent()
+
+            logger.computation(
+                tag = "toCampaignModelList",
+                msg = "parsed campaigns${NL.t}${partition.second.size} Null messages${NL.t}${partition.first.size} Not Null message"
             )
+
             return partition.first.map {
                 CampaignModel(
                     message = it.message!!,
@@ -80,6 +80,11 @@ internal class SpConsentLibImpl(
         consentManager.sPConsentsSuccess = { spConsents ->
             val spConsentString = spConsents.toJsonObject().toString()
             executor.executeOnMain {
+                pLogger.clientEvent(
+                    event = "onConsentReady",
+                    msg = "onConsentReady",
+                    content = spConsentString
+                )
                 spClient.onConsentReady(spConsents)
                 (spClient as? UnitySpClient)?.onConsentReady(spConsentString)
             }
@@ -88,6 +93,11 @@ internal class SpConsentLibImpl(
             throwable.printStackTrace()
             executor.executeOnMain {
                 spClient.onError(throwable)
+                pLogger.clientEvent(
+                    event = "onError",
+                    msg = "${throwable.message}",
+                    content = "${throwable.message}"
+                )
             }
         }
     }
@@ -104,24 +114,32 @@ internal class SpConsentLibImpl(
             pSuccess = { messageResp ->
                 consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
                 val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
-                if (list.isEmpty()) return@getUnifiedMessage
+                if (list.isEmpty()) {
+                    consentManager.sendStoredConsentToClient()
+                    return@getUnifiedMessage
+                }
                 val firstCampaign2Process = list.first()
                 val remainingCampaigns: Queue<CampaignModel> = LinkedList(list.drop(1))
-                Thread.sleep(300)
                 executor.executeOnMain {
                     /** create a instance of WebView */
                     val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
 
                     /** inject the message into the WebView */
                     val legislation = firstCampaign2Process.type
-                    val url = firstCampaign2Process.url // urlManager.urlURenderingApp(env)//
-                    pLogger.i(this::class.java.name, "loadMessage appUrl [$url]")
+                    val url = firstCampaign2Process.url
                     webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                 }
             },
             pError = { throwable ->
                 (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
-                spClient.onError(throwable.toConsentLibException())
+                val ex = throwable.toConsentLibException()
+                spClient.onError(ex)
+                pLogger.clientEvent(
+                    event = "onError",
+                    msg = "${throwable.message}",
+                    content = "${throwable.message}"
+                )
+                pLogger.e("SpConsentLib", "onError${NL.t}${throwable.message}")
             },
             env = env
         )
@@ -151,13 +169,18 @@ internal class SpConsentLibImpl(
                     /** inject the message into the WebView */
                     val legislation = firstCampaign2Process.type
                     val url = firstCampaign2Process.url // urlManager.urlURenderingApp(env)//
-                    pLogger.i(this::class.java.name, "loadMessage appUrl [$url]")
                     webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                 }
             },
             pError = { throwable ->
                 (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
-                spClient.onError(throwable.toConsentLibException())
+                val ex = throwable.toConsentLibException()
+                spClient.onError(ex)
+                pLogger.clientEvent(
+                    event = "onError",
+                    msg = "${throwable.message}",
+                    content = "${throwable.message}"
+                )
             },
             env = env
         )
@@ -205,14 +228,26 @@ internal class SpConsentLibImpl(
                 executeOnMain {
                     when (ccResp) {
                         is Either.Right -> success(ccResp.r ?: SPConsents())
-                        is Either.Left -> spClient.onError(ccResp.t)
+                        is Either.Left -> {
+                            spClient.onError(ccResp.t)
+                            pLogger.clientEvent(
+                                event = "onError",
+                                msg = "${ccResp.t.message}",
+                                content = "${ccResp.t}"
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-    override fun customConsentGDPR(vendors: Array<String>, categories: Array<String>, legIntCategories: Array<String>, successCallback: CustomConsentClient) {
+    override fun customConsentGDPR(
+        vendors: Array<String>,
+        categories: Array<String>,
+        legIntCategories: Array<String>,
+        successCallback: CustomConsentClient
+    ) {
         customConsentGDPR(
             vendors = vendors.toList(),
             categories = categories.toList(),
@@ -220,7 +255,14 @@ internal class SpConsentLibImpl(
             success = {
                 it?.let { spc ->
                     successCallback.transferCustomConsentToUnity(spc.toJsonObject().toString())
-                } ?: run { spClient.onError(RuntimeException("An error occurred during the custom consent request")) }
+                } ?: run {
+                    spClient.onError(RuntimeException("An error occurred during the custom consent request"))
+                    pLogger.clientEvent(
+                        event = "onError",
+                        msg = "An error occurred during the custom consent request",
+                        content = "An error occurred during the custom consent request"
+                    )
+                }
             }
         )
     }
@@ -233,7 +275,12 @@ internal class SpConsentLibImpl(
             .map { it ->
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
                 val url = urlManager.pmUrl(campaignType = campaignType, pmConfig = it, env = env)
-                    .also { pLogger.i(this::class.java.name, "_sendConsent pmUrl [$it]") }
+                pLogger.pm(
+                    tag = "${campaignType.name} Privacy Manager",
+                    url = url.toString(),
+                    pmId = "pmId $pmId",
+                    type = "GET"
+                )
                 webView?.loadConsentUIFromUrl(
                     url = url,
                     campaignType = campaignType,
@@ -292,16 +339,36 @@ internal class SpConsentLibImpl(
         }
 
         override fun log(view: View, tag: String?, msg: String?) {
-            logMess("JSReceiverDelegate log(view, tag, msg): $tag $msg")
+            check { JSONObject(msg).toString() }
+                .getOrNull()
+                ?.let {
+                    pLogger.clientEvent(
+                        event = "log",
+                        msg = "RenderingApp",
+                        content = it
+                    )
+                }
         }
 
         override fun log(view: View, msg: String?) {
-            logMess("JSReceiverDelegate log(view, msg): $msg")
+            check { JSONObject(msg).toString() }
+                .getOrNull()
+                ?.let {
+                    pLogger.clientEvent(
+                        event = "log",
+                        msg = "RenderingApp",
+                        content = it
+                    )
+                }
         }
 
         override fun onError(view: View, errorMessage: String) {
             spClient.onError(GenericSDKException(description = errorMessage))
-            pLogger.error(RenderingAppException(description = errorMessage, pCode = errorMessage))
+            pLogger.clientEvent(
+                event = "onError",
+                msg = errorMessage,
+                content = ""
+            )
         }
 
         override fun onNoIntentActivitiesFoundFor(view: View, url: String) {
@@ -309,6 +376,11 @@ internal class SpConsentLibImpl(
 
         override fun onError(view: View, error: Throwable) {
             spClient.onError(error)
+            pLogger.clientEvent(
+                event = "onError",
+                msg = "${error.message}",
+                content = "$error"
+            )
         }
 
         override fun onAction(iConsentWebView: IConsentWebView, actionData: String, nextCampaign: CampaignModel) {
@@ -337,7 +409,14 @@ internal class SpConsentLibImpl(
                 .map { onActionFromWebViewClient(it, iConsentWebView) }
                 .executeOnLeft { throw it }
             executor.executeOnMain {
-                view.let { spClient.onUIFinished(view) }
+                view.let {
+                    spClient.onUIFinished(view)
+                    pLogger.actionWebApp(
+                        tag = "onUIFinished",
+                        msg = "onUIFinished",
+                        json = null
+                    )
+                }
             }
         }
     }
@@ -351,21 +430,22 @@ internal class SpConsentLibImpl(
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
         executor.executeOnMain {
             spClient.onAction(view, action.actionType)
+            pLogger.actionWebApp(
+                tag = "onActionFromWebViewClient",
+                msg = action.actionType.name,
+                json = action.thisContent
+            )
             when (action.actionType) {
-                ActionType.MSG_CANCEL -> {
-                    view.let { spClient.onUIFinished(it) }
+                ACCEPT_ALL,
+                SAVE_AND_EXIT,
+                REJECT_ALL -> {
+                    consentManager.enqueueConsent(consentAction = action)
                 }
                 SHOW_OPTIONS -> {
                     showOption(action, iConsentWebView)
                 }
-                ActionType.PM_DISMISS -> {
-                    view.let { spClient.onUIFinished(it) }
-                }
-                ActionType.ACCEPT_ALL,
-                ActionType.SAVE_AND_EXIT,
-                ActionType.REJECT_ALL -> {
-                    view.let { spClient.onUIFinished(it) }
-                    consentManager.enqueueConsent(consentAction = action)
+                MSG_CANCEL,
+                PM_DISMISS -> {
                 }
             }
         }
@@ -378,8 +458,14 @@ internal class SpConsentLibImpl(
                 viewManager.removeView(view)
                 campaignManager.getPmConfig(l, action.privacyManagerId, PMTab.PURPOSES)
                     .map { pmUrlConfig ->
-                        val url = urlManager.pmUrl(campaignType = action.campaignType, pmConfig = pmUrlConfig, env = env)
-                            .also { pLogger.i(this::class.java.name, "_showOption showOption pmUrl [$it]") }
+                        val url =
+                            urlManager.pmUrl(campaignType = action.campaignType, pmConfig = pmUrlConfig, env = env)
+                        pLogger.pm(
+                            tag = "${action.campaignType.name} Privacy Manager",
+                            url = url.toString(),
+                            pmId = "${action.privacyManagerId}",
+                            type = "GET"
+                        )
                         iConsentWebView.loadConsentUIFromUrl(
                             url = url,
                             campaignType = action.campaignType,
@@ -392,8 +478,14 @@ internal class SpConsentLibImpl(
                 viewManager.removeView(view)
                 campaignManager.getPmConfig(campaignType = l, pmId = action.privacyManagerId, pmTab = null)
                     .map { pmUrlConfig ->
-                        val url = urlManager.pmUrl(campaignType = action.campaignType, pmConfig = pmUrlConfig, env = env)
-                            .also { pLogger.i(this::class.java.name, "_showOption showOption pmUrl [$it]") }
+                        val url =
+                            urlManager.pmUrl(campaignType = action.campaignType, pmConfig = pmUrlConfig, env = env)
+                        pLogger.pm(
+                            tag = "${action.campaignType.name} Privacy Manager",
+                            url = url.toString(),
+                            pmId = "${action.privacyManagerId}",
+                            type = "GET"
+                        )
                         iConsentWebView.loadConsentUIFromUrl(
                             url = url,
                             campaignType = action.campaignType,

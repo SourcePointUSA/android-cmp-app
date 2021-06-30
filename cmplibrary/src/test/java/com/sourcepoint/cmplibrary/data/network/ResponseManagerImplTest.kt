@@ -11,6 +11,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
+import com.sourcepoint.cmplibrary.stub.MockLogger
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -28,7 +29,7 @@ class ResponseManagerImplTest {
 
     @Test
     fun `GIVEN a response without body RETURN a Left object`() = runBlocking<Unit> {
-        val sut = ResponseManager.create(JsonConverter.create())
+        val sut = ResponseManager.create(JsonConverter.create(), mockk())
         val resp = Response.Builder() //
             .code(200)
             .message("OK")
@@ -42,7 +43,7 @@ class ResponseManagerImplTest {
     @Test
     fun `GIVEN a crash RETURN a Left object`() = runBlocking<Unit> {
         val jsonConverter = mockk<JsonConverter>().also { every { it.toUnifiedMessageResp(any()) }.throws(RuntimeException("test")) }
-        val sut = ResponseManager.create(jsonConverter)
+        val sut = ResponseManager.create(jsonConverter, MockLogger)
         val resp = Response.Builder() //
             .code(200)
             .body("unified_wrapper_resp/with_message_null.json".jsonFile2String().toResponseBody("application/json".toMediaTypeOrNull()))
@@ -57,7 +58,7 @@ class ResponseManagerImplTest {
     @Test(expected = InvalidRequestException::class)
     fun `GIVEN a 500 response code RETURN a Left object`() = runBlocking<Unit> {
         val jsonConverter = mockk<JsonConverter>()
-        val sut = ResponseManager.create(jsonConverter)
+        val sut = ResponseManager.create(jsonConverter, MockLogger)
         val resp = mockResponse(code = 500, message = "error", url = "https://mock.com", body = "{}")
         sut.parseConsentRes(resp, CampaignType.GDPR)
     }
@@ -65,7 +66,7 @@ class ResponseManagerImplTest {
     @Test(expected = java.lang.RuntimeException::class)
     fun `GIVEN a crash in jsonConverter RETURN a Left object`() = runBlocking<Unit> {
         val jsonConverter = mockk<JsonConverter>().also { every { it.toConsentResp(any(), any()) }.throws(RuntimeException("test")) }
-        val sut = ResponseManager.create(jsonConverter)
+        val sut = ResponseManager.create(jsonConverter, MockLogger)
         val resp = mockResponse(url = "https://mock.com", body = "{}")
         sut.parseConsentRes(resp, CampaignType.GDPR)
     }
@@ -73,7 +74,7 @@ class ResponseManagerImplTest {
     @Test(expected = InvalidResponseWebMessageException::class)
     fun `GIVEN a response body empty RETURN a Left object`() = runBlocking<Unit> {
         val jsonConverter = mockk<JsonConverter>()
-        val sut = ResponseManager.create(jsonConverter)
+        val sut = ResponseManager.create(jsonConverter, MockLogger)
         val resp = Response.Builder() //
             .code(200)
             .message("OK")
@@ -86,7 +87,7 @@ class ResponseManagerImplTest {
     @Test(expected = InvalidResponseWebMessageException::class)
     fun `EXECUNTING parseCustomConsentRes with a response body empty RETURN a Left object`() = runBlocking<Unit> {
         val jsonConverter = mockk<JsonConverter>()
-        val sut = ResponseManager.create(jsonConverter)
+        val sut = ResponseManager.create(jsonConverter, MockLogger)
         val resp = Response.Builder() //
             .code(200)
             .message("OK")
@@ -99,7 +100,7 @@ class ResponseManagerImplTest {
     @Test(expected = java.lang.RuntimeException::class)
     fun `EXECUNTING parseCustomConsentRes with a crash in jsonConverter RETURN a Left object`() = runBlocking<Unit> {
         val jsonConverter = mockk<JsonConverter>().also { every { it.toCustomConsentResp(any()) }.throws(RuntimeException("test")) }
-        val sut = ResponseManager.create(jsonConverter)
+        val sut = ResponseManager.create(jsonConverter, MockLogger)
         val resp = mockResponse(url = "https://mock.com", body = "{}")
         sut.parseCustomConsentRes(resp)
     }
@@ -109,7 +110,7 @@ class ResponseManagerImplTest {
         val jsonConverter = mockk<JsonConverter>()
         val customConsentRespMock = mockk<CustomConsentResp>()
         every { jsonConverter.toCustomConsentResp(any()) }.returns(Either.Right(customConsentRespMock))
-        val sut = ResponseManager.create(jsonConverter)
+        val sut = ResponseManager.create(jsonConverter, MockLogger)
         val resp = mockResponse(url = "https://mock.com", body = "{}")
         val res = sut.parseCustomConsentRes(resp)
         res.assertEquals(customConsentRespMock)

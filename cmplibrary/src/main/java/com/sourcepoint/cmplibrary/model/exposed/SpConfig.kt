@@ -1,6 +1,8 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 
 data class SpConfig(
@@ -9,7 +11,8 @@ data class SpConfig(
     @JvmField val campaigns: List<SpCampaign>,
     @JvmField val messageLanguage: MessageLanguage,
     @JvmField val messageTimeout: Long,
-
+    @JvmField val campaignEnv: CampaignEnv = CampaignEnv.PUBLIC,
+    @JvmField val logger: Logger? = null
 )
 
 data class SpCampaign(

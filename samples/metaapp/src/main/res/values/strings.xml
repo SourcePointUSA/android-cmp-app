@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Metaapp</string>
+    <string name="demo_fragment">Demo</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -104,6 +105,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_tabbed">TabbedActivity</string>
+    <string name="default_pm_tab">Default</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
     <string name="add_prop_title">Add a new property</string>
@@ -111,5 +113,18 @@
     <string name="stage">Stage</string>
     <string name="prod">Prod</string>
     <string name="message_type">Message type</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="message_language">Message Language</string>
+    <string name="error">Something went wrong</string>
+    <string name="save">Save</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="review_consents">Review Consents GDPR</string>
+    <string name="source_point_logo">LOGO</string>
+    <string name="authid_activity">AuthId activity</string>
+    <string name="review_consents_ccpa">Review Consents CCPA</string>
+    <string name="clear_all_data">Clear all data</string>
+    <string name="custom_consent">Custom consent</string>
+    <string name="pm_tab">Privacy Manager Tab</string>
+    <string name="saving">Saving ...</string>
+    <string name="json_analyzer_title">JSON Analyzer</string>
 </resources>

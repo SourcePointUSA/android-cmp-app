@@ -6,19 +6,19 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
+import com.sourcepoint.cmplibrary.data.network.model.toCCPA
+import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
+import com.sourcepoint.cmplibrary.data.network.model.toGDPR
+import com.sourcepoint.cmplibrary.data.network.model.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.Campaigns
-import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
-import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import com.sourcepoint.cmplibrary.model.ext.toCCPA
-import com.sourcepoint.cmplibrary.model.ext.toCCPAUserConsent
-import com.sourcepoint.cmplibrary.model.ext.toGDPR
-import com.sourcepoint.cmplibrary.model.ext.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
 
@@ -41,13 +41,11 @@ internal interface CampaignManager {
     fun getUnifiedMessageReq(): UnifiedMessageRequest
     fun getUnifiedMessageReq(authId: String?): UnifiedMessageRequest
 
-    fun getGDPRConsent(): Either<GDPRConsent>
-    fun getCCPAConsent(): Either<CCPAConsent>
+    fun getGDPRConsent(): Either<GDPRConsentInternal>
+    fun getCCPAConsent(): Either<CCPAConsentInternal>
 
     fun saveGdpr(gdpr: Gdpr)
     fun saveCcpa(ccpa: Ccpa)
-    fun saveGDPRConsent(consent: GDPRConsent?)
-    fun saveCCPAConsent(consent: CCPAConsent?)
     fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp)
 
     fun parseRenderingMessage()
@@ -69,12 +67,8 @@ private class CampaignManagerImpl(
     override val messageLanguage: MessageLanguage
 ) : CampaignManager {
 
-    companion object {
-        private var gdprConsent: GDPRConsent? = null
-        private var ccpaConsent: CCPAConsent? = null
-    }
-
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
+    private val campaignEnv: CampaignEnv = spConfig.campaignEnv
 
     init {
         if (!spConfig.propertyName.contains(validPattern)) {
@@ -87,14 +81,29 @@ private class CampaignManagerImpl(
         spConfig.also { spp ->
             spp.campaigns.forEach {
                 when (it.campaignType) {
-                    CampaignType.GDPR -> addCampaign(
-                        it.campaignType,
-                        CampaignTemplate(CampaignEnv.PUBLIC, it.targetingParams, it.campaignType)
-                    )
-                    CampaignType.CCPA -> addCampaign(
-                        it.campaignType,
-                        CampaignTemplate(CampaignEnv.PUBLIC, it.targetingParams, it.campaignType)
-                    )
+                    CampaignType.GDPR -> {
+                        val ce: CampaignEnv = it.targetingParams
+                            .find { c -> c.key == "campaignEnv" }
+                            ?.let { env ->
+                                CampaignEnv.values().find { t -> t.env == env.value }
+                            } ?: CampaignEnv.PUBLIC
+                        addCampaign(
+                            it.campaignType,
+                            CampaignTemplate(ce, it.targetingParams.filter { tp -> tp.key != "campaignEnv" }, it.campaignType)
+                        )
+                    }
+
+                    CampaignType.CCPA -> {
+                        val ce: CampaignEnv = it.targetingParams
+                            .find { c -> c.key == "campaignEnv" }
+                            ?.let { env ->
+                                CampaignEnv.values().find { t -> t.env == env.value }
+                            } ?: CampaignEnv.PUBLIC
+                        addCampaign(
+                            it.campaignType,
+                            CampaignTemplate(ce, it.targetingParams.filter { tp -> tp.key != "campaignEnv" }, it.campaignType)
+                        )
+                    }
                 }
             }
         }
@@ -105,11 +114,11 @@ private class CampaignManagerImpl(
     }
 
     override fun getGdpr(): Either<Gdpr> = check {
-        dataStorage.getGdpr()?.toGDPR() ?: fail("GDPR is not stored in memory!!!")
+        dataStorage.getGdpr()?.toGDPR(dataStorage.getGdprConsentUuid()) ?: fail("GDPR is not stored in memory!!!")
     }
 
     override fun getCcpa(): Either<Ccpa> = check {
-        dataStorage.getCcpa()?.toCCPA() ?: fail("CCPA is not stored in memory!!!")
+        dataStorage.getCcpa()?.toCCPA(dataStorage.getCcpaConsentUuid()) ?: fail("CCPA is not stored in memory!!!")
     }
 
     override fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate> = check {
@@ -161,7 +170,7 @@ private class CampaignManagerImpl(
             campaigns = campaigns,
             localState = localState,
             propertyPriorityData = propertyPriorityData?.let { JSONObject(it) } ?: JSONObject(),
-            thisContent = JSONObject()
+            thisContent = JSONObject(),
         )
     }
 
@@ -195,26 +204,27 @@ private class CampaignManagerImpl(
             campaigns = Campaigns(list = campaigns),
             consentLanguage = messageLanguage,
             localState = dataStorage.getLocalState(),
-            authId = authId
+            authId = authId,
+            campaignEnv = campaignEnv
         )
     }
 
-    override fun getGDPRConsent(): Either<GDPRConsent> = check {
-        gdprConsent ?: dataStorage
+    override fun getGDPRConsent(): Either<GDPRConsentInternal> = check {
+        dataStorage
             .getGdprConsentResp()
             .also { if (it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
             .let { JSONObject(it) }
             .toTreeMap()
-            .toGDPRUserConsent()
+            .toGDPRUserConsent(uuid = dataStorage.getGdprConsentUuid())
     }
 
-    override fun getCCPAConsent(): Either<CCPAConsent> = check {
-        ccpaConsent ?: dataStorage
+    override fun getCCPAConsent(): Either<CCPAConsentInternal> = check {
+        dataStorage
             .getCcpaConsentResp()
             .also { if (it.isBlank()) fail("CCPAConsent is not saved in the the storage!!") }
             .let { JSONObject(it) }
             .toTreeMap()
-            .toCCPAUserConsent()
+            .toCCPAUserConsent(uuid = dataStorage.getCcpaConsentUuid())
     }
 
     override fun saveGdpr(gdpr: Gdpr) {
@@ -225,16 +235,6 @@ private class CampaignManagerImpl(
     override fun saveCcpa(ccpa: Ccpa) {
         dataStorage.saveCcpa(ccpa.thisContent.toString())
         dataStorage.saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
-    }
-
-    override fun saveGDPRConsent(consent: GDPRConsent?) {
-        gdprConsent = consent
-        dataStorage.saveGdprConsentResp(consent?.thisContent?.toString() ?: "")
-    }
-
-    override fun saveCCPAConsent(consent: CCPAConsent?) {
-        ccpaConsent = consent
-        dataStorage.saveCcpaConsentResp(consent?.thisContent?.toString() ?: "")
     }
 
     override fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp) {
@@ -264,8 +264,6 @@ private class CampaignManagerImpl(
     }
 
     override fun clearConsents() {
-        gdprConsent = null
-        ccpaConsent = null
         dataStorage.clearGdprConsent()
         dataStorage.clearCcpaConsent()
     }

@@ -41,6 +41,23 @@
         <item name="colorOnBackground">@color/black_900</item>
         <item name="colorOnSurface">@color/black_900</item>
         <item name="colorOnError">@color/white_50</item>
+
+        <item name="colorOddItem">@color/black_50</item>
+        <item name="colorEvenItem">@color/white_50</item>
+        <item name="colorSuccessResponse">@color/green_status_600</item>
+        <item name="colorErrorResponse">@color/red_600</item>
+        <item name="colorItemComputation">@color/yellow_600</item>
+        <item name="colorWebAction">@color/orange_400</item>
+
+        <item name="webLink">@color/blue_link_600</item>
+        <item name="colorClientEvent">@color/rose_600</item>
+        <item name="colorJsonKey">@color/violet_600</item>
+        <item name="colorJsonValueText">@color/green_status_600</item>
+        <item name="colorJsonValueNumber">@color/blue_link_600</item>
+        <item name="colorJsonValueUrl">@color/blue_link_400</item>
+        <item name="colorJsonValueNull">@color/red_600</item>
+        <item name="colorJsonValueBraces">@color/black_400</item>
+
         <!--Material type attributes-->
         <item name="textAppearanceHeadline1">@style/TextAppearance.MyTheme.Headline1</item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.MyTheme.Headline2</item>
@@ -48,6 +65,7 @@
         <item name="textAppearanceHeadline4">@style/TextAppearance.MyTheme.Headline4</item>
         <item name="textAppearanceHeadline5">@style/TextAppearance.MyTheme.Headline5</item>
         <item name="textAppearanceHeadline6">@style/TextAppearance.MyTheme.Headline6</item>
+        <item name="textAppearanceHeadline7">@style/TextAppearance.MyTheme.Headline7</item>
         <item name="textAppearanceSubtitle1">@style/TextAppearance.MyTheme.Subtitle1</item>
         <item name="textAppearanceSubtitle2">@style/TextAppearance.MyTheme.Subtitle2</item>
         <item name="textAppearanceBody1">@style/TextAppearance.MyTheme.Body1</item>
@@ -63,7 +81,7 @@
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.MyTheme.BottomSheetDialog</item>
         <item name="navigationViewStyle">@style/Widget.MyTheme.NavigationView</item>
-        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Surface</item>
+        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Primary</item>
     </style>
     <style name="Base.Theme.MaterialThemeMetaapp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorPrimaryVariant</item>

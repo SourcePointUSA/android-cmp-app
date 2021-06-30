@@ -19,17 +19,35 @@
     <style name="Theme.MyApp" parent="Base.Theme.MyApp">
         <!--Material color attributes (dark theme) -->
         <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_600</item>
+        <item name="colorPrimaryVariant">@color/purple_500</item>
         <item name="colorSecondary">@color/green_200</item>
         <item name="colorSecondaryVariant">@color/green_500</item>
         <item name="android:colorBackground">@color/black_900</item>
-        <item name="colorSurface">@color/black_800</item>
+        <item name="colorSurface">@color/black_600</item>
         <item name="colorError">@color/red_200</item>
         <item name="colorOnPrimary">@color/black_900</item>
         <item name="colorOnSecondary">@color/black_900</item>
         <item name="colorOnBackground">@color/white_50</item>
         <item name="colorOnSurface">@color/white_50</item>
         <item name="colorOnError">@color/black_900</item>
+
+        <item name="colorSuccessResponse">@color/green_status_200</item>
+        <item name="colorErrorResponse">@color/red_200</item>
+        <item name="colorItemComputation">@color/yellow_600</item>
+        <item name="colorWebAction">@color/orange_200</item>
+
+        <item name="webLink">@color/blue_link_200</item>
+        <item name="colorClientEvent">@color/rose_200</item>
+        <item name="colorJsonKey">@color/violet_200</item>
+        <item name="colorJsonValueText">@color/green_status_200</item>
+        <item name="colorJsonValueNumber">@color/blue_link_200</item>
+        <item name="colorJsonValueUrl">@color/blue_link_200</item>
+        <item name="colorJsonValueNull">@color/red_200</item>
+        <item name="colorJsonValueBraces">@color/black_50</item>
+
+        <item name="colorOddItem">@color/black_400</item>
+        <item name="colorEvenItem">@color/black_600</item>
+
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
     </style>

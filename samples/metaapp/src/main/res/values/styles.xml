@@ -60,4 +60,14 @@
         <item name="boxCollapsedPaddingTop">0dp</item>
     </style>
 
+    <style name="Widget.MaterialComponents.Toolbar.Primary.Sp" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">?attr/colorSurface</item>
+    </style>
+
+    <style name="Widget.MaterialComponents.CircularProgressIndicator.ExtraSmall">
+        <item name="trackThickness">@dimen/mtrl_progress_circular_track_thickness_extra_small</item>
+        <item name="indicatorSize">@dimen/mtrl_progress_circular_size_extra_small</item>
+        <item name="indicatorInset">@dimen/mtrl_progress_circular_inset_extra_small</item>
+    </style>
+
 </resources>

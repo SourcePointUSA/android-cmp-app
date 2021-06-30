@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
+import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.uwMessDataTest
 import org.junit.Test
@@ -24,10 +25,9 @@ class MessageModelReqExtTest {
         val sut = uwMessDataTest.toJsonObject()
         sut.toTreeMap().apply {
             getMap("campaigns")?.size.assertEquals(2)
+            getFieldValue<String>("campaignEnv").assertEquals("stage")
             getMap("campaigns")?.also { map ->
-                map.getMap("ccpa")?.getFieldValue<String>("campaignEnv").assertEquals("stage")
                 map.getMap("ccpa")?.getFieldValue<String>("targetingParams").assertEquals("{\"location\":\"US\"}")
-                map.getMap("gdpr")?.getFieldValue<String>("campaignEnv").assertEquals("stage")
                 map.getMap("gdpr")?.getFieldValue<String>("targetingParams").assertEquals("{\"location\":\"EU\"}")
             }
         }

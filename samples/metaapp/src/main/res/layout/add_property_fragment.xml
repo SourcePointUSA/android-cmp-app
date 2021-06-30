@@ -4,9 +4,11 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?android:colorBackground">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.sourcepointmeta.metaapp.ui.component.AddPropertyLayout
+            android:id="@+id/add_property_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -22,6 +24,7 @@
                     android:id="@+id/tool_bar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
+                    app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
                     app:title="@string/add_prop_title"/>
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -42,62 +45,50 @@
                 app:helperTextEnabled="true"
                 app:placeholderText="i.e. mobile.prop.com">
             <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/prop_name"
+                    android:id="@+id/prop_name_ed"
                     android:maxLines="1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:inputType="text"
+                    android:nextFocusDown="@id/account_id_ed"
+                    android:layout_height="60dp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/account_id_container"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginStart="16dp"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/prop_name_container"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/message_type_autocomplete_container"
                 android:hint="Acount Id"
                 app:helperText="Account Id"
                 app:helperTextEnabled="true"
                 app:placeholderText="i.e. 22">
             <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/account_id_tv"
+                    android:id="@+id/account_id_ed"
                     android:maxLines="1"
                     android:inputType="number"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:nextFocusDown="@id/message_type_autocomplete"
+                    android:layout_height="60dp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--    <com.google.android.material.textfield.TextInputLayout-->
-        <!--            android:id="@+id/name_text_input"-->
-        <!--            app:layout_constraintTop_toBottomOf="@id/radio_group"-->
-        <!--            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:hint="@string/message_type">-->
-
-        <!--        <AutoCompleteTextView-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:background="@null"/>-->
-
-        <!--    </com.google.android.material.textfield.TextInputLayout>-->
-
         <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/input_layout_holiday_destination"
-                app:layout_constraintTop_toBottomOf="@id/account_id_container"
+                android:id="@+id/message_type_autocomplete_container"
+                app:layout_constraintTop_toBottomOf="@id/prop_name_container"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toEndOf="@id/account_id_container"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:helperText="Property name"
+                app:helperText="Message Type"
                 app:helperTextEnabled="true"
                 app:placeholderText="i.e. mobile.prop.com"
                 android:hint="@string/message_type">
@@ -106,19 +97,176 @@
                     android:id="@+id/message_type_autocomplete"
                     style="@style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:layout_gravity="center_vertical"
                     android:singleLine="true"
                     android:lines="1"
-                    android:nextFocusDown="@+id/txv_holiday_num_of_nights"
+                    android:nextFocusDown="@+id/active"
                     android:imeOptions="actionNext"
+            />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/gdpr_pm_id_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/account_id_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ccpa_pm_id_container"
+                android:hint="GDPR Pm Id"
+                app:helperText="GDPR Privacy Manager Id"
+                app:helperTextEnabled="true"
+                app:placeholderText="i.e. 121212">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/gdpr_pm_id_ed"
+                    android:maxLines="1"
+                    android:inputType="number"
+                    android:nextFocusDown="@id/ccpa_pm_id_ed"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ccpa_pm_id_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/account_id_container"
+                app:layout_constraintStart_toEndOf="@id/gdpr_pm_id_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:hint="CCPA Pm Id"
+                app:helperText="CCPA Privacy Manager Id"
+                app:helperTextEnabled="true"
+                app:placeholderText="i.e. 121212">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ccpa_pm_id_ed"
+                    android:maxLines="1"
+                    android:inputType="number"
+                    android:nextFocusDown="@id/radio_stage"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/auth_id_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/gdpr_pm_id_container"
+                app:layout_constraintStart_toStartOf="@id/ccpa_pm_id_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:hint="Auth Id"
+                app:helperText="Auth Id"
+                app:helperTextEnabled="true"
+                app:placeholderText="i.e. 121212">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/auth_id_ed"
+                    android:maxLines="1"
+                    android:layout_width="match_parent"
+                    android:inputType="text"
+                    android:nextFocusDown="@id/timeout_ed"
+                    android:layout_height="60dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/timeout_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toBottomOf="@id/auth_id_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:hint="Timeout"
+                app:helperText="Timeout in millis"
+                app:helperTextEnabled="true"
+                app:placeholderText="i.e. 3000">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/timeout_ed"
+                    android:maxLines="1"
+                    android:layout_width="match_parent"
+                    android:inputType="number"
+                    android:nextFocusDown="@id/message_language_autocomplete"
+                    android:layout_height="60dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/message_language_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toBottomOf="@id/timeout_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:helperText="Message Language"
+                app:helperTextEnabled="true"
+                app:placeholderText="i.e. English"
+                android:hint="@string/message_language">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/message_language_autocomplete"
+                    style="@style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_vertical"
+                    android:singleLine="true"
+                    android:lines="1"
+                    android:inputType="text"
+                    android:nextFocusDown="@id/chip_gdpr"
+                    android:imeOptions="actionNext"
+            />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/pm_tab_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toBottomOf="@id/message_language_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:helperText="PM Tab"
+                app:helperTextEnabled="true"
+                app:placeholderText="i.e. English"
+                android:hint="@string/pm_tab">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/pm_tab_autocomplete"
+                    style="@style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_vertical"
+                    android:singleLine="true"
+                    android:lines="1"
+                    android:inputType="text"
+                    android:nextFocusDown="@id/chip_gdpr"
+                    android:imeOptions="actionDone"
             />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
                 android:text="Campaign Enviroment"
-                app:layout_constraintTop_toBottomOf="@id/input_layout_holiday_destination"
+                app:layout_constraintTop_toBottomOf="@id/gdpr_pm_id_container"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
@@ -132,11 +280,12 @@
         <RadioGroup
                 android:id="@+id/radio_group"
                 app:layout_constraintTop_toBottomOf="@id/campaign_env_tv"
-                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="@id/gdpr_pm_id_container"
+                app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="16dp"
                 android:orientation="horizontal"
                 android:checkedButton="@+id/radio_stage"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content">
             <RadioButton
                     android:id="@+id/radio_stage"
@@ -145,7 +294,7 @@
                     android:text="@string/stage"/>
             <RadioButton
                     android:id="@+id/radio_prod"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/prod"/>
@@ -154,7 +303,7 @@
         <TextView
                 android:text="Active Camapigns"
                 android:id="@+id/campaigns_tv"
-                app:layout_constraintTop_toBottomOf="@id/radio_group"
+                app:layout_constraintTop_toBottomOf="@id/pm_tab_container"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
@@ -187,7 +336,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                app:icon="@drawable/baseline_add_circle_outline_48"
+                app:icon="@drawable/ic_baseline_add_circle_outline_48"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"/>
 
@@ -224,7 +373,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                app:icon="@drawable/baseline_add_circle_outline_48"
+                app:icon="@drawable/ic_baseline_add_circle_outline_48"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"/>
 
@@ -238,5 +387,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+                android:id="@+id/save_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:text="@string/save"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/ccpa_chip_group"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+    </com.sourcepointmeta.metaapp.ui.component.AddPropertyLayout>
 </ScrollView>

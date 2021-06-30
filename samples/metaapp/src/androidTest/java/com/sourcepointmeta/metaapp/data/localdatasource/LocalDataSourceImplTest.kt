@@ -3,8 +3,11 @@ package com.sourcepointmeta.metaapp.data.localdatasource
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.core.Either
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,25 +17,29 @@ class LocalDataSourceImplTest {
 
     private val appContext by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
 
-    private val tp = listOf(
-        TargetingParam("test", "key1", "val1"),
-        TargetingParam("test", "key2", "val2"),
-        TargetingParam("test", "key3", "val3"),
+    private val tp = listOf<MetaTargetingParam>(
+        MetaTargetingParam("test", CampaignType.GDPR, "key1", "val1"),
+        MetaTargetingParam("test", CampaignType.GDPR, "key2", "val2"),
+        MetaTargetingParam("test", CampaignType.GDPR, "key3", "val3"),
     )
 
     private val prop1 = Property(
-        account_id = 1,
-        property_name = "prop1",
-        property_id = 1,
-        pm_id = "",
-        auth_Id = null,
-        message_language = null,
-        pm_tab = null,
+        accountId = 1,
+        propertyName = "prop1",
+        timeout = 1,
+        authId = null,
+        messageLanguage = "ENGLISH",
+        pmTab = "DEFAULT",
         is_staging = false,
-        targetingParameters = tp
+        targetingParameters = tp,
+        statusCampaignSet = setOf(StatusCampaign("prop1", CampaignType.GDPR, true)),
+        messageType = "App",
+        gdprPmId = 1212L,
+        ccpaPmId = 1313L,
+        campaignEnv = CampaignEnv.STAGE
     )
 
-    private val prop2 = prop1.copy(property_name = "prop2", account_id = 2, property_id = 2)
+    private val prop2 = prop1.copy(propertyName = "prop2", accountId = 2, timeout = 2)
 
     private val db by lazy { createDb(appContext) }
     private val ds by lazy { LocalDataSource.create(db) }
@@ -42,27 +49,32 @@ class LocalDataSourceImplTest {
         ds.deleteAll()
     }
 
+    @After
+    fun cleanUp() = runBlocking<Unit> {
+        ds.deleteAll()
+    }
+
     @Test
     fun property_CRUD() = runBlocking<Unit> {
         (ds.fetchProperties() as Either.Right).r.size.assertEquals(0)
-        (ds.fetchTargetingParams(prop1.property_name) as Either.Right).r.size.assertEquals(0)
+        (ds.fetchTargetingParams(prop1.propertyName) as Either.Right).r.size.assertEquals(0)
         ds.storeOrUpdateProperty(prop1)
         ds.storeOrUpdateProperty(prop2)
-        (ds.fetchTargetingParams(prop1.property_name) as Either.Right).r.size.assertEquals(3)
+        (ds.fetchTargetingParams(prop1.propertyName) as Either.Right).r.size.assertEquals(3)
         (ds.fetchProperties() as Either.Right).r.size.assertEquals(2)
-        val p = (ds.fetchPropertyByName(prop1.property_name) as Either.Right).r
+        val p = (ds.fetchPropertyByName(prop1.propertyName) as Either.Right).r
         p.run {
             targetingParameters.size.assertEquals(3)
-            auth_Id.assertNull()
+            authId.assertNull()
             is_staging.assertFalse()
         }
-        ds.storeOrUpdateProperty(p.copy(auth_Id = "authId", is_staging = true))
-        val p2 = (ds.fetchPropertyByName(prop1.property_name) as Either.Right).r
+        ds.storeOrUpdateProperty(p.copy(authId = "authId", is_staging = true))
+        val p2 = (ds.fetchPropertyByName(prop1.propertyName) as Either.Right).r
         p2.run {
-            auth_Id.assertNotNull()
+            authId.assertNotNull()
             is_staging.assertTrue()
         }
-        ds.deleteByPropertyName(prop1.property_name)
+        ds.deleteByPropertyName(prop1.propertyName)
         (ds.fetchProperties() as Either.Right).r.size.assertEquals(1)
     }
 
@@ -70,7 +82,7 @@ class LocalDataSourceImplTest {
     fun targetingParams_crud() = runBlocking<Unit> {
         ds.storeOrUpdateProperty(prop1)
         ds.storeOrUpdateProperty(prop2)
-        val p = (ds.fetchPropertyByName(prop1.property_name) as Either.Right).r
+        val p = (ds.fetchPropertyByName(prop1.propertyName) as Either.Right).r
         p.run {
             targetingParameters.size.assertEquals(3)
             targetingParameters.forEach { it.value.contains("val").assertTrue() }
@@ -81,7 +93,7 @@ class LocalDataSourceImplTest {
                 targetingParameters = p.targetingParameters.map { it.copy(value = "test") }
             )
         )
-        (ds.fetchPropertyByName(prop1.property_name) as Either.Right).r
+        (ds.fetchPropertyByName(prop1.propertyName) as Either.Right).r
             .targetingParameters
             .forEach { it.value.contains("test").assertTrue() }
     }
@@ -119,5 +131,40 @@ class LocalDataSourceImplTest {
         val res = (ds.fetchProperties() as Either.Right).r
 
         res.first().targetingParameters.size.assertEquals(3)
+    }
+
+    @Test
+    fun GIVEN_a_targetingparameter_SAVE_it_into_the_DB() = runBlocking<Unit> {
+        val gdprState =
+            StatusCampaign(propertyName = prop1.propertyName, campaignType = CampaignType.GDPR, enabled = true)
+        val ccpaState =
+            StatusCampaign(propertyName = prop1.propertyName, campaignType = CampaignType.CCPA, enabled = false)
+        val prop3 = prop1.copy(statusCampaignSet = setOf(gdprState, ccpaState))
+        ds.storeOrUpdateProperty(prop3)
+        val sut = (ds.fetchPropertyByName(prop1.propertyName) as Either.Right).r
+        sut.statusCampaignSet.first { it.campaignType == CampaignType.GDPR }.enabled.assertTrue()
+        sut.statusCampaignSet.first { it.campaignType == CampaignType.CCPA }.enabled.assertFalse()
+
+        val prop4 =
+            prop3.copy(statusCampaignSet = setOf(gdprState.copy(enabled = false), ccpaState.copy(enabled = true)))
+        ds.storeOrUpdateProperty(prop4)
+        val sut1 = (ds.fetchPropertyByName(prop3.propertyName) as Either.Right).r
+        sut1.statusCampaignSet.first { it.campaignType == CampaignType.GDPR }.enabled.assertFalse()
+        sut1.statusCampaignSet.first { it.campaignType == CampaignType.CCPA }.enabled.assertTrue()
+    }
+
+    @Test
+    fun GIVEN_a_property_update_its_info() = runBlocking<Unit> {
+        val p = prop1.copy(authId = "athu")
+        repeat(2) { ds.storeOrUpdateProperty(p) }
+        (ds.propertyCount() as Either.Right).r.assertEquals(1)
+        ds.storeOrUpdateProperty(p.copy(gdprPmId = 111L, ccpaPmId = 222L, authId = "auth"))
+        (ds.propertyCount() as Either.Right).r.assertEquals(1)
+        val sut = (ds.fetchPropertyByName(prop1.propertyName) as Either.Right).r
+        sut.run {
+            gdprPmId.assertEquals(111L)
+            ccpaPmId.assertEquals(222L)
+            authId.assertEquals("auth")
+        }
     }
 }

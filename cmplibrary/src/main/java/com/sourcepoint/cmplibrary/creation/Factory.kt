@@ -58,17 +58,18 @@ fun makeConsentLib(
     val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
     val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig, spConfig.messageLanguage)
     val errorManager = errorMessageManager(campaignManager, client)
-    val logger = createLogger(errorManager)
+    val logger = spConfig.logger ?: createLogger(errorManager)
     val jsonConverter = JsonConverter.create()
     val connManager = ConnectionManager.create(appCtx)
-    val responseManager = ResponseManager.create(jsonConverter)
+    val responseManager = ResponseManager.create(jsonConverter, logger)
     val networkClient = networkClient(okHttpClient, responseManager, logger)
     val viewManager = ViewsManager.create(WeakReference<Activity>(activity), connManager, spConfig.messageTimeout)
     val execManager = ExecutorManager.create(appCtx)
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
     val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
     val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, dataStorage, logger)
-    val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, env, logger, dataStorage, execManager)
+    val consentManager: ConsentManager =
+        ConsentManager.create(service, consentManagerUtils, env, logger, dataStorage, execManager)
 
     return SpConsentLibImpl(
         context = appCtx,

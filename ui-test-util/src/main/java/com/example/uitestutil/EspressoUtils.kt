@@ -2,9 +2,11 @@ package com.example.uitestutil
 
 import androidx.annotation.IdRes
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.web.assertion.WebViewAssertions.webMatches
 import androidx.test.espresso.web.model.Atoms
@@ -73,6 +75,44 @@ fun performClickById(
             isDisplayed()
         )
     ).perform(ViewActions.click())
+}
+fun scrollAndPerformClickById(
+    @IdRes resId: Int
+) {
+    onView(allOf(withId(resId)))
+        .perform(ViewActions.scrollTo(), ViewActions.click())
+}
+
+@Throws(Throwable::class)
+fun pressAlertDialogBtn(
+    content : String
+){
+    onView(withText(content))
+        .inRoot(RootMatchers.isDialog())
+        .check(ViewAssertions.matches(isDisplayed()))
+        .perform(ViewActions.click())
+}
+
+@Throws(Throwable::class)
+fun addTextById(
+    @IdRes resId: Int,
+    text : String
+){
+    onView(withId(resId))
+        .perform(ViewActions.click())
+        .perform(ViewActions.typeText(text))
+        .perform(ViewActions.closeSoftKeyboard())
+}
+@Throws(Throwable::class)
+fun addTextByIdInDialog(
+    @IdRes resId: Int,
+    text : String
+){
+    onView(withId(resId))
+        .inRoot(RootMatchers.isDialog())
+        .perform(ViewActions.click())
+        .perform(ViewActions.typeText(text))
+        .perform(ViewActions.closeSoftKeyboard())
 }
 
 @Throws(Throwable::class)
@@ -169,7 +209,7 @@ fun performClickOnWebViewByClass(classValue: String) {
 @Throws(Throwable::class)
 fun checkConsentState(consent: String, selected: Boolean) {
     onWebView()
-        .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent' and @aria-checked='$selected']/span[@class='slider round']"))
+        .withElement(findElement(Locator.XPATH, "//span[@aria-label='$consent' and @aria-checked='$selected' and @class='slider round']"))
         .perform(webScrollIntoView())
 }
 
@@ -190,7 +230,7 @@ fun performClickPMTabSelected(expected: String) {
 @Throws(Throwable::class)
 fun tapOnToggle(property: String) {
     onWebView()
-        .withElement(findElement(Locator.XPATH, "//label[@aria-label='$property']/span[@class='slider round']"))
+        .withElement(findElement(Locator.XPATH, "//span[@aria-label='$property'and @class='slider round']"))
         .perform(webScrollIntoView())
         .perform(webClick())
 }
@@ -198,7 +238,7 @@ fun tapOnToggle(property: String) {
 @Throws(Throwable::class)
 fun tapOnToggle(property: String, tapOnlyWhen : Boolean) {
     onWebView()
-        .withElement(findElement(Locator.XPATH, "//label[@aria-label='$property' and @aria-checked='$tapOnlyWhen']/span[@class='slider round']"))
+        .withElement(findElement(Locator.XPATH, "//span[@aria-label='$property'and @aria-checked='$tapOnlyWhen' and @class='slider round']"))
         .perform(webScrollIntoView())
         .perform(webClick())
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sourcepointmeta.metaapp.ui.component.DemoFragmentLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/tool_bar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="@string/json_analyzer_title"
+                app:navigationIcon="@drawable/ic_baseline_arrow_back_24"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <TextView
+            tools:text="Log"
+            android:id="@+id/log_title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:textAppearance="?attr/textAppearanceHeadline7"
+            android:textColor="?android:attr/textColorAlertDialogListItem"
+            android:paddingTop="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:maxLines="5"
+            android:ellipsize="marquee"
+    />
+
+    <HorizontalScrollView
+            app:layout_constraintTop_toBottomOf="@id/log_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            android:orientation="vertical">
+
+        <com.yuyh.jsonviewer.library.JsonRecyclerView
+                android:id="@+id/rv_json"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+    </HorizontalScrollView>
+
+</com.sourcepointmeta.metaapp.ui.component.DemoFragmentLayout>

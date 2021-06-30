@@ -5,6 +5,7 @@ plugins {
     id("io.github.dryrum.update-changelog")
     id("io.github.dryrum.replace-in-file")
     id("io.github.dryrum.git-utils")
+    id("io.github.dryrum.bump-version-code")
     id("com.squareup.sqldelight")
     id("kotlin-android")
 }
@@ -13,22 +14,35 @@ plugins {
 apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
 apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
 
+val versionCodeMeta = (project.property("VERSION_CODE") as String).toInt()
+
 android {
     compileSdkVersion(29)
     defaultConfig {
         applicationId = "com.sourcepointmeta.metaapp"
         minSdkVersion(21)
         targetSdkVersion(29)
-        versionCode = 2
+        versionCode = versionCodeMeta
         versionName = "${rootProject.project("cmplibrary").version}"
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-//        getByName("debug") { }
+        getByName("debug") {
+            applicationIdSuffix = ".debug"
+        }
+        create("localProd") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".localprod"
+        }
+        create("preprod") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".preprod"
+        }
         getByName("release") {
             isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
@@ -36,8 +50,6 @@ android {
         val sharedRes = "${project.rootDir.path}/ui-test-util/jsonFiles"
         getByName("test").resources.srcDir(sharedRes)
         getByName("androidTest").resources.srcDir(sharedRes)
-//        getByName("main").resources.srcDir("${projectDir.path}/files")
-
     }
 
     compileOptions {
@@ -61,18 +73,23 @@ android {
         // https://stackoverflow.com/questions/44751469/kotlin-extension-functions-suddenly-require-api-level-24/44752239
         isAbortOnError = false
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
 }
 
 sqldelight {
-    database("MetaAppDB"){
+    database("MetaAppDB") {
         packageName = "com.sourcepointmeta.metaapp.db"
     }
 }
 
 dependencies {
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
+
+
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
     implementation(Libs.kotlinReflect)
@@ -89,11 +106,15 @@ dependencies {
     implementation(Libs.vectorDrawable)
     implementation(Libs.androidxLifLivedata)
     implementation(Libs.androidxLifViewModel)
+    implementation("androidx.fragment:fragment-ktx:1.3.4")
+    implementation("androidx.core:core-ktx:1.5.0") // ext drawable
+
 
     // Koin
-    implementation(Libs.koinCore)
-    implementation(Libs.koinCoreExt)
+//    implementation(Libs.koinCore)
+//    implementation(Libs.koinCoreExt)
     implementation(Libs.koinAndroid)
+    implementation(Libs.koinViewModel)
 
     // SQLDelight
     implementation(Libs.sqlDelight)
@@ -106,4 +127,14 @@ dependencies {
     // integration-test
     androidTestImplementation(Libs.koinTest)
 
+}
+
+versionCodePropPath {
+    path = "gradle.properties"
+}
+
+addCommitPushConfig {
+    fileList = listOf(
+        "${rootDir.path}/samples/metaapp/gradle.properties"
+    )
 }

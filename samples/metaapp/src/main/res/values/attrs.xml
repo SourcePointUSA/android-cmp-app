@@ -20,6 +20,22 @@
     <!--Common attributes-->
     <attr name="colorFillColor" format="color"/>
     <attr name="colorStrokeColor" format="color"/>
+    <attr name="colorOddItem" format="color"/>
+    <attr name="colorEvenItem" format="color"/>
+    <attr name="colorSuccessResponse" format="color"/>
+    <attr name="colorErrorResponse" format="color"/>
+    <attr name="webLink" format="color"/>
+    <attr name="colorClientEvent" format="color"/>
+    <attr name="colorJsonKey" format="color"/>
+    <attr name="colorJsonValueText" format="color"/>
+    <attr name="colorJsonValueNumber" format="color"/>
+    <attr name="colorJsonValueUrl" format="color"/>
+    <attr name="colorJsonValueNull" format="color"/>
+    <attr name="colorJsonValueBraces" format="color"/>
+    <attr name="colorWebAction" format="color"/>
+    <attr name="colorItemComputation" format="color"/>
+
+    <attr format="reference" name="textAppearanceHeadline7"/>
 
     <!--Label view attributes-->
     <declare-styleable name="LabelLinkView">
@@ -57,5 +73,5 @@
         <attr name="shapeStrokeColor" format="color"/>
         <attr name="shapeAppearanceAttr" format="reference"/>
     </declare-styleable>
-    
+
 </resources>

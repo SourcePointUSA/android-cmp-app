@@ -29,8 +29,13 @@ android {
     buildTypes {
         getByName("debug") {
             buildConfigField("String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\"")
-            buildConfigField("String", "SDK_ENV", "\"STAGE\"")
+            buildConfigField("String", "SDK_ENV", "\"PROD\"")
             buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
+            buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
+        }
+        create("localProd") {
+            initWith(getByName("debug"))
+            buildConfigField("String", "ENV_QUERY_PARAM", "\"localProd\"")
         }
         create("preprod") {
             initWith(getByName("debug"))
@@ -38,12 +43,14 @@ android {
             buildConfigField("String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\"")
             buildConfigField("String", "SDK_ENV", "\"PROD\"")
             buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
+            buildConfigField("String", "ENV_QUERY_PARAM", "\"localProd\"")
         }
         getByName("release") {
             isMinifyEnabled = false
             buildConfigField("String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\"")
             buildConfigField("String", "SDK_ENV", "\"PROD\"")
             buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
+            buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
         }
     }
 

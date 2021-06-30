@@ -11,8 +11,10 @@ object Libs {
     const val okHttpLatest = "com.squareup.okhttp3:okhttp:${Versions.okHttpLatestVersion}"
     const val koinCore = "org.koin:koin-core:${Versions.koinVersion}"
     const val koinCoreExt = "org.koin:koin-core-ext:${Versions.koinVersion}"
-    const val koinTest = "org.koin:koin-test:${Versions.koinVersion}"
-    const val koinAndroid = "org.koin:koin-android:${Versions.koinVersion}"
+    const val koinTest = "io.insert-koin:koin-test:2.2.3"
+    const val koinAndroid = "io.insert-koin:koin-android:2.2.3"
+    const val koinViewModel = "io.insert-koin:koin-androidx-viewmodel:2.2.3"
+    const val androidxFragmentKtx: String = "androidx.core:core-ktx:1.3.4"
 
     const val androidxCore: String = "androidx.core:core-ktx:${Versions.androidxCoreVersion}"
     const val androidxAppcompat: String = "androidx.appcompat:appcompat:${Versions.androidxAppcompatVersion}"
