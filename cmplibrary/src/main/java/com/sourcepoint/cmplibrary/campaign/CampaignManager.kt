@@ -16,7 +16,7 @@ import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.Campaigns
-import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.util.check
@@ -42,12 +42,10 @@ internal interface CampaignManager {
     fun getUnifiedMessageReq(authId: String?): UnifiedMessageRequest
 
     fun getGDPRConsent(): Either<GDPRConsentInternal>
-    fun getCCPAConsent(): Either<CCPAConsent>
+    fun getCCPAConsent(): Either<CCPAConsentInternal>
 
     fun saveGdpr(gdpr: Gdpr)
     fun saveCcpa(ccpa: Ccpa)
-    fun saveGDPRConsent(consent: GDPRConsentInternal?)
-    fun saveCCPAConsent(consent: CCPAConsent?)
     fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp)
 
     fun parseRenderingMessage()
@@ -68,11 +66,6 @@ private class CampaignManagerImpl(
     override val spConfig: SpConfig,
     override val messageLanguage: MessageLanguage
 ) : CampaignManager {
-
-    companion object {
-        private var gdprConsent: GDPRConsentInternal? = null
-        private var ccpaConsent: CCPAConsent? = null
-    }
 
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
 
@@ -120,11 +113,11 @@ private class CampaignManagerImpl(
     }
 
     override fun getGdpr(): Either<Gdpr> = check {
-        dataStorage.getGdpr()?.toGDPR() ?: fail("GDPR is not stored in memory!!!")
+        dataStorage.getGdpr()?.toGDPR(dataStorage.getGdprConsentUuid()) ?: fail("GDPR is not stored in memory!!!")
     }
 
     override fun getCcpa(): Either<Ccpa> = check {
-        dataStorage.getCcpa()?.toCCPA() ?: fail("CCPA is not stored in memory!!!")
+        dataStorage.getCcpa()?.toCCPA(dataStorage.getCcpaConsentUuid()) ?: fail("CCPA is not stored in memory!!!")
     }
 
     override fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate> = check {
@@ -215,21 +208,21 @@ private class CampaignManagerImpl(
     }
 
     override fun getGDPRConsent(): Either<GDPRConsentInternal> = check {
-        gdprConsent ?: dataStorage
+        dataStorage
             .getGdprConsentResp()
             .also { if (it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
             .let { JSONObject(it) }
             .toTreeMap()
-            .toGDPRUserConsent()
+            .toGDPRUserConsent(uuid = dataStorage.getGdprConsentUuid())
     }
 
-    override fun getCCPAConsent(): Either<CCPAConsent> = check {
-        ccpaConsent ?: dataStorage
+    override fun getCCPAConsent(): Either<CCPAConsentInternal> = check {
+        dataStorage
             .getCcpaConsentResp()
             .also { if (it.isBlank()) fail("CCPAConsent is not saved in the the storage!!") }
             .let { JSONObject(it) }
             .toTreeMap()
-            .toCCPAUserConsent()
+            .toCCPAUserConsent(uuid = dataStorage.getCcpaConsentUuid())
     }
 
     override fun saveGdpr(gdpr: Gdpr) {
@@ -240,16 +233,6 @@ private class CampaignManagerImpl(
     override fun saveCcpa(ccpa: Ccpa) {
         dataStorage.saveCcpa(ccpa.thisContent.toString())
         dataStorage.saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
-    }
-
-    override fun saveGDPRConsent(consent: GDPRConsentInternal?) {
-        gdprConsent = consent
-        dataStorage.saveGdprConsentResp(consent?.thisContent?.toString() ?: "")
-    }
-
-    override fun saveCCPAConsent(consent: CCPAConsent?) {
-        ccpaConsent = consent
-        dataStorage.saveCcpaConsentResp(consent?.thisContent?.toString() ?: "")
     }
 
     override fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp) {
@@ -279,8 +262,6 @@ private class CampaignManagerImpl(
     }
 
     override fun clearConsents() {
-        gdprConsent = null
-        ccpaConsent = null
         dataStorage.clearGdprConsent()
         dataStorage.clearCcpaConsent()
     }

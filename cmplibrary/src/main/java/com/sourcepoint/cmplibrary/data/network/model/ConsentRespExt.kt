@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
-import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
@@ -39,7 +39,7 @@ internal fun String.toConsentAction(): ConsentAction {
     )
 }
 
-internal fun Map<String, Any?>.toCCPAUserConsent(): CCPAConsent {
+internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?): CCPAConsentInternal {
 
     val rejectedCategories = getFieldValue<Iterable<Any?>>("rejectedCategories")
         ?.filterIsInstance(String::class.java)
@@ -54,7 +54,8 @@ internal fun Map<String, Any?>.toCCPAUserConsent(): CCPAConsent {
 
     val uspString: String = getFieldValue("USPString") ?: "" // failParam("Ccpa USPString")
 
-    return CCPAConsent(
+    return CCPAConsentInternal(
+        uuid = uuid,
         rejectedCategories = rejectedCategories,
         rejectedVendors = rejectedVendors,
         status = status,
@@ -63,7 +64,7 @@ internal fun Map<String, Any?>.toCCPAUserConsent(): CCPAConsent {
     )
 }
 
-internal fun Map<String, Any?>.toGDPRUserConsent(): GDPRConsentInternal {
+internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInternal {
 
     val tcData: Map<String, Any?> = getMap("TCData") ?: emptyMap()
     val vendorsGrants = getMap("grants")
@@ -92,11 +93,12 @@ internal fun Map<String, Any?>.toGDPRUserConsent(): GDPRConsentInternal {
         } ?: emptyList()
 
     return GDPRConsentInternal(
-        thisContent = JSONObject(this),
+        uuid = uuid,
         tcData = tcData,
         grants = vendorsGrants,
         euconsent = euConsent,
         acceptedCategories = consentedPurposes,
-        acceptedVendors = consentedVendors
+        acceptedVendors = consentedVendors,
+        thisContent = JSONObject(this)
     )
 }

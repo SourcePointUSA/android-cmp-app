@@ -77,7 +77,7 @@ internal fun CustomConsentResp.toSpCustomConsent(): SPCustomConsents = SPCustomC
 internal data class ConsentResp(
     val content: JSONObject,
     val userConsent: String?,
-    val uuid: String,
+    val uuid: String?,
     val localState: String,
     var campaignType: CampaignType? = null
 )

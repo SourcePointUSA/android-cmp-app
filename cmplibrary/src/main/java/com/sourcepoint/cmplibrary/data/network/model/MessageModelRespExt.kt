@@ -25,7 +25,13 @@ internal fun JSONObject.toUnifiedMessageRespDto(): UnifiedMessageResp {
 
     val listEither: List<Either<CampaignResp?>> = map
         .getFieldValue<List<Map<String, Any?>>>("campaigns")
-        ?.map { check { it.toCampaignResp() } }
+        ?.map {
+            check {
+                val campaignType = it.getFieldValue<String>("type")?.lowercase() ?: ""
+                val uuid: String? = map.getMap("localState")?.getMap(campaignType)?.getFieldValue("uuid")
+                it.toCampaignResp(uuid)
+            }
+        }
         ?: emptyList()
 
     val list = listEither.fold(mutableListOf<CampaignResp>()) { acc, elem ->
@@ -41,20 +47,20 @@ internal fun JSONObject.toUnifiedMessageRespDto(): UnifiedMessageResp {
     )
 }
 
-internal fun Map<String, Any?>.toCampaignResp(): CampaignResp? {
+internal fun Map<String, Any?>.toCampaignResp(uuid: String?): CampaignResp? {
     return when (getFieldValue<String>("type")?.uppercase(Locale.getDefault()) ?: failParam("type")) {
-        CampaignType.GDPR.name -> this.toGDPR()
-        CampaignType.CCPA.name -> this.toCCPA()
+        CampaignType.GDPR.name -> this.toGDPR(uuid)
+        CampaignType.CCPA.name -> this.toCCPA(uuid)
         else -> null
     }
 }
 
-internal fun String.toCCPA(): Ccpa? {
+internal fun String.toCCPA(uuid: String?): Ccpa {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
-    return map.toCCPA()
+    return map.toCCPA(uuid)
 }
 
-private fun Map<String, Any?>.toCCPA(): Ccpa? {
+private fun Map<String, Any?>.toCCPA(uuid: String?): Ccpa {
 
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
@@ -66,11 +72,11 @@ private fun Map<String, Any?>.toCCPA(): Ccpa? {
         message = message,
         url = url?.let { HttpUrl.parse(it) },
         messageMetaData = messageMetaData,
-        userConsent = getMap("userConsent")?.toCCPAUserConsent() ?: failParam("CCPAUserConsent")
+        userConsent = getMap("userConsent")?.toCCPAUserConsent(uuid) ?: failParam("CCPAUserConsent")
     )
 }
 
-internal fun Map<String, Any?>.toGDPR(): Gdpr {
+internal fun Map<String, Any?>.toGDPR(uuid: String?): Gdpr {
 
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
@@ -82,11 +88,11 @@ internal fun Map<String, Any?>.toGDPR(): Gdpr {
         message = message,
         url = url?.let { HttpUrl.parse(it) },
         messageMetaData = messageMetaData,
-        userConsent = getMap("userConsent")?.toGDPRUserConsent() ?: failParam("GDPRUserConsent")
+        userConsent = getMap("userConsent")?.toGDPRUserConsent(uuid = uuid) ?: failParam("GDPRUserConsent")
     )
 }
 
-internal fun String.toGDPR(): Gdpr? {
+internal fun String.toGDPR(uuid: String?): Gdpr {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
-    return map.toGDPR()
+    return map.toGDPR(uuid)
 }

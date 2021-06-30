@@ -21,6 +21,7 @@ data class SPCCPAConsent(
 )
 
 interface GDPRConsent {
+    val uuid: String?
     var euconsent: String
     var tcData: Map<String, Any?>
     var grants: Map<String, Map<String, Boolean>>
@@ -30,6 +31,7 @@ interface GDPRConsent {
 
 internal data class GDPRConsentInternal(
     override var euconsent: String = "",
+    override val uuid: String? = null,
     override var tcData: Map<String, Any?> = emptyMap(),
     override var grants: Map<String, Map<String, Boolean>> = emptyMap(),
     override val acceptedCategories: List<String> = emptyList(),
@@ -37,17 +39,28 @@ internal data class GDPRConsentInternal(
     val thisContent: JSONObject = JSONObject()
 ) : GDPRConsent
 
-data class CCPAConsent(
-    val rejectedCategories: List<Any> = listOf(),
-    val rejectedVendors: List<Any> = listOf(),
-    val status: String? = null,
-    val signedLspa: Boolean = false,
-    val uspstring: String = "",
+interface CCPAConsent {
+    val uuid: String?
+    val rejectedCategories: List<Any>
+    val rejectedVendors: List<Any>
+    val status: String?
+    val signedLspa: Boolean
+    val uspstring: String
+}
+
+internal data class CCPAConsentInternal(
+    override val uuid: String? = null,
+    override val rejectedCategories: List<Any> = listOf(),
+    override val rejectedVendors: List<Any> = listOf(),
+    override val status: String? = null,
+    override val signedLspa: Boolean = false,
+    override val uspstring: String = "",
     val thisContent: JSONObject = JSONObject()
-)
+) : CCPAConsent
 
 internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
+        put("uuid", uuid)
         put("tcData", tcData.toJSONObj())
         put("grants", grants.toJSONObj())
         put("euconsent", euconsent)
@@ -56,8 +69,9 @@ internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
     }
 }
 
-internal fun CCPAConsent.toJsonObject(): JSONObject {
+internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
+        put("uuid", uuid)
         put("status", status)
         put("signedLspa", signedLspa)
         put("uspstring", uspstring)
@@ -69,6 +83,6 @@ internal fun CCPAConsent.toJsonObject(): JSONObject {
 internal fun SPConsents.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("gdpr", (gdpr?.consent as? GDPRConsentInternal)?.toJsonObject())
-        put("ccpa", ccpa?.consent?.toJsonObject())
+        put("ccpa", (ccpa?.consent as? CCPAConsentInternal)?.toJsonObject())
     }
 }

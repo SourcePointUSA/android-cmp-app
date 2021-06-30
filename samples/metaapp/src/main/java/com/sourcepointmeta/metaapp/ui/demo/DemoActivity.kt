@@ -149,7 +149,6 @@ class DemoActivity : FragmentActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
-
         }
 
         override fun onUIFinished(view: View) {
