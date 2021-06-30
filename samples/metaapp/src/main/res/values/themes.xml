@@ -46,6 +46,8 @@
         <item name="colorEvenItem">@color/white_50</item>
         <item name="colorSuccessResponse">@color/green_status_600</item>
         <item name="colorErrorResponse">@color/red_600</item>
+        <item name="colorItemComputation">@color/yellow_600</item>
+        <item name="colorWebAction">@color/orange_400</item>
 
         <item name="webLink">@color/blue_link_600</item>
         <item name="colorClientEvent">@color/rose_600</item>

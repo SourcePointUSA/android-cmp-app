@@ -75,7 +75,7 @@ class JsonViewerFragment : Fragment() {
         log_title.text = arguments?.getString(TITLE)
 
         tool_bar.run {
-            title = "${getString(R.string.json_analyzer_title)} - ${BuildConfig.VERSION_NAME}"
+            title = "${BuildConfig.VERSION_NAME} - ${getString(R.string.json_analyzer_title)}"
             setNavigationOnClickListener { activity?.finish() }
         }
 

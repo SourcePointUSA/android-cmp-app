@@ -14,14 +14,13 @@ class MessageModelReqExtKtTest {
             {
               "accountId": 1,
               "propertyHref": "http://com.test",
+              "campaignEnv": "stage",
               "campaigns": {
                 "gdpr": {
-                  "targetingParams": "{\"location\":\"EU\"}",
-                  "campaignEnv": "stage"
+                  "targetingParams": "{\"location\":\"EU\"}"
                 },
                 "ccpa": {
-                  "targetingParams": "{\"location\":\"US\"}",
-                  "campaignEnv": "stage"
+                  "targetingParams": "{\"location\":\"US\"}"
                 }
               },
               "consentLanguage": "EN",

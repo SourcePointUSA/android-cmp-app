@@ -25,10 +25,9 @@ class MessageModelReqExtTest {
         val sut = uwMessDataTest.toJsonObject()
         sut.toTreeMap().apply {
             getMap("campaigns")?.size.assertEquals(2)
+            getFieldValue<String>("campaignEnv").assertEquals("stage")
             getMap("campaigns")?.also { map ->
-                map.getMap("ccpa")?.getFieldValue<String>("campaignEnv").assertEquals("stage")
                 map.getMap("ccpa")?.getFieldValue<String>("targetingParams").assertEquals("{\"location\":\"US\"}")
-                map.getMap("gdpr")?.getFieldValue<String>("campaignEnv").assertEquals("stage")
                 map.getMap("gdpr")?.getFieldValue<String>("targetingParams").assertEquals("{\"location\":\"EU\"}")
             }
         }

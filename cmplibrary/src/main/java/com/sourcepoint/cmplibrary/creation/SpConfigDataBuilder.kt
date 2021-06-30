@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.creation
 
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -18,6 +19,7 @@ class SpConfigDataBuilder {
     var accountId by Delegates.notNull<Int>()
     var propertyName by Delegates.notNull<String>()
     var messLanguage: MessageLanguage = MessageLanguage.ENGLISH
+    var campaignEnv: CampaignEnv = CampaignEnv.PUBLIC
     var messageTimeout: Long = 5000
     var logger: Logger? = null
 
@@ -39,6 +41,10 @@ class SpConfigDataBuilder {
 
     fun addMessageLanguage(messLanguage: MessageLanguage) = apply {
         this.messLanguage = messLanguage
+    }
+
+    fun addCampaignEnv(campaignEnv: CampaignEnv) = apply {
+        this.campaignEnv = campaignEnv
     }
 
     fun addMessageTimeout(messageTimeout: Long) = apply {
@@ -89,6 +95,7 @@ class SpConfigDataBuilder {
             campaigns = campaigns,
             messageLanguage = messLanguage,
             messageTimeout = messageTimeout,
+            campaignEnv = campaignEnv,
             logger = logger
         )
     }

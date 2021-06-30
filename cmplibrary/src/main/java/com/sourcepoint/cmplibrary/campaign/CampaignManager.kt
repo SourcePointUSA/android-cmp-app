@@ -68,6 +68,7 @@ private class CampaignManagerImpl(
 ) : CampaignManager {
 
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
+    private val campaignEnv: CampaignEnv = spConfig.campaignEnv
 
     init {
         if (!spConfig.propertyName.contains(validPattern)) {
@@ -84,7 +85,7 @@ private class CampaignManagerImpl(
                         val ce: CampaignEnv = it.targetingParams
                             .find { c -> c.key == "campaignEnv" }
                             ?.let { env ->
-                                CampaignEnv.values().find { t -> t.value == env.value }
+                                CampaignEnv.values().find { t -> t.env == env.value }
                             } ?: CampaignEnv.PUBLIC
                         addCampaign(
                             it.campaignType,
@@ -96,7 +97,7 @@ private class CampaignManagerImpl(
                         val ce: CampaignEnv = it.targetingParams
                             .find { c -> c.key == "campaignEnv" }
                             ?.let { env ->
-                                CampaignEnv.values().find { t -> t.value == env.value }
+                                CampaignEnv.values().find { t -> t.env == env.value }
                             } ?: CampaignEnv.PUBLIC
                         addCampaign(
                             it.campaignType,
@@ -169,7 +170,7 @@ private class CampaignManagerImpl(
             campaigns = campaigns,
             localState = localState,
             propertyPriorityData = propertyPriorityData?.let { JSONObject(it) } ?: JSONObject(),
-            thisContent = JSONObject()
+            thisContent = JSONObject(),
         )
     }
 
@@ -203,7 +204,8 @@ private class CampaignManagerImpl(
             campaigns = Campaigns(list = campaigns),
             consentLanguage = messageLanguage,
             localState = dataStorage.getLocalState(),
-            authId = authId
+            authId = authId,
+            campaignEnv = campaignEnv
         )
     }
 

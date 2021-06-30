@@ -53,4 +53,14 @@ class LogItemView : ConstraintLayout {
         TypedValue().apply { context.theme.resolveAttribute(R.attr.colorClientEvent, this, true) }
             .data
     }
+
+    val colorWebAction: Int by lazy {
+        TypedValue().apply { context.theme.resolveAttribute(R.attr.colorWebAction, this, true) }
+            .data
+    }
+
+    val colorComputation: Int by lazy {
+        TypedValue().apply { context.theme.resolveAttribute(R.attr.colorItemComputation, this, true) }
+            .data
+    }
 }
