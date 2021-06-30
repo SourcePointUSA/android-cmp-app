@@ -50,8 +50,6 @@ android {
         val sharedRes = "${project.rootDir.path}/ui-test-util/jsonFiles"
         getByName("test").resources.srcDir(sharedRes)
         getByName("androidTest").resources.srcDir(sharedRes)
-//        getByName("main").resources.srcDir("${projectDir.path}/files")
-
     }
 
     compileOptions {
@@ -75,14 +73,11 @@ android {
         // https://stackoverflow.com/questions/44751469/kotlin-extension-functions-suddenly-require-api-level-24/44752239
         isAbortOnError = false
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
 
-//    packagingOptions {
-//        exclude("META-INF/koin-core.kotlin_module")
-//        exclude("META-INF/koin-android_release.kotlin_module")
-//    }
 }
 
 sqldelight {
