@@ -140,6 +140,27 @@ Java
         spConsentLib.dispose();
     }
 ```
+## The *SpConsent* object
+The `SpConsent` object contains all the info related with the user consent action. 
+Following its structure:
+
+```
+SpConsent
+    |-- gdpr?
+    |   |-- uuid: String?
+    |   |-- tcData: Map<String, String>
+    |   |-- grants: Map<String, Map<String, Boolean>>
+    |   |-- euconsent: String
+    |   |-- acceptedCategories: List<String>
+    |   |-- acceptedVendors: List<String>
+    |-- ccpa?
+        |-- uuid: String?
+        |-- rejectedCategories: List<Any>
+        |-- rejectedVendors: List<Any>
+        |-- status: String?
+        |-- signedLspa: Boolean
+        |-- uspstring: String
+```
 ## Authenticated Consent
 If there is a consent profile associated with `authId` ("JohDoe"), the SDK will bring the consent data from the server, overwriting whatever was stored in the device.
 

@@ -14,13 +14,15 @@ plugins {
 apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
 apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
 
+val versionCodeMeta = (project.property("VERSION_CODE") as String).toInt()
+
 android {
     compileSdkVersion(29)
     defaultConfig {
         applicationId = "com.sourcepointmeta.metaapp"
         minSdkVersion(21)
         targetSdkVersion(29)
-        versionCode = 2
+        versionCode = versionCodeMeta
         versionName = "${rootProject.project("cmplibrary").version}"
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -40,6 +42,7 @@ android {
         }
         getByName("release") {
             isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
@@ -47,8 +50,6 @@ android {
         val sharedRes = "${project.rootDir.path}/ui-test-util/jsonFiles"
         getByName("test").resources.srcDir(sharedRes)
         getByName("androidTest").resources.srcDir(sharedRes)
-//        getByName("main").resources.srcDir("${projectDir.path}/files")
-
     }
 
     compileOptions {
@@ -72,14 +73,11 @@ android {
         // https://stackoverflow.com/questions/44751469/kotlin-extension-functions-suddenly-require-api-level-24/44752239
         isAbortOnError = false
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
 
-//    packagingOptions {
-//        exclude("META-INF/koin-core.kotlin_module")
-//        exclude("META-INF/koin-android_release.kotlin_module")
-//    }
 }
 
 sqldelight {
@@ -129,4 +127,14 @@ dependencies {
     // integration-test
     androidTestImplementation(Libs.koinTest)
 
+}
+
+versionCodePropPath {
+    path = "gradle.properties"
+}
+
+addCommitPushConfig {
+    fileList = listOf(
+        "${rootDir.path}/samples/metaapp/gradle.properties"
+    )
 }
