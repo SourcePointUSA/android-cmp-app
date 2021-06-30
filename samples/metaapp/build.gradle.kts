@@ -5,6 +5,7 @@ plugins {
     id("io.github.dryrum.update-changelog")
     id("io.github.dryrum.replace-in-file")
     id("io.github.dryrum.git-utils")
+    id("io.github.dryrum.bump-version-code")
     id("com.squareup.sqldelight")
     id("kotlin-android")
 }
