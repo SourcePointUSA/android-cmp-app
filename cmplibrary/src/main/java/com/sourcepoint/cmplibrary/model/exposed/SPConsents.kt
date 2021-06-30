@@ -44,7 +44,6 @@ interface CCPAConsent {
     val rejectedCategories: List<Any>
     val rejectedVendors: List<Any>
     val status: String?
-    val signedLspa: Boolean
     val uspstring: String
 }
 
@@ -53,7 +52,6 @@ internal data class CCPAConsentInternal(
     override val rejectedCategories: List<Any> = listOf(),
     override val rejectedVendors: List<Any> = listOf(),
     override val status: String? = null,
-    override val signedLspa: Boolean = false,
     override val uspstring: String = "",
     val thisContent: JSONObject = JSONObject()
 ) : CCPAConsent
@@ -73,7 +71,6 @@ internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("uuid", uuid)
         put("status", status)
-        put("signedLspa", signedLspa)
         put("uspstring", uspstring)
         put("rejectedCategories", JSONArray(rejectedCategories))
         put("rejectedVendors", JSONArray(rejectedVendors))
