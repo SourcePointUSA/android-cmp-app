@@ -153,14 +153,11 @@ SpConsent
     |   |-- tcData: Map<String, String>
     |   |-- grants: Map<String, Map<String, Boolean>>
     |   |-- euconsent: String
-    |   |-- acceptedCategories: List<String>
-    |   |-- acceptedVendors: List<String>
     |-- ccpa?
         |-- uuid: String?
         |-- rejectedCategories: List<Any>
         |-- rejectedVendors: List<Any>
         |-- status: String?
-        |-- signedLspa: Boolean
         |-- uspstring: String
 ```
 ## Authenticated Consent

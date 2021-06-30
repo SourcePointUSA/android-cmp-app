@@ -25,8 +25,8 @@ interface GDPRConsent {
     var euconsent: String
     var tcData: Map<String, Any?>
     var grants: Map<String, Map<String, Boolean>>
-    val acceptedCategories: List<String>
-    val acceptedVendors: List<String>
+//    val acceptedCategories: List<String>
+//    val acceptedVendors: List<String>
 }
 
 internal data class GDPRConsentInternal(
@@ -34,8 +34,8 @@ internal data class GDPRConsentInternal(
     override val uuid: String? = null,
     override var tcData: Map<String, Any?> = emptyMap(),
     override var grants: Map<String, Map<String, Boolean>> = emptyMap(),
-    override val acceptedCategories: List<String> = emptyList(),
-    override val acceptedVendors: List<String> = emptyList(),
+//    override val acceptedCategories: List<String> = emptyList(),
+//    override val acceptedVendors: List<String> = emptyList(),
     val thisContent: JSONObject = JSONObject()
 ) : GDPRConsent
 
@@ -44,7 +44,6 @@ interface CCPAConsent {
     val rejectedCategories: List<Any>
     val rejectedVendors: List<Any>
     val status: String?
-    val signedLspa: Boolean
     val uspstring: String
 }
 
@@ -53,7 +52,6 @@ internal data class CCPAConsentInternal(
     override val rejectedCategories: List<Any> = listOf(),
     override val rejectedVendors: List<Any> = listOf(),
     override val status: String? = null,
-    override val signedLspa: Boolean = false,
     override val uspstring: String = "",
     val thisContent: JSONObject = JSONObject()
 ) : CCPAConsent
@@ -64,8 +62,8 @@ internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
         put("tcData", tcData.toJSONObj())
         put("grants", grants.toJSONObj())
         put("euconsent", euconsent)
-        put("acceptedCategories", JSONArray(acceptedCategories))
-        put("acceptedVendors", JSONArray(acceptedVendors))
+//        put("acceptedCategories", JSONArray(acceptedCategories))
+//        put("acceptedVendors", JSONArray(acceptedVendors))
     }
 }
 
@@ -73,7 +71,6 @@ internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("uuid", uuid)
         put("status", status)
-        put("signedLspa", signedLspa)
         put("uspstring", uspstring)
         put("rejectedCategories", JSONArray(rejectedCategories))
         put("rejectedVendors", JSONArray(rejectedVendors))
