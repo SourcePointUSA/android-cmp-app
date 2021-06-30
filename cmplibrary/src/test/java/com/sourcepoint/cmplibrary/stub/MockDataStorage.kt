@@ -36,7 +36,6 @@ internal class MockDataStorage : DataStorage {
 
     override fun saveGdprConsentUuid(value: String?) {
         value?.let { storage[DataStorageGdpr.CONSENT_UUID_KEY] = it }
-
     }
 
     override fun saveGdprConsentResp(value: String) {
