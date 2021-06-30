@@ -35,7 +35,8 @@ internal class MockDataStorage : DataStorage {
     }
 
     override fun saveGdprConsentUuid(value: String?) {
-        storage[DataStorageGdpr.CONSENT_UUID_KEY] = value
+        value?.let { storage[DataStorageGdpr.CONSENT_UUID_KEY] = it }
+
     }
 
     override fun saveGdprConsentResp(value: String) {
@@ -98,7 +99,7 @@ internal class MockDataStorage : DataStorage {
     }
 
     override fun saveCcpaConsentUuid(value: String?) {
-        storage[DataStorageCcpa.CONSENT_CCPA_UUID_KEY] = value
+        value?.let { storage[DataStorageCcpa.CONSENT_CCPA_UUID_KEY] = it }
     }
 
     override var ccpaApplies: Boolean = false

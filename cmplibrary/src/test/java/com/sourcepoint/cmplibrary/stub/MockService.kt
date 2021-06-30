@@ -24,8 +24,6 @@ internal class MockService(
     override fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate> = Left(RuntimeException())
     override fun getGDPRConsent(): Either<GDPRConsentInternal> = Left(RuntimeException())
     override fun getCCPAConsent(): Either<CCPAConsentInternal> = Left(RuntimeException())
-    override fun saveGDPRConsent(consent: GDPRConsentInternal?) {}
-    override fun saveCCPAConsent(consent: CCPAConsentInternal?) {}
     override fun parseRenderingMessage() {}
     override fun clearConsents() {}
     override fun getUnifiedMessageResp(): Either<UnifiedMessageResp> = Left(RuntimeException())
