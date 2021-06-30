@@ -27,7 +27,7 @@ internal interface DataStorageGdpr {
     fun saveAuthId(value: String)
     fun saveEuConsent(value: String)
     fun saveMetaData(value: String)
-    fun saveGdprConsentUuid(value: String)
+    fun saveGdprConsentUuid(value: String?)
     fun saveAppliedLegislation(value: String)
     fun saveGdprConsentResp(value: String)
     fun saveGdprMessage(value: String)
@@ -137,11 +137,13 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .apply()
     }
 
-    override fun saveGdprConsentUuid(value: String) {
-        preference
-            .edit()
-            .putString(CONSENT_UUID_KEY, value)
-            .apply()
+    override fun saveGdprConsentUuid(value: String?) {
+        value?.let {
+            preference
+                .edit()
+                .putString(CONSENT_UUID_KEY, it)
+                .apply()
+        }
     }
 
     override fun saveGdprConsentResp(value: String) {

@@ -6,7 +6,7 @@ import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -23,9 +23,9 @@ internal class MockService(
     override fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>> = Left(RuntimeException())
     override fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate> = Left(RuntimeException())
     override fun getGDPRConsent(): Either<GDPRConsentInternal> = Left(RuntimeException())
-    override fun getCCPAConsent(): Either<CCPAConsent> = Left(RuntimeException())
+    override fun getCCPAConsent(): Either<CCPAConsentInternal> = Left(RuntimeException())
     override fun saveGDPRConsent(consent: GDPRConsentInternal?) {}
-    override fun saveCCPAConsent(consent: CCPAConsent?) {}
+    override fun saveCCPAConsent(consent: CCPAConsentInternal?) {}
     override fun parseRenderingMessage() {}
     override fun clearConsents() {}
     override fun getUnifiedMessageResp(): Either<UnifiedMessageResp> = Left(RuntimeException())
