@@ -47,7 +47,6 @@ class JsonConverterExtKtTest {
                 it.rejectedCategories.size.assertEquals(0)
                 it.rejectedVendors.size.assertEquals(0)
                 it.status.assertEquals("rejectedNone")
-                it.signedLspa.assertFalse()
                 it.uspstring.assertEquals("")
             }
         }
