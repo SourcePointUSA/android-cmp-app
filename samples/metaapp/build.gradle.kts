@@ -14,13 +14,15 @@ plugins {
 apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
 apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
 
+val versionCodeMeta = (project.property("VERSION_CODE") as String).toInt()
+
 android {
     compileSdkVersion(29)
     defaultConfig {
         applicationId = "com.sourcepointmeta.metaapp"
         minSdkVersion(21)
         targetSdkVersion(29)
-        versionCode = 2
+        versionCode = versionCodeMeta
         versionName = "${rootProject.project("cmplibrary").version}"
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -40,6 +42,7 @@ android {
         }
         getByName("release") {
             isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
@@ -129,4 +132,14 @@ dependencies {
     // integration-test
     androidTestImplementation(Libs.koinTest)
 
+}
+
+versionCodePropPath {
+    path = "gradle.properties"
+}
+
+addCommitPushConfig {
+    fileList = listOf(
+        "${rootDir.path}/samples/metaapp/gradle.properties"
+    )
 }
