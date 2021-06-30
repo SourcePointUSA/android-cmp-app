@@ -26,6 +26,7 @@ Kotlin
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
             messLanguage = MessageLanguage.ENGLISH
+            campaignEnv = CampaignEnv.PUBLIC
             +CampaignType.CCPA
             +CampaignType.GDPR
         }
@@ -40,6 +41,7 @@ Java
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
             .addMessageLanguage(MessageLanguage.ENGLISH)
+            .addCampaignEnv(CampaignEnv.PUBLIC)
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
             .build();
@@ -335,30 +337,31 @@ In this example 2 key/value pairs, "language":"fr" and "location":"EU/US", are p
 
 ### Targeting parameters to target the right environment
 
-In order to select the campaign environment you should add the following targeting parameter for each campaign
+In order to select the campaign environment you should add the following targeting parameter for each campaign.
+The default value is set to ``CampaignEnv.PUBLIC``
 
 Kotlin
 
 ```kotlin
-            // ...
-            +(CampaignType.GDPR to listOf(
-                // ...
-                ("campaignEnv" to "<YOUR ENV>")
-                // ...
-            ))
-            // ...
+    private val spConsentLib by spConsentLibLazy {
+        activity = this@MainActivityKotlin
+        spClient = LocalClient()
+        config {
+            //  ...
+            campaignEnv = CampaignEnv.PUBLIC
+            //  ...
+        }
+    }
 ```
 
 Java
 
 ```java
-            // ...
-            .addCampaign(CampaignType.GDPR, Arrays.asList(
-                // ...
-                new TargetingParam("campaignEnv", "<YOUR ENV>")
-                // ...
-            ))
-            // ...
+    private final SpConfig spConfig = new SpConfigDataBuilder()
+            //
+            .addCampaignEnv(CampaignEnv.PUBLIC)
+            //
+            .build();
 ```
 
 ## ProGuard
