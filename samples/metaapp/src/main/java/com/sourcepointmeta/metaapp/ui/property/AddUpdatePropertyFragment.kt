@@ -55,7 +55,7 @@ class AddUpdatePropertyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         tool_bar.run {
-            title = "${getString(R.string.add_prop_title)} - ${BuildConfig.VERSION_NAME}"
+            title = "${BuildConfig.VERSION_NAME} - ${getString(R.string.add_prop_title)}"
             setNavigationOnClickListener { activity?.onBackPressed() }
         }
 

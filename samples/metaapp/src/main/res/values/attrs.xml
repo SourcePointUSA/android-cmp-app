@@ -32,6 +32,8 @@
     <attr name="colorJsonValueUrl" format="color"/>
     <attr name="colorJsonValueNull" format="color"/>
     <attr name="colorJsonValueBraces" format="color"/>
+    <attr name="colorWebAction" format="color"/>
+    <attr name="colorItemComputation" format="color"/>
 
     <attr format="reference" name="textAppearanceHeadline7"/>
 

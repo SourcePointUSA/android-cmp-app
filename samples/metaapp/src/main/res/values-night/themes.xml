@@ -33,6 +33,8 @@
 
         <item name="colorSuccessResponse">@color/green_status_200</item>
         <item name="colorErrorResponse">@color/red_200</item>
+        <item name="colorItemComputation">@color/yellow_600</item>
+        <item name="colorWebAction">@color/orange_200</item>
 
         <item name="webLink">@color/blue_link_200</item>
         <item name="colorClientEvent">@color/rose_200</item>

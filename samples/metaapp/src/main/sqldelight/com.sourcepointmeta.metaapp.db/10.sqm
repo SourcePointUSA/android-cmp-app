@@ -22,3 +22,7 @@
 -- ALTER TABLE meta_log DROP COLUMN type;
 -- ALTER TABLE meta_log ADD COLUMN type TEXT;
 -- COMMIT;
+
+BEGIN TRANSACTION;
+ALTER TABLE property ADD COLUMN campaign_env TEXT;
+COMMIT;

@@ -64,6 +64,7 @@ fun LogItemView.setWebLink(link: String, textView: TextView) {
 fun LogItemView.bindWebAction(item: LogItem, position: Int) {
     log_title.text = "${item.type} - ${item.tag}"
     log_body.text = item.message
+    log_body.setTextColor(colorWebAction)
     item.jsonBody
         ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
         ?: run { log_body_1.visibility = View.GONE }

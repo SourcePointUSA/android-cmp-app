@@ -124,7 +124,7 @@ enum class Env(val host: String, val pmHostGdpr: String, val pmHostCcpa: String,
     PROD("cdn.privacy-mgmt.com", "cdn.privacy-mgmt.com", "cdn.privacy-mgmt.com", "prod")
 }
 
-enum class CampaignEnv(val value: String) {
+enum class CampaignEnv(val env: String) {
     STAGE("stage"),
     PUBLIC("prod")
 }

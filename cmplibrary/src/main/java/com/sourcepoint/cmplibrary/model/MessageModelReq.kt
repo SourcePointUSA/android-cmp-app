@@ -24,7 +24,7 @@ internal data class UnifiedMessageRequest(
     val includeData: IncludeData = IncludeData(),
     val consentLanguage: MessageLanguage = MessageLanguage.ENGLISH,
     val hasCSP: Boolean = true,
-    val campaignEnv: String = "prod",
+    val campaignEnv: CampaignEnv = CampaignEnv.PUBLIC,
     val localState: String? = null,
     val authId: String? = null,
     val requestUUID: String? = null

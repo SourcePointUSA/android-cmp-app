@@ -16,6 +16,7 @@ internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
             put("requestUUID", requestUUID)
             put("propertyHref", "http://$propertyHref")
             put("accountId", accountId)
+            put("campaignEnv", campaignEnv.env)
             put("campaigns", campaigns.toJsonObject())
             put("consentLanguage", consentLanguage.value)
             put("localState", localState)
@@ -28,12 +29,8 @@ internal fun Campaigns.toJsonObject(): JSONObject {
     return JSONObject().also { cm ->
         list.map {
             cm.put(
-                it.campaignType.name.toLowerCase(),
-                JSONObject()
-                    .apply {
-                        put("targetingParams", it.targetingParams)
-                        put("campaignEnv", it.campaignEnv.value)
-                    }
+                it.campaignType.name.lowercase(),
+                JSONObject().apply { put("targetingParams", it.targetingParams) }
             )
         }
     }

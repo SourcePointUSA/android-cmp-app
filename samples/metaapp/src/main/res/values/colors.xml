@@ -69,6 +69,13 @@
     <color name="violet_200">#CE93D8</color> <!--Color error (dark)-->
     <color name="violet_600">#8E24AA</color> <!--Color error (light)-->
 
+    <color name="orange_200">#FFAB91</color> <!--Color error (dark)-->
+    <color name="orange_400">#FF7043</color> <!--Color error (light)-->
+
+    <color name="yellow_200">#FFE082</color> <!--Color error (dark)-->
+    <color name="yellow_400">#FFCA28</color> <!--Color error (dark)-->
+    <color name="yellow_600">#FFB300</color> <!--Color error (light)-->
+
     <!--Color surface (light), color on error (light), -->
     <!--color on surface (dark), color on surface (dark)-->
     <color name="white_50">#ffffff</color>

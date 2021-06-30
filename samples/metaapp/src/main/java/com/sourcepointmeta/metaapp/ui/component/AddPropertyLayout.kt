@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
 import com.google.android.material.chip.Chip
+import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.core.UIErrorCode
 import com.sourcepointmeta.metaapp.core.getOrNull
@@ -41,12 +42,8 @@ internal fun AddPropertyLayout.bind(property: Property) {
     message_language_autocomplete.setText(property.messageLanguage)
     val (gdprTp, ccpaTp) = property.targetingParameters.partition { it.campaign == CampaignType.GDPR }
     // campaignEnv is presented as a radio btn, no need to add it as chip
-    gdprTp
-        .filter { it.key != "campaignEnv" }
-        .forEach { gdpr_chip_group.addChip("${it.key}:${it.value}") }
-    ccpaTp
-        .filter { it.key != "campaignEnv" }
-        .forEach { ccpa_chip_group.addChip("${it.key}:${it.value}") }
+    gdprTp.forEach { gdpr_chip_group.addChip("${it.key}:${it.value}") }
+    ccpaTp.forEach { ccpa_chip_group.addChip("${it.key}:${it.value}") }
     timeout_ed.setText("${property.timeout ?: 3000}")
 }
 
@@ -64,15 +61,6 @@ internal fun AddPropertyLayout.toProperty(): Property {
         }
         .toMutableList()
 
-    gdprTp.add(
-        MetaTargetingParam(
-            propertyName = prop_name_ed.text.toString(),
-            campaign = CampaignType.GDPR,
-            key = "campaignEnv",
-            value = if (radio_stage.isChecked) "stage" else "prod"
-        )
-    )
-
     val ccpaTp = ccpa_chip_group.children
         .map { (it as Chip).text.split(":") }
         .map {
@@ -84,15 +72,6 @@ internal fun AddPropertyLayout.toProperty(): Property {
             )
         }
         .toMutableList()
-
-    ccpaTp.add(
-        MetaTargetingParam(
-            propertyName = prop_name_ed.text.toString(),
-            campaign = CampaignType.CCPA,
-            key = "campaignEnv",
-            value = if (radio_stage.isChecked) "stage" else "prod"
-        )
-    )
 
     val chipGdprChecked = chip_gdpr.isChecked
     val chipCcpaChecked = chip_ccpa.isChecked
@@ -112,7 +91,8 @@ internal fun AddPropertyLayout.toProperty(): Property {
         statusCampaignSet = setOf(gdprStatus, ccpaStatus),
         messageType = message_type_autocomplete.text.toString(),
         gdprPmId = gdpr_pm_id_ed.text.toString().toLongOrNull(),
-        ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull()
+        ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull(),
+        campaignEnv = if (radio_stage.isChecked) CampaignEnv.STAGE else CampaignEnv.PUBLIC
     )
 }
 
