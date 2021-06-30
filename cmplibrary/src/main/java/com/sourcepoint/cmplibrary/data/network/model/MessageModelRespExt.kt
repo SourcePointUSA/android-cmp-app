@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.model.ext
+package com.sourcepoint.cmplibrary.data.network.model
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.map

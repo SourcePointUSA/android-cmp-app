@@ -31,6 +31,18 @@
         <item name="colorOnSurface">@color/white_50</item>
         <item name="colorOnError">@color/black_900</item>
 
+        <item name="colorSuccessResponse">@color/green_status_200</item>
+        <item name="colorErrorResponse">@color/red_200</item>
+
+        <item name="webLink">@color/blue_link_200</item>
+        <item name="colorClientEvent">@color/rose_200</item>
+        <item name="colorJsonKey">@color/violet_200</item>
+        <item name="colorJsonValueText">@color/green_status_200</item>
+        <item name="colorJsonValueNumber">@color/blue_link_200</item>
+        <item name="colorJsonValueUrl">@color/blue_link_200</item>
+        <item name="colorJsonValueNull">@color/red_200</item>
+        <item name="colorJsonValueBraces">@color/black_50</item>
+
         <item name="colorOddItem">@color/black_400</item>
         <item name="colorEvenItem">@color/black_600</item>
 

@@ -4,7 +4,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
-import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import okhttp3.HttpUrl
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -35,7 +35,7 @@ internal data class Gdpr(
     override val message: JSONObject? = null,
     override val messageMetaData: JSONObject? = null,
     override val url: HttpUrl?,
-    val userConsent: GDPRConsent,
+    val userConsent: GDPRConsentInternal,
     override val type: String = CampaignType.GDPR.name,
 ) : CampaignResp()
 

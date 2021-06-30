@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.model.ext
+package com.sourcepoint.cmplibrary.data.network.model
 
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
@@ -6,11 +6,12 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
-import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONObject
+import java.util.* //ktlint-disable
 
 internal fun String.toConsentAction(): ConsentAction {
 
@@ -62,7 +63,7 @@ internal fun Map<String, Any?>.toCCPAUserConsent(): CCPAConsent {
     )
 }
 
-internal fun Map<String, Any?>.toGDPRUserConsent(): GDPRConsent {
+internal fun Map<String, Any?>.toGDPRUserConsent(): GDPRConsentInternal {
 
     val tcData: Map<String, Any?> = getMap("TCData") ?: emptyMap()
     val vendorsGrants = getMap("grants")
@@ -74,11 +75,28 @@ internal fun Map<String, Any?>.toGDPRUserConsent(): GDPRConsent {
         }
         ?.toMap() ?: failParam("grants")
     val euConsent = getFieldValue<String>("euconsent") ?: failParam("euconsent")
+    val customVendorsResponse = getMap("customVendorsResponse")
+    val consentedVendors: List<String> =
+        (customVendorsResponse?.get("consentedVendors") as? Iterable<TreeMap<String, String>>)?.map {
+            it.getOrDefault(
+                "_id",
+                ""
+            )
+        } ?: emptyList()
+    val consentedPurposes: List<String> =
+        (customVendorsResponse?.get("consentedPurposes") as? Iterable<TreeMap<String, String>>)?.map {
+            it.getOrDefault(
+                "_id",
+                ""
+            )
+        } ?: emptyList()
 
-    return GDPRConsent(
+    return GDPRConsentInternal(
         thisContent = JSONObject(this),
         tcData = tcData,
-        vendorsGrants = vendorsGrants,
-        euconsent = euConsent
+        grants = vendorsGrants,
+        euconsent = euConsent,
+        acceptedCategories = consentedPurposes,
+        acceptedVendors = consentedVendors
     )
 }

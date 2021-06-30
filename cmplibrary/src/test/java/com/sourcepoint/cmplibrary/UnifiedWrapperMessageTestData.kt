@@ -1,10 +1,10 @@
 package com.sourcepoint.cmplibrary
 
+import com.sourcepoint.cmplibrary.data.network.model.toJsonObjStringify
 import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
-import com.sourcepoint.cmplibrary.model.ext.toJsonObjStringify
 
 internal val campaigns = Campaigns(
     list = listOf(
@@ -29,5 +29,5 @@ internal val uwMessDataTest = UnifiedMessageRequest(
     campaignEnv = CampaignEnv.STAGE.value,
     accountId = 1,
     hasCSP = true,
-    includeData = IncludeData(localState = LocalState("string"))
+    includeData = IncludeData()
 )

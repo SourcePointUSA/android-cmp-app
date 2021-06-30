@@ -8,11 +8,12 @@ import com.sourcepoint.cmplibrary.core.flatMap
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
+import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.IncludeData
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.ext.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -23,7 +24,7 @@ internal interface ConsentManagerUtils {
     fun buildGdprConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject>
     fun buildCcpaConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject>
 
-    fun getGdprConsent(): Either<GDPRConsent>
+    fun getGdprConsent(): Either<GDPRConsentInternal>
     fun getCcpaConsent(): Either<CCPAConsent>
     fun hasGdprConsent(): Boolean
     fun hasCcpaConsent(): Boolean
@@ -60,10 +61,6 @@ private class ConsentManagerUtilsImpl(
                 .getCampaignTemplate(CampaignType.GDPR)
                 .flatMap { campaign -> cm.getGdpr().map { Pair(campaign, it) } }
                 .map { _ ->
-                    val includeData = IncludeData(
-                        tCData = TCData("RecordString"),
-                        localState = LocalState("RecordString")
-                    )
                     JSONObject().apply {
                         put("propertyHref", cm.spConfig.propertyName)
                         put("accountId", cm.spConfig.accountId)
@@ -77,7 +74,7 @@ private class ConsentManagerUtilsImpl(
                         put("pubData", action.pubData)
                         put("consentLanguage", action.consentLanguage)
                         put("uuid", uuid)
-                        put("includeData", includeData.toJsonObject())
+                        put("includeData", IncludeData().toJsonObject())
                     }
                 }
                 .executeOnLeft {
@@ -86,18 +83,17 @@ private class ConsentManagerUtilsImpl(
                 .getOrNull() ?: fail("Error trying to build the gdpr body to send consents.")
         }
 
-    override fun buildCcpaConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject> =
-        check {
-            JSONObject().apply {
-                put("accountId", cm.spConfig.accountId)
-                put("privacyManagerId", pmId)
-                put("localState", localState)
-                put("pubData", action.pubData)
-                put("requestUUID", uuid)
-                put("pmSaveAndExitVariables", action.saveAndExitVariables)
-                put("includeData", IncludeData(localState = LocalState("string")).toJsonObject())
-            }
+    override fun buildCcpaConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject> = check {
+        JSONObject().apply {
+            put("accountId", cm.spConfig.accountId)
+            put("privacyManagerId", pmId)
+            put("localState", localState)
+            put("pubData", action.pubData)
+            put("requestUUID", uuid)
+            put("pmSaveAndExitVariables", action.saveAndExitVariables)
+            put("includeData", IncludeData().toJsonObject())
         }
+    }
 
     override fun getSpConsent(): SPConsents? {
         val gdprCached = getGdprConsent().getOrNull()
@@ -108,7 +104,7 @@ private class ConsentManagerUtilsImpl(
         )
     }
 
-    override fun getGdprConsent(): Either<GDPRConsent> {
+    override fun getGdprConsent(): Either<GDPRConsentInternal> {
         return cm.getGDPRConsent()
     }
 

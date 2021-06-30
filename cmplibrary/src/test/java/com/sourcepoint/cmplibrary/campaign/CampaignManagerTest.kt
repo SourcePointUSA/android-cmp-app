@@ -6,11 +6,11 @@ import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
-import com.sourcepoint.cmplibrary.model.ext.toUnifiedMessageRespDto
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.util.file2String
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -26,7 +26,7 @@ class CampaignManagerTest {
     private lateinit var dataStorage: DataStorage
 
     @MockK
-    private lateinit var gdprConsent: GDPRConsent
+    private lateinit var gdprConsent: GDPRConsentInternal
 
     @MockK
     private lateinit var ccpaConsent: CCPAConsent

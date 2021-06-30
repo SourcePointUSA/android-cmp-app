@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
+import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.uwMessDataTest
 import org.junit.Test

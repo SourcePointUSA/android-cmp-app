@@ -4,6 +4,8 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
+import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
@@ -11,8 +13,6 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
-import com.sourcepoint.cmplibrary.model.ext.toConsentAction
-import com.sourcepoint.cmplibrary.model.ext.toJsonObject
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockCall
