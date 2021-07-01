@@ -1,6 +1,6 @@
 package com.sourcepointmeta.metaapp.data.localdatasource
 
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import comsourcepointmetametaappdb.* // ktlint-disable
 import java.util.* // ktlint-disable
@@ -18,7 +18,7 @@ data class Property(
     val messageLanguage: String? = null,
     val pmTab: String? = null,
     val statusCampaignSet: Set<StatusCampaign>,
-    val campaignEnv: CampaignEnv,
+    val campaignsEnv: CampaignsEnv,
     val timestamp: Long = Date().time
 )
 
@@ -81,7 +81,7 @@ fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<Statu
     timestamp = timestamp,
     gdprPmId = gdpr_pm_id,
     ccpaPmId = ccpa_pm_id,
-    campaignEnv = CampaignEnv.values().find { it.env == campaign_env } ?: CampaignEnv.PUBLIC
+    campaignsEnv = CampaignsEnv.values().find { it.env == campaign_env } ?: CampaignsEnv.PUBLIC
 )
 
 fun CampaignQueries.getTargetingParams(propName: String) =

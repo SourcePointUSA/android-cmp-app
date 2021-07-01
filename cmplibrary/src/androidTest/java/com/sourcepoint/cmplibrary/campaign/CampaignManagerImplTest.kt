@@ -10,7 +10,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
@@ -27,13 +27,13 @@ class CampaignManagerImplTest {
     private val appContext by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
 
     private val gdpr = CampaignTemplate(
-        campaignEnv = CampaignEnv.STAGE,
+        campaignsEnv = CampaignsEnv.STAGE,
         targetingParams = listOf(TargetingParam("location", "EU")),
         campaignType = CampaignType.GDPR
     )
 
     private val ccpa = CampaignTemplate(
-        campaignEnv = CampaignEnv.STAGE,
+        campaignsEnv = CampaignsEnv.STAGE,
         targetingParams = listOf(TargetingParam("location", "EU")),
         campaignType = CampaignType.CCPA
     )

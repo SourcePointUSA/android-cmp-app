@@ -3,7 +3,7 @@ package com.sourcepointmeta.metaapp.data.localdatasource
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.core.Either
 import kotlinx.coroutines.runBlocking
@@ -36,7 +36,7 @@ class LocalDataSourceImplTest {
         messageType = "App",
         gdprPmId = 1212L,
         ccpaPmId = 1313L,
-        campaignEnv = CampaignEnv.STAGE
+        campaignsEnv = CampaignsEnv.STAGE
     )
 
     private val prop2 = prop1.copy(propertyName = "prop2", accountId = 2, timeout = 2)

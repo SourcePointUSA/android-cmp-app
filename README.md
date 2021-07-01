@@ -26,7 +26,7 @@ Kotlin
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
             messLanguage = MessageLanguage.ENGLISH
-            campaignEnv = CampaignEnv.PUBLIC
+            campaignsEnv = CampaignsEnv.PUBLIC
             +CampaignType.CCPA
             +CampaignType.GDPR
         }
@@ -41,7 +41,7 @@ Java
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
             .addMessageLanguage(MessageLanguage.ENGLISH)
-            .addCampaignEnv(CampaignEnv.PUBLIC)
+            .addCampaignsEnv(CampaignsEnv.PUBLIC)
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
             .build();
@@ -335,7 +335,7 @@ In this example 2 key/value pairs, "language":"fr" and "location":"EU/US", are p
 ### Targeting parameters to target the right environment
 
 In order to select the campaign environment you should add the following targeting parameter for each campaign.
-The default value is set to ``CampaignEnv.PUBLIC``
+The default value is set to ``CampaignsEnv.PUBLIC``
 
 Kotlin
 
@@ -345,7 +345,7 @@ Kotlin
         spClient = LocalClient()
         config {
             //  ...
-            campaignEnv = CampaignEnv.PUBLIC
+            campaignsEnv = CampaignsEnv.PUBLIC
             //  ...
         }
     }
@@ -356,7 +356,7 @@ Java
 ```java
     private final SpConfig spConfig = new SpConfigDataBuilder()
             //
-            .addCampaignEnv(CampaignEnv.PUBLIC)
+            .addCampaignsEnv(CampaignsEnv.PUBLIC)
             //
             .build();
 ```
