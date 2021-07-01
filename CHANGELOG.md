@@ -1,3 +1,7 @@
+## 6.1.0 (July, 01, 2021)
+* [SP-7430] (https://sourcepoint.atlassian.net/browse/SP-7430) Update Metaapp Play Store info (#385)
+* [SP-7395](https://sourcepoint.atlassian.net/browse/SP-7395) Renamed campaignEnv to campaignsEnv (#382)
+
 ## 6.0.5 (June, 30, 2021)
 * [SP-7395](https://sourcepoint.atlassian.net/browse/SP-7395) Move campaignEnv to the top level request body (#382)
 * [SP-7416](https://sourcepoint.atlassian.net/browse/SP-7416) Metaapp release build gradle (#381)
