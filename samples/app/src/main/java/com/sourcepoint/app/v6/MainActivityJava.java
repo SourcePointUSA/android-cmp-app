@@ -10,7 +10,7 @@ import com.sourcepoint.cmplibrary.SpConsentLib;
 import com.sourcepoint.cmplibrary.UnitySpClient;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
 import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv;
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv;
 import com.sourcepoint.cmplibrary.exception.CampaignType;
 import com.sourcepoint.cmplibrary.model.MessageLanguage;
 import com.sourcepoint.cmplibrary.model.PMTab;
@@ -36,7 +36,7 @@ public class MainActivityJava extends AppCompatActivity {
             .addPropertyName("mobile.multicampaign.demo")
             .addMessageLanguage(MessageLanguage.ENGLISH)
             .addMessageTimeout(5000)
-            .addCampaignEnv(CampaignEnv.PUBLIC)
+            .addCampaignsEnv(CampaignsEnv.PUBLIC)
             .addCampaign(new SpCampaign(CampaignType.GDPR, Collections.emptyList()))
             .addCampaign(CampaignType.GDPR)
 //            .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
