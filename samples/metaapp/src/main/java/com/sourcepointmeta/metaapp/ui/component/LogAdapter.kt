@@ -5,7 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.ui.eventlogs.bind
+import com.sourcepointmeta.metaapp.util.check
+import org.json.JSONObject
 
 class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
 
@@ -31,7 +34,11 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
 
     private fun Vh.bind(iv: LogItem, pos: Int) {
         (view as LogItemView).run {
-            setOnClickListener { iv.jsonBody?.let { itemClickListener?.invoke(iv) } }
+            setOnClickListener {
+                check { JSONObject(iv.jsonBody) }
+                    .getOrNull()
+                    ?.let { itemClickListener?.invoke(iv) }
+            }
             this.bind(iv, pos)
         }
     }
