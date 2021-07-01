@@ -1,19 +1,19 @@
 package com.sourcepoint.cmplibrary.model
 
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 
 internal data class Campaigns(val list: List<CampaignReq> = emptyList())
 
 internal interface CampaignReq {
     val targetingParams: String?
-    val campaignEnv: CampaignEnv
+    val campaignsEnv: CampaignsEnv
     val campaignType: CampaignType
 }
 
 internal data class CampaignReqImpl(
     override val targetingParams: String?,
-    override val campaignEnv: CampaignEnv,
+    override val campaignsEnv: CampaignsEnv,
     override val campaignType: CampaignType
 ) : CampaignReq
 
@@ -24,7 +24,7 @@ internal data class UnifiedMessageRequest(
     val includeData: IncludeData = IncludeData(),
     val consentLanguage: MessageLanguage = MessageLanguage.ENGLISH,
     val hasCSP: Boolean = true,
-    val campaignEnv: CampaignEnv = CampaignEnv.PUBLIC,
+    val campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC,
     val localState: String? = null,
     val authId: String? = null,
     val requestUUID: String? = null

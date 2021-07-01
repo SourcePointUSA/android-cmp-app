@@ -10,7 +10,7 @@ import com.sourcepoint.cmplibrary.data.network.model.toCCPA
 import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toGDPR
 import com.sourcepoint.cmplibrary.data.network.model.toGDPRUserConsent
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
@@ -68,7 +68,7 @@ private class CampaignManagerImpl(
 ) : CampaignManager {
 
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
-    private val campaignEnv: CampaignEnv = spConfig.campaignEnv
+    private val campaignsEnv: CampaignsEnv = spConfig.campaignsEnv
 
     init {
         if (!spConfig.propertyName.contains(validPattern)) {
@@ -82,11 +82,11 @@ private class CampaignManagerImpl(
             spp.campaigns.forEach {
                 when (it.campaignType) {
                     CampaignType.GDPR -> {
-                        val ce: CampaignEnv = it.targetingParams
+                        val ce: CampaignsEnv = it.targetingParams
                             .find { c -> c.key == "campaignEnv" }
                             ?.let { env ->
-                                CampaignEnv.values().find { t -> t.env == env.value }
-                            } ?: CampaignEnv.PUBLIC
+                                CampaignsEnv.values().find { t -> t.env == env.value }
+                            } ?: CampaignsEnv.PUBLIC
                         addCampaign(
                             it.campaignType,
                             CampaignTemplate(ce, it.targetingParams.filter { tp -> tp.key != "campaignEnv" }, it.campaignType)
@@ -94,11 +94,11 @@ private class CampaignManagerImpl(
                     }
 
                     CampaignType.CCPA -> {
-                        val ce: CampaignEnv = it.targetingParams
+                        val ce: CampaignsEnv = it.targetingParams
                             .find { c -> c.key == "campaignEnv" }
                             ?.let { env ->
-                                CampaignEnv.values().find { t -> t.env == env.value }
-                            } ?: CampaignEnv.PUBLIC
+                                CampaignsEnv.values().find { t -> t.env == env.value }
+                            } ?: CampaignsEnv.PUBLIC
                         addCampaign(
                             it.campaignType,
                             CampaignTemplate(ce, it.targetingParams.filter { tp -> tp.key != "campaignEnv" }, it.campaignType)
@@ -191,10 +191,10 @@ private class CampaignManagerImpl(
     override fun getUnifiedMessageReq(authId: String?): UnifiedMessageRequest {
         val campaigns = mutableListOf<CampaignReq>()
         mapTemplate[CampaignType.GDPR.name]
-            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignEnv = it.campaignEnv) }
+            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignsEnv = it.campaignsEnv) }
             ?.let { campaigns.add(it) }
         mapTemplate[CampaignType.CCPA.name]
-            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignEnv = it.campaignEnv) }
+            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignsEnv = it.campaignsEnv) }
             ?.let { campaigns.add(it) }
 
         return UnifiedMessageRequest(
@@ -205,7 +205,7 @@ private class CampaignManagerImpl(
             consentLanguage = messageLanguage,
             localState = dataStorage.getLocalState(),
             authId = authId,
-            campaignEnv = campaignEnv
+            campaignsEnv = campaignsEnv
         )
     }
 

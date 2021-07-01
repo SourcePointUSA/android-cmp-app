@@ -4,7 +4,7 @@ import android.content.Context
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.core.create
 import com.sourcepoint.cmplibrary.creation.config
-import com.sourcepoint.cmplibrary.data.network.util.CampaignEnv
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -59,7 +59,7 @@ val appModule = module {
                 propertyName = "mobile.multicampaign.demo"
                 messLanguage = MessageLanguage.ENGLISH
                 messageTimeout = 5000
-                campaignEnv = CampaignEnv.PUBLIC
+                campaignsEnv = CampaignsEnv.PUBLIC
                 +(CampaignType.GDPR)
             }
         } else {
@@ -68,7 +68,7 @@ val appModule = module {
                 propertyName = "mobile.multicampaign.demo"
                 messLanguage = MessageLanguage.ENGLISH
                 messageTimeout = 5000
-                campaignEnv = CampaignEnv.PUBLIC
+                campaignsEnv = CampaignsEnv.PUBLIC
                 +(CampaignType.GDPR)
 //                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
