@@ -77,6 +77,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .host(env.pmHostGdpr)
         .addPathSegments("privacy-manager/index.html")
         .addQueryParameter("pmTab", pmConf.pmTab?.key)
+        .addQueryParameter("site_id", pmConf.siteId)
         .apply {
             pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
             pmConf.uuid?.let { addQueryParameter("consentUUID", it) }
@@ -90,6 +91,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .scheme("https")
         .host(env.pmHostCcpa)
         .addPathSegments("ccpa_pm/index.html")
+        .addQueryParameter("site_id", pmConf.siteId)
         .apply {
             pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
             pmConf.uuid?.let { addQueryParameter("ccpaUUID", it) }
