@@ -66,6 +66,7 @@ class HttpUrlManagerTest {
             toString().contains("ccpa-notice.sp-stage.net").assertTrue()
             queryParameter("message_id").assertEquals("111")
             queryParameter("ccpaUUID").assertEquals("uuid")
+            queryParameter("site_id").assertNull()
         }
     }
 
