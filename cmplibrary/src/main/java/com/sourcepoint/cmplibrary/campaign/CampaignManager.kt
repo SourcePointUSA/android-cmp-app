@@ -134,21 +134,23 @@ private class CampaignManagerImpl(
 
     fun getGdprPmConfig(pmId: String?, pmTab: PMTab): Either<PmUrlConfig> = check {
         val uuid = dataStorage.getGdprConsentUuid()
+        val siteId = dataStorage.getPropertyId().toString()
         PmUrlConfig(
-            pmTab = pmTab, // gdprConfig.uuid ?: fail("consentUUID cannot be null!!!"),
+            pmTab = pmTab,
             consentLanguage = null,
             uuid = uuid,
-            siteId = null,
+            siteId = siteId,
             messageId = pmId
         )
     }
 
     fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = check {
         val uuid = dataStorage.getCcpaConsentUuid()
+        val siteId = dataStorage.getPropertyId().toString()
         PmUrlConfig(
-            consentLanguage = null, // ccpaConfig.uuid ?: fail("consentUUID cannot be null!!!"),
+            consentLanguage = null,
             uuid = uuid,
-            siteId = null,
+            siteId = siteId,
             messageId = pmId
         )
     }
