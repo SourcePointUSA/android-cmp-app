@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Handler
 import android.webkit.WebView
+import com.sourcepoint.cmplibrary.core.getOrNull
+import org.json.JSONObject
 
 internal fun Context.loadLinkOnExternalBrowser(
     url: String,
@@ -33,3 +35,5 @@ internal fun WebView.getLinkUrl(testResult: WebView.HitTestResult): String {
 internal fun doesLinkContainImage(testResult: WebView.HitTestResult): Boolean {
     return testResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
 }
+
+internal fun String.toJSONObject() : JSONObject? = check { JSONObject(this) }.getOrNull()

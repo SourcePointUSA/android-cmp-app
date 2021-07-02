@@ -11,6 +11,8 @@ import com.sourcepoint.cmplibrary.exception.UrlLoadingException
 import com.sourcepoint.cmplibrary.exception.WebViewException
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.util.loadLinkOnExternalBrowser
+import com.sourcepoint.cmplibrary.util.toJSONObject
+import org.json.JSONObject
 
 internal class SPWebViewClient(
     val wv: WebView,
@@ -46,8 +48,8 @@ internal class SPWebViewClient(
                 ?: let {
                     view.loadUrl("javascript:" + "js_receiver.js".file2String())
                     logger.d(
-                        SPWebViewClient::class.java.name,
-                        """
+                        tag = "SPWebViewClient",
+                        msg = """
                         jsReceiverConfig is null!! 
                         This means that the Legislation is not set and cannot deciding which is the correct link GDPR or CCPA?
                         """.trimIndent()
@@ -80,6 +82,11 @@ internal class SPWebViewClient(
     }
 
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+        logger.actionWebApp(
+            tag = "SPWebViewClient",
+            msg = "Loading url in an external browser",
+            json = JSONObject().apply { put("external_url", url) }
+        )
         wv.context.loadLinkOnExternalBrowser(url) {
             onNoIntentActivitiesFoundFor(it)
         }

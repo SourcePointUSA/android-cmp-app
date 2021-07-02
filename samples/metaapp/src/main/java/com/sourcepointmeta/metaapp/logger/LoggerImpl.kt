@@ -145,6 +145,7 @@ internal class LoggerImpl(
                 )
             )
         }
+        Log.d(tag, "$msg [$json]")
     }
 
     override fun computation(tag: String, msg: String) {
@@ -162,6 +163,7 @@ internal class LoggerImpl(
                 )
             )
         }
+        Log.i(tag, msg)
     }
 
     override fun clientEvent(event: String, msg: String, content: String) {
@@ -194,6 +196,7 @@ internal class LoggerImpl(
                 )
             }
         }
+        Log.d(event, "$msg [$content]")
     }
 
     override fun pm(tag: String, url: String, type: String, pmId: String?) {
@@ -211,6 +214,11 @@ internal class LoggerImpl(
                 )
             )
         }
+        Log.d(tag, """
+            url: $url
+            type: $type
+            pmId: $pmId
+        """.trimIndent())
     }
 }
 
