@@ -1,2 +1,1 @@
-* [SP-7430] (https://sourcepoint.atlassian.net/browse/SP-7430) Update Metaapp Play Store info (#385)
-* [SP-7395](https://sourcepoint.atlassian.net/browse/SP-7395) Renamed campaignEnv to campaignsEnv (#382)
+* [SP-7443] (https://sourcepoint.atlassian.net/browse/SP-7443) Add group PM param as query parameter (#387)
