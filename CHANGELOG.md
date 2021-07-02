@@ -1,3 +1,6 @@
+## 6.1.1 (July, 02, 2021)
+* [SP-7443] (https://sourcepoint.atlassian.net/browse/SP-7443) Add group PM param as query parameter (#387)
+
 ## 6.1.0 (July, 01, 2021)
 * [SP-7430] (https://sourcepoint.atlassian.net/browse/SP-7430) Update Metaapp Play Store info (#385)
 * [SP-7395](https://sourcepoint.atlassian.net/browse/SP-7395) Renamed campaignEnv to campaignsEnv (#382)
