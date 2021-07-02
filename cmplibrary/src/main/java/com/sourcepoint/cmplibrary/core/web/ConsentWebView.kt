@@ -133,13 +133,24 @@ internal class ConsentWebView(
                 "fromNativeSDK": true
                  */
             }
+            logger.webContent(
+                tag = "First Layer Message",
+                url = url.toString(),
+                msg = "injecting params to rendering app",
+                content = obj.toString()
+            )
             """
                 javascript: ${"js_receiver.js".file2String()};
                 window.spLegislation = '${campaignType.name}'; 
                 window.postMessage($obj);
             """.trimIndent()
         }
-        logger.i("ConsentWebView", "$campaignType loadConsentUIFromUrl${NL.t}url $url ")
+        logger.webContent(
+            tag = "First Layer Message",
+            url = url.toString(),
+            msg = "loadConsentUIFromUrl",
+            content = null
+        )
         loadUrl(url.toString())
         true
     }

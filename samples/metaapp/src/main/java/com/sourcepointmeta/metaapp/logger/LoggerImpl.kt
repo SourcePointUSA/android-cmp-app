@@ -214,11 +214,32 @@ internal class LoggerImpl(
                 )
             )
         }
-        Log.d(tag, """
+        Log.d(
+            tag, """
             url: $url
             type: $type
             pmId: $pmId
-        """.trimIndent())
+        """.trimIndent()
+        )
+    }
+
+    override fun webContent(tag: String, url: String, msg: String, content: String?) {
+        loggerScope.launch {
+            ds.storeOrUpdateLog(
+                MetaLog(
+                    id = null,
+                    propertyName = propertyName,
+                    timestamp = Date().time,
+                    type = "WEB_CONTENT",
+                    tag = tag,
+                    message = msg,
+                    logSession = session,
+                    jsonBody = content,
+                    url = url
+                )
+            )
+        }
+        Log.d(tag, "$msg [$content]")
     }
 }
 

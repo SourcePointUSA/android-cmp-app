@@ -51,5 +51,6 @@ fun MetaLog.toLogItem() = LogItem(
     propertyName = propertyName,
     id = id,
     tag = tag,
-    jsonBody = jsonBody
+    jsonBody = jsonBody,
+    url = url
 )

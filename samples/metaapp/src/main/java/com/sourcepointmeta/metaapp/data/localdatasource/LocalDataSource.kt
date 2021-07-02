@@ -202,7 +202,8 @@ private class LocalDataSourceImpl(
                         message = message,
                         json_body = jsonBody,
                         log_session = logSession,
-                        status_req = statusReq
+                        status_req = statusReq,
+                        url = url
                     )
                 lQueries
                     .lastInsertLog()

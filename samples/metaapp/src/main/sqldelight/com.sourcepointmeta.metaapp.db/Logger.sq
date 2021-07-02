@@ -10,7 +10,8 @@ CREATE TABLE meta_log (
     message TEXT NOT NULL,
     log_session TEXT,
     json_body TEXT,
-    status_req TEXT
+    status_req TEXT,
+    url TEXT
 );
 -- Logs
 
@@ -33,8 +34,8 @@ DELETE FROM meta_log
 WHERE meta_log.property_name = ?;
 
 insertLog:
-INSERT OR REPLACE INTO meta_log (id, property_name, timestamp, type, tag, message, log_session ,json_body, status_req)
-VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO meta_log (id, property_name, timestamp, type, tag, message, log_session ,json_body, status_req, url)
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 lastInsertLog:
 SELECT *

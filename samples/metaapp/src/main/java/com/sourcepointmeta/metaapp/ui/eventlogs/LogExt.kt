@@ -6,6 +6,7 @@ import android.widget.TextView
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.ui.component.LogItem
 import com.sourcepointmeta.metaapp.ui.component.LogItemView
+import com.sourcepointmeta.metaapp.util.check
 import kotlinx.android.synthetic.main.item_log.view.* // ktlint-disable
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.json.JSONObject
@@ -18,6 +19,7 @@ fun LogItemView.bind(item: LogItem, position: Int) {
         "WEB_ACTION" -> bindWebAction(item, position)
         "ERROR" -> bindClientError(item, position)
         "CLIENT_EVENT" -> bindClientEvent(item, position)
+        "WEB_CONTENT" -> bindWebContent(item, position)
         "COMPUTATION" -> bindComputation(item, position)
         else -> throw RuntimeException("No type found!!!")
     }
@@ -30,6 +32,7 @@ fun LogItemView.bindReq(item: LogItem, position: Int) {
     item.jsonBody
         ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
         ?: run { log_body_1.visibility = View.GONE }
+    log_body_2.visibility = View.GONE
 }
 
 fun LogItemView.bindResp(item: LogItem, position: Int) {
@@ -38,6 +41,7 @@ fun LogItemView.bindResp(item: LogItem, position: Int) {
     item.jsonBody
         ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
         ?: run { log_body_1.visibility = View.GONE }
+    log_body_2.visibility = View.GONE
 }
 
 fun LogItemView.setStatusField(status: String, textView: TextView) {
@@ -68,18 +72,20 @@ fun LogItemView.bindWebAction(item: LogItem, position: Int) {
     item.jsonBody
         ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
         ?: run { log_body_1.visibility = View.GONE }
+    log_body_2.visibility = View.GONE
 }
 
 fun LogItemView.bindComputation(item: LogItem, position: Int) {
     log_title.text = "${item.type} - ${item.tag}"
     log_body.visibility = View.GONE
     log_body_1.text = item.message
+    log_body_2.visibility = View.GONE
 }
 
 fun LogItemView.bindClientEvent(item: LogItem, position: Int) {
     log_title.text = "${item.type} - ${item.tag}"
     val errorObject =
-        item.jsonBody?.let { com.sourcepointmeta.metaapp.util.check { JSONObject(it) }.getOrNull() } ?: JSONObject()
+        item.jsonBody?.let { check { JSONObject(it) }.getOrNull() } ?: JSONObject()
     val title: String? = errorObject.getOrNull("title")
     val stackTrace: String = errorObject.getOrNull("stackTrace") ?: ""
     log_body.setTextColor(colorClientEvent)
@@ -90,6 +96,25 @@ fun LogItemView.bindClientEvent(item: LogItem, position: Int) {
     item.jsonBody
         ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
         ?: run { log_body_1.visibility = View.GONE }
+    log_body_2.visibility = View.GONE
+}
+
+fun LogItemView.bindWebContent(item: LogItem, position: Int) {
+    log_title.text = "${item.type} - ${item.tag}"
+    val jsonObject =
+        item.jsonBody?.let { check { JSONObject(it) }.getOrNull() } ?: JSONObject()
+    val title: String? = jsonObject.getOrNull("title")
+    val stackTrace: String = jsonObject.getOrNull("stackTrace") ?: ""
+    log_body.setTextColor(colorClientEvent)
+    when (title) {
+        null -> log_body.text = item.message
+        else -> log_body.text = "$title - $stackTrace"
+    }
+    item.jsonBody
+        ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
+        ?: run { log_body_1.visibility = View.GONE }
+
+    item.url?.let { setWebLink(it, log_body_2) }
 }
 
 fun JSONObject.getOrNull(key: String): String? = if (has(key)) this.getString(key) else null
@@ -98,4 +123,5 @@ fun LogItemView.bindClientError(item: LogItem, position: Int) {
     log_title.text = "${item.type} - ${item.tag}"
     log_body.visibility = View.GONE
     log_body_1.text = if (item.message.length > 200) item.message.subSequence(0, 200) else item.message
+    log_body_2.visibility = View.GONE
 }

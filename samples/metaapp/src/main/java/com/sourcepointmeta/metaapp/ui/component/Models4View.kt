@@ -57,5 +57,6 @@ data class LogItem(
     val type: String,
     val tag: String,
     val message: String,
+    val url: String?,
     val jsonBody: String? = null
 )

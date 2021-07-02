@@ -60,5 +60,7 @@ interface Logger {
 
     fun pm(tag: String, url: String, type: String, pmId: String?)
 
+    fun webContent(tag: String, url: String, msg: String, content: String?)
+
     companion object
 }

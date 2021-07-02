@@ -44,6 +44,23 @@
     <TextView
             tools:text="Log"
             android:id="@+id/log_body_1"
+            app:layout_constraintTop_toBottomOf="@id/log_body_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:layout_width="match_parent"
+            android:textColor="?android:attr/textColorAlertDialogListItem"
+            android:paddingBottom="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:maxLines="5"
+            android:ellipsize="marquee"
+    />
+
+    <TextView
+            tools:text="Log"
+            android:id="@+id/log_body_2"
             app:layout_constraintTop_toBottomOf="@id/log_body"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

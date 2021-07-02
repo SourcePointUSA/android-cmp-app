@@ -57,6 +57,7 @@ data class MetaLog(
     val message: String,
     val logSession: String? = null,
     val jsonBody: String? = null,
+    val url: String? = null,
     val statusReq: String? = null
 )
 
@@ -107,5 +108,6 @@ fun Meta_log.toMetaLog() = MetaLog(
     message = message,
     logSession = log_session,
     jsonBody = json_body,
-    statusReq = status_req
+    statusReq = status_req,
+    url = url
 )
