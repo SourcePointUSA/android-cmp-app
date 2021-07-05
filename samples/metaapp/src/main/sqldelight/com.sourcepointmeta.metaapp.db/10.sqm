@@ -26,3 +26,5 @@
 BEGIN TRANSACTION;
 ALTER TABLE property ADD COLUMN campaign_env TEXT;
 COMMIT;
+
+--  adb shell "run-as com.sourcepointmeta.metaapp.debug  rm /data/user/0/com.sourcepointmeta.metaapp.debug/databases/newmetaapp.db"

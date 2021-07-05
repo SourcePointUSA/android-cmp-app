@@ -31,6 +31,7 @@ object TestData {
     var OPTIONS = "Options"
     var EINSTELLUNGEN = "Einstellungen"
     var ACCEPT_ALL = "Accept All"
+    var NETWORK = "Network"
     var REJECT_ALL = "Reject All"
     var SAVE_AND_EXIT = "Save & Exit"
     var PRIVACY_MANAGER = "privacy-manager"

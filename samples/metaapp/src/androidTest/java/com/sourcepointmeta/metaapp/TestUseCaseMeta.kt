@@ -15,13 +15,13 @@ class TestUseCaseMeta {
 
         fun addTestProperty() {
             addProperty(
-                propertyName = "mobile.demo",
+                propertyName = "mobile.multicampaign.demo",
                 accountId = "22",
-                gdprPmId = "12",
-                ccpaPmId = "3",
+                gdprPmId = "488393",
+                ccpaPmId = "488393",
                 autId = "auth",
-                gdprTps = listOf(Pair("a", "a"), Pair("b", "b"), Pair("c", "c")),
-                ccpaTps = listOf(Pair("d", "d"), Pair("e", "e"))
+                gdprTps = listOf(Pair("a", "a")), // listOf(Pair("a", "a"), Pair("b", "b"), Pair("c", "c")),
+                ccpaTps = emptyList() // listOf(Pair("d", "d"), Pair("e", "e"))
             )
         }
 
