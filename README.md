@@ -7,6 +7,26 @@
 - [How to Install](#how-to-install)
 - [Usage](#usage)
 - [Diagnostic tool](#Diagnostic-tool)
+- [Usage](#)
+    - [Create new _Config_ object](#Create-new-_Config_-object)
+    - [Delegate Methods](#Delegate Methods)
+    - [Loading the Privacy Manager on demand](#Loading the Privacy Manager on demand)
+    - [Releasing resources](#Releasing resources)
+    - [The *SpConsent* object](#The SpConsent object)
+    - [Authenticated Consent](#Authenticated Consent)
+    - [Sharing consent with a `WebView`](#Sharing consent with a `WebView`)
+    - [The `authId`](#The `authId`)
+    - [Complete Example](#Complete Example)
+    - [Setting a Targeting Param](#Setting a Targeting Param)
+    - [Targeting parameters to target the right environment](#Targeting parameters to target the right environment)
+    - [ProGuard](#ProGuard)
+    - [Programmatically consenting the current user](#Programmatically consenting the current user)
+    - [Vendor Grants object](#Vendor Grants object)
+    - [`pubData`](#pubData)
+    - [Frequently Asked Questions](#Frequently Asked Questions)
+    - [Artifact Release Process](#Artifact Release Process)
+- [Diagnostic tool](#Diagnostic tool)
+      
 
 # How to Install 
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
