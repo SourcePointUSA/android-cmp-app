@@ -6,8 +6,6 @@
 # Table of Contents
 - [How to Install](#how-to-install)
 - [Usage](#usage)
-- [Diagnostic tool](#Diagnostic-tool)
-- [Usage](#)
     - [Create new _Config_ object](#Create-new-_Config_-object)
     - [Delegate Methods](#Delegate_Methods)
     - [Loading the Privacy Manager on demand](#Loading_the_Privacy_Manager_on_demand)
