@@ -3,6 +3,9 @@
 [![Metaap UI Tests](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/metaap_instrumentation_tests.yml/badge.svg)](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/metaap_instrumentation_tests.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.sourcepoint.cmplibrary/cmplibrary)](https://search.maven.org/search?q=g:com.sourcepoint.cmplibrary)
 
+### Diagnostic tool
+[![Get it on Google Play](art/gplay.png)](https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp)
+
 # Table of Contents
 - [How to Install](#how-to-install)
 - [Usage](#usage)
@@ -23,8 +26,6 @@
     - [`pubData`](#pubData)
     - [Frequently Asked Questions](#Frequently_Asked_Questions)
     - [Artifact Release Process](#Artifact_Release_Process)
-- [Diagnostic tool](#Diagnostic_tool)
-      
 
 # How to Install 
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
@@ -489,7 +490,3 @@ git pull
 git merge develop
 ```
 Now post-release process is done and you have consistent solution. Enjoy!
-
-# Diagnostic tool
-[![Get it on Google Play](art/gplay.png)](https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp)
-
