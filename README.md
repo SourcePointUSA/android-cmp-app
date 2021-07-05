@@ -3,6 +3,30 @@
 [![Metaap UI Tests](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/metaap_instrumentation_tests.yml/badge.svg)](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/metaap_instrumentation_tests.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.sourcepoint.cmplibrary/cmplibrary)](https://search.maven.org/search?q=g:com.sourcepoint.cmplibrary)
 
+### Diagnostic tool
+[![Get it on Google Play](art/gplay.png)](https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp)
+
+# Table of Contents
+- [How to Install](#how-to-install)
+- [Usage](#usage)
+    - [Create new _Config_ object](#Create-new-_Config_-object)
+    - [Delegate Methods](#Delegate_Methods)
+    - [Loading the Privacy Manager on demand](#Loading_the_Privacy_Manager_on_demand)
+    - [Releasing resources](#Releasing_resources)
+    - [The *SpConsent* object](#The_SpConsent_object)
+    - [Authenticated Consent](#Authenticated_Consent)
+    - [Sharing consent with a `WebView`](#Sharing_consent_with_a_`WebView`)
+    - [The `authId`](#The_`authId`)
+    - [Complete Example](#Complete_Example)
+    - [Setting a Targeting Param](#Setting_a_Targeting_Param)
+    - [Targeting parameters to target the right environment](#Targeting_parameters_to_target_the_right_environment)
+    - [ProGuard](#ProGuard)
+    - [Programmatically consenting the current user](#Programmatically_consenting_the_current_user)
+    - [Vendor Grants object](#Vendor_Grants_object)
+    - [`pubData`](#pubData)
+    - [Frequently Asked Questions](#Frequently_Asked_Questions)
+    - [Artifact Release Process](#Artifact_Release_Process)
+
 # How to Install 
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
 
