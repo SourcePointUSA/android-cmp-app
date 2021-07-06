@@ -1,11 +1,15 @@
 package com.example.uitestutil
 
+import android.view.View
 import androidx.annotation.IdRes
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.web.assertion.WebViewAssertions.webMatches
@@ -14,11 +18,11 @@ import androidx.test.espresso.web.sugar.Web.onWebView
 import androidx.test.espresso.web.webdriver.DriverAtoms.*
 import androidx.test.espresso.web.webdriver.Locator
 import org.hamcrest.CoreMatchers
+import org.hamcrest.Matcher
 import org.hamcrest.core.AllOf.allOf
 import org.hamcrest.core.StringContains
 import org.hamcrest.core.StringContains.containsString
 import java.security.InvalidParameterException
-import kotlin.jvm.Throws
 
 @Throws(Throwable::class)
 fun isDisplayedAllOfByResId(
@@ -76,6 +80,7 @@ fun performClickById(
         )
     ).perform(ViewActions.click())
 }
+
 fun scrollAndPerformClickById(
     @IdRes resId: Int
 ) {
@@ -85,8 +90,8 @@ fun scrollAndPerformClickById(
 
 @Throws(Throwable::class)
 fun pressAlertDialogBtn(
-    content : String
-){
+    content: String
+) {
     onView(withText(content))
         .inRoot(RootMatchers.isDialog())
         .check(ViewAssertions.matches(isDisplayed()))
@@ -96,18 +101,19 @@ fun pressAlertDialogBtn(
 @Throws(Throwable::class)
 fun addTextById(
     @IdRes resId: Int,
-    text : String
-){
+    text: String
+) {
     onView(withId(resId))
         .perform(ViewActions.click())
         .perform(ViewActions.typeText(text))
         .perform(ViewActions.closeSoftKeyboard())
 }
+
 @Throws(Throwable::class)
 fun addTextByIdInDialog(
     @IdRes resId: Int,
-    text : String
-){
+    text: String
+) {
     onView(withId(resId))
         .inRoot(RootMatchers.isDialog())
         .perform(ViewActions.click())
@@ -140,7 +146,12 @@ fun performClickContent(
 
 fun performSpinnerItemSelection(@IdRes resId: Int, contentDescription: String) {
     performClickById(resId)
-    Espresso.onData(CoreMatchers.allOf(CoreMatchers.`is`(CoreMatchers.instanceOf(String::class.java)), CoreMatchers.`is`(contentDescription)))
+    Espresso.onData(
+        CoreMatchers.allOf(
+            CoreMatchers.`is`(CoreMatchers.instanceOf(String::class.java)),
+            CoreMatchers.`is`(contentDescription)
+        )
+    )
         .perform(ViewActions.click())
 }
 
@@ -163,7 +174,8 @@ fun insertTextByResId(
     onView(
         allOf(
             withId(propId),
-            isDisplayed())
+            isDisplayed()
+        )
     )
         .perform(
             ViewActions.clearText(),
@@ -217,7 +229,12 @@ fun performClickOnWebViewByClass(classValue: String) {
 @Throws(Throwable::class)
 fun checkConsentState(consent: String, selected: Boolean) {
     onWebView()
-        .withElement(findElement(Locator.XPATH, "//span[@aria-label='$consent' and @aria-checked='$selected' and @class='slider round']"))
+        .withElement(
+            findElement(
+                Locator.XPATH,
+                "//span[@aria-label='$consent' and @aria-checked='$selected' and @class='slider round']"
+            )
+        )
         .perform(webScrollIntoView())
 }
 
@@ -244,9 +261,14 @@ fun tapOnToggle(property: String) {
 }
 
 @Throws(Throwable::class)
-fun tapOnToggle(property: String, tapOnlyWhen : Boolean) {
+fun tapOnToggle(property: String, tapOnlyWhen: Boolean) {
     onWebView()
-        .withElement(findElement(Locator.XPATH, "//span[@aria-label='$property'and @aria-checked='$tapOnlyWhen' and @class='slider round']"))
+        .withElement(
+            findElement(
+                Locator.XPATH,
+                "//span[@aria-label='$property'and @aria-checked='$tapOnlyWhen' and @class='slider round']"
+            )
+        )
         .perform(webScrollIntoView())
         .perform(webClick())
 }
@@ -287,10 +309,39 @@ fun checkWebViewDoesNotHasText(text: String) {
                 )
             )
 
-        throw InvalidParameterException("""
+        throw InvalidParameterException(
+            """
             The current view with text {$text} is displayed. 
-        """.trimIndent())
+        """.trimIndent()
+        )
     } catch (e: Exception) {
         /** This is the success case */
+    }
+}
+
+fun <T : RecyclerView.ViewHolder> clickListItem(position: Int, @IdRes recyclerViewId: Int) {
+    onView(withId(recyclerViewId))
+        .perform(RecyclerViewActions.actionOnItemAtPosition<T>(position, ViewActions.click()));
+}
+
+fun <T : RecyclerView.ViewHolder> clickElementListItem(@IdRes resId: Int, @IdRes recyclerViewId: Int) {
+    onView(withId(recyclerViewId))
+        .perform(RecyclerViewActions.actionOnItemAtPosition<T>(0, clickChildViewWithId(resId)))
+}
+
+fun clickChildViewWithId(id: Int): ViewAction {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View>? {
+            return null
+        }
+
+        override fun getDescription(): String {
+            return "Click on a child view with specified id."
+        }
+
+        override fun perform(uiController: UiController, view: View) {
+            val v = view.findViewById<View>(id)
+            v.performClick()
+        }
     }
 }

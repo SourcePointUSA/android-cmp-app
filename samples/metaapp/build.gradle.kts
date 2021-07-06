@@ -106,7 +106,7 @@ dependencies {
     implementation(Libs.vectorDrawable)
     implementation(Libs.androidxLifLivedata)
     implementation(Libs.androidxLifViewModel)
-    implementation("androidx.fragment:fragment-ktx:1.3.4")
+    implementation("androidx.fragment:fragment-ktx:1.3.5")
     implementation("androidx.core:core-ktx:1.5.0") // ext drawable
 
 

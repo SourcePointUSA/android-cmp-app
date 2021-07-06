@@ -1,6 +1,9 @@
 package com.sourcepointmeta.metaapp
 
 import com.example.uitestutil.* // ktlint-disable
+import com.sourcepointmeta.metaapp.db.MetaAppDB
+import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
+import java.util.*
 
 class TestUseCaseMeta {
     companion object {
@@ -18,10 +21,9 @@ class TestUseCaseMeta {
                 propertyName = "mobile.multicampaign.demo",
                 accountId = "22",
                 gdprPmId = "488393",
-                ccpaPmId = "488393",
-                autId = "auth",
-                gdprTps = listOf(Pair("a", "a")), // listOf(Pair("a", "a"), Pair("b", "b"), Pair("c", "c")),
-                ccpaTps = emptyList() // listOf(Pair("d", "d"), Pair("e", "e"))
+                ccpaPmId = "509688",
+                gdprTps = listOf(Pair("a", "a"), Pair("b", "b")),
+                ccpaTps = listOf(Pair("c", "c"))
             )
         }
 
@@ -57,6 +59,41 @@ class TestUseCaseMeta {
                     pressAlertDialogBtn("CREATE")
                 }
             }
+        }
+
+        fun clickFirstItem(){
+            clickListItem<PropertyAdapter.Vh>(0, R.id.property_list)
+        }
+
+        fun runDemo(){
+            clickElementListItem<PropertyAdapter.Vh>(R.id.play_demo_btn, R.id.property_list)
+        }
+
+        fun MetaAppDB.addTestProperty() {
+            campaignQueries.insertProperty(
+                property_name = "mobile.multicampaign.demo",
+                account_id = 22,
+                gdpr_pm_id = 488393L,
+                ccpa_pm_id = 509688L,
+                campaign_env = "prod",
+                timeout = 3000L,
+                timestamp = Date().time,
+                is_staging = 0,
+                message_type = "WebView",
+                auth_Id = null,
+                pm_tab = "PURPOSES",
+                message_language = "ENGLISH"
+            )
+            campaignQueries.insertStatusCampaign(
+                property_name = "mobile.multicampaign.demo",
+                campaign_type = "GDPR",
+                enabled = 1
+            )
+            campaignQueries.insertStatusCampaign(
+                property_name = "mobile.multicampaign.demo",
+                campaign_type = "CCPA",
+                enabled = 0
+            )
         }
     }
 }
