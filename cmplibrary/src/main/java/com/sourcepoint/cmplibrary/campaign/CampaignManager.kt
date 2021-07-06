@@ -248,9 +248,10 @@ private class CampaignManagerImpl(
             getFieldValue<Int>("propertyId")?.let { dataStorage.savePropertyId(it) }
         }
         // save GDPR uuid
-        map.getMap("ccpa")
-            ?.getFieldValue<String>("uuid")
-            ?.let { dataStorage.saveCcpaConsentUuid(it) }
+        map.getMap("ccpa")?.apply {
+            getFieldValue<String>("uuid")?.let { dataStorage.saveCcpaConsentUuid(it) }
+            getFieldValue<Int>("propertyId")?.let { dataStorage.savePropertyId(it) }
+        }
         // save campaigns and consents
         unifiedMessageResp
             .campaigns
