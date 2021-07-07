@@ -49,8 +49,9 @@ Kotlin
         config {
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
-            messLanguage = MessageLanguage.ENGLISH
-            campaignsEnv = CampaignsEnv.PUBLIC
+            messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
+            campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
+            messageTimeout = 4000 // Optional, default 3000ms
             +CampaignType.CCPA
             +CampaignType.GDPR
         }
@@ -64,8 +65,9 @@ Java
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addMessageLanguage(MessageLanguage.ENGLISH)
-            .addCampaignsEnv(CampaignsEnv.PUBLIC)
+            .addMessageLanguage(MessageLanguage.ENGLISH) // Optional, default ENGLISH
+            .addCampaignsEnv(CampaignsEnv.PUBLIC) // Optional, default PUBLIC
+            .addMessageTimeout(4000) // Optional, default 3000ms
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
             .build();
