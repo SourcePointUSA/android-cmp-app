@@ -199,6 +199,14 @@ fun performClickOnWebViewByContent(text: String) {
 }
 
 @Throws(Throwable::class)
+fun performClickOnLabelWebViewByContent(text: String) {
+    onWebView()
+        .withElement(findElement(Locator.XPATH, "//a[contains(text(), '$text')]"))
+        .perform(webScrollIntoView())
+        .perform(webClick())
+}
+
+@Throws(Throwable::class)
 fun performClickOnWebViewByClass(classValue: String) {
     onWebView()
         .withElement(findElement(Locator.CLASS_NAME, classValue))

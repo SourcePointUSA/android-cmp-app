@@ -8,11 +8,13 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeepLinkDisplayed
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCustomConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapNetworkOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapOptionWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
@@ -132,6 +134,19 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
+    }
+
+    @Test
+    fun GIVEN_a_deeplink_OPEN_an_activity() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))
+
+        scenario = launchActivity()
+
+        wr { tapRejectOnWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { tapNetworkOnWebView() }
+        wr { checkDeepLinkDisplayed() }
     }
 
     @Test

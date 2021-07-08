@@ -21,6 +21,15 @@
         </activity>
         <activity android:name=".ui.demo.DemoActivity"/>
         <activity android:name=".ui.viewer.JsonViewerActivity"/>
+        <activity android:name=".LinkActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="meta"
+                      android:host="meta_network" />
+            </intent-filter>
+        </activity>
         <meta-data
                 android:name="preloaded_fonts"
                 android:resource="@array/preloaded_fonts"/>

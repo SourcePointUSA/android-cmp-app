@@ -8,6 +8,7 @@ import com.sourcepoint.app.v6.TestData.CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST_2
 import com.sourcepoint.app.v6.TestData.FEATURES
 import com.sourcepoint.app.v6.TestData.MESSAGE
+import com.sourcepoint.app.v6.TestData.NETWORK
 import com.sourcepoint.app.v6.TestData.OPTIONS
 import com.sourcepoint.app.v6.TestData.PARTIAL_CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.PRIVACY_MANAGER
@@ -92,6 +93,10 @@ class TestUseCase {
             isDisplayedAllOfByResId(resId = R.id.review_consents_gdpr)
         }
 
+        fun checkDeepLinkDisplayed() {
+            isDisplayedAllOfByResId(resId = R.id.app_dl_tv)
+        }
+
         fun clickOnGdprReviewConsent() {
             performClickById(resId = R.id.review_consents_gdpr)
         }
@@ -138,6 +143,10 @@ class TestUseCase {
 
         fun tapAcceptAllOnWebView() {
             performClickOnWebViewByContent(ACCEPT_ALL)
+        }
+
+        fun tapNetworkOnWebView() {
+            performClickOnLabelWebViewByContent(NETWORK)
         }
 
         fun tapRejectOnWebView() {
