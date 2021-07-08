@@ -6,6 +6,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.wr
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkDeepLinkDisplayed
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkMessageNull
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnConsentReady
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.runDemo
@@ -16,7 +17,6 @@ import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapGdprPM
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapMetaDeepLinkOnWebView
 import com.sourcepointmeta.metaapp.data.localdatasource.createDb
 import com.sourcepointmeta.metaapp.db.MetaAppDB
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -49,9 +49,9 @@ class MainActivityTest {
     @Test
     fun INSERT_a_property_and_VERIFY_the_data() = runBlocking<Unit> {
         loadKoinModules(
-                module(override = true) {
-                    single(qualifier = named("clear_db")) { true }
-                }
+            module(override = true) {
+                single(qualifier = named("clear_db")) { true }
+            }
         )
         scenario = launchActivity()
 
@@ -70,5 +70,6 @@ class MainActivityTest {
         swipeLeftPager()
         wr { tapGdprPM() }
         wr { tapMetaDeepLinkOnWebView() }
+        wr { checkDeepLinkDisplayed() }
     }
 }

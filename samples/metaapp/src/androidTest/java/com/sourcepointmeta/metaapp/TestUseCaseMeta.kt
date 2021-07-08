@@ -29,7 +29,7 @@ class TestUseCaseMeta {
         }
 
         fun tapMetaDeepLinkOnWebView() {
-            performClickOnLabelWebViewByContent("Network")
+            performClickOnLabelWebViewByContent("metanetwork")
         }
 
         fun tapCcpaPM() {
@@ -38,25 +38,25 @@ class TestUseCaseMeta {
 
         fun addTestProperty() {
             addProperty(
-                    propertyName = "mobile.multicampaign.demo",
-                    accountId = "22",
-                    gdprPmId = "488393",
-                    ccpaPmId = "509688",
-                    gdprTps = listOf(Pair("a", "a"), Pair("b", "b")),
-                    ccpaTps = listOf(Pair("c", "c"))
+                propertyName = "mobile.multicampaign.demo",
+                accountId = "22",
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                gdprTps = listOf(Pair("a", "a"), Pair("b", "b")),
+                ccpaTps = listOf(Pair("c", "c"))
             )
         }
 
         fun saveProperty() = scrollAndPerformClickById(R.id.save_btn)
 
         fun addProperty(
-                propertyName: String,
-                accountId: String,
-                gdprPmId: String,
-                ccpaPmId: String? = null,
-                autId: String? = null,
-                gdprTps: List<Pair<String, String>>? = null,
-                ccpaTps: List<Pair<String, String>>? = null
+            propertyName: String,
+            accountId: String,
+            gdprPmId: String,
+            ccpaPmId: String? = null,
+            autId: String? = null,
+            gdprTps: List<Pair<String, String>>? = null,
+            ccpaTps: List<Pair<String, String>>? = null
         ) {
             addTextById(R.id.prop_name_ed, propertyName)
             addTextById(R.id.account_id_ed, accountId)
@@ -91,51 +91,51 @@ class TestUseCaseMeta {
 
         fun checkMessageNull() {
             checkElementListItem<PropertyAdapter.Vh>(
-                    resId = R.id.log_body_1,
-                    content = "parsed campaigns\n" + "1 Null messages\n" + "0 Not Null message",
-                    recyclerViewId = R.id.log_list,
-                    position = 1
+                resId = R.id.log_body_1,
+                content = "parsed campaigns\n" + "1 Null messages\n" + "0 Not Null message",
+                recyclerViewId = R.id.log_list,
+                position = 1
             )
         }
 
         fun checkOnConsentReady() {
             checkElementListItem<PropertyAdapter.Vh>(
-                    resId = R.id.log_body,
-                    content = "onConsentReady",
-                    recyclerViewId = R.id.log_list,
-                    position = 0
+                resId = R.id.log_body,
+                content = "onConsentReady",
+                recyclerViewId = R.id.log_list,
+                position = 0
             )
         }
 
         fun swipeLeftPager() {
             Espresso.onView(ViewMatchers.withId(R.id.pager))
-                    .perform(ViewActions.swipeLeft())
+                .perform(ViewActions.swipeLeft())
         }
 
         fun MetaAppDB.addTestProperty(autId: String? = null) {
             campaignQueries.insertProperty(
-                    property_name = "mobile.multicampaign.demo",
-                    account_id = 22,
-                    gdpr_pm_id = 488393L,
-                    ccpa_pm_id = 509688L,
-                    campaign_env = "prod",
-                    timeout = 3000L,
-                    timestamp = Date().time,
-                    is_staging = 0,
-                    message_type = "WebView",
-                    auth_Id = autId,
-                    pm_tab = "PURPOSES",
-                    message_language = "ENGLISH"
+                property_name = "mobile.multicampaign.demo",
+                account_id = 22,
+                gdpr_pm_id = 488393L,
+                ccpa_pm_id = 509688L,
+                campaign_env = "prod",
+                timeout = 3000L,
+                timestamp = Date().time,
+                is_staging = 0,
+                message_type = "WebView",
+                auth_Id = autId,
+                pm_tab = "PURPOSES",
+                message_language = "ENGLISH"
             )
             campaignQueries.insertStatusCampaign(
-                    property_name = "mobile.multicampaign.demo",
-                    campaign_type = "GDPR",
-                    enabled = 1
+                property_name = "mobile.multicampaign.demo",
+                campaign_type = "GDPR",
+                enabled = 1
             )
             campaignQueries.insertStatusCampaign(
-                    property_name = "mobile.multicampaign.demo",
-                    campaign_type = "CCPA",
-                    enabled = 0
+                property_name = "mobile.multicampaign.demo",
+                campaign_type = "CCPA",
+                enabled = 0
             )
         }
     }
