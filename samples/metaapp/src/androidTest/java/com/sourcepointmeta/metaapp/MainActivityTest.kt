@@ -5,7 +5,6 @@ import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
-import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.clickFirstItem
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.runDemo
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.saveProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapFab
@@ -14,13 +13,11 @@ import com.sourcepointmeta.metaapp.db.MetaAppDB
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityTest {
@@ -35,7 +32,7 @@ class MainActivityTest {
     }
 
     @Before
-    fun setup(){
+    fun setup() {
         db.campaignQueries.run {
             deleteAllProperties()
             deleteStatusCampaign()
@@ -43,7 +40,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun AAA_set_test_property() = runBlocking<Unit> {
+    fun INSERT_a_property_and_VERIFY_the_data() = runBlocking<Unit> {
         loadKoinModules(
             module(override = true) {
                 single(qualifier = named("clear_db")) { true }
@@ -63,7 +60,5 @@ class MainActivityTest {
         db.addTestProperty()
 //        clickFirstItem()
         runDemo()
-
-
     }
 }

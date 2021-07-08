@@ -3,7 +3,7 @@ package com.sourcepointmeta.metaapp
 import com.example.uitestutil.* // ktlint-disable
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
-import java.util.*
+import java.util.*  // ktlint-disable
 
 class TestUseCaseMeta {
     companion object {
@@ -61,11 +61,11 @@ class TestUseCaseMeta {
             }
         }
 
-        fun clickFirstItem(){
+        fun clickFirstItem() {
             clickListItem<PropertyAdapter.Vh>(0, R.id.property_list)
         }
 
-        fun runDemo(){
+        fun runDemo() {
             clickElementListItem<PropertyAdapter.Vh>(R.id.play_demo_btn, R.id.property_list)
         }
 
