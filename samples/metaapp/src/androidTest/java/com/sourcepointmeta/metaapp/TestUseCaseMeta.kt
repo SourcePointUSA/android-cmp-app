@@ -4,9 +4,13 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import com.example.uitestutil.* // ktlint-disable
+import com.sourcepointmeta.metaapp.TestData.ACCEPT
+import com.sourcepointmeta.metaapp.TestData.CCPA_CONSENT_LIST
+import com.sourcepointmeta.metaapp.TestData.GDPR_CONSENT_LIST_2
+import com.sourcepointmeta.metaapp.TestData.REJECT
+import com.sourcepointmeta.metaapp.data.localdatasource.toValueDB
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
-import kotlinx.android.synthetic.main.log_fragment_layout.*
 import java.util.*  // ktlint-disable
 
 class TestUseCaseMeta {
@@ -112,7 +116,41 @@ class TestUseCaseMeta {
                 .perform(ViewActions.swipeLeft())
         }
 
-        fun MetaAppDB.addTestProperty(autId: String? = null) {
+        fun tapAcceptOnWebView() {
+            performClickOnWebViewByContent(ACCEPT)
+        }
+
+        fun clickOnGdprReviewConsent() {
+            performClickById(resId = R.id.review_consents_gdpr_fr)
+        }
+
+        fun clickOnCcpaReviewConsent() {
+            performClickById(resId = R.id.review_consents_ccpa_fr)
+        }
+
+        fun checkAllGdprConsentsOn() {
+            GDPR_CONSENT_LIST_2.forEach { consent ->
+                checkConsentState(consent, true)
+            }
+        }
+
+        fun checkAllConsentsOff() {
+            GDPR_CONSENT_LIST_2.forEach { consent ->
+                checkConsentState(consent, false)
+            }
+        }
+
+        fun checkAllCcpaConsentsOn() {
+            CCPA_CONSENT_LIST.forEach { consent ->
+                checkConsentState(consent, true)
+            }
+        }
+
+        fun tapRejectOnWebView() {
+            performClickOnWebViewByContent(REJECT)
+        }
+
+        fun MetaAppDB.addTestProperty(autId: String? = null, gdprEnabled: Boolean = true, ccpaEnabled: Boolean = false) {
             campaignQueries.insertProperty(
                 property_name = "mobile.multicampaign.demo",
                 account_id = 22,
@@ -130,12 +168,12 @@ class TestUseCaseMeta {
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.demo",
                 campaign_type = "GDPR",
-                enabled = 1
+                enabled = gdprEnabled.toValueDB()
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.demo",
                 campaign_type = "CCPA",
-                enabled = 0
+                enabled = ccpaEnabled.toValueDB()
             )
         }
     }
