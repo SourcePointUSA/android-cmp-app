@@ -20,6 +20,12 @@ object TestData {
         "Game Accounts"
     )
 
+    val CCPA_CONSENT_LIST = listOf(
+        "Category 1",
+        "Category 2",
+        "Category 3",
+    )
+
     var CONSENT_LIST = arrayOf("Store and/or access information on a device", "Create a personalised ads profile", "Select personalised ads",
         "Create a personalised content profile", "Select personalised content", "Measure content performance", "Apply market research to generate audience insights",
         "Develop and improve products")

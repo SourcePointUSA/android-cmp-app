@@ -4,11 +4,13 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.wr
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeepLinkDisplayed
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCcpaReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCustomConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
@@ -53,6 +55,14 @@ class MainActivityKotlinTest {
         +(CampaignType.GDPR)
     }
 
+    private val spConfCcpa = config {
+        accountId = 22
+        propertyName = "mobile.multicampaign.demo"
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 3000
+        +(CampaignType.CCPA)
+    }
+
     private val spConf = config {
         accountId = 22
         propertyName = "mobile.multicampaign.demo"
@@ -75,7 +85,19 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_ccpa_campaign_SHOW_message_and_REJECT_ALL() = runBlocking<Unit> {
+    fun GIVEN_a_ccpa_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(spConfig = spConfCcpa, gdprPmId = "488393", ccpaPmId = "509688"))
+
+        scenario = launchActivity()
+
+        wr { tapAcceptOnWebView() }
+        wr { clickOnCcpaReviewConsent() }
+        wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
+    }
+
+    @Test
+    fun GIVEN_a_dgpr_campaign_SHOW_message_and_REJECT_ALL() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393", ccpaPmId = "509688"))
 
