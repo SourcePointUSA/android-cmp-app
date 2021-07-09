@@ -100,7 +100,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun GIVEN_a_ccpa_campaign_SHOW_message_and_REJECT_ALL() = runBlocking<Unit> {
+    fun GIVEN_a_gdpr_campaign_SHOW_message_and_REJECT_ALL() = runBlocking<Unit> {
         loadKoinModules(
             module(override = true) {
                 single(qualifier = named("ui_test_running")) { true }
