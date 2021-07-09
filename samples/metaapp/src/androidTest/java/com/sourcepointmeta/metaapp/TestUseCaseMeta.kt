@@ -24,10 +24,6 @@ class TestUseCaseMeta {
             performClickById(R.id.fab)
         }
 
-        fun tapGdprPM() {
-            performClickById(R.id.review_consents_gdpr_fr)
-        }
-
         fun checkDeepLinkDisplayed() {
             isDisplayedAllOfByResId(resId = R.id.dl_tv)
         }

@@ -19,7 +19,6 @@ import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.saveProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.swipeLeftPager
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapAcceptOnWebView
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapFab
-import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapGdprPM
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapMetaDeepLinkOnWebView
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapRejectOnWebView
 import com.sourcepointmeta.metaapp.data.localdatasource.createDb
@@ -76,9 +75,9 @@ class MainActivityTest {
         runDemo()
         wr { checkMessageNull() }
         wr { checkOnConsentReady() }
-        swipeLeftPager()
-        wr { tapGdprPM() }
-        wr { tapMetaDeepLinkOnWebView() }
+        wr(delay = 200) { swipeLeftPager() }
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { tapMetaDeepLinkOnWebView() }
         wr { checkDeepLinkDisplayed() }
     }
 
