@@ -81,57 +81,57 @@ class MainActivityTest {
         wr { checkDeepLinkDisplayed() }
     }
 
-    @Test
-    fun GIVEN_a_gdpr_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
-        loadKoinModules(
-            module(override = true) {
-                single(qualifier = named("ui_test_running")) { true }
-            }
-        )
-        scenario = launchActivity()
-
-        db.addTestProperty()
-
-        runDemo()
-        wr { tapAcceptOnWebView() }
-        wr(delay = 200) { swipeLeftPager() }
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
-    }
-
-    @Test
-    fun GIVEN_a_gdpr_campaign_SHOW_message_and_REJECT_ALL() = runBlocking<Unit> {
-        loadKoinModules(
-            module(override = true) {
-                single(qualifier = named("ui_test_running")) { true }
-            }
-        )
-        scenario = launchActivity()
-
-        db.addTestProperty()
-
-        runDemo()
-        wr { tapRejectOnWebView() }
-        wr(delay = 200) { swipeLeftPager() }
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
-    }
-
-    @Test
-    fun GIVEN_a_ccpa_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
-        loadKoinModules(
-            module(override = true) {
-                single(qualifier = named("ui_test_running")) { true }
-            }
-        )
-        scenario = launchActivity()
-
-        db.addTestProperty(ccpaEnabled = true, gdprEnabled = false)
-
-        runDemo()
-        wr { tapAcceptOnWebView() }
-        wr(delay = 200) { swipeLeftPager() }
-        wr { clickOnCcpaReviewConsent() }
-        wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
-    }
+//    @Test
+//    fun GIVEN_a_gdpr_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
+//        loadKoinModules(
+//            module(override = true) {
+//                single(qualifier = named("ui_test_running")) { true }
+//            }
+//        )
+//        scenario = launchActivity()
+//
+//        db.addTestProperty()
+//
+//        runDemo()
+//        wr { tapAcceptOnWebView() }
+//        wr(delay = 200) { swipeLeftPager() }
+//        wr { clickOnGdprReviewConsent() }
+//        wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
+//    }
+//
+//    @Test
+//    fun GIVEN_a_gdpr_campaign_SHOW_message_and_REJECT_ALL() = runBlocking<Unit> {
+//        loadKoinModules(
+//            module(override = true) {
+//                single(qualifier = named("ui_test_running")) { true }
+//            }
+//        )
+//        scenario = launchActivity()
+//
+//        db.addTestProperty()
+//
+//        runDemo()
+//        wr { tapRejectOnWebView() }
+//        wr(delay = 200) { swipeLeftPager() }
+//        wr { clickOnGdprReviewConsent() }
+//        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
+//    }
+//
+//    @Test
+//    fun GIVEN_a_ccpa_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
+//        loadKoinModules(
+//            module(override = true) {
+//                single(qualifier = named("ui_test_running")) { true }
+//            }
+//        )
+//        scenario = launchActivity()
+//
+//        db.addTestProperty(ccpaEnabled = true, gdprEnabled = false)
+//
+//        runDemo()
+//        wr { tapAcceptOnWebView() }
+//        wr(delay = 200) { swipeLeftPager() }
+//        wr { clickOnCcpaReviewConsent() }
+//        wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
+//    }
 }

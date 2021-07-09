@@ -62,7 +62,7 @@ class MainActivityKotlinTest {
         +(CampaignType.CCPA)
     }
 
-//    @Test
+    @Test
     fun GIVEN_a_gdpr_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393", ccpaPmId = "509688"))
@@ -74,7 +74,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
     }
 
-//    @Test
+    @Test
     fun GIVEN_a_ccpa_campaign_SHOW_message_and_REJECT_ALL() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393", ccpaPmId = "509688"))
@@ -86,7 +86,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
     }
 
-//    @Test
+    @Test
     fun GIVEN_a_campaignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConf, gdprPmId = "488393", ccpaPmId = "509688"))
