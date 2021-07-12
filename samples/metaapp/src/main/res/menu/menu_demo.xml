@@ -8,4 +8,9 @@
           android:orderInCategory="100"
           android:icon="@drawable/ic_baseline_ios_share_24"
           app:showAsAction="always"/>
+
+    <item android:id="@+id/action_share_all"
+          android:title="@string/action_share_all"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
 </menu>
