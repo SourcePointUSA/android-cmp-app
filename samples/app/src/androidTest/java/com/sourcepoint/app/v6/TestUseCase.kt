@@ -4,6 +4,7 @@ import android.webkit.CookieManager
 import com.example.uitestutil.* //ktlint-disable
 import com.sourcepoint.app.v6.TestData.ACCEPT
 import com.sourcepoint.app.v6.TestData.ACCEPT_ALL
+import com.sourcepoint.app.v6.TestData.CCPA_CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST_2
 import com.sourcepoint.app.v6.TestData.FEATURES
@@ -64,6 +65,12 @@ class TestUseCase {
         fun checkAllConsentsOff() {
             CONSENT_LIST_2.forEach { consent ->
                 checkConsentState(consent, false)
+            }
+        }
+
+        fun checkAllCcpaConsentsOn() {
+            CCPA_CONSENT_LIST.forEach { consent ->
+                checkConsentState(consent, true)
             }
         }
 

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.math.MathUtils
 import androidx.fragment.app.Fragment
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -18,17 +17,12 @@ import org.koin.android.ext.android.inject
 
 class DemoFragment : Fragment() {
 
-//    internal val adapter by lazy { DemoAdapter() }
-
     companion object {
         fun instance(propertyName: String) = DemoFragment().apply {
             arguments = Bundle().apply {
                 putString("property_name", propertyName)
             }
         }
-
-        private const val GRID_SPAN_COUNT_MIN = 1
-        private const val GRID_SPAN_COUNT_MAX = 4
     }
 
     enum class DemoAction {
@@ -69,17 +63,5 @@ class DemoFragment : Fragment() {
             ?.let { review_consents_gdpr_fr.isEnabled = true } ?: kotlin.run {
             review_consents_gdpr_fr.isEnabled = false
         }
-    }
-
-    private fun calculateGridSpanCount(): Int {
-        val displayMetrics = resources.displayMetrics
-        val displayWidth = displayMetrics.widthPixels
-        val itemSize = resources.getDimensionPixelSize(R.dimen.cat_toc_item_size)
-        val gridSpanCount = displayWidth / itemSize
-        return MathUtils.clamp(
-            gridSpanCount,
-            GRID_SPAN_COUNT_MIN,
-            GRID_SPAN_COUNT_MAX
-        )
     }
 }
