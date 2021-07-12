@@ -1,4 +1,4 @@
-package com.sourcepointmeta.metaapp.ui.component
+package com.sourcepointmeta.metaapp.ui.eventlogs
 
 import android.content.Context
 import android.graphics.drawable.Drawable

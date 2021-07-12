@@ -5,13 +5,13 @@ import android.view.View
 import android.widget.TextView
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.ui.component.LogItem
-import com.sourcepointmeta.metaapp.ui.component.LogItemView
 import kotlinx.android.synthetic.main.item_log.view.* // ktlint-disable
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.json.JSONObject
 
 @SuppressLint("ResourceType")
 fun LogItemView.bind(item: LogItem, position: Int) {
+    checkbox.isSelected = item.selected
     when (item.type) {
         "REQUEST" -> bindReq(item, position)
         "RESPONSE" -> bindResp(item, position)

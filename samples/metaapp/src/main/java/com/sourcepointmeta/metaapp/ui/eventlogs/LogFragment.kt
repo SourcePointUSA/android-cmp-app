@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.ui.component.LogAdapter
 import com.sourcepointmeta.metaapp.ui.component.LogItem
 import kotlinx.android.synthetic.main.log_fragment_layout.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
