@@ -1,6 +1,9 @@
 package com.sourcepointmeta.metaapp.ui.eventlogs
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.widget.TextView
 import com.sourcepointmeta.metaapp.core.getOrNull
@@ -98,4 +101,22 @@ fun LogItemView.bindClientError(item: LogItem, position: Int) {
     log_title.text = "${item.type} - ${item.tag}"
     log_body.visibility = View.GONE
     log_body_1.text = if (item.message.length > 200) item.message.subSequence(0, 200) else item.message
+}
+
+fun Activity.composeEmail(
+    propertyName: String,
+    text: String,
+    addresses: Array<String> = arrayOf("carmelo@sourcepoint.com"),
+    attachment: Uri? = null
+) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "message/rfc822"
+        putExtra(Intent.EXTRA_EMAIL, addresses)
+        putExtra(Intent.EXTRA_SUBJECT, "Logs: $propertyName")
+        putExtra(Intent.EXTRA_TEXT, text)
+        putExtra(Intent.EXTRA_STREAM, attachment)
+    }
+    if (intent.resolveActivity(packageManager) != null) {
+        startActivity(intent)
+    }
 }

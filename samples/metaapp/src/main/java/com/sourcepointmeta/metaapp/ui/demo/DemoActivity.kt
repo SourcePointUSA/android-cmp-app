@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -23,10 +24,11 @@ import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
+import com.sourcepointmeta.metaapp.ui.eventlogs.composeEmail
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.LOG_ID
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.TITLE
-import kotlinx.android.synthetic.main.activity_demo.* //ktlint-disable
+import kotlinx.android.synthetic.main.activity_demo.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
@@ -88,7 +90,9 @@ class DemoActivity : FragmentActivity() {
         demoFr.demoListener = { action ->
 
             // don't go to the first fragment during UI tests
-            if (!isUITestRunning) { pager.currentItem = 0 }
+            if (!isUITestRunning) {
+                pager.currentItem = 0
+            }
 
             when (action) {
                 DemoFragment.DemoAction.GDPR_PM -> {
@@ -124,6 +128,17 @@ class DemoActivity : FragmentActivity() {
             intent.putExtra(LOG_ID, it.id ?: -1L)
             intent.putExtra(TITLE, "${it.type} - ${it.tag}")
             startActivity(intent)
+        }
+
+        tool_bar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_share -> composeEmail(
+                    propertyName = "mobile.multicampaign.demo",
+                    text = JSONObject().toString()
+                )
+                R.id.action_share_all -> Toast.makeText(this@DemoActivity, "Action share all", Toast.LENGTH_LONG).show()
+            }
+            true
         }
     }
 
