@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -24,7 +23,6 @@ import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
-import com.sourcepointmeta.metaapp.ui.eventlogs.composeEmail
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.LOG_ID
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.TITLE
@@ -132,11 +130,7 @@ class DemoActivity : FragmentActivity() {
 
         tool_bar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.action_share -> composeEmail(
-                    propertyName = "mobile.multicampaign.demo",
-                    text = JSONObject().toString()
-                )
-                R.id.action_share_all -> Toast.makeText(this@DemoActivity, "Action share all", Toast.LENGTH_LONG).show()
+                R.id.action_share -> logFr.shareLogs()
             }
             true
         }

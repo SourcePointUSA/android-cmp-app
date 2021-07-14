@@ -2,15 +2,23 @@ package com.sourcepointmeta.metaapp.ui.eventlogs
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Environment
 import android.view.View
 import android.widget.TextView
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepointmeta.metaapp.core.getOrNull
+import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
 import com.sourcepointmeta.metaapp.ui.component.LogItem
-import kotlinx.android.synthetic.main.item_log.view.* // ktlint-disable
+import kotlinx.android.synthetic.main.item_log.view.* //ktlint-disable
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.* //ktlint-disable
 
 @SuppressLint("ResourceType")
 fun LogItemView.bind(item: LogItem, position: Int) {
@@ -104,19 +112,55 @@ fun LogItemView.bindClientError(item: LogItem, position: Int) {
 }
 
 fun Activity.composeEmail(
-    propertyName: String,
+    config: SpConfig,
     text: String,
-    addresses: Array<String> = arrayOf("carmelo@sourcepoint.com"),
+    addresses: Array<String> = emptyArray(),
     attachment: Uri? = null
 ) {
     val intent = Intent(Intent.ACTION_SEND).apply {
-        type = "message/rfc822"
+//        type = "message/rfc822"
+        type = "*/*"
         putExtra(Intent.EXTRA_EMAIL, addresses)
-        putExtra(Intent.EXTRA_SUBJECT, "Logs: $propertyName")
+        putExtra(Intent.EXTRA_SUBJECT, "Logs: ${config.propertyName}")
         putExtra(Intent.EXTRA_TEXT, text)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         putExtra(Intent.EXTRA_STREAM, attachment)
     }
     if (intent.resolveActivity(packageManager) != null) {
         startActivity(intent)
+    }
+}
+
+fun List<MetaLog>.toStringifyJson(): String {
+    return JSONArray(this.map { it.toJSONObject() }).toString()
+}
+
+fun MetaLog.toJSONObject(): JSONObject {
+    return JSONObject().apply {
+        put("tag", tag)
+        put("type", type)
+        put("message", message)
+        put("jsonBody", JSONObject(jsonBody))
+        put("statusReq", statusReq)
+    }
+}
+
+@SuppressLint("SimpleDateFormat")
+fun Context.createFileWithContent(propertyName: String, content: String): File {
+    val pattern = "yyyyMMddHHmmss"
+    val simpleDateFormat = SimpleDateFormat(pattern)
+    val date: String = simpleDateFormat.format(Date())
+    return File(getAbsoluteFile(), propertyName + "_$date.json")
+        .apply {
+            if (!exists()) createNewFile()
+            writeText(content)
+        }
+}
+
+fun Context.getAbsoluteFile(): File? {
+    return if (Environment.MEDIA_MOUNTED == Environment.getExternalStorageState()) {
+        getExternalFilesDir(null)
+    } else {
+        filesDir
     }
 }

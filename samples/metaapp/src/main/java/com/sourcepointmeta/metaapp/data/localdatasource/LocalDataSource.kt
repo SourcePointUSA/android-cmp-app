@@ -29,6 +29,7 @@ internal interface LocalDataSource {
     fun fetchPropertyByNameSync(name: String): Property
     fun fetchLogsByPropertyName(propertyName: String): Either<List<MetaLog>>
     fun fetchLogById(id: Long): Either<MetaLog>
+    fun fetchLogByIds(ids: Collection<Long>): Either<List<MetaLog>>
     suspend fun fetchTargetingParams(propName: String): Either<List<MetaTargetingParam>>
     suspend fun storeOrUpdateProperty(property: Property): Either<Property>
     suspend fun storeOrUpdateLog(log: MetaLog)
@@ -36,6 +37,7 @@ internal interface LocalDataSource {
     suspend fun updateProperty(property: Property)
     suspend fun deleteAll()
     suspend fun deleteByPropertyName(name: String)
+    fun deleteLogsByPropertyName(name: String)
     fun deleteTargetingParameter(propName: String, campaignType: CampaignType, key: String)
     fun getSPConfig(pName: String): Either<SpConfig>
 
@@ -121,7 +123,7 @@ private class LocalDataSourceImpl(
     override fun fetchLogsByPropertyName(propertyName: String): Either<List<MetaLog>> {
         return check {
             lQueries
-                .selectAllLogsByPropertyName(propertyName)
+                .selectAllLogsByPropertyNameASC(propertyName)
                 .executeAsList()
                 .map { it.toMetaLog() }
         }
@@ -134,6 +136,14 @@ private class LocalDataSourceImpl(
                 .firstOrNull()
                 ?.toMetaLog()
                 ?: throw RuntimeException("Log with id[$id] not found!!!")
+        }
+    }
+
+    override fun fetchLogByIds(ids: Collection<Long>): Either<List<MetaLog>> {
+        return check {
+            lQueries.selectLogByIds(ids)
+                .executeAsList()
+                .map { it.toMetaLog() }
         }
     }
 
@@ -228,6 +238,12 @@ private class LocalDataSourceImpl(
             deletePropertyByName(name)
             deleteTargetingParameterByPropName(name)
             deleteStatusCampaignByPropName(name)
+        }
+    }
+
+    override fun deleteLogsByPropertyName(name: String) {
+        lQueries.run {
+            deleteLogsByPropertyName(name)
         }
     }
 

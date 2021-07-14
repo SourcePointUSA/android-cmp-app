@@ -89,5 +89,4 @@ class MainActivityTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapMetaDeepLinkOnWebView() }
         wr { checkDeepLinkDisplayed() }
     }
-
 }
