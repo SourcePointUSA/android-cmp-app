@@ -12,13 +12,13 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
 import com.sourcepointmeta.metaapp.ui.component.LogItem
-import kotlinx.android.synthetic.main.item_log.view.* //ktlint-disable
+import kotlinx.android.synthetic.main.item_log.view.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.* //ktlint-disable
+import java.util.*
 
 @SuppressLint("ResourceType")
 fun LogItemView.bind(item: LogItem, position: Int) {
