@@ -12,13 +12,14 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
 import com.sourcepointmeta.metaapp.ui.component.LogItem
-import kotlinx.android.synthetic.main.item_log.view.*
+import com.sourcepointmeta.metaapp.util.check
+import kotlinx.android.synthetic.main.item_log.view.* //ktlint-disable
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.* //ktlint-disable
 
 @SuppressLint("ResourceType")
 fun LogItemView.bind(item: LogItem, position: Int) {
@@ -90,7 +91,7 @@ fun LogItemView.bindComputation(item: LogItem, position: Int) {
 fun LogItemView.bindClientEvent(item: LogItem, position: Int) {
     log_title.text = "${item.type} - ${item.tag}"
     val errorObject =
-        item.jsonBody?.let { com.sourcepointmeta.metaapp.util.check { JSONObject(it) }.getOrNull() } ?: JSONObject()
+        item.jsonBody?.let { check { JSONObject(it) }.getOrNull() } ?: JSONObject()
     val title: String? = errorObject.getOrNull("title")
     val stackTrace: String = errorObject.getOrNull("stackTrace") ?: ""
     log_body.setTextColor(colorClientEvent)
@@ -140,7 +141,7 @@ fun MetaLog.toJSONObject(): JSONObject {
         put("tag", tag)
         put("type", type)
         put("message", message)
-        put("jsonBody", JSONObject(jsonBody))
+        check { JSONObject(jsonBody) }.getOrNull()?.let { put("jsonBody", it) }
         put("statusReq", statusReq)
     }
 }
