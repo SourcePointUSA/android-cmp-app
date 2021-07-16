@@ -55,7 +55,7 @@ jobs:
       - name: Integration cmplibrary UI tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 28
+          api-level: 30
           script: ./gradlew cmplibrary:connectedAndroidTest
 
 
