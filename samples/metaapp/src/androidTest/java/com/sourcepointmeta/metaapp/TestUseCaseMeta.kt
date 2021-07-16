@@ -89,7 +89,7 @@ class TestUseCaseMeta {
             clickElementListItem<PropertyAdapter.Vh>(R.id.play_demo_btn, R.id.property_list)
         }
 
-        fun checkMessageNull() {
+        fun checkNumberOfNullMessage() {
             checkElementListItem<PropertyAdapter.Vh>(
                 resId = R.id.log_body_1,
                 content = "parsed campaigns\n" + "1 Null messages\n" + "0 Not Null message",

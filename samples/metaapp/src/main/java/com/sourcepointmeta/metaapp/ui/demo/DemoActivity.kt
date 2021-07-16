@@ -26,7 +26,7 @@ import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.LOG_ID
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.TITLE
-import kotlinx.android.synthetic.main.activity_demo.* //ktlint-disable
+import kotlinx.android.synthetic.main.activity_demo.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
@@ -88,7 +88,9 @@ class DemoActivity : FragmentActivity() {
         demoFr.demoListener = { action ->
 
             // don't go to the first fragment during UI tests
-            if (!isUITestRunning) { pager.currentItem = 0 }
+            if (!isUITestRunning) {
+                pager.currentItem = 0
+            }
 
             when (action) {
                 DemoFragment.DemoAction.GDPR_PM -> {
@@ -124,6 +126,13 @@ class DemoActivity : FragmentActivity() {
             intent.putExtra(LOG_ID, it.id ?: -1L)
             intent.putExtra(TITLE, "${it.type} - ${it.tag}")
             startActivity(intent)
+        }
+
+        tool_bar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_share -> logFr.shareLogs()
+            }
+            true
         }
     }
 
