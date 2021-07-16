@@ -1,3 +1,10 @@
+## 6.1.2 (July, 16, 2021)
+* [SP-7510](https://sourcepoint.atlassian.net/browse/7510) Allowing the user to share a set of selected logs (#393)
+* [SP-7084](https://sourcepoint.atlassian.net/browse/7084) Ui regression test for authId consent (#392)
+* [SP-7467](https://sourcepoint.atlassian.net/browse/7467) Writing a regression test case for the deep links
+* [SP-7481](https://sourcepoint.atlassian.net/browse/7481) Fix query parameter in the CCPA PM URL
+* [SP-7462](https://sourcepoint.atlassian.net/browse/7462) Add table of contents to readme  (#389)
+
 ## 6.1.1 (July, 02, 2021)
 * [SP-7443](https://sourcepoint.atlassian.net/browse/SP-7443) Add group PM param as query parameter (#387)
 
