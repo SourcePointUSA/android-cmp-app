@@ -20,10 +20,21 @@ FROM meta_log
 WHERE meta_log.property_name = ?
 ORDER BY meta_log.timestamp DESC;
 
+selectAllLogsByPropertyNameASC:
+SELECT *
+FROM meta_log
+WHERE meta_log.property_name = ?
+ORDER BY meta_log.timestamp ASC;
+
 selectLogById:
 SELECT *
 FROM meta_log
 WHERE meta_log.id = ?;
+
+selectLogByIds:
+SELECT *
+FROM meta_log
+WHERE meta_log.id IN :ids ORDER BY meta_log.timestamp ASC;
 
 deleteAllLogs:
 DELETE FROM meta_log;

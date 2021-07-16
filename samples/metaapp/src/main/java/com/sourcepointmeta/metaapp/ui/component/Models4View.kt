@@ -57,5 +57,6 @@ data class LogItem(
     val type: String,
     val tag: String,
     val message: String,
-    val jsonBody: String? = null
+    val jsonBody: String? = null,
+    val selected: Boolean = false
 )

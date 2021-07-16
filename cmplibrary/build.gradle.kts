@@ -24,6 +24,7 @@ android {
         targetSdkVersion(28)
         versionCode = 300
         versionName = versionLib
+        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

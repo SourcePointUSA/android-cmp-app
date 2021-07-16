@@ -31,4 +31,6 @@ val appModule = module {
     single { createDb(androidApplication()) }
 
     single(qualifier = named("clear_db")) { false }
+
+    single(qualifier = named("ui_test_running")) { false }
 }

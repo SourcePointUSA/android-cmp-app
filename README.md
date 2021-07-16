@@ -3,6 +3,30 @@
 [![Metaap UI Tests](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/metaap_instrumentation_tests.yml/badge.svg)](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/metaap_instrumentation_tests.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.sourcepoint.cmplibrary/cmplibrary)](https://search.maven.org/search?q=g:com.sourcepoint.cmplibrary)
 
+### Diagnostic tool
+[![Get it on Google Play](art/gplay.png)](https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp)
+
+# Table of Contents
+- [How to Install](#how-to-install)
+- [Usage](#usage)
+  - [Create new _Config_ object](#create-new-config-object)
+  - [Delegate Methods](#delegate-methods)
+  - [Loading the Privacy Manager on demand](#loading-the-privacy-manager-on-demand)
+  - [Releasing resources](#Releasing-resources)
+  - [The *SpConsent* object](#The-SpConsent-object)
+  - [Authenticated Consent](#Authenticated-Consent)
+  - [Sharing consent with a `WebView`](#Sharing-consent-with-a-WebView)
+  - [The `authId`](#The-authId)
+  - [Complete Example](#Complete-Example)
+  - [Setting a Targeting Param](#Setting-a-Targeting-Param)
+  - [Targeting parameters to target the right environment](#Targeting-parameters-to-target-the-right-environment)
+  - [ProGuard](#ProGuard)
+  - [Programmatically consenting the current user](#Programmatically-consenting-the-current-user)
+  - [Vendor Grants object](#Vendor-Grants-object)
+  - [`pubData`](#pubData)
+  - [Frequently Asked Questions](#Frequently-Asked-Questions)
+  - [Artifact Release Process](#Artifact-Release-Process)
+
 # How to Install 
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
 
@@ -25,8 +49,9 @@ Kotlin
         config {
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
-            messLanguage = MessageLanguage.ENGLISH
-            campaignsEnv = CampaignsEnv.PUBLIC
+            messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
+            campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
+            messageTimeout = 4000 // Optional, default 3000ms
             +CampaignType.CCPA
             +CampaignType.GDPR
         }
@@ -40,8 +65,9 @@ Java
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-            .addMessageLanguage(MessageLanguage.ENGLISH)
-            .addCampaignsEnv(CampaignsEnv.PUBLIC)
+            .addMessageLanguage(MessageLanguage.ENGLISH) // Optional, default ENGLISH
+            .addCampaignsEnv(CampaignsEnv.PUBLIC) // Optional, default PUBLIC
+            .addMessageTimeout(4000) // Optional, default 3000ms
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
             .build();

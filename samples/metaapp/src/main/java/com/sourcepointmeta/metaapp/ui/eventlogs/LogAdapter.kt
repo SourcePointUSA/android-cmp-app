@@ -1,4 +1,4 @@
-package com.sourcepointmeta.metaapp.ui.component
+package com.sourcepointmeta.metaapp.ui.eventlogs
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
-import com.sourcepointmeta.metaapp.ui.eventlogs.bind
+import com.sourcepointmeta.metaapp.ui.component.LogItem
 import com.sourcepointmeta.metaapp.util.check
+import kotlinx.android.synthetic.main.item_log.view.*
 import org.json.JSONObject
 
 class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
@@ -15,6 +16,7 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
     private var list = mutableListOf<LogItem>()
 
     var itemClickListener: ((LogItem) -> Unit)? = null
+    val selectedIds = sortedSetOf<Long>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Vh {
         val view = LayoutInflater.from(parent.context)
@@ -34,6 +36,7 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
 
     private fun Vh.bind(iv: LogItem, pos: Int) {
         (view as LogItemView).run {
+            this.checkbox.setOnCheckedChangeListener { _, isChecked -> addId(isChecked, iv.id) }
             setOnClickListener {
                 check { JSONObject(iv.jsonBody) }
                     .getOrNull()
@@ -41,6 +44,12 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
             }
             this.bind(iv, pos)
         }
+    }
+
+    private fun addId(checked: Boolean, id: Long?) {
+        id ?: return
+        if (checked) selectedIds.add(id)
+        else selectedIds.remove(id)
     }
 
     fun addItems(newItems: List<LogItem>) {

@@ -2,6 +2,7 @@ package com.sourcepoint.app.v6
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -40,7 +41,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(dataProvider.resetAll){
+        if (dataProvider.resetAll) {
             clearAllData(this)
         }
         setContentView(R.layout.activity_main)
@@ -74,7 +75,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        spConsentLib.loadMessage()
+        Handler().postDelayed({ spConsentLib.loadMessage() }, 400)
     }
 
     override fun onDestroy() {

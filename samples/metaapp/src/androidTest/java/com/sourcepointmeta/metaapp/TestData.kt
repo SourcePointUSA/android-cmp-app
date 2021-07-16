@@ -1,8 +1,8 @@
-package com.sourcepoint.app.v6
+package com.sourcepointmeta.metaapp
 
 object TestData {
 
-    val CONSENT_LIST_2 = listOf(
+    val GDPR_CONSENT_LIST_2 = listOf(
         "Store and/or access information on a device",
         "Select basic ads",
         "Create a personalised ads profile",
@@ -14,21 +14,23 @@ object TestData {
         "Our Custom Purpose"
     )
 
-    val VENDORS_LIST = listOf(
-        "Unruly Group LLC",
-        "QuarticON",
-        "Game Accounts"
-    )
-
     val CCPA_CONSENT_LIST = listOf(
         "Category 1",
         "Category 2",
         "Category 3",
     )
 
-    var CONSENT_LIST = arrayOf("Store and/or access information on a device", "Create a personalised ads profile", "Select personalised ads",
+    val VENDORS_LIST = listOf(
+        "Unruly Group LLC",
+        "QuarticON",
+        "Game Accounts"
+    )
+
+    var CONSENT_LIST = arrayOf(
+        "Store and/or access information on a device", "Create a personalised ads profile", "Select personalised ads",
         "Create a personalised content profile", "Select personalised content", "Measure content performance", "Apply market research to generate audience insights",
-        "Develop and improve products")
+        "Develop and improve products"
+    )
     var PARTIAL_CONSENT_LIST = arrayOf("Create a personalised content profile", "Select personalised content", "Measure content performance")
     var MESSAGE = "message"
     var ACCEPT = "Accept"
