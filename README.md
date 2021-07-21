@@ -40,29 +40,27 @@ dependencies {
 # Usage
 ## Create new _Config_ object
 Use the factory method to obtain a lazy configuration for v6 (Unified SDK). This contains your organization's account information and includes the type of campaigns that will be run on this property. This object will be instantiated at the first usage of the CMP SDK.
+The config object is a simple DTO.
 
 Kotlin
 ```kotlin
-    private val spConsentLib by spConsentLibLazy {
-        activity = this@MainActivityKotlin
-        spClient = LocalClient()
-        config {
-            accountId = 22
-            propertyName = "mobile.multicampaign.demo"
-            messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
-            campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
-            messageTimeout = 4000 // Optional, default 3000ms
-            +CampaignType.CCPA
-            +CampaignType.GDPR
-        }
-    }
+    val cmpConfig : SpConfig = config {
+                  accountId = 22
+                  propertyName = "mobile.multicampaign.demo"
+                  messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
+                  campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
+                  messageTimeout = 4000 // Optional, default 3000ms
+                  +CampaignType.CCPA
+                  +CampaignType.GDPR
+                }
 ```
+
 In case of Java language you can use a factory method to instantiate the Cmp lib  
 
 Java
 ```java
     // Cmp SDK config
-    private final SpConfig spConfig = new SpConfigDataBuilder()
+    private final SpConfig cmpConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
             .addMessageLanguage(MessageLanguage.ENGLISH) // Optional, default ENGLISH
@@ -72,18 +70,45 @@ Java
             .addCampaign(CampaignType.CCPA)
             .build();
 
-    private SpConsentLib spConsentLib = null;
+```
 
+## Create an instance of the CMP library
+The CMP SDK library is designed to follow the Activity lifecycle, this means that is **mandatory** to instantiate the library in the Activity in which you are planning to use the CMP SDK.
+
+Kotlin 
+```kotlin
+class MainActivityKotlin : AppCompatActivity() {
+    // ...
+    private val spConsentLib by spConsentLibLazy {
+      activity = this@MainActivityKotlin
+      spClient = LocalClient()
+      spConfig = cmpConfig
+    }
+  // ...
+}
+
+```
+
+Java
+```java
+public class MainActivityJava extends AppCompatActivity {
+
+    // ...
+    private SpConsentLib spConsentLib = null;
+  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        spConsentLib = FactoryKt.makeConsentLib(
-                spConfig,
-                this,
-                new LocalClient()
-        );
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_main);
+      spConsentLib = FactoryKt.makeConsentLib(
+              cmpConfig,
+              this,
+              new LocalClient()
+      );
     }
+    // ...
+}
+    // ...
 ```
 
 ## Delegate Methods
