@@ -136,7 +136,7 @@ internal class ConsentWebView(
             """
                 javascript: ${"js_receiver.js".file2String()};
                 window.spLegislation = '${campaignType.name}'; 
-                window.postMessage($obj);
+                window.postMessage($obj, "*");
             """.trimIndent()
         }
         logger.i("ConsentWebView", "$campaignType loadConsentUIFromUrl${NL.t}url $url ")
