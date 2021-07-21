@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
-import android.os.Build
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
