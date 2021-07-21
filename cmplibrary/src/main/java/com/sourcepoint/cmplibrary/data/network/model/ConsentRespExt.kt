@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
+import android.os.Build
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -79,14 +80,14 @@ internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInte
     val customVendorsResponse = getMap("customVendorsResponse")
     val consentedVendors: List<String> =
         (customVendorsResponse?.get("consentedVendors") as? Iterable<TreeMap<String, String>>)?.map {
-            it.getOrDefault(
+            it.getOrDefaultCheckVersion(
                 "_id",
                 ""
             )
         } ?: emptyList()
     val consentedPurposes: List<String> =
         (customVendorsResponse?.get("consentedPurposes") as? Iterable<TreeMap<String, String>>)?.map {
-            it.getOrDefault(
+            it.getOrDefaultCheckVersion(
                 "_id",
                 ""
             )
@@ -101,4 +102,12 @@ internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInte
 //        acceptedVendors = consentedVendors,
         thisContent = JSONObject(this)
     )
+}
+
+internal fun TreeMap<String, String>.getOrDefaultCheckVersion(key : String, default : String): String {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        getOrDefault(key, default)
+    } else {
+        get(key) ?: default
+    }
 }
