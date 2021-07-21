@@ -104,7 +104,7 @@ internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInte
     )
 }
 
-internal fun TreeMap<String, String>.getOrDefaultCheckVersion(key : String, default : String): String {
+internal fun<T> TreeMap<String, T>.getOrDefaultCheckVersion(key : String, default : T): T {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         getOrDefault(key, default)
     } else {
