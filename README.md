@@ -245,17 +245,22 @@ We recommend using a randomly generated `UUID` as `authId`. Make sure to persist
 ### Complete Example
 Kotlin
 ```kotlin
+class MainActivityKotlin : AppCompatActivity() {
+  
+    private val cmpConfig : SpConfig = config {
+      accountId = 22
+      propertyName = "mobile.multicampaign.demo"
+      messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
+      campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
+      messageTimeout = 4000 // Optional, default 3000ms
+      +CampaignType.CCPA
+      +CampaignType.GDPR
+    }
 
     private val spConsentLib by spConsentLibLazy {
             activity = this@MainActivityKotlin
             spClient = LocalClient()
-            config {
-                accountId = 22
-                propertyName = "mobile.multicampaign.demo"
-                messLanguage = MessageLanguage.ENGLISH
-                +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
-            }
+            spConfig = cmpConfig
     }
 
     override fun onResume() {
@@ -282,10 +287,13 @@ Kotlin
             spConsentLib.showView(view)
         }
     }
+}
 ```
 Java
 ```java
-    private final SpConfig spConfig = new SpConfigDataBuilder()
+public class MainActivityJava extends AppCompatActivity {
+    
+    private final SpConfig cmpConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
             .addMessageLanguage(MessageLanguage.ENGLISH)
@@ -300,7 +308,7 @@ Java
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         spConsentLib = FactoryKt.makeConsentLib(
-                spConfig,
+                cmpConfig,
                 this,
                 new LocalClient()
         );
@@ -346,6 +354,7 @@ Java
         @Override
         public void onAction(View view, @NotNull ActionType actionType) { }
     }
+}
 ```
 
 
@@ -360,21 +369,19 @@ Targeting params allow you to set arbitrary key/value pairs. These key/value pai
 
 Kotlin: customize a unity plus operator to add a list of targeting parameters per campaign type.
 ```kotlin
-    private val spConsentLib by spConsentLibLazy {
-        activity = this@MainActivityKotlin
-        spClient = LocalClient()
-        config {
+
+    val cmpConfig : SpConfig = config {
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
             messLanguage = MessageLanguage.ENGLISH
             +(CampaignType.GDPR to listOf(("location" to "EU")))
             +(CampaignType.CCPA to listOf(("location" to "US")))
-        }
     }
+
 ```
 Java: Use `addCampaign` method to add a list of targeting parameters per campaign type. 
 ```java
-    private final SpConfig spConfig = new SpConfigDataBuilder()
+    private final SpConfig cmpConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
             .addMessageLanguage(MessageLanguage.ENGLISH)
@@ -392,14 +399,10 @@ The default value is set to ``CampaignsEnv.PUBLIC``
 Kotlin
 
 ```kotlin
-    private val spConsentLib by spConsentLibLazy {
-        activity = this@MainActivityKotlin
-        spClient = LocalClient()
-        config {
+    val cmpConfig : SpConfig = config {
             //  ...
             campaignsEnv = CampaignsEnv.PUBLIC
             //  ...
-        }
     }
 ```
 
