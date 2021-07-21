@@ -10,6 +10,7 @@
 - [How to Install](#how-to-install)
 - [Usage](#usage)
   - [Create new _Config_ object](#create-new-config-object)
+  - [Create an instance of the CMP library](#create-an-instance-of-the-cmp-library)
   - [Delegate Methods](#delegate-methods)
   - [Loading the Privacy Manager on demand](#loading-the-privacy-manager-on-demand)
   - [Releasing resources](#Releasing-resources)
