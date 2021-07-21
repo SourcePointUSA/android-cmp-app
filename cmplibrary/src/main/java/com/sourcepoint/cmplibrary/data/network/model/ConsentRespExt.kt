@@ -80,17 +80,11 @@ internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInte
     val customVendorsResponse = getMap("customVendorsResponse")
     val consentedVendors: List<String> =
         (customVendorsResponse?.get("consentedVendors") as? Iterable<TreeMap<String, String>>)?.map {
-            it.getOrDefaultCheckVersion(
-                "_id",
-                ""
-            )
+            it["_id"] ?: ""
         } ?: emptyList()
     val consentedPurposes: List<String> =
         (customVendorsResponse?.get("consentedPurposes") as? Iterable<TreeMap<String, String>>)?.map {
-            it.getOrDefaultCheckVersion(
-                "_id",
-                ""
-            )
+            it["_id"] ?: ""
         } ?: emptyList()
 
     return GDPRConsentInternal(
@@ -102,12 +96,4 @@ internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInte
 //        acceptedVendors = consentedVendors,
         thisContent = JSONObject(this)
     )
-}
-
-internal fun<T> TreeMap<String, T>.getOrDefaultCheckVersion(key : String, default : T): T {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        getOrDefault(key, default)
-    } else {
-        get(key) ?: default
-    }
 }
