@@ -7,6 +7,15 @@ android-pixel-4:
       version: 29
       locale: 'en'
       orientation: portrait
+android-pixel-3-api28:
+  type: instrumentation
+  app: app-debug.apk
+  test: app-debug-androidTest.apk
+  device:
+    - model: blueline
+      version: 28
+      locale: 'en'
+      orientation: portrait
 app-nexus_low_res:
   type: instrumentation
   app: app-debug.apk
