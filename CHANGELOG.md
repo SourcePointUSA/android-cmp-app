@@ -1,3 +1,8 @@
+## 6.1.3 (July, 23, 2021)
+* [SP-7579](https://sourcepoint.atlassian.net/browse/7579) Fix postMessage error message (#398)
+* [SP-7575](https://sourcepoint.atlassian.net/browse/7575) Missing getOrDefault api on Android 6 (#397)
+* [SP-7574](https://sourcepoint.atlassian.net/browse/7574) Sdk setup instruction (#396)
+
 ## 6.1.2 (July, 16, 2021)
 * [SP-7510](https://sourcepoint.atlassian.net/browse/7510) Allowing the user to share a set of selected logs (#393)
 * [SP-7084](https://sourcepoint.atlassian.net/browse/7084) Ui regression test for authId consent (#392)
