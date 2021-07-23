@@ -1,5 +1,4 @@
-* [SP-7510](https://sourcepoint.atlassian.net/browse/7510) Allowing the user to share a set of selected logs (#393)
-* [SP-7084](https://sourcepoint.atlassian.net/browse/7084) Ui regression test for authId consent (#392)
-* [SP-7467](https://sourcepoint.atlassian.net/browse/7467) Writing a regression test case for the deep links
-* [SP-7481](https://sourcepoint.atlassian.net/browse/7481) Fix query parameter in the CCPA PM URL
-* [SP-7462](https://sourcepoint.atlassian.net/browse/7462) Add table of contents to readme  (#389)
+* [SP-7579](https://sourcepoint.atlassian.net/browse/7579) Fix postMessage error message (#398)
+* [SP-7575](https://sourcepoint.atlassian.net/browse/7575) Missing getOrDefault api on Android 6 (#397)
+* [SP-7574](https://sourcepoint.atlassian.net/browse/7574) Sdk setup instruction (#396)
+
