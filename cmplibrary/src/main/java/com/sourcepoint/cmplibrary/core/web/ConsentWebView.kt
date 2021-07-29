@@ -43,10 +43,7 @@ internal class ConsentWebView(
 
     private lateinit var spWebViewClient: SPWebViewClient
     private val jsReceiver: String by lazy {
-        context.assets
-            .open("js_receiver.js")
-            .reader()
-            .readText()
+        context.readFromAsset("js_receiver.js")
     }
 
     private val chromeClient = object : WebChromeClient() {
