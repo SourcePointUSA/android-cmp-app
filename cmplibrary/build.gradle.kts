@@ -123,6 +123,11 @@ replaceInFile {
             find = "com.sourcepoint.cmplibrary:cmplibrary:(\\d)+\\.(\\d)+\\.(\\d)+"
             replaceWith = "com.sourcepoint.cmplibrary:cmplibrary:$versionName"
         }
+        create("doc1") {
+            path = "${rootDir.path}/samples/demo/build.gradle"
+            find = "com.sourcepoint.cmplibrary:cmplibrary:(\\d)+\\.(\\d)+\\.(\\d)+"
+            replaceWith = "com.sourcepoint.cmplibrary:cmplibrary:$versionName"
+        }
     }
 }
 
