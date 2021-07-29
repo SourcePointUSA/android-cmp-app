@@ -19,10 +19,10 @@ import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.exception.LoggerType.*
+import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
-import com.sourcepoint.cmplibrary.util.*
+import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import okhttp3.HttpUrl
 import java.util.* // ktlint-disable
 
@@ -42,7 +42,7 @@ internal class ConsentWebView(
     }
 
     private lateinit var spWebViewClient: SPWebViewClient
-    private val jsReceiver : String by lazy {
+    private val jsReceiver: String by lazy {
         context.assets
             .open("js_receiver.js")
             .reader()
