@@ -111,7 +111,8 @@ tasks.register("versionTxt") {
 addCommitPushConfig {
     fileList = listOf(
         "${rootDir.path}/CHANGELOG.md",
-        "${rootDir.path}/README.md"
+        "${rootDir.path}/README.md",
+        "${rootDir.path}/samples/demo/build.gradle"
     )
 }
 
