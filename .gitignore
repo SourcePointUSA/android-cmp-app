@@ -2,7 +2,7 @@
 *.apk
 *.ap_
 keystore_staging
-*.jks
+keystore.jks
 google_play_key.json
 
 # Files for the ART/Dalvik VM
@@ -78,5 +78,3 @@ samples/authexample/*
 samples/nativemessage/*
 samples/metaapp/release/*
 sample-app.json
-
-*.jks

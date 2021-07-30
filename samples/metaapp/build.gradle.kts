@@ -28,9 +28,20 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs{
+        getByName("debug"){
+            storeFile = file("../../keystore4tests.jks")
+            storePassword = "123456"
+            keyAlias=  "testalias"
+            keyPassword = "123456"
+            isV2SigningEnabled = true
+        }
+    }
+
     buildTypes {
         getByName("debug") {
             applicationIdSuffix = ".debug"
+            signingConfig = signingConfigs.getByName("debug")
         }
         create("localProd") {
             initWith(getByName("debug"))

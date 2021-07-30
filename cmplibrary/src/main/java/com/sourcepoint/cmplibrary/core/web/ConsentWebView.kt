@@ -22,7 +22,7 @@ import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
-import com.sourcepoint.cmplibrary.util.*  //ktlint-disable
+import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import okhttp3.HttpUrl
 import java.util.* // ktlint-disable
 
@@ -42,6 +42,9 @@ internal class ConsentWebView(
     }
 
     private lateinit var spWebViewClient: SPWebViewClient
+    private val jsReceiver: String by lazy {
+        context.readFromAsset("js_receiver.js")
+    }
 
     private val chromeClient = object : WebChromeClient() {
         override fun onCreateWindow(view: WebView, dialog: Boolean, userGesture: Boolean, resultMsg: Message): Boolean {
@@ -94,7 +97,7 @@ internal class ConsentWebView(
         spWebViewClient.jsReceiverConfig = {
             """
                 javascript: window.spLegislation = '${campaignType.name}';                 
-                ${"js_receiver.js".file2String()};
+                $jsReceiver;
             """.trimIndent()
         }
         logger.i("ConsentWebView", "loadConsentUIFromUrl${NL.t}legislation $campaignType${NL.t}{NL.t}url $url ")
@@ -109,7 +112,7 @@ internal class ConsentWebView(
             sb.append(
                 """
                 javascript: window.spLegislation = '${campaignType.name}'; window.localPmId ='$pmId';
-                ${"js_receiver.js".file2String()};
+                $jsReceiver;
                 """.trimIndent()
             )
             sb.toString()
@@ -134,7 +137,7 @@ internal class ConsentWebView(
                  */
             }
             """
-                javascript: ${"js_receiver.js".file2String()};
+                javascript: $jsReceiver;
                 window.spLegislation = '${campaignType.name}'; 
                 window.postMessage($obj, "*");
             """.trimIndent()

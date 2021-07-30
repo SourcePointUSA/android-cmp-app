@@ -19,9 +19,21 @@ android {
     testOptions {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
+
+//    signingConfigs {
+//        debug4test {
+//            storeFile = file("../../keystore4tests.jks")
+//            storePassword = "123456"
+//            keyAlias = "testalias"
+//            keyPassword = "123456"
+//            v2SigningEnabled = true
+//        }
+//    }
+
     buildTypes {
         debug{
             applicationIdSuffix ".debug"
+//            signingConfig = signingConfigs.debug4test
         }
         localProd{
             initWith debug
