@@ -1,3 +1,6 @@
+## 6.1.4 (July, 30, 2021)
+* [SP-7573](https://sourcepoint.atlassian.net/browse/7573) Support for sharing unix process (#401)
+
 ## 6.1.3 (July, 23, 2021)
 * [SP-7579](https://sourcepoint.atlassian.net/browse/7579) Fix postMessage error message (#398)
 * [SP-7575](https://sourcepoint.atlassian.net/browse/7575) Missing getOrDefault api on Android 6 (#397)
