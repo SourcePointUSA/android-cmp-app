@@ -27,11 +27,11 @@
         </activity>
         <activity android:name=".LinkActivity">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="exampleapp"
-                      android:host="network" />
+                      android:host="network"/>
             </intent-filter>
         </activity>
     </application>
