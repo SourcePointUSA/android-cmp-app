@@ -178,7 +178,7 @@ Java
 ```
 
 ## Loading the Privacy Manager on demand
-Call `spConsentLib.loadMessage()` to surface the Privacy Manager
+Call `spConsentLib.loadPrivacyManager` to surface the Privacy Manager
 
 Kotlin
 ```kotlin
