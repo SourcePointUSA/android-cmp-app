@@ -11,7 +11,7 @@ import com.sourcepoint.cmplibrary.data.network.model.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.*
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -19,21 +19,22 @@ import com.sourcepoint.cmplibrary.model.exposed.SPGDPRConsent
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
-import java.util.* //ktlint-disable
+import java.util.*
 
 internal interface ConsentManager {
     var localStateStatus: LocalStateStatus
-    fun enqueueConsent(consentAction: ConsentAction)
+    fun enqueueConsent(consentAction: ConsentAction, fromPm: Boolean)
     fun sendStoredConsentToClient()
     fun sendConsent(
         action: ConsentAction,
-        localState: String
+        localState: String,
+        fromPm: Boolean
     )
 
     val enqueuedActions: Int
     val gdprUuid: String?
     val ccpaUuid: String?
-    var sPConsentsSuccess: ((SPConsents) -> Unit)?
+    var sPConsentsSuccess: ((SPConsents, fromPm: Boolean) -> Unit)?
     var sPConsentsError: ((Throwable) -> Unit)?
 
     companion object
@@ -57,7 +58,7 @@ private class ConsentManagerImpl(
     private val executorManager: ExecutorManager
 ) : ConsentManager {
 
-    override var sPConsentsSuccess: ((SPConsents) -> Unit)? = null
+    override var sPConsentsSuccess: ((SPConsents, fromPm: Boolean) -> Unit)? = null
     override var sPConsentsError: ((Throwable) -> Unit)? = null
     override var localStateStatus: LocalStateStatus = LocalStateStatus.Absent
         set(value) {
@@ -74,13 +75,13 @@ private class ConsentManagerImpl(
     override val ccpaUuid: String?
         get() = dataStorage.getCcpaConsentUuid()
 
-    override fun enqueueConsent(consentAction: ConsentAction) {
+    override fun enqueueConsent(consentAction: ConsentAction, fromPm: Boolean) {
         consentQueue.offer(consentAction)
         val lState: LocalStateStatus.Present? = localStateStatus as? LocalStateStatus.Present
         if (lState != null) {
             val localState = lState.value
             val action = consentQueue.poll()
-            sendConsent(action, localState)
+            sendConsent(action, localState, fromPm)
         }
     }
 
@@ -90,7 +91,7 @@ private class ConsentManagerImpl(
                 if (consentQueue.isNotEmpty()) {
                     val localState = newState.value
                     val action = consentQueue.poll()
-                    sendConsent(action, localState)
+                    sendConsent(action, localState, newState.fromPm)
                     localStateStatus = LocalStateStatus.Consumed
                 }
             }
@@ -106,17 +107,17 @@ private class ConsentManagerImpl(
             SPConsents(
                 gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
                 ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
-            ).let { sPConsentsSuccess?.invoke(it) }
+            ).let { sPConsentsSuccess?.invoke(it, false) }
         }
     }
 
-    override fun sendConsent(action: ConsentAction, localState: String) {
+    override fun sendConsent(action: ConsentAction, localState: String, fromPm: Boolean) {
         executorManager.executeOnSingleThread {
             when (val either = service.sendConsent(localState, action, env, action.privacyManagerId)) {
                 is Right -> {
-                    val updatedLocalState = LocalStateStatus.Present(either.r.localState)
+                    val updatedLocalState = LocalStateStatus.Present(either.r.localState, fromPm)
                     val sPConsents = responseConsentHandler(either, action, consentManagerUtils)
-                    sPConsentsSuccess?.invoke(sPConsents)
+                    sPConsentsSuccess?.invoke(sPConsents, fromPm)
                     this.localStateStatus = updatedLocalState
                 }
                 is Left -> sPConsentsError?.invoke(either.t)
@@ -126,7 +127,7 @@ private class ConsentManagerImpl(
 }
 
 internal sealed class LocalStateStatus {
-    data class Present(val value: String) : LocalStateStatus()
+    data class Present(val value: String, val fromPm: Boolean) : LocalStateStatus()
     object Absent : LocalStateStatus()
     object Consumed : LocalStateStatus()
 }

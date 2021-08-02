@@ -93,6 +93,9 @@ class MainActivityKotlin : AppCompatActivity() {
             Log.i(TAG, "onConsentReady: $consent")
         }
 
+        override fun onConsentReady(consent: SPConsents, fromPm: Boolean) {
+        }
+
         override fun onConsentReady(consent: String) {
             Log.i(TAG, "onConsentReady: $consent")
         }
