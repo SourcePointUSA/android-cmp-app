@@ -1,6 +1,8 @@
 package com.sourcepointmeta.metaapp.di
 
+import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
+import com.sourcepointmeta.metaapp.data.localdatasource.RemoteDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.create
 import com.sourcepointmeta.metaapp.data.localdatasource.createDb
 import com.sourcepointmeta.metaapp.ui.ValidationManager
@@ -18,7 +20,7 @@ val appModule = module {
 
     viewModel { LogViewModel(get()) }
 
-    viewModel { PropertyListViewModel(get()) }
+    viewModel { PropertyListViewModel(get(), get()) }
 
     viewModel { AddUpdatePropertyViewModel(get(), get()) }
 
@@ -27,6 +29,8 @@ val appModule = module {
     single { ValidationManager.create() }
 
     single { LocalDataSource.create(get()) }
+
+    single { RemoteDataSource.create(BuildConfig.URL_PROPERTY_FILE) }
 
     single { createDb(androidApplication()) }
 

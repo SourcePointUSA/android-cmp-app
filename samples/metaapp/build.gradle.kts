@@ -28,32 +28,25 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs{
-        getByName("debug"){
-            storeFile = file("../../keystore4tests.jks")
-            storePassword = "123456"
-            keyAlias=  "testalias"
-            keyPassword = "123456"
-            isV2SigningEnabled = true
-        }
-    }
-
     buildTypes {
         getByName("debug") {
             applicationIdSuffix = ".debug"
-            signingConfig = signingConfigs.getByName("debug")
+            buildConfigField("String", "URL_PROPERTY_FILE", "\"https://raw.githubusercontent.com/SourcePointUSA/android-cmp-app/master/cmplibrary/gradle.properties\"")
         }
         create("localProd") {
             initWith(getByName("debug"))
             applicationIdSuffix = ".localprod"
+            buildConfigField("String", "URL_PROPERTY_FILE", "\"https://raw.githubusercontent.com/SourcePointUSA/android-cmp-app/master/cmplibrary/gradle.properties\"")
         }
         create("preprod") {
             initWith(getByName("debug"))
             applicationIdSuffix = ".preprod"
+            buildConfigField("String", "URL_PROPERTY_FILE", "\"https://raw.githubusercontent.com/SourcePointUSA/android-cmp-app/master/cmplibrary/gradle.properties\"")
         }
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            buildConfigField("String", "URL_PROPERTY_FILE", "\"https://raw.githubusercontent.com/SourcePointUSA/android-cmp-app/master/cmplibrary/gradle.properties\"")
         }
     }
 
@@ -119,6 +112,7 @@ dependencies {
     implementation(Libs.androidxLifViewModel)
     implementation("androidx.fragment:fragment-ktx:1.3.5")
     implementation("androidx.core:core-ktx:1.5.0") // ext drawable
+    implementation("io.github.g00fy2:versioncompare:1.4.1")
 
 
     // Koin
