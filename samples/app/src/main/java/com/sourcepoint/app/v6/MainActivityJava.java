@@ -118,6 +118,11 @@ public class MainActivityJava extends AppCompatActivity {
         }
 
         @Override
+        public void onConsentReady(@NotNull SPConsents consent, boolean fromPm) {
+            System.out.println("onConsentReady String: " + consent);
+        }
+
+        @Override
         public void onUIFinished(@NotNull View v) {
             spConsentLib.removeView(v);
         }
