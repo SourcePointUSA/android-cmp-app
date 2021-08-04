@@ -32,7 +32,7 @@ class ConsentManagerImplTest {
     @MockK
     private lateinit var sPErrorMock: ((Throwable) -> Unit)
 
-    @Mock
+    @MockK
     private lateinit var service: Service
 
     @MockK
