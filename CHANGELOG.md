@@ -1,3 +1,7 @@
+## 6.2.0 (August, 06, 2021)
+* [SP-7618](https://sourcepoint.atlassian.net/browse/7618) New client API that adds a consent flag for the Privacy Manager (#406)
+* [SP-7552](https://sourcepoint.atlassian.net/browse/7552) Inform the user that a new version is available (#404)
+
 ## 6.1.4 (July, 30, 2021)
 * [SP-7573](https://sourcepoint.atlassian.net/browse/7573) Support for sharing unix process (#401)
 
