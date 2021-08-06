@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -21,12 +22,19 @@ import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
+import com.sourcepointmeta.metaapp.data.localdatasource.RemoteDataSource
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.LOG_ID
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.TITLE
-import kotlinx.android.synthetic.main.activity_demo.*
+import io.github.g00fy2.versioncompare.Version
+import kotlinx.android.synthetic.main.activity_demo.* //ktlint-disable
+import kotlinx.android.synthetic.main.activity_demo.tool_bar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
@@ -35,7 +43,12 @@ import java.util.* //ktlint-disable
 class DemoActivity : FragmentActivity() {
 
     private val dataSource by inject<LocalDataSource>()
-
+    private val remoteDataSource by inject<RemoteDataSource>()
+    private val scope by lazy { MainScope() }
+    private val errorColor: Int by lazy {
+        TypedValue().apply { theme.resolveAttribute(R.attr.colorErrorResponse, this, true) }
+            .data
+    }
     private val config: SpConfig by lazy {
         intent.extras
             ?.getString("property_name")
@@ -88,9 +101,7 @@ class DemoActivity : FragmentActivity() {
         demoFr.demoListener = { action ->
 
             // don't go to the first fragment during UI tests
-            if (!isUITestRunning) {
-                pager.currentItem = 0
-            }
+            if (!isUITestRunning) { pager.currentItem = 0 }
 
             when (action) {
                 DemoFragment.DemoAction.GDPR_PM -> {
@@ -138,6 +149,7 @@ class DemoActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
+        checkVersion()
         if (intent.getBooleanExtra("run_demo", true)) {
 
             Handler().postDelayed(
@@ -164,6 +176,9 @@ class DemoActivity : FragmentActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
+        }
+
+        override fun onConsentReady(consent: SPConsents, fromPm: Boolean) {
         }
 
         override fun onUIFinished(view: View) {
@@ -206,6 +221,18 @@ class DemoActivity : FragmentActivity() {
         } else {
             // Otherwise, select the previous step.
             pager.currentItem = pager.currentItem - 1
+        }
+    }
+
+    private fun checkVersion() {
+        scope.launch {
+            withContext(Dispatchers.IO) { remoteDataSource.fetchLatestVersion() }
+                .getOrNull()
+                ?.let {
+                    if (!Version(BuildConfig.VERSION_NAME).isEqual(it)) {
+                        tool_bar.setTitleTextColor(errorColor)
+                    }
+                }
         }
     }
 }

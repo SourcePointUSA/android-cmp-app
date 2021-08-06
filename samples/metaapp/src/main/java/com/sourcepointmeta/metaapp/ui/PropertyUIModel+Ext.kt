@@ -14,6 +14,7 @@ sealed class BaseState {
     data class StateJson(val json: String) : BaseState()
     data class StateError(@StringRes val errorMessage: Int) : BaseState()
     data class StateErrorValidationField(val uiCode: UIErrorCode, val message: String) : BaseState()
+    data class StateVersion(val version: String) : BaseState()
     object StatePropertySaved : BaseState()
 }
 

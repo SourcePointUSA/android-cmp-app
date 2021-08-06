@@ -77,15 +77,15 @@ internal class SpConsentLibImpl(
     }
 
     init {
-        consentManager.sPConsentsSuccess = { spConsents ->
+        consentManager.sPConsentsSuccess = { spConsents, fromPm ->
             val spConsentString = spConsents.toJsonObject().toString()
             executor.executeOnMain {
                 pLogger.clientEvent(
                     event = "onConsentReady",
-                    msg = "onConsentReady",
+                    msg = "onConsentReady fromPm[$fromPm]",
                     content = spConsentString
                 )
-                spClient.onConsentReady(spConsents)
+                spClient.onConsentReady(spConsents, fromPm)
                 (spClient as? UnitySpClient)?.onConsentReady(spConsentString)
             }
         }
@@ -112,7 +112,7 @@ internal class SpConsentLibImpl(
         service.getUnifiedMessage(
             messageReq = campaignManager.getUnifiedMessageReq(authId),
             pSuccess = { messageResp ->
-                consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
+                consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState, fromPm = false)
                 val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
@@ -154,7 +154,7 @@ internal class SpConsentLibImpl(
         service.getUnifiedMessage(
             messageReq = campaignManager.getUnifiedMessageReq(),
             pSuccess = { messageResp ->
-                consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
+                consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState, fromPm = false)
                 val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
@@ -439,7 +439,7 @@ internal class SpConsentLibImpl(
                 ACCEPT_ALL,
                 SAVE_AND_EXIT,
                 REJECT_ALL -> {
-                    consentManager.enqueueConsent(consentAction = action)
+                    consentManager.enqueueConsent(consentAction = action, fromPm = action.requestFromPm)
                 }
                 SHOW_OPTIONS -> {
                     showOption(action, iConsentWebView)

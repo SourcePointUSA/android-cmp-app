@@ -158,8 +158,8 @@ Java
     }
 ```
 
-## Loading the Privacy Manager on demand
-Call `spConsentLib.loadMessage()` to surface the Privacy Manager
+## Loading the First Layer Message
+Call `spConsentLib.loadMessage()` from the Activity `onResume` callback  to layout the First Layer Message 
 
 Kotlin
 ```kotlin
@@ -176,6 +176,31 @@ Java
         spConsentLib.loadMessage();
     }
 ```
+
+## Loading the Privacy Manager on demand
+Call `spConsentLib.loadPrivacyManager` to surface the Privacy Manager
+
+Kotlin
+```kotlin
+    //...
+    spConsentLib.loadPrivacyManager(
+      "<PM_ID>",
+      PMTab.PURPOSES,
+      CampaignType.GDPR
+    )
+    //...
+```
+Java
+```java
+    //...
+    spConsentLib.loadPrivacyManager(
+            "<PM_ID>",
+            PMTab.PURPOSES,
+            CampaignType.GDPR
+            ));
+    //...
+```
+
 ## Releasing resources
 Release resources when the activity gets destroyed.
 

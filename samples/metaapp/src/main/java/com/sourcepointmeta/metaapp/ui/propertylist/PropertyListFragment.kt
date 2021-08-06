@@ -1,7 +1,9 @@
 package com.sourcepointmeta.metaapp.ui.propertylist
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +22,7 @@ import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
 import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
-import kotlinx.android.synthetic.main.fragment_property_list.*
+import kotlinx.android.synthetic.main.fragment_property_list.*// ktlint-disable
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
@@ -29,6 +31,11 @@ class PropertyListFragment : Fragment() {
 
     private val viewModel: PropertyListViewModel by viewModel()
     private val clearDb: Boolean by inject(qualifier = named("clear_db"))
+
+    private val errorColor: Int by lazy {
+        TypedValue().apply { requireContext().theme.resolveAttribute(R.attr.colorErrorResponse, this, true) }
+            .data
+    }
 
     private val adapter by lazy { PropertyAdapter() }
     private val itemTouchHelper by lazy { ItemTouchHelper(swipeToDeleteCallback) }
@@ -58,6 +65,7 @@ class PropertyListFragment : Fragment() {
                 is StateError -> errorState(it)
                 is StateProperty -> updateProperty(it)
                 is StateLoading -> savingProperty(it.propertyName, it.loading)
+                is StateVersion -> showVersionPopup(it.version)
             }
         }
         property_list.layoutManager = GridLayoutManager(context, 1)
@@ -77,6 +85,7 @@ class PropertyListFragment : Fragment() {
         adapter.propertyChangedListener = { viewModel.updateProperty(it) }
         adapter.demoProperty = { runDemo(it) }
         itemTouchHelper.attachToRecyclerView(property_list)
+        viewModel.fetchLatestVersion()
     }
 
     private fun updateProperty(state: StateProperty) {
@@ -106,6 +115,26 @@ class PropertyListFragment : Fragment() {
                 viewModel.deleteProperty(propertyName)
             }
             .setNegativeButton("Cancel") { _, _ -> adapter.notifyItemChanged(position) }
+            .show()
+    }
+
+    private fun showVersionPopup(version: String) {
+        tool_bar.setTitleTextColor(errorColor)
+        tool_bar.title = "${tool_bar.title} -> $version"
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Metaapp version ${BuildConfig.VERSION_NAME} out of date, new version $version is available.")
+            .setPositiveButton("Update it") { _, _ ->
+                val uriBuilder = Uri.parse("https://play.google.com/store/apps/details")
+                    .buildUpon()
+                    .appendQueryParameter("id", "com.sourcepointmeta.metaapp")
+                    .appendQueryParameter("launch", "true")
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = uriBuilder.build()
+                    setPackage("com.android.vending")
+                }
+                startActivity(intent)
+            }
+            .setNegativeButton("Continue") { _, _ -> }
             .show()
     }
 

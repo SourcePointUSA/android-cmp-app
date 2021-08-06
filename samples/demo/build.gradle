@@ -16,11 +16,23 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
     }
+
+    signingConfigs{
+        debug{
+            storeFile = file("../../keystore4tests.jks")
+            storePassword = "123456"
+            keyAlias=  "testalias"
+            keyPassword = "123456"
+        }
+    }
+
     testOptions {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
     buildTypes {
-        debug{}
+        debug{
+            signingConfig = signingConfigs.debug
+        }
         localProd{
             initWith debug
         }
