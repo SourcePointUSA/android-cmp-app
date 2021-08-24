@@ -178,9 +178,6 @@ class DemoActivity : FragmentActivity() {
         override fun onConsentReady(consent: SPConsents) {
         }
 
-        override fun onConsentReady(consent: SPConsents, fromPm: Boolean) {
-        }
-
         override fun onUIFinished(view: View) {
             spConsentLib.removeView(view)
         }

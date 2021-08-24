@@ -84,9 +84,6 @@ class SpConsentLibDelegateTest {
         override fun onConsentReady(consent: SPConsents) {
         }
 
-        override fun onConsentReady(consent: SPConsents, fromPm: Boolean) {
-        }
-
         override fun onError(error: Throwable) {
         }
     }
