@@ -18,9 +18,7 @@ interface SpClient {
     fun onMessageReady(message: JSONObject)
     fun onAction(view: View, actionType: ActionType)
     fun onUIFinished(view: View)
-    @Deprecated("The onConsentReady(consent: SPConsents) is deprecated, replace it with onConsentReady(consent: SPConsents, fromPm : Boolean).")
     fun onConsentReady(consent: SPConsents)
-    fun onConsentReady(consent: SPConsents, fromPm: Boolean)
     fun onError(error: Throwable)
 }
 

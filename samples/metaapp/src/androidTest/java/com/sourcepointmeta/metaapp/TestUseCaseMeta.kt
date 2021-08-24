@@ -101,7 +101,7 @@ class TestUseCaseMeta {
         fun checkOnConsentReady() {
             checkElementListItem<PropertyAdapter.Vh>(
                 resId = R.id.log_body,
-                content = "onConsentReady fromPm[false]",
+                content = "onConsentReady",
                 recyclerViewId = R.id.log_list,
                 position = 0
             )
