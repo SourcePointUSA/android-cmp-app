@@ -131,6 +131,7 @@ dependencies {
 
     // integration-test
     androidTestImplementation(Libs.koinTest)
+    androidTestImplementation(Libs.mockkAndroid)
 
 }
 
