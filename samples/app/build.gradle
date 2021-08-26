@@ -81,4 +81,7 @@ dependencies {
     androidTestImplementation "org.koin:koin-test:$koin_version"
     implementation "org.koin:koin-android:$koin_version"
     implementation "org.koin:koin-java:$koin_java_version"
+
+    // mockk
+    androidTestImplementation(Libs.mockkAndroid)
 }
