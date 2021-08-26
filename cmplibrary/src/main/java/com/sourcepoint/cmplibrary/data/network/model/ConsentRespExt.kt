@@ -81,18 +81,22 @@ internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInte
         (customVendorsResponse?.get("consentedVendors") as? Iterable<TreeMap<String, String>>)?.map {
             it["_id"] ?: ""
         } ?: emptyList()
-    val consentedPurposes: List<String> =
-        (customVendorsResponse?.get("consentedPurposes") as? Iterable<TreeMap<String, String>>)?.map {
-            it["_id"] ?: ""
-        } ?: emptyList()
+    val consentedPurposes: List<String> = vendorsGrants.toAcceptedCategories().toList()
 
     return GDPRConsentInternal(
         uuid = uuid,
         tcData = tcData,
         grants = vendorsGrants,
         euconsent = euConsent,
-//        acceptedCategories = consentedPurposes,
+        acceptedCategories = consentedPurposes,
 //        acceptedVendors = consentedVendors,
         thisContent = JSONObject(this)
     )
+}
+
+internal fun Map<String, Map<String, Boolean>>.toAcceptedCategories(): Iterable<String> {
+    val partitions = this.flatMap { it.value.toList() }.partition { it.second }
+    val trueCategories = partitions.first.map { it.first }.toSet()
+    val falseCategories = partitions.second.map { it.first }.toSet()
+    return trueCategories.minus(falseCategories)
 }
