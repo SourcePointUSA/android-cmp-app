@@ -27,7 +27,7 @@
   - [`pubData`](#pubData)
   - [Frequently Asked Questions](#Frequently-Asked-Questions)
   - [Artifact Release Process](#Artifact-Release-Process)
-
+> **Note:** Sourcepoint's native message API is currently not supported in Android SDK v6. 
 # How to Install 
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
 
