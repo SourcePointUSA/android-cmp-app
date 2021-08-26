@@ -230,6 +230,7 @@ SpConsent
     |   |-- tcData: Map<String, String>
     |   |-- grants: Map<String, Map<String, Boolean>>
     |   |-- euconsent: String
+    |   |-- acceptedCategories: List<String>
     |-- ccpa?
         |-- uuid: String?
         |-- rejectedCategories: List<Any>
