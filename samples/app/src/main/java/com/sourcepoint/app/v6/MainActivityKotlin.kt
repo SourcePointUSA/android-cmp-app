@@ -7,7 +7,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepoint.app.v6.core.DataProvider
-import com.sourcepoint.cmplibrary.UnitySpClient
+import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
@@ -24,6 +24,7 @@ class MainActivityKotlin : AppCompatActivity() {
     }
 
     private val dataProvider by inject<DataProvider>()
+    private val spClientObserver: List<SpClient> by inject()
 
     private val spConsentLib by spConsentLibLazy {
         activity = this@MainActivityKotlin
@@ -83,29 +84,33 @@ class MainActivityKotlin : AppCompatActivity() {
         spConsentLib.dispose()
     }
 
-    internal inner class LocalClient : UnitySpClient {
-        override fun onMessageReady(message: JSONObject) {}
+    internal inner class LocalClient : SpClient {
+        override fun onMessageReady(message: JSONObject) {
+            spClientObserver.forEach { it.onMessageReady(message) }
+        }
+
         override fun onError(error: Throwable) {
+            spClientObserver.forEach { it.onError(error) }
             error.printStackTrace()
         }
 
         override fun onConsentReady(consent: SPConsents) {
-            Log.i(TAG, "onConsentReady: $consent")
-        }
-
-        override fun onConsentReady(consent: String) {
+            spClientObserver.forEach { it.onConsentReady(consent) }
             Log.i(TAG, "onConsentReady: $consent")
         }
 
         override fun onUIFinished(view: View) {
+            spClientObserver.forEach { it.onUIFinished(view) }
             spConsentLib.removeView(view)
         }
 
         override fun onUIReady(view: View) {
+            spClientObserver.forEach { it.onUIReady(view) }
             spConsentLib.showView(view)
         }
 
         override fun onAction(view: View, actionType: ActionType) {
+            spClientObserver.forEach { it.onAction(view, actionType) }
             Log.i(TAG, "ActionType: $actionType")
         }
     }
