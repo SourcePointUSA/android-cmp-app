@@ -127,6 +127,18 @@ class MainActivityKotlinTest {
         wr { tapAcceptOnWebView() }
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
+
+        verify(exactly = 0) { spClient.onError(any()) }
+
+        verifyOrder {
+            spClient.run {
+                onUIReady(any())
+                onAction(any(), any())
+                onUIFinished(any())
+                onConsentReady(any())
+            }
+
+        }
     }
 
     @Test
