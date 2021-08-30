@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp.di
 
+import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.RemoteDataSource
@@ -37,4 +38,6 @@ val appModule = module {
     single(qualifier = named("clear_db")) { false }
 
     single(qualifier = named("ui_test_running")) { false }
+
+    single<List<SpClient>> { emptyList() } // for tests purpose
 }
