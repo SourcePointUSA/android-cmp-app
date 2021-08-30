@@ -3,6 +3,7 @@ package com.sourcepoint.app.v6
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import com.example.uitestutil.assertEquals
 import com.example.uitestutil.wr
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
@@ -29,10 +30,9 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import io.mockk.mockk
-import io.mockk.verify
-import io.mockk.verifyOrder
+import io.mockk.*
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
@@ -80,6 +80,12 @@ class MainActivityKotlinTest {
     fun GIVEN_a_gdpr_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
+        val categoriesTester = listOf(
+            "608bad95d08d3112188e0e29",
+            "608bad95d08d3112188e0e36",
+            "608bad96d08d3112188e0e59",
+            "60b65857619abe242bed971e",
+            "608bad95d08d3112188e0e2f").sorted()
 
         loadKoinModules(
             mockModule(
@@ -103,9 +109,12 @@ class MainActivityKotlinTest {
                 onUIReady(any())
                 onAction(any(), any())
                 onUIFinished(any())
-                onConsentReady(any())
+                onConsentReady(withArg {
+                    it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(categoriesTester)
+                })
             }
         }
+
     }
 
     @Test
@@ -168,7 +177,9 @@ class MainActivityKotlinTest {
                 onUIReady(any())
                 onAction(any(), any())
                 onUIFinished(any())
-                onConsentReady(any())
+                onConsentReady(withArg {
+                    it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(emptyList())
+                })
             }
         }
     }
