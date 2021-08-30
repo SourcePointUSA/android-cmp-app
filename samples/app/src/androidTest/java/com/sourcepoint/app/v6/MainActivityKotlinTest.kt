@@ -144,13 +144,33 @@ class MainActivityKotlinTest {
     @Test
     fun GIVEN_a_dgpr_campaign_SHOW_message_and_REJECT_ALL() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393", ccpaPmId = "509688"))
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient)
+            )
+        )
 
         scenario = launchActivity()
 
         wr { tapRejectOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
+
+        verify(exactly = 0) { spClient.onError(any()) }
+
+        verifyOrder {
+            spClient.run {
+                onUIReady(any())
+                onAction(any(), any())
+                onUIFinished(any())
+                onConsentReady(any())
+            }
+        }
     }
 
     @Test
