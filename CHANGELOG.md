@@ -1,3 +1,9 @@
+## 6.2.1 (August, 31, 2021)
+* [SP-7820](https://sourcepoint.atlassian.net/browse/7820) IABTCF_TCString missing in the preferences (#412)
+* [SP-7742](https://sourcepoint.atlassian.net/browse/7742) Add acceptedCategories to GDPR userConsent (#410)
+* [SP-7678](https://sourcepoint.atlassian.net/browse/7678) UI regression tests improvement  (#409)
+* [SP-7688](https://sourcepoint.atlassian.net/browse/7688) Revert "[SP-7618] Consent flag for pm (#406)" (#408)
+
 ## 6.2.0 (August, 06, 2021)
 * [SP-7618](https://sourcepoint.atlassian.net/browse/7618) New client API that adds a consent flag for the Privacy Manager (#406)
 * [SP-7552](https://sourcepoint.atlassian.net/browse/7552) Inform the user that a new version is available (#404)
