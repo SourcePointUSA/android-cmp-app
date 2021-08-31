@@ -11,10 +11,9 @@ import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.ConsentResp
+import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.IncludeData
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -29,10 +28,6 @@ internal interface ConsentManagerUtils {
     fun getCcpaConsent(): Either<CCPAConsentInternal>
     fun hasGdprConsent(): Boolean
     fun hasCcpaConsent(): Boolean
-
-    fun saveConsent(consentResp: ConsentResp, dataStorage: DataStorage)
-    fun saveGdprConsent(consentResp: ConsentResp, dataStorage: DataStorage)
-    fun saveCcpaConsent(consentResp: ConsentResp, dataStorage: DataStorage)
 
     fun getSpConsent(): SPConsents?
 
@@ -115,32 +110,6 @@ private class ConsentManagerUtilsImpl(
 
     override fun getCcpaConsent(): Either<CCPAConsentInternal> {
         return cm.getCCPAConsent()
-    }
-
-    override fun saveGdprConsent(consentResp: ConsentResp, dataStorage: DataStorage) {
-        dataStorage.saveGdprConsentResp(consentResp.userConsent ?: "")
-        dataStorage.saveGdprConsentUuid(consentResp.uuid)
-        JSONObject(consentResp.userConsent)
-            .toTreeMap()
-            .getMap("TCData")
-            ?.let { dataStorage.saveTcData(it) }
-    }
-
-    override fun saveCcpaConsent(consentResp: ConsentResp, dataStorage: DataStorage) {
-        dataStorage.saveCcpaConsentResp(consentResp.userConsent ?: "")
-        dataStorage.saveCcpaConsentUuid(consentResp.uuid)
-    }
-
-    override fun saveConsent(consentResp: ConsentResp, dataStorage: DataStorage) {
-        dataStorage.saveLocalState(consentResp.localState)
-        when (consentResp.campaignType) {
-            CampaignType.GDPR -> {
-                saveGdprConsent(consentResp, dataStorage)
-            }
-            CampaignType.CCPA -> {
-                saveCcpaConsent(consentResp, dataStorage)
-            }
-        }
     }
 
     override fun hasGdprConsent(): Boolean = ds.getGdprConsentResp().isNotBlank()

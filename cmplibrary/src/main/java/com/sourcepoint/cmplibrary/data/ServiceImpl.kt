@@ -11,6 +11,8 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.util.Env
+import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
+import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
@@ -75,7 +77,21 @@ private class ServiceImpl(
                 nc.sendConsent(it, env, consentAction)
             }
             .executeOnRight {
-                consentManagerUtils.saveConsent(it, dataStorage)
+                dataStorage.saveLocalState(it.localState)
+                when (it.campaignType) {
+                    GDPR -> {
+                        dataStorage.saveGdprConsentResp(it.userConsent ?: "")
+                        dataStorage.saveGdprConsentUuid(it.uuid)
+                        JSONObject(it.userConsent)
+                            .toTreeMap()
+                            .getMap("TCData")
+                            ?.let { tc -> dataStorage.saveTcData(tc) }
+                    }
+                    CCPA -> {
+                        dataStorage.saveCcpaConsentResp(it.userConsent ?: "")
+                        dataStorage.saveCcpaConsentUuid(it.uuid)
+                    }
+                }
             }
             .fold(
                 { throwable -> throw throwable },
