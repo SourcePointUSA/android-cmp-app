@@ -11,7 +11,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.*
+import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.toTreeMap
@@ -123,7 +123,7 @@ private class ConsentManagerUtilsImpl(
         JSONObject(consentResp.userConsent)
             .toTreeMap()
             .getMap("TCData")
-            ?.let { dataStorage.saveTcData(it)  }
+            ?.let { dataStorage.saveTcData(it) }
     }
 
     override fun saveCcpaConsent(consentResp: ConsentResp, dataStorage: DataStorage) {

@@ -11,8 +11,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.util.Env
-import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
-import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
