@@ -11,6 +11,10 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
+import com.sourcepoint.cmplibrary.model.getMap
+import com.sourcepoint.cmplibrary.model.toTreeMap
+import com.sourcepoint.cmplibrary.util.check
+import org.json.JSONObject
 import java.util.* // ktlint-disable
 
 internal interface DataStorageGdpr {
@@ -147,6 +151,14 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     }
 
     override fun saveGdprConsentResp(value: String) {
+
+        check {
+            JSONObject(value)
+                .toTreeMap()
+                .getMap("TCData")
+                ?.let { tc -> saveTcData(tc) }
+        }
+
         preference
             .edit()
             .putString(GDPR_CONSENT_RESP, value)

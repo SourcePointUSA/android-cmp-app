@@ -82,10 +82,6 @@ private class ServiceImpl(
                     GDPR -> {
                         dataStorage.saveGdprConsentResp(it.userConsent ?: "")
                         dataStorage.saveGdprConsentUuid(it.uuid)
-                        JSONObject(it.userConsent)
-                            .toTreeMap()
-                            .getMap("TCData")
-                            ?.let { tc -> dataStorage.saveTcData(tc) }
                     }
                     CCPA -> {
                         dataStorage.saveCcpaConsentResp(it.userConsent ?: "")
