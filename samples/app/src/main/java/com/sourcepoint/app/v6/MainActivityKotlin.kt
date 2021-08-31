@@ -10,6 +10,7 @@ import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -29,14 +30,14 @@ class MainActivityKotlin : AppCompatActivity() {
     private val spConsentLib by spConsentLibLazy {
         activity = this@MainActivityKotlin
         spClient = LocalClient()
-        spConfig = dataProvider.spConfig
-//        config {
-//            accountId = 22
-//            propertyName = "mobile.multicampaign.demo"
-//            messLanguage = MessageLanguage.ENGLISH
-//            +(CampaignType.GDPR)
-//            +(CampaignType.CCPA to listOf(("location" to "US")))
-//        }
+//        spConfig = dataProvider.spConfig
+        config {
+            accountId = 22
+            propertyName = "mobile.multicampaign.native.demo"
+            messLanguage = MessageLanguage.ENGLISH
+            +(CampaignType.GDPR)
+            +(CampaignType.CCPA to listOf(("location" to "US")))
+        }
     }
 
 

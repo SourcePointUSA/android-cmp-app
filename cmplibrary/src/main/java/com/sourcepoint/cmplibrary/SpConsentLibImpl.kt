@@ -29,6 +29,9 @@ import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.CampaignResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.NATIVE_IN_APP
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.TCFv2
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
@@ -66,11 +69,13 @@ internal class SpConsentLibImpl(
             )
 
             return partition.first.map {
+
                 CampaignModel(
                     message = it.message!!,
                     messageMetaData = it.messageMetaData!!,
                     type = CampaignType.valueOf(it.type),
-                    url = it.url!!
+                    url = it.url!!,
+                    messageSubCategory = it.messageSubCategory,
                 )
             }
         }
@@ -121,13 +126,20 @@ internal class SpConsentLibImpl(
                 val firstCampaign2Process = list.first()
                 val remainingCampaigns: Queue<CampaignModel> = LinkedList(list.drop(1))
                 executor.executeOnMain {
-                    /** create a instance of WebView */
-                    val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
+                    when(firstCampaign2Process.messageSubCategory){
+                        TCFv2 -> {
+                            /** create a instance of WebView */
+                            val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
 
-                    /** inject the message into the WebView */
-                    val legislation = firstCampaign2Process.type
-                    val url = firstCampaign2Process.url
-                    webView?.loadConsentUI(firstCampaign2Process, url, legislation)
+                            /** inject the message into the WebView */
+                            val legislation = firstCampaign2Process.type
+                            val url = firstCampaign2Process.url
+                            webView?.loadConsentUI(firstCampaign2Process, url, legislation)
+                        }
+                        NATIVE_IN_APP -> {
+                            TODO()
+                        }
+                    }
                 }
             },
             pError = { throwable ->
@@ -163,13 +175,20 @@ internal class SpConsentLibImpl(
                 val firstCampaign2Process = list.first()
                 val remainingCampaigns: Queue<CampaignModel> = LinkedList(list.drop(1))
                 executor.executeOnMain {
-                    /** create a instance of WebView */
-                    val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
+                    when(firstCampaign2Process.messageSubCategory){
+                        TCFv2 -> {
+                            /** create a instance of WebView */
+                            val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
 
-                    /** inject the message into the WebView */
-                    val legislation = firstCampaign2Process.type
-                    val url = firstCampaign2Process.url // urlManager.urlURenderingApp(env)//
-                    webView?.loadConsentUI(firstCampaign2Process, url, legislation)
+                            /** inject the message into the WebView */
+                            val legislation = firstCampaign2Process.type
+                            val url = firstCampaign2Process.url // urlManager.urlURenderingApp(env)//
+                            webView?.loadConsentUI(firstCampaign2Process, url, legislation)
+                        }
+                        NATIVE_IN_APP -> {
+                            TODO()
+                        }
+                    }
                 }
             },
             pError = { throwable ->

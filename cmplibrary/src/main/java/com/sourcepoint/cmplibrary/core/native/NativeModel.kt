@@ -1,5 +1,7 @@
 package com.sourcepoint.cmplibrary.core.native
 
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
+
 data class NativeCategory(
     val id: String,
     val type: String,
@@ -35,11 +37,11 @@ data class NativeComponent(
     val customField: Map<String, String>
 )
 
-data class NativeActon(
+data class NativeAction(
     val text: String,
     val style: NativeStyle,
     val customField: Map<String, String>,
-    val choiceType : Int
+    val choiceType : ActionType
 )
 
 data class NativeStyle(
