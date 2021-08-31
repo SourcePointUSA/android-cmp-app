@@ -1,9 +1,12 @@
 package com.sourcepoint.app.v6
 
+import android.app.Activity
+import android.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.assertEquals
+import com.example.uitestutil.assertNotNull
 import com.example.uitestutil.wr
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
@@ -30,7 +33,6 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
@@ -80,6 +82,7 @@ class MainActivityKotlinTest {
     fun GIVEN_a_gdpr_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
+        val systemObserver: MutableList<Activity> = mutableListOf()
         val categoriesTester = listOf(
             "608bad95d08d3112188e0e29",
             "608bad95d08d3112188e0e36",
@@ -92,7 +95,8 @@ class MainActivityKotlinTest {
                 spConfig = spConfGdpr,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
-                spClientObserver = listOf(spClient)
+                spClientObserver = listOf(spClient),
+                systemObserver = systemObserver
             )
         )
 
@@ -113,6 +117,12 @@ class MainActivityKotlinTest {
                     it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(categoriesTester)
                 })
             }
+        }
+
+        scenario.onActivity { activity ->
+            val IABTCF_TCString = PreferenceManager.getDefaultSharedPreferences(activity)
+                .getString("IABTCF_TCString", null)
+            IABTCF_TCString.assertNotNull()
         }
 
     }
@@ -360,9 +370,11 @@ class MainActivityKotlinTest {
         ccpaPmId: String = "",
         uuid: String? = null,
         url: String = "",
-        spClientObserver: List<SpClient> = emptyList()
+        spClientObserver: List<SpClient> = emptyList(),
+        systemObserver: MutableList<Activity> = mutableListOf()
     ): Module {
         return module(override = true) {
+            single { systemObserver }
             single<List<SpClient?>> { spClientObserver }
             single<DataProvider> {
                 object : DataProvider {
