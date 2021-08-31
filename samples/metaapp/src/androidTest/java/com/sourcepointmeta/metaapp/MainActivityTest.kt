@@ -31,7 +31,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 @RunWith(AndroidJUnit4ClassRunner::class)
-class   MainActivityTest {
+class MainActivityTest {
 
     lateinit var scenario: ActivityScenario<MainActivity>
     private val appContext by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
