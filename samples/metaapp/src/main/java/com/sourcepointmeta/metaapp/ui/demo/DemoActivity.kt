@@ -43,6 +43,7 @@ import java.util.* //ktlint-disable
 class DemoActivity : FragmentActivity() {
 
     private val dataSource by inject<LocalDataSource>()
+    private val spClientObserver: List<SpClient> by inject()
     private val remoteDataSource by inject<RemoteDataSource>()
     private val scope by lazy { MainScope() }
     private val errorColor: Int by lazy {
@@ -170,26 +171,31 @@ class DemoActivity : FragmentActivity() {
     }
 
     internal inner class LocalClient : SpClient {
-        override fun onMessageReady(message: JSONObject) {}
+
+        override fun onMessageReady(message: JSONObject) {
+            spClientObserver.forEach { it.onMessageReady(message) }
+        }
         override fun onError(error: Throwable) {
+            spClientObserver.forEach { it.onError(error) }
             error.printStackTrace()
         }
 
         override fun onConsentReady(consent: SPConsents) {
-        }
-
-        override fun onConsentReady(consent: SPConsents, fromPm: Boolean) {
+            spClientObserver.forEach { it.onConsentReady(consent) }
         }
 
         override fun onUIFinished(view: View) {
+            spClientObserver.forEach { it.onUIFinished(view) }
             spConsentLib.removeView(view)
         }
 
         override fun onUIReady(view: View) {
+            spClientObserver.forEach { it.onUIReady(view) }
             spConsentLib.showView(view)
         }
 
         override fun onAction(view: View, actionType: ActionType) {
+            spClientObserver.forEach { it.onAction(view, actionType) }
             Log.i(this::class.java.name, "ActionType: $actionType")
         }
     }

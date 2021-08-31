@@ -3,6 +3,7 @@ package com.sourcepoint.app.v6.di
 import android.content.Context
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.core.create
+import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -77,4 +78,7 @@ val appModule = module {
     }
 
     single(qualifier = named("prod")) { false }
+
+    // for tests purpose
+    single<List<SpClient>> { emptyList() }
 }
