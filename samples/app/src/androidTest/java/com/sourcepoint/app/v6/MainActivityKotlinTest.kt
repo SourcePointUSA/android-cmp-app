@@ -1,9 +1,12 @@
 package com.sourcepoint.app.v6
 
+import android.app.Activity
+import android.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.assertEquals
+import com.example.uitestutil.assertNotNull
 import com.example.uitestutil.wr
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
@@ -30,7 +33,6 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
@@ -113,6 +115,12 @@ class MainActivityKotlinTest {
                     it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(categoriesTester)
                 })
             }
+        }
+
+        scenario.onActivity { activity ->
+            val IABTCF_TCString = PreferenceManager.getDefaultSharedPreferences(activity)
+                .getString("IABTCF_TCString", null)
+            IABTCF_TCString.assertNotNull()
         }
 
     }
