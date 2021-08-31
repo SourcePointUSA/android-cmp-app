@@ -77,17 +77,7 @@ private class ServiceImpl(
                 nc.sendConsent(it, env, consentAction)
             }
             .executeOnRight {
-                dataStorage.saveLocalState(it.localState)
-                when (it.campaignType) {
-                    GDPR -> {
-                        dataStorage.saveGdprConsentResp(it.userConsent ?: "")
-                        dataStorage.saveGdprConsentUuid(it.uuid)
-                    }
-                    CCPA -> {
-                        dataStorage.saveCcpaConsentResp(it.userConsent ?: "")
-                        dataStorage.saveCcpaConsentUuid(it.uuid)
-                    }
-                }
+                consentManagerUtils.saveConsent(it, dataStorage)
             }
             .fold(
                 { throwable -> throw throwable },
