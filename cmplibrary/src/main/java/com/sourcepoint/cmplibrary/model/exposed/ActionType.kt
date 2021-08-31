@@ -8,3 +8,8 @@ enum class ActionType(val code: Int) {
     SAVE_AND_EXIT(1),
     PM_DISMISS(2);
 }
+
+enum class MessageSubCategory(val code: Int) {
+    TCFv2(5),
+    NATIVE_IN_APP(6)
+}
