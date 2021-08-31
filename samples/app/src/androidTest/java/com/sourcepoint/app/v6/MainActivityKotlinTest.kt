@@ -82,7 +82,6 @@ class MainActivityKotlinTest {
     fun GIVEN_a_gdpr_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
-        val systemObserver: MutableList<Activity> = mutableListOf()
         val categoriesTester = listOf(
             "608bad95d08d3112188e0e29",
             "608bad95d08d3112188e0e36",
@@ -95,8 +94,7 @@ class MainActivityKotlinTest {
                 spConfig = spConfGdpr,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
-                spClientObserver = listOf(spClient),
-                systemObserver = systemObserver
+                spClientObserver = listOf(spClient)
             )
         )
 
@@ -370,11 +368,9 @@ class MainActivityKotlinTest {
         ccpaPmId: String = "",
         uuid: String? = null,
         url: String = "",
-        spClientObserver: List<SpClient> = emptyList(),
-        systemObserver: MutableList<Activity> = mutableListOf()
+        spClientObserver: List<SpClient> = emptyList()
     ): Module {
         return module(override = true) {
-            single { systemObserver }
             single<List<SpClient?>> { spClientObserver }
             single<DataProvider> {
                 object : DataProvider {
