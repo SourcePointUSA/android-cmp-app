@@ -9,6 +9,12 @@ enum class ActionType(val code: Int) {
     PM_DISMISS(2);
 }
 
+enum class NativeMessageActionType(val code: Int) {
+    REJECT_ALL(13),
+    ACCEPT_ALL(11),
+    MSG_CANCEL(15),
+}
+
 enum class MessageSubCategory(val code: Int) {
     TCFv2(5),
     NATIVE_IN_APP(6)
