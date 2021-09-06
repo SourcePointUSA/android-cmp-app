@@ -9,6 +9,7 @@ import com.sourcepoint.cmplibrary.model.CampaignResp
 import com.sourcepoint.cmplibrary.model.Ccpa
 import com.sourcepoint.cmplibrary.model.Gdpr
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.HttpUrl
 import org.json.JSONObject
@@ -65,6 +66,7 @@ private fun Map<String, Any?>.toCCPA(uuid: String?): Ccpa {
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
     val url = getFieldValue<String>("url")
+    val messageSubCategory = MessageSubCategory.values().find { m -> m.code == messageMetaData?.getInt("subCategoryId") } ?: MessageSubCategory.TCFv2
 
     return Ccpa(
         thisContent = JSONObject(this),
@@ -72,7 +74,8 @@ private fun Map<String, Any?>.toCCPA(uuid: String?): Ccpa {
         message = message,
         url = url?.let { HttpUrl.parse(it) },
         messageMetaData = messageMetaData,
-        userConsent = getMap("userConsent")?.toCCPAUserConsent(uuid) ?: failParam("CCPAUserConsent")
+        userConsent = getMap("userConsent")?.toCCPAUserConsent(uuid) ?: failParam("CCPAUserConsent"),
+        messageSubCategory = messageSubCategory
     )
 }
 
@@ -81,6 +84,7 @@ internal fun Map<String, Any?>.toGDPR(uuid: String?): Gdpr {
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
     val url = getFieldValue<String>("url")
+    val messageSubCategory = MessageSubCategory.values().find { m -> m.code == messageMetaData?.getInt("subCategoryId") } ?: MessageSubCategory.TCFv2
 
     return Gdpr(
         thisContent = JSONObject(this),
@@ -88,7 +92,8 @@ internal fun Map<String, Any?>.toGDPR(uuid: String?): Gdpr {
         message = message,
         url = url?.let { HttpUrl.parse(it) },
         messageMetaData = messageMetaData,
-        userConsent = getMap("userConsent")?.toGDPRUserConsent(uuid = uuid) ?: failParam("GDPRUserConsent")
+        userConsent = getMap("userConsent")?.toGDPRUserConsent(uuid = uuid) ?: failParam("GDPRUserConsent"),
+        messageSubCategory = messageSubCategory
     )
 }
 

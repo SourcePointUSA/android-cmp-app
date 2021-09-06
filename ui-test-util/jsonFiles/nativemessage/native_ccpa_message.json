@@ -1,0 +1,112 @@
+{
+  "message_json": {
+    "name": "CcpaNative",
+    "title": {
+      "text": "CCPA Lorem Ipsum",
+      "style": {
+        "fontFamily": "Arial",
+        "fontWeight": "400",
+        "fontSize": 16,
+        "color": "#000000",
+        "backgroundColor": "#ffffff"
+      },
+      "customFields": {
+        "ccpa_native_titile": "value1"
+      }
+    },
+    "body": {
+      "text": "CCPA - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a suscipit mauris. Quisque a eros at lorem accumsan feugiat. Nulla augue purus, volutpat a augue nec, aliquam volutpat metus. Aenean vel varius odio, eu sollicitudin tellus. Suspendisse id pellentesque mi, auctor rutrum dui. Ut risus sem, pretium non quam vitae, laoreet lacinia libero. Donec bibendum eleifend lacinia. Cras posuere massa vel nunc egestas pharetra. Vivamus eget egestas nisi. Quisque felis felis, ornare non consectetur vel, tempus et elit. Nullam mattis suscipit orci vel cursus.  Duis aliquet feugiat purus non eleifend. Donec interdum enim sapien, non ornare mi rutrum id. Morbi et dui finibus, dictum est ut, viverra purus. Aliquam urna felis, pretium non lobortis et, gravida facilisis purus. Nam bibendum, nisi eu porttitor dictum, sem odio malesuada neque, sit amet condimentum ipsum enim non metus. Integer finibus condimentum lectus, eget finibus est congue in. Fusce eleifend nunc sit amet libero molestie, eu elementum justo sollicit",
+      "style": {
+        "fontFamily": "Arial",
+        "fontWeight": "400",
+        "fontSize": 14,
+        "color": "#000000",
+        "backgroundColor": "#ffffff"
+      },
+      "customFields": {
+        "ccpa_body": "body1"
+      }
+    },
+    "actions": [
+      {
+        "text": "",
+        "style": {
+          "fontFamily": "Arial",
+          "fontSize": 16,
+          "fontWeight": "400",
+          "color": "#000000",
+          "backgroundColor": "#ffffff"
+        },
+        "customFields": {},
+        "choiceType": 11
+      },
+      {
+        "text": "",
+        "style": {
+          "fontFamily": "Arial",
+          "fontSize": 16,
+          "fontWeight": "400",
+          "color": "#000000",
+          "backgroundColor": "#ffffff"
+        },
+        "customFields": {},
+        "choiceType": 13
+      },
+      {
+        "text": "",
+        "style": {
+          "fontFamily": "Arial",
+          "fontSize": 16,
+          "fontWeight": "400",
+          "color": "#000000",
+          "backgroundColor": "#ffffff"
+        },
+        "customFields": {},
+        "choiceType": 12,
+        "url": "https://notice.sp-prod.net/privacy-manager/index.html?&message_id=545258"
+      },
+      {
+        "text": "",
+        "style": {
+          "fontFamily": "Arial",
+          "fontSize": 16,
+          "fontWeight": "400",
+          "color": "#000000",
+          "backgroundColor": "#ffffff"
+        },
+        "customFields": {},
+        "choiceType": 15
+      }
+    ],
+    "customFields": {
+      "ccpa_cf": "val"
+    }
+  },
+  "message_choice": [
+    {
+      "choice_id": 4781880,
+      "type": 11,
+      "iframe_url": null,
+      "button_text": null
+    },
+    {
+      "choice_id": 4781881,
+      "type": 13,
+      "iframe_url": null,
+      "button_text": null
+    },
+    {
+      "choice_id": 4781882,
+      "type": 12,
+      "iframe_url": "https://pm.sourcepoint.mgr.consensu.org",
+      "button_text": "Show purposes"
+    },
+    {
+      "choice_id": 4781883,
+      "type": 15,
+      "iframe_url": null,
+      "button_text": "Dismiss"
+    }
+  ],
+  "site_id": 18958
+}
