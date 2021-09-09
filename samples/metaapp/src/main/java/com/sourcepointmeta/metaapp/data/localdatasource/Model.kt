@@ -74,7 +74,7 @@ fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<Statu
     accountId = account_id,
     pmTab = pm_tab,
     messageLanguage = message_language,
-    authId = auth_Id,
+    authId = if (auth_Id.isNullOrEmpty()) null else auth_Id,
     targetingParameters = tp,
     statusCampaignSet = statusCampaign,
     messageType = message_type,
