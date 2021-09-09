@@ -10,5 +10,5 @@ internal data class CampaignModel(
     val messageMetaData: JSONObject,
     val type: CampaignType,
     val url: HttpUrl,
-    val messageSubCategory : MessageSubCategory
+    val messageSubCategory: MessageSubCategory
 )

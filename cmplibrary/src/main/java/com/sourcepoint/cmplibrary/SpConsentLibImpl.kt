@@ -29,7 +29,6 @@ import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.CampaignResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.NATIVE_IN_APP
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.TCFv2
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -126,7 +125,7 @@ internal class SpConsentLibImpl(
                 val firstCampaign2Process = list.first()
                 val remainingCampaigns: Queue<CampaignModel> = LinkedList(list.drop(1))
                 executor.executeOnMain {
-                    when(firstCampaign2Process.messageSubCategory){
+                    when (firstCampaign2Process.messageSubCategory) {
                         TCFv2 -> {
                             /** create a instance of WebView */
                             val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
@@ -175,7 +174,7 @@ internal class SpConsentLibImpl(
                 val firstCampaign2Process = list.first()
                 val remainingCampaigns: Queue<CampaignModel> = LinkedList(list.drop(1))
                 executor.executeOnMain {
-                    when(firstCampaign2Process.messageSubCategory){
+                    when (firstCampaign2Process.messageSubCategory) {
                         TCFv2 -> {
                             /** create a instance of WebView */
                             val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
