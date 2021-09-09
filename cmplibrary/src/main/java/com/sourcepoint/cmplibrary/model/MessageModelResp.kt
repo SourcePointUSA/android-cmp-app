@@ -28,14 +28,14 @@ internal abstract class CampaignResp {
     abstract val applies: Boolean
     abstract val message: JSONObject?
     abstract val messageMetaData: JSONObject?
-    abstract val messageSubCategory : MessageSubCategory
+    abstract val messageSubCategory: MessageSubCategory
 }
 
 internal data class Gdpr(
     override val thisContent: JSONObject,
     override val url: HttpUrl?,
     val userConsent: GDPRConsentInternal,
-    override val messageSubCategory : MessageSubCategory,
+    override val messageSubCategory: MessageSubCategory,
     override val applies: Boolean = false,
     override val message: JSONObject? = null,
     override val messageMetaData: JSONObject? = null,
@@ -46,7 +46,7 @@ internal data class Ccpa(
     override val thisContent: JSONObject,
     override val url: HttpUrl?,
     val userConsent: CCPAConsentInternal,
-    override val messageSubCategory : MessageSubCategory,
+    override val messageSubCategory: MessageSubCategory,
     override val applies: Boolean = false,
     override val message: JSONObject? = null,
     override val messageMetaData: JSONObject? = null,

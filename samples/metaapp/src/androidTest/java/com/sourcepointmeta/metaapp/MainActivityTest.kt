@@ -80,11 +80,11 @@ class MainActivityTest {
         wr { checkNumberOfNullMessage() }
         wr { checkOnConsentReady() }
 
-        verify(exactly = 1){ spClient.onConsentReady(any()) }
-        verify(exactly = 0){ spClient.onUIReady(any()) }
-        verify(exactly = 0){ spClient.onError(any()) }
-        verify(exactly = 0){ spClient.onMessageReady(any()) }
-        verify(exactly = 0){ spClient.onUIFinished(any()) }
+        verify(exactly = 1) { spClient.onConsentReady(any()) }
+        verify(exactly = 0) { spClient.onUIReady(any()) }
+        verify(exactly = 0) { spClient.onError(any()) }
+        verify(exactly = 0) { spClient.onMessageReady(any()) }
+        verify(exactly = 0) { spClient.onUIFinished(any()) }
     }
 
     @Test
@@ -130,7 +130,7 @@ class MainActivityTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapMetaDeepLinkOnWebView() }
         wr { checkDeepLinkDisplayed() }
 
-        verifySequence{
+        verifySequence {
             spClient.onConsentReady(any())
             spClient.onUIReady(any())
         }
