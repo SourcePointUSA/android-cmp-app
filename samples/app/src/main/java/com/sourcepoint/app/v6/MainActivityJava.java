@@ -6,8 +6,11 @@ import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.app.v6.core.DataProvider;
+import com.sourcepoint.cmplibrary.NativeMessageController;
+import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.SpConsentLib;
 import com.sourcepoint.cmplibrary.UnitySpClient;
+import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
 import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv;
@@ -95,7 +98,7 @@ public class MainActivityJava extends AppCompatActivity {
         spConsentLib.dispose();
     }
 
-    class LocalClient implements UnitySpClient {
+    class LocalClient implements SpClient {
 
         @Override
         public void onMessageReady(@NotNull JSONObject message) {
@@ -108,8 +111,8 @@ public class MainActivityJava extends AppCompatActivity {
         }
 
         @Override
-        public void onConsentReady(@NotNull SPConsents c) {
-            System.out.println("onConsentReady: " + c);
+        public void onNativeMessageReady(@NotNull MessageStructure message, @NotNull NativeMessageController messageController) {
+
         }
 
         @Override
@@ -123,13 +126,13 @@ public class MainActivityJava extends AppCompatActivity {
         }
 
         @Override
-        public void onUIReady(@NotNull View v) {
-            spConsentLib.showView(v);
+        public void onAction(View view, @NotNull ActionType actionType) {
+            Log.i(TAG, "ActionType: " + actionType.toString());
         }
 
         @Override
-        public void onAction(View view, @NotNull ActionType actionType) {
-            Log.i(TAG, "ActionType: " + actionType.toString());
+        public void onUIReady(@NotNull View v) {
+            spConsentLib.showView(v);
         }
     }
 }
