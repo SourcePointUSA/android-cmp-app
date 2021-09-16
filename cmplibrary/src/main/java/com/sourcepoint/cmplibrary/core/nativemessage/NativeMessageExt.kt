@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.core.nativemessage
 
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.NativeConsentAction
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType.UNKNOWN
 import com.sourcepoint.cmplibrary.model.getFieldValue
@@ -59,10 +58,10 @@ fun Map<String, Any?>.toNativeComponent(): NativeComponent {
 fun Map<String, Any?>.toNativeStyle(): NativeStyle {
     val styleMap = this
     return NativeStyle(
-        fontFamily = styleMap.getFieldValue<String>("fontFamily"),
-        fontSize = styleMap.getFieldValue<Int>("fontSize")?.toFloat(),
-        fontWeight = styleMap.getFieldValue<String>("fontWeight")?.toFloat(),
-        backgroundColor = styleMap.getFieldValue<String>("backgroundColor"),
+        fontFamily = styleMap.getFieldValue<String>("fontFamily") ?: "Arial",
+        fontSize = styleMap.getFieldValue<Int>("fontSize")?.toFloat() ?: 16F,
+        fontWeight = styleMap.getFieldValue<String>("fontWeight")?.toFloat() ?: 400F,
+        backgroundColor = styleMap.getFieldValue<String>("backgroundColor") ?: "#FFFFFF",
         color = styleMap.getFieldValue<String>("color"),
     )
 }
@@ -70,14 +69,4 @@ fun Map<String, Any?>.toNativeStyle(): NativeStyle {
 fun Map<*, *>.toStringOrNull(key: String): String? {
     return if (this[key] == null || this[key].toString() == "null") null
     else this[key].toString()
-}
-
-fun MessageStructure.getChoice(option: NativeMessageActionType): NativeAction? {
-    return messageComponents
-        ?.actions
-        ?.find { it.choiceType == option }
-}
-
-fun NativeChoice.toNativeConsentAction(): NativeConsentAction {
-    TODO()
 }

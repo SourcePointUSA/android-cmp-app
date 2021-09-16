@@ -74,7 +74,6 @@ class SpConsentLibDelegateTest {
         }
 
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
-            TODO("Not yet implemented")
         }
 
         override fun onAction(view: View, actionType: ActionType) {

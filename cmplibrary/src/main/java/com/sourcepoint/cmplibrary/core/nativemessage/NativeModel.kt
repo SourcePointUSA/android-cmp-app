@@ -6,8 +6,7 @@ import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType.* // ktl
 
 data class MessageStructure(
     val messageComponents: MessageComponents?,
-    val campaignType: CampaignType,
-    val messageChoices: List<NativeChoice> = emptyList()
+    val campaignType: CampaignType
 )
 
 data class MessageComponents(
@@ -15,31 +14,6 @@ data class MessageComponents(
     val title: NativeComponent?,
     val body: NativeComponent?,
     val actions: List<NativeAction> = emptyList(),
-    val customFields: Map<String, String> = emptyMap()
-)
-
-data class NativeChoice(
-    val choice_id: Int,
-    val type: Int,
-    val iframe_url: String? = null,
-    val button_text: String? = null
-)
-
-data class NativeCategory(
-    val id: String,
-    val type: String,
-    val name: String,
-    val description: String
-)
-
-data class NativeCategories(
-    val categories: List<NativeCategory> = emptyList()
-)
-
-data class NativeMessage(
-    val title: NativeComponent,
-    val body: NativeComponent,
-    val actions: List<String> = emptyList(),
     val customFields: Map<String, String> = emptyMap()
 )
 
@@ -58,9 +32,9 @@ data class NativeAction(
 )
 
 data class NativeStyle(
-    val fontFamily: String?,
-    val fontWeight: Float?,
-    val fontSize: Float?,
+    val fontFamily: String,
+    val fontWeight: Float,
+    val fontSize: Float,
     val color: String?,
-    val backgroundColor: String?,
+    val backgroundColor: String,
 )
