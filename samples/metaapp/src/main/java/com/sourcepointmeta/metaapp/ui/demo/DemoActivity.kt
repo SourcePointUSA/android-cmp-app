@@ -10,7 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
@@ -35,7 +37,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
 import java.util.* //ktlint-disable
@@ -172,12 +173,13 @@ class DemoActivity : FragmentActivity() {
 
     internal inner class LocalClient : SpClient {
 
-        override fun onMessageReady(message: JSONObject) {
-            spClientObserver.forEach { it.onMessageReady(message) }
-        }
         override fun onError(error: Throwable) {
             spClientObserver.forEach { it.onError(error) }
             error.printStackTrace()
+        }
+
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+            TODO("Not yet implemented")
         }
 
         override fun onConsentReady(consent: SPConsents) {
