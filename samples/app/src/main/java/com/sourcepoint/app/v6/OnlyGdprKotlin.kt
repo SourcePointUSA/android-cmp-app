@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -69,6 +71,10 @@ class OnlyGdprKotlin : AppCompatActivity() {
             spConsentLib.showView(view)
         }
 
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+            TODO("Not yet implemented")
+        }
+
         override fun onUIFinished(view: View) {
             spConsentLib.removeView(view)
         }
@@ -84,7 +90,5 @@ class OnlyGdprKotlin : AppCompatActivity() {
         override fun onAction(view: View, actionType: ActionType) {
             Log.i(this::class.java.name, "ActionType: $actionType")
         }
-
-        override fun onMessageReady(message: JSONObject) {}
     }
 }

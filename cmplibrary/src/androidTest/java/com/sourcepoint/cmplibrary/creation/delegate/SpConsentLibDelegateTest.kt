@@ -6,12 +6,13 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.assertEquals
 import com.example.uitestutil.assertNotNull
 import com.sourcepoint.cmplibrary.MyDebugActivity
+import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
-import org.json.JSONObject
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -72,7 +73,8 @@ class SpConsentLibDelegateTest {
         override fun onUIReady(view: View) {
         }
 
-        override fun onMessageReady(message: JSONObject) {
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+            TODO("Not yet implemented")
         }
 
         override fun onAction(view: View, actionType: ActionType) {

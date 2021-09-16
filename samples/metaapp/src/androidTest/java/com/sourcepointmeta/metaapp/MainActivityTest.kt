@@ -83,7 +83,6 @@ class MainActivityTest {
         verify(exactly = 1) { spClient.onConsentReady(any()) }
         verify(exactly = 0) { spClient.onUIReady(any()) }
         verify(exactly = 0) { spClient.onError(any()) }
-        verify(exactly = 0) { spClient.onMessageReady(any()) }
         verify(exactly = 0) { spClient.onUIFinished(any()) }
     }
 

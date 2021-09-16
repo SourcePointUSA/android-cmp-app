@@ -7,7 +7,9 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepoint.app.v6.core.DataProvider
+import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -86,8 +88,9 @@ class MainActivityKotlin : AppCompatActivity() {
     }
 
     internal inner class LocalClient : SpClient {
-        override fun onMessageReady(message: JSONObject) {
-            spClientObserver.forEach { it.onMessageReady(message) }
+
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+
         }
 
         override fun onError(error: Throwable) {
