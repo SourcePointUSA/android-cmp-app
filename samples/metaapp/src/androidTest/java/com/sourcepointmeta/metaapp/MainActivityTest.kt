@@ -84,6 +84,29 @@ class MainActivityTest {
     }
 
     @Test
+    fun GIVEN_a_camapignList_VERIFY_back_btn() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+        loadKoinModules(
+            module(override = true) {
+                single<List<SpClient>> { listOf(spClient) }
+                single(qualifier = named("ui_test_running")) { true }
+            }
+        )
+        scenario = launchActivity()
+
+        db.addTestProperty(gdprEnabled = true, ccpaEnabled = true)
+
+        runDemo()
+        // Show Option
+        // cancel
+        // check web view
+        // accept
+        //  Show Option
+        // cancel
+        // accept
+    }
+
+    @Test
     fun GIVEN_an_deepLink_SHOW_the_deep_link_activity() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
         loadKoinModules(
