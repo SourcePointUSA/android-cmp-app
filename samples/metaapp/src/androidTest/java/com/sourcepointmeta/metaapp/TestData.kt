@@ -47,4 +47,6 @@ object TestData {
     var VENDOR_NAME = "google"
     var FEATURES = "Features"
     var PURPOSES = "Purposes"
+    var TITLE = "GDPR Message"
+    var CANCEL = "Cancel"
 }

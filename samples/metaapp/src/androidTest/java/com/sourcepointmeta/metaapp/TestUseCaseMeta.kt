@@ -5,9 +5,13 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import com.example.uitestutil.* // ktlint-disable
 import com.sourcepointmeta.metaapp.TestData.ACCEPT
+import com.sourcepointmeta.metaapp.TestData.ACCEPT_ALL
+import com.sourcepointmeta.metaapp.TestData.CANCEL
 import com.sourcepointmeta.metaapp.TestData.CCPA_CONSENT_LIST
 import com.sourcepointmeta.metaapp.TestData.GDPR_CONSENT_LIST_2
+import com.sourcepointmeta.metaapp.TestData.OPTIONS
 import com.sourcepointmeta.metaapp.TestData.REJECT
+import com.sourcepointmeta.metaapp.TestData.TITLE
 import com.sourcepointmeta.metaapp.data.localdatasource.toValueDB
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
@@ -22,6 +26,22 @@ class TestUseCaseMeta {
 
         fun tapFab() {
             performClickById(R.id.fab)
+        }
+
+        fun tapOptionWebView() {
+            performClickOnWebViewByContent(OPTIONS)
+        }
+
+        fun tapCancelOnWebView() {
+            performClickOnWebViewByContent(CANCEL)
+        }
+
+        fun checkWebViewDisplayedGDPRFirstLayerMessage() {
+            checkTextInParagraph(TITLE)
+        }
+
+        fun tapAcceptAllOnWebView() {
+            performClickOnWebViewByContent(ACCEPT_ALL)
         }
 
         fun checkDeepLinkDisplayed() {
