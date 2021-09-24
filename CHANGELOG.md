@@ -1,3 +1,6 @@
+## 6.2.2 (September, 24, 2021)
+* [SP-7925](https://sourcepoint.atlassian.net/browse/7925) Adding a back behaviour to the dismiss action (#420)
+
 ## 6.2.1 (August, 31, 2021)
 * [SP-7820](https://sourcepoint.atlassian.net/browse/7820) IABTCF_TCString missing in the preferences (#412)
 * [SP-7742](https://sourcepoint.atlassian.net/browse/7742) Add acceptedCategories to GDPR userConsent (#410)
