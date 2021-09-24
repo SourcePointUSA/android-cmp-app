@@ -41,6 +41,7 @@ internal class ConsentWebView(
         setup()
     }
 
+    private var currentCampaignModel: CampaignModel? = null
     private lateinit var spWebViewClient: SPWebViewClient
     private val jsReceiver: String by lazy {
         context.readFromAsset("js_receiver.js")
@@ -105,6 +106,28 @@ internal class ConsentWebView(
         true
     }
 
+    override fun loadConsentUIFromUrl(
+        url: HttpUrl,
+        campaignType: CampaignType,
+        pmId: String?,
+        campaignModel: CampaignModel?
+    ): Either<Boolean> = check {
+        currentCampaignModel = campaignModel
+        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
+        spWebViewClient.jsReceiverConfig = {
+            val sb = StringBuffer()
+            sb.append(
+                """
+                javascript: window.spLegislation = '${campaignType.name}'; window.localPmId ='$pmId';
+                $jsReceiver;
+                """.trimIndent()
+            )
+            sb.toString()
+        }
+        loadUrl(url.toString())
+        true
+    }
+
     override fun loadConsentUIFromUrl(url: HttpUrl, campaignType: CampaignType, pmId: String?): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
@@ -123,6 +146,7 @@ internal class ConsentWebView(
 
     override fun loadConsentUI(campaignModel: CampaignModel, url: HttpUrl, campaignType: CampaignType): Either<Boolean> = check {
         val campaignType: CampaignType = campaignModel.type
+        currentCampaignModel = campaignModel
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             /**
@@ -158,7 +182,9 @@ internal class ConsentWebView(
         override fun onAction(actionData: String) {
             checkWorkerThread("ConsentWebView on action")
             val action = actionData.toConsentAction()
-            if (action.actionType != ActionType.SHOW_OPTIONS && campaignQueue.isNotEmpty()) {
+            if (action.actionType == ActionType.PM_DISMISS && currentCampaignModel != null) {
+                jsClientLib.onAction(this@ConsentWebView, actionData, currentCampaignModel!!)
+            } else if (action.actionType != ActionType.SHOW_OPTIONS && campaignQueue.isNotEmpty()) {
                 val campaign: CampaignModel = campaignQueue.poll()
                 jsClientLib.onAction(this@ConsentWebView, actionData, campaign)
             } else {
