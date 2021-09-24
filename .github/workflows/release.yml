@@ -1,7 +1,7 @@
 name: RELEASE
 on:
   push:
-    branches: [ master ]
+    branches: [ sp-7969-github-action-metaapp ]
 #    paths:
 #      - '!*.yml'
 #      - '!README.md'
@@ -38,6 +38,11 @@ jobs:
         alias: ${{ secrets.SIGNING_ALIAS }}
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
         keyPassword: ${{ secrets.KEY_ALIAS_PASSWORD }}
+    - name: Print content release
+      run: |
+        echo "----------------------------"
+        ls -la samples/metaapp/build/outputs/apk/release
+        echo "----------------------------"
     - name: Create service_account.json
       id: createServiceAccount
       run: |
