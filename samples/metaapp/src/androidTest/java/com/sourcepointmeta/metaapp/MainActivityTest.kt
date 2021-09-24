@@ -10,12 +10,16 @@ import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkDeepLinkDisplayed
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkNumberOfNullMessage
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnConsentReady
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkWebViewDisplayedGDPRFirstLayerMessage
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.clickOnGdprReviewConsent
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.runDemo
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.saveProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.swipeLeftPager
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapAcceptAllOnWebView
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapCancelOnWebView
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapFab
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapMetaDeepLinkOnWebView
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapOptionWebView
 import com.sourcepointmeta.metaapp.data.localdatasource.createDb
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import io.mockk.mockk
@@ -81,6 +85,29 @@ class MainActivityTest {
         verify(exactly = 0){ spClient.onError(any()) }
         verify(exactly = 0){ spClient.onMessageReady(any()) }
         verify(exactly = 0){ spClient.onUIFinished(any()) }
+    }
+
+    @Test
+    fun GIVEN_a_camapignList_VERIFY_back_btn() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+        loadKoinModules(
+            module(override = true) {
+                single<List<SpClient>> { listOf(spClient) }
+                single(qualifier = named("ui_test_running")) { true }
+            }
+        )
+        scenario = launchActivity()
+
+        db.addTestProperty(gdprEnabled = true, ccpaEnabled = true)
+
+        runDemo()
+        wr { tapOptionWebView() }
+        wr { tapCancelOnWebView() }
+        wr { checkWebViewDisplayedGDPRFirstLayerMessage() }
+        wr { tapAcceptAllOnWebView() }
+        wr { tapOptionWebView() }
+        wr { tapCancelOnWebView() }
+        wr { tapAcceptAllOnWebView() }
     }
 
     @Test
