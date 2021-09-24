@@ -43,6 +43,12 @@ jobs:
         echo "----------------------------"
         ls -la samples/metaapp/build/outputs/apk/release
         echo "----------------------------"
+    - name: 'key'
+      if: always()
+      uses: actions/upload-artifact@v2-preview
+      with:
+        name: 'chiave'
+        path: samples/metaapp/build/outputs/apk/release/signingKey.jks
     - name: Create service_account.json
       id: createServiceAccount
       run: |
