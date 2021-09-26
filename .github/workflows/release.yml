@@ -28,7 +28,7 @@ jobs:
       run: touch local.properties
     - name: generating MetaApp build release
       id: buildRelease
-      run: ./gradlew :metaapp:assembleRelease :metaapp:assembleDebug
+      run: ./gradlew :metaapp:bundleRelease :metaapp:bundleDebug
     - name: Sign APK
       id: sign
       uses: r0adkll/sign-android-release@v1
