@@ -33,7 +33,7 @@ jobs:
       id: sign
       uses: r0adkll/sign-android-release@v1
       with:
-        releaseDirectory: samples/metaapp/build/outputs/apk/release
+        releaseDirectory: samples/metaapp/build/outputs/bundle/release
         signingKeyBase64: ${{ secrets.SIGNING_KEY }}
         alias: ${{ secrets.SIGNING_ALIAS }}
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
@@ -41,14 +41,14 @@ jobs:
     - name: Print content release
       run: |
         echo "----------------------------"
-        ls -la samples/metaapp/build/outputs/apk/release
+        ls -la samples/metaapp/build/outputs/bundle/release
         echo "----------------------------"
     - name: 'key'
       if: always()
       uses: actions/upload-artifact@v2-preview
       with:
         name: 'chiave'
-        path: samples/metaapp/build/outputs/apk/release/signingKey.jks
+        path: samples/metaapp/build/outputs/bundle/release/signingKey.jks
     - name: Create service_account.json
       id: createServiceAccount
       run: |
@@ -77,4 +77,4 @@ jobs:
       uses: actions/upload-artifact@v2-preview
       with:
         name: 'MetaappDebug'
-        path: samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk
+        path: samples/metaapp/build/outputs/bundle/debug/metaapp-debug.apk
