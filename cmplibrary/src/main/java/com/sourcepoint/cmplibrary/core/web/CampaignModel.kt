@@ -12,3 +12,5 @@ internal data class CampaignModel(
     val url: HttpUrl,
     val messageSubCategory: MessageSubCategory
 )
+
+internal fun CampaignModel.toNativeMessageClient(): JSONObject = message
