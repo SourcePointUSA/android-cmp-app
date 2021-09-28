@@ -28,12 +28,12 @@ jobs:
       run: touch local.properties
     - name: generating MetaApp build release
       id: buildRelease
-      run: ./gradlew :metaapp:assembleRelease :metaapp:assembleDebug
+      run: ./gradlew :metaapp:bundleRelease :metaapp:bundleDebug :metaapp:assembleRelease
     - name: Sign APK
       id: sign
       uses: r0adkll/sign-android-release@v1
       with:
-        releaseDirectory: samples/metaapp/build/outputs/apk/release
+        releaseDirectory: samples/metaapp/build/outputs/bundle/release
         signingKeyBase64: ${{ secrets.SIGNING_KEY }}
         alias: ${{ secrets.SIGNING_ALIAS }}
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
@@ -50,7 +50,7 @@ jobs:
         path: ${{ steps.sign.outputs.signedReleaseFile }}
     - name: Deploy to Play Store
       id: deploy
-      uses: r0adkll/upload-google-play@v1
+      uses: r0adkll/upload-google-play@v1.0.15
       with:
         serviceAccountJson: service_account.json
         packageName: com.sourcepointmeta.metaapp
