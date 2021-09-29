@@ -12,12 +12,10 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
-import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
 class MainActivityKotlin : AppCompatActivity() {
@@ -32,14 +30,14 @@ class MainActivityKotlin : AppCompatActivity() {
     private val spConsentLib by spConsentLibLazy {
         activity = this@MainActivityKotlin
         spClient = LocalClient()
-//        spConfig = dataProvider.spConfig
-        config {
-            accountId = 22
-            propertyName = "mobile.multicampaign.native.demo"
-            messLanguage = MessageLanguage.ENGLISH
-            +(CampaignType.GDPR)
-            +(CampaignType.CCPA to listOf(("location" to "US")))
-        }
+        spConfig = dataProvider.spConfig
+//        config {
+//            accountId = 22
+//            propertyName = "mobile.multicampaign.demo"
+//            messLanguage = MessageLanguage.ENGLISH
+//            +(CampaignType.GDPR)
+//            +(CampaignType.CCPA to listOf(("location" to "US")))
+//        }
     }
 
 
