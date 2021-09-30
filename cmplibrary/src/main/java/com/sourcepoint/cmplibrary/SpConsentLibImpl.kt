@@ -143,9 +143,9 @@ internal class SpConsentLibImpl(
                             webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                         }
                         NATIVE_IN_APP -> {
-                            TODO()
-//                            val nm = firstCampaign2Process.toNativeMessageClient()
-//                            spClient.onMessageReady(nm)
+                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(legislation)
+                            currentNativeMessageCampaign = firstCampaign2Process
+                            spClient.onNativeMessageReady(nmDto, this)
                         }
                     }
                 }
@@ -195,7 +195,6 @@ internal class SpConsentLibImpl(
                             webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                         }
                         NATIVE_IN_APP -> {
-                            val nm = firstCampaign2Process.toNativeMessageClient()
                             val nmDto = firstCampaign2Process.message.toNativeMessageDTO(legislation)
                             currentNativeMessageCampaign = firstCampaign2Process
                             spClient.onNativeMessageReady(nmDto, this)
