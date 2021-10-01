@@ -36,13 +36,12 @@ import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.LOG_ID
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.TITLE
 import io.github.g00fy2.versioncompare.Version
-import kotlinx.android.synthetic.main.activity_demo.*
-import kotlinx.android.synthetic.main.native_message.view.*
+import kotlinx.android.synthetic.main.activity_demo.* // ktlint-disable
+import kotlinx.android.synthetic.main.native_message.view.* // ktlint-disable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
 import java.util.* // ktlint-disable
