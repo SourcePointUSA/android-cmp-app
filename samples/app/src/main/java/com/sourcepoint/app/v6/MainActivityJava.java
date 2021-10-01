@@ -101,11 +101,6 @@ public class MainActivityJava extends AppCompatActivity {
     class LocalClient implements SpClient {
 
         @Override
-        public void onMessageReady(@NotNull JSONObject message) {
-
-        }
-
-        @Override
         public void onError(@NotNull Throwable error) {
             error.printStackTrace();
         }
@@ -116,23 +111,24 @@ public class MainActivityJava extends AppCompatActivity {
         }
 
         @Override
-        public void onConsentReady(@NotNull String consent) {
-            System.out.println("onConsentReady String: " + consent);
-        }
-
-        @Override
         public void onUIFinished(@NotNull View v) {
             spConsentLib.removeView(v);
-        }
-
-        @Override
-        public void onAction(View view, @NotNull ActionType actionType) {
-            Log.i(TAG, "ActionType: " + actionType.toString());
         }
 
         @Override
         public void onUIReady(@NotNull View v) {
             spConsentLib.showView(v);
         }
+
+        @Override
+        public void onAction(@NotNull View view, @NotNull ActionType actionType) {
+
+        }
+
+        @Override
+        public void onConsentReady(@NotNull SPConsents consent) {
+
+        }
     }
+
 }
