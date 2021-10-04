@@ -31,14 +31,14 @@ class MainActivityKotlin : AppCompatActivity() {
     private val spConsentLib by spConsentLibLazy {
         activity = this@MainActivityKotlin
         spClient = LocalClient()
-//        spConfig = dataProvider.spConfig
-        config {
-            accountId = 22
-            propertyName = "mobile.multicampaign.native.demo"
-            messLanguage = MessageLanguage.ENGLISH
-            +(CampaignType.GDPR)
-            +(CampaignType.CCPA to listOf(("location" to "US")))
-        }
+        spConfig = dataProvider.spConfig
+//        config {
+//            accountId = 22
+//            propertyName = "mobile.multicampaign.native.demo"
+//            messLanguage = MessageLanguage.ENGLISH
+//            +(CampaignType.GDPR)
+//            +(CampaignType.CCPA to listOf(("location" to "US")))
+//        }
     }
 
 
