@@ -491,26 +491,6 @@ internal class SpConsentLibImpl(
         }
     }
 
-    /**
-     * Receive the action performed by the user from the WebView
-     */
-    internal fun onActionFromNativeLayout(action: NativeConsentAction) {
-        executor.executeOnMain {
-            pLogger.actionWebApp(
-                tag = "onActionFromNativeLayoutClient",
-                msg = action.actionType.name,
-                json = JSONObject()
-            )
-            when (action.actionType) {
-                NativeMessageActionType.ACCEPT_ALL,
-                NativeMessageActionType.REJECT_ALL -> {
-                    consentManager.enqueueConsent(nativeConsentAction = action)
-                }
-                NativeMessageActionType.MSG_CANCEL -> {}
-            }
-        }
-    }
-
     private fun showOption(action: ConsentAction, iConsentWebView: IConsentWebView) {
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
         when (val l = action.campaignType) {
