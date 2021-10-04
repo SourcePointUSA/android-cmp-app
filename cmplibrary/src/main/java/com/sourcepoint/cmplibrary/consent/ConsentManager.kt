@@ -24,6 +24,7 @@ import java.util.* //ktlint-disable
 internal interface ConsentManager {
     var localStateStatus: LocalStateStatus
     fun enqueueConsent(consentAction: ConsentAction)
+    fun enqueueConsent(nativeConsentAction: NativeConsentAction)
     fun sendStoredConsentToClient()
     fun sendConsent(
         action: ConsentAction,
@@ -82,6 +83,10 @@ private class ConsentManagerImpl(
             val action = consentQueue.poll()
             sendConsent(action, localState)
         }
+    }
+
+    override fun enqueueConsent(nativeConsentAction: NativeConsentAction) {
+        enqueueConsent(nativeConsentAction.toConsentAction())
     }
 
     fun changeLocalState(newState: LocalStateStatus) {
