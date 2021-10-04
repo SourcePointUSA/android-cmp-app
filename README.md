@@ -118,7 +118,8 @@ Create a client to receive the events from the Cmp SDK
 Kotlin
 ```kotlin
     internal inner class LocalClient : SpClient {
-        override fun onMessageReady(message: JSONObject) {}
+        override fun onMessageReady(message: JSONObject) {} // Deprecated
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController)
         override fun onError(error: Throwable) { }
         override fun onConsentReady(consent: SPConsents) { }
         override fun onAction(view: View, actionType: ActionType) { }
@@ -135,7 +136,10 @@ Java
     class LocalClient implements SpClient {
 
         @Override
-        public void onMessageReady(@NotNull JSONObject message) { }
+        public void onNativeMessageReady(@NotNull MessageStructure message, @NotNull  NativeMessageController messageController) { }
+
+        @Override
+        public void onMessageReady(@NotNull JSONObject message) { } // Deprecated
 
         @Override
         public void onError(@NotNull Throwable error) { error.printStackTrace(); }
@@ -301,6 +305,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
     internal inner class LocalClient : SpClient {
         override fun onMessageReady(message: JSONObject) { /* ... */ }
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) { /* ... */ }
         override fun onError(error: Throwable) { /* ... */ }
         override fun onConsentReady(consent: SPConsents) { /* ... */ }
         override fun onAction(view: View, actionType: ActionType) { /* ... */ }
@@ -356,6 +361,9 @@ public class MainActivityJava extends AppCompatActivity {
 
         @Override
         public void onMessageReady(@NotNull JSONObject message) { }
+
+        @Override
+        public void onNativeMessageReady(@NotNull MessageStructure message, @NotNull  NativeMessageController messageController) { }
 
         @Override
         public void onError(@NotNull Throwable error) {
