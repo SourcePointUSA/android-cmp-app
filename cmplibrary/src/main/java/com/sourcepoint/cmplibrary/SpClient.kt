@@ -4,6 +4,7 @@ import android.view.View
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import org.json.JSONObject
 
 interface SpClient {
 
@@ -16,7 +17,17 @@ interface SpClient {
      * It is invoked when the message is available to the client App
      */
     fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController)
+    @Deprecated(
+        "onMessageReady callback will be removed in favor of onUIReady. " +
+            "Currently this callback is disabled."
+    )
+    fun onMessageReady(message: JSONObject)
     fun onAction(view: View, actionType: ActionType)
+
+    /***
+     * This callback does NOT make sense for the Native message because:
+     * the CLIENT KNOWS when the view gets removed.
+     */
     fun onUIFinished(view: View)
     fun onConsentReady(consent: SPConsents)
     fun onError(error: Throwable)

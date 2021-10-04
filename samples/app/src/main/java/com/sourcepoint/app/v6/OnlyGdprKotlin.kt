@@ -71,8 +71,10 @@ class OnlyGdprKotlin : AppCompatActivity() {
             spConsentLib.showView(view)
         }
 
+        override fun onMessageReady(message: JSONObject) {
+        }
+
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
-            TODO("Not yet implemented")
         }
 
         override fun onUIFinished(view: View) {

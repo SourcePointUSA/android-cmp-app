@@ -42,6 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
 import java.util.* // ktlint-disable
@@ -184,6 +185,9 @@ class DemoActivity : FragmentActivity() {
         override fun onError(error: Throwable) {
             spClientObserver.forEach { it.onError(error) }
             error.printStackTrace()
+        }
+
+        override fun onMessageReady(message: JSONObject) {
         }
 
         override fun onConsentReady(consent: SPConsents) {

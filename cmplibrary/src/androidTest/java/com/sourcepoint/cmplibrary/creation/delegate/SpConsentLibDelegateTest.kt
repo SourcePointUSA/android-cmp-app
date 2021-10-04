@@ -13,6 +13,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import org.json.JSONObject
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -71,6 +72,9 @@ class SpConsentLibDelegateTest {
 
     class MockClient : SpClient {
         override fun onUIReady(view: View) {
+        }
+
+        override fun onMessageReady(message: JSONObject) {
         }
 
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {

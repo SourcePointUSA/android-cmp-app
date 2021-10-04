@@ -17,6 +17,7 @@ import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
+import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
 class MainActivityKotlin : AppCompatActivity() {
@@ -90,6 +91,9 @@ class MainActivityKotlin : AppCompatActivity() {
 
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
 
+        }
+
+        override fun onMessageReady(message: JSONObject) {
         }
 
         override fun onError(error: Throwable) {

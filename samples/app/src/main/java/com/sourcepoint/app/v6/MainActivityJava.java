@@ -111,6 +111,11 @@ public class MainActivityJava extends AppCompatActivity {
         }
 
         @Override
+        public void onMessageReady(@NotNull JSONObject message) {
+
+        }
+
+        @Override
         public void onUIFinished(@NotNull View v) {
             spConsentLib.removeView(v);
         }
