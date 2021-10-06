@@ -5,7 +5,7 @@ enum class ActionType(val code: Int) {
     REJECT_ALL(13),
     ACCEPT_ALL(11),
     MSG_CANCEL(15),
-    CONSENT_PAYWALL(16),
+    CUSTOM(9),
     SAVE_AND_EXIT(1),
     PM_DISMISS(2),
     UNKNOWN(-1);
