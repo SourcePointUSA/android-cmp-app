@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.data.network.model.toAcceptedCategories
+import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.toTreeMap
@@ -96,6 +97,33 @@ class ConsentRespExtKtTest {
             "608bad96d08d3112188e0e59"
         ).sorted()
         l.assertEquals(tester)
+    }
+
+    @Test
+    fun `GIVEN a CCPA consent RETURN a consent object`() {
+
+        val ccpaConsent = JSONObject(
+            """
+            {
+              "dateCreated": "2021-10-11T14:34:08.288Z",
+              "newUser": false,
+              "rejectedAll": false,
+              "rejectedCategories": [],
+              "rejectedVendors": [],
+              "signedLspa": false,
+              "status": "consentedAll",
+              "uspstring": "1---"
+            }
+            """.trimIndent()
+        ).toTreeMap()
+        val test = ccpaConsent.toCCPAUserConsent("1234")
+        test.run {
+            uspstring.assertEquals("1---")
+            status.assertEquals("consentedAll")
+            rejectedCategories.size.assertEquals(0)
+            rejectedVendors.size.assertEquals(0)
+            uuid.assertEquals("1234")
+        }
     }
 
     private val jsonGrantAll3 = """

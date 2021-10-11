@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CONSENT_U
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON_MESSAGE
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_TCData
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
@@ -68,6 +69,7 @@ internal interface DataStorageGdpr {
         const val KEY_GDPR_APPLIES = "key_gdpr_applies"
         const val GDPR_CONSENT_RESP = "gdpr_consent_resp"
         const val GDPR_JSON_MESSAGE = "gdpr_json_message"
+        const val GDPR_TCData = "TCData"
     }
 }
 
@@ -155,7 +157,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         check {
             JSONObject(value)
                 .toTreeMap()
-                .getMap("TCData")
+                .getMap(GDPR_TCData)
                 ?.let { tc -> saveTcData(tc) }
         }
 
@@ -231,9 +233,17 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     }
 
     override fun clearGdprConsent() {
+
+        val spEditor = preference.edit()
+        preference
+            .all
+            .filter { it.key.startsWith("IABTCF_") }
+            .forEach { entry -> spEditor.remove(entry.key) }
+        spEditor.apply()
+
         preference
             .edit()
-            .putString(GDPR_CONSENT_RESP, "")
+            .remove(GDPR_CONSENT_RESP)
             .apply()
     }
 
