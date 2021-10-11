@@ -27,7 +27,7 @@ internal fun String.toConsentAction(): ConsentAction {
     val consentLanguage = map.getFieldValue<String>("consentLanguage") ?: "EN"
 
     return ConsentAction(
-        actionType = actionType ?: ActionType.MSG_CANCEL,
+        actionType = actionType ?: ActionType.UNKNOWN,
         choiceId = choiceId,
         privacyManagerId = privacyManagerId,
         pmTab = pmTab,
