@@ -14,13 +14,16 @@ class MessageModelReqExtKtTest {
             {
               "accountId": 1,
               "propertyHref": "http://com.test",
-              "campaignEnv": "stage",
               "campaigns": {
                 "gdpr": {
-                  "targetingParams": "{\"location\":\"EU\"}"
+                  "targetingParams": {
+                    "location": "EU"
+                  }
                 },
                 "ccpa": {
-                  "targetingParams": "{\"location\":\"US\"}"
+                  "targetingParams": {
+                    "location": "US"
+                  }
                 }
               },
               "consentLanguage": "EN",
@@ -38,7 +41,8 @@ class MessageModelReqExtKtTest {
                 "TCData": {
                   "type": "RecordString"
                 }
-              }
+              },
+              "campaignEnv": "stage"
             }
         """.trimIndent()
     )
