@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.model.toJSONObj
+import com.sourcepoint.cmplibrary.model.toJSONObjGrant
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -20,11 +21,16 @@ data class SPCCPAConsent(
     val consent: CCPAConsent
 )
 
+data class Grant(
+    val granted: Boolean = false,
+    val purposes: Map<String, Boolean> = emptyMap()
+)
+
 interface GDPRConsent {
     val uuid: String?
     var euconsent: String
     var tcData: Map<String, Any?>
-    var grants: Map<String, Map<String, Boolean>>
+    var grants: Map<String, Grant>
     val acceptedCategories: List<String>
 }
 
@@ -32,7 +38,7 @@ internal data class GDPRConsentInternal(
     override var euconsent: String = "",
     override val uuid: String? = null,
     override var tcData: Map<String, Any?> = emptyMap(),
-    override var grants: Map<String, Map<String, Boolean>> = emptyMap(),
+    override var grants: Map<String, Grant> = emptyMap(),
     override val acceptedCategories: List<String> = emptyList(),
     val thisContent: JSONObject = JSONObject()
 ) : GDPRConsent
@@ -58,7 +64,7 @@ internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("uuid", uuid)
         put("tcData", tcData.toJSONObj())
-        put("grants", grants.toJSONObj())
+        put("grants", grants.toJSONObjGrant())
         put("euconsent", euconsent)
         put("acceptedCategories", JSONArray(acceptedCategories))
     }

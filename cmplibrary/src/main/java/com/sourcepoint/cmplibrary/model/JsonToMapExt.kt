@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.model
 
+import com.sourcepoint.cmplibrary.model.exposed.Grant
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -22,6 +23,20 @@ internal fun Map<String, Any?>.getList(key: String): List<Map<String, Any?>>? {
 
 internal fun Map<String, Any?>.toJSONObj(): JSONObject {
     return JSONObject(this)
+}
+
+internal fun Map<String, Grant?>.toJSONObjGrant(): JSONObject {
+    return JSONObject().also { jo ->
+        this.forEach {
+            jo.put(
+                it.key,
+                JSONObject().apply {
+                    put("granted", it.value?.granted)
+                    put("purposeGrants", JSONObject(it.value?.purposes))
+                }
+            )
+        }
+    }
 }
 
 internal fun <T> Map<String, Any?>.getFieldValue(key: String): T? {
