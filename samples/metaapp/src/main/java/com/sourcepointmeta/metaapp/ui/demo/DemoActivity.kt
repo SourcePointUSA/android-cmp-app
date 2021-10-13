@@ -192,8 +192,6 @@ class DemoActivity : FragmentActivity() {
 
         override fun onConsentReady(consent: SPConsents) {
             spClientObserver.forEach { it.onConsentReady(consent) }
-            consent.gdpr?.consent?.grants?.get("")?.granted
-            consent.gdpr?.consent?.grants?.get("")?.purposes
         }
 
         override fun onUIFinished(view: View) {
