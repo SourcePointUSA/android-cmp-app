@@ -82,7 +82,7 @@ internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInte
                 it.key,
                 Grant(
                     granted = ((it.value as? Map<String, Any?>)?.get("vendorGrant") as? Boolean) ?: false,
-                    purposes = ((it.value as? Map<String, Any?>)?.get("purposeGrants") as? Map<String, Boolean>)
+                    purposeGrants = ((it.value as? Map<String, Any?>)?.get("purposeGrants") as? Map<String, Boolean>)
                         ?: emptyMap()
                 )
             )

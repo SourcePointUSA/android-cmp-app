@@ -23,7 +23,7 @@ data class SPCCPAConsent(
 
 data class Grant(
     val granted: Boolean = false,
-    val purposes: Map<String, Boolean> = emptyMap()
+    val purposeGrants: Map<String, Boolean> = emptyMap()
 )
 
 interface GDPRConsent {

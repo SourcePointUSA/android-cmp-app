@@ -32,7 +32,7 @@ internal fun Map<String, Grant?>.toJSONObjGrant(): JSONObject {
                 it.key,
                 JSONObject().apply {
                     put("granted", it.value?.granted)
-                    put("purposeGrants", JSONObject(it.value?.purposes))
+                    put("purposeGrants", JSONObject(it.value?.purposeGrants))
                 }
             )
         }
