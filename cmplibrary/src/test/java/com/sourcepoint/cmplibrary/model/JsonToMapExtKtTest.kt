@@ -18,7 +18,8 @@ class JsonToMapExtKtTest {
 
         val res = map.toJSONObjGrant().toTreeMap()
 
-        val tester = JSONObject("""
+        val tester = JSONObject(
+            """
             {
               "5fbe6f050d88c7d28d765d47": {
                 "granted": true,
@@ -41,7 +42,8 @@ class JsonToMapExtKtTest {
                 }
               }
             }
-        """.trimIndent()).toTreeMap()
+            """.trimIndent()
+        ).toTreeMap()
 
         res.assertEquals(tester)
     }
