@@ -53,7 +53,7 @@ internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?): CCPAConsentInte
     val status: String = getFieldValue<String>("status")
         ?: fail("CCPAStatus cannot be null!!!")
 
-    val uspString: String = getFieldValue("uspstring") ?: "" // failParam("Ccpa USPString")
+    val uspString: String = getFieldValue("uspstring") ?: ""
 
     return CCPAConsentInternal(
         uuid = uuid,
