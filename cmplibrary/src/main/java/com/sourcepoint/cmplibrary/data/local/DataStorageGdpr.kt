@@ -237,7 +237,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         val spEditor = preference.edit()
         preference
             .all
-            .filter { it.key.startsWith("IABTCF_") }
+            .filter { it.key.startsWith(IABTCF_KEY_PREFIX) }
             .forEach { entry -> spEditor.remove(entry.key) }
         spEditor.apply()
 
