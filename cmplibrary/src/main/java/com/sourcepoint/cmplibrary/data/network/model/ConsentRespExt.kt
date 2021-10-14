@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
+import com.sourcepoint.cmplibrary.model.exposed.Grant
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
@@ -75,6 +76,18 @@ internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInte
             )
         }
         ?.toMap() ?: failParam("grants")
+    val vendorsGranted: Map<String, Grant> = getMap("grants")
+        ?.map {
+            Pair(
+                it.key,
+                Grant(
+                    granted = ((it.value as? Map<String, Any?>)?.get("vendorGrant") as? Boolean) ?: false,
+                    purposeGrants = ((it.value as? Map<String, Any?>)?.get("purposeGrants") as? Map<String, Boolean>)
+                        ?: emptyMap()
+                )
+            )
+        }
+        ?.toMap() ?: failParam("grants")
     val euConsent = getFieldValue<String>("euconsent") ?: failParam("euconsent")
     val customVendorsResponse = getMap("customVendorsResponse")
     val consentedVendors: List<String> =
@@ -86,7 +99,7 @@ internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInte
     return GDPRConsentInternal(
         uuid = uuid,
         tcData = tcData,
-        grants = vendorsGrants,
+        grants = vendorsGranted,
         euconsent = euConsent,
         acceptedCategories = consentedPurposes,
 //        acceptedVendors = consentedVendors,
