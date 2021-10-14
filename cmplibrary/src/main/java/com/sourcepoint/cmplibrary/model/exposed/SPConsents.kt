@@ -21,7 +21,7 @@ data class SPCCPAConsent(
     val consent: CCPAConsent
 )
 
-data class Grant(
+data class GDPRPurposeGrants(
     val granted: Boolean = false,
     val purposeGrants: Map<String, Boolean> = emptyMap()
 )
@@ -30,7 +30,7 @@ interface GDPRConsent {
     val uuid: String?
     var euconsent: String
     var tcData: Map<String, Any?>
-    var grants: Map<String, Grant>
+    var grants: Map<String, GDPRPurposeGrants>
     val acceptedCategories: List<String>
 }
 
@@ -38,7 +38,7 @@ internal data class GDPRConsentInternal(
     override var euconsent: String = "",
     override val uuid: String? = null,
     override var tcData: Map<String, Any?> = emptyMap(),
-    override var grants: Map<String, Grant> = emptyMap(),
+    override var grants: Map<String, GDPRPurposeGrants> = emptyMap(),
     override val acceptedCategories: List<String> = emptyList(),
     val thisContent: JSONObject = JSONObject()
 ) : GDPRConsent

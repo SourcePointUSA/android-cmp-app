@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.model
 
-import com.sourcepoint.cmplibrary.model.exposed.Grant
+import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -25,7 +25,7 @@ internal fun Map<String, Any?>.toJSONObj(): JSONObject {
     return JSONObject(this)
 }
 
-internal fun Map<String, Grant?>.toJSONObjGrant(): JSONObject {
+internal fun Map<String, GDPRPurposeGrants?>.toJSONObjGrant(): JSONObject {
     return JSONObject().also { jo ->
         this.forEach {
             jo.put(
