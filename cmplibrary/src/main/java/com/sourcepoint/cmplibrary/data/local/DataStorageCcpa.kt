@@ -111,18 +111,16 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
     override fun clearCcpaConsent() {
         preference
             .edit()
-            .putString(CCPA_CONSENT_RESP, "")
+            .remove(CCPA_CONSENT_RESP)
             .apply()
 
         preference
             .edit()
-            .putString(IAB_US_PRIVACY_STRING, "")
+            .remove(IAB_US_PRIVACY_STRING)
             .apply()
     }
 
     override fun clearAll() {
         preference.edit().clear().apply()
     }
-
-    private fun fail(param: String): Nothing = throw RuntimeException("$param not fund in local storage.")
 }
