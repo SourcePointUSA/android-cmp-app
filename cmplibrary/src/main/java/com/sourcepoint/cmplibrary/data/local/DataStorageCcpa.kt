@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CONSENT_CCPA_UUID_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.IAB_US_PRIVACY_STRING
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_APPLIES
 
@@ -32,6 +33,7 @@ internal interface DataStorageCcpa {
         const val CCPA_CONSENT_RESP = "ccpa_consent_resp"
         const val CCPA_JSON_MESSAGE = "ccpa_json_message"
         const val CONSENT_CCPA_UUID_KEY = "sp.ccpa.consentUUID"
+        const val IAB_US_PRIVACY_STRING = "IABUSPrivacy_String"
     }
 }
 
@@ -66,6 +68,12 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         }
 
     override fun saveCcpaConsentResp(value: String) {
+
+        preference
+            .edit()
+            .putString(IAB_US_PRIVACY_STRING, value)
+            .apply()
+
         preference
             .edit()
             .putString(CCPA_CONSENT_RESP, value)
@@ -103,13 +111,16 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
     override fun clearCcpaConsent() {
         preference
             .edit()
-            .putString(CCPA_CONSENT_RESP, "")
+            .remove(CCPA_CONSENT_RESP)
+            .apply()
+
+        preference
+            .edit()
+            .remove(IAB_US_PRIVACY_STRING)
             .apply()
     }
 
     override fun clearAll() {
         preference.edit().clear().apply()
     }
-
-    private fun fail(param: String): Nothing = throw RuntimeException("$param not fund in local storage.")
 }
