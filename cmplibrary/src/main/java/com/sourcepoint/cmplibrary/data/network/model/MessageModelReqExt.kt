@@ -26,24 +26,24 @@ internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
 }
 
 internal fun Campaigns.toJsonObject(): JSONObject {
+
     return JSONObject().also { cm ->
         list.map {
             cm.put(
                 it.campaignType.name.lowercase(),
-                JSONObject().apply { put("targetingParams", it.targetingParams) }
+                JSONObject().apply { put("targetingParams", it.targetingParams.toJsonObjStringify()) }
             )
         }
     }
 }
 
-internal fun List<TargetingParam>.toJsonObjStringify(): String {
+internal fun List<TargetingParam>.toJsonObjStringify(): JSONObject {
     return JSONObject()
         .apply {
             this@toJsonObjStringify.forEach {
                 put(it.key, it.value)
             }
         }
-        .toString()
 }
 
 internal fun IncludeData.toJsonObject(): JSONObject {

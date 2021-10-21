@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.model
 
-import com.sourcepoint.cmplibrary.data.network.model.toJsonObjStringify
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
@@ -22,7 +21,7 @@ internal fun CampaignTemplate.toCampaignReqImpl(
     campaignsEnv: CampaignsEnv
 ): CampaignReqImpl {
     return CampaignReqImpl(
-        targetingParams = if (targetingParams.isEmpty()) null else targetingParams.toJsonObjStringify(),
+        targetingParams = targetingParams.ifEmpty { emptyList() },
         campaignsEnv = campaignsEnv,
         campaignType = campaignType
     )

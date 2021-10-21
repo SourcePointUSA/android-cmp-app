@@ -12,7 +12,6 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -102,6 +101,12 @@ class MainActivityKotlin : AppCompatActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
+            val grants = consent.gdpr?.consent?.grants
+            grants?.forEach { grant ->
+                val granted = grants[grant.key]?.granted
+                val purposes = grants[grant.key]?.purposeGrants
+                println("vendor: ${grant.key} - granted: $granted - purposes: $purposes")
+            }
             spClientObserver.forEach { it.onConsentReady(consent) }
             Log.i(TAG, "onConsentReady: $consent")
         }

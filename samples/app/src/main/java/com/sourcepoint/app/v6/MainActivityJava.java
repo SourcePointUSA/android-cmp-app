@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -101,6 +102,14 @@ public class MainActivityJava extends AppCompatActivity {
     class LocalClient implements SpClient {
 
         @Override
+        public void onConsentReady(@NotNull SPConsents consent) {
+            Map<String, GDPRPurposeGrants> grants = consent.getGdpr().getConsent().getGrants();
+            Boolean granted = grants.get("<vendorId>").getGranted();
+            Map<String, Boolean> purposes = grants.get("<vendorId>").getPurposeGrants();
+            Boolean acceptedPurpose = purposes.get("<purposeId>");
+        }
+
+        @Override
         public void onError(@NotNull Throwable error) {
             error.printStackTrace();
         }
@@ -127,11 +136,6 @@ public class MainActivityJava extends AppCompatActivity {
 
         @Override
         public void onAction(@NotNull View view, @NotNull ActionType actionType) {
-
-        }
-
-        @Override
-        public void onConsentReady(@NotNull SPConsents consent) {
 
         }
     }
