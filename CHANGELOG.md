@@ -1,3 +1,11 @@
+## 6.2.3 (October, 22, 2021)
+* [SP-8056](https://sourcepoint.atlassian.net/browse/8056) Granted flag for vendors (#428). More info [here](https://github.com/SourcePointUSA/android-cmp-app#the-spconsent-object)
+* [SP-7933](https://sourcepoint.atlassian.net/browse/7933) Targeting parameters as JSONObject not as a String (#426)
+* [SP-7926](https://sourcepoint.atlassian.net/browse/7926) US Privacy String Set to "" when no message fires (#427)
+* [Sp-7840](https://sourcepoint.atlassian.net/browse/7840) New CustomAction type in PM (#425)
+* [SP-6821](https://sourcepoint.atlassian.net/browse/6821) Refactor and add support to NativeMessage for both CCPA and GDPR (#416)
+* [SP-7969](https://sourcepoint.atlassian.net/browse/7969) Metaapp - Switch to Android App Bundle (#422)
+
 ## 6.2.2 (September, 24, 2021)
 * [SP-7925](https://sourcepoint.atlassian.net/browse/7925) Adding a back behaviour to the dismiss action (#420)
 

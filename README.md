@@ -34,7 +34,7 @@ To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:6.2.2'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:6.2.3'
 }
 ```
 
