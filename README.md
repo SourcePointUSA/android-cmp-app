@@ -118,7 +118,8 @@ Create a client to receive the events from the Cmp SDK
 Kotlin
 ```kotlin
     internal inner class LocalClient : SpClient {
-        override fun onMessageReady(message: JSONObject) {}
+        override fun onMessageReady(message: JSONObject) {} // Deprecated
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController)
         override fun onError(error: Throwable) { }
         override fun onConsentReady(consent: SPConsents) { }
         override fun onAction(view: View, actionType: ActionType) { }
@@ -135,7 +136,10 @@ Java
     class LocalClient implements SpClient {
 
         @Override
-        public void onMessageReady(@NotNull JSONObject message) { }
+        public void onNativeMessageReady(@NotNull MessageStructure message, @NotNull  NativeMessageController messageController) { }
+
+        @Override
+        public void onMessageReady(@NotNull JSONObject message) { } // Deprecated
 
         @Override
         public void onError(@NotNull Throwable error) { error.printStackTrace(); }
@@ -228,7 +232,7 @@ SpConsent
     |-- gdpr?
     |   |-- uuid: String?
     |   |-- tcData: Map<String, String>
-    |   |-- grants: Map<String, Map<String, Boolean>>
+    |   |-- grants: Map<String, GDPRPurposeGrants>
     |   |-- euconsent: String
     |   |-- acceptedCategories: List<String>
     |-- ccpa?
@@ -238,6 +242,44 @@ SpConsent
         |-- status: String?
         |-- uspstring: String
 ```
+### The grants parameter and the GDPRPurposeGrants object
+
+The `grants` object contains information about each vendor and its purposes, it is using the Map class in which
+- the key represent a `vendorId` as a String,
+- the value represents a `GDPRPurposeGrants` object.
+
+The `GDPRPurposeGrants` class contains:
+- a `granted` param which inform the user that all consents have been granted for that vendor,
+- a `purposeGrants` param which is a Map of purposes. Each purpose can be opted-in (`true`) or opted-out (`false`)
+Following the structure of the `GDPRPurposeGrants` class.
+```
+GDPRPurposeGrants
+    |-- granted: Boolean
+    |-- purposeGrants: Map<String, Boolean>
+```  
+Kotlin
+```kotlin
+          override fun onConsentReady(consent: SPConsents) {
+            val grants = consent.gdpr?.consent?.grants
+            grants?.forEach { grant ->
+              val granted = grants[grant.key]?.granted
+              val purposes = grants[grant.key]?.purposeGrants
+              println("vendor: ${grant.key} - granted: $granted - purposes: $purposes")
+            }
+          }
+```
+
+Java
+```java
+          @Override
+          public void onConsentReady(@NotNull SPConsents consent) {
+                  Map<String, GDPRPurposeGrants> grants = consent.getGdpr().getConsent().getGrants(); // Nullable
+                  Boolean granted = grants.get("<vendorId>").getGranted(); // Nullable
+                  Map<String, Boolean> purposes = grants.get("<vendorId>").getPurposeGrants(); // Nullable
+                  Boolean acceptedPurpose = purposes.get("<purposeId>"); // Nullable
+          }
+```
+
 ## Authenticated Consent
 If there is a consent profile associated with `authId` ("JohDoe"), the SDK will bring the consent data from the server, overwriting whatever was stored in the device.
 
@@ -301,6 +343,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
     internal inner class LocalClient : SpClient {
         override fun onMessageReady(message: JSONObject) { /* ... */ }
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) { /* ... */ }
         override fun onError(error: Throwable) { /* ... */ }
         override fun onConsentReady(consent: SPConsents) { /* ... */ }
         override fun onAction(view: View, actionType: ActionType) { /* ... */ }
@@ -356,6 +399,9 @@ public class MainActivityJava extends AppCompatActivity {
 
         @Override
         public void onMessageReady(@NotNull JSONObject message) { }
+
+        @Override
+        public void onNativeMessageReady(@NotNull MessageStructure message, @NotNull  NativeMessageController messageController) { }
 
         @Override
         public void onError(@NotNull Throwable error) {

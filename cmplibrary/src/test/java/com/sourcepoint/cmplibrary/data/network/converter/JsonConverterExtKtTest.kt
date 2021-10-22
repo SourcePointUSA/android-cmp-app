@@ -47,7 +47,7 @@ class JsonConverterExtKtTest {
                 it.rejectedCategories.size.assertEquals(0)
                 it.rejectedVendors.size.assertEquals(0)
                 it.status.assertEquals("rejectedNone")
-                it.uspstring.assertEquals("")
+                it.uspstring.assertEquals("1---")
             }
         }
     }

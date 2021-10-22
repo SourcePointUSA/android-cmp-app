@@ -7,7 +7,9 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepoint.app.v6.core.DataProvider
+import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
@@ -32,7 +34,7 @@ class MainActivityKotlin : AppCompatActivity() {
         spConfig = dataProvider.spConfig
 //        config {
 //            accountId = 22
-//            propertyName = "mobile.multicampaign.demo"
+//            propertyName = "mobile.multicampaign.native.demo"
 //            messLanguage = MessageLanguage.ENGLISH
 //            +(CampaignType.GDPR)
 //            +(CampaignType.CCPA to listOf(("location" to "US")))
@@ -85,8 +87,12 @@ class MainActivityKotlin : AppCompatActivity() {
     }
 
     internal inner class LocalClient : SpClient {
+
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+
+        }
+
         override fun onMessageReady(message: JSONObject) {
-            spClientObserver.forEach { it.onMessageReady(message) }
         }
 
         override fun onError(error: Throwable) {
@@ -95,6 +101,12 @@ class MainActivityKotlin : AppCompatActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
+            val grants = consent.gdpr?.consent?.grants
+            grants?.forEach { grant ->
+                val granted = grants[grant.key]?.granted
+                val purposes = grants[grant.key]?.purposeGrants
+                println("vendor: ${grant.key} - granted: $granted - purposes: $purposes")
+            }
             spClientObserver.forEach { it.onConsentReady(consent) }
             Log.i(TAG, "onConsentReady: $consent")
         }

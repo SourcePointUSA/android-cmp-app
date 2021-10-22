@@ -27,8 +27,8 @@ class MessageModelReqExtTest {
             getMap("campaigns")?.size.assertEquals(2)
             getFieldValue<String>("campaignEnv").assertEquals("stage")
             getMap("campaigns")?.also { map ->
-                map.getMap("ccpa")?.getFieldValue<String>("targetingParams").assertEquals("{\"location\":\"US\"}")
-                map.getMap("gdpr")?.getFieldValue<String>("targetingParams").assertEquals("{\"location\":\"EU\"}")
+                map.getMap("ccpa")?.getMap("targetingParams")?.getFieldValue<String>("location").assertEquals("US")
+                map.getMap("gdpr")?.getMap("targetingParams")?.getFieldValue<String>("location").assertEquals("EU")
             }
         }
     }

@@ -5,9 +5,7 @@ import android.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.example.uitestutil.assertEquals
-import com.example.uitestutil.assertNotNull
-import com.example.uitestutil.wr
+import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
@@ -187,6 +185,7 @@ class MainActivityKotlinTest {
                 onUIFinished(any())
                 onConsentReady(withArg {
                     it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(emptyList())
+                    it.gdpr?.consent?.grants?.values?.forEach { el ->  el.granted.assertFalse() }
                 })
             }
         }
@@ -313,7 +312,9 @@ class MainActivityKotlinTest {
                 onUIReady(any())
                 onAction(any(), any())
                 onUIFinished(any())
-                onConsentReady(any())
+                onConsentReady(withArg {
+                    it.gdpr?.consent?.grants?.values?.forEach { el -> el.granted.assertTrue() }
+                })
             }
         }
     }

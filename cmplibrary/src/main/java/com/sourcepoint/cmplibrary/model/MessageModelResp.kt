@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import okhttp3.HttpUrl
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -27,26 +28,29 @@ internal abstract class CampaignResp {
     abstract val applies: Boolean
     abstract val message: JSONObject?
     abstract val messageMetaData: JSONObject?
+    abstract val messageSubCategory: MessageSubCategory
 }
 
 internal data class Gdpr(
     override val thisContent: JSONObject,
     override val url: HttpUrl?,
     val userConsent: GDPRConsentInternal,
+    override val messageSubCategory: MessageSubCategory,
     override val applies: Boolean = false,
     override val message: JSONObject? = null,
     override val messageMetaData: JSONObject? = null,
-    override val type: String = CampaignType.GDPR.name,
+    override val type: String = CampaignType.GDPR.name
 ) : CampaignResp()
 
 internal data class Ccpa(
     override val thisContent: JSONObject,
     override val url: HttpUrl?,
     val userConsent: CCPAConsentInternal,
+    override val messageSubCategory: MessageSubCategory,
     override val applies: Boolean = false,
     override val message: JSONObject? = null,
     override val messageMetaData: JSONObject? = null,
-    override val type: String = CampaignType.CCPA.name,
+    override val type: String = CampaignType.CCPA.name
 ) : CampaignResp()
 
 internal fun String.getAppliedLegislation(): CampaignType {
