@@ -244,7 +244,7 @@ SpConsent
 ```
 ### The grants parameter and the GDPRPurposeGrants object
 
-The `grants` parameter is using the Map class in which
+The `grants` object contains information about each vendor and its purposes, it is using the Map class in which
 - the key represent a `vendorId` as a String,
 - the value represents a `GDPRPurposeGrants` object.
 
