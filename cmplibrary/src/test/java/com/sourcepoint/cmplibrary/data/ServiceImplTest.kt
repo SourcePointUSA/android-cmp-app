@@ -112,7 +112,7 @@ class ServiceImplTest {
     fun `GIVEN a GDPR consent UPDATE the stored consent`() {
         val storedConsent = "custom_consent/stored_consent.json".file2String()
         val newConsent = "custom_consent/new_consent.json".file2String()
-        val consentAction = ConsentAction(
+        val consentAction = ConsentActionImpl(
             requestFromPm = false,
             campaignType = CampaignType.GDPR,
             actionType = ActionType.ACCEPT_ALL,
@@ -136,7 +136,7 @@ class ServiceImplTest {
         every { ds.getGdprConsentResp() }.returns(storedConsent)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger)
-        val res = sut.sendConsent(localState = "{}", pmId = null, env = Env.STAGE, consentAction = consentAction) as? Right
+        val res = sut.sendConsent(localState = "{}", pmId = null, env = Env.STAGE, consentActionImpl = consentAction) as? Right
 
         verify(exactly = 1) { ds.saveLocalState("localstate") }
         verify(exactly = 1) { ds.saveGdprConsentResp("userConsent") }
@@ -151,7 +151,7 @@ class ServiceImplTest {
     fun `GIVEN a CCPA consent UPDATE the stored consent`() {
         val storedConsent = "custom_consent/stored_consent.json".file2String()
         val newConsent = "custom_consent/new_consent.json".file2String()
-        val consentAction = ConsentAction(
+        val consentAction = ConsentActionImpl(
             requestFromPm = false,
             campaignType = CampaignType.CCPA,
             actionType = ActionType.ACCEPT_ALL,
@@ -175,7 +175,7 @@ class ServiceImplTest {
         every { ds.getGdprConsentResp() }.returns(storedConsent)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger)
-        val res = sut.sendConsent(localState = "{}", pmId = null, env = Env.STAGE, consentAction = consentAction) as? Right
+        val res = sut.sendConsent(localState = "{}", pmId = null, env = Env.STAGE, consentActionImpl = consentAction) as? Right
 
         verify(exactly = 1) { ds.saveLocalState("localstate") }
         verify(exactly = 1) { ds.saveCcpaConsentResp("userConsent") }
@@ -190,7 +190,7 @@ class ServiceImplTest {
     fun `GIVEN a CCPA-GDPR consent RETURN a Left obj`() {
         val storedConsent = "custom_consent/stored_consent.json".file2String()
         val newConsent = "custom_consent/new_consent.json".file2String()
-        val consentAction = ConsentAction(
+        val consentAction = ConsentActionImpl(
             requestFromPm = false,
             campaignType = CampaignType.CCPA,
             actionType = ActionType.ACCEPT_ALL,
@@ -215,7 +215,7 @@ class ServiceImplTest {
         every { ds.saveLocalState(any()) }.throws(RuntimeException("test"))
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger)
-        val res = sut.sendConsent(localState = "{}", pmId = null, env = Env.STAGE, consentAction = consentAction) as? Either.Left
+        val res = sut.sendConsent(localState = "{}", pmId = null, env = Env.STAGE, consentActionImpl = consentAction) as? Either.Left
 
         verify(exactly = 1) { ds.saveLocalState(any()) }
         verify(exactly = 0) { ds.saveCcpaConsentResp(any()) }

@@ -8,7 +8,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -52,7 +52,7 @@ class ConsentManagerImplTest {
         content = JSONObject()
     )
 
-    private val consentAction = ConsentAction(
+    private val consentAction = ConsentActionImpl(
         requestFromPm = false,
         campaignType = CampaignType.GDPR,
         actionType = ActionType.ACCEPT_ALL,

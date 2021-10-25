@@ -49,11 +49,11 @@ internal class MockService(
         TODO("Not yet implemented")
     }
 
-    override fun sendConsent(consentReq: JSONObject, env: Env, consentAction: ConsentAction): Either<ConsentResp> {
+    override fun sendConsent(consentReq: JSONObject, env: Env, consentActionImpl: ConsentActionImpl): Either<ConsentResp> {
         TODO("Not yet implemented")
     }
 
-    override fun sendConsent(localState: String, consentAction: ConsentAction, env: Env, pmId: String?): Either<ConsentResp> {
+    override fun sendConsent(localState: String, consentActionImpl: ConsentActionImpl, env: Env, pmId: String?): Either<ConsentResp> {
         TODO("Not yet implemented")
     }
 

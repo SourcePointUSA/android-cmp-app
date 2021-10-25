@@ -20,7 +20,7 @@ internal interface JsonConverter {
 
     fun toConsentResp(body: String, campaignType: CampaignType): Either<ConsentResp>
 
-    fun toConsentAction(body: String): Either<ConsentAction>
+    fun toConsentAction(body: String): Either<ConsentActionImpl>
 
     fun toCustomConsentResp(body: String): Either<CustomConsentResp>
 

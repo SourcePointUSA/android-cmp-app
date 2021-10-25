@@ -19,8 +19,8 @@ import com.sourcepoint.cmplibrary.core.nativemessage.NativeAction
 import com.sourcepoint.cmplibrary.core.nativemessage.NativeComponent
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -109,7 +109,9 @@ class DemoActivity : FragmentActivity() {
         demoFr.demoListener = { action ->
 
             // don't go to the first fragment during UI tests
-            if (!isUITestRunning) { pager.currentItem = 0 }
+            if (!isUITestRunning) {
+                pager.currentItem = 0
+            }
 
             when (action) {
                 DemoFragment.DemoAction.GDPR_PM -> {
@@ -182,6 +184,7 @@ class DemoActivity : FragmentActivity() {
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
             setNativeMessage(message, messageController)
         }
+
         override fun onError(error: Throwable) {
             spClientObserver.forEach { it.onError(error) }
             error.printStackTrace()
@@ -204,9 +207,10 @@ class DemoActivity : FragmentActivity() {
             spConsentLib.showView(view)
         }
 
-        override fun onAction(view: View, actionType: ActionType) {
-            spClientObserver.forEach { it.onAction(view, actionType) }
-            Log.i(this::class.java.name, "ActionType: $actionType")
+        override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
+            spClientObserver.forEach { it.onAction(view, consentAction) }
+            Log.i(this::class.java.name, "ActionType: $consentAction")
+            return consentAction
         }
     }
 
@@ -354,6 +358,7 @@ class DemoActivity : FragmentActivity() {
             textSize = na.style.fontSize ?: 10F
         }
     }
+
     fun setAcceptAllBtn(view: View, na: NativeAction) {
         view.accept_all.run {
             text = na.text

@@ -12,8 +12,8 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
 import org.json.JSONObject
@@ -121,9 +121,11 @@ class MainActivityKotlin : AppCompatActivity() {
             spConsentLib.showView(view)
         }
 
-        override fun onAction(view: View, actionType: ActionType) {
-            spClientObserver.forEach { it.onAction(view, actionType) }
-            Log.i(TAG, "ActionType: $actionType")
+        override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
+            spClientObserver.forEach { it.onAction(view, consentAction) }
+            Log.i(TAG, "ActionType: $consentAction")
+            consentAction.pubData.put("pb_key", "pb_value")
+            return consentAction
         }
     }
 }
