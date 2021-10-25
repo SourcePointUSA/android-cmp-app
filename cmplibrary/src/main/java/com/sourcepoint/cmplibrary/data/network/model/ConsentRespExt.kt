@@ -19,6 +19,7 @@ internal fun String.toConsentAction(): ConsentActionImpl {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
 
     val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } }
+    // from JS re
     val choiceId = (map["choiceId"] as? String)
     val legislation = map.getFieldValue<String>("legislation") ?: "CCPA"
     val privacyManagerId = (map["pmId"] as? String) ?: (map["localPmId"] as? String)
