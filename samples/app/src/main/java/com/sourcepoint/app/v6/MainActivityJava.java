@@ -14,7 +14,6 @@ import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv;
 import com.sourcepoint.cmplibrary.exception.CampaignType;
 import com.sourcepoint.cmplibrary.model.ConsentAction;
-import com.sourcepoint.cmplibrary.model.ConsentActionImpl;
 import com.sourcepoint.cmplibrary.model.MessageLanguage;
 import com.sourcepoint.cmplibrary.model.PMTab;
 import com.sourcepoint.cmplibrary.model.exposed.*;

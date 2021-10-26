@@ -81,6 +81,7 @@ class SpConsentLibDelegateTest {
         }
 
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
+            return consentAction
         }
 
         override fun onUIFinished(view: View) {
