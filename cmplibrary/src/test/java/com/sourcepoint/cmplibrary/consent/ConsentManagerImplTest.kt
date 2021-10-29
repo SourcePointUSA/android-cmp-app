@@ -42,7 +42,10 @@ class ConsentManagerImplTest {
     @MockK
     private lateinit var logger: Logger
 
-    private var dataStorage: DataStorage = MockDataStorage()
+    @MockK
+    private lateinit var dataStorage: DataStorage
+
+    private var dataStorageMock: DataStorage = MockDataStorage()
 
     private val consentResp = ConsentResp(
         uuid = "uuid_test",
@@ -161,7 +164,7 @@ class ConsentManagerImplTest {
             consentManagerUtils = consentManagerUtils,
             env = Env.PROD,
             logger = logger,
-            dataStorage = dataStorage,
+            dataStorage = dataStorageMock,
             executorManager = re
         )
 
@@ -222,5 +225,4 @@ class ConsentManagerImplTest {
         verify(exactly = 3) { sPSuccessMock.invoke(any()) }
         verify(exactly = 0) { sPErrorMock.invoke(any()) }
     }
-
 }
