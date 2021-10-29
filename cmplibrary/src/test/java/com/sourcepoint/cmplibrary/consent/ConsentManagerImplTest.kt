@@ -12,6 +12,7 @@ import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.stub.MockDataStorage
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -41,8 +42,7 @@ class ConsentManagerImplTest {
     @MockK
     private lateinit var logger: Logger
 
-    @MockK
-    private lateinit var dataStorage: DataStorage
+    private var dataStorage: DataStorage = MockDataStorage()
 
     private val consentResp = ConsentResp(
         uuid = "uuid_test",
@@ -222,4 +222,5 @@ class ConsentManagerImplTest {
         verify(exactly = 3) { sPSuccessMock.invoke(any()) }
         verify(exactly = 0) { sPErrorMock.invoke(any()) }
     }
+
 }
