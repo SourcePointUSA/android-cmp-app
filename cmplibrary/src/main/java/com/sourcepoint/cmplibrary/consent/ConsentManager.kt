@@ -65,6 +65,7 @@ private class ConsentManagerImpl(
             field = value
             changeLocalState(value)
         }
+        get() = dataStorage.getLocalState()?.let { LocalStateStatus.Present(it) } ?: LocalStateStatus.Absent
     private val consentQueueImpl: Queue<ConsentActionImpl> = LinkedList()
     override val enqueuedActions: Int
         get() = consentQueueImpl.size
