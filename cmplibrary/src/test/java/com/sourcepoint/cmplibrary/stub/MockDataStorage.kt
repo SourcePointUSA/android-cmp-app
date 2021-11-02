@@ -14,7 +14,7 @@ internal class MockDataStorage : DataStorage {
     var ccpaVal: String? = null
     var tcDataMap: Map<String, Any?> = emptyMap()
     var storage: MutableMap<String, Any> = mutableMapOf()
-    var mockLocalState : String? = null
+    var mockLocalState: String? = null
 
     override val preference: SharedPreferences = mockk()
     override var gdprApplies: Boolean = false
