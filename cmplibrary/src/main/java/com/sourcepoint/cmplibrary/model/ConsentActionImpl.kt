@@ -10,18 +10,19 @@ interface ConsentAction {
     val actionType: ActionType
     val pubData: JSONObject
     val campaignType: CampaignType
+    val customActionId: String?
 }
 
 internal data class ConsentActionImpl(
     override val campaignType: CampaignType,
     override val pubData: JSONObject = JSONObject(),
     override val actionType: ActionType,
+    override val customActionId: String? = null,
     val requestFromPm: Boolean,
     val saveAndExitVariables: JSONObject = JSONObject(),
     val pmTab: String? = null,
     val privacyManagerId: String? = null,
     val choiceId: String? = null,
-//    val customActionId: String? = null,
     val consentLanguage: String? = MessageLanguage.ENGLISH.value,
     val thisContent: JSONObject = JSONObject()
 ) : ConsentAction

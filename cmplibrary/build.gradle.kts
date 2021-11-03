@@ -30,7 +30,7 @@ android {
     buildTypes {
         getByName("debug") {
             buildConfigField("String", "LOGGER_URL", "\"https://wrapper-api.sp-prod.net/metrics/v1/custom-metrics\"")
-            buildConfigField("String", "SDK_ENV", "\"PROD\"")
+            buildConfigField("String", "SDK_ENV", "\"STAGE\"")
             buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
             buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
         }

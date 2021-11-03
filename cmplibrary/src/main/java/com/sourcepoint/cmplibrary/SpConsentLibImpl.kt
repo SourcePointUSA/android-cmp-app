@@ -498,6 +498,10 @@ internal class SpConsentLibImpl(
             SHOW_OPTIONS -> {
                 executor.executeOnMain { showOption(actionImpl, iConsentWebView) }
             }
+            CUSTOM -> {
+                val editedAction = spClient.onAction(view, actionImpl) as? ConsentActionImpl
+                println()
+            }
             MSG_CANCEL,
             PM_DISMISS -> {
             }
