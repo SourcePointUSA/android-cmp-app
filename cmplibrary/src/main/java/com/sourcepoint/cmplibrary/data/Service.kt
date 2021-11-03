@@ -4,7 +4,7 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.util.Env
-import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -17,7 +17,7 @@ internal interface Service : NetworkClient, CampaignManager {
 
     fun sendConsent(
         localState: String,
-        consentAction: ConsentAction,
+        consentActionImpl: ConsentActionImpl,
         env: Env,
         pmId: String?
     ): Either<ConsentResp>

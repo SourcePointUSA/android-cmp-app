@@ -26,7 +26,7 @@ private class JsonConverterImpl : JsonConverter {
         body.toUnifiedMessageRespDto()
     }
 
-    override fun toConsentAction(body: String): Either<ConsentAction> = check {
+    override fun toConsentAction(body: String): Either<ConsentActionImpl> = check {
         body.toConsentAction()
     }
 

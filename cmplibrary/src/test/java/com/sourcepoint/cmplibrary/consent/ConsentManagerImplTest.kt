@@ -8,10 +8,11 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.stub.MockDataStorage
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -44,6 +45,8 @@ class ConsentManagerImplTest {
     @MockK
     private lateinit var dataStorage: DataStorage
 
+    private var dataStorageMock: DataStorage = MockDataStorage()
+
     private val consentResp = ConsentResp(
         uuid = "uuid_test",
         localState = "localState_test",
@@ -52,7 +55,7 @@ class ConsentManagerImplTest {
         content = JSONObject()
     )
 
-    private val consentAction = ConsentAction(
+    private val consentAction = ConsentActionImpl(
         requestFromPm = false,
         campaignType = CampaignType.GDPR,
         actionType = ActionType.ACCEPT_ALL,
@@ -161,7 +164,7 @@ class ConsentManagerImplTest {
             consentManagerUtils = consentManagerUtils,
             env = Env.PROD,
             logger = logger,
-            dataStorage = dataStorage,
+            dataStorage = dataStorageMock,
             executorManager = re
         )
 

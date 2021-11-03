@@ -10,8 +10,8 @@ import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import org.json.JSONObject
 import org.junit.Test
@@ -80,7 +80,8 @@ class SpConsentLibDelegateTest {
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
         }
 
-        override fun onAction(view: View, actionType: ActionType) {
+        override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
+            return consentAction
         }
 
         override fun onUIFinished(view: View) {

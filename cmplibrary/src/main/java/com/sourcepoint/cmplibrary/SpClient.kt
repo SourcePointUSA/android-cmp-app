@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary
 
 import android.view.View
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import org.json.JSONObject
 
@@ -22,7 +22,7 @@ interface SpClient {
             "Currently this callback is disabled."
     )
     fun onMessageReady(message: JSONObject)
-    fun onAction(view: View, actionType: ActionType)
+    fun onAction(view: View, consentAction: ConsentAction): ConsentAction
 
     /***
      * This callback does NOT make sense for the Native message because:

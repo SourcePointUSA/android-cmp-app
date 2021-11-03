@@ -12,7 +12,7 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SPGDPRConsent
@@ -23,11 +23,11 @@ import java.util.* //ktlint-disable
 
 internal interface ConsentManager {
     var localStateStatus: LocalStateStatus
-    fun enqueueConsent(consentAction: ConsentAction)
+    fun enqueueConsent(consentActionImpl: ConsentActionImpl)
     fun enqueueConsent(nativeConsentAction: NativeConsentAction)
     fun sendStoredConsentToClient()
     fun sendConsent(
-        action: ConsentAction,
+        actionImpl: ConsentActionImpl,
         localState: String
     )
 
@@ -65,9 +65,10 @@ private class ConsentManagerImpl(
             field = value
             changeLocalState(value)
         }
-    private val consentQueue: Queue<ConsentAction> = LinkedList()
+        get() = dataStorage.getLocalState()?.let { LocalStateStatus.Present(it) } ?: LocalStateStatus.Absent
+    private val consentQueueImpl: Queue<ConsentActionImpl> = LinkedList()
     override val enqueuedActions: Int
-        get() = consentQueue.size
+        get() = consentQueueImpl.size
 
     override val gdprUuid: String?
         get() = dataStorage.getGdprConsentUuid()
@@ -75,12 +76,12 @@ private class ConsentManagerImpl(
     override val ccpaUuid: String?
         get() = dataStorage.getCcpaConsentUuid()
 
-    override fun enqueueConsent(consentAction: ConsentAction) {
-        consentQueue.offer(consentAction)
+    override fun enqueueConsent(consentActionImpl: ConsentActionImpl) {
+        consentQueueImpl.offer(consentActionImpl)
         val lState: LocalStateStatus.Present? = localStateStatus as? LocalStateStatus.Present
         if (lState != null) {
             val localState = lState.value
-            val action = consentQueue.poll()
+            val action = consentQueueImpl.poll()
             sendConsent(action, localState)
         }
     }
@@ -92,9 +93,9 @@ private class ConsentManagerImpl(
     fun changeLocalState(newState: LocalStateStatus) {
         when (newState) {
             is LocalStateStatus.Present -> {
-                if (consentQueue.isNotEmpty()) {
+                if (consentQueueImpl.isNotEmpty()) {
                     val localState = newState.value
-                    val action = consentQueue.poll()
+                    val action = consentQueueImpl.poll()
                     sendConsent(action, localState)
                     localStateStatus = LocalStateStatus.Consumed
                 }
@@ -115,12 +116,12 @@ private class ConsentManagerImpl(
         }
     }
 
-    override fun sendConsent(action: ConsentAction, localState: String) {
+    override fun sendConsent(actionImpl: ConsentActionImpl, localState: String) {
         executorManager.executeOnSingleThread {
-            when (val either = service.sendConsent(localState, action, env, action.privacyManagerId)) {
+            when (val either = service.sendConsent(localState, actionImpl, env, actionImpl.privacyManagerId)) {
                 is Right -> {
                     val updatedLocalState = LocalStateStatus.Present(either.r.localState)
-                    val sPConsents = responseConsentHandler(either, action, consentManagerUtils)
+                    val sPConsents = responseConsentHandler(either, actionImpl, consentManagerUtils)
                     sPConsentsSuccess?.invoke(sPConsents)
                     this.localStateStatus = updatedLocalState
                 }
@@ -138,14 +139,14 @@ internal sealed class LocalStateStatus {
 
 internal fun responseConsentHandler(
     either: Right<ConsentResp>,
-    action: ConsentAction,
+    actionImpl: ConsentActionImpl,
     consentManagerUtils: ConsentManagerUtils
 ): SPConsents {
     val map: Map<String, Any?> = either.r.content.toTreeMap()
     val uuid: String? = either.r.uuid
     return map.getMap("userConsent")
         ?.let {
-            when (action.campaignType) {
+            when (actionImpl.campaignType) {
                 CampaignType.GDPR -> it.toGDPRUserConsent(uuid = uuid).let { gdprConsent ->
                     val ccpaCached = consentManagerUtils.getCcpaConsent().getOrNull()
                     SPConsents(

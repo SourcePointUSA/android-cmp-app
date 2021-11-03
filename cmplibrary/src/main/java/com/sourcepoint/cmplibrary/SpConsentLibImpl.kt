@@ -425,13 +425,24 @@ internal class SpConsentLibImpl(
                             val url = nextCampaign.url
                             when (nextCampaign.messageSubCategory) {
                                 TCFv2 -> {
-                                    executor.executeOnMain { iConsentWebView.loadConsentUI(nextCampaign, url, legislation) }
+                                    executor.executeOnMain {
+                                        iConsentWebView.loadConsentUI(
+                                            nextCampaign,
+                                            url,
+                                            legislation
+                                        )
+                                    }
                                 }
                                 NATIVE_IN_APP -> {
                                     executor.executeOnMain {
                                         viewManager.removeView(iConsentWebView)
                                         currentNativeMessageCampaign = nextCampaign
-                                        spClient.onNativeMessageReady(nextCampaign.message.toNativeMessageDTO(legislation), this@SpConsentLibImpl)
+                                        spClient.onNativeMessageReady(
+                                            nextCampaign.message.toNativeMessageDTO(
+                                                legislation
+                                            ),
+                                            this@SpConsentLibImpl
+                                        )
                                     }
                                 }
                             }
@@ -466,76 +477,79 @@ internal class SpConsentLibImpl(
     /**
      * Receive the action performed by the user from the WebView
      */
-    internal fun onActionFromWebViewClient(action: ConsentAction, iConsentWebView: IConsentWebView?) {
+    internal fun onActionFromWebViewClient(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView?) {
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
-        executor.executeOnMain {
-            spClient.onAction(view, action.actionType)
-            pLogger.actionWebApp(
-                tag = "onActionFromWebViewClient",
-                msg = action.actionType.name,
-                json = action.thisContent
-            )
-            when (action.actionType) {
-                ACCEPT_ALL,
-                SAVE_AND_EXIT,
-                REJECT_ALL -> {
-                    consentManager.enqueueConsent(consentAction = action)
+        pLogger.actionWebApp(
+            tag = "onActionFromWebViewClient",
+            msg = actionImpl.actionType.name,
+            json = actionImpl.thisContent
+        )
+        when (actionImpl.actionType) {
+            ACCEPT_ALL,
+            SAVE_AND_EXIT,
+            REJECT_ALL -> {
+                executor.executeOnSingleThread {
+                    val editedAction = spClient.onAction(view, actionImpl) as? ConsentActionImpl
+                    editedAction?.let {
+                        consentManager.enqueueConsent(consentActionImpl = editedAction)
+                    }
                 }
-                SHOW_OPTIONS -> {
-                    showOption(action, iConsentWebView)
-                }
-                MSG_CANCEL,
-                PM_DISMISS -> {
-                }
+            }
+            SHOW_OPTIONS -> {
+                executor.executeOnMain { showOption(actionImpl, iConsentWebView) }
+            }
+            MSG_CANCEL,
+            PM_DISMISS -> {
             }
         }
     }
 
-    private fun showOption(action: ConsentAction, iConsentWebView: IConsentWebView) {
+    private fun showOption(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView) {
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
-        when (val l = action.campaignType) {
+        when (val l = actionImpl.campaignType) {
             CampaignType.GDPR -> {
                 viewManager.removeView(view)
-                campaignManager.getPmConfig(l, action.privacyManagerId, PMTab.PURPOSES)
+                campaignManager.getPmConfig(l, actionImpl.privacyManagerId, PMTab.PURPOSES)
                     .map { pmUrlConfig ->
                         val url =
-                            urlManager.pmUrl(campaignType = action.campaignType, pmConfig = pmUrlConfig, env = env)
+                            urlManager.pmUrl(campaignType = actionImpl.campaignType, pmConfig = pmUrlConfig, env = env)
                         pLogger.pm(
-                            tag = "${action.campaignType.name} Privacy Manager",
+                            tag = "${actionImpl.campaignType.name} Privacy Manager",
                             url = url.toString(),
-                            pmId = "${action.privacyManagerId}",
+                            pmId = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
                         iConsentWebView.loadConsentUIFromUrl(
                             url = url,
-                            campaignType = action.campaignType,
-                            pmId = action.privacyManagerId
+                            campaignType = actionImpl.campaignType,
+                            pmId = actionImpl.privacyManagerId
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
             }
             CampaignType.CCPA -> {
                 viewManager.removeView(view)
-                campaignManager.getPmConfig(campaignType = l, pmId = action.privacyManagerId, pmTab = null)
+                campaignManager.getPmConfig(campaignType = l, pmId = actionImpl.privacyManagerId, pmTab = null)
                     .map { pmUrlConfig ->
                         val url =
-                            urlManager.pmUrl(campaignType = action.campaignType, pmConfig = pmUrlConfig, env = env)
+                            urlManager.pmUrl(campaignType = actionImpl.campaignType, pmConfig = pmUrlConfig, env = env)
                         pLogger.pm(
-                            tag = "${action.campaignType.name} Privacy Manager",
+                            tag = "${actionImpl.campaignType.name} Privacy Manager",
                             url = url.toString(),
-                            pmId = "${action.privacyManagerId}",
+                            pmId = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
                         iConsentWebView.loadConsentUIFromUrl(
                             url = url,
-                            campaignType = action.campaignType,
-                            pmId = action.privacyManagerId
+                            campaignType = actionImpl.campaignType,
+                            pmId = actionImpl.privacyManagerId
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
             }
         }
     }
+
     private fun nativeMessageShowOption(action: NativeConsentAction, iConsentWebView: IConsentWebView) {
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
         when (val l = action.campaignType) {
@@ -614,7 +628,8 @@ internal class SpConsentLibImpl(
         when (nca.actionType) {
             NativeMessageActionType.SHOW_OPTIONS,
             NativeMessageActionType.UNKNOWN,
-            NativeMessageActionType.MSG_CANCEL -> {}
+            NativeMessageActionType.MSG_CANCEL -> {
+            }
             NativeMessageActionType.ACCEPT_ALL,
             NativeMessageActionType.REJECT_ALL -> {
                 consentManager.enqueueConsent(nativeConsentAction = nca)
