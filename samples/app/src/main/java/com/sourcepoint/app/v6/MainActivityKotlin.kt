@@ -27,7 +27,6 @@ class MainActivityKotlin : AppCompatActivity() {
 
     private val dataProvider by inject<DataProvider>()
     private val spClientObserver: List<SpClient> by inject()
-    private val testHelper by inject<TestHelper>()
 
     private val spConsentLib by spConsentLibLazy {
         activity = this@MainActivityKotlin
@@ -129,6 +128,4 @@ class MainActivityKotlin : AppCompatActivity() {
             return consentAction
         }
     }
-
-    class TestHelper(var exec : (() -> Unit)? = null)
 }

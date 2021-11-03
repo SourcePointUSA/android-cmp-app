@@ -33,6 +33,8 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import io.mockk.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
@@ -198,7 +200,6 @@ class MainActivityKotlinTest {
     fun GIVEN_a_campaignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
-        val testHelper = TestHelper()
 
         loadKoinModules(
             mockModule(
@@ -206,15 +207,12 @@ class MainActivityKotlinTest {
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
-                testHelper = testHelper
             )
         )
 
         scenario = launchActivity()
 
-        wr(backup = {
-            testHelper.exec?.invoke()
-        }) { tapAcceptOnWebView() }
+        wr { tapAcceptOnWebView() }
         wr { tapAcceptCcpaOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
@@ -377,12 +375,10 @@ class MainActivityKotlinTest {
         ccpaPmId: String = "",
         uuid: String? = null,
         url: String = "",
-        spClientObserver: List<SpClient> = emptyList(),
-        testHelper : TestHelper = TestHelper()
+        spClientObserver: List<SpClient> = emptyList()
     ): Module {
         return module(override = true) {
             single<List<SpClient?>> { spClientObserver }
-            single { testHelper }
             single<DataProvider> {
                 object : DataProvider {
                     override val authId = uuid
