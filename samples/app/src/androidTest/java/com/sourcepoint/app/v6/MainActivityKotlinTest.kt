@@ -5,6 +5,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.*
+import com.sourcepoint.app.v6.MainActivityKotlin.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
@@ -197,19 +198,23 @@ class MainActivityKotlinTest {
     fun GIVEN_a_campaignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
+        val testHelper = TestHelper()
 
         loadKoinModules(
             mockModule(
                 spConfig = spConf,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
-                spClientObserver = listOf(spClient)
+                spClientObserver = listOf(spClient),
+                testHelper = testHelper
             )
         )
 
         scenario = launchActivity()
 
-        wr { tapAcceptOnWebView() }
+        wr(backup = {
+            testHelper.exec?.invoke()
+        }) { tapAcceptOnWebView() }
         wr { tapAcceptCcpaOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
@@ -372,10 +377,12 @@ class MainActivityKotlinTest {
         ccpaPmId: String = "",
         uuid: String? = null,
         url: String = "",
-        spClientObserver: List<SpClient> = emptyList()
+        spClientObserver: List<SpClient> = emptyList(),
+        testHelper : TestHelper = TestHelper()
     ): Module {
         return module(override = true) {
             single<List<SpClient?>> { spClientObserver }
+            single { testHelper }
             single<DataProvider> {
                 object : DataProvider {
                     override val authId = uuid
