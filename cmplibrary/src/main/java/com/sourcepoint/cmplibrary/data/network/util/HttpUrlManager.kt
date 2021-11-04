@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
-import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
