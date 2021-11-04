@@ -24,22 +24,20 @@ fun userConsents(context: Context, spConfig: SpConfig): SPConsents {
 
 fun gdprApplies(context: Context, spConfig: SpConfig): Boolean {
     val cm: CampaignManager = createStorage(context, spConfig)
-//    return cm
-//        .getGdpr()
-//        .getOrNull()
-//        ?.gdprApplies
-//        ?: false
-    return false
+    return cm
+        .getGdpr()
+        .getOrNull()
+        ?.applies
+        ?: false
 }
 
 fun ccpaApplies(context: Context, spConfig: SpConfig): Boolean {
     val cm: CampaignManager = createStorage(context, spConfig)
-//    return cm
-//        .getCcpa()
-//        .getOrNull()
-//        ?.ccpaApplies
-//        ?: false
-    return false
+    return cm
+        .getCcpa()
+        .getOrNull()
+        ?.applies
+        ?: false
 }
 
 fun clearAllData(context: Context) {
