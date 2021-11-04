@@ -499,8 +499,9 @@ internal class SpConsentLibImpl(
                 executor.executeOnMain { showOption(actionImpl, iConsentWebView) }
             }
             CUSTOM -> {
-                val editedAction = spClient.onAction(view, actionImpl) as? ConsentActionImpl
-                println()
+                executor.executeOnSingleThread {
+                    spClient.onAction(view, actionImpl) as? ConsentActionImpl
+                }
             }
             MSG_CANCEL,
             PM_DISMISS -> {
