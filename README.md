@@ -122,7 +122,7 @@ Kotlin
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController)
         override fun onError(error: Throwable) { }
         override fun onConsentReady(consent: SPConsents) { }
-        override fun onAction(view: View, actionType: ActionType) { }
+        override fun onAction(view: View, consentAction: ConsentAction) { return consentAction }
         override fun onUIFinished(view: View) {
             spConsentLib.removeView(view)
         }
@@ -148,7 +148,7 @@ Java
         public void onConsentReady(@NotNull SPConsents c) { }
 
         @Override
-        public void onAction(View view, @NotNull ActionType actionType) { }
+        public ConsentAction onAction(View view, @NotNull ConsentAction consentAction) { return consentAction; }
 
         @Override
         public void onUIFinished(@NotNull View v) {
@@ -346,7 +346,7 @@ class MainActivityKotlin : AppCompatActivity() {
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) { /* ... */ }
         override fun onError(error: Throwable) { /* ... */ }
         override fun onConsentReady(consent: SPConsents) { /* ... */ }
-        override fun onAction(view: View, actionType: ActionType) { /* ... */ }
+        override fun onAction(view: View, consentAction: ConsentAction) : ConsentAction{  return consentAction }
         override fun onUIFinished(view: View) {
         // HERE you can take some action before removing the consent view
             spConsentLib.removeView(view)
@@ -424,7 +424,7 @@ public class MainActivityJava extends AppCompatActivity {
         }
 
         @Override
-        public void onAction(View view, @NotNull ActionType actionType) { }
+        public ConsentAction onAction(View view, @NotNull ConsentAction consentAction) { return consentAction; }
     }
 }
 ```
