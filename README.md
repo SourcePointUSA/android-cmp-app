@@ -539,7 +539,25 @@ The `vendorGrants` is an attribute of `GDPRUserConsent` class. The `vendorGrants
 ```
 
 ## `pubData`
-When the user takes an action within the consent UI, it's possible to attach an arbitrary payload to the action data an have it sent to our endpoints. For more information on how to do that check our wiki: [Sending arbitrary data when the user takes an action](https://github.com/SourcePointUSA/android-cmp-app/wiki/Sending-arbitrary-data-when-the-user-takes-an-action)
+When the user takes an action within the consent UI, it's possible to attach an arbitrary payload to the action data and have it sent to our endpoints.
+Those values are `key-values` pairs that have to be added inside the object `ConsentAction` during the `onAction` callback execution. 
+The `onAction` callback is a non-blocking call for the UI, this means that it gets executed outside the UI main thread.
+Following an example:
+
+```kotlin
+        override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
+            consentAction.pubData.put("pb_key", "pb_value")
+            return consentAction
+        }
+```
+
+```java
+        @Override
+        public ConsentAction onAction(@NotNull View view, @NotNull ConsentAction consentAction) {
+            consentAction.getPubData().put("pb_key", "pb_value");
+            return consentAction;
+        }
+```
 
 ## Frequently Asked Questions
 ### 1. How big is the SDK?
