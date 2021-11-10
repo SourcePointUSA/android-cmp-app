@@ -24,6 +24,8 @@
   - [ProGuard](#ProGuard)
   - [Programmatically consenting the current user](#Programmatically-consenting-the-current-user)
   - [Vendor Grants object](#Vendor-Grants-object)
+  - [The onAction callback](#the-onaction-callback)
+  - [The ConsentAction object](#the-consentaction-object)
   - [`pubData`](#pubData)
   - [Frequently Asked Questions](#Frequently-Asked-Questions)
   - [Artifact Release Process](#Artifact-Release-Process)
