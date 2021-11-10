@@ -552,7 +552,7 @@ ConsentAction
 ```
 
 - `actionType` is an enumeration type which has the following values: `SHOW_OPTIONS`, `REJECT_ALL`, `ACCEPT_ALL`, `MSG_CANCEL`, `CUSTOM`, `SAVE_AND_EXIT`,`PM_DISMISS`;
-- `customActionId` is a nullable filed which return the custom id set along with the custom action from our CMP web builder;
+- `customActionId` is a `nullable` field which returns the custom id set along with the custom action from our web message builder;
 - `pubData` is a JSONObject object, it is used to send custom parameters to our BE;
 - `campaignType` is the campaign type associated with the selected action.
 
