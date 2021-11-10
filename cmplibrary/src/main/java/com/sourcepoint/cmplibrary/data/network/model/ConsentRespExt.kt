@@ -26,6 +26,7 @@ internal fun String.toConsentAction(): ConsentActionImpl {
     val requestFromPm = map.getFieldValue<Boolean>("requestFromPm") ?: false
     val saveAndExitVariables = map.getMap("saveAndExitVariables")?.let { JSONObject(it) } ?: JSONObject()
     val consentLanguage = map.getFieldValue<String>("consentLanguage") ?: "EN"
+    val customActionId = map.getFieldValue<String>("customActionId")
 
     return ConsentActionImpl(
         actionType = actionType ?: ActionType.UNKNOWN,
@@ -36,6 +37,7 @@ internal fun String.toConsentAction(): ConsentActionImpl {
         saveAndExitVariables = saveAndExitVariables,
         consentLanguage = consentLanguage,
         campaignType = CampaignType.valueOf(legislation),
+        customActionId = customActionId,
         thisContent = map.toJSONObj()
     )
 }

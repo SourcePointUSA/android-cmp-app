@@ -498,6 +498,11 @@ internal class SpConsentLibImpl(
             SHOW_OPTIONS -> {
                 executor.executeOnMain { showOption(actionImpl, iConsentWebView) }
             }
+            CUSTOM -> {
+                executor.executeOnSingleThread {
+                    spClient.onAction(view, actionImpl) as? ConsentActionImpl
+                }
+            }
             MSG_CANCEL,
             PM_DISMISS -> {
             }

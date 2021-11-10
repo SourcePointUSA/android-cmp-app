@@ -537,6 +537,24 @@ The `vendorGrants` is an attribute of `GDPRUserConsent` class. The `vendorGrants
   // more vendors here
 ]
 ```
+## The `onAction` callback
+The on Action callback is created with the purpose of giving the client the chance to know with kind of action was selected
+and to set custom information using the `pubData` object.
+
+## The `ConsentAction` object
+The `ConsentAction` contains
+```
+ConsentAction
+|-- actionType: ActionType
+|-- pubData: JSONObject
+|-- campaignType: CampaignType
+|-- customActionId: String?
+```
+
+- `actionType` is an enumeration type which has the following values: `SHOW_OPTIONS`, `REJECT_ALL`, `ACCEPT_ALL`, `MSG_CANCEL`, `CUSTOM`, `SAVE_AND_EXIT`,`PM_DISMISS`;
+- `customActionId` is a `nullable` field which returns the custom id set along with the custom action from our web message builder;
+- `pubData` is a JSONObject object, it is used to send custom parameters to our BE;
+- `campaignType` is the campaign type associated with the selected action.
 
 ## `pubData`
 When the user takes an action within the consent UI, it's possible to attach an arbitrary payload to the action data and have it sent to our endpoints.
