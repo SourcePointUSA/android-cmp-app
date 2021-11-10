@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
+import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
@@ -120,8 +121,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 }
 
 enum class Env(val host: String, val pmHostGdpr: String, val pmHostCcpa: String, val queryParam: String) {
-//    STAGE("cdn.sp-stage.net", "notice.sp-stage.net", "ccpa-notice.sp-stage.net", BuildConfig.ENV_QUERY_PARAM),
-    STAGE("cdn.privacy-mgmt.com", "cdn.privacy-mgmt.com", "cdn.privacy-mgmt.com", "stage"),
+    STAGE("cdn.sp-stage.net", "notice.sp-stage.net", "ccpa-notice.sp-stage.net", BuildConfig.ENV_QUERY_PARAM),
     PRE_PROD("preprod-cdn.privacy-mgmt.com", "cdn.privacy-mgmt.com", "ccpa-inapp-pm.sp-prod.net", "stage"),
     PROD("cdn.privacy-mgmt.com", "cdn.privacy-mgmt.com", "cdn.privacy-mgmt.com", "prod")
 }
