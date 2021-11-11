@@ -17,11 +17,11 @@ apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
 val versionCodeMeta = (project.property("VERSION_CODE") as String).toInt()
 
 android {
-    compileSdkVersion(29)
+    compileSdkVersion(30)
     defaultConfig {
         applicationId = "com.sourcepointmeta.metaapp"
         minSdkVersion(21)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
         versionCode = versionCodeMeta
         versionName = "${rootProject.project("cmplibrary").version}"
         multiDexEnabled = true
