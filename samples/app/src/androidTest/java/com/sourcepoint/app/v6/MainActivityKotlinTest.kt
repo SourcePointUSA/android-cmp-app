@@ -1,11 +1,11 @@
 package com.sourcepoint.app.v6
 
-import android.app.Activity
 import android.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.*
+import com.sourcepoint.app.v6.MainActivityKotlin.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
@@ -33,6 +33,8 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import io.mockk.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
@@ -103,12 +105,13 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
+        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verifyOrder {
             spClient.run {
                 onUIReady(any())
-                onAction(any(), any())
                 onUIFinished(any())
+                onAction(any(), any())
                 onConsentReady(withArg {
                     it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(categoriesTester)
                 })
@@ -144,12 +147,13 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
+        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verifyOrder {
             spClient.run {
                 onUIReady(any())
-                onAction(any(), any())
                 onUIFinished(any())
+                onAction(any(), any())
                 onConsentReady(any())
             }
 
@@ -177,12 +181,13 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
 
         verify(exactly = 0) { spClient.onError(any()) }
+        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verifyOrder {
             spClient.run {
                 onUIReady(any())
-                onAction(any(), any())
                 onUIFinished(any())
+                onAction(any(), any())
                 onConsentReady(withArg {
                     it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(emptyList())
                     it.gdpr?.consent?.grants?.values?.forEach { el ->  el.granted.assertFalse() }
@@ -201,7 +206,7 @@ class MainActivityKotlinTest {
                 spConfig = spConf,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
-                spClientObserver = listOf(spClient)
+                spClientObserver = listOf(spClient),
             )
         )
 
@@ -213,7 +218,7 @@ class MainActivityKotlinTest {
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 2) { spClient.onUIReady(any()) } }
-        wr { verify(exactly = 2) { spClient.onAction(any(), any()) } }
+        wr { verify(exactly = 2) { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) } }
         verify(exactly = 1) { spClient.onUIFinished(any()) }
 
         verifyOrder {
@@ -251,16 +256,17 @@ class MainActivityKotlinTest {
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 4) { spClient.onUIReady(any()) } }
-        wr { verify(exactly = 4) { spClient.onAction(any(), any()) } }
+        wr { verify(exactly = 2) { spClient.onAction(any(), any()) } }
         verify(exactly = 3) { spClient.onUIFinished(any()) }
 
         verifyOrder {
             spClient.run {
                 onUIReady(any())
+                onUIFinished(any())
+                onUIReady(any())
                 onAction(any(), any())
                 onUIReady(any())
                 onConsentReady(any())
-                onUIFinished(any())
             }
         }
     }
@@ -283,8 +289,8 @@ class MainActivityKotlinTest {
         verifyOrder {
             spClient.run {
                 onUIReady(any())
-                onAction(any(), any())
                 onUIFinished(any())
+                onAction(any(), any())
                 onConsentReady(any())
             }
         }
@@ -310,8 +316,8 @@ class MainActivityKotlinTest {
         verifyOrder {
             spClient.run {
                 onUIReady(any())
-                onAction(any(), any())
                 onUIFinished(any())
+                onAction(any(), any())
                 onConsentReady(withArg {
                     it.gdpr?.consent?.grants?.values?.forEach { el -> el.granted.assertTrue() }
                 })

@@ -6,7 +6,7 @@ import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
 import com.sourcepoint.cmplibrary.core.layout.model.ActionButton
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 
 abstract class NativeMessageInternal : NativeMessage {
@@ -32,7 +32,7 @@ abstract class NativeMessageInternal : NativeMessage {
     }
 
     internal open fun onCancel(ab: ActionButton) {
-        val action = ConsentAction(
+        val action = ConsentActionImpl(
             actionType = ActionType.MSG_CANCEL,
             choiceId = ab.choiceId,
             requestFromPm = false,
@@ -42,7 +42,7 @@ abstract class NativeMessageInternal : NativeMessage {
     }
 
     internal open fun onAcceptAll(ab: ActionButton) {
-        val action = ConsentAction(
+        val action = ConsentActionImpl(
             actionType = ActionType.ACCEPT_ALL,
             choiceId = ab.choiceId,
             requestFromPm = false,
@@ -52,7 +52,7 @@ abstract class NativeMessageInternal : NativeMessage {
     }
 
     internal open fun onRejectAll(ab: ActionButton) {
-        val action = ConsentAction(
+        val action = ConsentActionImpl(
             actionType = ActionType.REJECT_ALL,
             choiceId = ab.choiceId,
             requestFromPm = false,
@@ -62,7 +62,7 @@ abstract class NativeMessageInternal : NativeMessage {
     }
 
     internal open fun onShowOptionsAb(ab: ActionButton) {
-        val action = ConsentAction(
+        val action = ConsentActionImpl(
             actionType = ActionType.SHOW_OPTIONS,
             choiceId = ab.choiceId,
             requestFromPm = false,

@@ -75,14 +75,14 @@ private class NetworkClientImpl(
     override fun sendConsent(
         consentReq: JSONObject,
         env: Env,
-        consentAction: ConsentAction
+        consentActionImpl: ConsentActionImpl
     ): Either<ConsentResp> = check {
 
         val mediaType = MediaType.parse("application/json")
         val jsonBody = consentReq.toString()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
         val url = urlManager
-            .sendConsentUrl(campaignType = consentAction.campaignType, env = env, actionType = consentAction.actionType)
+            .sendConsentUrl(campaignType = consentActionImpl.campaignType, env = env, actionType = consentActionImpl.actionType)
 
         logger.req(
             tag = "sendConsent",
@@ -98,7 +98,7 @@ private class NetworkClientImpl(
 
         val response = httpClient.newCall(request).execute()
 
-        responseManager.parseConsentRes(response, consentAction.campaignType)
+        responseManager.parseConsentRes(response, consentActionImpl.campaignType)
     }
 
     override fun sendCustomConsent(

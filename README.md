@@ -24,6 +24,8 @@
   - [ProGuard](#ProGuard)
   - [Programmatically consenting the current user](#Programmatically-consenting-the-current-user)
   - [Vendor Grants object](#Vendor-Grants-object)
+  - [The onAction callback](#the-onaction-callback)
+  - [The ConsentAction object](#the-consentaction-object)
   - [`pubData`](#pubData)
   - [Frequently Asked Questions](#Frequently-Asked-Questions)
   - [Artifact Release Process](#Artifact-Release-Process)
@@ -122,7 +124,7 @@ Kotlin
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController)
         override fun onError(error: Throwable) { }
         override fun onConsentReady(consent: SPConsents) { }
-        override fun onAction(view: View, actionType: ActionType) { }
+        override fun onAction(view: View, consentAction: ConsentAction) { return consentAction }
         override fun onUIFinished(view: View) {
             spConsentLib.removeView(view)
         }
@@ -148,7 +150,7 @@ Java
         public void onConsentReady(@NotNull SPConsents c) { }
 
         @Override
-        public void onAction(View view, @NotNull ActionType actionType) { }
+        public ConsentAction onAction(View view, @NotNull ConsentAction consentAction) { return consentAction; }
 
         @Override
         public void onUIFinished(@NotNull View v) {
@@ -346,7 +348,7 @@ class MainActivityKotlin : AppCompatActivity() {
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) { /* ... */ }
         override fun onError(error: Throwable) { /* ... */ }
         override fun onConsentReady(consent: SPConsents) { /* ... */ }
-        override fun onAction(view: View, actionType: ActionType) { /* ... */ }
+        override fun onAction(view: View, consentAction: ConsentAction) : ConsentAction{  return consentAction }
         override fun onUIFinished(view: View) {
         // HERE you can take some action before removing the consent view
             spConsentLib.removeView(view)
@@ -424,7 +426,7 @@ public class MainActivityJava extends AppCompatActivity {
         }
 
         @Override
-        public void onAction(View view, @NotNull ActionType actionType) { }
+        public ConsentAction onAction(View view, @NotNull ConsentAction consentAction) { return consentAction; }
     }
 }
 ```
@@ -537,9 +539,45 @@ The `vendorGrants` is an attribute of `GDPRUserConsent` class. The `vendorGrants
   // more vendors here
 ]
 ```
+## The `onAction` callback
+The on Action callback is created with the purpose of giving the client the chance to know with kind of action was selected
+and to set custom information using the `pubData` object.
+
+## The `ConsentAction` object
+The `ConsentAction` contains
+```
+ConsentAction
+|-- actionType: ActionType
+|-- pubData: JSONObject
+|-- campaignType: CampaignType
+|-- customActionId: String?
+```
+
+- `actionType` is an enumeration type which has the following values: `SHOW_OPTIONS`, `REJECT_ALL`, `ACCEPT_ALL`, `MSG_CANCEL`, `CUSTOM`, `SAVE_AND_EXIT`,`PM_DISMISS`;
+- `customActionId` is a `nullable` field which returns the custom id set along with the custom action from our web message builder;
+- `pubData` is a JSONObject object, it is used to send custom parameters to our BE;
+- `campaignType` is the campaign type associated with the selected action.
 
 ## `pubData`
-When the user takes an action within the consent UI, it's possible to attach an arbitrary payload to the action data an have it sent to our endpoints. For more information on how to do that check our wiki: [Sending arbitrary data when the user takes an action](https://github.com/SourcePointUSA/android-cmp-app/wiki/Sending-arbitrary-data-when-the-user-takes-an-action)
+When the user takes an action within the consent UI, it's possible to attach an arbitrary payload to the action data and have it sent to our endpoints.
+Those values are `key-values` pairs that have to be added inside the object `ConsentAction` during the `onAction` callback execution. 
+The `onAction` callback is a non-blocking call for the UI, this means that it gets executed outside the UI main thread.
+Following an example:
+
+```kotlin
+        override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
+            consentAction.pubData.put("pb_key", "pb_value")
+            return consentAction
+        }
+```
+
+```java
+        @Override
+        public ConsentAction onAction(@NotNull View view, @NotNull ConsentAction consentAction) {
+            consentAction.getPubData().put("pb_key", "pb_value");
+            return consentAction;
+        }
+```
 
 ## Frequently Asked Questions
 ### 1. How big is the SDK?

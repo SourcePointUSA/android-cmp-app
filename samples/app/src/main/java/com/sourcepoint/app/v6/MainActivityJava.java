@@ -2,19 +2,18 @@ package com.sourcepoint.app.v6;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.app.v6.core.DataProvider;
 import com.sourcepoint.cmplibrary.NativeMessageController;
 import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.SpConsentLib;
-import com.sourcepoint.cmplibrary.UnitySpClient;
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
 import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv;
 import com.sourcepoint.cmplibrary.exception.CampaignType;
+import com.sourcepoint.cmplibrary.model.ConsentAction;
 import com.sourcepoint.cmplibrary.model.MessageLanguage;
 import com.sourcepoint.cmplibrary.model.PMTab;
 import com.sourcepoint.cmplibrary.model.exposed.*;
@@ -134,9 +133,10 @@ public class MainActivityJava extends AppCompatActivity {
             spConsentLib.showView(v);
         }
 
+        @NotNull
         @Override
-        public void onAction(@NotNull View view, @NotNull ActionType actionType) {
-
+        public ConsentAction onAction(@NotNull View view, @NotNull ConsentAction consentAction) {
+            return consentAction;
         }
     }
 

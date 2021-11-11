@@ -14,7 +14,7 @@ import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONObject
 import java.util.* //ktlint-disable
 
-internal fun String.toConsentAction(): ConsentAction {
+internal fun String.toConsentAction(): ConsentActionImpl {
 
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
 
@@ -26,8 +26,9 @@ internal fun String.toConsentAction(): ConsentAction {
     val requestFromPm = map.getFieldValue<Boolean>("requestFromPm") ?: false
     val saveAndExitVariables = map.getMap("saveAndExitVariables")?.let { JSONObject(it) } ?: JSONObject()
     val consentLanguage = map.getFieldValue<String>("consentLanguage") ?: "EN"
+    val customActionId = map.getFieldValue<String>("customActionId")
 
-    return ConsentAction(
+    return ConsentActionImpl(
         actionType = actionType ?: ActionType.UNKNOWN,
         choiceId = choiceId,
         privacyManagerId = privacyManagerId,
@@ -36,6 +37,7 @@ internal fun String.toConsentAction(): ConsentAction {
         saveAndExitVariables = saveAndExitVariables,
         consentLanguage = consentLanguage,
         campaignType = CampaignType.valueOf(legislation),
+        customActionId = customActionId,
         thisContent = map.toJSONObj()
     )
 }
