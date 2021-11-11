@@ -1,3 +1,11 @@
+## 6.3.0 (November, 11, 2021)
+* [SP-7840](https://sourcepoint.atlassian.net/browse/7840) New CUSTOM ActionType, [more info here](https://github.com/SourcePointUSA/android-cmp-app#the-consentaction-object)
+* [SP-7840](https://sourcepoint.atlassian.net/browse/7840) SKD change to acknowledge the new action type for Consent-Paywall (#434)
+* [SP-8225](https://sourcepoint.atlassian.net/browse/8225) New onAction api [more info here](https://github.com/SourcePointUSA/android-cmp-app#the-onaction-callback) (#433)
+* [SP-8225](https://sourcepoint.atlassian.net/browse/8225) Updating section PubData in the readme file, [more info here](https://github.com/SourcePointUSA/android-cmp-app#pubData) (#433)
+* [SP-8210](https://sourcepoint.atlassian.net/browse/8210) Enabling the gdprApplies and gdprApplies functions (#431)
+* [SP-8118](https://sourcepoint.atlassian.net/browse/8118) New PubData api in V6 (#430)
+
 ## 6.2.3 (October, 22, 2021)
 * [SP-8056](https://sourcepoint.atlassian.net/browse/8056) Granted flag for vendors (#428). More info [here](https://github.com/SourcePointUSA/android-cmp-app#the-spconsent-object)
 * [SP-7933](https://sourcepoint.atlassian.net/browse/7933) Targeting parameters as JSONObject not as a String (#426)
