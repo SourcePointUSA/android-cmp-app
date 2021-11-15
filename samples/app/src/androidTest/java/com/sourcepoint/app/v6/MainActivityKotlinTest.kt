@@ -267,7 +267,7 @@ class MainActivityKotlinTest {
         verify(exactly = 0) { spClient.onError(any()) }
         verify(exactly = 1) { spClient.onSpFinish() }
         wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 4) { spClient.onUIReady(any()) } }
+        wr { verify(atLeast = 4) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 2) { spClient.onAction(any(), any()) } }
         verify(exactly = 3) { spClient.onUIFinished(any()) }
 
