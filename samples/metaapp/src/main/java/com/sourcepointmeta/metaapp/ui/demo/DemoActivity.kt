@@ -212,6 +212,10 @@ class DemoActivity : FragmentActivity() {
             Log.i(this::class.java.name, "ActionType: $consentAction")
             return consentAction
         }
+
+        override fun onSpFinish() {
+            spClientObserver.forEach { it.onSpFinish() }
+        }
     }
 
     private fun pmNotValid() {

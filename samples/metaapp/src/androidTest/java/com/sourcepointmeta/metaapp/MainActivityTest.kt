@@ -80,9 +80,11 @@ class MainActivityTest {
         db.addTestProperty(autId = "test")
 
         periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
-        wr { checkNumberOfNullMessage() }
-        wr { checkOnConsentReady() }
+        wr { checkNumberOfNullMessage(position = 2) }
+        wr { checkOnConsentReady(position = 0) }
+        wr { TestUseCaseMeta.checkOnSpFinish(position = 1) }
 
+        verify(exactly = 1) { spClient.onSpFinish() }
         verify(exactly = 1) { spClient.onConsentReady(any()) }
         verify(exactly = 0) { spClient.onUIReady(any()) }
         verify(exactly = 0) { spClient.onError(any()) }
@@ -126,15 +128,16 @@ class MainActivityTest {
         db.addTestProperty(autId = "test")
 
         periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
-        wr { checkOnConsentReady() }
+        wr(backup = { checkOnConsentReady(position = 1) }) { checkOnConsentReady(position = 0) }
         wr(delay = 200) { swipeLeftPager() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapMetaDeepLinkOnWebView() }
         wr { checkDeepLinkDisplayed() }
 
-        verify {
-            spClient.onConsentReady(any())
-            spClient.onUIReady(any())
-        }
+
+        verify(exactly = 1) { spClient.onSpFinish() }
+        verify(exactly = 1) { spClient.onConsentReady(any()) }
+        verify(exactly = 1) { spClient.onUIReady(any()) }
+
     }
 }

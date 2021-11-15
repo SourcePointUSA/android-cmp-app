@@ -57,6 +57,9 @@ internal class SpConsentLibImpl(
     private val remainingCampaigns: Queue<CampaignModel> = LinkedList()
     private var currentNativeMessageCampaign: CampaignModel? = null
 
+    var cmpNumber = -1
+    var actionCounter = 0
+
     companion object {
         fun UnifiedMessageResp.toCampaignModelList(logger: Logger): List<CampaignModel> {
             val campaignList = this.campaigns
@@ -80,6 +83,19 @@ internal class SpConsentLibImpl(
                     messageSubCategory = it.messageSubCategory,
                 )
             }
+        }
+
+        private fun onSpFinish(
+            spClient: SpClient,
+            logger: Logger,
+            executor: ExecutorManager,
+        ) {
+            executor.executeOnSingleThread { spClient.onSpFinish() }
+            logger.clientEvent(
+                event = "onSpFinish",
+                msg = "All campaigns have been processed.",
+                content = ""
+            )
         }
     }
 
@@ -109,6 +125,28 @@ internal class SpConsentLibImpl(
         }
     }
 
+    /**
+     * Every time the user takes an action, it necessary to check if it was the last campaign process:
+     * - yes: trigger the onSpFinish()
+     * - no: decrement the counter
+     *
+     * If from the first layer message the SDK has to open the PM, the cmpNumber MUST be incremented because this action
+     * doesn't must not influence the counter
+     */
+    private fun onSpFinishCB() {
+        println("onSpFinish - cmpNumber: $cmpNumber - actionCounter: $actionCounter")
+        if (cmpNumber == actionCounter) {
+            cmpNumber = -1
+            actionCounter = 0
+            println("onSpFinish - executed")
+            onSpFinish(
+                spClient = spClient,
+                logger = pLogger,
+                executor = executor
+            )
+        }
+    }
+
     /** Start Client's methods */
     override fun loadMessage(authId: String) {
         checkMainThread("loadMessage")
@@ -123,8 +161,15 @@ internal class SpConsentLibImpl(
                 val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
+                    onSpFinish(
+                        spClient = spClient,
+                        logger = pLogger,
+                        executor = executor
+                    )
                     return@getUnifiedMessage
                 }
+                cmpNumber = list.size
+                actionCounter = 0
                 val firstCampaign2Process: CampaignModel = list.first()
                 remainingCampaigns.run {
                     clear()
@@ -177,8 +222,15 @@ internal class SpConsentLibImpl(
                 val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
+                    onSpFinish(
+                        spClient = spClient,
+                        logger = pLogger,
+                        executor = executor
+                    )
                     return@getUnifiedMessage
                 }
+                cmpNumber = list.size
+                actionCounter = 0
                 val firstCampaign2Process = list.first()
                 remainingCampaigns.clear()
                 remainingCampaigns.addAll(LinkedList(list.drop(1)))
@@ -488,6 +540,7 @@ internal class SpConsentLibImpl(
             ACCEPT_ALL,
             SAVE_AND_EXIT,
             REJECT_ALL -> {
+                actionCounter++
                 executor.executeOnSingleThread {
                     val editedAction = spClient.onAction(view, actionImpl) as? ConsentActionImpl
                     editedAction?.let {
@@ -499,6 +552,7 @@ internal class SpConsentLibImpl(
                 executor.executeOnMain { showOption(actionImpl, iConsentWebView) }
             }
             CUSTOM -> {
+                actionCounter++
                 executor.executeOnSingleThread {
                     spClient.onAction(view, actionImpl) as? ConsentActionImpl
                 }
@@ -507,6 +561,7 @@ internal class SpConsentLibImpl(
             PM_DISMISS -> {
             }
         }
+        onSpFinishCB()
     }
 
     private fun showOption(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView) {
@@ -631,12 +686,14 @@ internal class SpConsentLibImpl(
         )
 
         when (nca.actionType) {
-            NativeMessageActionType.SHOW_OPTIONS,
+            NativeMessageActionType.SHOW_OPTIONS -> {
+            }
             NativeMessageActionType.UNKNOWN,
             NativeMessageActionType.MSG_CANCEL -> {
             }
             NativeMessageActionType.ACCEPT_ALL,
             NativeMessageActionType.REJECT_ALL -> {
+                actionCounter++
                 consentManager.enqueueConsent(nativeConsentAction = nca)
                 remainingCampaigns.poll()?.let {
                     val legislation = it.type
@@ -658,5 +715,6 @@ internal class SpConsentLibImpl(
                 }
             }
         }
+        onSpFinishCB()
     }
 }

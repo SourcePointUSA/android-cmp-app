@@ -127,5 +127,9 @@ class MainActivityKotlin : AppCompatActivity() {
             consentAction.pubData.put("pb_key", "pb_value")
             return consentAction
         }
+
+        override fun onSpFinish() {
+            spClientObserver.forEach { it.onSpFinish() }
+        }
     }
 }

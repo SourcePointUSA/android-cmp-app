@@ -138,6 +138,11 @@ public class MainActivityJava extends AppCompatActivity {
         public ConsentAction onAction(@NotNull View view, @NotNull ConsentAction consentAction) {
             return consentAction;
         }
+
+        @Override
+        public void onSpFinish() {
+
+        }
     }
 
 }
