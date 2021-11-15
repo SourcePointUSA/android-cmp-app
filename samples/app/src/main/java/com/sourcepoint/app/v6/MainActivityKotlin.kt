@@ -78,7 +78,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        Handler().postDelayed({ spConsentLib.loadMessage() }, 400)
+        spConsentLib.loadMessage()
     }
 
     override fun onDestroy() {
