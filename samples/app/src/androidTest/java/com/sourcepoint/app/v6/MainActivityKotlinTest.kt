@@ -108,7 +108,7 @@ class MainActivityKotlinTest {
         verify(exactly = 0) { spClient.onError(any()) }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
-        verifyOrder {
+        verify {
             spClient.run {
                 onUIReady(any())
                 onUIFinished(any())
@@ -150,7 +150,7 @@ class MainActivityKotlinTest {
         verify(exactly = 0) { spClient.onError(any()) }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
-        verifyOrder {
+        verify {
             spClient.run {
                 onUIReady(any())
                 onUIFinished(any())
@@ -184,7 +184,7 @@ class MainActivityKotlinTest {
         verify(exactly = 0) { spClient.onError(any()) }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
-        verifyOrder {
+        verify {
             spClient.run {
                 onUIReady(any())
                 onUIFinished(any())
@@ -267,7 +267,7 @@ class MainActivityKotlinTest {
         wr { verify(exactly = 2) { spClient.onAction(any(), any()) } }
         verify(exactly = 3) { spClient.onUIFinished(any()) }
 
-        verifyOrder {
+        verify {
             spClient.run {
                 onUIReady(any())
                 onUIFinished(any())
@@ -294,7 +294,7 @@ class MainActivityKotlinTest {
 
         verify(exactly = 0) { spClient.onError(any()) }
 
-        verifyOrder {
+        verify {
             spClient.run {
                 onUIReady(any())
                 onUIFinished(any())
@@ -321,7 +321,7 @@ class MainActivityKotlinTest {
 
         verify(exactly = 0) { spClient.onError(any()) }
 
-        verifyOrder {
+        verify {
             spClient.run {
                 onUIReady(any())
                 onUIFinished(any())
