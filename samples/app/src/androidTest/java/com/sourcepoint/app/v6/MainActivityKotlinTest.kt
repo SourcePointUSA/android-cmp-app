@@ -201,6 +201,7 @@ class MainActivityKotlinTest {
     fun GIVEN_a_campaignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
+        var bkCalls = 0
 
         loadKoinModules(
             mockModule(
@@ -213,12 +214,12 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
+        periodicWr(backup = { scenario.recreateAndResume(); bkCalls++ }) { tapAcceptOnWebView() }
         wr { tapAcceptCcpaOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 2) { spClient.onUIReady(any()) } }
+        wr { verify(exactly = 2 + bkCalls) { spClient.onUIReady(any()) } }
         wr {
             verify(exactly = 2) {
                 spClient.onAction(
@@ -228,7 +229,7 @@ class MainActivityKotlinTest {
         }
         verify(exactly = 1) { spClient.onUIFinished(any()) }
 
-        verifyOrder {
+        verify {
             spClient.run {
                 onUIReady(any())
                 onAction(any(), any())
