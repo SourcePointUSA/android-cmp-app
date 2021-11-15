@@ -4,6 +4,8 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
+import com.example.uitestutil.periodicWr
+import com.example.uitestutil.recreateAndResume
 import com.example.uitestutil.wr
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
@@ -25,6 +27,7 @@ import com.sourcepointmeta.metaapp.db.MetaAppDB
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifySequence
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -76,7 +79,7 @@ class MainActivityTest {
 
         db.addTestProperty(autId = "test")
 
-        runDemo()
+        periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
         wr { checkNumberOfNullMessage() }
         wr { checkOnConsentReady() }
 
@@ -99,7 +102,7 @@ class MainActivityTest {
 
         db.addTestProperty(gdprEnabled = true, ccpaEnabled = true)
 
-        runDemo()
+        periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
         wr { tapOptionWebView() }
         wr { tapCancelOnWebView() }
         wr { checkWebViewDisplayedGDPRFirstLayerMessage() }
@@ -122,7 +125,7 @@ class MainActivityTest {
 
         db.addTestProperty(autId = "test")
 
-        runDemo()
+        periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
         wr { checkOnConsentReady() }
         wr(delay = 200) { swipeLeftPager() }
         wr { clickOnGdprReviewConsent() }
