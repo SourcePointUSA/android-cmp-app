@@ -132,7 +132,7 @@ class MainActivityTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapMetaDeepLinkOnWebView() }
         wr { checkDeepLinkDisplayed() }
 
-        verifySequence {
+        verify {
             spClient.onConsentReady(any())
             spClient.onUIReady(any())
         }
