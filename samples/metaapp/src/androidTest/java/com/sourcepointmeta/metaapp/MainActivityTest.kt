@@ -1,6 +1,5 @@
 package com.sourcepointmeta.metaapp
 
-import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -101,7 +100,7 @@ class MainActivityTest {
         db.addTestProperty(gdprEnabled = true, ccpaEnabled = true)
 
         runDemo()
-        wr(backup = { scenario.moveToState(Lifecycle.State.RESUMED); scenario.recreate() }) { tapOptionWebView() }
+        wr { tapOptionWebView() }
         wr { tapCancelOnWebView() }
         wr { checkWebViewDisplayedGDPRFirstLayerMessage() }
         wr { tapAcceptAllOnWebView() }
