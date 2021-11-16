@@ -364,7 +364,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapToDisableAllConsent() }
         wr { tapSaveAndExitWebView() }
         wr { clickOnGdprReviewConsent() }
-        wr { checkAllConsentsOff() }
+        wr(backup = { clickOnGdprReviewConsent() })  { checkAllConsentsOff() }
     }
 
     @Test
