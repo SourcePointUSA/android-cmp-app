@@ -57,7 +57,7 @@ internal class SpConsentLibImpl(
     private val remainingCampaigns: Queue<CampaignModel> = LinkedList()
     private var currentNativeMessageCampaign: CampaignModel? = null
 
-    var cmpNumber = -1
+    var cmpNumber = 0
     var actionCounter = 0
 
     companion object {
@@ -135,8 +135,8 @@ internal class SpConsentLibImpl(
      */
     private fun onSpFinishCB() {
         println("onSpFinish - cmpNumber: $cmpNumber - actionCounter: $actionCounter")
-        if (cmpNumber == actionCounter) {
-            cmpNumber = -1
+        if (cmpNumber == actionCounter && (cmpNumber + actionCounter) != 0) {
+            cmpNumber = 0
             actionCounter = 0
             println("onSpFinish - executed")
             onSpFinish(

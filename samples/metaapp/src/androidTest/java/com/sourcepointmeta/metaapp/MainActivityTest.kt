@@ -26,7 +26,6 @@ import com.sourcepointmeta.metaapp.data.localdatasource.createDb
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifySequence
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -134,10 +133,8 @@ class MainActivityTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapMetaDeepLinkOnWebView() }
         wr { checkDeepLinkDisplayed() }
 
-
         verify(exactly = 1) { spClient.onSpFinish() }
         verify(exactly = 1) { spClient.onConsentReady(any()) }
         verify(exactly = 1) { spClient.onUIReady(any()) }
-
     }
 }

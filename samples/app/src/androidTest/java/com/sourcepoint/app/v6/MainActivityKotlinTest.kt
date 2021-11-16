@@ -339,14 +339,14 @@ class MainActivityKotlinTest {
         }
     }
 
-    //    @Test
+    @Test
     fun GIVEN_a_deeplink_OPEN_an_activity() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))
 
         scenario = launchActivity()
 
-        wr { tapRejectOnWebView() }
+        periodicWr(backup = { scenario.recreateAndResume() }) { tapRejectOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapNetworkOnWebView() }
         wr { checkDeepLinkDisplayed() }
@@ -360,7 +360,6 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
-//        wr { tapAcceptCcpaOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapToDisableAllConsent() }
         wr { tapSaveAndExitWebView() }
