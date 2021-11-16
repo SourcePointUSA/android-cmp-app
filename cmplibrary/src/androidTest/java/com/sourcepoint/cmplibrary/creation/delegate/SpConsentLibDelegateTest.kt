@@ -94,7 +94,6 @@ class SpConsentLibDelegateTest {
         }
 
         override fun onSpFinish() {
-
         }
     }
 }
