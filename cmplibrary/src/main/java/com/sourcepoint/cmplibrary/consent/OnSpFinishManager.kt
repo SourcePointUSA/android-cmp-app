@@ -63,6 +63,18 @@ private class ClientManagerImpl(
     }
 
     override fun setAction(action: NativeMessageActionType) {
+        when (action) {
+            NativeMessageActionType.ACCEPT_ALL,
+            NativeMessageActionType.REJECT_ALL,
+            NativeMessageActionType.SHOW_OPTIONS -> {
+            }
+            NativeMessageActionType.UNKNOWN -> {
+            }
+            NativeMessageActionType.MSG_CANCEL -> {
+                if (cNumber > 0) cNumber--
+            }
+        }
+        checkStatus()
     }
 
     override fun reset() {
