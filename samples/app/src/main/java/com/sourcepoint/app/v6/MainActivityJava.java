@@ -140,7 +140,7 @@ public class MainActivityJava extends AppCompatActivity {
         }
 
         @Override
-        public void onSpFinish() {
+        public void onSpFinish(@NotNull SPConsents sPConsents) {
 
         }
     }

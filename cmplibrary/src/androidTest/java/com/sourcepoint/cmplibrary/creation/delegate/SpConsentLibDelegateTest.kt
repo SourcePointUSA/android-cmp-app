@@ -93,7 +93,7 @@ class SpConsentLibDelegateTest {
         override fun onError(error: Throwable) {
         }
 
-        override fun onSpFinish() {
+        override fun onSpFinish(sPConsents: SPConsents) {
         }
     }
 }

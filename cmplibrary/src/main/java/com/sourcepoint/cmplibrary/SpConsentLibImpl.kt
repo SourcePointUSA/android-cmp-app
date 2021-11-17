@@ -83,19 +83,6 @@ internal class SpConsentLibImpl(
                 )
             }
         }
-
-        private fun onSpFinish(
-            spClient: SpClient,
-            logger: Logger,
-            executor: ExecutorManager,
-        ) {
-            executor.executeOnSingleThread { spClient.onSpFinish() }
-            logger.clientEvent(
-                event = "onSpFinish",
-                msg = "All campaigns have been processed.",
-                content = ""
-            )
-        }
     }
 
     init {

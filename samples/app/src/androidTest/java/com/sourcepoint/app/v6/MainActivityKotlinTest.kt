@@ -39,9 +39,6 @@ import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import java.lang.RuntimeException
-import java.text.SimpleDateFormat
-import java.util.*
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinTest {

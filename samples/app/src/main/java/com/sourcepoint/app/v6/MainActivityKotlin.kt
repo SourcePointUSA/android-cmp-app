@@ -2,7 +2,6 @@ package com.sourcepoint.app.v6
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -128,7 +127,7 @@ class MainActivityKotlin : AppCompatActivity() {
             return consentAction
         }
 
-        override fun onSpFinish() {
+        override fun onSpFinish(sPConsents: SPConsents) {
             spClientObserver.forEach { it.onSpFinish() }
         }
     }

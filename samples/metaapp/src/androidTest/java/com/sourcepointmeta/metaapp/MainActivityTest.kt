@@ -26,7 +26,6 @@ import com.sourcepointmeta.metaapp.data.localdatasource.createDb
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before

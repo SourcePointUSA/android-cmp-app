@@ -35,7 +35,7 @@ interface SpClient {
     /**
      * It is invoked to signaling that all the campaigns in the SDK get processed.
      */
-    fun onSpFinish()
+    fun onSpFinish(sPConsents: SPConsents)
 }
 
 interface UnitySpClient : SpClient {
