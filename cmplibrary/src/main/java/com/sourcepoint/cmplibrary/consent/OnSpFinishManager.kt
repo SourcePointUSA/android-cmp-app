@@ -21,19 +21,18 @@ internal interface ClientManager {
 
 internal fun ClientManager.Companion.create(
     logger: Logger,
-    executor : ExecutorManager,
-    spClient : SpClient
+    executor: ExecutorManager,
+    spClient: SpClient
 ): ClientManager = ClientManagerImpl(logger, executor, spClient)
 
 private class ClientManagerImpl(
     val logger: Logger,
-    val executor : ExecutorManager,
-    val spClient : SpClient
+    val executor: ExecutorManager,
+    val spClient: SpClient
 ) : ClientManager {
 
     private var cNumber: Int = Int.MAX_VALUE
     private var storedConsent: Int = 0
-
 
     override fun setCampaignNumber(campNum: Int) {
         cNumber = campNum
@@ -56,7 +55,6 @@ private class ClientManagerImpl(
                 if (!actionObj.requestFromPm) {
                     if (cNumber > 0) cNumber--
                 }
-
             }
         }
         checkStatus()

@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary
 import android.content.Context
 import android.view.View
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
-import com.sourcepoint.cmplibrary.consent.*
+import com.sourcepoint.cmplibrary.consent.* // ktlint-disable
 import com.sourcepoint.cmplibrary.consent.ClientManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.LocalStateStatus
@@ -111,7 +111,6 @@ internal class SpConsentLibImpl(
                 (spClient as? UnitySpClient)?.onConsentReady(spConsentString)
                 clientManager.checkStatus()
             }
-
         }
         consentManager.sPConsentsError = { throwable ->
             throwable.printStackTrace()
