@@ -12,6 +12,7 @@ import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkDeepLinkDisplayed
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkNumberOfNullMessage
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnConsentReady
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnSpFinish
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkWebViewDisplayedGDPRFirstLayerMessage
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.clickOnGdprReviewConsent
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.runDemo
@@ -79,8 +80,8 @@ class MainActivityTest {
 
         periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
         wr { checkNumberOfNullMessage(position = 2) }
-        wr { checkOnConsentReady(position = 0) }
-        wr { TestUseCaseMeta.checkOnSpFinish(position = 1) }
+        wr { checkOnConsentReady(position = 1) }
+        wr { checkOnSpFinish(position = 0) }
 
         verify(exactly = 1) { spClient.onSpFinish(any()) }
         verify(exactly = 1) { spClient.onConsentReady(any()) }
@@ -126,7 +127,8 @@ class MainActivityTest {
         db.addTestProperty(autId = "test")
 
         periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
-        wr(backup = { checkOnConsentReady(position = 1) }) { checkOnConsentReady(position = 0) }
+        wr { checkOnConsentReady(position = 1) }
+        wr { checkOnSpFinish(position = 0) }
         wr(delay = 200) { swipeLeftPager() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapMetaDeepLinkOnWebView() }
