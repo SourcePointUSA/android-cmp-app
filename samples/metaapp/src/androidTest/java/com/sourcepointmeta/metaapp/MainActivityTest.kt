@@ -82,7 +82,7 @@ class MainActivityTest {
         wr { checkOnConsentReady(position = 0) }
         wr { TestUseCaseMeta.checkOnSpFinish(position = 1) }
 
-        verify(exactly = 1) { spClient.onSpFinish() }
+        verify(exactly = 1) { spClient.onSpFinish(any()) }
         verify(exactly = 1) { spClient.onConsentReady(any()) }
         verify(exactly = 0) { spClient.onUIReady(any()) }
         verify(exactly = 0) { spClient.onError(any()) }
@@ -132,7 +132,7 @@ class MainActivityTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapMetaDeepLinkOnWebView() }
         wr { checkDeepLinkDisplayed() }
 
-        verify(exactly = 1) { spClient.onSpFinish() }
+        verify(exactly = 1) { spClient.onSpFinish(any()) }
         verify(exactly = 1) { spClient.onConsentReady(any()) }
         verify(exactly = 1) { spClient.onUIReady(any()) }
     }

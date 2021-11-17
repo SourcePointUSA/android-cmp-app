@@ -69,7 +69,7 @@ fun makeConsentLib(
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
     val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
     val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, dataStorage, logger)
-    val clientManager: ClientManager = ClientManager.create(logger = logger, executor = execManager, spClient = spClient)
+    val clientManager: ClientManager = ClientManager.create(logger = logger, executor = execManager, spClient = spClient, consentManagerUtils = consentManagerUtils)
     val consentManager: ConsentManager =
         ConsentManager.create(service, consentManagerUtils, env, logger, dataStorage, execManager, clientManager)
 

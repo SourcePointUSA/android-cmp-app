@@ -34,6 +34,9 @@ class ConsentManagerImplTest {
     private lateinit var sPErrorMock: ((Throwable) -> Unit)
 
     @MockK
+    private lateinit var clientManager: ClientManager
+
+    @MockK
     private lateinit var service: Service
 
     @MockK
@@ -71,7 +74,8 @@ class ConsentManagerImplTest {
             env = Env.PROD,
             logger = logger,
             dataStorage = dataStorage,
-            executorManager = MockExecutorManager()
+            executorManager = MockExecutorManager(),
+            clientManager = clientManager
         )
     }
 
@@ -165,7 +169,8 @@ class ConsentManagerImplTest {
             env = Env.PROD,
             logger = logger,
             dataStorage = dataStorageMock,
-            executorManager = re
+            executorManager = re,
+            clientManager = clientManager
         )
 
         consentManager.sPConsentsSuccess = { spConsents -> sPSuccessMock(spConsents) }
@@ -206,7 +211,8 @@ class ConsentManagerImplTest {
             env = Env.PROD,
             logger = logger,
             dataStorage = dataStorage,
-            executorManager = re
+            executorManager = re,
+            clientManager = clientManager
         )
 
         consentManager.sPConsentsSuccess = { spConsents -> sPSuccessMock(spConsents) }
