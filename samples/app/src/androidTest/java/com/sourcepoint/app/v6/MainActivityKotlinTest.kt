@@ -106,7 +106,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        verify(exactly = 1) { spClient.onSpFinish() }
+        wr { verify(exactly = 1) { spClient.onSpFinish() } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verify {
@@ -149,7 +149,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        verify(exactly = 1) { spClient.onSpFinish() }
+        wr { verify(exactly = 1) { spClient.onSpFinish() } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verify {
@@ -184,7 +184,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        verify(exactly = 1) { spClient.onSpFinish() }
+        wr { verify(exactly = 1) { spClient.onSpFinish() } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verify {
@@ -220,7 +220,7 @@ class MainActivityKotlinTest {
         wr { tapAcceptCcpaOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        verify(exactly = 1) { spClient.onSpFinish() }
+        wr { verify(exactly = 1) { spClient.onSpFinish() } }
         wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { verify(atLeast = 2) { spClient.onUIReady(any()) } }
         wr {
@@ -265,7 +265,7 @@ class MainActivityKotlinTest {
         wr { tapAcceptAllOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        verify(exactly = 1) { spClient.onSpFinish() }
+        wr { verify(exactly = 1) { spClient.onSpFinish() } }
         wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { verify(atLeast = 4) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 2) { spClient.onAction(any(), any()) } }
@@ -297,7 +297,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        verify(exactly = 1) { spClient.onSpFinish() }
+        wr { verify(exactly = 1) { spClient.onSpFinish() } }
 
         verify {
             spClient.run {
@@ -325,7 +325,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        verify(exactly = 1) { spClient.onSpFinish() }
+        wr { verify(exactly = 1) { spClient.onSpFinish() } }
 
         verify {
             spClient.run {

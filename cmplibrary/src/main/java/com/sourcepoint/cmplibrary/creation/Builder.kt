@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.campaign.create
+import com.sourcepoint.cmplibrary.consent.ClientManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.consent.create
@@ -86,6 +87,7 @@ class Builder {
                 .build()
         }
 
+        val spClientLocal: SpClient = spClient ?: genericFail("SpClient must be set!!!")
         val activityWeakRef: WeakReference<Activity> = weakReference ?: failParam("context")
         val appCtx: Context = activityWeakRef.get()?.applicationContext ?: failParam("context")
         val client = createClientInfo()
@@ -105,7 +107,8 @@ class Builder {
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
         val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
         val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, dataStorage, logger)
-        val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, env, logger, dataStorage, execManager)
+        val clientManager: ClientManager = ClientManager.create(logger = logger, executor = execManager, spClient = spClientLocal)
+        val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, env, logger, dataStorage, execManager, clientManager)
 
         return SpConsentLibImpl(
             context = appCtx,
@@ -119,7 +122,8 @@ class Builder {
             urlManager = urlManager,
             dataStorage = dataStorage,
             env = env,
-            spClient = spClient ?: genericFail("SpClient must be set!!!")
+            spClient = spClientLocal,
+            clientManager = clientManager
         )
     }
 
