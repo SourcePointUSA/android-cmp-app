@@ -8,31 +8,30 @@ import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 
-internal interface ClientManager {
+internal interface ClientEventManager {
 
     fun setCampaignNumber(campNum: Int)
     fun storedConsent()
     fun setAction(action: ConsentActionImpl)
     fun setAction(action: NativeMessageActionType)
     fun checkStatus()
-    fun reset()
 
     companion object
 }
 
-internal fun ClientManager.Companion.create(
+internal fun ClientEventManager.Companion.create(
     logger: Logger,
     executor: ExecutorManager,
     consentManagerUtils: ConsentManagerUtils,
     spClient: SpClient
-): ClientManager = ClientManagerImpl(logger, executor, spClient, consentManagerUtils)
+): ClientEventManager = ClientEventManagerImpl(logger, executor, spClient, consentManagerUtils)
 
-private class ClientManagerImpl(
+private class ClientEventManagerImpl(
     val logger: Logger,
     val executor: ExecutorManager,
     val spClient: SpClient,
     val consentManagerUtils: ConsentManagerUtils,
-) : ClientManager {
+) : ClientEventManager {
 
     private var cNumber: Int = Int.MAX_VALUE
     private var storedConsent: Int = 0
@@ -42,8 +41,8 @@ private class ClientManagerImpl(
         storedConsent = 0
     }
 
-    override fun setAction(actionObj: ConsentActionImpl) {
-        when (actionObj.actionType) {
+    override fun setAction(action: ConsentActionImpl) {
+        when (action.actionType) {
             ActionType.ACCEPT_ALL,
             ActionType.REJECT_ALL,
             ActionType.SAVE_AND_EXIT -> {
@@ -55,7 +54,7 @@ private class ClientManagerImpl(
             ActionType.CUSTOM,
             ActionType.MSG_CANCEL,
             ActionType.PM_DISMISS -> {
-                if (!actionObj.requestFromPm) {
+                if (!action.requestFromPm) {
                     if (cNumber > 0) cNumber--
                 }
             }
@@ -76,9 +75,6 @@ private class ClientManagerImpl(
             }
         }
         checkStatus()
-    }
-
-    override fun reset() {
     }
 
     override fun checkStatus() {

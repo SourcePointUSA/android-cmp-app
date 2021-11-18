@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.* // ktlint-disable
-import com.sourcepoint.cmplibrary.consent.ClientManager
+import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.LocalStateStatus
 import com.sourcepoint.cmplibrary.core.* // ktlint-disable
@@ -50,7 +50,7 @@ internal class SpConsentLibImpl(
     private val consentManager: ConsentManager,
     private val dataStorage: DataStorage,
     private val spClient: SpClient,
-    private val clientManager: ClientManager,
+    private val clientEventManager: ClientEventManager,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     private val env: Env = Env.PROD,
 ) : SpConsentLib, NativeMessageController {
@@ -96,7 +96,7 @@ internal class SpConsentLibImpl(
                 )
                 spClient.onConsentReady(spConsents)
                 (spClient as? UnitySpClient)?.onConsentReady(spConsentString)
-                clientManager.checkStatus()
+                clientEventManager.checkStatus()
             }
         }
         consentManager.sPConsentsError = { throwable ->
@@ -124,7 +124,7 @@ internal class SpConsentLibImpl(
             pSuccess = { messageResp ->
                 consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
                 val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
-                clientManager.setCampaignNumber(list.size)
+                clientEventManager.setCampaignNumber(list.size)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
                     return@getUnifiedMessage
@@ -179,7 +179,7 @@ internal class SpConsentLibImpl(
             pSuccess = { messageResp ->
                 consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
                 val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
-                clientManager.setCampaignNumber(list.size)
+                clientEventManager.setCampaignNumber(list.size)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
                     return@getUnifiedMessage
@@ -483,7 +483,7 @@ internal class SpConsentLibImpl(
      * Receive the action performed by the user from the WebView
      */
     internal fun onActionFromWebViewClient(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView?) {
-        clientManager.setAction(actionImpl)
+        clientEventManager.setAction(actionImpl)
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
         pLogger.actionWebApp(
             tag = "onActionFromWebViewClient",
@@ -631,7 +631,7 @@ internal class SpConsentLibImpl(
 
     override fun sendConsent(action: NativeMessageActionType, campaignType: CampaignType) {
 
-        clientManager.setAction(action)
+        clientEventManager.setAction(action)
 
         val nca = NativeConsentAction(
             campaignType = campaignType,

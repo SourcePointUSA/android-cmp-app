@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary
 
 import android.content.Context
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
-import com.sourcepoint.cmplibrary.consent.ClientManager
+import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.ExecutorManager
@@ -32,7 +32,7 @@ class SpConsentLibImplTest {
     private lateinit var logger: Logger
 
     @MockK
-    private lateinit var clientManager: ClientManager
+    private lateinit var clientEventManager: ClientEventManager
 
     @MockK
     private lateinit var jsonConverter: JsonConverter
@@ -134,6 +134,6 @@ class SpConsentLibImplTest {
         urlManager = urlManager,
         dataStorage = dataStorage,
         spClient = spClient,
-        clientManager = clientManager
+        clientEventManager = clientEventManager
     )
 }

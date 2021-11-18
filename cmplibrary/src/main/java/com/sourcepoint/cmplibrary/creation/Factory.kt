@@ -8,7 +8,7 @@ import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.campaign.create
-import com.sourcepoint.cmplibrary.consent.ClientManager
+import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.consent.create
@@ -69,9 +69,9 @@ fun makeConsentLib(
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
     val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
     val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, dataStorage, logger)
-    val clientManager: ClientManager = ClientManager.create(logger = logger, executor = execManager, spClient = spClient, consentManagerUtils = consentManagerUtils)
+    val clientEventManager: ClientEventManager = ClientEventManager.create(logger = logger, executor = execManager, spClient = spClient, consentManagerUtils = consentManagerUtils)
     val consentManager: ConsentManager =
-        ConsentManager.create(service, consentManagerUtils, env, logger, dataStorage, execManager, clientManager)
+        ConsentManager.create(service, consentManagerUtils, env, logger, dataStorage, execManager, clientEventManager)
 
     return SpConsentLibImpl(
         context = appCtx,
@@ -86,6 +86,6 @@ fun makeConsentLib(
         dataStorage = dataStorage,
         env = env,
         spClient = spClient,
-        clientManager = clientManager
+        clientEventManager = clientEventManager
     )
 }
