@@ -73,7 +73,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 
     private fun urlPmGdpr(pmConf: PmUrlConfig, env: Env, isOtt: Boolean): HttpUrl {
 
-        val urlPostFix = if(isOtt) "-ott" else ""
+        val urlPostFix = if (isOtt) "-ott" else ""
 
         return HttpUrl.Builder()
             // https://notice.sp-stage.net/privacy-manager/index.html?message_id=<PM_ID>
@@ -96,7 +96,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         // ott: https://cdn.privacy-mgmt.com/ccpa_ott/index.html?message_id=527843
         //      https://ccpa-notice.sp-stage.net/ccpa_pm/index.html?message_id=14777
 
-        val pathSegment = if(isOtt) "ccpa_ott/index.html" else "ccpa_pm/index.html"
+        val pathSegment = if (isOtt) "ccpa_ott/index.html" else "ccpa_pm/index.html"
 
         return HttpUrl.Builder()
             .scheme("https")
