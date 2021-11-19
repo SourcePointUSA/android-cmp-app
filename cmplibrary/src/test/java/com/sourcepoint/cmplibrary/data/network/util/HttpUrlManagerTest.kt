@@ -21,7 +21,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = "000"
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, false)
         sut.run {
             toString().contains("notice.sp-stage.net").assertTrue()
             queryParameter("pmTab").assertEquals("purposes")
@@ -41,7 +41,7 @@ class HttpUrlManagerTest {
             messageId = null,
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, false)
         sut.run {
             toString().contains("notice.sp-stage.net").assertTrue()
             queryParameter("pmTab").assertEquals("features")
@@ -61,7 +61,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.CCPA, pmConfig)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.CCPA, pmConfig, false)
         sut.run {
             toString().contains("ccpa-notice.sp-stage.net").assertTrue()
             queryParameter("message_id").assertEquals("111")

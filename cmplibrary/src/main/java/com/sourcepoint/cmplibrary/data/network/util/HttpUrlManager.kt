@@ -14,7 +14,7 @@ internal interface HttpUrlManager {
     fun inAppMessageUrl(env: Env): HttpUrl
     fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl
     fun sendCustomConsentUrl(env: Env): HttpUrl
-    fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig): HttpUrl
+    fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig, isOtt: Boolean): HttpUrl
     fun ottUrlPm(pmConf: PmUrlConfig, env: Env): HttpUrl
 }
 
@@ -37,10 +37,10 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         }
     }
 
-    override fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig): HttpUrl {
+    override fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig, isOtt: Boolean): HttpUrl {
         return when (campaignType) {
-            CampaignType.GDPR -> urlPmGdpr(pmConfig, env)
-            CampaignType.CCPA -> urlPmCcpa(pmConfig, env)
+            CampaignType.GDPR -> urlPmGdpr(pmConfig, env, isOtt)
+            CampaignType.CCPA -> urlPmCcpa(pmConfig, env, isOtt)
         }
     }
 
@@ -71,33 +71,45 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("message_id", pmConf.messageId)
         .build()
 
-    private fun urlPmGdpr(pmConf: PmUrlConfig, env: Env): HttpUrl = HttpUrl.Builder()
-        // https://notice.sp-stage.net/privacy-manager/index.html?message_id=<PM_ID>
-        .scheme("https")
-        .host(env.pmHostGdpr)
-        .addPathSegments("privacy-manager/index.html")
-        .addQueryParameter("pmTab", pmConf.pmTab?.key)
-        .addQueryParameter("site_id", pmConf.siteId)
-        .apply {
-            pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
-            pmConf.uuid?.let { addQueryParameter("consentUUID", it) }
-            pmConf.siteId?.let { addQueryParameter("site_id", it) }
-            pmConf.messageId?.let { addQueryParameter("message_id", it) }
-        }
-        .build()
+    private fun urlPmGdpr(pmConf: PmUrlConfig, env: Env, isOtt: Boolean): HttpUrl {
 
-    private fun urlPmCcpa(pmConf: PmUrlConfig, env: Env): HttpUrl = HttpUrl.Builder()
-        // https://ccpa-notice.sp-stage.net/ccpa_pm/index.html?message_id=14777
-        .scheme("https")
-        .host(env.pmHostCcpa)
-        .addPathSegments("ccpa_pm/index.html")
-        .addQueryParameter("site_id", pmConf.siteId)
-        .apply {
-            pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
-            pmConf.uuid?.let { addQueryParameter("ccpaUUID", it) }
-            pmConf.messageId?.let { addQueryParameter("message_id", it) }
-        }
-        .build()
+        val urlPostFix = if(isOtt) "-ott" else ""
+
+        return HttpUrl.Builder()
+            // https://notice.sp-stage.net/privacy-manager/index.html?message_id=<PM_ID>
+            .scheme("https")
+            .host(env.pmHostGdpr)
+            .addPathSegments("privacy-manager$urlPostFix/index.html")
+            .addQueryParameter("pmTab", pmConf.pmTab?.key)
+            .addQueryParameter("site_id", pmConf.siteId)
+            .apply {
+                pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
+                pmConf.uuid?.let { addQueryParameter("consentUUID", it) }
+                pmConf.siteId?.let { addQueryParameter("site_id", it) }
+                pmConf.messageId?.let { addQueryParameter("message_id", it) }
+            }
+            .build()
+    }
+
+    private fun urlPmCcpa(pmConf: PmUrlConfig, env: Env, isOtt: Boolean): HttpUrl {
+
+        // ott: https://cdn.privacy-mgmt.com/ccpa_ott/index.html?message_id=527843
+        //      https://ccpa-notice.sp-stage.net/ccpa_pm/index.html?message_id=14777
+
+        val pathSegment = if(isOtt) "ccpa_ott/index.html" else "ccpa_pm/index.html"
+
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(env.pmHostCcpa)
+            .addPathSegments(pathSegment)
+            .addQueryParameter("site_id", pmConf.siteId)
+            .apply {
+                pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
+                pmConf.uuid?.let { addQueryParameter("ccpaUUID", it) }
+                pmConf.messageId?.let { addQueryParameter("message_id", it) }
+            }
+            .build()
+    }
 
     private fun sendCcpaConsentUrl(actionType: Int, env: Env): HttpUrl {
         // https://<spHost>/wrapper/v2/messages/choice/ccpa/11?env=stage

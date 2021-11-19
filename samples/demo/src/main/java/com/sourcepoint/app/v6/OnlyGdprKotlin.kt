@@ -73,6 +73,15 @@ class OnlyGdprKotlin : AppCompatActivity() {
             spConsentLib.showView(view)
         }
 
+        override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
+            Log.i(this::class.java.name, "ActionType: ${consentAction.actionType}")
+            return consentAction
+        }
+
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+
+        }
+
         override fun onUIFinished(view: View) {
             spConsentLib.removeView(view)
         }

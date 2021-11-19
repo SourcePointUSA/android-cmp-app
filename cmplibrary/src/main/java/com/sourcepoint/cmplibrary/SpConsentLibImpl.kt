@@ -308,7 +308,30 @@ internal class SpConsentLibImpl(
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
-                val url = urlManager.pmUrl(campaignType = campaignType, pmConfig = it, env = env)
+                val url = urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, isOtt = false)
+                pLogger.pm(
+                    tag = "${campaignType.name} Privacy Manager",
+                    url = url.toString(),
+                    pmId = "pmId $pmId",
+                    type = "GET"
+                )
+                webView?.loadConsentUIFromUrl(
+                    url = url,
+                    campaignType = campaignType,
+                    pmId = it.messageId
+                )
+            }
+            .executeOnLeft { logMess("PmUrlConfig is null") }
+    }
+
+    override fun loadOTTPrivacyManager(pmId: String, campaignType: CampaignType) {
+        checkMainThread("loadPrivacyManager")
+        throwsExceptionIfClientIsNull()
+        val pmConfig = campaignManager.getPmConfig(campaignType, pmId, PMTab.DEFAULT)
+        pmConfig
+            .map {
+                val webView = viewManager.createWebView(this, JSReceiverDelegate())
+                val url = urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, isOtt = true)
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
                     url = url.toString(),
@@ -523,7 +546,12 @@ internal class SpConsentLibImpl(
                 campaignManager.getPmConfig(l, actionImpl.privacyManagerId, PMTab.PURPOSES)
                     .map { pmUrlConfig ->
                         val url =
-                            urlManager.pmUrl(campaignType = actionImpl.campaignType, pmConfig = pmUrlConfig, env = env)
+                            urlManager.pmUrl(
+                                env = env,
+                                campaignType = actionImpl.campaignType,
+                                pmConfig = pmUrlConfig,
+                                isOtt = false
+                            )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
                             url = url.toString(),
@@ -543,7 +571,12 @@ internal class SpConsentLibImpl(
                 campaignManager.getPmConfig(campaignType = l, pmId = actionImpl.privacyManagerId, pmTab = null)
                     .map { pmUrlConfig ->
                         val url =
-                            urlManager.pmUrl(campaignType = actionImpl.campaignType, pmConfig = pmUrlConfig, env = env)
+                            urlManager.pmUrl(
+                                env = env,
+                                campaignType = actionImpl.campaignType,
+                                pmConfig = pmUrlConfig,
+                                isOtt = false
+                            )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
                             url = url.toString(),
@@ -569,7 +602,12 @@ internal class SpConsentLibImpl(
                 campaignManager.getPmConfig(l, action.privacyManagerId, PMTab.PURPOSES)
                     .map { pmUrlConfig ->
                         val url =
-                            urlManager.pmUrl(campaignType = action.campaignType, pmConfig = pmUrlConfig, env = env)
+                            urlManager.pmUrl(
+                                env = env,
+                                campaignType = action.campaignType,
+                                pmConfig = pmUrlConfig,
+                                isOtt = false
+                            )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
                             url = url.toString(),
@@ -590,7 +628,12 @@ internal class SpConsentLibImpl(
                 campaignManager.getPmConfig(campaignType = l, pmId = action.privacyManagerId, pmTab = null)
                     .map { pmUrlConfig ->
                         val url =
-                            urlManager.pmUrl(campaignType = action.campaignType, pmConfig = pmUrlConfig, env = env)
+                            urlManager.pmUrl(
+                                env = env,
+                                campaignType = action.campaignType,
+                                pmConfig = pmUrlConfig,
+                                isOtt = false
+                            )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
                             url = url.toString(),
