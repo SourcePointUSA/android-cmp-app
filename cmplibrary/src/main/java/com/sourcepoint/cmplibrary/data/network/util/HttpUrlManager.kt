@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import okhttp3.HttpUrl
@@ -15,7 +14,6 @@ internal interface HttpUrlManager {
     fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl
     fun sendCustomConsentUrl(env: Env): HttpUrl
     fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig, isOtt: Boolean): HttpUrl
-    fun ottUrlPm(pmConf: PmUrlConfig, env: Env): HttpUrl
 }
 
 /**
@@ -54,22 +52,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("inApp", "true")
             .build()
     }
-
-    override fun ottUrlPm(pmConf: PmUrlConfig, env: Env): HttpUrl = HttpUrl.Builder()
-        .scheme("https")
-        .host(env.host)
-        .addPathSegments("privacy-manager-ott")
-        .addPathSegments("index.html")
-        .addQueryParameter("consentLanguage", pmConf.consentLanguage)
-        .addQueryParameter("consentUUID", pmConf.uuid)
-        .apply {
-            if (pmConf.pmTab != PMTab.DEFAULT) {
-                addQueryParameter("pmTab", pmConf.pmTab?.key)
-            }
-        }
-        .addQueryParameter("site_id", pmConf.siteId)
-        .addQueryParameter("message_id", pmConf.messageId)
-        .build()
 
     private fun urlPmGdpr(pmConf: PmUrlConfig, env: Env, isOtt: Boolean): HttpUrl {
 

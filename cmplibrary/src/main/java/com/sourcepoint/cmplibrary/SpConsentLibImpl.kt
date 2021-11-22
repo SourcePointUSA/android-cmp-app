@@ -115,7 +115,6 @@ internal class SpConsentLibImpl(
     /** Start Client's methods */
     override fun loadMessage(authId: String) {
         checkMainThread("loadMessage")
-        throwsExceptionIfClientIsNull()
 
         if (viewManager.isViewInLayout) return
 
@@ -170,7 +169,6 @@ internal class SpConsentLibImpl(
 
     override fun loadMessage() {
         checkMainThread("loadMessage")
-        throwsExceptionIfClientIsNull()
 
         if (viewManager.isViewInLayout) return
 
@@ -222,7 +220,6 @@ internal class SpConsentLibImpl(
 
     override fun loadMessage(nativeMessage: NativeMessage) {
         checkMainThread("loadMessage")
-        throwsExceptionIfClientIsNull()
 
         service.getNativeMessageK(
             campaignManager.getUnifiedMessageReq(),
@@ -302,36 +299,21 @@ internal class SpConsentLibImpl(
     }
 
     override fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType) {
+        loadPm(pmId = pmId, campaignType = campaignType, isOtt = false, pmTab = pmTab)
+    }
+
+    override fun loadOTTPrivacyManager(pmId: String, campaignType: CampaignType) {
+        loadPm(pmId = pmId, campaignType = campaignType, isOtt = true, pmTab = PMTab.DEFAULT)
+    }
+
+    private fun loadPm(pmId: String, pmTab: PMTab, campaignType: CampaignType, isOtt: Boolean) {
         checkMainThread("loadPrivacyManager")
-        throwsExceptionIfClientIsNull()
+
         val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab)
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
-                val url = urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, isOtt = false)
-                pLogger.pm(
-                    tag = "${campaignType.name} Privacy Manager",
-                    url = url.toString(),
-                    pmId = "pmId $pmId",
-                    type = "GET"
-                )
-                webView?.loadConsentUIFromUrl(
-                    url = url,
-                    campaignType = campaignType,
-                    pmId = it.messageId
-                )
-            }
-            .executeOnLeft { logMess("PmUrlConfig is null") }
-    }
-
-    override fun loadOTTPrivacyManager(pmId: String, campaignType: CampaignType) {
-        checkMainThread("loadPrivacyManager")
-        throwsExceptionIfClientIsNull()
-        val pmConfig = campaignManager.getPmConfig(campaignType, pmId, PMTab.DEFAULT)
-        pmConfig
-            .map {
-                val webView = viewManager.createWebView(this, JSReceiverDelegate())
-                val url = urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, isOtt = true)
+                val url = urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, isOtt = isOtt)
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
                     url = url.toString(),
@@ -361,10 +343,6 @@ internal class SpConsentLibImpl(
         executor.dispose()
         viewManager.removeAllViews()
         campaignManager.clearConsents()
-    }
-
-    private fun throwsExceptionIfClientIsNull() {
-        spClient ?: throw MissingClientException(description = "spClient instance is missing")
     }
 
     private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, "$mess")

@@ -8,7 +8,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.sourcepoint.app.v6"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 29
         versionCode 2
         versionName "1.0.0"
@@ -84,4 +84,6 @@ dependencies {
 
     // mockk
     androidTestImplementation(Libs.mockkAndroid)
+
+    androidTestImplementation group: 'androidx.test.uiautomator', name: 'uiautomator', version: '2.2.0'
 }

@@ -1,7 +1,7 @@
 package com.sourcepoint.app.v6
 
 import android.webkit.CookieManager
-import com.example.uitestutil.* //ktlint-disable
+import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestData.ACCEPT
 import com.sourcepoint.app.v6.TestData.ACCEPT_ALL
 import com.sourcepoint.app.v6.TestData.CCPA_CONSENT_LIST
@@ -17,6 +17,7 @@ import com.sourcepoint.app.v6.TestData.PURPOSES
 import com.sourcepoint.app.v6.TestData.REJECT
 import com.sourcepoint.app.v6.TestData.REJECT_ALL
 import com.sourcepoint.app.v6.TestData.SAVE_AND_EXIT
+import com.sourcepoint.app.v6.TestData.SETTINGS_DE
 import com.sourcepoint.app.v6.TestData.SITE_VENDORS
 import com.sourcepoint.app.v6.TestData.VENDORS_LIST
 import com.sourcepoint.app.v6.di.customCategoriesDataProd
@@ -174,6 +175,10 @@ class TestUseCase {
 
         fun tapAcceptOnWebView() {
             performClickOnWebViewByContent(ACCEPT)
+        }
+
+        fun tapSettingsOnWebViewDE() {
+            performClickOnWebViewByContent(SETTINGS_DE)
         }
 
         fun tapAcceptCcpaOnWebView() {

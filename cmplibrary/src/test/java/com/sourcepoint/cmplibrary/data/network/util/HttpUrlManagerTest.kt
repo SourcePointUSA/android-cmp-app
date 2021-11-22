@@ -107,17 +107,54 @@ class HttpUrlManagerTest {
     }
 
     @Test
-    fun `GIVEN an OTT and `() {
+    fun `GIVEN a GDPR OTT property RETURN the ott link`() {
         val config = PmUrlConfig(
-            pmTab = PMTab.DEFAULT,
-            consentLanguage = "EN",
-            uuid = "3c7c3e22-0aac-4941-b97d-8e70b73b91c7",
-            siteId = "7639",
-            messageId = "122058"
+            pmTab = null,
+            consentLanguage = null,
+            uuid = "uuid",
+            messageId = "111",
+            siteId = null
         )
-        val sut = HttpUrlManagerSingleton.ottUrlPm(config, Env.PROD)
-        val url = sut.toString()
-        val expected = "https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?consentLanguage=EN&consentUUID=3c7c3e22-0aac-4941-b97d-8e70b73b91c7&site_id=7639&message_id=122058"
-        url.assertEquals(expected)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, isOtt = true).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?pmTab&site_id&consentUUID=uuid&message_id=111")
+    }
+
+    @Test
+    fun `GIVEN a GDPR property RETURN the correct pm link`() {
+        val config = PmUrlConfig(
+            pmTab = null,
+            consentLanguage = null,
+            uuid = "uuid",
+            messageId = "111",
+            siteId = null
+        )
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, isOtt = false).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager/index.html?pmTab&site_id&consentUUID=uuid&message_id=111")
+    }
+
+    @Test
+    fun `GIVEN a CCPA property RETURN the correct pm link`() {
+        val config = PmUrlConfig(
+            pmTab = null,
+            consentLanguage = null,
+            uuid = "uuid",
+            messageId = "111",
+            siteId = null
+        )
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, isOtt = true).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_ott/index.html?site_id&ccpaUUID=uuid&message_id=111")
+    }
+
+    @Test
+    fun `GIVEN a CCPA OTT property RETURN the ott link`() {
+        val config = PmUrlConfig(
+            pmTab = null,
+            consentLanguage = null,
+            uuid = "uuid",
+            messageId = "111",
+            siteId = null
+        )
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, isOtt = false).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_pm/index.html?site_id&ccpaUUID=uuid&message_id=111")
     }
 }
