@@ -3,6 +3,8 @@ package com.sourcepoint.app.v6;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.app.v6.core.DataProvider;
 import com.sourcepoint.cmplibrary.NativeMessageController;
@@ -137,6 +139,11 @@ public class MainActivityJava extends AppCompatActivity {
         @Override
         public ConsentAction onAction(@NotNull View view, @NotNull ConsentAction consentAction) {
             return consentAction;
+        }
+
+
+        @Override
+        public void onNoIntentActivitiesFound(@NonNull String url) {
         }
     }
 

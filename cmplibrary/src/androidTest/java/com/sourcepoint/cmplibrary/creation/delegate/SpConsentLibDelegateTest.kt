@@ -92,5 +92,8 @@ class SpConsentLibDelegateTest {
 
         override fun onError(error: Throwable) {
         }
+
+        override fun onNoIntentActivitiesFound(url: String) {
+        }
     }
 }

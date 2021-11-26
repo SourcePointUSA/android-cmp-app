@@ -31,6 +31,11 @@ interface SpClient {
     fun onUIFinished(view: View)
     fun onConsentReady(consent: SPConsents)
     fun onError(error: Throwable)
+
+    /**
+     * This callback is invoked if no activity could open an intent with the given url.
+     */
+    fun onNoIntentActivitiesFound(url: String)
 }
 
 interface UnitySpClient : SpClient {

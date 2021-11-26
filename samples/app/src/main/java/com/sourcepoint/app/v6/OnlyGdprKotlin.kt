@@ -93,5 +93,9 @@ class OnlyGdprKotlin : AppCompatActivity() {
             Log.i(this::class.java.name, "ActionType: $consentAction")
             return consentAction
         }
+
+        override fun onNoIntentActivitiesFound(url: String) {
+            Log.i(this::class.java.name, "No activities found for url: $url")
+        }
     }
 }
