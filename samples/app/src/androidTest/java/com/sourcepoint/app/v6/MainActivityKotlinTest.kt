@@ -106,7 +106,7 @@ class MainActivityKotlinTest {
         wr { verify(exactly = 1) { spClient.onSpFinish(any()) } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
-        verifySequence {
+        verify {
             spClient.run {
                 onUIReady(any())
                 onUIFinished(any())
@@ -218,7 +218,7 @@ class MainActivityKotlinTest {
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 1) { spClient.onSpFinish(any()) } }
-        wr { verify(atLeast = 2) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { verify(atLeast = 2) { spClient.onUIReady(any()) } }
         wr {
             verify(exactly = 2) {
@@ -393,11 +393,11 @@ class MainActivityKotlinTest {
                 object : DataProvider {
                     override val authId = uuid
                     override val resetAll = true
+                    override val isOtt: Boolean = false
                     override val url = url
                     override val spConfig: SpConfig = spConfig
                     override val gdprPmId: String = gdprPmId
                     override val ccpaPmId: String = ccpaPmId
-                    override val isOtt: Boolean = false
                     override val customVendorList: List<String> = customVendorDataListProd.map { it.first }
                     override val customCategories: List<String> = customCategoriesDataProd.map { it.first }
                 }
