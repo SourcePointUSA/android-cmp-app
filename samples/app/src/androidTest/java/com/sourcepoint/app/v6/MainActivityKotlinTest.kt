@@ -39,9 +39,6 @@ import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import java.lang.RuntimeException
-import java.text.SimpleDateFormat
-import java.util.*
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinTest {
@@ -53,20 +50,20 @@ class MainActivityKotlinTest {
         if (this::scenario.isLateinit) scenario.close()
     }
 
-    private val spConfGdpr = config {
-        accountId = 22
-        propertyName = "mobile.multicampaign.demo"
-        messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 3000
-        +(CampaignType.GDPR)
-    }
-
     private val spConfCcpa = config {
         accountId = 22
         propertyName = "mobile.multicampaign.demo"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
         +(CampaignType.CCPA)
+    }
+
+    private val spConfGdpr = config {
+        accountId = 22
+        propertyName = "mobile.multicampaign.demo"
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 3000
+        +(CampaignType.GDPR)
     }
 
     private val spConf = config {
@@ -106,6 +103,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinish(any()) } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verify {
@@ -148,6 +146,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinish(any()) } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verify {
@@ -182,6 +181,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
 
         verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinish(any()) } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verify {
@@ -217,6 +217,7 @@ class MainActivityKotlinTest {
         wr { tapAcceptCcpaOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinish(any()) } }
         wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { verify(atLeast = 2) { spClient.onUIReady(any()) } }
         wr {
@@ -261,8 +262,9 @@ class MainActivityKotlinTest {
         wr { tapAcceptAllOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinish(any()) } }
         wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 4) { spClient.onUIReady(any()) } }
+        wr { verify(atLeast = 4) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 2) { spClient.onAction(any(), any()) } }
         verify(exactly = 3) { spClient.onUIFinished(any()) }
 
@@ -292,6 +294,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinish(any()) } }
 
         verify {
             spClient.run {
@@ -319,6 +322,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinish(any()) } }
 
         verify {
             spClient.run {
@@ -332,14 +336,14 @@ class MainActivityKotlinTest {
         }
     }
 
-    //    @Test
+    @Test
     fun GIVEN_a_deeplink_OPEN_an_activity() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))
 
         scenario = launchActivity()
 
-        wr { tapRejectOnWebView() }
+        periodicWr(backup = { scenario.recreateAndResume() }) { tapRejectOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapNetworkOnWebView() }
         wr { checkDeepLinkDisplayed() }
@@ -353,12 +357,11 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
-//        wr { tapAcceptCcpaOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapToDisableAllConsent() }
         wr { tapSaveAndExitWebView() }
         wr { clickOnGdprReviewConsent() }
-        wr { checkAllConsentsOff() }
+        wr(backup = { clickOnGdprReviewConsent() })  { checkAllConsentsOff() }
     }
 
     @Test

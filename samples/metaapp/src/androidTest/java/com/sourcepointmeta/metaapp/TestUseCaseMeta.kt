@@ -109,21 +109,30 @@ class TestUseCaseMeta {
             clickElementListItem<PropertyAdapter.Vh>(R.id.play_demo_btn, R.id.property_list)
         }
 
-        fun checkNumberOfNullMessage() {
+        fun checkNumberOfNullMessage(position: Int = 1) {
             checkElementListItem<PropertyAdapter.Vh>(
                 resId = R.id.log_body_1,
                 content = "parsed campaigns\n" + "1 Null messages\n" + "0 Not Null message",
                 recyclerViewId = R.id.log_list,
-                position = 1
+                position = position
             )
         }
 
-        fun checkOnConsentReady() {
+        fun checkOnConsentReady(position: Int = 0) {
             checkElementListItem<PropertyAdapter.Vh>(
                 resId = R.id.log_body,
                 content = "onConsentReady",
                 recyclerViewId = R.id.log_list,
-                position = 0
+                position = position
+            )
+        }
+
+        fun checkOnSpFinish(position: Int = 0) {
+            checkElementListItem<PropertyAdapter.Vh>(
+                resId = R.id.log_body,
+                content = "All campaigns have been processed.",
+                recyclerViewId = R.id.log_list,
+                position = position
             )
         }
 
