@@ -3,8 +3,9 @@ package com.sourcepoint.cmplibrary
 import android.content.Context
 import android.view.View
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.consent.* // ktlint-disable
+import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
-import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.consent.LocalStateStatus
 import com.sourcepoint.cmplibrary.core.* // ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
@@ -49,8 +50,9 @@ internal class SpConsentLibImpl(
     private val consentManager: ConsentManager,
     private val dataStorage: DataStorage,
     private val spClient: SpClient,
+    private val clientEventManager: ClientEventManager,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
-    private val env: Env = Env.PROD
+    private val env: Env = Env.PROD,
 ) : SpConsentLib, NativeMessageController {
 
     private val nativeMsgClient by lazy { NativeMsgDelegate() }
@@ -94,6 +96,7 @@ internal class SpConsentLibImpl(
                 )
                 spClient.onConsentReady(spConsents)
                 (spClient as? UnitySpClient)?.onConsentReady(spConsentString)
+                clientEventManager.checkStatus()
             }
         }
         consentManager.sPConsentsError = { throwable ->
@@ -112,7 +115,6 @@ internal class SpConsentLibImpl(
     /** Start Client's methods */
     override fun loadMessage(authId: String) {
         checkMainThread("loadMessage")
-        throwsExceptionIfClientIsNull()
 
         if (viewManager.isViewInLayout) return
 
@@ -121,6 +123,7 @@ internal class SpConsentLibImpl(
             pSuccess = { messageResp ->
                 consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
                 val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
+                clientEventManager.setCampaignNumber(list.size)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
                     return@getUnifiedMessage
@@ -166,7 +169,6 @@ internal class SpConsentLibImpl(
 
     override fun loadMessage() {
         checkMainThread("loadMessage")
-        throwsExceptionIfClientIsNull()
 
         if (viewManager.isViewInLayout) return
 
@@ -175,6 +177,7 @@ internal class SpConsentLibImpl(
             pSuccess = { messageResp ->
                 consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
                 val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
+                clientEventManager.setCampaignNumber(list.size)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
                     return@getUnifiedMessage
@@ -217,7 +220,6 @@ internal class SpConsentLibImpl(
 
     override fun loadMessage(nativeMessage: NativeMessage) {
         checkMainThread("loadMessage")
-        throwsExceptionIfClientIsNull()
 
         service.getNativeMessageK(
             campaignManager.getUnifiedMessageReq(),
@@ -297,13 +299,21 @@ internal class SpConsentLibImpl(
     }
 
     override fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType) {
+        loadPm(pmId = pmId, campaignType = campaignType, isOtt = false, pmTab = pmTab)
+    }
+
+    override fun loadOTTPrivacyManager(pmId: String, campaignType: CampaignType) {
+        loadPm(pmId = pmId, campaignType = campaignType, isOtt = true, pmTab = PMTab.DEFAULT)
+    }
+
+    private fun loadPm(pmId: String, pmTab: PMTab, campaignType: CampaignType, isOtt: Boolean) {
         checkMainThread("loadPrivacyManager")
-        throwsExceptionIfClientIsNull()
+
         val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab)
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
-                val url = urlManager.pmUrl(campaignType = campaignType, pmConfig = it, env = env)
+                val url = urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, isOtt = isOtt)
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
                     url = url.toString(),
@@ -333,10 +343,6 @@ internal class SpConsentLibImpl(
         executor.dispose()
         viewManager.removeAllViews()
         campaignManager.clearConsents()
-    }
-
-    private fun throwsExceptionIfClientIsNull() {
-        spClient ?: throw MissingClientException(description = "spClient instance is missing")
     }
 
     private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, "$mess")
@@ -478,6 +484,7 @@ internal class SpConsentLibImpl(
      * Receive the action performed by the user from the WebView
      */
     internal fun onActionFromWebViewClient(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView?) {
+        clientEventManager.setAction(actionImpl)
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
         pLogger.actionWebApp(
             tag = "onActionFromWebViewClient",
@@ -517,7 +524,12 @@ internal class SpConsentLibImpl(
                 campaignManager.getPmConfig(l, actionImpl.privacyManagerId, PMTab.PURPOSES)
                     .map { pmUrlConfig ->
                         val url =
-                            urlManager.pmUrl(campaignType = actionImpl.campaignType, pmConfig = pmUrlConfig, env = env)
+                            urlManager.pmUrl(
+                                env = env,
+                                campaignType = actionImpl.campaignType,
+                                pmConfig = pmUrlConfig,
+                                isOtt = false
+                            )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
                             url = url.toString(),
@@ -537,7 +549,12 @@ internal class SpConsentLibImpl(
                 campaignManager.getPmConfig(campaignType = l, pmId = actionImpl.privacyManagerId, pmTab = null)
                     .map { pmUrlConfig ->
                         val url =
-                            urlManager.pmUrl(campaignType = actionImpl.campaignType, pmConfig = pmUrlConfig, env = env)
+                            urlManager.pmUrl(
+                                env = env,
+                                campaignType = actionImpl.campaignType,
+                                pmConfig = pmUrlConfig,
+                                isOtt = false
+                            )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
                             url = url.toString(),
@@ -563,7 +580,12 @@ internal class SpConsentLibImpl(
                 campaignManager.getPmConfig(l, action.privacyManagerId, PMTab.PURPOSES)
                     .map { pmUrlConfig ->
                         val url =
-                            urlManager.pmUrl(campaignType = action.campaignType, pmConfig = pmUrlConfig, env = env)
+                            urlManager.pmUrl(
+                                env = env,
+                                campaignType = action.campaignType,
+                                pmConfig = pmUrlConfig,
+                                isOtt = false
+                            )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
                             url = url.toString(),
@@ -584,7 +606,12 @@ internal class SpConsentLibImpl(
                 campaignManager.getPmConfig(campaignType = l, pmId = action.privacyManagerId, pmTab = null)
                     .map { pmUrlConfig ->
                         val url =
-                            urlManager.pmUrl(campaignType = action.campaignType, pmConfig = pmUrlConfig, env = env)
+                            urlManager.pmUrl(
+                                env = env,
+                                campaignType = action.campaignType,
+                                pmConfig = pmUrlConfig,
+                                isOtt = false
+                            )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
                             url = url.toString(),
@@ -625,13 +652,16 @@ internal class SpConsentLibImpl(
 
     override fun sendConsent(action: NativeMessageActionType, campaignType: CampaignType) {
 
+        clientEventManager.setAction(action)
+
         val nca = NativeConsentAction(
             campaignType = campaignType,
             actionType = action
         )
 
         when (nca.actionType) {
-            NativeMessageActionType.SHOW_OPTIONS,
+            NativeMessageActionType.SHOW_OPTIONS -> {
+            }
             NativeMessageActionType.UNKNOWN,
             NativeMessageActionType.MSG_CANCEL -> {
             }

@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
 import kotlinx.android.synthetic.main.only_gdpr.*
@@ -70,6 +72,15 @@ class OnlyGdprKotlin : AppCompatActivity() {
             spConsentLib.showView(view)
         }
 
+        override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
+            Log.i(this::class.java.name, "ActionType: ${consentAction.actionType}")
+            return consentAction
+        }
+
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+
+        }
+
         override fun onUIFinished(view: View) {
             spConsentLib.removeView(view)
         }
@@ -80,10 +91,6 @@ class OnlyGdprKotlin : AppCompatActivity() {
 
         override fun onConsentReady(consent: SPConsents) {
             Log.i(this::class.java.name, "onConsentReady: $consent")
-        }
-
-        override fun onAction(view: View, actionType: ActionType) {
-            Log.i(this::class.java.name, "ActionType: $actionType")
         }
 
         override fun onMessageReady(message: JSONObject) {}

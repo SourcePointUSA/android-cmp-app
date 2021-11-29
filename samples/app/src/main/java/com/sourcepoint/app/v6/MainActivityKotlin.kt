@@ -2,7 +2,6 @@ package com.sourcepoint.app.v6
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -49,18 +48,33 @@ class MainActivityKotlin : AppCompatActivity() {
         }
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
-            spConsentLib.loadPrivacyManager(
-                dataProvider.gdprPmId,
-                PMTab.PURPOSES,
-                CampaignType.GDPR
-            )
+            if(dataProvider.isOtt){
+                spConsentLib.loadOTTPrivacyManager(
+                    dataProvider.gdprPmId,
+                    CampaignType.GDPR
+                )
+            }else{
+                spConsentLib.loadPrivacyManager(
+                    dataProvider.gdprPmId,
+                    PMTab.PURPOSES,
+                    CampaignType.GDPR
+                )
+            }
         }
         findViewById<View>(R.id.review_consents_ccpa).setOnClickListener { _v: View? ->
-            spConsentLib.loadPrivacyManager(
-                dataProvider.ccpaPmId,
-                PMTab.PURPOSES,
-                CampaignType.CCPA
-            )
+            if(dataProvider.isOtt){
+                spConsentLib.loadOTTPrivacyManager(
+                    dataProvider.ccpaPmId,
+                    CampaignType.CCPA
+                )
+            }else{
+                spConsentLib.loadPrivacyManager(
+                    dataProvider.ccpaPmId,
+                    PMTab.PURPOSES,
+                    CampaignType.CCPA
+                )
+            }
+
         }
         findViewById<View>(R.id.clear_all).setOnClickListener { _v: View? -> clearAllData(this) }
         findViewById<View>(R.id.auth_id_activity).setOnClickListener { _v: View? ->
@@ -78,7 +92,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        Handler().postDelayed({ spConsentLib.loadMessage() }, 400)
+        spConsentLib.loadMessage()
     }
 
     override fun onDestroy() {
@@ -126,6 +140,10 @@ class MainActivityKotlin : AppCompatActivity() {
             Log.i(TAG, "ActionType: $consentAction")
             consentAction.pubData.put("pb_key", "pb_value")
             return consentAction
+        }
+
+        override fun onSpFinish(sPConsents: SPConsents) {
+            spClientObserver.forEach { it.onSpFinish(sPConsents) }
         }
     }
 }

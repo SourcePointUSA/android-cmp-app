@@ -31,6 +31,11 @@ interface SpClient {
     fun onUIFinished(view: View)
     fun onConsentReady(consent: SPConsents)
     fun onError(error: Throwable)
+
+    /**
+     * It is invoked to signaling that all the campaigns in the SDK get processed.
+     */
+    fun onSpFinish(sPConsents: SPConsents)
 }
 
 interface UnitySpClient : SpClient {

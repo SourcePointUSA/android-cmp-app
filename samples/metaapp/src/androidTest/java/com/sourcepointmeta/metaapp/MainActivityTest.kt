@@ -4,12 +4,15 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
+import com.example.uitestutil.periodicWr
+import com.example.uitestutil.recreateAndResume
 import com.example.uitestutil.wr
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkDeepLinkDisplayed
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkNumberOfNullMessage
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnConsentReady
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnSpFinish
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkWebViewDisplayedGDPRFirstLayerMessage
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.clickOnGdprReviewConsent
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.runDemo
@@ -24,7 +27,6 @@ import com.sourcepointmeta.metaapp.data.localdatasource.createDb
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifySequence
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -76,10 +78,12 @@ class MainActivityTest {
 
         db.addTestProperty(autId = "test")
 
-        runDemo()
-        wr { checkNumberOfNullMessage() }
-        wr { checkOnConsentReady() }
+        periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
+        wr { checkNumberOfNullMessage(position = 2) }
+        wr { checkOnConsentReady(position = 1) }
+        wr { checkOnSpFinish(position = 0) }
 
+        verify(exactly = 1) { spClient.onSpFinish(any()) }
         verify(exactly = 1) { spClient.onConsentReady(any()) }
         verify(exactly = 0) { spClient.onUIReady(any()) }
         verify(exactly = 0) { spClient.onError(any()) }
@@ -99,7 +103,7 @@ class MainActivityTest {
 
         db.addTestProperty(gdprEnabled = true, ccpaEnabled = true)
 
-        runDemo()
+        periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
         wr { tapOptionWebView() }
         wr { tapCancelOnWebView() }
         wr { checkWebViewDisplayedGDPRFirstLayerMessage() }
@@ -122,16 +126,16 @@ class MainActivityTest {
 
         db.addTestProperty(autId = "test")
 
-        runDemo()
-        wr { checkOnConsentReady() }
+        periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
+        wr { checkOnConsentReady(position = 1) }
+        wr { checkOnSpFinish(position = 0) }
         wr(delay = 200) { swipeLeftPager() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapMetaDeepLinkOnWebView() }
         wr { checkDeepLinkDisplayed() }
 
-        verifySequence {
-            spClient.onConsentReady(any())
-            spClient.onUIReady(any())
-        }
+        verify(exactly = 1) { spClient.onSpFinish(any()) }
+        verify(exactly = 1) { spClient.onConsentReady(any()) }
+        verify(exactly = 1) { spClient.onUIReady(any()) }
     }
 }

@@ -46,8 +46,9 @@ internal fun ConsentManager.Companion.create(
     env: Env,
     logger: Logger,
     dataStorage: DataStorage,
-    executorManager: ExecutorManager
-): ConsentManager = ConsentManagerImpl(service, consentManagerUtils, logger, env, dataStorage, executorManager)
+    executorManager: ExecutorManager,
+    clientEventManager: ClientEventManager
+): ConsentManager = ConsentManagerImpl(service, consentManagerUtils, logger, env, dataStorage, executorManager, clientEventManager)
 
 private class ConsentManagerImpl(
     private val service: Service,
@@ -55,7 +56,8 @@ private class ConsentManagerImpl(
     private val logger: Logger,
     private val env: Env,
     private val dataStorage: DataStorage,
-    private val executorManager: ExecutorManager
+    private val executorManager: ExecutorManager,
+    private val clientEventManager: ClientEventManager
 ) : ConsentManager {
 
     override var sPConsentsSuccess: ((SPConsents) -> Unit)? = null
@@ -124,6 +126,7 @@ private class ConsentManagerImpl(
                     val sPConsents = responseConsentHandler(either, actionImpl, consentManagerUtils)
                     sPConsentsSuccess?.invoke(sPConsents)
                     this.localStateStatus = updatedLocalState
+                    clientEventManager.storedConsent()
                 }
                 is Left -> sPConsentsError?.invoke(either.t)
             }
