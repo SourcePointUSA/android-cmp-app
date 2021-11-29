@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp.ui.propertylist
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -124,15 +125,11 @@ class PropertyListFragment : Fragment() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Metaapp version ${BuildConfig.VERSION_NAME} out of date, new version $version is available.")
             .setPositiveButton("Update it") { _, _ ->
-                val uriBuilder = Uri.parse("https://play.google.com/store/apps/details")
-                    .buildUpon()
-                    .appendQueryParameter("id", "com.sourcepointmeta.metaapp")
-                    .appendQueryParameter("launch", "true")
-                val intent = Intent(Intent.ACTION_VIEW).apply {
-                    data = uriBuilder.build()
-                    setPackage("com.android.vending")
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.sourcepointmeta.metaapp")))
+                } catch (e: ActivityNotFoundException) {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp")))
                 }
-                startActivity(intent)
             }
             .setNegativeButton("Continue") { _, _ -> }
             .show()
@@ -143,17 +140,10 @@ class PropertyListFragment : Fragment() {
     }
 
     private fun runDemo(property: Property) {
-//        if (property.hasActiveCampaign()) {
         val bundle = Bundle()
         bundle.putString("property_name", property.propertyName)
         val i = Intent(activity, DemoActivity::class.java)
         i.putExtras(bundle)
         startActivity(i)
-//        } else {
-//            MaterialAlertDialogBuilder(requireContext())
-//                .setTitle("You need at least one active campaign to run the demo.")
-//                .setPositiveButton("OK", null)
-//                .show()
-//        }
     }
 }
