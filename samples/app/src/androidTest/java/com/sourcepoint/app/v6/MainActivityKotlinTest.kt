@@ -393,6 +393,7 @@ class MainActivityKotlinTest {
                 object : DataProvider {
                     override val authId = uuid
                     override val resetAll = true
+                    override val isOtt: Boolean = false
                     override val url = url
                     override val spConfig: SpConfig = spConfig
                     override val gdprPmId: String = gdprPmId
