@@ -111,6 +111,8 @@ class MainActivityTest {
         wr { tapOptionWebView() }
         wr { tapCancelOnWebView() }
         wr { tapAcceptAllOnWebView() }
+
+        verify(exactly = 4) { spClient.onAction(any(), any()) }
     }
 
     @Test
