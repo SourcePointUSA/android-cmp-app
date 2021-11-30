@@ -15,6 +15,7 @@ internal interface ClientEventManager {
     fun setAction(action: ConsentActionImpl)
     fun setAction(action: NativeMessageActionType)
     fun checkStatus()
+    fun triggerOnSpFinish()
 
     companion object
 }
@@ -100,6 +101,12 @@ private class ClientEventManagerImpl(
                 )
             }
         }
+    }
+
+    override fun triggerOnSpFinish() {
+        cNumber = 0
+        storedConsent = 0
+        checkStatus()
     }
 
     override fun storedConsent() {

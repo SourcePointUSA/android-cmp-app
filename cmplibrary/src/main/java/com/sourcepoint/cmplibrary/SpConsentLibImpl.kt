@@ -323,7 +323,8 @@ internal class SpConsentLibImpl(
                 webView?.loadConsentUIFromUrl(
                     url = url,
                     campaignType = campaignType,
-                    pmId = it.messageId
+                    pmId = it.messageId,
+                    singleShot = true
                 )
             }
             .executeOnLeft { logMess("PmUrlConfig is null") }
@@ -515,6 +516,9 @@ internal class SpConsentLibImpl(
                 executor.executeOnSingleThread {
                     spClient.onAction(view, actionImpl) as? ConsentActionImpl
                 }
+                if(actionImpl.singleShotPM){
+                    clientEventManager.triggerOnSpFinish()
+                }
             }
         }
     }
@@ -542,7 +546,8 @@ internal class SpConsentLibImpl(
                         iConsentWebView.loadConsentUIFromUrl(
                             url = url,
                             campaignType = actionImpl.campaignType,
-                            pmId = actionImpl.privacyManagerId
+                            pmId = actionImpl.privacyManagerId,
+                            singleShot = false
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -567,7 +572,8 @@ internal class SpConsentLibImpl(
                         iConsentWebView.loadConsentUIFromUrl(
                             url = url,
                             campaignType = actionImpl.campaignType,
-                            pmId = actionImpl.privacyManagerId
+                            pmId = actionImpl.privacyManagerId,
+                            singleShot = false
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
