@@ -486,7 +486,6 @@ internal class SpConsentLibImpl(
      * Receive the action performed by the user from the WebView
      */
     internal fun onActionFromWebViewClient(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView?) {
-        clientEventManager.setAction(actionImpl)
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
         pLogger.actionWebApp(
             tag = "onActionFromWebViewClient",
@@ -517,11 +516,9 @@ internal class SpConsentLibImpl(
                 executor.executeOnSingleThread {
                     spClient.onAction(view, actionImpl) as? ConsentActionImpl
                 }
-                if (actionImpl.singleShotPM) {
-                    clientEventManager.triggerOnSpFinish()
-                }
             }
         }
+        clientEventManager.setAction(actionImpl)
     }
 
     private fun showOption(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView) {

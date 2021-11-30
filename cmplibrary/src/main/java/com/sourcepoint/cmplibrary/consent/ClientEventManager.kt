@@ -16,7 +16,6 @@ internal interface ClientEventManager {
     fun setAction(action: ConsentActionImpl)
     fun setAction(action: NativeMessageActionType)
     fun checkStatus()
-    fun triggerOnSpFinish()
 
     companion object
 }
@@ -61,7 +60,7 @@ private class ClientEventManagerImpl(
             ActionType.CUSTOM,
             ActionType.MSG_CANCEL,
             ActionType.PM_DISMISS -> {
-                if (!action.requestFromPm) {
+                if (!action.requestFromPm || action.singleShotPM) {
                     if (cNumber > 0) cNumber--
                 }
             }
@@ -107,12 +106,6 @@ private class ClientEventManagerImpl(
                 )
             }
         }
-    }
-
-    override fun triggerOnSpFinish() {
-        cNumber = 0
-        storedConsent = 0
-        checkStatus()
     }
 
     override fun storedConsent() {
