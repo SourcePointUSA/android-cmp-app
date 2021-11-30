@@ -111,6 +111,8 @@ class MainActivityTest {
         wr { tapOptionWebView() }
         wr { tapCancelOnWebView() }
         wr { tapAcceptAllOnWebView() }
+
+        verify(exactly = 4) { spClient.onAction(any(), any()) }
     }
 
     @Test
@@ -136,6 +138,6 @@ class MainActivityTest {
 
         verify(exactly = 1) { spClient.onSpFinish(any()) }
         verify(exactly = 1) { spClient.onConsentReady(any()) }
-        verify(exactly = 1) { spClient.onUIReady(any()) }
+        verify(atLeast = 1) { spClient.onUIReady(any()) }
     }
 }

@@ -512,6 +512,9 @@ internal class SpConsentLibImpl(
             }
             MSG_CANCEL,
             PM_DISMISS -> {
+                executor.executeOnSingleThread {
+                    spClient.onAction(view, actionImpl) as? ConsentActionImpl
+                }
             }
         }
     }
