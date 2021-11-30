@@ -11,6 +11,7 @@ import com.sourcepoint.cmplibrary.util.check
 internal interface ClientEventManager {
 
     fun setCampaignNumber(campNum: Int)
+    fun executingLoadPM()
     fun storedConsent()
     fun setAction(action: ConsentActionImpl)
     fun setAction(action: NativeMessageActionType)
@@ -39,6 +40,11 @@ private class ClientEventManagerImpl(
 
     override fun setCampaignNumber(campNum: Int) {
         cNumber = campNum
+        storedConsent = 0
+    }
+
+    override fun executingLoadPM() {
+        cNumber = 1
         storedConsent = 0
     }
 

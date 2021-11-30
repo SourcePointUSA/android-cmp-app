@@ -308,6 +308,7 @@ internal class SpConsentLibImpl(
 
     private fun loadPm(pmId: String, pmTab: PMTab, campaignType: CampaignType, isOtt: Boolean) {
         checkMainThread("loadPrivacyManager")
+        clientEventManager.executingLoadPM()
 
         val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab)
         pmConfig
@@ -516,7 +517,7 @@ internal class SpConsentLibImpl(
                 executor.executeOnSingleThread {
                     spClient.onAction(view, actionImpl) as? ConsentActionImpl
                 }
-                if(actionImpl.singleShotPM){
+                if (actionImpl.singleShotPM) {
                     clientEventManager.triggerOnSpFinish()
                 }
             }

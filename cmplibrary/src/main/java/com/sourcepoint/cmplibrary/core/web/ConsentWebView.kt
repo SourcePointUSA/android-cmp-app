@@ -134,7 +134,7 @@ internal class ConsentWebView(
             val sb = StringBuffer()
             sb.append(
                 """
-                javascript: window.spLegislation = '${campaignType.name}'; window.localPmId ='$pmId'; window.isSingleShot = ${singleShot}; 
+                javascript: window.spLegislation = '${campaignType.name}'; window.localPmId ='$pmId'; window.isSingleShot = $singleShot; 
                 $jsReceiver;
                 """.trimIndent()
             )
