@@ -70,6 +70,7 @@ class OnlyGdprKotlin : AppCompatActivity() {
 
         override fun onUIReady(view: View) {
             spConsentLib.showView(view)
+            Log.i(this::class.java.name, "onUIReady")
         }
 
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
@@ -83,10 +84,16 @@ class OnlyGdprKotlin : AppCompatActivity() {
 
         override fun onUIFinished(view: View) {
             spConsentLib.removeView(view)
+            Log.i(this::class.java.name, "onUIFinished")
         }
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
+        }
+
+        override fun onSpFinish(sPConsents: SPConsents) {
+            Log.i(this::class.java.name, "onSpFinish: $sPConsents")
+            Log.i(this::class.java.name, "==================== onSpFinish ==================")
         }
 
         override fun onConsentReady(consent: SPConsents) {

@@ -308,6 +308,7 @@ internal class SpConsentLibImpl(
 
     private fun loadPm(pmId: String, pmTab: PMTab, campaignType: CampaignType, isOtt: Boolean) {
         checkMainThread("loadPrivacyManager")
+        clientEventManager.executingLoadPM()
 
         val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab)
         pmConfig
@@ -323,7 +324,8 @@ internal class SpConsentLibImpl(
                 webView?.loadConsentUIFromUrl(
                     url = url,
                     campaignType = campaignType,
-                    pmId = it.messageId
+                    pmId = it.messageId,
+                    singleShot = true
                 )
             }
             .executeOnLeft { logMess("PmUrlConfig is null") }
@@ -484,7 +486,6 @@ internal class SpConsentLibImpl(
      * Receive the action performed by the user from the WebView
      */
     internal fun onActionFromWebViewClient(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView?) {
-        clientEventManager.setAction(actionImpl)
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
         pLogger.actionWebApp(
             tag = "onActionFromWebViewClient",
@@ -512,8 +513,12 @@ internal class SpConsentLibImpl(
             }
             MSG_CANCEL,
             PM_DISMISS -> {
+                executor.executeOnSingleThread {
+                    spClient.onAction(view, actionImpl) as? ConsentActionImpl
+                }
             }
         }
+        clientEventManager.setAction(actionImpl)
     }
 
     private fun showOption(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView) {
@@ -539,7 +544,8 @@ internal class SpConsentLibImpl(
                         iConsentWebView.loadConsentUIFromUrl(
                             url = url,
                             campaignType = actionImpl.campaignType,
-                            pmId = actionImpl.privacyManagerId
+                            pmId = actionImpl.privacyManagerId,
+                            singleShot = false
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -564,7 +570,8 @@ internal class SpConsentLibImpl(
                         iConsentWebView.loadConsentUIFromUrl(
                             url = url,
                             campaignType = actionImpl.campaignType,
-                            pmId = actionImpl.privacyManagerId
+                            pmId = actionImpl.privacyManagerId,
+                            singleShot = false
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }

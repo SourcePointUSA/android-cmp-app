@@ -83,7 +83,7 @@ class MainActivityTest {
         wr { checkOnConsentReady(position = 1) }
         wr { checkOnSpFinish(position = 0) }
 
-        verify(exactly = 1) { spClient.onSpFinish(any()) }
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
         verify(exactly = 1) { spClient.onConsentReady(any()) }
         verify(exactly = 0) { spClient.onUIReady(any()) }
         verify(exactly = 0) { spClient.onError(any()) }
@@ -111,6 +111,8 @@ class MainActivityTest {
         wr { tapOptionWebView() }
         wr { tapCancelOnWebView() }
         wr { tapAcceptAllOnWebView() }
+
+        verify(exactly = 4) { spClient.onAction(any(), any()) }
     }
 
     @Test
@@ -134,8 +136,8 @@ class MainActivityTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapMetaDeepLinkOnWebView() }
         wr { checkDeepLinkDisplayed() }
 
-        verify(exactly = 1) { spClient.onSpFinish(any()) }
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
         verify(exactly = 1) { spClient.onConsentReady(any()) }
-        verify(exactly = 1) { spClient.onUIReady(any()) }
+        verify(atLeast = 1) { spClient.onUIReady(any()) }
     }
 }
