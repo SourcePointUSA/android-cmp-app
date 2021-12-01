@@ -11,6 +11,7 @@ import com.sourcepoint.cmplibrary.util.check
 internal interface ClientEventManager {
 
     fun setCampaignNumber(campNum: Int)
+    fun executingLoadPM()
     fun storedConsent()
     fun setAction(action: ConsentActionImpl)
     fun setAction(action: NativeMessageActionType)
@@ -41,6 +42,11 @@ private class ClientEventManagerImpl(
         storedConsent = 0
     }
 
+    override fun executingLoadPM() {
+        cNumber = 1
+        storedConsent = 0
+    }
+
     override fun setAction(action: ConsentActionImpl) {
         when (action.actionType) {
             ActionType.ACCEPT_ALL,
@@ -54,7 +60,7 @@ private class ClientEventManagerImpl(
             ActionType.CUSTOM,
             ActionType.MSG_CANCEL,
             ActionType.PM_DISMISS -> {
-                if (!action.requestFromPm) {
+                if (!action.requestFromPm || action.singleShotPM) {
                     if (cNumber > 0) cNumber--
                 }
             }
@@ -86,7 +92,7 @@ private class ClientEventManagerImpl(
                 val spConsent: SPConsents? = getSPConsents().getOrNull()
                 val spConsentString = spConsent
                     ?.let {
-                        spClient.onSpFinish(it)
+                        spClient.onSpFinished(it)
                         it.toJsonObject().toString()
                     }
                     ?: run {
