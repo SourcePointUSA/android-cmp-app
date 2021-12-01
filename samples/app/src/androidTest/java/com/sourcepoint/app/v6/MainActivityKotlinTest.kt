@@ -294,7 +294,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 1) { spClient.onSpFinish(any()) } }
+        wr { verify(exactly = 2) { spClient.onSpFinish(any()) } }
 
         verify {
             spClient.run {
@@ -322,7 +322,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 1) { spClient.onSpFinish(any()) } }
+        wr { verify(exactly = 2) { spClient.onSpFinish(any()) } }
 
         verify {
             spClient.run {
