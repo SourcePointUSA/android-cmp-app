@@ -55,7 +55,7 @@ class ClientEventManagerTest {
             checkStatus() // check the status
         }
 
-        verify(exactly = 1) { spClient.onSpFinish(any()) }
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
     }
 
     @Test
@@ -69,7 +69,7 @@ class ClientEventManagerTest {
             checkStatus() // check the status
         }
 
-        verify(exactly = 1) { spClient.onSpFinish(any()) }
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
     }
 
     @Test
@@ -82,7 +82,7 @@ class ClientEventManagerTest {
             checkStatus() // check the status
         }
 
-        verify(exactly = 1) { spClient.onSpFinish(any()) }
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
     }
 
     @Test
@@ -98,7 +98,7 @@ class ClientEventManagerTest {
             checkStatus() // check the status
         }
 
-        verify(exactly = 1) { spClient.onSpFinish(any()) }
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
     }
 
     @Test
@@ -109,7 +109,7 @@ class ClientEventManagerTest {
             checkStatus() // check the status
         }
 
-        verify(exactly = 1) { spClient.onSpFinish(any()) }
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
     }
 
     @Test
@@ -122,7 +122,7 @@ class ClientEventManagerTest {
             checkStatus() // check the status
         }
 
-        verify(exactly = 1) { spClient.onSpFinish(any()) }
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
     }
 
     @Test
@@ -134,6 +134,6 @@ class ClientEventManagerTest {
             checkStatus() // check the status
         }
 
-        verify(exactly = 1) { spClient.onSpFinish(any()) }
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
     }
 }

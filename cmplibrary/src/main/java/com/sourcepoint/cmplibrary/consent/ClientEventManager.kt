@@ -92,7 +92,7 @@ private class ClientEventManagerImpl(
                 val spConsent: SPConsents? = getSPConsents().getOrNull()
                 val spConsentString = spConsent
                     ?.let {
-                        spClient.onSpFinish(it)
+                        spClient.onSpFinished(it)
                         it.toJsonObject().toString()
                     }
                     ?: run {

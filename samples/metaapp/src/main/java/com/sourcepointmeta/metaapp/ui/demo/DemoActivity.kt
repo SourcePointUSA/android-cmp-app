@@ -227,8 +227,8 @@ class DemoActivity : FragmentActivity() {
             return consentAction
         }
 
-        override fun onSpFinish(sPConsents: SPConsents) {
-            spClientObserver.forEach { it.onSpFinish(sPConsents) }
+        override fun onSpFinished(sPConsents: SPConsents) {
+            spClientObserver.forEach { it.onSpFinished(sPConsents) }
         }
     }
 
