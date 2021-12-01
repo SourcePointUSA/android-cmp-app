@@ -91,7 +91,7 @@ class OnlyGdprKotlin : AppCompatActivity() {
             error.printStackTrace()
         }
 
-        override fun onSpFinish(sPConsents: SPConsents) {
+        override fun onSpFinished(sPConsents: SPConsents) {
             Log.i(this::class.java.name, "onSpFinish: $sPConsents")
             Log.i(this::class.java.name, "==================== onSpFinish ==================")
         }
