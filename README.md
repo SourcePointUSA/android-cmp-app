@@ -132,6 +132,7 @@ Kotlin
         override fun onUIReady(view: View) {
             spConsentLib.showView(view)
         }
+        override fun onSpFinished(sPConsents: SPConsents) { }
     }
 ```
 Java
@@ -162,8 +163,30 @@ Java
         public void onUIReady(@NotNull View v) {
             spConsentLib.showView(v);
         }
+
+        @Override
+        public void onSpFinished(@NotNull SPConsents sPConsents) { }
     }
 ```
+
+Meaning of the callbacks : 
+- `onUIFinished` the consent view should be removed;
+- `onNativeMessageReady` the native message should be created;
+- `onConsentReady` the client receives the saved consent;
+- `onError` the client has access to the error details; 
+- `onUIReady` the consent view should be inflated;
+- `onAction` the client receives the selected action type and has the chance to set the `pubData` fields; 
+- `onSpFinished` there is nothing to process, all the work is done.
+
+Some of those callbacks work on the main thread, others on a worker thread:
+
+| Main thread            	| Worker thread  	|
+|------------------------	|----------------	|
+| `onUIReady`            	| `onSpFinished` 	|
+| `onError`              	| `onAction`     	|
+| `onConsentReady`       	|                	|
+| `onNativeMessageReady` 	|                	|
+| `onUIFinished`         	|                	|
 
 ## Loading the First Layer Message
 Call `spConsentLib.loadMessage()` from the Activity `onResume` callback  to layout the First Layer Message 
@@ -374,6 +397,7 @@ class MainActivityKotlin : AppCompatActivity() {
             // HERE you can take some action before inflating the consent view
             spConsentLib.showView(view)
         }
+        override fun onSpFinished(sPConsents: SPConsents) { }
     }
 }
 ```
@@ -444,6 +468,9 @@ public class MainActivityJava extends AppCompatActivity {
 
         @Override
         public ConsentAction onAction(View view, @NotNull ConsentAction consentAction) { return consentAction; }
+
+        @Override
+        public void onSpFinished(@NotNull SPConsents sPConsents) { }
     }
 }
 ```
