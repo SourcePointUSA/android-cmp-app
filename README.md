@@ -170,15 +170,15 @@ Java
 ```
 
 Meaning of the callbacks : 
-- `onUIFinished` the consent view should be removed;
-- `onNativeMessageReady` the native message should be created;
-- `onConsentReady` the client receives the saved consent;
-- `onError` the client has access to the error details; 
-- `onUIReady` the consent view should be inflated;
-- `onAction` the client receives the selected action type and has the chance to set the `pubData` fields; 
-- `onSpFinished` there is nothing to process, all the work is done.
+- `onUIFinished`: the consent view should be removed;
+- `onNativeMessageReady`: the native message should be created;
+- `onConsentReady`: the client receives the saved consent;
+- `onError`: the client has access to the error details; 
+- `onUIReady`: the consent view should be inflated;
+- `onAction`: the client receives the selected action type and has the chance to set the `pubData` fields; 
+- `onSpFinished`: there is nothing to process, all the work is done.
 
-Some of those callbacks work on the main thread, others on a worker thread:
+Some of the above callbacks work on the main thread while others are work on a worker thread. Please see the table below for the distinction:
 
 | Main thread            	| Worker thread  	|
 |------------------------	|----------------	|
