@@ -1,3 +1,1 @@
-* [SP-8328](https://sourcepoint.atlassian.net/browse/SP-8328) Add OnSpFinish to the PM (#442)
-* [SP-8314](https://sourcepoint.atlassian.net/browse/SP-8314) Adding regression test for the MSG_CANCEL, PM_DISMISS actions (#441)
-
+* [SP-8351](https://sourcepoint.atlassian.net/browse/SP-8351) ClientEventManager working always on the same thread (#444)
