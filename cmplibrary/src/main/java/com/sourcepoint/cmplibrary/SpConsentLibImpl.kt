@@ -96,7 +96,9 @@ internal class SpConsentLibImpl(
                 )
                 spClient.onConsentReady(spConsents)
                 (spClient as? UnitySpClient)?.onConsentReady(spConsentString)
-                clientEventManager.checkStatus()
+                executor.executeOnSingleThread {
+                    clientEventManager.checkStatus()
+                }
             }
         }
         consentManager.sPConsentsError = { throwable ->

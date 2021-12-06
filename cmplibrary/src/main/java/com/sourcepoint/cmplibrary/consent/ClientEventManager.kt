@@ -48,39 +48,43 @@ private class ClientEventManagerImpl(
     }
 
     override fun setAction(action: ConsentActionImpl) {
-        when (action.actionType) {
-            ActionType.ACCEPT_ALL,
-            ActionType.REJECT_ALL,
-            ActionType.SAVE_AND_EXIT -> {
-            }
-            ActionType.SHOW_OPTIONS -> {
-            }
-            ActionType.UNKNOWN -> {
-            }
-            ActionType.CUSTOM,
-            ActionType.MSG_CANCEL,
-            ActionType.PM_DISMISS -> {
-                if (!action.requestFromPm || action.singleShotPM) {
-                    if (cNumber > 0) cNumber--
+        executor.executeOnSingleThread {
+            when (action.actionType) {
+                ActionType.ACCEPT_ALL,
+                ActionType.REJECT_ALL,
+                ActionType.SAVE_AND_EXIT -> {
+                }
+                ActionType.SHOW_OPTIONS -> {
+                }
+                ActionType.UNKNOWN -> {
+                }
+                ActionType.CUSTOM,
+                ActionType.MSG_CANCEL,
+                ActionType.PM_DISMISS -> {
+                    if (!action.requestFromPm || action.singleShotPM) {
+                        if (cNumber > 0) cNumber--
+                    }
                 }
             }
+            checkStatus()
         }
-        checkStatus()
     }
 
     override fun setAction(action: NativeMessageActionType) {
-        when (action) {
-            NativeMessageActionType.ACCEPT_ALL,
-            NativeMessageActionType.REJECT_ALL,
-            NativeMessageActionType.SHOW_OPTIONS -> {
+        executor.executeOnSingleThread {
+            when (action) {
+                NativeMessageActionType.ACCEPT_ALL,
+                NativeMessageActionType.REJECT_ALL,
+                NativeMessageActionType.SHOW_OPTIONS -> {
+                }
+                NativeMessageActionType.UNKNOWN -> {
+                }
+                NativeMessageActionType.MSG_CANCEL -> {
+                    if (cNumber > 0) cNumber--
+                }
             }
-            NativeMessageActionType.UNKNOWN -> {
-            }
-            NativeMessageActionType.MSG_CANCEL -> {
-                if (cNumber > 0) cNumber--
-            }
+            checkStatus()
         }
-        checkStatus()
     }
 
     override fun checkStatus() {
@@ -88,23 +92,21 @@ private class ClientEventManagerImpl(
             cNumber = Int.MAX_VALUE
             storedConsent = 0
 
-            executor.executeOnSingleThread {
-                val spConsent: SPConsents? = getSPConsents().getOrNull()
-                val spConsentString = spConsent
-                    ?.let {
-                        spClient.onSpFinished(it)
-                        it.toJsonObject().toString()
-                    }
-                    ?: run {
-                        spClient.onError(Throwable("Something went wrong during the consent fetching process."))
-                        "{}"
-                    }
-                logger.clientEvent(
-                    event = "onSpFinish",
-                    msg = "All campaigns have been processed.",
-                    content = spConsentString
-                )
-            }
+            val spConsent: SPConsents? = getSPConsents().getOrNull()
+            val spConsentString = spConsent
+                ?.let {
+                    spClient.onSpFinished(it)
+                    it.toJsonObject().toString()
+                }
+                ?: run {
+                    spClient.onError(Throwable("Something went wrong during the consent fetching process."))
+                    "{}"
+                }
+            logger.clientEvent(
+                event = "onSpFinish",
+                msg = "All campaigns have been processed.",
+                content = spConsentString
+            )
         }
     }
 
