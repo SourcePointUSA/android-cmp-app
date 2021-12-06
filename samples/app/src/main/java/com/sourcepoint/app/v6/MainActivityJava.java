@@ -144,6 +144,12 @@ public class MainActivityJava extends AppCompatActivity {
 
         @Override
         public void onNoIntentActivitiesFound(@NonNull String url) {
+
+        }
+
+        @Override
+        public void onSpFinish(@NotNull SPConsents sPConsents) {
+
         }
     }
 

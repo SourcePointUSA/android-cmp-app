@@ -89,6 +89,9 @@ class OnlyGdprKotlin : AppCompatActivity() {
             Log.i(this::class.java.name, "onConsentReady: $consent")
         }
 
+        override fun onSpFinish(sPConsents: SPConsents) {
+        }
+
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
             Log.i(this::class.java.name, "ActionType: $consentAction")
             return consentAction
