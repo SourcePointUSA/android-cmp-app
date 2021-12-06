@@ -148,7 +148,7 @@ public class MainActivityJava extends AppCompatActivity {
         }
 
         @Override
-        public void onSpFinish(@NotNull SPConsents sPConsents) {
+        public void onSpFinished(@NotNull SPConsents sPConsents) {
 
         }
     }

@@ -19,6 +19,7 @@ internal data class ConsentActionImpl(
     override val actionType: ActionType,
     override val customActionId: String? = null,
     val requestFromPm: Boolean,
+    val singleShotPM: Boolean = false,
     val saveAndExitVariables: JSONObject = JSONObject(),
     val pmTab: String? = null,
     val privacyManagerId: String? = null,

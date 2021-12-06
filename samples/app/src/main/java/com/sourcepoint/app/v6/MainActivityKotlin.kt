@@ -48,18 +48,33 @@ class MainActivityKotlin : AppCompatActivity() {
         }
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
-            spConsentLib.loadPrivacyManager(
-                dataProvider.gdprPmId,
-                PMTab.PURPOSES,
-                CampaignType.GDPR
-            )
+            if(dataProvider.isOtt){
+                spConsentLib.loadOTTPrivacyManager(
+                    dataProvider.gdprPmId,
+                    CampaignType.GDPR
+                )
+            }else{
+                spConsentLib.loadPrivacyManager(
+                    dataProvider.gdprPmId,
+                    PMTab.PURPOSES,
+                    CampaignType.GDPR
+                )
+            }
         }
         findViewById<View>(R.id.review_consents_ccpa).setOnClickListener { _v: View? ->
-            spConsentLib.loadPrivacyManager(
-                dataProvider.ccpaPmId,
-                PMTab.PURPOSES,
-                CampaignType.CCPA
-            )
+            if(dataProvider.isOtt){
+                spConsentLib.loadOTTPrivacyManager(
+                    dataProvider.ccpaPmId,
+                    CampaignType.CCPA
+                )
+            }else{
+                spConsentLib.loadPrivacyManager(
+                    dataProvider.ccpaPmId,
+                    PMTab.PURPOSES,
+                    CampaignType.CCPA
+                )
+            }
+
         }
         findViewById<View>(R.id.clear_all).setOnClickListener { _v: View? -> clearAllData(this) }
         findViewById<View>(R.id.auth_id_activity).setOnClickListener { _v: View? ->
@@ -97,6 +112,7 @@ class MainActivityKotlin : AppCompatActivity() {
         override fun onError(error: Throwable) {
             spClientObserver.forEach { it.onError(error) }
             error.printStackTrace()
+            Log.i(TAG, "onError: $error")
         }
 
         override fun onConsentReady(consent: SPConsents) {
@@ -113,24 +129,28 @@ class MainActivityKotlin : AppCompatActivity() {
         override fun onUIFinished(view: View) {
             spClientObserver.forEach { it.onUIFinished(view) }
             spConsentLib.removeView(view)
+            Log.i(TAG, "onUIFinished")
         }
 
         override fun onUIReady(view: View) {
             spClientObserver.forEach { it.onUIReady(view) }
             spConsentLib.showView(view)
+            Log.i(TAG, "onUIReady")
         }
 
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
             spClientObserver.forEach { it.onAction(view, consentAction) }
-            Log.i(TAG, "ActionType: $consentAction")
+            Log.i(TAG, "onAction ActionType: $consentAction")
             consentAction.pubData.put("pb_key", "pb_value")
             return consentAction
         }
 
         override fun onNoIntentActivitiesFound(url: String) { }
 
-        override fun onSpFinish(sPConsents: SPConsents) {
-            spClientObserver.forEach { it.onSpFinish(sPConsents) }
+        override fun onSpFinished(sPConsents: SPConsents) {
+            spClientObserver.forEach { it.onSpFinished(sPConsents) }
+            Log.i(TAG, "onSpFinish: $sPConsents")
+            Log.i(TAG, "==================== onSpFinish ==================")
         }
     }
 }

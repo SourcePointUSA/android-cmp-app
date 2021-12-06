@@ -12,7 +12,6 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
 import kotlinx.android.synthetic.main.only_gdpr.*
@@ -71,18 +70,7 @@ class OnlyGdprKotlin : AppCompatActivity() {
 
         override fun onUIReady(view: View) {
             spConsentLib.showView(view)
-        }
-
-        override fun onUIFinished(view: View) {
-            spConsentLib.removeView(view)
-        }
-
-        override fun onError(error: Throwable) {
-            error.printStackTrace()
-        }
-
-        override fun onConsentReady(consent: SPConsents) {
-            Log.i(this::class.java.name, "onConsentReady: $consent")
+            Log.i(this::class.java.name, "onUIReady")
         }
 
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
@@ -90,7 +78,27 @@ class OnlyGdprKotlin : AppCompatActivity() {
             return consentAction
         }
 
-        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {}
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+
+        }
+
+        override fun onUIFinished(view: View) {
+            spConsentLib.removeView(view)
+            Log.i(this::class.java.name, "onUIFinished")
+        }
+
+        override fun onError(error: Throwable) {
+            error.printStackTrace()
+        }
+
+        override fun onSpFinished(sPConsents: SPConsents) {
+            Log.i(this::class.java.name, "onSpFinish: $sPConsents")
+            Log.i(this::class.java.name, "==================== onSpFinish ==================")
+        }
+
+        override fun onConsentReady(consent: SPConsents) {
+            Log.i(this::class.java.name, "onConsentReady: $consent")
+        }
 
         override fun onMessageReady(message: JSONObject) {}
     }

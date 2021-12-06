@@ -13,6 +13,7 @@
   - [Create an instance of the CMP library](#create-an-instance-of-the-cmp-library)
   - [Delegate Methods](#delegate-methods)
   - [Loading the Privacy Manager on demand](#loading-the-privacy-manager-on-demand)
+  - [Loading an OTT Privacy Manager on demand](#loading-an-ott-privacy-manager-on-demand)
   - [Releasing resources](#Releasing-resources)
   - [The *SpConsent* object](#The-SpConsent-object)
   - [Authenticated Consent](#Authenticated-Consent)
@@ -36,7 +37,7 @@ To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:6.3.0'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:6.3.2'
 }
 ```
 
@@ -131,6 +132,7 @@ Kotlin
         override fun onUIReady(view: View) {
             spConsentLib.showView(view)
         }
+        override fun onSpFinished(sPConsents: SPConsents) { }
     }
 ```
 Java
@@ -161,8 +163,30 @@ Java
         public void onUIReady(@NotNull View v) {
             spConsentLib.showView(v);
         }
+
+        @Override
+        public void onSpFinished(@NotNull SPConsents sPConsents) { }
     }
 ```
+
+Meaning of the callbacks : 
+- `onUIFinished`: the consent view should be removed;
+- `onNativeMessageReady`: the native message should be created;
+- `onConsentReady`: the client receives the saved consent;
+- `onError`: the client has access to the error details; 
+- `onUIReady`: the consent view should be inflated;
+- `onAction`: the client receives the selected action type and has the chance to set the `pubData` fields; 
+- `onSpFinished`: there is nothing to process, all the work is done.
+
+Some of the above callbacks work on the main thread while others are work on a worker thread. Please see the table below for the distinction:
+
+| Main thread            	| Worker thread  	|
+|------------------------	|----------------	|
+| `onUIReady`            	| `onSpFinished` 	|
+| `onError`              	| `onAction`     	|
+| `onConsentReady`       	|                	|
+| `onNativeMessageReady` 	|                	|
+| `onUIFinished`         	|                	|
 
 ## Loading the First Layer Message
 Call `spConsentLib.loadMessage()` from the Activity `onResume` callback  to layout the First Layer Message 
@@ -206,6 +230,22 @@ Java
             ));
     //...
 ```
+
+## Loading an OTT Privacy Manager on demand
+In case a property was created from the web builder as OTT/CTV, the Privacy Manager is the first layer message itself,
+this means that as pmId you should use the message id of your first layer message.
+
+Furthermore, an ott PM get surfaced through the following api
+
+```kotlin
+    spConsentLib.loadOTTPrivacyManager("<PM_ID>", CampaignType.GDPR) // For a GDPR campaign
+```
+
+```java
+    spConsentLib.loadOTTPrivacyManager("<PM_ID>", CampaignType.CCPA); // For a CCPA campaign
+```
+
+
 
 ## Releasing resources
 Release resources when the activity gets destroyed.
@@ -357,6 +397,7 @@ class MainActivityKotlin : AppCompatActivity() {
             // HERE you can take some action before inflating the consent view
             spConsentLib.showView(view)
         }
+        override fun onSpFinished(sPConsents: SPConsents) { }
     }
 }
 ```
@@ -427,6 +468,9 @@ public class MainActivityJava extends AppCompatActivity {
 
         @Override
         public ConsentAction onAction(View view, @NotNull ConsentAction consentAction) { return consentAction; }
+
+        @Override
+        public void onSpFinished(@NotNull SPConsents sPConsents) { }
     }
 }
 ```

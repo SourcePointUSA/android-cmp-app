@@ -32,6 +32,8 @@ object TestData {
     var PARTIAL_CONSENT_LIST = arrayOf("Create a personalised content profile", "Select personalised content", "Measure content performance")
     var MESSAGE = "message"
     var ACCEPT = "Accept"
+    var ACCEPT_ALL_DE = "ALLE AKZEPTIEREN"
+    var SETTINGS_DE = "EINSTELLUNGEN"
     var ZUSTIMMEN = "Zustimmen"
     var REJECT = "Reject"
     var OPTIONS = "Options"

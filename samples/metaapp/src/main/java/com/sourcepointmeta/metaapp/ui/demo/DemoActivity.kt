@@ -106,7 +106,7 @@ class DemoActivity : FragmentActivity() {
         val pagerAdapter = ScreenSlidePagerAdapter(this)
         pager.adapter = pagerAdapter
 
-        demoFr.demoListener = { action ->
+        demoFr.demoListener = { action, isOtt ->
 
             // don't go to the first fragment during UI tests
             if (!isUITestRunning) {
@@ -117,22 +117,36 @@ class DemoActivity : FragmentActivity() {
                 DemoFragment.DemoAction.GDPR_PM -> {
                     gdprPmId?.toString()
                         ?.let {
-                            spConsentLib.loadPrivacyManager(
-                                it,
-                                PMTab.PURPOSES,
-                                CampaignType.GDPR
-                            )
+                            if (isOtt) {
+                                spConsentLib.loadOTTPrivacyManager(
+                                    it,
+                                    CampaignType.GDPR
+                                )
+                            } else {
+                                spConsentLib.loadPrivacyManager(
+                                    it,
+                                    PMTab.PURPOSES,
+                                    CampaignType.GDPR
+                                )
+                            }
                         }
                         ?: pmNotValid()
                 }
                 DemoFragment.DemoAction.CCPA_PM -> {
                     ccpaPmId?.toString()
                         ?.let {
-                            spConsentLib.loadPrivacyManager(
-                                it,
-                                PMTab.PURPOSES,
-                                CampaignType.CCPA
-                            )
+                            if (isOtt) {
+                                spConsentLib.loadOTTPrivacyManager(
+                                    it,
+                                    CampaignType.CCPA
+                                )
+                            } else {
+                                spConsentLib.loadPrivacyManager(
+                                    it,
+                                    PMTab.PURPOSES,
+                                    CampaignType.CCPA
+                                )
+                            }
                         }
                         ?: pmNotValid()
                 }
@@ -213,8 +227,8 @@ class DemoActivity : FragmentActivity() {
             return consentAction
         }
 
-        override fun onSpFinish(sPConsents: SPConsents) {
-            spClientObserver.forEach { it.onSpFinish(sPConsents) }
+        override fun onSpFinished(sPConsents: SPConsents) {
+            spClientObserver.forEach { it.onSpFinished(sPConsents) }
         }
     }
 

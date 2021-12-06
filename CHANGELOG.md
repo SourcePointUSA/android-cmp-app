@@ -1,3 +1,12 @@
+## 6.3.2 (December, 01, 2021)
+* [SP-8328](https://sourcepoint.atlassian.net/browse/SP-8328) Add OnSpFinished to the PM (#442)
+* [SP-8314](https://sourcepoint.atlassian.net/browse/SP-8314) Adding regression test for the MSG_CANCEL, PM_DISMISS actions (#441)
+
+## 6.3.1 (November, 29, 2021)
+* [SP-8277](https://sourcepoint.atlassian.net/browse/SP-8277) Added a new OTT api for PM, [more info here](https://github.com/SourcePointUSA/android-cmp-app#loading-an-ott-privacy-manager-on-demand) (#438)
+* [SP-8098](https://sourcepoint.atlassian.net/browse/SP-8098) SDK callback signaling that the SDK is done - onSPFinished (#437)
+* [SP-8249](https://sourcepoint.atlassian.net/browse/SP-8249) Enhancing stability of the regression tests (#436)
+
 ## 6.3.0 (November, 11, 2021)
 * [SP-7840](https://sourcepoint.atlassian.net/browse/7840) New CUSTOM ActionType, [more info here](https://github.com/SourcePointUSA/android-cmp-app#the-consentaction-object)
 * [SP-7840](https://sourcepoint.atlassian.net/browse/7840) SKD change to acknowledge the new action type for Consent-Paywall (#434)
