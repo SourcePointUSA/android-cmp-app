@@ -411,6 +411,7 @@ internal class SpConsentLibImpl(
         }
 
         override fun onNoIntentActivitiesFoundFor(view: View, url: String) {
+            spClient.onNoIntentActivitiesFound(url)
         }
 
         override fun onError(view: View, error: Throwable) {
