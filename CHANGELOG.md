@@ -1,3 +1,6 @@
+## 6.3.3 (December, 06, 2021)
+* [SP-8351](https://sourcepoint.atlassian.net/browse/SP-8351) ClientEventManager working always on the same thread (#444)
+
 ## 6.3.2 (December, 01, 2021)
 * [SP-8328](https://sourcepoint.atlassian.net/browse/SP-8328) Add OnSpFinished to the PM (#442)
 * [SP-8314](https://sourcepoint.atlassian.net/browse/SP-8314) Adding regression test for the MSG_CANCEL, PM_DISMISS actions (#441)
