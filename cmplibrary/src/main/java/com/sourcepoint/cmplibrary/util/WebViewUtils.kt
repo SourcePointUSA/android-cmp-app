@@ -2,8 +2,11 @@ package com.sourcepoint.cmplibrary.util
 
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.webkit.WebView
 
@@ -13,11 +16,37 @@ internal fun Context.loadLinkOnExternalBrowser(
 ) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    val l = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
-    if (l.size != 0)
+    val canBeProcessed = areResolvedActivitiesOnlyBrowsers(this, intent)
+    if (canBeProcessed)
         startActivity(intent)
     else
         onNoIntentActivitiesFound(url)
+}
+
+internal fun areResolvedActivitiesOnlyBrowsers(context: Context, uriIntent: Intent): Boolean {
+    val packageManager = context.packageManager
+    val scheme = uriIntent.scheme
+    if (scheme == null || scheme != "http" && scheme != "https") {
+        return false
+    }
+
+    // Find all activities that could open the URI intent
+    val resolvedActivityList: List<ResolveInfo> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        packageManager.queryIntentActivities(uriIntent, PackageManager.MATCH_ALL)
+    } else {
+        packageManager.queryIntentActivities(uriIntent, 0)
+    }
+
+    // Check each activity for a match with the path part of the URI, if
+    for (activityResolveInfo in resolvedActivityList) {
+        val match = activityResolveInfo.match
+        val matchesPath = match and IntentFilter.MATCH_CATEGORY_PATH > 0
+        val isStub = activityResolveInfo.activityInfo?.packageName?.startsWith("com.google.android.tv.frameworkpackagestubs") ?: false
+        if (matchesPath || isStub) {
+            return false
+        }
+    }
+    return true
 }
 
 internal fun WebView.getLinkUrl(testResult: WebView.HitTestResult): String {
