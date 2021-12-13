@@ -16,28 +16,26 @@ internal fun Context.loadLinkOnExternalBrowser(
 ) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    val canBeProcessed = areResolvedActivitiesOnlyBrowsers(this, intent)
+    val canBeProcessed = isIntentExecutable(this, intent)
     if (canBeProcessed)
         startActivity(intent)
     else
         onNoIntentActivitiesFound(url)
 }
 
-internal fun areResolvedActivitiesOnlyBrowsers(context: Context, uriIntent: Intent): Boolean {
+internal fun isIntentExecutable(context: Context, uriIntent: Intent): Boolean {
     val packageManager = context.packageManager
     val scheme = uriIntent.scheme
     if (scheme == null || scheme != "http" && scheme != "https") {
         return false
     }
 
-    // Find all activities that could open the URI intent
     val resolvedActivityList: List<ResolveInfo> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         packageManager.queryIntentActivities(uriIntent, PackageManager.MATCH_ALL)
     } else {
         packageManager.queryIntentActivities(uriIntent, 0)
     }
 
-    // Check each activity for a match with the path part of the URI, if
     for (activityResolveInfo in resolvedActivityList) {
         val match = activityResolveInfo.match
         val matchesPath = match and IntentFilter.MATCH_CATEGORY_PATH > 0
