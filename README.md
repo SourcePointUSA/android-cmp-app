@@ -28,6 +28,7 @@
   - [The onAction callback](#the-onaction-callback)
   - [The ConsentAction object](#the-consentaction-object)
   - [`pubData`](#pubData)
+  - [Delete user data](#Delete-user-data)
   - [Frequently Asked Questions](#Frequently-Asked-Questions)
   - [Artifact Release Process](#Artifact-Release-Process)
 > **Note:** Sourcepoint's native message API is currently not supported in Android SDK v6. 
@@ -623,6 +624,11 @@ Following an example:
         }
 ```
 
+## Delete user data
+Utilize the following method if an end-user requests to have their data deleted:
+```
+fun clearAllData(context: Context)
+```
 ## Frequently Asked Questions
 ### 1. How big is the SDK?
 The SDK is pretty slim, there are no assets, a single dependency, it's just pure code. The SDK shouldn't exceed `2 MB`.
