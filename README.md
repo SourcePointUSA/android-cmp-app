@@ -626,9 +626,21 @@ Following an example:
 
 ## Delete user data
 Utilize the following method if an end-user requests to have their data deleted:
+
+Kotlin
+```kotlin
+import com.sourcepoint.cmplibrary.util.clearAllData
+
+clearAllData(context: Context)
 ```
-fun clearAllData(context: Context)
+Java
+```java
+import com.sourcepoint.cmplibrary.util.SpUtils;
+
+SpUtils.clearAllData(context: Context)
 ```
+
+
 ## Frequently Asked Questions
 ### 1. How big is the SDK?
 The SDK is pretty slim, there are no assets, a single dependency, it's just pure code. The SDK shouldn't exceed `2 MB`.
