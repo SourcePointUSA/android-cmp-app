@@ -139,7 +139,7 @@ private class ViewsManagerImpl(
     }
 
     override fun dispose() {
-        weakReference.clear() //
+        weakReference.clear()
     }
 
     override val isViewInLayout: Boolean
