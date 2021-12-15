@@ -28,20 +28,20 @@ jobs:
         run: |
           ./gradlew cmplibrary:versionTxt
           echo "VERSION_NAME=$(cat app/version.txt)" >> $GITHUB_ENV
-#      - name: Update CHANGELOG.md
-#        run: ./gradlew cmplibrary:changeLogUpdate
-#      - name: Update README.md
-#        run: ./gradlew cmplibrary:replaceInFile
-#      - name: Read Release Note
-#        id: release_note
-#        uses: juliangruber/read-file-action@v1
-#        with:
-#          path: ./cmplibrary/release_note.txt
-#      - name: Get the version
-#        id: get_version
-#        uses: juliangruber/read-file-action@v1
-#        with:
-#          path: ./cmplibrary/version.txt
+      - name: Update CHANGELOG.md
+        run: ./gradlew cmplibrary:changeLogUpdate
+      - name: Update README.md
+        run: ./gradlew cmplibrary:replaceInFile
+      - name: Read Release Note
+        id: release_note
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./cmplibrary/release_note.txt
+      - name: Get the version
+        id: get_version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./cmplibrary/version.txt
 #      - name: Create Release
 #        id: create_release
 #        uses: actions/create-release@v1
