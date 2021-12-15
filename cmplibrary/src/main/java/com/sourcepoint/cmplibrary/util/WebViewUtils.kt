@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.util
 
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.net.Uri
@@ -34,16 +33,12 @@ internal fun isIntentExecutable(context: Context, uriIntent: Intent): Boolean {
         packageManager.queryIntentActivities(uriIntent, PackageManager.MATCH_ALL)
     } else {
         packageManager.queryIntentActivities(uriIntent, 0)
+    }.filterNot { it.activityInfo?.packageName?.startsWith("com.google.android.tv.frameworkpackagestubs") ?: false }
+
+    if (resolvedActivityList.isEmpty()) {
+        return false
     }
 
-    for (activityResolveInfo in resolvedActivityList) {
-        val match = activityResolveInfo.match
-        val matchesPath = match and IntentFilter.MATCH_CATEGORY_PATH > 0
-        val isStub = activityResolveInfo.activityInfo?.packageName?.startsWith("com.google.android.tv.frameworkpackagestubs") ?: false
-        if (matchesPath || isStub) {
-            return false
-        }
-    }
     return true
 }
 
