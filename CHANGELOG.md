@@ -1,3 +1,6 @@
+## 6.3.4 (December, 15, 2021)
+* [SP-8377](https://sourcepoint.atlassian.net/browse/SP-8377) Add callback onNoIntentActivitiesFound to SpClient (#449)
+
 ## 6.3.3 (December, 06, 2021)
 * [SP-8351](https://sourcepoint.atlassian.net/browse/SP-8351) ClientEventManager working always on the same thread (#444)
 
