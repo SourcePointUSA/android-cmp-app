@@ -150,10 +150,5 @@ class MainActivityKotlin : AppCompatActivity() {
             Log.i(TAG, "onSpFinish: $sPConsents")
             Log.i(TAG, "==================== onSpFinish ==================")
         }
-
-        override fun onNoIntentActivitiesFound(url: String) {
-            Log.i(TAG, "onNoIntentActivitiesFound: $url")
-            spClientObserver.forEach { it.onNoIntentActivitiesFound(url) }
-        }
     }
 }

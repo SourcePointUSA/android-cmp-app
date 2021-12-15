@@ -95,8 +95,5 @@ class SpConsentLibDelegateTest {
 
         override fun onSpFinished(sPConsents: SPConsents) {
         }
-
-        override fun onNoIntentActivitiesFound(url: String) {
-        }
     }
 }

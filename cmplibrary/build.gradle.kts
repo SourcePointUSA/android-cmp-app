@@ -89,6 +89,7 @@ android {
 dependencies {
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
+    implementation(Libs.kotlinReflect)
 
     // Unfortunately we depend on a outdated version of okhttp due to its support to older versions of Android
     //noinspection GradleDependency
