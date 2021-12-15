@@ -1,8 +1,8 @@
-name: SDK Release - Test workflow
+name: SDK Release
 
 on:
   push:
-    branches:  [ disabled ] #[ release/* ]
+    branches:  [ release/6.3.4 ] #[ release/* ]
 #    paths:
 #      - '!*.yml'
 #      - '!README.md'
@@ -11,23 +11,23 @@ on:
 
 jobs:
   build:
-    name: Create Release and tag test workflow
+    name: Create Release and tag
     runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-#      - name: Assemble
-#        run: |
-#          ./gradlew cmplibrary:assemble
+      - name: Build and test
+        run: |
+          ./gradlew cmplibrary:build
       - name: Get current time
         uses: 1466587594/get-current-time@v2
         id: current-time
         with:
           format: (MMMM, DD, YYYY)
-      - name: Print date
+      - name: Set version lib into VERSION_NAME variable
         run: |
-          echo "${{ steps.current-time.outputs.formattedTime }}"
-#          echo "VERSION_NAME=$(cat app/version.txt)" >> $GITHUB_ENV
+          ./gradlew cmplibrary:versionTxt
+          echo "VERSION_NAME=$(cat app/version.txt)" >> $GITHUB_ENV
 #      - name: Update CHANGELOG.md
 #        run: ./gradlew cmplibrary:changeLogUpdate
 #      - name: Update README.md
@@ -61,10 +61,10 @@ jobs:
 #          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
 #        run: |
 #          sudo bash -c "echo '$SIGNING_SECRET_KEY_RING_FILE_CONTENT' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
-#      - name: Release build
-#        run: ./gradlew cmplibrary:assemble
-#      - name: Source jar and dokka
-#        run: ./gradlew androidSourcesJar javadocJar
+      - name: Release build
+        run: ./gradlew cmplibrary:assemble
+      - name: Source jar and dokka
+        run: ./gradlew androidSourcesJar javadocJar
 #      - name: Publish to MavenCentral
 #        run: ./gradlew publishReleasePublicationToSonatypeRepository #--max-workers 1 closeAndReleaseRepository --info
 #        env:
