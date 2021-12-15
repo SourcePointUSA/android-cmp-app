@@ -411,6 +411,14 @@ internal class SpConsentLibImpl(
         }
 
         override fun onNoIntentActivitiesFoundFor(view: View, url: String) {
+            spClient.onNoIntentActivitiesFound(url)
+            pLogger.clientEvent(
+                event = "log",
+                msg = "onNoIntentActivitiesFound",
+                content = JSONObject().apply {
+                    put("url", url)
+                }.toString()
+            )
         }
 
         override fun onError(view: View, error: Throwable) {

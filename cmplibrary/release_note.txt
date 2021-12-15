@@ -1,1 +1,1 @@
-* [SP-8351](https://sourcepoint.atlassian.net/browse/SP-8351) ClientEventManager working always on the same thread (#444)
+* [SP-8377](https://sourcepoint.atlassian.net/browse/SP-8377) Add callback onNoIntentActivitiesFound to SpClient (#449)
