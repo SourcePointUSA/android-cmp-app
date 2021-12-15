@@ -10,7 +10,7 @@ buildscript {
         maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
         mavenCentral()
         maven { url 'https://www.jetbrains.com/intellij-repository/releases' }
-        maven { url "https://jetbrains.bintray.com/intellij-third-party-dependencies" }
+//        maven { url "https://jetbrains.bintray.com/intellij-third-party-dependencies" }
         maven {
             url "https://nexus.pentaho.org/content/groups/omni"
             artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
@@ -46,7 +46,7 @@ allprojects {
         maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
         mavenCentral()
         maven { url 'https://www.jetbrains.com/intellij-repository/releases' }
-        maven { url "https://jetbrains.bintray.com/intellij-third-party-dependencies" }
+//        maven { url "https://jetbrains.bintray.com/intellij-third-party-dependencies" }
         maven {
             url "https://nexus.pentaho.org/content/groups/omni"
             artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
