@@ -143,11 +143,6 @@ public class MainActivityJava extends AppCompatActivity {
         public void onSpFinished(@NotNull SPConsents sPConsents) {
 
         }
-
-        @Override
-        public void onNoIntentActivitiesFound(@NotNull String url) {
-
-        }
     }
 
 }
