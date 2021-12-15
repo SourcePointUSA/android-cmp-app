@@ -230,6 +230,10 @@ class DemoActivity : FragmentActivity() {
         override fun onSpFinished(sPConsents: SPConsents) {
             spClientObserver.forEach { it.onSpFinished(sPConsents) }
         }
+
+        override fun onNoIntentActivitiesFound(url: String) {
+            spClientObserver.forEach { it.onNoIntentActivitiesFound(url) }
+        }
     }
 
     private fun pmNotValid() {

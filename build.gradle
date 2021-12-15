@@ -10,7 +10,6 @@ buildscript {
         maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
         mavenCentral()
         maven { url 'https://www.jetbrains.com/intellij-repository/releases' }
-        maven { url "https://jetbrains.bintray.com/intellij-third-party-dependencies" }
         maven {
             url "https://nexus.pentaho.org/content/groups/omni"
             artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
@@ -20,7 +19,6 @@ buildscript {
         classpath "com.android.tools.build:gradle:4.1.3"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
-        classpath 'com.palantir:jacoco-coverage:0.2.1'
 
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0"
         classpath 'com.squareup.sqldelight:gradle-plugin:1.5.0'
@@ -41,12 +39,10 @@ apply plugin: 'io.codearte.nexus-staging'
 allprojects {
     repositories {
         google()
-//        maven { url "https://s01.oss.sonatype.org/service/local/repositories/comsourcepoint-1040/content/"} // repo to test the staging artifact the {comsourcepoint-1040} path will be different
         maven { url "https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/" }
         maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
         mavenCentral()
         maven { url 'https://www.jetbrains.com/intellij-repository/releases' }
-        maven { url "https://jetbrains.bintray.com/intellij-third-party-dependencies" }
         maven {
             url "https://nexus.pentaho.org/content/groups/omni"
             artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"

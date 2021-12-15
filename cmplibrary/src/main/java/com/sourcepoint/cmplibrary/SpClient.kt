@@ -36,6 +36,11 @@ interface SpClient {
      * It is invoked to signaling that all the campaigns in the SDK get processed.
      */
     fun onSpFinished(sPConsents: SPConsents)
+
+    /**
+     * This callback is invoked if no activity could open an intent with the given url.
+     */
+    fun onNoIntentActivitiesFound(url: String)
 }
 
 interface UnitySpClient : SpClient {
