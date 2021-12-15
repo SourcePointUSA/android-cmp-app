@@ -1,7 +1,7 @@
 name: RELEASE
 on:
   push:
-    branches: [ release/6.3.4_disabled ]
+    branches: [ release/6.3.4 ]
 #    paths:
 #      - '!*.yml'
 #      - '!README.md'
@@ -48,19 +48,19 @@ jobs:
       with:
         name: 'release-artifact'
         path: ${{ steps.sign.outputs.signedReleaseFile }}
-    - name: Deploy to Play Store
-      id: deploy
-      uses: r0adkll/upload-google-play@v1.0.15
-      with:
-        serviceAccountJson: service_account.json
-        packageName: com.sourcepointmeta.metaapp
-        releaseFiles: ${{ steps.sign.outputs.signedReleaseFile }}
-        track: production
-    - name: Add, commit and push edited files
-      env:
-        GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-        GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
-      run: ./gradlew addCommitPush
+#    - name: Deploy to Play Store
+#      id: deploy
+#      uses: r0adkll/upload-google-play@v1.0.15
+#      with:
+#        serviceAccountJson: service_account.json
+#        packageName: com.sourcepointmeta.metaapp
+#        releaseFiles: ${{ steps.sign.outputs.signedReleaseFile }}
+#        track: production
+#    - name: Add, commit and push edited files
+#      env:
+#        GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+#        GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+#      run: ./gradlew addCommitPush
     - name: 'Publish Metaapp debug artifact'
       if: always()
       uses: actions/upload-artifact@v2-preview
