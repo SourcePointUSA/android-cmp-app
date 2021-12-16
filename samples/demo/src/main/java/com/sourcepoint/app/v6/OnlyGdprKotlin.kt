@@ -68,6 +68,10 @@ class OnlyGdprKotlin : AppCompatActivity() {
 
     internal inner class LocalClient : SpClient {
 
+        override fun onNoIntentActivitiesFound(url: String) {
+            Log.i(this::class.java.name, "onNoIntentActivitiesFound")
+        }
+
         override fun onUIReady(view: View) {
             spConsentLib.showView(view)
             Log.i(this::class.java.name, "onUIReady")
