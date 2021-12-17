@@ -190,7 +190,11 @@ Some of the above callbacks work on the main thread while others are work on a w
 | `onUIFinished`         	|                	|
 
 ## Loading the First Layer Message
-Call `spConsentLib.loadMessage()` from the Activity `onResume` callback  to layout the First Layer Message 
+In order to show the FLM, the method `spConsentLib.loadMessage()` has to be called. 
+
+IMPORTANT : The `loadMessage` needs to be invoked from the Activity `onResume` callback because during its execution
+all the components involved in the save consent process get created. If you try to load directly the Privacy Manager 
+without calling the `loadMessage`, you won't be able to save the edited consent.
 
 Kotlin
 ```kotlin
