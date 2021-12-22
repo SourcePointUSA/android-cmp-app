@@ -10,10 +10,6 @@ buildscript {
         maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
         mavenCentral()
         maven { url 'https://www.jetbrains.com/intellij-repository/releases' }
-//        maven {
-//            url "https://nexus.pentaho.org/content/groups/omni"
-//            artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
-//        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.1.3"
