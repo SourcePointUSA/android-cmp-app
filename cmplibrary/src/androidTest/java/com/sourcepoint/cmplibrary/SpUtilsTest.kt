@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.uitestutil.*
+import com.example.uitestutil.* //ktlint-disable
 import com.example.uitestutil.assertNotNull
 import com.example.uitestutil.assertNull
 import com.example.uitestutil.assertTrue
