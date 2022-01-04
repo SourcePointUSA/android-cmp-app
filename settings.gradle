@@ -2,8 +2,10 @@ include ":cmplibrary"
 include ":app"
 include ":metaapp"
 include ":demo"
+include ':native-message-demo'
 include ":ui-test-util"
 project(':ui-test-util').projectDir = new File(settingsDir, "ui-test-util")
 project(':app').projectDir = new File(settingsDir, "samples/app")
 project(':metaapp').projectDir = new File(settingsDir, "samples/metaapp")
 project(':demo').projectDir = new File(settingsDir, "samples/demo")
+project(':native-message-demo').projectDir = new File(settingsDir, "samples/native-message-demo")
