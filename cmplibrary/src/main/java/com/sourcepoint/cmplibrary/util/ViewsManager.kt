@@ -5,10 +5,12 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.web.CampaignModel
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
+import com.sourcepoint.cmplibrary.exception.GenericSDKException
 import com.sourcepoint.cmplibrary.util.ViewsManagerImpl.IDS.idsSet
 import java.lang.ref.WeakReference
 import java.util.* // ktlint-disable
@@ -21,8 +23,8 @@ internal interface ViewsManager {
     val isViewInLayout: Boolean
 
     fun showView(view: View)
-    fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate): IConsentWebView?
-    fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate, campaignQueue: Queue<CampaignModel>): IConsentWebView?
+    fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate): Either<IConsentWebView>
+    fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate, campaignQueue: Queue<CampaignModel>): Either<IConsentWebView>
     fun removeView(view: View)
     fun removeAllViews()
     fun removeAllViewsExcept(pView: View)
@@ -111,31 +113,35 @@ private class ViewsManagerImpl(
         }
     }
 
-    override fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate): ConsentWebView? {
+    override fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate): Either<IConsentWebView> {
         return weakReference.get()?.let {
-            ConsentWebView(
-                context = it,
-                connectionManager = connectionManager,
-                jsClientLib = jsReceiverDelegate,
-                logger = lib.pLogger,
-                executorManager = lib.executor,
-                messageTimeout = messageTimeout
-            )
-        }
+            check {
+                ConsentWebView(
+                    context = it,
+                    connectionManager = connectionManager,
+                    jsClientLib = jsReceiverDelegate,
+                    logger = lib.pLogger,
+                    executorManager = lib.executor,
+                    messageTimeout = messageTimeout
+                )
+            }
+        } ?: Either.Left(GenericSDKException(description = "The activity reference in the ViewManager is null!!!"))
     }
 
-    override fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate, campaignQueue: Queue<CampaignModel>): IConsentWebView? {
+    override fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate, campaignQueue: Queue<CampaignModel>): Either<IConsentWebView> {
         return weakReference.get()?.let {
-            ConsentWebView(
-                context = it,
-                connectionManager = connectionManager,
-                jsClientLib = jsReceiverDelegate,
-                logger = lib.pLogger,
-                executorManager = lib.executor,
-                campaignQueue = campaignQueue,
-                messageTimeout = messageTimeout
-            )
-        }
+            check {
+                ConsentWebView(
+                    context = it,
+                    connectionManager = connectionManager,
+                    jsClientLib = jsReceiverDelegate,
+                    logger = lib.pLogger,
+                    executorManager = lib.executor,
+                    campaignQueue = campaignQueue,
+                    messageTimeout = messageTimeout
+                )
+            }
+        } ?: Either.Left(GenericSDKException(description = "The activity reference in the ViewManager is null!!!"))
     }
 
     override fun dispose() {
