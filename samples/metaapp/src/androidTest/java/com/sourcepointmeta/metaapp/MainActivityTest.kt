@@ -10,7 +10,9 @@ import com.example.uitestutil.wr
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addNativeTestProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkCcpaNativeTitle
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkDeepLinkDisplayed
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkGdprNativeTitle
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkNumberOfNullMessage
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnConsentReady
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnSpFinish
@@ -29,6 +31,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.createDb
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -130,12 +133,12 @@ class MainActivityTest {
 
         db.addNativeTestProperty(gdprEnabled = true, ccpaEnabled = true)
 
-        periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
+        runDemo()
 
+        wr { checkGdprNativeTitle() }
         wr { tapDismiss() }
+        wr { checkCcpaNativeTitle() }
         wr { tapDismiss() }
-
-        verify(exactly = 4) { spClient.onAction(any(), any()) }
     }
 
     @Test

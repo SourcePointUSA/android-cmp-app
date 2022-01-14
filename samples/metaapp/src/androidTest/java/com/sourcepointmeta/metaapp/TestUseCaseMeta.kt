@@ -48,6 +48,14 @@ class TestUseCaseMeta {
             isDisplayedAllOfByResId(resId = R.id.dl_tv)
         }
 
+        fun checkGdprNativeTitle() {
+            isDisplayedByResIdByText(resId = R.id.dl_tv, text = "GDPR Lorem Ipsum")
+        }
+
+        fun checkCcpaNativeTitle() {
+            isDisplayedByResIdByText(resId = R.id.dl_tv, text = "CCPA Lorem Ipsum")
+        }
+
         fun tapMetaDeepLinkOnWebView() {
             performClickOnLabelWebViewByContent("metanetwork")
         }
