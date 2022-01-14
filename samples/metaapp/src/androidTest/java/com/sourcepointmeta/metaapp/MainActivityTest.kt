@@ -8,6 +8,7 @@ import com.example.uitestutil.periodicWr
 import com.example.uitestutil.recreateAndResume
 import com.example.uitestutil.wr
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addNativeTestProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkDeepLinkDisplayed
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkNumberOfNullMessage
@@ -20,6 +21,7 @@ import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.saveProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.swipeLeftPager
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapAcceptAllOnWebView
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapCancelOnWebView
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapDismiss
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapFab
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapMetaDeepLinkOnWebView
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapOptionWebView
@@ -111,6 +113,27 @@ class MainActivityTest {
         wr { tapOptionWebView() }
         wr { tapCancelOnWebView() }
         wr { tapAcceptAllOnWebView() }
+
+        verify(exactly = 4) { spClient.onAction(any(), any()) }
+    }
+
+    @Test
+    fun GIVEN_a_native_message_DISMISS_all_messages() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+        loadKoinModules(
+            module(override = true) {
+                single<List<SpClient>> { listOf(spClient) }
+                single(qualifier = named("ui_test_running")) { true }
+            }
+        )
+        scenario = launchActivity()
+
+        db.addNativeTestProperty(gdprEnabled = true, ccpaEnabled = true)
+
+        periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
+
+        wr { tapDismiss() }
+        wr { tapDismiss() }
 
         verify(exactly = 4) { spClient.onAction(any(), any()) }
     }

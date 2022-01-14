@@ -52,8 +52,8 @@ class TestUseCaseMeta {
             performClickOnLabelWebViewByContent("metanetwork")
         }
 
-        fun tapCcpaPM() {
-            performClickById(R.id.review_consents_ccpa_fr)
+        fun tapDismiss() {
+            performClickById(R.id.cancel)
         }
 
         fun addTestProperty() {
@@ -197,6 +197,33 @@ class TestUseCaseMeta {
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.demo",
+                campaign_type = "CCPA",
+                enabled = ccpaEnabled.toValueDB()
+            )
+        }
+
+        fun MetaAppDB.addNativeTestProperty(autId: String? = null, gdprEnabled: Boolean = true, ccpaEnabled: Boolean = false) {
+            campaignQueries.insertProperty(
+                property_name = "mobile.multicampaign.fully.native",
+                account_id = 22,
+                gdpr_pm_id = 594218L,
+                ccpa_pm_id = 594219L,
+                campaign_env = "prod",
+                timeout = 3000L,
+                timestamp = Date().time,
+                is_staging = 0,
+                message_type = "WebView",
+                auth_Id = autId,
+                pm_tab = "PURPOSES",
+                message_language = "ENGLISH"
+            )
+            campaignQueries.insertStatusCampaign(
+                property_name = "mobile.multicampaign.fully.native",
+                campaign_type = "GDPR",
+                enabled = gdprEnabled.toValueDB()
+            )
+            campaignQueries.insertStatusCampaign(
+                property_name = "mobile.multicampaign.fully.native",
                 campaign_type = "CCPA",
                 enabled = ccpaEnabled.toValueDB()
             )
