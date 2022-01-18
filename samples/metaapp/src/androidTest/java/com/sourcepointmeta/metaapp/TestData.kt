@@ -6,11 +6,11 @@ object TestData {
         "Store and/or access information on a device",
         "Select basic ads",
         "Create a personalised ads profile",
-        "Select personalised ads",
-        "Measure ad performance",
-        "Measure content performance",
+//        "Select personalised ads",
+//        "Measure ad performance",
+//        "Measure content performance",
         "Apply market research to generate audience insights",
-        "Develop and improve products",
+//        "Develop and improve products",
         "Our Custom Purpose"
     )
 

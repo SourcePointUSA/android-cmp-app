@@ -60,8 +60,16 @@ class TestUseCaseMeta {
             performClickOnLabelWebViewByContent("metanetwork")
         }
 
-        fun tapDismiss() {
+        fun tapNmDismiss() {
             performClickById(R.id.cancel)
+        }
+
+        fun tapNmAcceptAll() {
+            performClickById(R.id.accept_all)
+        }
+
+        fun tapShowPmBtn() {
+            performClickById(R.id.review_consents_gdpr_fr)
         }
 
         fun addTestProperty() {

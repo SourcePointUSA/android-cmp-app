@@ -7,10 +7,15 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.wr
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addNativeTestProperty
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkAllCcpaConsentsOn
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkAllGdprConsentsOn
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkCcpaNativeTitle
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkGdprNativeTitle
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.runDemo
-import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapDismiss
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.swipeLeftPager
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapNmAcceptAll
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapNmDismiss
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapShowPmBtn
 import com.sourcepointmeta.metaapp.data.localdatasource.createDb
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import io.mockk.mockk
@@ -59,8 +64,30 @@ class MainActivityNativeMessTest {
         runDemo()
 
         wr { checkGdprNativeTitle() }
-        wr { tapDismiss() }
+        wr { tapNmDismiss() }
         wr { checkCcpaNativeTitle() }
-        wr { tapDismiss() }
+        wr { tapNmDismiss() }
+    }
+
+    @Test
+    fun GIVEN_a_gdpr_native_message_ACCEPT_ALL_and_verify() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+        loadKoinModules(
+            module(override = true) {
+                single<List<SpClient>> { listOf(spClient) }
+                single(qualifier = named("ui_test_running")) { true }
+            }
+        )
+        scenario = launchActivity()
+
+        db.addNativeTestProperty(gdprEnabled = true, ccpaEnabled = false)
+
+        runDemo()
+
+        wr { checkGdprNativeTitle() }
+        wr { tapNmAcceptAll() }
+        wr { swipeLeftPager() }
+        wr { tapShowPmBtn() }
+        wr(backup = { tapShowPmBtn() }) { checkAllGdprConsentsOn() }
     }
 }
