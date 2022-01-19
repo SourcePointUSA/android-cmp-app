@@ -22,13 +22,14 @@ class OnlyGdprKotlin : AppCompatActivity() {
     companion object{
         const val propName = "mobile.multicampaign.demo"
         const val pmId = "488393"
+        const val accountId = 22
     }
 
     private val spConsentLib by spConsentLibLazy {
         activity = this@OnlyGdprKotlin
         spClient = LocalClient()
         config {
-            accountId = 22
+            accountId = accountId
             propertyName = propName
             messLanguage = MessageLanguage.ENGLISH
             messageTimeout = 3000
