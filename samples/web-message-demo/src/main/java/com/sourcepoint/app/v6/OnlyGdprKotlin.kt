@@ -19,12 +19,17 @@ import org.json.JSONObject
 
 class OnlyGdprKotlin : AppCompatActivity() {
 
+    companion object{
+        const val propName = "mobile.multicampaign.demo"
+        const val pmId = "488393"
+    }
+
     private val spConsentLib by spConsentLibLazy {
         activity = this@OnlyGdprKotlin
         spClient = LocalClient()
         config {
             accountId = 22
-            propertyName = "mobile.multicampaign.demo"
+            propertyName = propName
             messLanguage = MessageLanguage.ENGLISH
             messageTimeout = 3000
             +(CampaignType.GDPR)
@@ -38,7 +43,7 @@ class OnlyGdprKotlin : AppCompatActivity() {
 
         review_consents_gdpr.setOnClickListener {
             spConsentLib.loadPrivacyManager(
-                "488393",
+                pmId,
                 PMTab.PURPOSES,
                 CampaignType.GDPR
             )
@@ -46,14 +51,9 @@ class OnlyGdprKotlin : AppCompatActivity() {
 
         clear_all.setOnClickListener { clearAllData(this) }
 
-        custom_consent.setOnClickListener {
-            spConsentLib.customConsentGDPR(
-                vendors = listOf("5ff4d000a228633ac048be41"),
-                categories = listOf("608bad95d08d3112188e0e29", "608bad95d08d3112188e0e2f"),
-                legIntCategories = emptyList(),
-                success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
-            )
-        }
+        propname_tv.text = propName
+        pmid_tv.text = pmId
+
     }
 
     override fun onResume() {

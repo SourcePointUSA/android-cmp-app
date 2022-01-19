@@ -23,7 +23,7 @@ internal data class UnifiedMessageRequest(
     val propertyHref: String,
     val campaigns: Campaigns,
     val includeData: IncludeData = IncludeData(),
-    val consentLanguage: MessageLanguage = MessageLanguage.ENGLISH,
+    val consentLanguage: MessageLanguage = MessageLanguage.DEFAULT,
     val hasCSP: Boolean = true,
     val campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC,
     val localState: String? = null,

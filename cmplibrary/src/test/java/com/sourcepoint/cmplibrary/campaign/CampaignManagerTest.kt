@@ -67,7 +67,7 @@ class CampaignManagerTest {
         sut.clearConsents()
     }
 
-    private val sut by lazy { CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH) }
+    private val sut by lazy { CampaignManager.create(dataStorage, spConfig) }
 
     @Test
     fun `CHECK that getGDPRConsent RETURNS a GDPRConsent from the dataStorage`() {

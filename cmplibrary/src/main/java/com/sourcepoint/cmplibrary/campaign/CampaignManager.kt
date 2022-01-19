@@ -57,16 +57,15 @@ internal interface CampaignManager {
 
 internal fun CampaignManager.Companion.create(
     dataStorage: DataStorage,
-    spConfig: SpConfig,
-    messageLanguage: MessageLanguage
-): CampaignManager = CampaignManagerImpl(dataStorage, spConfig, messageLanguage)
+    spConfig: SpConfig
+): CampaignManager = CampaignManagerImpl(dataStorage, spConfig)
 
 private class CampaignManagerImpl(
     val dataStorage: DataStorage,
-    override val spConfig: SpConfig,
-    override val messageLanguage: MessageLanguage
+    override val spConfig: SpConfig
 ) : CampaignManager {
 
+    override val messageLanguage: MessageLanguage = spConfig.messageLanguage
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
     private val campaignsEnv: CampaignsEnv = spConfig.campaignsEnv
 

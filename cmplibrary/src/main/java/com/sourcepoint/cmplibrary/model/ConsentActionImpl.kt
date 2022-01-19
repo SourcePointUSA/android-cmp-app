@@ -24,7 +24,7 @@ internal data class ConsentActionImpl(
     val pmTab: String? = null,
     val privacyManagerId: String? = null,
     val choiceId: String? = null,
-    val consentLanguage: String? = MessageLanguage.ENGLISH.value,
+    val consentLanguage: String? = MessageLanguage.DEFAULT.value,
     val thisContent: JSONObject = JSONObject()
 ) : ConsentAction
 

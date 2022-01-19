@@ -7,6 +7,7 @@ enum class MessageLanguage(val value: String) {
     CROATIAN("HR"),
     CZECH("CS"),
     DANISH("DA"),
+    DEFAULT(""),
     DUTCH("NL"),
     ENGLISH("EN"),
     ESTONIAN("ET"),

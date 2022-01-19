@@ -18,7 +18,7 @@ class SpConfigDataBuilder {
     private val campaigns = mutableListOf<SpCampaign>()
     var accountId by Delegates.notNull<Int>()
     var propertyName by Delegates.notNull<String>()
-    var messLanguage: MessageLanguage = MessageLanguage.ENGLISH
+    var messLanguage: MessageLanguage = MessageLanguage.DEFAULT
     var campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC
     var messageTimeout: Long = 5000
     var logger: Logger? = null
