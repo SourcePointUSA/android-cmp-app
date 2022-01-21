@@ -21,7 +21,6 @@ import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
-import java.lang.RuntimeException
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityNativeMessTest {
