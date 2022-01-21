@@ -13,7 +13,8 @@
   - [Create an instance of the CMP library](#create-an-instance-of-the-cmp-library)
   - [Delegate Methods](#delegate-methods)
   - [Loading the Privacy Manager on demand](#loading-the-privacy-manager-on-demand)
-  - [Loading an OTT Privacy Manager on demand](#loading-an-ott-privacy-manager-on-demand)
+  - [Load OTT privacy manager](#load-ott-privacy-manager)
+  - [Resurface OTT privacy manager](#resurface-ott-privacy-manager)
   - [Releasing resources](#Releasing-resources)
   - [The *SpConsent* object](#The-SpConsent-object)
   - [Authenticated Consent](#Authenticated-Consent)
@@ -236,19 +237,42 @@ Java
     //...
 ```
 
-## Loading an OTT Privacy Manager on demand
-In case a property was created from the web builder as OTT/CTV, the Privacy Manager is the first layer message itself,
-this means that as pmId you should use the message id of your first layer message.
+## Load OTT privacy manager
 
-Furthermore, an ott PM get surfaced through the following api
+In order to show an OTT message, the method `spConsentLib.loadMessage()` has to be called.
 
+> The `loadMessage` needs to be invoked from the Activity `onResume` callback because during its execution all the components involved in the save consent process gets created. If you try to load directly the OTT privacy manager without calling the `loadMessage`, you won't be able to save the edited consent.
+
+Kotlin
+```kotlin
+    override fun onResume() {
+        super.onResume()
+        spConsentLib.loadMessage()
+    }
+```
+Java
+```java
+    @Override
+    protected void onResume() {
+        super.onResume();
+        spConsentLib.loadMessage();
+    }
+```
+
+## Resurface OTT privacy manager
+
+An OTT privacy manager can be **resurfaced** for your project (*e.g. via a button in your project*) through the following API:
+
+Kotlin
 ```kotlin
     spConsentLib.loadOTTPrivacyManager("<PM_ID>", CampaignType.GDPR) // For a GDPR campaign
 ```
-
+Java
 ```java
     spConsentLib.loadOTTPrivacyManager("<PM_ID>", CampaignType.CCPA); // For a CCPA campaign
 ```
+
+>In case a property was created from the web builder as OTT/CTV, the Privacy Manager is the first layer message itself, this means that as pmId you should use the message id of your first layer message.
 
 
 
