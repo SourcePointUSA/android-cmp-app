@@ -20,8 +20,13 @@ import com.sourcepoint.app.v6.TestData.SAVE_AND_EXIT
 import com.sourcepoint.app.v6.TestData.SETTINGS_DE
 import com.sourcepoint.app.v6.TestData.SITE_VENDORS
 import com.sourcepoint.app.v6.TestData.VENDORS_LIST
+import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.di.customCategoriesDataProd
 import com.sourcepoint.app.v6.di.customVendorDataListProd
+import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
 class TestUseCase {
 
@@ -107,6 +112,14 @@ class TestUseCase {
 
         fun clickOnGdprReviewConsent() {
             performClickById(resId = R.id.review_consents_gdpr)
+        }
+
+        fun checkGdprNativeTitle() {
+            isDisplayedByResIdByText(resId = R.id.title_nm, text = "GDPR Lorem Ipsum")
+        }
+
+        fun tapNmAcceptAll() {
+            performClickById(R.id.accept_all)
         }
 
         fun clickOnCustomConsent() {
@@ -248,6 +261,34 @@ class TestUseCase {
                 .getCookie(url)
                 .contains("authId=")
                 .assertFalse()
+        }
+
+        fun mockModule(
+            spConfig: SpConfig,
+            gdprPmId: String,
+            ccpaPmId: String = "",
+            uuid: String? = null,
+            url: String = "",
+            isOtt: Boolean = false,
+            pResetAll: Boolean = true,
+            spClientObserver: List<SpClient> = emptyList()
+        ): Module {
+            return module(override = true) {
+                single<List<SpClient?>> { spClientObserver }
+                single<DataProvider> {
+                    object : DataProvider {
+                        override val authId = uuid
+                        override val resetAll = pResetAll
+                        override val isOtt = isOtt
+                        override val url = url
+                        override val spConfig: SpConfig = spConfig
+                        override val gdprPmId: String = gdprPmId
+                        override val ccpaPmId: String = ccpaPmId
+                        override val customVendorList: List<String> = customVendorDataListProd.map { it.first }
+                        override val customCategories: List<String> = customCategoriesDataProd.map { it.first }
+                    }
+                }
+            }
         }
     }
 }
