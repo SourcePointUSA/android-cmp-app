@@ -16,13 +16,11 @@ import com.sourcepoint.cmplibrary.core.nativemessage.NativeComponent
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
 import kotlinx.android.synthetic.main.native_message.view.*
-import kotlinx.android.synthetic.main.only_gdpr.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
@@ -49,12 +47,12 @@ class NativeMessageActivity : AppCompatActivity() {
         }
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
-            if(dataProvider.isOtt){
+            if (dataProvider.isOtt) {
                 spConsentLib.loadOTTPrivacyManager(
                     dataProvider.gdprPmId,
                     CampaignType.GDPR
                 )
-            }else{
+            } else {
                 spConsentLib.loadPrivacyManager(
                     dataProvider.gdprPmId,
                     PMTab.PURPOSES,
@@ -63,12 +61,12 @@ class NativeMessageActivity : AppCompatActivity() {
             }
         }
         findViewById<View>(R.id.review_consents_ccpa).setOnClickListener { _v: View? ->
-            if(dataProvider.isOtt){
+            if (dataProvider.isOtt) {
                 spConsentLib.loadOTTPrivacyManager(
                     dataProvider.ccpaPmId,
                     CampaignType.CCPA
                 )
-            }else{
+            } else {
                 spConsentLib.loadPrivacyManager(
                     dataProvider.ccpaPmId,
                     PMTab.PURPOSES,
@@ -107,6 +105,7 @@ class NativeMessageActivity : AppCompatActivity() {
         override fun onMessageReady(message: JSONObject) {}
 
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+            spClientObserver.forEach { it.onNativeMessageReady(message, messageController) }
             setNativeMessage(message, messageController)
         }
 
