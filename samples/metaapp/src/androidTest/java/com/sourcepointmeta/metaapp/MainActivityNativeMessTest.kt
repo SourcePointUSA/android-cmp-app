@@ -4,12 +4,9 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.uitestutil.periodicWr
-import com.example.uitestutil.recreateAndResume
 import com.example.uitestutil.wr
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addNativeTestProperty
-import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkAllGdprConsentsOn
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkCcpaNativeTitle
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkGdprNativeTitle
@@ -70,6 +67,15 @@ class MainActivityNativeMessTest {
         wr { tapNmDismiss() }
         wr { checkCcpaNativeTitle() }
         wr { tapNmDismiss() }
+
+        verify(exactly = 2) { spClient.onNativeMessageReady(any(), any()) }
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
+        verify(exactly = 0) { spClient.onConsentReady(any()) }
+        verify(exactly = 0) { spClient.onUIReady(any()) }
+        verify(exactly = 0) { spClient.onError(any()) }
+        verify(exactly = 0) { spClient.onUIFinished(any()) }
+        verify(exactly = 0) { spClient.onNoIntentActivitiesFound(any()) }
+        verify(exactly = 0) { spClient.onAction(any(), any()) }
     }
 
     @Test
@@ -92,6 +98,15 @@ class MainActivityNativeMessTest {
         wr { swipeLeftPager() }
         wr { tapShowPmBtn() }
         wr(backup = { tapShowPmBtn() }) { checkAllGdprConsentsOn() }
+
+        verify(exactly = 1) { spClient.onNativeMessageReady(any(), any()) }
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
+        verify(exactly = 1) { spClient.onConsentReady(any()) }
+        verify(exactly = 1) { spClient.onUIReady(any()) }
+        verify(exactly = 0) { spClient.onError(any()) }
+        verify(exactly = 0) { spClient.onUIFinished(any()) }
+        verify(exactly = 0) { spClient.onNoIntentActivitiesFound(any()) }
+        verify(exactly = 0) { spClient.onAction(any(), any()) }
     }
 
     @Test

@@ -196,6 +196,7 @@ class DemoActivity : FragmentActivity() {
     internal inner class LocalClient : SpClient {
 
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+            spClientObserver.forEach { it.onNativeMessageReady(message, messageController) }
             setNativeMessage(message, messageController)
         }
 
