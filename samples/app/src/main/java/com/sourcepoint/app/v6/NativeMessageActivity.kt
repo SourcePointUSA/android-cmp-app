@@ -39,6 +39,7 @@ class NativeMessageActivity : AppCompatActivity() {
         spConfig = dataProvider.spConfig
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (dataProvider.resetAll) {
