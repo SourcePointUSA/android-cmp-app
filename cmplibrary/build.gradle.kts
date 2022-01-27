@@ -111,7 +111,8 @@ addCommitPushConfig {
     fileList = listOf(
         "${rootDir.path}/CHANGELOG.md",
         "${rootDir.path}/README.md",
-        "${rootDir.path}/samples/demo/build.gradle"
+        "${rootDir.path}/samples/web-message-demo/build.gradle",
+        "${rootDir.path}/samples/native-message-demo/build.gradle"
     )
 }
 
@@ -124,7 +125,12 @@ replaceInFile {
             replaceWith = "com.sourcepoint.cmplibrary:cmplibrary:$versionName"
         }
         create("doc1") {
-            path = "${rootDir.path}/samples/demo/build.gradle"
+            path = "${rootDir.path}/samples/web-message-demo/build.gradle"
+            find = "com.sourcepoint.cmplibrary:cmplibrary:(\\d)+\\.(\\d)+\\.(\\d)+"
+            replaceWith = "com.sourcepoint.cmplibrary:cmplibrary:$versionName"
+        }
+        create("doc2") {
+            path = "${rootDir.path}/samples/native-message-demo/build.gradle"
             find = "com.sourcepoint.cmplibrary:cmplibrary:(\\d)+\\.(\\d)+\\.(\\d)+"
             replaceWith = "com.sourcepoint.cmplibrary:cmplibrary:$versionName"
         }

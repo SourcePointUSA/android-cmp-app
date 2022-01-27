@@ -141,6 +141,8 @@ internal class SpConsentLibImpl(
                         TCFv2 -> {
                             /** create a instance of WebView */
                             val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
+                                .executeOnLeft { spClient.onError(it) }
+                                .getOrNull()
 
                             /** inject the message into the WebView */
                             val url = firstCampaign2Process.url
@@ -193,6 +195,8 @@ internal class SpConsentLibImpl(
                         TCFv2 -> {
                             /** create a instance of WebView */
                             val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
+                                .executeOnLeft { spClient.onError(it) }
+                                .getOrNull()
 
                             /** inject the message into the WebView */
                             val url = firstCampaign2Process.url // urlManager.urlURenderingApp(env)//
@@ -316,6 +320,8 @@ internal class SpConsentLibImpl(
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate())
+                    .executeOnLeft { e -> spClient.onError(e) }
+                    .getOrNull()
                 val url = urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, isOtt = isOtt)
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
@@ -654,9 +660,9 @@ internal class SpConsentLibImpl(
             privacyManagerId = pmId
         )
 
-        viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)?.let {
-            nativeMessageShowOption(nca, it)
-        }
+        viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
+            .map { nativeMessageShowOption(nca, it) }
+            .executeOnLeft { spClient.onError(it) }
     }
 
     override fun removeNativeView(view: View) {
@@ -691,6 +697,8 @@ internal class SpConsentLibImpl(
                         TCFv2 -> {
                             /** create a instance of WebView */
                             val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
+                                .executeOnLeft { e -> spClient.onError(e) }
+                                .getOrNull()
 
                             /** inject the message into the WebView */
                             val url = it.url // urlManager.urlURenderingApp(env)//
