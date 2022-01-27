@@ -28,6 +28,11 @@ internal data class ConsentActionImpl(
     val thisContent: JSONObject = JSONObject()
 ) : ConsentAction
 
+internal fun ConsentActionImpl.privacyManagerTab(): PMTab {
+    return pmTab?.let { pt -> PMTab.values().find { it.key == pt } }
+        ?: PMTab.DEFAULT
+}
+
 data class NativeConsentAction(
     val actionType: NativeMessageActionType,
     val campaignType: CampaignType,

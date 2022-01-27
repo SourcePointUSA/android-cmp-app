@@ -78,6 +78,12 @@ class DemoActivity : FragmentActivity() {
         dataSource.fetchPropertyByNameSync(propName)
     }
 
+    private val pTab by lazy {
+        property.pmTab
+            ?.let { pt -> PMTab.values().find { it.name == pt } }
+            ?: PMTab.DEFAULT
+    }
+
     private val isUITestRunning by inject<Boolean>(qualifier = named("ui_test_running"))
 
     private val gdprPmId by lazy { property.gdprPmId }
@@ -125,7 +131,7 @@ class DemoActivity : FragmentActivity() {
                             } else {
                                 spConsentLib.loadPrivacyManager(
                                     it,
-                                    PMTab.PURPOSES,
+                                    pTab,
                                     CampaignType.GDPR
                                 )
                             }
@@ -143,7 +149,7 @@ class DemoActivity : FragmentActivity() {
                             } else {
                                 spConsentLib.loadPrivacyManager(
                                     it,
-                                    PMTab.PURPOSES,
+                                    pTab,
                                     CampaignType.CCPA
                                 )
                             }
