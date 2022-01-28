@@ -244,5 +244,42 @@ class TestUseCaseMeta {
                 enabled = ccpaEnabled.toValueDB()
             )
         }
+
+        enum class CampEnv { prod, stage }
+
+        fun MetaAppDB.addProperty(
+            propertyName: String = "mobile.multicampaign.native.demo2",
+            autId: String? = null,
+            gdprEnabled: Boolean = true,
+            ccpaEnabled: Boolean = false,
+            campEnv: CampEnv = CampEnv.prod,
+            gdprPmId: Long = 548285L,
+            ccpaPmId: Long = 0L
+        ) {
+            campaignQueries.insertProperty(
+                property_name = propertyName,
+                account_id = 22,
+                gdpr_pm_id = gdprPmId,
+                ccpa_pm_id = ccpaPmId,
+                campaign_env = campEnv.name,
+                timeout = 3000L,
+                timestamp = Date().time,
+                is_staging = 0,
+                message_type = "WebView",
+                auth_Id = autId,
+                pm_tab = "PURPOSES",
+                message_language = "ENGLISH"
+            )
+            campaignQueries.insertStatusCampaign(
+                property_name = propertyName,
+                campaign_type = "GDPR",
+                enabled = gdprEnabled.toValueDB()
+            )
+            campaignQueries.insertStatusCampaign(
+                property_name = propertyName,
+                campaign_type = "CCPA",
+                enabled = ccpaEnabled.toValueDB()
+            )
+        }
     }
 }

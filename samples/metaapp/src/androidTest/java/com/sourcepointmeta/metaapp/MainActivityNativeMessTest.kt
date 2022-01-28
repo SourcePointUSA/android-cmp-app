@@ -7,6 +7,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.wr
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addNativeTestProperty
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkAllGdprConsentsOn
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkCcpaNativeTitle
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkGdprNativeTitle
@@ -89,7 +90,7 @@ class MainActivityNativeMessTest {
         )
         scenario = launchActivity()
 
-        db.addNativeTestProperty(gdprEnabled = true, ccpaEnabled = false)
+        db.addProperty(gdprEnabled = true, ccpaEnabled = false)
 
         runDemo()
 
