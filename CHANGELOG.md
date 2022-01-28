@@ -1,3 +1,6 @@
+## 6.3.5 (January, 27, 2022)
+* [SP-8382](https://sourcepoint.atlassian.net/browse/SP-8382) Fix webview issue on android version prior to API 21 (#455)
+
 ## 6.3.4 (December, 15, 2021)
 * [SP-8377](https://sourcepoint.atlassian.net/browse/SP-8377) Add callback onNoIntentActivitiesFound to SpClient (#449)
 
