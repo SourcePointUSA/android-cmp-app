@@ -687,29 +687,38 @@ internal class SpConsentLibImpl(
             }
             NativeMessageActionType.UNKNOWN,
             NativeMessageActionType.MSG_CANCEL -> {
+                moveToNextCampaign(remainingCampaigns, viewManager, spClient)
             }
             NativeMessageActionType.ACCEPT_ALL,
             NativeMessageActionType.REJECT_ALL -> {
                 consentManager.enqueueConsent(nativeConsentAction = nca)
-                remainingCampaigns.poll()?.let {
-                    val legislation = it.type
-                    when (it.messageSubCategory) {
-                        TCFv2 -> {
-                            /** create a instance of WebView */
-                            val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
-                                .executeOnLeft { e -> spClient.onError(e) }
-                                .getOrNull()
+                moveToNextCampaign(remainingCampaigns, viewManager, spClient)
+            }
+        }
+    }
 
-                            /** inject the message into the WebView */
-                            val url = it.url // urlManager.urlURenderingApp(env)//
-                            webView?.loadConsentUI(it, url, legislation)
-                        }
-                        NATIVE_IN_APP -> {
-                            val nm = it.message.toNativeMessageDTO(legislation)
-                            currentNativeMessageCampaign = it
-                            spClient.onNativeMessageReady(nm, this@SpConsentLibImpl)
-                        }
-                    }
+    private fun moveToNextCampaign(
+        remainingCampaigns: Queue<CampaignModel>,
+        viewManager: ViewsManager,
+        spClient: SpClient
+    ) {
+        remainingCampaigns.poll()?.let {
+            val legislation = it.type
+            when (it.messageSubCategory) {
+                TCFv2 -> {
+                    /** create a instance of WebView */
+                    val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
+                        .executeOnLeft { e -> spClient.onError(e) }
+                        .getOrNull()
+
+                    /** inject the message into the WebView */
+                    val url = it.url // urlManager.urlURenderingApp(env)//
+                    webView?.loadConsentUI(it, url, legislation)
+                }
+                NATIVE_IN_APP -> {
+                    val nm = it.message.toNativeMessageDTO(legislation)
+                    currentNativeMessageCampaign = it
+                    spClient.onNativeMessageReady(nm, this@SpConsentLibImpl)
                 }
             }
         }
