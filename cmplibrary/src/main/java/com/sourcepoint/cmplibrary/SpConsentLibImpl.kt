@@ -11,9 +11,6 @@ import com.sourcepoint.cmplibrary.core.* // ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
-import com.sourcepoint.cmplibrary.core.layout.NativeMessageClient
-import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
-import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessageInternal
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.core.nativemessage.toNativeMessageDTO
 import com.sourcepoint.cmplibrary.core.web.CampaignModel
@@ -55,7 +52,6 @@ internal class SpConsentLibImpl(
     private val env: Env = Env.PROD,
 ) : SpConsentLib, NativeMessageController {
 
-    private val nativeMsgClient by lazy { NativeMsgDelegate() }
     private val remainingCampaigns: Queue<CampaignModel> = LinkedList()
     private var currentNativeMessageCampaign: CampaignModel? = null
 
@@ -115,13 +111,13 @@ internal class SpConsentLibImpl(
     }
 
     /** Start Client's methods */
-    override fun loadMessage(authId: String) {
+    override fun loadMessage(authId: String?, pubData: JSONObject?) {
         checkMainThread("loadMessage")
 
         if (viewManager.isViewInLayout) return
 
         service.getUnifiedMessage(
-            messageReq = campaignManager.getUnifiedMessageReq(authId),
+            messageReq = campaignManager.getUnifiedMessageReq(authId, pubData),
             pSuccess = { messageResp ->
                 consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
                 val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
@@ -221,28 +217,6 @@ internal class SpConsentLibImpl(
                 )
             },
             env = env
-        )
-    }
-
-    override fun loadMessage(nativeMessage: NativeMessage) {
-        checkMainThread("loadMessage")
-
-        service.getNativeMessageK(
-            campaignManager.getUnifiedMessageReq(),
-            { messageResp ->
-                executor.executeOnMain {
-                    /** configuring onClickListener and set the parameters */
-                    (nativeMessage as? NativeMessageInternal)?.setAttributes(messageResp.msg)
-                    /** set the action callback */
-                    (nativeMessage as? NativeMessageInternal)?.setActionClient(nativeMsgClient)
-                    /** calling the client */
-                    spClient.onUIReady(nativeMessage)
-                }
-            },
-            { throwable ->
-                (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
-                pLogger.error(throwable.toConsentLibException())
-            }
         )
     }
 
@@ -356,25 +330,6 @@ internal class SpConsentLibImpl(
     }
 
     private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, "$mess")
-
-    /**
-     * Delegate used by the [NativeMessage] to catch events performed by the user
-     */
-    // TODO in progress
-    inner class NativeMsgDelegate : NativeMessageClient {
-
-        override fun onClickAcceptAll(view: View, ca: ConsentAction) {}
-
-        override fun onClickRejectAll(view: View, ca: ConsentAction) {}
-
-        override fun onPmDismiss(view: View, ca: ConsentAction) {}
-
-        override fun onClickShowOptions(view: View, ca: ConsentAction) {}
-
-        override fun onClickCancel(view: View, ca: ConsentAction) {}
-
-        override fun onDefaultAction(view: View, ca: ConsentAction) {}
-    }
 
     /** Start Receiver methods */
     inner class JSReceiverDelegate : JSClientLib {

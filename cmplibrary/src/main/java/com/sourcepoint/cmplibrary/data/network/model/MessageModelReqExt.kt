@@ -16,6 +16,7 @@ internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
             put("requestUUID", requestUUID)
             put("propertyHref", "http://$propertyHref")
             put("accountId", accountId)
+            put("pubData", pubData)
             put("campaignEnv", campaignsEnv.env)
             put("campaigns", campaigns.toJsonObject())
             put("consentLanguage", consentLanguage.value)

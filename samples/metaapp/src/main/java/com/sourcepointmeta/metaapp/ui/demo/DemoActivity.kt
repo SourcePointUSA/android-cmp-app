@@ -84,6 +84,13 @@ class DemoActivity : FragmentActivity() {
             ?: PMTab.DEFAULT
     }
 
+    private val pubData: JSONObject = JSONObject().apply {
+        put("timeStamp", 1628620031363)
+        put("key_1", "value_1")
+        put("key_2", true)
+        put("key_3", JSONObject())
+    }
+
     private val isUITestRunning by inject<Boolean>(qualifier = named("ui_test_running"))
 
     private val gdprPmId by lazy { property.gdprPmId }
@@ -181,12 +188,11 @@ class DemoActivity : FragmentActivity() {
         super.onResume()
         checkVersion()
         if (intent.getBooleanExtra("run_demo", true)) {
-
             Handler().postDelayed(
                 {
                     authId
-                        ?.let { spConsentLib.loadMessage(authId = it) }
-                        ?: run { spConsentLib.loadMessage() }
+                        ?.let { spConsentLib.loadMessage(authId = it, pubData = pubData) }
+                        ?: run { spConsentLib.loadMessage(pubData = pubData) }
                 },
                 400
             )
