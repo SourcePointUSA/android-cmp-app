@@ -125,10 +125,6 @@ class MainActivityNativeMessTest {
 
         runDemo()
 
-        wr { TestUseCaseMeta.checkNumberOfNullMessage(position = 2) }
-        wr { TestUseCaseMeta.checkOnConsentReady(position = 1) }
-        wr { TestUseCaseMeta.checkOnSpFinish(position = 0) }
-
         verify(exactly = 1) { spClient.onSpFinished(any()) }
         verify(exactly = 1) { spClient.onConsentReady(any()) }
         verify(exactly = 0) { spClient.onUIReady(any()) }
