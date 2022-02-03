@@ -8,7 +8,9 @@ import com.example.uitestutil.periodicWr
 import com.example.uitestutil.recreateAndResume
 import com.example.uitestutil.wr
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkAllVendorsOff
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkDeepLinkDisplayed
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkNumberOfNullMessage
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnConsentReady
@@ -23,6 +25,7 @@ import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapCancelOnWebView
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapFab
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapMetaDeepLinkOnWebView
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapOptionWebView
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapPartnersOnWebView
 import com.sourcepointmeta.metaapp.data.localdatasource.createDb
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import io.mockk.mockk
@@ -143,7 +146,20 @@ class MainActivityTest {
     }
 
     @Test
-    fun TAPPING_on_aVENDORS_link_SHOW_the_PM_VENDORS_tab(){
+    fun TAPPING_on_aVENDORS_link_SHOW_the_PM_VENDORS_tab() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+        loadKoinModules(
+            module(override = true) {
+                single<List<SpClient>> { listOf(spClient) }
+                single(qualifier = named("ui_test_running")) { true }
+            }
+        )
+        scenario = launchActivity()
 
+        db.addProperty(propertyName = "mobile.multicampaign.native.demo", gdprPmId = 545258)
+
+        periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
+        wr { tapPartnersOnWebView() }
+        wr { checkAllVendorsOff() }
     }
 }

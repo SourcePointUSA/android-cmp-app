@@ -12,6 +12,7 @@ import com.sourcepointmeta.metaapp.TestData.GDPR_CONSENT_LIST_2
 import com.sourcepointmeta.metaapp.TestData.OPTIONS
 import com.sourcepointmeta.metaapp.TestData.REJECT
 import com.sourcepointmeta.metaapp.TestData.TITLE
+import com.sourcepointmeta.metaapp.TestData.VENDORS_LIST_2
 import com.sourcepointmeta.metaapp.data.localdatasource.toValueDB
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
@@ -42,6 +43,10 @@ class TestUseCaseMeta {
 
         fun tapAcceptAllOnWebView() {
             performClickOnWebViewByContent(ACCEPT_ALL)
+        }
+
+        fun tapPartnersOnWebView() {
+            performClickOnLabelWebViewByContent("partners")
         }
 
         fun checkDeepLinkDisplayed() {
@@ -172,6 +177,12 @@ class TestUseCaseMeta {
         fun checkAllGdprConsentsOn() {
             GDPR_CONSENT_LIST_2.forEach { consent ->
                 checkConsentState(consent, true)
+            }
+        }
+
+        fun checkAllVendorsOff() {
+            VENDORS_LIST_2.forEach { consent ->
+                checkConsentState(consent, false)
             }
         }
 

@@ -14,6 +14,14 @@ object TestData {
         "Our Custom Purpose"
     )
 
+    val VENDORS_LIST_2 = listOf(
+        "Deutsche Post AG",
+        "Jivox Corporation",
+        "Rockabox Media Ltd t/a Scoota",
+        "brand eins Medien AG",
+        "Insticator"
+    )
+
     val CCPA_CONSENT_LIST = listOf(
         "Category 1",
         "Category 2",
@@ -27,11 +35,17 @@ object TestData {
     )
 
     var CONSENT_LIST = arrayOf(
-        "Store and/or access information on a device", "Create a personalised ads profile", "Select personalised ads",
-        "Create a personalised content profile", "Select personalised content", "Measure content performance", "Apply market research to generate audience insights",
+        "Store and/or access information on a device",
+        "Create a personalised ads profile",
+        "Select personalised ads",
+        "Create a personalised content profile",
+        "Select personalised content",
+        "Measure content performance",
+        "Apply market research to generate audience insights",
         "Develop and improve products"
     )
-    var PARTIAL_CONSENT_LIST = arrayOf("Create a personalised content profile", "Select personalised content", "Measure content performance")
+    var PARTIAL_CONSENT_LIST =
+        arrayOf("Create a personalised content profile", "Select personalised content", "Measure content performance")
     var MESSAGE = "message"
     var ACCEPT = "Accept"
     var ZUSTIMMEN = "Zustimmen"
