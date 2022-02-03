@@ -100,10 +100,10 @@ class MainActivityNativeMessTest {
         wr { tapShowPmBtn() }
         wr(backup = { tapShowPmBtn() }) { checkAllGdprConsentsOn() }
 
-        verify(exactly = 1) { spClient.onNativeMessageReady(any(), any()) }
-        verify(exactly = 1) { spClient.onSpFinished(any()) }
-        verify(exactly = 1) { spClient.onConsentReady(any()) }
-        verify(exactly = 1) { spClient.onUIReady(any()) }
+        verify(atLeast = 1) { spClient.onNativeMessageReady(any(), any()) }
+        verify(atLeast = 1) { spClient.onSpFinished(any()) }
+        verify(atLeast = 1) { spClient.onConsentReady(any()) }
+        verify(atLeast = 1) { spClient.onUIReady(any()) }
         verify(exactly = 0) { spClient.onError(any()) }
         verify(exactly = 0) { spClient.onUIFinished(any()) }
         verify(exactly = 0) { spClient.onNoIntentActivitiesFound(any()) }
