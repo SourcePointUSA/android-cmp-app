@@ -141,4 +141,9 @@ class MainActivityTest {
         verify(exactly = 1) { spClient.onConsentReady(any()) }
         verify(atLeast = 1) { spClient.onUIReady(any()) }
     }
+
+    @Test
+    fun TAPPING_on_aVENDORS_link_SHOW_the_PM_VENDORS_tab(){
+
+    }
 }
