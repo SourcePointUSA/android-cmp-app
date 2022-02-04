@@ -46,7 +46,15 @@ class TestUseCaseMeta {
         }
 
         fun tapPartnersOnWebView() {
-            performClickOnLabelWebViewByContent("partners")
+            performClickOnLabelWebViewByContent("Partners")
+        }
+
+        fun tapFeaturesOnWebView() {
+            performClickOnLabelWebViewByContent("Features")
+        }
+
+        fun tapPurposesOnWebView() {
+            performClickOnLabelWebViewByContent("Purposes")
         }
 
         fun checkDeepLinkDisplayed() {
@@ -186,10 +194,12 @@ class TestUseCaseMeta {
             }
         }
 
-        fun checkAllConsentsOff() {
-            GDPR_CONSENT_LIST_2.forEach { consent ->
-                checkConsentState(consent, false)
-            }
+        fun checkFeaturesTab() {
+            checkTextInParagraph("Features are a use of the data that you have already agreed to share with us")
+        }
+
+        fun checkPurposesTab() {
+            checkTextInParagraph("You give an affirmative action to indicate that we can use your data for this purpose.")
         }
 
         fun checkAllCcpaConsentsOn() {
