@@ -168,10 +168,12 @@ class MainActivityTest {
         wr { tapPartnersOnWebView() }
         wr { checkAllVendorsOff() }
         wr { tapCancelOnWebView() }
+
         // Features
         wr { tapFeaturesOnWebView() }
         wr { checkFeaturesTab() }
         wr { tapCancelOnWebView() }
+
         // Purposes
         wr { tapPurposesOnWebView() }
         wr { checkPurposesTab() }
