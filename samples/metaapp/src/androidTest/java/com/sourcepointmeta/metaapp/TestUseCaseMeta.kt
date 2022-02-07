@@ -12,6 +12,7 @@ import com.sourcepointmeta.metaapp.TestData.GDPR_CONSENT_LIST_2
 import com.sourcepointmeta.metaapp.TestData.OPTIONS
 import com.sourcepointmeta.metaapp.TestData.REJECT
 import com.sourcepointmeta.metaapp.TestData.TITLE
+import com.sourcepointmeta.metaapp.TestData.VENDORS_LIST_2
 import com.sourcepointmeta.metaapp.data.localdatasource.toValueDB
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
@@ -42,6 +43,18 @@ class TestUseCaseMeta {
 
         fun tapAcceptAllOnWebView() {
             performClickOnWebViewByContent(ACCEPT_ALL)
+        }
+
+        fun tapPartnersOnWebView() {
+            performClickOnLabelWebViewByContent("Partners")
+        }
+
+        fun tapFeaturesOnWebView() {
+            performClickOnLabelWebViewByContent("Features")
+        }
+
+        fun tapPurposesOnWebView() {
+            performClickOnLabelWebViewByContent("Purposes")
         }
 
         fun checkDeepLinkDisplayed() {
@@ -175,10 +188,18 @@ class TestUseCaseMeta {
             }
         }
 
-        fun checkAllConsentsOff() {
-            GDPR_CONSENT_LIST_2.forEach { consent ->
+        fun checkAllVendorsOff() {
+            VENDORS_LIST_2.forEach { consent ->
                 checkConsentState(consent, false)
             }
+        }
+
+        fun checkFeaturesTab() {
+            checkTextInParagraph("Features are a use of the data that you have already agreed to share with us")
+        }
+
+        fun checkPurposesTab() {
+            checkTextInParagraph("You give an affirmative action to indicate that we can use your data for this purpose.")
         }
 
         fun checkAllCcpaConsentsOn() {

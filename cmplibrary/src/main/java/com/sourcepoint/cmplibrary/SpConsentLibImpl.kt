@@ -542,7 +542,7 @@ internal class SpConsentLibImpl(
         when (val l = actionImpl.campaignType) {
             CampaignType.GDPR -> {
                 viewManager.removeView(view)
-                campaignManager.getPmConfig(l, actionImpl.privacyManagerId, PMTab.PURPOSES)
+                campaignManager.getPmConfig(l, actionImpl.privacyManagerId, actionImpl.privacyManagerTab())
                     .map { pmUrlConfig ->
                         val url =
                             urlManager.pmUrl(

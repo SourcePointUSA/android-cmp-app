@@ -97,7 +97,6 @@ class Builder {
         val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spc, MessageLanguage.ENGLISH)
         val errorManager = errorMessageManager(campaignManager, client)
         val logger = spc.logger ?: createLogger(errorManager)
-        val pmTab = privacyManagerTab ?: PMTab.FEATURES
         val jsonConverter = JsonConverter.create()
         val connManager = ConnectionManager.create(appCtx)
         val responseManager = ResponseManager.create(jsonConverter, logger)
