@@ -56,9 +56,20 @@ class OnlyGdprKotlin : AppCompatActivity() {
         }
     }
 
+    private val pubData: JSONObject = JSONObject().apply {
+        put("timeStamp", 1628620031363)
+        put("key_1", "value_1")
+        put("key_2", true)
+        put("key_3", JSONObject())
+    }
+
     override fun onResume() {
         super.onResume()
         spConsentLib.loadMessage()
+        /**
+         * To send the `pubData` JSONObject you can use the following variant of loadMessage
+         */
+        // spConsentLib.loadMessage(pubData = pubData)
     }
 
     override fun onDestroy() {
