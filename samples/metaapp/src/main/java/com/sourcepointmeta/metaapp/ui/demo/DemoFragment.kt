@@ -1,9 +1,11 @@
 package com.sourcepointmeta.metaapp.ui.demo
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -18,9 +20,13 @@ import org.koin.android.ext.android.inject
 class DemoFragment : Fragment() {
 
     companion object {
-        fun instance(propertyName: String) = DemoFragment().apply {
+
+        const val AUTH_ID_KEY = "authId_sharing"
+
+        fun instance(propertyName: String, authId: String?) = DemoFragment().apply {
             arguments = Bundle().apply {
                 putString("property_name", propertyName)
+                putString(AUTH_ID_KEY, authId)
             }
         }
     }
@@ -35,6 +41,9 @@ class DemoFragment : Fragment() {
 
     private val propertyName by lazy {
         arguments?.getString("property_name") ?: throw RuntimeException("Property name not set!!!")
+    }
+    private val authId: String? by lazy {
+        arguments?.getString(AUTH_ID_KEY)
     }
     private val dataSource by inject<LocalDataSource>()
     private val config: SpConfig by lazy {
@@ -54,6 +63,15 @@ class DemoFragment : Fragment() {
         campaign_name_fr.text = propertyName
         review_consents_ccpa_fr.setOnClickListener { _v: View? -> demoListener?.invoke(CCPA_PM, ott_switch.isChecked) }
         review_consents_gdpr_fr.setOnClickListener { _v: View? -> demoListener?.invoke(GDPR_PM, ott_switch.isChecked) }
+        auth_id_activity.setOnClickListener { _v: View? ->
+            authId
+                ?.let {
+                    val i = Intent(activity, DemoActivityAuthId::class.java)
+                    i.putExtra(AUTH_ID_KEY, it)
+                    startActivity(i)
+                }
+                ?: run { Toast.makeText(context, "Auth id not set, please configure a value!!!", Toast.LENGTH_SHORT).show() }
+        }
         config.campaigns.find { it.campaignType == CampaignType.CCPA }
             ?.let { review_consents_ccpa_fr.isEnabled = true } ?: kotlin.run {
             review_consents_ccpa_fr.isEnabled = false

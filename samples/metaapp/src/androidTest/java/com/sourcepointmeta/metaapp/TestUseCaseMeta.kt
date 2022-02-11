@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp
 
+import android.webkit.CookieManager
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -176,6 +177,25 @@ class TestUseCaseMeta {
 
         fun clickOnGdprReviewConsent() {
             performClickById(resId = R.id.review_consents_gdpr_fr)
+        }
+
+        fun clickOnAuthIdActivity() {
+            performClickById(resId = R.id.auth_id_activity)
+        }
+
+        fun checkConsentString() {
+            checkTextSpan("CPUPjHZPUPjHZAGABCENCCCgAAAAAEIAAAYgAAAAPAAEAAAA.YAAAAAAAAAAA", "euconsent")
+        }
+
+        fun checkAuthId() {
+            checkTextSpan("test", "authId")
+        }
+
+        fun checkCookieExist(url: String, value: String) {
+            CookieManager.getInstance()
+                .getCookie(url)
+                .contains(value)
+                .assertTrue()
         }
 
         fun clickOnCcpaReviewConsent() {

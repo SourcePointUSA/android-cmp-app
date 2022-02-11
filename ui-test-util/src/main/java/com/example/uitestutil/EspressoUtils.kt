@@ -266,6 +266,12 @@ fun performClickPMTabSelected(expected: String) {
 }
 
 @Throws(Throwable::class)
+fun checkTextSpan(expected: String, id: String) {
+    onWebView()
+            .withElement(findElement(Locator.XPATH, "//span[@id='$id' and text()='$expected']"))
+}
+
+@Throws(Throwable::class)
 fun tapOnToggle(property: String) {
     onWebView()
             .withElement(findElement(Locator.XPATH, "//span[@aria-label='$property'and @class='slider round']"))

@@ -103,7 +103,9 @@ class DemoActivity : FragmentActivity() {
         spConfig = config.copy(logger = logger)
     }
 
-    private val demoFr by lazy { DemoFragment.instance(config.propertyName) }
+    private val demoFr by lazy {
+        DemoFragment.instance(config.propertyName, property.authId)
+    }
     private val logFr by lazy { LogFragment.instance(config.propertyName) }
 
     override fun onCreate(savedInstanceState: Bundle?) {

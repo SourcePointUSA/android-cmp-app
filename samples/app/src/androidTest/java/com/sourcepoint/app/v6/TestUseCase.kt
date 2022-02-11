@@ -271,16 +271,18 @@ class TestUseCase {
             url: String = "",
             isOtt: Boolean = false,
             pResetAll: Boolean = true,
+            authId : String? = null,
+            authIdUrl : String = "",
             spClientObserver: List<SpClient> = emptyList()
         ): Module {
             return module(override = true) {
                 single<List<SpClient?>> { spClientObserver }
                 single<DataProvider> {
                     object : DataProvider {
-                        override val authId = uuid
+                        override val authId = authId
                         override val resetAll = pResetAll
                         override val isOtt = isOtt
-                        override val url = url
+                        override val url = authIdUrl
                         override val spConfig: SpConfig = spConfig
                         override val gdprPmId: String = gdprPmId
                         override val ccpaPmId: String = ccpaPmId

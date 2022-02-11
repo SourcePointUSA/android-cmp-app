@@ -11,12 +11,16 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkAllVendorsOff
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkAuthId
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkConsentString
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkCookieExist
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkDeepLinkDisplayed
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkFeaturesTab
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkNumberOfNullMessage
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnConsentReady
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnSpFinish
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkPurposesTab
+import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.clickOnAuthIdActivity
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.clickOnGdprReviewConsent
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.runDemo
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.saveProperty
@@ -92,6 +96,27 @@ class MainActivityTest {
         verify(exactly = 0) { spClient.onUIReady(any()) }
         verify(exactly = 0) { spClient.onError(any()) }
         verify(exactly = 0) { spClient.onUIFinished(any()) }
+    }
+
+    @Test
+    fun GIVEN_an_authId_VERIFY_that_a_webview_catchs_the_consent_id() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+        loadKoinModules(
+            module(override = true) {
+                single<List<SpClient>> { listOf(spClient) }
+                single(qualifier = named("ui_test_running")) { true }
+            }
+        )
+        scenario = launchActivity()
+
+        db.addTestProperty(autId = "test")
+
+        periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
+        wr(delay = 200) { swipeLeftPager() }
+        wr { clickOnAuthIdActivity() }
+        wr { checkConsentString() }
+        wr { checkAuthId() }
+        wr { checkCookieExist("https://carmelo-iriti.github.io/authid.github.io", "test") }
     }
 
     @Test
