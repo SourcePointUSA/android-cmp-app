@@ -52,7 +52,9 @@ interface Logger {
 
     fun res(tag: String, msg: String, status: String, body: String)
 
-    fun actionWebApp(tag: String, msg: String, json: JSONObject?)
+    fun webAppAction(tag: String, msg: String, json: JSONObject?)
+
+    fun nativeMessageAction(tag: String, msg: String, json: JSONObject?)
 
     fun computation(tag: String, msg: String)
 

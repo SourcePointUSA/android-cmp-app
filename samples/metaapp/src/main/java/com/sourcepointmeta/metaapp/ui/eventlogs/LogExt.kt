@@ -28,6 +28,7 @@ fun LogItemView.bind(item: LogItem, position: Int) {
         "REQUEST" -> bindReq(item, position)
         "RESPONSE" -> bindResp(item, position)
         "WEB_ACTION" -> bindWebAction(item, position)
+        "NATIVEMESSAGE_ACTION" -> bindWebAction(item, position)
         "ERROR" -> bindClientError(item, position)
         "CLIENT_EVENT" -> bindClientEvent(item, position)
         "COMPUTATION" -> bindComputation(item, position)

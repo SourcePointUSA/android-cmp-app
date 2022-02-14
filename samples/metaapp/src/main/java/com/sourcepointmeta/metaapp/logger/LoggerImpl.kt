@@ -130,7 +130,7 @@ internal class LoggerImpl(
         }
     }
 
-    override fun actionWebApp(tag: String, msg: String, json: JSONObject?) {
+    override fun webAppAction(tag: String, msg: String, json: JSONObject?) {
         loggerScope.launch {
             ds.storeOrUpdateLog(
                 MetaLog(
@@ -138,6 +138,23 @@ internal class LoggerImpl(
                     propertyName = propertyName,
                     timestamp = Date().time,
                     type = "WEB_ACTION",
+                    tag = tag,
+                    message = msg,
+                    logSession = session,
+                    jsonBody = json.toString()
+                )
+            )
+        }
+    }
+
+    override fun nativeMessageAction(tag: String, msg: String, json: JSONObject?) {
+        loggerScope.launch {
+            ds.storeOrUpdateLog(
+                MetaLog(
+                    id = null,
+                    propertyName = propertyName,
+                    timestamp = Date().time,
+                    type = "NATIVEMESSAGE_ACTION",
                     tag = tag,
                     message = msg,
                     logSession = session,

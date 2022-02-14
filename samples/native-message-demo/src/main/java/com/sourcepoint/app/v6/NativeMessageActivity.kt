@@ -81,6 +81,7 @@ class NativeMessageActivity : AppCompatActivity() {
         }
 
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+            Log.i(this::class.java.name, "onNativeMessageReady: $message")
             setNativeMessage(message, messageController)
         }
 
@@ -90,6 +91,7 @@ class NativeMessageActivity : AppCompatActivity() {
         }
 
         override fun onError(error: Throwable) {
+            Log.i(this::class.java.name, "onError: ${error.message}")
             error.printStackTrace()
         }
 
