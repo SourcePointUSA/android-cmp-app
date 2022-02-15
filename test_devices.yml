@@ -34,3 +34,12 @@ metaapp-nexus_low_res:
       version: 29
       locale: 'en'
       orientation: portrait
+meta-device:
+  type: instrumentation
+  app: metaapp-debug.apk
+  test: metaapp-debug-androidTest.apk
+  device:
+    - model: blueline
+      version: 28
+      locale: 'en'
+      orientation: portrait

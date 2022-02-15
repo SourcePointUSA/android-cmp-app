@@ -31,7 +31,6 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
@@ -42,10 +41,8 @@ import java.util.concurrent.TimeUnit
 class Builder {
 
     private var spConfig: SpConfig? = null
-    private var authId: String? = null
     private var weakReference: WeakReference<Activity>? = null
     private var ott: Boolean = false
-    private var privacyManagerTab: PMTab? = null
     private var spClient: SpClient? = null
 
     fun isOtt(ott: Boolean) = apply {
@@ -56,10 +53,6 @@ class Builder {
         this.spClient = spClient
     }
 
-    fun setAuthId(authId: String) = apply {
-        this.authId = authId
-    }
-
     fun setSpConfig(spConfig: SpConfig) = apply {
         this.spConfig = spConfig
     }
@@ -68,12 +61,6 @@ class Builder {
         this.weakReference = WeakReference(context)
     }
 
-    fun setPrivacyManagerTab(privacyManagerTab: PMTab) = apply {
-        this.privacyManagerTab = privacyManagerTab
-    }
-
-    //    @Suppress("UNCHECKED_CAST")
-//    fun <T : ConsentLib> build(clazz: Class<out T>): T {
     fun build(): SpConsentLib {
 
         val env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD
