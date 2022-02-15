@@ -125,7 +125,7 @@ class MainActivityNativeMessTest {
 
         runDemo()
 
-        verify(exactly = 1) { spClient.onSpFinished(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         verify(exactly = 1) { spClient.onConsentReady(any()) }
         verify(exactly = 0) { spClient.onUIReady(any()) }
         verify(exactly = 0) { spClient.onError(any()) }
