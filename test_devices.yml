@@ -34,12 +34,12 @@ metaapp-nexus_low_res:
       version: 29
       locale: 'en'
       orientation: portrait
-android-pixel-4-meta:
+meta-device:
   type: instrumentation
   app: metaapp-debug.apk
   test: metaapp-debug-androidTest.apk
   device:
-    - model: walleye
-      version: 29
+    - model: blueline
+      version: 28
       locale: 'en'
       orientation: portrait
