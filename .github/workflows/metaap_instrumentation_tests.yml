@@ -33,25 +33,14 @@ jobs:
             !~/cache/exclude
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-#      - name: Build test artifact
-#        run: |
-#          ./gradlew metaapp:assembleDebug metaapp:assembleDebugAndroidTest
-#          cp samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk ./metaapp-debug.apk
-#          cp samples/metaapp/build/outputs/apk/androidTest/debug/metaapp-debug-androidTest.apk ./metaapp-debug-androidTest.apk
-#      - name: Run tests Metaapp on Firebase Test Lab
-#        uses: asadmansr/Firebase-Test-Lab-Action@v1.0
-#        with:
-#          arg-spec: 'test_devices.yml:meta-device'
-#        env:
-#          SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
-      - name: run MetaApp tests
-        uses: reactivecircus/android-emulator-runner@v2
+      - name: Build test artifact
+        run: |
+          ./gradlew metaapp:assembleDebug metaapp:assembleDebugAndroidTest
+          cp samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk ./metaapp-debug.apk
+          cp samples/metaapp/build/outputs/apk/androidTest/debug/metaapp-debug-androidTest.apk ./metaapp-debug-androidTest.apk
+      - name: Run tests Metaapp on Firebase Test Lab
+        uses: asadmansr/Firebase-Test-Lab-Action@v1.0
         with:
-          api-level: 29
-          script: ./gradlew metaapp:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.sourcepointmeta.metaapp.MainActivityTest
-      - name: 'Publish Metaapp Test Report'
-        if: always()
-        uses: actions/upload-artifact@v2-preview
-        with:
-          name: 'metaap-test-report'
-          path: samples/metaapp/build/reports/androidTests/*
+          arg-spec: 'test_devices.yml:meta-device'
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
