@@ -1,4 +1,4 @@
-name: Metaap UI Tests
+name: Metaap UI Tests 2
 on:
   push:
     branches: [ develop ]
@@ -48,7 +48,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew metaapp:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.sourcepointmeta.metaapp.MainActivityTest
+          script: ./gradlew metaapp:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.sourcepointmeta.metaapp.MainActivityTest2
       - name: 'Publish Metaapp Test Report'
         if: always()
         uses: actions/upload-artifact@v2-preview
