@@ -11,8 +11,6 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkAllVendorsOff
-import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkAuthId
-import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkConsentString
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkCookieExist
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkDeepLinkDisplayed
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkFeaturesTab
@@ -114,8 +112,6 @@ class MainActivityTest {
         periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
         wr(delay = 200) { swipeLeftPager() }
         wr { clickOnAuthIdActivity() }
-        wr { checkConsentString() }
-        wr { checkAuthId() }
         wr { checkCookieExist("https://carmelo-iriti.github.io/authid.github.io", "test") }
     }
 

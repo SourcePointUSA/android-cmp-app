@@ -183,14 +183,6 @@ class TestUseCaseMeta {
             performClickById(resId = R.id.auth_id_activity)
         }
 
-        fun checkConsentString() {
-            checkTextSpan("CPUPjHZPUPjHZAGABCENCCCgAAAAAEIAAAYgAAAAPAAEAAAA.YAAAAAAAAAAA", "euconsent")
-        }
-
-        fun checkAuthId() {
-            checkTextSpan("test", "authId")
-        }
-
         fun checkCookieExist(url: String, value: String) {
             CookieManager.getInstance()
                 .getCookie(url)
