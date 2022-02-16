@@ -39,8 +39,8 @@ meta-device:
   app: metaapp-debug.apk
   test: metaapp-debug-androidTest.apk
   device:
-    - model: Pixel3
-      version: 30
+    - model: Pixel2
+      version: 29
       locale: 'en'
       orientation: portrait
 app-device:
@@ -48,7 +48,7 @@ app-device:
   app: app-debug.apk
   test: app-debug-androidTest.apk
   device:
-    - model: Pixel3
-      version: 30
+    - model: Pixel2
+      version: 29
       locale: 'en'
       orientation: portrait
