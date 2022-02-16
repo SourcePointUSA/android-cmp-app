@@ -42,12 +42,7 @@ class Builder {
 
     private var spConfig: SpConfig? = null
     private var weakReference: WeakReference<Activity>? = null
-    private var ott: Boolean = false
     private var spClient: SpClient? = null
-
-    fun isOtt(ott: Boolean) = apply {
-        this.ott = ott
-    }
 
     fun setSpClient(spClient: SpClient) = apply {
         this.spClient = spClient

@@ -11,7 +11,6 @@ class SpCmpBuilder {
 
     lateinit var spConfig: SpConfig
     var authId: String? = null
-    var ott: Boolean = false
     lateinit var activity: Activity
     lateinit var spClient: SpClient
 
