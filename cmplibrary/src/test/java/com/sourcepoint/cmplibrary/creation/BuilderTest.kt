@@ -4,7 +4,6 @@ import android.app.Activity
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
@@ -44,14 +43,6 @@ class BuilderTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
-    }
-
-    @Test(expected = RuntimeException::class)
-    fun `A context object is MISSING an exception is THROWN`() {
-        Builder()
-            // .setContext(context)
-            .setPrivacyManagerTab(PMTab.FEATURES)
-            .build()
     }
 
     @Test(expected = RuntimeException::class)

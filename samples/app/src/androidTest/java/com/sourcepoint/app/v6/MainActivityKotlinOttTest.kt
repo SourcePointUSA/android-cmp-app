@@ -8,6 +8,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.di.customCategoriesDataProd
@@ -143,33 +144,6 @@ class MainActivityKotlinOttTest {
             IABTCF_TCString.assertNotNull()
         }
 
-    }
-
-    private fun mockModule(
-        spConfig: SpConfig,
-        gdprPmId: String,
-        ccpaPmId: String = "",
-        uuid: String? = null,
-        url: String = "",
-        isOtt: Boolean = false,
-        spClientObserver: List<SpClient> = emptyList()
-    ): Module {
-        return module(override = true) {
-            single<List<SpClient?>> { spClientObserver }
-            single<DataProvider> {
-                object : DataProvider {
-                    override val authId = uuid
-                    override val resetAll = true
-                    override val isOtt = isOtt
-                    override val url = url
-                    override val spConfig: SpConfig = spConfig
-                    override val gdprPmId: String = gdprPmId
-                    override val ccpaPmId: String = ccpaPmId
-                    override val customVendorList: List<String> = customVendorDataListProd.map { it.first }
-                    override val customCategories: List<String> = customCategoriesDataProd.map { it.first }
-                }
-            }
-        }
     }
 
 }

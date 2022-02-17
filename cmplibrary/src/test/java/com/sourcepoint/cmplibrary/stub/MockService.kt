@@ -57,7 +57,7 @@ internal class MockService(
         TODO("Not yet implemented")
     }
 
-    override fun getUnifiedMessageReq(authId: String?): UnifiedMessageRequest {
+    override fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest {
         TODO("Not yet implemented")
     }
 

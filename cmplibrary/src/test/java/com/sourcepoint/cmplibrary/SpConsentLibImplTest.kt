@@ -6,7 +6,6 @@ import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.ExecutorManager
-import com.sourcepoint.cmplibrary.core.layout.nat.NativeMessage
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
@@ -100,26 +99,6 @@ class SpConsentLibImplTest {
 //        val slot = slot<ActionTypes>()
 //        verify(exactly = 1) { spClient.onAction(capture(slot)) }
 //        slot.captured
-    }
-
-    // TODO
-//    @Test
-    fun `CALLING loadNativeMessage() with verify that spClient is called`() = runBlocking<Unit> {
-//        val dtJson = "msgJSON.json".file2String()
-//        val mockService = MockService(
-//            getNativeMessageLogic = { _, pSuccess, _ -> pSuccess.invoke(NativeMessageResp(JSONObject(dtJson))) }
-//        )
-//        val sut = SpConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, MockExecutorManager())
-//        sut.spClient = spClient
-//
-//        val nm = mockk<NativeMessage>()
-//        every { nm.setAttributes(any()) }.returns(Unit)
-//        every { nm.setActionClient(any()) }.returns(Unit)
-//        sut.loadMessage(nm)
-
-        val slot = slot<NativeMessage>()
-        verify(exactly = 1) { spClient.onUIReady(capture(slot)) }
-        slot.captured
     }
 
     internal fun createLib() = SpConsentLibImpl(

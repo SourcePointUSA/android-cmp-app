@@ -5,15 +5,12 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import java.lang.ref.WeakReference
 
 @SpDSL
 class SpCmpBuilder {
 
     lateinit var spConfig: SpConfig
     var authId: String? = null
-    lateinit var weakReference: WeakReference<Activity>
-    var ott: Boolean = false
     lateinit var activity: Activity
     lateinit var spClient: SpClient
 

@@ -12,6 +12,7 @@ import com.sourcepointmeta.metaapp.TestData.GDPR_CONSENT_LIST_2
 import com.sourcepointmeta.metaapp.TestData.OPTIONS
 import com.sourcepointmeta.metaapp.TestData.REJECT
 import com.sourcepointmeta.metaapp.TestData.TITLE
+import com.sourcepointmeta.metaapp.TestData.VENDORS_LIST_2
 import com.sourcepointmeta.metaapp.data.localdatasource.toValueDB
 import com.sourcepointmeta.metaapp.db.MetaAppDB
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
@@ -44,16 +45,44 @@ class TestUseCaseMeta {
             performClickOnWebViewByContent(ACCEPT_ALL)
         }
 
+        fun tapPartnersOnWebView() {
+            performClickOnLabelWebViewByContent("Partners")
+        }
+
+        fun tapFeaturesOnWebView() {
+            performClickOnLabelWebViewByContent("Features")
+        }
+
+        fun tapPurposesOnWebView() {
+            performClickOnLabelWebViewByContent("Purposes")
+        }
+
         fun checkDeepLinkDisplayed() {
             isDisplayedAllOfByResId(resId = R.id.dl_tv)
+        }
+
+        fun checkGdprNativeTitle() {
+            isDisplayedByResIdByText(resId = R.id.dl_tv, text = "GDPR Lorem Ipsum")
+        }
+
+        fun checkCcpaNativeTitle() {
+            isDisplayedByResIdByText(resId = R.id.dl_tv, text = "CCPA Lorem Ipsum")
         }
 
         fun tapMetaDeepLinkOnWebView() {
             performClickOnLabelWebViewByContent("metanetwork")
         }
 
-        fun tapCcpaPM() {
-            performClickById(R.id.review_consents_ccpa_fr)
+        fun tapNmDismiss() {
+            performClickById(R.id.cancel)
+        }
+
+        fun tapNmAcceptAll() {
+            performClickById(R.id.accept_all)
+        }
+
+        fun tapShowPmBtn() {
+            performClickById(R.id.review_consents_gdpr_fr)
         }
 
         fun addTestProperty() {
@@ -159,10 +188,18 @@ class TestUseCaseMeta {
             }
         }
 
-        fun checkAllConsentsOff() {
-            GDPR_CONSENT_LIST_2.forEach { consent ->
+        fun checkAllVendorsOff() {
+            VENDORS_LIST_2.forEach { consent ->
                 checkConsentState(consent, false)
             }
+        }
+
+        fun checkFeaturesTab() {
+            checkTextInParagraph("Features are a use of the data that you have already agreed to share with us")
+        }
+
+        fun checkPurposesTab() {
+            checkTextInParagraph("You give an affirmative action to indicate that we can use your data for this purpose.")
         }
 
         fun checkAllCcpaConsentsOn() {
@@ -197,6 +234,70 @@ class TestUseCaseMeta {
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.demo",
+                campaign_type = "CCPA",
+                enabled = ccpaEnabled.toValueDB()
+            )
+        }
+
+        fun MetaAppDB.addNativeTestProperty(autId: String? = null, gdprEnabled: Boolean = true, ccpaEnabled: Boolean = false) {
+            campaignQueries.insertProperty(
+                property_name = "mobile.multicampaign.fully.native",
+                account_id = 22,
+                gdpr_pm_id = 594218L,
+                ccpa_pm_id = 594219L,
+                campaign_env = "prod",
+                timeout = 3000L,
+                timestamp = Date().time,
+                is_staging = 0,
+                message_type = "WebView",
+                auth_Id = autId,
+                pm_tab = "PURPOSES",
+                message_language = "ENGLISH"
+            )
+            campaignQueries.insertStatusCampaign(
+                property_name = "mobile.multicampaign.fully.native",
+                campaign_type = "GDPR",
+                enabled = gdprEnabled.toValueDB()
+            )
+            campaignQueries.insertStatusCampaign(
+                property_name = "mobile.multicampaign.fully.native",
+                campaign_type = "CCPA",
+                enabled = ccpaEnabled.toValueDB()
+            )
+        }
+
+        enum class CampEnv { prod, stage }
+
+        fun MetaAppDB.addProperty(
+            propertyName: String = "mobile.multicampaign.native.demo2",
+            autId: String? = null,
+            gdprEnabled: Boolean = true,
+            ccpaEnabled: Boolean = false,
+            campEnv: CampEnv = CampEnv.prod,
+            gdprPmId: Long = 548285L,
+            ccpaPmId: Long = 0L
+        ) {
+            campaignQueries.insertProperty(
+                property_name = propertyName,
+                account_id = 22,
+                gdpr_pm_id = gdprPmId,
+                ccpa_pm_id = ccpaPmId,
+                campaign_env = campEnv.name,
+                timeout = 3000L,
+                timestamp = Date().time,
+                is_staging = 0,
+                message_type = "WebView",
+                auth_Id = autId,
+                pm_tab = "PURPOSES",
+                message_language = "ENGLISH"
+            )
+            campaignQueries.insertStatusCampaign(
+                property_name = propertyName,
+                campaign_type = "GDPR",
+                enabled = gdprEnabled.toValueDB()
+            )
+            campaignQueries.insertStatusCampaign(
+                property_name = propertyName,
                 campaign_type = "CCPA",
                 enabled = ccpaEnabled.toValueDB()
             )

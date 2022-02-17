@@ -34,3 +34,21 @@ metaapp-nexus_low_res:
       version: 29
       locale: 'en'
       orientation: portrait
+meta-device:
+  type: instrumentation
+  app: metaapp-debug.apk
+  test: metaapp-debug-androidTest.apk
+  device:
+    - model: a10
+      version: 29
+      locale: 'en'
+      orientation: portrait
+app-device:
+  type: instrumentation
+  app: app-debug.apk
+  test: app-debug-androidTest.apk
+  device:
+    - model: Pixel2
+      version: 29
+      locale: 'en'
+      orientation: portrait

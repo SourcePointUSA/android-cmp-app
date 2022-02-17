@@ -78,6 +78,19 @@ class DemoActivity : FragmentActivity() {
         dataSource.fetchPropertyByNameSync(propName)
     }
 
+    private val pTab by lazy {
+        property.pmTab
+            ?.let { pt -> PMTab.values().find { it.name == pt } }
+            ?: PMTab.DEFAULT
+    }
+
+    private val pubData: JSONObject = JSONObject().apply {
+        put("timeStamp", 1628620031363)
+        put("key_1", "value_1")
+        put("key_2", true)
+        put("key_3", JSONObject())
+    }
+
     private val isUITestRunning by inject<Boolean>(qualifier = named("ui_test_running"))
 
     private val gdprPmId by lazy { property.gdprPmId }
@@ -125,7 +138,7 @@ class DemoActivity : FragmentActivity() {
                             } else {
                                 spConsentLib.loadPrivacyManager(
                                     it,
-                                    PMTab.PURPOSES,
+                                    pTab,
                                     CampaignType.GDPR
                                 )
                             }
@@ -143,7 +156,7 @@ class DemoActivity : FragmentActivity() {
                             } else {
                                 spConsentLib.loadPrivacyManager(
                                     it,
-                                    PMTab.PURPOSES,
+                                    pTab,
                                     CampaignType.CCPA
                                 )
                             }
@@ -175,12 +188,11 @@ class DemoActivity : FragmentActivity() {
         super.onResume()
         checkVersion()
         if (intent.getBooleanExtra("run_demo", true)) {
-
             Handler().postDelayed(
                 {
                     authId
-                        ?.let { spConsentLib.loadMessage(authId = it) }
-                        ?: run { spConsentLib.loadMessage() }
+                        ?.let { spConsentLib.loadMessage(authId = it, pubData = pubData) }
+                        ?: run { spConsentLib.loadMessage(pubData = pubData) }
                 },
                 400
             )
@@ -196,6 +208,7 @@ class DemoActivity : FragmentActivity() {
     internal inner class LocalClient : SpClient {
 
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+            spClientObserver.forEach { it.onNativeMessageReady(message, messageController) }
             setNativeMessage(message, messageController)
         }
 
