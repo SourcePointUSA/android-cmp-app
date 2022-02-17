@@ -673,10 +673,10 @@ Java
     protected void onResume() {
         super.onResume();
         JSONObject pubData = new JSONObject();
-        put("timeStamp", 1628620031363);
-        put("key_1", "value_1");
-        put("key_2", true);
-        put("key_3", new JSONObject());
+        pubData.put("timeStamp", 1628620031363);
+        pubData.put("key_1", "value_1");
+        pubData.put("key_2", true);
+        pubData.put("key_3", new JSONObject());
         spConsentLib.loadMessage(pubData);
     }
 ```
