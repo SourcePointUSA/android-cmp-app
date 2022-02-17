@@ -650,7 +650,7 @@ Following an example:
 ```
 
 The `pubData` object can be also attached during the call to load the First Layer Message, in this case you only need to create
-a `JSONObject` entity with the desired structure, following an example
+a `JSONObject` entity with the desired structure and send it as parameter of the `loadMessage` call, following an example
 
 Kotlin
 ```kotlin
@@ -663,8 +663,8 @@ Kotlin
     }
 
     override fun onResume() {
-        super.onResume(pubData)
-        spConsentLib.loadMessage()
+        super.onResume()
+        spConsentLib.loadMessage(pubData)
     }
 ```
 Java
