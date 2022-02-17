@@ -652,6 +652,38 @@ Following an example:
         }
 ```
 
+The `pubData` object can be also attached during the call to load the First Layer Message, in this case you only need to create
+a `JSONObject` entity with the desired structure, following an example
+
+Kotlin
+```kotlin
+
+    private val pubData: JSONObject = JSONObject().apply {
+      put("timeStamp", 1628620031363)
+      put("key_1", "value_1")
+      put("key_2", true)
+      put("key_3", JSONObject())
+    }
+
+    override fun onResume() {
+        super.onResume(pubData)
+        spConsentLib.loadMessage()
+    }
+```
+Java
+```java
+    @Override
+    protected void onResume() {
+        super.onResume();
+        JSONObject pubData = new JSONObject();
+        put("timeStamp", 1628620031363);
+        put("key_1", "value_1");
+        put("key_2", true);
+        put("key_3", new JSONObject());
+        spConsentLib.loadMessage(pubData);
+    }
+```
+
 ## Delete user data
 Utilize the following method if an end-user requests to have their data deleted:
 
