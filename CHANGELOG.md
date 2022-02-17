@@ -1,3 +1,9 @@
+## 6.4.0 (February, 17, 2022)
+* [SP-8615](https://sourcepoint.atlassian.net/browse/SP-8615) Give the option to send the Pubdata obj as parameter of the getMessage call (#464)
+* [SP-7846](https://sourcepoint.atlassian.net/browse/SP-7846) Remove unused variables from the factory function and the builder obj (#466)
+* [SP-8381](https://sourcepoint.atlassian.net/browse/SP-8381) Customtab issue (#463)
+* [SP-8329](https://sourcepoint.atlassian.net/browse/SP-8329) Add regression tests for the Native Message feature (#458)
+
 ## 6.3.5 (January, 27, 2022)
 * [SP-8382](https://sourcepoint.atlassian.net/browse/SP-8382) Fix webview issue on android version prior to API 21 (#455)
 
