@@ -29,6 +29,7 @@
   - [The onAction callback](#the-onaction-callback)
   - [The ConsentAction object](#the-consentaction-object)
   - [`pubData`](#pubData)
+  - [The Nativemessage](NATIVEMESSAGE_GUIDE.md)
   - [Delete user data](#Delete-user-data)
   - [Frequently Asked Questions](#Frequently-Asked-Questions)
   - [Artifact Release Process](#Artifact-Release-Process)
