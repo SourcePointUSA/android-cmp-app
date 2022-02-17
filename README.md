@@ -3,7 +3,7 @@
 [![Metaap UI Tests](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/metaap_instrumentation_tests.yml/badge.svg)](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/metaap_instrumentation_tests.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.sourcepoint.cmplibrary/cmplibrary)](https://search.maven.org/search?q=g:com.sourcepoint.cmplibrary)
 
-### Diagnostic tool
+### Diagnostic tool for our SDK
 [![Get it on Google Play](art/gplay.png)](https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp)
 
 # Table of Contents
@@ -370,6 +370,9 @@ Java
         spConsentLib.loadMessage("<authId>");
     }
 ```
+
+## Sharing consent with a `WebView`
+In order to share the consent between native and webview the SDK will rely on authenticated consent (explained in detail below).
 
 ### The `authId`:
 This feature makes use of what we call [Authenticated Consent](https://documentation.sourcepoint.com/consent_mp/authenticated-consent/authenticated-consent-overview). In a nutshell, you provide an identifier for the current user (username, user id, uuid or any unique string) and we'll take care of associating the consent profile to that identifier.
