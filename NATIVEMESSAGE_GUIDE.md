@@ -1,14 +1,14 @@
 # The Nativemessage
 ## Table of Contents
 - [Intro](#intro)
-- [Configure a property to use with the Nativemessage](#configure_a_property_to_use_with_the_nativemessage)
+- [Configure a property to use with the Nativemessage](#configure-a-property-to-use-with-the-nativemessage)
 - [How to Install](#how-to-install)
-- [The Lifecycle](#the_lifecycle)
-    - [The Webmessage VS Nativemessage lifecycle](#the_webmessage_vs_nativemessage_lifecycle)
-- [The `onNativeMessageReady` callback](#the_onnativemessageready_callback)
-    - [The `MessageStructure` obj](#the_messagestructure_obj)
-    - [The `NativeMessageController` obj](#the_nativemessagecontroller_obj)
-- [A complete example](#a_complete_example)  
+- [The Lifecycle](#the-lifecycle)
+    - [The Webmessage VS Nativemessage lifecycle](#the-webmessage-vs-nativemessage-lifecycle)
+- [The `onNativeMessageReady` callback](#the-onnativemessageready-callback)
+    - [The `MessageStructure` obj](#the-messagestructure-obj)
+    - [The `NativeMessageController` obj](#the-nativemessagecontroller-obj)
+- [A complete example](#a-complete-example)  
 
 ## Intro
 The `Nativemessage` feature let the client app to provide a native layout to present the consent text avoiding 
