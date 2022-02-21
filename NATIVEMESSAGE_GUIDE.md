@@ -10,8 +10,8 @@
     - [The `NativeMessageController` obj](#the_nativemessagecontroller_obj)
 
 ## Intro
-The `Nativemessage` feature let the client app to provide a native layout to show the consent text in order to avoid 
-using the Webview object.
+The `Nativemessage` feature let the client app to provide a native layout to present the consent text avoiding 
+the usage of the Webview object.
 
 ## Configure a property to use with the Nativemessage
 From our Message Builder, choose the `Native App` option to create the new native property and the press on `New Message`.
@@ -50,10 +50,45 @@ This callback has two parameters:
 
 ### The `MessageStructure` obj
 
+The MessageStructure object contains all the info related to current consent like the title, the body, the actions, etc... 
+The actions are listed in a `List<NativeAction>` collection where each item contains the action type, its style and other useful info,
+following the `MessageStructure` structure:
+
+```
+MessageStructure
+    |-- messageComponents: MessageComponents?
+    |   |-- name: String
+    |   |-- title: NativeComponent?
+    |   |-- body: NativeComponent?
+    |   |-- actions: List<NativeAction>
+    |   |-- customFields: Map<String, String>
+    |-- campaignType: CampaignType
+```
+
+```
+NativeAction
+    |-- text: String
+    |-- style: NativeStyle
+    |-- customField: Map<String, String>
+    |-- choiceType: NativeMessageActionType
+    |-- legislation: CampaignType
+```
+
+```
+NativeStyle
+    |-- fontFamily: String
+    |-- fontWeight: Float
+    |-- fontSize: Float
+    |-- color: String?
+    |-- backgroundColor: String
+```
 
 ### The `NativeMessageController` obj
 
-
-
-
-
+```
+NativeMessageController
+    |-- sendConsent(NativeMessageActionType, CampaignType)
+    |-- showOptionNativeMessage(CampaignType, pmId: String)
+    |-- fun removeNativeView(View)
+    |-- fun showNativeView(View)
+```
