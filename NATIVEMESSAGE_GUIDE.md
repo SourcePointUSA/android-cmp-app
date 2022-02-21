@@ -32,7 +32,9 @@ This because the client app now knows exactly when the action happened.
   
 ### The Webmessage VS Nativemessage lifecycle
 
-This is a comparison of the two lifecycles during the `Accept all` action
+This is a comparison of the two lifecycles during different kind of actions or use cases:
+
+#### Use case: the `Accept all` action
 
 | Web message      	| Native message         	| Event                                	|
 |------------------	|------------------------	|--------------------------------------	|
@@ -41,6 +43,14 @@ This is a comparison of the two lifecycles during the `Accept all` action
 | `onUIFinished`   	|                        	| called after the button `Accept All` 	|
 | `onConsentReady` 	| `onConsentReady`       	| called after the button `Accept All` 	|
 | `onSpFinish`     	| `onSpFinish`           	| called after the button `Accept All` 	|
+
+#### Use case: an already given consent
+
+| Web message      	| Native message         	| Event                                	|
+|------------------	|------------------------	|--------------------------------------	|
+| `onUIReady`      	| `onNativeMessageReady` 	| called after `loadMessage`           	|
+| `onConsentReady` 	| `onConsentReady`       	| called after `loadMessage` 	        |
+| `onSpFinish`     	| `onSpFinish`           	| called after `loadMessage` 	        |
 
 ## The `onNativeMessageReady` callback
 After the `loadMessage` is triggered, the cmp SDK will give back the consent configuration created with the cmp web Builder.
