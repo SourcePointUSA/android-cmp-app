@@ -8,6 +8,7 @@
 - [The `onNativeMessageReady` callback](#the_onnativemessageready_callback)
     - [The `MessageStructure` obj](#the_messagestructure_obj)
     - [The `NativeMessageController` obj](#the_nativemessagecontroller_obj)
+- [A complete example](#a_complete_example)  
 
 ## Intro
 The `Nativemessage` feature let the client app to provide a native layout to present the consent text avoiding 
@@ -67,21 +68,21 @@ following the `MessageStructure` structure:
 ```
 MessageStructure
     |-- messageComponents: MessageComponents?
-    |   |-- name: String
-    |   |-- title: NativeComponent?
-    |   |-- body: NativeComponent?
-    |   |-- actions: List<NativeAction>
-    |   |-- customFields: Map<String, String>
-    |-- campaignType: CampaignType
+    |   |-- name: String                          // Nativemessage name in the web builder
+    |   |-- title: NativeComponent?               // Title set in the web builder
+    |   |-- body: NativeComponent?                // Body set in the web builder
+    |   |-- actions: List<NativeAction>           // List of available actions
+    |   |-- customFields: Map<String, String>     // custom Key-value pairs added from the web builder
+    |-- campaignType: CampaignType                // campaign type e.g. CampaignType.GDPR
 ```
 
 ```
 NativeAction
-    |-- text: String
-    |-- style: NativeStyle
-    |-- customField: Map<String, String>
-    |-- choiceType: NativeMessageActionType
-    |-- legislation: CampaignType
+    |-- text: String                              // Action text
+    |-- style: NativeStyle                        // Style object
+    |-- customField: Map<String, String>          // custom Key-value pairs
+    |-- choiceType: NativeMessageActionType       // Action type e.g ACCEPT_ALL, CANCEL, REJECT_ALL, etc..
+    |-- legislation: CampaignType                 // campaign type e.g. CampaignType.GDPR
 ```
 
 ```
@@ -95,10 +96,30 @@ NativeStyle
 
 ### The `NativeMessageController` obj
 
+The `NativeMessageController` object gives you the API to handle the consent lifecycle, 
+
 ```
 NativeMessageController
-    |-- sendConsent(NativeMessageActionType, CampaignType)
-    |-- showOptionNativeMessage(CampaignType, pmId: String)
-    |-- fun removeNativeView(View)
-    |-- fun showNativeView(View)
+    |-- sendConsent(NativeMessageActionType, CampaignType)    // Save the consent
+    |-- showOptionNativeMessage(CampaignType, pmId: String)   // Surface the Web PM int a Webview
+    |-- fun showNativeView(View)                              // Surface the client native layout for the consent
+    |-- fun removeNativeView(View)                            // Remove the consent native layout
 ```
+
+following the list of the 
+available functions:
+- `sendConsent`: the sendConsent function gives you the chances to store the consent related to the users choice, 
+  if, for instance, the user decide to accept all the consent, the `sendConsent` function should be executed with the 
+  following config:
+  ```kotlin
+  sendConsent(NativeMessageActionType.ACCEPT_ALL, message.campaignType)
+  ```
+- `showOptionNativeMessage`: allows the client app to surface the web PM using the `pmId`,
+- `showNativeView`: allows the client app to inject its own native layout into our SDK and use it to show the consent,
+- `removeNativeView`: allows the app to remove the native layout after the user take an action.
+
+## A complete example
+A complete example can be found into the `samples/native-message-demo`
+
+
+
