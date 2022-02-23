@@ -68,7 +68,8 @@ private class LoggerImpl(
     override fun v(tag: String, msg: String) { }
     override fun req(tag: String, url: String, type: String, body: String) { }
     override fun res(tag: String, msg: String, status: String, body: String) { }
-    override fun actionWebApp(tag: String, msg: String, json: JSONObject?) { }
+    override fun webAppAction(tag: String, msg: String, json: JSONObject?) { }
+    override fun nativeMessageAction(tag: String, msg: String, json: JSONObject?) { }
     override fun clientEvent(tag: String, msg: String, content: String) { }
     override fun computation(tag: String, msg: String) { }
     override fun pm(tag: String, url: String, type: String, pmId: String?) { }
