@@ -11,8 +11,7 @@
 - [A complete example](#a-complete-example)  
 
 ## Intro
-The `Nativemessage` feature let the client app to provide a native layout to present the consent text avoiding 
-the usage of the Webview object.
+Until now customers needed to use the SDK to create the consent pop-up. Thanks to the new `Nativemessage` feature, customers can now choose to create the consent view using their own native layout. 
 
 ## Configure a property to use with the Nativemessage
 From our Message Builder, choose the `Native App` option to create the new native property and the press on `New Message`.
