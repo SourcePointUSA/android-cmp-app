@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CONSENT_UUID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_APPLIED_LEGISLATION
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_TCData
@@ -66,9 +67,10 @@ internal interface DataStorageGdpr {
         const val DEFAULT_META_DATA = "{}"
         val DEFAULT_AUTH_ID: String? = null
         const val IABTCF_KEY_PREFIX = "IABTCF_"
-        const val KEY_GDPR_APPLIES = "key_gdpr_applies"
-        const val GDPR_CONSENT_RESP = "gdpr_consent_resp"
-        const val GDPR_JSON_MESSAGE = "gdpr_json_message"
+        const val KEY_GDPR_APPLIES = "sp.key.gdpr.applies"
+        const val GDPR_CONSENT_RESP = "sp.gdpr.consent.resp"
+        const val GDPR_JSON_MESSAGE = "sp.gdpr.json.message"
+        const val GDPR_APPLIED_LEGISLATION = "sp.gdpr.applied.legislation"
         const val GDPR_TCData = "TCData"
     }
 }
@@ -80,7 +82,7 @@ internal fun DataStorageGdpr.Companion.create(
 private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
 
     companion object {
-        const val KEY_GDPR = "key_gdpr"
+        const val KEY_GDPR = "sp.key.gdpr"
     }
 
     override val preference: SharedPreferences by lazy {
@@ -177,7 +179,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     override fun saveAppliedLegislation(value: String) {
         preference
             .edit()
-            .putString("applied_legislation", value)
+            .putString(GDPR_APPLIED_LEGISLATION, value)
             .apply()
     }
 
@@ -207,7 +209,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     }
 
     override fun getAppliedLegislation(): String {
-        return preference.getString("applied_legislation", "")!!
+        return preference.getString(GDPR_APPLIED_LEGISLATION, "")!!
     }
 
     override fun getGdprConsentResp(): String {

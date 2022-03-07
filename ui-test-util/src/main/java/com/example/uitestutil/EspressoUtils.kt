@@ -172,6 +172,12 @@ fun isDisplayedByResId(@IdRes resId: Int) {
 }
 
 @Throws(Throwable::class)
+fun containsText(@IdRes resId: Int, content: String) {
+    onView(withId(resId))
+            .check(ViewAssertions.matches(withText(containsString(content))))
+}
+
+@Throws(Throwable::class)
 fun insertTextByResId(
         @IdRes propId: Int,
         text: String

@@ -88,6 +88,11 @@ class MainActivityKotlin : AppCompatActivity() {
                 success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
             )
         }
+        findViewById<View>(R.id.consent_btn).setOnClickListener {
+            spConsentLib.dispose()
+            finish()
+            startActivity(Intent(this, MainActivityViewConsent::class.java))
+        }
     }
 
     override fun onResume() {

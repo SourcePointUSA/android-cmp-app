@@ -25,6 +25,7 @@ import com.sourcepoint.app.v6.di.customCategoriesDataProd
 import com.sourcepoint.app.v6.di.customVendorDataListProd
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import kotlinx.android.synthetic.main.activity_main_consent.*
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -130,12 +131,20 @@ class TestUseCase {
             performClickById(resId = R.id.review_consents_ccpa)
         }
 
+        fun clickOnConsentActivity() {
+            performClickById(resId = R.id.consent_btn)
+        }
+
         fun openAuthIdActivity() {
             performClickByIdCompletelyDisplayed(resId = R.id.auth_id_activity)
         }
 
         fun checkAuthIdIsDisplayed(autId : String) {
             checkElementWithText("authId", autId)
+        }
+
+        fun checkUUID(uuid : String) {
+            containsText(R.id.consent_uuid, uuid)
         }
 
         fun checkAuthIdIsNotDisplayed() {

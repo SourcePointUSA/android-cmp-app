@@ -11,7 +11,9 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeepLinkDisplayed
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkUUID
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCcpaReviewConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnConsentActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCustomConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
@@ -33,6 +35,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import io.mockk.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
@@ -122,6 +125,33 @@ class MainActivityKotlinTest {
             val IABTCF_TCString = PreferenceManager.getDefaultSharedPreferences(activity)
                 .getString("IABTCF_TCString", null)
             IABTCF_TCString.assertNotNull()
+        }
+
+    }
+    @Test
+    fun GIVEN_a_gdpr_campaign_CHECK_the_consent_from_a_second_activity() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
+        wr {
+            verify {
+                spClient.onSpFinished(withArg {
+                    val uuid = it.gdpr?.consent?.uuid.assertNotNull()!!
+                    clickOnConsentActivity()
+                    checkUUID(uuid)
+                })
+            }
         }
 
     }

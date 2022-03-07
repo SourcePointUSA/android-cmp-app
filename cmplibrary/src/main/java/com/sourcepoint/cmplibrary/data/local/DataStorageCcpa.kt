@@ -28,10 +28,10 @@ internal interface DataStorageCcpa {
     fun clearAll()
 
     companion object {
-        const val KEY_CCPA = "key_ccpa"
-        const val KEY_CCPA_APPLIES = "key_ccpa_applies"
-        const val CCPA_CONSENT_RESP = "ccpa_consent_resp"
-        const val CCPA_JSON_MESSAGE = "ccpa_json_message"
+        const val KEY_CCPA = "sp.key.ccpa"
+        const val KEY_CCPA_APPLIES = "sp.ccpa.key.applies"
+        const val CCPA_CONSENT_RESP = "sp.ccpa.consent.resp"
+        const val CCPA_JSON_MESSAGE = "sp.ccpa.json.message"
         const val CONSENT_CCPA_UUID_KEY = "sp.ccpa.consentUUID"
         const val IAB_US_PRIVACY_STRING = "IABUSPrivacy_String"
     }
