@@ -336,7 +336,6 @@ internal class SpConsentLibImpl(
     override fun dispose() {
         executor.dispose()
         viewManager.removeAllViews()
-        campaignManager.clearConsents()
     }
 
     private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, "$mess")

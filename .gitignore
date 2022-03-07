@@ -74,6 +74,7 @@ service-account.json
 cmplibrary_old/*
 
 samples/app_old/*
+samples/app1/*
 samples/authexample/*
 samples/nativemessage/*
 samples/metaapp/release/*
