@@ -4,6 +4,7 @@ import android.webkit.CookieManager
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestData.ACCEPT
 import com.sourcepoint.app.v6.TestData.ACCEPT_ALL
+import com.sourcepoint.app.v6.TestData.CANCEL
 import com.sourcepoint.app.v6.TestData.CCPA_CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST_2
@@ -19,7 +20,9 @@ import com.sourcepoint.app.v6.TestData.REJECT_ALL
 import com.sourcepoint.app.v6.TestData.SAVE_AND_EXIT
 import com.sourcepoint.app.v6.TestData.SETTINGS_DE
 import com.sourcepoint.app.v6.TestData.SITE_VENDORS
+import com.sourcepoint.app.v6.TestData.TITLE_GDPR
 import com.sourcepoint.app.v6.TestData.VENDORS_LIST
+import com.sourcepoint.app.v6.TestData.VENDORS_LIST_2
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.di.customCategoriesDataProd
 import com.sourcepoint.app.v6.di.customVendorDataListProd
@@ -165,6 +168,40 @@ class TestUseCase {
 
         fun tapOptionWebView() {
             performClickOnWebViewByContent(OPTIONS)
+        }
+
+        fun tapCancelOnWebView() {
+            performClickOnWebViewByContent(CANCEL)
+        }
+
+        fun checkWebViewDisplayedGDPRFirstLayerMessage() {
+            checkTextInParagraph(TITLE_GDPR)
+        }
+
+        fun tapPartnersOnWebView() {
+            performClickOnLabelWebViewByContent("Partners")
+        }
+
+        fun checkAllVendorsOff() {
+            VENDORS_LIST_2.forEach { consent ->
+                checkConsentState(consent, false)
+            }
+        }
+
+        fun tapFeaturesOnWebView() {
+            performClickOnLabelWebViewByContent("Features")
+        }
+
+        fun tapPurposesOnWebView() {
+            performClickOnLabelWebViewByContent("Purposes")
+        }
+
+        fun checkFeaturesTab() {
+            checkTextInParagraph("Features are a use of the data that you have already agreed to share with us")
+        }
+
+        fun checkPurposesTab() {
+            checkTextInParagraph("You give an affirmative action to indicate that we can use your data for this purpose.")
         }
 
         fun tapSiteVendorsWebView() {

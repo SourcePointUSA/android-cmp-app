@@ -8,10 +8,14 @@ import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllVendorsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeepLinkDisplayed
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkFeaturesTab
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkPurposesTab
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkUUID
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkWebViewDisplayedGDPRFirstLayerMessage
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCcpaReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnConsentActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCustomConsent
@@ -20,8 +24,12 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapCancelOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapFeaturesOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapNetworkOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapOptionWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapPartnersOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapPurposesOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSiteVendorsWebView
@@ -42,6 +50,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 @RunWith(AndroidJUnit4ClassRunner::class)
@@ -77,6 +86,14 @@ class MainActivityKotlinTest {
         messageTimeout = 3000
         +(CampaignType.GDPR)
         +(CampaignType.CCPA)
+    }
+
+    private val spConfNative = config {
+        accountId = 22
+        propertyName = "mobile.multicampaign.native.demo" // gdprPmId = 545258
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 3000
+        +(CampaignType.GDPR)
     }
 
     @Test
@@ -408,6 +425,61 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkCustomCategoriesData() }
         wr { tapSiteVendorsWebView() }
         wr { checkCustomVendorDataList() }
+    }
+
+    @Test
+    fun GIVEN_a_camapignList_VERIFY_back_btn() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        periodicWr(backup = { scenario.recreateAndResume() }) { tapOptionWebView() }
+        wr { tapCancelOnWebView() }
+        wr { checkWebViewDisplayedGDPRFirstLayerMessage() }
+        wr { tapAcceptAllOnWebView() }
+        wr { tapOptionWebView() }
+        wr { tapCancelOnWebView() }
+        wr { tapAcceptAllOnWebView() }
+
+        verify(atLeast = 4) { spClient.onAction(any(), any()) }
+    }
+
+    @Test
+    fun TAPPING_on_aVENDORS_link_SHOW_the_PM_VENDORS_tab() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfNative,
+                gdprPmId = "545258",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        // Vendors
+        wr { tapPartnersOnWebView() }
+        wr { checkAllVendorsOff() }
+        wr { tapCancelOnWebView() }
+
+        // Features
+        wr { tapFeaturesOnWebView() }
+        wr { checkFeaturesTab() }
+        wr { tapCancelOnWebView() }
+
+        // Purposes
+        wr { tapPurposesOnWebView() }
+        wr { checkPurposesTab() }
     }
 
 }

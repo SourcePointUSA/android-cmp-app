@@ -26,6 +26,14 @@ object TestData {
         "Category 3",
     )
 
+    val VENDORS_LIST_2 = listOf(
+        "Deutsche Post AG",
+        "Jivox Corporation",
+        "Rockabox Media Ltd t/a Scoota",
+        "brand eins Medien AG",
+        "Insticator"
+    )
+
     var CONSENT_LIST = arrayOf("Store and/or access information on a device", "Create a personalised ads profile", "Select personalised ads",
         "Create a personalised content profile", "Select personalised content", "Measure content performance", "Apply market research to generate audience insights",
         "Develop and improve products")
@@ -37,6 +45,8 @@ object TestData {
     var ZUSTIMMEN = "Zustimmen"
     var REJECT = "Reject"
     var OPTIONS = "Options"
+    var CANCEL = "Cancel"
+    var TITLE_GDPR = "GDPR Message"
     var EINSTELLUNGEN = "Einstellungen"
     var ACCEPT_ALL = "Accept All"
     var NETWORK = "Network"
