@@ -345,7 +345,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 2) { spClient.onSpFinished(any()) } }
+        wr { verify(atLeast = 2) { spClient.onSpFinished(any()) } }
 
         verify {
             spClient.run {
