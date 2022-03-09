@@ -5,6 +5,8 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.*
+import com.sourcepoint.app.v6.MainActivityKotlin.Companion.CLIENT_PREF_KEY
+import com.sourcepoint.app.v6.MainActivityKotlin.Companion.CLIENT_PREF_VAL
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
@@ -17,6 +19,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.checkPurposesTab
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkUUID
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkWebViewDisplayedGDPRFirstLayerMessage
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCcpaReviewConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnClearConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnConsentActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCustomConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
@@ -480,6 +483,33 @@ class MainActivityKotlinTest {
         // Purposes
         wr { tapPurposesOnWebView() }
         wr { checkPurposesTab() }
+    }
+
+    @Test
+    fun GIVEN_a_saved_consent_CLEAR_all_SDK_variables() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
+        wr { clickOnClearConsent() }
+
+        scenario.onActivity { activity ->
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            val numberOfItemInSP = sp.all.size
+            numberOfItemInSP.assertEquals(1)
+            sp.getString(CLIENT_PREF_KEY, "").assertEquals(CLIENT_PREF_VAL)
+        }
+
     }
 
 }

@@ -118,6 +118,10 @@ class TestUseCase {
             performClickById(resId = R.id.review_consents_gdpr)
         }
 
+        fun clickOnClearConsent() {
+            performClickById(resId = R.id.clear_all)
+        }
+
         fun checkGdprNativeTitle() {
             isDisplayedByResIdByText(resId = R.id.title_nm, text = "GDPR Lorem Ipsum")
         }

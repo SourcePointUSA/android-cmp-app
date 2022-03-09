@@ -4,7 +4,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_ID_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_VERSION_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CONSENT_UUID_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_AUTH_ID
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_EMPTY_CONSENT_STRING
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_EMPTY_UUID
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_META_DATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_APPLIED_LEGISLATION
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_CONSENT_RESP
@@ -13,11 +19,12 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_TCDa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.USER_CONSENT_KEY
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
-import java.util.* // ktlint-disable
+import java.util.*  //ktlint-disable
 
 internal interface DataStorageGdpr {
 
@@ -231,7 +238,28 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     }
 
     override fun clearAll() {
-        preference.edit().clear().apply()
+        val listIABTCF = preference.all.filter { prefix -> prefix.key.startsWith(IABTCF_KEY_PREFIX) }.keys
+        preference.edit()
+            .apply {
+                remove(CONSENT_UUID_KEY)
+                remove(META_DATA_KEY)
+                remove(EU_CONSENT_KEY)
+                remove(USER_CONSENT_KEY)
+                remove(AUTH_ID_KEY)
+                remove(DEFAULT_EMPTY_UUID)
+                remove(CMP_SDK_ID_KEY)
+                remove(CMP_SDK_VERSION_KEY)
+                remove(DEFAULT_EMPTY_CONSENT_STRING)
+                remove(DEFAULT_META_DATA)
+                remove(DEFAULT_AUTH_ID)
+                remove(KEY_GDPR_APPLIES)
+                remove(GDPR_CONSENT_RESP)
+                remove(GDPR_JSON_MESSAGE)
+                remove(GDPR_APPLIED_LEGISLATION)
+                remove(GDPR_TCData)
+                remove(KEY_GDPR)
+                listIABTCF.forEach { remove(it) }
+            }.apply()
     }
 
     override fun clearGdprConsent() {

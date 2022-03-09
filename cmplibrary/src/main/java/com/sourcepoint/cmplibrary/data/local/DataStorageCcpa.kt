@@ -121,6 +121,14 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
     }
 
     override fun clearAll() {
-        preference.edit().clear().apply()
+        preference
+            .edit()
+            .remove(KEY_CCPA)
+            .remove(KEY_CCPA_APPLIES)
+            .remove(CCPA_CONSENT_RESP)
+            .remove(CCPA_JSON_MESSAGE)
+            .remove(CONSENT_CCPA_UUID_KEY)
+            .remove(IAB_US_PRIVACY_STRING)
+            .apply()
     }
 }
