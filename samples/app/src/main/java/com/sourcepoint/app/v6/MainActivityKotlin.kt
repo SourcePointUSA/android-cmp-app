@@ -103,6 +103,7 @@ class MainActivityKotlin : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         spConsentLib.dispose()
+        Log.i(TAG, "onDestroy: disposed")
     }
 
     internal inner class LocalClient : SpClient {
