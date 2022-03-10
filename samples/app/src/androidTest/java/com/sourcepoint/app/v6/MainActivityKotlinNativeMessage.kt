@@ -57,30 +57,6 @@ class MainActivityNativeMessTest {
         +(CampaignType.CCPA)
     }
 
-    @Test(expected = NoMatchingViewException::class)
-    fun VERIFY_the_native_message_doesn_t_get_surface_after_ACCEPT_ALL() = runBlocking<Unit> {
-        val spClient = mockk<SpClient>(relaxed = true)
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConfGdpr,
-                gdprPmId = "488393",
-                pResetAll = false,
-                spClientObserver = listOf(spClient)
-            )
-        )
-
-        scenario = launchActivity()
-
-        periodicWr(backup = { scenario.recreateAndResume() }) { checkGdprNativeTitle() }
-        wr { tapNmAcceptAll() }
-
-        scenario.recreateAndResume()
-
-        /** wait 2 sec and verify that the native message doesn't get surfaced again */
-        periodicWr(times = 1, period = 2000) { tapNmAcceptAll() }
-    }
-
     @Test
     fun GIVEN_a_native_message_DISMISS_all_messages() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
@@ -130,7 +106,7 @@ class MainActivityNativeMessTest {
         periodicWr(backup = { scenario.recreateAndResume() }) { checkGdprNativeTitle() }
         wr { tapNmAcceptAll() }
         wr { clickOnGdprReviewConsent() }
-        wr { checkAllGdprConsentsOn() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
 
         wr {
             verify(atLeast = 1) { spClient.onSpFinished(any()) }
