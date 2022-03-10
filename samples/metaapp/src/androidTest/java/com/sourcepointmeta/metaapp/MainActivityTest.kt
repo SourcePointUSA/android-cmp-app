@@ -108,7 +108,7 @@ class MainActivityTest {
 
         db.addProperty(propertyName = "mobile.multicampaign.native.demo", gdprPmId = 545258)
 
-        periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
+        periodicWr(period = 1000, times = 4, backup = { scenario.recreateAndResume() }) { runDemo() }
 
         // Vendors
         wr { tapPartnersOnWebView() }
