@@ -29,7 +29,7 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-@RunWith(AndroidJUnit4ClassRunner::class)
+//@RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinOttTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
