@@ -95,7 +95,7 @@ class MainActivityTest {
         verify(atLeast = 1) { spClient.onUIReady(any()) }
     }
 
-    @Test
+//    @Test
     fun TAPPING_on_aVENDORS_link_SHOW_the_PM_VENDORS_tab() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
         loadKoinModules(
