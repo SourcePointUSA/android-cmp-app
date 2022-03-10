@@ -48,7 +48,7 @@ class MainActivityKotlinOttTest {
         +(CampaignType.GDPR)
     }
 
-    @Test
+//    @Test
     fun GIVEN_an_OTT_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
