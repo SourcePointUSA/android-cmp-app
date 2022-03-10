@@ -99,7 +99,6 @@ class MainActivityNativeMessTest {
 
         periodicWr(backup = { scenario.recreateAndResume() }) { checkGdprNativeTitle() }
         wr { tapNmDismiss() }
-        wr { checkCcpaNativeTitle() }
         wr { tapNmDismiss() }
 
         verify(exactly = 2) { spClient.onNativeMessageReady(any(), any()) }

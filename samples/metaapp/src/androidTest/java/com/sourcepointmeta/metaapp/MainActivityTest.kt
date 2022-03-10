@@ -70,31 +70,6 @@ class MainActivityTest {
     }
 
     @Test
-    fun GIVEN_an_authId_VERIFY_no_first_layer_mess_gets_called() = runBlocking<Unit> {
-        val spClient = mockk<SpClient>(relaxed = true)
-        loadKoinModules(
-            module(override = true) {
-                single<List<SpClient>> { listOf(spClient) }
-                single(qualifier = named("ui_test_running")) { true }
-            }
-        )
-        scenario = launchActivity()
-
-        db.addTestProperty(autId = "test")
-
-        periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
-        wr { checkNumberOfNullMessage(position = 2) }
-        wr { checkOnConsentReady(position = 1) }
-        wr { checkOnSpFinish(position = 0) }
-
-        verify(exactly = 1) { spClient.onSpFinished(any()) }
-        verify(exactly = 1) { spClient.onConsentReady(any()) }
-        verify(exactly = 0) { spClient.onUIReady(any()) }
-        verify(exactly = 0) { spClient.onError(any()) }
-        verify(exactly = 0) { spClient.onUIFinished(any()) }
-    }
-
-    @Test
     fun GIVEN_an_deepLink_SHOW_the_deep_link_activity() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
         loadKoinModules(
