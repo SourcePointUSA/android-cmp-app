@@ -9,6 +9,7 @@ import com.sourcepoint.app.v6.TestData.CCPA_CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST_2
 import com.sourcepoint.app.v6.TestData.FEATURES
+import com.sourcepoint.app.v6.TestData.GDPR_CONSENT_LIST_2
 import com.sourcepoint.app.v6.TestData.MESSAGE
 import com.sourcepoint.app.v6.TestData.NETWORK
 import com.sourcepoint.app.v6.TestData.OPTIONS
@@ -28,7 +29,6 @@ import com.sourcepoint.app.v6.di.customCategoriesDataProd
 import com.sourcepoint.app.v6.di.customVendorDataListProd
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import kotlinx.android.synthetic.main.activity_main_consent.*
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -118,12 +118,26 @@ class TestUseCase {
             performClickById(resId = R.id.review_consents_gdpr)
         }
 
+        fun checkAllGdprConsentsOn() {
+            GDPR_CONSENT_LIST_2.forEach { consent ->
+                checkConsentState(consent, true)
+            }
+        }
+
         fun clickOnClearConsent() {
             performClickById(resId = R.id.clear_all)
         }
 
         fun checkGdprNativeTitle() {
             isDisplayedByResIdByText(resId = R.id.title_nm, text = "GDPR Lorem Ipsum")
+        }
+
+        fun tapNmDismiss() {
+            performClickById(R.id.cancel)
+        }
+
+        fun checkCcpaNativeTitle() {
+            isDisplayedByResIdByText(resId = R.id.title_nm, text = "CCPA Lorem Ipsum")
         }
 
         fun tapNmAcceptAll() {
@@ -317,7 +331,7 @@ class TestUseCase {
             spConfig: SpConfig,
             gdprPmId: String,
             ccpaPmId: String = "",
-            uuid: String? = null,
+            pAuthId: String? = null,
             url: String = "",
             isOtt: Boolean = false,
             pResetAll: Boolean = true,
@@ -327,7 +341,7 @@ class TestUseCase {
                 single<List<SpClient?>> { spClientObserver }
                 single<DataProvider> {
                     object : DataProvider {
-                        override val authId = uuid
+                        override val authId = pAuthId
                         override val resetAll = pResetAll
                         override val isOtt = isOtt
                         override val url = url
