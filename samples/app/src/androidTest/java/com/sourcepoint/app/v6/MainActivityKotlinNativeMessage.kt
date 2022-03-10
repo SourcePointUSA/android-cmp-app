@@ -2,14 +2,12 @@ package com.sourcepoint.app.v6
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
-import androidx.test.espresso.NoMatchingViewException
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.periodicWr
 import com.example.uitestutil.recreateAndResume
 import com.example.uitestutil.wr
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllGdprConsentsOn
-import com.sourcepoint.app.v6.TestUseCase.Companion.checkCcpaNativeTitle
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkGdprNativeTitle
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
