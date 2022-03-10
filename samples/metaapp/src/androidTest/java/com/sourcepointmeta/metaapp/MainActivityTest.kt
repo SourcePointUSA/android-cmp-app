@@ -69,7 +69,7 @@ class MainActivityTest {
         saveProperty()
     }
 
-    @Test
+//    @Test
     fun GIVEN_an_deepLink_SHOW_the_deep_link_activity() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
         loadKoinModules(
