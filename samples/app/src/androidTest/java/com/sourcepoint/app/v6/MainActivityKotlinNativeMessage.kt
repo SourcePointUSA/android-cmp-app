@@ -72,7 +72,7 @@ class MainActivityNativeMessTest {
 
         scenario = launchActivity()
 
-        wr { checkGdprNativeTitle() }
+        periodicWr(backup = { scenario.recreateAndResume() }) { checkGdprNativeTitle() }
         wr { tapNmAcceptAll() }
 
         scenario.recreateAndResume()
@@ -97,7 +97,7 @@ class MainActivityNativeMessTest {
 
         scenario = launchActivity()
 
-        wr { checkGdprNativeTitle() }
+        periodicWr(backup = { scenario.recreateAndResume() }) { checkGdprNativeTitle() }
         wr { tapNmDismiss() }
         wr { checkCcpaNativeTitle() }
         wr { tapNmDismiss() }
@@ -128,7 +128,7 @@ class MainActivityNativeMessTest {
 
         scenario = launchActivity()
 
-        wr { checkGdprNativeTitle() }
+        periodicWr(backup = { scenario.recreateAndResume() }) { checkGdprNativeTitle() }
         wr { tapNmAcceptAll() }
         wr { clickOnGdprReviewConsent() }
         wr { checkAllGdprConsentsOn() }
