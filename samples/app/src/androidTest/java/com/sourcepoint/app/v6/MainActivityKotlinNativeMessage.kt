@@ -55,7 +55,7 @@ class MainActivityNativeMessTest {
         +(CampaignType.CCPA)
     }
 
-//    @Test
+    @Test
     fun GIVEN_a_native_message_DISMISS_all_messages() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
 
