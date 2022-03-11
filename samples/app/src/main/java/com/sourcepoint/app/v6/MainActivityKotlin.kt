@@ -2,6 +2,7 @@ package com.sourcepoint.app.v6
 
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,8 @@ class MainActivityKotlin : AppCompatActivity() {
 
     companion object {
         private const val TAG = "**MainActivity"
+        const val CLIENT_PREF_KEY = "client_pref_key"
+        const val CLIENT_PREF_VAL = "client_pref_val"
     }
 
     private val dataProvider by inject<DataProvider>()
@@ -46,6 +49,8 @@ class MainActivityKotlin : AppCompatActivity() {
         if (dataProvider.resetAll) {
             clearAllData(this)
         }
+        val sp = PreferenceManager.getDefaultSharedPreferences(this)
+        sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
             if(dataProvider.isOtt){
@@ -88,6 +93,11 @@ class MainActivityKotlin : AppCompatActivity() {
                 success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
             )
         }
+        findViewById<View>(R.id.consent_btn).setOnClickListener {
+            spConsentLib.dispose()
+            finish()
+            startActivity(Intent(this, MainActivityViewConsent::class.java))
+        }
     }
 
     override fun onResume() {
@@ -98,6 +108,7 @@ class MainActivityKotlin : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         spConsentLib.dispose()
+        Log.i(TAG, "onDestroy: disposed")
     }
 
     internal inner class LocalClient : SpClient {

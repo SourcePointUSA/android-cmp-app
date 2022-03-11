@@ -20,8 +20,8 @@ internal fun DataStorage.Companion.create(
 
 private class DataStorageImpl(
     context: Context,
-    dsGdpr: DataStorageGdpr,
-    dsCcpa: DataStorageCcpa
+    val dsGdpr: DataStorageGdpr,
+    val dsCcpa: DataStorageCcpa
 ) : DataStorage,
     DataStorageGdpr by dsGdpr,
     DataStorageCcpa by dsCcpa {
@@ -64,7 +64,14 @@ private class DataStorageImpl(
     }
 
     override fun clearAll() {
-        preference.edit().clear().apply()
+        dsCcpa.clearAll()
+        dsGdpr.clearAll()
+        preference
+            .edit()
+            .remove(LOCAL_STATE)
+            .remove(PROPERTY_PRIORITY_DATA)
+            .remove(PROPERTY_ID)
+            .apply()
     }
 
     companion object

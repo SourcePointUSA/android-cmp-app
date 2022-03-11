@@ -43,6 +43,15 @@ meta-device:
       version: 29
       locale: 'en'
       orientation: portrait
+meta-device-pixel-2:
+  type: instrumentation
+  app: metaapp-debug.apk
+  test: metaapp-debug-androidTest.apk
+  device:
+    - model: Pixel2
+      version: 29
+      locale: 'en'
+      orientation: portrait
 app-device:
   type: instrumentation
   app: app-debug.apk

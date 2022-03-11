@@ -15,6 +15,7 @@ import com.sourcepoint.app.v6.di.customCategoriesDataProd
 import com.sourcepoint.app.v6.di.customVendorDataListProd
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -28,7 +29,7 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-@RunWith(AndroidJUnit4ClassRunner::class)
+//@RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinOttTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
@@ -43,12 +44,13 @@ class MainActivityKotlinOttTest {
     private val spConfOtt = config {
         accountId = 22
         propertyName = "ott.test.suite"
+        campaignsEnv = CampaignsEnv.PUBLIC
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
         +(CampaignType.GDPR)
     }
 
-    @Test
+//    @Test
     fun GIVEN_an_OTT_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
@@ -65,7 +67,7 @@ class MainActivityKotlinOttTest {
 
         scenario = launchActivity()
 
-        periodicWr(backup = { scenario.recreateAndResume() }) {
+        periodicWr(period = 3000, backup = { scenario.recreateAndResume() }) {
             tapAcceptAllOnWebView()
             device.pressEnter()
         }
@@ -94,7 +96,7 @@ class MainActivityKotlinOttTest {
 
     }
 
-    @Test
+//    @Test
     fun GIVEN_an_OTT_campaign_SHOW_message_and_ACCEPT_ALL_from_PM() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
@@ -111,7 +113,7 @@ class MainActivityKotlinOttTest {
 
         scenario = launchActivity()
 
-        periodicWr(backup = { scenario.recreateAndResume() }) {
+        periodicWr(period = 3000, backup = { scenario.recreateAndResume() }) {
             tapAcceptAllOnWebView()
             device.pressEnter()
         }

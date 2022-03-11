@@ -4,19 +4,27 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_ID_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_VERSION_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CONSENT_UUID_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_AUTH_ID
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_EMPTY_CONSENT_STRING
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_EMPTY_UUID
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_META_DATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_APPLIED_LEGISLATION
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_TCData
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.USER_CONSENT_KEY
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
-import java.util.* // ktlint-disable
+import java.util.*  //ktlint-disable
 
 internal interface DataStorageGdpr {
 
@@ -66,9 +74,10 @@ internal interface DataStorageGdpr {
         const val DEFAULT_META_DATA = "{}"
         val DEFAULT_AUTH_ID: String? = null
         const val IABTCF_KEY_PREFIX = "IABTCF_"
-        const val KEY_GDPR_APPLIES = "key_gdpr_applies"
-        const val GDPR_CONSENT_RESP = "gdpr_consent_resp"
-        const val GDPR_JSON_MESSAGE = "gdpr_json_message"
+        const val KEY_GDPR_APPLIES = "sp.key.gdpr.applies"
+        const val GDPR_CONSENT_RESP = "sp.gdpr.consent.resp"
+        const val GDPR_JSON_MESSAGE = "sp.gdpr.json.message"
+        const val GDPR_APPLIED_LEGISLATION = "sp.gdpr.applied.legislation"
         const val GDPR_TCData = "TCData"
     }
 }
@@ -80,7 +89,7 @@ internal fun DataStorageGdpr.Companion.create(
 private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
 
     companion object {
-        const val KEY_GDPR = "key_gdpr"
+        const val KEY_GDPR = "sp.key.gdpr"
     }
 
     override val preference: SharedPreferences by lazy {
@@ -177,7 +186,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     override fun saveAppliedLegislation(value: String) {
         preference
             .edit()
-            .putString("applied_legislation", value)
+            .putString(GDPR_APPLIED_LEGISLATION, value)
             .apply()
     }
 
@@ -207,7 +216,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     }
 
     override fun getAppliedLegislation(): String {
-        return preference.getString("applied_legislation", "")!!
+        return preference.getString(GDPR_APPLIED_LEGISLATION, "")!!
     }
 
     override fun getGdprConsentResp(): String {
@@ -229,7 +238,28 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     }
 
     override fun clearAll() {
-        preference.edit().clear().apply()
+        val listIABTCF = preference.all.filter { prefix -> prefix.key.startsWith(IABTCF_KEY_PREFIX) }.keys
+        preference.edit()
+            .apply {
+                remove(CONSENT_UUID_KEY)
+                remove(META_DATA_KEY)
+                remove(EU_CONSENT_KEY)
+                remove(USER_CONSENT_KEY)
+                remove(AUTH_ID_KEY)
+                remove(DEFAULT_EMPTY_UUID)
+                remove(CMP_SDK_ID_KEY)
+                remove(CMP_SDK_VERSION_KEY)
+                remove(DEFAULT_EMPTY_CONSENT_STRING)
+                remove(DEFAULT_META_DATA)
+                remove(DEFAULT_AUTH_ID)
+                remove(KEY_GDPR_APPLIES)
+                remove(GDPR_CONSENT_RESP)
+                remove(GDPR_JSON_MESSAGE)
+                remove(GDPR_APPLIED_LEGISLATION)
+                remove(GDPR_TCData)
+                remove(KEY_GDPR)
+                listIABTCF.forEach { remove(it) }
+            }.apply()
     }
 
     override fun clearGdprConsent() {

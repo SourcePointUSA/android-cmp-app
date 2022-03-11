@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
 
     companion object {
-        const val LOCAL_STATE = "key_local_state"
-        const val PROPERTY_PRIORITY_DATA = "key_property_priority_data"
-        const val PROPERTY_ID = "key_property_id"
+        const val LOCAL_STATE = "sp.key.local.state"
+        const val PROPERTY_PRIORITY_DATA = "sp.key.property.priority.data"
+        const val PROPERTY_ID = "sp.key.property.id"
     }
 
     override val preference: SharedPreferences
