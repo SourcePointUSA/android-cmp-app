@@ -92,7 +92,10 @@ class NativeMessageActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        spConsentLib.loadMessage()
+        dataProvider.authId
+            ?.let { spConsentLib.loadMessage(it) }
+            ?: kotlin.run { spConsentLib.loadMessage() }
+
     }
 
     override fun onDestroy() {

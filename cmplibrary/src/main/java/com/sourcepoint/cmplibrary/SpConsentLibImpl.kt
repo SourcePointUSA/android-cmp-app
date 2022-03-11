@@ -148,6 +148,11 @@ internal class SpConsentLibImpl(
                             val nmDto = firstCampaign2Process.message.toNativeMessageDTO(legislation)
                             currentNativeMessageCampaign = firstCampaign2Process
                             spClient.onNativeMessageReady(nmDto, this)
+                            pLogger.nativeMessageAction(
+                                tag = "onNativeMessageReady",
+                                msg = "onNativeMessageReady",
+                                json = firstCampaign2Process.message
+                            )
                         }
                     }
                 }
@@ -202,6 +207,11 @@ internal class SpConsentLibImpl(
                             val nmDto = firstCampaign2Process.message.toNativeMessageDTO(legislation)
                             currentNativeMessageCampaign = firstCampaign2Process
                             spClient.onNativeMessageReady(nmDto, this)
+                            pLogger.nativeMessageAction(
+                                tag = "onNativeMessageReady",
+                                msg = "onNativeMessageReady",
+                                json = firstCampaign2Process.message
+                            )
                         }
                     }
                 }
@@ -326,7 +336,6 @@ internal class SpConsentLibImpl(
     override fun dispose() {
         executor.dispose()
         viewManager.removeAllViews()
-        campaignManager.clearConsents()
     }
 
     private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, "$mess")
@@ -422,6 +431,11 @@ internal class SpConsentLibImpl(
                                             ),
                                             this@SpConsentLibImpl
                                         )
+                                        pLogger.nativeMessageAction(
+                                            tag = "onNativeMessageReady",
+                                            msg = "onNativeMessageReady",
+                                            json = nextCampaign.message
+                                        )
                                     }
                                 }
                             }
@@ -441,7 +455,7 @@ internal class SpConsentLibImpl(
             executor.executeOnMain {
                 view.let {
                     spClient.onUIFinished(view)
-                    pLogger.actionWebApp(
+                    pLogger.webAppAction(
                         tag = "onUIFinished",
                         msg = "onUIFinished",
                         json = null
@@ -458,7 +472,7 @@ internal class SpConsentLibImpl(
      */
     internal fun onActionFromWebViewClient(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView?) {
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
-        pLogger.actionWebApp(
+        pLogger.webAppAction(
             tag = "onActionFromWebViewClient",
             msg = actionImpl.actionType.name,
             json = actionImpl.thisContent
@@ -674,6 +688,11 @@ internal class SpConsentLibImpl(
                     val nm = it.message.toNativeMessageDTO(legislation)
                     currentNativeMessageCampaign = it
                     spClient.onNativeMessageReady(nm, this@SpConsentLibImpl)
+                    pLogger.nativeMessageAction(
+                        tag = "onNativeMessageReady",
+                        msg = "onNativeMessageReady",
+                        json = it.message
+                    )
                 }
             }
         }

@@ -27,6 +27,8 @@
         </activity>
         <activity android:name=".NativeMessageActivity">
         </activity>
+        <activity android:name=".MainActivityViewConsent">
+        </activity>
         <activity android:name=".LinkActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

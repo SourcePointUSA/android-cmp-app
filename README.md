@@ -3,7 +3,7 @@
 [![Metaap UI Tests](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/metaap_instrumentation_tests.yml/badge.svg)](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/metaap_instrumentation_tests.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.sourcepoint.cmplibrary/cmplibrary)](https://search.maven.org/search?q=g:com.sourcepoint.cmplibrary)
 
-### Diagnostic tool
+### Diagnostic tool for our SDK
 [![Get it on Google Play](art/gplay.png)](https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp)
 
 # Table of Contents
@@ -29,10 +29,11 @@
   - [The onAction callback](#the-onaction-callback)
   - [The ConsentAction object](#the-consentaction-object)
   - [`pubData`](#pubData)
+  - [The Nativemessage](NATIVEMESSAGE_GUIDE.md)
   - [Delete user data](#Delete-user-data)
   - [Frequently Asked Questions](#Frequently-Asked-Questions)
   - [Artifact Release Process](#Artifact-Release-Process)
-> **Note:** Sourcepoint's native message API is currently not supported in Android SDK v6. 
+ 
 # How to Install 
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
 
@@ -653,7 +654,7 @@ Following an example:
 ```
 
 The `pubData` object can be also attached during the call to load the First Layer Message, in this case you only need to create
-a `JSONObject` entity with the desired structure, following an example
+a `JSONObject` entity with the desired structure and send it as parameter of the `loadMessage` call, following an example
 
 Kotlin
 ```kotlin
@@ -666,8 +667,8 @@ Kotlin
     }
 
     override fun onResume() {
-        super.onResume(pubData)
-        spConsentLib.loadMessage()
+        super.onResume()
+        spConsentLib.loadMessage(pubData)
     }
 ```
 Java
@@ -676,10 +677,10 @@ Java
     protected void onResume() {
         super.onResume();
         JSONObject pubData = new JSONObject();
-        put("timeStamp", 1628620031363);
-        put("key_1", "value_1");
-        put("key_2", true);
-        put("key_3", new JSONObject());
+        pubData.put("timeStamp", 1628620031363);
+        pubData.put("key_1", "value_1");
+        pubData.put("key_2", true);
+        pubData.put("key_3", new JSONObject());
         spConsentLib.loadMessage(pubData);
     }
 ```

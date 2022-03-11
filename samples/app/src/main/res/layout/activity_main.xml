@@ -21,7 +21,7 @@
         app:layout_constraintHorizontal_bias="0.514"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.932" />
+        app:layout_constraintVertical_bias="0.882" />
 
     <Button
             android:id="@+id/auth_id_activity"
@@ -56,6 +56,15 @@
             app:layout_constraintStart_toStartOf="@id/review_consents_gdpr"
             app:layout_constraintEnd_toEndOf="@id/review_consents_gdpr"
             app:layout_constraintBottom_toTopOf="@id/review_consents_gdpr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <Button
+            android:id="@+id/consent_btn"
+            android:text="consent view"
+            app:layout_constraintStart_toStartOf="@id/review_consents_gdpr"
+            app:layout_constraintEnd_toEndOf="@id/review_consents_gdpr"
+            app:layout_constraintTop_toBottomOf="@id/auth_id_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

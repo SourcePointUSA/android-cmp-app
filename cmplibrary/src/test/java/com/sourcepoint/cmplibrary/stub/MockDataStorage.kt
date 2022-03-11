@@ -48,7 +48,7 @@ internal class MockDataStorage : DataStorage {
     }
 
     override fun saveAppliedLegislation(value: String) {
-        storage["applied_legislation"] = value
+        storage[DataStorageGdpr.GDPR_APPLIED_LEGISLATION] = value
     }
 
     override fun getTcData(): Map<String, Any?> {
@@ -72,7 +72,7 @@ internal class MockDataStorage : DataStorage {
     }
 
     override fun getAppliedLegislation(): String {
-        return storage["applied_legislation"]!! as String
+        return storage[DataStorageGdpr.GDPR_APPLIED_LEGISLATION]!! as String
     }
 
     override fun getGdprConsentResp(): String {
