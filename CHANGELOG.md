@@ -1,3 +1,6 @@
+## 6.4.1 (March, 11, 2022)
+* [SP-8903](https://sourcepoint.atlassian.net/browse/SP-8903) The reset of the SDK shared preferences won't be execute in the dispose method anymore (#474)
+
 ## 6.4.0 (February, 17, 2022)
 * [SP-8615](https://sourcepoint.atlassian.net/browse/SP-8615) Give the option to send the Pubdata obj as parameter of the getMessage call (#464)
 * [SP-7846](https://sourcepoint.atlassian.net/browse/SP-7846) Remove unused variables from the factory function and the builder obj (#466)
