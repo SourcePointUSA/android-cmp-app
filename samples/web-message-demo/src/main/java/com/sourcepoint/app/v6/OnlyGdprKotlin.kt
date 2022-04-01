@@ -75,6 +75,7 @@ class OnlyGdprKotlin : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         spConsentLib.dispose()
+        println("onDestroy ---------------------")
     }
 
     internal inner class LocalClient : SpClient {

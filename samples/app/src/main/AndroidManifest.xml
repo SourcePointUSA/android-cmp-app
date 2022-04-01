@@ -25,6 +25,8 @@
         </activity>
         <activity android:name=".MainActivityAuthId">
         </activity>
+        <activity android:name=".MainActivityOttIssue">
+        </activity>
         <activity android:name=".NativeMessageActivity">
         </activity>
         <activity android:name=".MainActivityViewConsent">

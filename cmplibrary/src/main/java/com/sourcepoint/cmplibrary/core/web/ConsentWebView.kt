@@ -167,7 +167,8 @@ internal class ConsentWebView(
             """.trimIndent()
         }
         logger.i("ConsentWebView", "$campaignType loadConsentUIFromUrl${NL.t}url $url ")
-        loadUrl(url.toString())
+//        loadUrl(url.toString())
+        loadUrl("https://preprod-cdn.privacy-mgmt.com/privacy-manager-ott/index.html?message_id=629591")
         true
     }
 
