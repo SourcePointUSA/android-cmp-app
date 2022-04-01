@@ -30,7 +30,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 @RunWith(AndroidJUnit4ClassRunner::class)
-class MainActivityKotlinOttTest {
+class    MainActivityKotlinOttTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
@@ -73,7 +73,7 @@ class MainActivityKotlinOttTest {
         }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr{ verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr{ verify(atLeast = 1) { spClient.onConsentReady(any()) } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         wr {

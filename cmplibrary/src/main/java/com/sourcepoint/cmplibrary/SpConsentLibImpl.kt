@@ -708,7 +708,6 @@ internal class SpConsentLibImpl(
                     val url = it.url // urlManager.urlURenderingApp(env)//
                     webView?.loadConsentUI(it, url, legislation)
                 }
-
             }
         }
     }
