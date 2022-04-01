@@ -29,8 +29,8 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-@RunWith(AndroidJUnit4ClassRunner::class)
-class    MainActivityKotlinOttTest {
+//@RunWith(AndroidJUnit4ClassRunner::class)
+class MainActivityKotlinOttTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
@@ -50,7 +50,7 @@ class    MainActivityKotlinOttTest {
         +(CampaignType.GDPR)
     }
 
-    @Test
+//    @Test
     fun GIVEN_an_OTT_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
@@ -73,7 +73,7 @@ class    MainActivityKotlinOttTest {
         }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr{ verify(atLeast = 1) { spClient.onConsentReady(any()) } }
+        wr{ verify(exactly = 1) { spClient.onConsentReady(any()) } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         wr {
@@ -96,7 +96,7 @@ class    MainActivityKotlinOttTest {
 
     }
 
-    @Test
+//    @Test
     fun GIVEN_an_OTT_campaign_SHOW_message_and_ACCEPT_ALL_from_PM() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
