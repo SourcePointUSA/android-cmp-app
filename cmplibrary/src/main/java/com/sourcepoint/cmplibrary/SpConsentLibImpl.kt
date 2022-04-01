@@ -29,7 +29,7 @@ import com.sourcepoint.cmplibrary.model.CampaignResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.*
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
