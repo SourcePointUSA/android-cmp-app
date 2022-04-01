@@ -83,7 +83,7 @@ class MainActivityKotlin : AppCompatActivity() {
         }
         findViewById<View>(R.id.clear_all).setOnClickListener { _v: View? -> clearAllData(this) }
         findViewById<View>(R.id.auth_id_activity).setOnClickListener { _v: View? ->
-            startActivity(Intent(this, MainActivityOttIssue::class.java))
+            startActivity(Intent(this, MainActivityAuthId::class.java))
         }
         findViewById<View>(R.id.custom_consent).setOnClickListener { _v: View? ->
             spConsentLib.customConsentGDPR(

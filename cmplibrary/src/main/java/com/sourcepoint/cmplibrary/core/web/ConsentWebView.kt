@@ -34,7 +34,8 @@ internal class ConsentWebView(
     private val messageTimeout: Long,
     private val connectionManager: ConnectionManager,
     private val executorManager: ExecutorManager,
-    private val campaignQueue: Queue<CampaignModel> = LinkedList()
+    private val campaignQueue: Queue<CampaignModel> = LinkedList(),
+    private val isOtt: Boolean = false
 ) : WebView(context), IConsentWebView {
 
     init {
@@ -64,6 +65,12 @@ internal class ConsentWebView(
         }
         enableDebug()
         setStyle()
+        println("isOtt: $isOtt")
+        if (isOtt) {
+            val density = resources.displayMetrics.densityDpi
+            val scaleFactor = density - (density * 0.6).toInt()
+            setInitialScale(scaleFactor)
+        }
         settings.cacheMode = WebSettings.LOAD_DEFAULT
         webChromeClient = chromeClient
         addJavascriptInterface(JSClientWebViewImpl(), "JSReceiver")
@@ -128,7 +135,12 @@ internal class ConsentWebView(
         true
     }
 
-    override fun loadConsentUIFromUrl(url: HttpUrl, campaignType: CampaignType, pmId: String?, singleShot: Boolean): Either<Boolean> = check {
+    override fun loadConsentUIFromUrl(
+        url: HttpUrl,
+        campaignType: CampaignType,
+        pmId: String?,
+        singleShot: Boolean
+    ): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             val sb = StringBuffer()
@@ -144,7 +156,11 @@ internal class ConsentWebView(
         true
     }
 
-    override fun loadConsentUI(campaignModel: CampaignModel, url: HttpUrl, campaignType: CampaignType): Either<Boolean> = check {
+    override fun loadConsentUI(
+        campaignModel: CampaignModel,
+        url: HttpUrl,
+        campaignType: CampaignType
+    ): Either<Boolean> = check {
         currentCampaignModel = campaignModel
         val campaignType: CampaignType = campaignModel.type
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
@@ -167,8 +183,7 @@ internal class ConsentWebView(
             """.trimIndent()
         }
         logger.i("ConsentWebView", "$campaignType loadConsentUIFromUrl${NL.t}url $url ")
-//        loadUrl(url.toString())
-        loadUrl("https://preprod-cdn.privacy-mgmt.com/privacy-manager-ott/index.html?message_id=629591")
+        loadUrl(url.toString())
         true
     }
 

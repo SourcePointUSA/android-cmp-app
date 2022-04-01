@@ -17,14 +17,14 @@ import com.sourcepoint.cmplibrary.util.clearAllData
 import kotlinx.android.synthetic.main.only_gdpr.*
 import org.json.JSONObject
 
-class OnlyGdprKotlin : AppCompatActivity() {
+class OnlyGdprOttKotlin : AppCompatActivity() {
 
     private val spConsentLib by spConsentLibLazy {
-        activity = this@OnlyGdprKotlin
+        activity = this@OnlyGdprOttKotlin
         spClient = LocalClient()
         config {
-            accountId = 22
-            propertyName = "mobile.multicampaign.demo"
+            accountId = 75
+            propertyName = "BILD-SMARTTV-ANDROID"
             messLanguage = MessageLanguage.ENGLISH
             messageTimeout = 3000
             +(CampaignType.GDPR)
@@ -36,6 +36,8 @@ class OnlyGdprKotlin : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.only_gdpr)
 
+        supportActionBar?.hide()
+
         review_consents_gdpr.setOnClickListener {
             spConsentLib.loadPrivacyManager(
                 "488393",
@@ -46,14 +48,6 @@ class OnlyGdprKotlin : AppCompatActivity() {
 
         clear_all.setOnClickListener { clearAllData(this) }
 
-        custom_consent.setOnClickListener {
-            spConsentLib.customConsentGDPR(
-                vendors = listOf("5ff4d000a228633ac048be41"),
-                categories = listOf("608bad95d08d3112188e0e29", "608bad95d08d3112188e0e2f"),
-                legIntCategories = emptyList(),
-                success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
-            )
-        }
     }
 
     private val pubData: JSONObject = JSONObject().apply {
@@ -75,6 +69,7 @@ class OnlyGdprKotlin : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         spConsentLib.dispose()
+        println("onDestroy ---------------------")
     }
 
     internal inner class LocalClient : SpClient {

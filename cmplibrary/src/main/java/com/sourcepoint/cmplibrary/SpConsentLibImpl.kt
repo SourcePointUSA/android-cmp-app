@@ -29,8 +29,7 @@ import com.sourcepoint.cmplibrary.model.CampaignResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.NATIVE_IN_APP
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.TCFv2
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.*
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
@@ -134,9 +133,14 @@ internal class SpConsentLibImpl(
                 executor.executeOnMain {
                     val legislation = firstCampaign2Process.type
                     when (firstCampaign2Process.messageSubCategory) {
-                        TCFv2 -> {
+                        TCFv2, OTT -> {
                             /** create a instance of WebView */
-                            val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
+                            val webView = viewManager.createWebView(
+                                this,
+                                JSReceiverDelegate(),
+                                remainingCampaigns,
+                                firstCampaign2Process.messageSubCategory == OTT
+                            )
                                 .executeOnLeft { spClient.onError(it) }
                                 .getOrNull()
 
@@ -193,9 +197,14 @@ internal class SpConsentLibImpl(
                 executor.executeOnMain {
                     val legislation = firstCampaign2Process.type
                     when (firstCampaign2Process.messageSubCategory) {
-                        TCFv2 -> {
+                        TCFv2, OTT -> {
                             /** create a instance of WebView */
-                            val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
+                            val webView = viewManager.createWebView(
+                                this,
+                                JSReceiverDelegate(),
+                                remainingCampaigns,
+                                firstCampaign2Process.messageSubCategory == OTT
+                            )
                                 .executeOnLeft { spClient.onError(it) }
                                 .getOrNull()
 
@@ -629,7 +638,7 @@ internal class SpConsentLibImpl(
             privacyManagerId = pmId
         )
 
-        viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
+        viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns, false)
             .map { nativeMessageShowOption(nca, it) }
             .executeOnLeft { spClient.onError(it) }
     }
@@ -674,16 +683,6 @@ internal class SpConsentLibImpl(
         remainingCampaigns.poll()?.let {
             val legislation = it.type
             when (it.messageSubCategory) {
-                TCFv2 -> {
-                    /** create a instance of WebView */
-                    val webView = viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns)
-                        .executeOnLeft { e -> spClient.onError(e) }
-                        .getOrNull()
-
-                    /** inject the message into the WebView */
-                    val url = it.url // urlManager.urlURenderingApp(env)//
-                    webView?.loadConsentUI(it, url, legislation)
-                }
                 NATIVE_IN_APP -> {
                     val nm = it.message.toNativeMessageDTO(legislation)
                     currentNativeMessageCampaign = it
@@ -694,6 +693,22 @@ internal class SpConsentLibImpl(
                         json = it.message
                     )
                 }
+                TCFv2, OTT -> {
+                    /** create a instance of WebView */
+                    val webView = viewManager.createWebView(
+                        this,
+                        JSReceiverDelegate(),
+                        remainingCampaigns,
+                        it.messageSubCategory == OTT
+                    )
+                        .executeOnLeft { e -> spClient.onError(e) }
+                        .getOrNull()
+
+                    /** inject the message into the WebView */
+                    val url = it.url // urlManager.urlURenderingApp(env)//
+                    webView?.loadConsentUI(it, url, legislation)
+                }
+
             }
         }
     }
