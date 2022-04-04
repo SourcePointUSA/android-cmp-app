@@ -65,7 +65,6 @@ internal class ConsentWebView(
         }
         enableDebug()
         setStyle()
-        println("isOtt: $isOtt")
         if (isOtt) {
             val density = resources.displayMetrics.densityDpi
             val scaleFactor = density - (density * 0.5).toInt()
