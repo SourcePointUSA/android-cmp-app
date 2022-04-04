@@ -116,6 +116,8 @@ class DemoActivity : FragmentActivity() {
             setNavigationOnClickListener { onBackPressed() }
         }
 
+        tool_bar.visibility = View.GONE
+
         val pagerAdapter = ScreenSlidePagerAdapter(this)
         pager.adapter = pagerAdapter
 

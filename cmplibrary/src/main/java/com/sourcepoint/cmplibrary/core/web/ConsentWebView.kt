@@ -68,7 +68,7 @@ internal class ConsentWebView(
         println("isOtt: $isOtt")
         if (isOtt) {
             val density = resources.displayMetrics.densityDpi
-            val scaleFactor = density - (density * 0.6).toInt()
+            val scaleFactor = density - (density * 0.5).toInt()
             setInitialScale(scaleFactor)
         }
         settings.cacheMode = WebSettings.LOAD_DEFAULT

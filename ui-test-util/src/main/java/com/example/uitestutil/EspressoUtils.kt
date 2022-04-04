@@ -8,6 +8,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.BoundedMatcher
@@ -26,7 +27,6 @@ import org.hamcrest.core.AllOf.allOf
 import org.hamcrest.core.StringContains
 import org.hamcrest.core.StringContains.containsString
 import java.security.InvalidParameterException
-import androidx.test.espresso.action.ViewActions.swipeLeft
 
 
 @Throws(Throwable::class)
@@ -248,13 +248,10 @@ fun performClickOnWebViewByClass(classValue: String) {
 @Throws(Throwable::class)
 fun checkConsentState(consent: String, selected: Boolean) {
     onWebView()
-            .withElement(
-                    findElement(
-                            Locator.XPATH,
-                            "//span[@aria-label='$consent' and @aria-checked='$selected' and @class='slider round']"
-                    )
-            )
-            .perform(webScrollIntoView())
+        .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'stack-row')]"))
+        .withElement( findElement(Locator.XPATH, "//span[(text()='$consent') ]"))
+        .withElement(findElement(Locator.XPATH, "//span[@aria-checked='$selected' and @class='slider round']"))
+        .perform(webScrollIntoView())
 }
 
 @Throws(Throwable::class)
@@ -290,6 +287,16 @@ fun tapOnToggle(property: String, tapOnlyWhen: Boolean) {
             )
             .perform(webScrollIntoView())
             .perform(webClick())
+}
+
+@Throws(Throwable::class)
+fun tapOnToggle2(property: String, tapOnlyWhen: Boolean) {
+    onWebView()
+        .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'stack-row')]"))
+        .withElement( findElement(Locator.XPATH, "//span[(text()='$property') ]"))
+        .withElement(findElement(Locator.XPATH, "//span[ @class='slider round' and @aria-checked='$tapOnlyWhen']"))
+        .perform(webScrollIntoView())
+        .perform(webClick())
 }
 
 @Throws(Throwable::class)

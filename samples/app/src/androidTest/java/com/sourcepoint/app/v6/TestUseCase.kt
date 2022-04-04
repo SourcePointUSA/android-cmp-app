@@ -62,7 +62,7 @@ class TestUseCase {
 
         fun tapToDisableAllConsent() {
             CONSENT_LIST_2.forEach { consent ->
-                tapOnToggle(property = consent, tapOnlyWhen = true)
+                tapOnToggle2(property = consent, tapOnlyWhen = true)
             }
         }
 
