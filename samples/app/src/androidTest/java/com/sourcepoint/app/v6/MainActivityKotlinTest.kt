@@ -257,7 +257,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
+        periodicWr(period = 2000, backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
         wr { tapAcceptCcpaOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
