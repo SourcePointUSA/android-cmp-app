@@ -496,6 +496,8 @@ class MainActivityKotlinTest {
         periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
         wr { clickOnClearConsent() }
 
+        wr { verify { spClient.onSpFinished(any()) } }
+
         scenario.onActivity { activity ->
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
             val numberOfItemInSP = sp.all.size
