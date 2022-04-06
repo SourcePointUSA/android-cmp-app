@@ -23,8 +23,17 @@ internal interface ViewsManager {
     val isViewInLayout: Boolean
 
     fun showView(view: View)
-    fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate): Either<IConsentWebView>
-    fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate, campaignQueue: Queue<CampaignModel>): Either<IConsentWebView>
+    fun createWebView(
+        lib: SpConsentLibImpl,
+        jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
+        isOtt: Boolean = false
+    ): Either<IConsentWebView>
+    fun createWebView(
+        lib: SpConsentLibImpl,
+        jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
+        campaignQueue: Queue<CampaignModel>,
+        isOtt: Boolean = false
+    ): Either<IConsentWebView>
     fun removeView(view: View)
     fun removeAllViews()
     fun removeAllViewsExcept(pView: View)
@@ -113,7 +122,11 @@ private class ViewsManagerImpl(
         }
     }
 
-    override fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate): Either<IConsentWebView> {
+    override fun createWebView(
+        lib: SpConsentLibImpl,
+        jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
+        isOtt: Boolean
+    ): Either<IConsentWebView> {
         return weakReference.get()?.let {
             check {
                 ConsentWebView(
@@ -122,13 +135,19 @@ private class ViewsManagerImpl(
                     jsClientLib = jsReceiverDelegate,
                     logger = lib.pLogger,
                     executorManager = lib.executor,
-                    messageTimeout = messageTimeout
+                    messageTimeout = messageTimeout,
+                    isOtt = isOtt
                 )
             }
         } ?: Either.Left(GenericSDKException(description = "The activity reference in the ViewManager is null!!!"))
     }
 
-    override fun createWebView(lib: SpConsentLibImpl, jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate, campaignQueue: Queue<CampaignModel>): Either<IConsentWebView> {
+    override fun createWebView(
+        lib: SpConsentLibImpl,
+        jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
+        campaignQueue: Queue<CampaignModel>,
+        isOtt: Boolean
+    ): Either<IConsentWebView> {
         return weakReference.get()?.let {
             check {
                 ConsentWebView(
@@ -138,7 +157,8 @@ private class ViewsManagerImpl(
                     logger = lib.pLogger,
                     executorManager = lib.executor,
                     campaignQueue = campaignQueue,
-                    messageTimeout = messageTimeout
+                    messageTimeout = messageTimeout,
+                    isOtt = isOtt
                 )
             }
         } ?: Either.Left(GenericSDKException(description = "The activity reference in the ViewManager is null!!!"))

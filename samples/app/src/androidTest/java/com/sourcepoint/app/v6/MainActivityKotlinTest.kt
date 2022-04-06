@@ -37,24 +37,17 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSiteVendorsWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableAllConsent
-import com.sourcepoint.app.v6.core.DataProvider
-import com.sourcepoint.app.v6.di.customCategoriesDataProd
-import com.sourcepoint.app.v6.di.customVendorDataListProd
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import io.mockk.*
-import kotlinx.coroutines.delay
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
-import org.koin.core.module.Module
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinTest {
@@ -264,7 +257,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
+        periodicWr(period = 2000, backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
         wr { tapAcceptCcpaOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
@@ -416,7 +409,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun customConsentAction() = runBlocking<Unit> {
+    fun     customConsentAction() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))
 
@@ -503,12 +496,16 @@ class MainActivityKotlinTest {
         periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
         wr { clickOnClearConsent() }
 
-        scenario.onActivity { activity ->
-            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            val numberOfItemInSP = sp.all.size
-            numberOfItemInSP.assertEquals(1)
-            sp.getString(CLIENT_PREF_KEY, "").assertEquals(CLIENT_PREF_VAL)
+        wr{
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                val numberOfItemInSP = sp.all.size
+                numberOfItemInSP.assertEquals(1)
+                sp.getString(CLIENT_PREF_KEY, "").assertEquals(CLIENT_PREF_VAL)
+            }
         }
+
+
 
     }
 

@@ -13,7 +13,6 @@ import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.addTestProperty
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkAllVendorsOff
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkDeepLinkDisplayed
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkFeaturesTab
-import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkNumberOfNullMessage
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnConsentReady
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkOnSpFinish
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.checkPurposesTab
