@@ -1,3 +1,6 @@
+## 6.4.2 (April, 06, 2022)
+* [SP-8981](https://sourcepoint.atlassian.net/browse/SP-8981) Added scale factor for ott properties (#478)
+
 ## 6.4.1 (March, 11, 2022)
 * [SP-8903](https://sourcepoint.atlassian.net/browse/SP-8903) The reset of the SDK shared preferences won't be execute in the dispose method anymore (#474)
 
