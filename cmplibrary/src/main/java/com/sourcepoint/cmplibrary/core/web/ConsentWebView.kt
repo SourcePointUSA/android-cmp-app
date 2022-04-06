@@ -34,7 +34,8 @@ internal class ConsentWebView(
     private val messageTimeout: Long,
     private val connectionManager: ConnectionManager,
     private val executorManager: ExecutorManager,
-    private val campaignQueue: Queue<CampaignModel> = LinkedList()
+    private val campaignQueue: Queue<CampaignModel> = LinkedList(),
+    private val isOtt: Boolean = false
 ) : WebView(context), IConsentWebView {
 
     init {
@@ -64,6 +65,11 @@ internal class ConsentWebView(
         }
         enableDebug()
         setStyle()
+        if (isOtt) {
+            val density = resources.displayMetrics.densityDpi
+            val scaleFactor = density - (density * 0.5).toInt()
+            setInitialScale(scaleFactor)
+        }
         settings.cacheMode = WebSettings.LOAD_DEFAULT
         webChromeClient = chromeClient
         addJavascriptInterface(JSClientWebViewImpl(), "JSReceiver")
