@@ -1,7 +1,7 @@
 name: RELEASE
 on:
   push:
-    branches: [ master ]
+    branches: [ release-meta ]
 #    paths:
 #      - '!*.yml'
 #      - '!README.md'
@@ -28,7 +28,7 @@ jobs:
       run: touch local.properties
     - name: generating MetaApp build release
       id: buildRelease
-      run: ./gradlew :metaapp:bundleRelease :metaapp:bundleDebug :metaapp:assembleRelease
+      run: ./gradlew :metaapp:bundleRelease :metaapp:assembleRelease
     - name: Sign APK
       id: sign
       uses: r0adkll/sign-android-release@v1
@@ -61,9 +61,9 @@ jobs:
         GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
         GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
       run: ./gradlew addCommitPush
-    - name: 'Publish Metaapp debug artifact'
-      if: always()
-      uses: actions/upload-artifact@v2-preview
-      with:
-        name: 'MetaappDebug'
-        path: samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk
+#    - name: 'Publish Metaapp debug artifact'
+#      if: always()
+#      uses: actions/upload-artifact@v2-preview
+#      with:
+#        name: 'MetaappDebug'
+#        path: samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk
