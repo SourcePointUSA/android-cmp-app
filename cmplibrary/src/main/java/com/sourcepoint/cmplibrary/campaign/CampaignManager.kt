@@ -213,21 +213,23 @@ private class CampaignManagerImpl(
     }
 
     override fun getGDPRConsent(): Either<GDPRConsentInternal> = check {
+        val gdprApplies = isAppliedCampaign(CampaignType.GDPR)
         dataStorage
             .getGdprConsentResp()
             .also { if (it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
             .let { JSONObject(it) }
             .toTreeMap()
-            .toGDPRUserConsent(uuid = dataStorage.getGdprConsentUuid())
+            .toGDPRUserConsent(uuid = dataStorage.getGdprConsentUuid(), applies = gdprApplies)
     }
 
     override fun getCCPAConsent(): Either<CCPAConsentInternal> = check {
+        val ccpaApplies = isAppliedCampaign(CampaignType.CCPA)
         dataStorage
             .getCcpaConsentResp()
             .also { if (it.isBlank()) fail("CCPAConsent is not saved in the the storage!!") }
             .let { JSONObject(it) }
             .toTreeMap()
-            .toCCPAUserConsent(uuid = dataStorage.getCcpaConsentUuid())
+            .toCCPAUserConsent(uuid = dataStorage.getCcpaConsentUuid(), applies = ccpaApplies)
     }
 
     override fun saveGdpr(gdpr: Gdpr) {

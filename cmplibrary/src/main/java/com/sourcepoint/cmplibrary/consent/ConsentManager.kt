@@ -123,7 +123,7 @@ private class ConsentManagerImpl(
             when (val either = service.sendConsent(localState, actionImpl, env, actionImpl.privacyManagerId)) {
                 is Right -> {
                     val updatedLocalState = LocalStateStatus.Present(either.r.localState)
-                    val sPConsents = responseConsentHandler(either, actionImpl, consentManagerUtils)
+                    val sPConsents = responseConsentHandler(either, actionImpl, consentManagerUtils, dataStorage)
                     sPConsentsSuccess?.invoke(sPConsents)
                     this.localStateStatus = updatedLocalState
                     clientEventManager.storedConsent()
@@ -143,21 +143,22 @@ internal sealed class LocalStateStatus {
 internal fun responseConsentHandler(
     either: Right<ConsentResp>,
     actionImpl: ConsentActionImpl,
-    consentManagerUtils: ConsentManagerUtils
+    consentManagerUtils: ConsentManagerUtils,
+    dataStorage: DataStorage
 ): SPConsents {
     val map: Map<String, Any?> = either.r.content.toTreeMap()
     val uuid: String? = either.r.uuid
     return map.getMap("userConsent")
         ?.let {
             when (actionImpl.campaignType) {
-                CampaignType.GDPR -> it.toGDPRUserConsent(uuid = uuid).let { gdprConsent ->
+                CampaignType.GDPR -> it.toGDPRUserConsent(uuid = uuid, dataStorage.gdprApplies).let { gdprConsent ->
                     val ccpaCached = consentManagerUtils.getCcpaConsent().getOrNull()
                     SPConsents(
                         gdpr = SPGDPRConsent(consent = gdprConsent),
                         ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
                     )
                 }
-                CampaignType.CCPA -> it.toCCPAUserConsent(uuid = uuid).let { ccpaConsent ->
+                CampaignType.CCPA -> it.toCCPAUserConsent(uuid = uuid, dataStorage.gdprApplies).let { ccpaConsent ->
                     val gdprCached = consentManagerUtils.getGdprConsent().getOrNull()
                     SPConsents(
                         gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
