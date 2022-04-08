@@ -37,7 +37,7 @@ class DataStorageGdprImplTest {
         storage.saveGdprConsentUuid("uuid")
         storage.saveEuConsent("eu")
         storage.saveMetaData("meta")
-        storage.saveAppliedLegislation("GDPR")
+        storage.saveGdprApply("GDPR")
         storage.saveGdpr("{\"type\":\"GDPR\"}")
         storage.saveTcData(getMap())
 
@@ -45,7 +45,7 @@ class DataStorageGdprImplTest {
         storage.getGdprConsentUuid().assertEquals("uuid")
         storage.getEuConsent().assertEquals("eu")
         storage.getMetaData().assertEquals("meta")
-        storage.getAppliedLegislation().assertEquals("GDPR")
+        storage.getGDPRApplied().assertEquals("GDPR")
         storage.getGdpr().assertEquals("{\"type\":\"GDPR\"}")
         storage.getTcData().assertEquals(getMap())
 
@@ -58,7 +58,7 @@ class DataStorageGdprImplTest {
         storage.getMetaData().assertEquals("")
 
         /** clearInternalData DOES NOT delete these prefs */
-        storage.getAppliedLegislation().assertEquals("GDPR")
+        storage.getGDPRApplied().assertEquals("GDPR")
         storage.getTcData().assertEquals(getMap())
         storage.getGdpr().assertEquals("{\"type\":\"GDPR\"}")
     }

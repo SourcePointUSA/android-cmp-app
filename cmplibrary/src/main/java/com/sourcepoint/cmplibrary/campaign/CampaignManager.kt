@@ -249,11 +249,13 @@ private class CampaignManagerImpl(
         map.getMap("gdpr")?.apply {
             getFieldValue<String>("uuid")?.let { dataStorage.saveGdprConsentUuid(it) }
             getFieldValue<Int>("propertyId")?.let { dataStorage.savePropertyId(it) }
+            getFieldValue<Boolean>("applies")?.let { dataStorage.saveGdprApply(it) }
         }
         // save GDPR uuid
         map.getMap("ccpa")?.apply {
             getFieldValue<String>("uuid")?.let { dataStorage.saveCcpaConsentUuid(it) }
             getFieldValue<Int>("propertyId")?.let { dataStorage.savePropertyId(it) }
+            getFieldValue<Boolean>("applies")?.let { dataStorage.saveCcpaApply(it) }
         }
         // save campaigns and consents
         unifiedMessageResp

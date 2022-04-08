@@ -12,7 +12,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_E
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_EMPTY_UUID
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_META_DATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
-import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_APPLIED_LEGISLATION
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_APPLIED
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_TCData
@@ -41,7 +41,7 @@ internal interface DataStorageGdpr {
     fun saveEuConsent(value: String)
     fun saveMetaData(value: String)
     fun saveGdprConsentUuid(value: String?)
-    fun saveAppliedLegislation(value: String)
+    fun saveGdprApply(value: Boolean)
     fun saveGdprConsentResp(value: String)
     fun saveGdprMessage(value: String)
 
@@ -51,7 +51,7 @@ internal interface DataStorageGdpr {
     fun getEuConsent(): String
     fun getMetaData(): String
     fun getGdprConsentUuid(): String?
-    fun getAppliedLegislation(): String
+    fun getGDPRApplied(): Boolean
     fun getGdprConsentResp(): String
     fun getGdprMessage(): String
 
@@ -77,7 +77,7 @@ internal interface DataStorageGdpr {
         const val KEY_GDPR_APPLIES = "sp.key.gdpr.applies"
         const val GDPR_CONSENT_RESP = "sp.gdpr.consent.resp"
         const val GDPR_JSON_MESSAGE = "sp.gdpr.json.message"
-        const val GDPR_APPLIED_LEGISLATION = "sp.gdpr.applied.legislation"
+        const val GDPR_APPLIED = "sp.gdpr.applied.legislation"
         const val GDPR_TCData = "TCData"
     }
 }
@@ -183,10 +183,10 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .apply()
     }
 
-    override fun saveAppliedLegislation(value: String) {
+    override fun saveGdprApply(value: Boolean) {
         preference
             .edit()
-            .putString(GDPR_APPLIED_LEGISLATION, value)
+            .putBoolean(GDPR_APPLIED, value)
             .apply()
     }
 
@@ -215,8 +215,8 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         return preference.getString(CONSENT_UUID_KEY, null)
     }
 
-    override fun getAppliedLegislation(): String {
-        return preference.getString(GDPR_APPLIED_LEGISLATION, "")!!
+    override fun getGDPRApplied(): Boolean {
+        return preference.getBoolean(GDPR_APPLIED, false)
     }
 
     override fun getGdprConsentResp(): String {
@@ -255,7 +255,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 remove(KEY_GDPR_APPLIES)
                 remove(GDPR_CONSENT_RESP)
                 remove(GDPR_JSON_MESSAGE)
-                remove(GDPR_APPLIED_LEGISLATION)
+                remove(GDPR_APPLIED)
                 remove(GDPR_TCData)
                 remove(KEY_GDPR)
                 listIABTCF.forEach { remove(it) }

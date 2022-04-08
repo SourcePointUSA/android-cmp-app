@@ -47,8 +47,8 @@ internal class MockDataStorage : DataStorage {
         storage[DataStorageGdpr.GDPR_JSON_MESSAGE] = value
     }
 
-    override fun saveAppliedLegislation(value: String) {
-        storage[DataStorageGdpr.GDPR_APPLIED_LEGISLATION] = value
+    override fun saveGdprApply(value: Boolean) {
+        storage[DataStorageGdpr.GDPR_APPLIED] = value
     }
 
     override fun getTcData(): Map<String, Any?> {
@@ -71,8 +71,8 @@ internal class MockDataStorage : DataStorage {
         return storage[DataStorageGdpr.CONSENT_UUID_KEY] as? String ?: ""
     }
 
-    override fun getAppliedLegislation(): String {
-        return storage[DataStorageGdpr.GDPR_APPLIED_LEGISLATION]!! as String
+    override fun getGDPRApplied(): String {
+        return storage[DataStorageGdpr.GDPR_APPLIED]!! as String
     }
 
     override fun getGdprConsentResp(): String {

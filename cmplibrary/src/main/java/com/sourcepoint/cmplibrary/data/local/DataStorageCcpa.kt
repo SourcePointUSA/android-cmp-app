@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_APPLIED
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CONSENT_CCPA_UUID_KEY
@@ -19,11 +20,13 @@ internal interface DataStorageCcpa {
     fun saveCcpaConsentResp(value: String)
     fun saveCcpaConsentUuid(value: String?)
     fun saveCcpaMessage(value: String)
+    fun saveCcpaApply(value: Boolean)
 
     fun getCcpa(): String?
     fun getCcpaConsentResp(): String
     fun getCcpaMessage(): String
     fun getCcpaConsentUuid(): String?
+    fun getCcpaApplied(): Boolean
     fun clearCcpaConsent()
     fun clearAll()
 
@@ -34,6 +37,7 @@ internal interface DataStorageCcpa {
         const val CCPA_JSON_MESSAGE = "sp.ccpa.json.message"
         const val CONSENT_CCPA_UUID_KEY = "sp.ccpa.consentUUID"
         const val IAB_US_PRIVACY_STRING = "IABUSPrivacy_String"
+        const val CCPA_APPLIED = "sp.ccpa.applied.legislation"
     }
 }
 
@@ -80,6 +84,12 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .apply()
     }
 
+    override fun saveCcpaApply(value: Boolean) {
+        preference
+            .edit()
+            .putBoolean(CCPA_APPLIED, value)
+    }
+
     override fun saveCcpaConsentUuid(value: String?) {
         value?.let {
             preference
@@ -106,6 +116,10 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
 
     override fun getCcpaConsentUuid(): String? {
         return preference.getString(CONSENT_CCPA_UUID_KEY, null)
+    }
+
+    override fun getCcpaApplied(): Boolean {
+        return preference.getBoolean(CCPA_APPLIED, false)
     }
 
     override fun clearCcpaConsent() {
