@@ -17,7 +17,8 @@ data class SpConfig(
 
 data class SpCampaign(
     @JvmField val campaignType: CampaignType,
-    @JvmField internal val targetingParams: List<TargetingParam>
+    @JvmField internal val targetingParams: List<TargetingParam>,
+    @JvmField val groupPmId: Long? = null
 )
 
 data class TargetingParam(val key: String, val value: String)

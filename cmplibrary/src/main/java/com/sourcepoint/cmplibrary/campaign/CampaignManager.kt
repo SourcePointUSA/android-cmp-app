@@ -90,7 +90,7 @@ private class CampaignManagerImpl(
                             } ?: CampaignsEnv.PUBLIC
                         addCampaign(
                             it.campaignType,
-                            CampaignTemplate(ce, it.targetingParams.filter { tp -> tp.key != "campaignEnv" }, it.campaignType)
+                            CampaignTemplate(ce, it.targetingParams.filter { tp -> tp.key != "campaignEnv" }, it.campaignType, it.groupPmId)
                         )
                     }
 
@@ -102,7 +102,7 @@ private class CampaignManagerImpl(
                             } ?: CampaignsEnv.PUBLIC
                         addCampaign(
                             it.campaignType,
-                            CampaignTemplate(ce, it.targetingParams.filter { tp -> tp.key != "campaignEnv" }, it.campaignType)
+                            CampaignTemplate(ce, it.targetingParams.filter { tp -> tp.key != "campaignEnv" }, it.campaignType, it.groupPmId)
                         )
                     }
                 }
@@ -194,10 +194,10 @@ private class CampaignManagerImpl(
     override fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest {
         val campaigns = mutableListOf<CampaignReq>()
         mapTemplate[CampaignType.GDPR.name]
-            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignsEnv = it.campaignsEnv) }
+            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignsEnv = it.campaignsEnv, groupPmId = it.groupPmId) }
             ?.let { campaigns.add(it) }
         mapTemplate[CampaignType.CCPA.name]
-            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignsEnv = it.campaignsEnv) }
+            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignsEnv = it.campaignsEnv, groupPmId = it.groupPmId) }
             ?.let { campaigns.add(it) }
 
         return UnifiedMessageRequest(

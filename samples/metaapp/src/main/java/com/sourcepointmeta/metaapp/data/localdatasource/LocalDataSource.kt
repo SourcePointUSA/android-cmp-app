@@ -269,9 +269,9 @@ private class LocalDataSourceImpl(
                             .find { it.name == p.messageLanguage }
                             ?: MessageLanguage.ENGLISH
                         buildSPCampaign(CampaignType.GDPR, p.statusCampaignSet, p.targetingParameters)
-                            ?.let { spc -> addCampaign(CampaignType.GDPR, spc) }
+                            ?.let { spc -> addCampaign(CampaignType.GDPR, spc, 613056) }
                         buildSPCampaign(CampaignType.CCPA, p.statusCampaignSet, p.targetingParameters)
-                            ?.let { spc -> addCampaign(CampaignType.CCPA, spc) }
+                            ?.let { spc -> addCampaign(CampaignType.CCPA, spc, 613056) }
                     }
                 }
                 ?: throw RuntimeException("Inconsistent state! LocalDataSource.getSPConfig cannot have a SpConfig null!!!")

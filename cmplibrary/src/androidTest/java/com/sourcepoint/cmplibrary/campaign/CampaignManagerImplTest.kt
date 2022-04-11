@@ -29,13 +29,15 @@ class CampaignManagerImplTest {
     private val gdpr = CampaignTemplate(
         campaignsEnv = CampaignsEnv.STAGE,
         targetingParams = listOf(TargetingParam("location", "EU")),
-        campaignType = CampaignType.GDPR
+        campaignType = CampaignType.GDPR,
+        groupPmId = 111L
     )
 
     private val ccpa = CampaignTemplate(
         campaignsEnv = CampaignsEnv.STAGE,
         targetingParams = listOf(TargetingParam("location", "EU")),
-        campaignType = CampaignType.CCPA
+        campaignType = CampaignType.CCPA,
+        groupPmId = 111L
     )
 
     private val ds by lazy {
