@@ -63,22 +63,6 @@ private class DataStorageImpl(
         return preference.getString(PROPERTY_PRIORITY_DATA, null)
     }
 
-    override fun saveGdprAppliedLegislation(value: Boolean) {
-        dsGdpr.saveGdprApply(value)
-    }
-
-    override fun saveCcpaAppliedLegislation(value: Boolean) {
-        dsCcpa.save
-    }
-
-    override fun getGdprAppliedLegislation(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun getCcpaAppliedLegislation(): Boolean {
-        TODO("Not yet implemented")
-    }
-
     override fun clearAll() {
         dsCcpa.clearAll()
         dsGdpr.clearAll()

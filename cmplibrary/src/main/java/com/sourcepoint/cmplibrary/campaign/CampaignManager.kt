@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
+import com.sourcepoint.cmplibrary.data.network.model.*
 import com.sourcepoint.cmplibrary.data.network.model.toCCPA
 import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toGDPR
@@ -213,23 +214,21 @@ private class CampaignManagerImpl(
     }
 
     override fun getGDPRConsent(): Either<GDPRConsentInternal> = check {
-        val gdprApplies = isAppliedCampaign(CampaignType.GDPR)
         dataStorage
             .getGdprConsentResp()
             .also { if (it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
             .let { JSONObject(it) }
             .toTreeMap()
-            .toGDPRUserConsent(uuid = dataStorage.getGdprConsentUuid(), applies = gdprApplies)
+            .toGDPRUserConsent(uuid = dataStorage.getGdprConsentUuid(), applies = dataStorage.gdprApplies)
     }
 
     override fun getCCPAConsent(): Either<CCPAConsentInternal> = check {
-        val ccpaApplies = isAppliedCampaign(CampaignType.CCPA)
         dataStorage
             .getCcpaConsentResp()
             .also { if (it.isBlank()) fail("CCPAConsent is not saved in the the storage!!") }
             .let { JSONObject(it) }
             .toTreeMap()
-            .toCCPAUserConsent(uuid = dataStorage.getCcpaConsentUuid(), applies = ccpaApplies)
+            .toCCPAUserConsent(uuid = dataStorage.getCcpaConsentUuid(), applies = dataStorage.ccpaApplies)
     }
 
     override fun saveGdpr(gdpr: Gdpr) {
@@ -249,14 +248,16 @@ private class CampaignManagerImpl(
         map.getMap("gdpr")?.apply {
             getFieldValue<String>("uuid")?.let { dataStorage.saveGdprConsentUuid(it) }
             getFieldValue<Int>("propertyId")?.let { dataStorage.savePropertyId(it) }
-            getFieldValue<Boolean>("applies")?.let { dataStorage.saveGdprApply(it) }
         }
         // save GDPR uuid
         map.getMap("ccpa")?.apply {
             getFieldValue<String>("uuid")?.let { dataStorage.saveCcpaConsentUuid(it) }
             getFieldValue<Int>("propertyId")?.let { dataStorage.savePropertyId(it) }
-            getFieldValue<Boolean>("applies")?.let { dataStorage.saveCcpaApply(it) }
         }
+        // applies legislation
+        dataStorage.gdprApplies = (unifiedMessageResp.isLegislationApplied(CampaignType.GDPR))
+        dataStorage.ccpaApplies = (unifiedMessageResp.isLegislationApplied(CampaignType.CCPA))
+
         // save campaigns and consents
         unifiedMessageResp
             .campaigns

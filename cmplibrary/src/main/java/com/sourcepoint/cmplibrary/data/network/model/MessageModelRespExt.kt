@@ -103,3 +103,9 @@ internal fun String.toGDPR(uuid: String?): Gdpr {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
     return map.toGDPR(uuid)
 }
+
+internal fun UnifiedMessageResp.isLegislationApplied(campaignType: CampaignType) = this
+    .campaigns
+    .find { it.type == campaignType.name }
+    ?.applies
+    ?: false
