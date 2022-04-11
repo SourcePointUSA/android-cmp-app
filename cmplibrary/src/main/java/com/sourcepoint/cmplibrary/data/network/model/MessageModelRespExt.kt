@@ -69,7 +69,7 @@ private fun Map<String, Any?>.toCCPA(uuid: String?): Ccpa {
     val messageSubCategory = MessageSubCategory.values().find { m -> m.code == messageMetaData?.getInt("subCategoryId") } ?: MessageSubCategory.TCFv2
     val applies = getFieldValue<Boolean>("applies") ?: false
 
-        return Ccpa(
+    return Ccpa(
         thisContent = JSONObject(this),
         applies = applies,
         message = message,
