@@ -234,11 +234,13 @@ private class CampaignManagerImpl(
     override fun saveGdpr(gdpr: Gdpr) {
         dataStorage.saveGdpr(gdpr.thisContent.toString())
         dataStorage.saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
+        dataStorage.gdprApplies = gdpr.applies
     }
 
     override fun saveCcpa(ccpa: Ccpa) {
         dataStorage.saveCcpa(ccpa.thisContent.toString())
         dataStorage.saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
+        dataStorage.ccpaApplies = ccpa.applies
     }
 
     override fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp) {
@@ -254,9 +256,6 @@ private class CampaignManagerImpl(
             getFieldValue<String>("uuid")?.let { dataStorage.saveCcpaConsentUuid(it) }
             getFieldValue<Int>("propertyId")?.let { dataStorage.savePropertyId(it) }
         }
-        // applies legislation
-        dataStorage.gdprApplies = (unifiedMessageResp.isLegislationApplied(CampaignType.GDPR))
-        dataStorage.ccpaApplies = (unifiedMessageResp.isLegislationApplied(CampaignType.CCPA))
 
         // save campaigns and consents
         unifiedMessageResp
