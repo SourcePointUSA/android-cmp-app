@@ -45,6 +45,7 @@ internal fun AddPropertyLayout.bind(property: Property) {
     gdprTp.forEach { gdpr_chip_group.addChip("${it.key}:${it.value}") }
     ccpaTp.forEach { ccpa_chip_group.addChip("${it.key}:${it.value}") }
     timeout_ed.setText("${property.timeout ?: 3000}")
+    group_pm_id_ed.setText("${property.groupPmId}")
 }
 
 internal fun AddPropertyLayout.toProperty(): Property {
@@ -92,7 +93,8 @@ internal fun AddPropertyLayout.toProperty(): Property {
         messageType = message_type_autocomplete.text.toString(),
         gdprPmId = gdpr_pm_id_ed.text.toString().toLongOrNull(),
         ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull(),
-        campaignsEnv = if (radio_stage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC
+        campaignsEnv = if (radio_stage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC,
+        groupPmId = group_pm_id_ed.text.toString(),
     )
 }
 

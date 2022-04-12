@@ -19,7 +19,8 @@ data class Property(
     val pmTab: String? = null,
     val statusCampaignSet: Set<StatusCampaign>,
     val campaignsEnv: CampaignsEnv,
-    val timestamp: Long = Date().time
+    val timestamp: Long = Date().time,
+    val groupPmId: String? = null
 )
 
 data class MetaTargetingParam(
@@ -81,7 +82,8 @@ fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<Statu
     timestamp = timestamp,
     gdprPmId = gdpr_pm_id,
     ccpaPmId = ccpa_pm_id,
-    campaignsEnv = CampaignsEnv.values().find { it.env == campaign_env } ?: CampaignsEnv.PUBLIC
+    campaignsEnv = CampaignsEnv.values().find { it.env == campaign_env } ?: CampaignsEnv.PUBLIC,
+    groupPmId = group_pm_id
 )
 
 fun CampaignQueries.getTargetingParams(propName: String) =

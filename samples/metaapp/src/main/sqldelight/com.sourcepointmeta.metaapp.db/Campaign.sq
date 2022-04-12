@@ -16,7 +16,8 @@ CREATE TABLE property (
     ccpa_pm_id INTEGER,
     message_language TEXT,
     pm_tab TEXT,
-    campaign_env TEXT
+    campaign_env TEXT,
+    group_pm_id TEXT
 );
 
 CREATE TABLE targeting_param (
@@ -47,8 +48,8 @@ FROM property
 WHERE property.property_name = ?;
 
 insertProperty:
-INSERT OR REPLACE INTO property (property_name, account_id, is_staging, timestamp, message_type, timeout, auth_Id, gdpr_pm_id, ccpa_pm_id, message_language, pm_tab, campaign_env)
-VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO property (property_name, account_id, is_staging, timestamp, message_type, timeout, auth_Id, gdpr_pm_id, ccpa_pm_id, message_language, pm_tab, campaign_env, group_pm_id)
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- TargetingParameters
 
