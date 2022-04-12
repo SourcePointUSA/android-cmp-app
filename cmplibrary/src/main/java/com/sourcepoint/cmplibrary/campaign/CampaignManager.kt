@@ -14,6 +14,7 @@ import com.sourcepoint.cmplibrary.data.network.model.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
+import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.Campaigns
@@ -70,6 +71,7 @@ private class CampaignManagerImpl(
 
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
     private val campaignsEnv: CampaignsEnv = spConfig.campaignsEnv
+    val logger: Logger? = spConfig.logger
 
     init {
         if (!spConfig.propertyName.contains(validPattern)) {
@@ -90,7 +92,12 @@ private class CampaignManagerImpl(
                             } ?: CampaignsEnv.PUBLIC
                         addCampaign(
                             it.campaignType,
-                            CampaignTemplate(ce, it.targetingParams.filter { tp -> tp.key != "campaignEnv" }, it.campaignType, it.groupPmId)
+                            CampaignTemplate(
+                                ce,
+                                it.targetingParams.filter { tp -> tp.key != "campaignEnv" },
+                                it.campaignType,
+                                it.groupPmId
+                            )
                         )
                     }
 
@@ -102,7 +109,12 @@ private class CampaignManagerImpl(
                             } ?: CampaignsEnv.PUBLIC
                         addCampaign(
                             it.campaignType,
-                            CampaignTemplate(ce, it.targetingParams.filter { tp -> tp.key != "campaignEnv" }, it.campaignType, it.groupPmId)
+                            CampaignTemplate(
+                                ce,
+                                it.targetingParams.filter { tp -> tp.key != "campaignEnv" },
+                                it.campaignType,
+                                it.groupPmId
+                            )
                         )
                     }
                 }
@@ -136,23 +148,40 @@ private class CampaignManagerImpl(
     fun getGdprPmConfig(pmId: String?, pmTab: PMTab): Either<PmUrlConfig> = check {
         val uuid = dataStorage.getGdprConsentUuid()
         val siteId = dataStorage.getPropertyId().toString()
+        val childPmId: String? = dataStorage.gdprChildPmId
+
+        val usedPmId = childPmId ?: pmId
+
+        logger?.computation(
+            tag = "Property group - GDPR PM",
+            msg = "pmId[$pmId] - childPmId[$childPmId] -> used pmId[$usedPmId]"
+        )
+
         PmUrlConfig(
             pmTab = pmTab,
             consentLanguage = null,
             uuid = uuid,
             siteId = siteId,
-            messageId = pmId
+            messageId = usedPmId
         )
     }
 
     fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = check {
         val uuid = dataStorage.getCcpaConsentUuid()
         val siteId = dataStorage.getPropertyId().toString()
+        val childPmId: String? = dataStorage.ccpaChildPmId
+
+        val usedPmId = childPmId ?: pmId
+
+        logger?.computation(
+            tag = "Property group - CCPA PM",
+            msg = "pmId[$pmId] - childPmId[$childPmId] -> used[$usedPmId]"
+        )
         PmUrlConfig(
             consentLanguage = null,
             uuid = uuid,
             siteId = siteId,
-            messageId = pmId
+            messageId = usedPmId
         )
     }
 
@@ -194,10 +223,22 @@ private class CampaignManagerImpl(
     override fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest {
         val campaigns = mutableListOf<CampaignReq>()
         mapTemplate[CampaignType.GDPR.name]
-            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignsEnv = it.campaignsEnv, groupPmId = it.groupPmId) }
+            ?.let {
+                it.toCampaignReqImpl(
+                    targetingParams = it.targetingParams,
+                    campaignsEnv = it.campaignsEnv,
+                    groupPmId = it.groupPmId
+                )
+            }
             ?.let { campaigns.add(it) }
         mapTemplate[CampaignType.CCPA.name]
-            ?.let { it.toCampaignReqImpl(targetingParams = it.targetingParams, campaignsEnv = it.campaignsEnv, groupPmId = it.groupPmId) }
+            ?.let {
+                it.toCampaignReqImpl(
+                    targetingParams = it.targetingParams,
+                    campaignsEnv = it.campaignsEnv,
+                    groupPmId = it.groupPmId
+                )
+            }
             ?.let { campaigns.add(it) }
 
         return UnifiedMessageRequest(
@@ -235,12 +276,14 @@ private class CampaignManagerImpl(
         dataStorage.saveGdpr(gdpr.thisContent.toString())
         dataStorage.saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
         dataStorage.gdprApplies = gdpr.applies
+        dataStorage.gdprChildPmId = gdpr.userConsent.childPmId
     }
 
     override fun saveCcpa(ccpa: Ccpa) {
         dataStorage.saveCcpa(ccpa.thisContent.toString())
         dataStorage.saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
         dataStorage.ccpaApplies = ccpa.applies
+        dataStorage.ccpaChildPmId = ccpa.userConsent.childPmId
     }
 
     override fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp) {

@@ -85,6 +85,13 @@ class SpConfigDataBuilder {
         campaigns.add(SpCampaign(campaignType, params, groupPmId))
     }
 
+    fun addCampaign(
+        campaignType: CampaignType,
+        params: List<TargetingParam>
+    ): SpConfigDataBuilder = apply {
+        campaigns.add(SpCampaign(campaignType, params))
+    }
+
     fun addCampaign(campaign: SpCampaign): SpConfigDataBuilder = apply {
         campaigns.add(campaign)
     }

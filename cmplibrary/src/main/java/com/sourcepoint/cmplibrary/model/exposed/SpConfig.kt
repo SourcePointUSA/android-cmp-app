@@ -19,7 +19,12 @@ data class SpCampaign(
     @JvmField val campaignType: CampaignType,
     @JvmField internal val targetingParams: List<TargetingParam>,
     @JvmField val groupPmId: Long? = null
-)
+) {
+    constructor(
+        campaignType: CampaignType,
+        targetingParams: List<TargetingParam>
+    ) : this(campaignType, targetingParams, null)
+}
 
 data class TargetingParam(val key: String, val value: String)
 

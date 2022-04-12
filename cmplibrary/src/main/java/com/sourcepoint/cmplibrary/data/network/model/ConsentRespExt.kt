@@ -61,7 +61,7 @@ internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?, applies: Boolean
 
     val uspString: String = getFieldValue("uspstring") ?: ""
 
-    val childPmId : Int? = getFieldValue<Int>("childPmId")
+    val childPmId: String? = check { getFieldValue<String>("childPmId") }.getOrNull()
 
     return CCPAConsentInternal(
         uuid = uuid,
@@ -106,7 +106,7 @@ internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?, applies: Boolean
         } ?: emptyList()
     val consentedPurposes: List<String> = vendorsGrants.toAcceptedCategories().toList()
 
-    val childPmId : String? = check { getFieldValue<String>("childPmId") }.getOrNull()
+    val childPmId: String? = check { getFieldValue<String>("childPmId") }.getOrNull()
 
     return GDPRConsentInternal(
         uuid = uuid,

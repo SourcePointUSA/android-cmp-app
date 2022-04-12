@@ -54,7 +54,7 @@ interface CCPAConsent {
     val rejectedVendors: List<Any>
     val status: String?
     val uspstring: String
-    val childPmId: Int?
+    val childPmId: String?
     val applies: Boolean
 }
 
@@ -64,7 +64,7 @@ internal data class CCPAConsentInternal(
     override val rejectedVendors: List<Any> = listOf(),
     override val status: String? = null,
     override val uspstring: String = "",
-    override val childPmId: Int? = null,
+    override val childPmId: String? = null,
     override val applies: Boolean = false,
     val thisContent: JSONObject = JSONObject()
 ) : CCPAConsent

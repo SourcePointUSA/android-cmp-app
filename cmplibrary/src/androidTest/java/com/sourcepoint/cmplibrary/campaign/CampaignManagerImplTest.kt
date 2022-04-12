@@ -3,8 +3,11 @@ package com.sourcepoint.cmplibrary.campaign
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertEquals
+import com.example.uitestutil.assertNotNull
+import com.example.uitestutil.assertNull
 import com.example.uitestutil.jsonFile2String
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
@@ -79,25 +82,47 @@ class CampaignManagerImplTest {
     }
 
     @Test
-    fun `GIVEN_an_empty_ds_RETURN_a_MessageRequest_with_meta_and_uuid_null`() {
+    fun `GIVEN_a_groupPmId_RETURN_the_pmId`() {
 
         val sut = CampaignManager.create(ds, spConfig, MessageLanguage.ENGLISH).apply {
             addCampaign(CampaignType.GDPR, gdpr)
             addCampaign(CampaignType.CCPA, ccpa)
         }
 
-//        val output = sut.getMessageReq()
+        sut
+            .getPmConfig(CampaignType.GDPR, "11", PMTab.PURPOSES)
+            .getOrNull()!!
+            .messageId
+            .assertEquals("11")
 
-//        output.campaigns.ccpa!!.run {
-//        }
-//        output.campaigns.gdpr!!.run {
-//        }
+        sut
+            .getPmConfig(CampaignType.CCPA, "22", PMTab.PURPOSES)
+            .getOrNull()!!
+            .messageId
+            .assertEquals("22")
+
+        // set the groupPmId
+
+        ds.gdprChildPmId = "33"
+        ds.ccpaChildPmId = "44"
+
+        sut
+            .getPmConfig(CampaignType.GDPR, "11", PMTab.PURPOSES)
+            .getOrNull()!!
+            .messageId
+            .assertEquals("33")
+        sut
+            .getPmConfig(CampaignType.CCPA, "22", PMTab.PURPOSES)
+            .getOrNull()!!
+            .messageId
+            .assertEquals("44")
     }
 
     @Test
     fun `GIVEN_a_ds_with_a_resp_saved_RETURN_a_MessageRequest_with_meta_and_uuid_null`() {
         // create a message response DTO
-        val unifiedMess = JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto()
+        val unifiedMess =
+            JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto()
 
         // store the message response dto as we already did the first call getMessage
         // this means that we already have in memory the GDPR and CCPA campaign
@@ -113,13 +138,6 @@ class CampaignManagerImplTest {
             addCampaign(CampaignType.GDPR, gdpr)
             addCampaign(CampaignType.CCPA, ccpa)
         }
-
-//        val output = sut.getMessageReq()
-
-//        output.campaigns.ccpa!!.run {
-//        }
-//        output.campaigns.gdpr!!.run {
-//        }
     }
 
     @Test
@@ -134,22 +152,25 @@ class CampaignManagerImplTest {
         val sut = CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH)
 
         sut.saveGdpr(gdpr)
-//        val res = sut.getGdpr()
+        val res = sut.getGdpr()
 
-//        (res as Either.Right).r.run {
-//            userConsent!!.let { uc ->
-//                uc.acceptedCategories.sortedBy { it.hashCode() }.assertEquals(gdpr.userConsent!!.acceptedCategories.sortedBy { it.hashCode() })
-//                uc.acceptedVendors.sortedBy { it.hashCode() }.assertEquals(gdpr.userConsent!!.acceptedVendors.sortedBy { it.hashCode() })
-//                uc.legIntCategories.sortedBy { it.hashCode() }.assertEquals(gdpr.userConsent!!.legIntCategories.sortedBy { it.hashCode() })
-//                uc.specialFeatures.sortedBy { it.hashCode() }.assertEquals(gdpr.userConsent!!.specialFeatures.sortedBy { it.hashCode() })
-//            }
-//        }
+        val t: Gdpr = (res as Either.Right<Gdpr>).getOrNull().assertNotNull()!!
+
+        t.run {
+            userConsent.let {
+                it.uuid.assertNull()
+                it.childPmId.assertNull()
+                it.grants.size.assertEquals(633)
+                it.euconsent.assertEquals("CPEpDOrPEpDOrHIABCENBVCgAAAAAH_AAAYgAAAOQAIMBAUAAAEEAAAIECIQAAQAiQAAAABBCABQJIAEqgACVwERAIAACAxAQgAAgBAQgwCAAAAAJIAgBACwQCAAiAQAAgAEAAAAEIAIDACQEAAAEAJCAAiACECAgiAAg5CAgIACCAFABAAAuJDACAMooASBBgHBIB4ACAArACOAGWANQAgABSwDFAGsAN4AfIBMQCZQFoAMCDQDQArADLAGoAOwAgABBQClgGsAN4AdUA-QC6AGBBwAIDfxEAsAKwAywBqADsAIAAUsA1gB1QD5ALoAYEJAAgN_FQCQBHADLAGoAOwApYBvAExAMCAbkMgEACOAGWANQAdgBSwDeAJiAYEOgFABWAEcANQAsQBdQDFAHUAWgAu0Bog8ACA38hAHAEcANQAoYBigDqALtAaISgEAAIADaAI4AuoBigDqAHyAXaTAAgN_KQAwChgK2AXaVAAgN_AA.YAAAAAAAAAAA")
+            }
+        }
     }
 
     @Test
     fun `GIVEN_an_Ccpa_object_STORE_it_into_the_local_data_storage`() {
 
-        val unifiedMess = JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto()
+        val unifiedMess =
+            JSONObject("unified_wrapper_resp/response_gdpr_and_ccpa.json".jsonFile2String()).toUnifiedMessageRespDto()
 
         val ccpa = unifiedMess.campaigns.find { it is Ccpa } as Ccpa
         val gdpr = unifiedMess.campaigns.find { it is Gdpr } as Gdpr
@@ -164,8 +185,10 @@ class CampaignManagerImplTest {
 
         (res as Either.Right).r.run {
             userConsent.let { uc ->
-                uc.rejectedCategories.sortedBy { it.hashCode() }.assertEquals(ccpa.userConsent.rejectedCategories.sortedBy { it.hashCode() })
-                uc.rejectedVendors.sortedBy { it.hashCode() }.assertEquals(ccpa.userConsent.rejectedVendors.sortedBy { it.hashCode() })
+                uc.rejectedCategories.sortedBy { it.hashCode() }
+                    .assertEquals(ccpa.userConsent.rejectedCategories.sortedBy { it.hashCode() })
+                uc.rejectedVendors.sortedBy { it.hashCode() }
+                    .assertEquals(ccpa.userConsent.rejectedVendors.sortedBy { it.hashCode() })
                 uc.status.assertEquals(ccpa.userConsent.status)
                 uc.uspstring.assertEquals(ccpa.userConsent.uspstring)
             }

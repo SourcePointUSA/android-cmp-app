@@ -59,6 +59,7 @@ private class ServiceImpl(
             messageReq,
             pSuccess = { messageResp ->
                 campaignManager.saveUnifiedMessageResp(messageResp)
+                messageResp.campaigns
                 pSuccess(messageResp)
             },
             pError = pError,

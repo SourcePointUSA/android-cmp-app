@@ -225,7 +225,8 @@ class TestUseCaseMeta {
                 message_type = "WebView",
                 auth_Id = autId,
                 pm_tab = "PURPOSES",
-                message_language = "ENGLISH"
+                message_language = "ENGLISH",
+                group_pm_id = null
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.demo",
@@ -252,7 +253,8 @@ class TestUseCaseMeta {
                 message_type = "WebView",
                 auth_Id = autId,
                 pm_tab = "PURPOSES",
-                message_language = "ENGLISH"
+                message_language = "ENGLISH",
+                group_pm_id = null
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.fully.native",
@@ -289,7 +291,8 @@ class TestUseCaseMeta {
                 message_type = "WebView",
                 auth_Id = autId,
                 pm_tab = "PURPOSES",
-                message_language = "ENGLISH"
+                message_language = "ENGLISH",
+                group_pm_id = null
             )
             campaignQueries.insertStatusCampaign(
                 property_name = propertyName,
