@@ -41,6 +41,6 @@ jobs:
       - name: Run tests Metaapp on Firebase Test Lab
         uses: asadmansr/Firebase-Test-Lab-Action@v1.0
         with:
-          arg-spec: 'test_devices.yml:metaapp-nexus_low_res'
+          arg-spec: 'test_devices.yml:android-pixel-3-api28'
         env:
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
