@@ -12,7 +12,6 @@
   - [Create new _Config_ object](#create-new-config-object)
   - [Create an instance of the CMP library](#create-an-instance-of-the-cmp-library)
   - [Delegate Methods](#delegate-methods)
-  - [Event Callbacks](#event-callbacks)
   - [Loading the Privacy Manager on demand](#loading-the-privacy-manager-on-demand)
   - [Load OTT privacy manager](#load-ott-privacy-manager)
   - [Resurface OTT privacy manager](#resurface-ott-privacy-manager)
@@ -173,20 +172,14 @@ Java
     }
 ```
 
-## Event callbacks
-
-Android delegate methods are triggered in response to certain events for example, when a message is ready to be displayed or the end-user opens the privacy manager.
-
-The Android implementation of Sourcepoint's CMP has five event callbacks:
-
-- [`onUIReady(view: View)`](#onUIReady)
-- [`onAction(view: View, consentAction: ConsentAction)`](#onAction)
-- [`onUIFinished(view: View)`](#onUIFinished())
-- [`onConsentReady(consent: SPConsents)`](#onConsentReady())
-- [`onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController)`](#onNativeMessageReady())
-- [`onError(error: Throwable)`](#onError())
-- [`onSpFinished(view: View)`](#onSpFinished())
-
+Meaning of the callbacks : 
+- `onUIFinished`: the consent view should be removed;
+- `onNativeMessageReady`: the native message should be created;
+- `onConsentReady`: the client receives the saved consent;
+- `onError`: the client has access to the error details; 
+- `onUIReady`: the consent view should be inflated;
+- `onAction`: the client receives the selected action type and has the chance to set the `pubData` fields; 
+- `onSpFinished`: there is nothing to process, all the work is done.
 
 Some of the above callbacks work on the main thread while others are work on a worker thread. Please see the table below for the distinction:
 
@@ -197,60 +190,6 @@ Some of the above callbacks work on the main thread while others are work on a w
 | `onConsentReady`       	|                	|
 | `onNativeMessageReady` 	|                	|
 | `onUIFinished`         	|                	|
-
----
-### `onUIReady` `(view: View)`
-
-The SDK will wrap the message into a `(View)` object and call the `onUIReady` delegate method is called when there is a "web-based" message to be displayed.
-
----
-### `onAction` `(view: View, consentAction: ConsentAction)`
-
-The `onAction` delegate method is called once the user takes an action (e.g. tapping on a button), the SDK will pass the `action` as a parameter.
-
-The action: `onActionFromWebViewClient` parameter, among other data (used internally), contains:
-
-| Parameter                      | Description                                                                                                                                                                                                                                                        |
-|--------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `actionType`           | Indicates the type of action, this is an enumerated value.  For example, to show the privacy manager `actionType` has a value of '12'.                                                                               |
-| `legislation` | Indicates the type of campaign in which the action was taken. This is an enumerated value e.g.  **GDPR, CCPA, unknown**.                                                                                                                                    |
-| `localPmId`       | The id for the privacy manager.                                                                                                      |
-| `consentLanguage`              | The language used in the messages.                                                                                                                                                                                                                                 |
-| `requestFromPM`                | The value is set to **'true'** if the end-user opens the privacy manager |
-
----
-### `onUIFinished(view: View)`
-
-When an action is taken (see above), the SDK will handle it appropriately (sending a consent request to our servers, for example) and call the onUIFinished to indicate the message can be dismissed by your app.
-
----
-### `onConsentReady(consent: SPConsents)`
-
-The `onConsentReady` will be called in two different scenarios:
-
-- After `loadMessage` is called but there's no message to be displayed
-- After the SDK receives a response for one of its consent requests. This happens after the user has taken a consent action (`AcceptAll`, `RejectAll`, `Save&Exit`) in the message or Privacy Manager
-
-The `onConsentReady` delegate method sends the consent action to the server and receives a response, the SDK will store the data in the `UserDefaults`.
-
----
-### `onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController)`
-
-This event callback fires when a message is about to display.
-
----
-### `onError(error: Throwable)`
-
-The SDK will in all cases wrap the error in one of the SPError class and eventually call the func `onError(_ error: SPError)` callback. By default, the SDK will also remove all consent data from the device. This may cause a consent message to be shown again, depending on your scenario.
-
-This was implemented on purpose to be the most safe possible. Since there are no consent data, vendors should refrain from performing logic that depends on it.
-
-This behaviour can be opted-out by setting the flag `consentManager.cleanUserDataOnError` to false, after you initialise `SPConsentManager`.
-
----
-### `onSpFinished(sPConsents: SPConsents)`
-
-All work has been completed, there is nothing more to process.
 
 ## Loading the First Layer Message
 In order to show the FLM, the method `spConsentLib.loadMessage()` has to be called. 
