@@ -34,10 +34,6 @@ android {
             buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
             buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
         }
-        create("localProd") {
-            initWith(getByName("debug"))
-            buildConfigField("String", "ENV_QUERY_PARAM", "\"localProd\"")
-        }
         create("preprod") {
             initWith(getByName("debug"))
             isMinifyEnabled = false
