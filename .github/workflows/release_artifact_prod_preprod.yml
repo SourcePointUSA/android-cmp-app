@@ -26,16 +26,16 @@ jobs:
       run: touch local.properties
     - name: generating MetaApp build release
       id: buildArtifacts
-      run: ./gradlew :metaapp:assembleDebug :metaapp:assemblePreprod
-    - name: 'Publish Metaapp debug artifact'
+      run: ./gradlew :metaapp:assemblePreprod :metaapp:assembleDebug
+    - name: 'Publish MetaappPreprod artifact'
+      if: always()
+      uses: actions/upload-artifact@v2-preview
+      with:
+        name: 'MetaappPreprod'
+        path: samples/metaapp/build/outputs/apk/preprod/metaapp-preprod.apk
+    - name: 'Publish MetaappDebug artifact'
       if: always()
       uses: actions/upload-artifact@v2-preview
       with:
         name: 'MetaappDebug'
         path: samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk
-    - name: 'Publish Metaapp preprod artifact'
-      if: always()
-      uses: actions/upload-artifact@v2-preview
-      with:
-        name: 'MetaappDebug'
-        path: samples/metaapp/build/outputs/apk/preprod/metaapp-preprod.apk
