@@ -1,3 +1,6 @@
+## 6.4.3 (April, 22, 2022)
+* [SP-9187](https://sourcepoint.atlassian.net/browse/SP-9187) Applied scale factor to the loadPm API (#485)
+
 ## 6.4.2 (April, 06, 2022)
 * [SP-8981](https://sourcepoint.atlassian.net/browse/SP-8981) Added scale factor for ott properties (#478)
 

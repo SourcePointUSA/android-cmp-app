@@ -1,1 +1,1 @@
-* [SP-8981](https://sourcepoint.atlassian.net/browse/SP-8981) Added scale factor for ott properties (#478)
+* [SP-9187](https://sourcepoint.atlassian.net/browse/SP-9187) Applied scale factor to the loadPm API (#485)
