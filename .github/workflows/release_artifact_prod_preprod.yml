@@ -1,7 +1,7 @@
 name: ARTIFACTS PROD/PREPROD
 on:
   push:
-    branches: [ preprod_workflow ]
+    branches: [ preprod_workflow_disabled ]
 #    paths:
 #      - '!*.yml'
 #      - '!README.md'
