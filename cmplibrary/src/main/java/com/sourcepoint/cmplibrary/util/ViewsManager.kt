@@ -26,13 +26,13 @@ internal interface ViewsManager {
     fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
-        isOtt: Boolean
+        isOtt: Boolean = false
     ): Either<IConsentWebView>
     fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
         campaignQueue: Queue<CampaignModel>,
-        isOtt: Boolean
+        isOtt: Boolean = false
     ): Either<IConsentWebView>
     fun removeView(view: View)
     fun removeAllViews()

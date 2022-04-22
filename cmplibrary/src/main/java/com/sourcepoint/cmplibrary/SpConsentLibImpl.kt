@@ -312,7 +312,7 @@ internal class SpConsentLibImpl(
         val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab)
         pmConfig
             .map {
-                val webView = viewManager.createWebView(this, JSReceiverDelegate(), isOtt)
+                val webView = viewManager.createWebView(this, JSReceiverDelegate())
                     .executeOnLeft { e -> spClient.onError(e) }
                     .getOrNull()
                 val url = urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, isOtt = isOtt)
