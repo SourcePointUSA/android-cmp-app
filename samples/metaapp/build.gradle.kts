@@ -33,11 +33,6 @@ android {
             applicationIdSuffix = ".debug"
             buildConfigField("String", "URL_PROPERTY_FILE", "\"https://raw.githubusercontent.com/SourcePointUSA/android-cmp-app/master/cmplibrary/gradle.properties\"")
         }
-        create("localProd") {
-            initWith(getByName("debug"))
-            applicationIdSuffix = ".localprod"
-            buildConfigField("String", "URL_PROPERTY_FILE", "\"https://raw.githubusercontent.com/SourcePointUSA/android-cmp-app/master/cmplibrary/gradle.properties\"")
-        }
         create("preprod") {
             initWith(getByName("debug"))
             applicationIdSuffix = ".preprod"
