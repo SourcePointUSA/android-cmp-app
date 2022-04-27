@@ -44,7 +44,7 @@ internal fun String.toConsentAction(): ConsentActionImpl {
     )
 }
 
-internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?): CCPAConsentInternal {
+internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?, applies: Boolean): CCPAConsentInternal {
 
     val rejectedCategories = getFieldValue<Iterable<Any?>>("rejectedCategories")
         ?.filterIsInstance(String::class.java)
@@ -65,11 +65,12 @@ internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?): CCPAConsentInte
         rejectedVendors = rejectedVendors,
         status = status,
         uspstring = uspString,
+        applies = applies,
         thisContent = JSONObject(this)
     )
 }
 
-internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInternal {
+internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?, applies: Boolean): GDPRConsentInternal {
 
     val tcData: Map<String, Any?> = getMap("TCData") ?: emptyMap()
     val vendorsGrants = getMap("grants")
@@ -106,7 +107,7 @@ internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInte
         grants = vendorsGranted,
         euconsent = euConsent,
         acceptedCategories = consentedPurposes,
-//        acceptedVendors = consentedVendors,
+        applies = applies,
         thisContent = JSONObject(this)
     )
 }

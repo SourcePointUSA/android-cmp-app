@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
+import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.toCCPA
 import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toGDPR
@@ -218,7 +219,7 @@ private class CampaignManagerImpl(
             .also { if (it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
             .let { JSONObject(it) }
             .toTreeMap()
-            .toGDPRUserConsent(uuid = dataStorage.getGdprConsentUuid())
+            .toGDPRUserConsent(uuid = dataStorage.getGdprConsentUuid(), applies = dataStorage.gdprApplies)
     }
 
     override fun getCCPAConsent(): Either<CCPAConsentInternal> = check {
@@ -227,17 +228,19 @@ private class CampaignManagerImpl(
             .also { if (it.isBlank()) fail("CCPAConsent is not saved in the the storage!!") }
             .let { JSONObject(it) }
             .toTreeMap()
-            .toCCPAUserConsent(uuid = dataStorage.getCcpaConsentUuid())
+            .toCCPAUserConsent(uuid = dataStorage.getCcpaConsentUuid(), applies = dataStorage.ccpaApplies)
     }
 
     override fun saveGdpr(gdpr: Gdpr) {
         dataStorage.saveGdpr(gdpr.thisContent.toString())
         dataStorage.saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
+        dataStorage.gdprApplies = gdpr.applies
     }
 
     override fun saveCcpa(ccpa: Ccpa) {
         dataStorage.saveCcpa(ccpa.thisContent.toString())
         dataStorage.saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
+        dataStorage.ccpaApplies = ccpa.applies
     }
 
     override fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp) {
@@ -253,6 +256,7 @@ private class CampaignManagerImpl(
             getFieldValue<String>("uuid")?.let { dataStorage.saveCcpaConsentUuid(it) }
             getFieldValue<Int>("propertyId")?.let { dataStorage.savePropertyId(it) }
         }
+
         // save campaigns and consents
         unifiedMessageResp
             .campaigns
