@@ -76,7 +76,6 @@ internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
         put("grants", grants.toJSONObjGrant())
         put("euconsent", euconsent)
         put("apply", applies)
-        put("childPmId", childPmId)
         put("acceptedCategories", JSONArray(acceptedCategories))
     }
 }
@@ -88,7 +87,6 @@ internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
         put("uspstring", uspstring)
         put("rejectedCategories", JSONArray(rejectedCategories))
         put("apply", applies)
-        put("childPmId", childPmId)
         put("rejectedVendors", JSONArray(rejectedVendors))
     }
 }
