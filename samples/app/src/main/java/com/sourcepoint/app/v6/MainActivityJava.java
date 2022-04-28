@@ -62,13 +62,13 @@ public class MainActivityJava extends AppCompatActivity {
                 spConsentLib.loadPrivacyManager(
                         "488393",//"13111",
                         PMTab.PURPOSES,
-                        CampaignType.GDPR
+                        CampaignType.GDPR,
                 ));
         findViewById(R.id.review_consents_ccpa).setOnClickListener(_v ->
                 spConsentLib.loadPrivacyManager(
                         "14967",
                         PMTab.PURPOSES,
-                        CampaignType.CCPA
+                        CampaignType.CCPA,
                 ));
         findViewById(R.id.clear_all).setOnClickListener(_v ->
                 SpUtils.clearAllData(this)

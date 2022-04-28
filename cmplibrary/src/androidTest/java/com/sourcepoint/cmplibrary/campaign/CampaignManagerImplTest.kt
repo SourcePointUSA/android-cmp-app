@@ -90,13 +90,13 @@ class CampaignManagerImplTest {
         }
 
         sut
-            .getPmConfig(CampaignType.GDPR, "11", PMTab.PURPOSES)
+            .getPmConfig(CampaignType.GDPR, "11", PMTab.PURPOSES, false)
             .getOrNull()!!
             .messageId
             .assertEquals("11")
 
         sut
-            .getPmConfig(CampaignType.CCPA, "22", PMTab.PURPOSES)
+            .getPmConfig(CampaignType.CCPA, "22", PMTab.PURPOSES, false)
             .getOrNull()!!
             .messageId
             .assertEquals("22")
@@ -107,15 +107,26 @@ class CampaignManagerImplTest {
         ds.ccpaChildPmId = "44"
 
         sut
-            .getPmConfig(CampaignType.GDPR, "11", PMTab.PURPOSES)
+            .getPmConfig(CampaignType.GDPR, "11", PMTab.PURPOSES, true)
             .getOrNull()!!
             .messageId
             .assertEquals("33")
         sut
-            .getPmConfig(CampaignType.CCPA, "22", PMTab.PURPOSES)
+            .getPmConfig(CampaignType.CCPA, "22", PMTab.PURPOSES, true)
             .getOrNull()!!
             .messageId
             .assertEquals("44")
+
+        sut
+            .getPmConfig(CampaignType.GDPR, "11", PMTab.PURPOSES, false)
+            .getOrNull()!!
+            .messageId
+            .assertEquals("11")
+        sut
+            .getPmConfig(CampaignType.CCPA, "22", PMTab.PURPOSES, false)
+            .getOrNull()!!
+            .messageId
+            .assertEquals("44") // it is 44 because the feature is not yet implemented on ccpa
     }
 
     @Test

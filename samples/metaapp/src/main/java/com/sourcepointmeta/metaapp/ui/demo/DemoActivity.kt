@@ -139,7 +139,7 @@ class DemoActivity : FragmentActivity() {
                                 spConsentLib.loadPrivacyManager(
                                     it,
                                     pTab,
-                                    CampaignType.GDPR
+                                    CampaignType.GDPR,
                                 )
                             }
                         }
@@ -157,7 +157,7 @@ class DemoActivity : FragmentActivity() {
                                 spConsentLib.loadPrivacyManager(
                                     it,
                                     pTab,
-                                    CampaignType.CCPA
+                                    CampaignType.CCPA,
                                 )
                             }
                         }

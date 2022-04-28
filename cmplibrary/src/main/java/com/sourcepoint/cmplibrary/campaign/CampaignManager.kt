@@ -1,12 +1,12 @@
 package com.sourcepoint.cmplibrary.campaign
 
+import com.sourcepoint.cmplibrary.campaign.CampaignManager.Companion.selectPmId
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.toCCPA
 import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toGDPR
@@ -38,7 +38,18 @@ internal interface CampaignManager {
     fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>>
     fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate>
 
-    fun getPmConfig(campaignType: CampaignType, pmId: String?, pmTab: PMTab?): Either<PmUrlConfig>
+    fun getPmConfig(
+        campaignType: CampaignType,
+        pmId: String?,
+        pmTab: PMTab?,
+        useGroupPmIfAvailable: Boolean
+    ): Either<PmUrlConfig>
+
+    fun getPmConfig(
+        campaignType: CampaignType,
+        pmId: String?,
+        pmTab: PMTab?
+    ): Either<PmUrlConfig>
 
     fun getUnifiedMessageReq(): UnifiedMessageRequest
     fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest
@@ -54,7 +65,14 @@ internal interface CampaignManager {
 
     fun clearConsents()
 
-    companion object
+    companion object {
+        fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
+            return when {
+                useGroupPmIfAvailable && childPmId != null -> childPmId
+                else -> userPmId ?: ""
+            }
+        }
+    }
 }
 
 internal fun CampaignManager.Companion.create(
@@ -138,19 +156,35 @@ private class CampaignManagerImpl(
         mapTemplate[campaignType.name] ?: fail("${campaignType.name} Campain is missing!!!")
     }
 
-    override fun getPmConfig(campaignType: CampaignType, pmId: String?, pmTab: PMTab?): Either<PmUrlConfig> {
+    override fun getPmConfig(
+        campaignType: CampaignType,
+        pmId: String?,
+        pmTab: PMTab?,
+        useGroupPmIfAvailable: Boolean
+    ): Either<PmUrlConfig> {
         return when (campaignType) {
-            CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES)
+            CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, useGroupPmIfAvailable)
             CampaignType.CCPA -> getCcpaPmConfig(pmId)
         }
     }
 
-    fun getGdprPmConfig(pmId: String?, pmTab: PMTab): Either<PmUrlConfig> = check {
+    override fun getPmConfig(
+        campaignType: CampaignType,
+        pmId: String?,
+        pmTab: PMTab?
+    ): Either<PmUrlConfig> {
+        return when (campaignType) {
+            CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, false)
+            CampaignType.CCPA -> getCcpaPmConfig(pmId)
+        }
+    }
+
+    fun getGdprPmConfig(pmId: String?, pmTab: PMTab, useGroupPmIfAvailable: Boolean): Either<PmUrlConfig> = check {
         val uuid = dataStorage.getGdprConsentUuid()
         val siteId = dataStorage.getPropertyId().toString()
         val childPmId: String? = dataStorage.gdprChildPmId
 
-        val usedPmId = childPmId ?: pmId
+        val usedPmId = selectPmId(pmId, childPmId, useGroupPmIfAvailable)
 
         logger?.computation(
             tag = "Property group - GDPR PM",

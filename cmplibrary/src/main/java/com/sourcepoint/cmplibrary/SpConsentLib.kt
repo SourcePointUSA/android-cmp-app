@@ -36,6 +36,7 @@ interface SpConsentLib {
     )
 
     fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType)
+    fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType, useGroupPmIfAvailable: Boolean)
     fun loadOTTPrivacyManager(pmId: String, campaignType: CampaignType)
 
     fun showView(view: View)

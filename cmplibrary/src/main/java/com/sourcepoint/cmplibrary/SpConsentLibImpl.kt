@@ -297,19 +297,50 @@ internal class SpConsentLibImpl(
         )
     }
 
-    override fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType) {
-        loadPm(pmId = pmId, campaignType = campaignType, isOtt = false, pmTab = pmTab)
+    override fun loadPrivacyManager(
+        pmId: String,
+        pmTab: PMTab,
+        campaignType: CampaignType
+    ) {
+        loadPrivacyManager(pmId, pmTab, campaignType, false)
+    }
+
+    override fun loadPrivacyManager(
+        pmId: String,
+        pmTab: PMTab,
+        campaignType: CampaignType,
+        useGroupPmIfAvailable: Boolean
+    ) {
+        loadPm(
+            pmId = pmId,
+            pmTab = pmTab,
+            campaignType = campaignType,
+            isOtt = false,
+            useGroupPmIfAvailable = useGroupPmIfAvailable
+        )
     }
 
     override fun loadOTTPrivacyManager(pmId: String, campaignType: CampaignType) {
-        loadPm(pmId = pmId, campaignType = campaignType, isOtt = true, pmTab = PMTab.DEFAULT)
+        loadPm(
+            pmId = pmId,
+            pmTab = PMTab.DEFAULT,
+            campaignType = campaignType,
+            isOtt = true,
+            useGroupPmIfAvailable = false
+        )
     }
 
-    private fun loadPm(pmId: String, pmTab: PMTab, campaignType: CampaignType, isOtt: Boolean) {
+    private fun loadPm(
+        pmId: String,
+        pmTab: PMTab,
+        campaignType: CampaignType,
+        isOtt: Boolean,
+        useGroupPmIfAvailable: Boolean
+    ) {
         checkMainThread("loadPrivacyManager")
         clientEventManager.executingLoadPM()
 
-        val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab)
+        val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab, useGroupPmIfAvailable)
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate(), isOtt)
