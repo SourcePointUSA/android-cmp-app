@@ -46,6 +46,7 @@ internal fun AddPropertyLayout.bind(property: Property) {
     ccpaTp.forEach { ccpa_chip_group.addChip("${it.key}:${it.value}") }
     timeout_ed.setText("${property.timeout ?: 3000}")
     group_pm_id_ed.setText("${property.groupPmId}")
+    groupId_switch.isChecked = property.useGroupPmIfAvailable
 }
 
 internal fun AddPropertyLayout.toProperty(): Property {
@@ -95,6 +96,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
         ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull(),
         campaignsEnv = if (radio_stage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC,
         groupPmId = group_pm_id_ed.text.toString(),
+        useGroupPmIfAvailable = groupId_switch.isChecked
     )
 }
 

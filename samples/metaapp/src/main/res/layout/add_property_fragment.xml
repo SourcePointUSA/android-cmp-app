@@ -181,14 +181,14 @@
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/group_pm_id_container"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 app:layout_constraintTop_toBottomOf="@id/auth_id_container"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/groupId_switch"
                 android:hint="GroupPmId"
                 app:helperText="GroupPmId"
                 app:helperTextEnabled="true"
@@ -199,6 +199,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"/>
         </com.google.android.material.textfield.TextInputLayout>
+
+        <Switch
+                android:text="Use groupId"
+                android:switchPadding="20dp"
+                android:id="@+id/groupId_switch"
+                app:layout_constraintTop_toTopOf="@id/group_pm_id_container"
+                app:layout_constraintStart_toEndOf="@id/group_pm_id_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/group_pm_id_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
 
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/timeout_container"
