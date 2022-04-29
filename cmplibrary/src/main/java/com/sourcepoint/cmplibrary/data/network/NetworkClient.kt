@@ -36,24 +36,4 @@ internal interface NetworkClient {
         customConsentReq: CustomConsentReq,
         env: Env
     ): Either<CustomConsentResp>
-
-    /**
-     * Requesting a native message object to the server
-     * @param messageReq request content to send into the body
-     * @param success success callback
-     * @param error error callback
-     */
-    // TODO verify if we need it
-    fun getNativeMessage(
-        messageReq: UnifiedMessageRequest,
-        success: (NativeMessageResp) -> Unit,
-        error: (Throwable) -> Unit
-    )
-
-    // TODO verify if we need it
-    fun getNativeMessageK(
-        messageReq: UnifiedMessageRequest,
-        success: (NativeMessageRespK) -> Unit,
-        error: (Throwable) -> Unit
-    )
 }
