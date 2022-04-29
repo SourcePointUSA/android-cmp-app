@@ -1,31 +1,6 @@
-
-
-
-
--- CREATE TABLE meta_log (
---     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
---     property_name TEXT NOT NULL,
---     timestamp INTEGER NOT NULL,
---     type INTEGER NOT NULL,
---     tag TEXT NOT NULL,
---     message TEXT NOT NULL,
---     log_session TEXT,
---     json_object TEXT
--- );
-
--- BEGIN TRANSACTION;
--- ALTER TABLE meta_log ADD COLUMN log_session TEXT;
---     ALTER TABLE property DELETE COLUMN property_id;
---     ALTER TABLE property ADD COLUMN timeout INTEGER;
--- ALTER TABLE meta_log ADD COLUMN json_body TEXT;
--- ALTER TABLE meta_log ADD COLUMN status_req TEXT;
--- ALTER TABLE meta_log DROP COLUMN type;
--- ALTER TABLE meta_log ADD COLUMN type TEXT;
--- COMMIT;
-
 BEGIN TRANSACTION;
-ALTER TABLE property ADD COLUMN group_pm_id TEXT;
-ALTER TABLE property ADD COLUMN use_groupid_if_available INTEGER;
+ALTER TABLE property ADD COLUMN group_pm_id TEXT DEFAULT '';
+ALTER TABLE property ADD COLUMN use_groupid_if_available INTEGER DEFAULT 0;
 COMMIT;
 
 --  adb shell "run-as com.sourcepointmeta.metaapp.debug  rm /data/user/0/com.sourcepointmeta.metaapp.debug/databases/newmetaapp.db"
