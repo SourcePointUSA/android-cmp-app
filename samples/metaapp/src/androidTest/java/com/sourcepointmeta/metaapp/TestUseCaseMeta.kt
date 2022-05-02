@@ -226,7 +226,8 @@ class TestUseCaseMeta {
                 auth_Id = autId,
                 pm_tab = "PURPOSES",
                 message_language = "ENGLISH",
-                group_pm_id = null
+                group_pm_id = null,
+                use_groupid_if_available = null
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.demo",
@@ -254,7 +255,8 @@ class TestUseCaseMeta {
                 auth_Id = autId,
                 pm_tab = "PURPOSES",
                 message_language = "ENGLISH",
-                group_pm_id = null
+                group_pm_id = null,
+                use_groupid_if_available = null
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.fully.native",
@@ -292,7 +294,8 @@ class TestUseCaseMeta {
                 auth_Id = autId,
                 pm_tab = "PURPOSES",
                 message_language = "ENGLISH",
-                group_pm_id = null
+                group_pm_id = null,
+                use_groupid_if_available = null
             )
             campaignQueries.insertStatusCampaign(
                 property_name = propertyName,

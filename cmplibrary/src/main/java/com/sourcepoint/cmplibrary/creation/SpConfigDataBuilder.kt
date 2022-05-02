@@ -22,6 +22,7 @@ class SpConfigDataBuilder {
     var campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC
     var messageTimeout: Long = 5000
     var logger: Logger? = null
+    var groupPmId: String? = null
 
     operator fun CampaignType.unaryPlus() {
         campaigns.add(SpCampaign(this, emptyList()))
@@ -33,6 +34,10 @@ class SpConfigDataBuilder {
 
     fun addAccountId(accountId: Int): SpConfigDataBuilder = apply {
         this.accountId = accountId
+    }
+
+    fun addGroupPmId(groupPmId: String): SpConfigDataBuilder = apply {
+        this.groupPmId = groupPmId
     }
 
     fun addPropertyName(propertyName: String): SpConfigDataBuilder = apply {
@@ -79,14 +84,6 @@ class SpConfigDataBuilder {
 
     fun addCampaign(
         campaignType: CampaignType,
-        params: List<TargetingParam>,
-        groupPmId: Long? = null
-    ): SpConfigDataBuilder = apply {
-        campaigns.add(SpCampaign(campaignType, params, groupPmId))
-    }
-
-    fun addCampaign(
-        campaignType: CampaignType,
         params: List<TargetingParam>
     ): SpConfigDataBuilder = apply {
         campaigns.add(SpCampaign(campaignType, params))
@@ -104,7 +101,8 @@ class SpConfigDataBuilder {
             messageLanguage = messLanguage,
             messageTimeout = messageTimeout,
             campaignsEnv = campaignsEnv,
-            logger = logger
+            logger = logger,
+            groupPmId = groupPmId
         )
     }
 }

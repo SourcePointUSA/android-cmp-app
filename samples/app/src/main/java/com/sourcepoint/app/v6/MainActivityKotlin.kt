@@ -62,7 +62,7 @@ class MainActivityKotlin : AppCompatActivity() {
                 spConsentLib.loadPrivacyManager(
                     dataProvider.gdprPmId,
                     PMTab.PURPOSES,
-                    CampaignType.GDPR,
+                    CampaignType.GDPR
                 )
             }
         }
@@ -76,7 +76,7 @@ class MainActivityKotlin : AppCompatActivity() {
                 spConsentLib.loadPrivacyManager(
                     dataProvider.ccpaPmId,
                     PMTab.PURPOSES,
-                    CampaignType.CCPA,
+                    CampaignType.CCPA
                 )
             }
 

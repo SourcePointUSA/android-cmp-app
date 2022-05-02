@@ -16,8 +16,6 @@ internal class MockService(
     private val getNativeMessageLogic: ((messageReq: UnifiedMessageRequest, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) -> Unit)? = null
 ) : Service {
 
-    override fun getNativeMessage(messageReq: UnifiedMessageRequest, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {}
-    override fun getNativeMessageK(messageReq: UnifiedMessageRequest, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
     override fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate) {}
     override fun isAppliedCampaign(campaignType: CampaignType): Boolean = false
     override fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>> = Left(RuntimeException())
@@ -49,7 +47,15 @@ internal class MockService(
         campaignType: CampaignType,
         pmId: String?,
         pmTab: PMTab?,
-        ` useGroupPmIfAvailable`: Boolean
+        useGroupPmIfAvailable: Boolean
+    ): Either<PmUrlConfig> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getPmConfig(
+        campaignType: CampaignType,
+        pmId: String?,
+        pmTab: PMTab?
     ): Either<PmUrlConfig> {
         TODO("Not yet implemented")
     }

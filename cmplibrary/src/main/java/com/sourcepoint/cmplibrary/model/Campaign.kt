@@ -13,19 +13,16 @@ internal data class Campaign(
 internal open class CampaignTemplate(
     open val campaignsEnv: CampaignsEnv,
     open val targetingParams: List<TargetingParam>,
-    open val campaignType: CampaignType,
-    open val groupPmId: Long?
+    open val campaignType: CampaignType
 )
 
 internal fun CampaignTemplate.toCampaignReqImpl(
     targetingParams: List<TargetingParam>,
-    campaignsEnv: CampaignsEnv,
-    groupPmId: Long?
+    campaignsEnv: CampaignsEnv
 ): CampaignReqImpl {
     return CampaignReqImpl(
         targetingParams = targetingParams.ifEmpty { emptyList() },
         campaignsEnv = campaignsEnv,
-        campaignType = campaignType,
-        groupPmId = groupPmId
+        campaignType = campaignType
     )
 }

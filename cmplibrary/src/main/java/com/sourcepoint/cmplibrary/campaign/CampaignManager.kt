@@ -16,8 +16,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.MissingPropertyException
-import com.sourcepoint.cmplibrary.model.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.Campaigns
+import com.sourcepoint.cmplibrary.model.*  // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -113,8 +112,7 @@ private class CampaignManagerImpl(
                             CampaignTemplate(
                                 ce,
                                 it.targetingParams.filter { tp -> tp.key != "campaignEnv" },
-                                it.campaignType,
-                                it.groupPmId
+                                it.campaignType
                             )
                         )
                     }
@@ -130,8 +128,7 @@ private class CampaignManagerImpl(
                             CampaignTemplate(
                                 ce,
                                 it.targetingParams.filter { tp -> tp.key != "campaignEnv" },
-                                it.campaignType,
-                                it.groupPmId
+                                it.campaignType
                             )
                         )
                     }
@@ -183,12 +180,30 @@ private class CampaignManagerImpl(
         val uuid = dataStorage.getGdprConsentUuid()
         val siteId = dataStorage.getPropertyId().toString()
         val childPmId: String? = dataStorage.gdprChildPmId
+        val groupPmId: String? = spConfig.groupPmId
 
         val usedPmId = selectPmId(pmId, childPmId, useGroupPmIfAvailable)
 
+        if (useGroupPmIfAvailable && childPmId == null) {
+            logger?.error(
+                InvalidArgumentException(
+                    description = """
+                              childPmId not found!!!
+                              GroupPmId[$groupPmId]
+                              useGroupPmIfAvailable [true] 
+                    """.trimIndent()
+                )
+            )
+        }
+
         logger?.computation(
             tag = "Property group - GDPR PM",
-            msg = "pmId[$pmId] - childPmId[$childPmId] -> used pmId[$usedPmId]"
+            msg = """
+                pmId[$pmId]
+                childPmId[$childPmId]
+                useGroupPmIfAvailable [$useGroupPmIfAvailable] 
+                Query Parameter pmId[$usedPmId]
+            """.trimIndent()
         )
 
         PmUrlConfig(
@@ -260,8 +275,7 @@ private class CampaignManagerImpl(
             ?.let {
                 it.toCampaignReqImpl(
                     targetingParams = it.targetingParams,
-                    campaignsEnv = it.campaignsEnv,
-                    groupPmId = it.groupPmId
+                    campaignsEnv = it.campaignsEnv
                 )
             }
             ?.let { campaigns.add(it) }
@@ -269,11 +283,15 @@ private class CampaignManagerImpl(
             ?.let {
                 it.toCampaignReqImpl(
                     targetingParams = it.targetingParams,
-                    campaignsEnv = it.campaignsEnv,
-                    groupPmId = it.groupPmId
+                    campaignsEnv = it.campaignsEnv
                 )
             }
             ?.let { campaigns.add(it) }
+
+        val localState = when (dataStorage.savedConsent) {
+            true -> dataStorage.getLocalState()
+            false -> null
+        }
 
         return UnifiedMessageRequest(
             requestUUID = "test",
@@ -281,10 +299,11 @@ private class CampaignManagerImpl(
             accountId = spConfig.accountId,
             campaigns = Campaigns(list = campaigns),
             consentLanguage = messageLanguage,
-            localState = dataStorage.getLocalState(),
+            localState = localState,
             authId = authId,
             campaignsEnv = campaignsEnv,
-            pubData = pubData
+            pubData = pubData,
+            groupPmId = spConfig.groupPmId
         )
     }
 

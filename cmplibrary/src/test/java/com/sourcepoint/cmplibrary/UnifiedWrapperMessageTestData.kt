@@ -28,13 +28,13 @@ internal val campaignsGroupPmId = Campaigns(
             targetingParams = listOf(TargetingParam("location", "EU")),
             campaignsEnv = CampaignsEnv.STAGE,
             campaignType = CampaignType.GDPR,
-            groupPmId = 613056
+            groupPmId = "613056"
         ),
         CampaignReqImpl(
             targetingParams = listOf(TargetingParam("location", "US")),
             campaignsEnv = CampaignsEnv.STAGE,
             campaignType = CampaignType.CCPA,
-            groupPmId = 613056
+            groupPmId = "613056"
         )
     )
 )

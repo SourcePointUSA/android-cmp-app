@@ -146,6 +146,12 @@ internal class SpConsentLibImpl(
 
                             /** inject the message into the WebView */
                             val url = firstCampaign2Process.url
+                            pLogger.pm(
+                                tag = "${firstCampaign2Process.type} First Layer Message",
+                                url = url.toString(),
+                                pmId = null,
+                                type = "GET"
+                            )
                             webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                         }
                         NATIVE_IN_APP -> {
@@ -210,6 +216,12 @@ internal class SpConsentLibImpl(
 
                             /** inject the message into the WebView */
                             val url = firstCampaign2Process.url // urlManager.urlURenderingApp(env)//
+                            pLogger.pm(
+                                tag = "${firstCampaign2Process.type} First Layer Message",
+                                url = url.toString(),
+                                pmId = null,
+                                type = "GET"
+                            )
                             webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                         }
                         NATIVE_IN_APP -> {
@@ -350,7 +362,7 @@ internal class SpConsentLibImpl(
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
                     url = url.toString(),
-                    pmId = "pmId $pmId",
+                    pmId = "pmId ${it.messageId}",
                     type = "GET"
                 )
                 webView?.loadConsentUIFromUrl(

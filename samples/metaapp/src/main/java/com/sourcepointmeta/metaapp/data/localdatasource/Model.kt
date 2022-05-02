@@ -21,7 +21,7 @@ data class Property(
     val campaignsEnv: CampaignsEnv,
     val timestamp: Long = Date().time,
     val groupPmId: String? = null,
-    val useGroupPmIfAvailable : Boolean = false
+    val useGroupPmIfAvailable: Boolean = false
 )
 
 data class MetaTargetingParam(

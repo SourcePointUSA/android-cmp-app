@@ -177,7 +177,7 @@ private class LocalDataSourceImpl(
                     gdpr_pm_id = property.gdprPmId,
                     campaign_env = property.campaignsEnv.env,
                     group_pm_id = property.groupPmId,
-                    use_groupid_if_available = if(property.useGroupPmIfAvailable) 1 else 0
+                    use_groupid_if_available = if (property.useGroupPmIfAvailable) 1 else 0
                 )
                 deleteTargetingParameterByPropName(property.propertyName)
                 property.targetingParameters.forEach {
@@ -267,13 +267,14 @@ private class LocalDataSourceImpl(
                         propertyName = p.propertyName
                         messageTimeout = p.timeout ?: 3000L
                         campaignsEnv = p.campaignsEnv
+                        groupPmId = p.groupPmId
                         messLanguage = MessageLanguage.values()
                             .find { it.name == p.messageLanguage }
                             ?: MessageLanguage.ENGLISH
                         buildSPCampaign(CampaignType.GDPR, p.statusCampaignSet, p.targetingParameters)
-                            ?.let { spc -> addCampaign(CampaignType.GDPR, spc, p.groupPmId) }
+                            ?.let { spc -> addCampaign(CampaignType.GDPR, spc) }
                         buildSPCampaign(CampaignType.CCPA, p.statusCampaignSet, p.targetingParameters)
-                            ?.let { spc -> addCampaign(CampaignType.CCPA, spc, p.groupPmId) }
+                            ?.let { spc -> addCampaign(CampaignType.CCPA, spc) }
                     }
                 }
                 ?: throw RuntimeException("Inconsistent state! LocalDataSource.getSPConfig cannot have a SpConfig null!!!")
