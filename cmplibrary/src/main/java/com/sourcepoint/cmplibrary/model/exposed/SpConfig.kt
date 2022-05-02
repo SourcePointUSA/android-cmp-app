@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.model.MessageLanguage
 data class SpConfig(
     @JvmField val accountId: Int,
     @JvmField val propertyName: String,
+    @JvmField val groupPmId: String?,
     @JvmField val campaigns: List<SpCampaign>,
     @JvmField val messageLanguage: MessageLanguage,
     @JvmField val messageTimeout: Long,
@@ -17,14 +18,8 @@ data class SpConfig(
 
 data class SpCampaign(
     @JvmField val campaignType: CampaignType,
-    @JvmField internal val targetingParams: List<TargetingParam>,
-    @JvmField val groupPmId: Long? = null
-) {
-    constructor(
-        campaignType: CampaignType,
-        targetingParams: List<TargetingParam>
-    ) : this(campaignType, targetingParams, null)
-}
+    @JvmField internal val targetingParams: List<TargetingParam>
+)
 
 data class TargetingParam(val key: String, val value: String)
 
