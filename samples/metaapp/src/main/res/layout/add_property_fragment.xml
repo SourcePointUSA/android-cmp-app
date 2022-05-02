@@ -188,9 +188,9 @@
                 android:layout_marginStart="16dp"
                 app:layout_constraintTop_toBottomOf="@id/auth_id_container"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/groupId_switch"
-                android:hint="GroupPmId"
-                app:helperText="GroupPmId"
+                app:layout_constraintEnd_toStartOf="@id/gdpr_groupId_switch"
+                android:hint="GdprGroupPmId"
+                app:helperText="GroupPmId for gdpr"
                 app:helperTextEnabled="true"
                 app:placeholderText="i.e. 3000">
             <com.google.android.material.textfield.TextInputEditText
@@ -201,9 +201,9 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Switch
-                android:text="Use groupId"
+                android:text="Use Gdpr GroupPmId"
                 android:switchPadding="20dp"
-                android:id="@+id/groupId_switch"
+                android:id="@+id/gdpr_groupId_switch"
                 app:layout_constraintTop_toTopOf="@id/group_pm_id_container"
                 app:layout_constraintStart_toEndOf="@id/group_pm_id_container"
                 app:layout_constraintEnd_toEndOf="parent"

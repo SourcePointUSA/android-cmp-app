@@ -1,6 +1,6 @@
 BEGIN TRANSACTION;
     ALTER TABLE property ADD COLUMN group_pm_id TEXT DEFAULT '';
-    ALTER TABLE property ADD COLUMN use_groupid_if_available INTEGER DEFAULT 0;
+    ALTER TABLE property ADD COLUMN use_gdpr_groupid_if_available INTEGER DEFAULT 0;
 COMMIT;
 
 --  adb shell "run-as com.sourcepointmeta.metaapp.debug  rm /data/user/0/com.sourcepointmeta.metaapp.debug/databases/newmetaapp.db"
