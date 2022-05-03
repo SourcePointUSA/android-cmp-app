@@ -80,7 +80,6 @@ private class ServiceImpl(
             .executeOnRight {
                 dataStorage.run {
                     saveLocalState(it.localState)
-                    println("savedConsent = true")
                     savedConsent = true
                 }
                 when (it.campaignType) {
