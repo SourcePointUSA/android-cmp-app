@@ -223,14 +223,31 @@ private class CampaignManagerImpl(
     fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = check {
         val uuid = dataStorage.getCcpaConsentUuid()
         val siteId = dataStorage.getPropertyId().toString()
+
         val childPmId: String? = dataStorage.ccpaChildPmId
+        val isChildPmIdAbsent: Boolean = childPmId == null
+        val hasGroupPmId = false // feature not yet implemented
+        val useGroupPmIfAvailable = false // feature not yet implemented
+
+        if (hasGroupPmId && useGroupPmIfAvailable && isChildPmIdAbsent) {
+            logger?.error(
+                ChildPmIdNotFound(
+                    description = """
+                              childPmId not found!!!
+                              GroupPmId[groupPmId]
+                              useGroupPmIfAvailable [true] 
+                    """.trimIndent()
+                )
+            )
+        }
 
         val usedPmId = childPmId ?: pmId
 
-        logger?.computation(
-            tag = "Property group - CCPA PM",
-            msg = "pmId[$pmId] - childPmId[$childPmId] -> used[$usedPmId]"
-        )
+//        logger?.computation(
+//            tag = "Property group - CCPA PM",
+//            msg = "pmId[$pmId] - childPmId[$childPmId] -> used[$usedPmId]"
+//        )
+
         PmUrlConfig(
             consentLanguage = null,
             uuid = uuid,
