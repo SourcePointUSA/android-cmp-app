@@ -11,12 +11,14 @@ internal interface CampaignReq {
     val targetingParams: List<TargetingParam>
     val campaignsEnv: CampaignsEnv
     val campaignType: CampaignType
+    val groupPmId: String?
 }
 
 internal data class CampaignReqImpl(
     override val targetingParams: List<TargetingParam>,
     override val campaignsEnv: CampaignsEnv,
-    override val campaignType: CampaignType
+    override val campaignType: CampaignType,
+    override val groupPmId: String? = null
 ) : CampaignReq
 
 internal data class UnifiedMessageRequest(
@@ -30,8 +32,7 @@ internal data class UnifiedMessageRequest(
     val localState: String? = null,
     val authId: String? = null,
     val requestUUID: String? = null,
-    val pubData: JSONObject? = null,
-    val groupPmId: String? = null,
+    val pubData: JSONObject? = null
 )
 
 data class DataType(val type: String)

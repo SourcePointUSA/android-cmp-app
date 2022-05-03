@@ -13,7 +13,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.util.* // ktlint-disable
+import java.util.*
 
 internal class LoggerImpl(
     private val propertyName: String,

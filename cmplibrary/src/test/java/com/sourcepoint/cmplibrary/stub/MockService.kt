@@ -47,8 +47,13 @@ internal class MockService(
         campaignType: CampaignType,
         pmId: String?,
         pmTab: PMTab?,
-        useGroupPmIfAvailable: Boolean
+        useGroupPmIfAvailable: Boolean,
+        groupPmId: String?
     ): Either<PmUrlConfig> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getGroupId(campaignType: CampaignType): String? {
         TODO("Not yet implemented")
     }
 

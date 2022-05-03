@@ -12,11 +12,8 @@ import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toGDPR
 import com.sourcepoint.cmplibrary.data.network.model.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
-import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
-import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.exception.MissingPropertyException
-import com.sourcepoint.cmplibrary.model.*  // ktlint-disable
+import com.sourcepoint.cmplibrary.exception.*
+import com.sourcepoint.cmplibrary.model.*
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -41,7 +38,8 @@ internal interface CampaignManager {
         campaignType: CampaignType,
         pmId: String?,
         pmTab: PMTab?,
-        useGroupPmIfAvailable: Boolean
+        useGroupPmIfAvailable: Boolean,
+        groupPmId: String?
     ): Either<PmUrlConfig>
 
     fun getPmConfig(
@@ -55,6 +53,8 @@ internal interface CampaignManager {
 
     fun getGDPRConsent(): Either<GDPRConsentInternal>
     fun getCCPAConsent(): Either<CCPAConsentInternal>
+
+    fun getGroupId(campaignType: CampaignType): String?
 
     fun saveGdpr(gdpr: Gdpr)
     fun saveCcpa(ccpa: Ccpa)
@@ -112,7 +112,8 @@ private class CampaignManagerImpl(
                             CampaignTemplate(
                                 ce,
                                 it.targetingParams.filter { tp -> tp.key != "campaignEnv" },
-                                it.campaignType
+                                it.campaignType,
+                                it.groupPmId
                             )
                         )
                     }
@@ -128,7 +129,8 @@ private class CampaignManagerImpl(
                             CampaignTemplate(
                                 ce,
                                 it.targetingParams.filter { tp -> tp.key != "campaignEnv" },
-                                it.campaignType
+                                it.campaignType,
+                                it.groupPmId
                             )
                         )
                     }
@@ -157,10 +159,11 @@ private class CampaignManagerImpl(
         campaignType: CampaignType,
         pmId: String?,
         pmTab: PMTab?,
-        useGroupPmIfAvailable: Boolean
+        useGroupPmIfAvailable: Boolean,
+        groupPmId: String?
     ): Either<PmUrlConfig> {
         return when (campaignType) {
-            CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, useGroupPmIfAvailable)
+            CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, useGroupPmIfAvailable, groupPmId)
             CampaignType.CCPA -> getCcpaPmConfig(pmId)
         }
     }
@@ -171,22 +174,24 @@ private class CampaignManagerImpl(
         pmTab: PMTab?
     ): Either<PmUrlConfig> {
         return when (campaignType) {
-            CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, false)
+            CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, false, null)
             CampaignType.CCPA -> getCcpaPmConfig(pmId)
         }
     }
 
-    fun getGdprPmConfig(pmId: String?, pmTab: PMTab, useGroupPmIfAvailable: Boolean): Either<PmUrlConfig> = check {
+    fun getGdprPmConfig(pmId: String?, pmTab: PMTab, useGroupPmIfAvailable: Boolean, groupPmId: String?): Either<PmUrlConfig> = check {
         val uuid = dataStorage.getGdprConsentUuid()
         val siteId = dataStorage.getPropertyId().toString()
+
         val childPmId: String? = dataStorage.gdprChildPmId
-        val groupPmId: String? = spConfig.groupPmId
+        val isChildPmIdAbsent: Boolean = childPmId == null
+        val hasGroupPmId: Boolean = groupPmId != null
 
         val usedPmId = selectPmId(pmId, childPmId, useGroupPmIfAvailable)
 
-        if (useGroupPmIfAvailable && childPmId == null) {
+        if (hasGroupPmId && useGroupPmIfAvailable && isChildPmIdAbsent) {
             logger?.error(
-                InvalidArgumentException(
+                ChildPmIdNotFound(
                     description = """
                               childPmId not found!!!
                               GroupPmId[$groupPmId]
@@ -275,7 +280,8 @@ private class CampaignManagerImpl(
             ?.let {
                 it.toCampaignReqImpl(
                     targetingParams = it.targetingParams,
-                    campaignsEnv = it.campaignsEnv
+                    campaignsEnv = it.campaignsEnv,
+                    groupPmId = it.groupPmId
                 )
             }
             ?.let { campaigns.add(it) }
@@ -302,8 +308,7 @@ private class CampaignManagerImpl(
             localState = localState,
             authId = authId,
             campaignsEnv = campaignsEnv,
-            pubData = pubData,
-            groupPmId = spConfig.groupPmId
+            pubData = pubData
         )
     }
 
@@ -323,6 +328,10 @@ private class CampaignManagerImpl(
             .let { JSONObject(it) }
             .toTreeMap()
             .toCCPAUserConsent(uuid = dataStorage.getCcpaConsentUuid(), applies = dataStorage.ccpaApplies)
+    }
+
+    override fun getGroupId(campaignType: CampaignType): String? {
+        return spConfig.campaigns.find { it.campaignType == campaignType }?.groupPmId
     }
 
     override fun saveGdpr(gdpr: Gdpr) {

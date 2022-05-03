@@ -18,7 +18,7 @@ internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
             put("accountId", accountId)
             put("pubData", pubData)
             put("campaignEnv", campaignsEnv.env)
-            put("campaigns", campaigns.toJsonObject(groupPmId))
+            put("campaigns", campaigns.toJsonObject())
             put("consentLanguage", consentLanguage.value)
             put("localState", localState)
             put("authId", authId)
@@ -26,7 +26,7 @@ internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
         }
 }
 
-internal fun Campaigns.toJsonObject(groupPmId: String?): JSONObject {
+internal fun Campaigns.toJsonObject(): JSONObject {
 
     return JSONObject().also { cm ->
         list.map {
@@ -34,7 +34,7 @@ internal fun Campaigns.toJsonObject(groupPmId: String?): JSONObject {
                 it.campaignType.name.lowercase(),
                 JSONObject().apply {
                     put("targetingParams", it.targetingParams.toJsonObjStringify())
-                    put("groupPmId", groupPmId)
+                    put("groupPmId", it.groupPmId)
                 }
             )
         }

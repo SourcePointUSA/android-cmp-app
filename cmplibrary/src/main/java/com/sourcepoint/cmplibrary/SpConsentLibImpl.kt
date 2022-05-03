@@ -33,7 +33,7 @@ import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* // ktlint-d
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
-import java.util.* // ktlint-disable
+import java.util.*
 
 internal class SpConsentLibImpl(
     internal val context: Context,
@@ -146,12 +146,6 @@ internal class SpConsentLibImpl(
 
                             /** inject the message into the WebView */
                             val url = firstCampaign2Process.url
-                            pLogger.pm(
-                                tag = "${firstCampaign2Process.type} First Layer Message",
-                                url = url.toString(),
-                                pmId = null,
-                                type = "GET"
-                            )
                             webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                         }
                         NATIVE_IN_APP -> {
@@ -216,12 +210,6 @@ internal class SpConsentLibImpl(
 
                             /** inject the message into the WebView */
                             val url = firstCampaign2Process.url // urlManager.urlURenderingApp(env)//
-                            pLogger.pm(
-                                tag = "${firstCampaign2Process.type} First Layer Message",
-                                url = url.toString(),
-                                pmId = null,
-                                type = "GET"
-                            )
                             webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                         }
                         NATIVE_IN_APP -> {
@@ -352,7 +340,9 @@ internal class SpConsentLibImpl(
         checkMainThread("loadPrivacyManager")
         clientEventManager.executingLoadPM()
 
-        val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab, useGroupPmIfAvailable)
+        val gdprGroupPmId = campaignManager.getGroupId(campaignType)
+
+        val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab, useGroupPmIfAvailable, gdprGroupPmId)
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate(), isOtt)
