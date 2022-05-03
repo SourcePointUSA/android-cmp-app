@@ -62,5 +62,7 @@ interface Logger {
 
     fun pm(tag: String, url: String, type: String, pmId: String?)
 
+    fun flm(tag: String, url: String, type: String, json: JSONObject)
+
     companion object
 }

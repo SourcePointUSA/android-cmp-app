@@ -229,6 +229,23 @@ internal class LoggerImpl(
             )
         }
     }
+
+    override fun flm(tag: String, url: String, type: String, json: JSONObject) {
+        loggerScope.launch {
+            ds.storeOrUpdateLog(
+                MetaLog(
+                    id = null,
+                    propertyName = propertyName,
+                    timestamp = Date().time,
+                    type = "REQUEST",
+                    tag = tag,
+                    message = url,
+                    logSession = session,
+                    jsonBody = json.toString()
+                )
+            )
+        }
+    }
 }
 
 fun TextView.setColorOfSubstring(substring: String, color: Int) {

@@ -318,7 +318,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="16dp"
                 android:orientation="horizontal"
-                android:checkedButton="@+id/radio_stage"
+                android:checkedButton="@+id/radio_prod"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
             <RadioButton
