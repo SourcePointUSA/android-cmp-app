@@ -24,7 +24,7 @@ import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import okhttp3.HttpUrl
-import java.util.*
+import java.util.* //ktlint-disable
 
 @SuppressLint("ViewConstructor")
 internal class ConsentWebView(

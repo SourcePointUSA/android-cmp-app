@@ -33,7 +33,7 @@ import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* // ktlint-d
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
-import java.util.*
+import java.util.* //ktlint-disable
 
 internal class SpConsentLibImpl(
     internal val context: Context,
