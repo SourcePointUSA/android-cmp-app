@@ -213,7 +213,7 @@ private class CampaignManagerImpl(
 
         PmUrlConfig(
             pmTab = pmTab,
-            consentLanguage = null,
+            consentLanguage = spConfig.messageLanguage.value,
             uuid = uuid,
             siteId = siteId,
             messageId = usedPmId
@@ -249,7 +249,7 @@ private class CampaignManagerImpl(
 //        )
 
         PmUrlConfig(
-            consentLanguage = null,
+            consentLanguage = spConfig.messageLanguage.value,
             uuid = uuid,
             siteId = siteId,
             messageId = usedPmId

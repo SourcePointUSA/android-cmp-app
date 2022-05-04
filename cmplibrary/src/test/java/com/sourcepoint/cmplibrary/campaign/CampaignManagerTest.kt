@@ -5,13 +5,11 @@ import com.sourcepoint.cmplibrary.assertFalse
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.CampaignTemplate
-import com.sourcepoint.cmplibrary.model.Ccpa
-import com.sourcepoint.cmplibrary.model.Gdpr
-import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import io.mockk.MockKAnnotations
@@ -138,5 +136,17 @@ class CampaignManagerTest {
         }
         sut.isAppliedCampaign(CampaignType.CCPA).assertTrue()
         sut.isAppliedCampaign(CampaignType.GDPR).assertFalse()
+    }
+
+    @Test
+    fun `GIVEN a GDPR config RETURN the configuration`() {
+        val config = sut.getPmConfig(CampaignType.GDPR, "11", PMTab.DEFAULT).getOrNull().assertNotNull()!!
+        config.run {
+            pmTab.assertEquals(PMTab.DEFAULT)
+            consentLanguage.assertEquals("EN")
+            uuid.assertEquals("")
+            siteId.assertEquals("")
+            messageId.assertEquals("11")
+        }
     }
 }
