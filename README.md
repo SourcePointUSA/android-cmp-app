@@ -23,7 +23,7 @@
   - [Complete Example](#Complete-Example)
   - [Setting a Targeting Param](#Setting-a-Targeting-Param)
   - [Targeting parameters to target the right environment](#Targeting-parameters-to-target-the-right-environment)
-  - [Set a Property Group Id](#set-a-property-group-id)
+  - [Set a Privacy Manager Id for the Property Group](#set-a-privacy-manager-id-for-the-property-group)
   - [ProGuard](#ProGuard)
   - [Programmatically consenting the current user](#Programmatically-consenting-the-current-user)
   - [Vendor Grants object](#Vendor-Grants-object)
@@ -565,10 +565,10 @@ Java
             .build();
 ```
 
-## Set a Property Group Id
+## Set a Privacy Manager Id for the Property Group
 
 Property groups allow your organization to group properties together in order to simplify configurations for  mass campaigns and updates. 
-In order to use a Property Group Id, you should edit the SDK configuration object as follows:
+In order to use a `Privacy Manager Id for the Property Group`, you should edit the SDK configuration object as follows:
 
 Kotlin
 ```kotlin
@@ -578,7 +578,7 @@ Kotlin
                   messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
                   campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
                   messageTimeout = 4000 // Optional, default 3000ms
-                  + SpCampaign(CampaignType.GDPR, "1234") // 1234 is the property group
+                  + SpCampaign(CampaignType.GDPR, "1234") // 1234 is the id of the privacy manager for the property group
                 }
 ```
 
@@ -596,7 +596,7 @@ Java
 
 ```
 
-After adding the `Property Group Id` you should set the flag `useGroupPmIfAvailable`, in the `loadPrivacyManager`, to true:
+After adding the `Privacy Manager Id for the Property Group`, you should set the flag `useGroupPmIfAvailable`, in the `loadPrivacyManager`, to true:
 
 ```kotlin
             spConsentLib.loadPrivacyManager(
@@ -615,6 +615,8 @@ After adding the `Property Group Id` you should set the flag `useGroupPmIfAvaila
               true                  // useGroupPmIfAvailable, enable the SDK to use the group Pm Id
             )
 ```
+
+**Note**: CCPA campaign `Privacy Manager Id for the Property Group` feature is currently not supported.
 
 ## ProGuard
 
