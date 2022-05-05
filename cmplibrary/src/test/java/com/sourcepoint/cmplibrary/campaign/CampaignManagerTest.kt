@@ -65,7 +65,7 @@ class CampaignManagerTest {
         sut.clearConsents()
     }
 
-    private val sut by lazy { CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH) }
+    private val sut by lazy { CampaignManager.create(dataStorage, spConfig) }
 
     @Test
     fun `CHECK that getGDPRConsent RETURNS a GDPRConsent from the dataStorage`() {
@@ -139,7 +139,11 @@ class CampaignManagerTest {
     }
 
     @Test
-    fun `GIVEN a GDPR config RETURN the configuration`() {
+    fun `GIVEN a GDPR config RETURN the configuration with language EN`() {
+        val sut = CampaignManager.create(
+            dataStorage,
+            spConfig.copy(messageLanguage = MessageLanguage.ENGLISH)
+        )
         val config = sut.getPmConfig(CampaignType.GDPR, "11", PMTab.DEFAULT).getOrNull().assertNotNull()!!
         config.run {
             pmTab.assertEquals(PMTab.DEFAULT)
@@ -147,6 +151,22 @@ class CampaignManagerTest {
             uuid.assertEquals("")
             siteId.assertEquals("0")
             messageId.assertEquals("11")
+        }
+    }
+
+    @Test
+    fun `GIVEN a GDPR config RETURN the configuration with language BG`() {
+        val sut = CampaignManager.create(
+            dataStorage,
+            spConfig.copy(messageLanguage = MessageLanguage.BULGARIAN)
+        )
+        val config = sut.getPmConfig(CampaignType.GDPR, "22", PMTab.PURPOSES).getOrNull().assertNotNull()!!
+        config.run {
+            pmTab.assertEquals(PMTab.PURPOSES)
+            consentLanguage.assertEquals("BG")
+            uuid.assertEquals("")
+            siteId.assertEquals("0")
+            messageId.assertEquals("22")
         }
     }
 }

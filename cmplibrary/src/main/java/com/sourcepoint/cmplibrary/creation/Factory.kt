@@ -57,7 +57,7 @@ fun makeConsentLib(
     val dataStorageGdpr = DataStorageGdpr.create(appCtx)
     val dataStorageCcpa = DataStorageCcpa.create(appCtx)
     val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
-    val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig, spConfig.messageLanguage)
+    val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig)
     val errorManager = errorMessageManager(campaignManager, client)
     val logger = spConfig.logger ?: createLogger(errorManager)
     val jsonConverter = JsonConverter.create()
