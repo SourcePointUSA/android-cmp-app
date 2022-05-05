@@ -220,7 +220,7 @@ private class CampaignManagerImpl(
         )
     }
 
-    private fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = check {
+    fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = check {
         val uuid = dataStorage.getCcpaConsentUuid()
         val siteId = dataStorage.getPropertyId().toString()
 

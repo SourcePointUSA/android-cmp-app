@@ -145,7 +145,7 @@ class CampaignManagerTest {
             pmTab.assertEquals(PMTab.DEFAULT)
             consentLanguage.assertEquals("EN")
             uuid.assertEquals("")
-            siteId.assertEquals("")
+            siteId.assertEquals("0")
             messageId.assertEquals("11")
         }
     }
