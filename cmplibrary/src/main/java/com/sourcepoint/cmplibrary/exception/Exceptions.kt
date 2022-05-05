@@ -344,6 +344,21 @@ internal class MissingPropertyException @JvmOverloads constructor(
 }
 
 /**
+ * This exception is thrown when a property is missing
+ */
+internal class ChildPmIdNotFound @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = CodeList.CHILD_PM_ID_NOT_FOUND
+}
+
+/**
  * This exception is thrown when a the current thread is not the MainThread
  */
 internal class ExecutionInTheWrongThreadException @JvmOverloads constructor(

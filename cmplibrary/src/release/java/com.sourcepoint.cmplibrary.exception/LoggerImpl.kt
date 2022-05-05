@@ -73,4 +73,5 @@ private class LoggerImpl(
     override fun clientEvent(tag: String, msg: String, content: String) { }
     override fun computation(tag: String, msg: String) { }
     override fun pm(tag: String, url: String, type: String, pmId: String?) { }
+    override fun flm(tag: String, url: String, type: String, json: JSONObject) { }
 }

@@ -26,7 +26,7 @@ class ErrorMessageManagerImplTest {
         osVersion = "30"
     )
 
-    private val gdprTemplate = CampaignTemplate(CampaignsEnv.STAGE, listOf(TargetingParam("location", "EU")), CampaignType.GDPR)
+    private val gdprTemplate = CampaignTemplate(CampaignsEnv.STAGE, listOf(TargetingParam("location", "EU")), CampaignType.GDPR, "111")
 
     private val gdpr = SpCampaign(
         campaignType = CampaignType.GDPR,

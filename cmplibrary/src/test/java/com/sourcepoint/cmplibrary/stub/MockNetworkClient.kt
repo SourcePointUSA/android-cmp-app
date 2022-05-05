@@ -14,9 +14,6 @@ internal class MockNetworkClient(
         logicUnifiedMess?.invoke(messageReq, pSuccess, pError)
     }
 
-    override fun getNativeMessage(messageReq: UnifiedMessageRequest, success: (NativeMessageResp) -> Unit, error: (Throwable) -> Unit) {
-    }
-
     override fun sendConsent(consentReq: JSONObject, env: Env, consentActionImpl: ConsentActionImpl): Either<ConsentResp> {
         TODO("Not yet implemented")
     }
@@ -24,6 +21,4 @@ internal class MockNetworkClient(
     override fun sendCustomConsent(customConsentReq: CustomConsentReq, env: Env): Either<CustomConsentResp> {
         TODO("Not yet implemented")
     }
-
-    override fun getNativeMessageK(messageReq: UnifiedMessageRequest, success: (NativeMessageRespK) -> Unit, error: (Throwable) -> Unit) {}
 }

@@ -32,7 +32,10 @@ internal fun Campaigns.toJsonObject(): JSONObject {
         list.map {
             cm.put(
                 it.campaignType.name.lowercase(),
-                JSONObject().apply { put("targetingParams", it.targetingParams.toJsonObjStringify()) }
+                JSONObject().apply {
+                    put("targetingParams", it.targetingParams.toJsonObjStringify())
+                    put("groupPmId", it.groupPmId)
+                }
             )
         }
     }

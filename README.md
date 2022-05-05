@@ -23,6 +23,7 @@
   - [Complete Example](#Complete-Example)
   - [Setting a Targeting Param](#Setting-a-Targeting-Param)
   - [Targeting parameters to target the right environment](#Targeting-parameters-to-target-the-right-environment)
+  - [Set a Privacy Manager Id for the Property Group](#set-a-privacy-manager-id-for-the-property-group)
   - [ProGuard](#ProGuard)
   - [Programmatically consenting the current user](#Programmatically-consenting-the-current-user)
   - [Vendor Grants object](#Vendor-Grants-object)
@@ -563,6 +564,59 @@ Java
             //
             .build();
 ```
+
+## Set a Privacy Manager Id for the Property Group
+
+Property groups allow your organization to group properties together in order to simplify configurations for  mass campaigns and updates. 
+In order to use a `Privacy Manager Id for the Property Group`, you should edit the SDK configuration object as follows:
+
+Kotlin
+```kotlin
+    val cmpConfig : SpConfig = config {
+                  accountId = 22
+                  propertyName = "mobile.multicampaign.demo"
+                  messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
+                  campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
+                  messageTimeout = 4000 // Optional, default 3000ms
+                  + SpCampaign(CampaignType.GDPR, "1234") // 1234 is the id of the privacy manager for the property group
+                }
+```
+
+Java
+```java
+    // Cmp SDK config
+    private final SpConfig cmpConfig = new SpConfigDataBuilder()
+            .addAccountId(22)
+            .addPropertyName("mobile.multicampaign.demo")
+            .addMessageLanguage(MessageLanguage.ENGLISH) // Optional, default ENGLISH
+            .addCampaignsEnv(CampaignsEnv.PUBLIC) // Optional, default PUBLIC
+            .addMessageTimeout(4000) // Optional, default 3000ms
+            .addCampaign(new SpCampaign(CampaignType.GDPR, "1234")) // 1234 is the property group
+            .build();
+
+```
+
+After adding the `Privacy Manager Id for the Property Group`, you should set the flag `useGroupPmIfAvailable`, in the `loadPrivacyManager`, to true:
+
+```kotlin
+            spConsentLib.loadPrivacyManager(
+              pmId = 1000,
+              pmTab = PMTab.PURPOSES,
+              campaignType = CampaignType.GDPR,
+              useGroupPmIfAvailable = true      // enable the SDK to use the group Pm Id
+            )
+```
+
+```java
+            spConsentLib.loadPrivacyManager(
+              1000,                 // pmId
+              PMTab.PURPOSES,       // PMTab
+              CampaignType.GDPR,    // CampaignType
+              true                  // useGroupPmIfAvailable, enable the SDK to use the group Pm Id
+            )
+```
+
+**Note**: CCPA campaign `Privacy Manager Id for the Property Group` feature is currently not supported.
 
 ## ProGuard
 

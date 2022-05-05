@@ -42,7 +42,7 @@ class OnlyGdprOttKotlin : AppCompatActivity() {
             spConsentLib.loadPrivacyManager(
                 "488393",
                 PMTab.PURPOSES,
-                CampaignType.GDPR
+                CampaignType.GDPR,
             )
         }
 

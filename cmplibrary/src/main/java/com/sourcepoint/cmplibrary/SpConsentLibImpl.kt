@@ -33,7 +33,7 @@ import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* // ktlint-d
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
-import java.util.* // ktlint-disable
+import java.util.* //ktlint-disable
 
 internal class SpConsentLibImpl(
     internal val context: Context,
@@ -297,19 +297,52 @@ internal class SpConsentLibImpl(
         )
     }
 
-    override fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType) {
-        loadPm(pmId = pmId, campaignType = campaignType, isOtt = false, pmTab = pmTab)
+    override fun loadPrivacyManager(
+        pmId: String,
+        pmTab: PMTab,
+        campaignType: CampaignType
+    ) {
+        loadPrivacyManager(pmId, pmTab, campaignType, false)
+    }
+
+    override fun loadPrivacyManager(
+        pmId: String,
+        pmTab: PMTab,
+        campaignType: CampaignType,
+        useGroupPmIfAvailable: Boolean
+    ) {
+        loadPm(
+            pmId = pmId,
+            pmTab = pmTab,
+            campaignType = campaignType,
+            isOtt = false,
+            useGroupPmIfAvailable = useGroupPmIfAvailable
+        )
     }
 
     override fun loadOTTPrivacyManager(pmId: String, campaignType: CampaignType) {
-        loadPm(pmId = pmId, campaignType = campaignType, isOtt = true, pmTab = PMTab.DEFAULT)
+        loadPm(
+            pmId = pmId,
+            pmTab = PMTab.DEFAULT,
+            campaignType = campaignType,
+            isOtt = true,
+            useGroupPmIfAvailable = false
+        )
     }
 
-    private fun loadPm(pmId: String, pmTab: PMTab, campaignType: CampaignType, isOtt: Boolean) {
+    private fun loadPm(
+        pmId: String,
+        pmTab: PMTab,
+        campaignType: CampaignType,
+        isOtt: Boolean,
+        useGroupPmIfAvailable: Boolean
+    ) {
         checkMainThread("loadPrivacyManager")
         clientEventManager.executingLoadPM()
 
-        val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab)
+        val gdprGroupPmId = campaignManager.getGroupId(campaignType)
+
+        val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab, useGroupPmIfAvailable, gdprGroupPmId)
         pmConfig
             .map {
                 val webView = viewManager.createWebView(this, JSReceiverDelegate(), isOtt)
@@ -319,7 +352,7 @@ internal class SpConsentLibImpl(
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
                     url = url.toString(),
-                    pmId = "pmId $pmId",
+                    pmId = "pmId ${it.messageId}",
                     type = "GET"
                 )
                 webView?.loadConsentUIFromUrl(

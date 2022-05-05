@@ -17,6 +17,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_TCData
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_CHILD_PM_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.USER_CONSENT_KEY
 import com.sourcepoint.cmplibrary.model.getMap
@@ -30,6 +31,7 @@ internal interface DataStorageGdpr {
     val preference: SharedPreferences
 
     var gdprApplies: Boolean
+    var gdprChildPmId: String?
 
     fun saveGdpr(value: String)
     fun getGdpr(): String?
@@ -71,9 +73,10 @@ internal interface DataStorageGdpr {
         const val DEFAULT_META_DATA = "{}"
         val DEFAULT_AUTH_ID: String? = null
         const val IABTCF_KEY_PREFIX = "IABTCF_"
+        const val KEY_GDPR_APPLIES = "sp.key.gdpr.applies"
+        const val KEY_GDPR_CHILD_PM_ID = "sp.key.gdpr.childPmId"
         const val GDPR_CONSENT_RESP = "sp.gdpr.consent.resp"
         const val GDPR_JSON_MESSAGE = "sp.gdpr.json.message"
-        const val KEY_GDPR_APPLIES = "sp.key.gdpr.applies"
         const val GDPR_TCData = "TCData"
     }
 }
@@ -98,6 +101,15 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             preference
                 .edit()
                 .putBoolean(KEY_GDPR_APPLIES, value)
+                .apply()
+        }
+
+    override var gdprChildPmId: String?
+        get() = preference.getString(KEY_GDPR_CHILD_PM_ID, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(KEY_GDPR_CHILD_PM_ID, value)
                 .apply()
         }
 
@@ -237,11 +249,12 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 remove(DEFAULT_EMPTY_CONSENT_STRING)
                 remove(DEFAULT_META_DATA)
                 remove(DEFAULT_AUTH_ID)
+                remove(KEY_GDPR_APPLIES)
                 remove(GDPR_CONSENT_RESP)
                 remove(GDPR_JSON_MESSAGE)
-                remove(KEY_GDPR_APPLIES)
                 remove(GDPR_TCData)
                 remove(KEY_GDPR)
+                remove(KEY_GDPR_CHILD_PM_ID)
                 listIABTCF.forEach { remove(it) }
             }.apply()
     }

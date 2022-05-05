@@ -15,9 +15,17 @@ internal class MockDataStorage : DataStorage {
     var tcDataMap: Map<String, Any?> = emptyMap()
     var storage: MutableMap<String, Any> = mutableMapOf()
     var mockLocalState: String? = null
+    var savedConsentVar: Boolean = false
+
+    override var ccpaChildPmId: String? = null
+    override var gdprChildPmId: String? = null
 
     override val preference: SharedPreferences = mockk()
     override var gdprApplies: Boolean = false
+
+    override var savedConsent: Boolean
+        get() = savedConsentVar
+        set(value) { savedConsentVar = value }
 
     override fun saveTcData(deferredMap: Map<String, Any?>) {
         this.tcDataMap = deferredMap

@@ -179,6 +179,40 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/group_pm_id_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toBottomOf="@id/auth_id_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/gdpr_groupId_switch"
+                android:hint="GdprGroupPmId"
+                app:helperText="GroupPmId for gdpr"
+                app:helperTextEnabled="true"
+                app:placeholderText="i.e. 3000">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/group_pm_id_ed"
+                    android:maxLines="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Switch
+                android:text="Use Gdpr GroupPmId"
+                android:switchPadding="20dp"
+                android:id="@+id/gdpr_groupId_switch"
+                app:layout_constraintTop_toTopOf="@id/group_pm_id_container"
+                app:layout_constraintStart_toEndOf="@id/group_pm_id_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/group_pm_id_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+
+        <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/timeout_container"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
@@ -186,7 +220,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                app:layout_constraintTop_toBottomOf="@id/auth_id_container"
+                app:layout_constraintTop_toBottomOf="@id/group_pm_id_container"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:hint="Timeout"
@@ -284,7 +318,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="16dp"
                 android:orientation="horizontal"
-                android:checkedButton="@+id/radio_stage"
+                android:checkedButton="@+id/radio_prod"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
             <RadioButton

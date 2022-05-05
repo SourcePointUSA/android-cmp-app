@@ -45,7 +45,8 @@ internal interface LocalDataSource {
         fun buildSPCampaign(
             campaignType: CampaignType,
             campaignStatus: Set<StatusCampaign>,
-            list: List<MetaTargetingParam>
+            list: List<MetaTargetingParam>,
+
         ): List<TargetingParam>? {
             val campaign: CampaignType? = campaignStatus
                 .firstOrNull { it.campaignType == campaignType && it.enabled }
@@ -175,7 +176,9 @@ private class LocalDataSourceImpl(
                     timestamp = property.timestamp,
                     ccpa_pm_id = property.ccpaPmId,
                     gdpr_pm_id = property.gdprPmId,
-                    campaign_env = property.campaignsEnv.env
+                    campaign_env = property.campaignsEnv.env,
+                    group_pm_id = property.gdprGroupPmId,
+                    use_gdpr_groupid_if_available = if (property.useGdprGroupPmIfAvailable) 1 else 0
                 )
                 deleteTargetingParameterByPropName(property.propertyName)
                 property.targetingParameters.forEach {
@@ -269,9 +272,9 @@ private class LocalDataSourceImpl(
                             .find { it.name == p.messageLanguage }
                             ?: MessageLanguage.ENGLISH
                         buildSPCampaign(CampaignType.GDPR, p.statusCampaignSet, p.targetingParameters)
-                            ?.let { spc -> addCampaign(CampaignType.GDPR, spc) }
+                            ?.let { spc -> addCampaign(CampaignType.GDPR, spc, p.gdprGroupPmId) }
                         buildSPCampaign(CampaignType.CCPA, p.statusCampaignSet, p.targetingParameters)
-                            ?.let { spc -> addCampaign(CampaignType.CCPA, spc) }
+                            ?.let { spc -> addCampaign(CampaignType.CCPA, spc, p.ccpaGroupPmId) }
                     }
                 }
                 ?: throw RuntimeException("Inconsistent state! LocalDataSource.getSPConfig cannot have a SpConfig null!!!")

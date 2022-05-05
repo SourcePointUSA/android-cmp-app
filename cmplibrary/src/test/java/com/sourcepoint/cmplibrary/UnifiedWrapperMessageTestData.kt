@@ -11,12 +11,30 @@ internal val campaigns = Campaigns(
         CampaignReqImpl(
             targetingParams = listOf(TargetingParam("location", "EU")),
             campaignsEnv = CampaignsEnv.STAGE,
-            campaignType = CampaignType.GDPR
+            campaignType = CampaignType.GDPR,
+            groupPmId = null
         ),
         CampaignReqImpl(
             targetingParams = listOf(TargetingParam("location", "US")),
             campaignsEnv = CampaignsEnv.STAGE,
-            campaignType = CampaignType.CCPA
+            campaignType = CampaignType.CCPA,
+            groupPmId = null
+        )
+    )
+)
+internal val campaignsGroupPmId = Campaigns(
+    list = listOf(
+        CampaignReqImpl(
+            targetingParams = listOf(TargetingParam("location", "EU")),
+            campaignsEnv = CampaignsEnv.STAGE,
+            campaignType = CampaignType.GDPR,
+            groupPmId = "613056"
+        ),
+        CampaignReqImpl(
+            targetingParams = listOf(TargetingParam("location", "US")),
+            campaignsEnv = CampaignsEnv.STAGE,
+            campaignType = CampaignType.CCPA,
+            groupPmId = "613056"
         )
     )
 )
@@ -46,4 +64,15 @@ internal val uwMessDataTestPubData = UnifiedMessageRequest(
         put("key_2", "test_pb")
         put("key_3", 1)
     }
+)
+
+internal val uwMessDataTestGdouPmId = UnifiedMessageRequest(
+    requestUUID = "test",
+    consentLanguage = MessageLanguage.ENGLISH,
+    campaigns = campaignsGroupPmId,
+    propertyHref = "mobile.prop-1",
+    campaignsEnv = CampaignsEnv.STAGE,
+    accountId = 22,
+    hasCSP = true,
+    includeData = IncludeData()
 )

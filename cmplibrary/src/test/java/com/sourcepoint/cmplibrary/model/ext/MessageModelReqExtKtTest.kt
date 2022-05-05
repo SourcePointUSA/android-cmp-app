@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.uwMessDataTest
+import com.sourcepoint.cmplibrary.uwMessDataTestGdouPmId
 import com.sourcepoint.cmplibrary.uwMessDataTestPubData
 import org.json.JSONObject
 import org.junit.Test
@@ -20,6 +21,12 @@ class MessageModelReqExtKtTest {
     fun `GIVEN a UnifiedMessageRequest object with pubData RETURN stringify request Json obj`() {
         val sut = JSONObject(uwMessDataTestPubData.toBodyRequest())
         sut.toTreeMap().assertEquals(testJsonObjectPubData.toTreeMap())
+    }
+
+    @Test
+    fun `GIVEN a UnifiedMessageRequest object with groupPmId RETURN stringify request Json obj`() {
+        val sut = JSONObject(uwMessDataTestGdouPmId.toBodyRequest()).toTreeMap().toString()
+        sut.assertEquals(testReqBodyGroupPmId.toTreeMap().toString())
     }
 
     private val testJsonObject = JSONObject(
@@ -100,6 +107,46 @@ class MessageModelReqExtKtTest {
               },
               "campaignEnv": "stage"
             }
+        """.trimIndent()
+    )
+
+    private val testReqBodyGroupPmId = JSONObject(
+        """
+        {
+          "accountId": 22,
+          "propertyHref": "http://mobile.prop-1",
+          "campaigns": {
+            "gdpr": {
+              "targetingParams": {
+                "location": "EU"
+              },
+              "groupPmId": "613056"
+            },
+            "ccpa": {
+              "targetingParams": {
+                "location": "US"
+              },
+              "groupPmId": "613056"
+            }
+          },
+          "consentLanguage": "EN",
+          "requestUUID": "test",
+          "includeData": {
+            "customVendorsResponse": {
+              "type": "RecordString"
+            },
+            "messageMetaData": {
+              "type": "RecordString"
+            },
+            "localState": {
+              "type": "RecordString"
+            },
+            "TCData": {
+              "type": "RecordString"
+            }
+          },
+          "campaignEnv": "stage"
+        }
         """.trimIndent()
     )
 }

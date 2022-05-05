@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_PRIORITY_DATA
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.SAVED_CONSENT
 
 /**
  * Factory method to create an instance of a [DataStorage] using its implementation
@@ -29,6 +30,15 @@ private class DataStorageImpl(
     override val preference: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
+
+    override var savedConsent: Boolean
+        get() = preference.getBoolean(SAVED_CONSENT, false)
+        set(value) {
+            preference
+                .edit()
+                .putBoolean(SAVED_CONSENT, value)
+                .apply()
+        }
 
     override fun saveLocalState(value: String) {
         preference
@@ -71,6 +81,7 @@ private class DataStorageImpl(
             .remove(LOCAL_STATE)
             .remove(PROPERTY_PRIORITY_DATA)
             .remove(PROPERTY_ID)
+            .remove(SAVED_CONSENT)
             .apply()
     }
 

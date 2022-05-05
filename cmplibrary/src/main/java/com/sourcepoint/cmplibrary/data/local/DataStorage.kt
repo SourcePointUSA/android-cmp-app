@@ -8,9 +8,13 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
         const val LOCAL_STATE = "sp.key.local.state"
         const val PROPERTY_PRIORITY_DATA = "sp.key.property.priority.data"
         const val PROPERTY_ID = "sp.key.property.id"
+        const val SAVED_CONSENT = "sp.key.saved.consent"
     }
 
     override val preference: SharedPreferences
+
+    var savedConsent: Boolean
+
     fun savePropertyId(value: Int)
     fun savePropertyPriorityData(value: String)
     fun saveLocalState(value: String)

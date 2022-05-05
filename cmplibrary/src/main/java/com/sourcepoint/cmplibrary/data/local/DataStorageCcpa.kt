@@ -9,11 +9,14 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CONSENT_C
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.IAB_US_PRIVACY_STRING
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_APPLIES
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_CHILD_PM_ID
 
 internal interface DataStorageCcpa {
 
     val preference: SharedPreferences
+
     var ccpaApplies: Boolean
+    var ccpaChildPmId: String?
 
     fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
@@ -30,6 +33,7 @@ internal interface DataStorageCcpa {
     companion object {
         const val KEY_CCPA = "sp.key.ccpa"
         const val KEY_CCPA_APPLIES = "sp.ccpa.key.applies"
+        const val KEY_CCPA_CHILD_PM_ID = "sp.key.ccpa.childPmId"
         const val CCPA_CONSENT_RESP = "sp.ccpa.consent.resp"
         const val CCPA_JSON_MESSAGE = "sp.ccpa.json.message"
         const val CONSENT_CCPA_UUID_KEY = "sp.ccpa.consentUUID"
@@ -64,6 +68,15 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             preference
                 .edit()
                 .putBoolean(KEY_CCPA_APPLIES, value)
+                .apply()
+        }
+
+    override var ccpaChildPmId: String?
+        get() = preference.getString(KEY_CCPA_CHILD_PM_ID, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(KEY_CCPA_CHILD_PM_ID, value)
                 .apply()
         }
 
@@ -128,6 +141,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .remove(CCPA_CONSENT_RESP)
             .remove(CCPA_JSON_MESSAGE)
             .remove(CONSENT_CCPA_UUID_KEY)
+            .remove(KEY_CCPA_CHILD_PM_ID)
             .remove(IAB_US_PRIVACY_STRING)
             .apply()
     }

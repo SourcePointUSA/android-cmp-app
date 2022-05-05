@@ -94,6 +94,7 @@ class DemoActivity : FragmentActivity() {
     private val isUITestRunning by inject<Boolean>(qualifier = named("ui_test_running"))
 
     private val gdprPmId by lazy { property.gdprPmId }
+    private val useGroupPmIfAvailable by lazy { property.useGdprGroupPmIfAvailable }
     private val ccpaPmId by lazy { property.ccpaPmId }
     private val authId by lazy { property.authId }
 
@@ -139,7 +140,8 @@ class DemoActivity : FragmentActivity() {
                                 spConsentLib.loadPrivacyManager(
                                     it,
                                     pTab,
-                                    CampaignType.GDPR
+                                    CampaignType.GDPR,
+                                    useGroupPmIfAvailable
                                 )
                             }
                         }
@@ -157,7 +159,8 @@ class DemoActivity : FragmentActivity() {
                                 spConsentLib.loadPrivacyManager(
                                     it,
                                     pTab,
-                                    CampaignType.CCPA
+                                    CampaignType.CCPA,
+                                    useGroupPmIfAvailable
                                 )
                             }
                         }
