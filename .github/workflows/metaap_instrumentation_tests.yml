@@ -1,9 +1,7 @@
 name: Metaap UI Tests
 on:
   push:
-    branches:
-      - develop
-      - 'release/**'
+    branches: [ develop ]
     paths:
       - '!README.md'
       - '!release_note.txt'
