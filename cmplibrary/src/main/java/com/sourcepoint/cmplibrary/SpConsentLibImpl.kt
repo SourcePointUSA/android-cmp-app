@@ -109,6 +109,10 @@ internal class SpConsentLibImpl(
         }
     }
 
+    override fun loadMessage(authId: String?) {
+        loadMessage(authId, null)
+    }
+
     /** Start Client's methods */
     override fun loadMessage(authId: String?, pubData: JSONObject?) {
         checkMainThread("loadMessage")
