@@ -356,7 +356,12 @@ internal class SpConsentLibImpl(
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
                     url = url.toString(),
-                    pmId = "pmId ${it.messageId}",
+                    params = """
+                        pmId [${it.messageId}]
+                        consentLanguage [${it.consentLanguage}]
+                        pmTab [${it.pmTab}]
+                        siteId [${it.siteId}]
+                    """.trimIndent(),
                     type = "GET"
                 )
                 webView?.loadConsentUIFromUrl(
@@ -569,7 +574,7 @@ internal class SpConsentLibImpl(
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
                             url = url.toString(),
-                            pmId = "${actionImpl.privacyManagerId}",
+                            params = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
                         iConsentWebView.loadConsentUIFromUrl(
@@ -595,7 +600,7 @@ internal class SpConsentLibImpl(
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
                             url = url.toString(),
-                            pmId = "${actionImpl.privacyManagerId}",
+                            params = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
                         iConsentWebView.loadConsentUIFromUrl(
@@ -627,7 +632,7 @@ internal class SpConsentLibImpl(
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
                             url = url.toString(),
-                            pmId = "${action.privacyManagerId}",
+                            params = "${action.privacyManagerId}",
                             type = "GET"
                         )
                         iConsentWebView.loadConsentUIFromUrl(
@@ -653,7 +658,7 @@ internal class SpConsentLibImpl(
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
                             url = url.toString(),
-                            pmId = "${action.privacyManagerId}",
+                            params = "${action.privacyManagerId}",
                             type = "GET"
                         )
                         iConsentWebView.loadConsentUIFromUrl(

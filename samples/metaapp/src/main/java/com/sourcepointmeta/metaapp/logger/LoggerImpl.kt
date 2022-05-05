@@ -213,7 +213,7 @@ internal class LoggerImpl(
         }
     }
 
-    override fun pm(tag: String, url: String, type: String, pmId: String?) {
+    override fun pm(tag: String, url: String, type: String, params: String?) {
         loggerScope.launch {
             ds.storeOrUpdateLog(
                 MetaLog(
@@ -224,7 +224,7 @@ internal class LoggerImpl(
                     tag = tag,
                     message = url,
                     logSession = session,
-                    jsonBody = pmId
+                    jsonBody = params
                 )
             )
         }
