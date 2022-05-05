@@ -1,7 +1,7 @@
 name: SampleApp UI Tests
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop, release/6.5.0 ]
     paths:
       - '!README.md'
       - '!release_note.txt'
