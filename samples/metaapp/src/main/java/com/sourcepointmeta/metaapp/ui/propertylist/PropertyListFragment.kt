@@ -90,8 +90,10 @@ class PropertyListFragment : Fragment() {
         adapter.propertyChangedListener = { viewModel.updateProperty(it) }
         adapter.demoProperty = { runDemo(it) }
         itemTouchHelper.attachToRecyclerView(property_list)
-        viewModel.fetchLatestVersion()
 
+        if(BuildConfig.BUILD_TYPE == "release"){
+            viewModel.fetchLatestVersion()
+        }
         tool_bar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_clear_sp -> {
