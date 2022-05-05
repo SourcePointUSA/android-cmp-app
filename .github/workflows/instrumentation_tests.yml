@@ -1,7 +1,7 @@
 name: SampleApp UI Tests
 on:
   push:
-    branches: [ develop, release/6.5.0 ]
+    branches: [ develop, release/6.5.0 ] #sfdas
     paths:
       - '!README.md'
       - '!release_note.txt'
