@@ -207,12 +207,16 @@ internal class ConsentWebView(
 
         @JavascriptInterface
         override fun log(tag: String?, msg: String?) {
-            jsClientLib.log(this@ConsentWebView, tag, msg)
+            if (msg != null && msg.length < 100_000) {
+                jsClientLib.log(this@ConsentWebView, tag, msg)
+            }
         }
 
         @JavascriptInterface
         override fun log(msg: String?) {
-            jsClientLib.log(this@ConsentWebView, msg)
+            if (msg != null && msg.length < 100_000) {
+                jsClientLib.log(this@ConsentWebView, msg)
+            }
         }
 
         @JavascriptInterface

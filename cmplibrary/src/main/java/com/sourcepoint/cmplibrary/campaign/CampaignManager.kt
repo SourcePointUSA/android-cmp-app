@@ -179,7 +179,7 @@ private class CampaignManagerImpl(
         }
     }
 
-    fun getGdprPmConfig(pmId: String?, pmTab: PMTab, useGroupPmIfAvailable: Boolean, groupPmId: String?): Either<PmUrlConfig> = check {
+    private fun getGdprPmConfig(pmId: String?, pmTab: PMTab, useGroupPmIfAvailable: Boolean, groupPmId: String?): Either<PmUrlConfig> = check {
         val uuid = dataStorage.getGdprConsentUuid()
         val siteId = dataStorage.getPropertyId().toString()
 
@@ -220,7 +220,7 @@ private class CampaignManagerImpl(
         )
     }
 
-    fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = check {
+    private fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = check {
         val uuid = dataStorage.getCcpaConsentUuid()
         val siteId = dataStorage.getPropertyId().toString()
 

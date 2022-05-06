@@ -1,3 +1,7 @@
+## 6.5.0 (May, 06, 2022)
+* [SP-9022](https://sourcepoint.atlassian.net/browse/SP-9022) Added applies attribute to the consent object (#483)
+* [SP-8824](https://sourcepoint.atlassian.net/browse/SP-8824) Add support of groupPmId and childPmId (#484). This new feature bring some change to the public API. Follow this [link](https://github.com/SourcePointUSA/android-cmp-app#set-a-privacy-manager-id-for-the-property-group) for more info.
+
 ## 6.4.3 (April, 22, 2022)
 * [SP-9187](https://sourcepoint.atlassian.net/browse/SP-9187) Applied scale factor to the loadPm API (#485)
 
