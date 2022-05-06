@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.sourcepoint.cmplibrary.util.clearAllData
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
@@ -24,6 +27,7 @@ import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
 import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
 import kotlinx.android.synthetic.main.fragment_property_list.*// ktlint-disable
+import kotlinx.android.synthetic.main.fragment_property_list.tool_bar
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
@@ -86,7 +90,22 @@ class PropertyListFragment : Fragment() {
         adapter.propertyChangedListener = { viewModel.updateProperty(it) }
         adapter.demoProperty = { runDemo(it) }
         itemTouchHelper.attachToRecyclerView(property_list)
-        viewModel.fetchLatestVersion()
+
+        if(BuildConfig.BUILD_TYPE == "release"){
+            viewModel.fetchLatestVersion()
+        }
+        tool_bar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_clear_sp -> {
+                    context?.let { clearAllData(it) }
+                }
+            }
+            true
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_prop_list, menu)
     }
 
     private fun updateProperty(state: StateProperty) {

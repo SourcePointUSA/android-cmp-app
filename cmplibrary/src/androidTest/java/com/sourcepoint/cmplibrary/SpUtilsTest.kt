@@ -135,8 +135,8 @@ class SpUtilsTest {
         campaignManager.saveGdpr(gdpr)
         campaignManager.saveCcpa(ccpa)
 
-        gdprApplies(appCtx, spConfig).assertTrue()
-        ccpaApplies(appCtx, spConfig).assertTrue()
+        gdprApplies(appCtx).assertTrue()
+        ccpaApplies(appCtx).assertTrue()
     }
 
     @Test
@@ -152,8 +152,8 @@ class SpUtilsTest {
         campaignManager.saveGdpr(gdpr)
         campaignManager.saveCcpa(ccpa)
 
-        gdprApplies(appCtx, spConfig).assertFalse()
-        ccpaApplies(appCtx, spConfig).assertFalse()
+        gdprApplies(appCtx).assertFalse()
+        ccpaApplies(appCtx).assertFalse()
     }
 
     @Test
@@ -167,8 +167,8 @@ class SpUtilsTest {
 
         campaignManager.saveCcpa(ccpa)
 
-        gdprApplies(appCtx, spConfig).assertFalse()
-        ccpaApplies(appCtx, spConfig).assertTrue()
+        gdprApplies(appCtx).assertFalse()
+        ccpaApplies(appCtx).assertTrue()
     }
 
     @Test
@@ -183,7 +183,20 @@ class SpUtilsTest {
 
         campaignManager.saveGdpr(gdpr)
 
-        gdprApplies(appCtx, spConfig).assertTrue()
-        ccpaApplies(appCtx, spConfig).assertFalse()
+        gdprApplies(appCtx).assertTrue()
+        ccpaApplies(appCtx).assertFalse()
+    }
+
+    @Test
+    fun `SAVE_ccpa_andgdpr_groupId`() {
+        val dataStorageGdpr = DataStorageGdpr.create(appCtx)
+        val dataStorageCcpa = DataStorageCcpa.create(appCtx)
+        val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
+
+        dataStorage.gdprChildPmId = "1"
+        dataStorage.ccpaChildPmId = "2"
+
+        dataStorage.gdprChildPmId.assertEquals("1")
+        dataStorage.ccpaChildPmId.assertEquals("2")
     }
 }

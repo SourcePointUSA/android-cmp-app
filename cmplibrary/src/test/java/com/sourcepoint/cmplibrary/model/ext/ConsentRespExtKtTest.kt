@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.model.toAcceptedCategories
 import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
@@ -116,13 +117,14 @@ class ConsentRespExtKtTest {
             }
             """.trimIndent()
         ).toTreeMap()
-        val test = ccpaConsent.toCCPAUserConsent("1234")
+        val test = ccpaConsent.toCCPAUserConsent("1234", true)
         test.run {
             uspstring.assertEquals("1---")
             status.assertEquals("consentedAll")
             rejectedCategories.size.assertEquals(0)
             rejectedVendors.size.assertEquals(0)
             uuid.assertEquals("1234")
+            applies.assertTrue()
         }
     }
 

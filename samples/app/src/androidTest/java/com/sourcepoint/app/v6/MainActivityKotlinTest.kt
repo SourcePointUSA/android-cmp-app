@@ -75,6 +75,14 @@ class MainActivityKotlinTest {
         +(CampaignType.GDPR)
     }
 
+    private val spConfGdprGroupId = config {
+        accountId = 22
+        propertyName = "mobile.prop-1"
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 3000
+        +(CampaignType.GDPR)
+    }
+
     private val spConf = config {
         accountId = 22
         propertyName = "mobile.multicampaign.demo"
@@ -141,6 +149,7 @@ class MainActivityKotlinTest {
         }
 
     }
+
     @Test
     fun GIVEN_a_gdpr_campaign_CHECK_the_consent_from_a_second_activity() = runBlocking<Unit> {
 
@@ -405,11 +414,11 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { tapToDisableAllConsent() }
         wr { tapSaveAndExitWebView() }
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() })  { checkAllConsentsOff() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
     }
 
     @Test
-    fun     customConsentAction() = runBlocking<Unit> {
+    fun customConsentAction() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))
 
@@ -447,6 +456,27 @@ class MainActivityKotlinTest {
         wr { tapAcceptAllOnWebView() }
 
         verify(atLeast = 4) { spClient.onAction(any(), any()) }
+    }
+
+    @Test
+    fun GIVEN_a_camapignList_PRESS_cancel_VERIFY_onConsentReady_NOT_called() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdprGroupId,
+                gdprPmId = "613057",
+                ccpaPmId = "-",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        periodicWr(backup = { scenario.recreateAndResume() }) { tapCancelOnWebView() }
+
+        verify(exactly = 0) { spClient.onConsentReady(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
     }
 
     @Test
@@ -494,9 +524,13 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
+
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { clickOnClearConsent() }
 
-        wr{
+
+
+        wr {
             scenario.onActivity { activity ->
                 val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                 val numberOfItemInSP = sp.all.size
@@ -504,7 +538,6 @@ class MainActivityKotlinTest {
                 sp.getString(CLIENT_PREF_KEY, "").assertEquals(CLIENT_PREF_VAL)
             }
         }
-
 
 
     }

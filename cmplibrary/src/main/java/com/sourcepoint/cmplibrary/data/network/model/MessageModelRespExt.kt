@@ -67,14 +67,15 @@ private fun Map<String, Any?>.toCCPA(uuid: String?): Ccpa {
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
     val url = getFieldValue<String>("url")
     val messageSubCategory = MessageSubCategory.values().find { m -> m.code == messageMetaData?.getInt("subCategoryId") } ?: MessageSubCategory.TCFv2
+    val applies = getFieldValue<Boolean>("applies") ?: false
 
     return Ccpa(
         thisContent = JSONObject(this),
-        applies = getFieldValue<Boolean>("applies") ?: false,
+        applies = applies,
         message = message,
         url = url?.let { HttpUrl.parse(it) },
         messageMetaData = messageMetaData,
-        userConsent = getMap("userConsent")?.toCCPAUserConsent(uuid) ?: failParam("CCPAUserConsent"),
+        userConsent = getMap("userConsent")?.toCCPAUserConsent(uuid, applies) ?: failParam("CCPAUserConsent"),
         messageSubCategory = messageSubCategory
     )
 }
@@ -85,14 +86,15 @@ internal fun Map<String, Any?>.toGDPR(uuid: String?): Gdpr {
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
     val url = getFieldValue<String>("url")
     val messageSubCategory = MessageSubCategory.values().find { m -> m.code == messageMetaData?.getInt("subCategoryId") } ?: MessageSubCategory.TCFv2
+    val applies = getFieldValue<Boolean>("applies") ?: false
 
     return Gdpr(
         thisContent = JSONObject(this),
-        applies = getFieldValue<Boolean>("applies") ?: false,
+        applies = applies,
         message = message,
         url = url?.let { HttpUrl.parse(it) },
         messageMetaData = messageMetaData,
-        userConsent = getMap("userConsent")?.toGDPRUserConsent(uuid = uuid) ?: failParam("GDPRUserConsent"),
+        userConsent = getMap("userConsent")?.toGDPRUserConsent(uuid = uuid, applies) ?: failParam("GDPRUserConsent"),
         messageSubCategory = messageSubCategory
     )
 }
@@ -101,3 +103,9 @@ internal fun String.toGDPR(uuid: String?): Gdpr {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
     return map.toGDPR(uuid)
 }
+
+internal fun UnifiedMessageResp.isLegislationApplied(campaignType: CampaignType) = this
+    .campaigns
+    .find { it.type == campaignType.name }
+    ?.applies
+    ?: false

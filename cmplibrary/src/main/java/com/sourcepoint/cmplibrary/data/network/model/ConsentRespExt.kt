@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -11,6 +12,7 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
+import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
 import java.util.* //ktlint-disable
 
@@ -44,7 +46,7 @@ internal fun String.toConsentAction(): ConsentActionImpl {
     )
 }
 
-internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?): CCPAConsentInternal {
+internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?, applies: Boolean): CCPAConsentInternal {
 
     val rejectedCategories = getFieldValue<Iterable<Any?>>("rejectedCategories")
         ?.filterIsInstance(String::class.java)
@@ -59,17 +61,21 @@ internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?): CCPAConsentInte
 
     val uspString: String = getFieldValue("uspstring") ?: ""
 
+    val childPmId: String? = check { getFieldValue<String>("childPmId") }.getOrNull()
+
     return CCPAConsentInternal(
         uuid = uuid,
         rejectedCategories = rejectedCategories,
         rejectedVendors = rejectedVendors,
         status = status,
         uspstring = uspString,
+        childPmId = childPmId,
+        applies = applies,
         thisContent = JSONObject(this)
     )
 }
 
-internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInternal {
+internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?, applies: Boolean): GDPRConsentInternal {
 
     val tcData: Map<String, Any?> = getMap("TCData") ?: emptyMap()
     val vendorsGrants = getMap("grants")
@@ -100,13 +106,16 @@ internal fun Map<String, Any?>.toGDPRUserConsent(uuid: String?): GDPRConsentInte
         } ?: emptyList()
     val consentedPurposes: List<String> = vendorsGrants.toAcceptedCategories().toList()
 
+    val childPmId: String? = check { getFieldValue<String>("childPmId") }.getOrNull()
+
     return GDPRConsentInternal(
         uuid = uuid,
         tcData = tcData,
         grants = vendorsGranted,
         euconsent = euConsent,
         acceptedCategories = consentedPurposes,
-//        acceptedVendors = consentedVendors,
+        childPmId = childPmId,
+        applies = applies,
         thisContent = JSONObject(this)
     )
 }

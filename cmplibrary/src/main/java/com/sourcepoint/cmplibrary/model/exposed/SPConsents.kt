@@ -17,6 +17,7 @@ data class SPCustomConsents(
 data class SPGDPRConsent(
     val consent: GDPRConsent
 )
+
 data class SPCCPAConsent(
     val consent: CCPAConsent
 )
@@ -32,6 +33,8 @@ interface GDPRConsent {
     var tcData: Map<String, Any?>
     var grants: Map<String, GDPRPurposeGrants>
     val acceptedCategories: List<String>
+    val childPmId: String?
+    val applies: Boolean
 }
 
 internal data class GDPRConsentInternal(
@@ -40,6 +43,8 @@ internal data class GDPRConsentInternal(
     override var tcData: Map<String, Any?> = emptyMap(),
     override var grants: Map<String, GDPRPurposeGrants> = emptyMap(),
     override val acceptedCategories: List<String> = emptyList(),
+    override val childPmId: String? = null,
+    override val applies: Boolean = false,
     val thisContent: JSONObject = JSONObject()
 ) : GDPRConsent
 
@@ -49,6 +54,8 @@ interface CCPAConsent {
     val rejectedVendors: List<Any>
     val status: String?
     val uspstring: String
+    val childPmId: String?
+    val applies: Boolean
 }
 
 internal data class CCPAConsentInternal(
@@ -57,6 +64,8 @@ internal data class CCPAConsentInternal(
     override val rejectedVendors: List<Any> = listOf(),
     override val status: String? = null,
     override val uspstring: String = "",
+    override val childPmId: String? = null,
+    override val applies: Boolean = false,
     val thisContent: JSONObject = JSONObject()
 ) : CCPAConsent
 
@@ -66,6 +75,7 @@ internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
         put("tcData", tcData.toJSONObj())
         put("grants", grants.toJSONObjGrant())
         put("euconsent", euconsent)
+        put("apply", applies)
         put("acceptedCategories", JSONArray(acceptedCategories))
     }
 }
@@ -76,6 +86,7 @@ internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
         put("status", status)
         put("uspstring", uspstring)
         put("rejectedCategories", JSONArray(rejectedCategories))
+        put("apply", applies)
         put("rejectedVendors", JSONArray(rejectedVendors))
     }
 }

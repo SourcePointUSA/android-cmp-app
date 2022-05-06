@@ -24,7 +24,7 @@ import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import okhttp3.HttpUrl
-import java.util.* // ktlint-disable
+import java.util.* //ktlint-disable
 
 @SuppressLint("ViewConstructor")
 internal class ConsentWebView(
@@ -166,13 +166,20 @@ internal class ConsentWebView(
                 "fromNativeSDK": true
                  */
             }
+
+            logger.flm(
+                tag = "$campaignType First Layer Message",
+                url = url.toString(),
+                json = obj,
+                type = "GET"
+            )
+
             """
                 javascript: $jsReceiver;
                 window.spLegislation = '${campaignType.name}'; 
                 window.postMessage($obj, "*");
             """.trimIndent()
         }
-        logger.i("ConsentWebView", "$campaignType loadConsentUIFromUrl${NL.t}url $url ")
         loadUrl(url.toString())
         true
     }
@@ -200,12 +207,16 @@ internal class ConsentWebView(
 
         @JavascriptInterface
         override fun log(tag: String?, msg: String?) {
-            jsClientLib.log(this@ConsentWebView, tag, msg)
+            if (msg != null && msg.length < 100_000) {
+                jsClientLib.log(this@ConsentWebView, tag, msg)
+            }
         }
 
         @JavascriptInterface
         override fun log(msg: String?) {
-            jsClientLib.log(this@ConsentWebView, msg)
+            if (msg != null && msg.length < 100_000) {
+                jsClientLib.log(this@ConsentWebView, msg)
+            }
         }
 
         @JavascriptInterface

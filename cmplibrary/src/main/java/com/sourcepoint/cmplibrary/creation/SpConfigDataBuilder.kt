@@ -27,6 +27,10 @@ class SpConfigDataBuilder {
         campaigns.add(SpCampaign(this, emptyList()))
     }
 
+    operator fun SpCampaign.unaryPlus() {
+        campaigns.add(this)
+    }
+
     operator fun Pair<CampaignType, List<Pair<String, String>>>.unaryPlus() {
         campaigns.add(SpCampaign(this.first, this.second.map { it.toTParam() }))
     }
@@ -79,9 +83,10 @@ class SpConfigDataBuilder {
 
     fun addCampaign(
         campaignType: CampaignType,
-        params: List<TargetingParam>
+        params: List<TargetingParam>,
+        groupPmId: String?
     ): SpConfigDataBuilder = apply {
-        campaigns.add(SpCampaign(campaignType, params))
+        campaigns.add(SpCampaign(campaignType, params, groupPmId))
     }
 
     fun addCampaign(campaign: SpCampaign): SpConfigDataBuilder = apply {

@@ -17,8 +17,19 @@ data class SpConfig(
 
 data class SpCampaign(
     @JvmField val campaignType: CampaignType,
-    @JvmField internal val targetingParams: List<TargetingParam>
-)
+    @JvmField internal var targetingParams: List<TargetingParam> = emptyList(),
+    @JvmField var groupPmId: String? = null
+) {
+    constructor(
+        campaignType: CampaignType,
+        targetingParams: List<TargetingParam>
+    ) : this(campaignType, targetingParams, null)
+
+    constructor(
+        campaignType: CampaignType,
+        groupPmId: String
+    ) : this(campaignType, emptyList(), groupPmId)
+}
 
 data class TargetingParam(val key: String, val value: String)
 

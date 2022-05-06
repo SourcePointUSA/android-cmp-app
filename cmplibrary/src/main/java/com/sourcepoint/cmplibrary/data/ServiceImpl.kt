@@ -59,6 +59,7 @@ private class ServiceImpl(
             messageReq,
             pSuccess = { messageResp ->
                 campaignManager.saveUnifiedMessageResp(messageResp)
+                messageResp.campaigns
                 pSuccess(messageResp)
             },
             pError = pError,
@@ -77,7 +78,10 @@ private class ServiceImpl(
                 nc.sendConsent(it, env, consentActionImpl)
             }
             .executeOnRight {
-                dataStorage.saveLocalState(it.localState)
+                dataStorage.run {
+                    saveLocalState(it.localState)
+                    savedConsent = true
+                }
                 when (it.campaignType) {
                     GDPR -> {
                         dataStorage.saveGdprConsentResp(it.userConsent ?: "")
@@ -106,37 +110,5 @@ private class ServiceImpl(
                 dataStorage.saveGdprConsentResp(existingConsent.toString())
             }
         consentManagerUtils.getSpConsent()
-    }
-
-    override fun getNativeMessage(
-        messageReq: UnifiedMessageRequest,
-        success: (NativeMessageResp) -> Unit,
-        error: (Throwable) -> Unit
-    ) {
-        nc.getNativeMessage(
-            messageReq,
-            { nativeMessageResp ->
-                success(nativeMessageResp)
-                nativeMessageResp.msgJSON
-                // TODO save the data into the local storage
-            },
-            error
-        )
-    }
-
-    override fun getNativeMessageK(
-        messageReq: UnifiedMessageRequest,
-        success: (NativeMessageRespK) -> Unit,
-        error: (Throwable) -> Unit
-    ) {
-        nc.getNativeMessageK(
-            messageReq,
-            { nativeMessageResp ->
-                success(nativeMessageResp)
-                nativeMessageResp.msg
-                // TODO save the data into the local storage
-            },
-            error
-        )
     }
 }

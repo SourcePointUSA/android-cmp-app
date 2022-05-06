@@ -21,6 +21,12 @@ interface SpConsentLib {
      */
     fun loadMessage(authId: String? = null, pubData: JSONObject? = null)
 
+    /**
+     * Load the First Layer Message (FLM)
+     * @param authId is used to get an already saved consent
+     */
+    fun loadMessage(authId: String? = null)
+
     fun customConsentGDPR(
         vendors: List<String>,
         categories: List<String>,
@@ -36,6 +42,7 @@ interface SpConsentLib {
     )
 
     fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType)
+    fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType, useGroupPmIfAvailable: Boolean)
     fun loadOTTPrivacyManager(pmId: String, campaignType: CampaignType)
 
     fun showView(view: View)

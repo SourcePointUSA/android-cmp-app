@@ -13,7 +13,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.util.* // ktlint-disable
+import java.util.*
 
 internal class LoggerImpl(
     private val propertyName: String,
@@ -225,6 +225,23 @@ internal class LoggerImpl(
                     message = url,
                     logSession = session,
                     jsonBody = pmId
+                )
+            )
+        }
+    }
+
+    override fun flm(tag: String, url: String, type: String, json: JSONObject) {
+        loggerScope.launch {
+            ds.storeOrUpdateLog(
+                MetaLog(
+                    id = null,
+                    propertyName = propertyName,
+                    timestamp = Date().time,
+                    type = "REQUEST",
+                    tag = tag,
+                    message = url,
+                    logSession = session,
+                    jsonBody = json.toString()
                 )
             )
         }
