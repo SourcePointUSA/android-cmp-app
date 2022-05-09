@@ -355,17 +355,22 @@ private class CampaignManagerImpl(
     }
 
     override fun saveGdpr(gdpr: Gdpr) {
-        dataStorage.saveGdpr(gdpr.thisContent.toString())
-        dataStorage.saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
-        dataStorage.gdprApplies = gdpr.applies
-        dataStorage.gdprChildPmId = gdpr.userConsent.childPmId
+        dataStorage.run {
+            saveGdpr(gdpr.thisContent.toString())
+            saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
+            gdprApplies = gdpr.applies
+            gdprChildPmId = gdpr.userConsent.childPmId
+            gdprMessageSubCategory = gdpr.messageSubCategory
+        }
     }
 
     override fun saveCcpa(ccpa: Ccpa) {
-        dataStorage.saveCcpa(ccpa.thisContent.toString())
-        dataStorage.saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
-        dataStorage.ccpaApplies = ccpa.applies
-        dataStorage.ccpaChildPmId = ccpa.userConsent.childPmId
+        dataStorage.run {
+            saveCcpa(ccpa.thisContent.toString())
+            saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
+            ccpaApplies = ccpa.applies
+            ccpaChildPmId = ccpa.userConsent.childPmId
+        }
     }
 
     override fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp) {

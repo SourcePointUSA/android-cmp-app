@@ -119,8 +119,10 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         }
 
     override var gdprMessageSubCategory: MessageSubCategory
-        get() = preference.getInt(KEY_GDPR_MESSAGE_SUBCATEGORY, MessageSubCategory.TCFv2.code)
-            .run { MessageSubCategory.values().find { i -> i.code == this } ?: MessageSubCategory.TCFv2 }
+        get() {
+            return preference.getInt(KEY_GDPR_MESSAGE_SUBCATEGORY, MessageSubCategory.TCFv2.code)
+                .run { MessageSubCategory.values().find { i -> i.code == this } ?: MessageSubCategory.TCFv2 }
+        }
         set(value) {
             preference
                 .edit()
