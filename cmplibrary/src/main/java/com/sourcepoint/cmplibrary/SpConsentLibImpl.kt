@@ -270,17 +270,19 @@ internal class SpConsentLibImpl(
             pmId = pmId,
             pmTab = pmTab,
             campaignType = campaignType,
-            isOtt = false,
+            isOtt = campaignManager.isCampaignOtt(campaignType),
             useGroupPmIfAvailable = useGroupPmIfAvailable
         )
     }
 
-    override fun loadOTTPrivacyManager(pmId: String, campaignType: CampaignType) {
+
+
+    override fun loadPrivacyManager(pmId: String, campaignType: CampaignType) {
         loadPm(
             pmId = pmId,
             pmTab = PMTab.DEFAULT,
             campaignType = campaignType,
-            isOtt = true,
+            isOtt = campaignManager.isCampaignOtt(campaignType),
             useGroupPmIfAvailable = false
         )
     }

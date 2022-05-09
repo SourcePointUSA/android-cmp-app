@@ -18,8 +18,10 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_TCDa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_CHILD_PM_ID
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_MESSAGE_SUBCATEGORY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.USER_CONSENT_KEY
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
@@ -32,6 +34,8 @@ internal interface DataStorageGdpr {
 
     var gdprApplies: Boolean
     var gdprChildPmId: String?
+    var gdprMessageSubCategory: MessageSubCategory
+    val isGdprOtt: Boolean
 
     fun saveGdpr(value: String)
     fun getGdpr(): String?
@@ -75,6 +79,7 @@ internal interface DataStorageGdpr {
         const val IABTCF_KEY_PREFIX = "IABTCF_"
         const val KEY_GDPR_APPLIES = "sp.key.gdpr.applies"
         const val KEY_GDPR_CHILD_PM_ID = "sp.key.gdpr.childPmId"
+        const val KEY_GDPR_MESSAGE_SUBCATEGORY = "sp.key.gdpr.message.subcategory"
         const val GDPR_CONSENT_RESP = "sp.gdpr.consent.resp"
         const val GDPR_JSON_MESSAGE = "sp.gdpr.json.message"
         const val GDPR_TCData = "TCData"
@@ -112,6 +117,19 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 .putString(KEY_GDPR_CHILD_PM_ID, value)
                 .apply()
         }
+
+    override var gdprMessageSubCategory: MessageSubCategory
+        get() = preference.getInt(KEY_GDPR_MESSAGE_SUBCATEGORY, MessageSubCategory.TCFv2.code)
+            .run { MessageSubCategory.values().find { i -> i.code == this } ?: MessageSubCategory.TCFv2 }
+        set(value) {
+            preference
+                .edit()
+                .putInt(KEY_GDPR_MESSAGE_SUBCATEGORY, value.code)
+                .apply()
+        }
+
+    override val isGdprOtt: Boolean
+        get() = gdprMessageSubCategory == MessageSubCategory.OTT
 
     override fun saveGdpr(value: String) {
         preference

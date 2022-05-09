@@ -27,6 +27,7 @@ internal interface CampaignManager {
     fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate)
 
     fun isAppliedCampaign(campaignType: CampaignType): Boolean
+    fun isCampaignOtt(campaignType: CampaignType): Boolean
     fun getUnifiedMessageResp(): Either<UnifiedMessageResp>
 
     fun getGdpr(): Either<Gdpr>
@@ -260,6 +261,13 @@ private class CampaignManagerImpl(
             .map { it.first == campaignType }
             .getOrNull()
             ?: false
+    }
+
+    override fun isCampaignOtt(campaignType: CampaignType): Boolean {
+        return when(campaignType){
+            CampaignType.GDPR -> dataStorage.isGdprOtt
+            CampaignType.CCPA -> false
+        }
     }
 
     override fun getUnifiedMessageResp(): Either<UnifiedMessageResp> = check {
