@@ -272,6 +272,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 remove(KEY_GDPR_APPLIES)
                 remove(GDPR_CONSENT_RESP)
                 remove(GDPR_JSON_MESSAGE)
+                remove(KEY_GDPR_MESSAGE_SUBCATEGORY)
                 remove(GDPR_TCData)
                 remove(KEY_GDPR)
                 remove(KEY_GDPR_CHILD_PM_ID)
