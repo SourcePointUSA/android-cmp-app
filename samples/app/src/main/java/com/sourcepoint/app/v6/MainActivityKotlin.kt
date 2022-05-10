@@ -60,12 +60,12 @@ class MainActivityKotlin : AppCompatActivity() {
             )
         }
         findViewById<View>(R.id.review_consents_ccpa).setOnClickListener { _v: View? ->
-            if(dataProvider.isOtt){
+            if (dataProvider.isOtt) {
                 spConsentLib.loadOTTPrivacyManager(
                     dataProvider.ccpaPmId,
                     CampaignType.CCPA
                 )
-            }else{
+            } else {
                 spConsentLib.loadPrivacyManager(
                     dataProvider.ccpaPmId,
                     PMTab.PURPOSES,
@@ -106,7 +106,10 @@ class MainActivityKotlin : AppCompatActivity() {
 
     internal inner class LocalClient : SpClient {
 
-        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+        override fun onNativeMessageReady(
+            message: MessageStructure,
+            messageController: NativeMessageController
+        ) {
 
         }
 
