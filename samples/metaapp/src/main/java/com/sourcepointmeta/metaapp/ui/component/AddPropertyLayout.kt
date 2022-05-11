@@ -45,7 +45,7 @@ internal fun AddPropertyLayout.bind(property: Property) {
     gdprTp.forEach { gdpr_chip_group.addChip("${it.key}:${it.value}") }
     ccpaTp.forEach { ccpa_chip_group.addChip("${it.key}:${it.value}") }
     timeout_ed.setText("${property.timeout ?: 3000}")
-    group_pm_id_ed.setText("${property.gdprGroupPmId}")
+    group_pm_id_ed.setText(property.gdprGroupPmId ?: "")
     gdpr_groupId_switch.isChecked = property.useGdprGroupPmIfAvailable
 }
 
@@ -81,6 +81,8 @@ internal fun AddPropertyLayout.toProperty(): Property {
     val gdprStatus = StatusCampaign(prop_name_ed.text.toString(), CampaignType.GDPR, chipGdprChecked)
     val ccpaStatus = StatusCampaign(prop_name_ed.text.toString(), CampaignType.CCPA, chipCcpaChecked)
 
+    val gdprGroupPmId = group_pm_id_ed.text.toString()
+
     return Property(
         propertyName = prop_name_ed.text.toString(),
         accountId = account_id_ed.text.toString().toLongOrNull() ?: 0L,
@@ -95,7 +97,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
         gdprPmId = gdpr_pm_id_ed.text.toString().toLongOrNull(),
         ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull(),
         campaignsEnv = if (radio_stage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC,
-        gdprGroupPmId = group_pm_id_ed.text.toString(),
+        gdprGroupPmId = if(gdprGroupPmId.isEmpty() || gdprGroupPmId.isBlank()) null else gdprGroupPmId,
         useGdprGroupPmIfAvailable = gdpr_groupId_switch.isChecked
     )
 }

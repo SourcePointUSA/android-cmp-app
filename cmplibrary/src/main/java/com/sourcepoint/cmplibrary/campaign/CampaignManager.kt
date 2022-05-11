@@ -48,7 +48,6 @@ internal interface CampaignManager {
         pmTab: PMTab?
     ): Either<PmUrlConfig>
 
-    fun getUnifiedMessageReq(): UnifiedMessageRequest
     fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest
 
     fun getGDPRConsent(): Either<GDPRConsentInternal>
@@ -285,10 +284,6 @@ private class CampaignManagerImpl(
                 .getCcpaMessage().isNotBlank() -> Pair(CampaignType.CCPA, mapTemplate[CampaignType.CCPA.name]!!)
             else -> throw MissingPropertyException(description = "Inconsistent Legislation!!!")
         }
-    }
-
-    override fun getUnifiedMessageReq(): UnifiedMessageRequest {
-        return getUnifiedMessageReq(null, null)
     }
 
     override fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest {
