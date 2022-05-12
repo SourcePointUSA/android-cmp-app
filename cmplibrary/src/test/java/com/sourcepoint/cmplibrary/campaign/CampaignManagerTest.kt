@@ -203,6 +203,7 @@ class CampaignManagerTest {
 
         every { dataStorage.getGdprConsentUuid() }.returns("uuid")
         every { dataStorage.getPropertyId() }.returns(9090)
+        every { dataStorage.gdprChildPmId }.returns("8989")
 
         val sut = CampaignManager.create(
             dataStorage,
@@ -222,7 +223,7 @@ class CampaignManagerTest {
             consentLanguage.assertEquals("NL")
             uuid.assertEquals("uuid")
             siteId.assertEquals("9090")
-            messageId.assertEquals("111")
+            messageId.assertEquals("8989")
         }
     }
 }
