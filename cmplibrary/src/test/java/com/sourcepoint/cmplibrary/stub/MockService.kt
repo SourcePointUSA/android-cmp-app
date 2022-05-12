@@ -31,14 +31,9 @@ internal class MockService(
     override fun saveCcpa(ccpa: Ccpa) {}
     override fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp) {}
     override fun getUnifiedMessage(messageReq: UnifiedMessageRequest, pSuccess: (UnifiedMessageResp) -> Unit, pError: (Throwable) -> Unit, env: Env) {}
-    override fun getUnifiedMessageReq(): UnifiedMessageRequest {
-        TODO("Not yet implemented")
-    }
-
     override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<SPConsents?> {
         TODO("Not yet implemented")
     }
-
     override fun sendCustomConsent(customConsentReq: CustomConsentReq, env: Env): Either<CustomConsentResp> {
         TODO("Not yet implemented")
     }
@@ -53,9 +48,7 @@ internal class MockService(
         TODO("Not yet implemented")
     }
 
-    override fun getGroupId(campaignType: CampaignType): String? {
-        TODO("Not yet implemented")
-    }
+    override fun getGroupId(campaignType: CampaignType): String? = null
 
     override fun getPmConfig(
         campaignType: CampaignType,
@@ -68,11 +61,9 @@ internal class MockService(
     override fun sendConsent(consentReq: JSONObject, env: Env, consentActionImpl: ConsentActionImpl): Either<ConsentResp> {
         TODO("Not yet implemented")
     }
-
     override fun sendConsent(localState: String, consentActionImpl: ConsentActionImpl, env: Env, pmId: String?): Either<ConsentResp> {
         TODO("Not yet implemented")
     }
-
     override fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest {
         TODO("Not yet implemented")
     }

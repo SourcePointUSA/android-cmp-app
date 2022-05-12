@@ -66,7 +66,7 @@ internal interface CampaignManager {
     companion object {
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
             return when {
-                useGroupPmIfAvailable && childPmId != null -> childPmId
+                useGroupPmIfAvailable && !childPmId.isNullOrEmpty() && childPmId.isNotBlank() -> childPmId
                 else -> userPmId ?: ""
             }
         }
