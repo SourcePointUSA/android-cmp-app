@@ -18,6 +18,10 @@ internal class MockDataStorage : DataStorage {
     var mockLocalState: String? = null
     var savedConsentVar: Boolean = false
 
+    override var ccpaMessageSubCategory: MessageSubCategory = MessageSubCategory.TCFv2
+    override val isCcpaOtt: Boolean
+        get() = ccpaMessageSubCategory == MessageSubCategory.OTT
+
     override var ccpaChildPmId: String? = null
     override var gdprChildPmId: String? = null
 
