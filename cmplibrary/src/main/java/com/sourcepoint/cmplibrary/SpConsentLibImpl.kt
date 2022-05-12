@@ -275,8 +275,6 @@ internal class SpConsentLibImpl(
         )
     }
 
-
-
     override fun loadPrivacyManager(pmId: String, campaignType: CampaignType) {
         loadPm(
             pmId = pmId,
