@@ -21,7 +21,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 
@@ -77,7 +76,7 @@ class SpConsentLibImplTest {
     }
 
     @Test
-    fun `CALLING loadPrivacyManager(pmId, campaignType) RETURN the right params`() {
+    fun `CALLING loadPrivacyManager(pmId, campaignType) VERIFY that getPmConfig receive the right params`() {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
@@ -99,7 +98,7 @@ class SpConsentLibImplTest {
     }
 
     @Test
-    fun `CALLING loadPrivacyManager(pmId, pmTab, campaignType) RETURN the right params`() {
+    fun `CALLING loadPrivacyManager(pmId, pmTab, campaignType) VERIFY that getPmConfig receive the right params`() {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
@@ -121,7 +120,7 @@ class SpConsentLibImplTest {
     }
 
     @Test
-    fun `CALLING loadPrivacyManager(pmId, pmTab, campaignType, useGroupPmIfAvailable) RETURN the right params`() {
+    fun `CALLING loadPrivacyManager(pmId, pmTab, campaignType, useGroupPmIfAvailable) VERIFY that getPmConfig receive the right params`() {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
@@ -143,7 +142,7 @@ class SpConsentLibImplTest {
     }
 
     @Test
-    fun `CALLING loadPrivacyManager(pmId, campaignType) RETURN the right params for OTT`() {
+    fun `CALLING loadPrivacyManager(pmId, campaignType) VERIFY that getPmConfig receive the right params for OTT`() {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
@@ -166,7 +165,7 @@ class SpConsentLibImplTest {
     }
 
     @Test
-    fun `CALLING loadPrivacyManager(pmId, pmTab, campaignType) RETURN the right params for OTT`() {
+    fun `CALLING loadPrivacyManager(pmId, pmTab, campaignType) VERIFY that getPmConfig receive the right params for OTT`() {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
@@ -189,7 +188,7 @@ class SpConsentLibImplTest {
     }
 
     @Test
-    fun `CALLING loadPrivacyManager(pmId, pmTab, campaignType, useGroupPmIfAvailable) RETURN the right params for OTT`() {
+    fun `CALLING loadPrivacyManager(pmId, pmTab, campaignType, useGroupPmIfAvailable) VERIFY that getPmConfig receive the right params for OTT`() {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
@@ -211,30 +210,7 @@ class SpConsentLibImplTest {
         verify { logger.i(any(), "true") }
     }
 
-    @Test
-    fun `CALLING loadMessage() verify that getMessage is called exactly 1 time`() {
-        val sut = createLib()
-        sut.loadMessage()
-        verify(exactly = 1) { service.getUnifiedMessage(any(), any(), any(), any()) }
-    }
-
-    @Test
-    fun `CALLING loadMessage() with verify that spClient is called`() = runBlocking<Unit> {
-//        val mr = MessageResp(legislation = Legislation.GDPR, message = JSONObject(), uuid = "", meta = "", userConsent = mockk())
-//        val mockService = MockService(
-//            getMessageLogic = { _, pSuccess, _ -> pSuccess.invoke(mr) }
-//        )
-//        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, execManager)
-//        sut.spClient = spClient
-//
-//        sut.loadMessage()
-
-//        val slot = slot<ActionTypes>()
-//        verify(exactly = 1) { spClient.onAction(capture(slot)) }
-//        slot.captured
-    }
-
-    internal fun createLib() = SpConsentLibImpl(
+    private fun createLib() = SpConsentLibImpl(
         context = appCtx,
         pLogger = logger,
         pJsonConverter = jsonConverter,
