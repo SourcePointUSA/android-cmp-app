@@ -34,8 +34,8 @@
   - [Delete user data](#Delete-user-data)
   - [Frequently Asked Questions](#Frequently-Asked-Questions)
   - [Artifact Release Process](#Artifact-Release-Process)
-
-# How to Install
+ 
+# How to Install 
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
 
 ```
@@ -63,7 +63,7 @@ Kotlin
                 }
 ```
 
-In case of Java language you can use a factory method to instantiate the Cmp lib
+In case of Java language you can use a factory method to instantiate the Cmp lib  
 
 Java
 ```java
@@ -83,7 +83,7 @@ Java
 ## Create an instance of the CMP library
 The CMP SDK library is designed to follow the Activity lifecycle, this means that is **mandatory** to instantiate the library in the Activity in which you are planning to use the CMP SDK.
 
-Kotlin
+Kotlin 
 ```kotlin
 class MainActivityKotlin : AppCompatActivity() {
     // ...
@@ -173,13 +173,13 @@ Java
     }
 ```
 
-Meaning of the callbacks :
+Meaning of the callbacks : 
 - `onUIFinished`: the consent view should be removed;
 - `onNativeMessageReady`: the native message should be created;
 - `onConsentReady`: the client receives the saved consent;
-- `onError`: the client has access to the error details;
+- `onError`: the client has access to the error details; 
 - `onUIReady`: the consent view should be inflated;
-- `onAction`: the client receives the selected action type and has the chance to set the `pubData` fields;
+- `onAction`: the client receives the selected action type and has the chance to set the `pubData` fields; 
 - `onSpFinished`: there is nothing to process, all the work is done.
 
 Some of the above callbacks work on the main thread while others are work on a worker thread. Please see the table below for the distinction:
@@ -193,10 +193,10 @@ Some of the above callbacks work on the main thread while others are work on a w
 | `onUIFinished`         	|                	|
 
 ## Loading the First Layer Message
-In order to show the FLM, the method `spConsentLib.loadMessage()` has to be called.
+In order to show the FLM, the method `spConsentLib.loadMessage()` has to be called. 
 
 IMPORTANT : The `loadMessage` needs to be invoked from the Activity `onResume` callback because during its execution
-all the components involved in the save consent process get created. If you try to load directly the Privacy Manager
+all the components involved in the save consent process get created. If you try to load directly the Privacy Manager 
 without calling the `loadMessage`, you won't be able to save the edited consent.
 
 Kotlin
@@ -284,20 +284,20 @@ Release resources when the activity gets destroyed.
 Kotlin
 ```kotlin
     override fun onDestroy() {
-  super.onDestroy()
-  spConsentLib.dispose()
-}
+        super.onDestroy()
+        spConsentLib.dispose()
+    }
 ```
 Java
 ```java
     @Override
-protected void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
         spConsentLib.dispose();
-        }
+    }
 ```
 ## The *SpConsent* object
-The `SpConsent` object contains all the info related with the user consent action.
+The `SpConsent` object contains all the info related with the user consent action. 
 Following its structure:
 
 ```
@@ -324,7 +324,7 @@ The `grants` object contains information about each vendor and its purposes, it 
 The `GDPRPurposeGrants` class contains:
 - a `granted` param which inform the user that all consents have been granted for that vendor,
 - a `purposeGrants` param which is a Map of purposes. Each purpose can be opted-in (`true`) or opted-out (`false`)
-  Following the structure of the `GDPRPurposeGrants` class.
+Following the structure of the `GDPRPurposeGrants` class.
 ```
 GDPRPurposeGrants
     |-- granted: Boolean
@@ -333,24 +333,24 @@ GDPRPurposeGrants
 Kotlin
 ```kotlin
           override fun onConsentReady(consent: SPConsents) {
-  val grants = consent.gdpr?.consent?.grants
-  grants?.forEach { grant ->
-    val granted = grants[grant.key]?.granted
-    val purposes = grants[grant.key]?.purposeGrants
-    println("vendor: ${grant.key} - granted: $granted - purposes: $purposes")
-  }
-}
+            val grants = consent.gdpr?.consent?.grants
+            grants?.forEach { grant ->
+              val granted = grants[grant.key]?.granted
+              val purposes = grants[grant.key]?.purposeGrants
+              println("vendor: ${grant.key} - granted: $granted - purposes: $purposes")
+            }
+          }
 ```
 
 Java
 ```java
           @Override
-public void onConsentReady(@NotNull SPConsents consent) {
-        Map<String, GDPRPurposeGrants> grants = consent.getGdpr().getConsent().getGrants(); // Nullable
-        Boolean granted = grants.get("<vendorId>").getGranted(); // Nullable
-        Map<String, Boolean> purposes = grants.get("<vendorId>").getPurposeGrants(); // Nullable
-        Boolean acceptedPurpose = purposes.get("<purposeId>"); // Nullable
-        }
+          public void onConsentReady(@NotNull SPConsents consent) {
+                  Map<String, GDPRPurposeGrants> grants = consent.getGdpr().getConsent().getGrants(); // Nullable
+                  Boolean granted = grants.get("<vendorId>").getGranted(); // Nullable
+                  Map<String, Boolean> purposes = grants.get("<vendorId>").getPurposeGrants(); // Nullable
+                  Boolean acceptedPurpose = purposes.get("<purposeId>"); // Nullable
+          }
 ```
 
 ## Authenticated Consent
@@ -359,17 +359,17 @@ If there is a consent profile associated with `authId` ("JohDoe"), the SDK will 
 Kotlin
 ```kotlin
     override fun onResume() {
-  super.onResume()
-  spConsentLib.loadMessage(authId = "<authId>")
-}
+        super.onResume()
+        spConsentLib.loadMessage(authId = "<authId>")
+    }
 ```
 Java
 ```java
     @Override
-protected void onResume() {
+    protected void onResume() {
         super.onResume();
         spConsentLib.loadMessage("<authId>");
-        }
+    }
 ```
 
 ## Sharing consent with a `WebView`
@@ -379,130 +379,130 @@ In order to share the consent between native and webview the SDK will rely on au
 This feature makes use of what we call [Authenticated Consent](https://documentation.sourcepoint.com/consent_mp/authenticated-consent/authenticated-consent-overview). In a nutshell, you provide an identifier for the current user (username, user id, uuid or any unique string) and we'll take care of associating the consent profile to that identifier.
 The authId will then assume 1 of the 2 values below:
 1. **User is authenticated and have an id:**
-   In that case the `authId` is going to be that user id.
+In that case the `authId` is going to be that user id.
 2. **User is _not_ authenticated and I'm only interested in using consent in this app.**
-   We recommend using a randomly generated `UUID` as `authId`. Make sure to persist this `authId` before passing it to the builder method `.setAuthId(String)`
+We recommend using a randomly generated `UUID` as `authId`. Make sure to persist this `authId` before passing it to the builder method `.setAuthId(String)`
 
 ### Complete Example
 Kotlin
 ```kotlin
 class MainActivityKotlin : AppCompatActivity() {
-
-  private val cmpConfig : SpConfig = config {
-    accountId = 22
-    propertyName = "mobile.multicampaign.demo"
-    messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
-    campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
-    messageTimeout = 4000 // Optional, default 3000ms
-    +CampaignType.CCPA
-    +CampaignType.GDPR
-  }
-
-  private val spConsentLib by spConsentLibLazy {
-    activity = this@MainActivityKotlin
-    spClient = LocalClient()
-    spConfig = cmpConfig
-  }
-
-  override fun onResume() {
-    super.onResume()
-    spConsentLib.loadMessage()
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    spConsentLib.dispose()
-  }
-
-  internal inner class LocalClient : SpClient {
-    override fun onMessageReady(message: JSONObject) { /* ... */ }
-    override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) { /* ... */ }
-    override fun onError(error: Throwable) { /* ... */ }
-    override fun onConsentReady(consent: SPConsents) { /* ... */ }
-    override fun onAction(view: View, consentAction: ConsentAction) : ConsentAction{  return consentAction }
-    override fun onUIFinished(view: View) {
-      // HERE you can take some action before removing the consent view
-      spConsentLib.removeView(view)
+  
+    private val cmpConfig : SpConfig = config {
+      accountId = 22
+      propertyName = "mobile.multicampaign.demo"
+      messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
+      campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
+      messageTimeout = 4000 // Optional, default 3000ms
+      +CampaignType.CCPA
+      +CampaignType.GDPR
     }
-    override fun onUIReady(view: View) {
-      // HERE you can take some action before inflating the consent view
-      spConsentLib.showView(view)
+
+    private val spConsentLib by spConsentLibLazy {
+            activity = this@MainActivityKotlin
+            spClient = LocalClient()
+            spConfig = cmpConfig
     }
-    override fun onSpFinished(sPConsents: SPConsents) { }
-  }
+
+    override fun onResume() {
+        super.onResume()
+        spConsentLib.loadMessage()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        spConsentLib.dispose()
+    }
+
+    internal inner class LocalClient : SpClient {
+        override fun onMessageReady(message: JSONObject) { /* ... */ }
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) { /* ... */ }
+        override fun onError(error: Throwable) { /* ... */ }
+        override fun onConsentReady(consent: SPConsents) { /* ... */ }
+        override fun onAction(view: View, consentAction: ConsentAction) : ConsentAction{  return consentAction }
+        override fun onUIFinished(view: View) {
+        // HERE you can take some action before removing the consent view
+            spConsentLib.removeView(view)
+        }
+        override fun onUIReady(view: View) {
+            // HERE you can take some action before inflating the consent view
+            spConsentLib.showView(view)
+        }
+        override fun onSpFinished(sPConsents: SPConsents) { }
+    }
 }
 ```
 Java
 ```java
 public class MainActivityJava extends AppCompatActivity {
+    
+    private final SpConfig cmpConfig = new SpConfigDataBuilder()
+            .addAccountId(22)
+            .addPropertyName("mobile.multicampaign.demo")
+            .addMessageLanguage(MessageLanguage.ENGLISH)
+            .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
+            .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
+            .build();
 
-  private final SpConfig cmpConfig = new SpConfigDataBuilder()
-          .addAccountId(22)
-          .addPropertyName("mobile.multicampaign.demo")
-          .addMessageLanguage(MessageLanguage.ENGLISH)
-          .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
-          .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
-          .build();
-
-  private SpConsentLib spConsentLib = null;
-
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    spConsentLib = FactoryKt.makeConsentLib(
-            cmpConfig,
-            this,
-            new LocalClient()
-    );
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-    spConsentLib.loadMessage();
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    spConsentLib.dispose();
-  }
-
-  class LocalClient implements SpClient {
+    private SpConsentLib spConsentLib = null;
 
     @Override
-    public void onMessageReady(@NotNull JSONObject message) { }
-
-    @Override
-    public void onNativeMessageReady(@NotNull MessageStructure message, @NotNull  NativeMessageController messageController) { }
-
-    @Override
-    public void onError(@NotNull Throwable error) {
-      error.printStackTrace();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        spConsentLib = FactoryKt.makeConsentLib(
+                cmpConfig,
+                this,
+                new LocalClient()
+        );
     }
 
     @Override
-    public void onConsentReady(@NotNull SPConsents c) {
-      System.out.println("onConsentReady: " + c);
+    protected void onResume() {
+        super.onResume();
+        spConsentLib.loadMessage();
     }
 
     @Override
-    public void onUIFinished(@NotNull View v) {
-      spConsentLib.removeView(v);
+    protected void onDestroy() {
+        super.onDestroy();
+        spConsentLib.dispose();
     }
 
-    @Override
-    public void onUIReady(@NotNull View v) {
-      spConsentLib.showView(v);
+    class LocalClient implements SpClient {
+
+        @Override
+        public void onMessageReady(@NotNull JSONObject message) { }
+
+        @Override
+        public void onNativeMessageReady(@NotNull MessageStructure message, @NotNull  NativeMessageController messageController) { }
+
+        @Override
+        public void onError(@NotNull Throwable error) {
+            error.printStackTrace();
+        }
+
+        @Override
+        public void onConsentReady(@NotNull SPConsents c) {
+            System.out.println("onConsentReady: " + c);
+        }
+
+        @Override
+        public void onUIFinished(@NotNull View v) {
+            spConsentLib.removeView(v);
+        }
+
+        @Override
+        public void onUIReady(@NotNull View v) {
+            spConsentLib.showView(v);
+        }
+
+        @Override
+        public ConsentAction onAction(View view, @NotNull ConsentAction consentAction) { return consentAction; }
+
+        @Override
+        public void onSpFinished(@NotNull SPConsents sPConsents) { }
     }
-
-    @Override
-    public ConsentAction onAction(View view, @NotNull ConsentAction consentAction) { return consentAction; }
-
-    @Override
-    public void onSpFinished(@NotNull SPConsents sPConsents) { }
-  }
 }
 ```
 
@@ -519,24 +519,24 @@ Targeting params allow you to set arbitrary key/value pairs. These key/value pai
 Kotlin: customize a unity plus operator to add a list of targeting parameters per campaign type.
 ```kotlin
 
-val cmpConfig : SpConfig = config {
-  accountId = 22
-  propertyName = "mobile.multicampaign.demo"
-  messLanguage = MessageLanguage.ENGLISH
-  +(CampaignType.GDPR to listOf(("location" to "EU")))
-  +(CampaignType.CCPA to listOf(("location" to "US")))
-}
+    val cmpConfig : SpConfig = config {
+            accountId = 22
+            propertyName = "mobile.multicampaign.demo"
+            messLanguage = MessageLanguage.ENGLISH
+            +(CampaignType.GDPR to listOf(("location" to "EU")))
+            +(CampaignType.CCPA to listOf(("location" to "US")))
+    }
 
 ```
-Java: Use `addCampaign` method to add a list of targeting parameters per campaign type.
+Java: Use `addCampaign` method to add a list of targeting parameters per campaign type. 
 ```java
     private final SpConfig cmpConfig = new SpConfigDataBuilder()
-        .addAccountId(22)
-        .addPropertyName("mobile.multicampaign.demo")
-        .addMessageLanguage(MessageLanguage.ENGLISH)
-        .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
-        .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
-        .build();
+            .addAccountId(22)
+            .addPropertyName("mobile.multicampaign.demo")
+            .addMessageLanguage(MessageLanguage.ENGLISH)
+            .addCampaign(CampaignType.GDPR, Arrays.asList(new TargetingParam("location", "EU")))
+            .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
+            .build();
 ```
 In this example 2 key/value pairs, "language":"fr" and "location":"EU/US", are passed to the campaign scenario.
 
@@ -549,50 +549,50 @@ Kotlin
 
 ```kotlin
     val cmpConfig : SpConfig = config {
-  //  ...
-  campaignsEnv = CampaignsEnv.PUBLIC
-  //  ...
-}
+            //  ...
+            campaignsEnv = CampaignsEnv.PUBLIC
+            //  ...
+    }
 ```
 
 Java
 
 ```java
     private final SpConfig spConfig = new SpConfigDataBuilder()
-        //
-        .addCampaignsEnv(CampaignsEnv.PUBLIC)
-        //
-        .build();
+            //
+            .addCampaignsEnv(CampaignsEnv.PUBLIC)
+            //
+            .build();
 ```
 
 ## Set a Privacy Manager Id for the Property Group
 
-Property groups allow your organization to group properties together in order to simplify configurations for  mass campaigns and updates.
+Property groups allow your organization to group properties together in order to simplify configurations for  mass campaigns and updates. 
 In order to use a `Privacy Manager Id for the Property Group`, you should edit the SDK configuration object as follows:
 
 Kotlin
 ```kotlin
     val cmpConfig : SpConfig = config {
-  accountId = 22
-  propertyName = "mobile.multicampaign.demo"
-  messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
-  campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
-  messageTimeout = 4000 // Optional, default 3000ms
-  + SpCampaign(CampaignType.GDPR, "1234") // 1234 is the id of the privacy manager for the property group
-}
+                  accountId = 22
+                  propertyName = "mobile.multicampaign.demo"
+                  messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
+                  campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
+                  messageTimeout = 4000 // Optional, default 3000ms
+                  + SpCampaign(CampaignType.GDPR, "1234") // 1234 is the id of the privacy manager for the property group
+                }
 ```
 
 Java
 ```java
     // Cmp SDK config
-private final SpConfig cmpConfig = new SpConfigDataBuilder()
-        .addAccountId(22)
-        .addPropertyName("mobile.multicampaign.demo")
-        .addMessageLanguage(MessageLanguage.ENGLISH) // Optional, default ENGLISH
-        .addCampaignsEnv(CampaignsEnv.PUBLIC) // Optional, default PUBLIC
-        .addMessageTimeout(4000) // Optional, default 3000ms
-        .addCampaign(new SpCampaign(CampaignType.GDPR, "1234")) // 1234 is the property group
-        .build();
+    private final SpConfig cmpConfig = new SpConfigDataBuilder()
+            .addAccountId(22)
+            .addPropertyName("mobile.multicampaign.demo")
+            .addMessageLanguage(MessageLanguage.ENGLISH) // Optional, default ENGLISH
+            .addCampaignsEnv(CampaignsEnv.PUBLIC) // Optional, default PUBLIC
+            .addMessageTimeout(4000) // Optional, default 3000ms
+            .addCampaign(new SpCampaign(CampaignType.GDPR, "1234")) // 1234 is the property group
+            .build();
 
 ```
 
@@ -600,20 +600,20 @@ After adding the `Privacy Manager Id for the Property Group`, you should set the
 
 ```kotlin
             spConsentLib.loadPrivacyManager(
-  pmId = 1000,
-  pmTab = PMTab.PURPOSES,
-  campaignType = CampaignType.GDPR,
-  useGroupPmIfAvailable = true      // enable the SDK to use the group Pm Id
-)
+              pmId = 1000,
+              pmTab = PMTab.PURPOSES,
+              campaignType = CampaignType.GDPR,
+              useGroupPmIfAvailable = true      // enable the SDK to use the group Pm Id
+            )
 ```
 
 ```java
             spConsentLib.loadPrivacyManager(
-        1000,                 // pmId
-        PMTab.PURPOSES,       // PMTab
-        CampaignType.GDPR,    // CampaignType
-        true                  // useGroupPmIfAvailable, enable the SDK to use the group Pm Id
-        )
+              1000,                 // pmId
+              PMTab.PURPOSES,       // PMTab
+              CampaignType.GDPR,    // CampaignType
+              true                  // useGroupPmIfAvailable, enable the SDK to use the group Pm Id
+            )
 ```
 
 **Note**: CCPA campaign `Privacy Manager Id for the Property Group` feature is currently not supported.
@@ -633,20 +633,20 @@ It's possible to programmatically consent the current user to a list of vendors,
 Kotlin
 ```kotlin
             spConsentLib.customConsentGDPR(
-  vendors = listOf("5ff4d000a228633ac048be41"),
-  categories = listOf("608bad95d08d3112188e0e36", "608bad95d08d3112188e0e2f"),
-  legIntCategories = emptyList(),
-  success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
-)
+                vendors = listOf("5ff4d000a228633ac048be41"),
+                categories = listOf("608bad95d08d3112188e0e36", "608bad95d08d3112188e0e2f"),
+                legIntCategories = emptyList(),
+                success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
+            )
 ```
 Java
 ```java
             spConsentLib.customConsentGDPR(
-        Arrays.asList("5ff4d000a228633ac048be41"),
-        Arrays.asList("608bad95d08d3112188e0e36", "608bad95d08d3112188e0e2f"),
-        new ArrayList<>(),
-        (SPConsents) -> {  return Unit.INSTANCE;  }
-        )
+                    Arrays.asList("5ff4d000a228633ac048be41"),
+                    Arrays.asList("608bad95d08d3112188e0e36", "608bad95d08d3112188e0e2f"),
+                    new ArrayList<>(),
+                    (SPConsents) -> {  return Unit.INSTANCE;  }
+            )
 ```
 The ids passed will be appended to the list of already accepted vendors, categories and leg. int. categories. The method is asynchronous so you must pass a `Runnable` that will receive back an instance of `GDPRUserConsent` in case of success or it'll call the `onError` callback in case of failure.
 
@@ -656,16 +656,16 @@ It's important to notice, this method is intended to be used for **custom** vend
 The `vendorGrants` is an attribute of `GDPRUserConsent` class. The `vendorGrants` attribute, simply put, is an Map representing the consent state (on a legal basis) of all vendors and its purposes for the current user. For example:
 ```Java
 [
-        "vendorId1": VendorGrant(
-        vendorGrant: boolean,
-        purposeGrants: [
-        "purposeId1": boolean,
-        "purposeId2": boolean,
-        // more purposes here
-        ]
-        )
-        // more vendors here
-        ]
+  "vendorId1": VendorGrant(
+    vendorGrant: boolean,
+    purposeGrants: [
+      "purposeId1": boolean,
+      "purposeId2": boolean,
+      // more purposes here
+    ]
+  )
+  // more vendors here
+]
 ```
 ## The `onAction` callback
 The on Action callback is created with the purpose of giving the client the chance to know with kind of action was selected
@@ -688,22 +688,22 @@ ConsentAction
 
 ## `pubData`
 When the user takes an action within the consent UI, it's possible to attach an arbitrary payload to the action data and have it sent to our endpoints.
-Those values are `key-values` pairs that have to be added inside the object `ConsentAction` during the `onAction` callback execution.
+Those values are `key-values` pairs that have to be added inside the object `ConsentAction` during the `onAction` callback execution. 
 The `onAction` callback is a non-blocking call for the UI, this means that it gets executed outside the UI main thread.
 Following an example:
 
 ```kotlin
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
-  consentAction.pubData.put("pb_key", "pb_value")
-  return consentAction
-}
+            consentAction.pubData.put("pb_key", "pb_value")
+            return consentAction
+        }
 ```
 
 ```java
         @Override
-public ConsentAction onAction(@NotNull View view, @NotNull ConsentAction consentAction) {
-        consentAction.getPubData().put("pb_key", "pb_value");
-        return consentAction;
+        public ConsentAction onAction(@NotNull View view, @NotNull ConsentAction consentAction) {
+            consentAction.getPubData().put("pb_key", "pb_value");
+            return consentAction;
         }
 ```
 
@@ -713,22 +713,22 @@ a `JSONObject` entity with the desired structure and send it as parameter of the
 Kotlin
 ```kotlin
 
-private val pubData: JSONObject = JSONObject().apply {
-  put("timeStamp", 1628620031363)
-  put("key_1", "value_1")
-  put("key_2", true)
-  put("key_3", JSONObject())
-}
+    private val pubData: JSONObject = JSONObject().apply {
+      put("timeStamp", 1628620031363)
+      put("key_1", "value_1")
+      put("key_2", true)
+      put("key_3", JSONObject())
+    }
 
-override fun onResume() {
-  super.onResume()
-  spConsentLib.loadMessage(pubData)
-}
+    override fun onResume() {
+        super.onResume()
+        spConsentLib.loadMessage(pubData)
+    }
 ```
 Java
 ```java
     @Override
-protected void onResume() {
+    protected void onResume() {
         super.onResume();
         JSONObject pubData = new JSONObject();
         pubData.put("timeStamp", 1628620031363);
@@ -736,7 +736,7 @@ protected void onResume() {
         pubData.put("key_2", true);
         pubData.put("key_3", new JSONObject());
         spConsentLib.loadMessage(pubData);
-        }
+    }
 ```
 
 ## Delete user data
@@ -774,7 +774,7 @@ To publish new release artifact you need to do following:
 git checkout develop
 git pull
 ```
-* Create a new branch based on pure develop branch code named `release/x.y.z` where x.y.z stands for ordinal version of upcoming release. Push it to `origin`.
+* Create a new branch based on pure develop branch code named `release/x.y.z` where x.y.z stands for ordinal version of upcoming release. Push it to `origin`. 
 ```
 git checkout -b release/x.y.z
 git push --set-upstream origin release/x.y.z
@@ -794,7 +794,7 @@ git push
 * Log in with your credentials. Please take a note you should receive permission in order to access to SourcePoint repo.
 * Select artifact and click “close” then “confirm”
 * Refresh the page and click “release” then ”confirm”
-
+ 
 From now, you may count your release successful. Artifact will appear on Maven Central in few hours and must be already accesible on GitHub repository page.
 ## Post-release
 However, after you have accomplished artifact release process, few more steps need to be done:
