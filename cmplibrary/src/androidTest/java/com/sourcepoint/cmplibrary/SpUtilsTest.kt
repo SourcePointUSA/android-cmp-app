@@ -183,7 +183,7 @@ class SpUtilsTest {
         campaignManager.saveGdpr(gdpr)
 
         campaignApplies(appCtx, CampaignType.GDPR).assertTrue()
-        campaignApplies(appCtx, CampaignType.CCPA).assertTrue()
+        campaignApplies(appCtx, CampaignType.CCPA).assertFalse()
     }
 
     @Test
