@@ -23,7 +23,7 @@ fun userConsents(context: Context, spConfig: SpConfig): SPConsents {
 }
 
 fun campaignApplies(context: Context, campaign: CampaignType): Boolean {
-    return when(campaign){
+    return when (campaign) {
         CampaignType.GDPR -> DataStorageGdpr.create(context).gdprApplies
         CampaignType.CCPA -> DataStorageCcpa.create(context).ccpaApplies
     }

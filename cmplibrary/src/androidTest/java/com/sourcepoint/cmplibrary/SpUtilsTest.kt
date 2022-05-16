@@ -134,8 +134,8 @@ class SpUtilsTest {
         campaignManager.saveGdpr(gdpr)
         campaignManager.saveCcpa(ccpa)
 
-        campaignApplies(appCtx,CampaignType.GDPR).assertTrue()
-        campaignApplies(appCtx,CampaignType.CCPA).assertTrue()
+        campaignApplies(appCtx, CampaignType.GDPR).assertTrue()
+        campaignApplies(appCtx, CampaignType.CCPA).assertTrue()
     }
 
     @Test
@@ -151,8 +151,8 @@ class SpUtilsTest {
         campaignManager.saveGdpr(gdpr)
         campaignManager.saveCcpa(ccpa)
 
-        campaignApplies(appCtx,CampaignType.GDPR).assertFalse()
-        campaignApplies(appCtx,CampaignType.CCPA).assertFalse()
+        campaignApplies(appCtx, CampaignType.GDPR).assertFalse()
+        campaignApplies(appCtx, CampaignType.CCPA).assertFalse()
     }
 
     @Test
@@ -166,8 +166,8 @@ class SpUtilsTest {
 
         campaignManager.saveCcpa(ccpa)
 
-        campaignApplies(appCtx,CampaignType.GDPR).assertFalse()
-        campaignApplies(appCtx,CampaignType.CCPA).assertTrue()
+        campaignApplies(appCtx, CampaignType.GDPR).assertFalse()
+        campaignApplies(appCtx, CampaignType.CCPA).assertTrue()
     }
 
     @Test
@@ -182,8 +182,8 @@ class SpUtilsTest {
 
         campaignManager.saveGdpr(gdpr)
 
-        campaignApplies(appCtx,CampaignType.GDPR).assertTrue()
-        campaignApplies(appCtx,CampaignType.CCPA).assertTrue()
+        campaignApplies(appCtx, CampaignType.GDPR).assertTrue()
+        campaignApplies(appCtx, CampaignType.CCPA).assertTrue()
     }
 
     @Test
