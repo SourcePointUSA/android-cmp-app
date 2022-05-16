@@ -182,10 +182,13 @@ internal class SpConsentLibImpl(
                     msg = "${throwable.message}",
                     content = "${throwable.message}"
                 )
-                pLogger.e("SpConsentLib", """
+                pLogger.e(
+                    "SpConsentLib",
+                    """
                     onError
                     ${throwable.message}
-                """.trimIndent())
+                    """.trimIndent()
+                )
             },
             env = env
         )

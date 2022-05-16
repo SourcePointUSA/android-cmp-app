@@ -97,7 +97,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
         gdprPmId = gdpr_pm_id_ed.text.toString().toLongOrNull(),
         ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull(),
         campaignsEnv = if (radio_stage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC,
-        gdprGroupPmId = if(gdprGroupPmId.isEmpty() || gdprGroupPmId.isBlank()) null else gdprGroupPmId,
+        gdprGroupPmId = if (gdprGroupPmId.isEmpty() || gdprGroupPmId.isBlank()) null else gdprGroupPmId,
         useGdprGroupPmIfAvailable = gdpr_groupId_switch.isChecked
     )
 }
