@@ -18,8 +18,7 @@ import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
-import com.sourcepoint.cmplibrary.util.ccpaApplies
-import com.sourcepoint.cmplibrary.util.gdprApplies
+import com.sourcepoint.cmplibrary.util.campaignApplies
 import com.sourcepoint.cmplibrary.util.userConsents
 import org.json.JSONObject
 import org.junit.Test
@@ -135,8 +134,8 @@ class SpUtilsTest {
         campaignManager.saveGdpr(gdpr)
         campaignManager.saveCcpa(ccpa)
 
-        gdprApplies(appCtx).assertTrue()
-        ccpaApplies(appCtx).assertTrue()
+        campaignApplies(appCtx,CampaignType.GDPR).assertTrue()
+        campaignApplies(appCtx,CampaignType.CCPA).assertTrue()
     }
 
     @Test
@@ -152,8 +151,8 @@ class SpUtilsTest {
         campaignManager.saveGdpr(gdpr)
         campaignManager.saveCcpa(ccpa)
 
-        gdprApplies(appCtx).assertFalse()
-        ccpaApplies(appCtx).assertFalse()
+        campaignApplies(appCtx,CampaignType.GDPR).assertFalse()
+        campaignApplies(appCtx,CampaignType.CCPA).assertFalse()
     }
 
     @Test
@@ -167,8 +166,8 @@ class SpUtilsTest {
 
         campaignManager.saveCcpa(ccpa)
 
-        gdprApplies(appCtx).assertFalse()
-        ccpaApplies(appCtx).assertTrue()
+        campaignApplies(appCtx,CampaignType.GDPR).assertFalse()
+        campaignApplies(appCtx,CampaignType.CCPA).assertTrue()
     }
 
     @Test
@@ -183,8 +182,8 @@ class SpUtilsTest {
 
         campaignManager.saveGdpr(gdpr)
 
-        gdprApplies(appCtx).assertTrue()
-        ccpaApplies(appCtx).assertFalse()
+        campaignApplies(appCtx,CampaignType.GDPR).assertTrue()
+        campaignApplies(appCtx,CampaignType.CCPA).assertTrue()
     }
 
     @Test
