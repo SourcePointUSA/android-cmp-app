@@ -31,7 +31,7 @@ class DemoFragment : Fragment() {
         LOG
     }
 
-    var demoListener: ((DemoAction, ott: Boolean) -> Unit)? = null
+    var demoListener: ((DemoAction) -> Unit)? = null
 
     private val propertyName by lazy {
         arguments?.getString("property_name") ?: throw RuntimeException("Property name not set!!!")

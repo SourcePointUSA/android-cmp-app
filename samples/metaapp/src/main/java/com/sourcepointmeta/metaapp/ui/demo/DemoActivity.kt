@@ -120,7 +120,7 @@ class DemoActivity : FragmentActivity() {
         val pagerAdapter = ScreenSlidePagerAdapter(this)
         pager.adapter = pagerAdapter
 
-        demoFr.demoListener = { action, isOtt ->
+        demoFr.demoListener = { action ->
 
             // don't go to the first fragment during UI tests
             if (!isUITestRunning) {
@@ -131,38 +131,24 @@ class DemoActivity : FragmentActivity() {
                 DemoFragment.DemoAction.GDPR_PM -> {
                     gdprPmId?.toString()
                         ?.let {
-                            if (isOtt) {
-                                spConsentLib.loadOTTPrivacyManager(
-                                    it,
-                                    CampaignType.GDPR
-                                )
-                            } else {
-                                spConsentLib.loadPrivacyManager(
-                                    it,
-                                    pTab,
-                                    CampaignType.GDPR,
-                                    useGroupPmIfAvailable
-                                )
-                            }
+                            spConsentLib.loadPrivacyManager(
+                                it,
+                                pTab,
+                                CampaignType.GDPR,
+                                useGroupPmIfAvailable
+                            )
                         }
                         ?: pmNotValid()
                 }
                 DemoFragment.DemoAction.CCPA_PM -> {
                     ccpaPmId?.toString()
                         ?.let {
-                            if (isOtt) {
-                                spConsentLib.loadOTTPrivacyManager(
-                                    it,
-                                    CampaignType.CCPA
-                                )
-                            } else {
-                                spConsentLib.loadPrivacyManager(
-                                    it,
-                                    pTab,
-                                    CampaignType.CCPA,
-                                    useGroupPmIfAvailable
-                                )
-                            }
+                            spConsentLib.loadPrivacyManager(
+                                it,
+                                pTab,
+                                CampaignType.CCPA,
+                                useGroupPmIfAvailable
+                            )
                         }
                         ?: pmNotValid()
                 }

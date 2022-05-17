@@ -60,19 +60,11 @@ class MainActivityKotlin : AppCompatActivity() {
             )
         }
         findViewById<View>(R.id.review_consents_ccpa).setOnClickListener { _v: View? ->
-            if (dataProvider.isOtt) {
-                spConsentLib.loadOTTPrivacyManager(
-                    dataProvider.ccpaPmId,
-                    CampaignType.CCPA
-                )
-            } else {
-                spConsentLib.loadPrivacyManager(
-                    dataProvider.ccpaPmId,
-                    PMTab.PURPOSES,
-                    CampaignType.CCPA
-                )
-            }
-
+            spConsentLib.loadPrivacyManager(
+                dataProvider.ccpaPmId,
+                PMTab.PURPOSES,
+                CampaignType.CCPA
+            )
         }
         findViewById<View>(R.id.clear_all).setOnClickListener { _v: View? -> clearAllData(this) }
         findViewById<View>(R.id.auth_id_activity).setOnClickListener { _v: View? ->

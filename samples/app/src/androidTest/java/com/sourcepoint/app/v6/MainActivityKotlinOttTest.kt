@@ -117,7 +117,7 @@ class MainActivityKotlinOttTest {
         }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr{ verify(exactly = 2) { spClient.onConsentReady(any()) } }
+        wr{ verify(atLeast = 2) { spClient.onConsentReady(any()) } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         wr {
