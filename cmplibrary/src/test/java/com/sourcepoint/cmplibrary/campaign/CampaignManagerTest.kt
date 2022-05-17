@@ -5,13 +5,11 @@ import com.sourcepoint.cmplibrary.assertFalse
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.CampaignTemplate
-import com.sourcepoint.cmplibrary.model.Ccpa
-import com.sourcepoint.cmplibrary.model.Gdpr
-import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import io.mockk.MockKAnnotations
@@ -67,7 +65,7 @@ class CampaignManagerTest {
         sut.clearConsents()
     }
 
-    private val sut by lazy { CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH) }
+    private val sut by lazy { CampaignManager.create(dataStorage, spConfig) }
 
     @Test
     fun `CHECK that getGDPRConsent RETURNS a GDPRConsent from the dataStorage`() {
@@ -138,5 +136,94 @@ class CampaignManagerTest {
         }
         sut.isAppliedCampaign(CampaignType.CCPA).assertTrue()
         sut.isAppliedCampaign(CampaignType.GDPR).assertFalse()
+    }
+
+    @Test
+    fun `GIVEN a GDPR config RETURN the configuration with language EN`() {
+        val sut = CampaignManager.create(
+            dataStorage,
+            spConfig.copy(messageLanguage = MessageLanguage.ENGLISH)
+        )
+        val config = sut.getPmConfig(CampaignType.GDPR, "11", PMTab.DEFAULT).getOrNull().assertNotNull()!!
+        config.run {
+            pmTab.assertEquals(PMTab.DEFAULT)
+            consentLanguage.assertEquals("EN")
+            uuid.assertEquals("")
+            siteId.assertEquals("0")
+            messageId.assertEquals("11")
+        }
+    }
+
+    @Test
+    fun `GIVEN a GDPR config RETURN the configuration with language BG`() {
+        val sut = CampaignManager.create(
+            dataStorage,
+            spConfig.copy(messageLanguage = MessageLanguage.BULGARIAN)
+        )
+        val config = sut.getPmConfig(CampaignType.GDPR, "22", PMTab.PURPOSES).getOrNull().assertNotNull()!!
+        config.run {
+            pmTab.assertEquals(PMTab.PURPOSES)
+            consentLanguage.assertEquals("BG")
+            uuid.assertEquals("")
+            siteId.assertEquals("0")
+            messageId.assertEquals("22")
+        }
+    }
+
+    @Test
+    fun `GIVEN a GDPR config RETURN the configuration with language ES`() {
+
+        every { dataStorage.getGdprConsentUuid() }.returns("uuid-test")
+        every { dataStorage.getPropertyId() }.returns(1234)
+
+        val sut = CampaignManager.create(
+            dataStorage,
+            spConfig.copy(messageLanguage = MessageLanguage.SPANISH)
+        )
+
+        val config = sut.getPmConfig(
+            campaignType = CampaignType.GDPR,
+            pmId = "22",
+            pmTab = PMTab.PURPOSES,
+            useGroupPmIfAvailable = true,
+            groupPmId = null
+        ).getOrNull().assertNotNull()!!
+
+        config.run {
+            pmTab.assertEquals(PMTab.PURPOSES)
+            consentLanguage.assertEquals("ES")
+            uuid.assertEquals("uuid-test")
+            siteId.assertEquals("1234")
+            messageId.assertEquals("22")
+        }
+    }
+
+    @Test
+    fun `GIVEN a GDPR config RETURN the configuration with language NL and groupPmId not empty`() {
+
+        every { dataStorage.getGdprConsentUuid() }.returns("uuid")
+        every { dataStorage.getPropertyId() }.returns(9090)
+        every { dataStorage.gdprChildPmId }.returns("8989")
+
+        val sut = CampaignManager.create(
+            dataStorage,
+            spConfig.copy(messageLanguage = MessageLanguage.DUTCH)
+        )
+
+        val config = sut.getPmConfig(
+            campaignType = CampaignType.GDPR,
+            pmId = "22",
+            pmTab = PMTab.PURPOSES,
+            useGroupPmIfAvailable = true,
+            groupPmId = "111"
+        ).getOrNull().assertNotNull()!!
+
+        config.run {
+            pmTab.assertEquals(PMTab.PURPOSES)
+            consentLanguage.assertEquals("NL")
+            uuid.assertEquals("uuid")
+            siteId.assertEquals("9090")
+            messageId.assertEquals("8989")
+        }
     }
 }

@@ -60,7 +60,7 @@ interface Logger {
 
     fun clientEvent(event: String, msg: String, content: String)
 
-    fun pm(tag: String, url: String, type: String, pmId: String?)
+    fun pm(tag: String, url: String, type: String, params: String?)
 
     fun flm(tag: String, url: String, type: String, json: JSONObject)
 

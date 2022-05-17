@@ -23,6 +23,12 @@ interface SpConsentLib {
 
     /**
      * Load the First Layer Message (FLM)
+     * @param pubData is used to save some data in the BE using a JSON object
+     */
+    fun loadMessage(pubData: JSONObject? = null)
+
+    /**
+     * Load the First Layer Message (FLM)
      * @param authId is used to get an already saved consent
      */
     fun loadMessage(authId: String? = null)

@@ -48,7 +48,6 @@ internal interface CampaignManager {
         pmTab: PMTab?
     ): Either<PmUrlConfig>
 
-    fun getUnifiedMessageReq(): UnifiedMessageRequest
     fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest
 
     fun getGDPRConsent(): Either<GDPRConsentInternal>
@@ -67,7 +66,7 @@ internal interface CampaignManager {
     companion object {
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
             return when {
-                useGroupPmIfAvailable && childPmId != null -> childPmId
+                useGroupPmIfAvailable && !childPmId.isNullOrEmpty() && childPmId.isNotBlank() -> childPmId
                 else -> userPmId ?: ""
             }
         }
@@ -76,15 +75,15 @@ internal interface CampaignManager {
 
 internal fun CampaignManager.Companion.create(
     dataStorage: DataStorage,
-    spConfig: SpConfig,
-    messageLanguage: MessageLanguage
-): CampaignManager = CampaignManagerImpl(dataStorage, spConfig, messageLanguage)
+    spConfig: SpConfig
+): CampaignManager = CampaignManagerImpl(dataStorage, spConfig)
 
 private class CampaignManagerImpl(
     val dataStorage: DataStorage,
-    override val spConfig: SpConfig,
-    override val messageLanguage: MessageLanguage
+    override val spConfig: SpConfig
 ) : CampaignManager {
+
+    override val messageLanguage: MessageLanguage = spConfig.messageLanguage
 
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
     private val campaignsEnv: CampaignsEnv = spConfig.campaignsEnv
@@ -213,7 +212,7 @@ private class CampaignManagerImpl(
 
         PmUrlConfig(
             pmTab = pmTab,
-            consentLanguage = null,
+            consentLanguage = spConfig.messageLanguage.value,
             uuid = uuid,
             siteId = siteId,
             messageId = usedPmId
@@ -249,7 +248,7 @@ private class CampaignManagerImpl(
 //        )
 
         PmUrlConfig(
-            consentLanguage = null,
+            consentLanguage = spConfig.messageLanguage.value,
             uuid = uuid,
             siteId = siteId,
             messageId = usedPmId
@@ -285,10 +284,6 @@ private class CampaignManagerImpl(
                 .getCcpaMessage().isNotBlank() -> Pair(CampaignType.CCPA, mapTemplate[CampaignType.CCPA.name]!!)
             else -> throw MissingPropertyException(description = "Inconsistent Legislation!!!")
         }
-    }
-
-    override fun getUnifiedMessageReq(): UnifiedMessageRequest {
-        return getUnifiedMessageReq(null, null)
     }
 
     override fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest {

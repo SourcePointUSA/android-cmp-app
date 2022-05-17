@@ -11,7 +11,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SPGDPRConsent
@@ -22,12 +22,11 @@ fun userConsents(context: Context, spConfig: SpConfig): SPConsents {
     return userConsents(cm)
 }
 
-fun gdprApplies(context: Context): Boolean {
-    return DataStorageGdpr.create(context).gdprApplies
-}
-
-fun ccpaApplies(context: Context): Boolean {
-    return DataStorageCcpa.create(context).ccpaApplies
+fun campaignApplies(context: Context, campaign: CampaignType): Boolean {
+    return when (campaign) {
+        CampaignType.GDPR -> DataStorageGdpr.create(context).gdprApplies
+        CampaignType.CCPA -> DataStorageCcpa.create(context).ccpaApplies
+    }
 }
 
 fun clearAllData(context: Context) {
@@ -58,5 +57,5 @@ internal fun createStorage(context: Context, spConfig: SpConfig): CampaignManage
     val dataStorageGdpr = fetchOrStore(DataStorageGdpr::class.java) { DataStorageGdpr.create(context) }
     val dataStorageCcpa = fetchOrStore(DataStorageCcpa::class.java) { DataStorageCcpa.create(context) }
     val dataStorage = fetchOrStore(DataStorage::class.java) { DataStorage.create(context, dataStorageGdpr, dataStorageCcpa) }
-    return fetchOrStore(CampaignManager::class.java) { CampaignManager.create(dataStorage, spConfig, MessageLanguage.ENGLISH) }
+    return fetchOrStore(CampaignManager::class.java) { CampaignManager.create(dataStorage, spConfig) }
 }

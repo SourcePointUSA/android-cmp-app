@@ -109,8 +109,16 @@ internal class SpConsentLibImpl(
         }
     }
 
+    override fun loadMessage() {
+        loadMessage(authId = null, pubData = null)
+    }
+
     override fun loadMessage(authId: String?) {
-        loadMessage(authId, null)
+        loadMessage(authId = authId, pubData = null)
+    }
+
+    override fun loadMessage(pubData: JSONObject?) {
+        loadMessage(authId = null, pubData = pubData)
     }
 
     /** Start Client's methods */
@@ -174,69 +182,12 @@ internal class SpConsentLibImpl(
                     msg = "${throwable.message}",
                     content = "${throwable.message}"
                 )
-                pLogger.e("SpConsentLib", "onError${NL.t}${throwable.message}")
-            },
-            env = env
-        )
-    }
-
-    override fun loadMessage() {
-        checkMainThread("loadMessage")
-
-        if (viewManager.isViewInLayout) return
-
-        service.getUnifiedMessage(
-            messageReq = campaignManager.getUnifiedMessageReq(),
-            pSuccess = { messageResp ->
-                consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
-                val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
-                clientEventManager.setCampaignNumber(list.size)
-                if (list.isEmpty()) {
-                    consentManager.sendStoredConsentToClient()
-                    return@getUnifiedMessage
-                }
-                val firstCampaign2Process = list.first()
-                remainingCampaigns.clear()
-                remainingCampaigns.addAll(LinkedList(list.drop(1)))
-                executor.executeOnMain {
-                    val legislation = firstCampaign2Process.type
-                    when (firstCampaign2Process.messageSubCategory) {
-                        TCFv2, OTT -> {
-                            /** create a instance of WebView */
-                            val webView = viewManager.createWebView(
-                                this,
-                                JSReceiverDelegate(),
-                                remainingCampaigns,
-                                firstCampaign2Process.messageSubCategory == OTT
-                            )
-                                .executeOnLeft { spClient.onError(it) }
-                                .getOrNull()
-
-                            /** inject the message into the WebView */
-                            val url = firstCampaign2Process.url // urlManager.urlURenderingApp(env)//
-                            webView?.loadConsentUI(firstCampaign2Process, url, legislation)
-                        }
-                        NATIVE_IN_APP -> {
-                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(legislation)
-                            currentNativeMessageCampaign = firstCampaign2Process
-                            spClient.onNativeMessageReady(nmDto, this)
-                            pLogger.nativeMessageAction(
-                                tag = "onNativeMessageReady",
-                                msg = "onNativeMessageReady",
-                                json = firstCampaign2Process.message
-                            )
-                        }
-                    }
-                }
-            },
-            pError = { throwable ->
-                (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
-                val ex = throwable.toConsentLibException()
-                spClient.onError(ex)
-                pLogger.clientEvent(
-                    event = "onError",
-                    msg = "${throwable.message}",
-                    content = "${throwable.message}"
+                pLogger.e(
+                    "SpConsentLib",
+                    """
+                    onError
+                    ${throwable.message}
+                    """.trimIndent()
                 )
             },
             env = env
@@ -356,7 +307,12 @@ internal class SpConsentLibImpl(
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
                     url = url.toString(),
-                    pmId = "pmId ${it.messageId}",
+                    params = """
+                        pmId [${it.messageId}]
+                        consentLanguage [${it.consentLanguage}]
+                        pmTab [${it.pmTab}]
+                        siteId [${it.siteId}]
+                    """.trimIndent(),
                     type = "GET"
                 )
                 webView?.loadConsentUIFromUrl(
@@ -569,7 +525,7 @@ internal class SpConsentLibImpl(
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
                             url = url.toString(),
-                            pmId = "${actionImpl.privacyManagerId}",
+                            params = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
                         iConsentWebView.loadConsentUIFromUrl(
@@ -595,7 +551,7 @@ internal class SpConsentLibImpl(
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
                             url = url.toString(),
-                            pmId = "${actionImpl.privacyManagerId}",
+                            params = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
                         iConsentWebView.loadConsentUIFromUrl(
@@ -627,7 +583,7 @@ internal class SpConsentLibImpl(
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
                             url = url.toString(),
-                            pmId = "${action.privacyManagerId}",
+                            params = "${action.privacyManagerId}",
                             type = "GET"
                         )
                         iConsentWebView.loadConsentUIFromUrl(
@@ -653,7 +609,7 @@ internal class SpConsentLibImpl(
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
                             url = url.toString(),
-                            pmId = "${action.privacyManagerId}",
+                            params = "${action.privacyManagerId}",
                             type = "GET"
                         )
                         iConsentWebView.loadConsentUIFromUrl(

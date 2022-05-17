@@ -3,7 +3,7 @@ package com.sourcepointmeta.metaapp.data.localdatasource
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import comsourcepointmetametaappdb.* // ktlint-disable
-import java.util.*
+import java.util.* // ktlint-disable
 
 data class Property(
     val propertyName: String,
