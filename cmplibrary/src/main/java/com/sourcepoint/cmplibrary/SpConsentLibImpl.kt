@@ -297,7 +297,7 @@ internal class SpConsentLibImpl(
 
         val gdprGroupPmId = campaignManager.getGroupId(campaignType)
 
-        pLogger.i("loadPm - isOtt: ", isOtt.toString())
+        pLogger.i("loadPm - isOtt: ", isOtt.toString()) // used for testing
 
         val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab, useGroupPmIfAvailable, gdprGroupPmId)
         pmConfig
