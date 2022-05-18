@@ -266,7 +266,7 @@ private class CampaignManagerImpl(
     override fun isCampaignOtt(campaignType: CampaignType): Boolean {
         return when (campaignType) {
             CampaignType.GDPR -> dataStorage.isGdprOtt
-            CampaignType.CCPA -> false
+            CampaignType.CCPA -> dataStorage.isCcpaOtt
         }
     }
 
