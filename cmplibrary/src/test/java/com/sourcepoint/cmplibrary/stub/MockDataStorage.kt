@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import io.mockk.mockk
 
 internal class MockDataStorage : DataStorage {
@@ -17,6 +18,10 @@ internal class MockDataStorage : DataStorage {
     var mockLocalState: String? = null
     var savedConsentVar: Boolean = false
 
+    override var ccpaMessageSubCategory: MessageSubCategory = MessageSubCategory.TCFv2
+    override val isCcpaOtt: Boolean
+        get() = ccpaMessageSubCategory == MessageSubCategory.OTT
+
     override var ccpaChildPmId: String? = null
     override var gdprChildPmId: String? = null
 
@@ -26,6 +31,11 @@ internal class MockDataStorage : DataStorage {
     override var savedConsent: Boolean
         get() = savedConsentVar
         set(value) { savedConsentVar = value }
+
+    override var gdprMessageSubCategory: MessageSubCategory = MessageSubCategory.TCFv2
+
+    override val isGdprOtt: Boolean
+        get() = gdprMessageSubCategory == MessageSubCategory.OTT
 
     override fun saveTcData(deferredMap: Map<String, Any?>) {
         this.tcDataMap = deferredMap

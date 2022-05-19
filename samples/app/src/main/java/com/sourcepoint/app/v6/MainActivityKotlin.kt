@@ -53,33 +53,18 @@ class MainActivityKotlin : AppCompatActivity() {
         sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
-            if(dataProvider.isOtt){
-                spConsentLib.loadOTTPrivacyManager(
-                    dataProvider.gdprPmId,
-                    CampaignType.GDPR
-                )
-            }else{
-                spConsentLib.loadPrivacyManager(
-                    dataProvider.gdprPmId,
-                    PMTab.PURPOSES,
-                    CampaignType.GDPR
-                )
-            }
+            spConsentLib.loadPrivacyManager(
+                dataProvider.gdprPmId,
+                PMTab.PURPOSES,
+                CampaignType.GDPR
+            )
         }
         findViewById<View>(R.id.review_consents_ccpa).setOnClickListener { _v: View? ->
-            if(dataProvider.isOtt){
-                spConsentLib.loadOTTPrivacyManager(
-                    dataProvider.ccpaPmId,
-                    CampaignType.CCPA
-                )
-            }else{
-                spConsentLib.loadPrivacyManager(
-                    dataProvider.ccpaPmId,
-                    PMTab.PURPOSES,
-                    CampaignType.CCPA
-                )
-            }
-
+            spConsentLib.loadPrivacyManager(
+                dataProvider.ccpaPmId,
+                PMTab.PURPOSES,
+                CampaignType.CCPA
+            )
         }
         findViewById<View>(R.id.clear_all).setOnClickListener { _v: View? -> clearAllData(this) }
         findViewById<View>(R.id.auth_id_activity).setOnClickListener { _v: View? ->
@@ -113,7 +98,10 @@ class MainActivityKotlin : AppCompatActivity() {
 
     internal inner class LocalClient : SpClient {
 
-        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
+        override fun onNativeMessageReady(
+            message: MessageStructure,
+            messageController: NativeMessageController
+        ) {
 
         }
 

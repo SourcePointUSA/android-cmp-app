@@ -31,7 +31,7 @@ class DemoFragment : Fragment() {
         LOG
     }
 
-    var demoListener: ((DemoAction, ott: Boolean) -> Unit)? = null
+    var demoListener: ((DemoAction) -> Unit)? = null
 
     private val propertyName by lazy {
         arguments?.getString("property_name") ?: throw RuntimeException("Property name not set!!!")
@@ -52,8 +52,8 @@ class DemoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         campaign_name_fr.text = propertyName
-        review_consents_ccpa_fr.setOnClickListener { _v: View? -> demoListener?.invoke(CCPA_PM, ott_switch.isChecked) }
-        review_consents_gdpr_fr.setOnClickListener { _v: View? -> demoListener?.invoke(GDPR_PM, ott_switch.isChecked) }
+        review_consents_ccpa_fr.setOnClickListener { _v: View? -> demoListener?.invoke(CCPA_PM) }
+        review_consents_gdpr_fr.setOnClickListener { _v: View? -> demoListener?.invoke(GDPR_PM) }
         config.campaigns.find { it.campaignType == CampaignType.CCPA }
             ?.let { review_consents_ccpa_fr.isEnabled = true } ?: kotlin.run {
             review_consents_ccpa_fr.isEnabled = false

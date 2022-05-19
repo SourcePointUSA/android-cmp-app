@@ -24,8 +24,6 @@ import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityNativeMessTest {
@@ -127,9 +125,9 @@ class MainActivityNativeMessTest {
                 spConfig = spConfGdpr,
                 gdprPmId = "594218",
                 ccpaPmId = "594219",
+                pAuthId = "test",
                 pResetAll = false,
-                spClientObserver = listOf(spClient),
-                pAuthId = "test"
+                spClientObserver = listOf(spClient)
             )
         )
 

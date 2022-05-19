@@ -10,6 +10,8 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.IAB_US_PR
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_CHILD_PM_ID
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_MESSAGE_SUBCATEGORY
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 
 internal interface DataStorageCcpa {
 
@@ -17,6 +19,9 @@ internal interface DataStorageCcpa {
 
     var ccpaApplies: Boolean
     var ccpaChildPmId: String?
+
+    var ccpaMessageSubCategory: MessageSubCategory
+    val isCcpaOtt: Boolean
 
     fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
@@ -38,6 +43,7 @@ internal interface DataStorageCcpa {
         const val CCPA_JSON_MESSAGE = "sp.ccpa.json.message"
         const val CONSENT_CCPA_UUID_KEY = "sp.ccpa.consentUUID"
         const val IAB_US_PRIVACY_STRING = "IABUSPrivacy_String"
+        const val KEY_CCPA_MESSAGE_SUBCATEGORY = "sp.key.ccpa.message.subcategory"
     }
 }
 
@@ -79,6 +85,21 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
                 .putString(KEY_CCPA_CHILD_PM_ID, value)
                 .apply()
         }
+
+    override var ccpaMessageSubCategory: MessageSubCategory
+        get() {
+            return preference.getInt(KEY_CCPA_MESSAGE_SUBCATEGORY, MessageSubCategory.TCFv2.code)
+                .run { MessageSubCategory.values().find { i -> i.code == this } ?: MessageSubCategory.TCFv2 }
+        }
+        set(value) {
+            preference
+                .edit()
+                .putInt(KEY_CCPA_MESSAGE_SUBCATEGORY, value.code)
+                .apply()
+        }
+
+    override val isCcpaOtt: Boolean
+        get() = ccpaMessageSubCategory == MessageSubCategory.OTT
 
     override fun saveCcpaConsentResp(value: String) {
 
@@ -143,6 +164,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .remove(CONSENT_CCPA_UUID_KEY)
             .remove(KEY_CCPA_CHILD_PM_ID)
             .remove(IAB_US_PRIVACY_STRING)
+            .remove(KEY_CCPA_MESSAGE_SUBCATEGORY)
             .apply()
     }
 }
