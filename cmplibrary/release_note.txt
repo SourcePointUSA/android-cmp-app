@@ -1,2 +1,2 @@
-* [SP-9022](https://sourcepoint.atlassian.net/browse/SP-9022) Added applies attribute to the consent object (#483)
-* [SP-8824](https://sourcepoint.atlassian.net/browse/SP-8824) Add support of groupPmId and childPmId (#484). This new feature bring some change to the public API. Follow this [link](https://github.com/SourcePointUSA/android-cmp-app#set-a-privacy-manager-id-for-the-property-group) for more info.
+* [DIA-273](https://sourcepoint.atlassian.net/browse/DIA-273) From v6.6.0, to surface the OTT Privacy Manager you should use Merge the loadPrivacyManager API, now the CMP SDK is able automatically to detect an OTT property. Follow this [link](https://github.com/SourcePointUSA/android-cmp-app#loading-an-ott-privacy-manager) for more info. (#492)
+* [DIA-277](https://sourcepoint.atlassian.net/browse/DIA-277) Privacy Manager translation fix (#493)

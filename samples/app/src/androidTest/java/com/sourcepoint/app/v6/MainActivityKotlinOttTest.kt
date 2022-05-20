@@ -10,15 +10,11 @@ import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
-import com.sourcepoint.app.v6.core.DataProvider
-import com.sourcepoint.app.v6.di.customCategoriesDataProd
-import com.sourcepoint.app.v6.di.customVendorDataListProd
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
@@ -26,8 +22,6 @@ import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
-import org.koin.core.module.Module
-import org.koin.dsl.module
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinOttTest {
@@ -60,7 +54,6 @@ class MainActivityKotlinOttTest {
                 spConfig = spConfOtt,
                 gdprPmId = "579231",
                 ccpaPmId = "1",
-                isOtt = true,
                 spClientObserver = listOf(spClient)
             )
         )
@@ -106,7 +99,6 @@ class MainActivityKotlinOttTest {
                 spConfig = spConfOtt,
                 gdprPmId = "579231",
                 ccpaPmId = "1",
-                isOtt = true,
                 spClientObserver = listOf(spClient)
             )
         )
@@ -125,7 +117,7 @@ class MainActivityKotlinOttTest {
         }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr{ verify(exactly = 2) { spClient.onConsentReady(any()) } }
+        wr{ verify(atLeast = 2) { spClient.onConsentReady(any()) } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         wr {

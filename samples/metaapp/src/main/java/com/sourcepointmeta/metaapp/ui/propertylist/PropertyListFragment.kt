@@ -91,7 +91,7 @@ class PropertyListFragment : Fragment() {
         adapter.demoProperty = { runDemo(it) }
         itemTouchHelper.attachToRecyclerView(property_list)
 
-        if(BuildConfig.BUILD_TYPE == "release"){
+        if (BuildConfig.BUILD_TYPE == "release") {
             viewModel.fetchLatestVersion()
         }
         tool_bar.setOnMenuItemClickListener { item ->

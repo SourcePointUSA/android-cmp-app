@@ -338,7 +338,11 @@ class MainActivityKotlinTest {
 
         val spClient = mockk<SpClient>(relaxed = true)
 
-        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393", spClientObserver = listOf(spClient)))
+        loadKoinModules(mockModule(
+            spConfig = spConfGdpr,
+            gdprPmId = "488393",
+            spClientObserver = listOf(spClient)
+        ))
 
         scenario = launchActivity()
 
@@ -364,7 +368,11 @@ class MainActivityKotlinTest {
 
         val spClient = mockk<SpClient>(relaxed = true)
 
-        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393", spClientObserver = listOf(spClient)))
+        loadKoinModules(mockModule(
+            spConfig = spConfGdpr,
+            gdprPmId = "488393",
+            spClientObserver = listOf(spClient)
+        ))
 
         scenario = launchActivity()
 

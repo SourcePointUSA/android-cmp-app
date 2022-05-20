@@ -27,6 +27,7 @@ internal interface CampaignManager {
     fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate)
 
     fun isAppliedCampaign(campaignType: CampaignType): Boolean
+    fun isCampaignOtt(campaignType: CampaignType): Boolean
     fun getUnifiedMessageResp(): Either<UnifiedMessageResp>
 
     fun getGdpr(): Either<Gdpr>
@@ -48,7 +49,6 @@ internal interface CampaignManager {
         pmTab: PMTab?
     ): Either<PmUrlConfig>
 
-    fun getUnifiedMessageReq(): UnifiedMessageRequest
     fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest
 
     fun getGDPRConsent(): Either<GDPRConsentInternal>
@@ -67,7 +67,7 @@ internal interface CampaignManager {
     companion object {
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
             return when {
-                useGroupPmIfAvailable && childPmId != null -> childPmId
+                useGroupPmIfAvailable && !childPmId.isNullOrEmpty() && childPmId.isNotBlank() -> childPmId
                 else -> userPmId ?: ""
             }
         }
@@ -76,15 +76,15 @@ internal interface CampaignManager {
 
 internal fun CampaignManager.Companion.create(
     dataStorage: DataStorage,
-    spConfig: SpConfig,
-    messageLanguage: MessageLanguage
-): CampaignManager = CampaignManagerImpl(dataStorage, spConfig, messageLanguage)
+    spConfig: SpConfig
+): CampaignManager = CampaignManagerImpl(dataStorage, spConfig)
 
 private class CampaignManagerImpl(
     val dataStorage: DataStorage,
-    override val spConfig: SpConfig,
-    override val messageLanguage: MessageLanguage
+    override val spConfig: SpConfig
 ) : CampaignManager {
+
+    override val messageLanguage: MessageLanguage = spConfig.messageLanguage
 
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
     private val campaignsEnv: CampaignsEnv = spConfig.campaignsEnv
@@ -213,7 +213,7 @@ private class CampaignManagerImpl(
 
         PmUrlConfig(
             pmTab = pmTab,
-            consentLanguage = null,
+            consentLanguage = spConfig.messageLanguage.value,
             uuid = uuid,
             siteId = siteId,
             messageId = usedPmId
@@ -249,7 +249,7 @@ private class CampaignManagerImpl(
 //        )
 
         PmUrlConfig(
-            consentLanguage = null,
+            consentLanguage = spConfig.messageLanguage.value,
             uuid = uuid,
             siteId = siteId,
             messageId = usedPmId
@@ -261,6 +261,13 @@ private class CampaignManagerImpl(
             .map { it.first == campaignType }
             .getOrNull()
             ?: false
+    }
+
+    override fun isCampaignOtt(campaignType: CampaignType): Boolean {
+        return when (campaignType) {
+            CampaignType.GDPR -> dataStorage.isGdprOtt
+            CampaignType.CCPA -> dataStorage.isCcpaOtt
+        }
     }
 
     override fun getUnifiedMessageResp(): Either<UnifiedMessageResp> = check {
@@ -285,10 +292,6 @@ private class CampaignManagerImpl(
                 .getCcpaMessage().isNotBlank() -> Pair(CampaignType.CCPA, mapTemplate[CampaignType.CCPA.name]!!)
             else -> throw MissingPropertyException(description = "Inconsistent Legislation!!!")
         }
-    }
-
-    override fun getUnifiedMessageReq(): UnifiedMessageRequest {
-        return getUnifiedMessageReq(null, null)
     }
 
     override fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest {
@@ -352,17 +355,22 @@ private class CampaignManagerImpl(
     }
 
     override fun saveGdpr(gdpr: Gdpr) {
-        dataStorage.saveGdpr(gdpr.thisContent.toString())
-        dataStorage.saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
-        dataStorage.gdprApplies = gdpr.applies
-        dataStorage.gdprChildPmId = gdpr.userConsent.childPmId
+        dataStorage.run {
+            saveGdpr(gdpr.thisContent.toString())
+            saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
+            gdprApplies = gdpr.applies
+            gdprChildPmId = gdpr.userConsent.childPmId
+            gdprMessageSubCategory = gdpr.messageSubCategory
+        }
     }
 
     override fun saveCcpa(ccpa: Ccpa) {
-        dataStorage.saveCcpa(ccpa.thisContent.toString())
-        dataStorage.saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
-        dataStorage.ccpaApplies = ccpa.applies
-        dataStorage.ccpaChildPmId = ccpa.userConsent.childPmId
+        dataStorage.run {
+            saveCcpa(ccpa.thisContent.toString())
+            saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
+            ccpaApplies = ccpa.applies
+            ccpaChildPmId = ccpa.userConsent.childPmId
+        }
     }
 
     override fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp) {

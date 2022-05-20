@@ -333,7 +333,6 @@ class TestUseCase {
             ccpaPmId: String = "",
             pAuthId: String? = null,
             url: String = "",
-            isOtt: Boolean = false,
             pResetAll: Boolean = true,
             spClientObserver: List<SpClient> = emptyList()
         ): Module {
@@ -343,7 +342,6 @@ class TestUseCase {
                     object : DataProvider {
                         override val authId = pAuthId
                         override val resetAll = pResetAll
-                        override val isOtt = isOtt
                         override val url = url
                         override val spConfig: SpConfig = spConfig
                         override val gdprPmId: String = gdprPmId

@@ -5,18 +5,22 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
+import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.Campaign
+import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.util.ViewsManager
-import io.mockk.*  //ktlint-disable
+import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.runBlocking
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 
@@ -71,37 +75,142 @@ class SpConsentLibImplTest {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
     }
 
-    //    @Test(expected = MissingClientException::class)
-    fun `CALLING loadMessage() with a null SpGDPRClient THROWS a MissingClientException`() {
-//        val sut = SpConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, service, viewManager, execManager)
-//        sut.loadMessage()
-//        verify(exactly = 1) { service.getMessage(any(), any(), any()) }
-    }
-
     @Test
-    fun `CALLING loadMessage() verify that getMessage is called exactly 1 time`() {
+    fun `CALLING loadPrivacyManager(pmId, campaignType) VERIFY that getPmConfig receive the right params`() {
+
+        every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
+        every { campaignManager.getGroupId(any()) }.returns(null)
+
         val sut = createLib()
-        sut.loadMessage()
-        verify(exactly = 1) { service.getUnifiedMessage(any(), any(), any(), any()) }
+        sut.loadPrivacyManager("1234", GDPR)
+
+        verify {
+            campaignManager.getPmConfig(
+                campaignType = GDPR,
+                pmId = "1234",
+                pmTab = PMTab.DEFAULT,
+                useGroupPmIfAvailable = false,
+                groupPmId = null
+            )
+        }
+
+        verify { logger.i(any(), "false") }
     }
 
     @Test
-    fun `CALLING loadMessage() with verify that spClient is called`() = runBlocking<Unit> {
-//        val mr = MessageResp(legislation = Legislation.GDPR, message = JSONObject(), uuid = "", meta = "", userConsent = mockk())
-//        val mockService = MockService(
-//            getMessageLogic = { _, pSuccess, _ -> pSuccess.invoke(mr) }
-//        )
-//        val sut = ConsentLibImpl(urlManager, campaign, PrivacyManagerTabK.FEATURES, appCtx, logger, jsonConverter, connManager, mockService, viewManager, execManager)
-//        sut.spClient = spClient
-//
-//        sut.loadMessage()
+    fun `CALLING loadPrivacyManager(pmId, pmTab, campaignType) VERIFY that getPmConfig receive the right params`() {
 
-//        val slot = slot<ActionTypes>()
-//        verify(exactly = 1) { spClient.onAction(capture(slot)) }
-//        slot.captured
+        every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
+        every { campaignManager.getGroupId(any()) }.returns(null)
+
+        val sut = createLib()
+        sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR)
+
+        verify {
+            campaignManager.getPmConfig(
+                campaignType = GDPR,
+                pmId = "1234",
+                pmTab = PMTab.VENDORS,
+                useGroupPmIfAvailable = false,
+                groupPmId = null
+            )
+        }
+
+        verify { logger.i(any(), "false") }
     }
 
-    internal fun createLib() = SpConsentLibImpl(
+    @Test
+    fun `CALLING loadPrivacyManager(pmId, pmTab, campaignType, useGroupPmIfAvailable) VERIFY that getPmConfig receive the right params`() {
+
+        every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
+        every { campaignManager.getGroupId(any()) }.returns(null)
+
+        val sut = createLib()
+        sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR, true)
+
+        verify {
+            campaignManager.getPmConfig(
+                campaignType = GDPR,
+                pmId = "1234",
+                pmTab = PMTab.VENDORS,
+                useGroupPmIfAvailable = true,
+                groupPmId = null
+            )
+        }
+
+        verify { logger.i(any(), "false") }
+    }
+
+    @Test
+    fun `CALLING loadPrivacyManager(pmId, campaignType) VERIFY that getPmConfig receive the right params for OTT`() {
+
+        every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
+        every { campaignManager.getGroupId(any()) }.returns(null)
+        every { campaignManager.isCampaignOtt(any()) }.returns(true)
+
+        val sut = createLib()
+        sut.loadPrivacyManager("1234", GDPR)
+
+        verify {
+            campaignManager.getPmConfig(
+                campaignType = GDPR,
+                pmId = "1234",
+                pmTab = PMTab.DEFAULT,
+                useGroupPmIfAvailable = false,
+                groupPmId = null
+            )
+        }
+
+        verify { logger.i(any(), "true") }
+    }
+
+    @Test
+    fun `CALLING loadPrivacyManager(pmId, pmTab, campaignType) VERIFY that getPmConfig receive the right params for OTT`() {
+
+        every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
+        every { campaignManager.getGroupId(any()) }.returns(null)
+        every { campaignManager.isCampaignOtt(any()) }.returns(true)
+
+        val sut = createLib()
+        sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR)
+
+        verify {
+            campaignManager.getPmConfig(
+                campaignType = GDPR,
+                pmId = "1234",
+                pmTab = PMTab.VENDORS,
+                useGroupPmIfAvailable = false,
+                groupPmId = null
+            )
+        }
+
+        verify { logger.i(any(), "true") }
+    }
+
+    @Test
+    fun `CALLING loadPrivacyManager(pmId, pmTab, campaignType, useGroupPmIfAvailable) VERIFY that getPmConfig receive the right params for OTT`() {
+
+        every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
+        every { campaignManager.getGroupId(any()) }.returns(null)
+        every { campaignManager.isCampaignOtt(any()) }.returns(true)
+
+        val sut = createLib()
+        sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR, true)
+
+        verify {
+            campaignManager.getPmConfig(
+                campaignType = GDPR,
+                pmId = "1234",
+                pmTab = PMTab.VENDORS,
+                useGroupPmIfAvailable = true,
+                groupPmId = null
+            )
+        }
+
+        verify { logger.i(any(), "true") }
+    }
+
+    private fun createLib() = SpConsentLibImpl(
         context = appCtx,
         pLogger = logger,
         pJsonConverter = jsonConverter,

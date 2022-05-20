@@ -23,6 +23,12 @@ interface SpConsentLib {
 
     /**
      * Load the First Layer Message (FLM)
+     * @param pubData is used to save some data in the BE using a JSON object
+     */
+    fun loadMessage(pubData: JSONObject? = null)
+
+    /**
+     * Load the First Layer Message (FLM)
      * @param authId is used to get an already saved consent
      */
     fun loadMessage(authId: String? = null)
@@ -41,9 +47,9 @@ interface SpConsentLib {
         successCallback: CustomConsentClient
     )
 
+    fun loadPrivacyManager(pmId: String, campaignType: CampaignType)
     fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType)
     fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType, useGroupPmIfAvailable: Boolean)
-    fun loadOTTPrivacyManager(pmId: String, campaignType: CampaignType)
 
     fun showView(view: View)
     fun removeView(view: View)
