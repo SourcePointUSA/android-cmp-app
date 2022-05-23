@@ -157,7 +157,7 @@ class ConsentRespExtKtTest {
     @Test
     fun `GIVEN a CCPA consent with malformed rejectedCategories and rejectedVendors RETURN a consent object`() {
         val ccpaConsent = JSONObject(
-                """
+            """
             {
               "dateCreated": "2021-10-11T14:34:08.288Z",
               "newUser": false,
