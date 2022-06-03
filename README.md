@@ -310,8 +310,8 @@ SpConsent
     |   |-- acceptedCategories: List<String>
     |-- ccpa?
         |-- uuid: String?
-        |-- rejectedCategories: List<Any>
-        |-- rejectedVendors: List<Any>
+        |-- rejectedCategories: List<String>
+        |-- rejectedVendors: List<String>
         |-- status: String?
         |-- uspstring: String
 ```
