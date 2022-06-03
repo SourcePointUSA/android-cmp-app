@@ -41,7 +41,7 @@ To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:6.6.0'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:6.6.1'
 }
 ```
 
@@ -310,8 +310,8 @@ SpConsent
     |   |-- acceptedCategories: List<String>
     |-- ccpa?
         |-- uuid: String?
-        |-- rejectedCategories: List<Any>
-        |-- rejectedVendors: List<Any>
+        |-- rejectedCategories: List<String>
+        |-- rejectedVendors: List<String>
         |-- status: String?
         |-- uspstring: String
 ```

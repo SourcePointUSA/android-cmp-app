@@ -1,3 +1,7 @@
+## 6.6.1 (June, 03, 2022)
+* [DIA-274](https://sourcepoint.atlassian.net/browse/DIA-274) Update of the custom metrics URL in `build.gradle.kts` (#497)
+* [DIA-579](https://sourcepoint.atlassian.net/browse/DIA-579) `List<Any>` is substituted with `List<String>` in `CCPAConsentInternal` class (#495)
+
 ## 6.6.0 (May, 20, 2022)
 * [DIA-273](https://sourcepoint.atlassian.net/browse/DIA-273) From v6.6.0, to surface the OTT Privacy Manager you should use Merge the loadPrivacyManager API, now the CMP SDK is able automatically to detect an OTT property. Follow this [link](https://github.com/SourcePointUSA/android-cmp-app#loading-an-ott-privacy-manager) for more info. (#492)
 * [DIA-277](https://sourcepoint.atlassian.net/browse/DIA-277) Privacy Manager translation fix (#493)
