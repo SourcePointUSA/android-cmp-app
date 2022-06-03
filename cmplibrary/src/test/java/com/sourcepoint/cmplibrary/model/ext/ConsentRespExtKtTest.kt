@@ -128,6 +128,55 @@ class ConsentRespExtKtTest {
         }
     }
 
+    @Test
+    fun `GIVEN a CCPA consent with not empty rejectedCategories and rejectedVendors RETURN a consent object`() {
+        val ccpaConsent = JSONObject(
+            """
+            {
+              "dateCreated": "2021-10-11T14:34:08.288Z",
+              "newUser": false,
+              "rejectedAll": false,
+              "rejectedCategories": ["rejectedCategory0", "rejectedCategory1"],
+              "rejectedVendors": ["rejectedVendor0"],
+              "signedLspa": false,
+              "status": "consentedAll",
+              "uspstring": "1---"
+            }
+            """.trimIndent()
+        ).toTreeMap()
+        val test = ccpaConsent.toCCPAUserConsent("1234", true)
+        test.run {
+            rejectedCategories.size.assertEquals(2)
+            rejectedCategories[0].assertEquals("rejectedCategory0")
+            rejectedCategories[1].assertEquals("rejectedCategory1")
+            rejectedVendors.size.assertEquals(1)
+            rejectedVendors[0].assertEquals("rejectedVendor0")
+        }
+    }
+
+    @Test
+    fun `GIVEN a CCPA consent with malformed rejectedCategories and rejectedVendors RETURN a consent object`() {
+        val ccpaConsent = JSONObject(
+            """
+            {
+              "dateCreated": "2021-10-11T14:34:08.288Z",
+              "newUser": false,
+              "rejectedAll": false,
+              "rejectedCategories": [123, 123.0, true, {"hello":"world"}],
+              "rejectedVendors": [null],
+              "signedLspa": false,
+              "status": "consentedAll",
+              "uspstring": "1---"
+            }
+            """.trimIndent()
+        ).toTreeMap()
+        val test = ccpaConsent.toCCPAUserConsent("1234", true)
+        test.run {
+            rejectedCategories.size.assertEquals(0)
+            rejectedVendors.size.assertEquals(0)
+        }
+    }
+
     private val jsonGrantAll3 = """
         {
           "5e7ced57b8e05c485246cce0": {
