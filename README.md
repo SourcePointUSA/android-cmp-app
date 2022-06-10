@@ -124,18 +124,19 @@ Create a client to receive the events from the Cmp SDK
 
 Kotlin
 ```kotlin
-    internal inner class LocalClient : SpClient {
-        override fun onMessageReady(message: JSONObject) {} // Deprecated
-        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController)
-        override fun onError(error: Throwable) { }
-        override fun onConsentReady(consent: SPConsents) { }
-        override fun onAction(view: View, consentAction: ConsentAction) { return consentAction }
+   internal inner class LocalClient : SpClient {
         override fun onUIFinished(view: View) {
             spConsentLib.removeView(view)
         }
         override fun onUIReady(view: View) {
             spConsentLib.showView(view)
         }
+        override fun onMessageReady(message: JSONObject) {} // Deprecated
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) { }
+        override fun onError(error: Throwable) { }
+        override fun onConsentReady(consent: SPConsents) { }
+        override fun onAction(view: View, consentAction: ConsentAction): ConsentAction = consentAction
+        override fun onNoIntentActivitiesFound(url: String) {}
         override fun onSpFinished(sPConsents: SPConsents) { }
     }
 ```
