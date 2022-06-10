@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:clickable="true"
+    android:elevation="3dp"
+    android:focusable="true">
+
+    <com.sourcepointmeta.metaapp.ui.component.PropertyItemView
+        android:id="@+id/property_view_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:nextFocusRight="@id/chip_gdpr"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/property_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textSize="34sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="mobile.demo.com" />
+
+        <TextView
+            android:id="@+id/account_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:textAppearance="?attr/textAppearanceSubtitle2"
+            android:textSize="34sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/property_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="22" />
+
+        <TextView
+            android:id="@+id/message_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:padding="3dp"
+            android:textAppearance="?attr/textAppearanceSubtitle2"
+            android:textSize="34sp"
+            app:layout_constraintTop_toBottomOf="@id/account_id"
+            tools:layout_editor_absoluteX="8dp"
+            tools:text="Web-view" />
+
+        <TextView
+            android:id="@+id/campaign_env"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:padding="3dp"
+            android:textAppearance="?attr/textAppearanceSubtitle2"
+            android:textSize="34sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/account_id"
+            tools:text="stage" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group"
+            android:layout_width="319dp"
+            android:layout_height="110dp"
+            android:layout_marginEnd="20dp"
+            android:nextFocusLeft="@id/property_view_item"
+            app:chipSpacing="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_gdpr"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="90dp"
+                android:layout_height="match_parent"
+                android:nextFocusRight="@id/chip_ccpa"
+                android:text="GDPR"
+                android:textAlignment="center" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_ccpa"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="90dp"
+                android:layout_height="match_parent"
+                android:nextFocusLeft="@id/chip_gdpr"
+                android:nextFocusRight="@id/play_demo_btn"
+                android:text="CCPA"
+                android:textAlignment="center" />
+
+            <com.sourcepointmeta.metaapp.ui.component.PlayDemoGroup
+                android:id="@+id/play_demo_group"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/play_demo_btn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/blue_link_200"
+                    android:nextFocusLeft="@id/chip_ccpa"
+                    android:shadowColor="@color/blue_link_400"
+                    app:cornerRadius="50dp"
+                    app:icon="@drawable/ic_baseline_arrow_right_48"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:strokeColor="@color/blue_link_200"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/cat_progress_indicator_chip"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:ellipsize="end"
+                    android:text="@string/saving"
+                    android:visibility="gone" />
+
+            </com.sourcepointmeta.metaapp.ui.component.PlayDemoGroup>
+
+        </com.google.android.material.chip.ChipGroup>
+
+
+    </com.sourcepointmeta.metaapp.ui.component.PropertyItemView>
+
+</com.google.android.material.card.MaterialCardView>
