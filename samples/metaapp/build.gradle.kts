@@ -109,6 +109,9 @@ dependencies {
     implementation("androidx.core:core-ktx:1.5.0") // ext drawable
     implementation("io.github.g00fy2:versioncompare:1.4.1")
 
+    // TV
+    implementation("androidx.appcompat:appcompat:1.0.0")
+    implementation("androidx.leanback:leanback:1.0.0")
 
     // Koin
 //    implementation(Libs.koinCore)
