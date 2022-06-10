@@ -70,4 +70,5 @@
         <item name="indicatorInset">@dimen/mtrl_progress_circular_inset_extra_small</item>
     </style>
 
+    <style name="AppTheme" parent="@style/Theme.Leanback"> </style>
 </resources>
