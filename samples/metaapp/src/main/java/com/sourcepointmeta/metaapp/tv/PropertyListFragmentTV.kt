@@ -77,41 +77,17 @@ class PropertyListFragmentTV: Fragment() {
         (activity as? AppCompatActivity)?.supportFragmentManager?.addOnBackStackChangedListener {
             viewModel.fetchPropertyList()
         }
-        if(isTv()) {
-            add_property_button?.setOnClickListener(){
-                (activity as? AppCompatActivity)?.addFragment(
-                    R.id.container,
-                    AddUpdatePropertyFragment()
-                )
-            }
-            action_clear_sp?.setOnClickListener() {
-                context?.let { clearAllData(it) }
-            }
-            adapter.itemClickListener = {
-//                requestFocus()
-            }
+        add_property_button?.setOnClickListener(){
+            (activity as? AppCompatActivity)?.addFragment(
+                R.id.container,
+                AddUpdatePropertyFragment()
+            )
         }
-        else {
-            fab.setOnClickListener {
-                (activity as? AppCompatActivity)?.addFragment(
-                    R.id.container,
-                    AddUpdatePropertyFragment()
-                )
-            }
-            adapter.itemClickListener = {
-                (activity as? AppCompatActivity)?.addFragment(
-                    R.id.container,
-                    AddUpdatePropertyFragment.instance(it.propertyName)
-                )
-            }
-            tool_bar.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.action_clear_sp -> {
-                        context?.let { clearAllData(it) }
-                    }
-                }
-                true
-            }
+        action_clear_sp?.setOnClickListener() {
+            context?.let { clearAllData(it) }
+        }
+        adapter.itemClickListener = {
+//            TODO: Load new screen
         }
         adapter.propertyChangedListener = { viewModel.updateProperty(it) }
         adapter.demoProperty = { runDemo(it) }
@@ -182,10 +158,5 @@ class PropertyListFragmentTV: Fragment() {
         val i = Intent(activity, DemoActivity::class.java)
         i.putExtras(bundle)
         startActivity(i)
-    }
-
-    private fun isTv(): Boolean {
-        val uiModeManager =  context?.applicationContext?.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        return uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION
     }
 }
