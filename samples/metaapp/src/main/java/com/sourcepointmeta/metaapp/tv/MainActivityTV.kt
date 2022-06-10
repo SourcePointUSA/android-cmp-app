@@ -6,6 +6,7 @@ import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListFragment
 
 class MainActivityTV : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity) // ?
