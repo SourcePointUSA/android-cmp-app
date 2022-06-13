@@ -1,18 +1,13 @@
 package com.sourcepointmeta.metaapp.tv
 
-import android.app.UiModeManager
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepoint.cmplibrary.util.clearAllData
 import com.sourcepointmeta.metaapp.BuildConfig
@@ -21,7 +16,6 @@ import com.sourcepointmeta.metaapp.core.addFragment
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
-import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
 import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
@@ -40,11 +34,11 @@ class PropertyListFragmentTV: Fragment() {
             .data
     }
 
-    private val adapter by lazy { PropertyAdapter() }
-    private val itemTouchHelper by lazy { ItemTouchHelper(swipeToDeleteCallback) }
-    private val swipeToDeleteCallback: SwipeToDeleteCallback by lazy {
-        SwipeToDeleteCallback(requireContext()) { showDeleteDialog(it, adapter) }
-    }
+    private val adapter by lazy { PropertyAdapterTV() }
+//    private val itemTouchHelper by lazy { ItemTouchHelper(swipeToDeleteCallback) }
+//    private val swipeToDeleteCallback: SwipeToDeleteCallback by lazy {
+//        SwipeToDeleteCallback(requireContext()) { showDeleteDialog(it, adapter) }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,8 +65,8 @@ class PropertyListFragmentTV: Fragment() {
                 is BaseState.StateVersion -> showVersionPopup(it.version)
             }
         }
-        property_list.layoutManager = GridLayoutManager(context, 1)
-        property_list.adapter = adapter
+//        property_list.layoutManager = GridLayoutManager(context, 1)
+        property_grid.adapter = adapter
 
         (activity as? AppCompatActivity)?.supportFragmentManager?.addOnBackStackChangedListener {
             viewModel.fetchPropertyList()
@@ -88,10 +82,11 @@ class PropertyListFragmentTV: Fragment() {
         }
         adapter.itemClickListener = {
 //            TODO: Load new screen
+            print("TODO: Load new screen")
         }
         adapter.propertyChangedListener = { viewModel.updateProperty(it) }
         adapter.demoProperty = { runDemo(it) }
-        itemTouchHelper.attachToRecyclerView(property_list)
+//        itemTouchHelper.attachToRecyclerView(property_list)
 
         if (BuildConfig.BUILD_TYPE == "release") {
             viewModel.fetchLatestVersion()
