@@ -180,7 +180,7 @@ class DemoActivity : FragmentActivity() {
             Handler().postDelayed(
                 {
                     authId
-                        ?.let { spConsentLib.loadMessage(authId = it, pubData = pubData) }
+                        ?.let { spConsentLib.loadMessage(authId = it, pubData = pubData, cmpViewId = null) }
                         ?: run { spConsentLib.loadMessage(pubData = pubData) }
                 },
                 400
