@@ -11,7 +11,6 @@ import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.exception.GenericSDKException
-import com.sourcepoint.cmplibrary.util.ViewsManagerImpl.IDS.idsSet
 import java.lang.ref.WeakReference
 import java.util.* // ktlint-disable
 
@@ -63,9 +62,7 @@ private class ViewsManagerImpl(
     val messageTimeout: Long
 ) : ViewsManager {
 
-    object IDS {
-        val idsSet = LinkedHashSet<Int>()
-    }
+    val idsSet = LinkedHashSet<Int>()
 
     val mainView: ViewGroup?
         get() = weakReference.get()?.findViewById(R.id.content)
