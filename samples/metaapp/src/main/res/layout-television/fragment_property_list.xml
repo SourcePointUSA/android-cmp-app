@@ -6,10 +6,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?android:colorBackground">
+
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
@@ -36,11 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:text="@string/add_prop_title"
             app:cornerRadius="50dp"
             app:icon="@drawable/ic_add_on_secondary_24dp"
-            app:layout_constraintBottom_toTopOf="@+id/property_list"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/app_bar"
             tools:ignore="DuplicateSpeakableTextCheck" />
@@ -51,23 +50,24 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:text="@string/clear_all_data"
             app:cornerRadius="50dp"
             app:icon="@drawable/ic_baseline_delete_24"
-            app:layout_constraintBottom_toTopOf="@+id/property_list"
             app:layout_constraintStart_toEndOf="@+id/add_property_button"
             app:layout_constraintTop_toBottomOf="@+id/app_bar" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/property_list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="80dp"
-            android:nextFocusUp="@id/add_property_button"
-            android:visibility="visible"
+        <GridView
+            android:id="@+id/property_grid"
+            android:layout_width="958dp"
+            android:layout_height="418dp"
+            android:layout_marginTop="5dp"
+            android:horizontalSpacing="1dp"
+            android:numColumns="3"
+            android:scrollbars="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/app_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_property_button"
             tools:listitem="@layout/property_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
