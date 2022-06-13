@@ -11,15 +11,19 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
+import com.sourcepoint.cmplibrary.data.local.getCCPAConsent
+import com.sourcepoint.cmplibrary.data.local.getGDPRConsent
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SPGDPRConsent
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 
-fun userConsents(context: Context, spConfig: SpConfig): SPConsents {
-    val cm: CampaignManager = createStorage(context, spConfig)
-    return userConsents(cm)
+fun userConsents(context: Context): SPConsents {
+    val dataStorageGdpr = fetchOrStore(DataStorageGdpr::class.java) { DataStorageGdpr.create(context) }
+    val dataStorageCcpa = fetchOrStore(DataStorageCcpa::class.java) { DataStorageCcpa.create(context) }
+    val dataStorage = fetchOrStore(DataStorage::class.java) { DataStorage.create(context, dataStorageGdpr, dataStorageCcpa) }
+    return userConsents(dataStorage)
 }
 
 fun campaignApplies(context: Context, campaign: CampaignType): Boolean {
@@ -36,16 +40,16 @@ fun clearAllData(context: Context) {
 }
 
 internal fun userConsents(
-    campaignManager: CampaignManager
+    dataStorage: DataStorage
 ): SPConsents {
 
     return SPConsents(
-        ccpa = campaignManager.getCCPAConsent().getOrNull()?.let {
+        ccpa = dataStorage.getCCPAConsent().getOrNull()?.let {
             SPCCPAConsent(
                 consent = it
             )
         },
-        gdpr = campaignManager.getGDPRConsent().getOrNull()?.let {
+        gdpr = dataStorage.getGDPRConsent().getOrNull()?.let {
             SPGDPRConsent(
                 consent = it
             )
