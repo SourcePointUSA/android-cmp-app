@@ -25,13 +25,15 @@ internal interface ViewsManager {
     fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
-        isOtt: Boolean
+        isOtt: Boolean,
+        cmpViewId: Int?
     ): Either<IConsentWebView>
     fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
         campaignQueue: Queue<CampaignModel>,
-        isOtt: Boolean
+        isOtt: Boolean,
+        cmpViewId: Int?
     ): Either<IConsentWebView>
     fun removeView(view: View)
     fun removeAllViews()
@@ -122,7 +124,8 @@ private class ViewsManagerImpl(
     override fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
-        isOtt: Boolean
+        isOtt: Boolean,
+        cmpViewId: Int?
     ): Either<IConsentWebView> {
         return weakReference.get()?.let {
             check {
@@ -143,7 +146,8 @@ private class ViewsManagerImpl(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
         campaignQueue: Queue<CampaignModel>,
-        isOtt: Boolean
+        isOtt: Boolean,
+        cmpViewId: Int?
     ): Either<IConsentWebView> {
         return weakReference.get()?.let {
             check {
