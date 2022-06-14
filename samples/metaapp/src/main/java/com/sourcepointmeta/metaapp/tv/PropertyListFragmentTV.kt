@@ -35,10 +35,6 @@ class PropertyListFragmentTV: Fragment() {
     }
 
     private val adapter by lazy { PropertyAdapterTV() }
-//    private val itemTouchHelper by lazy { ItemTouchHelper(swipeToDeleteCallback) }
-//    private val swipeToDeleteCallback: SwipeToDeleteCallback by lazy {
-//        SwipeToDeleteCallback(requireContext()) { showDeleteDialog(it, adapter) }
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,7 +61,6 @@ class PropertyListFragmentTV: Fragment() {
                 is BaseState.StateVersion -> showVersionPopup(it.version)
             }
         }
-//        property_list.layoutManager = GridLayoutManager(context, 1)
         property_grid.adapter = adapter
 
         (activity as? AppCompatActivity)?.supportFragmentManager?.addOnBackStackChangedListener {
@@ -81,12 +76,10 @@ class PropertyListFragmentTV: Fragment() {
             context?.let { clearAllData(it) }
         }
         adapter.itemClickListener = {
-//            TODO: Load new screen
-            print("TODO: Load new screen")
+            print("TODO: Load new screen") // TODO
         }
         adapter.propertyChangedListener = { viewModel.updateProperty(it) }
         adapter.demoProperty = { runDemo(it) }
-//        itemTouchHelper.attachToRecyclerView(property_list)
 
         if (BuildConfig.BUILD_TYPE == "release") {
             viewModel.fetchLatestVersion()
