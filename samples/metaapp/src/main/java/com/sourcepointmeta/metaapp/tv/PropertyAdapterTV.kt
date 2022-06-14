@@ -108,7 +108,6 @@ internal class PropertyAdapterTV() : BaseAdapter() {
                     add(StatusCampaign(p.propertyName, CampaignType.GDPR, isChecked))
                     addAll(p.statusCampaignSet)
                 }
-//                    play_demo_group.saving = true
                 propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
             }
             chip_ccpa?.setOnCheckedChangeListener { _, isChecked ->
@@ -116,19 +115,8 @@ internal class PropertyAdapterTV() : BaseAdapter() {
                     add(StatusCampaign(p.propertyName, CampaignType.CCPA, isChecked))
                     addAll(p.statusCampaignSet)
                 }
-//                    play_demo_group.saving = true
                 propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
             }
-
-//            (convertView.property_view_item as PropertyItemView).bind(iv)
-//            view.run {
-//                val p = list[pos].property
-//                setOnClickListener { itemClickListener?.invoke(list[pos]) }
-//
-//                play_demo_btn.setOnClickListener {
-//                    demoProperty?.invoke(p)
-//                }
-//        }
             return convertView
         }
         return convertView
@@ -153,9 +141,4 @@ internal class PropertyAdapterTV() : BaseAdapter() {
     override fun isEnabled(position: Int): Boolean {
         return true
     }
-
-//    override fun onBindViewHolder(holder: PropertyAdapter.Vh, position: Int) {
-//        holder.bind(list[position], position)
-//    }
-
 }
