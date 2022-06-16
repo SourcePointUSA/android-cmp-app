@@ -12,12 +12,12 @@ ways to integrate successfully our SDK into your cross-platform app.
 # Android Integration
 From the Android point of view, we can accomplish it using the soft integration or the direct integration.
 
-[The Soft Integration](docs-reactnative/ANDROID_SOFT_INTEGRATION.md) offer a solution which allows the client app to write the Cmp SDK configuration 
+[The Soft Integration](ANDROID_SOFT_INTEGRATION.md) offer a solution which allows the client app to write the Cmp SDK configuration 
 into extra Activity letting the ReactNative main Activity run in isolation.
 
-[The Direct Integration](docs-reactnative/ANDROID_DIRECT_INTEGRATION.md) is the traditional way for integration our SDK using the ReactNative main Activity.
+[The Direct Integration](ANDROID_DIRECT_INTEGRATION.md) is the traditional way for integration our SDK using the ReactNative main Activity.
 
 # Ios Integration
-From the Ios side, the [integration](docs-reactnative/IOS_INTEGRATION.md) is performed using a custom ViewController which make the process 
+From the Ios side, the [integration](IOS_INTEGRATION.md) is performed using a custom ViewController which make the process 
 easy and straightforward.
 
