@@ -132,7 +132,7 @@ with this:
     CmpViewController *rootViewController = [CmpViewController new];
 ```
 
-You can find [here](https://github.com/SourcePointUSA/CmpReactNativeIntegration/blob/soft/ios/CmpReactNativeIntegration/AppDelegate.mm) 
+You can find [here](https://github.com/SourcePointUSA/CmpReactNativeIntegration/blob/ios/ios/CmpReactNativeIntegration/AppDelegate.mm) 
 the final `AppDelegate.mm` file.
 
 ## Load the First Layer Message
