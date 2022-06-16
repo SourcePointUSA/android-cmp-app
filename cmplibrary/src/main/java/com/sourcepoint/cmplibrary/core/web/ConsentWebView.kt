@@ -35,7 +35,8 @@ internal class ConsentWebView(
     private val connectionManager: ConnectionManager,
     private val executorManager: ExecutorManager,
     private val campaignQueue: Queue<CampaignModel> = LinkedList(),
-    private val isOtt: Boolean = false
+    private val isOtt: Boolean = false,
+    private val viewId: Int? = null
 ) : WebView(context), IConsentWebView {
 
     init {
@@ -60,8 +61,9 @@ internal class ConsentWebView(
     }
 
     private fun setup() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            id = View.generateViewId()
+        when {
+            viewId != null -> { id = viewId }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 -> { id = View.generateViewId() }
         }
         enableDebug()
         setStyle()
