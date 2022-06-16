@@ -10,13 +10,13 @@ import org.koin.android.ext.android.inject
 
 class MainActivityViewConsent : AppCompatActivity() {
 
-    private val TAG = "**MainActivityViewConsent"
+    private val TAG = "MainActivityViewConsent"
     private val dataProvider by inject<DataProvider>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_consent)
-        val consent = userConsents(this.applicationContext, dataProvider.spConfig)
+        val consent = userConsents(this.applicationContext)
         val uuid = consent.gdpr?.consent?.uuid ?: "NO DATA"
         consent_uuid.text = uuid
         Log.i(TAG, "uuid: $uuid")

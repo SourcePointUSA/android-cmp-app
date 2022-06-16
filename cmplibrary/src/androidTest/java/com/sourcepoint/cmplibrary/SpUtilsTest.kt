@@ -57,7 +57,7 @@ class SpUtilsTest {
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
         val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig)
 
-        userConsents(appCtx, spConfig).run {
+        userConsents(appCtx).run {
             ccpa.assertNull()
             gdpr.assertNull()
         }
@@ -67,7 +67,7 @@ class SpUtilsTest {
 
         campaignManager.saveGdpr(gdpr)
 
-        userConsents(appCtx, spConfig).run {
+        userConsents(appCtx).run {
             ccpa.assertNull()
             gdpr.assertNotNull()
         }
@@ -80,7 +80,7 @@ class SpUtilsTest {
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
         val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig)
 
-        userConsents(appCtx, spConfig).run {
+        userConsents(appCtx).run {
             ccpa.assertNull()
             gdpr.assertNull()
         }
@@ -90,7 +90,7 @@ class SpUtilsTest {
 
         campaignManager.saveCcpa(ccpa)
 
-        userConsents(appCtx, spConfig).run {
+        userConsents(appCtx).run {
             ccpa.assertNotNull()
             gdpr.assertNull()
         }
@@ -103,7 +103,7 @@ class SpUtilsTest {
         val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
         val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig)
 
-        userConsents(appCtx, spConfig).run {
+        userConsents(appCtx).run {
             ccpa.assertNull()
             gdpr.assertNull()
         }
@@ -115,7 +115,7 @@ class SpUtilsTest {
         campaignManager.saveGdpr(gdpr)
         campaignManager.saveCcpa(ccpa)
 
-        userConsents(appCtx, spConfig).run {
+        userConsents(appCtx).run {
             ccpa.assertNotNull()
             gdpr.assertNotNull()
         }

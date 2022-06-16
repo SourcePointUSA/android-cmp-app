@@ -6,11 +6,11 @@ import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.local.getCCPAConsent
+import com.sourcepoint.cmplibrary.data.local.getGDPRConsent
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toCCPA
-import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toGDPR
-import com.sourcepoint.cmplibrary.data.network.model.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -332,23 +332,9 @@ private class CampaignManagerImpl(
         )
     }
 
-    override fun getGDPRConsent(): Either<GDPRConsentInternal> = check {
-        dataStorage
-            .getGdprConsentResp()
-            .also { if (it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
-            .let { JSONObject(it) }
-            .toTreeMap()
-            .toGDPRUserConsent(uuid = dataStorage.getGdprConsentUuid(), applies = dataStorage.gdprApplies)
-    }
+    override fun getGDPRConsent(): Either<GDPRConsentInternal> = dataStorage.getGDPRConsent()
 
-    override fun getCCPAConsent(): Either<CCPAConsentInternal> = check {
-        dataStorage
-            .getCcpaConsentResp()
-            .also { if (it.isBlank()) fail("CCPAConsent is not saved in the the storage!!") }
-            .let { JSONObject(it) }
-            .toTreeMap()
-            .toCCPAUserConsent(uuid = dataStorage.getCcpaConsentUuid(), applies = dataStorage.ccpaApplies)
-    }
+    override fun getCCPAConsent(): Either<CCPAConsentInternal> = dataStorage.getCCPAConsent()
 
     override fun getGroupId(campaignType: CampaignType): String? {
         return spConfig.campaigns.find { it.campaignType == campaignType }?.groupPmId
