@@ -9,7 +9,7 @@
   - [The IOS Native Modules](#the-ios-native-modules)
   - [Calling native module from Javascript](#calling-native-module-from-javascript)
   - [Surfacing the Privacy Manager from the SpModule](#surface-the-privacy-manager-from-the-spmodule)
-- [The full example IOS project](https://github.com/SourcePointUSA/CmpReactNativeIntegration/tree/soft/ios)
+- [The full example IOS project](https://github.com/SourcePointUSA/CmpReactNativeIntegration/tree/ios/ios)
 
 # What we are aiming for
 The purpose of this document is to show you how to integrate our SDK in a ReactNative application using a test property, at the end you'll have the following result
