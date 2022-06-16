@@ -1,4 +1,4 @@
-# Android Direct Integration
+# Android Classic Integration
 
 # Table of Contents
 - [How to Install](#how-to-install)
