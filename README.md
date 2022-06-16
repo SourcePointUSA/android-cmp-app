@@ -34,7 +34,7 @@
   - [Delete user data](#Delete-user-data)
   - [Frequently Asked Questions](#Frequently-Asked-Questions)
   - [Artifact Release Process](#Artifact-Release-Process)
-- [ReactNative Integration](docs-reactnative/README-REACTNATIVE.md)
+- [React Native Integration](docs-reactnative/README-REACTNATIVE.md)
  
 # How to Install 
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
