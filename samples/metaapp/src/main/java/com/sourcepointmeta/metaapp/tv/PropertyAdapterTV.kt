@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.GridView
 import android.widget.TextView
 import com.google.android.material.chip.Chip
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -116,6 +117,11 @@ internal class PropertyAdapterTV() : BaseAdapter() {
                     addAll(p.statusCampaignSet)
                 }
                 propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
+            }
+            convertView.setOnFocusChangeListener { v, hasFocus ->
+                if(hasFocus){
+                    (v.parent as? GridView)?.smoothScrollToPosition(position)
+                }
             }
             return convertView
         }
