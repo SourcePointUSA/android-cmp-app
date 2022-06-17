@@ -6,6 +6,11 @@
 ### Diagnostic tool for our SDK
 [![Get it on Google Play](art/gplay.png)](https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp)
 
+Compatible with:
+
+<img src="art/react.png" width=10% height=10%/>
+<img src="art/flutter.png" width=20% height=20%/> 
+
 # Table of Contents
 - [How to Install](#how-to-install)
 - [Usage](#usage)
