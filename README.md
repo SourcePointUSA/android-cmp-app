@@ -809,8 +809,10 @@ However, after you have accomplished artifact release process, few more steps ne
 git checkout master
 git pull
 ```
-* Merge `master` branch to `develop` branch. Push this commit (which contains merged code).
+* Merge `master` branch into the `develop` branch and push.
 ```
-git merge develop
+git checkout develop 
+git merge master
+git push
 ```
 Now post-release process is done and you have consistent solution. Enjoy!
