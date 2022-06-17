@@ -809,7 +809,7 @@ However, after you have accomplished artifact release process, few more steps ne
 git checkout master
 git pull
 ```
-* Merge `master` branch into the `develop` branch and push.
+* Merge the `master` branch into the `develop` branch and push.
 ```
 git checkout develop 
 git merge master
