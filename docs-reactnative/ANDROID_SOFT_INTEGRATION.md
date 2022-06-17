@@ -313,3 +313,73 @@ Now you can invoke the functions using the `SpModule` object as follows:
   <Button title="Clear All Data" onPress={() => SpModule.clearData() } />
   // ...
 ```
+
+## Surface the Privacy Manager from the SpModule
+
+In this scenario the main obstacle is that the `SpModule` doesn't have any instance of our cmp SDK, the SDK reference
+is in `CMPActivity`. To establish the communication between the `SpModule` and the `CMPActivity`, we can employ
+the intent mechanism for sending information to the `CMPActivity` and triggering the right action.
+Following the full `SpModule`
+
+```java
+public class SpModule extends ReactContextBaseJavaModule {
+
+    SpModule(ReactApplicationContext context) {
+        super(context);
+    }
+
+    @NonNull
+    @Override
+    public String getName() {
+        return "SpModule";
+    }
+
+    @ReactMethod
+    public void clearData() {
+        SpUtils.clearAllData(getCurrentActivity());
+    }
+
+    @ReactMethod
+    public void showGdprPm() {
+        Intent intent = new Intent(getCurrentActivity(), CMPActivity.class);
+        intent.putExtra("type", "pm");
+        intent.putExtra("pmId", "<YOUR PM ID>");
+        intent.putExtra("campaignType", CampaignType.GDPR.name());
+        getCurrentActivity().startActivity(intent);
+    }
+
+    @ReactMethod
+    public void showCcpaPm() {
+        Intent intent = new Intent(getCurrentActivity(), CMPActivity.class);
+        intent.putExtra("type", "pm");
+        intent.putExtra("pmId", "<YOUR PM ID>");
+        intent.putExtra("campaignType", CampaignType.CCPA.name());
+        getCurrentActivity().startActivity(intent);
+    }
+}
+```
+
+From the `CMPActivity` prospective we just need a way to understand when we should load a PM rather than a FLM, 
+follow is one way of doing that:
+
+```java
+public class CMPActivity extends Activity {
+    // ...
+    @Override
+    protected void onResume() {
+      super.onResume();
+      String type = getIntent().getStringExtra("type");
+      String pmId = getIntent().getStringExtra("pmId");
+      String pCampaignType = getIntent().getStringExtra("campaignType");
+      pCampaignType = pCampaignType != null ? pCampaignType : "GDPR";
+      CampaignType ct = CampaignType.valueOf(pCampaignType);
+  
+      if(type != null && type.equals("pm")){
+        mSpConsentLib.loadPrivacyManager(pmId, PMTab.DEFAULT, ct);
+      }else {
+        mSpConsentLib.loadMessage();
+      }
+    }
+  // ...
+}
+```
