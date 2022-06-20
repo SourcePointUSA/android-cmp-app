@@ -14,7 +14,7 @@ internal interface HttpUrlManager {
     fun inAppMessageUrl(env: Env): HttpUrl
     fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl
     fun sendCustomConsentUrl(env: Env): HttpUrl
-    fun deleteCustomConsentToUrl(env: Env, params: CustomConsentReq): HttpUrl
+    fun deleteCustomConsentToUrl(host: String, params: CustomConsentReq): HttpUrl
     fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig, isOtt: Boolean): HttpUrl
 }
 
@@ -55,11 +55,11 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    override fun deleteCustomConsentToUrl(env: Env, params: CustomConsentReq): HttpUrl {
+    override fun deleteCustomConsentToUrl(host: String, params: CustomConsentReq): HttpUrl {
         // https://cdn.privacy-mgmt.com/consent/tcfv2/consent/v3/custom/:propertyId?consentUUID={GDPR_UUID}
         return HttpUrl.Builder()
             .scheme("https")
-            .host(env.host)
+            .host(host)
             .addPathSegments("consent/tcfv2/consent/v3/custom/${params.propertyId}")
             .addQueryParameter("consentUUID", params.consentUUID)
             .build()

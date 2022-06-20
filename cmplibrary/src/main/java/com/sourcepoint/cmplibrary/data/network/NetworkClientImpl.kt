@@ -138,7 +138,7 @@ private class NetworkClientImpl(
         val mediaType = MediaType.parse("application/json")
         val jsonBody = customConsentReq.toBodyRequestDeleteCustomConsentTo()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
-        val url = urlManager.deleteCustomConsentToUrl(env, customConsentReq)
+        val url = urlManager.deleteCustomConsentToUrl(env.host, customConsentReq)
 
         logger.req(
             tag = "DeleteCustomConsentReq",
