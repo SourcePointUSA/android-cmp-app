@@ -82,7 +82,11 @@ private class NetworkClientImpl(
         val jsonBody = consentReq.toString()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
         val url = urlManager
-            .sendConsentUrl(campaignType = consentActionImpl.campaignType, env = env, actionType = consentActionImpl.actionType)
+            .sendConsentUrl(
+                campaignType = consentActionImpl.campaignType,
+                env = env,
+                actionType = consentActionImpl.actionType
+            )
 
         logger.req(
             tag = "sendConsent",
@@ -107,7 +111,7 @@ private class NetworkClientImpl(
     ): Either<CustomConsentResp> = check {
         val mediaType = MediaType.parse("application/json")
         val jsonBody = customConsentReq.toBodyRequest()
-        val body: RequestBody = RequestBody.create(mediaType, customConsentReq.toBodyRequest())
+        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
         val url = urlManager.sendCustomConsentUrl(env)
 
         logger.req(
@@ -120,6 +124,32 @@ private class NetworkClientImpl(
         val request: Request = Request.Builder()
             .url(url)
             .post(body)
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseCustomConsentRes(response)
+    }
+
+    override fun deleteCustomConsentTo(
+        customConsentReq: CustomConsentReq,
+        env: Env
+    ): Either<CustomConsentResp> = check {
+        val mediaType = MediaType.parse("application/json")
+        val jsonBody = customConsentReq.toBodyRequestDeleteCustomConsentTo()
+        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
+        val url = urlManager.deleteCustomConsentToUrl(env, customConsentReq)
+
+        logger.req(
+            tag = "DeleteCustomConsentReq",
+            url = url.toString(),
+            body = jsonBody,
+            type = "DELETE"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .delete(body)
             .build()
 
         val response = httpClient.newCall(request).execute()

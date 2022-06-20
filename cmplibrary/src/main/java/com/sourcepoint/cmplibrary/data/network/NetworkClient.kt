@@ -36,4 +36,9 @@ internal interface NetworkClient {
         customConsentReq: CustomConsentReq,
         env: Env
     ): Either<CustomConsentResp>
+
+    fun deleteCustomConsentTo(
+        customConsentReq: CustomConsentReq,
+        env: Env
+    ): Either<CustomConsentResp>
 }

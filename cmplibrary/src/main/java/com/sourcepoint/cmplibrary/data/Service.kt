@@ -27,5 +27,10 @@ internal interface Service : NetworkClient, CampaignManager {
         env: Env
     ): Either<SPConsents?>
 
+    fun deleteCustomConsentToServ(
+        customConsentReq: CustomConsentReq,
+        env: Env
+    ): Either<SPConsents?>
+
     companion object
 }
