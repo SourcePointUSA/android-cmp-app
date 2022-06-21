@@ -236,6 +236,39 @@ internal class SpConsentLibImpl(
         }
     }
 
+    override fun deleteCustomConsentTo(
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>,
+        success: (SPConsents?) -> Unit
+    ) {
+        val customConsentReq = CustomConsentReq(
+            consentUUID = dataStorage.getGdprConsentUuid() ?: "",
+            propertyId = dataStorage.getPropertyId(),
+            categories = categories,
+            legIntCategories = legIntCategories,
+            vendors = vendors
+        )
+        executor.run {
+            executeOnWorkerThread {
+                val ccResp = service.deleteCustomConsentToServ(customConsentReq, env)
+                executeOnMain {
+                    when (ccResp) {
+                        is Either.Right -> success(ccResp.r ?: SPConsents())
+                        is Either.Left -> {
+                            spClient.onError(ccResp.t)
+                            pLogger.clientEvent(
+                                event = "onError",
+                                msg = "${ccResp.t.message}",
+                                content = "${ccResp.t}"
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     override fun customConsentGDPR(
         vendors: Array<String>,
         categories: Array<String>,

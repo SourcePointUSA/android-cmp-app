@@ -45,6 +45,13 @@ interface SpConsentLib {
         success: (SPConsents?) -> Unit,
     )
 
+    fun deleteCustomConsentTo(
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>,
+        success: (SPConsents?) -> Unit,
+    )
+
     fun customConsentGDPR(
         vendors: Array<String>,
         categories: Array<String>,
