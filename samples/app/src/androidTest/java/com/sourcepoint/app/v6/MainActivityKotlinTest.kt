@@ -441,6 +441,11 @@ class MainActivityKotlinTest {
     }
 
     @Test
+    fun deleteCustomConsentAction() = runBlocking<Unit> {
+        //TODO
+    }
+
+    @Test
     fun GIVEN_a_camapignList_VERIFY_back_btn() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
 
