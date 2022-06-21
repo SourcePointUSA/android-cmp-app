@@ -20,6 +20,6 @@ WIP - [The Classic Integration](ANDROID_CLASSIC_INTEGRATION.md) is the tradition
 The Classic Integration offers better performance than the Soft Integration.
 
 # Ios Integration
-From the Ios side, the [integration](IOS_INTEGRATION.md) is performed using a custom ViewController which make the process 
+From the Ios side, the [integration](IOS_INTEGRATION.md) is performed using a custom ViewController which makes the process 
 easy and straightforward.
 
