@@ -6,6 +6,10 @@
 ### Diagnostic tool for our SDK
 [![Get it on Google Play](art/gplay.png)](https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp)
 
+### Compatibility
+
+<img src="art/react.png" width=10% height=10%/> <img src="art/flutter.png" width=20% height=20%/> 
+
 # Table of Contents
 - [How to Install](#how-to-install)
 - [Usage](#usage)
@@ -34,6 +38,7 @@
   - [Delete user data](#Delete-user-data)
   - [Frequently Asked Questions](#Frequently-Asked-Questions)
   - [Artifact Release Process](#Artifact-Release-Process)
+- [React Native Integration](docs-reactnative/README-REACTNATIVE.md)
  
 # How to Install 
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
@@ -804,8 +809,10 @@ However, after you have accomplished artifact release process, few more steps ne
 git checkout master
 git pull
 ```
-* Merge `master` branch to `develop` branch. Push this commit (which contains merged code).
+* Merge the `master` branch into the `develop` branch and push.
 ```
-git merge develop
+git checkout develop 
+git merge master
+git push
 ```
 Now post-release process is done and you have consistent solution. Enjoy!
