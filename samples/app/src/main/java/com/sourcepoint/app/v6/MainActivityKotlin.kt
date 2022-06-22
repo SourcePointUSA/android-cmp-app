@@ -79,7 +79,12 @@ class MainActivityKotlin : AppCompatActivity() {
             )
         }
         findViewById<View>(R.id.delete_custom_consent).setOnClickListener { _v: View? ->
-            // delete consent
+            spConsentLib.deleteCustomConsentTo(
+                vendors = dataProvider.customVendorList,
+                categories = dataProvider.customCategories,
+                legIntCategories = emptyList(),
+                success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
+            )
         }
         findViewById<View>(R.id.consent_btn).setOnClickListener {
             spConsentLib.dispose()
