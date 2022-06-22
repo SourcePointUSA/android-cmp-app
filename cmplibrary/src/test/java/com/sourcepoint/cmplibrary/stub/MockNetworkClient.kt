@@ -21,4 +21,8 @@ internal class MockNetworkClient(
     override fun sendCustomConsent(customConsentReq: CustomConsentReq, env: Env): Either<CustomConsentResp> {
         TODO("Not yet implemented")
     }
+
+    override fun deleteCustomConsentTo(customConsentReq: CustomConsentReq, env: Env): Either<CustomConsentResp> {
+        TODO("Not yet implemented")
+    }
 }
