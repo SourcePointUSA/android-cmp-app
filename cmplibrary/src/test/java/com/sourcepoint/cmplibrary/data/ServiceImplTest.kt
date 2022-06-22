@@ -16,6 +16,7 @@ import com.sourcepoint.cmplibrary.exception.GenericSDKException
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.stub.MockDataStorage
 import com.sourcepoint.cmplibrary.stub.MockNetworkClient
 import com.sourcepoint.cmplibrary.util.file2String
@@ -316,11 +317,11 @@ class ServiceImplTest {
     fun `GIVEN a deleted custom consent THROWS an exception`() {
         val newConsent = "custom_consent/new_consent.json".file2String()
 
-        every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
+        every { ncMock.deleteCustomConsentTo(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
         every { ds.getGdprConsentResp() }.throws(RuntimeException("test"))
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger)
-        val res = sut.deleteCustomConsentTo(mockk(), Env.STAGE)
+        val res = sut.sendCustomConsentServ(mockk(), Env.STAGE)
         (res as? Either.Left).assertNotNull()
     }
 }
