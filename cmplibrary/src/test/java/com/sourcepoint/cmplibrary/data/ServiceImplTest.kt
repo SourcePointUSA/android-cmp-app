@@ -16,7 +16,6 @@ import com.sourcepoint.cmplibrary.exception.GenericSDKException
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
-import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.stub.MockDataStorage
 import com.sourcepoint.cmplibrary.stub.MockNetworkClient
 import com.sourcepoint.cmplibrary.util.file2String
