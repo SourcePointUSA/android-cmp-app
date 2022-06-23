@@ -30,6 +30,7 @@
   - [Set a Privacy Manager Id for the Property Group](#set-a-privacy-manager-id-for-the-property-group)
   - [ProGuard](#ProGuard)
   - [Programmatically consenting the current user](#Programmatically-consenting-the-current-user)
+  - [Programmatically delete the saved consent](#Programmatically-delete-the-saved-consent)
   - [Vendor Grants object](#Vendor-Grants-object)
   - [The onAction callback](#the-onaction-callback)
   - [The ConsentAction object](#the-consentaction-object)
@@ -635,7 +636,7 @@ Using ProGuard in your project you might need to add the following rules
 ```
 
 ## Programmatically consenting the current user
-It's possible to programmatically consent the current user to a list of vendors, categories and legitimate interest categories by using the following method from the consentlib:
+It's possible to programmatically consent the current user to a list of vendors, categories and legitimate interest categories by using the following method from the consent lib:
 Kotlin
 ```kotlin
             spConsentLib.customConsentGDPR(
@@ -648,6 +649,30 @@ Kotlin
 Java
 ```java
             spConsentLib.customConsentGDPR(
+                    Arrays.asList("5ff4d000a228633ac048be41"),
+                    Arrays.asList("608bad95d08d3112188e0e36", "608bad95d08d3112188e0e2f"),
+                    new ArrayList<>(),
+                    (SPConsents) -> {  return Unit.INSTANCE;  }
+            )
+```
+The ids passed will be appended to the list of already accepted vendors, categories and leg. int. categories. The method is asynchronous so you must pass a `Runnable` that will receive back an instance of `GDPRUserConsent` in case of success or it'll call the `onError` callback in case of failure.
+
+It's important to notice, this method is intended to be used for **custom** vendors and purposes only. For IAB vendors and purposes, it's still required to get consents via the consent message or privacy manager.
+
+## Programmatically delete the saved consent
+Using the same strategy for the custom consent, it's possible to programmatically delete the current user consent to a list of vendors, categories and legitimate interest categories by using the following method from the consent lib:
+Kotlin
+```kotlin
+            spConsentLib.deleteCustomConsentTo(
+                vendors = listOf("5ff4d000a228633ac048be41"),
+                categories = listOf("608bad95d08d3112188e0e36", "608bad95d08d3112188e0e2f"),
+                legIntCategories = emptyList(),
+                success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
+            )
+```
+Java
+```java
+            spConsentLib.deleteCustomConsentTo(
                     Arrays.asList("5ff4d000a228633ac048be41"),
                     Arrays.asList("608bad95d08d3112188e0e36", "608bad95d08d3112188e0e2f"),
                     new ArrayList<>(),
