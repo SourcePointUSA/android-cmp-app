@@ -110,19 +110,27 @@ internal class SpConsentLibImpl(
     }
 
     override fun loadMessage() {
-        loadMessage(authId = null, pubData = null)
+        localLoadMessage(authId = null, pubData = null, cmpViewId = null)
+    }
+
+    override fun loadMessage(cmpViewId: Int) {
+        localLoadMessage(authId = null, pubData = null, cmpViewId = cmpViewId)
     }
 
     override fun loadMessage(authId: String?) {
-        loadMessage(authId = authId, pubData = null)
+        localLoadMessage(authId = authId, pubData = null, cmpViewId = null)
     }
 
     override fun loadMessage(pubData: JSONObject?) {
-        loadMessage(authId = null, pubData = pubData)
+        localLoadMessage(authId = null, pubData = pubData, cmpViewId = null)
     }
 
     /** Start Client's methods */
-    override fun loadMessage(authId: String?, pubData: JSONObject?) {
+    override fun loadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
+        localLoadMessage(authId = authId, pubData = pubData, cmpViewId = cmpViewId)
+    }
+
+    private fun localLoadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
         checkMainThread("loadMessage")
 
         if (viewManager.isViewInLayout) return
@@ -151,7 +159,8 @@ internal class SpConsentLibImpl(
                                 this,
                                 JSReceiverDelegate(),
                                 remainingCampaigns,
-                                firstCampaign2Process.messageSubCategory == OTT
+                                firstCampaign2Process.messageSubCategory == OTT,
+                                cmpViewId
                             )
                                 .executeOnLeft { spClient.onError(it) }
                                 .getOrNull()
@@ -210,6 +219,39 @@ internal class SpConsentLibImpl(
         executor.run {
             executeOnWorkerThread {
                 val ccResp = service.sendCustomConsentServ(customConsentReq, env)
+                executeOnMain {
+                    when (ccResp) {
+                        is Either.Right -> success(ccResp.r ?: SPConsents())
+                        is Either.Left -> {
+                            spClient.onError(ccResp.t)
+                            pLogger.clientEvent(
+                                event = "onError",
+                                msg = "${ccResp.t.message}",
+                                content = "${ccResp.t}"
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun deleteCustomConsentTo(
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>,
+        success: (SPConsents?) -> Unit
+    ) {
+        val customConsentReq = CustomConsentReq(
+            consentUUID = dataStorage.getGdprConsentUuid() ?: "",
+            propertyId = dataStorage.getPropertyId(),
+            categories = categories,
+            legIntCategories = legIntCategories,
+            vendors = vendors
+        )
+        executor.run {
+            executeOnWorkerThread {
+                val ccResp = service.deleteCustomConsentToServ(customConsentReq, env)
                 executeOnMain {
                     when (ccResp) {
                         is Either.Right -> success(ccResp.r ?: SPConsents())
@@ -303,7 +345,7 @@ internal class SpConsentLibImpl(
         val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab, useGroupPmIfAvailable, gdprGroupPmId)
         pmConfig
             .map {
-                val webView = viewManager.createWebView(this, JSReceiverDelegate(), isOtt)
+                val webView = viewManager.createWebView(this, JSReceiverDelegate(), isOtt, null)
                     .executeOnLeft { e -> spClient.onError(e) }
                     .getOrNull()
                 val url = urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, isOtt = isOtt)
@@ -634,7 +676,7 @@ internal class SpConsentLibImpl(
             privacyManagerId = pmId
         )
 
-        viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns, false)
+        viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns, false, null)
             .map { nativeMessageShowOption(nca, it) }
             .executeOnLeft { spClient.onError(it) }
     }
@@ -695,7 +737,8 @@ internal class SpConsentLibImpl(
                         this,
                         JSReceiverDelegate(),
                         remainingCampaigns,
-                        it.messageSubCategory == OTT
+                        it.messageSubCategory == OTT,
+                        null
                     )
                         .executeOnLeft { e -> spClient.onError(e) }
                         .getOrNull()

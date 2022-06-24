@@ -15,11 +15,16 @@ interface SpConsentLib {
     fun loadMessage()
 
     /**
+     * Load the First Layer Message (FLM) using a custom ViewId
+     */
+    fun loadMessage(cmpViewId: Int)
+
+    /**
      * Load the First Layer Message (FLM)
      * @param authId is used to get an already saved consent
      * @param pubData is used to save some data in the BE using a JSON object
      */
-    fun loadMessage(authId: String? = null, pubData: JSONObject? = null)
+    fun loadMessage(authId: String? = null, pubData: JSONObject? = null, cmpViewId: Int? = null)
 
     /**
      * Load the First Layer Message (FLM)
@@ -34,6 +39,13 @@ interface SpConsentLib {
     fun loadMessage(authId: String? = null)
 
     fun customConsentGDPR(
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>,
+        success: (SPConsents?) -> Unit,
+    )
+
+    fun deleteCustomConsentTo(
         vendors: List<String>,
         categories: List<String>,
         legIntCategories: List<String>,

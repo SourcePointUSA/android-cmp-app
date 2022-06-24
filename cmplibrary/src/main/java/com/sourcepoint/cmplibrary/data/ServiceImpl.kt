@@ -111,4 +111,17 @@ private class ServiceImpl(
             }
         consentManagerUtils.getSpConsent()
     }
+
+    override fun deleteCustomConsentToServ(customConsentReq: CustomConsentReq, env: Env): Either<SPConsents?> = check {
+        nc.deleteCustomConsentTo(customConsentReq, env)
+            .map {
+                if (dataStorage.getGdprConsentResp().isEmpty()) {
+                    genericFail("CustomConsent cannot be executed. Consent is missing!!!")
+                }
+                val existingConsent = JSONObject(dataStorage.getGdprConsentResp())
+                existingConsent.put("grants", it.content.get("grants"))
+                dataStorage.saveGdprConsentResp(existingConsent.toString())
+            }
+        consentManagerUtils.getSpConsent()
+    }
 }

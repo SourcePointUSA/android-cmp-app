@@ -6,6 +6,10 @@
 ### Diagnostic tool for our SDK
 [![Get it on Google Play](art/gplay.png)](https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp)
 
+### Compatibility
+
+<img src="art/react.png" width=10% height=10%/> <img src="art/flutter.png" width=20% height=20%/> 
+
 # Table of Contents
 - [How to Install](#how-to-install)
 - [Usage](#usage)
@@ -26,6 +30,8 @@
   - [Set a Privacy Manager Id for the Property Group](#set-a-privacy-manager-id-for-the-property-group)
   - [ProGuard](#ProGuard)
   - [Programmatically consenting the current user](#Programmatically-consenting-the-current-user)
+  - [Programmatically delete the saved consent](#Programmatically-delete-the-saved-consent)
+  - [Adding or Removing custom consents](#Adding-or-Removing-custom-consents)
   - [Vendor Grants object](#Vendor-Grants-object)
   - [The onAction callback](#the-onaction-callback)
   - [The ConsentAction object](#the-consentaction-object)
@@ -34,6 +40,7 @@
   - [Delete user data](#Delete-user-data)
   - [Frequently Asked Questions](#Frequently-Asked-Questions)
   - [Artifact Release Process](#Artifact-Release-Process)
+- [React Native Integration](docs-reactnative/README-REACTNATIVE.md)
  
 # How to Install 
 To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:x.y.z` as a dependency to your project's build.gradle file.
@@ -124,18 +131,19 @@ Create a client to receive the events from the Cmp SDK
 
 Kotlin
 ```kotlin
-    internal inner class LocalClient : SpClient {
-        override fun onMessageReady(message: JSONObject) {} // Deprecated
-        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController)
-        override fun onError(error: Throwable) { }
-        override fun onConsentReady(consent: SPConsents) { }
-        override fun onAction(view: View, consentAction: ConsentAction) { return consentAction }
+   internal inner class LocalClient : SpClient {
         override fun onUIFinished(view: View) {
             spConsentLib.removeView(view)
         }
         override fun onUIReady(view: View) {
             spConsentLib.showView(view)
         }
+        override fun onMessageReady(message: JSONObject) {} // Deprecated
+        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) { }
+        override fun onError(error: Throwable) { }
+        override fun onConsentReady(consent: SPConsents) { }
+        override fun onAction(view: View, consentAction: ConsentAction): ConsentAction = consentAction
+        override fun onNoIntentActivitiesFound(url: String) {}
         override fun onSpFinished(sPConsents: SPConsents) { }
     }
 ```
@@ -628,8 +636,8 @@ Using ProGuard in your project you might need to add the following rules
 -keep class com.sourcepoint.** { *; }
 ```
 
-## Programmatically consenting the current user
-It's possible to programmatically consent the current user to a list of vendors, categories and legitimate interest categories by using the following method from the consentlib:
+## Adding or Removing custom consents
+It's possible to programmatically consent the current user to a list of vendors, categories and legitimate interest categories by using the following method from the consent lib:
 Kotlin
 ```kotlin
             spConsentLib.customConsentGDPR(
@@ -649,6 +657,29 @@ Java
             )
 ```
 The ids passed will be appended to the list of already accepted vendors, categories and leg. int. categories. The method is asynchronous so you must pass a `Runnable` that will receive back an instance of `GDPRUserConsent` in case of success or it'll call the `onError` callback in case of failure.
+
+It's important to notice, this method is intended to be used for **custom** vendors and purposes only. For IAB vendors and purposes, it's still required to get consents via the consent message or privacy manager.
+
+Using the same strategy for the custom consent, it's possible to programmatically delete the current user consent to a list of vendors, categories and legitimate interest categories by using the following method from the consent lib:
+Kotlin
+```kotlin
+            spConsentLib.deleteCustomConsentTo(
+                vendors = listOf("5ff4d000a228633ac048be41"),
+                categories = listOf("608bad95d08d3112188e0e36", "608bad95d08d3112188e0e2f"),
+                legIntCategories = emptyList(),
+                success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
+            )
+```
+Java
+```java
+            spConsentLib.deleteCustomConsentTo(
+                    Arrays.asList("5ff4d000a228633ac048be41"),
+                    Arrays.asList("608bad95d08d3112188e0e36", "608bad95d08d3112188e0e2f"),
+                    new ArrayList<>(),
+                    (SPConsents) -> {  return Unit.INSTANCE;  }
+            )
+```
+The ids passed will be removed to the list of already accepted vendors, categories and leg. int. categories. The method is asynchronous so you must pass a `Runnable` that will receive back an instance of `GDPRUserConsent` in case of success or it'll call the `onError` callback in case of failure.
 
 It's important to notice, this method is intended to be used for **custom** vendors and purposes only. For IAB vendors and purposes, it's still required to get consents via the consent message or privacy manager.
 
@@ -803,8 +834,10 @@ However, after you have accomplished artifact release process, few more steps ne
 git checkout master
 git pull
 ```
-* Merge `master` branch to `develop` branch. Push this commit (which contains merged code).
+* Merge the `master` branch into the `develop` branch and push.
 ```
-git merge develop
+git checkout develop 
+git merge master
+git push
 ```
 Now post-release process is done and you have consistent solution. Enjoy!

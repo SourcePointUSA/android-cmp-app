@@ -11,7 +11,6 @@ import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.exception.GenericSDKException
-import com.sourcepoint.cmplibrary.util.ViewsManagerImpl.IDS.idsSet
 import java.lang.ref.WeakReference
 import java.util.* // ktlint-disable
 
@@ -26,13 +25,15 @@ internal interface ViewsManager {
     fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
-        isOtt: Boolean
+        isOtt: Boolean,
+        cmpViewId: Int?
     ): Either<IConsentWebView>
     fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
         campaignQueue: Queue<CampaignModel>,
-        isOtt: Boolean
+        isOtt: Boolean,
+        cmpViewId: Int?
     ): Either<IConsentWebView>
     fun removeView(view: View)
     fun removeAllViews()
@@ -63,9 +64,7 @@ private class ViewsManagerImpl(
     val messageTimeout: Long
 ) : ViewsManager {
 
-    object IDS {
-        val idsSet = LinkedHashSet<Int>()
-    }
+    val idsSet = LinkedHashSet<Int>()
 
     val mainView: ViewGroup?
         get() = weakReference.get()?.findViewById(R.id.content)
@@ -125,7 +124,8 @@ private class ViewsManagerImpl(
     override fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
-        isOtt: Boolean
+        isOtt: Boolean,
+        cmpViewId: Int?
     ): Either<IConsentWebView> {
         return weakReference.get()?.let {
             check {
@@ -146,7 +146,8 @@ private class ViewsManagerImpl(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
         campaignQueue: Queue<CampaignModel>,
-        isOtt: Boolean
+        isOtt: Boolean,
+        cmpViewId: Int?
     ): Either<IConsentWebView> {
         return weakReference.get()?.let {
             check {
