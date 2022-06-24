@@ -1,3 +1,11 @@
+## 6.7.0 (June, 24, 2022)
+* [DIA-814](https://sourcepoint.atlassian.net/browse/DIA-814) Behaviour Change onAction Callback in Android SDK 6.6.1 (#505)
+* [DIA-563](https://sourcepoint.atlassian.net/browse/DIA-563) Implementation of the deleteCustomConsentTo api (#503)
+* [DIA-188](https://sourcepoint.atlassian.net/browse/DIA-188) Docs React Native pt 1 (#504)
+* [DIA-638](https://sourcepoint.atlassian.net/browse/DIA-638) Removing the userConfig param from userConsents function (#500)
+* [DIA-686](https://sourcepoint.atlassian.net/browse/DIA-686) Configurable ConsentWebView viewId (#499)
+* [DIA-580](https://sourcepoint.atlassian.net/browse/DIA-580) Making the elements of the ViewsManagerImpl to have the same lifetime (#501)
+
 ## 6.6.1 (June, 03, 2022)
 * [DIA-274](https://sourcepoint.atlassian.net/browse/DIA-274) Update of the custom metrics URL in `build.gradle.kts` (#497)
 * [DIA-579](https://sourcepoint.atlassian.net/browse/DIA-579) `List<Any>` is substituted with `List<String>` in `CCPAConsentInternal` class (#495)
