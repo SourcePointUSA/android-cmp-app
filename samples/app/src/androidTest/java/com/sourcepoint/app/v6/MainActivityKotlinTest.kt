@@ -14,6 +14,8 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllVendorsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeepLinkDisplayed
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeletedCustomCategoriesData
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeletedCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkFeaturesTab
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkPurposesTab
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkUUID
@@ -22,6 +24,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCcpaReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnClearConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnConsentActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCustomConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnDeleteCustomConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
@@ -438,6 +441,27 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkCustomCategoriesData() }
         wr { tapSiteVendorsWebView() }
         wr { checkCustomVendorDataList() }
+    }
+
+    @Test
+    fun deleteCustomConsentAction() = runBlocking<Unit> {
+
+        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))
+
+        scenario = launchActivity()
+
+        periodicWr(backup = { scenario.recreateAndResume() }) { tapRejectOnWebView() }
+
+        wr { clickOnCustomConsent() } // set a random custom consent
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkCustomCategoriesData() }
+        wr { tapCancelOnWebView() }
+
+        wr { clickOnDeleteCustomConsent() } // delete the previous custom consent
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkDeletedCustomCategoriesData() }
+        wr { tapSiteVendorsWebView() }
+        wr { checkDeletedCustomVendorDataList() }
     }
 
     @Test

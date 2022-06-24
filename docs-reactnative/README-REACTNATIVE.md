@@ -17,9 +17,9 @@ into extra Activity letting the ReactNative main Activity run in isolation.
 
 WIP - [The Classic Integration](ANDROID_CLASSIC_INTEGRATION.md) is the traditional way for integration our SDK using the ReactNative main Activity.
 
-The Classic Integration offer better performance than the Soft Integration.
+The Classic Integration offers better performance than the Soft Integration.
 
 # Ios Integration
-From the Ios side, the [integration](IOS_INTEGRATION.md) is performed using a custom ViewController which make the process 
+From the Ios side, the [integration](IOS_INTEGRATION.md) is performed using a custom ViewController which makes the process 
 easy and straightforward.
 

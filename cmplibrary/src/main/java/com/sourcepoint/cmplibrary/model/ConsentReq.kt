@@ -66,6 +66,16 @@ internal fun CustomConsentReq.toBodyRequest(): String {
         .toString()
 }
 
+internal fun CustomConsentReq.toBodyRequestDeleteCustomConsentTo(): String {
+    return JSONObject()
+        .apply {
+            put("vendors", JSONArray(vendors))
+            put("categories", JSONArray(categories))
+            put("legIntCategories", JSONArray(legIntCategories))
+        }
+        .toString()
+}
+
 /**
  * RESPONSE
  */

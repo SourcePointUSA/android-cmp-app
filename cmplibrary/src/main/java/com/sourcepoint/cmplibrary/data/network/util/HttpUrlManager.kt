@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import okhttp3.HttpUrl
@@ -13,6 +14,7 @@ internal interface HttpUrlManager {
     fun inAppMessageUrl(env: Env): HttpUrl
     fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl
     fun sendCustomConsentUrl(env: Env): HttpUrl
+    fun deleteCustomConsentToUrl(host: String, params: CustomConsentReq): HttpUrl
     fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig, isOtt: Boolean): HttpUrl
 }
 
@@ -50,6 +52,16 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addPathSegments("wrapper/tcfv2/v1/gdpr/custom-consent")
             .addQueryParameter("env", env.queryParam)
             .addQueryParameter("inApp", "true")
+            .build()
+    }
+
+    override fun deleteCustomConsentToUrl(host: String, params: CustomConsentReq): HttpUrl {
+        // https://cdn.privacy-mgmt.com/consent/tcfv2/consent/v3/custom/:propertyId?consentUUID={GDPR_UUID}
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(host)
+            .addPathSegments("consent/tcfv2/consent/v3/custom/${params.propertyId}")
+            .addQueryParameter("consentUUID", params.consentUUID)
             .build()
     }
 

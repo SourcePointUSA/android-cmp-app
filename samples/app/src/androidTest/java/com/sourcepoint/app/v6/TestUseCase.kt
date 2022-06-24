@@ -95,10 +95,32 @@ class TestUseCase {
             }
         }
 
+        fun checkDeletedCustomCategoriesData() {
+            // the customCategoriesData elements are enabled
+            customCategoriesDataProd.map { it.second }.forEach { consent ->
+                checkConsentState(consent, false)
+            }
+            // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
+            CONSENT_LIST_2.subtract(customCategoriesDataProd.map { it.second }).forEach { consent ->
+                checkConsentState(consent, false)
+            }
+        }
+
         fun checkCustomVendorDataList() {
             // the customVendorDataList elements are enabled
             customVendorDataListProd.map { it.second }.forEach { consent ->
                 checkConsentState(consent, true)
+            }
+            // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
+            VENDORS_LIST.subtract(customVendorDataListProd.map { it.second }).forEach { consent ->
+                checkConsentState(consent, false)
+            }
+        }
+
+        fun checkDeletedCustomVendorDataList() {
+            // the customVendorDataList elements are enabled
+            customVendorDataListProd.map { it.second }.forEach { consent ->
+                checkConsentState(consent, false)
             }
             // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
             VENDORS_LIST.subtract(customVendorDataListProd.map { it.second }).forEach { consent ->
@@ -146,6 +168,10 @@ class TestUseCase {
 
         fun clickOnCustomConsent() {
             performClickById(resId = R.id.custom_consent)
+        }
+
+        fun clickOnDeleteCustomConsent() {
+            performClickById(resId = R.id.delete_custom_consent)
         }
 
         fun clickOnCcpaReviewConsent() {

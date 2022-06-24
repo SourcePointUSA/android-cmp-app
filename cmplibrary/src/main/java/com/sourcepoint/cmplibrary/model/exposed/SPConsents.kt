@@ -33,7 +33,6 @@ interface GDPRConsent {
     var tcData: Map<String, Any?>
     var grants: Map<String, GDPRPurposeGrants>
     val acceptedCategories: List<String>
-    val childPmId: String?
     val applies: Boolean
 }
 
@@ -43,8 +42,8 @@ internal data class GDPRConsentInternal(
     override var tcData: Map<String, Any?> = emptyMap(),
     override var grants: Map<String, GDPRPurposeGrants> = emptyMap(),
     override val acceptedCategories: List<String> = emptyList(),
-    override val childPmId: String? = null,
     override val applies: Boolean = false,
+    val childPmId: String? = null,
     val thisContent: JSONObject = JSONObject()
 ) : GDPRConsent
 
