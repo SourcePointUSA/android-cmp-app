@@ -314,10 +314,7 @@ private class CampaignManagerImpl(
             }
             ?.let { campaigns.add(it) }
 
-        val localState = when (dataStorage.savedConsent) {
-            true -> dataStorage.getLocalState()
-            false -> null
-        }
+        val localState = dataStorage.getLocalState()
 
         return UnifiedMessageRequest(
             requestUUID = "test",
