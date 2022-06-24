@@ -1,5 +1,5 @@
 ## 6.7.0 (June, 24, 2022)
-* [DIA-814](https://sourcepoint.atlassian.net/browse/DIA-814) Behaviour Change onAction Callback in Android SDK 6.6.1 (#505)
+* [DIA-841](https://sourcepoint.atlassian.net/browse/DIA-841) Behaviour Change onAction Callback in Android SDK 6.6.1 (#505)
 * [DIA-563](https://sourcepoint.atlassian.net/browse/DIA-563) Implementation of the deleteCustomConsentTo api (#503)
 * [DIA-188](https://sourcepoint.atlassian.net/browse/DIA-188) Docs React Native pt 1 (#504)
 * [DIA-638](https://sourcepoint.atlassian.net/browse/DIA-638) Removing the userConfig param from userConsents function (#500)
