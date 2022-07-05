@@ -73,7 +73,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             // https://notice.sp-stage.net/privacy-manager/index.html?message_id=<PM_ID>
             .scheme("https")
             .host(env.pmHostGdpr)
-            .addPathSegments("privacy-manager$urlPostFix/index.html")
+            .addPathSegments("native$urlPostFix/index.html")
             .addQueryParameter("pmTab", pmConf.pmTab?.key)
             .addQueryParameter("site_id", pmConf.siteId)
             .apply {
