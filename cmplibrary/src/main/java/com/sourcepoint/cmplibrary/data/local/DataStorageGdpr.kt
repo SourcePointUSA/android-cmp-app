@@ -135,7 +135,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         }
 
     override val isGdprOtt: Boolean
-        get() = gdprMessageSubCategory == MessageSubCategory.OTT
+        get() = gdprMessageSubCategory == MessageSubCategory.OTT || gdprMessageSubCategory == MessageSubCategory.NATIVE_OTT
 
     override fun saveGdpr(value: String) {
         preference

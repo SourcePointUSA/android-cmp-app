@@ -153,13 +153,13 @@ internal class SpConsentLibImpl(
                 executor.executeOnMain {
                     val legislation = firstCampaign2Process.type
                     when (firstCampaign2Process.messageSubCategory) {
-                        TCFv2, OTT -> {
+                        TCFv2, OTT, NATIVE_OTT -> {
                             /** create a instance of WebView */
                             val webView = viewManager.createWebView(
                                 this,
                                 JSReceiverDelegate(),
                                 remainingCampaigns,
-                                firstCampaign2Process.messageSubCategory == OTT,
+                                firstCampaign2Process.messageSubCategory == OTT || firstCampaign2Process.messageSubCategory == NATIVE_OTT,
                                 cmpViewId
                             )
                                 .executeOnLeft { spClient.onError(it) }
@@ -731,13 +731,13 @@ internal class SpConsentLibImpl(
                         json = it.message
                     )
                 }
-                TCFv2, OTT -> {
+                TCFv2, OTT , NATIVE_OTT -> {
                     /** create a instance of WebView */
                     val webView = viewManager.createWebView(
                         this,
                         JSReceiverDelegate(),
                         remainingCampaigns,
-                        it.messageSubCategory == OTT,
+                        it.messageSubCategory == OTT || it.messageSubCategory == NATIVE_OTT,
                         null
                     )
                         .executeOnLeft { e -> spClient.onError(e) }

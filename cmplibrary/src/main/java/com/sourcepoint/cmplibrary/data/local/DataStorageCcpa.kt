@@ -106,7 +106,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         }
 
     override val isCcpaOtt: Boolean
-        get() = ccpaMessageSubCategory == MessageSubCategory.OTT
+        get() = ccpaMessageSubCategory == MessageSubCategory.OTT || ccpaMessageSubCategory == MessageSubCategory.NATIVE_OTT
 
     override fun saveCcpaConsentResp(value: String) {
 
