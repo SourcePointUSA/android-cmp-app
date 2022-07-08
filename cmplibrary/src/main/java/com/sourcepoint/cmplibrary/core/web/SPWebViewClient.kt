@@ -54,7 +54,7 @@ internal class SPWebViewClient(
                     )
                 }
         } catch (e: Throwable) {
-            onError(WebViewException(cause = e, description = "Unable to load jsReceiver into ConasentLibWebview."))
+            onError(WebViewException(cause = e, description = "Unable to load jsReceiver into ConsentLibWebView."))
         }
     }
 

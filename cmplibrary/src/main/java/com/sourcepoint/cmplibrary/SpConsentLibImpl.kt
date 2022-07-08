@@ -731,7 +731,7 @@ internal class SpConsentLibImpl(
                         json = it.message
                     )
                 }
-                TCFv2, OTT , NATIVE_OTT -> {
+                TCFv2, OTT, NATIVE_OTT -> {
                     /** create a instance of WebView */
                     val webView = viewManager.createWebView(
                         this,
