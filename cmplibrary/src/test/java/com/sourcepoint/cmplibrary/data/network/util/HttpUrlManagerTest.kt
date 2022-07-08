@@ -116,7 +116,7 @@ class HttpUrlManagerTest {
             siteId = null
         )
         val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, isOtt = true).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?pmTab&site_id&consentUUID=uuid&message_id=111")
+        sut.assertEquals("https://cdn.privacy-mgmt.com/native-ott/index.html?pmTab&site_id&consentUUID=uuid&message_id=111")
     }
 
     @Test
