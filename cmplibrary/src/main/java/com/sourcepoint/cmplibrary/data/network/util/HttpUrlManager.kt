@@ -67,13 +67,13 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 
     private fun urlPmGdpr(pmConf: PmUrlConfig, env: Env, isOtt: Boolean): HttpUrl {
 
-        val urlPostFix = if (isOtt) "-ott" else ""
+        val urlPostFix = if (isOtt) "native-ott" else "privacy-manager"
 
         return HttpUrl.Builder()
             // https://notice.sp-stage.net/privacy-manager/index.html?message_id=<PM_ID>
             .scheme("https")
             .host(env.pmHostGdpr)
-            .addPathSegments("native$urlPostFix/index.html")
+            .addPathSegments("$urlPostFix/index.html")
             .addQueryParameter("pmTab", pmConf.pmTab?.key)
             .addQueryParameter("site_id", pmConf.siteId)
             .apply {
