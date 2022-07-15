@@ -686,9 +686,9 @@ It's important to notice, this method is intended to be used for **custom** vend
 ## The SpUtils file
 In some cases it is useful to work with the consent already stored in the `Shared Preferencies` without using an 
 instance of the Cmp SDK. In order to do that, you can use the `SpUtils.kt` file which contains the following public functions:
-- userConsents,
-- clearAllData,
-- campaignApplies.
+- `userConsents`,
+- `clearAllData`,
+- `campaignApplies`.
 ### userConsents
 This utility function gives you back an instance of the [`SpConsent` object](#the-SpConsent-object). 
 You can use as follows:
