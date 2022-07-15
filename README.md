@@ -691,7 +691,7 @@ instance of the Cmp SDK. In order to do that, you can use the `SpUtils.kt` file 
 - `campaignApplies`.
 ### userConsents
 This utility function gives you back an instance of the [`SpConsent` object](#the-SpConsent-object). 
-You can use as follows:
+You can use it as follows:
 
 Kotlin:
 ```kotlin
