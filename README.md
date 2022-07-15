@@ -31,6 +31,9 @@
   - [ProGuard](#ProGuard)
   - [Adding or Removing custom consents](#adding-or-removing-custom-consents)
   - [The SpUtils file](#The-SpUtils-file)
+    - `userConsents`
+    - `clearAllData`
+    - `campaignApplies`
   - [Adding or Removing custom consents](#Adding-or-Removing-custom-consents)
   - [Vendor Grants object](#Vendor-Grants-object)
   - [The onAction callback](#the-onaction-callback)
