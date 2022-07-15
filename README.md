@@ -711,7 +711,7 @@ Java:
 import com.sourcepoint.cmplibrary.util.SpUtils;
 
 // ...
-SpConsent consent = userConsents(context);
+SpConsent consent = SpUtils.userConsents(context);
 // ...
 
 ```
@@ -733,7 +733,7 @@ Java:
 import com.sourcepoint.cmplibrary.util.SpUtils;
 
 // ...
-clearAllData(context);
+SpUtils.clearAllData(context);
 // ...
 
 ```
@@ -755,7 +755,7 @@ Java:
 import com.sourcepoint.cmplibrary.util.SpUtils;
 
 // ...
-boolean applies = campaignApplies(context, CampaignType.GDPR);
+boolean applies = SpUtils.campaignApplies(context, CampaignType.GDPR);
 // ...
 
 ```
