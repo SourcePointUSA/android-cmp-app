@@ -30,7 +30,7 @@
   - [Set a Privacy Manager Id for the Property Group](#set-a-privacy-manager-id-for-the-property-group)
   - [ProGuard](#ProGuard)
   - [Adding or Removing custom consents](#adding-or-removing-custom-consents)
-  - [The SpUtils file](#The#SpUtils#file)
+  - [The SpUtils file](#The-SpUtils-file)
   - [Adding or Removing custom consents](#Adding-or-Removing-custom-consents)
   - [Vendor Grants object](#Vendor-Grants-object)
   - [The onAction callback](#the-onaction-callback)
