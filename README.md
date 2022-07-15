@@ -29,8 +29,8 @@
   - [Targeting parameters to target the right environment](#Targeting-parameters-to-target-the-right-environment)
   - [Set a Privacy Manager Id for the Property Group](#set-a-privacy-manager-id-for-the-property-group)
   - [ProGuard](#ProGuard)
-  - [Programmatically consenting the current user](#Programmatically-consenting-the-current-user)
-  - [Programmatically delete the saved consent](#Programmatically-delete-the-saved-consent)
+  - [Adding or Removing custom consents](#adding-or-removing-custom-consents)
+  - [The SpUtils file](#The#SpUtils#file)
   - [Adding or Removing custom consents](#Adding-or-Removing-custom-consents)
   - [Vendor Grants object](#Vendor-Grants-object)
   - [The onAction callback](#the-onaction-callback)
@@ -682,6 +682,80 @@ Java
 The ids passed will be removed to the list of already accepted vendors, categories and leg. int. categories. The method is asynchronous so you must pass a `Runnable` that will receive back an instance of `GDPRUserConsent` in case of success or it'll call the `onError` callback in case of failure.
 
 It's important to notice, this method is intended to be used for **custom** vendors and purposes only. For IAB vendors and purposes, it's still required to get consents via the consent message or privacy manager.
+
+## The SpUtils file
+In some cases it is useful to work with the consent already stored in the `Shared Preferencies` without using an 
+instance of the Cmp SDK. In order to do that, you can use the `SpUtils.kt` file which contains the following public functions:
+- userConsents,
+- clearAllData,
+- campaignApplies.
+### userConsents
+This utility function gives you back an instance of the [`SpConsent` object](#the-SpConsent-object). 
+You can use as follows:
+
+Kotlin:
+```kotlin
+import com.sourcepoint.cmplibrary.util.userConsents
+
+// ...
+val consent = userConsents(context)
+// ...
+
+```
+
+Java:
+```java
+import com.sourcepoint.cmplibrary.util.SpUtils;
+
+// ...
+SpConsent consent = userConsents(context);
+// ...
+
+```
+### clearAllData
+This function is used whenever you need to cancel all the stored data:
+
+Kotlin:
+```kotlin
+import com.sourcepoint.cmplibrary.util.clearAllData
+
+// ...
+val consent = clearAllData(context)
+// ...
+
+```
+
+Java:
+```java
+import com.sourcepoint.cmplibrary.util.SpUtils;
+
+// ...
+clearAllData(context);
+// ...
+
+```
+### campaignApplies
+This function is used whenever you need to know if a specific legislation applies:
+
+Kotlin:
+```kotlin
+import com.sourcepoint.cmplibrary.util.campaignApplies
+
+// ...
+val applies = campaignApplies(context, CampaignType.GDPR)
+// ...
+
+```
+
+Java:
+```java
+import com.sourcepoint.cmplibrary.util.SpUtils;
+
+// ...
+boolean applies = campaignApplies(context, CampaignType.GDPR);
+// ...
+
+```
 
 ## Vendor Grants object
 The `vendorGrants` is an attribute of `GDPRUserConsent` class. The `vendorGrants` attribute, simply put, is an Map representing the consent state (on a legal basis) of all vendors and its purposes for the current user. For example:
