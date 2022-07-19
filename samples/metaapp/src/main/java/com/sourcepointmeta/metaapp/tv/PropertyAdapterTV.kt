@@ -66,7 +66,7 @@ internal class PropertyAdapterTV() : BaseAdapter() {
         return true
     }
 
-    fun SetChipStyle(chip: Chip, isEnabled: Boolean){
+    private fun setChipStyle(chip: Chip, isEnabled: Boolean){
         chip.isChecked = isEnabled
         if(isEnabled)
         {
@@ -94,24 +94,24 @@ internal class PropertyAdapterTV() : BaseAdapter() {
             val campaignEnv = convertView?.findViewById<TextView>(R.id.campaign_env)
             campaignEnv?.text = list[position].campaignEnv
 
-            val chip_gdpr = convertView?.findViewById<Chip>(R.id.chip_gdpr)
-            if (chip_gdpr != null) {
-                SetChipStyle(chip_gdpr, list[position].gdprEnabled)
+            val chipGdpr = convertView?.findViewById<Chip>(R.id.chip_gdpr)
+            if (chipGdpr != null) {
+                setChipStyle(chipGdpr, list[position].gdprEnabled)
             }
-            val chip_ccpa = convertView?.findViewById<Chip>(R.id.chip_ccpa)
-            if (chip_ccpa != null) {
-                SetChipStyle(chip_ccpa, list[position].ccpaEnabled)
+            val chipCcpa = convertView?.findViewById<Chip>(R.id.chip_ccpa)
+            if (chipCcpa != null) {
+                setChipStyle(chipCcpa, list[position].ccpaEnabled)
             }
 
             val p = list[position].property
-            chip_gdpr?.setOnCheckedChangeListener { _, isChecked ->
+            chipGdpr?.setOnCheckedChangeListener { _, isChecked ->
                 val editedSet = mutableSetOf<StatusCampaign>().apply {
                     add(StatusCampaign(p.propertyName, CampaignType.GDPR, isChecked))
                     addAll(p.statusCampaignSet)
                 }
                 propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
             }
-            chip_ccpa?.setOnCheckedChangeListener { _, isChecked ->
+            chipCcpa?.setOnCheckedChangeListener { _, isChecked ->
                 val editedSet = mutableSetOf<StatusCampaign>().apply {
                     add(StatusCampaign(p.propertyName, CampaignType.CCPA, isChecked))
                     addAll(p.statusCampaignSet)
