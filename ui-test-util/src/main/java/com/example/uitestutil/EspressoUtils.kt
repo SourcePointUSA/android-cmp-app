@@ -293,8 +293,8 @@ fun tapOnToggle(property: String, tapOnlyWhen: Boolean) {
 fun tapOnToggle2(property: String, tapOnlyWhen: Boolean) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'stack-row')]"))
-        .withElement( findElement(Locator.XPATH, "//span[(text()='$property') ]"))
-        .withElement(findElement(Locator.XPATH, "//span[ @class='slider round' and @aria-checked='$tapOnlyWhen']"))
+        .withElement( findElement(Locator.XPATH, "//div[(text()='$property') ]"))
+        .withElement(findElement(Locator.XPATH, "//span[ @aria-checked='$tapOnlyWhen']"))
         .perform(webScrollIntoView())
         .perform(webClick())
 }
