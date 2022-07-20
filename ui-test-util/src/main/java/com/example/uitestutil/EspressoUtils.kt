@@ -250,7 +250,7 @@ fun checkConsentState(consent: String, selected: Boolean) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'stack-row')]"))
         .withElement( findElement(Locator.XPATH, "//button[(text()='$consent') ]"))
-        .withElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected' and @class='slider round']"))
+        .withElement(findElement(Locator.XPATH, "//div[@aria-checked='$selected' and @class='slider round']"))
         .perform(webScrollIntoView())
 }
 
