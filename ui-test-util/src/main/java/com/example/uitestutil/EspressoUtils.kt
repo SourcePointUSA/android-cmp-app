@@ -451,7 +451,7 @@ fun <T : RecyclerView.ViewHolder> isInPosition(position: Int): Matcher<T> {
         }
 
         override fun describeTo(description: Description) {
-            description.appendText("item in the middle")
+            description.appendText("Item in the middle")
         }
     }
 }
