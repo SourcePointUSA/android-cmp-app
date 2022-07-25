@@ -112,7 +112,7 @@ private class ConsentManagerUtilsImpl(
         return cm.getCCPAConsent()
     }
 
-    override fun hasGdprConsent(): Boolean = ds.getGdprConsentResp().isNotBlank()
+    override fun hasGdprConsent(): Boolean = ds.getGdprConsentResp() != null
 
-    override fun hasCcpaConsent(): Boolean = ds.getGdprConsentResp().isNotBlank()
+    override fun hasCcpaConsent(): Boolean = ds.getGdprConsentResp() != null
 }

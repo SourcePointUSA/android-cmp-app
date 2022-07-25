@@ -102,7 +102,7 @@ private class ServiceImpl(
     override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<SPConsents?> = check {
         nc.sendCustomConsent(customConsentReq, env)
             .map {
-                if (dataStorage.getGdprConsentResp().isEmpty()) {
+                if (dataStorage.getGdprConsentResp() != null) {
                     genericFail("CustomConsent cannot be executed. Consent is missing!!!")
                 }
                 val existingConsent = JSONObject(dataStorage.getGdprConsentResp())
@@ -115,7 +115,7 @@ private class ServiceImpl(
     override fun deleteCustomConsentToServ(customConsentReq: CustomConsentReq, env: Env): Either<SPConsents?> = check {
         nc.deleteCustomConsentTo(customConsentReq, env)
             .map {
-                if (dataStorage.getGdprConsentResp().isEmpty()) {
+                if (dataStorage.getGdprConsentResp() != null) {
                     genericFail("CustomConsent cannot be executed. Consent is missing!!!")
                 }
                 val existingConsent = JSONObject(dataStorage.getGdprConsentResp())

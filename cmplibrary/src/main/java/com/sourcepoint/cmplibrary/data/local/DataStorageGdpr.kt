@@ -59,7 +59,7 @@ internal interface DataStorageGdpr {
     fun getEuConsent(): String
     fun getMetaData(): String
     fun getGdprConsentUuid(): String?
-    fun getGdprConsentResp(): String
+    fun getGdprConsentResp(): String?
     fun getGdprMessage(): String
 
     fun clearGdprConsent()
@@ -240,8 +240,8 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         return preference.getString(CONSENT_UUID_KEY, null)
     }
 
-    override fun getGdprConsentResp(): String {
-        return preference.getString(GDPR_CONSENT_RESP, "")!!
+    override fun getGdprConsentResp(): String? {
+        return preference.getString(GDPR_CONSENT_RESP, null)
     }
 
     override fun getGdprMessage(): String {
@@ -304,7 +304,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
 
 internal fun DataStorageGdpr.getGDPRConsent(): Either<GDPRConsentInternal> = check {
     getGdprConsentResp()
-        .also { if (it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
+        .also { if (it == null || it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
         .let { JSONObject(it) }
         .toTreeMap()
         .toGDPRUserConsent(uuid = this.getGdprConsentUuid(), applies = this.gdprApplies)
