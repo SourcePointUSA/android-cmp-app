@@ -82,8 +82,8 @@ private class ConsentManagerImpl(
         get() = dataStorage.getCcpaConsentUuid()
 
     override val storedConsentByUser: Boolean
-        get() = dataStorage.getCcpaConsentResp() == null &&
-            dataStorage.getGdprConsentResp() == null
+        get() = dataStorage.getCcpaConsentResp() != null ||
+            dataStorage.getGdprConsentResp() != null
 
     override fun enqueueConsent(consentActionImpl: ConsentActionImpl) {
         consentQueueImpl.offer(consentActionImpl)
