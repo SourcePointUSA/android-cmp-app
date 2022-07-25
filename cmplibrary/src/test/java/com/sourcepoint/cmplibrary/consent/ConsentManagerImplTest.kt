@@ -1,6 +1,8 @@
 package com.sourcepoint.cmplibrary.consent
 
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.assertFalse
+import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.Service
@@ -230,5 +232,33 @@ class ConsentManagerImplTest {
         verify(exactly = 3) { service.sendConsent(any(), any(), any(), any()) }
         verify(exactly = 3) { sPSuccessMock.invoke(any()) }
         verify(exactly = 0) { sPErrorMock.invoke(any()) }
+    }
+
+    @Test
+    fun `GIVEN a GDPR stored consent in SP VERIFY that savedConsentByUser RETURN true`(){
+        every { dataStorage.getGdprConsentResp() }.returns("gdpr")
+        every { dataStorage.getCcpaConsentResp() }.returns(null)
+        consentManager.storedConsentByUser.assertTrue()
+    }
+
+    @Test
+    fun `GIVEN a GDPR and CCPA stored consent in SP VERIFY that savedConsentByUser RETURN true`(){
+        every { dataStorage.getGdprConsentResp() }.returns("gdpr")
+        every { dataStorage.getCcpaConsentResp() }.returns("ccpa")
+        consentManager.storedConsentByUser.assertTrue()
+    }
+
+    @Test
+    fun `GIVEN a CCPA stored consent in SP VERIFY that savedConsentByUser RETURN true`(){
+        every { dataStorage.getCcpaConsentResp() }.returns("ccpa")
+        every { dataStorage.getGdprConsentResp() }.returns(null)
+        consentManager.storedConsentByUser.assertTrue()
+    }
+
+    @Test
+    fun `GIVEN a MISSING stored consent in SP VERIFY that savedConsentByUser RETURN false`(){
+        every { dataStorage.getGdprConsentResp() }.returns(null)
+        every { dataStorage.getCcpaConsentResp() }.returns(null)
+        consentManager.storedConsentByUser.assertFalse()
     }
 }
