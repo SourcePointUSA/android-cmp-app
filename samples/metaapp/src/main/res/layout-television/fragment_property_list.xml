@@ -55,8 +55,8 @@
             app:layout_constraintStart_toEndOf="@+id/add_property_button"
             app:layout_constraintTop_toBottomOf="@+id/app_bar" />
 
-        <GridView
-            android:id="@+id/property_grid"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/property_list"
             android:layout_width="958dp"
             android:layout_height="418dp"
             android:layout_marginTop="5dp"
@@ -66,11 +66,18 @@
             android:scrollbars="horizontal|vertical"
             android:verticalScrollbarPosition="defaultPosition"
             android:verticalSpacing="15dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_property_button"
-            tools:listitem="@layout/property_item" />
+
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="3"
+
+            tools:listitem="@layout/property_item">
+
+        </androidx.recyclerview.widget.RecyclerView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
