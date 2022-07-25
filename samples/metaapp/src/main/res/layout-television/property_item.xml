@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="0dp"
-    android:clickable="true"
-    android:elevation="3dp"
-    android:focusable="true">
-
-    <com.sourcepointmeta.metaapp.ui.component.PropertyItemView
-        android:id="@+id/property_view_item"
+<com.google.android.material.card.MaterialCardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:focusable="auto"
-        android:padding="8dp">
+        android:layout_margin="0dp"
+        android:clickable="true"
+        android:elevation="3dp"
+        android:focusable="true">
+
+    <com.sourcepointmeta.metaapp.ui.component.PropertyItemView
+            android:id="@+id/property_view_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
 
         <LinearLayout
             android:layout_width="230dp"
@@ -136,6 +136,36 @@
                 </LinearLayout>
 
             </com.google.android.material.chip.ChipGroup>
+
+            <com.sourcepointmeta.metaapp.ui.component.PlayDemoGroup
+                android:id="@+id/play_demo_group"
+                app:layout_constraintTop_toTopOf="@id/chip_group"
+                app:layout_constraintBottom_toBottomOf="@id/chip_group"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp">
+
+                <Button
+                    android:id="@+id/play_demo_btn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:icon="@drawable/ic_baseline_arrow_right_48"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/cat_progress_indicator_chip"
+                    android:checked="true"
+                    android:visibility="gone"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:text="@string/saving"/>
+
+            </com.sourcepointmeta.metaapp.ui.component.PlayDemoGroup>
+
         </LinearLayout>
 
 
