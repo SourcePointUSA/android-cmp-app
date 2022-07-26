@@ -183,21 +183,26 @@ internal class SpConsentLibImpl(
                 }
             },
             pError = { throwable ->
-                (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
-                val ex = throwable.toConsentLibException()
-                spClient.onError(ex)
-                pLogger.clientEvent(
-                    event = "onError",
-                    msg = "${throwable.message}",
-                    content = "${throwable.message}"
-                )
-                pLogger.e(
-                    "SpConsentLib",
-                    """
+                if (consentManager.storedConsent) {
+                    // send consent
+                    consentManager.sendStoredConsentToClient()
+                } else {
+                    (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
+                    val ex = throwable.toConsentLibException()
+                    spClient.onError(ex)
+                    pLogger.clientEvent(
+                        event = "onError",
+                        msg = "${throwable.message}",
+                        content = "${throwable.message}"
+                    )
+                    pLogger.e(
+                        "SpConsentLib",
+                        """
                     onError
                     ${throwable.message}
-                    """.trimIndent()
-                )
+                        """.trimIndent()
+                    )
+                }
             },
             env = env
         )
