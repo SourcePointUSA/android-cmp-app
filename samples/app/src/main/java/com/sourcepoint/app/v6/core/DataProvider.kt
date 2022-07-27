@@ -8,6 +8,7 @@ import java.util.*
 interface DataProvider {
     val authId: String?
     val resetAll: Boolean
+    val storeState: Boolean
     val url: String
     val gdprPmId: String
     val ccpaPmId: String
@@ -43,6 +44,7 @@ private class DataProviderImpl(
     override val gdprPmId: String,
     override val ccpaPmId: String,
     override val resetAll: Boolean = false,
+    override val storeState: Boolean = false,
     val pAuthId: String?
 ) : DataProvider {
 

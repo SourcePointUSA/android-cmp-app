@@ -574,4 +574,27 @@ class MainActivityKotlinTest {
 
     }
 
+    @Test
+    fun test_GracefulDegradation_consent_present() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr.copy(messageTimeout = 3),
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient),
+                pStoreState = true
+            )
+        )
+
+        scenario = launchActivity()
+
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+    }
+
 }
