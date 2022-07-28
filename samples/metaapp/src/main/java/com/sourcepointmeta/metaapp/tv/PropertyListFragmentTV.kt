@@ -1,17 +1,16 @@
 package com.sourcepointmeta.metaapp.tv
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
-import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -20,9 +19,11 @@ import com.sourcepoint.cmplibrary.util.clearAllData
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
+import com.sourcepointmeta.metaapp.core.replaceFragment
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
+import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
@@ -53,21 +54,12 @@ class PropertyListFragmentTV: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_property_list, container, false)
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (clearDb) {
             viewModel.clearDB()
         }
-
-        tool_bar.title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
-
-        add_property_button?.setOnClickListener {
-            (activity as? AppCompatActivity)?.addFragment(
-                R.id.container,
-                AddUpdatePropertyFragment.instance("EMPTY_NAME")
-            )
-        }
-
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
                 is BaseState.StatePropertyList -> successState(it)
@@ -77,16 +69,24 @@ class PropertyListFragmentTV: Fragment() {
                 is BaseState.StateVersion -> showVersionPopup(it.version)
             }
         }
+
+        tool_bar.title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
+        add_property_button?.setOnClickListener {
+            (activity as? AppCompatActivity)?.addFragment(
+                R.id.container,
+                AddUpdatePropertyFragment.instance("EMPTY_NAME")
+            )
+        }
+
         property_list.layoutManager = GridLayoutManager(context, 3)
         property_list.adapter = adapter
-//        fab.setOnClickListener { (activity as? AppCompatActivity)?.addFragment(R.id.container, AddUpdatePropertyFragment()) }
         (activity as? AppCompatActivity)?.supportFragmentManager?.addOnBackStackChangedListener {
             viewModel.fetchPropertyList()
         }
         adapter.itemClickListener = {
-            (activity as? AppCompatActivity)?.addFragment(
+            (activity as? AppCompatActivity)?.replaceFragment(
                 R.id.container,
-                AddUpdatePropertyFragment.instance(it.propertyName)
+                PropertyItemControlsTV(it)
             )
         }
         adapter.propertyChangedListener = { viewModel.updateProperty(it) }
