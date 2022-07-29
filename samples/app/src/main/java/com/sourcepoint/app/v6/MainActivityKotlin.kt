@@ -46,11 +46,17 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if (dataProvider.resetAll) {
             clearAllData(this)
         }
+
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
+        if(dataProvider.storeState){
+            sp.edit().putString("sp.key.local.state", "localstate").apply()
+            sp.edit().putBoolean("sp.key.saved.consent", true).apply()
+        }
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
