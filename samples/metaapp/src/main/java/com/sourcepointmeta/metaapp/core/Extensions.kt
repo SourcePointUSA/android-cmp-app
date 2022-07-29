@@ -28,8 +28,7 @@ fun AppCompatActivity.replaceFragment(@IdRes resId: Int, fragment: Fragment) {
         .replace(resId, fragment, fragment::class.java.name)
         .commit()
 }
-
-fun AppCompatActivity.replaceWithoutBackstackFragment(@IdRes resId: Int, fragment: Fragment) {
+fun AppCompatActivity.replaceFragmentWithoutBackstack(@IdRes resId: Int, fragment: Fragment) {
     supportFragmentManager
         .beginTransaction()
         .replace(resId, fragment, fragment::class.java.name)
