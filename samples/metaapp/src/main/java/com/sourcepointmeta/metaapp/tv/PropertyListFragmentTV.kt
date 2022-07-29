@@ -105,9 +105,11 @@ class PropertyListFragmentTV: Fragment() {
             true
         }
     }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_prop_list, menu)
     }
+
     override fun onResume() {
         super.onResume()
         viewModel.fetchPropertyList()
@@ -116,6 +118,7 @@ class PropertyListFragmentTV: Fragment() {
     private fun updateProperty(state: BaseState.StateProperty) {
         adapter.updateProperty(state.property.toPropertyDTO())
     }
+
     private fun savingProperty(propertyName: String, showLoading: Boolean) {
         adapter.savingProperty(propertyName, showLoading)
     }
@@ -125,6 +128,7 @@ class PropertyListFragmentTV: Fragment() {
             .map { p -> p.toPropertyDTO() }
             .let { adapter.addItems(it) }
     }
+
     private fun errorState(it: BaseState.StateError) {
     }
 
@@ -143,6 +147,7 @@ class PropertyListFragmentTV: Fragment() {
             .setNegativeButton("Continue") { _, _ -> }
             .show()
     }
+
     private fun showDeleteDialog(position: Int, adapter: PropertyAdapter) {
         val propertyName = adapter.getPropertyNameByPosition(position)
         MaterialAlertDialogBuilder(requireContext())
