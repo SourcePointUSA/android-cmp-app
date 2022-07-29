@@ -255,6 +255,23 @@ fun checkConsentState(consent: String, selected: Boolean) {
 }
 
 @Throws(Throwable::class)
+fun checkConsentState(consent: String, selected: Boolean, stackType: String) {
+    onWebView()
+        .withElement(findElement(Locator.XPATH, "//div[@class='$stackType' and @title='$consent']"))
+        .withElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected']"))
+        .perform(webScrollIntoView())
+}
+
+@Throws(Throwable::class)
+fun checkConsentStateVendor(consent: String, selected: Boolean, stackType: String) {
+    onWebView()
+        .withElement(findElement(Locator.XPATH, "//div[@class='$stackType']"))
+        .withElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected']"))
+        .withElement(findElement(Locator.XPATH, "//span[text()='$consent']"))
+        .perform(webScrollIntoView())
+}
+
+@Throws(Throwable::class)
 fun checkPMTabSelected(expected: String) {
     onWebView()
             .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab active') and text()='$expected']"))
@@ -292,9 +309,9 @@ fun tapOnToggle(property: String, tapOnlyWhen: Boolean) {
 @Throws(Throwable::class)
 fun tapOnToggle2(property: String, tapOnlyWhen: Boolean) {
     onWebView()
-        .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'stack-row')]"))
+        .withElement(findElement(Locator.XPATH, "//div[@class='tcfv2-stack']"))
         .withElement( findElement(Locator.XPATH, "//span[(text()='$property') ]"))
-        .withElement(findElement(Locator.XPATH, "//span[ @class='slider round' and @aria-checked='$tapOnlyWhen']"))
+        .withElement(findElement(Locator.XPATH, "//button[@role='switch' and @aria-checked='$tapOnlyWhen']"))
         .perform(webScrollIntoView())
         .perform(webClick())
 }
@@ -434,7 +451,7 @@ fun <T : RecyclerView.ViewHolder> isInPosition(position: Int): Matcher<T> {
         }
 
         override fun describeTo(description: Description) {
-            description.appendText("item in the middle")
+            description.appendText("Item in the middle")
         }
     }
 }
