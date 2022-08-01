@@ -360,7 +360,8 @@ class TestUseCase {
             pAuthId: String? = null,
             url: String = "",
             pResetAll: Boolean = true,
-            pStoreState: Boolean = false,
+            pStoreStateGdpr: Boolean = false,
+            pStoreStateCcpa: Boolean = false,
             spClientObserver: List<SpClient> = emptyList()
         ): Module {
             return module(override = true) {
@@ -369,7 +370,8 @@ class TestUseCase {
                     object : DataProvider {
                         override val authId = pAuthId
                         override val resetAll = pResetAll
-                        override val storeState: Boolean = pStoreState
+                        override val storeStateGdpr: Boolean = pStoreStateGdpr
+                        override val storeStateCcpa: Boolean = pStoreStateCcpa
                         override val url = url
                         override val spConfig: SpConfig = spConfig
                         override val gdprPmId: String = gdprPmId

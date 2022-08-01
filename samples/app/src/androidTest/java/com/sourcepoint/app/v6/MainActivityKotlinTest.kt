@@ -584,7 +584,7 @@ class MainActivityKotlinTest {
                 spConfig = spConfGdpr.copy(messageTimeout = 3),
                 gdprPmId = "488393",
                 spClientObserver = listOf(spClient),
-                pStoreState = true
+                pStoreStateGdpr = true
             )
         )
 
@@ -607,7 +607,7 @@ class MainActivityKotlinTest {
                 spConfig = spConfGdpr.copy(messageTimeout = 3),
                 gdprPmId = "488393",
                 spClientObserver = listOf(spClient),
-                pStoreState = false
+                pStoreStateGdpr = false
             )
         )
 
