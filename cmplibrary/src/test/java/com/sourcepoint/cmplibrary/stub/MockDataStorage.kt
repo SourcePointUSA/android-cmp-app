@@ -61,6 +61,10 @@ internal class MockDataStorage : DataStorage {
         storage[DataStorageGdpr.GDPR_CONSENT_RESP] = value
     }
 
+    override fun saveUsPrivacyString(value: String) {
+        storage[DataStorageCcpa.KEY_IAB_US_PRIVACY_STRING] = value
+    }
+
     override fun saveGdprMessage(value: String) {
         storage[DataStorageGdpr.GDPR_JSON_MESSAGE] = value
     }

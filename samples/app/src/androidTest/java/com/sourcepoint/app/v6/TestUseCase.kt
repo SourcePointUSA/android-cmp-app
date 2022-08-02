@@ -68,63 +68,63 @@ class TestUseCase {
 
         fun checkAllConsentsOn() {
             CONSENT_LIST_2.forEach { consent ->
-                checkConsentState(consent, true)
+                checkConsentState(consent, true, "tcfv2-stack")
             }
         }
 
         fun checkAllConsentsOff() {
             CONSENT_LIST_2.forEach { consent ->
-                checkConsentState(consent, false)
+                checkConsentState(consent, false, "tcfv2-stack")
             }
         }
 
         fun checkAllCcpaConsentsOn() {
             CCPA_CONSENT_LIST.forEach { consent ->
-                checkConsentState(consent, true)
+                checkConsentState(consent, true, "ccpa-stack")
             }
         }
 
         fun checkCustomCategoriesData() {
             // the customCategoriesData elements are enabled
             customCategoriesDataProd.map { it.second }.forEach { consent ->
-                checkConsentState(consent, true)
+                checkConsentState(consent, true, "tcfv2-stack")
             }
             // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
             CONSENT_LIST_2.subtract(customCategoriesDataProd.map { it.second }).forEach { consent ->
-                checkConsentState(consent, false)
+                checkConsentState(consent, false, "tcfv2-stack")
             }
         }
 
         fun checkDeletedCustomCategoriesData() {
             // the customCategoriesData elements are enabled
             customCategoriesDataProd.map { it.second }.forEach { consent ->
-                checkConsentState(consent, false)
+                checkConsentState(consent, false, "tcfv2-stack")
             }
             // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
             CONSENT_LIST_2.subtract(customCategoriesDataProd.map { it.second }).forEach { consent ->
-                checkConsentState(consent, false)
+                checkConsentState(consent, false, "tcfv2-stack")
             }
         }
 
         fun checkCustomVendorDataList() {
             // the customVendorDataList elements are enabled
             customVendorDataListProd.map { it.second }.forEach { consent ->
-                checkConsentState(consent, true)
+                checkConsentStateVendor(consent, true, "tcfv2-stack")
             }
             // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
             VENDORS_LIST.subtract(customVendorDataListProd.map { it.second }).forEach { consent ->
-                checkConsentState(consent, false)
+                checkConsentStateVendor(consent, false, "tcfv2-stack")
             }
         }
 
         fun checkDeletedCustomVendorDataList() {
             // the customVendorDataList elements are enabled
             customVendorDataListProd.map { it.second }.forEach { consent ->
-                checkConsentState(consent, false)
+                checkConsentStateVendor(consent, false, "tcfv2-stack")
             }
-            // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
+//            // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
             VENDORS_LIST.subtract(customVendorDataListProd.map { it.second }).forEach { consent ->
-                checkConsentState(consent, false)
+                checkConsentStateVendor(consent, false, "tcfv2-stack")
             }
         }
 
@@ -142,7 +142,7 @@ class TestUseCase {
 
         fun checkAllGdprConsentsOn() {
             GDPR_CONSENT_LIST_2.forEach { consent ->
-                checkConsentState(consent, true)
+                checkConsentState(consent, true, "tcfv2-stack")
             }
         }
 
@@ -228,7 +228,7 @@ class TestUseCase {
 
         fun checkAllVendorsOff() {
             VENDORS_LIST_2.forEach { consent ->
-                checkConsentState(consent, false)
+                checkConsentStateVendor(consent, false, "tcfv2-stack")
             }
         }
 
