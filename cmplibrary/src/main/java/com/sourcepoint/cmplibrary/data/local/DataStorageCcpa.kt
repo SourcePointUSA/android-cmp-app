@@ -32,6 +32,7 @@ internal interface DataStorageCcpa {
 
     fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
+    fun saveUsPrivacyString(value: String)
     fun saveCcpaConsentUuid(value: String?)
     fun saveCcpaMessage(value: String)
 
@@ -112,12 +113,14 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
 
         preference
             .edit()
-            .putString(IAB_US_PRIVACY_STRING, value)
+            .putString(CCPA_CONSENT_RESP, value)
             .apply()
+    }
 
+    override fun saveUsPrivacyString(value: String) {
         preference
             .edit()
-            .putString(CCPA_CONSENT_RESP, value)
+            .putString(IAB_US_PRIVACY_STRING, value)
             .apply()
     }
 
