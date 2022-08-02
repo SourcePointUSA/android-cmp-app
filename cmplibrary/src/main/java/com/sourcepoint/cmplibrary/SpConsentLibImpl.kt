@@ -184,8 +184,10 @@ internal class SpConsentLibImpl(
             },
             pError = { throwable ->
                 if (consentManager.storedConsent) {
-                    // send consent
-                    consentManager.sendStoredConsentToClient()
+                    executor.executeOnSingleThread {
+                        consentManager.sendStoredConsentToClient()
+                        clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
+                    }
                 } else {
                     (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
                     val ex = throwable.toConsentLibException()

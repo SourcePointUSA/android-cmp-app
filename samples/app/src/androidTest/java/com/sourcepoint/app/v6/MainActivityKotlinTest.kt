@@ -575,7 +575,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun test_GracefulDegradation_consent_present() = runBlocking<Unit> {
+    fun test_GracefulDegradation_gdpr_consent_present() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
 
@@ -598,7 +598,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun test_GracefulDegradation_consent_absent() = runBlocking<Unit> {
+    fun test_GracefulDegradation_gdpr_and_ccpa_consent_present() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
 
@@ -607,7 +607,53 @@ class MainActivityKotlinTest {
                 spConfig = spConfGdpr.copy(messageTimeout = 3),
                 gdprPmId = "488393",
                 spClientObserver = listOf(spClient),
-                pStoreStateGdpr = false
+                pStoreStateGdpr = true,
+                pStoreStateCcpa = true
+            )
+        )
+
+        scenario = launchActivity()
+
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+    }
+
+    @Test
+    fun test_GracefulDegradation_ccpa_consent_present() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr.copy(messageTimeout = 3),
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient),
+                pStoreStateCcpa = true
+            )
+        )
+
+        scenario = launchActivity()
+
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+    }
+
+    @Test
+    fun test_GracefulDegradation_consent_absent() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr.copy(messageTimeout = 3),
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient)
             )
         )
 
