@@ -1,3 +1,8 @@
+## 6.7.1 (August, 02, 2022)
+* [DIA-1054](https://sourcepoint.atlassian.net/browse/DIA-1054) IABUSPrivacy_String inconsistency in DataStorage (#512)
+* [DIA-943](https://sourcepoint.atlassian.net/browse/DIA-943) Updated UI tests on old ott PM (#509)
+* [DIA-547](https://sourcepoint.atlassian.net/browse/DIA-547) Adding docs about SpUtil in the README file (#508)
+
 ## 6.7.0 (June, 24, 2022)
 * [DIA-841](https://sourcepoint.atlassian.net/browse/DIA-841) Behaviour Change onAction Callback in Android SDK 6.6.1 (#505)
 * [DIA-563](https://sourcepoint.atlassian.net/browse/DIA-563) Implementation of the deleteCustomConsentTo api (#503)
