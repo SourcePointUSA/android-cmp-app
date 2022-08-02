@@ -169,7 +169,6 @@ class CampaignManagerTest {
             siteId.assertEquals("0")
             messageId.assertEquals("22")
         }
-
     }
 
     @Test
