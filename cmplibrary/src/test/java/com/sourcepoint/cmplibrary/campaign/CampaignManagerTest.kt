@@ -161,6 +161,7 @@ class CampaignManagerTest {
             spConfig.copy(messageLanguage = MessageLanguage.BULGARIAN)
         )
         val config = sut.getPmConfig(CampaignType.GDPR, "22", PMTab.PURPOSES).getOrNull().assertNotNull()!!
+
         config.run {
             pmTab.assertEquals(PMTab.PURPOSES)
             consentLanguage.assertEquals("BG")
@@ -168,6 +169,7 @@ class CampaignManagerTest {
             siteId.assertEquals("0")
             messageId.assertEquals("22")
         }
+
     }
 
     @Test
