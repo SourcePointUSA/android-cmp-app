@@ -174,7 +174,7 @@ class CampaignManagerTest {
     @Test
     fun `GIVEN a GDPR config RETURN the configuration with language ES`() {
 
-        every { dataStorage.getGdprConsentUuid() }.returns( "uuid-test")
+        every { dataStorage.getGdprConsentUuid() }.returns("uuid-test")
         every { dataStorage.getPropertyId() }.returns(1234)
 
         val sut = CampaignManager.create(
