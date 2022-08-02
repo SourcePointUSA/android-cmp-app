@@ -666,4 +666,26 @@ class MainActivityKotlinTest {
 
     }
 
+    @Test
+    fun GracefulDegradation_GIVEN_a_backend_error_EXECUTE_the_onError() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr.copy(propertyName = "invalid.property"),
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+
+        wr { verify(exactly = 1) { spClient.onError(any()) } }
+        wr { verify(exactly = 0) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 0) { spClient.onSpFinished(any()) } }
+
+    }
+
 }
