@@ -351,6 +351,7 @@ private class CampaignManagerImpl(
         dataStorage.run {
             saveCcpa(ccpa.thisContent.toString())
             saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
+            saveUsPrivacyString(ccpa.userConsent.uspstring)
             ccpaApplies = ccpa.applies
             ccpaChildPmId = ccpa.userConsent.childPmId
         }

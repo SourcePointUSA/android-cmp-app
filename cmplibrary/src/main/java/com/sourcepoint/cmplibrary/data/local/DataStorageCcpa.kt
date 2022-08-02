@@ -7,11 +7,11 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CONSENT_CCPA_UUID_KEY
-import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.IAB_US_PRIVACY_STRING
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_CHILD_PM_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_MESSAGE_SUBCATEGORY
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_IAB_US_PRIVACY_STRING
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
@@ -32,6 +32,7 @@ internal interface DataStorageCcpa {
 
     fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
+    fun saveUsPrivacyString(value: String)
     fun saveCcpaConsentUuid(value: String?)
     fun saveCcpaMessage(value: String)
 
@@ -49,7 +50,7 @@ internal interface DataStorageCcpa {
         const val CCPA_CONSENT_RESP = "sp.ccpa.consent.resp"
         const val CCPA_JSON_MESSAGE = "sp.ccpa.json.message"
         const val CONSENT_CCPA_UUID_KEY = "sp.ccpa.consentUUID"
-        const val IAB_US_PRIVACY_STRING = "IABUSPrivacy_String"
+        const val KEY_IAB_US_PRIVACY_STRING = "IABUSPrivacy_String"
         const val KEY_CCPA_MESSAGE_SUBCATEGORY = "sp.key.ccpa.message.subcategory"
     }
 }
@@ -112,12 +113,14 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
 
         preference
             .edit()
-            .putString(IAB_US_PRIVACY_STRING, value)
+            .putString(CCPA_CONSENT_RESP, value)
             .apply()
+    }
 
+    override fun saveUsPrivacyString(value: String) {
         preference
             .edit()
-            .putString(CCPA_CONSENT_RESP, value)
+            .putString(KEY_IAB_US_PRIVACY_STRING, value)
             .apply()
     }
 
@@ -157,7 +160,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
 
         preference
             .edit()
-            .remove(IAB_US_PRIVACY_STRING)
+            .remove(KEY_IAB_US_PRIVACY_STRING)
             .apply()
     }
 
@@ -170,7 +173,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .remove(CCPA_JSON_MESSAGE)
             .remove(CONSENT_CCPA_UUID_KEY)
             .remove(KEY_CCPA_CHILD_PM_ID)
-            .remove(IAB_US_PRIVACY_STRING)
+            .remove(KEY_IAB_US_PRIVACY_STRING)
             .remove(KEY_CCPA_MESSAGE_SUBCATEGORY)
             .apply()
     }
