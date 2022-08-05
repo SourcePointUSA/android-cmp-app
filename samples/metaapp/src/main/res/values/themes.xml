@@ -83,7 +83,7 @@
         <item name="navigationViewStyle">@style/Widget.MyTheme.NavigationView</item>
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Primary</item>
     </style>
-    <style name="Base.Theme.MaterialThemeMetaapp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Base.Theme.MaterialThemeMetaapp" parent="Theme.Leanback">
         <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorPrimaryVariant</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
         <item name="android:navigationBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
