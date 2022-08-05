@@ -1,170 +1,214 @@
 package com.sourcepointmeta.metaapp.tv
 
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.DisplayMetrics
 import android.util.Log
-import android.util.TypedValue
-import android.view.*
+import android.view.Gravity
+import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.PopupMenu
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.ItemTouchHelper
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.sourcepoint.cmplibrary.util.clearAllData
-import com.sourcepointmeta.metaapp.BuildConfig
+import androidx.core.content.ContextCompat
+import androidx.leanback.app.BackgroundManager
+import androidx.leanback.app.BrowseSupportFragment
+import androidx.leanback.widget.*
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.core.addFragment
-import com.sourcepointmeta.metaapp.core.replaceFragment
-import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.ui.BaseState
-import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
-import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
-import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
-import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
-import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
-import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
-import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListViewModel
-import kotlinx.android.synthetic.main.fragment_property_list.*
-import kotlinx.android.synthetic.main.fragment_property_list.view.*
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.qualifier.named
+import com.sourcepointmeta.metaapp.tv.presenters.CardPresenter
+import com.sourcepointmeta.metaapp.tv.samples.DataSamples
+import com.sourcepointmeta.metaapp.tv.samples.MovieSample
+import java.util.*
 
-class PropertyListFragmentTV: Fragment() {
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 
-    private val viewModel: PropertyListViewModel by viewModel()
-    private val clearDb: Boolean by inject(qualifier = named("clear_db"))
 
-    private val errorColor: Int by lazy {
-        TypedValue().apply { requireContext().theme.resolveAttribute(R.attr.colorErrorResponse, this, true) }
-            .data
+class PropertyListFragmentTV() : BrowseSupportFragment() {
+    companion object {
+        private val TAG = "MainFragment"
+
+        private val BACKGROUND_UPDATE_DELAY = 300
+        private val GRID_ITEM_WIDTH = 200
+        private val GRID_ITEM_HEIGHT = 200
+        private val NUM_ROWS = 6
+        private val NUM_COLS = 15
     }
 
-    private val adapter by lazy { PropertyAdapter() }
-    private val itemTouchHelper by lazy { ItemTouchHelper(swipeToDeleteCallback) }
-    private val swipeToDeleteCallback: SwipeToDeleteCallback by lazy {
-        SwipeToDeleteCallback(requireContext()) { showDeleteDialog(it, adapter) }
+    private lateinit var mBackgroundManager: BackgroundManager
+    private var mDefaultBackground: Drawable? = null
+    private var mBackgroundTimer: Timer? = null
+    private var mBackgroundUri: String? = null
+    private lateinit var mMetrics: DisplayMetrics
+    private val mHandler = Handler(Looper.myLooper()!!)
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        Log.i(TAG, "onCreate")
+        super.onActivityCreated(savedInstanceState)
+
+        prepareBackgroundManager()
+        setupUIElements()
+        loadRows()
+        setupEventListeners()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: " + mBackgroundTimer?.toString())
+        mBackgroundTimer?.cancel()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_property_list, container, false)
+    private fun prepareBackgroundManager() {
+        mBackgroundManager = BackgroundManager.getInstance(activity)
+        mBackgroundManager.attach(requireActivity().window)
+        mDefaultBackground = ContextCompat.getDrawable(requireActivity(), R.drawable.lb_background)
+        mMetrics = DisplayMetrics()
+        requireActivity().windowManager.defaultDisplay.getMetrics(mMetrics)
     }
+    private fun setupUIElements() {
+        title = getString(R.string.add_prop_title)
+        // over title
+        headersState = BrowseSupportFragment.HEADERS_ENABLED
+        isHeadersTransitionOnBackEnabled = true
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if (clearDb) {
-            viewModel.clearDB()
-        }
-        viewModel.liveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is BaseState.StatePropertyList -> successState(it)
-                is BaseState.StateError -> errorState(it)
-                is BaseState.StateProperty -> updateProperty(it)
-                is BaseState.StateLoading -> savingProperty(it.propertyName, it.loading)
-                is BaseState.StateVersion -> showVersionPopup(it.version)
+        // set fastLane (or headers) background color
+        brandColor = ContextCompat.getColor(requireActivity(), R.color.blue_link_600)
+        // set search icon color
+        searchAffordanceColor = ContextCompat.getColor(requireActivity(), R.color.blue_link_200)
+    }
+    private fun loadRows() {
+        val list = DataSamples.list
+
+        val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+        val cardPresenter = CardPresenter()
+
+        for (i in 0 until NUM_ROWS) {
+            if (i != 0) {
+                Collections.shuffle(list)
             }
+            val listRowAdapter = ArrayObjectAdapter(cardPresenter)
+            for (j in 0 until NUM_COLS) {
+                listRowAdapter.add(list[j % 5])
+            }
+            val header = HeaderItem(i.toLong(), DataSamples.MOVIE_CATEGORY[i])
+            rowsAdapter.add(ListRow(header, listRowAdapter))
         }
 
-        tool_bar.title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
-        add_property_button?.setOnClickListener {
-            (activity as? AppCompatActivity)?.addFragment(
-                R.id.container,
-                AddUpdatePropertyFragment.instance("EMPTY_NAME")
-            )
+        val gridHeader = HeaderItem(NUM_ROWS.toLong(), "PREFERENCES")
+
+        val mGridPresenter = GridItemPresenter()
+        val gridRowAdapter = ArrayObjectAdapter(mGridPresenter)
+//        gridRowAdapter.add(resources.getString(R.string.grid_view))
+//        gridRowAdapter.add(getString(R.string.error_fragment))
+//        gridRowAdapter.add(resources.getString(R.string.personal_settings))
+        rowsAdapter.add(ListRow(gridHeader, gridRowAdapter))
+
+        adapter = rowsAdapter
+    }
+    private fun setupEventListeners() {
+        setOnSearchClickedListener {
+            Toast.makeText(requireActivity(), "Implement your own in-app search", Toast.LENGTH_LONG)
+                .show()
         }
 
-        property_list.layoutManager = GridLayoutManager(context, 3)
-        property_list.adapter = adapter
-        (activity as? AppCompatActivity)?.supportFragmentManager?.addOnBackStackChangedListener {
-            viewModel.fetchPropertyList()
-        }
-        adapter.itemClickListener = {
-            (activity as? AppCompatActivity)?.replaceFragment(
-                R.id.container,
-                PropertyItemControlsTV(it)
-            )
-        }
-        adapter.propertyChangedListener = { viewModel.updateProperty(it) }
-        adapter.demoProperty = { runDemo(it) }
-        itemTouchHelper.attachToRecyclerView(property_list)
+        onItemViewClickedListener = ItemViewClickedListener()
+        onItemViewSelectedListener = ItemViewSelectedListener()
+    }
 
-        if (BuildConfig.BUILD_TYPE == "release") {
-            viewModel.fetchLatestVersion()
-        }
-        tool_bar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_clear_sp -> {
-                    context?.let { clearAllData(it) }
+    private inner class ItemViewClickedListener : OnItemViewClickedListener {
+        override fun onItemClicked(
+            itemViewHolder: Presenter.ViewHolder,
+            item: Any,
+            rowViewHolder: RowPresenter.ViewHolder,
+            row: Row
+        ) {
+
+            /*if (item is MovieSample) {
+                Log.d(TAG, "Item: " + item.toString())
+                val intent = Intent(activity!!, DetailsActivity::class.java)
+                intent.putExtra(DetailsActivity.MOVIE, item)
+
+                val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    activity!!,
+                    (itemViewHolder.view as ImageCardView).mainImageView,
+                    DetailsActivity.SHARED_ELEMENT_NAME
+                )
+                    .toBundle()
+                startActivity(intent, bundle)
+            } else if (item is String) {
+                if (item.contains(getString(R.string.error_fragment))) {
+                    val intent = Intent(activity!!, BrowseErrorActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(activity!!, item, Toast.LENGTH_SHORT).show()
                 }
+            }*/
+        }
+    }
+    private inner class ItemViewSelectedListener : OnItemViewSelectedListener {
+        override fun onItemSelected(
+            itemViewHolder: Presenter.ViewHolder?, item: Any?,
+            rowViewHolder: RowPresenter.ViewHolder, row: Row
+        ) {
+            if (item is MovieSample) {
+                mBackgroundUri = item.backgroundImageUrl
+                startBackgroundTimer()
             }
-            true
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_prop_list, menu)
+    private fun updateBackground(uri: String?) {
+        val width = mMetrics.widthPixels
+        val height = mMetrics.heightPixels
+        Glide.with(requireActivity())
+            .load(uri)
+            .centerCrop()
+            .error(mDefaultBackground)
+            .into<SimpleTarget<Drawable>>(
+                object : SimpleTarget<Drawable>(width, height) {
+                    override fun onResourceReady(
+                        drawable: Drawable,
+                        transition: Transition<in Drawable>?
+                    ) {
+                        mBackgroundManager.drawable = drawable
+                    }
+                })
+        mBackgroundTimer?.cancel()
+    }
+    private fun startBackgroundTimer() {
+        mBackgroundTimer?.cancel()
+        mBackgroundTimer = Timer()
+        mBackgroundTimer?.schedule(UpdateBackgroundTask(), BACKGROUND_UPDATE_DELAY.toLong())
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.fetchPropertyList()
-    }
+    private inner class UpdateBackgroundTask : TimerTask() {
 
-    private fun updateProperty(state: BaseState.StateProperty) {
-        adapter.updateProperty(state.property.toPropertyDTO())
+        override fun run() {
+            mHandler.post { updateBackground(mBackgroundUri) }
+        }
     }
+    private inner class GridItemPresenter : Presenter() {
+        override fun onCreateViewHolder(parent: ViewGroup): Presenter.ViewHolder {
+            val view = TextView(parent.context)
+            view.layoutParams = ViewGroup.LayoutParams(GRID_ITEM_WIDTH, GRID_ITEM_HEIGHT)
+            view.isFocusable = true
+            view.isFocusableInTouchMode = true
+            view.setBackgroundColor(
+                ContextCompat.getColor(
+                    activity!!,
+                    R.color.ic_launcher_background
+                )
+            )
+            view.setTextColor(Color.WHITE)
+            view.gravity = Gravity.CENTER
+            return Presenter.ViewHolder(view)
+        }
 
-    private fun savingProperty(propertyName: String, showLoading: Boolean) {
-        adapter.savingProperty(propertyName, showLoading)
-    }
+        override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any) {
+            (viewHolder.view as TextView).text = item as String
+        }
 
-    private fun successState(it: BaseState.StatePropertyList) {
-        it.propertyList
-            .map { p -> p.toPropertyDTO() }
-            .let { adapter.addItems(it) }
-    }
-
-    private fun errorState(it: BaseState.StateError) {
-    }
-
-    private fun showVersionPopup(version: String) {
-        tool_bar.setTitleTextColor(errorColor)
-        tool_bar.title = "${tool_bar.title} -> $version"
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Metaapp version ${BuildConfig.VERSION_NAME} out of date, new version $version is available.")
-            .setPositiveButton("Update it") { _, _ ->
-                try {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.sourcepointmeta.metaapp")))
-                } catch (e: ActivityNotFoundException) {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp")))
-                }
-            }
-            .setNegativeButton("Continue") { _, _ -> }
-            .show()
-    }
-
-    private fun showDeleteDialog(position: Int, adapter: PropertyAdapter) {
-        val propertyName = adapter.getPropertyNameByPosition(position)
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Delete Property $propertyName")
-            .setPositiveButton("Confirm") { _, _ ->
-                adapter.notifyItemChanged(position)
-                viewModel.deleteProperty(propertyName)
-            }
-            .setNegativeButton("Cancel") { _, _ -> adapter.notifyItemChanged(position) }
-            .show()
-    }
-
-    private fun runDemo(property: Property) {
-        val bundle = Bundle()
-        bundle.putString("property_name", property.propertyName)
-        val i = Intent(activity, DemoActivity::class.java)
-        i.putExtras(bundle)
-        startActivity(i)
+        override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder) {}
     }
 }

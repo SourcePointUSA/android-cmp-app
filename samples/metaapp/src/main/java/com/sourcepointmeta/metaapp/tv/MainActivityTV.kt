@@ -2,10 +2,10 @@ package com.sourcepointmeta.metaapp.tv
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListFragment
 
-class MainActivityTV : AppCompatActivity() {
+class MainActivityTV : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
