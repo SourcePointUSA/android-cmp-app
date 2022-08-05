@@ -212,7 +212,13 @@ class MainActivityKotlinTest {
                 onAction(any(), any())
                 onConsentReady(any())
             }
+        }
 
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.getString("IABUSPrivacy_String", null).assertEquals("1YNN")
+            }
         }
     }
 

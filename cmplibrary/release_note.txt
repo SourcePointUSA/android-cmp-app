@@ -1,8 +1,5 @@
-* [DIA-814](https://sourcepoint.atlassian.net/browse/DIA-814) Behaviour Change onAction Callback in Android SDK 6.6.1 (#505)
-* [DIA-563](https://sourcepoint.atlassian.net/browse/DIA-563) Implementation of the deleteCustomConsentTo api (#503)
-* [DIA-188](https://sourcepoint.atlassian.net/browse/DIA-188) Docs React Native pt 1 (#504)
-* [DIA-638](https://sourcepoint.atlassian.net/browse/DIA-638) Removing the userConfig param from userConsents function (#500)
-* [DIA-686](https://sourcepoint.atlassian.net/browse/DIA-686) Configurable ConsentWebView viewId (#499)
-* [DIA-580](https://sourcepoint.atlassian.net/browse/DIA-580) Making the elements of the ViewsManagerImpl to have the same lifetime (#501)
+* [DIA-1054](https://sourcepoint.atlassian.net/browse/DIA-1054) IABUSPrivacy_String inconsistency in DataStorage (#512)
+* [DIA-943](https://sourcepoint.atlassian.net/browse/DIA-943) Updated UI tests on old ott PM (#509)
+* [DIA-547](https://sourcepoint.atlassian.net/browse/DIA-547) Adding docs about SpUtil in the README file (#508)
 
 
