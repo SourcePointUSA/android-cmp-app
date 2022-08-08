@@ -37,7 +37,7 @@ internal interface DataStorageCcpa {
     fun saveCcpaMessage(value: String)
 
     fun getCcpa(): String?
-    fun getCcpaConsentResp(): String
+    fun getCcpaConsentResp(): String?
     fun getCcpaMessage(): String
     fun getCcpaConsentUuid(): String?
     fun clearCcpaConsent()
@@ -140,8 +140,8 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .apply()
     }
 
-    override fun getCcpaConsentResp(): String {
-        return preference.getString(CCPA_CONSENT_RESP, "")!!
+    override fun getCcpaConsentResp(): String? {
+        return preference.getString(CCPA_CONSENT_RESP, null)
     }
 
     override fun getCcpaMessage(): String {
@@ -181,7 +181,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
 
 internal fun DataStorageCcpa.getCCPAConsent(): Either<CCPAConsentInternal> = check {
     getCcpaConsentResp()
-        .also { if (it.isBlank()) fail("CCPAConsent is not saved in the the storage!!") }
+        .also { if (it == null || it.isBlank()) fail("CCPAConsent is not saved in the the storage!!") }
         .let { JSONObject(it) }
         .toTreeMap()
         .toCCPAUserConsent(uuid = this.getCcpaConsentUuid(), applies = this.ccpaApplies)

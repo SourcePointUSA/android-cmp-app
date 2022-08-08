@@ -86,11 +86,11 @@ internal class MockDataStorage : DataStorage {
     }
 
     override fun getGdprConsentUuid(): String? {
-        return storage[DataStorageGdpr.CONSENT_UUID_KEY] as? String ?: ""
+        return storage[DataStorageGdpr.CONSENT_UUID_KEY] as? String
     }
 
-    override fun getGdprConsentResp(): String {
-        return storage[DataStorageGdpr.GDPR_CONSENT_RESP] as? String ?: ""
+    override fun getGdprConsentResp(): String? {
+        return storage[DataStorageGdpr.GDPR_CONSENT_RESP] as? String
     }
 
     override fun getGdprMessage(): String {
@@ -126,8 +126,8 @@ internal class MockDataStorage : DataStorage {
         storage[CCPA_JSON_MESSAGE] = value
     }
 
-    override fun getCcpaConsentResp(): String {
-        return storage[CCPA_CONSENT_RESP] as? String ?: ""
+    override fun getCcpaConsentResp(): String? {
+        return storage[CCPA_CONSENT_RESP] as? String
     }
 
     override fun getCcpaMessage(): String {
