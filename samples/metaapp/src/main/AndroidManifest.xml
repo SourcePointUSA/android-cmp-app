@@ -31,7 +31,7 @@
             android:label="@string/app_name"
             android:banner="@mipmap/ic_launcher"
             android:exported="true"
-            android:theme="@style/Theme.MyApp">
+            android:theme="@style/Theme.MyAppAndroidTV">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
