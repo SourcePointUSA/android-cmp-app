@@ -1,13 +1,13 @@
-package com.sourcepointmeta.metaapp.tv.presenters
+package com.sourcepointmeta.metaapp.tv.cards
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.drawable.Drawable
-import androidx.leanback.widget.ImageCardView
-import androidx.leanback.widget.Presenter
 import android.util.Log
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-
-import com.bumptech.glide.Glide
+import androidx.leanback.widget.BaseCardView
+import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.tv.samples.MovieSample
 import kotlin.properties.Delegates
@@ -16,7 +16,9 @@ import kotlin.properties.Delegates
  * A CardPresenter is used to generate Views and bind Objects to them on demand.
  * It contains an ImageCardView.
  */
-class CardPresenter : Presenter() {
+class CardPresenter(
+    val context: Context
+) : Presenter() {
     companion object {
         private val TAG = "CardPresenter"
 
@@ -37,51 +39,42 @@ class CardPresenter : Presenter() {
         sSelectedBackgroundColor = ContextCompat.getColor(parent.context, R.color.cardview_dark_background)
         mDefaultCardImage = ContextCompat.getDrawable(parent.context, R.drawable.ic_baseline_ios_share_24)
 
-        val cardView = object : ImageCardView(parent.context) {
+        val cardView = object : TextCardView(parent.context) {
             override fun setSelected(selected: Boolean) {
                 updateCardBackgroundColor(this, selected)
                 super.setSelected(selected)
             }
         }
 
-
         cardView.isFocusable = true
         cardView.isFocusableInTouchMode = true
         updateCardBackgroundColor(cardView, false)
         return Presenter.ViewHolder(cardView)
     }
-
+    @SuppressLint("ResourceType")
     override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any) {
         val movie = item as MovieSample
-        val cardView = viewHolder.view as ImageCardView
+        val cardView = viewHolder.view as TextCardView
 
         Log.d(TAG, "onBindViewHolder")
         if (movie.cardImageUrl != null) {
-            cardView.titleText = movie.title
-            cardView.contentText = movie.studio
-            cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
-            Glide.with(viewHolder.view.context)
-                .load(movie.cardImageUrl)
-                .centerCrop()
-                .error(mDefaultCardImage)
-                .into(cardView.mainImageView)
+            //TODO: ACHTUNG!!! HARDCODE!!!
+            cardView.propertyNameView!!.text = "property_name"
+            cardView.messageTypeView!!.text = "message_type"
+            cardView.accountIdView!!.text = "420"
+            cardView.campaignEnvView!!.text = "campaign_env"
         }
     }
-
     override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder) {
         Log.d(TAG, "onUnbindViewHolder")
-        val cardView = viewHolder.view as ImageCardView
-        // Remove references to images so that the garbage collector can free up memory
-        cardView.badgeImage = null
-        cardView.mainImage = null
     }
 
-    private fun updateCardBackgroundColor(view: ImageCardView, selected: Boolean) {
+    private fun updateCardBackgroundColor(view: BaseCardView, selected: Boolean) {
         val color = if (selected) sSelectedBackgroundColor else sDefaultBackgroundColor
         // Both background colors should be set because the view"s background is temporarily visible
         // during animations.
         view.setBackgroundColor(color)
-        view.setInfoAreaBackgroundColor(color)
+//        view.setInfoAreaBackgroundColor(color)
     }
 
 }
