@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="0dp"
-        android:clickable="true"
-        android:elevation="3dp"
-        android:focusable="true">
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="0dp"
+    android:clickable="true"
+    android:elevation="3dp"
+    android:focusable="true">
 
     <com.sourcepointmeta.metaapp.ui.component.PropertyItemView
-            android:id="@+id/property_view_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp">
+
+        android:id="@+id/property_view_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
 
         <LinearLayout
             android:layout_width="230dp"
@@ -88,9 +88,30 @@
                 app:autoSizeMinTextSize="20dp"
                 tools:text="Web-view" />
 
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                app:chipSpacing="8dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_gdpr"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GDPR" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_ccpa"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CCPA" />
+
+            </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
-
-
     </com.sourcepointmeta.metaapp.ui.component.PropertyItemView>
 
 </com.google.android.material.card.MaterialCardView>
