@@ -83,7 +83,7 @@
         <item name="navigationViewStyle">@style/Widget.MyTheme.NavigationView</item>
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Primary</item>
     </style>
-    <style name="Base.Theme.MaterialThemeMetaapp" parent="Theme.Leanback">
+    <style name="Base.Theme.MaterialThemeMetaapp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorPrimaryVariant</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
         <item name="android:navigationBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
@@ -97,7 +97,7 @@
     <style name="Theme.MyApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="Theme.MyApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
-<!--  Themes for AndroidTV  -->
+<!-- Special themes for AndroidTV. AndroidTV using Leanback package, which require Leanback theme -->
     <style name="Theme.MyAppAndroidTV" parent="Base.Theme.MyAppAndroidTV"/>
     <!--Base custom theme which will be shared between both light and dark theme variants-->
     <style name="Base.Theme.MyAppAndroidTV" parent="Base.Theme.MaterialThemeMetaappTV">

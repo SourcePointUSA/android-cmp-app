@@ -8,6 +8,7 @@ import android.os.Looper
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
@@ -16,7 +17,7 @@ import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.tv.presenters.CardPresenter
+import com.sourcepointmeta.metaapp.tv.cards.CardPresenter
 import com.sourcepointmeta.metaapp.tv.samples.DataSamples
 import com.sourcepointmeta.metaapp.tv.samples.MovieSample
 import java.util.*
