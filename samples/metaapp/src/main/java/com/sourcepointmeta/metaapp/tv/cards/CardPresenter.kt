@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.leanback.widget.BaseCardView
 import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.tv.samples.MovieSample
+import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 import kotlin.properties.Delegates
 
 /**
@@ -53,17 +53,16 @@ class CardPresenter(
     }
     @SuppressLint("ResourceType")
     override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any) {
-        val movie = item as MovieSample
+        val property = item as PropertyDTO
         val cardView = viewHolder.view as TextCardView
 
         Log.d(TAG, "onBindViewHolder")
-        if (movie.cardImageUrl != null) {
-            //TODO: ACHTUNG!!! HARDCODE!!!
-            cardView.propertyNameView!!.text = "property_name"
-            cardView.messageTypeView!!.text = "message_type"
-            cardView.accountIdView!!.text = "420"
-            cardView.campaignEnvView!!.text = "campaign_env"
-        }
+        cardView.propertyNameView!!.text = property.propertyName
+        cardView.messageTypeView!!.text = property.messageType
+        cardView.accountIdView!!.text = property.authId
+        cardView.campaignEnvView!!.text = property.campaignEnv
+        cardView.chipGDPR!!.isChecked = property.gdprEnabled
+        cardView.chipCCPA!!.isChecked = property.ccpaEnabled
     }
     override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder) {
         Log.d(TAG, "onUnbindViewHolder")

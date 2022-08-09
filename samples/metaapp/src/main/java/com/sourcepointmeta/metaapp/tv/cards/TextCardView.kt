@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.leanback.widget.BaseCardView
+import com.google.android.material.chip.Chip
 import com.sourcepointmeta.metaapp.R
 
 open class TextCardView(context: Context?) : BaseCardView(context) {
@@ -19,6 +20,8 @@ open class TextCardView(context: Context?) : BaseCardView(context) {
     var messageTypeView: TextView? = null
     var campaignEnvView: TextView? = null
     var accountIdView: TextView? = null
+    var chipGDPR: Chip? = null
+    var chipCCPA: Chip? = null
 
     init {
         // Make sure the ImageCardView is focusable.
@@ -31,6 +34,8 @@ open class TextCardView(context: Context?) : BaseCardView(context) {
         messageTypeView = findViewById(R.id.message_type)
         campaignEnvView = findViewById(R.id.campaign_env)
         accountIdView = findViewById(R.id.account_id)
+        chipGDPR = findViewById(R.id.chip_gdpr)
+        chipCCPA = findViewById(R.id.chip_ccpa)
     }
 
     fun setMainImageDimensions(width: Int, height: Int) {
