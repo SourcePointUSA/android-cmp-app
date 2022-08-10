@@ -26,7 +26,7 @@ import com.sourcepointmeta.metaapp.tv.ui.detail.model.Card
  *
  * @param <T> View type for the card.
 </T> */
-abstract class AbstractCardPresenter<T : BaseCardView?>
+abstract class AbstractCardPresenter<T : BaseCardView>
 /**
  * @param context The current context.
  */(val context: Context) : Presenter() {

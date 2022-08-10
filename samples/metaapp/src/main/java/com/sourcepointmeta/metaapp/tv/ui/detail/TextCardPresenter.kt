@@ -11,31 +11,23 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
+package com.sourcepointmeta.metaapp.tv.ui.detail
 
-package com.sourcepointmeta.metaapp.tv.ui.detail;
-
-import android.content.Context;
-import com.sourcepointmeta.metaapp.tv.ui.detail.TextCardView;
-import com.sourcepointmeta.metaapp.tv.ui.detail.model.Card;
+import android.content.Context
+import com.sourcepointmeta.metaapp.tv.ui.detail.model.Card
 
 /**
  * The Presenter displays a card consisting of text as a replacement for a big image. The footer is
  * also quite unique since it does contain two images rather than one or non.
  */
-public class TextCardPresenter extends AbstractCardPresenter<TextCardView> {
-
-    public TextCardPresenter(Context context) {
-        super(context);
+class TextCardPresenter(context: Context?) : AbstractCardPresenter<TextCardView>(
+    context!!
+) {
+    override fun onCreateView(): TextCardView {
+        return TextCardView(context)
     }
 
-    @Override
-    protected TextCardView onCreateView() {
-        return new TextCardView(getContext());
+    override fun onBindViewHolder(card: Card?, cardView: TextCardView) {
+        cardView.updateUi(card!!)
     }
-
-    @Override
-    public void onBindViewHolder(Card card, TextCardView cardView) {
-        cardView.updateUi(card);
-    }
-
 }

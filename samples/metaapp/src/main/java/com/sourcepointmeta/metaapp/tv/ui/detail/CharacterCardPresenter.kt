@@ -14,21 +14,19 @@
 package com.sourcepointmeta.metaapp.tv.ui.detail
 
 import android.content.Context
-import com.sourcepointmeta.metaapp.tv.ui.detail.AbstractCardPresenter
-import com.sourcepointmeta.metaapp.tv.ui.detail.CharacterCardView
 import com.sourcepointmeta.metaapp.tv.ui.detail.model.Card
 
 /**
  * This Presenter is used to display the characters card row in the DetailView examples.
  */
-class CharacterCardPresenter(context: Context?) : AbstractCardPresenter<CharacterCardView?>(
+class CharacterCardPresenter(context: Context?) : AbstractCardPresenter<CharacterCardView>(
     context!!
 ) {
     override fun onCreateView(): CharacterCardView {
         return CharacterCardView(context)
     }
 
-    fun onBindViewHolder(card: Card?, cardView: CharacterCardView) {
+    fun onBindViewHolder(card: Card, cardView: CharacterCardView) {
         cardView.updateUi(card)
     }
 }

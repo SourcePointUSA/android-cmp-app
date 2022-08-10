@@ -11,36 +11,29 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
+package com.sourcepointmeta.metaapp.tv.ui.detail
 
-package com.sourcepointmeta.metaapp.tv.ui.detail;
-
-import android.content.Context;
-import com.sourcepointmeta.metaapp.tv.ui.detail.model.Card;
-import com.sourcepointmeta.metaapp.tv.ui.detail.model.VideoCard;
-import androidx.leanback.widget.ImageCardView;
+import android.content.Context
+import com.sourcepointmeta.metaapp.tv.ui.detail.ImageCardViewPresenter
+import androidx.leanback.widget.ImageCardView
+import com.sourcepointmeta.metaapp.tv.ui.detail.model.Card
+import com.sourcepointmeta.metaapp.tv.ui.detail.model.VideoCard
 
 /**
  * Presenter for rendering video cards on the Vertical Grid fragment.
  */
-public class VideoCardViewPresenter extends ImageCardViewPresenter {
+class VideoCardViewPresenter : ImageCardViewPresenter {
+    constructor(context: Context?, cardThemeResId: Int) : super(context, cardThemeResId) {}
+    constructor(context: Context?) : super(context) {}
 
-    public VideoCardViewPresenter(Context context, int cardThemeResId) {
-        super(context, cardThemeResId);
-    }
 
-    public VideoCardViewPresenter(Context context) {
-        super(context);
-    }
 
-    @Override
-    public void onBindViewHolder(Card card, final ImageCardView cardView) {
-        super.onBindViewHolder(card, cardView);
-        VideoCard videoCard = (VideoCard) card;
-//        Glide.with(getContext())
+    override fun onBindViewHolder(card: Card?, cardView: ImageCardView) {
+        super.onBindViewHolder(card, cardView)
+        val videoCard = card as VideoCard?
+        //        Glide.with(getContext())
 //                .asBitmap()
 //                .load(videoCard.getImageUrl())
 //                .into(cardView.getMainImageView());
-
     }
-
 }
