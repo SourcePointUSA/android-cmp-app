@@ -11,46 +11,40 @@
  *  or implied. See the License for the specific language governing permissions and limitations under
  *  the License.
  */
+package com.sourcepointmeta.metaapp.tv.ui.detail.model
 
-package com.sourcepointmeta.metaapp.tv.ui.detail.model;
-
-import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
+import com.google.gson.annotations.SerializedName
+import com.sourcepointmeta.metaapp.tv.ui.detail.model.CardRow
 
 /**
  * This class represents a row of cards. In a real world application you might want to store more
  * data than in this example.
  */
-public class CardRow {
+class CardRow {
+    @SerializedName("type")
+    val type = TYPE_DEFAULT
 
-    // default is a list of cards
-    public static final int TYPE_DEFAULT = 0;
-    // section header
-    public static final int TYPE_SECTION_HEADER = 1;
-    // divider
-    public static final int TYPE_DIVIDER = 2;
-
-    @SerializedName("type") private int mType = TYPE_DEFAULT;
     // Used to determine whether the row shall use shadows when displaying its cards or not.
-    @SerializedName("shadow") private boolean mShadow = true;
-    @SerializedName("title") private String mTitle;
-    @SerializedName("cards") private List<Card> mCards;
+    @SerializedName("shadow")
+    private val mShadow = true
 
-    public int getType() {
-        return mType;
+    @SerializedName("title")
+    val title: String? = null
+
+    @SerializedName("cards")
+    val cards: List<Card>? = null
+    fun useShadow(): Boolean {
+        return mShadow
     }
 
-    public String getTitle() {
-        return mTitle;
-    }
+    companion object {
+        // default is a list of cards
+        const val TYPE_DEFAULT = 0
 
-    public boolean useShadow() {
-        return mShadow;
-    }
+        // section header
+        const val TYPE_SECTION_HEADER = 1
 
-    public List<Card> getCards() {
-        return mCards;
+        // divider
+        const val TYPE_DIVIDER = 2
     }
-
 }
