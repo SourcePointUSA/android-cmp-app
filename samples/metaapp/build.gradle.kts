@@ -112,7 +112,6 @@ dependencies {
     // TV
     implementation("androidx.appcompat:appcompat:1.0.0")
     implementation("androidx.leanback:leanback:1.0.0")
-    implementation("com.github.bumptech.glide:glide:4.11.0")
 
     // Koin
 //    implementation(Libs.koinCore)
