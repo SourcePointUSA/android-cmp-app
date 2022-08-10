@@ -20,7 +20,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.tv.ui.detail.ResourceCache
 import com.sourcepointmeta.metaapp.tv.ui.detail.model.DetailedCard
 import javax.inject.Inject
 

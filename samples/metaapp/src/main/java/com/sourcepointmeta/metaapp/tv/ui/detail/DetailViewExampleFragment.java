@@ -111,7 +111,7 @@ public class DetailViewExampleFragment extends DetailsFragment implements OnItem
         if (extras != null && extras.containsKey(EXTRA_CARD)) {
             imageResId = extras.getInt(EXTRA_CARD, imageResId);
         }
-//        detailsOverview.setImageDrawable(getResources().getDrawable(imageResId, null));
+        detailsOverview.setImageDrawable(getResources().getDrawable(imageResId, null));
         ArrayObjectAdapter actionAdapter = new ArrayObjectAdapter();
 
         mActionBuy = new Action(ACTION_BUY, "Buy" + data.getPrice());
@@ -121,21 +121,21 @@ public class DetailViewExampleFragment extends DetailsFragment implements OnItem
         actionAdapter.add(mActionBuy);
         actionAdapter.add(mActionWishList);
         actionAdapter.add(mActionRelated);
-        detailsOverview.setActionsAdapter(actionAdapter);
+//        detailsOverview.setActionsAdapter(actionAdapter);
         mRowsAdapter.add(detailsOverview);
 
-        // Setup related row.
-        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(
-                new CardPresenterSelector(getActivity()));
-        for (Card characterCard : data.getCharacters()) listRowAdapter.add(characterCard);
-        HeaderItem header = new HeaderItem(0, "related");
-        mRowsAdapter.add(new CardListRow(header, listRowAdapter, null));
-
-        // Setup recommended row.
-        listRowAdapter = new ArrayObjectAdapter(new CardPresenterSelector(getActivity()));
-        for (Card card : data.getRecommended()) listRowAdapter.add(card);
-        header = new HeaderItem(1, "recommended");
-        mRowsAdapter.add(new ListRow(header, listRowAdapter));
+//        // Setup related row.
+//        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(
+//                new CardPresenterSelector(getActivity()));
+//        for (Card characterCard : data.getCharacters()) listRowAdapter.add(characterCard);
+//        HeaderItem header = new HeaderItem(0, "related");
+//        mRowsAdapter.add(new CardListRow(header, listRowAdapter, null));
+//
+//        // Setup recommended row.
+//        listRowAdapter = new ArrayObjectAdapter(new CardPresenterSelector(getActivity()));
+//        for (Card card : data.getRecommended()) listRowAdapter.add(card);
+//        header = new HeaderItem(1, "recommended");
+//        mRowsAdapter.add(new ListRow(header, listRowAdapter));
 
         setAdapter(mRowsAdapter);
         new Handler().postDelayed(new Runnable() {
