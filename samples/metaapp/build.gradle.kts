@@ -120,6 +120,12 @@ dependencies {
     implementation(Libs.sqlDelight)
     implementation(Libs.sqlDelightCoroutines)
 
+    // tv
+    implementation("androidx.leanback:leanback:1.0.0")
+    implementation("androidx.leanback:leanback-preference:1.0.0")
+    implementation ("com.google.code.gson:gson:2.8.2")
+    implementation ("javax.inject:javax.inject:1")
+
     // unit-test
     testImplementation(Libs.mockk)
     testImplementation(Libs.mockwebserver)
@@ -127,6 +133,7 @@ dependencies {
     // integration-test
     androidTestImplementation(Libs.koinTest)
     androidTestImplementation(Libs.mockkAndroid)
+
 
 }
 

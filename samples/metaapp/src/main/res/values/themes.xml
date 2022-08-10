@@ -96,4 +96,77 @@
     </style>
     <style name="Theme.MyApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="Theme.MyApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="Theme.Example.Leanback" parent="Theme.Leanback">
+        <item name="android:colorPrimary">#00A2B8</item>
+        <item name="android:colorAccent">@color/orange_200</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14</item>
+    </style>
+
+<!--    <style name="Theme.Example.LeanbackLauncher" parent="Theme.Example.Leanback">-->
+<!--        <item name="android:windowBackground">@drawable/bg_living_room_wide</item>-->
+<!--        <item name="browseRowsMarginTop">275dp</item>-->
+<!--    </style>-->
+
+<!--    <style name="Theme.Example.LeanbackBrowse" parent="Theme.Leanback.Browse">-->
+<!--        <item name="android:windowBackground">@color/card_examples_background</item>-->
+<!--        <item name="defaultBrandColor">@color/fastlane_background</item>-->
+<!--        <item name="defaultSearchColor">@color/search_color</item>-->
+<!--        <item name="defaultSearchIconColor">@color/search_icon_color</item>-->
+<!--        <item name="defaultSearchBrightColor">@color/search_bright_color</item>-->
+<!--    </style>-->
+
+<!--    <style name="Theme.Example.Leanback.CustomTitle" parent="Theme.Example.LeanbackBrowse">-->
+<!--        <item name="browseTitleViewLayout">@layout/tv_titleview</item>-->
+<!--        <item name="browseRowsMarginTop">120dp</item>-->
+<!--    </style>-->
+
+<!--    <style name="Theme.Example.LeanbackVerticalGrid" parent="Theme.Leanback.VerticalGrid">-->
+<!--        <item name="android:windowBackground">@drawable/background_food</item>-->
+<!--    </style>-->
+
+<!--    <style name="Theme.Example.LeanbackWizard" parent="Theme.Leanback.GuidedStep">-->
+<!--        <item name="guidedActionsBackground">@color/app_guidedstep_actions_background</item>-->
+<!--        <item name="guidedActionsBackgroundDark">@color/app_guidedstep_subactions_background</item>-->
+<!--    </style>-->
+
+<!--    <style name="Theme.Example.LeanbackWizard.NoSelector">-->
+<!--        <item name="guidedActionsSelectorDrawable">@null</item>-->
+<!--    </style>-->
+
+<!--    <style name="Theme.Example.LeanbackDialog" parent="Theme.Leanback.GuidedStep">-->
+<!--        <item name="guidedActionsBackground">@color/app_guidedstep_dialog_actions_background</item>-->
+<!--    </style>-->
+
+    <style name="Theme.Example.LeanbackPreferences" parent="Theme.Leanback">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Leanback</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:colorPrimary">@color/black_600</item>
+    </style>
+
+    <style name="Theme.Example.LeanbackDetails" parent="Theme.Leanback.Details">
+        <item name="android:colorPrimary">@color/blue_link_400</item>
+    </style>
+
+<!--    <style name="Theme.Example.LeanbackMusic" parent="Theme.Example.Leanback">-->
+<!--        <item name="android:windowBackground">@drawable/background_sax</item>-->
+<!--    </style>-->
+
+<!--    <style name="Theme.Example.LeanbackMusic.RegularSongNumbers">-->
+<!--        <item name="playbackMediaItemNumberStyle">@style/RegularMediaItemNumberStyle</item>-->
+<!--        <item name="playbackMediaItemNameStyle">@style/RegularMediaItemNameStyle</item>-->
+<!--        <item name="playbackMediaItemDurationStyle">@style/RegularMediaItemDurationStyle</item>-->
+<!--    </style>-->
+
+<!--    <style name="Theme.Example.LeanbackMusic.FavoriteSongNumbers">-->
+<!--        <item name="playbackMediaItemNumberStyle">@style/FavoriteMediaItemNumberStyle</item>-->
+<!--        <item name="playbackMediaItemNameStyle">@style/FavoriteMediaItemNameStyle</item>-->
+<!--        <item name="playbackMediaItemDurationStyle">@style/FavoriteMediaItemDurationStyle</item>-->
+<!--    </style>-->
+
+<!--    <style name="Theme.Example.LeanbackMusic.TrackListHeader">-->
+<!--        <item name="playbackMediaListHeaderStyle">@style/MediaListHeaderStyle</item>-->
+<!--    </style>-->
 </resources>
