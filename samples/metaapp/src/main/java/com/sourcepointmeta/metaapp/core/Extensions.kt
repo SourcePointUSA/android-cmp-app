@@ -21,20 +21,6 @@ fun AppCompatActivity.addFragment(@IdRes resId: Int, fragment: Fragment) {
         .commit()
 }
 
-fun AppCompatActivity.replaceFragment(@IdRes resId: Int, fragment: Fragment) {
-    supportFragmentManager
-        .beginTransaction()
-        .addToBackStack("back_stack")
-        .replace(resId, fragment, fragment::class.java.name)
-        .commit()
-}
-fun AppCompatActivity.replaceFragmentWithoutBackstack(@IdRes resId: Int, fragment: Fragment) {
-    supportFragmentManager
-        .beginTransaction()
-        .replace(resId, fragment, fragment::class.java.name)
-        .commit()
-}
-
 fun <T> List<T>.moveToBegin(position: Int): MutableList<T> {
     if (position > lastIndex) throw RuntimeException("Position not valid!!!")
     return (

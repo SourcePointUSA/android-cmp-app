@@ -5,9 +5,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="0dp"
-    android:clickable="true"
     android:elevation="3dp"
-    android:focusable="true">
+    android:clickable="false"
+    android:focusable="false">
 
     <com.sourcepointmeta.metaapp.ui.component.PropertyItemView
 
@@ -101,6 +101,8 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:clickable="false"
                     android:text="GDPR" />
 
                 <com.google.android.material.chip.Chip
@@ -108,6 +110,8 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:clickable="false"
                     android:text="CCPA" />
 
             </com.google.android.material.chip.ChipGroup>

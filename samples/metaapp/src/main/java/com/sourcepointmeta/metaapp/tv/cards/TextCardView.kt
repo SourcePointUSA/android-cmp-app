@@ -8,41 +8,20 @@ import com.google.android.material.chip.Chip
 import com.sourcepointmeta.metaapp.R
 
 open class TextCardView(context: Context?) : BaseCardView(context) {
-    val CARD_TYPE_FLAG_IMAGE_ONLY = 0
-    val CARD_TYPE_FLAG_TITLE = 1
-    val CARD_TYPE_FLAG_CONTENT = 2
-    val CARD_TYPE_FLAG_ICON_RIGHT = 4
-    val CARD_TYPE_FLAG_ICON_LEFT = 8
-
-    val ALPHA = "alpha"
-
     var propertyNameView: TextView? = null
     var messageTypeView: TextView? = null
     var campaignEnvView: TextView? = null
     var accountIdView: TextView? = null
     var chipGDPR: Chip? = null
     var chipCCPA: Chip? = null
+    var textView: TextView? = null
 
     init {
         // Make sure the ImageCardView is focusable.
-        isFocusable = false
-        isFocusableInTouchMode = false
         val inflater = LayoutInflater.from(getContext())
-        inflater.inflate(R.layout.property_item, this)
+        inflater.inflate(R.layout.leanback_card_sample, this)
 
-        propertyNameView = findViewById(R.id.property_name)
-        messageTypeView = findViewById(R.id.message_type)
-        campaignEnvView = findViewById(R.id.campaign_env)
-        accountIdView = findViewById(R.id.account_id)
-        chipGDPR = findViewById(R.id.chip_gdpr)
-        chipCCPA = findViewById(R.id.chip_ccpa)
-    }
-
-    fun setMainImageDimensions(width: Int, height: Int) {
-//        val lp = mImageView!!.layoutParams
-//        lp.width = width
-//        lp.height = height
-//        mImageView.layoutParams = lp
+        textView = findViewById(R.id.textView)
     }
     override fun hasOverlappingRendering(): Boolean {
         return false

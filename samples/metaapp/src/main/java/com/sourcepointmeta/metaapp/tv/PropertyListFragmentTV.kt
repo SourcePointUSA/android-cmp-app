@@ -7,36 +7,36 @@ import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
 import android.util.Log
-import android.util.TypedValue
 import android.view.Gravity
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
-import androidx.lifecycle.map
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.tv.cards.CardPresenter
+import com.sourcepointmeta.metaapp.tv.cards.PropertyCardPresenter
+import com.sourcepointmeta.metaapp.tv.cards.TextCardPresenter
 import com.sourcepointmeta.metaapp.tv.samples.DataSamples
-import com.sourcepointmeta.metaapp.tv.samples.MovieSample
 import com.sourcepointmeta.metaapp.ui.BaseState
 import java.util.*
 
-import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
-import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
+import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListViewModel
+import kotlinx.android.synthetic.main.leanback_card_sample.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
+import kotlin.random.Random
 
 
-class PropertyListFragmentTV() : BrowseSupportFragment() {
+class PropertyListFragmentTV(
+    var supportFragmentManager: FragmentManager
+) : BrowseSupportFragment() {
     companion object {
         private val TAG = "MainFragment"
 
@@ -80,74 +80,86 @@ class PropertyListFragmentTV() : BrowseSupportFragment() {
     }
     private fun setupUIElements() {
         title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
+//        (titleView as TitleView).setTextColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
         // over title
         headersState = BrowseSupportFragment.HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true
 
         // set fastLane (or headers) background color
-        brandColor = ContextCompat.getColor(requireActivity(), R.color.blue_link_600)
+        brandColor = ContextCompat.getColor(requireActivity(), R.color.purple_500)
         // set search icon color
-        searchAffordanceColor = ContextCompat.getColor(requireActivity(), R.color.blue_link_200)
+        searchAffordanceColor = ContextCompat.getColor(requireActivity(), R.color.purple_200)
+        androidx.leanback.R.layout.lb_title_view
     }
     private fun loadRows() {
-//        val list = DataSamples.list
+        viewModel.liveData.observe(viewLifecycleOwner) { baseState ->
+            if(baseState is BaseState.StatePropertyList){
+                baseState.propertyList.map { p -> p.toPropertyDTO() }.let { propertyList ->
+                        val rowsAdapter = ArrayObjectAdapter(object : ListRowPresenter() {
+                            override fun isUsingDefaultListSelectEffect() = false
+                        }.apply { shadowEnabled = false })
+                        val propertyCardPresenter = context?.let { PropertyCardPresenter(it) }
+                        val textCardPresenter = context?.let { TextCardPresenter(it) }
 
-        viewModel.liveData.observe(viewLifecycleOwner) { propertyBaseState ->
-            (propertyBaseState as BaseState.StatePropertyList).propertyList
-                .map { p -> p.toPropertyDTO() }.let { propertyList ->
-                    val rowsAdapter = ArrayObjectAdapter(object : ListRowPresenter() {
-                        override fun isUsingDefaultListSelectEffect() = false
-                    }.apply { shadowEnabled = false })
-                    val cardPresenter = context?.let { CardPresenter(it) }
-
-                    for (dataCategory in 0 until DataSamples.DATA_CATEGORY.size) {
-                        // TODO: hardcode corresponding with DataSamples.DATA_CATEGORY
-                        when(DataSamples.DATA_CATEGORY[dataCategory]){
-                            "GDPR+CCPA" -> {
-                                val listRowAdapter = ArrayObjectAdapter(cardPresenter)
-                                for (j in propertyList.indices) {
-                                    if(propertyList[j].gdprEnabled && propertyList[j].ccpaEnabled)
-                                        listRowAdapter.add(propertyList[j])
+                        for (dataCategory in 0 until DataSamples.DATA_CATEGORY.size) {
+                            when(DataSamples.DATA_CATEGORY[dataCategory]){
+                                "GDPR+CCPA" -> {
+                                    val listRowAdapter = ArrayObjectAdapter(propertyCardPresenter)
+                                    for (j in propertyList.indices) {
+                                        if(propertyList[j].gdprEnabled && propertyList[j].ccpaEnabled)
+                                            listRowAdapter.add(propertyList[j])
+                                    }
+                                    val header = HeaderItem(dataCategory.toLong(), DataSamples.DATA_CATEGORY[dataCategory])
+                                    rowsAdapter.add(ListRow(header, listRowAdapter))
                                 }
-                                val header = HeaderItem(dataCategory.toLong(), DataSamples.DATA_CATEGORY[dataCategory])
-                                rowsAdapter.add(ListRow(header, listRowAdapter))
-                            }
-                            "GDPR" -> {
-                                val listRowAdapter = ArrayObjectAdapter(cardPresenter)
-                                for (j in propertyList.indices) {
-                                    if(propertyList[j].gdprEnabled && !propertyList[j].ccpaEnabled)
-                                        listRowAdapter.add(propertyList[j])
+                                "GDPR" -> {
+                                    val listRowAdapter = ArrayObjectAdapter(propertyCardPresenter)
+                                    for (j in propertyList.indices) {
+                                        if(propertyList[j].gdprEnabled && !propertyList[j].ccpaEnabled)
+                                            listRowAdapter.add(propertyList[j])
+                                    }
+                                    val header = HeaderItem(dataCategory.toLong(), DataSamples.DATA_CATEGORY[dataCategory])
+                                    rowsAdapter.add(ListRow(header, listRowAdapter))
                                 }
-                                val header = HeaderItem(dataCategory.toLong(), DataSamples.DATA_CATEGORY[dataCategory])
-                                rowsAdapter.add(ListRow(header, listRowAdapter))
-                            }
-                            "CCPA" -> {
-                                val listRowAdapter = ArrayObjectAdapter(cardPresenter)
-                                for (j in propertyList.indices) {
-                                    if(!propertyList[j].gdprEnabled && propertyList[j].ccpaEnabled)
-                                        listRowAdapter.add(propertyList[j])
+                                "CCPA" -> {
+                                    val listRowAdapter = ArrayObjectAdapter(propertyCardPresenter)
+                                    for (j in propertyList.indices) {
+                                        if(!propertyList[j].gdprEnabled && propertyList[j].ccpaEnabled)
+                                            listRowAdapter.add(propertyList[j])
+                                    }
+                                    val header = HeaderItem(dataCategory.toLong(), DataSamples.DATA_CATEGORY[dataCategory])
+                                    rowsAdapter.add(ListRow(header, listRowAdapter))
                                 }
-                                val header = HeaderItem(dataCategory.toLong(), DataSamples.DATA_CATEGORY[dataCategory])
-                                rowsAdapter.add(ListRow(header, listRowAdapter))
+                                "Else" -> {
+                                    val listRowAdapter = ArrayObjectAdapter(propertyCardPresenter)
+                                    for (j in propertyList.indices) {
+                                        if(!propertyList[j].gdprEnabled && !propertyList[j].ccpaEnabled)
+                                            listRowAdapter.add(propertyList[j])
+                                    }
+                                    val header = HeaderItem(dataCategory.toLong(), DataSamples.DATA_CATEGORY[dataCategory])
+                                    rowsAdapter.add(ListRow(header, listRowAdapter))
+                                }
+                                "Utils" -> {
+                                    val listRowAdapter = ArrayObjectAdapter(textCardPresenter)
+                                    listRowAdapter.add("Add new")
+                                    listRowAdapter.add("Delete all")
+                                    listRowAdapter.add("Generate")
+                                    val header = HeaderItem(dataCategory.toLong(), DataSamples.DATA_CATEGORY[dataCategory])
+                                    rowsAdapter.add(ListRow(header, listRowAdapter))
+                                }
                             }
                         }
+
+                        adapter = rowsAdapter
                     }
+            }
 
-                    val gridHeader = HeaderItem(NUM_ROWS.toLong(), "PREFERENCES")
-
-                    val mGridPresenter = GridItemPresenter()
-                    val gridRowAdapter = ArrayObjectAdapter(mGridPresenter)
-                    rowsAdapter.add(ListRow(gridHeader, gridRowAdapter))
-
-                    adapter = rowsAdapter
-                }
         }
-
+        viewModel.fetchPropertyList()
     }
     private fun setupEventListeners() {
         setOnSearchClickedListener {
-            Toast.makeText(requireActivity(), "Update", Toast.LENGTH_LONG)
-                .show()
+            Toast.makeText(requireActivity(), "Update", Toast.LENGTH_LONG).show()
             viewModel.fetchPropertyList()
         }
 
@@ -155,34 +167,37 @@ class PropertyListFragmentTV() : BrowseSupportFragment() {
         onItemViewSelectedListener = ItemViewSelectedListener()
     }
 
-    private inner class ItemViewClickedListener : OnItemViewClickedListener {
+    private inner class ItemViewClickedListener() : OnItemViewClickedListener {
         override fun onItemClicked(
             itemViewHolder: Presenter.ViewHolder,
             item: Any,
             rowViewHolder: RowPresenter.ViewHolder,
             row: Row
         ) {
-
-            /*if (item is MovieSample) {
-                Log.d(TAG, "Item: " + item.toString())
-                val intent = Intent(activity!!, DetailsActivity::class.java)
-                intent.putExtra(DetailsActivity.MOVIE, item)
-
-                val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    activity!!,
-                    (itemViewHolder.view as ImageCardView).mainImageView,
-                    DetailsActivity.SHARED_ELEMENT_NAME
-                )
-                    .toBundle()
-                startActivity(intent, bundle)
-            } else if (item is String) {
-                if (item.contains(getString(R.string.error_fragment))) {
-                    val intent = Intent(activity!!, BrowseErrorActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(activity!!, item, Toast.LENGTH_SHORT).show()
+            when(item){
+                is PropertyDTO -> {
+                    Toast.makeText(requireActivity(), (item as PropertyDTO).propertyName, Toast.LENGTH_SHORT).show()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.container, PropertyItemControlsMenuTV(supportFragmentManager, item))
+                        .commitNow()
                 }
-            }*/
+                is String -> {
+                    when(item){
+                        "Add new" -> {}
+                        "Delete all" -> {
+                            viewModel.clearDB()
+                            viewModel.fetchPropertyList()
+                        }
+                        "Generate" -> {
+                            for (i in 0..20){
+                                viewModel.updateProperty(DataSamples.generatePropertyDTO().property)
+                            }
+                            viewModel.fetchPropertyList()
+                        }
+                        else -> {}
+                    }
+                }
+            }
         }
     }
     private inner class ItemViewSelectedListener : OnItemViewSelectedListener {
@@ -190,10 +205,10 @@ class PropertyListFragmentTV() : BrowseSupportFragment() {
             itemViewHolder: Presenter.ViewHolder?, item: Any?,
             rowViewHolder: RowPresenter.ViewHolder, row: Row
         ) {
-            if (item is MovieSample) {
-                mBackgroundUri = item.backgroundImageUrl
-                startBackgroundTimer()
-            }
+//            if (item is PropertyDTO) {
+//                (itemViewHolder!!.view as TextCardView).setGDPR(item.gdprEnabled)
+//                (itemViewHolder!!.view as TextCardView).setCCPA(item.ccpaEnabled)
+//            }
         }
     }
 

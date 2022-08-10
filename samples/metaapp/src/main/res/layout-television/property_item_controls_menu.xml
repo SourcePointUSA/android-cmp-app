@@ -68,7 +68,8 @@
                     android:textColor="#3F51B5"
                     android:textIsSelectable="false"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:layout_marginEnd="@dimen/appbar_padding"/>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip_ccpa"
@@ -86,13 +87,6 @@
 
         </com.google.android.material.chip.ChipGroup>
 
-        <Button
-            android:layout_marginTop="20dp"
-            android:id="@+id/backBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/back"
-            android:focusable="true"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
