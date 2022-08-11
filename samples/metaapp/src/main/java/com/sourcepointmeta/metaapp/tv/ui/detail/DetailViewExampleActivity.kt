@@ -15,19 +15,23 @@ package com.sourcepointmeta.metaapp.tv.ui.detail
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.core.replaceFragment
 import com.sourcepointmeta.metaapp.tv.ui.detail.DetailViewExampleFragment
 
 /**
  * Contains a [DetailsFragment] in order to display more details for a given card.
  */
-class DetailViewExampleActivity : Activity() {
+class DetailViewExampleActivity : FragmentActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tv_activity_detail_example)
+
         if (savedInstanceState == null) {
-            val fragment = DetailViewExampleFragment()
-            fragmentManager.beginTransaction()
+            val fragment = DetailPropertyFragment()
+            supportFragmentManager.beginTransaction()
                 .replace(R.id.details_fragment, fragment)
                 .commit()
         }

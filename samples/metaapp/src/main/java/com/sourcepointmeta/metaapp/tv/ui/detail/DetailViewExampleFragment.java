@@ -14,6 +14,7 @@
 
 package com.sourcepointmeta.metaapp.tv.ui.detail;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,18 +23,29 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.leanback.app.DetailsFragment;
 import androidx.leanback.app.DetailsFragmentBackgroundController;
+import androidx.leanback.app.DetailsSupportFragment;
+import androidx.leanback.app.DetailsSupportFragmentBackgroundController;
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv;
+import com.sourcepoint.cmplibrary.exception.CampaignType;
 import com.sourcepointmeta.metaapp.R;
+import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam;
+import com.sourcepointmeta.metaapp.data.localdatasource.Property;
+import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign;
 import com.sourcepointmeta.metaapp.tv.ui.detail.model.Card;
 import com.sourcepointmeta.metaapp.tv.ui.detail.model.DetailedCard;
 import com.sourcepointmeta.metaapp.tv.ui.detail.CardListRow;
 import com.sourcepointmeta.metaapp.tv.ui.detail.Utils;
 import androidx.leanback.widget.*;
 import com.google.gson.Gson;
+import com.sourcepointmeta.metaapp.ui.demo.DemoActivity;
+
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 /**
  * Displays a card with more details using a {@link DetailsFragment}.
  */
-public class DetailViewExampleFragment extends DetailsFragment implements OnItemViewClickedListener,
+public class DetailViewExampleFragment extends DetailsSupportFragment implements OnItemViewClickedListener,
         OnItemViewSelectedListener {
 
     public static final String TRANSITION_NAME = "t_for_transition";
@@ -47,8 +59,8 @@ public class DetailViewExampleFragment extends DetailsFragment implements OnItem
     private Action mActionWishList;
     private Action mActionRelated;
     private ArrayObjectAdapter mRowsAdapter;
-    private final DetailsFragmentBackgroundController mDetailsBackground =
-            new DetailsFragmentBackgroundController(this);
+    private final DetailsSupportFragmentBackgroundController mDetailsBackground =
+            new  DetailsSupportFragmentBackgroundController(this);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,7 +123,7 @@ public class DetailViewExampleFragment extends DetailsFragment implements OnItem
         if (extras != null && extras.containsKey(EXTRA_CARD)) {
             imageResId = extras.getInt(EXTRA_CARD, imageResId);
         }
-        detailsOverview.setImageDrawable(getResources().getDrawable(imageResId, null));
+//        detailsOverview.setImageDrawable(getResources().getDrawable(imageResId, null));
         ArrayObjectAdapter actionAdapter = new ArrayObjectAdapter();
 
         mActionBuy = new Action(ACTION_BUY, "Buy" + data.getPrice());
@@ -122,7 +134,8 @@ public class DetailViewExampleFragment extends DetailsFragment implements OnItem
         actionAdapter.add(mActionWishList);
         actionAdapter.add(mActionRelated);
 //        detailsOverview.setActionsAdapter(actionAdapter);
-        mRowsAdapter.add(detailsOverview);
+//        mRowsAdapter.add(detailsOverview);
+        mRowsAdapter.add(actionAdapter);
 
 //        // Setup related row.
 //        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(
@@ -144,7 +157,7 @@ public class DetailViewExampleFragment extends DetailsFragment implements OnItem
                 startEntranceTransition();
             }
         }, 500);
-        initializeBackground(data);
+//        initializeBackground(data);
     }
 
     private void initializeBackground(DetailedCard data) {
@@ -158,6 +171,32 @@ public class DetailViewExampleFragment extends DetailsFragment implements OnItem
         setOnItemViewClickedListener(this);
     }
 
+    Property getProp(){
+        StatusCampaign statusCamp = new StatusCampaign("cmaurer.fire.tv", CampaignType.GDPR, true);
+        LinkedHashSet ls = new LinkedHashSet<StatusCampaign>();
+        ls.add(statusCamp);
+        return new Property(
+                "cmaurer.fire.tv",
+                22,
+                680497L,
+                null,
+                "App",
+                false,
+                new LinkedList<MetaTargetingParam>(),
+                3000L,
+                null,
+                "EN",
+                null,
+                ls,
+                CampaignsEnv.PUBLIC,
+                1000,
+                null,
+                false,
+                null,
+                false
+        );
+    }
+
     @Override
     public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item,
                               RowPresenter.ViewHolder rowViewHolder, Row row) {
@@ -169,7 +208,40 @@ public class DetailViewExampleFragment extends DetailsFragment implements OnItem
         } else {
             Toast.makeText(getActivity(), "cicked", Toast.LENGTH_LONG)
                     .show();
+            runDemo();
+
         }
+    }
+
+    public void runDemo() {
+        StatusCampaign statusCamp = new StatusCampaign("cmaurer.fire.tv", CampaignType.GDPR, true);
+        LinkedHashSet ls = new LinkedHashSet<StatusCampaign>();
+        ls.add(statusCamp);
+        Property property = new Property(
+                "cmaurer.fire.tv",
+                22,
+                680497L,
+                null,
+                "App",
+                false,
+                new LinkedList<MetaTargetingParam>(),
+                3000L,
+                null,
+                "EN",
+                null,
+                ls,
+                CampaignsEnv.PUBLIC,
+                1000,
+                null,
+                false,
+                null,
+                false
+        );
+        Bundle bundle = new Bundle();
+        bundle.putString("property_name", "cmaurer.fire.tv");
+        Intent i = new Intent(getActivity(), DemoActivity.class);
+        i.putExtras(bundle);
+        startActivity(i);
     }
 
     @Override

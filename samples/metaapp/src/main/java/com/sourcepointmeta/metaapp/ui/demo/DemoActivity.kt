@@ -18,18 +18,20 @@ import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.core.nativemessage.NativeAction
 import com.sourcepoint.cmplibrary.core.nativemessage.NativeComponent
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
-import com.sourcepoint.cmplibrary.model.exposed.SPConsents
-import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import com.sourcepoint.cmplibrary.model.exposed.*
 import com.sourcepoint.cmplibrary.util.clearAllData
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.RemoteDataSource
+import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
@@ -58,10 +60,20 @@ class DemoActivity : FragmentActivity() {
             .data
     }
     private val config: SpConfig by lazy {
-        intent.extras
-            ?.getString("property_name")
-            ?.let { dataSource.getSPConfig(it).getOrNull() }
-            ?: throw RuntimeException("extra property_name param is null!!!")
+//        intent.extras
+//            ?.getString("property_name")
+//            ?.let { dataSource.getSPConfig(it).getOrNull() }
+//            ?: throw RuntimeException("extra property_name param is null!!!")
+        val gdprCampaign = SpCampaign(
+            CampaignType.GDPR
+        )
+        SpConfig(
+            22,
+            "cmaurer.fire.tv",
+            listOf(gdprCampaign),
+            MessageLanguage.ENGLISH,
+            3000
+        )
     }
 
     private val logger by lazy {
@@ -73,9 +85,25 @@ class DemoActivity : FragmentActivity() {
     }
 
     private val property by lazy {
-        val propName = intent.extras
-            ?.getString("property_name") ?: ""
-        dataSource.fetchPropertyByNameSync(propName)
+//        val propName = intent.extras
+//            ?.getString("property_name") ?: ""
+//        dataSource.fetchPropertyByNameSync(propName)
+
+        Property(
+            accountId = 22,
+            propertyName = "cmaurer.fire.tv",
+            timeout = 1,
+            authId = null,
+            messageLanguage = "ENGLISH",
+            pmTab = "DEFAULT",
+            is_staging = false,
+            targetingParameters = emptyList(),
+            statusCampaignSet = setOf(StatusCampaign("cmaurer.fire.tv", CampaignType.GDPR, true)),
+            messageType = "App",
+            gdprPmId = 1212L,
+            ccpaPmId = 1313L,
+            campaignsEnv = CampaignsEnv.PUBLIC
+        )
     }
 
     private val pTab by lazy {

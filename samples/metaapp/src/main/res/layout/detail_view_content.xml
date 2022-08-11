@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="3dp"
         android:layout_marginTop="15dp"
+        android:visibility="gone"
         android:fontFamily="sans-serif-light"
         android:text="Title Text"/>
 
@@ -34,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="14dp"
         android:gravity="center_vertical"
+        android:visibility="gone"
         android:orientation="horizontal">
 
         <TextView
@@ -92,14 +94,15 @@
         android:layout_width="match_parent"
         android:fontFamily="sans-serif-regular"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:text="Filmmaker Guillermo del Toro teas up with Legendary Pictures to bring audiences a unique take on the monster film with this sci/fi production."/>
 
-    <TextView
-        android:id="@+id/extra_text1"
-        style="@style/Widget.Leanback.DetailsDescriptionBodyStyle"
-        android:layout_width="match_parent"
-        android:fontFamily="sans-serif-regular"
-        android:layout_height="wrap_content"
-        android:paddingTop="100dp"
-        android:text="Filmmaker Guillermo del Toro teas up with Legendary Pictures to bring audiences a unique take on the monster film with this sci/fi production."/>
+<!--    <TextView-->
+<!--        android:id="@+id/extra_text1"-->
+<!--        style="@style/Widget.Leanback.DetailsDescriptionBodyStyle"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:fontFamily="sans-serif-regular"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:paddingTop="100dp"-->
+<!--        android:text="Filmmaker Guillermo del Toro teas up with Legendary Pictures to bring audiences a unique take on the monster film with this sci/fi production."/>-->
 </LinearLayout>

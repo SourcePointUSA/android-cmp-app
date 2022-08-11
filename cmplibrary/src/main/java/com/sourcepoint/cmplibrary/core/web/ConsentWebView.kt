@@ -195,6 +195,7 @@ internal class ConsentWebView(
 
         @JavascriptInterface
         override fun onAction(actionData: String) {
+            println("JavascriptInterface: $actionData")
             checkWorkerThread("ConsentWebView on action")
             val action = actionData.toConsentAction()
             if (action.actionType == ActionType.PM_DISMISS && currentCampaignModel != null) {
