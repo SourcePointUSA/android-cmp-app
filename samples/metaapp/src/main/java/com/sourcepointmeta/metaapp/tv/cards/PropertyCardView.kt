@@ -16,10 +16,8 @@ open class PropertyCardView(context: Context?)  : BaseCardView(context) {
     var chipCCPA: Chip? = null
 
     init {
-        // Make sure the ImageCardView is focusable.
         val inflater = LayoutInflater.from(getContext())
         inflater.inflate(R.layout.property_item, this)
-
         propertyNameView = findViewById(R.id.property_name)
         messageTypeView = findViewById(R.id.message_type)
         campaignEnvView = findViewById(R.id.campaign_env)
@@ -33,11 +31,8 @@ open class PropertyCardView(context: Context?)  : BaseCardView(context) {
 
 
     fun setMainImageDimensions(width: Int, height: Int) {
-//        val lp = mImageView!!.layoutParams
-//        lp.width = width
-//        lp.height = height
-//        mImageView.layoutParams = lp
     }
+    
     override fun hasOverlappingRendering(): Boolean {
         return false
     }

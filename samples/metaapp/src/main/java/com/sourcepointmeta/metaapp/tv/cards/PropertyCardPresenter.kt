@@ -13,17 +13,13 @@ import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 import kotlin.properties.Delegates
 
 /**
- * A CardPresenter is used to generate Views and bind Objects to them on demand.
- * It contains an ImageCardView.
+ * A PropertyCardPresenter is used to generate Views and bind Objects to them on demand.
  */
 class PropertyCardPresenter(
     val context: Context
 ) : Presenter() {
     companion object {
         private val TAG = "PropertyCardPresenter"
-
-        private val CARD_WIDTH = 313
-        private val CARD_HEIGHT = 176
     }
 
     override fun onCreateViewHolder(parent: ViewGroup): Presenter.ViewHolder {
