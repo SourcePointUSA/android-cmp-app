@@ -23,7 +23,7 @@ import com.sourcepointmeta.metaapp.R
 class DetailPropertyActivity : FragmentActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.tv_activity_detail_example)
+        setContentView(R.layout.tv_activity_detail)
 
         if (savedInstanceState == null) {
             val fragment = DetailPropertyFragment()
