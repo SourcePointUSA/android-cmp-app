@@ -34,6 +34,7 @@ class PropertyDescriptionPresenter(
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(mContext).inflate(R.layout.detail_view_property, null)
+//        view.setBackgroundColor(mContext.resources.getColor(R.color.red_200))
         return ViewHolder(view)
     }
 
