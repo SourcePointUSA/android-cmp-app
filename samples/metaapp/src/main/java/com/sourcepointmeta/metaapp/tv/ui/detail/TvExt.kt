@@ -16,18 +16,18 @@ import androidx.leanback.widget.OnActionClickedListener
 import com.sourcepointmeta.metaapp.tv.ui.detail.model.PropDto
 
 fun FullWidthDetailsOverviewRowPresenter.setBackgroundColor(
-    ctx : Context,
-    @ColorRes color : Int
-) : FullWidthDetailsOverviewRowPresenter{
+    ctx: Context,
+    @ColorRes color: Int
+): FullWidthDetailsOverviewRowPresenter {
     backgroundColor =
         ContextCompat.getColor(ctx, color)
     return this
 }
 
 fun FullWidthDetailsOverviewRowPresenter.setTransition(
-    activity : Activity,
-    sharedElemName : String
-) : FullWidthDetailsOverviewRowPresenter{
+    activity: Activity,
+    sharedElemName: String
+): FullWidthDetailsOverviewRowPresenter {
     val sharedElementHelper = FullWidthDetailsOverviewSharedElementHelper()
     sharedElementHelper.setSharedElementEnterTransition(
         activity,
@@ -39,9 +39,9 @@ fun FullWidthDetailsOverviewRowPresenter.setTransition(
 }
 
 fun FullWidthDetailsOverviewRowPresenter.setOnActionClickListener(
-    propDto : PropDto,
-    actionListener : (Action, PropDto) -> Unit
-) : FullWidthDetailsOverviewRowPresenter{
+    propDto: PropDto,
+    actionListener: (Action, PropDto) -> Unit
+): FullWidthDetailsOverviewRowPresenter {
     onActionClickedListener = OnActionClickedListener {
         actionListener(it, propDto)
     }
@@ -49,20 +49,20 @@ fun FullWidthDetailsOverviewRowPresenter.setOnActionClickListener(
 }
 
 fun FullWidthDetailsOverviewRowPresenter.setTransitionListener(
-    helper : FullWidthDetailsOverviewSharedElementHelper,
-) : FullWidthDetailsOverviewRowPresenter{
+    helper: FullWidthDetailsOverviewSharedElementHelper,
+): FullWidthDetailsOverviewRowPresenter {
     setListener(helper)
     isParticipatingEntranceTransition = false
     return this
 }
 
-fun DetailsOverviewRow.arrayObjectAdapter(vararg pairs : Pair<Long, String>) : DetailsOverviewRow{
+fun DetailsOverviewRow.arrayObjectAdapter(vararg pairs: Pair<Long, String>): DetailsOverviewRow {
     val arr = ArrayObjectAdapter()
     pairs.fold(ArrayObjectAdapter()) { acc, elem -> acc.apply { add(elem) } }
     actionsAdapter = pairs.fold(ArrayObjectAdapter()) { acc, elem -> acc.apply { add(Action(elem.first, elem.second)) } }
     return this
 }
 
-fun DetailsSupportFragment.initEntranceTransition(){
+fun DetailsSupportFragment.initEntranceTransition() {
     Handler(Looper.getMainLooper()).postDelayed({ startEntranceTransition() }, 500)
 }

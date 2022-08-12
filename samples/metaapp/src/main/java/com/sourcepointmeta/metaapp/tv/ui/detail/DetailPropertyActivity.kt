@@ -13,21 +13,23 @@
  */
 package com.sourcepointmeta.metaapp.tv.ui.detail
 
-import android.content.Context
-import com.sourcepointmeta.metaapp.tv.ui.detail.model.Card
+import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
+import com.sourcepointmeta.metaapp.R
 
 /**
- * The Presenter displays a card consisting of text as a replacement for a big image. The footer is
- * also quite unique since it does contain two images rather than one or non.
+ * Contains a [DetailsFragment] in order to display more details for a given card.
  */
-class TextCardPresenter(context: Context?) : AbstractCardPresenter<TextCardView>(
-    context!!
-) {
-    override fun onCreateView(): TextCardView {
-        return TextCardView(context)
-    }
+class DetailPropertyActivity : FragmentActivity() {
+    public override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.tv_activity_detail_example)
 
-    override fun onBindViewHolder(card: Card?, cardView: TextCardView) {
-        cardView.updateUi(card!!)
+        if (savedInstanceState == null) {
+            val fragment = DetailPropertyFragment()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.details_fragment, fragment)
+                .commit()
+        }
     }
 }

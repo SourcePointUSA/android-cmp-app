@@ -19,7 +19,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.annotation.IdRes
 import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.tv.ui.detail.ResourceCache
@@ -27,25 +26,32 @@ import com.sourcepointmeta.metaapp.tv.ui.detail.model.PropDto
 
 class PropertyDescriptionPresenter(
     private val mContext: Context,
-    private val clickListener: (view: View)-> Unit
+    private val clickListener: (view: View) -> Unit
 ) : Presenter() {
 
     private val mResourceCache = ResourceCache()
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(mContext).inflate(R.layout.detail_view_property, null)
-//        view.setBackgroundColor(mContext.resources.getColor(R.color.red_200))
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
+
         val propertyName = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.property)
         val accountId = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.account_id)
+        val messageType = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.mess_type)
+        val messageLanguage = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.mess_language)
+        val timeout = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.timeout)
         val propertyDetail = item as PropDto
         propertyName.text = propertyDetail.name
         accountId.text = propertyDetail.accId.toString()
+
         propertyName.setOnClickListener(clickListener)
         accountId.setOnClickListener(clickListener)
+        messageType.setOnClickListener(clickListener)
+        messageLanguage.setOnClickListener(clickListener)
+        timeout.setOnClickListener(clickListener)
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
