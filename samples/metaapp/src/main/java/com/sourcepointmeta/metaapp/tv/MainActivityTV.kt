@@ -12,7 +12,7 @@ class MainActivityTV : FragmentActivity() {
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, PropertyListFragmentTV(supportFragmentManager))
+                .replace(R.id.container, PropertyListFragmentTV())
                 .commitNow()
         }
     }

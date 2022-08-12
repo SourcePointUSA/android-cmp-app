@@ -29,10 +29,6 @@ open class PropertyCardView(context: Context?)  : BaseCardView(context) {
     fun setGDPR(status: Boolean) {chipGDPR!!.isChecked = status}
     fun setCCPA(status: Boolean) {chipCCPA!!.isChecked = status}
 
-
-    fun setMainImageDimensions(width: Int, height: Int) {
-    }
-    
     override fun hasOverlappingRendering(): Boolean {
         return false
     }
