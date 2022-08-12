@@ -16,20 +16,22 @@ package com.sourcepointmeta.metaapp.tv.ui.detail.presenter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.IdRes
 import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.tv.ui.detail.ResourceCache
-import com.sourcepointmeta.metaapp.tv.ui.detail.model.DetailedCard
 import com.sourcepointmeta.metaapp.tv.ui.detail.model.PropDto
-import javax.inject.Inject
 
-/**
- * This presenter is used to render a [DetailedCard] in the [ ].
- */
-class PropertyDescriptionPresenter @Inject constructor(private val mContext: Context) : Presenter() {
+class PropertyDescriptionPresenter(
+    private val mContext: Context,
+    private val clickListener: (view: View)-> Unit
+) : Presenter() {
+
     private val mResourceCache = ResourceCache()
+
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(mContext).inflate(R.layout.detail_view_property, null)
         return ViewHolder(view)
@@ -41,12 +43,8 @@ class PropertyDescriptionPresenter @Inject constructor(private val mContext: Con
         val propertyDetail = item as PropDto
         propertyName.text = propertyDetail.name
         accountId.text = propertyDetail.accId.toString()
-        propertyName.setOnClickListener {
-            println(it)
-        }
-        accountId.setOnClickListener {
-            println(it)
-        }
+        propertyName.setOnClickListener(clickListener)
+        accountId.setOnClickListener(clickListener)
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {

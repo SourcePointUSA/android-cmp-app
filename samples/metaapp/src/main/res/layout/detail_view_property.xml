@@ -14,93 +14,138 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <TextView
-        android:id="@+id/property"
-        style="@style/Widget.Leanback.DetailsActionButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="15dp"
-        android:fontFamily="sans-serif-light"
-        android:text="Title Text"/>
+            android:id="@+id/property"
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="mobile.multicampaign.demo"/>
 
     <TextView
-        android:id="@+id/account_id"
-        style="@style/Widget.Leanback.DetailsActionButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="15dp"
-        android:fontFamily="sans-serif-light"
-        android:text="Title Text"/>
+            android:id="@+id/account_id"
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="22"/>
 
     <TextView
-        android:id="@+id/timeout"
-        style="@style/Widget.Leanback.DetailsActionButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="15dp"
-        android:fontFamily="sans-serif-light"
-        android:text="Title Text"/>
+            android:id="@+id/mess_type"
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="App"/>
 
     <TextView
-        style="@style/Widget.Leanback.DetailsActionButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="15dp"
-        android:fontFamily="sans-serif-light"
-        android:text="Title Text"/>
+            android:id="@+id/gdpr_pm_id"
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="1234"/>
 
     <TextView
-        style="@style/Widget.Leanback.DetailsActionButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="15dp"
-        android:fontFamily="sans-serif-light"
-        android:text="Title Text"/>
+            android:id="@+id/ccpa_pm_id"
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="1234"/>
 
     <TextView
-        style="@style/Widget.Leanback.DetailsActionButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="15dp"
-        android:fontFamily="sans-serif-light"
-        android:text="Title Text"/>
+            android:id="@+id/timeout"
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="12345"/>
 
     <TextView
-        style="@style/Widget.Leanback.DetailsActionButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="15dp"
-        android:fontFamily="sans-serif-light"
-        android:text="Title Text"/>
+            android:id="@+id/camp_env"
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Stage"/>
 
     <TextView
-        style="@style/Widget.Leanback.DetailsActionButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="15dp"
-        android:fontFamily="sans-serif-light"
-        android:text="Title Text"/>
+            android:id="@+id/auth_id"
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="auth_id_key"/>
 
     <TextView
-        style="@style/Widget.Leanback.DetailsActionButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="15dp"
-        android:fontFamily="sans-serif-light"
-        android:text="Title Text"/>
+            android:id="@+id/gdpr_group_pm"
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:focusable="false"
+            android:textIsSelectable="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="gdpr_group_pm"/>
+
+    <TextView
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Title Text"/>
+
+    <TextView
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Title Text"/>
+
+    <TextView
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Title Text"/>
+
+    <TextView
+            style="@style/Widget.Leanback.DetailsActionButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Title Text"/>
 
 </LinearLayout>

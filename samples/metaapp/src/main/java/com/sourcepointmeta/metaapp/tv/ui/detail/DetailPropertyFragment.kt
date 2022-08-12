@@ -77,7 +77,7 @@ class DetailPropertyFragment: DetailsSupportFragment() {
         actionHandler: (Action, PropDto) -> Unit
     ): FullWidthDetailsOverviewRowPresenter =
         // 1
-        FullWidthDetailsOverviewRowPresenter(PropertyDescriptionPresenter(requireContext())).apply {
+        FullWidthDetailsOverviewRowPresenter(PropertyDescriptionPresenter(requireContext(), { it -> })).apply {
             // 2
 //            backgroundColor =
 //                ContextCompat.getColor(requireContext(), R.color.selected_background)
