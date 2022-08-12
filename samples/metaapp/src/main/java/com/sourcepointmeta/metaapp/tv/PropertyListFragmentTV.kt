@@ -22,8 +22,6 @@ class PropertyListFragmentTV : BrowseSupportFragment() {
         private val TAG = "MainFragment"
     }
 
-    private val viewModel: PropertyListViewModel by viewModel()
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
         super.onActivityCreated(savedInstanceState)
@@ -45,7 +43,6 @@ class PropertyListFragmentTV : BrowseSupportFragment() {
     private fun setupEventListeners() {
         setOnSearchClickedListener {
             Toast.makeText(requireActivity(), "Update", Toast.LENGTH_LONG).show()
-            viewModel.fetchPropertyList()
         }
         onItemViewClickedListener = ItemViewClickedListener()
     }
