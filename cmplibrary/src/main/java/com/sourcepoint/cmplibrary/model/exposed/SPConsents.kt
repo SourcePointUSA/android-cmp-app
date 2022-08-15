@@ -51,7 +51,7 @@ interface CCPAConsent {
     val uuid: String?
     val rejectedCategories: List<String>
     val rejectedVendors: List<String>
-    val status: String?
+    val status: CcpaStatus?
     val uspstring: String
     val childPmId: String?
     val applies: Boolean
@@ -61,12 +61,19 @@ internal data class CCPAConsentInternal(
     override val uuid: String? = null,
     override val rejectedCategories: List<String> = listOf(),
     override val rejectedVendors: List<String> = listOf(),
-    override val status: String? = null,
+    override val status: CcpaStatus? = null,
     override val uspstring: String = "",
     override val childPmId: String? = null,
     override val applies: Boolean = false,
     val thisContent: JSONObject = JSONObject()
 ) : CCPAConsent
+
+enum class CcpaStatus {
+    rejectedAll,
+    rejectedSome,
+    rejectedNone,
+    consentedAll
+}
 
 internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
