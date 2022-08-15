@@ -95,19 +95,6 @@
             android:fontFamily="sans-serif-light"
             android:text="12345"/>
 
-<!--    <Switch-->
-<!--            android:text="Use Gdpr GroupPmId"-->
-<!--            android:switchPadding="20dp"-->
-<!--            android:id="@+id/gdpr_groupId_switch"-->
-<!--            style="@style/Widget.Leanback.DetailsActionButtonStyle"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="3dp"-->
-<!--            android:layout_marginTop="15dp"-->
-<!--            android:fontFamily="sans-serif-light"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/property"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            tools:ignore="UseSwitchCompatOrMaterialXml"/>-->
     <TextView
             android:id="@+id/label_mess_type"
             style="@style/Widget.Leanback.ImageCardView.TitleStyle"
