@@ -875,6 +875,17 @@ We'll update this list over time, if you have any questions feel free to open an
 
 Sourcepoint does not support deep linking due to an HTML sanitizer used in our message rendering app (used by our in-app SDKs to render messages in a webview). Changing the configuration to our HTML sanitizer would compromise our security and introduce vulnerabilities for cross-site scripting (XSS) attacks.
 
+Your organization can mirror deep linking by creating a button with a **Custom Action** choice option in your first layer message and leveraging the following code in your implementation:
+
+```kotlin
+override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
+    if(consentAction.actionType == ActionType.CUSTOM &&
+        consentAction.customActionId == "id-specified-in-portal") {
+        // navigate user to intended screen
+    }
+    return consentAction
+}
+```
 ---
 
 # Artifact Release Process
