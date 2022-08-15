@@ -18,18 +18,15 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.tv.ui.detail.ResourceCache
+import kotlinx.android.synthetic.main.detail_view_property.view.*
 
 class PropertyDescriptionPresenter(
     private val mContext: Context,
     private val clickListener: (view: View) -> Unit
 ) : Presenter() {
-
-    private val mResourceCache = ResourceCache()
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(mContext).inflate(R.layout.detail_view_property, null)
@@ -38,20 +35,30 @@ class PropertyDescriptionPresenter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
 
-        val propertyName = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.property)
-        val accountId = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.account_id)
-        val messageType = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.mess_type)
-        val messageLanguage = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.mess_language)
-        val timeout = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.timeout)
         val propertyDetail = item as Property
-        propertyName.text = propertyDetail.propertyName
-        accountId.text = propertyDetail.accountId.toString()
 
-        propertyName.setOnClickListener(clickListener)
-        accountId.setOnClickListener(clickListener)
-        messageType.setOnClickListener(clickListener)
-        messageLanguage.setOnClickListener(clickListener)
-        timeout.setOnClickListener(clickListener)
+        viewHolder.view.apply {
+            property?.let {
+                it.text = propertyDetail.propertyName
+                it.setOnClickListener(clickListener)
+            }
+            account_id?.let {
+                it.text = propertyDetail.accountId.toString()
+                it.setOnClickListener(clickListener)
+            }
+            mess_type?.let {
+                it.text = propertyDetail.messageType
+                it.setOnClickListener(clickListener)
+            }
+            mess_language?.let {
+                it.text = propertyDetail.messageLanguage
+                it.setOnClickListener(clickListener)
+            }
+            timeout?.let {
+                it.text = propertyDetail.timeout.toString()
+                it.setOnClickListener(clickListener)
+            }
+        }
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
