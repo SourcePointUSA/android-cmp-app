@@ -18,9 +18,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="TvAppTheme" parent="@style/Theme.Leanback">
     </style>
-
-    <style name="MovieCardTitleTwoLineStyle" parent="Widget.Leanback.ImageCardView.TitleStyle">
-        <item name="android:maxLines">2</item>
-        <item name="android:minLines">2</item>
-    </style>
 </resources>
