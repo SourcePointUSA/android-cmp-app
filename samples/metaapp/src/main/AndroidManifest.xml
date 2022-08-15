@@ -30,7 +30,7 @@
                   android:label="@string/app_name"
                   android:banner="@mipmap/ic_launcher"
                   android:exported="true"
-                  android:theme="@style/Theme.Example.LeanbackDetails">
+                  android:theme="@style/Theme.MyAppTv">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />

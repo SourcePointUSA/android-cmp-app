@@ -96,9 +96,4 @@
     </style>
     <style name="Theme.MyApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="Theme.MyApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
-
-    <style name="Theme.Example.LeanbackDetails" parent="Theme.Leanback.Details">
-        <item name="android:colorPrimary">@color/blue_link_400</item>
-    </style>
-
 </resources>
