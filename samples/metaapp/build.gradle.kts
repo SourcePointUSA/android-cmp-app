@@ -132,7 +132,6 @@ dependencies {
     androidTestImplementation(Libs.koinTest)
     androidTestImplementation(Libs.mockkAndroid)
 
-
 }
 
 versionCodePropPath {
