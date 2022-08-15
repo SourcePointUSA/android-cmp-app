@@ -21,8 +21,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.tv.ui.detail.ResourceCache
-import com.sourcepointmeta.metaapp.tv.ui.detail.model.PropDto
 
 class PropertyDescriptionPresenter(
     private val mContext: Context,
@@ -43,9 +43,9 @@ class PropertyDescriptionPresenter(
         val messageType = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.mess_type)
         val messageLanguage = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.mess_language)
         val timeout = mResourceCache.getViewById<TextView>(viewHolder.view, R.id.timeout)
-        val propertyDetail = item as PropDto
-        propertyName.text = propertyDetail.name
-        accountId.text = propertyDetail.accId.toString()
+        val propertyDetail = item as Property
+        propertyName.text = propertyDetail.propertyName
+        accountId.text = propertyDetail.accountId.toString()
 
         propertyName.setOnClickListener(clickListener)
         accountId.setOnClickListener(clickListener)

@@ -13,7 +13,7 @@ import androidx.leanback.widget.DetailsOverviewRow
 import androidx.leanback.widget.FullWidthDetailsOverviewRowPresenter
 import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper
 import androidx.leanback.widget.OnActionClickedListener
-import com.sourcepointmeta.metaapp.tv.ui.detail.model.PropDto
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
 
 fun FullWidthDetailsOverviewRowPresenter.setBackgroundColor(
     ctx: Context,
@@ -39,8 +39,8 @@ fun FullWidthDetailsOverviewRowPresenter.setTransition(
 }
 
 fun FullWidthDetailsOverviewRowPresenter.setOnActionClickListener(
-    propDto: PropDto,
-    actionListener: (Action, PropDto) -> Unit
+    propDto: Property,
+    actionListener: (Action, Property) -> Unit
 ): FullWidthDetailsOverviewRowPresenter {
     onActionClickedListener = OnActionClickedListener {
         actionListener(it, propDto)
