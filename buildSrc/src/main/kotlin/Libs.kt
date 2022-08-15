@@ -28,6 +28,9 @@ object Libs {
     const val sqlDelight: String = "com.squareup.sqldelight:android-driver:${Versions.sqlDelightVersion}"
     const val sqlDelightCoroutines: String = "com.squareup.sqldelight:coroutines-extensions-jvm:${Versions.sqlDelightVersion}"
 
+    const val leanback : String = "androidx.leanback:leanback-preference:1.0.0"
+    const val leanback_pref : String = "androidx.leanback:leanback-preference:1.0.0"
+
 }
 
 
