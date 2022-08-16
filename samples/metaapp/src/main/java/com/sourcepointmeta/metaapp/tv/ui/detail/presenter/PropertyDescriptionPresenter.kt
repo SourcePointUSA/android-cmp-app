@@ -20,7 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.data.localdatasource.Property
+import com.sourcepointmeta.metaapp.tv.ui.PropertyTvDTO
 import kotlinx.android.synthetic.main.detail_view_property.view.*
 
 class PropertyDescriptionPresenter(
@@ -35,7 +35,7 @@ class PropertyDescriptionPresenter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
 
-        val propertyDetail = item as Property
+        val propertyDetail = item as PropertyTvDTO
 
         viewHolder.view.apply {
             property?.let {
@@ -46,12 +46,8 @@ class PropertyDescriptionPresenter(
                 it.text = propertyDetail.accountId.toString()
                 it.setOnClickListener(clickListener)
             }
-            mess_type?.let {
-                it.text = propertyDetail.messageType
-                it.setOnClickListener(clickListener)
-            }
             mess_language?.let {
-                it.text = propertyDetail.messageLanguage
+                it.text = propertyDetail.messageLanguage.toString()
                 it.setOnClickListener(clickListener)
             }
             timeout?.let {

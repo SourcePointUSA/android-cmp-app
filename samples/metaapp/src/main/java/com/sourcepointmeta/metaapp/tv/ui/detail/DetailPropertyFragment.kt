@@ -10,6 +10,10 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
+import com.sourcepointmeta.metaapp.tv.ui.PropertyTvDTO
+import com.sourcepointmeta.metaapp.tv.ui.arrayObjectAdapter
+import com.sourcepointmeta.metaapp.tv.ui.initEntranceTransition
+import com.sourcepointmeta.metaapp.tv.ui.toPropertyTvDTO
 
 class DetailPropertyFragment : DetailsSupportFragment() {
 
@@ -17,7 +21,7 @@ class DetailPropertyFragment : DetailsSupportFragment() {
         Toast.makeText(requireContext(), "Run", Toast.LENGTH_SHORT).show()
     }
 
-    private val actionListener: (Action, Property) -> Unit = { a, i ->
+    private val actionListener: (Action, PropertyTvDTO) -> Unit = { a, i ->
         Toast.makeText(requireContext(), "Run Action", Toast.LENGTH_SHORT).show()
     }
 
@@ -31,7 +35,7 @@ class DetailPropertyFragment : DetailsSupportFragment() {
         super.onCreate(savedInstanceState)
         prepareEntranceTransition()
 
-        adapter = ArrayObjectAdapter(createPresenterSelector(prop1, actionListener, listener, helper)).apply {
+        adapter = ArrayObjectAdapter(createPresenterSelector(prop1.toPropertyTvDTO(), actionListener, listener, helper)).apply {
             add(DetailsOverviewRow(prop1).arrayObjectAdapter(Pair(1, "Run Demo")))
         }
 

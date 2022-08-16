@@ -1,4 +1,4 @@
-package com.sourcepointmeta.metaapp.tv.ui.detail
+package com.sourcepointmeta.metaapp.tv.ui
 
 import android.app.Activity
 import android.content.Context
@@ -13,7 +13,6 @@ import androidx.leanback.widget.DetailsOverviewRow
 import androidx.leanback.widget.FullWidthDetailsOverviewRowPresenter
 import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper
 import androidx.leanback.widget.OnActionClickedListener
-import com.sourcepointmeta.metaapp.data.localdatasource.Property
 
 fun FullWidthDetailsOverviewRowPresenter.setBackgroundColor(
     ctx: Context,
@@ -39,8 +38,8 @@ fun FullWidthDetailsOverviewRowPresenter.setTransition(
 }
 
 fun FullWidthDetailsOverviewRowPresenter.setOnActionClickListener(
-    propDto: Property,
-    actionListener: (Action, Property) -> Unit
+    propDto: PropertyTvDTO,
+    actionListener: (Action, PropertyTvDTO) -> Unit
 ): FullWidthDetailsOverviewRowPresenter {
     onActionClickedListener = OnActionClickedListener {
         actionListener(it, propDto)

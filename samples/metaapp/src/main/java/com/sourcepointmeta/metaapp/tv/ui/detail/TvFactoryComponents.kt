@@ -3,12 +3,12 @@ package com.sourcepointmeta.metaapp.tv.ui.detail
 import android.view.View
 import androidx.leanback.widget.* // ktlint-disable
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.data.localdatasource.Property
+import com.sourcepointmeta.metaapp.tv.ui.* // ktlint-disable
 import com.sourcepointmeta.metaapp.tv.ui.detail.presenter.PropertyDescriptionPresenter
 
 internal fun DetailPropertyFragment.createDetailsOverviewRowPresenter(
-    propDto: Property,
-    actionHandler: (Action, Property) -> Unit,
+    propDto: PropertyTvDTO,
+    actionHandler: (Action, PropertyTvDTO) -> Unit,
     itemHandler: (View) -> Unit,
     helper: FullWidthDetailsOverviewSharedElementHelper
 ): FullWidthDetailsOverviewRowPresenter =
@@ -19,8 +19,8 @@ internal fun DetailPropertyFragment.createDetailsOverviewRowPresenter(
         .setTransitionListener(helper)
 
 internal fun DetailPropertyFragment.createPresenterSelector(
-    propDto: Property,
-    actionHandler: (Action, Property) -> Unit,
+    propDto: PropertyTvDTO,
+    actionHandler: (Action, PropertyTvDTO) -> Unit,
     itemHandler: (View) -> Unit,
     helper: FullWidthDetailsOverviewSharedElementHelper
 ): ClassPresenterSelector =
