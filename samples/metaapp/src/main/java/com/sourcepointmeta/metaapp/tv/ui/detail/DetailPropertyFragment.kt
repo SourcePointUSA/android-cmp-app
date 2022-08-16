@@ -17,8 +17,11 @@ import com.sourcepointmeta.metaapp.tv.ui.toPropertyTvDTO
 
 class DetailPropertyFragment : DetailsSupportFragment() {
 
+    var navListener : (() -> Unit)? = null
+
     private val listener: (View) -> Unit = { view ->
         Toast.makeText(requireContext(), "Run", Toast.LENGTH_SHORT).show()
+        navListener?.invoke()
     }
 
     private val actionListener: (Action, PropertyTvDTO) -> Unit = { a, i ->
@@ -36,7 +39,7 @@ class DetailPropertyFragment : DetailsSupportFragment() {
         prepareEntranceTransition()
 
         adapter = ArrayObjectAdapter(createPresenterSelector(prop1.toPropertyTvDTO(), actionListener, listener, helper)).apply {
-            add(DetailsOverviewRow(prop1).arrayObjectAdapter(Pair(1, "Run Demo")))
+            add(DetailsOverviewRow(prop1.toPropertyTvDTO()).arrayObjectAdapter(Pair(1, "Run Demo")))
         }
 
         initEntranceTransition()

@@ -16,20 +16,33 @@ package com.sourcepointmeta.metaapp.tv.ui.detail
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.tv.ui.edit.EditPropertyName
 
 /**
  * Contains a [DetailsFragment] in order to display more details for a given card.
  */
 class DetailPropertyActivity : FragmentActivity() {
+
+    val fragment by lazy { DetailPropertyFragment() }
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tv_activity_detail)
 
         if (savedInstanceState == null) {
-            val fragment = DetailPropertyFragment()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.details_fragment, fragment)
                 .commit()
+        }
+
+        fragment.navListener = {
+
+            supportFragmentManager
+                .beginTransaction()
+                .addToBackStack("back_stack")
+                .add(R.id.details_fragment, EditPropertyName("Property Name","Edit the property name", "modile.demop"), EditPropertyName::class.java.name)
+                .commit()
+
         }
     }
 }
