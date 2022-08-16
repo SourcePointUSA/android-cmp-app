@@ -4,17 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.text.InputType
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.leanback.app.DetailsSupportFragment
 import androidx.leanback.app.GuidedStepSupportFragment
-import androidx.leanback.widget.Action
-import androidx.leanback.widget.ArrayObjectAdapter
-import androidx.leanback.widget.DetailsOverviewRow
-import androidx.leanback.widget.FullWidthDetailsOverviewRowPresenter
-import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper
-import androidx.leanback.widget.OnActionClickedListener
+import androidx.leanback.widget.* // ktlint-disable
 
 fun FullWidthDetailsOverviewRowPresenter.setBackgroundColor(
     ctx: Context,
@@ -60,7 +56,8 @@ fun FullWidthDetailsOverviewRowPresenter.setTransitionListener(
 fun DetailsOverviewRow.arrayObjectAdapter(vararg pairs: Pair<Long, String>): DetailsOverviewRow {
     val arr = ArrayObjectAdapter()
     pairs.fold(ArrayObjectAdapter()) { acc, elem -> acc.apply { add(elem) } }
-    actionsAdapter = pairs.fold(ArrayObjectAdapter()) { acc, elem -> acc.apply { add(Action(elem.first, elem.second)) } }
+    actionsAdapter =
+        pairs.fold(ArrayObjectAdapter()) { acc, elem -> acc.apply { add(Action(elem.first, elem.second)) } }
     return this
 }
 
@@ -68,8 +65,24 @@ fun DetailsSupportFragment.initEntranceTransition() {
     Handler(Looper.getMainLooper()).postDelayed({ startEntranceTransition() }, 500)
 }
 
-fun GuidedStepSupportFragment.hideKeyboard(){
+fun GuidedStepSupportFragment.hideKeyboard() {
     val imm: InputMethodManager =
         requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+}
+
+fun GuidedStepSupportFragment.createAction(
+    id: Long,
+    title: String,
+    description: String,
+    editable: Boolean = false,
+    inputType: Int = InputType.TYPE_CLASS_TEXT
+): GuidedAction {
+    return GuidedAction.Builder(activity)
+        .id(id)
+        .title(title)
+        .description(description)
+        .editable(editable)
+        .inputType(inputType)
+        .build()
 }
