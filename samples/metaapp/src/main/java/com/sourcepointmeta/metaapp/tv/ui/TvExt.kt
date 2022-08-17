@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.text.InputType
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
@@ -69,20 +68,4 @@ fun GuidedStepSupportFragment.hideKeyboard() {
     val imm: InputMethodManager =
         requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(requireView().windowToken, 0)
-}
-
-fun GuidedStepSupportFragment.createAction(
-    id: Long,
-    title: String,
-    description: String,
-    editable: Boolean = false,
-    inputType: Int = InputType.TYPE_CLASS_TEXT
-): GuidedAction {
-    return GuidedAction.Builder(activity)
-        .id(id)
-        .title(title)
-        .description(description)
-        .editable(editable)
-        .inputType(inputType)
-        .build()
 }

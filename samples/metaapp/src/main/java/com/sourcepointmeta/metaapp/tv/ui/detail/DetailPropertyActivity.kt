@@ -18,43 +18,36 @@ import androidx.fragment.app.FragmentActivity
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.core.addFragment
+import com.sourcepointmeta.metaapp.core.replaceFragment
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
-import com.sourcepointmeta.metaapp.tv.ui.edit.EditPropertyName
-import com.sourcepointmeta.metaapp.tv.ui.toPropertyTvDTO
+import com.sourcepointmeta.metaapp.tv.ui.edit.EditProperty
+import com.sourcepointmeta.metaapp.tv.ui.edit.PropertyField
 
 /**
  * Contains a [DetailsFragment] in order to display more details for a given card.
  */
 class DetailPropertyActivity : FragmentActivity() {
 
-    val propertyTvDTO by lazy {
-//        val propName = intent.extras
-//            ?.getString("property_name") ?: ""
-//        dataSource.fetchPropertyByNameSync(propName)
-        prop1.toPropertyTvDTO()
+    companion object {
+        const val PROPERTY_NAME_KEY = "property_name"
     }
-
-    val fragment by lazy { DetailPropertyFragment() }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tv_activity_detail)
 
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.details_fragment, fragment)
-                .commit()
-        }
+        val propertyName = intent.extras?.getString(PROPERTY_NAME_KEY) ?: throw RuntimeException("No property name")
 
-        fragment.navListener = {
-
-            supportFragmentManager
-                .beginTransaction()
-                .addToBackStack("back_stack")
-                .add(R.id.details_fragment, EditPropertyName.instance("Property Name", "Edit the property name", "modile.demop"), EditPropertyName::class.java.name)
-                .commit()
+        val fragment = DetailPropertyFragment.instance(propertyName)
+        savedInstanceState ?: replaceFragment(R.id.details_fragment, fragment)
+        fragment.navListener = { propertyName, type ->
+            PropertyField.values().find { it.ordinal == type }?.let {
+                val editFragment = EditProperty.instance(propertyName, it.ordinal)
+                addFragment(R.id.details_fragment, editFragment)
+            }
         }
     }
 }
@@ -65,18 +58,18 @@ private val tp = listOf(
     MetaTargetingParam("test", CampaignType.GDPR, "key3", "val3"),
 )
 
-val prop1 = Property(
-    accountId = 1,
-    propertyName = "prop1",
+val defaultProperty = Property(
+    accountId = 22,
+    propertyName = "write.your.property.name.here",
     timeout = 1,
     authId = null,
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
     is_staging = false,
     targetingParameters = tp,
-    statusCampaignSet = setOf(StatusCampaign("prop1", CampaignType.GDPR, true)),
+    statusCampaignSet = setOf(StatusCampaign("write.your.property.name.here", CampaignType.GDPR, true)),
     messageType = "App",
-    gdprPmId = 1212L,
-    ccpaPmId = 1313L,
+    gdprPmId = 1L,
+    ccpaPmId = 1L,
     campaignsEnv = CampaignsEnv.STAGE
 )

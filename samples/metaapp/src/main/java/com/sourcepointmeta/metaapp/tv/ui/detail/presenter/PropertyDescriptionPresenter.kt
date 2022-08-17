@@ -21,11 +21,12 @@ import android.view.ViewGroup
 import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.tv.ui.PropertyTvDTO
+import com.sourcepointmeta.metaapp.tv.ui.edit.PropertyField
 import kotlinx.android.synthetic.main.detail_view_property.view.*
 
 class PropertyDescriptionPresenter(
     private val mContext: Context,
-    private val clickListener: (view: View) -> Unit
+    private val clickListener: (view: View, Int) -> Unit
 ) : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
@@ -40,19 +41,19 @@ class PropertyDescriptionPresenter(
         viewHolder.view.apply {
             property?.let {
                 it.text = propertyDetail.propertyName
-                it.setOnClickListener(clickListener)
+                it.setOnClickListener { v -> clickListener(v, PropertyField.PROPERTY_NAME.ordinal) }
             }
             account_id?.let {
                 it.text = propertyDetail.accountId.toString()
-                it.setOnClickListener(clickListener)
+                it.setOnClickListener { v -> clickListener(v, PropertyField.ACCOUNT_ID.ordinal) }
             }
             mess_language?.let {
                 it.text = propertyDetail.messageLanguage.toString()
-                it.setOnClickListener(clickListener)
+                it.setOnClickListener { v -> clickListener(v, PropertyField.MESSAGE_LANGUAGE.ordinal) }
             }
             timeout?.let {
                 it.text = propertyDetail.timeout.toString()
-                it.setOnClickListener(clickListener)
+                it.setOnClickListener { v -> clickListener(v, PropertyField.TIMEOUT.ordinal) }
             }
         }
     }
