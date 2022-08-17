@@ -26,8 +26,8 @@ open class PropertyCardView(context: Context?)  : BaseCardView(context) {
         chipCCPA = findViewById(R.id.chip_ccpa)
     }
 
-    fun setGDPR(status: Boolean) {chipGDPR!!.isChecked = status}
-    fun setCCPA(status: Boolean) {chipCCPA!!.isChecked = status}
+    fun setGDPR(status: Boolean) {chipGDPR?.let{ it.isChecked = status}}
+    fun setCCPA(status: Boolean) {chipCCPA?.let{ it.isChecked = status}}
 
     override fun hasOverlappingRendering(): Boolean {
         return false

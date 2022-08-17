@@ -37,12 +37,12 @@ class PropertyCardPresenter(
         val cardView = viewHolder.view as PropertyCardView
 
         Log.d(TAG, "onBindViewHolder")
-        cardView.propertyNameView!!.text = property.propertyName
-        cardView.messageTypeView!!.text = property.messageType
-        cardView.accountIdView!!.text = property.accountId.toString()
-        cardView.campaignEnvView!!.text = property.campaignEnv
-        cardView.chipGDPR!!.isChecked = property.gdprEnabled
-        cardView.chipCCPA!!.isChecked = property.ccpaEnabled
+        cardView.propertyNameView?.let{ it.text = property.propertyName }
+        cardView.messageTypeView?.let{ it.text = property.messageType }
+        cardView.accountIdView?.let{ it.text = property.accountId.toString() }
+        cardView.campaignEnvView?.let{ it.text = property.campaignEnv }
+        cardView.chipGDPR?.let{ it.isChecked = property.gdprEnabled }
+        cardView.chipCCPA?.let{ it.isChecked = property.ccpaEnabled }
     }
     override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder) {
         Log.d(TAG, "onUnbindViewHolder")
