@@ -34,7 +34,7 @@ enum class PropertyField(
 fun PropertyTvDTO.getFieldById(type: PropertyField): String {
     return when (type) {
         PROPERTY_NAME -> this.propertyName
-        MESSAGE_LANGUAGE -> this.messageLanguage.value
+        MESSAGE_LANGUAGE -> this.messageLanguage.name
         ACCOUNT_ID -> this.accountId.toString()
         TIMEOUT -> this.timeout.toString()
     }

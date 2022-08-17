@@ -3,6 +3,7 @@ package com.sourcepointmeta.metaapp.tv.ui
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.tv.ui.edit.PropertyField
 
@@ -46,9 +47,9 @@ fun Property.toPropertyTvDTO(): PropertyTvDTO {
 fun PropertyTvDTO.toProperty(fieldType: PropertyField, newField: String?): Property {
 
     val messLanguageTv = if (newField != null && fieldType == PropertyField.MESSAGE_LANGUAGE) {
-        MessageLanguage.values().find { it.value == newField }?.value
-            ?: MessageLanguage.ENGLISH.value
-    } else messageLanguage.value
+        MessageLanguage.values().find { it.value == newField }?.name
+            ?: MessageLanguage.ENGLISH.name
+    } else messageLanguage.name
 
     val env = if (is_staging) "stage" else "prod"
 
@@ -63,9 +64,9 @@ fun PropertyTvDTO.toProperty(fieldType: PropertyField, newField: String?): Prope
         timeout = if (newField != null && fieldType == PropertyField.TIMEOUT) newField.toLong() else timeout,
         is_staging = is_staging,
         statusCampaignSet = property.statusCampaignSet,
-        messageType = "",
+        messageType = "App",
         gdprGroupPmId = null,
-        pmTab = null,
+        pmTab = PMTab.DEFAULT.name,
         ccpaGroupPmId = null,
         targetingParameters = emptyList(),
         timestamp = property.timestamp,
