@@ -123,6 +123,10 @@ dependencies {
     implementation(Libs.sqlDelight)
     implementation(Libs.sqlDelightCoroutines)
 
+    // tv
+    implementation(Libs.leanback)
+    implementation(Libs.leanback_pref)
+
     // unit-test
     testImplementation(Libs.mockk)
     testImplementation(Libs.mockwebserver)
