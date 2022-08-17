@@ -118,8 +118,6 @@
     <string name="message_language">Message Language</string>
     <string name="error">Something went wrong</string>
     <string name="save">Save</string>
-    <string name="edit">Edit</string>
-    <string name="back">Back</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="review_consents">Review Consents GDPR</string>
@@ -132,5 +130,4 @@
     <string name="saving">Saving ...</string>
     <string name="json_analyzer_title">JSON Analyzer</string>
     <string name="deeplink_placeholder">DeepLink</string>
-    <string name="delete">Delete</string>
 </resources>
