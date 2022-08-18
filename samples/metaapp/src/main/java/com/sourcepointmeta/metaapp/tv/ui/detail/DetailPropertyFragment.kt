@@ -28,6 +28,7 @@ class DetailPropertyFragment : DetailsSupportFragment() {
         }
 
         const val ACTION_RUN_DEMO = 1L
+        const val ACTION_DELETE = 2L
     }
 
     private val viewModel by viewModel<AddUpdatePropertyViewModelTv>()
@@ -46,6 +47,10 @@ class DetailPropertyFragment : DetailsSupportFragment() {
     private val actionListener: (Action, Property) -> Unit = { a, i ->
         when (a.id) {
             ACTION_RUN_DEMO -> runDemo(viewModel.fetchPropertySync(i.propertyName))
+            ACTION_DELETE -> {
+                viewModel.deletePropertySync(i.propertyName)
+                FakeActivity4Tests.initTest(viewModel.dataSource, requireActivity())
+            }
         }
     }
 
@@ -68,7 +73,12 @@ class DetailPropertyFragment : DetailsSupportFragment() {
         prepareEntranceTransition()
 
         adapter = ArrayObjectAdapter(createPresenterSelector(property, actionListener, listener, helper)).apply {
-            add(DetailsOverviewRow(property).arrayObjectAdapter(Pair(ACTION_RUN_DEMO, "Run Demo")))
+            add(
+                DetailsOverviewRow(property).arrayObjectAdapter(
+                    Pair(ACTION_RUN_DEMO, "Run Demo"),
+                    Pair(ACTION_DELETE, "Delete Property")
+                )
+            )
         }
 
         initEntranceTransition()

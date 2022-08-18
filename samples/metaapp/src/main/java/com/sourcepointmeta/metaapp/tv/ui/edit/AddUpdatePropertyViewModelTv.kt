@@ -13,11 +13,12 @@ import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.ValidationManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 internal class AddUpdatePropertyViewModelTv(
-    private val dataSource: LocalDataSource,
+    val dataSource: LocalDataSource,
     private val validationManager: ValidationManager,
     private val workerDispatcher: CoroutineContext = Dispatchers.IO
 ) : ViewModel() {
@@ -52,6 +53,10 @@ internal class AddUpdatePropertyViewModelTv(
 
     fun fetchPropertySync(propertyName: String): Property {
         return dataSource.fetchPropertyByNameSync(propertyName)
+    }
+
+    fun deletePropertySync(propertyName: String) {
+        return runBlocking { dataSource.deleteByPropertyName(propertyName) }
     }
 
     private fun validateProperty(property: Property): Either<Property> = validationManager.run {

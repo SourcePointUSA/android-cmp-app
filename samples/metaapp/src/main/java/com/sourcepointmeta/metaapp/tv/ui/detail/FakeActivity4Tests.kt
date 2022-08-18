@@ -13,6 +13,7 @@
  */
 package com.sourcepointmeta.metaapp.tv.ui.detail
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
@@ -25,22 +26,28 @@ import org.koin.android.ext.android.inject
 
 class FakeActivity4Tests : FragmentActivity() {
 
+    companion object {
+        internal fun initTest(dataSource: LocalDataSource, activity: Activity) {
+            MainScope().launch {
+                val list = dataSource.fetchProperties().getOrNull() ?: emptyList()
+                val p = if (list.isEmpty()) {
+                    dataSource.storeOrUpdateProperty(defaultProperty).getOrNull()!!
+                } else list.first()
+
+                val i = Intent(activity, DetailPropertyActivity::class.java)
+                i.flags = i.flags or Intent.FLAG_ACTIVITY_NO_HISTORY
+                i.putExtra(DetailPropertyActivity.PROPERTY_NAME_KEY, p.propertyName)
+                activity.startActivity(i)
+                activity.finish()
+            }
+        }
+    }
+
     private val dataSource by inject<LocalDataSource>()
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tv_activity_detail)
-        MainScope().launch {
-            val list = dataSource.fetchProperties().getOrNull() ?: emptyList()
-            val p = if (list.isEmpty()) {
-                dataSource.storeOrUpdateProperty(defaultProperty).getOrNull()!!
-            } else list.first()
-
-            val i = Intent(this@FakeActivity4Tests, DetailPropertyActivity::class.java)
-            i.flags = i.flags or Intent.FLAG_ACTIVITY_NO_HISTORY
-            i.putExtra(DetailPropertyActivity.PROPERTY_NAME_KEY, p.propertyName)
-            startActivity(i)
-            finish()
-        }
+        initTest(dataSource, this)
     }
 }
