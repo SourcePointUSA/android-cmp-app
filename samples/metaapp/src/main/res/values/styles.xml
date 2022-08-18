@@ -69,5 +69,4 @@
         <item name="indicatorSize">@dimen/mtrl_progress_circular_size_extra_small</item>
         <item name="indicatorInset">@dimen/mtrl_progress_circular_inset_extra_small</item>
     </style>
-
 </resources>

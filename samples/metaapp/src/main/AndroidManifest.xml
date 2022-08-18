@@ -21,7 +21,6 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -39,6 +38,18 @@
 
         <activity android:name=".ui.demo.DemoActivity"/>
         <activity android:name=".ui.viewer.JsonViewerActivity"/>
+
+        <activity android:name=".tv.MainActivityTV"
+            android:banner="@mipmap/ic_launcher"
+            android:configChanges="keyboard|keyboardHidden|navigation"
+            android:exported="true"
+            android:theme="@style/Theme.MyAppTv">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".LinkActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
