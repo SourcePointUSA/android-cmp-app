@@ -20,9 +20,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.tv.ui.PropertyTvDTO
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.tv.ui.edit.PropertyField
-import kotlinx.android.synthetic.main.detail_view_property.view.*
+import kotlinx.android.synthetic.main.detail_view_property.view.* //ktlint-disable
 
 class PropertyDescriptionPresenter(
     private val mContext: Context,
@@ -36,7 +36,7 @@ class PropertyDescriptionPresenter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
 
-        val propertyDetail = item as PropertyTvDTO
+        val propertyDetail = item as Property
 
         viewHolder.view.apply {
             property?.let {

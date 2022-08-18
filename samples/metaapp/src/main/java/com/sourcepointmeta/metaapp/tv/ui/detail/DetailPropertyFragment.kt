@@ -8,7 +8,7 @@ import androidx.leanback.widget.Action
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.DetailsOverviewRow
 import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper
-import com.sourcepointmeta.metaapp.tv.ui.PropertyTvDTO
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.tv.ui.arrayObjectAdapter
 import com.sourcepointmeta.metaapp.tv.ui.detail.DetailPropertyActivity.Companion.PROPERTY_NAME_KEY
 import com.sourcepointmeta.metaapp.tv.ui.edit.AddUpdatePropertyViewModelTv
@@ -40,7 +40,7 @@ class DetailPropertyFragment : DetailsSupportFragment() {
         navListener?.invoke(propertyName.propertyName, type)
     }
 
-    private val actionListener: (Action, PropertyTvDTO) -> Unit = { a, i ->
+    private val actionListener: (Action, Property) -> Unit = { a, i ->
         Toast.makeText(requireContext(), "Run Action", Toast.LENGTH_SHORT).show()
     }
 

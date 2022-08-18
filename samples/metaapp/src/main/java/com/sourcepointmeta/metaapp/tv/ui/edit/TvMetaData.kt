@@ -1,7 +1,7 @@
 package com.sourcepointmeta.metaapp.tv.ui.edit
 
 import android.text.InputType
-import com.sourcepointmeta.metaapp.tv.ui.PropertyTvDTO
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.tv.ui.edit.PropertyField.* //ktlint-disable
 
 enum class PropertyField(
@@ -31,10 +31,10 @@ enum class PropertyField(
     ),
 }
 
-fun PropertyTvDTO.getFieldById(type: PropertyField): String {
+fun Property.getFieldById(type: PropertyField): String {
     return when (type) {
         PROPERTY_NAME -> this.propertyName
-        MESSAGE_LANGUAGE -> this.messageLanguage.name
+        MESSAGE_LANGUAGE -> this.messageLanguage ?: "ENGLISH"
         ACCOUNT_ID -> this.accountId.toString()
         TIMEOUT -> this.timeout.toString()
     }

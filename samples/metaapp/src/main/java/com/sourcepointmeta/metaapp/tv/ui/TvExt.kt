@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.leanback.app.DetailsSupportFragment
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.* // ktlint-disable
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
 
 fun FullWidthDetailsOverviewRowPresenter.setBackgroundColor(
     ctx: Context,
@@ -35,8 +36,8 @@ fun FullWidthDetailsOverviewRowPresenter.setTransition(
 }
 
 fun FullWidthDetailsOverviewRowPresenter.setOnActionClickListener(
-    propDto: PropertyTvDTO,
-    actionListener: (Action, PropertyTvDTO) -> Unit
+    propDto: Property,
+    actionListener: (Action, Property) -> Unit
 ): FullWidthDetailsOverviewRowPresenter {
     onActionClickedListener = OnActionClickedListener {
         actionListener(it, propDto)
