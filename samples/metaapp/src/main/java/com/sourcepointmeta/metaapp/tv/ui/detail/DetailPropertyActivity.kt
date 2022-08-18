@@ -60,16 +60,16 @@ private val tp = listOf(
 
 val defaultProperty = Property(
     accountId = 22,
-    propertyName = "write.your.property.name.here",
-    timeout = 1,
+    propertyName = "ott.test.suite",
+    timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
     is_staging = false,
     targetingParameters = tp,
-    statusCampaignSet = setOf(StatusCampaign("write.your.property.name.here", CampaignType.GDPR, true)),
+    statusCampaignSet = setOf(StatusCampaign("ott.test.suite", CampaignType.GDPR, true)),
     messageType = "App",
-    gdprPmId = 1L,
+    gdprPmId = 579231L,
     ccpaPmId = 1L,
-    campaignsEnv = CampaignsEnv.STAGE
+    campaignsEnv = CampaignsEnv.PUBLIC
 )
