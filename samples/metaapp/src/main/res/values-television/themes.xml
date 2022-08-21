@@ -43,5 +43,9 @@
         <item name="colorJsonValueUrl">@color/blue_link_400</item>
         <item name="colorJsonValueNull">@color/red_600</item>
         <item name="colorJsonValueBraces">@color/black_400</item>
+
+        <item
+            name="browseTitleViewLayout">@layout/tv_titleview</item>
+        <item name="browseRowsMarginTop">160dp</item>
     </style>
 </resources>
