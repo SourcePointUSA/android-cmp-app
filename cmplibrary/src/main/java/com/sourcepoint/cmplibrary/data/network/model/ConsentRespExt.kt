@@ -5,10 +5,9 @@ import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
-import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
@@ -56,7 +55,12 @@ internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?, applies: Boolean
         ?.filterIsInstance(String::class.java)
         ?: failParam("Ccpa  rejectedVendors")
 
-    val status: String = getFieldValue<String>("status")
+    val status: CcpaStatus = getFieldValue<String>("status")
+        ?.let { s ->
+            CcpaStatus.values().find {
+                it.name == s
+            }
+        }
         ?: fail("CCPAStatus cannot be null!!!")
 
     val uspString: String = getFieldValue("uspstring") ?: ""

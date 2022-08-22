@@ -7,7 +7,7 @@ import androidx.leanback.widget.BaseCardView
 import com.google.android.material.chip.Chip
 import com.sourcepointmeta.metaapp.R
 
-open class PropertyCardView(context: Context?)  : BaseCardView(context) {
+open class PropertyCardView(context: Context?) : BaseCardView(context) {
     var propertyNameView: TextView? = null
     var messageTypeView: TextView? = null
     var campaignEnvView: TextView? = null
@@ -26,8 +26,8 @@ open class PropertyCardView(context: Context?)  : BaseCardView(context) {
         chipCCPA = findViewById(R.id.chip_ccpa)
     }
 
-    fun setGDPR(status: Boolean) {chipGDPR?.let{ it.isChecked = status}}
-    fun setCCPA(status: Boolean) {chipCCPA?.let{ it.isChecked = status}}
+    fun setGDPR(status: Boolean) { chipGDPR?.let { it.isChecked = status } }
+    fun setCCPA(status: Boolean) { chipCCPA?.let { it.isChecked = status } }
 
     override fun hasOverlappingRendering(): Boolean {
         return false
