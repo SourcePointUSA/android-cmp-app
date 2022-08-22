@@ -8,13 +8,7 @@ import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.tv.cards.PropertyCardPresenter
-import com.sourcepointmeta.metaapp.ui.BaseState
-
 import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
-import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
-import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class PropertyListFragmentTV : BrowseSupportFragment() {
@@ -35,16 +29,23 @@ class PropertyListFragmentTV : BrowseSupportFragment() {
         headersState = HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true
         brandColor = ContextCompat.getColor(requireActivity(), R.color.purple_500)
-        searchAffordanceColor = ContextCompat.getColor(requireActivity(), R.color.purple_200)
     }
     private fun loadRows() {
         // TODO("Not implemented yet")
     }
     private fun setupEventListeners() {
-        setOnSearchClickedListener {
-            Toast.makeText(requireActivity(), "Update", Toast.LENGTH_LONG).show()
-        }
         onItemViewClickedListener = ItemViewClickedListener()
+
+        // Remove Leanback interception on focus mAddBtn on CustomTitleView
+        val browseFrameLayout = requireView().findViewById<BrowseFrameLayout>(R.id.browse_frame)
+        browseFrameLayout.onFocusSearchListener = null
+
+        // Remove Leanback interception on AddBtn.clickListener()
+        titleView.setOnClickListener {  }
+        // Add OnClickListener() to CustomTitleView.mTitleViewAdapter.getSearchAffordanceView() return (mAddBtn)
+        titleViewAdapter.setOnSearchClickedListener {
+            Toast.makeText(context, "Add button clicked", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private inner class ItemViewClickedListener() : OnItemViewClickedListener {
