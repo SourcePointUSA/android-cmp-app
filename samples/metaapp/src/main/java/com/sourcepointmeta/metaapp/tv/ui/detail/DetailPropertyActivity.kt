@@ -15,21 +15,61 @@ package com.sourcepointmeta.metaapp.tv.ui.detail
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.core.addFragment
+import com.sourcepointmeta.metaapp.core.replaceFragment
+import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
+import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
+import com.sourcepointmeta.metaapp.tv.ui.edit.EditProperty
+import com.sourcepointmeta.metaapp.tv.ui.edit.PropertyField
 
 /**
  * Contains a [DetailsFragment] in order to display more details for a given card.
  */
 class DetailPropertyActivity : FragmentActivity() {
+
+    companion object {
+        const val PROPERTY_NAME_KEY = "property_name"
+    }
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tv_activity_detail)
 
-        if (savedInstanceState == null) {
-            val fragment = DetailPropertyFragment()
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.details_fragment, fragment)
-                .commit()
+        val propertyName = intent.extras?.getString(PROPERTY_NAME_KEY) ?: throw RuntimeException("No property name")
+
+        val fragment = DetailPropertyFragment.instance(propertyName)
+        savedInstanceState ?: replaceFragment(R.id.details_fragment, fragment)
+        fragment.navListener = { propertyName, type ->
+            PropertyField.values().find { it.ordinal == type }?.let {
+                val editFragment = EditProperty.instance(propertyName, it.ordinal)
+                addFragment(R.id.details_fragment, editFragment)
+            }
         }
     }
 }
+
+private val tp = listOf(
+    MetaTargetingParam("test", CampaignType.GDPR, "key1", "val1"),
+    MetaTargetingParam("test", CampaignType.GDPR, "key2", "val2"),
+    MetaTargetingParam("test", CampaignType.GDPR, "key3", "val3"),
+)
+
+val defaultProperty = Property(
+    accountId = 22,
+    propertyName = "ott.test.suite",
+    timeout = 3000,
+    authId = null,
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    is_staging = false,
+    targetingParameters = tp,
+    statusCampaignSet = setOf(StatusCampaign("ott.test.suite", CampaignType.GDPR, true)),
+    messageType = "App",
+    gdprPmId = 579231L,
+    ccpaPmId = 1L,
+    campaignsEnv = CampaignsEnv.PUBLIC
+)

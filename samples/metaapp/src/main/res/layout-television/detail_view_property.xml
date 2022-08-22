@@ -20,7 +20,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="MissingDefaultResource">
 
     <TextView
             android:id="@+id/label_prop_name"
@@ -106,10 +107,10 @@
             android:textAlignment="viewStart"
             app:layout_constraintTop_toBottomOf="@id/property"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="Message type"/>
+            android:text="Message language"/>
 
     <TextView
-            android:id="@+id/mess_type"
+            android:id="@+id/mess_language"
             style="@style/Widget.Leanback.DetailsActionButtonStyle"
             app:layout_constraintTop_toBottomOf="@id/label_mess_type"
             app:layout_constraintStart_toStartOf="parent"
@@ -118,29 +119,19 @@
             android:layout_marginBottom="3dp"
             android:layout_marginTop="15dp"
             android:fontFamily="sans-serif-light"
-            android:text="App"/>
+            android:text="English"/>
 
     <TextView
             android:id="@+id/label_mess_language"
             style="@style/Widget.Leanback.ImageCardView.TitleStyle"
-            app:layout_constraintTop_toBottomOf="@id/mess_type"
+            app:layout_constraintTop_toBottomOf="@id/mess_language"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
             android:layout_marginTop="15dp"
             android:fontFamily="sans-serif-light"
-            android:text="Message language"/>
-    <TextView
-            android:id="@+id/mess_language"
-            style="@style/Widget.Leanback.DetailsActionButtonStyle"
-            app:layout_constraintTop_toBottomOf="@id/label_mess_language"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:layout_marginTop="15dp"
-            android:fontFamily="sans-serif-light"
-            android:text="English"/>
+            android:text="TBD"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

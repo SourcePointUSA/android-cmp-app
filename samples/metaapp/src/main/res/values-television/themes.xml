@@ -5,43 +5,34 @@
     </style>
 
     <style name="Base.Theme.MyAppTv" parent="Theme.Leanback.Details">
-        <!--Material color attributes (light theme) -->
-        <!--colorPrimary colors map to components and elements, such as app bars and buttons. -->
-        <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
-        <!--selection controls.-->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_600</item>
+        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimaryVariant">@color/purple_500</item>
         <item name="colorSecondary">@color/green_200</item>
         <item name="colorSecondaryVariant">@color/green_500</item>
-        <!--colorBackground appears behind scrollable content and is used for the default window-->
-        <!--background. colorSurface is mapped to the surface of components such as cards, sheets-->
-        <!--and menus. colorError is used to indicate an error state for components such as-->
-        <!--text fields.-->
-<!--        <item name="android:colorBackground">@color/white_50</item>-->
-        <item name="colorSurface">@color/white_50</item>
-        <item name="colorError">@color/red_600</item>
-        <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
-        <!--on which they appear.-->
-        <item name="colorOnPrimary">@color/white_50</item>
+        <item name="android:colorBackground">@color/black_900</item>
+        <item name="colorSurface">@color/black_600</item>
+        <item name="colorError">@color/red_200</item>
+        <item name="colorOnPrimary">@color/black_900</item>
         <item name="colorOnSecondary">@color/black_900</item>
-        <item name="colorOnBackground">@color/black_900</item>
-        <item name="colorOnSurface">@color/black_900</item>
-        <item name="colorOnError">@color/white_50</item>
+        <item name="colorOnBackground">@color/white_50</item>
+        <item name="colorOnSurface">@color/white_50</item>
+        <item name="colorOnError">@color/black_900</item>
 
-        <item name="colorOddItem">@color/black_50</item>
-        <item name="colorEvenItem">@color/white_50</item>
-        <item name="colorSuccessResponse">@color/green_status_600</item>
-        <item name="colorErrorResponse">@color/red_600</item>
+        <item name="colorSuccessResponse">@color/green_status_200</item>
+        <item name="colorErrorResponse">@color/red_200</item>
         <item name="colorItemComputation">@color/yellow_600</item>
-        <item name="colorWebAction">@color/orange_400</item>
+        <item name="colorWebAction">@color/orange_200</item>
 
-        <item name="webLink">@color/blue_link_600</item>
-        <item name="colorClientEvent">@color/rose_600</item>
-        <item name="colorJsonKey">@color/violet_600</item>
-        <item name="colorJsonValueText">@color/green_status_600</item>
-        <item name="colorJsonValueNumber">@color/blue_link_600</item>
-        <item name="colorJsonValueUrl">@color/blue_link_400</item>
-        <item name="colorJsonValueNull">@color/red_600</item>
-        <item name="colorJsonValueBraces">@color/black_400</item>
+        <item name="webLink">@color/blue_link_200</item>
+        <item name="colorClientEvent">@color/rose_200</item>
+        <item name="colorJsonKey">@color/violet_200</item>
+        <item name="colorJsonValueText">@color/green_status_200</item>
+        <item name="colorJsonValueNumber">@color/blue_link_200</item>
+        <item name="colorJsonValueUrl">@color/blue_link_200</item>
+        <item name="colorJsonValueNull">@color/red_200</item>
+        <item name="colorJsonValueBraces">@color/black_50</item>
+
+        <item name="colorOddItem">@color/black_400</item>
+        <item name="colorEvenItem">@color/black_600</item>
     </style>
 </resources>

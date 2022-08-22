@@ -1,28 +1,65 @@
 package com.sourcepointmeta.metaapp.tv.ui.detail
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.leanback.app.DetailsSupportFragment
-import androidx.leanback.widget.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
-import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam
+import androidx.leanback.widget.Action
+import androidx.leanback.widget.ArrayObjectAdapter
+import androidx.leanback.widget.DetailsOverviewRow
+import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
-import com.sourcepointmeta.metaapp.tv.ui.PropertyTvDTO
 import com.sourcepointmeta.metaapp.tv.ui.arrayObjectAdapter
+import com.sourcepointmeta.metaapp.tv.ui.detail.DetailPropertyActivity.Companion.PROPERTY_NAME_KEY
+import com.sourcepointmeta.metaapp.tv.ui.edit.AddUpdatePropertyViewModelTv
 import com.sourcepointmeta.metaapp.tv.ui.initEntranceTransition
-import com.sourcepointmeta.metaapp.tv.ui.toPropertyTvDTO
+import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailPropertyFragment : DetailsSupportFragment() {
 
-    private val listener: (View) -> Unit = { view ->
-        Toast.makeText(requireContext(), "Run", Toast.LENGTH_SHORT).show()
+    companion object {
+        fun instance(
+            propertyName: String?
+        ) = DetailPropertyFragment().apply {
+            arguments = Bundle().apply {
+                putString(PROPERTY_NAME_KEY, propertyName)
+            }
+        }
+
+        const val ACTION_RUN_DEMO = 1L
+        const val ACTION_DELETE = 2L
     }
 
-    private val actionListener: (Action, PropertyTvDTO) -> Unit = { a, i ->
-        Toast.makeText(requireContext(), "Run Action", Toast.LENGTH_SHORT).show()
+    private val viewModel by viewModel<AddUpdatePropertyViewModelTv>()
+
+    private val property by lazy {
+        val name = arguments?.getString(PROPERTY_NAME_KEY) ?: defaultProperty.propertyName
+        viewModel.fetchPropertySync(name)
+    }
+
+    var navListener: ((String, Int) -> Unit)? = null
+
+    private val listener: (View, Int) -> Unit = { _, type ->
+        navListener?.invoke(property.propertyName, type)
+    }
+
+    private val actionListener: (Action, Property) -> Unit = { a, i ->
+        when (a.id) {
+            ACTION_RUN_DEMO -> runDemo(viewModel.fetchPropertySync(i.propertyName))
+            ACTION_DELETE -> {
+                viewModel.deletePropertySync(i.propertyName)
+                FakeActivity4Tests.initTest(viewModel.dataSource, requireActivity())
+            }
+        }
+    }
+
+    private fun runDemo(property: Property) {
+        val bundle = Bundle()
+        bundle.putString(PROPERTY_NAME_KEY, property.propertyName)
+        val i = Intent(activity, DemoActivity::class.java)
+        i.putExtras(bundle)
+        startActivity(i)
     }
 
     private val helper by lazy {
@@ -35,32 +72,15 @@ class DetailPropertyFragment : DetailsSupportFragment() {
         super.onCreate(savedInstanceState)
         prepareEntranceTransition()
 
-        adapter = ArrayObjectAdapter(createPresenterSelector(prop1.toPropertyTvDTO(), actionListener, listener, helper)).apply {
-            add(DetailsOverviewRow(prop1).arrayObjectAdapter(Pair(1, "Run Demo")))
+        adapter = ArrayObjectAdapter(createPresenterSelector(property, actionListener, listener, helper)).apply {
+            add(
+                DetailsOverviewRow(property).arrayObjectAdapter(
+                    Pair(ACTION_RUN_DEMO, "Run Demo"),
+                    Pair(ACTION_DELETE, "Delete Property")
+                )
+            )
         }
 
         initEntranceTransition()
     }
 }
-
-private val tp = listOf(
-    MetaTargetingParam("test", CampaignType.GDPR, "key1", "val1"),
-    MetaTargetingParam("test", CampaignType.GDPR, "key2", "val2"),
-    MetaTargetingParam("test", CampaignType.GDPR, "key3", "val3"),
-)
-
-val prop1 = Property(
-    accountId = 1,
-    propertyName = "prop1",
-    timeout = 1,
-    authId = null,
-    messageLanguage = "ENGLISH",
-    pmTab = "DEFAULT",
-    is_staging = false,
-    targetingParameters = tp,
-    statusCampaignSet = setOf(StatusCampaign("prop1", CampaignType.GDPR, true)),
-    messageType = "App",
-    gdprPmId = 1212L,
-    ccpaPmId = 1313L,
-    campaignsEnv = CampaignsEnv.STAGE
-)

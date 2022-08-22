@@ -6,6 +6,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.RemoteDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.create
 import com.sourcepointmeta.metaapp.data.localdatasource.createDb
+import com.sourcepointmeta.metaapp.tv.ui.edit.AddUpdatePropertyViewModelTv
 import com.sourcepointmeta.metaapp.ui.ValidationManager
 import com.sourcepointmeta.metaapp.ui.create
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogViewModel
@@ -24,6 +25,8 @@ val appModule = module {
     viewModel { PropertyListViewModel(get(), get()) }
 
     viewModel { AddUpdatePropertyViewModel(get(), get()) }
+
+    viewModel { AddUpdatePropertyViewModelTv(get(), get()) }
 
     viewModel { JsonViewerViewModel(get()) }
 
