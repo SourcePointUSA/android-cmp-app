@@ -36,6 +36,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapNetworkOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapOptionWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapPartnersOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapPurposesOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectAllWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSiteVendorsWebView
@@ -44,6 +45,7 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
@@ -220,6 +222,36 @@ class MainActivityKotlinTest {
                 sp.getString("IABUSPrivacy_String", null).assertEquals("1YNN")
             }
         }
+    }
+
+    @Test
+    fun GIVEN_a_ccpa_campaign_CHECK_the_different_status() = runBlocking<Unit> {
+
+        val spClient = SpClientMock()
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfCcpa,
+                gdprPmId = "1",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
+
+        // check consentedAll
+        wr { clickOnCcpaReviewConsent() }
+        wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
+        wr{ spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.consentedAll) }
+
+        // check consentedAll
+        wr { clickOnCcpaReviewConsent() }
+        wr(backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
+        wr{ spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.rejectedAll) }
+
     }
 
     @Test

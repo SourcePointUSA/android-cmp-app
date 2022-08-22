@@ -5,17 +5,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.leanback.app.BrowseSupportFragment
-import androidx.leanback.widget.*
+import androidx.leanback.widget.* //ktlint-disable
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.tv.cards.PropertyCardPresenter
-import com.sourcepointmeta.metaapp.ui.BaseState
-
 import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
-import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
-import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 class PropertyListFragmentTV : BrowseSupportFragment() {
     companion object {

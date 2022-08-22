@@ -3,7 +3,6 @@ package com.sourcepointmeta.metaapp.tv
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
 
 class MainActivityTV : FragmentActivity() {
 
