@@ -11,7 +11,6 @@ import com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity
 import com.sourcepointmeta.metaapp.tv.detail.createAction
 import com.sourcepointmeta.metaapp.tv.hideKeyboard
 import com.sourcepointmeta.metaapp.ui.BaseState
-import kotlinx.android.synthetic.main.add_property_fragment.* // ktlint-disable
 import kotlinx.coroutines.* // ktlint-disable
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

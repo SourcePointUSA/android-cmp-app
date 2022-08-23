@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import androidx.leanback.widget.BaseCardView
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
-import kotlinx.android.synthetic.main.property_item.view.*
+import kotlinx.android.synthetic.main.property_item.view.* //ktlint-disable
 
 class PropertyCardView : BaseCardView {
     constructor(context: Context) : super(context)

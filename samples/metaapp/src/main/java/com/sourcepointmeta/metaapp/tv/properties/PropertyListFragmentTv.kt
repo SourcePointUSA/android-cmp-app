@@ -14,7 +14,7 @@ import com.sourcepointmeta.metaapp.tv.initEntranceTransition
 import com.sourcepointmeta.metaapp.tv.showPropertyDetail
 import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
-import kotlinx.android.synthetic.main.plus_btn.*
+import kotlinx.android.synthetic.main.plus_btn.* //ktlint-disable
 
 class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedListener {
 

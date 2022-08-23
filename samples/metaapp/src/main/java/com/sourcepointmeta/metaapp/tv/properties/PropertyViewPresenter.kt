@@ -2,7 +2,6 @@ package com.sourcepointmeta.metaapp.tv.properties
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
@@ -11,8 +10,6 @@ import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 class PropertyViewPresenter(
     private val mContext: Context
 ) : Presenter() {
-
-    var clickListener: ((view: View, String) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(mContext).inflate(R.layout.property_item, null)

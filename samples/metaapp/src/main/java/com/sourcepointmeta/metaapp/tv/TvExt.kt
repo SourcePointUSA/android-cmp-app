@@ -17,6 +17,7 @@ import androidx.leanback.widget.* // ktlint-disable
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity
+import com.sourcepointmeta.metaapp.tv.edit.PropertyField
 
 fun FullWidthDetailsOverviewRowPresenter.setBackgroundColor(
     ctx: Context,
@@ -93,4 +94,14 @@ fun Context.showPropertyDetail(propertyName: String) {
     i.flags = i.flags or Intent.FLAG_ACTIVITY_NO_HISTORY
     i.putExtra(DetailPropertyActivity.PROPERTY_NAME_KEY, propertyName)
     startActivity(i)
+}
+
+fun Property.updateDTO(fieldType: PropertyField, newField: String?): Property {
+    newField ?: return this
+    return when (fieldType) {
+        PropertyField.PROPERTY_NAME -> this.copy(propertyName = newField)
+        PropertyField.MESSAGE_LANGUAGE -> this.copy(messageLanguage = newField)
+        PropertyField.ACCOUNT_ID -> this.copy(accountId = newField.toLongOrNull() ?: 1)
+        PropertyField.TIMEOUT -> this.copy(timeout = newField.toLongOrNull() ?: 3000L)
+    }
 }

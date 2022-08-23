@@ -20,7 +20,6 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
 import com.sourcepointmeta.metaapp.core.replaceFragment
-import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 import com.sourcepointmeta.metaapp.tv.edit.EditProperty
