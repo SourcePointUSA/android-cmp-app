@@ -16,11 +16,14 @@
 
         <TextView
                 tools:text="mobile.demo.com"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:singleLine="true"
+                android:ellipsize="marquee"
                 android:layout_height="wrap_content"
                 android:id="@+id/property_name"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/account_id"
                 android:padding="3dp"/>
         <TextView
                 tools:text="22"

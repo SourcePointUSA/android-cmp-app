@@ -53,7 +53,7 @@ class DetailPropertyActivity : FragmentActivity() {
 
 val defaultProperty = Property(
     accountId = 22,
-    propertyName = "ott.test.suite",
+    propertyName = "ott.test.suite.mobile.demo.com.mobile.demo.com",
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",

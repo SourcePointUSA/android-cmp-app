@@ -19,7 +19,6 @@ class MainActivityTV : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-        Handler().postDelayed({fragment.refreshData()}, 2000)
-
+        Handler().postDelayed({ fragment.refreshData() }, 2000)
     }
 }

@@ -53,7 +53,7 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
         requireContext().showPropertyDetail(propDto.propertyName)
     }
 
-    fun refreshData(){
+    fun refreshData() {
         // TO DO
     }
 }
