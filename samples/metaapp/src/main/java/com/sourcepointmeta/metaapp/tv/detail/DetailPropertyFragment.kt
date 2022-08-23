@@ -1,4 +1,4 @@
-package com.sourcepointmeta.metaapp.tv.ui.detail
+package com.sourcepointmeta.metaapp.tv.detail
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,10 +9,10 @@ import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.DetailsOverviewRow
 import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.tv.ui.arrayObjectAdapter
-import com.sourcepointmeta.metaapp.tv.ui.detail.DetailPropertyActivity.Companion.PROPERTY_NAME_KEY
-import com.sourcepointmeta.metaapp.tv.ui.edit.AddUpdatePropertyViewModelTv
-import com.sourcepointmeta.metaapp.tv.ui.initEntranceTransition
+import com.sourcepointmeta.metaapp.tv.arrayObjectAdapter
+import com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity.Companion.PROPERTY_NAME_KEY
+import com.sourcepointmeta.metaapp.tv.edit.AddUpdatePropertyViewModelTv
+import com.sourcepointmeta.metaapp.tv.initEntranceTransition
 import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

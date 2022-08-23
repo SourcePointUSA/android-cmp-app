@@ -1,12 +1,12 @@
-package com.sourcepointmeta.metaapp.tv.ui.detail
+package com.sourcepointmeta.metaapp.tv.detail
 
 import android.view.View
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.* // ktlint-disable
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.tv.ui.* // ktlint-disable
-import com.sourcepointmeta.metaapp.tv.ui.detail.presenter.PropertyDescriptionPresenter
+import com.sourcepointmeta.metaapp.tv.* // ktlint-disable
+import com.sourcepointmeta.metaapp.tv.detail.presenter.PropertyDescriptionPresenter
 
 internal fun DetailPropertyFragment.createDetailsOverviewRowPresenter(
     propDto: Property,

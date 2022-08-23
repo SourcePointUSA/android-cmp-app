@@ -12,7 +12,7 @@
  * the License.
  *
  */
-package com.sourcepointmeta.metaapp.tv.ui.detail.presenter
+package com.sourcepointmeta.metaapp.tv.detail.presenter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -21,7 +21,7 @@ import android.view.ViewGroup
 import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.tv.ui.edit.PropertyField
+import com.sourcepointmeta.metaapp.tv.edit.PropertyField
 import kotlinx.android.synthetic.main.detail_view_property.view.* //ktlint-disable
 
 class PropertyDescriptionPresenter(

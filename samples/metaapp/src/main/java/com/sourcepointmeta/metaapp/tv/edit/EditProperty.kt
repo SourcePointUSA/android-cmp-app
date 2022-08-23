@@ -1,4 +1,4 @@
-package com.sourcepointmeta.metaapp.tv.ui.edit
+package com.sourcepointmeta.metaapp.tv.edit
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,9 +7,9 @@ import android.view.View
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist
 import androidx.leanback.widget.GuidedAction
-import com.sourcepointmeta.metaapp.tv.ui.detail.DetailPropertyActivity
-import com.sourcepointmeta.metaapp.tv.ui.detail.createAction
-import com.sourcepointmeta.metaapp.tv.ui.hideKeyboard
+import com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity
+import com.sourcepointmeta.metaapp.tv.detail.createAction
+import com.sourcepointmeta.metaapp.tv.hideKeyboard
 import com.sourcepointmeta.metaapp.ui.BaseState
 import kotlinx.android.synthetic.main.add_property_fragment.* // ktlint-disable
 import kotlinx.coroutines.* // ktlint-disable

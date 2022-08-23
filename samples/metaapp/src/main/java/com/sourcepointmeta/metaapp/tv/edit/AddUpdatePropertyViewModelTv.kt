@@ -1,4 +1,4 @@
-package com.sourcepointmeta.metaapp.tv.ui.edit
+package com.sourcepointmeta.metaapp.tv.edit
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,7 +8,7 @@ import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.* //ktlint-disable
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.tv.ui.updateDTO
+import com.sourcepointmeta.metaapp.tv.updateDTO
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.ValidationManager
 import kotlinx.coroutines.Dispatchers

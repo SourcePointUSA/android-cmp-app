@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.sourcepointmeta.metaapp.tv.ui.detail
+package com.sourcepointmeta.metaapp.tv.detail
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
@@ -23,8 +23,8 @@ import com.sourcepointmeta.metaapp.core.replaceFragment
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
-import com.sourcepointmeta.metaapp.tv.ui.edit.EditProperty
-import com.sourcepointmeta.metaapp.tv.ui.edit.PropertyField
+import com.sourcepointmeta.metaapp.tv.edit.EditProperty
+import com.sourcepointmeta.metaapp.tv.edit.PropertyField
 
 /**
  * Contains a [DetailsFragment] in order to display more details for a given card.
@@ -39,7 +39,7 @@ class DetailPropertyActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tv_activity_detail)
 
-        val propertyName = intent.extras?.getString(PROPERTY_NAME_KEY) ?: throw RuntimeException("No property name")
+        val propertyName = intent.extras?.getString(PROPERTY_NAME_KEY)
 
         val fragment = DetailPropertyFragment.instance(propertyName)
         savedInstanceState ?: replaceFragment(R.id.details_fragment, fragment)
@@ -52,12 +52,6 @@ class DetailPropertyActivity : FragmentActivity() {
     }
 }
 
-private val tp = listOf(
-    MetaTargetingParam("test", CampaignType.GDPR, "key1", "val1"),
-    MetaTargetingParam("test", CampaignType.GDPR, "key2", "val2"),
-    MetaTargetingParam("test", CampaignType.GDPR, "key3", "val3"),
-)
-
 val defaultProperty = Property(
     accountId = 22,
     propertyName = "ott.test.suite",
@@ -66,7 +60,7 @@ val defaultProperty = Property(
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
     is_staging = false,
-    targetingParameters = tp,
+    targetingParameters = emptyList(),
     statusCampaignSet = setOf(StatusCampaign("ott.test.suite", CampaignType.GDPR, true)),
     messageType = "App",
     gdprPmId = 579231L,

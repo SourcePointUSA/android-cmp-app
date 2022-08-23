@@ -1,8 +1,8 @@
-package com.sourcepointmeta.metaapp.tv.ui.edit
+package com.sourcepointmeta.metaapp.tv.edit
 
 import android.text.InputType
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.tv.ui.edit.PropertyField.* //ktlint-disable
+import com.sourcepointmeta.metaapp.tv.edit.PropertyField.* //ktlint-disable
 
 enum class PropertyField(
     val dialogTitle: String,
