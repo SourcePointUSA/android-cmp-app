@@ -49,7 +49,7 @@ class DetailPropertyFragment : DetailsSupportFragment() {
             ACTION_RUN_DEMO -> runDemo(viewModel.fetchPropertySync(i.propertyName))
             ACTION_DELETE -> {
                 viewModel.deletePropertySync(i.propertyName)
-                FakeActivity4Tests.initTest(viewModel.dataSource, requireActivity())
+                // Go to the main activity
             }
         }
     }
