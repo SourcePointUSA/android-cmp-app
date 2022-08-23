@@ -6,7 +6,6 @@ import androidx.leanback.widget.* // ktlint-disable
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.tv.* // ktlint-disable
-import com.sourcepointmeta.metaapp.tv.detail.presenter.PropertyDescriptionPresenter
 
 internal fun DetailPropertyFragment.createDetailsOverviewRowPresenter(
     propDto: Property,
