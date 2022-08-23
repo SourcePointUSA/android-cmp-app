@@ -6,7 +6,9 @@
         android:id="@+id/btn_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:ignore="MissingDefaultResource">
+        tools:ignore="MissingDefaultResource"
+        android:paddingStart="105dp"
+        android:paddingTop="50dp">
 
     <ImageButton
             android:id="@+id/add_property_btn"
