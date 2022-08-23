@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="MissingDefaultResource"
-        android:paddingStart="105dp"
+        android:paddingStart="50dp"
         android:paddingTop="50dp">
 
     <ImageButton
@@ -20,7 +20,7 @@
             android:clipToPadding="false"
             android:background="@null"
             android:layout_marginStart="50dp"
-            android:src="@drawable/ic_baseline_add_24"
+            android:src="@drawable/add_selector"
             android:stateListAnimator="@xml/animate_scale"
             style="@style/Widget.Leanback.ImageCardView"
             tools:ignore="MissingConstraints,MissingDefaultResource"/>

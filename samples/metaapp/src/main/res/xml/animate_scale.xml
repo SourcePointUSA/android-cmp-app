@@ -26,16 +26,4 @@
                             android:valueType="floatType"/>
         </set>
     </item>
-<!--    <item android:state_pressed="true">-->
-<!--        <set>-->
-<!--            <objectAnimator android:propertyName="rotation"-->
-<!--                            android:duration="@android:integer/config_shortAnimTime"-->
-<!--                            android:valueTo="0"-->
-<!--                            android:valueFrom="135"/>-->
-<!--            <objectAnimator android:propertyName="rotation"-->
-<!--                            android:duration="@android:integer/config_shortAnimTime"-->
-<!--                            android:valueTo="135"-->
-<!--                            android:valueFrom="0"/>-->
-<!--        </set>-->
-<!--    </item>-->
 </selector>
