@@ -52,8 +52,12 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
         val propDto = item as? PropertyDTO ?: throw RuntimeException("The item must be a PropertyDTO type!!!")
         requireContext().showPropertyDetail(propDto.propertyName)
     }
+
+    fun refreshData(){
+        // TO DO
+    }
 }
 
-val dtoList = (1..9).fold(mutableListOf<PropertyDTO>()) { acc, _ ->
+val dtoList = (1..30).fold(mutableListOf<PropertyDTO>()) { acc, _ ->
     acc.apply { add(defaultProperty.toPropertyDTO()) }
 }
