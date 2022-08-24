@@ -78,7 +78,3 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
         viewModel.fetchPropertyList()
     }
 }
-
-// val dtoList = (1..30).fold(mutableListOf<PropertyDTO>()) { acc, _ ->
-//    acc.apply { add(defaultProperty.toPropertyDTO()) }
-// }
