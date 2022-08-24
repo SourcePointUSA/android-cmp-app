@@ -14,7 +14,8 @@
         android:layout_marginEnd="24dp"
         android:layout_centerVertical="true"
         android:focusable="false"
-        app:layout_constraintEnd_toStartOf="@+id/addBtn"
+        android:layout_margin="6dp"
+        app:layout_constraintEnd_toStartOf="@+id/removeAllBtn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -24,10 +25,25 @@
         android:layout_alignParentEnd="true"
         android:layout_gravity="center_vertical|end"
         android:padding="6dp"
+        android:layout_margin="6dp"
         android:text="@string/add_prop_title"
         android:focusable="true"
         android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/removeAllBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="center_vertical|end"
+        android:padding="6dp"
+        android:layout_margin="6dp"
+        android:text="REMOVE ALL"
+        android:focusable="true"
+        android:clickable="true"
+        app:layout_constraintEnd_toStartOf="@id/addBtn"
         app:layout_constraintTop_toTopOf="parent" />
 
 

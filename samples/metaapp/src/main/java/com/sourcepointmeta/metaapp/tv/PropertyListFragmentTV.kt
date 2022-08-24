@@ -42,9 +42,14 @@ class PropertyListFragmentTV : BrowseSupportFragment() {
 
         // Remove Leanback interception on AddBtn.clickListener()
         titleView.setOnClickListener {  }
-        // Add OnClickListener() to CustomTitleView.mTitleViewAdapter.getSearchAffordanceView() return (mAddBtn)
-        titleViewAdapter.setOnSearchClickedListener {
-            Toast.makeText(context, "Add button clicked", Toast.LENGTH_SHORT).show()
+        // Add OnClickListener() to CustomTitleView.mTitleViewAdapter
+        if(titleViewAdapter is CustomTitleView.CustomTitleViewAdapter){
+            (titleViewAdapter as CustomTitleView.CustomTitleViewAdapter).setAddButtonOnClickListener(){
+                Toast.makeText(context, "Add button clicked", Toast.LENGTH_SHORT).show()
+            }
+            (titleViewAdapter as CustomTitleView.CustomTitleViewAdapter).setRemoveButtonOnClickListener(){
+                Toast.makeText(context, "Remove button clicked", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

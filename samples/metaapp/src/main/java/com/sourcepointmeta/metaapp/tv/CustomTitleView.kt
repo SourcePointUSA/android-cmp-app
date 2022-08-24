@@ -13,9 +13,10 @@ import com.sourcepointmeta.metaapp.R
 class CustomTitleView(context: Context?, attrs: AttributeSet?, defStyle: Int) : RelativeLayout(context, attrs, defStyle), TitleViewAdapter.Provider {
     private var mTitleView: TextView? = null
     private var mAddBtn: Button? = null
-    var mTitleViewAdapter: TitleViewAdapter = object : TitleViewAdapter() {
+    private var mRemoveAllBtn: Button? = null
+    var mTitleViewAdapter: CustomTitleViewAdapter = object : CustomTitleViewAdapter() {
         override fun getSearchAffordanceView(): View? {
-            return mAddBtn
+            return null
         }
         override fun setTitle(titleText: CharSequence?) {
             this@CustomTitleView.setTitle(titleText)
@@ -27,6 +28,14 @@ class CustomTitleView(context: Context?, attrs: AttributeSet?, defStyle: Int) : 
         override fun setOnSearchClickedListener(listener: OnClickListener?) {
             super.setOnSearchClickedListener(listener)
         }
+
+        override fun setRemoveButtonOnClickListener(listener: OnClickListener?){
+            mRemoveAllBtn?.setOnClickListener(listener)
+        }
+        override fun setAddButtonOnClickListener(listener: OnClickListener?){
+            mAddBtn?.setOnClickListener(listener)
+        }
+
     }
 
     constructor(context: Context?) : this(context, null) {}
@@ -53,5 +62,11 @@ class CustomTitleView(context: Context?, attrs: AttributeSet?, defStyle: Int) : 
         val root: View = LayoutInflater.from(context).inflate(R.layout.tv_custom_titleview, this, true)
         mTitleView = root.findViewById(R.id.titleTextView)
         mAddBtn = root.findViewById(R.id.addBtn)
+        mRemoveAllBtn = root.findViewById(R.id.removeAllBtn)
+    }
+
+    abstract class CustomTitleViewAdapter(): TitleViewAdapter() {
+        abstract fun setRemoveButtonOnClickListener(listener: OnClickListener?)
+        abstract fun setAddButtonOnClickListener(listener: OnClickListener?)
     }
 }
