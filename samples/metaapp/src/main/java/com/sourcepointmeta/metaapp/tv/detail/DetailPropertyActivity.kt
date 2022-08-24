@@ -24,6 +24,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 import com.sourcepointmeta.metaapp.tv.edit.EditProperty
 import com.sourcepointmeta.metaapp.tv.edit.PropertyField
+import com.sourcepointmeta.metaapp.tv.updatePropertyList
 
 /**
  * Contains a [DetailsFragment] in order to display more details for a given card.
@@ -34,17 +35,20 @@ class DetailPropertyActivity : FragmentActivity(), UpdateScreen {
         const val PROPERTY_NAME_KEY = "property_name"
     }
 
+    val fragment by lazy { DetailPropertyFragment() }
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tv_activity_detail)
 
         val propertyName = intent.extras?.getString(PROPERTY_NAME_KEY)
+        fragment.refreshPropertyNameArgument(propertyName)
+        savedInstanceState ?: replaceFragment(R.id.details_fragment, fragment)
         update(propertyName)
     }
 
     override fun update(propertyName: String?) {
-        val fragment = DetailPropertyFragment.instance(propertyName)
-        replaceFragment(R.id.details_fragment, fragment)
+        fragment.updateProperty(propertyName)
         fragment.navListener = { propertyName_, type ->
             PropertyField.values().find { it.ordinal == type }?.let {
                 val editFragment = EditProperty.instance(propertyName_, it.ordinal)
@@ -52,6 +56,11 @@ class DetailPropertyActivity : FragmentActivity(), UpdateScreen {
                 addFragment(R.id.details_fragment, editFragment)
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        updatePropertyList()
     }
 }
 

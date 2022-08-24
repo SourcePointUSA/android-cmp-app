@@ -96,11 +96,13 @@ class DetailPropertyFragment : DetailsSupportFragment() {
         viewModel.fetchPropertyOrDefault(propertyName, defaultProperty)
     }
 
-    fun updateProperty(propertyName: String) {
+    fun updateProperty(propertyName: String?) {
+        propertyName ?: return
         viewModel.fetchProperty(propertyName)
     }
 
-    fun updatePropertyName(propertyName: String){
+    fun refreshPropertyNameArgument(propertyName: String?) {
+        propertyName ?: return
         arguments = Bundle().apply {
             putString(PROPERTY_NAME_KEY, propertyName)
         }
