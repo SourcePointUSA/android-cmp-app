@@ -24,36 +24,49 @@ import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 import com.sourcepointmeta.metaapp.tv.edit.EditProperty
 import com.sourcepointmeta.metaapp.tv.edit.PropertyField
+import com.sourcepointmeta.metaapp.tv.updatePropertyList
 
 /**
  * Contains a [DetailsFragment] in order to display more details for a given card.
  */
-class DetailPropertyActivity : FragmentActivity() {
+class DetailPropertyActivity : FragmentActivity(), UpdateScreen {
 
     companion object {
         const val PROPERTY_NAME_KEY = "property_name"
     }
+
+    val fragment by lazy { DetailPropertyFragment() }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tv_activity_detail)
 
         val propertyName = intent.extras?.getString(PROPERTY_NAME_KEY)
-
-        val fragment = DetailPropertyFragment.instance(propertyName)
+        fragment.refreshPropertyNameArgument(propertyName)
         savedInstanceState ?: replaceFragment(R.id.details_fragment, fragment)
-        fragment.navListener = { propertyName, type ->
+        update(propertyName)
+    }
+
+    override fun update(propertyName: String?) {
+        fragment.updateProperty(propertyName)
+        fragment.navListener = { propertyName_, type ->
             PropertyField.values().find { it.ordinal == type }?.let {
-                val editFragment = EditProperty.instance(propertyName, it.ordinal)
+                val editFragment = EditProperty.instance(propertyName_, it.ordinal)
+                    .apply { listener4Update = this@DetailPropertyActivity }
                 addFragment(R.id.details_fragment, editFragment)
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        updatePropertyList()
     }
 }
 
 val defaultProperty = Property(
     accountId = 22,
-    propertyName = "ott.test.suite.mobile.demo.com.mobile.demo.com",
+    propertyName = "ott.test.suite",
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",

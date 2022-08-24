@@ -1,22 +1,21 @@
 package com.sourcepointmeta.metaapp.tv.edit
 
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist
 import androidx.leanback.widget.GuidedAction
-import com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity
+import com.sourcepointmeta.metaapp.tv.detail.UpdateScreen
 import com.sourcepointmeta.metaapp.tv.detail.createAction
 import com.sourcepointmeta.metaapp.tv.hideKeyboard
+import com.sourcepointmeta.metaapp.tv.updatePropertyList
 import com.sourcepointmeta.metaapp.ui.BaseState
 import kotlinx.coroutines.* // ktlint-disable
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditProperty : GuidedStepSupportFragment() {
 
-    var listener4Update: ((String) -> Unit)? = null
+    var listener4Update: UpdateScreen? = null
 
     companion object {
 
@@ -55,12 +54,11 @@ class EditProperty : GuidedStepSupportFragment() {
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
                 is BaseState.StateTvPropertySaved -> {
-                    requireActivity().onBackPressed()
-                    listener4Update?.invoke(it.propName)
-                    val i = Intent(requireActivity(), DetailPropertyActivity::class.java)
-                    i.putExtra(DetailPropertyActivity.PROPERTY_NAME_KEY, it.propName)
-                    startActivity(i)
-                    Handler().postDelayed({ activity?.finish() }, 1000)
+                    listener4Update?.update(it.propName)
+                    requireActivity().apply {
+                        onBackPressed()
+                        updatePropertyList()
+                    }
                 }
                 else -> {}
             }

@@ -71,6 +71,7 @@ fun DetailsOverviewRow.arrayObjectAdapter(vararg pairs: Pair<Long, String>): Det
 fun DetailsSupportFragment.initEntranceTransition() {
     Handler(Looper.getMainLooper()).postDelayed({ startEntranceTransition() }, 500)
 }
+
 fun VerticalGridSupportFragment.initEntranceTransition() {
     Handler(Looper.getMainLooper()).postDelayed({ startEntranceTransition() }, 500)
 }
@@ -104,4 +105,14 @@ fun Property.updateDTO(fieldType: PropertyField, newField: String?): Property {
         PropertyField.ACCOUNT_ID -> this.copy(accountId = newField.toLongOrNull() ?: 1)
         PropertyField.TIMEOUT -> this.copy(timeout = newField.toLongOrNull() ?: 3000L)
     }
+}
+
+fun Context.updatePropertyList() {
+    val i = Intent().apply { action = MainActivityTV.REFRESH_ACTION }
+    sendBroadcast(i)
+}
+
+fun Activity.updatePropertyListAndClose() {
+    updatePropertyList()
+    finish()
 }
