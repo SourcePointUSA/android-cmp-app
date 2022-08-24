@@ -51,6 +51,10 @@ class DetailPropertyActivity : FragmentActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         updatePropertyList()
