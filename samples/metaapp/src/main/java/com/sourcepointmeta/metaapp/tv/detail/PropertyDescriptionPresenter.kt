@@ -12,7 +12,7 @@
  * the License.
  *
  */
-package com.sourcepointmeta.metaapp.tv.ui.detail.presenter
+package com.sourcepointmeta.metaapp.tv.detail
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -21,8 +21,6 @@ import android.view.ViewGroup
 import androidx.leanback.widget.Presenter
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.tv.ui.edit.PropertyField
-import kotlinx.android.synthetic.main.detail_view_property.view.* //ktlint-disable
 
 class PropertyDescriptionPresenter(
     private val mContext: Context,
@@ -35,27 +33,9 @@ class PropertyDescriptionPresenter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
-
         val propertyDetail = item as Property
-
-        viewHolder.view.apply {
-            property?.let {
-                it.text = propertyDetail.propertyName
-                it.setOnClickListener { v -> clickListener(v, PropertyField.PROPERTY_NAME.ordinal) }
-            }
-            account_id?.let {
-                it.text = propertyDetail.accountId.toString()
-                it.setOnClickListener { v -> clickListener(v, PropertyField.ACCOUNT_ID.ordinal) }
-            }
-            mess_language?.let {
-                it.text = propertyDetail.messageLanguage.toString()
-                it.setOnClickListener { v -> clickListener(v, PropertyField.MESSAGE_LANGUAGE.ordinal) }
-            }
-            timeout?.let {
-                it.text = propertyDetail.timeout.toString()
-                it.setOnClickListener { v -> clickListener(v, PropertyField.TIMEOUT.ordinal) }
-            }
-        }
+        val holder = viewHolder.view as? DetailPropertyView ?: throw RuntimeException("The view item must be a PropertyCardView type!!!")
+        holder.bind(propertyDetail, clickListener)
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
