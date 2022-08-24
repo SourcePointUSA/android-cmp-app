@@ -13,7 +13,7 @@ import com.sourcepointmeta.metaapp.tv.arrayObjectAdapter
 import com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity.Companion.PROPERTY_NAME_KEY
 import com.sourcepointmeta.metaapp.tv.edit.AddUpdatePropertyViewModelTv
 import com.sourcepointmeta.metaapp.tv.initEntranceTransition
-import com.sourcepointmeta.metaapp.tv.updatePropertyList
+import com.sourcepointmeta.metaapp.tv.updatePropertyListAndClose
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -21,16 +21,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class DetailPropertyFragment : DetailsSupportFragment() {
 
     companion object {
-        fun instance(
-            propertyName: String?
-        ) = DetailPropertyFragment().apply {
-            arguments = Bundle().apply {
-                putString(PROPERTY_NAME_KEY, propertyName)
-            }
-        }
-
-        fun instance() = DetailPropertyFragment()
-
         const val ACTION_RUN_DEMO = 1L
         const val ACTION_DELETE = 2L
         const val ACTION_DUPLICATE = 3L
@@ -45,18 +35,11 @@ class DetailPropertyFragment : DetailsSupportFragment() {
             ACTION_RUN_DEMO -> runDemo(viewModel.fetchPropertySync(i.propertyName))
             ACTION_DELETE -> {
                 viewModel.deletePropertySync(i.propertyName)
-                requireActivity().run {
-                    updatePropertyList()
-                    finish()
-                }
-                // Go to the main activity
+                requireActivity().updatePropertyListAndClose()
             }
             ACTION_DUPLICATE -> {
                 viewModel.duplicatePropertySync(i.propertyName)
-                requireActivity().run {
-                    updatePropertyList()
-                    finish()
-                }
+                requireActivity().updatePropertyListAndClose()
             }
         }
     }
@@ -85,11 +68,8 @@ class DetailPropertyFragment : DetailsSupportFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
-//                is BaseState.StatePropertyList -> successState(it)
-//                is BaseState.StateError -> errorState(it)
                 is BaseState.StateProperty -> showProperty(it.property)
-//                is BaseState.StateLoading -> savingProperty(it.propertyName, it.loading)
-//                is BaseState.StateVersion -> showVersionPopup(it.version)
+                // TO DO handle error case
             }
         }
         val propertyName = arguments?.getString(PROPERTY_NAME_KEY) ?: defaultProperty.propertyName

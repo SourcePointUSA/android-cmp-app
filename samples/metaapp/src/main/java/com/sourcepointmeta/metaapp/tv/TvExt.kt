@@ -111,3 +111,8 @@ fun Context.updatePropertyList() {
     val i = Intent().apply { action = MainActivityTV.REFRESH_ACTION }
     sendBroadcast(i)
 }
+
+fun Activity.updatePropertyListAndClose() {
+    updatePropertyList()
+    finish()
+}
