@@ -29,16 +29,14 @@ class DetailPropertyFragment : DetailsSupportFragment() {
             }
         }
 
+        fun instance() = DetailPropertyFragment()
+
         const val ACTION_RUN_DEMO = 1L
         const val ACTION_DELETE = 2L
         const val ACTION_DUPLICATE = 3L
     }
 
     private val viewModel by viewModel<AddUpdatePropertyViewModelTv>()
-
-    private val propertyName by lazy {
-        arguments?.getString(PROPERTY_NAME_KEY) ?: defaultProperty.propertyName
-    }
 
     var navListener: ((String, Int) -> Unit)? = null
 
@@ -94,7 +92,18 @@ class DetailPropertyFragment : DetailsSupportFragment() {
 //                is BaseState.StateVersion -> showVersionPopup(it.version)
             }
         }
+        val propertyName = arguments?.getString(PROPERTY_NAME_KEY) ?: defaultProperty.propertyName
         viewModel.fetchPropertyOrDefault(propertyName, defaultProperty)
+    }
+
+    fun updateProperty(propertyName: String) {
+        viewModel.fetchProperty(propertyName)
+    }
+
+    fun updatePropertyName(propertyName: String){
+        arguments = Bundle().apply {
+            putString(PROPERTY_NAME_KEY, propertyName)
+        }
     }
 
     private fun showProperty(property: Property) {

@@ -67,6 +67,14 @@ internal class AddUpdatePropertyViewModelTv(
         }
     }
 
+    fun fetchProperty(propertyName: String) {
+        viewModelScope.launch {
+            dataSource.fetchPropertyByName(propertyName)
+                .map { mutableLiveData.value = BaseState.StateProperty(it) }
+                .executeOnLeft { mutableLiveData.value = BaseState.StateError(R.string.error) }
+        }
+    }
+
     fun deletePropertySync(propertyName: String) {
         // make it async
         return runBlocking { dataSource.deleteByPropertyName(propertyName) }
