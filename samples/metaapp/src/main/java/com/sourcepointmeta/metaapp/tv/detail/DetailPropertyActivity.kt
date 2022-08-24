@@ -24,6 +24,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 import com.sourcepointmeta.metaapp.tv.edit.EditProperty
 import com.sourcepointmeta.metaapp.tv.edit.PropertyField
+import com.sourcepointmeta.metaapp.tv.updatePropertyList
 
 /**
  * Contains a [DetailsFragment] in order to display more details for a given card.
@@ -49,11 +50,16 @@ class DetailPropertyActivity : FragmentActivity() {
             }
         }
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        updatePropertyList()
+    }
 }
 
 val defaultProperty = Property(
     accountId = 22,
-    propertyName = "ott.test.suite.mobile.demo.com.mobile.demo.com",
+    propertyName = "ott.test.suite",
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",

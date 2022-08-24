@@ -52,11 +52,34 @@ internal class AddUpdatePropertyViewModelTv(
     }
 
     fun fetchPropertySync(propertyName: String): Property {
+        // make it async
         return dataSource.fetchPropertyByNameSync(propertyName)
     }
 
+    fun fetchPropertyOrDefault(propertyName: String, default: Property) {
+        viewModelScope.launch {
+            dataSource.fetchPropertyByName(propertyName)
+                .map { mutableLiveData.value = BaseState.StateProperty(it) }
+                .executeOnLeft {
+                    dataSource.storeOrUpdateProperty(default)
+                    mutableLiveData.value = BaseState.StateProperty(default)
+                }
+        }
+    }
+
     fun deletePropertySync(propertyName: String) {
+        // make it async
         return runBlocking { dataSource.deleteByPropertyName(propertyName) }
+    }
+
+    fun duplicatePropertySync(propertyName: String) {
+        // make it async
+        runBlocking {
+            dataSource.fetchPropertyByName(propertyName)
+                .map {
+                    dataSource.storeOrUpdateProperty(it.copy(propertyName = it.propertyName + ".copy"))
+                }
+        }
     }
 
     private fun validateProperty(property: Property): Either<Property> = validationManager.run {

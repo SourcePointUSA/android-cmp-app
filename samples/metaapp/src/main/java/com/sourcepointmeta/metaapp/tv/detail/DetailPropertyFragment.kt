@@ -13,6 +13,8 @@ import com.sourcepointmeta.metaapp.tv.arrayObjectAdapter
 import com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity.Companion.PROPERTY_NAME_KEY
 import com.sourcepointmeta.metaapp.tv.edit.AddUpdatePropertyViewModelTv
 import com.sourcepointmeta.metaapp.tv.initEntranceTransition
+import com.sourcepointmeta.metaapp.tv.updatePropertyList
+import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -29,27 +31,34 @@ class DetailPropertyFragment : DetailsSupportFragment() {
 
         const val ACTION_RUN_DEMO = 1L
         const val ACTION_DELETE = 2L
+        const val ACTION_DUPLICATE = 3L
     }
 
     private val viewModel by viewModel<AddUpdatePropertyViewModelTv>()
 
-    private val property by lazy {
-        val name = arguments?.getString(PROPERTY_NAME_KEY) ?: defaultProperty.propertyName
-        viewModel.fetchPropertySync(name)
+    private val propertyName by lazy {
+        arguments?.getString(PROPERTY_NAME_KEY) ?: defaultProperty.propertyName
     }
 
     var navListener: ((String, Int) -> Unit)? = null
-
-    private val listener: (View, Int) -> Unit = { _, type ->
-        navListener?.invoke(property.propertyName, type)
-    }
 
     private val actionListener: (Action, Property) -> Unit = { a, i ->
         when (a.id) {
             ACTION_RUN_DEMO -> runDemo(viewModel.fetchPropertySync(i.propertyName))
             ACTION_DELETE -> {
                 viewModel.deletePropertySync(i.propertyName)
+                requireActivity().run {
+                    updatePropertyList()
+                    finish()
+                }
                 // Go to the main activity
+            }
+            ACTION_DUPLICATE -> {
+                viewModel.duplicatePropertySync(i.propertyName)
+                requireActivity().run {
+                    updatePropertyList()
+                    finish()
+                }
             }
         }
     }
@@ -71,16 +80,39 @@ class DetailPropertyFragment : DetailsSupportFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prepareEntranceTransition()
+        initEntranceTransition()
+    }
 
-        adapter = ArrayObjectAdapter(createPresenterSelector(property, actionListener, listener, helper)).apply {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.liveData.observe(viewLifecycleOwner) {
+            when (it) {
+//                is BaseState.StatePropertyList -> successState(it)
+//                is BaseState.StateError -> errorState(it)
+                is BaseState.StateProperty -> showProperty(it.property)
+//                is BaseState.StateLoading -> savingProperty(it.propertyName, it.loading)
+//                is BaseState.StateVersion -> showVersionPopup(it.version)
+            }
+        }
+        viewModel.fetchPropertyOrDefault(propertyName, defaultProperty)
+    }
+
+    private fun showProperty(property: Property) {
+        adapter = ArrayObjectAdapter(
+            createPresenterSelector(
+                property,
+                actionListener,
+                { _, type -> navListener?.invoke(property.propertyName, type) },
+                helper
+            )
+        ).apply {
             add(
                 DetailsOverviewRow(property).arrayObjectAdapter(
                     Pair(ACTION_RUN_DEMO, "Run Demo"),
-                    Pair(ACTION_DELETE, "Delete Property")
+                    Pair(ACTION_DELETE, "Delete Property"),
+                    Pair(ACTION_DUPLICATE, "Duplicate Property")
                 )
             )
         }
-
-        initEntranceTransition()
     }
 }
