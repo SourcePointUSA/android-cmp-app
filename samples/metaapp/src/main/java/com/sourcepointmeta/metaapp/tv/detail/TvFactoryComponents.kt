@@ -1,15 +1,16 @@
-package com.sourcepointmeta.metaapp.tv.ui.detail
+package com.sourcepointmeta.metaapp.tv.detail
 
 import android.view.View
+import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.* // ktlint-disable
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.tv.ui.* // ktlint-disable
-import com.sourcepointmeta.metaapp.tv.ui.detail.presenter.PropertyDescriptionPresenter
+import com.sourcepointmeta.metaapp.data.localdatasource.Property
+import com.sourcepointmeta.metaapp.tv.* // ktlint-disable
 
 internal fun DetailPropertyFragment.createDetailsOverviewRowPresenter(
-    propDto: PropertyTvDTO,
-    actionHandler: (Action, PropertyTvDTO) -> Unit,
-    itemHandler: (View) -> Unit,
+    propDto: Property,
+    actionHandler: (Action, Property) -> Unit,
+    itemHandler: (View, Int) -> Unit,
     helper: FullWidthDetailsOverviewSharedElementHelper
 ): FullWidthDetailsOverviewRowPresenter =
     FullWidthDetailsOverviewRowPresenter(PropertyDescriptionPresenter(requireContext(), itemHandler))
@@ -19,9 +20,9 @@ internal fun DetailPropertyFragment.createDetailsOverviewRowPresenter(
         .setTransitionListener(helper)
 
 internal fun DetailPropertyFragment.createPresenterSelector(
-    propDto: PropertyTvDTO,
-    actionHandler: (Action, PropertyTvDTO) -> Unit,
-    itemHandler: (View) -> Unit,
+    propDto: Property,
+    actionHandler: (Action, Property) -> Unit,
+    itemHandler: (View, Int) -> Unit,
     helper: FullWidthDetailsOverviewSharedElementHelper
 ): ClassPresenterSelector =
     ClassPresenterSelector().apply {
@@ -31,3 +32,20 @@ internal fun DetailPropertyFragment.createPresenterSelector(
             createDetailsOverviewRowPresenter(propDto, actionHandler, itemHandler, helper)
         )
     }
+
+fun GuidedStepSupportFragment.createAction(
+    id: Long,
+    title: String,
+    description: String,
+    editable: Boolean = false,
+    inputType: Int
+): GuidedAction {
+    return GuidedAction.Builder(activity)
+        .id(id)
+        .title(title)
+        .description(description)
+        .editable(editable)
+        .editInputType(inputType)
+        .inputType(inputType)
+        .build()
+}

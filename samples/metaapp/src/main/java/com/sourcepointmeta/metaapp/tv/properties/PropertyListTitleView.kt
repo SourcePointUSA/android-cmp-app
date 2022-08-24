@@ -1,6 +1,7 @@
-package com.sourcepointmeta.metaapp.tv
+package com.sourcepointmeta.metaapp.tv.properties
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -10,19 +11,24 @@ import androidx.leanback.widget.TitleViewAdapter
 import com.sourcepointmeta.metaapp.R
 
 
-class CustomTitleView(context: Context?, attrs: AttributeSet?, defStyle: Int) : RelativeLayout(context, attrs, defStyle), TitleViewAdapter.Provider {
+class PropertyListTitleView(context: Context?, attrs: AttributeSet?, defStyle: Int) : RelativeLayout(context, attrs, defStyle), TitleViewAdapter.Provider {
     private var mTitleView: TextView? = null
     private var mAddBtn: Button? = null
     private var mRemoveAllBtn: Button? = null
-    var mTitleViewAdapter: CustomTitleViewAdapter = object : CustomTitleViewAdapter() {
+    var mTitleViewAdapter: PropertyListTitleViewAdapter = object : PropertyListTitleViewAdapter() {
         override fun getSearchAffordanceView(): View? {
             return null
         }
         override fun setTitle(titleText: CharSequence?) {
-            this@CustomTitleView.setTitle(titleText)
+            if (title != null) {
+                mTitleView?.text = title
+                mTitleView?.visibility = View.VISIBLE
+            }
         }
         override fun setBadgeDrawable(drawable: Drawable?) {
-            this@CustomTitleView.setBadgeDrawable(drawable)
+            if (drawable != null) {
+                mTitleView?.visibility = View.GONE
+            }
         }
         override fun updateComponentsVisibility(flags: Int) {}
         override fun setOnSearchClickedListener(listener: OnClickListener?) {
@@ -41,31 +47,18 @@ class CustomTitleView(context: Context?, attrs: AttributeSet?, defStyle: Int) : 
     constructor(context: Context?) : this(context, null) {}
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0) {}
 
-    fun setTitle(title: CharSequence?) {
-        if (title != null) {
-            mTitleView?.text = title
-            mTitleView?.visibility = View.VISIBLE
-        }
-    }
-
-    fun setBadgeDrawable(drawable: Drawable?) {
-        if (drawable != null) {
-            mTitleView?.visibility = View.GONE
-        }
-    }
-
     override fun getTitleViewAdapter(): TitleViewAdapter {
         return mTitleViewAdapter
     }
 
     init {
-        val root: View = LayoutInflater.from(context).inflate(R.layout.tv_custom_titleview, this, true)
+        val root: View = LayoutInflater.from(context).inflate(R.layout.property_list_title, this, true)
         mTitleView = root.findViewById(R.id.titleTextView)
         mAddBtn = root.findViewById(R.id.addBtn)
         mRemoveAllBtn = root.findViewById(R.id.removeAllBtn)
     }
 
-    abstract class CustomTitleViewAdapter(): TitleViewAdapter() {
+    abstract class PropertyListTitleViewAdapter(): TitleViewAdapter() {
         abstract fun setRemoveButtonOnClickListener(listener: OnClickListener?)
         abstract fun setAddButtonOnClickListener(listener: OnClickListener?)
     }

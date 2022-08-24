@@ -868,10 +868,24 @@ SpUtils.clearAllData(context: Context)
 ### 1. How big is the SDK?
 The SDK is pretty slim, there are no assets, a single dependency, it's just pure code. The SDK shouldn't exceed `2 MB`.
 ### 2. What's the lowest Android API supported?
-Although our SDK can be technically added to projects targeting Android API 16, we support Android API >= 21 only.
+Although our SDK can be technically added to projects targeting Android API 16, we support Android API >= 21 only. 
 
 We'll update this list over time, if you have any questions feel free to open an issue or contact your SourcePoint account manager.
+### 3. Are deep links supported?
 
+Sourcepoint does not support deep linking due to an HTML sanitizer used in our message rendering app (used by our in-app SDKs to render messages in a webview). Changing the configuration to our HTML sanitizer would compromise our security and introduce vulnerabilities for cross-site scripting (XSS) attacks.
+
+Your organization can mirror deep linking by creating a button with a **Custom Action** choice option in your first layer message and leveraging the following code in your implementation:
+
+```kotlin
+override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
+    if(consentAction.actionType == ActionType.CUSTOM &&
+        consentAction.customActionId == "id-specified-in-portal") {
+        // navigate user to intended screen
+    }
+    return consentAction
+}
+```
 ---
 
 # Artifact Release Process

@@ -7,7 +7,6 @@
     <TextView
         android:id="@+id/titleTextView"
         android:textAppearance="@android:style/TextAppearance.Large"
-        android:visibility="gone"
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
@@ -16,6 +15,20 @@
         android:focusable="false"
         android:layout_margin="6dp"
         app:layout_constraintEnd_toStartOf="@+id/removeAllBtn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/removeAllBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="center_vertical|end"
+        android:padding="6dp"
+        android:layout_margin="6dp"
+        android:text="@string/remove_all"
+        android:focusable="true"
+        android:clickable="true"
+        app:layout_constraintEnd_toStartOf="@id/addBtn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -32,19 +45,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/removeAllBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="center_vertical|end"
-        android:padding="6dp"
-        android:layout_margin="6dp"
-        android:text="REMOVE ALL"
-        android:focusable="true"
-        android:clickable="true"
-        app:layout_constraintEnd_toStartOf="@id/addBtn"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,4 +18,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="TvAppTheme" parent="@style/Theme.Leanback">
     </style>
+
+    <!-- Theme used for styling image cards in the vertical grid view -->
+    <style name="GridCardTheme" parent="Theme.Leanback">
+        <item name="imageCardViewStyle">@style/GridCardStyle</item>
+    </style>
+
+    <style name="GridCardStyle" parent="Widget.Leanback.BaseCardViewStyle">
+        <item name="cardBackground">@null</item>
+    </style>
+
 </resources>

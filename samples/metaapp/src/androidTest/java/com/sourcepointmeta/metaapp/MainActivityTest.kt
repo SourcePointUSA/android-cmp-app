@@ -28,6 +28,7 @@ import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapPartnersOnWebVie
 import com.sourcepointmeta.metaapp.TestUseCaseMeta.Companion.tapPurposesOnWebView
 import com.sourcepointmeta.metaapp.data.localdatasource.createDb
 import com.sourcepointmeta.metaapp.db.MetaAppDB
+import com.sourcepointmeta.metaapp.ui.MainActivity
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
