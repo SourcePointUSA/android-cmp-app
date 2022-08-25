@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sourcepointmeta.metaapp.tv.demo.DemoLogView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:clickable="true"
+        android:padding="10dp" tools:ignore="MissingDefaultResource">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="600dp"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:id="@+id/log_event"
+                tools:text="OnSpFinish"
+                android:layout_width="match_parent"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:padding="3dp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.sourcepointmeta.metaapp.tv.demo.DemoLogView>

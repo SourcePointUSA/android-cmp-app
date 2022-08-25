@@ -32,6 +32,7 @@
         </activity>
 
         <activity android:name=".ui.demo.DemoActivity"/>
+        <activity android:name=".tv.demo.DemoActivityTv" android:theme="@style/Theme.DemoAppTv"/>
         <activity android:name=".ui.viewer.JsonViewerActivity"/>
 
         <activity android:name=".tv.MainActivityTV"

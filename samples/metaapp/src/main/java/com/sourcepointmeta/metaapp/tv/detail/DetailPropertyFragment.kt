@@ -10,12 +10,12 @@ import androidx.leanback.widget.DetailsOverviewRow
 import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.tv.arrayObjectAdapter
+import com.sourcepointmeta.metaapp.tv.demo.DemoActivityTv
 import com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity.Companion.PROPERTY_NAME_KEY
 import com.sourcepointmeta.metaapp.tv.edit.AddUpdatePropertyViewModelTv
 import com.sourcepointmeta.metaapp.tv.initEntranceTransition
 import com.sourcepointmeta.metaapp.tv.updatePropertyListAndClose
 import com.sourcepointmeta.metaapp.ui.BaseState
-import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailPropertyFragment : DetailsSupportFragment() {
@@ -47,7 +47,7 @@ class DetailPropertyFragment : DetailsSupportFragment() {
     private fun runDemo(property: Property) {
         val bundle = Bundle()
         bundle.putString(PROPERTY_NAME_KEY, property.propertyName)
-        val i = Intent(activity, DemoActivity::class.java)
+        val i = Intent(activity, DemoActivityTv::class.java)
         i.putExtras(bundle)
         startActivity(i)
     }
