@@ -14,16 +14,50 @@
             android:layout_height="wrap_content">
 
         <TextView
-                android:id="@+id/log_event"
+                android:id="@+id/log_title"
                 tools:text="OnSpFinish"
                 android:layout_width="match_parent"
                 android:singleLine="true"
                 android:ellipsize="marquee"
+                android:textAppearance="@style/TextAppearance.Leanback.SearchTextEdit"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:padding="3dp"/>
 
+        <TextView
+                tools:text="Log"
+                android:id="@+id/log_body"
+                app:layout_constraintTop_toBottomOf="@id/log_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:textAppearance="@style/TextAppearance.Leanback.LogsDescription"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:maxLines="5"
+                android:ellipsize="marquee"
+        />
+
+        <TextView
+                tools:text="Log"
+                android:id="@+id/log_body_1"
+                app:layout_constraintTop_toBottomOf="@id/log_body"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Leanback.LogsDescription"
+                android:layout_width="match_parent"
+                android:textColor="?android:attr/textColorAlertDialogListItem"
+                android:paddingBottom="8dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:maxLines="5"
+                android:ellipsize="marquee"
+        />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

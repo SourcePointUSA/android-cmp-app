@@ -11,7 +11,7 @@
         tools:ignore="MissingDefaultResource">
 
     <Button
-            android:id="@+id/ccpa_pm"
+            android:id="@+id/gdpr_pm"
             android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
     />
 
     <Button
-            android:id="@+id/gdpr_pm"
+            android:id="@+id/ccpa_pm"
             android:clickable="false"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"

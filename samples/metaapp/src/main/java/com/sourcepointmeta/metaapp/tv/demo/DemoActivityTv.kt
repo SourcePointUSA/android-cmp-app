@@ -82,6 +82,10 @@ class DemoActivityTv : FragmentActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+    }
+
     override fun onResume() {
         super.onResume()
         spConsentLib.loadMessage()

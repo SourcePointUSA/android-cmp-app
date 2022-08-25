@@ -9,12 +9,21 @@ import androidx.leanback.widget.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepointmeta.metaapp.core.getOrNull
+import com.sourcepointmeta.metaapp.tv.bounceEventAndSelectFirstElement
 import com.sourcepointmeta.metaapp.tv.initEntranceTransition
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogViewModel
 import com.sourcepointmeta.metaapp.ui.eventlogs.composeEmail
 import com.sourcepointmeta.metaapp.ui.eventlogs.createFileWithContent
 import kotlinx.android.synthetic.main.demo_header.* //ktlint-disable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedListener {
@@ -29,6 +38,8 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
             }
         }
     }
+
+    val channel = BroadcastChannel<Int>(1)
 
     var pmListener: ((CampaignType) -> Unit)? = null
 
@@ -63,13 +74,17 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
         gdpr_pm.setOnClickListener { pmListener?.invoke(CampaignType.GDPR) }
         ccpa_pm.setOnClickListener { pmListener?.invoke(CampaignType.CCPA) }
         viewModel.liveDataLog.observe(viewLifecycleOwner) {
-            if (it.type != "INFO") {
+            if (it.type != "INFO"){
                 presenterAdapter.add(0, it)
-                gridPresenter.setOnItemViewSelectedListener { itemViewHolder, item, rowViewHolder, row ->
-                }
+                bounceEventAndSelectFirstElement()
             }
         }
         viewModel.liveData.observe(viewLifecycleOwner, ::stateHandler)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenterAdapter.clear()
     }
 
     override fun onItemClicked(
