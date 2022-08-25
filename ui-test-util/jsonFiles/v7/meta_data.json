@@ -1,0 +1,13 @@
+{
+  "ccpa": {
+    "applies": true
+  },
+  "gdpr": {
+    "additionsChangeDate": "2022-05-11T21:05:16.262Z",
+    "getMessageAlways": false,
+    "legalBasisChangeDate": "2022-05-11T21:05:25.600Z",
+    "version": 27,
+    "_id": "5fa9a8fda228635eaf24ceb5",
+    "applies": true
+  }
+}
