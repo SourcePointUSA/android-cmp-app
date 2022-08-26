@@ -16,8 +16,16 @@ import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.* // ktlint-disable
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
+import com.sourcepointmeta.metaapp.tv.demo.DemoEventFragmentTv
 import com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity
 import com.sourcepointmeta.metaapp.tv.edit.PropertyField
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 fun FullWidthDetailsOverviewRowPresenter.setBackgroundColor(
     ctx: Context,
@@ -115,4 +123,18 @@ fun Context.updatePropertyList() {
 fun Activity.updatePropertyListAndClose() {
     updatePropertyList()
     finish()
+}
+
+fun DemoEventFragmentTv.bounceEventAndSelectFirstElement() {
+    MainScope().launch {
+        withContext(Dispatchers.Default) {
+            channel.send(0)
+        }
+        channel
+            .asFlow()
+            .debounce(300)
+            .collect {
+                setSelectedPosition(0)
+            }
+    }
 }

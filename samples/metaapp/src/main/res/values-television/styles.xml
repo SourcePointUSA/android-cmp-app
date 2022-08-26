@@ -28,4 +28,10 @@
         <item name="cardBackground">@null</item>
     </style>
 
+    <style name="TextAppearance.Leanback.LogsDescription">
+        <item name="android:textSize">@dimen/lb_guidedactions_item_description_font_size</item>
+        <item name="android:textColor">@color/lb_details_description_body_color</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
 </resources>
