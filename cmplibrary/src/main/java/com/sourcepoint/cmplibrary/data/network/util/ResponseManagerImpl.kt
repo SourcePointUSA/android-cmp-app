@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
@@ -123,6 +124,26 @@ private class ResponseManagerImpl(
         )
         return if (r.isSuccessful) {
             when (val either: Either<CustomConsentResp> = jsonConverter.toCustomConsentResp(body)) {
+                is Either.Right -> either.r
+                is Either.Left -> throw either.t
+            }
+        } else {
+            throw InvalidRequestException(description = body)
+        }
+    }
+
+    override fun parseMetaDataRes(r: Response): MetaDataResp {
+        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code()
+        val mess = r.message()
+//        logger.res(
+//            tag = "MetaDataResp",
+//            msg = mess,
+//            body = body,
+//            status = status.toString()
+//        )
+        return if (r.isSuccessful) {
+            when (val either: Either<MetaDataResp> = jsonConverter.toMetaDataRespResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }

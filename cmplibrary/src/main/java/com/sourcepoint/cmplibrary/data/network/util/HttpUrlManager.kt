@@ -162,6 +162,12 @@ enum class Env(
         "ccpa-inapp-pm.sp-prod.net",
         "prod"
     ),
+    LOCAL_PROD(
+        "preprod-cdn.privacy-mgmt.com",
+        "preprod-cdn.privacy-mgmt.com",
+        "ccpa-inapp-pm.sp-prod.net",
+        "localProd"
+    ),
     PROD(
         "cdn.privacy-mgmt.com",
         "cdn.privacy-mgmt.com",
