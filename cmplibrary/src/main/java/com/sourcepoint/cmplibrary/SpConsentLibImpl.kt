@@ -405,11 +405,11 @@ internal class SpConsentLibImpl(
             check { JSONObject(msg).toString() }
                 .getOrNull()
                 ?.let {
-                    pLogger.clientEvent(
-                        event = "log",
-                        msg = "RenderingApp",
-                        content = it
-                    )
+//                    pLogger.clientEvent(
+//                        event = "log",
+//                        msg = "RenderingApp",
+//                        content = it
+//                    )
                 }
         }
 
@@ -417,11 +417,11 @@ internal class SpConsentLibImpl(
             check { JSONObject(msg).toString() }
                 .getOrNull()
                 ?.let {
-                    pLogger.clientEvent(
-                        event = "log",
-                        msg = "RenderingApp",
-                        content = it
-                    )
+//                    pLogger.clientEvent(
+//                        event = "log",
+//                        msg = "RenderingApp",
+//                        content = it
+//                    )
                 }
         }
 
@@ -527,7 +527,7 @@ internal class SpConsentLibImpl(
     internal fun onActionFromWebViewClient(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView?) {
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
         pLogger.webAppAction(
-            tag = "onActionFromWebViewClient",
+            tag = "Action from the RenderingApp",
             msg = actionImpl.actionType.name,
             json = actionImpl.thisContent
         )

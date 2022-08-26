@@ -16,21 +16,14 @@ import com.sourcepointmeta.metaapp.ui.eventlogs.LogViewModel
 import com.sourcepointmeta.metaapp.ui.eventlogs.composeEmail
 import com.sourcepointmeta.metaapp.ui.eventlogs.createFileWithContent
 import kotlinx.android.synthetic.main.demo_header.* //ktlint-disable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedListener {
 
     companion object {
         const val COLUMNS = 1
-        const val ZOOM_FACTOR = FocusHighlight.ZOOM_FACTOR_MEDIUM
+        const val ZOOM_FACTOR = FocusHighlight.ZOOM_FACTOR_SMALL
         const val PROPERTY_NAME = "property_name"
         fun instance(propertyName: String) = DemoEventFragmentTv().apply {
             arguments = Bundle().apply {
@@ -72,9 +65,8 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         gdpr_pm.setOnClickListener { pmListener?.invoke(CampaignType.GDPR) }
-        ccpa_pm.setOnClickListener { pmListener?.invoke(CampaignType.CCPA) }
         viewModel.liveDataLog.observe(viewLifecycleOwner) {
-            if (it.type != "INFO"){
+            if (it.type != "INFO") {
                 presenterAdapter.add(0, it)
                 bounceEventAndSelectFirstElement()
             }

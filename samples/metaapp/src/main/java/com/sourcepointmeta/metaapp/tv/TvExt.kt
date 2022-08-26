@@ -125,9 +125,9 @@ fun Activity.updatePropertyListAndClose() {
     finish()
 }
 
-fun DemoEventFragmentTv.bounceEventAndSelectFirstElement(){
+fun DemoEventFragmentTv.bounceEventAndSelectFirstElement() {
     MainScope().launch {
-        withContext(Dispatchers.Default){
+        withContext(Dispatchers.Default) {
             channel.send(0)
         }
         channel
@@ -136,6 +136,5 @@ fun DemoEventFragmentTv.bounceEventAndSelectFirstElement(){
             .collect {
                 setSelectedPosition(0)
             }
-
     }
 }

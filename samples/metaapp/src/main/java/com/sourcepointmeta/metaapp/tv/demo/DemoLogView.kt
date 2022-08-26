@@ -9,9 +9,6 @@ import androidx.leanback.widget.BaseCardView
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.ui.component.LogItem
-import com.sourcepointmeta.metaapp.ui.eventlogs.*
-import kotlinx.android.synthetic.main.item_log.view.*
-import kotlinx.android.synthetic.main.log_item.view.*
 import kotlinx.android.synthetic.main.log_item.view.log_body
 import kotlinx.android.synthetic.main.log_item.view.log_body_1
 import kotlinx.android.synthetic.main.log_item.view.log_title

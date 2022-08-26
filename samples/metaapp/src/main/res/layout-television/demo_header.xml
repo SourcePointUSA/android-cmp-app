@@ -15,8 +15,6 @@
             android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:nextFocusRight="@id/ccpa_pm"
-            android:nextFocusLeft="@id/ccpa_pm"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -25,24 +23,6 @@
             android:background="@null"
             style="@style/Widget.Leanback.DetailsDescriptionTitleStyle"
             android:text="GDPR PM"
-    />
-
-    <Button
-            android:id="@+id/ccpa_pm"
-            android:clickable="false"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/ccpa_pm"
-            android:background="@null"
-            android:layout_marginEnd="50dp"
-            android:nextFocusLeft="@id/gdpr_pm"
-            android:nextFocusRight="@id/gdpr_pm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:stateListAnimator="@xml/animate_scale_text_button"
-            style="@style/Widget.Leanback.DetailsDescriptionTitleStyle"
-            android:text="CCPA PM"
     />
 
 </com.sourcepointmeta.metaapp.tv.demo.DemoTitleView>
