@@ -29,6 +29,11 @@ enum class PropertyField(
         "Click on the timeout to edit",
         InputType.TYPE_CLASS_NUMBER
     ),
+    GDPR_PM_ID(
+        "Edit the GDPR PmId field",
+        "Click on the PmId to edit",
+        InputType.TYPE_CLASS_NUMBER
+    ),
 }
 
 fun Property.getFieldById(type: PropertyField): String {
@@ -37,5 +42,6 @@ fun Property.getFieldById(type: PropertyField): String {
         MESSAGE_LANGUAGE -> this.messageLanguage ?: "ENGLISH"
         ACCOUNT_ID -> this.accountId.toString()
         TIMEOUT -> this.timeout.toString()
+        GDPR_PM_ID -> this.gdprPmId.toString()
     }
 }

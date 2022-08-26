@@ -112,6 +112,7 @@ fun Property.updateDTO(fieldType: PropertyField, newField: String?): Property {
         PropertyField.MESSAGE_LANGUAGE -> this.copy(messageLanguage = newField)
         PropertyField.ACCOUNT_ID -> this.copy(accountId = newField.toLongOrNull() ?: 1)
         PropertyField.TIMEOUT -> this.copy(timeout = newField.toLongOrNull() ?: 3000L)
+        PropertyField.GDPR_PM_ID -> this.copy(gdprPmId = newField.toLongOrNull() ?: 3000L)
     }
 }
 
