@@ -136,12 +136,12 @@ private class ResponseManagerImpl(
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         val status = r.code()
         val mess = r.message()
-//        logger.res(
-//            tag = "MetaDataResp",
-//            msg = mess,
-//            body = body,
-//            status = status.toString()
-//        )
+        logger.res(
+            tag = "MetaDataResp",
+            msg = mess,
+            body = body,
+            status = status.toString()
+        )
         return if (r.isSuccessful) {
             when (val either: Either<MetaDataResp> = jsonConverter.toMetaDataRespResp(body)) {
                 is Either.Right -> either.r
