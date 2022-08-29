@@ -7,45 +7,20 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.leanback.widget.TitleViewAdapter
 import com.sourcepointmeta.metaapp.R
+import kotlinx.android.synthetic.main.property_list_title.view.*
 
 
-class PropertyListTitleView(context: Context?, attrs: AttributeSet?, defStyle: Int) : RelativeLayout(context, attrs, defStyle), TitleViewAdapter.Provider {
-    private var mTitleView: TextView? = null
-    private var mAddBtn: Button? = null
-    private var mRemoveAllBtn: Button? = null
-    var mTitleViewAdapter: PropertyListTitleViewAdapter = object : PropertyListTitleViewAdapter() {
-        override fun getSearchAffordanceView(): View? {
-            return null
-        }
-        override fun setTitle(titleText: CharSequence?) {
-            if (title != null) {
-                mTitleView?.text = title
-                mTitleView?.visibility = View.VISIBLE
-            }
-        }
-        override fun setBadgeDrawable(drawable: Drawable?) {
-            if (drawable != null) {
-                mTitleView?.visibility = View.GONE
-            }
-        }
-        override fun updateComponentsVisibility(flags: Int) {}
-        override fun setOnSearchClickedListener(listener: OnClickListener?) {
-            super.setOnSearchClickedListener(listener)
-        }
-
-        override fun setRemoveButtonOnClickListener(listener: OnClickListener?){
-            mRemoveAllBtn?.setOnClickListener(listener)
-        }
-        override fun setAddButtonOnClickListener(listener: OnClickListener?){
-            mAddBtn?.setOnClickListener(listener)
-        }
-
+class PropertyListTitleView(context: Context, attrs: AttributeSet?, defStyle: Int) : ConstraintLayout(context, attrs, defStyle), TitleViewAdapter.Provider {
+    var mTitleViewAdapter: TitleViewAdapter = object : TitleViewAdapter() {
+        // Nothing to return, there is no SearchBar
+        override fun getSearchAffordanceView(): View = View(context)
     }
 
-    constructor(context: Context?) : this(context, null) {}
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0) {}
+    constructor(context: Context) : this(context, null) {}
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0) {}
 
     override fun getTitleViewAdapter(): TitleViewAdapter {
         return mTitleViewAdapter
@@ -53,13 +28,15 @@ class PropertyListTitleView(context: Context?, attrs: AttributeSet?, defStyle: I
 
     init {
         val root: View = LayoutInflater.from(context).inflate(R.layout.property_list_title, this, true)
-        mTitleView = root.findViewById(R.id.titleTextView)
-        mAddBtn = root.findViewById(R.id.addBtn)
-        mRemoveAllBtn = root.findViewById(R.id.removeAllBtn)
-    }
 
-    abstract class PropertyListTitleViewAdapter(): TitleViewAdapter() {
-        abstract fun setRemoveButtonOnClickListener(listener: OnClickListener?)
-        abstract fun setAddButtonOnClickListener(listener: OnClickListener?)
+        val mRemoveAllBtn: Button? = root.findViewById(R.id.removeAllBtn)
+        mRemoveAllBtn?.setOnClickListener(){
+            Toast.makeText(context, "Remove All button clicked", Toast.LENGTH_SHORT).show()
+        }
+
+        val mAddBtn: Button? = root.findViewById(R.id.addBtn)
+        mAddBtn?.setOnClickListener(){
+            Toast.makeText(context, "Add button clicked", Toast.LENGTH_SHORT).show()
+        }
     }
 }

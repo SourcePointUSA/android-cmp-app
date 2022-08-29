@@ -19,12 +19,24 @@ class DetailPropertyView : ConstraintLayout {
 }
 
 fun DetailPropertyView.bind(holder: Property, clickListener: (view: View, Int) -> Unit) {
-    property.text = holder.propertyName
-    property.setOnClickListener { v -> clickListener(v, PROPERTY_NAME.ordinal) }
-    account_id.text = holder.accountId.toString()
-    account_id.setOnClickListener { v -> clickListener(v, ACCOUNT_ID.ordinal) }
-    mess_language.text = holder.messageLanguage.toString()
-    mess_language.setOnClickListener { v -> clickListener(v, MESSAGE_LANGUAGE.ordinal) }
-    timeout.text = holder.timeout.toString()
-    timeout.setOnClickListener { v -> clickListener(v, TIMEOUT.ordinal) }
+    property.run {
+        text = holder.propertyName
+        setOnClickListener { v -> clickListener(v, PROPERTY_NAME.ordinal) }
+    }
+    account_id.run {
+        text = holder.accountId.toString()
+        setOnClickListener { v -> clickListener(v, ACCOUNT_ID.ordinal) }
+    }
+    mess_language.run {
+        text = holder.messageLanguage.toString()
+        setOnClickListener { v -> clickListener(v, MESSAGE_LANGUAGE.ordinal) }
+    }
+    timeout.run {
+        text = holder.timeout.toString()
+        setOnClickListener { v -> clickListener(v, TIMEOUT.ordinal) }
+    }
+    pm_id_gdpr.run {
+        text = holder.gdprPmId.toString()
+        setOnClickListener { v -> clickListener(v, GDPR_PM_ID.ordinal) }
+    }
 }

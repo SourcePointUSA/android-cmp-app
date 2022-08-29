@@ -16,8 +16,16 @@ import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.* // ktlint-disable
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
+import com.sourcepointmeta.metaapp.tv.demo.DemoEventFragmentTv
 import com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity
 import com.sourcepointmeta.metaapp.tv.edit.PropertyField
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 fun FullWidthDetailsOverviewRowPresenter.setBackgroundColor(
     ctx: Context,
@@ -71,6 +79,7 @@ fun DetailsOverviewRow.arrayObjectAdapter(vararg pairs: Pair<Long, String>): Det
 fun DetailsSupportFragment.initEntranceTransition() {
     Handler(Looper.getMainLooper()).postDelayed({ startEntranceTransition() }, 500)
 }
+
 fun VerticalGridSupportFragment.initEntranceTransition() {
     Handler(Looper.getMainLooper()).postDelayed({ startEntranceTransition() }, 500)
 }
@@ -103,5 +112,30 @@ fun Property.updateDTO(fieldType: PropertyField, newField: String?): Property {
         PropertyField.MESSAGE_LANGUAGE -> this.copy(messageLanguage = newField)
         PropertyField.ACCOUNT_ID -> this.copy(accountId = newField.toLongOrNull() ?: 1)
         PropertyField.TIMEOUT -> this.copy(timeout = newField.toLongOrNull() ?: 3000L)
+        PropertyField.GDPR_PM_ID -> this.copy(gdprPmId = newField.toLongOrNull() ?: 3000L)
+    }
+}
+
+fun Context.updatePropertyList() {
+    val i = Intent().apply { action = MainActivityTV.REFRESH_ACTION }
+    sendBroadcast(i)
+}
+
+fun Activity.updatePropertyListAndClose() {
+    updatePropertyList()
+    finish()
+}
+
+fun DemoEventFragmentTv.bounceEventAndSelectFirstElement() {
+    MainScope().launch {
+        withContext(Dispatchers.Default) {
+            channel.send(0)
+        }
+        channel
+            .asFlow()
+            .debounce(300)
+            .collect {
+                setSelectedPosition(0)
+            }
     }
 }
