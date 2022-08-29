@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.property_list_title.view.*
 
 
 class PropertyListTitleView(context: Context, attrs: AttributeSet?, defStyle: Int) : ConstraintLayout(context, attrs, defStyle), TitleViewAdapter.Provider {
-    var mTitleViewAdapter: TitleViewAdapter = object : TitleViewAdapter() {
+    private var mTitleViewAdapter: TitleViewAdapter = object : TitleViewAdapter() {
         // Nothing to return, there is no SearchBar
         override fun getSearchAffordanceView(): View = View(context)
     }
