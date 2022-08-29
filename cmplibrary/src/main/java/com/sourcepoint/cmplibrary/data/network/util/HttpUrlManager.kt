@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.example.cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
@@ -16,6 +17,9 @@ internal interface HttpUrlManager {
     fun sendCustomConsentUrl(env: Env): HttpUrl
     fun deleteCustomConsentToUrl(host: String, params: CustomConsentReq): HttpUrl
     fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig, isOtt: Boolean): HttpUrl
+
+    // V7
+    fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
 }
 
 /**
@@ -124,6 +128,20 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("env", env.queryParam)
             .build()
     }
+
+    override fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl {
+        // http://localhost:3000/wrapper/v2/meta-data?env=localProd&accountId=22&propertyId=17801&metadata={"gdpr": {}, "ccpa": {}}
+
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(param.env.host)
+            .addPathSegments("wrapper/v2/meta-data")
+            .addQueryParameter("env", param.env.queryParam)
+            .addQueryParameter("accountId", param.accountId.toString())
+            .addQueryParameter("propertyId", param.propertyId.toString())
+            .addEncodedQueryParameter("metadata", param.metadata)
+            .build()
+    }
 }
 
 enum class Env(
@@ -143,6 +161,12 @@ enum class Env(
         "preprod-cdn.privacy-mgmt.com",
         "ccpa-inapp-pm.sp-prod.net",
         "prod"
+    ),
+    LOCAL_PROD(
+        "preprod-cdn.privacy-mgmt.com",
+        "preprod-cdn.privacy-mgmt.com",
+        "ccpa-inapp-pm.sp-prod.net",
+        "localProd"
     ),
     PROD(
         "cdn.privacy-mgmt.com",

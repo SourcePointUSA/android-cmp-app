@@ -1,8 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
-import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.assertNotNull
-import com.sourcepoint.cmplibrary.assertNull
+import com.sourcepoint.cmplibrary.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.model.NativeMessageResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
@@ -130,5 +128,26 @@ class JsonConverterImplTest {
         val testMap = JSONObject(json).toTreeMap()
         val nm = (sut.toNativeMessageDto(json) as Either.Right).r
         nm.thisContent.assertEquals(testMap)
+    }
+
+    @Test
+    fun `GIVEN a metadata body resp  RETURN a Right(MetaDataResp)`() {
+        val json = "v7/meta_data.json".file2String()
+        val testMap = JSONObject(json).toTreeMap()
+        val nm = (sut.toMetaDataRespResp(json) as Either.Right).r
+        nm.thisContent.toTreeMap().assertEquals(testMap)
+        nm.run {
+            gdpr.also {
+                it!!.additionsChangeDate.assertEquals("2022-05-11T21:05:16.262Z")
+                it.getMessageAlways.assertFalse()
+                it.legalBasisChangeDate.assertEquals("2022-05-11T21:05:25.600Z")
+                it.version.assertEquals(27)
+                it._id.assertEquals("5fa9a8fda228635eaf24ceb5")
+                it.applies.assertTrue()
+            }
+            ccpa.also {
+                it!!.applies.assertTrue()
+            }
+        }
     }
 }

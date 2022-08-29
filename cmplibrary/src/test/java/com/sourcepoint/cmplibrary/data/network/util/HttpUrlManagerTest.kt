@@ -4,10 +4,12 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.assertTrue
+import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import org.json.JSONObject
 import org.junit.Test
 
 class HttpUrlManagerTest {
@@ -156,5 +158,17 @@ class HttpUrlManagerTest {
         )
         val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, isOtt = false).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_pm/index.html?site_id&ccpaUUID=uuid&message_id=111")
+    }
+
+    @Test
+    fun `GIVEN a PROD env getMetaData RETURN the prod link`() {
+        val param = MetaDataParamReq(
+            accountId = 22,
+            env = Env.PROD,
+            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
+            propertyId = 17801
+        )
+        val sut = HttpUrlManagerSingleton.getMetaDataUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/meta-data?env=prod&accountId=22&propertyId=17801&metadata={%22gdpr%22:{},%22ccpa%22:{}}")
     }
 }
