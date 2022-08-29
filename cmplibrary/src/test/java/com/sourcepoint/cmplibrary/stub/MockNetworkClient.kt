@@ -2,6 +2,8 @@ package com.sourcepoint.cmplibrary.stub
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
+import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
+import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import org.json.JSONObject
@@ -23,6 +25,10 @@ internal class MockNetworkClient(
     }
 
     override fun deleteCustomConsentTo(customConsentReq: CustomConsentReq, env: Env): Either<CustomConsentResp> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> {
         TODO("Not yet implemented")
     }
 }
