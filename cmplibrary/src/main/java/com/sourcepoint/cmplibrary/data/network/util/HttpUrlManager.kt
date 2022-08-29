@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
+import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
@@ -25,6 +26,7 @@ internal interface HttpUrlManager {
     fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
     fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
     fun getPvData(env: Env): HttpUrl
+    fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
 }
 
 /**
