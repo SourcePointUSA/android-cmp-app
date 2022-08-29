@@ -6,6 +6,8 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
+import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
+import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
@@ -155,5 +157,25 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseCustomConsentRes(response)
+    }
+
+    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> = check {
+        val url = urlManager.getMetaDataUrl(param)
+
+        logger.req(
+            tag = "getMetaData",
+            url = url.toString(),
+            body = "",
+            type = "GET"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseMetaDataRes(response)
     }
 }
