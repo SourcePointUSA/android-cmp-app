@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.example.cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
@@ -20,6 +21,7 @@ internal interface HttpUrlManager {
 
     // V7
     fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
+    fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
 }
 
 /**
@@ -139,6 +141,27 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("env", param.env.queryParam)
             .addQueryParameter("accountId", param.accountId.toString())
             .addQueryParameter("propertyId", param.propertyId.toString())
+            .addEncodedQueryParameter("metadata", param.metadata)
+            .build()
+    }
+
+    override fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl {
+        // http://localhost:3000/wrapper/v2/consent-status?env=localProd
+        // &metadata={"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}
+        // &hasCsp=true
+        // &withSiteActions=true
+        // &propertyId=17801
+
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(param.env.host)
+            .addPathSegments("wrapper/v2/consent-status")
+            .addQueryParameter("env", param.env.queryParam)
+            .addQueryParameter("accountId", param.accountId.toString())
+            .addQueryParameter("propertyId", param.propertyId.toString())
+            .addQueryParameter("hasCsp", param.hasCsp.toString())
+            .addQueryParameter("withSiteActions", param.withSiteActions.toString())
+            .apply { param.authId?.let { p -> addQueryParameter("authId", p) } }
             .addEncodedQueryParameter("metadata", param.metadata)
             .build()
     }
