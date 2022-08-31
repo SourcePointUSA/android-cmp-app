@@ -2,6 +2,8 @@ package com.sourcepoint.cmplibrary.stub
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
+import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
+import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
@@ -29,6 +31,10 @@ internal class MockNetworkClient(
     }
 
     override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> {
         TODO("Not yet implemented")
     }
 }

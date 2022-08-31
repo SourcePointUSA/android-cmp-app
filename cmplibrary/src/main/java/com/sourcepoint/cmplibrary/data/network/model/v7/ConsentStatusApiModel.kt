@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.model.v7
 
 import com.sourcepoint.cmplibrary.data.network.util.Env
+import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import org.json.JSONObject
 
@@ -28,7 +29,6 @@ internal data class ConsentStatusData(
 
 internal data class GdprCS(
     val thisContent: JSONObject,
-    val customVendorsResponse: CustomVendorsResponse,
     var grants: Map<String, GDPRPurposeGrants> = emptyMap(),
     val euconsent: String,
     val addtlConsent: String,
@@ -50,7 +50,18 @@ internal data class CustomVendorsResponse(
 
 internal data class CcpaCS(
     val thisContent: JSONObject,
-    val dateCreated: String
+    val dateCreated: String?,
+    val newUser: Boolean,
+    val consentedAll: Boolean,
+    val rejectedCategories: List<String> = listOf(),
+    val rejectedVendors: List<String> = listOf(),
+    val rejectedAll: Boolean,
+    val status: CcpaStatus? = null,
+    val signedLspa: Boolean,
+    val uspstring: String,
+    val gpcEnabled: Boolean,
+    val uuid: String?,
+    val ccpaApplies: Boolean
 )
 
 internal data class Vendor(
@@ -61,13 +72,19 @@ internal data class Vendor(
 
 internal data class GranularStatus(
     val thisContent: JSONObject,
-    val vendorConsent: String,
-    val vendorLegInt: String,
-    val purposeConsent: String,
-    val purposeLegInt: String,
+    val vendorConsent: GranularState,
+    val vendorLegInt: GranularState,
+    val purposeConsent: GranularState,
+    val purposeLegInt: GranularState,
     val previousOptInAll: Boolean,
     val defaultConsent: Boolean
 )
+
+enum class GranularState {
+    ALL,
+    SOME,
+    NONE
+}
 
 internal data class ConsentStatusCS(
     val thisContent: JSONObject,
