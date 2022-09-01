@@ -372,3 +372,33 @@ internal class ExecutionInTheWrongThreadException @JvmOverloads constructor(
 ) {
     override val code: ExceptionCodes = ExceptionCodes("OUT_OF_MAIN_THREAD")
 }
+
+/**
+ * This exception is thrown when the consent params are missing
+ */
+internal class InvalidConsentResponse @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = CodeList.INVALID_CONSENT_STATUS_RESPONSE
+}
+
+/**
+ * This exception is thrown when a consent response is invalid
+ */
+internal class InvalidConsentReqParam @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = CodeList.INVALID_CONSENT_STATUS_REQUEST_PARAM
+}

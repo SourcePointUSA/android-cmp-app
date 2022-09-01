@@ -1,6 +1,8 @@
 package com.sourcepoint.cmplibrary.data.network.model.v7
 
+import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
+import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
@@ -11,7 +13,8 @@ import java.util.* // ktlint-disable
 internal fun Map<String, Any?>.toConsentStatusResp(): ConsentStatusResp {
 
     val localState = getMap("localState")?.toJSONObj()
-    val consentStatusData = getMap("consentStatusData")?.toConsentStatusData() ?: throw RuntimeException("ConsentStatusData is missing!!!")
+    val consentStatusData =
+        getMap("consentStatusData")?.toConsentStatusData() ?: throw RuntimeException("ConsentStatusData is missing!!!")
 
     return ConsentStatusResp(
         localState = localState ?: JSONObject(),
@@ -22,7 +25,8 @@ internal fun Map<String, Any?>.toConsentStatusResp(): ConsentStatusResp {
 
 internal fun Map<String, Any?>.toConsentStatusData(): ConsentStatusData {
     val gdprCS = getMap("gdpr")?.toGdprCS()
-    return ConsentStatusData(JSONObject(this), gdprCS, null)
+    val ccpaCS = getMap("ccpa")?.toCcpaCS()
+    return ConsentStatusData(JSONObject(this), gdprCS, ccpaCS)
 }
 
 internal fun Map<String, Any?>.toConsentStatus(): ConsentStatusCS {
@@ -38,13 +42,46 @@ internal fun Map<String, Any?>.toConsentStatus(): ConsentStatusCS {
 }
 
 internal fun Map<String, Any?>.toGranularStatus(): GranularStatus {
+
+    val purposeConsent: GranularState = getFieldValue<String>("purposeConsent")
+        ?.let { s ->
+            GranularState.values().find {
+                it.name == s
+            }
+        }
+        ?: fail("GranularState purposeConsent cannot be null!!!")
+
+    val purposeLegInt: GranularState = getFieldValue<String>("purposeLegInt")
+        ?.let { s ->
+            GranularState.values().find {
+                it.name == s
+            }
+        }
+        ?: fail("GranularState purposeLegInt cannot be null!!!")
+
+    val vendorConsent: GranularState = getFieldValue<String>("vendorConsent")
+        ?.let { s ->
+            GranularState.values().find {
+                it.name == s
+            }
+        }
+        ?: fail("GranularState vendorConsent cannot be null!!!")
+
+    val vendorLegInt: GranularState = getFieldValue<String>("vendorLegInt")
+        ?.let { s ->
+            GranularState.values().find {
+                it.name == s
+            }
+        }
+        ?: fail("GranularState vendorLegInt cannot be null!!!")
+
     return GranularStatus(
         defaultConsent = getFieldValue<Boolean>("defaultConsent") ?: failParam("defaultConsent"),
         previousOptInAll = getFieldValue<Boolean>("previousOptInAll") ?: failParam("previousOptInAll"),
-        purposeConsent = getFieldValue<String>("purposeConsent") ?: failParam("purposeConsent"),
-        purposeLegInt = getFieldValue<String>("purposeLegInt") ?: failParam("purposeLegInt"),
-        vendorConsent = getFieldValue<String>("vendorConsent") ?: failParam("vendorConsent"),
-        vendorLegInt = getFieldValue<String>("vendorLegInt") ?: failParam("vendorLegInt"),
+        purposeConsent = purposeConsent,
+        purposeLegInt = purposeLegInt,
+        vendorConsent = vendorConsent,
+        vendorLegInt = vendorLegInt,
         thisContent = JSONObject(this)
     )
 }
@@ -69,9 +106,53 @@ internal fun Map<String, Any?>.toCustomVendorsResponse(): CustomVendorsResponse 
     )
 }
 
-internal fun Map<String, Any?>.toGdprCS(): GdprCS {
+internal fun Map<String, Any?>.toCcpaCS(): CcpaCS {
 
-    val customVendorsResponse = getMap("customVendorsResponse")?.toCustomVendorsResponse() ?: failParam("customVendorsResponse")
+    val uuid = getFieldValue<String>("uuid")
+    val dateCreated = getFieldValue<String>("dateCreated")
+    val uspstring = getFieldValue<String>("uspstring") ?: failParam("uspstring")
+
+    val applies = getFieldValue<Boolean>("ccpaApplies") ?: false
+    val consentedAll = getFieldValue<Boolean>("consentedAll") ?: false
+    val gpcEnabled = getFieldValue<Boolean>("gpcEnabled") ?: false
+    val newUser = getFieldValue<Boolean>("newUser") ?: false
+    val rejectedAll = getFieldValue<Boolean>("rejectedAll") ?: false
+    val signedLspa = getFieldValue<Boolean>("signedLspa") ?: false
+
+    val rejectedCategories = getFieldValue<Iterable<Any?>>("rejectedCategories")
+        ?.filterIsInstance(String::class.java)
+        ?: failParam("Ccpa  rejectedCategories")
+
+    val rejectedVendors = getFieldValue<Iterable<Any?>>("rejectedVendors")
+        ?.filterIsInstance(String::class.java)
+        ?: failParam("Ccpa  rejectedVendors")
+
+    val status: CcpaStatus = getFieldValue<String>("status")
+        ?.let { s ->
+            CcpaStatus.values().find {
+                it.name == s
+            }
+        }
+        ?: fail("CCPAStatus cannot be null!!!")
+
+    return CcpaCS(
+        thisContent = JSONObject(this),
+        ccpaApplies = applies,
+        consentedAll = consentedAll,
+        uuid = uuid,
+        dateCreated = dateCreated,
+        gpcEnabled = gpcEnabled,
+        newUser = newUser,
+        rejectedAll = rejectedAll,
+        rejectedCategories = rejectedCategories,
+        rejectedVendors = rejectedVendors,
+        signedLspa = signedLspa,
+        uspstring = uspstring,
+        status = status
+    )
+}
+
+internal fun Map<String, Any?>.toGdprCS(): GdprCS {
 
     val vendorsGranted: Map<String, GDPRPurposeGrants> = getMap("grants")
         ?.map {
@@ -99,7 +180,6 @@ internal fun Map<String, Any?>.toGdprCS(): GdprCS {
 
     return GdprCS(
         thisContent = JSONObject(this),
-        customVendorsResponse = customVendorsResponse,
         euconsent = euConsent,
         grants = vendorsGranted,
         addtlConsent = addtlConsent,

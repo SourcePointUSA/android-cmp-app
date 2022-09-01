@@ -159,8 +159,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("env", param.env.queryParam)
             .addQueryParameter("accountId", param.accountId.toString())
             .addQueryParameter("propertyId", param.propertyId.toString())
-            .addQueryParameter("hasCsp", param.hasCsp.toString())
-            .addQueryParameter("withSiteActions", param.withSiteActions.toString())
+            .addQueryParameter("hasCsp", true.toString())
+            .addQueryParameter("withSiteActions", false.toString())
             .apply { param.authId?.let { p -> addQueryParameter("authId", p) } }
             .addEncodedQueryParameter("metadata", param.metadata)
             .build()

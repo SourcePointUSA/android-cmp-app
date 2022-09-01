@@ -15,8 +15,6 @@ internal data class ConsentStatusParamReq(
     val env: Env,
     val metadata: String,
     val propertyId: Int,
-    val hasCsp: Boolean,
-    val withSiteActions: Boolean,
     val accountId: Int,
     val authId: String? = null
 )
