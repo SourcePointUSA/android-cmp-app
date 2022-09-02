@@ -31,7 +31,6 @@ internal data class GdprCS(
     val euconsent: String,
     val addtlConsent: String,
     val dateCreated: String,
-    val consentUUID: String,
     val vendorListId: String,
     val uuid: String,
     val gdprApplies: Boolean,

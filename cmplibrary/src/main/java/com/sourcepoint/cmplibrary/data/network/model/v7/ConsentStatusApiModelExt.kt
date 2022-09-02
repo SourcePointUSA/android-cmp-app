@@ -180,11 +180,10 @@ internal fun Map<String, Any?>.toGdprCS(): GdprCS {
 
     return GdprCS(
         thisContent = JSONObject(this),
-        euconsent = euConsent,
         grants = vendorsGranted,
+        euconsent = euConsent,
         addtlConsent = addtlConsent,
         dateCreated = dateCreated,
-        consentUUID = consentUUID,
         vendorListId = vendorListId,
         uuid = uuid,
         gdprApplies = gdprApplies,

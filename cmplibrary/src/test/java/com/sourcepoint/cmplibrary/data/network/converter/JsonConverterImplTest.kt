@@ -163,7 +163,6 @@ class JsonConverterImplTest {
             grants.size.assertEquals(5)
             euconsent.assertEquals("CPeQ1MAPeQ1MAAGABCENCdCsAP_AAHAAAAYgGMwBAAMgA0AXmAxkDGYAIDGQCgkAMADIANAF5hQAIDGQ4AEBjIkACAxkVABAXmMgAgLzHQAwAMgA0AXmQgAgAZJQAgAMgLzKQAwAMgA0AXmA.YAAAAAAAAAAA")
             dateCreated.assertEquals("2022-08-25T20:56:38.551Z")
-            consentUUID.assertEquals("69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10")
             gdprApplies.assertTrue()
             cookieExpirationDays.assertEquals(365)
             localDataCurrent.assertFalse()
