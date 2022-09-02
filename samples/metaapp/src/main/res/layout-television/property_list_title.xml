@@ -1,8 +1,16 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<com.sourcepointmeta.metaapp.tv.properties.PropertyListTitleView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/browse_title_group"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:focusable="false"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    tools:ignore="MissingDefaultResource">
 
     <TextView
         android:id="@+id/titleTextView"
@@ -14,39 +22,39 @@
         android:layout_centerVertical="true"
         android:focusable="false"
         android:layout_margin="6dp"
-        app:layout_constraintEnd_toStartOf="@+id/removeAllBtn"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/removeAllBtn"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="center_vertical|end"
-        android:layout_margin="6dp"
+        style="@style/Widget.Leanback.ImageCardView"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:background="@null"
         android:clickable="true"
-        android:backgroundTint="@android:color/holo_green_light"
-        android:background="@drawable/ic_baseline_delete_black_24"
+        android:clipToPadding="false"
         android:focusable="true"
-        android:padding="6dp"
-        app:layout_constraintEnd_toStartOf="@id/addBtn"
+        android:src="@drawable/ic_baseline_delete_24"
+        android:stateListAnimator="@xml/animate_scale"
+        app:layout_constraintStart_toEndOf="@+id/titleTextView"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/addBtn"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="center_vertical|end"
-        android:padding="6dp"
-        android:layout_margin="6dp"
-        android:backgroundTint="@android:color/holo_green_light"
-        android:background="@drawable/ic_add_on_secondary_24dp"
-        android:focusable="true"
+        style="@style/Widget.Leanback.ImageCardView"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:background="@null"
         android:clickable="true"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:src="@drawable/add_selector"
+        android:stateListAnimator="@xml/animate_scale"
+        app:layout_constraintStart_toEndOf="@+id/removeAllBtn"
         app:layout_constraintTop_toTopOf="parent" />
 
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.sourcepointmeta.metaapp.tv.properties.PropertyListTitleView>

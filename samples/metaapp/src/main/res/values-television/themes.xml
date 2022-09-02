@@ -6,6 +6,7 @@
     </style>
 
     <style name="Theme.MyAppTv" parent="Base.Theme.MyAppTv">
+        <item name="browseTitleViewLayout">@layout/property_list_title</item>
     </style>
 
     <style name="Base.Theme.MyAppTv" parent="Theme.Leanback.Details">
@@ -39,6 +40,5 @@
         <item name="colorOddItem">@color/black_400</item>
         <item name="colorEvenItem">@color/black_600</item>
 
-        <item name="browseTitleViewLayout">@layout/property_list_title_leanback</item>
     </style>
 </resources>

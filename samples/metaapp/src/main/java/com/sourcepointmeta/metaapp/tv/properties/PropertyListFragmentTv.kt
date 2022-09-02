@@ -2,6 +2,7 @@ package com.sourcepointmeta.metaapp.tv.properties
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.leanback.app.VerticalGridSupportFragment
@@ -17,6 +18,7 @@ import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListViewModel
 import kotlinx.android.synthetic.main.plus_btn.* //ktlint-disable
+import kotlinx.android.synthetic.main.property_list_title.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedListener {
@@ -43,6 +45,8 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
         super.onViewCreated(view, savedInstanceState)
         (view as? FrameLayout)?.addPlusBtn()
         add_property_btn.setOnClickListener { requireContext().createNewProperty() }
+        removeAllBtn?.setOnClickListener(){ Toast.makeText(context, "Remove All button clicked", Toast.LENGTH_SHORT).show() }
+        addBtn?.setOnClickListener(){ Toast.makeText(context, "Add button clicked", Toast.LENGTH_SHORT).show() }
         title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
