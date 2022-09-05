@@ -12,19 +12,6 @@
     app:layout_constraintEnd_toEndOf="parent"
     tools:ignore="MissingDefaultResource">
 
-    <TextView
-        android:id="@+id/titleTextView"
-        android:textAppearance="@android:style/TextAppearance.Large"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_marginEnd="24dp"
-        android:layout_centerVertical="true"
-        android:focusable="false"
-        android:layout_margin="6dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageButton
         android:id="@+id/removeAllBtn"
         style="@style/Widget.Leanback.ImageCardView"
@@ -35,9 +22,9 @@
         android:clickable="true"
         android:clipToPadding="false"
         android:focusable="true"
-        android:src="@drawable/ic_baseline_delete_24"
+        android:src="@android:drawable/ic_menu_delete"
         android:stateListAnimator="@xml/animate_scale"
-        app:layout_constraintStart_toEndOf="@+id/titleTextView"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
@@ -55,6 +42,16 @@
         app:layout_constraintStart_toEndOf="@+id/removeAllBtn"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:layout_centerVertical="true"
+        android:focusable="false"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </com.sourcepointmeta.metaapp.tv.properties.PropertyListTitleView>

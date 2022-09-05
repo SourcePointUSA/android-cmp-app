@@ -43,10 +43,8 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (view as? FrameLayout)?.addPlusBtn()
-        add_property_btn.setOnClickListener { requireContext().createNewProperty() }
         removeAllBtn?.setOnClickListener(){ Toast.makeText(context, "Remove All button clicked", Toast.LENGTH_SHORT).show() }
-        addBtn?.setOnClickListener(){ Toast.makeText(context, "Add button clicked", Toast.LENGTH_SHORT).show() }
+        addBtn?.setOnClickListener(){ requireContext().createNewProperty() }
         title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {

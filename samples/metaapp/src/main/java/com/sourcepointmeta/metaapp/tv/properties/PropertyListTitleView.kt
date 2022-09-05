@@ -14,7 +14,7 @@ import com.sourcepointmeta.metaapp.tv.demo.DemoTitleViewAdapter
 import kotlinx.android.synthetic.main.property_list_title.view.*
 
 class PropertyListTitleView : ConstraintLayout, TitleViewAdapter.Provider {
-    private val titleAdapter by lazy { DemoTitleViewAdapter() }
+    private val titleAdapter by lazy { PropertyListTitleViewAdapter(findViewById(R.id.titleTextView)) }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
