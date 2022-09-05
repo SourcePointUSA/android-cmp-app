@@ -2,7 +2,6 @@ package com.sourcepointmeta.metaapp.tv.properties
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.* //ktlint-disable
 import com.sourcepointmeta.metaapp.BuildConfig
@@ -27,6 +26,7 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
     private val viewModel: PropertyListViewModel by viewModel()
     private val presenterAdapter by lazy { ArrayObjectAdapter(PropertyViewPresenter(requireActivity())) }
     private val localGridPresenter by lazy { VerticalGridPresenter(ZOOM_FACTOR).apply { numberOfColumns = COLUMNS } }
+    var deleteAllListener: ((View) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +39,8 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        remove_all_btn?.setOnClickListener(){ Toast.makeText(context, "Remove All button clicked", Toast.LENGTH_SHORT).show() }
-        add_property_button?.setOnClickListener(){ requireContext().createNewProperty() }
+        remove_all_btn?.setOnClickListener(deleteAllListener)
+        add_property_button?.setOnClickListener { requireContext().createNewProperty() }
         title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
