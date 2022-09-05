@@ -118,6 +118,10 @@ private class JsonConverterImpl : JsonConverter {
         JSONObject(body).toTreeMap().toConsentStatusResp()
     }
 
+    override fun toPvDataResp(body: String): Either<PvDataResp> = check {
+        JSONObject(body).toTreeMap().toPvDataResp()
+    }
+
     /**
      * Util method to throws a [ConsentLibExceptionK] with a custom message
      * @param param name of the null object

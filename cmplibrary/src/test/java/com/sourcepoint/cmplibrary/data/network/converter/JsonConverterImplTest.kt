@@ -193,4 +193,17 @@ class JsonConverterImplTest {
 //        val nm = (sut.toConsentStatusResp(json) as Either.Right).r
 //        nm.thisContent.toTreeMap().assertEquals(testMap)
     }
+
+    @Test
+    fun `GIVEN a pv_data body resp RETURN a Right(PvDataResp)`() {
+        val json = "v7/pv_data.json".file2String()
+        val nm = (sut.toPvDataResp(json) as Either.Right).r
+        nm.gdprPv!!.cookies[0].also {
+            it.getString("key").assertEquals("consentUUID")
+            it.getString("value").assertEquals("86ac1e2e-ef53-451a-9e65-27c51f95adb8")
+            it.getInt("maxAge").assertEquals(31536000)
+            it.getBoolean("shareRootDomain").assertFalse()
+            it.getBoolean("session").assertFalse()
+        }
+    }
 }
