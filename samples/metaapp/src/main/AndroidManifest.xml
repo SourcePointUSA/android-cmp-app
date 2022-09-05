@@ -39,7 +39,7 @@
             android:banner="@mipmap/ic_launcher"
             android:configChanges="keyboard|keyboardHidden|navigation"
             android:exported="true"
-            android:theme="@style/Theme.MyAppTv">
+            android:theme="@style/Theme.MainActivityAppTv">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />

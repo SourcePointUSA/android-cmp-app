@@ -2,12 +2,11 @@ package com.sourcepointmeta.metaapp.tv.properties
 
 import android.os.Bundle
 import android.view.View
-import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.* //ktlint-disable
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.tv.addPlusBtn
 import com.sourcepointmeta.metaapp.tv.createNewProperty
 import com.sourcepointmeta.metaapp.tv.initEntranceTransition
 import com.sourcepointmeta.metaapp.tv.showPropertyDetail
@@ -15,7 +14,7 @@ import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListViewModel
-import kotlinx.android.synthetic.main.plus_btn.* //ktlint-disable
+import kotlinx.android.synthetic.main.property_list_title.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedListener {
@@ -31,7 +30,6 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
         gridPresenter = localGridPresenter
         adapter = presenterAdapter
         onItemViewClickedListener = this
@@ -41,8 +39,9 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (view as? FrameLayout)?.addPlusBtn()
-        add_property_btn.setOnClickListener { requireContext().createNewProperty() }
+        remove_all_btn?.setOnClickListener(){ Toast.makeText(context, "Remove All button clicked", Toast.LENGTH_SHORT).show() }
+        add_property_button?.setOnClickListener(){ requireContext().createNewProperty() }
+        title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
                 is BaseState.StatePropertyList -> successState(it)
