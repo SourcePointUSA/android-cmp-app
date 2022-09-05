@@ -1,0 +1,14 @@
+{
+  "gdpr": {
+    "uuid": "86ac1e2e-ef53-451a-9e65-27c51f95adb8",
+    "cookies": [
+      {
+        "key": "consentUUID",
+        "value": "86ac1e2e-ef53-451a-9e65-27c51f95adb8",
+        "maxAge": 31536000,
+        "shareRootDomain": false,
+        "session": false
+      }
+    ]
+  }
+}
