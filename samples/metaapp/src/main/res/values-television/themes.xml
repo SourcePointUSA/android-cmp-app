@@ -5,8 +5,11 @@
         <item name="browseTitleViewLayout">@layout/demo_header</item>
     </style>
 
-    <style name="Theme.MyAppTv" parent="Base.Theme.MyAppTv">
+    <style name="Theme.MainActivityAppTv" parent="Base.Theme.MyAppTv">
         <item name="browseTitleViewLayout">@layout/property_list_title</item>
+    </style>
+
+    <style name="Theme.MyAppTv" parent="Base.Theme.MyAppTv">
     </style>
 
     <style name="Base.Theme.MyAppTv" parent="Theme.Leanback.Details">

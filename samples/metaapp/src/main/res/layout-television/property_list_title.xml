@@ -13,22 +13,7 @@
     tools:ignore="MissingDefaultResource">
 
     <ImageButton
-        android:id="@+id/removeAllBtn"
-        style="@style/Widget.Leanback.ImageCardView"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="bottom|end"
-        android:background="@null"
-        android:clickable="true"
-        android:clipToPadding="false"
-        android:focusable="true"
-        android:src="@android:drawable/ic_menu_delete"
-        android:stateListAnimator="@xml/animate_scale"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/addBtn"
+        android:id="@+id/add_property_button"
         style="@style/Widget.Leanback.ImageCardView"
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -39,17 +24,32 @@
         android:focusable="true"
         android:src="@drawable/add_selector"
         android:stateListAnimator="@xml/animate_scale"
-        app:layout_constraintStart_toEndOf="@+id/removeAllBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/remove_all_btn"
+        style="@style/Widget.Leanback.ImageCardView"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:background="@null"
+        android:clickable="true"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:src="@android:drawable/ic_menu_delete"
+        android:stateListAnimator="@xml/animate_scale"
+        app:layout_constraintStart_toEndOf="@id/add_property_button"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/titleTextView"
+        android:id="@+id/title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="64dp"
         android:layout_centerVertical="true"
         android:focusable="false"
         android:gravity="center"
-        android:textAppearance="@android:style/TextAppearance.Large"
+        style="@style/Widget.Leanback.DetailsDescriptionTitleStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
