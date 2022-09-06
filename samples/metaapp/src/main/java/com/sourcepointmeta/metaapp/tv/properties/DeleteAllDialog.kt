@@ -6,6 +6,7 @@ import android.view.View
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist
 import androidx.leanback.widget.GuidedAction
+import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.tv.detail.createAction
 import com.sourcepointmeta.metaapp.tv.hideKeyboard
 import com.sourcepointmeta.metaapp.tv.updatePropertyListAndGoBack
@@ -34,8 +35,8 @@ class DeleteAllDialog : GuidedStepSupportFragment() {
 
     override fun onCreateGuidance(savedInstanceState: Bundle?): GuidanceStylist.Guidance {
         return GuidanceStylist.Guidance(
-            "Delete all properties",
-            "Delete all saved properties in the Metaapp",
+            getString(R.string.title_deletell_dialog),
+            getString(R.string.descr_deleteall_dialog),
             "",
             null
         )
@@ -47,8 +48,8 @@ class DeleteAllDialog : GuidedStepSupportFragment() {
             add(
                 createAction(
                     CANCEL_ACTION,
-                    "Cancel",
-                    "Return to the property list",
+                    getString(R.string.title_cancel_action),
+                    getString(R.string.descr_cancel_action),
                     false,
                     InputType.TYPE_CLASS_TEXT
                 )
@@ -56,8 +57,8 @@ class DeleteAllDialog : GuidedStepSupportFragment() {
             add(
                 createAction(
                     DELETE_ALL_ACTION,
-                    "Delete all",
-                    "Delete all",
+                    getString(R.string.title_deleteall_action),
+                    getString(R.string.descr_deleteall_action),
                     false,
                     InputType.TYPE_CLASS_TEXT
                 )
