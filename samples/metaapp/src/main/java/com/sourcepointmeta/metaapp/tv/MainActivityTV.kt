@@ -7,7 +7,9 @@ import android.content.IntentFilter
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.core.addFragment
 import com.sourcepointmeta.metaapp.core.replaceFragment
+import com.sourcepointmeta.metaapp.tv.properties.DeleteAllDialog
 import com.sourcepointmeta.metaapp.tv.properties.PropertyListFragmentTv
 
 class MainActivityTV : FragmentActivity() {
@@ -25,6 +27,7 @@ class MainActivityTV : FragmentActivity() {
         savedInstanceState ?: replaceFragment(R.id.container, fragment)
         // receiver to update the main screen
         registerReceiver(br, IntentFilter().apply { addAction(REFRESH_ACTION) })
+        fragment.deleteAllListener = { addFragment(R.id.container, DeleteAllDialog()) }
     }
 
     inner class MyBroadcastReceiver : BroadcastReceiver() {

@@ -126,6 +126,11 @@ fun Activity.updatePropertyListAndClose() {
     finish()
 }
 
+fun Activity.updatePropertyListAndGoBack() {
+    updatePropertyList()
+    onBackPressed()
+}
+
 fun DemoEventFragmentTv.bounceEventAndSelectFirstElement() {
     MainScope().launch {
         withContext(Dispatchers.Default) {

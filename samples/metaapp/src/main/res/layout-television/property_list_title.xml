@@ -37,7 +37,7 @@
         android:clickable="true"
         android:clipToPadding="false"
         android:focusable="true"
-        android:src="@android:drawable/ic_menu_delete"
+        android:src="@drawable/delete_selector"
         android:stateListAnimator="@xml/animate_scale"
         app:layout_constraintStart_toEndOf="@id/add_property_button"
         app:layout_constraintTop_toTopOf="parent" />
@@ -49,7 +49,8 @@
         android:layout_centerVertical="true"
         android:focusable="false"
         android:gravity="center"
-        style="@style/Widget.Leanback.DetailsDescriptionTitleStyle"
+        tools:text="MetaApp 6.7.0"
+        style="@style/Widget.Leanback.Title.Text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
