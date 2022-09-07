@@ -10,7 +10,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 import kotlinx.android.synthetic.main.property_item.view.*
 
-internal class PropertyAdapter() : RecyclerView.Adapter<PropertyAdapter.Vh>() {
+internal class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.Vh>() {
 
     private var list = mutableListOf<PropertyDTO>()
     var itemClickListener: ((PropertyDTO) -> Unit)? = null
