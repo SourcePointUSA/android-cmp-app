@@ -5,16 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.leanback.app.DetailsSupportFragment
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.* // ktlint-disable
-import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.tv.demo.DemoEventFragmentTv
 import com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity
@@ -90,17 +87,12 @@ fun GuidedStepSupportFragment.hideKeyboard() {
     imm.hideSoftInputFromWindow(requireView().windowToken, 0)
 }
 
-fun FrameLayout.addPlusBtn() {
-    addView(LayoutInflater.from(context).inflate(R.layout.plus_btn, null))
-}
-
 fun Context.createNewProperty() {
     startActivity(Intent(this, DetailPropertyActivity::class.java))
 }
 
 fun Context.showPropertyDetail(propertyName: String) {
     val i = Intent(this, DetailPropertyActivity::class.java)
-    i.flags = i.flags or Intent.FLAG_ACTIVITY_NO_HISTORY
     i.putExtra(DetailPropertyActivity.PROPERTY_NAME_KEY, propertyName)
     startActivity(i)
 }
@@ -122,7 +114,11 @@ fun Context.updatePropertyList() {
 }
 
 fun Activity.updatePropertyListAndClose() {
-    updatePropertyList()
+    val i = Intent().apply {
+        action = MainActivityTV.REFRESH_ACTION
+        putExtra("selectedIndex", true)
+    }
+    sendBroadcast(i)
     finish()
 }
 
@@ -143,4 +139,9 @@ fun DemoEventFragmentTv.bounceEventAndSelectFirstElement() {
                 setSelectedPosition(0)
             }
     }
+}
+
+fun ObjectAdapter.lastIndex(): Int = when (size()) {
+    0 -> 0
+    else -> size() - 1
 }

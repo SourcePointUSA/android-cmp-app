@@ -35,6 +35,7 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
     val channel = BroadcastChannel<Int>(1)
 
     var pmListener: ((CampaignType) -> Unit)? = null
+    var flmListener: (() -> Unit)? = null
 
     private val viewModel by viewModel<LogViewModel>()
 
@@ -65,6 +66,7 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         gdpr_pm.setOnClickListener { pmListener?.invoke(CampaignType.GDPR) }
+        refresh_flm.setOnClickListener { flmListener?.invoke() }
         viewModel.liveDataLog.observe(viewLifecycleOwner) {
             if (it.type != "INFO") {
                 presenterAdapter.add(0, it)

@@ -10,6 +10,22 @@
         android:focusable="false"
         tools:ignore="MissingDefaultResource">
 
+    <ImageButton
+            android:id="@+id/refresh_flm"
+            style="@style/Widget.Leanback.ImageCardView"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="50dp"
+            android:layout_gravity="bottom|end"
+            android:background="@null"
+            android:clickable="true"
+            android:clipToPadding="false"
+            android:focusable="true"
+            android:src="@drawable/refresh_selector"
+            android:stateListAnimator="@xml/animate_scale"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     <Button
             android:id="@+id/gdpr_pm"
             android:clickable="true"

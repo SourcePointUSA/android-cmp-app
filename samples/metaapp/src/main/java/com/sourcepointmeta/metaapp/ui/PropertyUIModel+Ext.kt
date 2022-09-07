@@ -7,7 +7,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.Property
 
 sealed class BaseState {
     data class StateProperty(val property: Property) : BaseState()
-    data class StatePropertyList(val propertyList: List<Property>) : BaseState()
+    data class StatePropertyList(val propertyList: List<Property>, val selectLast: Boolean = false) : BaseState()
     data class StateLogList(val propertyList: List<MetaLog>) : BaseState()
     data class StateLoading(val loading: Boolean, val propertyName: String) : BaseState()
     data class StateSharingLogs(val stringifyJson: String) : BaseState()

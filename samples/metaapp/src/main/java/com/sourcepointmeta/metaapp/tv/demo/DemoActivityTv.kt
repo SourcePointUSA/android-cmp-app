@@ -63,6 +63,7 @@ class DemoActivityTv : FragmentActivity() {
         clearAllData(this)
         setContentView(R.layout.main_activity)
         savedInstanceState ?: replaceFragment(R.id.container, fragment)
+        fragment.flmListener = { spConsentLib.loadMessage() }
         fragment.pmListener = {
             when (it) {
                 CampaignType.GDPR -> spConsentLib.loadPrivacyManager(gdprPmId.toString(), CampaignType.GDPR)
