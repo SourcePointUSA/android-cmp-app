@@ -61,7 +61,7 @@ internal fun String.toCCPA(uuid: String?): Ccpa {
     return map.toCCPA(uuid)
 }
 
-private fun Map<String, Any?>.toCCPA(uuid: String?): Ccpa {
+internal fun Map<String, Any?>.toCCPA(uuid: String?): Ccpa {
 
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
@@ -103,9 +103,3 @@ internal fun String.toGDPR(uuid: String?): Gdpr {
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
     return map.toGDPR(uuid)
 }
-
-internal fun UnifiedMessageResp.isLegislationApplied(campaignType: CampaignType) = this
-    .campaigns
-    .find { it.type == campaignType.name }
-    ?.applies
-    ?: false
