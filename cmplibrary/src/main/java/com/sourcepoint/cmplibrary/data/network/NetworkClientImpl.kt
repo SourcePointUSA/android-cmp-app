@@ -6,6 +6,8 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
+import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
+import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
@@ -177,5 +179,25 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseMetaDataRes(response)
+    }
+
+    override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> = check {
+        val url = urlManager.getConsentStatusUrl(param)
+
+        logger.req(
+            tag = "getConsentStatus",
+            url = url.toString(),
+            body = "",
+            type = "GET"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseConsentStatusResp(response)
     }
 }

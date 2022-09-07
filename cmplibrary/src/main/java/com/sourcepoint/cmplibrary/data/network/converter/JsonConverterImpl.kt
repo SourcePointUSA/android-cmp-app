@@ -3,9 +3,12 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
+import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
+import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.v7.CcpaMD
+import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.GdprMD
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -109,6 +112,10 @@ private class JsonConverterImpl : JsonConverter {
             version = version,
             thisContent = JSONObject(this)
         )
+    }
+
+    override fun toConsentStatusResp(body: String): Either<ConsentStatusResp> = check {
+        JSONObject(body).toTreeMap().toConsentStatusResp()
     }
 
     /**
