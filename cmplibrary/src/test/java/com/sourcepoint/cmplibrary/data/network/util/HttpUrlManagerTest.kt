@@ -4,6 +4,7 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.assertTrue
+import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
@@ -217,5 +218,30 @@ class HttpUrlManagerTest {
         )
         val sut = HttpUrlManagerSingleton.getMetaDataUrl(param).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/meta-data?env=prod&accountId=22&propertyId=17801&metadata={%22gdpr%22:{},%22ccpa%22:{}}")
+    }
+
+    @Test
+    fun `GIVEN a PROD env getConsentStatus RETURN the prod link`() {
+        val param = ConsentStatusParamReq(
+            accountId = 22,
+            env = Env.PROD,
+            metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
+            propertyId = 17801,
+            authId = "user_auth_id"
+        )
+        val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&authId=user_auth_id&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}")
+    }
+
+    @Test
+    fun `GIVEN a PROD env getConsentStatus with authId NULL RETURN the prod link`() {
+        val param = ConsentStatusParamReq(
+            accountId = 22,
+            env = Env.PROD,
+            metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
+            propertyId = 17801,
+        )
+        val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}")
     }
 }

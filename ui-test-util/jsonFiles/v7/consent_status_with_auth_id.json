@@ -1,0 +1,234 @@
+{
+  "consentStatusData": {
+    "gdpr": {
+      "customVendorsResponse": {
+        "consentedVendors": [
+          {
+            "_id": "5ebe70ceb8e05c43d547d7b4",
+            "name": "Akamai Technologies, Inc.",
+            "vendorType": "CUSTOM"
+          }
+        ],
+        "consentedPurposes": [
+          {
+            "_id": "5fa9a8fb455f9533d77500fb",
+            "name": "Store and/or access information on a device"
+          },
+          {
+            "_id": "5fa9a8fb455f9533d7750103",
+            "name": "Select basic ads"
+          },
+          {
+            "_id": "5fa9a8fb455f9533d775010b",
+            "name": "Create a personalised ads profile"
+          },
+          {
+            "_id": "5fa9a8fb455f9533d7750113",
+            "name": "Select personalised ads"
+          },
+          {
+            "_id": "5fa9a8fb455f9533d775011b",
+            "name": "Create a personalised content profile"
+          },
+          {
+            "_id": "5fa9a8fb455f9533d7750122",
+            "name": "Select personalised content"
+          },
+          {
+            "_id": "5fa9a8fb455f9533d7750129",
+            "name": "Measure ad performance"
+          },
+          {
+            "_id": "5fa9a8fb455f9533d7750131",
+            "name": "Measure content performance"
+          },
+          {
+            "_id": "5fa9a8fb455f9533d7750137",
+            "name": "Apply market research to generate audience insights"
+          },
+          {
+            "_id": "5fa9a8fb455f9533d775013f",
+            "name": "Develop and improve products"
+          },
+          {
+            "_id": "627c250c5abdfe0873e995ad",
+            "name": "GCM Purpose"
+          }
+        ],
+        "legIntPurposes": [
+          {
+            "_id": "5fa9a8fb455f9533d7750103",
+            "name": "Select basic ads"
+          },
+          {
+            "_id": "5fa9a8fb455f9533d775010b",
+            "name": "Create a personalised ads profile"
+          },
+          {
+            "_id": "5fa9a8fb455f9533d7750113",
+            "name": "Select personalised ads"
+          }
+        ]
+      },
+      "addtlConsent": "1~",
+      "grants": {
+        "5f369a02b8e05c308701f829": {
+          "vendorGrant": true,
+          "purposeGrants": {
+            "5fa9a8fb455f9533d77500fb": true,
+            "5fa9a8fb455f9533d7750103": true,
+            "5fa9a8fb455f9533d775010b": true,
+            "5fa9a8fb455f9533d7750113": true,
+            "5fa9a8fb455f9533d7750129": true,
+            "5fa9a8fb455f9533d7750137": true,
+            "5fa9a8fb455f9533d775013f": true
+          }
+        },
+        "5f1aada6b8e05c306c0597d7": {
+          "vendorGrant": true,
+          "purposeGrants": {
+            "5fa9a8fb455f9533d77500fb": true,
+            "5fa9a8fb455f9533d7750103": true,
+            "5fa9a8fb455f9533d775010b": true,
+            "5fa9a8fb455f9533d7750113": true,
+            "5fa9a8fb455f9533d775011b": true,
+            "5fa9a8fb455f9533d7750122": true,
+            "5fa9a8fb455f9533d7750129": true,
+            "5fa9a8fb455f9533d7750137": true,
+            "5fa9a8fb455f9533d775013f": true,
+            "627c250c5abdfe0873e995ad": true
+          }
+        },
+        "5e7ced57b8e05c485246cce5": {
+          "vendorGrant": true,
+          "purposeGrants": {
+            "5fa9a8fb455f9533d77500fb": true,
+            "5fa9a8fb455f9533d7750103": true,
+            "5fa9a8fb455f9533d7750129": true,
+            "5fa9a8fb455f9533d775013f": true
+          }
+        },
+        "5e7ced56b8e05c4854221bb3": {
+          "vendorGrant": true,
+          "purposeGrants": {
+            "5fa9a8fb455f9533d77500fb": true,
+            "5fa9a8fb455f9533d7750103": true,
+            "5fa9a8fb455f9533d775010b": true,
+            "5fa9a8fb455f9533d7750113": true,
+            "5fa9a8fb455f9533d775011b": true,
+            "5fa9a8fb455f9533d7750122": true,
+            "5fa9a8fb455f9533d7750129": true,
+            "5fa9a8fb455f9533d7750131": true,
+            "5fa9a8fb455f9533d7750137": true,
+            "5fa9a8fb455f9533d775013f": true
+          }
+        },
+        "5ebe70ceb8e05c43d547d7b4": {
+          "vendorGrant": true,
+          "purposeGrants": {
+            "5fa9a8fb455f9533d77500fb": true,
+            "5fa9a8fb455f9533d7750103": true,
+            "5fa9a8fb455f9533d775010b": true,
+            "5fa9a8fb455f9533d7750113": true,
+            "5fa9a8fb455f9533d775011b": true
+          }
+        }
+      },
+      "euconsent": "CPeQ1MAPeQ1MAAGABCENCdCsAP_AAHAAAAYgGMwBAAMgA0AXmAxkDGYAIDGQCgkAMADIANAF5hQAIDGQ4AEBjIkACAxkVABAXmMgAgLzHQAwAMgA0AXmQgAgAZJQAgAMgLzKQAwAMgA0AXmA.YAAAAAAAAAAA",
+      "consentStatus": {
+        "rejectedAny": false,
+        "rejectedLI": false,
+        "consentedAll": true,
+        "granularStatus": {
+          "vendorConsent": "ALL",
+          "vendorLegInt": "ALL",
+          "purposeConsent": "ALL",
+          "purposeLegInt": "ALL",
+          "previousOptInAll": false,
+          "defaultConsent": false
+        },
+        "hasConsentData": true,
+        "consentedToAny": true
+      },
+      "cookies": [
+        {
+          "key": "consentUUID",
+          "value": "69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10",
+          "maxAge": 31536000,
+          "shareRootDomain": false,
+          "session": false
+        }
+      ],
+      "actions": [
+        {
+          "_id": "6307e06c14641f06b9f62f5c",
+          "type": "google_consent_mode",
+          "url": "",
+          "js": "",
+          "tagManager": {
+            "_id": "6307e06c14641f06b9f62f5d",
+            "name": "consent",
+            "key": "analytics_storage",
+            "value": "granted"
+          }
+        },
+        {
+          "_id": "6307e06c14641f06b9f630a8",
+          "type": "inline",
+          "url": "",
+          "js": "try {\n    window.consentAction('accept', 'google')\n} catch (err) {\n    console.error(err);\n}",
+          "tagManager": null
+        },
+        {
+          "_id": "6307e06c14641f06b9f630a9",
+          "type": "inline",
+          "url": "",
+          "js": "window.dataLayer && window.dataLayer.push({ 'event': 'consent_google' });",
+          "tagManager": {
+            "_id": "6307e06c14641f06b9f630aa",
+            "name": "google",
+            "key": "event",
+            "value": "'consent_google'"
+          }
+        },
+        {
+          "type": "inline",
+          "js": "var cookie='google_consent=accept; Path=/; Max-Age=86400; expires=Tue, 30 Aug 2022 12:43:15 GMT;';\nif (true) {\n  var h = window.location && window.location.hostname;\n  if (h) {\n    var rc = (/.co.uk$/.test(h) || /.com.br$/.test(h) || /.com.au$/.test(h) || /.co.nz$/.test(h) ) ? 3 : 2;\n    var ha = h.split('.');\n    var rda = ha.slice(ha.length - rc);\n    if (rda.length > 1) {\n      var rd = rda.join('.');\n      cookie += ' Domain=' + rd + ';';\n    }\n  }\n}\ndocument.cookie = cookie;\n"
+        },
+        {
+          "type": "inline",
+          "js": "var cookie='_sp_action_cookie=test; Path=/; Max-Age=432000; expires=Sat, 03 Sep 2022 12:43:15 GMT;';\nif (true) {\n  var h = window.location && window.location.hostname;\n  if (h) {\n    var rc = (/.co.uk$/.test(h) || /.com.br$/.test(h) || /.com.au$/.test(h) || /.co.nz$/.test(h) ) ? 3 : 2;\n    var ha = h.split('.');\n    var rda = ha.slice(ha.length - rc);\n    if (rda.length > 1) {\n      var rd = rda.join('.');\n      cookie += ' Domain=' + rd + ';';\n    }\n  }\n}\ndocument.cookie = cookie;\n"
+        }
+      ],
+      "dateCreated": "2022-08-25T20:56:38.551Z",
+      "consentUUID": "69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10",
+      "gdprApplies": true,
+      "cookieExpirationDays": 365,
+      "localDataCurrent": false,
+      "vendorListId": "5fa9a8fda228635eaf24ceb5",
+      "uuid": "69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10"
+    },
+    "ccpa": {
+      "dateCreated": "2022-08-25T20:56:39.010Z",
+      "newUser": false,
+      "consentedAll": false,
+      "rejectedCategories": [],
+      "rejectedVendors": [],
+      "rejectedAll": false,
+      "status": "rejectedNone",
+      "signedLspa": false,
+      "uspstring": "1YNN",
+      "gpcEnabled": false,
+      "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4",
+      "ccpaApplies": true
+    }
+  },
+  "localState": {
+    "gdpr": {
+      "propertyId": 17801
+    },
+    "ccpa": {
+      "propertyId": 17801
+    }
+  }
+}
