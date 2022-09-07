@@ -114,7 +114,11 @@ fun Context.updatePropertyList() {
 }
 
 fun Activity.updatePropertyListAndClose() {
-    updatePropertyList()
+    val i = Intent().apply {
+        action = MainActivityTV.REFRESH_ACTION
+        putExtra("selectedIndex", true)
+    }
+    sendBroadcast(i)
     finish()
 }
 
@@ -135,4 +139,9 @@ fun DemoEventFragmentTv.bounceEventAndSelectFirstElement() {
                 setSelectedPosition(0)
             }
     }
+}
+
+fun ObjectAdapter.lastIndex(): Int = when (size()) {
+    0 -> 0
+    else -> size() - 1
 }

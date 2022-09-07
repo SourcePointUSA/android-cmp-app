@@ -32,7 +32,7 @@ class MainActivityTV : FragmentActivity() {
 
     inner class MyBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            fragment.refreshData()
+            fragment.refreshData(intent.getBooleanExtra("selectedIndex", false))
         }
     }
 

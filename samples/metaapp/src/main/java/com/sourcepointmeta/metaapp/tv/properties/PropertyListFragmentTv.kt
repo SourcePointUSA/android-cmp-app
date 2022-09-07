@@ -8,6 +8,7 @@ import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.tv.createNewProperty
 import com.sourcepointmeta.metaapp.tv.initEntranceTransition
+import com.sourcepointmeta.metaapp.tv.lastIndex
 import com.sourcepointmeta.metaapp.tv.showPropertyDetail
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
@@ -54,12 +55,15 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
         viewModel.fetchPropertyList()
     }
 
-    private fun successState(it: BaseState.StatePropertyList) {
-        it.propertyList
+    private fun successState(state: BaseState.StatePropertyList) {
+        state.propertyList
             .map { p -> p.toPropertyDTO() }
             .let {
                 presenterAdapter.clear()
                 presenterAdapter.addAll(0, it)
+                if (state.selectLast) {
+                    setSelectedPosition(presenterAdapter.lastIndex())
+                }
             }
     }
 
@@ -73,7 +77,7 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
         requireContext().showPropertyDetail(propDto.propertyName)
     }
 
-    fun refreshData() {
-        viewModel.fetchPropertyList()
+    fun refreshData(focusOnLastElem: Boolean = false) {
+        viewModel.fetchPropertyList(focusOnLastElem)
     }
 }
