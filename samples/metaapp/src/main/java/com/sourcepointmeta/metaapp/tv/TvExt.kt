@@ -113,12 +113,17 @@ fun Context.updatePropertyList() {
     sendBroadcast(i)
 }
 
-fun Activity.updatePropertyListAndClose() {
+fun Activity.updatePListAndSelectLast() {
     val i = Intent().apply {
         action = MainActivityTV.REFRESH_ACTION
         putExtra("selectedIndex", true)
     }
     sendBroadcast(i)
+    finish()
+}
+
+fun Activity.updatePropertyListAndClose() {
+    updatePropertyList()
     finish()
 }
 
