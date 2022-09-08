@@ -159,7 +159,7 @@ internal class SpConsentLibImpl(
                                 this,
                                 JSReceiverDelegate(),
                                 remainingCampaigns,
-                                firstCampaign2Process.messageSubCategory == OTT,
+                                firstCampaign2Process.messageSubCategory == OTT, // we don't use anymore boolean, we use MessageSubCategory
                                 cmpViewId
                             )
                                 .executeOnLeft { spClient.onError(it) }
@@ -178,6 +178,9 @@ internal class SpConsentLibImpl(
                                 msg = "onNativeMessageReady",
                                 json = firstCampaign2Process.message
                             )
+                        }
+                        NATIVE_OTT -> {
+                            // native ott case
                         }
                     }
                 }

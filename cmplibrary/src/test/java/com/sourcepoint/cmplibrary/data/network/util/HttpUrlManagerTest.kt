@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import org.junit.Test
 
 class HttpUrlManagerTest {
@@ -44,6 +45,26 @@ class HttpUrlManagerTest {
         val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, false)
         sut.run {
             toString().contains("notice.sp-stage.net").assertTrue()
+            queryParameter("pmTab").assertEquals("features")
+            queryParameter("message_id").assertNull()
+            queryParameter("consentLanguage").assertNull()
+            queryParameter("consentUUID").assertNull()
+            queryParameter("site_id").assertNull()
+        }
+    }
+
+    @Test
+    fun `GIVEN a NATIVE_OTT sub cat RETURN a Native OTT GDPR URL`() {
+        val pmConfig = PmUrlConfig(
+            pmTab = PMTab.FEATURES,
+            consentLanguage = // TODO,
+            uuid = // TODO,
+            messageId = // TODO,
+            siteId = // TODO
+        )
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, MessageSubCategory.NATIVE_OTT)
+        sut.run {
+            host().contains("-------> NATIVE OTT HOST< --------").assertTrue()
             queryParameter("pmTab").assertEquals("features")
             queryParameter("message_id").assertNull()
             queryParameter("consentLanguage").assertNull()

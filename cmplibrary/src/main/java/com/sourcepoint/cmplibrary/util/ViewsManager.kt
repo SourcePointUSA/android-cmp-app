@@ -25,14 +25,14 @@ internal interface ViewsManager {
     fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
-        isOtt: Boolean,
+        isOtt: Boolean, // we don't use anymore boolean, we use MessageSubCategory
         cmpViewId: Int?
     ): Either<IConsentWebView>
     fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
         campaignQueue: Queue<CampaignModel>,
-        isOtt: Boolean,
+        isOtt: Boolean, // we don't use anymore boolean, we use MessageSubCategory
         cmpViewId: Int?
     ): Either<IConsentWebView>
     fun removeView(view: View)
