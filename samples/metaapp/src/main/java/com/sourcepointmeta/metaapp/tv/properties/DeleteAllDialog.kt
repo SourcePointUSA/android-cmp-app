@@ -47,18 +47,18 @@ class DeleteAllDialog : GuidedStepSupportFragment() {
         actions.apply {
             add(
                 createAction(
-                    CANCEL_ACTION,
-                    getString(R.string.title_cancel_action),
-                    getString(R.string.descr_cancel_action),
+                    DELETE_ALL_ACTION,
+                    getString(R.string.title_deleteall_action),
+                    getString(R.string.descr_deleteall_action),
                     false,
                     InputType.TYPE_CLASS_TEXT
                 )
             )
             add(
                 createAction(
-                    DELETE_ALL_ACTION,
-                    getString(R.string.title_deleteall_action),
-                    getString(R.string.descr_deleteall_action),
+                    CANCEL_ACTION,
+                    getString(R.string.title_cancel_action),
+                    getString(R.string.descr_cancel_action),
                     false,
                     InputType.TYPE_CLASS_TEXT
                 )

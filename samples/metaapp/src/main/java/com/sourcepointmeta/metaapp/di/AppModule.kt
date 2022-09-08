@@ -8,6 +8,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.create
 import com.sourcepointmeta.metaapp.data.localdatasource.createDb
 import com.sourcepointmeta.metaapp.tv.edit.AddUpdatePropertyViewModelTv
 import com.sourcepointmeta.metaapp.tv.properties.DeleteAllViewModel
+import com.sourcepointmeta.metaapp.tv.viewer.JsonViewerViewModelTv
 import com.sourcepointmeta.metaapp.ui.ValidationManager
 import com.sourcepointmeta.metaapp.ui.create
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogViewModel
@@ -32,6 +33,8 @@ val appModule = module {
     viewModel { DeleteAllViewModel(get()) }
 
     viewModel { JsonViewerViewModel(get()) }
+
+    viewModel { JsonViewerViewModelTv(get()) }
 
     single { ValidationManager.create() }
 

@@ -12,6 +12,7 @@ import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.tv.bounceEventAndSelectFirstElement
 import com.sourcepointmeta.metaapp.tv.initEntranceTransition
 import com.sourcepointmeta.metaapp.ui.BaseState
+import com.sourcepointmeta.metaapp.ui.component.LogItem
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogViewModel
 import com.sourcepointmeta.metaapp.ui.eventlogs.composeEmail
 import com.sourcepointmeta.metaapp.ui.eventlogs.createFileWithContent
@@ -36,6 +37,7 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
 
     var pmListener: ((CampaignType) -> Unit)? = null
     var flmListener: (() -> Unit)? = null
+    var logClickListener: ((logId: LogItem) -> Unit)? = null
 
     private val viewModel by viewModel<LogViewModel>()
 
@@ -49,7 +51,8 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
             ?: throw RuntimeException("extra property_name param is null!!!")
     }
 
-    private val presenterAdapter by lazy { ArrayObjectAdapter(DemoViewPresenter(requireActivity())) }
+    private val demoViewPresenter by lazy { DemoViewPresenter(requireActivity()) }
+    private val presenterAdapter by lazy { ArrayObjectAdapter(demoViewPresenter) }
     private val localGridPresenter by lazy { VerticalGridPresenter(ZOOM_FACTOR).apply { numberOfColumns = COLUMNS } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,8 +90,8 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
         rowViewHolder: RowPresenter.ViewHolder?,
         row: Row?
     ) {
-//        val propDto = item as? PropertyDTO ?: throw RuntimeException("The item must be a PropertyDTO type!!!")
-//        requireContext().showPropertyDetail(propDto.propertyName)
+        val propDto = item as? LogItem ?: throw RuntimeException("The item must be a PropertyDTO type!!!")
+        logClickListener?.invoke(propDto)
     }
 
     private fun stateHandler(state: BaseState) {

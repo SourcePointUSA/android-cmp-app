@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp.tv.demo
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,6 +19,8 @@ import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.core.replaceFragment
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
+import com.sourcepointmeta.metaapp.tv.viewer.JsonViewerActivityTv
+import com.sourcepointmeta.metaapp.tv.viewer.JsonViewerFragmentTv
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import java.util.* //ktlint-disable
@@ -69,6 +72,13 @@ class DemoActivityTv : FragmentActivity() {
                 CampaignType.GDPR -> spConsentLib.loadPrivacyManager(gdprPmId.toString(), CampaignType.GDPR)
                 CampaignType.CCPA -> {}
             }
+        }
+        fragment.logClickListener = {
+            intent.putExtra("run_demo", false)
+            val intent = Intent(baseContext, JsonViewerActivityTv::class.java)
+            intent.putExtra(JsonViewerFragmentTv.LOG_ID, it.id ?: -1L)
+            intent.putExtra(JsonViewerFragmentTv.TITLE, "${it.type} - ${it.tag}")
+            startActivity(intent)
         }
     }
 

@@ -14,6 +14,7 @@ import com.sourcepointmeta.metaapp.tv.demo.DemoActivityTv
 import com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity.Companion.PROPERTY_NAME_KEY
 import com.sourcepointmeta.metaapp.tv.edit.AddUpdatePropertyViewModelTv
 import com.sourcepointmeta.metaapp.tv.initEntranceTransition
+import com.sourcepointmeta.metaapp.tv.updatePListAndSelectLast
 import com.sourcepointmeta.metaapp.tv.updatePropertyListAndClose
 import com.sourcepointmeta.metaapp.ui.BaseState
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -39,7 +40,7 @@ class DetailPropertyFragment : DetailsSupportFragment() {
             }
             ACTION_DUPLICATE -> {
                 viewModel.duplicatePropertySync(i.propertyName)
-                requireActivity().updatePropertyListAndClose()
+                requireActivity().updatePListAndSelectLast()
             }
         }
     }
