@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
+import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -26,7 +27,7 @@ internal interface HttpUrlManager {
     fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
     fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
     fun getPvData(env: Env): HttpUrl
-    fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
+    fun getMessagesUrl(param: MessagesParamReq): HttpUrl
 }
 
 /**
@@ -182,6 +183,25 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .host(env.host)
             .addPathSegments("wrapper/v2/pv-data")
             .addQueryParameter("env", env.queryParam)
+            .build()
+    }
+
+    override fun getMessagesUrl(param: MessagesParamReq): HttpUrl {
+        // http://localhost:3000/wrapper/v2/messages?
+        // env=localProd
+        // &nonKeyedLocalState={"gdpr":{"_sp_v1_uid":null,"_sp_v1_data":null},"ccpa":{"_sp_v1_uid":null,"_sp_v1_data":null}}
+        // &body={"accountId":22,"propertyHref":"https://tests.unified-script.com","hasCSP":true,"campaigns":{"ccpa":{"hasLocalData": false},"gdpr":{"hasLocalData": false, "consentStatus": {}}}, "includeData": {"TCData": {"type": "RecordString"}}}
+        // &metadata={"ccpa":{"applies":true},"gdpr":{"applies":true}}
+        // &includeData=
+
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(param.env.host)
+            .addPathSegments("wrapper/v2/messages")
+            .addQueryParameter("env", param.env.queryParam)
+            .addEncodedQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState)
+            .addEncodedQueryParameter("body", param.body)
+            .addEncodedQueryParameter("metadata", param.metadata)
             .build()
     }
 }

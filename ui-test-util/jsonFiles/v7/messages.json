@@ -5,7 +5,8 @@
     "site_id": 17801,
     "public_campaign_type_priority": [
       1,
-      2
+      2,
+      5
     ],
     "multi_campaign_enabled": true,
     "stage_campaign_type_priority": [
@@ -586,13 +587,13 @@
         "messageId": 521357,
         "prtnUUID": "acc10281-503d-4ce7-b303-62683fada039",
         "msgDescription": "",
-        "bucket": 611,
+        "bucket": 278,
         "categoryId": 1,
         "subCategoryId": 5
       },
       "actions": [],
       "cookies": [],
-      "euconsent": "CPe4YcAPe4YcAAGABCENCfCgAAAAAHAAAAYgAAAMZgAgMZADCgAQGMhwAIDGRIAEBjIA.YAAAAAAAAAAA",
+      "euconsent": "CPe--UAPe--UAAGABCENCfCgAAAAAHAAAAYgAAAMZgAgMZADCgAQGMhwAIDGRIAEBjIA.YAAAAAAAAAAA",
       "grants": {
         "5f369a02b8e05c308701f829": {
           "vendorGrant": false,
@@ -677,7 +678,7 @@
       },
       "childPmId": null,
       "hasLocalData": false,
-      "dateCreated": "2022-09-06T14:18:18.518Z",
+      "dateCreated": "2022-09-08T12:10:18.306Z",
       "consentStatus": {
         "rejectedAny": true,
         "rejectedLI": false,
@@ -697,8 +698,8 @@
     {
       "type": "CCPA",
       "applies": true,
-      "url": "https://cdn.privacy-mgmt.com/index.html?message_id=521359&consentLanguage=en&preload_message=true",
-      "dateCreated": "2022-09-06T14:18:18.850Z",
+      "url": "https://cdn.privacy-mgmt.com/index.html?message_id=704632&consentLanguage=en&preload_message=true",
+      "dateCreated": "2022-09-08T12:10:18.677Z",
       "newUser": true,
       "consentedAll": false,
       "rejectedCategories": [],
@@ -873,25 +874,25 @@
         },
         "message_choice": [
           {
-            "choice_id": 4486243,
+            "choice_id": 6878114,
             "type": 15,
             "iframe_url": null,
             "button_text": "Dismiss"
           },
           {
-            "choice_id": 4486244,
+            "choice_id": 6878115,
             "type": 12,
             "iframe_url": "https://pm.cmp.sp-stage.net?privacy_manager_id=5da094ce8a88c000127b8da7",
             "button_text": "1573484199354"
           },
           {
-            "choice_id": 4486245,
+            "choice_id": 6878116,
             "type": 12,
             "iframe_url": "https://ccpa-notice.sp-prod.net/ccpa_pm/index.html?message_id=521354",
             "button_text": "1625690580103"
           },
           {
-            "choice_id": 4486246,
+            "choice_id": 6878117,
             "type": 11,
             "iframe_url": null,
             "button_text": "1625690549764"
@@ -900,10 +901,10 @@
         "site_id": 17801
       },
       "messageMetaData": {
-        "messageId": 521359,
-        "prtnUUID": "25107d88-77c2-4e17-b0a0-2be422a22fb3",
+        "messageId": 704632,
+        "prtnUUID": "dcfd5678-9cfc-4c71-9be3-2b006136a31f",
         "msgDescription": "",
-        "bucket": 252,
+        "bucket": 237,
         "categoryId": 2,
         "subCategoryId": 1
       }
@@ -923,13 +924,13 @@
         "_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbKKBjLyQAyD2lidGKVUEDOvNCcHyC4BK6iurVWKBQAW54XRMAAAAA%3D%3D"
       ],
       "propertyId": 17801,
-      "messageId": 521359
+      "messageId": 704632
     }
   },
   "nonKeyedLocalState": {
     "gdpr": {
-      "_sp_v1_uid": "1:611:4de3ed1d-fac5-4af6-bcc8-be0eee3eab24",
-      "_sp_v1_data": "2:369163:1662473898:0:1:0:1:0:0:_:-1"
+      "_sp_v1_uid": "1:278:b2db1c6a-0041-4897-8f4d-6fc2f9e95ba9",
+      "_sp_v1_data": "2:369163:1662639018:0:1:0:1:0:0:_:-1"
     },
     "ccpa": {
       "_sp_v1_uid": null,
