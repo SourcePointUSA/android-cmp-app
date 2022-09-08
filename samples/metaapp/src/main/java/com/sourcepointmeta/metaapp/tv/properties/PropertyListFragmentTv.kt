@@ -63,7 +63,7 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
                 presenterAdapter.addAll(0, it)
                 if (state.selectLast) {
                     setSelectedPosition(presenterAdapter.lastIndex())
-                }else{
+                } else {
                     setSelectedPosition(0)
                 }
             }

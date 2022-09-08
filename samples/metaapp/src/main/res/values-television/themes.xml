@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Theme.JsonViewerAppTv" parent="Base.Theme.MyAppTv">
+        <item name="browseTitleViewLayout">@layout/viewer_header</item>
+    </style>
+
     <style name="Theme.DemoAppTv" parent="Base.Theme.MyAppTv">
         <item name="browseTitleViewLayout">@layout/demo_header</item>
     </style>
