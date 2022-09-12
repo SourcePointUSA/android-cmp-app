@@ -34,7 +34,7 @@ internal fun Map<String, Any?>.toConsentStatus(): ConsentStatusCS {
         granularStatus = getMap("granularStatus")?.toGranularStatus(),
         consentedAll = getFieldValue<Boolean>("consentedAll") ?: failParam("consentedAll"),
         hasConsentData = getFieldValue<Boolean>("hasConsentData") ?: failParam("hasConsentData"),
-        consentedToAny = getFieldValue<Boolean>("consentedToAny") ?: failParam("consentedToAny"),
+        consentedToAny = getFieldValue<Boolean>("consentedToAny"),
         rejectedAny = getFieldValue<Boolean>("rejectedAny") ?: failParam("rejectedAny"),
         rejectedLI = getFieldValue<Boolean>("rejectedLI") ?: failParam("rejectedLI"),
         thisContent = JSONObject(this)

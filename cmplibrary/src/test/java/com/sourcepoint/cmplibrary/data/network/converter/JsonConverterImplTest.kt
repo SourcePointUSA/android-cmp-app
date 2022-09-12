@@ -190,7 +190,31 @@ class JsonConverterImplTest {
         val json = "v7/consent_status_without_auth_id.json".file2String()
         val testMap = JSONObject(json).toTreeMap()
         // talk with Sid to fix the boolean-null value
-//        val nm = (sut.toConsentStatusResp(json) as Either.Right).r
-//        nm.thisContent.toTreeMap().assertEquals(testMap)
+        val nm = (sut.toConsentStatusResp(json) as Either.Right).r
+        nm.thisContent.toTreeMap().assertEquals(testMap)
+        nm.consentStatusData.gdprCS!!.run {
+            addtlConsent.assertEquals("1~")
+            grants.size.assertEquals(5)
+            euconsent.assertEquals("CPeeA8APeeA8AAGABCENCeCgAAAAAHAAAAYgAAAMZgAgMZADCgAQGMhwAIDGRIAEBjIA.YAAAAAAAAAAA")
+            dateCreated.assertEquals("2022-08-29T13:40:54.754Z")
+            gdprApplies.assertTrue()
+            cookieExpirationDays.assertEquals(365)
+            localDataCurrent.assertFalse()
+            vendorListId.assertEquals("5fa9a8fda228635eaf24ceb5")
+            uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
+        }
+    }
+
+    @Test
+    fun `GIVEN a pv_data body resp RETURN a Right(PvDataResp)`() {
+        val json = "v7/pv_data.json".file2String()
+        val nm = (sut.toPvDataResp(json) as Either.Right).r
+        nm.gdprPv!!.cookies[0].also {
+            it.getString("key").assertEquals("consentUUID")
+            it.getString("value").assertEquals("86ac1e2e-ef53-451a-9e65-27c51f95adb8")
+            it.getInt("maxAge").assertEquals(31536000)
+            it.getBoolean("shareRootDomain").assertFalse()
+            it.getBoolean("session").assertFalse()
+        }
     }
 }
