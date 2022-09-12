@@ -40,7 +40,7 @@ internal fun Map<String, GDPRPurposeGrants?>.toJSONObjGrant(): JSONObject {
 }
 
 internal fun <T> Map<String, Any?>.getFieldValue(key: String): T? {
-    return this[key] as? T
+    return this[key]?.let { this[key] as? T }
 }
 
 private fun toMap(jsonObj: JSONObject): Map<String, Any?> {
@@ -48,6 +48,7 @@ private fun toMap(jsonObj: JSONObject): Map<String, Any?> {
     val keysItr = jsonObj.keys()
     while (keysItr.hasNext()) {
         val key = keysItr.next()
+        if (jsonObj.isNull(key)) continue
         var value = jsonObj[key]
         when (value) {
             is JSONArray -> value = toList(value)
