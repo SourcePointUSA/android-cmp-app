@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.PvDataResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -40,6 +41,8 @@ internal interface JsonConverter {
     fun toConsentStatusResp(body: String): Either<ConsentStatusResp>
 
     fun toPvDataResp(body: String): Either<PvDataResp>
+
+    fun toMessagesResp(body: String): Either<MessagesResp>
 
     companion object
 }

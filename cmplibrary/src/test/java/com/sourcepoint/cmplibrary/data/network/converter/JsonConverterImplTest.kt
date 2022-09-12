@@ -217,4 +217,12 @@ class JsonConverterImplTest {
             it.getBoolean("session").assertFalse()
         }
     }
+
+    @Test
+    fun `GIVEN a message body resp RETURN a Right(MessagesResp)`() {
+        val json = "v7/messages.json".file2String()
+        val testMap = JSONObject(json).toTreeMap()
+        val nm = (sut.toMessagesResp(json) as Either.Right).r
+//        nm.thisContent.toTreeMap().assertEquals(testMap)
+    }
 }
