@@ -24,6 +24,7 @@ internal interface HttpUrlManager {
     // V7
     fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
     fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
+    fun getPvData(env: Env): HttpUrl
 }
 
 /**
@@ -169,6 +170,16 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("withSiteActions", false.toString())
             .apply { param.authId?.let { p -> addQueryParameter("authId", p) } }
             .addEncodedQueryParameter("metadata", param.metadata)
+            .build()
+    }
+
+    override fun getPvData(env: Env): HttpUrl {
+        // http://localhost:3000/wrapper/v2/pv-data?env=localProd
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(env.host)
+            .addPathSegments("wrapper/v2/pv-data")
+            .addQueryParameter("env", env.queryParam)
             .build()
     }
 }

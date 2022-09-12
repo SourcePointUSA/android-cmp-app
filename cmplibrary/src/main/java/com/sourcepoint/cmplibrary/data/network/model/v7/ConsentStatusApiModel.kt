@@ -89,6 +89,6 @@ internal data class ConsentStatusCS(
     val rejectedLI: Boolean,
     val consentedAll: Boolean,
     val hasConsentData: Boolean,
-    val consentedToAny: Boolean,
+    val consentedToAny: Boolean?,
     val granularStatus: GranularStatus?
 )
