@@ -44,7 +44,7 @@ internal data class GdprMess(
 
 internal data class CcpaMess(
     override val thisContent: JSONObject,
-    override val dateCreated: String,
+    override val dateCreated: String?,
     override val message: JSONObject?,
     override val messageMetaData: JSONObject?,
     override val type: String,
@@ -57,7 +57,8 @@ internal data class CcpaMess(
     val rejectedCategories: List<String> = listOf(),
     val rejectedVendors: List<String> = listOf(),
     val status: CcpaStatus,
-    val uspstring: String,
+    val uspstring: String?,
+    val applies: Boolean = false,
 ) : MessagesCampaign()
 
 internal data class MessagesParamReq(

@@ -2,8 +2,10 @@ package com.sourcepoint.cmplibrary.data.network.model.v7
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.map
+import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.getFieldValue
@@ -88,23 +90,41 @@ internal fun Map<String, Any?>.toGdprMess(): GdprMess {
     )
 }
 
-internal fun Map<String, Any?>.toCcpaMess(): CcpaMess? {
+internal fun Map<String, Any?>.toCcpaMess(): CcpaMess {
 
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
     val url = getFieldValue<String>("url")
     val messageSubCategory = MessageSubCategory.values().find { m -> m.code == messageMetaData?.getInt("subCategoryId") } ?: MessageSubCategory.TCFv2
     val applies = getFieldValue<Boolean>("applies") ?: false
+    val dateCreated = getFieldValue<String>("dateCreated")
+    val newUser = getFieldValue<Boolean>("newUser") ?: false
+    val signedLspa = getFieldValue<Boolean>("signedLspa") ?: false
+    val rejectedAll = getFieldValue<Boolean>("rejectedAll") ?: false
+    val consentedAll = getFieldValue<Boolean>("consentedAll") ?: false
+    val uspString: String = getFieldValue("uspstring") ?: failParam("uspString")
+    val status: CcpaStatus = getFieldValue<String>("status")
+        ?.let { s ->
+            CcpaStatus.values().find {
+                it.name == s
+            }
+        }
+        ?: fail("CCPAStatus cannot be null!!!")
 
-    return null
-
-//    return CcpaMess(
-//        thisContent = JSONObject(this),
-//        applies = applies,
-//        message = message,
-//        url = url?.let { HttpUrl.parse(it) },
-//        messageMetaData = messageMetaData,
-//        userConsent = getMap("userConsent")?.toCCPAUserConsent(uuid, applies) ?: failParam("CCPAUserConsent"),
-//        messageSubCategory = messageSubCategory
-//    )
+    return CcpaMess(
+        thisContent = JSONObject(this),
+        applies = applies,
+        type = CampaignType.CCPA.name,
+        message = message,
+        dateCreated = dateCreated,
+        url = url?.let { HttpUrl.parse(it) },
+        messageMetaData = messageMetaData,
+        newUser = newUser,
+        messageSubCategory = messageSubCategory,
+        status = status,
+        uspstring = uspString,
+        signedLspa = signedLspa,
+        consentedAll = consentedAll,
+        rejectedAll = rejectedAll
+    )
 }
