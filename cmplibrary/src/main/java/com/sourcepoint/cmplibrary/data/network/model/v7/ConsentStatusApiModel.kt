@@ -92,3 +92,25 @@ internal data class ConsentStatusCS(
     val consentedToAny: Boolean?,
     val granularStatus: GranularStatus?
 )
+
+internal fun ConsentStatusCS.toJsonObject(): JSONObject {
+    return JSONObject().apply {
+        put("rejectedAny", rejectedAny)
+        put("rejectedLI", rejectedLI)
+        put("consentedAll", consentedAll)
+        put("hasConsentData", hasConsentData)
+        put("consentedToAny", consentedToAny)
+        put("granularStatus", granularStatus?.toJsonObject())
+    }
+}
+
+internal fun GranularStatus.toJsonObject(): JSONObject {
+    return JSONObject().apply {
+        put("vendorConsent", vendorConsent)
+        put("vendorLegInt", vendorLegInt)
+        put("purposeConsent", purposeConsent)
+        put("purposeLegInt", purposeLegInt)
+        put("previousOptInAll", previousOptInAll)
+        put("defaultConsent", defaultConsent)
+    }
+}

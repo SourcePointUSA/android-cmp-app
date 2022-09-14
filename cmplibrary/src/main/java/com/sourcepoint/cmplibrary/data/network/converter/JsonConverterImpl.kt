@@ -7,9 +7,7 @@ import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.v7.CcpaMD
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.GdprMD
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.CcpaMD
 import com.sourcepoint.cmplibrary.data.network.model.v7.GdprMD

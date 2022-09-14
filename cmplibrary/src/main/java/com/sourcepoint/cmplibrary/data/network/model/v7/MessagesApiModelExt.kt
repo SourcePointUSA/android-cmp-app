@@ -12,14 +12,14 @@ import com.sourcepoint.cmplibrary.model.toJSONObj
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.HttpUrl
 import org.json.JSONObject
-import java.util.*
+import java.util.* //ktlint-disable
 
 internal fun Map<String, Any?>.toMessagesResp(): MessagesResp {
-    val propertyId = getFieldValue<Int>("propertyId")  ?: failParam("propertyId")
+    val propertyId = getFieldValue<Int>("propertyId") ?: failParam("propertyId")
     val localState = getMap("localState")?.toJSONObj()
 
     val listEither: List<Either<MessagesCampaign?>> = getFieldValue<List<Map<String, Any?>>>("campaigns")
-        ?.map { check { it.toMessageCampaignResp()}}
+        ?.map { check { it.toMessageCampaignResp() } }
         ?: emptyList()
 
     val list = listEither.fold(mutableListOf<MessagesCampaign>()) { acc, elem ->
@@ -77,7 +77,7 @@ internal fun Map<String, Any?>.toGdprMess(): GdprMess {
         messageMetaData = messageMetaData,
         consentStatusCS = consentStatusCS,
         dateCreated = dateCreated,
-        type =  CampaignType.GDPR.name,
+        type = CampaignType.GDPR.name,
         customVendorsResponse = getMap("customVendorsResponse")?.toJSONObj(),
         euconsent = euconsent,
         addtlConsent = addtlConsent,
