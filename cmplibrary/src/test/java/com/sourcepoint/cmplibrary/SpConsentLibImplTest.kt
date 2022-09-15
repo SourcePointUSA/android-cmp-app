@@ -16,6 +16,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -146,7 +147,7 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
-        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(true)
+        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(OTT)
 
         val sut = createLib()
         sut.loadPrivacyManager("1234", GDPR)
@@ -169,7 +170,7 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
-        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(true)
+        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(OTT)
 
         val sut = createLib()
         sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR)
@@ -192,7 +193,7 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
-        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(true)
+        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(OTT)
 
         val sut = createLib()
         sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR, true)

@@ -38,7 +38,7 @@ class MainActivityKotlinNativeOttTest {
     // TODO we need a spConfOttNative prop
     private val spConfOttNative = config {
         accountId = 22
-        propertyName = // TODO
+        propertyName = "android-tv-integrate-new-ott"
         campaignsEnv = CampaignsEnv.PUBLIC
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
@@ -53,7 +53,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "PM ID",
+                gdprPmId = "683994",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )

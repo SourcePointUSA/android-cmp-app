@@ -6,7 +6,7 @@ import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.*
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
 import okhttp3.HttpUrl
 
 /**
@@ -21,7 +21,7 @@ internal interface HttpUrlManager {
      * Need to replace
      *  isOtt: Boolean ----> subCategory: MessageSubCategory
      *  This means, we need a refactor of all tests
-      */
+     */
 
     fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig, messSubCat: MessageSubCategory): HttpUrl
 }
@@ -75,7 +75,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
 
     private fun urlPmGdpr(pmConf: PmUrlConfig, env: Env, messSubCat: MessageSubCategory): HttpUrl {
 
-        val urlPostFix = when(messSubCat){
+        val urlPostFix = when (messSubCat) {
             OTT -> "privacy-manager-ott/index.html"
             NATIVE_OTT -> "native-ott/index.html"
             else -> "privacy-manager/index.html"
