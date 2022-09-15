@@ -30,7 +30,7 @@ internal fun Map<String, Any?>.toMessagesResp(): MessagesResp {
     }
 
     return MessagesResp(
-        localState = localState ?: JSONObject(),
+        localState = localState,
         campaigns = list,
         propertyId = propertyId,
         thisContent = JSONObject(this)

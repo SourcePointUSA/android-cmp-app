@@ -11,7 +11,7 @@ internal data class MessagesResp(
     val thisContent: JSONObject,
     val propertyId: Int,
     val campaigns: List<MessagesCampaign> = emptyList(),
-    val localState: JSONObject
+    val localState: JSONObject?
 )
 
 internal abstract class MessagesCampaign {
