@@ -16,6 +16,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import io.mockk.MockKAnnotations
@@ -81,6 +82,7 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
+        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(OTT)
 
         val sut = createLib()
         sut.loadPrivacyManager("1234", GDPR)
@@ -95,7 +97,7 @@ class SpConsentLibImplTest {
             )
         }
 
-        verify { logger.i(any(), "false") }
+        verify { logger.i(any(), "${OTT.code}") }
     }
 
     @Test
@@ -103,6 +105,7 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
+        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(TCFv2)
 
         val sut = createLib()
         sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR)
@@ -117,7 +120,7 @@ class SpConsentLibImplTest {
             )
         }
 
-        verify { logger.i(any(), "false") }
+        verify { logger.i(any(), "${TCFv2.code}") }
     }
 
     @Test
@@ -125,6 +128,7 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
+        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(NATIVE_OTT)
 
         val sut = createLib()
         sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR, true)
@@ -139,7 +143,7 @@ class SpConsentLibImplTest {
             )
         }
 
-        verify { logger.i(any(), "false") }
+        verify { logger.i(any(), "${NATIVE_OTT.code}") }
     }
 
     @Test
@@ -162,7 +166,7 @@ class SpConsentLibImplTest {
             )
         }
 
-        verify { logger.i(any(), "true") }
+        verify { logger.i(any(), "${OTT.code}") }
     }
 
     @Test
@@ -185,7 +189,7 @@ class SpConsentLibImplTest {
             )
         }
 
-        verify { logger.i(any(), "true") }
+        verify { logger.i(any(), "${OTT.code}") }
     }
 
     @Test
@@ -208,7 +212,7 @@ class SpConsentLibImplTest {
             )
         }
 
-        verify { logger.i(any(), "true") }
+        verify { logger.i(any(), "${OTT.code}") }
     }
 
     private fun createLib() = SpConsentLibImpl(
