@@ -17,12 +17,6 @@ internal interface HttpUrlManager {
     fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl
     fun sendCustomConsentUrl(env: Env): HttpUrl
     fun deleteCustomConsentToUrl(host: String, params: CustomConsentReq): HttpUrl
-    /**
-     * Need to replace
-     *  isOtt: Boolean ----> subCategory: MessageSubCategory
-     *  This means, we need a refactor of all tests
-     */
-
     fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig, messSubCat: MessageSubCategory): HttpUrl
 }
 
