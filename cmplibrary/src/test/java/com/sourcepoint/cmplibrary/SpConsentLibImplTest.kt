@@ -146,7 +146,7 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
-        every { campaignManager.isCampaignOtt(any()) }.returns(true)
+        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(true)
 
         val sut = createLib()
         sut.loadPrivacyManager("1234", GDPR)
@@ -169,7 +169,7 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
-        every { campaignManager.isCampaignOtt(any()) }.returns(true)
+        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(true)
 
         val sut = createLib()
         sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR)
@@ -192,7 +192,7 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
-        every { campaignManager.isCampaignOtt(any()) }.returns(true)
+        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(true)
 
         val sut = createLib()
         sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR, true)

@@ -159,7 +159,7 @@ internal class SpConsentLibImpl(
                                 this,
                                 JSReceiverDelegate(),
                                 remainingCampaigns,
-                                firstCampaign2Process.messageSubCategory == OTT, // we don't use anymore boolean, we use MessageSubCategory
+                                firstCampaign2Process.messageSubCategory,
                                 cmpViewId
                             )
                                 .executeOnLeft { spClient.onError(it) }
@@ -322,7 +322,7 @@ internal class SpConsentLibImpl(
             pmId = pmId,
             pmTab = pmTab,
             campaignType = campaignType,
-            isOtt = campaignManager.isCampaignOtt(campaignType),
+            messSubCat = campaignManager.getMessSubCategoryByCamp(campaignType),
             useGroupPmIfAvailable = useGroupPmIfAvailable
         )
     }
@@ -332,7 +332,7 @@ internal class SpConsentLibImpl(
             pmId = pmId,
             pmTab = PMTab.DEFAULT,
             campaignType = campaignType,
-            isOtt = campaignManager.isCampaignOtt(campaignType),
+            messSubCat = campaignManager.getMessSubCategoryByCamp(campaignType),
             useGroupPmIfAvailable = false
         )
     }
@@ -341,7 +341,7 @@ internal class SpConsentLibImpl(
         pmId: String,
         pmTab: PMTab,
         campaignType: CampaignType,
-        isOtt: Boolean,
+        messSubCat: MessageSubCategory,
         useGroupPmIfAvailable: Boolean
     ) {
         checkMainThread("loadPrivacyManager")
@@ -350,15 +350,15 @@ internal class SpConsentLibImpl(
         val gdprGroupPmId = campaignManager.getGroupId(campaignType)
 
         // used for testing
-        pLogger.i("loadPm - isOtt: ", isOtt.toString())
+        pLogger.i("loadPm - isOtt: ", messSubCat.toString())
 
         val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab, useGroupPmIfAvailable, gdprGroupPmId)
         pmConfig
             .map {
-                val webView = viewManager.createWebView(this, JSReceiverDelegate(), isOtt, null)
+                val webView = viewManager.createWebView(this, JSReceiverDelegate(), messSubCat, null)
                     .executeOnLeft { e -> spClient.onError(e) }
                     .getOrNull()
-                val url = urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, isOtt = isOtt)
+                val url = urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, messSubCat = messSubCat)
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
                     url = url.toString(),
@@ -575,7 +575,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
-                                isOtt = false
+                                messSubCat = TCFv2
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -601,7 +601,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
-                                isOtt = false
+                                messSubCat = TCFv2
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -633,7 +633,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
-                                isOtt = false
+                                messSubCat = TCFv2
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
@@ -659,7 +659,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
-                                isOtt = false
+                                messSubCat = TCFv2
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
@@ -686,7 +686,7 @@ internal class SpConsentLibImpl(
             privacyManagerId = pmId
         )
 
-        viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns, false, null)
+        viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns, TCFv2, null)
             .map { nativeMessageShowOption(nca, it) }
             .executeOnLeft { spClient.onError(it) }
     }
@@ -741,13 +741,13 @@ internal class SpConsentLibImpl(
                         json = it.message
                     )
                 }
-                TCFv2, OTT -> {
+                TCFv2, OTT, NATIVE_OTT -> {
                     /** create a instance of WebView */
                     val webView = viewManager.createWebView(
                         this,
                         JSReceiverDelegate(),
                         remainingCampaigns,
-                        it.messageSubCategory == OTT,
+                        it.messageSubCategory,
                         null
                     )
                         .executeOnLeft { e -> spClient.onError(e) }

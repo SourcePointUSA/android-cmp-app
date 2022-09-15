@@ -136,7 +136,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, isOtt = true).toString()
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = true).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?pmTab&site_id&consentUUID=uuid&message_id=111")
     }
 
@@ -149,7 +149,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, isOtt = false).toString()
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = false).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager/index.html?pmTab&site_id&consentUUID=uuid&message_id=111")
     }
 
@@ -162,7 +162,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, isOtt = true).toString()
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messSubCat = true).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_ott/index.html?site_id&ccpaUUID=uuid&message_id=111")
     }
 
@@ -175,7 +175,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, isOtt = false).toString()
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messSubCat = false).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_pm/index.html?site_id&ccpaUUID=uuid&message_id=111")
     }
 }

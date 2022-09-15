@@ -11,6 +11,7 @@ import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.exception.GenericSDKException
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import java.lang.ref.WeakReference
 import java.util.* // ktlint-disable
 
@@ -25,14 +26,14 @@ internal interface ViewsManager {
     fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
-        isOtt: Boolean, // we don't use anymore boolean, we use MessageSubCategory
+        messSubCat: MessageSubCategory, // we don't use anymore boolean, we use MessageSubCategory
         cmpViewId: Int?
     ): Either<IConsentWebView>
     fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
         campaignQueue: Queue<CampaignModel>,
-        isOtt: Boolean, // we don't use anymore boolean, we use MessageSubCategory
+        messSubCat: MessageSubCategory, // we don't use anymore boolean, we use MessageSubCategory
         cmpViewId: Int?
     ): Either<IConsentWebView>
     fun removeView(view: View)
@@ -124,7 +125,7 @@ private class ViewsManagerImpl(
     override fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
-        isOtt: Boolean,
+        messSubCat: MessageSubCategory,
         cmpViewId: Int?
     ): Either<IConsentWebView> {
         return weakReference.get()?.let {
@@ -136,7 +137,7 @@ private class ViewsManagerImpl(
                     logger = lib.pLogger,
                     executorManager = lib.executor,
                     messageTimeout = messageTimeout,
-                    isOtt = isOtt
+                    messSubCat = messSubCat
                 )
             }
         } ?: Either.Left(GenericSDKException(description = "The activity reference in the ViewManager is null!!!"))
@@ -146,7 +147,7 @@ private class ViewsManagerImpl(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
         campaignQueue: Queue<CampaignModel>,
-        isOtt: Boolean,
+        messSubCat: MessageSubCategory,
         cmpViewId: Int?
     ): Either<IConsentWebView> {
         return weakReference.get()?.let {
@@ -159,7 +160,7 @@ private class ViewsManagerImpl(
                     executorManager = lib.executor,
                     campaignQueue = campaignQueue,
                     messageTimeout = messageTimeout,
-                    isOtt = isOtt
+                    messSubCat = messSubCat
                 )
             }
         } ?: Either.Left(GenericSDKException(description = "The activity reference in the ViewManager is null!!!"))
