@@ -10,6 +10,7 @@ import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
@@ -35,10 +36,9 @@ class MainActivityKotlinNativeOttTest {
         if (this::scenario.isLateinit) scenario.close()
     }
 
-    // TODO we need a spConfOttNative prop
     private val spConfOttNative = config {
         accountId = 22
-        propertyName = "android-tv-integrate-new-ott"
+        propertyName = "sca-ott-newwebpm"
         campaignsEnv = CampaignsEnv.PUBLIC
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
@@ -53,7 +53,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "683994",
+                gdprPmId = "704111",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )
@@ -62,7 +62,7 @@ class MainActivityKotlinNativeOttTest {
         scenario = launchActivity()
 
         periodicWr(period = 3000, backup = { scenario.recreateAndResume() }) {
-            tapAcceptAllOnWebView()
+            tapAcceptOnWebView()
             device.pressEnter()
         }
 
@@ -97,7 +97,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "PM ID",
+                gdprPmId = "704111",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )
@@ -106,13 +106,13 @@ class MainActivityKotlinNativeOttTest {
         scenario = launchActivity()
 
         periodicWr(period = 3000, backup = { scenario.recreateAndResume() }) {
-            tapAcceptAllOnWebView()
+            tapAcceptOnWebView()
             device.pressEnter()
         }
 
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }){
-            tapAcceptAllOnWebView()
+            tapAcceptOnWebView()
             device.pressEnter()
         }
 

@@ -153,7 +153,7 @@ internal class SpConsentLibImpl(
                 executor.executeOnMain {
                     val legislation = firstCampaign2Process.type
                     when (firstCampaign2Process.messageSubCategory) {
-                        TCFv2, OTT -> {
+                        TCFv2, OTT, NATIVE_OTT -> {
                             /** create a instance of WebView */
                             val webView = viewManager.createWebView(
                                 this,
@@ -178,9 +178,6 @@ internal class SpConsentLibImpl(
                                 msg = "onNativeMessageReady",
                                 json = firstCampaign2Process.message
                             )
-                        }
-                        NATIVE_OTT -> {
-                            // native ott case
                         }
                     }
                 }
