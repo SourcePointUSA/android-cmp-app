@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.data.network.model.v7.CcpaMess
 import com.sourcepoint.cmplibrary.data.network.model.v7.GdprMess
 import com.sourcepoint.cmplibrary.data.network.model.v7.toJsonObject
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -240,6 +241,24 @@ class JsonConverterImplTest {
             euconsent.assertEquals(gdprTester["euconsent"].toString())
             customVendorsResponse!!.toTreeMap().toString().assertEquals(gdprTester["customVendorsResponse"].toString())
             childPmId.assertNull()
+        }
+        (nm.campaigns[1] as CcpaMess).run {
+            val ccpaTester = testMap.getList("campaigns")!![1]
+            type.assertEquals(CampaignType.CCPA.name)
+            message!!.toTreeMap().toString().assertEquals(ccpaTester["message"].toString())
+            dateCreated.assertEquals(ccpaTester["dateCreated"])
+            messageMetaData!!.toTreeMap().toString().assertEquals(ccpaTester["messageMetaData"].toString())
+            url.toString().assertEquals(ccpaTester["url"].toString())
+            messageSubCategory.assertEquals(MessageSubCategory.TCFv2)
+            newUser.assertTrue()
+            consentedAll.assertFalse()
+            rejectedAll.assertFalse()
+            signedLspa.assertFalse()
+            rejectedCategories.size.assertEquals(0)
+            rejectedVendors.size.assertEquals(0)
+            uspstring.assertEquals("1YNN")
+            applies.assertTrue()
+            status.name.assertEquals(ccpaTester["status"].toString())
         }
     }
 }
