@@ -22,6 +22,7 @@ import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import okhttp3.HttpUrl
 import java.util.* //ktlint-disable
@@ -35,7 +36,7 @@ internal class ConsentWebView(
     private val connectionManager: ConnectionManager,
     private val executorManager: ExecutorManager,
     private val campaignQueue: Queue<CampaignModel> = LinkedList(),
-    private val isOtt: Boolean = false,
+    private val messSubCat: MessageSubCategory = MessageSubCategory.TCFv2,
     private val viewId: Int? = null
 ) : WebView(context), IConsentWebView {
 
@@ -67,7 +68,7 @@ internal class ConsentWebView(
         }
         enableDebug()
         setStyle()
-        if (isOtt) {
+        if (messSubCat == MessageSubCategory.OTT) {
             val density = resources.displayMetrics.densityDpi
             val scaleFactor = density - (density * 0.5).toInt()
             setInitialScale(scaleFactor)
