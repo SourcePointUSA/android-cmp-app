@@ -2,10 +2,7 @@ package com.sourcepoint.cmplibrary.stub
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
+import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import org.json.JSONObject
@@ -35,6 +32,10 @@ internal class MockNetworkClient(
     }
 
     override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getMessages(param: MessagesParamReq): Either<MessagesResp> {
         TODO("Not yet implemented")
     }
 }
