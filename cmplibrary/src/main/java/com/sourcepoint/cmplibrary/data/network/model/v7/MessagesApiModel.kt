@@ -24,7 +24,7 @@ internal abstract class MessagesCampaign {
     abstract val messageSubCategory: MessageSubCategory
 }
 
-internal data class GdprMess(
+internal data class GdprMessage(
     override val thisContent: JSONObject,
     override val dateCreated: String?,
     override val message: JSONObject?,
@@ -42,7 +42,7 @@ internal data class GdprMess(
 
 ) : MessagesCampaign()
 
-internal data class CcpaMess(
+internal data class CcpaMessage(
     override val thisContent: JSONObject,
     override val dateCreated: String?,
     override val message: JSONObject?,

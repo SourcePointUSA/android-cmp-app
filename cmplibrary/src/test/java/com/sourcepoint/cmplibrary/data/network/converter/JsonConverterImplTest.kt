@@ -2,8 +2,8 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.data.network.model.v7.CcpaMess
-import com.sourcepoint.cmplibrary.data.network.model.v7.GdprMess
+import com.sourcepoint.cmplibrary.data.network.model.v7.CcpaMessage
+import com.sourcepoint.cmplibrary.data.network.model.v7.GdprMessage
 import com.sourcepoint.cmplibrary.data.network.model.v7.toJsonObject
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.*  //ktlint-disable
@@ -226,7 +226,7 @@ class JsonConverterImplTest {
         val json = "v7/messages.json".file2String()
         val testMap = JSONObject(json).toTreeMap()
         val nm = (sut.toMessagesResp(json) as Either.Right).r
-        (nm.campaigns[0] as GdprMess).run {
+        (nm.campaigns[0] as GdprMessage).run {
             val gdprTester = testMap.getList("campaigns")!![0]
             type.assertEquals(CampaignType.GDPR.name)
             message!!.toTreeMap().toString().assertEquals(gdprTester["message"].toString())
@@ -242,7 +242,7 @@ class JsonConverterImplTest {
             customVendorsResponse!!.toTreeMap().toString().assertEquals(gdprTester["customVendorsResponse"].toString())
             childPmId.assertNull()
         }
-        (nm.campaigns[1] as CcpaMess).run {
+        (nm.campaigns[1] as CcpaMessage).run {
             val ccpaTester = testMap.getList("campaigns")!![1]
             type.assertEquals(CampaignType.CCPA.name)
             message!!.toTreeMap().toString().assertEquals(ccpaTester["message"].toString())

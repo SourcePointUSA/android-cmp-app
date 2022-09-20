@@ -45,7 +45,7 @@ internal fun Map<String, Any?>.toMessageCampaignResp(): MessagesCampaign? {
     }
 }
 
-internal fun Map<String, Any?>.toGdprMess(): GdprMess {
+internal fun Map<String, Any?>.toGdprMess(): GdprMessage {
 
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
@@ -72,7 +72,7 @@ internal fun Map<String, Any?>.toGdprMess(): GdprMess {
         }
         ?.toMap() ?: emptyMap()
 
-    return GdprMess(
+    return GdprMessage(
         thisContent = JSONObject(this),
         message = message,
         url = url?.let { HttpUrl.parse(it) },
@@ -90,7 +90,7 @@ internal fun Map<String, Any?>.toGdprMess(): GdprMess {
     )
 }
 
-internal fun Map<String, Any?>.toCcpaMess(): CcpaMess {
+internal fun Map<String, Any?>.toCcpaMess(): CcpaMessage {
 
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
@@ -111,7 +111,7 @@ internal fun Map<String, Any?>.toCcpaMess(): CcpaMess {
         }
         ?: fail("CCPAStatus cannot be null!!!")
 
-    return CcpaMess(
+    return CcpaMessage(
         thisContent = JSONObject(this),
         applies = applies,
         type = CampaignType.CCPA.name,
