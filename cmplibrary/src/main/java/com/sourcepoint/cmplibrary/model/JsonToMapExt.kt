@@ -40,7 +40,7 @@ internal fun Map<String, GDPRPurposeGrants?>.toJSONObjGrant(): JSONObject {
 }
 
 internal fun <T> Map<String, Any?>.getFieldValue(key: String): T? {
-    return this[key]?.let { this[key] as? T }
+    return this[key] as? T
 }
 
 private fun toMap(jsonObj: JSONObject): Map<String, Any?> {

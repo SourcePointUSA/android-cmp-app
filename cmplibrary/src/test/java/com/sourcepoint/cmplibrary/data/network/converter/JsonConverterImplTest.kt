@@ -2,9 +2,12 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.model.NativeMessageResp
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
-import com.sourcepoint.cmplibrary.model.toTreeMap
+import com.sourcepoint.cmplibrary.data.network.model.v7.CcpaMessage
+import com.sourcepoint.cmplibrary.data.network.model.v7.GdprMessage
+import com.sourcepoint.cmplibrary.data.network.model.v7.toJsonObject
+import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.*  //ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.file2List
 import com.sourcepoint.cmplibrary.util.file2String
 import org.json.JSONObject
@@ -215,6 +218,47 @@ class JsonConverterImplTest {
             it.getInt("maxAge").assertEquals(31536000)
             it.getBoolean("shareRootDomain").assertFalse()
             it.getBoolean("session").assertFalse()
+        }
+    }
+
+    @Test
+    fun `GIVEN a message body resp RETURN a Right(MessagesResp)`() {
+        val json = "v7/messages.json".file2String()
+        val testMap = JSONObject(json).toTreeMap()
+        val nm = (sut.toMessagesResp(json) as Either.Right).r
+        (nm.campaigns[0] as GdprMessage).run {
+            val gdprTester = testMap.getList("campaigns")!![0]
+            type.assertEquals(CampaignType.GDPR.name)
+            message!!.toTreeMap().toString().assertEquals(gdprTester["message"].toString())
+            dateCreated.assertEquals(gdprTester["dateCreated"])
+            messageMetaData!!.toTreeMap().toString().assertEquals(gdprTester["messageMetaData"].toString())
+            url.toString().assertEquals(gdprTester["url"].toString())
+            messageSubCategory.assertEquals(MessageSubCategory.TCFv2)
+            grants.size.assertEquals(5)
+            consentStatusCS!!.toJsonObject().toTreeMap().toString().assertEquals(gdprTester["consentStatus"].toString())
+            hasLocalData.assertFalse()
+            addtlConsent.assertEquals(gdprTester["addtlConsent"].toString())
+            euconsent.assertEquals(gdprTester["euconsent"].toString())
+            customVendorsResponse!!.toTreeMap().toString().assertEquals(gdprTester["customVendorsResponse"].toString())
+            childPmId.assertNull()
+        }
+        (nm.campaigns[1] as CcpaMessage).run {
+            val ccpaTester = testMap.getList("campaigns")!![1]
+            type.assertEquals(CampaignType.CCPA.name)
+            message!!.toTreeMap().toString().assertEquals(ccpaTester["message"].toString())
+            dateCreated.assertEquals(ccpaTester["dateCreated"])
+            messageMetaData!!.toTreeMap().toString().assertEquals(ccpaTester["messageMetaData"].toString())
+            url.toString().assertEquals(ccpaTester["url"].toString())
+            messageSubCategory.assertEquals(MessageSubCategory.TCFv2)
+            newUser.assertTrue()
+            consentedAll.assertFalse()
+            rejectedAll.assertFalse()
+            signedLspa.assertFalse()
+            rejectedCategories.size.assertEquals(0)
+            rejectedVendors.size.assertEquals(0)
+            uspstring.assertEquals("1YNN")
+            applies.assertTrue()
+            status.name.assertEquals(ccpaTester["status"].toString())
         }
     }
 }
