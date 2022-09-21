@@ -48,7 +48,7 @@ internal fun Map<String, Any?>.toMessageCampaignResp(): MessagesCampaign? {
 internal fun Map<String, Any?>.toGdprMess(): GdprMessage {
 
     val message = getMap("message")?.toJSONObj()
-    val messageMetaData = getMap("messageMetaData")?.toJSONObj()
+    val messageMetaData = getMap("messageMetaData")?.toMessageMetaData()
     val url = getFieldValue<String>("url")
     val consentStatusCS = getMap("consentStatus")?.toConsentStatus()
     val dateCreated = getFieldValue<String>("dateCreated")
@@ -56,9 +56,6 @@ internal fun Map<String, Any?>.toGdprMess(): GdprMessage {
     val addtlConsent = getFieldValue<String>("addtlConsent")
     val childPmId = getFieldValue<String>("childPmId")
     val hasLocalData = getFieldValue<Boolean>("hasLocalData")
-    val messageSubCategory = MessageSubCategory.values()
-        .find { m -> m.code == messageMetaData?.getInt("subCategoryId") }
-        ?: MessageSubCategory.TCFv2
     val vendorsGranted: Map<String, GDPRPurposeGrants> = getMap("grants")
         ?.map {
             Pair(
@@ -86,16 +83,15 @@ internal fun Map<String, Any?>.toGdprMess(): GdprMessage {
         childPmId = childPmId,
         grants = vendorsGranted,
         hasLocalData = hasLocalData ?: false,
-        messageSubCategory = messageSubCategory
+        messageSubCategory = messageMetaData?.subCategoryId ?: MessageSubCategory.TCFv2,
     )
 }
 
 internal fun Map<String, Any?>.toCcpaMess(): CcpaMessage {
 
     val message = getMap("message")?.toJSONObj()
-    val messageMetaData = getMap("messageMetaData")?.toJSONObj()
+    val messageMetaData = getMap("messageMetaData")?.toMessageMetaData()
     val url = getFieldValue<String>("url")
-    val messageSubCategory = MessageSubCategory.values().find { m -> m.code == messageMetaData?.getInt("subCategoryId") } ?: MessageSubCategory.TCFv2
     val applies = getFieldValue<Boolean>("applies") ?: false
     val dateCreated = getFieldValue<String>("dateCreated")
     val newUser = getFieldValue<Boolean>("newUser") ?: false
@@ -120,11 +116,22 @@ internal fun Map<String, Any?>.toCcpaMess(): CcpaMessage {
         url = url?.let { HttpUrl.parse(it) },
         messageMetaData = messageMetaData,
         newUser = newUser,
-        messageSubCategory = messageSubCategory,
+        messageSubCategory = messageMetaData?.subCategoryId ?: MessageSubCategory.TCFv2,
         status = status,
         uspstring = uspString,
         signedLspa = signedLspa,
         consentedAll = consentedAll,
         rejectedAll = rejectedAll
     )
+}
+
+internal fun MessageMetaData.toJsonObj() : JSONObject{
+    return JSONObject().apply {
+        put("bucket", bucket)
+        put("categoryId", categoryId)
+        put("messageId", messageId)
+        put("msgDescription", msgDescription)
+        put("prtnUUID", prtnUUID)
+        put("subCategoryId", subCategoryId.code)
+    }
 }

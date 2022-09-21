@@ -20,7 +20,7 @@ internal abstract class MessagesCampaign {
     abstract val dateCreated: String?
     abstract val url: HttpUrl?
     abstract val message: JSONObject?
-    abstract val messageMetaData: JSONObject?
+    abstract val messageMetaData: MessageMetaData?
     abstract val messageSubCategory: MessageSubCategory
 }
 
@@ -28,7 +28,7 @@ internal data class GdprMessage(
     override val thisContent: JSONObject,
     override val dateCreated: String?,
     override val message: JSONObject?,
-    override val messageMetaData: JSONObject?,
+    override val messageMetaData: MessageMetaData?,
     override val type: String,
     override val url: HttpUrl?,
     override val messageSubCategory: MessageSubCategory,
@@ -40,13 +40,13 @@ internal data class GdprMessage(
     val customVendorsResponse: JSONObject?,
     val childPmId: String? = null,
 
-) : MessagesCampaign()
+    ) : MessagesCampaign()
 
 internal data class CcpaMessage(
     override val thisContent: JSONObject,
     override val dateCreated: String?,
     override val message: JSONObject?,
-    override val messageMetaData: JSONObject?,
+    override val messageMetaData: MessageMetaData?,
     override val type: String,
     override val url: HttpUrl?,
     override val messageSubCategory: MessageSubCategory,
@@ -66,4 +66,14 @@ internal data class MessagesParamReq(
     val metadata: String,
     val body: String,
     val nonKeyedLocalState: String
+)
+
+data class MessageMetaData(
+    val thisContent: JSONObject,
+    val bucket: Int?,
+    val categoryId: Int?,
+    val messageId: Int?,
+    val msgDescription: String?,
+    val prtnUUID: String?,
+    val subCategoryId: MessageSubCategory
 )
