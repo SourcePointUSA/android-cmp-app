@@ -125,7 +125,7 @@ internal fun Map<String, Any?>.toCcpaMess(): CcpaMessage {
     )
 }
 
-internal fun MessageMetaData.toJsonObj() : JSONObject{
+internal fun MessageMetaData.toJsonObj(): JSONObject {
     return JSONObject().apply {
         put("bucket", bucket)
         put("categoryId", categoryId)

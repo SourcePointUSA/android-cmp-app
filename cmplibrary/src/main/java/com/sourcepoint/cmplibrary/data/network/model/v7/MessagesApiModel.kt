@@ -40,7 +40,7 @@ internal data class GdprMessage(
     val customVendorsResponse: JSONObject?,
     val childPmId: String? = null,
 
-    ) : MessagesCampaign()
+) : MessagesCampaign()
 
 internal data class CcpaMessage(
     override val thisContent: JSONObject,
