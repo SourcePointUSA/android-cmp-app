@@ -38,4 +38,8 @@ internal class MockNetworkClient(
     override fun getMessages(param: MessagesParamReq): Either<MessagesResp> {
         TODO("Not yet implemented")
     }
+
+    override fun savePvData(param: PvDataParamReq): Either<PvDataResp> {
+        TODO("Not yet implemented")
+    }
 }

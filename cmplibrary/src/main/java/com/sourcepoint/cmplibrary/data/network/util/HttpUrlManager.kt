@@ -25,7 +25,7 @@ internal interface HttpUrlManager {
     // V7
     fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
     fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
-    fun getPvData(env: Env): HttpUrl
+    fun getPvDataUrl(env: Env): HttpUrl
     fun getMessagesUrl(param: MessagesParamReq): HttpUrl
 }
 
@@ -175,7 +175,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    override fun getPvData(env: Env): HttpUrl {
+    override fun getPvDataUrl(env: Env): HttpUrl {
         // http://localhost:3000/wrapper/v2/pv-data?env=localProd
         return HttpUrl.Builder()
             .scheme("https")

@@ -60,4 +60,8 @@ internal interface NetworkClient {
     fun getMessages(
         param: MessagesParamReq
     ): Either<MessagesResp>
+
+    fun savePvData(
+        param: PvDataParamReq
+    ): Either<PvDataResp>
 }
