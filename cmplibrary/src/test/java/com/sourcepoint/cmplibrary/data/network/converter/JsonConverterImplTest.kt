@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.v7.CcpaMessage
 import com.sourcepoint.cmplibrary.data.network.model.v7.GdprMessage
+import com.sourcepoint.cmplibrary.data.network.model.v7.toJsonObj
 import com.sourcepoint.cmplibrary.data.network.model.v7.toJsonObject
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.*  //ktlint-disable
@@ -231,7 +232,7 @@ class JsonConverterImplTest {
             type.assertEquals(CampaignType.GDPR.name)
             message!!.toTreeMap().toString().assertEquals(gdprTester["message"].toString())
             dateCreated.assertEquals(gdprTester["dateCreated"])
-            messageMetaData!!.toTreeMap().toString().assertEquals(gdprTester["messageMetaData"].toString())
+            messageMetaData!!.toJsonObj().toTreeMap().toString().assertEquals(gdprTester["messageMetaData"].toString())
             url.toString().assertEquals(gdprTester["url"].toString())
             messageSubCategory.assertEquals(MessageSubCategory.TCFv2)
             grants.size.assertEquals(5)
@@ -247,7 +248,7 @@ class JsonConverterImplTest {
             type.assertEquals(CampaignType.CCPA.name)
             message!!.toTreeMap().toString().assertEquals(ccpaTester["message"].toString())
             dateCreated.assertEquals(ccpaTester["dateCreated"])
-            messageMetaData!!.toTreeMap().toString().assertEquals(ccpaTester["messageMetaData"].toString())
+            messageMetaData!!.toJsonObj().toTreeMap().toString().assertEquals(ccpaTester["messageMetaData"].toString())
             url.toString().assertEquals(ccpaTester["url"].toString())
             messageSubCategory.assertEquals(MessageSubCategory.TCFv2)
             newUser.assertTrue()
