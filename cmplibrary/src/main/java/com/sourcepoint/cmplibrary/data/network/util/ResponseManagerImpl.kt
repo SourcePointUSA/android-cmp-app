@@ -215,6 +215,26 @@ private class ResponseManagerImpl(
         }
     }
 
+    override fun parseMessagesResp2(r: Response): Either<MessagesResp> = check {
+        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code()
+        val mess = r.message()
+        logger.res(
+            tag = "PvDataResp",
+            msg = mess,
+            body = body,
+            status = status.toString()
+        )
+        if (r.isSuccessful) {
+            when (val either: Either<MessagesResp> = jsonConverter.toMessagesResp(body)) {
+                is Either.Right -> either.r
+                is Either.Left -> throw either.t
+            }
+        } else {
+            throw InvalidRequestException(description = body)
+        }
+    }
+
     private fun fail(param: String): Nothing {
         throw InvalidResponseWebMessageException(description = "$param object is null")
     }

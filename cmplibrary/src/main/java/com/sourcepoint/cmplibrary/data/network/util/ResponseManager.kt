@@ -41,6 +41,7 @@ internal interface ResponseManager {
     fun parseConsentStatusResp(r: Response): ConsentStatusResp
     fun parsePvDataResp(r: Response): PvDataResp
     fun parseMessagesResp(r: Response): MessagesResp
+    fun parseMessagesResp2(r: Response): Either<MessagesResp>
 
     companion object
 }

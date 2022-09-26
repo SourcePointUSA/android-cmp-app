@@ -58,10 +58,20 @@ internal interface NetworkClient {
     ): Either<ConsentStatusResp>
 
     fun getMessages(
+        messageReq: MessagesParamReq,
+        pSuccess: (MessagesResp) -> Unit,
+        pError: (Throwable) -> Unit
+    )
+
+    fun getMessages(
         param: MessagesParamReq
     ): Either<MessagesResp>
 
     fun savePvData(
         param: PvDataParamReq
     ): Either<PvDataResp>
+
+    fun getChoice(
+        param: ChoiceParamReq
+    ): Either<ChoiceResp>
 }

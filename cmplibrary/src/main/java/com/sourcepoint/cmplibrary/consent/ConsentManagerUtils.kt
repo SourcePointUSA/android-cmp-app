@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.consent
 
+import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
@@ -30,6 +31,8 @@ internal interface ConsentManagerUtils {
     fun hasCcpaConsent(): Boolean
 
     fun getSpConsent(): SPConsents?
+
+    val shoulTriggerTheFlow: Boolean
 
     companion object
 }
@@ -115,4 +118,16 @@ private class ConsentManagerUtilsImpl(
     override fun hasGdprConsent(): Boolean = ds.getGdprConsentResp() != null
 
     override fun hasCcpaConsent(): Boolean = ds.getGdprConsentResp() != null
+
+    override val shoulTriggerTheFlow: Boolean
+        get() {
+            return when{
+                BuildConfig.SAMPLE_RATE <= 0 -> false
+                BuildConfig.SAMPLE_RATE >= 100 -> true
+                else ->{
+                    val num = (1 until 100).random()
+                    num in (1 .. BuildConfig.SAMPLE_RATE)
+                }
+            }
+        }
 }

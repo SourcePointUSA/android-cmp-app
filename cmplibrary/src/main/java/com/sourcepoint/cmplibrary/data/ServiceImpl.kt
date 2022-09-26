@@ -10,6 +10,9 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
+import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceParamReq
+import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
+import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
@@ -123,5 +126,22 @@ private class ServiceImpl(
                 dataStorage.saveGdprConsentResp(existingConsent.toString())
             }
         consentManagerUtils.getSpConsent()
+    }
+
+    override fun getMessages(
+        messageReq: MessagesParamReq,
+        pSuccess: (MessagesResp) -> Unit,
+        pError: (Throwable) -> Unit
+    ) {
+        if(campaignManager.shouldCallMessages){
+            if(consentManagerUtils.shoulTriggerTheFlow){
+                // pv data
+            }
+            getChoice(ChoiceParamReq())
+
+        }else{
+            // pvData
+            pSuccess(campaignManager.messagesV7)
+        }
     }
 }
