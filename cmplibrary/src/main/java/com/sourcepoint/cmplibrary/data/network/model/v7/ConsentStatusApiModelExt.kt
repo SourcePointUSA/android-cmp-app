@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toJSONObj
@@ -27,6 +28,22 @@ internal fun Map<String, Any?>.toConsentStatusData(): ConsentStatusData {
     val gdprCS = getMap("gdpr")?.toGdprCS()
     val ccpaCS = getMap("ccpa")?.toCcpaCS()
     return ConsentStatusData(JSONObject(this), gdprCS, ccpaCS)
+}
+
+internal fun Map<String, Any?>.toMessageMetaData(): MessageMetaData {
+    val messageSubCategory = MessageSubCategory.values()
+        .find { m -> m.code == getFieldValue<Int>("subCategoryId") }
+        ?: MessageSubCategory.TCFv2
+
+    return MessageMetaData(
+        thisContent = this.toJSONObj(),
+        bucket = getFieldValue("bucket"),
+        categoryId = getFieldValue<Int>("categoryId"),
+        messageId = getFieldValue<Int>("messageId"),
+        msgDescription = getFieldValue<String>("msgDescription"),
+        prtnUUID = getFieldValue<String>("prtnUUID"),
+        subCategoryId = messageSubCategory
+    )
 }
 
 internal fun Map<String, Any?>.toConsentStatus(): ConsentStatusCS {
