@@ -248,7 +248,7 @@ class HttpUrlManagerTest {
 
     @Test
     fun `GIVEN a PROD env getPvData RETURN the prod link`() {
-        val sut = HttpUrlManagerSingleton.getPvData(Env.PROD).toString()
+        val sut = HttpUrlManagerSingleton.getPvDataUrl(Env.PROD).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/pv-data?env=prod")
     }
 

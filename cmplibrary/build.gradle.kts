@@ -33,6 +33,7 @@ android {
             buildConfigField("String", "SDK_ENV", "\"PROD\"")
             buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
             buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
+            buildConfigField("int", "SAMPLE_RATE", "1")
         }
         create("preprod") {
             initWith(getByName("debug"))
@@ -41,6 +42,7 @@ android {
             buildConfigField("String", "SDK_ENV", "\"PRE_PROD\"")
             buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
             buildConfigField("String", "ENV_QUERY_PARAM", "\"localProd\"")
+            buildConfigField("int", "SAMPLE_RATE", "1")
         }
         getByName("release") {
             isMinifyEnabled = false
@@ -48,6 +50,7 @@ android {
             buildConfigField("String", "SDK_ENV", "\"PROD\"")
             buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
             buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
+            buildConfigField("int", "SAMPLE_RATE", "1")
         }
     }
 
