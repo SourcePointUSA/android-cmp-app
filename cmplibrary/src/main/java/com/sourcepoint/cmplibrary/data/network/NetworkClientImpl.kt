@@ -222,4 +222,27 @@ private class NetworkClientImpl(
 
         responseManager.parseMessagesResp(response)
     }
+
+    override fun savePvData(param: PvDataParamReq): Either<PvDataResp> = check {
+        val url = urlManager.getPvDataUrl(param.env)
+        val mediaType = MediaType.parse("application/json")
+        val jsonBody = param.body.toString()
+        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
+
+        logger.req(
+            tag = "savePvData",
+            url = url.toString(),
+            body = "",
+            type = "POST"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parsePvDataResp(response)
+    }
 }
