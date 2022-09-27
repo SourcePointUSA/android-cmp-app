@@ -5,6 +5,7 @@ plugins {
     id("io.github.dryrum.update-changelog")
     id("io.github.dryrum.replace-in-file")
     id("io.github.dryrum.git-utils")
+    id("kotlinx-serialization")
 }
 
 apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
@@ -92,6 +93,8 @@ dependencies {
     // Unfortunately we depend on a outdated version of okhttp due to its support to older versions of Android
     //noinspection GradleDependency
     api(Libs.okHttpCmp)
+
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.0")
 
     testImplementation(Libs.mockk)
     testImplementation(Libs.mockwebserver)
