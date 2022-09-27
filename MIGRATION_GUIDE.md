@@ -2,6 +2,8 @@
 
 In this guide we will cover how to migrate your app to the latest version of Sourcepoint's SDK (v6).
 
+>**Note:** In addition to the technical migration below, you will also need to enable the **Multi-Campaign** toggle for the app property within the Sourcepoint portal. 
+
 ## Upgrade library in project's build.gradle file
 
 Navigate to your build.gradle file and upgrade the `cmplibrary`:
