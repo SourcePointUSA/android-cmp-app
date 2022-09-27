@@ -17,10 +17,23 @@ data class Messages2(
     @SerialName("nonKeyedLocalState")
     val nonKeyedLocalState: JsonElement?,
     @SerialName("priority")
-    val priority: List<Int?>?,
+    val priority: List<Int>,
     @SerialName("propertyId")
     val propertyId: Int?
 ) {
+    interface CampaignMessage{
+        val type: String?
+        val messageMetaData: MessageMetaData
+    }
+    val campaignList : List<CampaignMessage>
+        get() {
+            val list = mutableListOf<CampaignMessage>().apply {
+                campaigns?.gdpr?.let { add(it) }
+                campaigns?.ccpa?.let { add(it) }
+            }.associateBy { it.messageMetaData.categoryId }
+            return priority.mapNotNull { list[it] }
+        }
+
     @Serializable
     data class Campaigns(
         @SerialName("CCPA")
@@ -39,7 +52,7 @@ data class Messages2(
             @SerialName("message")
             val message: JsonElement?,
             @SerialName("messageMetaData")
-            val messageMetaData: MessageMetaData?,
+            override val messageMetaData: MessageMetaData,
             @SerialName("newUser")
             val newUser: Boolean?,
             @SerialName("rejectedAll")
@@ -53,28 +66,14 @@ data class Messages2(
             @SerialName("status")
             val status: String?,
             @SerialName("type")
-            val type: String?,
+            override val type: String?,
             @SerialName("url")
             val url: String?,
             @SerialName("uspstring")
             val uspstring: String?
-        ) {
+        ) : CampaignMessage {
 
-            @Serializable
-            data class MessageMetaData(
-                @SerialName("bucket")
-                val bucket: Int?,
-                @SerialName("categoryId")
-                val categoryId: Int?,
-                @SerialName("messageId")
-                val messageId: Int?,
-                @SerialName("msgDescription")
-                val msgDescription: String?,
-                @SerialName("prtnUUID")
-                val prtnUUID: String?,
-                @SerialName("subCategoryId")
-                val subCategoryId: Int?
-            )
+
         }
 
         @Serializable
@@ -100,14 +99,14 @@ data class Messages2(
             @SerialName("message")
             val message: JsonElement?,
             @SerialName("messageMetaData")
-            val messageMetaData: MessageMetaData?,
+            override val messageMetaData: MessageMetaData,
             @Serializable(with = TcDataSerializer::class)
             val TCData: Map<String, String>?,
             @SerialName("type")
-            val type: String?,
+            override val type: String?,
             @SerialName("url")
             val url: String?
-        ) {
+        ) : CampaignMessage{
             @Serializable
             data class ConsentStatus(
                 @SerialName("consentedAll")
@@ -158,23 +157,24 @@ data class Messages2(
                 )
             }
 
-            @Serializable
-            data class MessageMetaData(
-                @SerialName("bucket")
-                val bucket: Int?,
-                @SerialName("categoryId")
-                val categoryId: Int?,
-                @SerialName("messageId")
-                val messageId: Int?,
-                @SerialName("msgDescription")
-                val msgDescription: String?,
-                @SerialName("prtnUUID")
-                val prtnUUID: String?,
-                @SerialName("subCategoryId")
-                val subCategoryId: Int?
-            )
         }
     }
+
+    @Serializable
+    data class MessageMetaData(
+        @SerialName("bucket")
+        val bucket: Int?,
+        @SerialName("categoryId")
+        val categoryId: Int?,
+        @SerialName("messageId")
+        val messageId: Int?,
+        @SerialName("msgDescription")
+        val msgDescription: String?,
+        @SerialName("prtnUUID")
+        val prtnUUID: String?,
+        @SerialName("subCategoryId")
+        val subCategoryId: Int?
+    )
 
     @Serializable
     data class LocalState(
@@ -204,3 +204,4 @@ data class Messages2(
         )
     }
 }
+

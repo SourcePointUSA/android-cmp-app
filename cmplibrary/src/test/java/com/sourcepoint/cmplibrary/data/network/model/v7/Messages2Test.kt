@@ -7,10 +7,8 @@ import org.junit.Test
 
 class Messages2Test {
 
-    @Test
-    fun mess() {
-        val mess = "v7/messagesObj.json".file2String()
-        val obj = Json {
+    private val converter by lazy {
+        Json {
             encodeDefaults = true
             ignoreUnknownKeys = true
             isLenient = true
@@ -20,7 +18,24 @@ class Messages2Test {
             coerceInputValues = true
             useArrayPolymorphism = true
             allowSpecialFloatingPointValues = true
-        }.decodeFromString<Messages2>(mess)
-        println(obj)
+        }
     }
+
+    @Test
+    fun `GIVEN a priority {1, 2, 5} GDPR is first`() {
+        val mess = "v7/messagesObj.json".file2String()
+        val message = converter.decodeFromString<Messages2>(mess)
+        message.campaignList[0] as Messages2.Campaigns.GDPR
+        message.campaignList[1] as Messages2.Campaigns.CCPA
+    }
+
+    @Test
+    fun `GIVEN a priority {1, 5, 2} CCPA is first`() {
+        val mess = "v7/messagesObjSwitchOrder.json".file2String()
+        val message = converter.decodeFromString<Messages2>(mess)
+        message.campaignList[0] as Messages2.Campaigns.CCPA
+        message.campaignList[1] as Messages2.Campaigns.GDPR
+    }
+
+
 }
