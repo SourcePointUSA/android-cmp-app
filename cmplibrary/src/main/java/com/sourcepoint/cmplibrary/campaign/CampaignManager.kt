@@ -11,7 +11,6 @@ import com.sourcepoint.cmplibrary.data.local.getGDPRConsent
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toCCPA
 import com.sourcepoint.cmplibrary.data.network.model.toGDPR
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusData
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
@@ -21,6 +20,7 @@ import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.json.JsonNull
 import org.json.JSONObject
 
 internal interface CampaignManager {
@@ -401,24 +401,22 @@ private class CampaignManagerImpl(
 
     val isNewUser: Boolean
         get() {
-            return consentStatus.consentStatusData.gdprCS?.uuid == null &&
-                consentStatus.consentStatusData.ccpaCS?.uuid == null
+            return consentStatus.consentStatusData?.gdpr?.uuid == null &&
+                consentStatus.consentStatusData?.ccpa?.uuid == null
         }
 
     val consentStatus: ConsentStatusResp = ConsentStatusResp(
-        thisContent = JSONObject(),
-        localState = JSONObject(),
-        consentStatusData = ConsentStatusData(
-            thisContent = JSONObject(),
-            ccpaCS = null,
-            gdprCS = null
+        localState = JsonNull,
+        consentStatusData = ConsentStatusResp.ConsentStatusData(
+            ccpa = null,
+            gdpr = null
         )
     )
     override val shouldCallMessages: Boolean
         get() {
             return isNewUser ||
-                (consentStatus.consentStatusData.gdprCS?.gdprApplies == true && !consentStatus.consentStatusData.gdprCS.consentStatus.consentedAll) ||
-                (consentStatus.consentStatusData.ccpaCS?.ccpaApplies == true && consentStatus.consentStatusData.ccpaCS.status != CcpaStatus.consentedAll)
+                (consentStatus.consentStatusData?.gdpr?.gdprApplies == true && consentStatus.consentStatusData.gdpr.consentStatus?.consentedAll == false) ||
+                (consentStatus.consentStatusData?.ccpa?.ccpaApplies == true && consentStatus.consentStatusData.ccpa.status != CcpaStatus.consentedAll)
         }
 
     override val messagesV7: MessagesResp

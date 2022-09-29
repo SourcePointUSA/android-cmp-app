@@ -4,10 +4,9 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.assertTrue
-import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converter.create
-import com.sourcepoint.cmplibrary.data.network.model.v7.*
+import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
@@ -15,7 +14,6 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import org.junit.Test
 
@@ -260,7 +258,7 @@ class HttpUrlManagerTest {
     fun `GIVEN a PROD env getMessages RETURN the prod link`() {
 
         val json = "v7/message_body_cs.json".file2String()
-        val cs = converter.decodeFromString<ConsentStatusRespV7>(json)
+        val cs = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
 
         val body = getMessageBody(
             accountId = 22,

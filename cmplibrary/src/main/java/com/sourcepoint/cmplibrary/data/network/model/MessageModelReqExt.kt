@@ -4,7 +4,7 @@ import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.Campaigns
 import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.* // ktlint-disable
 import org.json.JSONObject
 
 internal fun UnifiedMessageRequest.toBodyRequest(): String {

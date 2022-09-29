@@ -2,10 +2,6 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.data.network.model.v7.CcpaMessage
-import com.sourcepoint.cmplibrary.data.network.model.v7.GdprMessage
-import com.sourcepoint.cmplibrary.data.network.model.v7.toJsonObj
-import com.sourcepoint.cmplibrary.data.network.model.v7.toJsonObject
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.*  //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
@@ -161,31 +157,30 @@ class JsonConverterImplTest {
         val json = "v7/consent_status_with_auth_id.json".file2String()
         val testMap = JSONObject(json).toTreeMap()
         val nm = (sut.toConsentStatusResp(json) as Either.Right).r
-        nm.thisContent.toTreeMap().assertEquals(testMap)
-        nm.consentStatusData.gdprCS!!.run {
+        nm.consentStatusData!!.gdpr!!.run {
             addtlConsent.assertEquals("1~")
-            grants.size.assertEquals(5)
+            grants!!.size.assertEquals(5)
             euconsent.assertEquals("CPeQ1MAPeQ1MAAGABCENCdCsAP_AAHAAAAYgGMwBAAMgA0AXmAxkDGYAIDGQCgkAMADIANAF5hQAIDGQ4AEBjIkACAxkVABAXmMgAgLzHQAwAMgA0AXmQgAgAZJQAgAMgLzKQAwAMgA0AXmA.YAAAAAAAAAAA")
             dateCreated.assertEquals("2022-08-25T20:56:38.551Z")
-            gdprApplies.assertTrue()
+            gdprApplies!!.assertTrue()
             cookieExpirationDays.assertEquals(365)
-            localDataCurrent.assertFalse()
+            localDataCurrent!!.assertFalse()
             vendorListId.assertEquals("5fa9a8fda228635eaf24ceb5")
             uuid.assertEquals("69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10")
         }
-        nm.consentStatusData.ccpaCS!!.run {
+        nm.consentStatusData!!.ccpa!!.run {
             dateCreated.assertEquals("2022-08-25T20:56:39.010Z")
-            newUser.assertFalse()
-            consentedAll.assertFalse()
-            rejectedCategories.size.assertEquals(0)
-            rejectedVendors.size.assertEquals(0)
-            rejectedAll.assertFalse()
+            newUser!!.assertFalse()
+            consentedAll!!.assertFalse()
+            rejectedCategories!!.size.assertEquals(0)
+            rejectedVendors!!.size.assertEquals(0)
+            rejectedAll!!.assertFalse()
             status!!.name.assertEquals("rejectedNone")
-            signedLspa.assertFalse()
+            signedLspa!!.assertFalse()
             uspstring.assertEquals("1YNN")
-            gpcEnabled.assertFalse()
+            gpcEnabled!!.assertFalse()
             uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
-            ccpaApplies.assertTrue()
+            ccpaApplies!!.assertTrue()
         }
     }
 
@@ -195,15 +190,14 @@ class JsonConverterImplTest {
         val testMap = JSONObject(json).toTreeMap()
         // talk with Sid to fix the boolean-null value
         val nm = (sut.toConsentStatusResp(json) as Either.Right).r
-        nm.thisContent.toTreeMap().assertEquals(testMap)
-        nm.consentStatusData.gdprCS!!.run {
+        nm.consentStatusData!!.gdpr!!.run {
             addtlConsent.assertEquals("1~")
-            grants.size.assertEquals(5)
+            grants!!.size.assertEquals(5)
             euconsent.assertEquals("CPeeA8APeeA8AAGABCENCeCgAAAAAHAAAAYgAAAMZgAgMZADCgAQGMhwAIDGRIAEBjIA.YAAAAAAAAAAA")
             dateCreated.assertEquals("2022-08-29T13:40:54.754Z")
-            gdprApplies.assertTrue()
+            gdprApplies!!.assertTrue()
             cookieExpirationDays.assertEquals(365)
-            localDataCurrent.assertFalse()
+            localDataCurrent!!.assertFalse()
             vendorListId.assertEquals("5fa9a8fda228635eaf24ceb5")
             uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
         }
@@ -224,42 +218,45 @@ class JsonConverterImplTest {
 
     @Test
     fun `GIVEN a message body resp RETURN a Right(MessagesResp)`() {
-        val json = "v7/messages.json".file2String()
+        val json = "v7/messagesObj.json".file2String()
         val testMap = JSONObject(json).toTreeMap()
         val nm = (sut.toMessagesResp(json) as Either.Right).r
-        (nm.campaigns[0] as GdprMessage).run {
-            val gdprTester = testMap.getList("campaigns")!![0]
+        nm.campaigns!!.gdpr!!.run {
+            val gdprTester = testMap.getMap("campaigns")!!.getMap("GDPR")!!
             type.assertEquals(CampaignType.GDPR.name)
-            message!!.toTreeMap().toString().assertEquals(gdprTester["message"].toString())
+            message.assertNotNull()
             dateCreated.assertEquals(gdprTester["dateCreated"])
-            messageMetaData!!.toJsonObj().toTreeMap().toString().assertEquals(gdprTester["messageMetaData"].toString())
+            messageMetaData.subCategoryId.assertEquals(MessageSubCategory.TCFv2)
             url.toString().assertEquals(gdprTester["url"].toString())
-            messageSubCategory.assertEquals(MessageSubCategory.TCFv2)
-            grants.size.assertEquals(5)
-            consentStatusCS!!.toJsonObject().toTreeMap().toString().assertEquals(gdprTester["consentStatus"].toString())
-            hasLocalData.assertFalse()
+            grants!!.size.assertEquals(5)
+            consentStatus!!.also {
+                it.consentedAll!!.assertFalse()
+                it.consentedToAny!!.assertFalse()
+                it.hasConsentData!!.assertFalse()
+                it.rejectedAny!!.assertTrue()
+            }
+            hasLocalData!!.assertFalse()
             addtlConsent.assertEquals(gdprTester["addtlConsent"].toString())
             euconsent.assertEquals(gdprTester["euconsent"].toString())
-            customVendorsResponse!!.toTreeMap().toString().assertEquals(gdprTester["customVendorsResponse"].toString())
+            customVendorsResponse.assertNotNull()
             childPmId.assertNull()
         }
-        (nm.campaigns[1] as CcpaMessage).run {
-            val ccpaTester = testMap.getList("campaigns")!![1]
+        nm.campaigns!!.ccpa!!.run {
+            val ccpaTester = testMap.getMap("campaigns")!!.getMap("CCPA")!!
             type.assertEquals(CampaignType.CCPA.name)
-            message!!.toTreeMap().toString().assertEquals(ccpaTester["message"].toString())
+            message.assertNotNull()
             dateCreated.assertEquals(ccpaTester["dateCreated"])
-            messageMetaData!!.toJsonObj().toTreeMap().toString().assertEquals(ccpaTester["messageMetaData"].toString())
+            messageMetaData.subCategoryId.assertEquals(MessageSubCategory.TCFv2)
             url.toString().assertEquals(ccpaTester["url"].toString())
-            messageSubCategory.assertEquals(MessageSubCategory.TCFv2)
-            newUser.assertTrue()
-            consentedAll.assertFalse()
-            rejectedAll.assertFalse()
-            signedLspa.assertFalse()
-            rejectedCategories.size.assertEquals(0)
-            rejectedVendors.size.assertEquals(0)
+            newUser!!.assertTrue()
+            consentedAll!!.assertFalse()
+            rejectedAll!!.assertFalse()
+            signedLspa!!.assertFalse()
+            rejectedCategories!!.size.assertEquals(0)
+            rejectedVendors!!.size.assertEquals(0)
             uspstring.assertEquals("1YNN")
-            applies.assertTrue()
-            status.name.assertEquals(ccpaTester["status"].toString())
+            applies!!.assertTrue()
+            status!!.name.assertEquals(ccpaTester["status"].toString())
         }
     }
 }

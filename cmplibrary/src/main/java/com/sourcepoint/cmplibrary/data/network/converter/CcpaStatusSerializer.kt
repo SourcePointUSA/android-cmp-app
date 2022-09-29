@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
-import com.sourcepoint.cmplibrary.data.network.model.v7.GranularState
+import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -8,18 +8,18 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-object GranularStateSerializer : KSerializer<GranularState> {
+object CcpaStatusSerializer : KSerializer<CcpaStatus> {
 
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("GranularState", PrimitiveKind.STRING)
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("CcpaStatus", PrimitiveKind.STRING)
 
-    override fun deserialize(decoder: Decoder): GranularState {
+    override fun deserialize(decoder: Decoder): CcpaStatus {
         val code = decoder.decodeString()
-        return GranularState.values()
+        return CcpaStatus.values()
             .find { m -> m.name == code }
-            ?: GranularState.NONE
+            ?: CcpaStatus.consentedAll
     }
 
-    override fun serialize(encoder: Encoder, value: GranularState) {
+    override fun serialize(encoder: Encoder, value: CcpaStatus) {
         encoder.encodeString(value.name)
     }
 }
