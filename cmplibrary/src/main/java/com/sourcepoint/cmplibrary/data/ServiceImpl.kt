@@ -133,13 +133,12 @@ private class ServiceImpl(
         pSuccess: (MessagesResp) -> Unit,
         pError: (Throwable) -> Unit
     ) {
-        if(campaignManager.shouldCallMessages){
-            if(consentManagerUtils.shoulTriggerTheFlow){
+        if (campaignManager.shouldCallMessages) {
+            if (consentManagerUtils.shoulTriggerTheFlow) {
                 // pv data
             }
             getChoice(ChoiceParamReq())
-
-        }else{
+        } else {
             // pvData
             pSuccess(campaignManager.messagesV7)
         }

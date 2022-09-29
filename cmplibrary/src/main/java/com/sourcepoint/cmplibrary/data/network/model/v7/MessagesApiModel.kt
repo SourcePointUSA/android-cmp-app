@@ -67,13 +67,3 @@ internal data class MessagesParamReq(
     val body: String,
     val nonKeyedLocalState: String
 )
-
-data class MessageMetaData(
-    val thisContent: JSONObject,
-    val bucket: Int?,
-    val categoryId: Int?,
-    val messageId: Int?,
-    val msgDescription: String?,
-    val prtnUUID: String?,
-    val subCategoryId: MessageSubCategory
-)

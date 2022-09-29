@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.Campaigns
 import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
+import kotlinx.serialization.json.*
 import org.json.JSONObject
 
 internal fun UnifiedMessageRequest.toBodyRequest(): String {
@@ -58,4 +59,15 @@ internal fun IncludeData.toJsonObject(): JSONObject {
             put("localState", JSONObject().apply { put("type", localState.type) })
             put("customVendorsResponse", JSONObject().apply { put("type", customVendorsResponse.type) })
         }
+}
+
+internal fun toIncludeDataBodyMess(): JsonObject {
+    return buildJsonObject {
+        putJsonObject("TCData") {
+            put("type", "RecordString")
+        }
+        putJsonObject("campaigns") {
+            put("type", "RecordString")
+        }
+    }
 }

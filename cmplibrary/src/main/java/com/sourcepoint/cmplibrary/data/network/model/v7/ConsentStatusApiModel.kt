@@ -3,6 +3,9 @@ package com.sourcepoint.cmplibrary.data.network.model.v7
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import org.json.JSONObject
 
 internal class ConsentStatusResp(
@@ -101,6 +104,15 @@ internal fun ConsentStatusCS.toJsonObject(): JSONObject {
         put("hasConsentData", hasConsentData)
         put("consentedToAny", consentedToAny)
         put("granularStatus", granularStatus?.toJsonObject())
+    }
+}
+
+internal fun ConsentStatusRespV7.ConsentStatusData.GdprCS.ConsentStatus.toJsonObjectV7(): JsonElement {
+    return buildJsonObject {
+        put("hasConsentData", hasConsentData)
+        put("consentedToAll", consentedAll)
+        put("consentedToAny", consentedToAny)
+        put("rejectedAny", rejectedAny)
     }
 }
 

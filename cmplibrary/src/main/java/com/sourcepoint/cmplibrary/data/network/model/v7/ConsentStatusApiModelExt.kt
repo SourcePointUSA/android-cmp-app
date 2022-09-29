@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
+import com.sourcepoint.cmplibrary.model.exposed.MessageCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
@@ -34,11 +35,13 @@ internal fun Map<String, Any?>.toMessageMetaData(): MessageMetaData {
     val messageSubCategory = MessageSubCategory.values()
         .find { m -> m.code == getFieldValue<Int>("subCategoryId") }
         ?: MessageSubCategory.TCFv2
+    val messageCategory = MessageCategory.values()
+        .find { m -> m.code == getFieldValue<Int>("categoryId") }
+        ?: failParam("MessageCategory")
 
     return MessageMetaData(
-        thisContent = this.toJSONObj(),
         bucket = getFieldValue("bucket"),
-        categoryId = getFieldValue<Int>("categoryId"),
+        categoryId = messageCategory,
         messageId = getFieldValue<Int>("messageId"),
         msgDescription = getFieldValue<String>("msgDescription"),
         prtnUUID = getFieldValue<String>("prtnUUID"),

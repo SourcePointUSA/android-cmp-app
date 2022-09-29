@@ -121,12 +121,12 @@ private class ConsentManagerUtilsImpl(
 
     override val shoulTriggerTheFlow: Boolean
         get() {
-            return when{
+            return when {
                 BuildConfig.SAMPLE_RATE <= 0 -> false
                 BuildConfig.SAMPLE_RATE >= 100 -> true
-                else ->{
+                else -> {
                     val num = (1 until 100).random()
-                    num in (1 .. BuildConfig.SAMPLE_RATE)
+                    num in (1..BuildConfig.SAMPLE_RATE)
                 }
             }
         }

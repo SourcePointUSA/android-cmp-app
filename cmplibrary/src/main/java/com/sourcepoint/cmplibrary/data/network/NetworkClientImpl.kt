@@ -6,10 +6,10 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
-import com.sourcepoint.cmplibrary.data.network.model.v7.*
-import com.sourcepoint.cmplibrary.data.network.util.*
+import com.sourcepoint.cmplibrary.data.network.model.v7.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.*
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
@@ -279,7 +279,7 @@ private class NetworkClientImpl(
             }
     }
 
-    override fun getChoice(param: ChoiceParamReq): Either<ChoiceResp> = check{
+    override fun getChoice(param: ChoiceParamReq): Either<ChoiceResp> = check {
         ChoiceResp(JSONObject())
     }
 }

@@ -11,14 +11,13 @@ import com.sourcepoint.cmplibrary.data.local.getGDPRConsent
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toCCPA
 import com.sourcepoint.cmplibrary.data.network.model.toGDPR
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusCS
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusData
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.*
+import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.util.check
@@ -69,8 +68,8 @@ internal interface CampaignManager {
     fun clearConsents()
 
     // V7
-    val shouldCallMessages : Boolean
-    val messagesV7 : MessagesResp
+    val shouldCallMessages: Boolean
+    val messagesV7: MessagesResp
 
     companion object {
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
@@ -401,12 +400,12 @@ private class CampaignManagerImpl(
     // V7 Implementation below
 
     val isNewUser: Boolean
-    get() {
-        return consentStatus.consentStatusData.gdprCS?.uuid == null
-            && consentStatus.consentStatusData.ccpaCS?.uuid == null
-    }
+        get() {
+            return consentStatus.consentStatusData.gdprCS?.uuid == null &&
+                consentStatus.consentStatusData.ccpaCS?.uuid == null
+        }
 
-    val consentStatus : ConsentStatusResp = ConsentStatusResp(
+    val consentStatus: ConsentStatusResp = ConsentStatusResp(
         thisContent = JSONObject(),
         localState = JSONObject(),
         consentStatusData = ConsentStatusData(
@@ -417,9 +416,9 @@ private class CampaignManagerImpl(
     )
     override val shouldCallMessages: Boolean
         get() {
-            return isNewUser
-                || (consentStatus.consentStatusData.gdprCS?.gdprApplies == true && !consentStatus.consentStatusData.gdprCS.consentStatus.consentedAll)
-                || (consentStatus.consentStatusData.ccpaCS?.ccpaApplies == true && consentStatus.consentStatusData.ccpaCS.status != CcpaStatus.consentedAll)
+            return isNewUser ||
+                (consentStatus.consentStatusData.gdprCS?.gdprApplies == true && !consentStatus.consentStatusData.gdprCS.consentStatus.consentedAll) ||
+                (consentStatus.consentStatusData.ccpaCS?.ccpaApplies == true && consentStatus.consentStatusData.ccpaCS.status != CcpaStatus.consentedAll)
         }
 
     override val messagesV7: MessagesResp

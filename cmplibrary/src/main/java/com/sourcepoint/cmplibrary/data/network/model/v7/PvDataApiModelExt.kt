@@ -58,7 +58,7 @@ internal fun toPvDataBody(
                 put("euconsent", it.euconsent)
                 put("pubData", "string")
                 put("msgId", it.messageMetaData?.messageId)
-                put("categoryId", it.messageMetaData?.categoryId)
+                put("categoryId", it.messageMetaData?.categoryId?.code)
                 put("subCategoryId", it.messageMetaData?.subCategoryId?.code)
                 put("prtnUUID", it.messageMetaData?.prtnUUID)
                 put("sampleRate", BuildConfig.SAMPLE_RATE)

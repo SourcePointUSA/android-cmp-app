@@ -12,6 +12,7 @@ import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toJSONObj
 import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.json.*
 import okhttp3.HttpUrl
 import org.json.JSONObject
 import java.util.* //ktlint-disable
@@ -128,10 +129,45 @@ internal fun Map<String, Any?>.toCcpaMess(): CcpaMessage {
 internal fun MessageMetaData.toJsonObj(): JSONObject {
     return JSONObject().apply {
         put("bucket", bucket)
-        put("categoryId", categoryId)
+        put("categoryId", categoryId.code)
         put("messageId", messageId)
         put("msgDescription", msgDescription)
         put("prtnUUID", prtnUUID)
-        put("subCategoryId", subCategoryId.code)
+        put("subCategoryId", subCategoryId?.code)
     }
+}
+
+internal fun getMessageBody(
+    cs: ConsentStatusRespV7,
+    propertyHref: String,
+    accountId: Int
+): JsonObject {
+    return buildJsonObject {
+        put("accountId", accountId)
+        putJsonObject("includeData") {
+            putJsonObject("TCData") {
+                put("type", "RecordString")
+            }
+            putJsonObject("campaigns") {
+                put("type", "RecordString")
+            }
+        }
+        put("propertyHref", "https://$propertyHref")
+        put("hasCSP", true)
+        putJsonObject("campaigns") {
+            putJsonObject("ccpa") {
+                put("hasLocalData", false)
+                /**
+                 *  ==============================> INTENTIONAL ERROR <===============================================
+                 *  ==============================> the consentStatus is not present in the ccpa obj <===============================================
+                 */
+                put("consentStatus", cs.consentStatusData?.gdpr?.consentStatus?.toJsonObjectV7() ?: JsonNull)
+            }
+            putJsonObject("gdpr") {
+                put("hasLocalData", false)
+                put("consentStatus", cs.consentStatusData?.gdpr?.consentStatus?.toJsonObjectV7() ?: JsonNull)
+            }
+        }
+    }
+
 }
