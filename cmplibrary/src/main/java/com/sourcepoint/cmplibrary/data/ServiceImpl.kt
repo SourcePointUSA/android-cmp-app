@@ -10,9 +10,11 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
+import com.sourcepoint.cmplibrary.data.network.model.v7.*
 import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
+import com.sourcepoint.cmplibrary.data.network.model.v7.PvDataParamReq
+import com.sourcepoint.cmplibrary.data.network.model.v7.toPvDataBody
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
@@ -133,14 +135,26 @@ private class ServiceImpl(
         pSuccess: (MessagesResp) -> Unit,
         pError: (Throwable) -> Unit
     ) {
+        val messages = campaignManager.messagesV7
+        val consentStatus = campaignManager.consentStatus
+
         if (campaignManager.shouldCallMessages) {
-            if (consentManagerUtils.shoulTriggerTheFlow) {
+            if (consentManagerUtils.shouldTriggerTheFlow) {
+                val body = toPvDataBody(
+                    messages =  messages,
+                    accountId = 22,
+                    gdprApplies = false,
+                    gdprUuid = null,
+                    ccpaUuid = null,
+                    siteId = null
+                )
+                savePvData(PvDataParamReq(messageReq.env, body))
                 // pv data
             }
             getChoice(ChoiceParamReq())
         } else {
             // pvData
-            pSuccess(campaignManager.messagesV7)
+            pSuccess(campaignManager.messagesV7!!)
         }
     }
 }

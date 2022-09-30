@@ -8,6 +8,8 @@ import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.getCCPAConsent
 import com.sourcepoint.cmplibrary.data.local.getGDPRConsent
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toCCPA
 import com.sourcepoint.cmplibrary.data.network.model.toGDPR
@@ -20,6 +22,8 @@ import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonNull
 import org.json.JSONObject
 
@@ -69,7 +73,8 @@ internal interface CampaignManager {
 
     // V7
     val shouldCallMessages: Boolean
-    val messagesV7: MessagesResp
+    var messagesV7: MessagesResp?
+    var consentStatus: ConsentStatusResp?
 
     companion object {
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
@@ -401,24 +406,42 @@ private class CampaignManagerImpl(
 
     val isNewUser: Boolean
         get() {
-            return consentStatus.consentStatusData?.gdpr?.uuid == null &&
-                consentStatus.consentStatusData?.ccpa?.uuid == null
+            return consentStatus?.consentStatusData?.gdpr?.uuid == null &&
+                consentStatus?.consentStatusData?.ccpa?.uuid == null
         }
 
-    val consentStatus: ConsentStatusResp = ConsentStatusResp(
-        localState = JsonNull,
-        consentStatusData = ConsentStatusResp.ConsentStatusData(
-            ccpa = null,
-            gdpr = null
-        )
-    )
     override val shouldCallMessages: Boolean
         get() {
             return isNewUser ||
-                (consentStatus.consentStatusData?.gdpr?.gdprApplies == true && consentStatus.consentStatusData.gdpr.consentStatus?.consentedAll == false) ||
-                (consentStatus.consentStatusData?.ccpa?.ccpaApplies == true && consentStatus.consentStatusData.ccpa.status != CcpaStatus.consentedAll)
+                (consentStatus?.consentStatusData?.gdpr?.gdprApplies == true && consentStatus?.consentStatusData?.gdpr?.consentStatus?.consentedAll == false) ||
+                (consentStatus?.consentStatusData?.ccpa?.ccpaApplies == true && consentStatus?.consentStatusData?.ccpa?.status != CcpaStatus.consentedAll)
         }
 
-    override val messagesV7: MessagesResp
-        get() = TODO("Not yet implemented")
+
+    private var messagesV7Local: MessagesResp? = null
+    override var messagesV7: MessagesResp?
+        get() {
+            return messagesV7Local
+                ?: run {
+                    messagesV7Local = dataStorage.messagesV7?.let { JsonConverter.converter.decodeFromString<MessagesResp>(it) }
+                    messagesV7Local
+                }
+        }
+        set(value) {
+            dataStorage.messagesV7 = JsonConverter.converter.encodeToString(value)
+        }
+
+    private var consentStatusLocal: ConsentStatusResp? = null
+    override var consentStatus: ConsentStatusResp?
+        get() {
+            return consentStatusLocal
+                ?: run {
+                    consentStatusLocal = dataStorage.consentStatus?.let { JsonConverter.converter.decodeFromString<ConsentStatusResp>(it) }
+                    consentStatusLocal
+                }
+        }
+        set(value) {
+            consentStatusLocal = value
+            dataStorage.consentStatus = JsonConverter.converter.encodeToString(value)
+        }
 }

@@ -10,6 +10,7 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
+import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
@@ -32,7 +33,8 @@ internal interface ConsentManagerUtils {
 
     fun getSpConsent(): SPConsents?
 
-    val shoulTriggerTheFlow: Boolean
+    val shouldTriggerTheFlow: Boolean
+    var messagesResp: MessagesResp?
 
     companion object
 }
@@ -119,9 +121,23 @@ private class ConsentManagerUtilsImpl(
 
     override fun hasCcpaConsent(): Boolean = ds.getGdprConsentResp() != null
 
-    override val shoulTriggerTheFlow: Boolean
+    override val shouldTriggerTheFlow: Boolean
         get() {
-            return when {
+//            return if(ds.preference.contains(DataStorage.TRIGGER_BY_SAMPLE)){
+//                ds.shouldTriggerBySample
+//            }else{
+//                val res = when {
+//                    BuildConfig.SAMPLE_RATE <= 0 -> false
+//                    BuildConfig.SAMPLE_RATE >= 100 -> true
+//                    else -> {
+//                        val num = (1 until 100).random()
+//                        num in (1..BuildConfig.SAMPLE_RATE)
+//                    }
+//                }
+//                ds.shouldTriggerBySample = res
+//                res
+//            }
+            val res = when {
                 BuildConfig.SAMPLE_RATE <= 0 -> false
                 BuildConfig.SAMPLE_RATE >= 100 -> true
                 else -> {
@@ -129,5 +145,12 @@ private class ConsentManagerUtilsImpl(
                     num in (1..BuildConfig.SAMPLE_RATE)
                 }
             }
+            return res
+        }
+
+    override var messagesResp: MessagesResp?
+        get() = TODO("Not yet implemented")
+        set(value) {
+            ds
         }
 }

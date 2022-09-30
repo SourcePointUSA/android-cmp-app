@@ -3,10 +3,13 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_V7
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_PRIORITY_DATA
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.SAVED_CONSENT
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.TRIGGER_BY_SAMPLE
 
 /**
  * Factory method to create an instance of a [DataStorage] using its implementation
@@ -37,6 +40,33 @@ private class DataStorageImpl(
             preference
                 .edit()
                 .putBoolean(SAVED_CONSENT, value)
+                .apply()
+        }
+
+    override var shouldTriggerBySample: Boolean
+        get() = preference.getBoolean(TRIGGER_BY_SAMPLE, false)
+        set(value) {
+            preference
+                .edit()
+                .putBoolean(TRIGGER_BY_SAMPLE, value)
+                .apply()
+        }
+
+    override var messagesV7: String?
+        get() = preference.getString(MESSAGES_V7, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(MESSAGES_V7, value)
+                .apply()
+        }
+
+    override var consentStatus: String?
+        get() = preference.getString(CONSENT_STATUS, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(CONSENT_STATUS, value)
                 .apply()
         }
 
@@ -82,6 +112,9 @@ private class DataStorageImpl(
             .remove(PROPERTY_PRIORITY_DATA)
             .remove(PROPERTY_ID)
             .remove(SAVED_CONSENT)
+            .remove(TRIGGER_BY_SAMPLE)
+            .remove(MESSAGES_V7)
+            .remove(CONSENT_STATUS)
             .apply()
     }
 
