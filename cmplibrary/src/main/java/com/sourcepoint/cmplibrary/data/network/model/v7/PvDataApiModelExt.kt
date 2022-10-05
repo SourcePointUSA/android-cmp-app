@@ -4,7 +4,6 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
-import kotlinx.serialization.json.JsonNull
 import org.json.JSONObject
 import java.util.TreeMap
 
@@ -46,7 +45,7 @@ internal fun toPvDataBody(
     gdprUuid: String?
 ): JSONObject {
 
-    return if (messages !=null) {
+    return if (messages != null) {
         val gdpr = messages.campaigns
             ?.gdpr
             ?.let {
@@ -85,5 +84,5 @@ internal fun toPvDataBody(
             put("gdpr", gdpr)
             put("ccpa", ccpa)
         }
-    }else JSONObject()
+    } else JSONObject()
 }

@@ -12,6 +12,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
         const val TRIGGER_BY_SAMPLE = "sp.key.trigger.by.sample"
         const val MESSAGES_V7 = "sp.key.messages"
         const val CONSENT_STATUS = "sp.key.consent.status"
+        const val META_DATA_RESP = "sp.key.meta.data"
     }
 
     override val preference: SharedPreferences
@@ -20,6 +21,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     var shouldTriggerBySample: Boolean
     var messagesV7: String?
     var consentStatus: String?
+    var metaDataResp: String?
 
     fun savePropertyId(value: Int)
     fun savePropertyPriorityData(value: String)

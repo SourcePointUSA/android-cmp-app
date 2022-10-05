@@ -15,6 +15,7 @@ import com.sourcepoint.cmplibrary.data.network.model.toCCPA
 import com.sourcepoint.cmplibrary.data.network.model.toGDPR
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
+import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -24,7 +25,6 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.JsonNull
 import org.json.JSONObject
 
 internal interface CampaignManager {
@@ -73,8 +73,10 @@ internal interface CampaignManager {
 
     // V7
     val shouldCallMessages: Boolean
+    val shouldCallConsentStatus: Boolean
     var messagesV7: MessagesResp?
     var consentStatus: ConsentStatusResp?
+    var metaDataResp: MetaDataResp?
 
     companion object {
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
@@ -413,10 +415,17 @@ private class CampaignManagerImpl(
     override val shouldCallMessages: Boolean
         get() {
             return isNewUser ||
+                // applies from Message response
                 (consentStatus?.consentStatusData?.gdpr?.gdprApplies == true && consentStatus?.consentStatusData?.gdpr?.consentStatus?.consentedAll == false) ||
+
                 (consentStatus?.consentStatusData?.ccpa?.ccpaApplies == true && consentStatus?.consentStatusData?.ccpa?.status != CcpaStatus.consentedAll)
         }
 
+    override val shouldCallConsentStatus: Boolean
+        get() {
+            // TODO authId != nil || ((state.gdpr?.uuid != nil || state.ccpa?.uuid != nil) && !localDataComplete)
+            return false
+        }
 
     private var messagesV7Local: MessagesResp? = null
     override var messagesV7: MessagesResp?
@@ -428,7 +437,9 @@ private class CampaignManagerImpl(
                 }
         }
         set(value) {
-            dataStorage.messagesV7 = JsonConverter.converter.encodeToString(value)
+            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
+            dataStorage.messagesV7 = serialised
+            messagesV7Local = value
         }
 
     private var consentStatusLocal: ConsentStatusResp? = null
@@ -441,7 +452,23 @@ private class CampaignManagerImpl(
                 }
         }
         set(value) {
+            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
+            dataStorage.consentStatus = serialised
             consentStatusLocal = value
-            dataStorage.consentStatus = JsonConverter.converter.encodeToString(value)
+        }
+
+    private var metaDataResp2Local: MetaDataResp? = null
+    override var metaDataResp: MetaDataResp?
+        get() {
+            return metaDataResp2Local
+                ?: run {
+                    metaDataResp2Local = dataStorage.metaDataResp?.let { JsonConverter.converter.decodeFromString<MetaDataResp>(it) }
+                    metaDataResp2Local
+                }
+        }
+        set(value) {
+            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
+            dataStorage.metaDataResp = serialised
+            metaDataResp2Local = value
         }
 }

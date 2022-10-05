@@ -9,8 +9,9 @@ import com.sourcepoint.cmplibrary.core.flatMap
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
+import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
-import com.sourcepoint.cmplibrary.data.network.model.v7.*
+import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.PvDataParamReq
@@ -130,18 +131,65 @@ private class ServiceImpl(
         consentManagerUtils.getSpConsent()
     }
 
+    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> {
+        return nc.getMetaData(param)
+            .executeOnRight { campaignManager.metaDataResp = it }
+    }
+
     override fun getMessages(
         messageReq: MessagesParamReq,
         pSuccess: (MessagesResp) -> Unit,
         pError: (Throwable) -> Unit
     ) {
+
+        val md = MetaDataParamReq(
+            env = messageReq.env,
+            accountId = 22,
+            propertyId = 1212,
+            metadata = messageReq.metadata
+        )
+
+        val meta = this.getMetaData(md).getOrNull() ?: failParam("MessageData call")
+
+        val additionsChangeDate = meta.gdpr?.additionsChangeDate ?: failParam("additionsChangeDate")
+        val legalBasisChangeDate = meta.gdpr.legalBasisChangeDate ?: failParam("legalBasisChangeDate")
+        val dateCreated = consentStatus?.consentStatusData?.gdpr?.dateCreated ?: failParam("dateCreated")
+
+        val creationLessThanAdditions = dateCreated.epochSecond < additionsChangeDate.epochSecond
+        val creationLessThanLegalBasis = dateCreated.epochSecond < legalBasisChangeDate.epochSecond
+
+        if (creationLessThanAdditions) {
+            // TODO ---> consentStatus.vendorListAdditions = true
+        }
+        if (creationLessThanLegalBasis) {
+            // TODO ---> consentStatus.legalBasisChanges = true
+        }
+        if (creationLessThanAdditions || creationLessThanLegalBasis) {
+            // TODO 1. if(consentStatus.consentedAll) consentStatus.granularStatus.previousOptInAll = true
+            // TODO 2. consentStatus.consentedAll = false
+        }
+        // update consentStatus
+        campaignManager.consentStatus = consentStatus
+
         val messages = campaignManager.messagesV7
         val consentStatus = campaignManager.consentStatus
+        val metaDataResp = getMetaData(
+            MetaDataParamReq(
+                env = messageReq.env,
+                propertyId = 22,
+                accountId = 123,
+                metadata = messageReq.metadata
+            )
+        ).getOrNull()
+
+        if (metaDataResp != null) {
+        }
 
         if (campaignManager.shouldCallMessages) {
+
             if (consentManagerUtils.shouldTriggerTheFlow) {
                 val body = toPvDataBody(
-                    messages =  messages,
+                    messages = messages,
                     accountId = 22,
                     gdprApplies = false,
                     gdprUuid = null,

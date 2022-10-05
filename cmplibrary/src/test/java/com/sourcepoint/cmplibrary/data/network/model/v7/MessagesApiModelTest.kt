@@ -7,7 +7,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.encodeToJsonElement
 import org.junit.Test
 
-class MessagesApiModel2Test {
+class MessagesApiModelTest {
 
     @Test
     fun `GIVEN a priority {1, 2, 5} GDPR is first`() {

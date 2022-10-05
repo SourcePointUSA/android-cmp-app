@@ -7,7 +7,6 @@ import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
@@ -86,7 +85,7 @@ private class JsonConverterImpl : JsonConverter {
     }
 
     override fun toMetaDataRespResp(body: String): Either<MetaDataResp> = check {
-        JSONObject(body).toTreeMap().toMetaDataResp()
+        JsonConverter.converter.decodeFromString(body)
     }
 
     override fun toConsentStatusResp(body: String): Either<ConsentStatusResp> = check {

@@ -181,4 +181,17 @@ internal class MockDataStorage : DataStorage {
     override fun getCcpaConsentUuid(): String? {
         TODO("Not yet implemented")
     }
+
+    override var shouldTriggerBySample: Boolean
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var messagesV7: String?
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var consentStatus: String?
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var metaDataResp: String?
+        get() = TODO("Not yet implemented")
+        set(value) {}
 }

@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_V7
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.META_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_PRIORITY_DATA
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.SAVED_CONSENT
@@ -70,6 +71,15 @@ private class DataStorageImpl(
                 .apply()
         }
 
+    override var metaDataResp: String?
+        get() = preference.getString(META_DATA_RESP, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(META_DATA_RESP, value)
+                .apply()
+        }
+
     override fun saveLocalState(value: String) {
         preference
             .edit()
@@ -115,6 +125,7 @@ private class DataStorageImpl(
             .remove(TRIGGER_BY_SAMPLE)
             .remove(MESSAGES_V7)
             .remove(CONSENT_STATUS)
+            .remove(META_DATA_RESP)
             .apply()
     }
 

@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.model.v7
 
 import com.sourcepoint.cmplibrary.data.network.converter.CcpaStatusSerializer
+import com.sourcepoint.cmplibrary.data.network.converter.DateSerializer
 import com.sourcepoint.cmplibrary.data.network.converter.GrantsSerializer
 import com.sourcepoint.cmplibrary.data.network.converter.GranularStateSerializer
 import com.sourcepoint.cmplibrary.data.network.util.Env
@@ -9,6 +10,7 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
+import java.time.Instant
 
 internal data class ConsentStatusParamReq(
     val env: Env,
@@ -38,7 +40,7 @@ data class ConsentStatusResp(
         data class CcpaCS(
             @SerialName("ccpaApplies") val ccpaApplies: Boolean?,
             @SerialName("consentedAll") val consentedAll: Boolean?,
-            @SerialName("dateCreated") val dateCreated: String?,
+            @Serializable(with = DateSerializer::class) val dateCreated: Instant?,
             @SerialName("gpcEnabled") val gpcEnabled: Boolean?,
             @SerialName("newUser") val newUser: Boolean?,
             @SerialName("rejectedAll") val rejectedAll: Boolean?,
@@ -58,7 +60,7 @@ data class ConsentStatusResp(
             @SerialName("cookieExpirationDays") val cookieExpirationDays: Int?,
             @SerialName("cookies") val cookies: List<Cooky?>?,
             @SerialName("customVendorsResponse") val customVendorsResponse: CustomVendorsResponse?,
-            @SerialName("dateCreated") val dateCreated: String?,
+            @Serializable(with = DateSerializer::class) val dateCreated: Instant?,
             @SerialName("euconsent") val euconsent: String?,
             @SerialName("gdprApplies") val gdprApplies: Boolean?,
             @Serializable(with = GrantsSerializer::class) val grants: Map<String, GDPRPurposeGrants>?,
