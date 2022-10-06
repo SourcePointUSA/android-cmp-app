@@ -14,8 +14,6 @@ import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.PvDataParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.toPvDataBody
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
@@ -41,8 +39,9 @@ internal fun Service.Companion.create(
     campaignManager: CampaignManager,
     consentManagerUtils: ConsentManagerUtils,
     dataStorage: DataStorage,
-    logger: Logger
-): Service = ServiceImpl(nc, campaignManager, consentManagerUtils, dataStorage, logger)
+    logger: Logger,
+    execManager: ExecutorManager
+): Service = ServiceImpl(nc, campaignManager, consentManagerUtils, dataStorage, logger, execManager)
 
 /**
  * Implementation os the [Service] interface
@@ -52,7 +51,8 @@ private class ServiceImpl(
     private val campaignManager: CampaignManager,
     private val consentManagerUtils: ConsentManagerUtils,
     private val dataStorage: DataStorage,
-    private val logger: Logger
+    private val logger: Logger,
+    private val execManager: ExecutorManager
 ) : Service, NetworkClient by nc, CampaignManager by campaignManager {
 
     override fun getUnifiedMessage(
@@ -131,10 +131,15 @@ private class ServiceImpl(
         consentManagerUtils.getSpConsent()
     }
 
-    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> {
-        return nc.getMetaData(param)
-            .executeOnRight { campaignManager.metaDataResp = it }
-    }
+//    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> {
+//        return nc.getMetaData(param)
+//            .executeOnRight { campaignManager.metaDataResp = it }
+//    }
+
+//    override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> {
+//        return nc.getConsentStatus(param)
+//            .executeOnRight { campaignManager.consentStatusResponse = it }
+//    }
 
     override fun getMessages(
         messageReq: MessagesParamReq,
@@ -142,67 +147,97 @@ private class ServiceImpl(
         pError: (Throwable) -> Unit
     ) {
 
-        val md = MetaDataParamReq(
-            env = messageReq.env,
-            accountId = 22,
-            propertyId = 1212,
-            metadata = messageReq.metadata
-        )
-
-        val meta = this.getMetaData(md).getOrNull() ?: failParam("MessageData call")
-
-        val additionsChangeDate = meta.gdpr?.additionsChangeDate ?: failParam("additionsChangeDate")
-        val legalBasisChangeDate = meta.gdpr.legalBasisChangeDate ?: failParam("legalBasisChangeDate")
-        val dateCreated = consentStatus?.consentStatusData?.gdpr?.dateCreated ?: failParam("dateCreated")
-
-        val creationLessThanAdditions = dateCreated.epochSecond < additionsChangeDate.epochSecond
-        val creationLessThanLegalBasis = dateCreated.epochSecond < legalBasisChangeDate.epochSecond
-
-        if (creationLessThanAdditions) {
-            // TODO ---> consentStatus.vendorListAdditions = true
-        }
-        if (creationLessThanLegalBasis) {
-            // TODO ---> consentStatus.legalBasisChanges = true
-        }
-        if (creationLessThanAdditions || creationLessThanLegalBasis) {
-            // TODO 1. if(consentStatus.consentedAll) consentStatus.granularStatus.previousOptInAll = true
-            // TODO 2. consentStatus.consentedAll = false
-        }
-        // update consentStatus
-        campaignManager.consentStatus = consentStatus
-
-        val messages = campaignManager.messagesV7
-        val consentStatus = campaignManager.consentStatus
-        val metaDataResp = getMetaData(
-            MetaDataParamReq(
+        execManager.executeOnWorkerThread {
+            val md = MetaDataParamReq(
                 env = messageReq.env,
-                propertyId = 22,
-                accountId = 123,
+                accountId = messageReq.accountId,
+                propertyId = messageReq.propertyId,
                 metadata = messageReq.metadata
             )
-        ).getOrNull()
 
-        if (metaDataResp != null) {
-        }
+            val meta = this.getMetaData(md)
+                .executeOnRight {
+                    campaignManager.metaDataResp = it
+                }
+                .executeOnLeft {
+                    println()
+                }
+                .getOrNull() ?: failParam("MessageData call")
+            val gdprUUID = consentStatusResponse?.consentStatusData?.gdpr?.uuid
+            val ccpaUUID = consentStatusResponse?.consentStatusData?.ccpa?.uuid
 
-        if (campaignManager.shouldCallMessages) {
-
-            if (consentManagerUtils.shouldTriggerTheFlow) {
-                val body = toPvDataBody(
-                    messages = messages,
-                    accountId = 22,
-                    gdprApplies = false,
-                    gdprUuid = null,
-                    ccpaUuid = null,
-                    siteId = null
+            if (messageReq.authId != null || ((gdprUUID == null || ccpaUUID == null) && consentStatusResponse == null)) {
+                val csParam = ConsentStatusParamReq(
+                    env = messageReq.env,
+                    accountId = messageReq.accountId,
+                    propertyId = messageReq.propertyId,
+                    metadata = messageReq.metadata,
+                    authId = messageReq.authId
                 )
-                savePvData(PvDataParamReq(messageReq.env, body))
-                // pv data
+                campaignManager.run {
+                    getConsentStatus(csParam).executeOnRight {
+                        consentStatusResponse = it
+                        gdprConsentStatus = it.consentStatusData?.gdpr?.consentStatus
+                    }
+                }
             }
-            getChoice(ChoiceParamReq())
-        } else {
-            // pvData
-            pSuccess(campaignManager.messagesV7!!)
+
+            val gdprConsentStatus = campaignManager.gdprConsentStatus
+
+            val additionsChangeDate = meta.gdpr?.additionsChangeDate ?: failParam("additionsChangeDate")
+            val legalBasisChangeDate = meta.gdpr.legalBasisChangeDate ?: failParam("legalBasisChangeDate")
+            val dataRecordedConsent = campaignManager.dataRecordedConsent
+
+            if (dataRecordedConsent != null && gdprConsentStatus != null) {
+                val creationLessThanAdditions = dataRecordedConsent.epochSecond < additionsChangeDate.epochSecond
+                val creationLessThanLegalBasis = dataRecordedConsent.epochSecond < legalBasisChangeDate.epochSecond
+
+                if (creationLessThanAdditions) {
+                    gdprConsentStatus.vendorListAdditions = true
+                }
+                if (creationLessThanLegalBasis) {
+                    gdprConsentStatus.legalBasisChanges = true
+                }
+                if (creationLessThanAdditions || creationLessThanLegalBasis) {
+                    if (gdprConsentStatus.consentedAll == true) {
+                        gdprConsentStatus.granularStatus?.previousOptInAll = true
+                    } else {
+                        gdprConsentStatus.consentedAll = false
+                    }
+                }
+            }
+
+            // update consentStatus
+            campaignManager.gdprConsentStatus = gdprConsentStatus
+
+            if (campaignManager.shouldCallMessages) {
+
+                val body = getMessageBody(
+                    accountId = messageReq.accountId,
+                    propertyHref = messageReq.propertyHref,
+                    cs = consentStatusResponse
+                )
+
+                val messagesParamReq = MessagesParamReq(
+                    accountId = messageReq.accountId,
+                    propertyId = messageReq.propertyId,
+                    authId = messageReq.authId,
+                    propertyHref = messageReq.propertyHref,
+                    env = messageReq.env,
+                    body = body.toString(),
+                    metadata = meta.toString(),
+                    nonKeyedLocalState = ""
+                )
+
+                getMessages(messagesParamReq).executeOnRight {
+                    pSuccess(it)
+                }
+
+                getChoice(ChoiceParamReq())
+            } else {
+                // pvData
+                campaignManager.messagesV7?.let(pSuccess)
+            }
         }
     }
 }

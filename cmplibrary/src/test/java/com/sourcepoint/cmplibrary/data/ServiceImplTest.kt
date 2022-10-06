@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.Either.Right
+import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
@@ -47,6 +48,9 @@ class ServiceImplTest {
     private lateinit var logger: Logger
 
     @MockK
+    private lateinit var execManager: ExecutorManager
+
+    @MockK
     private lateinit var successMock: (UnifiedMessageResp) -> Unit
 
     @MockK
@@ -71,7 +75,7 @@ class ServiceImplTest {
         )
         every { successMock(any()) }.answers { }
 
-        val sut = Service.create(nc, cm, cmu, ds, logger)
+        val sut = Service.create(nc, cm, cmu, ds, logger, execManager)
         sut.getUnifiedMessage(uwMessDataTest, successMock, errorMock, Env.STAGE)
 
         verify(exactly = 1) { cm.saveUnifiedMessageResp(any()) }
@@ -87,7 +91,7 @@ class ServiceImplTest {
 
         every { errorMock(any()) }.answers { }
 
-        val sut = Service.create(nc, cm, cmu, ds, logger)
+        val sut = Service.create(nc, cm, cmu, ds, logger, execManager)
         sut.getUnifiedMessage(uwMessDataTest, successMock, errorMock, Env.STAGE)
 
         verify(exactly = 0) { cm.saveUnifiedMessageResp(any()) }
@@ -103,7 +107,7 @@ class ServiceImplTest {
         every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
         every { ds.getGdprConsentResp() }.returns(storedConsent)
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
         val res = sut.sendCustomConsent(mockk(), Env.STAGE).getOrNull()!!
         res.content.getJSONObject("grants").toTreeMap().assertEquals(JSONObject(newConsent).getJSONObject("grants").toTreeMap())
     }
@@ -135,7 +139,7 @@ class ServiceImplTest {
         every { cmu.buildConsentReq(any(), any(), any()) }.returns(Right(JSONObject()))
         every { ds.getGdprConsentResp() }.returns(storedConsent)
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
         val res = sut.sendConsent(localState = "{}", pmId = null, env = Env.STAGE, consentActionImpl = consentAction) as? Right
 
         verify(exactly = 1) { ds.saveLocalState("localstate") }
@@ -174,7 +178,7 @@ class ServiceImplTest {
         every { cmu.buildConsentReq(any(), any(), any()) }.returns(Right(JSONObject()))
         every { ds.getGdprConsentResp() }.returns(storedConsent)
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
         val res = sut.sendConsent(localState = "{}", pmId = null, env = Env.STAGE, consentActionImpl = consentAction) as? Right
 
         verify(exactly = 1) { ds.saveLocalState("localstate") }
@@ -214,7 +218,7 @@ class ServiceImplTest {
         every { ds.getGdprConsentResp() }.returns(storedConsent)
         every { ds.saveLocalState(any()) }.throws(RuntimeException("test"))
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
         val res = sut.sendConsent(localState = "{}", pmId = null, env = Env.STAGE, consentActionImpl = consentAction) as? Either.Left
 
         verify(exactly = 1) { ds.saveLocalState(any()) }
@@ -234,7 +238,7 @@ class ServiceImplTest {
         every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
         every { ds.getGdprConsentResp() }.returns(storedConsent)
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
         val res = sut.sendCustomConsentServ(mockk(), Env.STAGE).getOrNull()!!
 
         verify(exactly = 1) { ds.saveGdprConsentResp(any()) }
@@ -251,7 +255,7 @@ class ServiceImplTest {
         every { ncMock.deleteCustomConsentTo(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
         every { ds.getGdprConsentResp() }.returns(storedConsent)
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
         val res = sut.deleteCustomConsentToServ(mockk(), Env.STAGE).getOrNull()!!
 
         verify(exactly = 1) { ds.saveGdprConsentResp(any()) }
@@ -271,7 +275,7 @@ class ServiceImplTest {
 
         every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
 
-        val sut = Service.create(ncMock, cm, cmu, dsStub, logger)
+        val sut = Service.create(ncMock, cm, cmu, dsStub, logger, execManager)
         sut.sendCustomConsentServ(mockk(), Env.STAGE).getOrNull()!!
 
         // compare that the new consent get stored
@@ -291,7 +295,7 @@ class ServiceImplTest {
 
         every { ncMock.deleteCustomConsentTo(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
 
-        val sut = Service.create(ncMock, cm, cmu, dsStub, logger)
+        val sut = Service.create(ncMock, cm, cmu, dsStub, logger, execManager)
         sut.deleteCustomConsentToServ(mockk(), Env.STAGE).getOrNull()!!
 
         // compare that the new consent get stored
@@ -307,7 +311,7 @@ class ServiceImplTest {
         every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
         every { ds.getGdprConsentResp() }.throws(RuntimeException("test"))
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
         val res = sut.sendCustomConsentServ(mockk(), Env.STAGE)
         (res as? Either.Left).assertNotNull()
     }
@@ -319,7 +323,7 @@ class ServiceImplTest {
         every { ncMock.deleteCustomConsentTo(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
         every { ds.getGdprConsentResp() }.throws(RuntimeException("test"))
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
         val res = sut.sendCustomConsentServ(mockk(), Env.STAGE)
         (res as? Either.Left).assertNotNull()
     }

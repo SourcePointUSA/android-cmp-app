@@ -243,6 +243,7 @@ class HttpUrlManagerTest {
             env = Env.PROD,
             metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
             propertyId = 17801,
+            authId = null
         )
         val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}")
@@ -271,6 +272,10 @@ class HttpUrlManagerTest {
             nonKeyedLocalState = """{"gdpr":{"_sp_v1_uid":null,"_sp_v1_data":null},"ccpa":{"_sp_v1_uid":null,"_sp_v1_data":null}}""",
             body = body.toString(),
             metadata = """{"ccpa":{"applies":true},"gdpr":{"applies":true}}""",
+            authId = null,
+            accountId = 1212,
+            propertyId = 12,
+            propertyHref = "asdfasdfasd"
         )
         val sut = HttpUrlManagerSingleton.getMessagesUrl(param).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages?env=prod&nonKeyedLocalState={%22gdpr%22:{%22_sp_v1_uid%22:null,%22_sp_v1_data%22:null},%22ccpa%22:{%22_sp_v1_uid%22:null,%22_sp_v1_data%22:null}}&body={%22accountId%22:22,%22includeData%22:{%22TCData%22:{%22type%22:%22RecordString%22},%22campaigns%22:{%22type%22:%22RecordString%22}},%22propertyHref%22:%22https://tests.unified-script.com%22,%22hasCSP%22:true,%22campaigns%22:{%22ccpa%22:{%22hasLocalData%22:false,%22consentStatus%22:{%22hasConsentData%22:false,%22consentedToAll%22:true,%22consentedToAny%22:false,%22rejectedAny%22:false}},%22gdpr%22:{%22hasLocalData%22:false,%22consentStatus%22:{%22hasConsentData%22:false,%22consentedToAll%22:true,%22consentedToAny%22:false,%22rejectedAny%22:false}}}}&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true}}")

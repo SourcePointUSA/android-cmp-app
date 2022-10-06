@@ -1,15 +1,20 @@
 package com.sourcepoint.cmplibrary.data.network.model.v7
 
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.DateSerializer
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.Env
+import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import java.time.Instant
 
 internal data class MetaDataParamReq(
     val env: Env,
-    val propertyId: Int,
-    val accountId: Int,
+    val propertyId: Long,
+    val accountId: Long,
     val metadata: String
 )
 
@@ -32,4 +37,9 @@ data class MetaDataResp(
         @Serializable(with = DateSerializer::class) val legalBasisChangeDate: Instant?,
         @SerialName("version") val version: Int?
     )
+
+    override fun toString(): String {
+        return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
+            ?: super.toString()
+    }
 }

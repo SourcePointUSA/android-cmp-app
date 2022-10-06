@@ -215,9 +215,9 @@ class CampaignManagerImplTest {
         val json = "v7/consent_status_with_auth_id.json".file2String()
         val obj = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
 
-        cm.consentStatus = obj
+        cm.consentStatusResponse = obj
 
-        cm.consentStatus?.consentStatusData.also { csd ->
+        cm.consentStatusResponse?.consentStatusData.also { csd ->
             csd?.gdpr?.also {
                 it.uuid.assertEquals("69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10")
                 it.dateCreated.toString().assertEquals("2022-08-25T20:56:38.551Z")
@@ -228,9 +228,9 @@ class CampaignManagerImplTest {
             }
         }
 
-        cm.consentStatus = null
+        cm.consentStatusResponse = null
 
-        cm.consentStatus.assertNull()
+        cm.consentStatusResponse.assertNull()
     }
 
     @Test

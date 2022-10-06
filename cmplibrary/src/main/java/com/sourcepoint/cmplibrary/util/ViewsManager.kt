@@ -10,6 +10,7 @@ import com.sourcepoint.cmplibrary.core.web.CampaignModel
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
+import com.sourcepoint.cmplibrary.data.network.model.v7.CampaignMessage
 import com.sourcepoint.cmplibrary.exception.GenericSDKException
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import java.lang.ref.WeakReference
@@ -33,6 +34,14 @@ internal interface ViewsManager {
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
         campaignQueue: Queue<CampaignModel>,
+        messSubCat: MessageSubCategory,
+        cmpViewId: Int?
+    ): Either<IConsentWebView>
+    fun createWebViewV7(
+        lib: SpConsentLibImpl,
+        jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
+        campaignQueue: Queue<CampaignModel>,
+        remainingCampaignsV7: Queue<CampaignMessage> = LinkedList(),
         messSubCat: MessageSubCategory,
         cmpViewId: Int?
     ): Either<IConsentWebView>
@@ -159,6 +168,31 @@ private class ViewsManagerImpl(
                     logger = lib.pLogger,
                     executorManager = lib.executor,
                     campaignQueue = campaignQueue,
+                    messageTimeout = messageTimeout,
+                    messSubCat = messSubCat
+                )
+            }
+        } ?: Either.Left(GenericSDKException(description = "The activity reference in the ViewManager is null!!!"))
+    }
+
+    override fun createWebViewV7(
+        lib: SpConsentLibImpl,
+        jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
+        campaignQueue: Queue<CampaignModel>,
+        remainingCampaignsV7: Queue<CampaignMessage>,
+        messSubCat: MessageSubCategory,
+        cmpViewId: Int?
+    ): Either<IConsentWebView> {
+        return weakReference.get()?.let {
+            check {
+                ConsentWebView(
+                    context = it,
+                    connectionManager = connectionManager,
+                    jsClientLib = jsReceiverDelegate,
+                    logger = lib.pLogger,
+                    executorManager = lib.executor,
+                    campaignQueue = campaignQueue,
+                    campaignQueueV7 = remainingCampaignsV7,
                     messageTimeout = messageTimeout,
                     messSubCat = messSubCat
                 )

@@ -1,11 +1,13 @@
 package com.sourcepoint.cmplibrary.data.network.model.v7
 
+import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.CampaignReq
 import kotlinx.serialization.json.* // ktlint-disable
 
 internal fun getMessageBody(
-    cs: ConsentStatusResp,
+    cs: ConsentStatusResp?,
     propertyHref: String,
-    accountId: Int
+    accountId: Long
 ): JsonObject {
     return buildJsonObject {
         put("accountId", accountId)
@@ -22,15 +24,38 @@ internal fun getMessageBody(
         putJsonObject("campaigns") {
             putJsonObject("ccpa") {
                 put("hasLocalData", false)
-                /**
-                 *  ==============================> INTENTIONAL ERROR <===============================================
-                 *  ==============================> the consentStatus is not present in the ccpa obj <===============================================
-                 */
-                put("consentStatus", cs.consentStatusData?.gdpr?.consentStatus?.toJsonObjectV7() ?: JsonNull)
             }
             putJsonObject("gdpr") {
                 put("hasLocalData", false)
-                put("consentStatus", cs.consentStatusData?.gdpr?.consentStatus?.toJsonObjectV7() ?: JsonNull)
+                putJsonObject("consentStatus") {
+                    put("hasConsentData", cs?.consentStatusData?.gdpr?.consentStatus?.hasConsentData ?: false)
+                    put("consentedToAll", cs?.consentStatusData?.gdpr?.consentStatus?.consentedAll ?: false)
+                    put("consentedToAny", cs?.consentStatusData?.gdpr?.consentStatus?.consentedToAny ?: false)
+                    put("rejectedAny", cs?.consentStatusData?.gdpr?.consentStatus?.rejectedAny ?: false)
+                    put("legalBasisChanges", cs?.consentStatusData?.gdpr?.consentStatus?.rejectedAny ?: false)
+                    put("vendorListAdditions", cs?.consentStatusData?.gdpr?.consentStatus?.rejectedAny ?: false)
+                }
+            }
+        }
+    }
+}
+
+internal fun List<CampaignReq>.toMetadataBody(): JsonObject {
+    return buildJsonObject {
+        putJsonObject("gdpr") {
+            find { it.campaignType == CampaignType.GDPR }?.let { c ->
+                putJsonObject("targetingParams") {
+                    c.targetingParams.forEach { t -> put(t.key, t.value) }
+                }
+                put("groupPmId", c.groupPmId)
+            }
+        }
+        putJsonObject("ccpa") {
+            find { it.campaignType == CampaignType.CCPA }?.let { c ->
+                putJsonObject("targetingParams") {
+                    c.targetingParams.forEach { t -> put(t.key, t.value) }
+                }
+                put("groupPmId", c.groupPmId)
             }
         }
     }

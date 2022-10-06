@@ -188,10 +188,19 @@ internal class MockDataStorage : DataStorage {
     override var messagesV7: String?
         get() = TODO("Not yet implemented")
         set(value) {}
-    override var consentStatus: String?
+    override var consentStatusResponse: String?
         get() = TODO("Not yet implemented")
         set(value) {}
     override var metaDataResp: String?
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var dataRecordedConsent: String?
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var gdprConsentStatus: String?
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var pvDataResp: String?
         get() = TODO("Not yet implemented")
         set(value) {}
 }

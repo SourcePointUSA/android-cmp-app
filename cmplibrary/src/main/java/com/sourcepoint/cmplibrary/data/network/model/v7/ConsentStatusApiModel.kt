@@ -1,23 +1,25 @@
 package com.sourcepoint.cmplibrary.data.network.model.v7
 
-import com.sourcepoint.cmplibrary.data.network.converter.CcpaStatusSerializer
-import com.sourcepoint.cmplibrary.data.network.converter.DateSerializer
-import com.sourcepoint.cmplibrary.data.network.converter.GrantsSerializer
-import com.sourcepoint.cmplibrary.data.network.converter.GranularStateSerializer
+import com.sourcepoint.cmplibrary.core.getOrNull
+import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
+import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 import java.time.Instant
 
 internal data class ConsentStatusParamReq(
     val env: Env,
     val metadata: String,
-    val propertyId: Int,
-    val accountId: Int,
-    val authId: String? = null
+    val propertyId: Long,
+    val accountId: Long,
+    val authId: String?
 )
 
 enum class GranularState {
@@ -85,25 +87,25 @@ data class ConsentStatusResp(
                 )
             }
 
-            @Serializable
-            data class ConsentStatus(
-                @SerialName("consentedAll") val consentedAll: Boolean?,
-                @SerialName("consentedToAny") val consentedToAny: Boolean?,
-                @SerialName("granularStatus") val granularStatus: GranularStatus?,
-                @SerialName("hasConsentData") val hasConsentData: Boolean?,
-                @SerialName("rejectedAny") val rejectedAny: Boolean?,
-                @SerialName("rejectedLI") val rejectedLI: Boolean?
-            ) {
-                @Serializable
-                data class GranularStatus(
-                    @SerialName("defaultConsent") val defaultConsent: Boolean?,
-                    @SerialName("previousOptInAll") val previousOptInAll: Boolean?,
-                    @Serializable(with = GranularStateSerializer::class) val purposeConsent: GranularState?,
-                    @Serializable(with = GranularStateSerializer::class) val purposeLegInt: GranularState?,
-                    @Serializable(with = GranularStateSerializer::class) val vendorConsent: GranularState?,
-                    @Serializable(with = GranularStateSerializer::class) val vendorLegInt: GranularState?
-                )
-            }
+//            @Serializable
+//            data class ConsentStatus(
+//                @SerialName("consentedAll") val consentedAll: Boolean?,
+//                @SerialName("consentedToAny") val consentedToAny: Boolean?,
+//                @SerialName("granularStatus") val granularStatus: GranularStatus?,
+//                @SerialName("hasConsentData") val hasConsentData: Boolean?,
+//                @SerialName("rejectedAny") val rejectedAny: Boolean?,
+//                @SerialName("rejectedLI") val rejectedLI: Boolean?
+//            ) {
+//                @Serializable
+//                data class GranularStatus(
+//                    @SerialName("defaultConsent") var defaultConsent: Boolean?,
+//                    @SerialName("previousOptInAll") var previousOptInAll: Boolean?,
+//                    @Serializable(with = GranularStateSerializer::class) val purposeConsent: GranularState?,
+//                    @Serializable(with = GranularStateSerializer::class) val purposeLegInt: GranularState?,
+//                    @Serializable(with = GranularStateSerializer::class) val vendorConsent: GranularState?,
+//                    @Serializable(with = GranularStateSerializer::class) val vendorLegInt: GranularState?
+//                )
+//            }
 
             @Serializable
             data class Cooky(
@@ -140,5 +142,10 @@ data class ConsentStatusResp(
                 )
             }
         }
+    }
+
+    override fun toString(): String {
+        return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
+            ?: super.toString()
     }
 }

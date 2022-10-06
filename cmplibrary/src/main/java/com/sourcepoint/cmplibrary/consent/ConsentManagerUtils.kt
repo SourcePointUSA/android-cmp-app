@@ -33,7 +33,7 @@ internal interface ConsentManagerUtils {
 
     fun getSpConsent(): SPConsents?
 
-    val shouldTriggerTheFlow: Boolean
+    val shouldTriggerBySample: Boolean
     var messagesResp: MessagesResp?
 
     companion object
@@ -121,31 +121,22 @@ private class ConsentManagerUtilsImpl(
 
     override fun hasCcpaConsent(): Boolean = ds.getGdprConsentResp() != null
 
-    override val shouldTriggerTheFlow: Boolean
+    override val shouldTriggerBySample: Boolean
         get() {
-//            return if(ds.preference.contains(DataStorage.TRIGGER_BY_SAMPLE)){
-//                ds.shouldTriggerBySample
-//            }else{
-//                val res = when {
-//                    BuildConfig.SAMPLE_RATE <= 0 -> false
-//                    BuildConfig.SAMPLE_RATE >= 100 -> true
-//                    else -> {
-//                        val num = (1 until 100).random()
-//                        num in (1..BuildConfig.SAMPLE_RATE)
-//                    }
-//                }
-//                ds.shouldTriggerBySample = res
-//                res
-//            }
-            val res = when {
-                BuildConfig.SAMPLE_RATE <= 0 -> false
-                BuildConfig.SAMPLE_RATE >= 100 -> true
-                else -> {
-                    val num = (1 until 100).random()
-                    num in (1..BuildConfig.SAMPLE_RATE)
+            return if (ds.preference.contains(DataStorage.TRIGGER_BY_SAMPLE)) {
+                ds.shouldTriggerBySample
+            } else {
+                val res = when {
+                    BuildConfig.SAMPLE_RATE <= 0 -> false
+                    BuildConfig.SAMPLE_RATE >= 100 -> true
+                    else -> {
+                        val num = (1 until 100).random()
+                        num in (1..BuildConfig.SAMPLE_RATE)
+                    }
                 }
+                ds.shouldTriggerBySample = res
+                res
             }
-            return res
         }
 
     override var messagesResp: MessagesResp?

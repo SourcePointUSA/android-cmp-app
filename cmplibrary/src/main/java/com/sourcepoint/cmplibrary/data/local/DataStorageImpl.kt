@@ -3,12 +3,15 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATUS
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATUS_RESPONSE
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.DATA_RECORDED_CONSENT
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_V7
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.META_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_PRIORITY_DATA
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PV_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.SAVED_CONSENT
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.TRIGGER_BY_SAMPLE
 
@@ -62,12 +65,21 @@ private class DataStorageImpl(
                 .apply()
         }
 
-    override var consentStatus: String?
-        get() = preference.getString(CONSENT_STATUS, null)
+    override var consentStatusResponse: String?
+        get() = preference.getString(CONSENT_STATUS_RESPONSE, null)
         set(value) {
             preference
                 .edit()
-                .putString(CONSENT_STATUS, value)
+                .putString(CONSENT_STATUS_RESPONSE, value)
+                .apply()
+        }
+
+    override var gdprConsentStatus: String?
+        get() = preference.getString(GDPR_CONSENT_STATUS, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(GDPR_CONSENT_STATUS, value)
                 .apply()
         }
 
@@ -77,6 +89,24 @@ private class DataStorageImpl(
             preference
                 .edit()
                 .putString(META_DATA_RESP, value)
+                .apply()
+        }
+
+    override var pvDataResp: String?
+        get() = preference.getString(PV_DATA_RESP, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(PV_DATA_RESP, value)
+                .apply()
+        }
+
+    override var dataRecordedConsent: String?
+        get() = preference.getString(DATA_RECORDED_CONSENT, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(DATA_RECORDED_CONSENT, value)
                 .apply()
         }
 
@@ -124,8 +154,11 @@ private class DataStorageImpl(
             .remove(SAVED_CONSENT)
             .remove(TRIGGER_BY_SAMPLE)
             .remove(MESSAGES_V7)
-            .remove(CONSENT_STATUS)
+            .remove(CONSENT_STATUS_RESPONSE)
+            .remove(GDPR_CONSENT_STATUS)
             .remove(META_DATA_RESP)
+            .remove(PV_DATA_RESP)
+            .remove(DATA_RECORDED_CONSENT)
             .apply()
     }
 

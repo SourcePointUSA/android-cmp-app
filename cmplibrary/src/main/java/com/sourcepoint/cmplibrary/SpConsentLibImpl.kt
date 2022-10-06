@@ -19,6 +19,7 @@ import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.model.v7.CampaignMessage
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
@@ -32,6 +33,7 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
+import okhttp3.HttpUrl
 import org.json.JSONObject
 import java.util.* //ktlint-disable
 
@@ -52,6 +54,7 @@ internal class SpConsentLibImpl(
 ) : SpConsentLib, NativeMessageController {
 
     private val remainingCampaigns: Queue<CampaignModel> = LinkedList()
+    private val remainingCampaignsV7: Queue<CampaignMessage> = LinkedList()
     private var currentNativeMessageCampaign: CampaignModel? = null
 
     companion object {
@@ -207,6 +210,60 @@ internal class SpConsentLibImpl(
                 }
             },
             env = env
+        )
+    }
+
+    override fun loadMessageV7(authId: String?) {
+        service.getMessages(
+            messageReq = campaignManager.getMessageV7Req(authId),
+            pSuccess = {
+                val list = it.campaignList
+//                clientEventManager.setCampaignNumber(list.size)
+                if (list.isEmpty()) {
+//                    consentManager.sendStoredConsentToClient()
+                    return@getMessages
+                }
+                val firstCampaign2Process: CampaignMessage = list.first()
+                remainingCampaignsV7.run {
+                    clear()
+                    addAll(LinkedList(list.drop(1)))
+                }
+                executor.executeOnMain {
+                    val legislation = firstCampaign2Process.type
+                    when (firstCampaign2Process.messageMetaData.subCategoryId) {
+                        TCFv2, OTT, NATIVE_OTT -> {
+                            /** create a instance of WebView */
+                            val webView = viewManager.createWebViewV7(
+                                this,
+                                JSReceiverDelegate(),
+                                remainingCampaigns,
+                                remainingCampaignsV7,
+                                firstCampaign2Process.messageMetaData.subCategoryId,
+                                null
+                            )
+                                .executeOnLeft { spClient.onError(it) }
+                                .getOrNull()
+
+                            /** inject the message into the WebView */
+                            val url = firstCampaign2Process.url!!
+                            webView?.loadConsentUIV7(firstCampaign2Process, HttpUrl.parse(url)!!, legislation)
+                        }
+                        NATIVE_IN_APP -> {
+//                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(legislation)
+//                            currentNativeMessageCampaign = firstCampaign2Process
+//                            spClient.onNativeMessageReady(nmDto, this)
+//                            pLogger.nativeMessageAction(
+//                                tag = "onNativeMessageReady",
+//                                msg = "onNativeMessageReady",
+//                                json = firstCampaign2Process.message
+//                            )
+                        }
+                    }
+                }
+            },
+            pError = {
+                println()
+            }
         )
     }
 
@@ -489,6 +546,34 @@ internal class SpConsentLibImpl(
                                             tag = "onNativeMessageReady",
                                             msg = "onNativeMessageReady",
                                             json = nextCampaign.message
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .executeOnLeft { throw it }
+            }
+        }
+
+        override fun onAction(iConsentWebView: IConsentWebView, actionData: String, nextCampaign: CampaignMessage) {
+            /** spClient is called from [onActionFromWebViewClient] */
+            (iConsentWebView as? View)?.let {
+                /** spClient is called from [onActionFromWebViewClient] */
+                pJsonConverter
+                    .toConsentAction(actionData)
+                    .map { ca ->
+                        onActionFromWebViewClient(ca, iConsentWebView)
+                        if (ca.actionType != SHOW_OPTIONS) {
+                            val legislation = nextCampaign.type
+                            val url = nextCampaign.url
+                            when (nextCampaign.messageMetaData.subCategoryId) {
+                                TCFv2 -> {
+                                    executor.executeOnMain {
+                                        iConsentWebView.loadConsentUIV7(
+                                            nextCampaign,
+                                            HttpUrl.parse(url)!!,
+                                            legislation
                                         )
                                     }
                                 }

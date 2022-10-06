@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.campaign
 
+import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.campaign.CampaignManager.Companion.selectPmId
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
@@ -13,12 +14,12 @@ import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toCCPA
 import com.sourcepoint.cmplibrary.data.network.model.toGDPR
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
+import com.sourcepoint.cmplibrary.data.network.model.v7.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
+import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.Campaigns
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
@@ -26,6 +27,7 @@ import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import org.json.JSONObject
+import java.time.Instant
 
 internal interface CampaignManager {
 
@@ -57,6 +59,7 @@ internal interface CampaignManager {
     ): Either<PmUrlConfig>
 
     fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest
+    fun getMessageV7Req(authId: String?): MessagesParamReq
 
     fun getGDPRConsent(): Either<GDPRConsentInternal>
     fun getCCPAConsent(): Either<CCPAConsentInternal>
@@ -73,10 +76,12 @@ internal interface CampaignManager {
 
     // V7
     val shouldCallMessages: Boolean
-    val shouldCallConsentStatus: Boolean
     var messagesV7: MessagesResp?
-    var consentStatus: ConsentStatusResp?
+    var consentStatusResponse: ConsentStatusResp?
+    var gdprConsentStatus: ConsentStatus?
     var metaDataResp: MetaDataResp?
+    var pvDataResp: PvDataResp?
+    var dataRecordedConsent: Instant?
 
     companion object {
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
@@ -343,6 +348,38 @@ private class CampaignManagerImpl(
         )
     }
 
+    override fun getMessageV7Req(authId: String?): MessagesParamReq {
+        val campaigns = mutableListOf<CampaignReq>()
+        mapTemplate[CampaignType.GDPR.name]
+            ?.let {
+                it.toCampaignReqImpl(
+                    targetingParams = it.targetingParams,
+                    campaignsEnv = it.campaignsEnv,
+                    groupPmId = it.groupPmId
+                )
+            }
+            ?.let { campaigns.add(it) }
+        mapTemplate[CampaignType.CCPA.name]
+            ?.let {
+                it.toCampaignReqImpl(
+                    targetingParams = it.targetingParams,
+                    campaignsEnv = it.campaignsEnv
+                )
+            }
+            ?.let { campaigns.add(it) }
+
+        return MessagesParamReq(
+            metadata = campaigns.toMetadataBody().toString(),
+            nonKeyedLocalState = "",
+            body = "",
+            env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD,
+            propertyHref = spConfig.propertyName,
+            accountId = spConfig.accountId.toLong(),
+            authId = authId,
+            propertyId = spConfig.propertyId?.let { it.toLong() } ?: fail("The propertyId field is missing in the setup phase!!!!!")
+        )
+    }
+
     override fun getGDPRConsent(): Either<GDPRConsentInternal> = dataStorage.getGDPRConsent()
 
     override fun getCCPAConsent(): Either<CCPAConsentInternal> = dataStorage.getCCPAConsent()
@@ -408,23 +445,17 @@ private class CampaignManagerImpl(
 
     val isNewUser: Boolean
         get() {
-            return consentStatus?.consentStatusData?.gdpr?.uuid == null &&
-                consentStatus?.consentStatusData?.ccpa?.uuid == null
+            return consentStatusResponse?.consentStatusData?.gdpr?.uuid == null &&
+                consentStatusResponse?.consentStatusData?.ccpa?.uuid == null
         }
 
     override val shouldCallMessages: Boolean
         get() {
             return isNewUser ||
                 // applies from Message response
-                (consentStatus?.consentStatusData?.gdpr?.gdprApplies == true && consentStatus?.consentStatusData?.gdpr?.consentStatus?.consentedAll == false) ||
+                (consentStatusResponse?.consentStatusData?.gdpr?.gdprApplies == true && consentStatusResponse?.consentStatusData?.gdpr?.consentStatus?.consentedAll == false) ||
 
-                (consentStatus?.consentStatusData?.ccpa?.ccpaApplies == true && consentStatus?.consentStatusData?.ccpa?.status != CcpaStatus.consentedAll)
-        }
-
-    override val shouldCallConsentStatus: Boolean
-        get() {
-            // TODO authId != nil || ((state.gdpr?.uuid != nil || state.ccpa?.uuid != nil) && !localDataComplete)
-            return false
+                (consentStatusResponse?.consentStatusData?.ccpa?.ccpaApplies == true && consentStatusResponse?.consentStatusData?.ccpa?.status != CcpaStatus.consentedAll)
         }
 
     private var messagesV7Local: MessagesResp? = null
@@ -443,18 +474,33 @@ private class CampaignManagerImpl(
         }
 
     private var consentStatusLocal: ConsentStatusResp? = null
-    override var consentStatus: ConsentStatusResp?
+    override var consentStatusResponse: ConsentStatusResp?
         get() {
             return consentStatusLocal
                 ?: run {
-                    consentStatusLocal = dataStorage.consentStatus?.let { JsonConverter.converter.decodeFromString<ConsentStatusResp>(it) }
+                    consentStatusLocal = dataStorage.consentStatusResponse?.let { JsonConverter.converter.decodeFromString<ConsentStatusResp>(it) }
                     consentStatusLocal
                 }
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.consentStatus = serialised
+            dataStorage.consentStatusResponse = serialised
             consentStatusLocal = value
+        }
+
+    private var gdprConsentStatusLocal: ConsentStatus? = null
+    override var gdprConsentStatus: ConsentStatus?
+        get() {
+            return gdprConsentStatusLocal
+                ?: run {
+                    gdprConsentStatusLocal = dataStorage.gdprConsentStatus?.let { JsonConverter.converter.decodeFromString<ConsentStatus>(it) }
+                    gdprConsentStatusLocal
+                }
+        }
+        set(value) {
+            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
+            dataStorage.gdprConsentStatus = serialised
+            gdprConsentStatusLocal = value
         }
 
     private var metaDataResp2Local: MetaDataResp? = null
@@ -470,5 +516,34 @@ private class CampaignManagerImpl(
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.metaDataResp = serialised
             metaDataResp2Local = value
+        }
+
+    private var pvDataRespLocal: PvDataResp? = null
+    override var pvDataResp: PvDataResp?
+        get() {
+            return pvDataRespLocal
+                ?: run {
+                    pvDataRespLocal = dataStorage.pvDataResp?.let { JsonConverter.converter.decodeFromString<PvDataResp>(it) }
+                    pvDataRespLocal
+                }
+        }
+        set(value) {
+            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
+            dataStorage.pvDataResp = serialised
+            pvDataRespLocal = value
+        }
+
+    private var dataRecordedConsentLocal: Instant? = null
+    override var dataRecordedConsent: Instant?
+        get() {
+            return dataRecordedConsentLocal
+                ?: run {
+                    dataRecordedConsentLocal = dataStorage.dataRecordedConsent?.let { Instant.parse(it) }
+                    dataRecordedConsentLocal
+                }
+        }
+        set(value) {
+            dataStorage.dataRecordedConsent = value?.toString()
+            dataRecordedConsentLocal = value
         }
 }
