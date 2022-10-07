@@ -138,9 +138,9 @@ class JsonConverterImplTest {
         val nm = (sut.toMetaDataRespResp(json) as Either.Right).r
         nm.run {
             gdpr.also {
-                it!!.additionsChangeDate.assertEquals("2022-05-11T21:05:16.262Z")
+                it!!.additionsChangeDate.toString().assertEquals("2022-05-11T21:05:16.262Z")
                 it.getMessageAlways!!.assertFalse()
-                it.legalBasisChangeDate.assertEquals("2022-05-11T21:05:25.600Z")
+                it.legalBasisChangeDate.toString().assertEquals("2022-05-11T21:05:25.600Z")
                 it.version.assertEquals(27)
                 it.id.assertEquals("5fa9a8fda228635eaf24ceb5")
                 it.applies!!.assertTrue()
@@ -154,13 +154,12 @@ class JsonConverterImplTest {
     @Test
     fun `GIVEN a consent_status body resp RETURN a Right(ConsentStatusResp)`() {
         val json = "v7/consent_status_with_auth_id.json".file2String()
-        val testMap = JSONObject(json).toTreeMap()
         val nm = (sut.toConsentStatusResp(json) as Either.Right).r
         nm.consentStatusData!!.gdpr!!.run {
             addtlConsent.assertEquals("1~")
             grants!!.size.assertEquals(5)
             euconsent.assertEquals("CPeQ1MAPeQ1MAAGABCENCdCsAP_AAHAAAAYgGMwBAAMgA0AXmAxkDGYAIDGQCgkAMADIANAF5hQAIDGQ4AEBjIkACAxkVABAXmMgAgLzHQAwAMgA0AXmQgAgAZJQAgAMgLzKQAwAMgA0AXmA.YAAAAAAAAAAA")
-            dateCreated.assertEquals("2022-08-25T20:56:38.551Z")
+            dateCreated.toString().assertEquals("2022-08-25T20:56:38.551Z")
             gdprApplies!!.assertTrue()
             cookieExpirationDays.assertEquals(365)
             localDataCurrent!!.assertFalse()
@@ -168,7 +167,7 @@ class JsonConverterImplTest {
             uuid.assertEquals("69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10")
         }
         nm.consentStatusData!!.ccpa!!.run {
-            dateCreated.assertEquals("2022-08-25T20:56:39.010Z")
+            dateCreated.toString().assertEquals("2022-08-25T20:56:39.010Z")
             newUser!!.assertFalse()
             consentedAll!!.assertFalse()
             rejectedCategories!!.size.assertEquals(0)
@@ -193,7 +192,7 @@ class JsonConverterImplTest {
             addtlConsent.assertEquals("1~")
             grants!!.size.assertEquals(5)
             euconsent.assertEquals("CPeeA8APeeA8AAGABCENCeCgAAAAAHAAAAYgAAAMZgAgMZADCgAQGMhwAIDGRIAEBjIA.YAAAAAAAAAAA")
-            dateCreated.assertEquals("2022-08-29T13:40:54.754Z")
+            dateCreated.toString().assertEquals("2022-08-29T13:40:54.754Z")
             gdprApplies!!.assertTrue()
             cookieExpirationDays.assertEquals(365)
             localDataCurrent!!.assertFalse()
@@ -209,7 +208,7 @@ class JsonConverterImplTest {
         val nm = (sut.toMessagesResp(json) as Either.Right).r
         nm.campaigns!!.gdpr!!.run {
             val gdprTester = testMap.getMap("campaigns")!!.getMap("GDPR")!!
-            type.assertEquals(CampaignType.GDPR.name)
+            type.assertEquals(CampaignType.GDPR)
             message.assertNotNull()
             dateCreated.assertEquals(gdprTester["dateCreated"])
             messageMetaData.subCategoryId.assertEquals(MessageSubCategory.TCFv2)
@@ -229,7 +228,7 @@ class JsonConverterImplTest {
         }
         nm.campaigns!!.ccpa!!.run {
             val ccpaTester = testMap.getMap("campaigns")!!.getMap("CCPA")!!
-            type.assertEquals(CampaignType.CCPA.name)
+            type.assertEquals(CampaignType.CCPA)
             message.assertNotNull()
             dateCreated.assertEquals(ccpaTester["dateCreated"])
             messageMetaData.subCategoryId.assertEquals(MessageSubCategory.TCFv2)

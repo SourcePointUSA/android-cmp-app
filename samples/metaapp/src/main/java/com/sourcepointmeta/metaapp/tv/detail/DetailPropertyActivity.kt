@@ -65,17 +65,17 @@ class DetailPropertyActivity : FragmentActivity(), UpdateScreen {
 }
 
 val defaultProperty = Property(
-    accountId = 22,
-    propertyName = "ott.test.suite",
+    accountId = 1631,
+    propertyName = "kividoo-OTT-FireTV",
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
     is_staging = false,
     targetingParameters = emptyList(),
-    statusCampaignSet = setOf(StatusCampaign("ott.test.suite", CampaignType.GDPR, true)),
+    statusCampaignSet = setOf(StatusCampaign("kividoo-OTT-FireTV", CampaignType.GDPR, true)),
     messageType = "App",
-    gdprPmId = 579231L,
+    gdprPmId = 696026L,
     ccpaPmId = 1L,
     campaignsEnv = CampaignsEnv.PUBLIC
 )
