@@ -446,7 +446,7 @@ private class CampaignManagerImpl(
     val isNewUser: Boolean
         get() {
             return consentStatusResponse?.consentStatusData?.gdpr?.uuid == null &&
-                consentStatusResponse?.consentStatusData?.ccpa?.uuid == null
+                consentStatusResponse?.consentStatusData?.ccpa?.newUser == true
         }
 
     override val shouldCallMessages: Boolean
