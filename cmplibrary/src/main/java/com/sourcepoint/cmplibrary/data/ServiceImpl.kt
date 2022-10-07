@@ -156,13 +156,10 @@ private class ServiceImpl(
             )
 
             val meta = this.getMetaData(md)
-                .executeOnRight {
-                    campaignManager.metaDataResp = it
-                }
-                .executeOnLeft {
-                    println()
-                }
+                .executeOnRight { campaignManager.metaDataResp = it }
+                .executeOnLeft { throw it }
                 .getOrNull() ?: failParam("MessageData call")
+
             val gdprUUID = consentStatusResponse?.consentStatusData?.gdpr?.uuid
             val ccpaUUID = consentStatusResponse?.consentStatusData?.ccpa?.uuid
 

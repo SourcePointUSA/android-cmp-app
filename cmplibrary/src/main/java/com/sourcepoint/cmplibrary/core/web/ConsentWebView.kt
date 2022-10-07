@@ -17,7 +17,6 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
-import com.sourcepoint.cmplibrary.data.network.model.v7.CampaignMessage
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
@@ -26,7 +25,6 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import okhttp3.HttpUrl
-import org.json.JSONObject
 import java.util.* //ktlint-disable
 
 @SuppressLint("ViewConstructor")
@@ -38,7 +36,6 @@ internal class ConsentWebView(
     private val connectionManager: ConnectionManager,
     private val executorManager: ExecutorManager,
     private val campaignQueue: Queue<CampaignModel> = LinkedList(),
-    private val campaignQueueV7: Queue<CampaignMessage> = LinkedList(),
     private val messSubCat: MessageSubCategory = MessageSubCategory.TCFv2,
     private val viewId: Int? = null
 ) : WebView(context), IConsentWebView {
@@ -48,7 +45,6 @@ internal class ConsentWebView(
     }
 
     private var currentCampaignModel: CampaignModel? = null
-    private var currentCampaignModelV7: CampaignMessage? = null
     private lateinit var spWebViewClient: SPWebViewClient
     private val jsReceiver: String by lazy {
         context.readFromAsset("js_receiver.js")
@@ -67,12 +63,8 @@ internal class ConsentWebView(
 
     private fun setup() {
         when {
-            viewId != null -> {
-                id = viewId
-            }
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 -> {
-                id = View.generateViewId()
-            }
+            viewId != null -> { id = viewId }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 -> { id = View.generateViewId() }
         }
         enableDebug()
         setStyle()
@@ -145,12 +137,7 @@ internal class ConsentWebView(
         true
     }
 
-    override fun loadConsentUIFromUrl(
-        url: HttpUrl,
-        campaignType: CampaignType,
-        pmId: String?,
-        singleShot: Boolean
-    ): Either<Boolean> = check {
+    override fun loadConsentUIFromUrl(url: HttpUrl, campaignType: CampaignType, pmId: String?, singleShot: Boolean): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             val sb = StringBuffer()
@@ -166,11 +153,7 @@ internal class ConsentWebView(
         true
     }
 
-    override fun loadConsentUI(
-        campaignModel: CampaignModel,
-        url: HttpUrl,
-        campaignType: CampaignType
-    ): Either<Boolean> = check {
+    override fun loadConsentUI(campaignModel: CampaignModel, url: HttpUrl, campaignType: CampaignType): Either<Boolean> = check {
         currentCampaignModel = campaignModel
         val campaignType: CampaignType = campaignModel.type
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
@@ -204,46 +187,6 @@ internal class ConsentWebView(
         true
     }
 
-    override fun loadConsentUIV7(
-        campaignMessage: CampaignMessage,
-        url: HttpUrl,
-        campaignType: CampaignType
-    ): Either<Boolean> = check {
-        currentCampaignModelV7 = campaignMessage
-        val campaignType: CampaignType = campaignMessage.type
-        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
-        spWebViewClient.jsReceiverConfig = {
-            /**
-             * adding the parameter [sp.loadMessage] needed by the webpage to trigger the loadMessage event
-             */
-            val obj = campaignMessage.message
-                .let { JSONObject(it.toString()) }
-                .apply {
-                    put("name", "sp.loadMessage")
-                    put("fromNativeSDK", true)
-                    /*
-                    "name": "sp.loadMessage",
-                    "fromNativeSDK": true
-                     */
-                }
-
-            logger.flm(
-                tag = "$campaignType First Layer Message",
-                url = url.toString(),
-                json = obj,
-                type = "GET"
-            )
-
-            """
-                javascript: $jsReceiver;
-                window.spLegislation = '${campaignType.name}'; 
-                window.postMessage($obj, "*");
-            """.trimIndent()
-        }
-        loadUrl(url.toString())
-        true
-    }
-
     inner class JSClientWebViewImpl : JSClientWebView {
 
         @JavascriptInterface
@@ -257,8 +200,8 @@ internal class ConsentWebView(
             val action = actionData.toConsentAction()
             if (action.actionType == ActionType.PM_DISMISS && currentCampaignModel != null) {
                 jsClientLib.onAction(this@ConsentWebView, actionData, currentCampaignModel!!)
-            } else if (action.actionType != ActionType.SHOW_OPTIONS && (campaignQueue.isNotEmpty() || campaignQueueV7.isNotEmpty())) {
-                val campaign: CampaignMessage = campaignQueueV7.poll()
+            } else if (action.actionType != ActionType.SHOW_OPTIONS && campaignQueue.isNotEmpty()) {
+                val campaign: CampaignModel = campaignQueue.poll()
                 jsClientLib.onAction(this@ConsentWebView, actionData, campaign)
             } else {
                 jsClientLib.onAction(this@ConsentWebView, actionData)

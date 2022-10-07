@@ -65,7 +65,12 @@ data class MessageMetaData(
     @SerialName("msgDescription") val msgDescription: String?,
     @SerialName("prtnUUID") val prtnUUID: String?,
     @Serializable(with = MessageSubCategorySerializer::class) val subCategoryId: MessageSubCategory
-)
+) {
+    override fun toString(): String {
+        return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
+            ?: "{}"
+    }
+}
 
 @Serializable
 data class Campaigns(
