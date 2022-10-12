@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CHOICE_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATUS_RESPONSE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.DATA_RECORDED_CONSENT
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_CONSENT_STATUS
@@ -101,6 +102,15 @@ private class DataStorageImpl(
                 .apply()
         }
 
+    override var choiceResp: String?
+        get() = preference.getString(CHOICE_RESP, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(CHOICE_RESP, value)
+                .apply()
+        }
+
     override var dataRecordedConsent: String?
         get() = preference.getString(DATA_RECORDED_CONSENT, null)
         set(value) {
@@ -158,6 +168,7 @@ private class DataStorageImpl(
             .remove(GDPR_CONSENT_STATUS)
             .remove(META_DATA_RESP)
             .remove(PV_DATA_RESP)
+            .remove(CHOICE_RESP)
             .remove(DATA_RECORDED_CONSENT)
             .apply()
     }

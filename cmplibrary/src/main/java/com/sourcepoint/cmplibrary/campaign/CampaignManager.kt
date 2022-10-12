@@ -26,6 +26,7 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 import java.time.Instant
 
@@ -81,7 +82,11 @@ internal interface CampaignManager {
     var gdprConsentStatus: ConsentStatus?
     var metaDataResp: MetaDataResp?
     var pvDataResp: PvDataResp?
+    var choiceResp: ChoiceResp?
     var dataRecordedConsent: Instant?
+
+    fun getChoiceBody(choiceParam: MessagesParamReq): JsonObject
+    fun getPvDataBody(messageReq: MessagesParamReq): JsonObject
 
     companion object {
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
@@ -533,6 +538,21 @@ private class CampaignManagerImpl(
             pvDataRespLocal = value
         }
 
+    private var choiceRespLocal: ChoiceResp? = null
+    override var choiceResp: ChoiceResp?
+        get() {
+            return choiceRespLocal
+                ?: run {
+                    choiceRespLocal = dataStorage.choiceResp?.let { JsonConverter.converter.decodeFromString<ChoiceResp>(it) }
+                    choiceRespLocal
+                }
+        }
+        set(value) {
+            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
+            dataStorage.pvDataResp = serialised
+            choiceRespLocal = value
+        }
+
     private var dataRecordedConsentLocal: Instant? = null
     override var dataRecordedConsent: Instant?
         get() {
@@ -546,4 +566,28 @@ private class CampaignManagerImpl(
             dataStorage.dataRecordedConsent = value?.toString()
             dataRecordedConsentLocal = value
         }
+
+    override fun getChoiceBody(messageReq: MessagesParamReq): JsonObject {
+        return toChoiceBody(
+            accountId = messageReq.accountId,
+            propertyId = messageReq.propertyId,
+            gdprCs = gdprConsentStatus,
+            gdprMessageMetaData = messagesV7?.campaigns?.gdpr?.messageMetaData,
+            gdprApplies = consentStatusResponse?.consentStatusData?.gdpr?.gdprApplies,
+        )
+    }
+
+    override fun getPvDataBody(messageReq: MessagesParamReq): JsonObject {
+        return toPvDataBody2(
+            accountId = messageReq.accountId,
+            propertyId = messageReq.propertyId,
+            gdprCs = gdprConsentStatus,
+            gdprMessageMetaData = messagesV7?.campaigns?.gdpr?.messageMetaData,
+            ccpaMessageMetaData = messagesV7?.campaigns?.ccpa?.messageMetaData,
+            gdprApplies = consentStatusResponse?.consentStatusData?.gdpr?.gdprApplies,
+            ccpaApplies = messagesV7?.campaigns?.ccpa?.applies,
+            pubData = messageReq.pubData,
+            ccpaCS = consentStatusResponse?.consentStatusData?.ccpa
+        )
+    }
 }

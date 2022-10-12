@@ -15,6 +15,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
         const val GDPR_CONSENT_STATUS = "sp.key.gdpr.consent.status"
         const val META_DATA_RESP = "sp.key.meta.data"
         const val PV_DATA_RESP = "sp.key.pv.data"
+        const val CHOICE_RESP = "sp.key.choice"
         const val DATA_RECORDED_CONSENT = "sp.key.data.recorded.consent"
     }
 
@@ -27,6 +28,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     var gdprConsentStatus: String?
     var metaDataResp: String?
     var pvDataResp: String?
+    var choiceResp: String?
     var dataRecordedConsent: String?
 
     fun savePropertyId(value: Int)

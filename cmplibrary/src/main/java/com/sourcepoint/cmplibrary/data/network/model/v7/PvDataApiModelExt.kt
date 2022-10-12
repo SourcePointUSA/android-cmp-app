@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.network.model.v7
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp.ConsentStatusData.CcpaCS
 import kotlinx.serialization.json.* //ktlint-disable
 import org.json.JSONObject
 
@@ -11,19 +12,43 @@ internal fun toPvDataBody2(
     accountId: Long?,
     propertyId: Long?,
     gdprApplies: Boolean?,
-    messageMetaData: MessageMetaData,
-    fromTest: Boolean
+    ccpaApplies: Boolean?,
+    gdprMessageMetaData: MessageMetaData?,
+    ccpaMessageMetaData: MessageMetaData?,
+    ccpaCS: CcpaCS?,
+    fromTest: Boolean = true,
+    pubData: JsonObject = JsonNull.jsonObject
 ): JsonObject {
+
     return buildJsonObject {
-        put("accountId", accountId)
-        put("applies", gdprApplies)
-        put("siteId", propertyId)
-        put("consentStatus", gdprCs?.let { JsonConverter.converter.encodeToJsonElement(gdprCs) } ?: JsonNull)
-        put("msgId", messageMetaData.messageId)
-        put("categoryId", messageMetaData.categoryId.code)
-        put("subCategoryId", messageMetaData.subCategoryId.code)
-        put("prtnUUID", messageMetaData.prtnUUID)
-        put("fromTest", fromTest)
+        put(
+            "gdpr",
+            buildJsonObject {
+                put("accountId", accountId)
+                put("applies", gdprApplies)
+                put("siteId", propertyId)
+                put("consentStatus", gdprCs?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonNull)
+                put("msgId", gdprMessageMetaData?.messageId)
+                put("categoryId", gdprMessageMetaData?.categoryId?.code)
+                put("subCategoryId", gdprMessageMetaData?.subCategoryId?.code)
+                put("prtnUUID", gdprMessageMetaData?.prtnUUID)
+                put("fromTest", fromTest)
+                put("sampleRate", BuildConfig.SAMPLE_RATE)
+            }
+        )
+        put(
+            "ccpa",
+            buildJsonObject {
+                put("accountId", accountId)
+                put("applies", ccpaApplies)
+                put("siteId", propertyId)
+                put("consentStatus", ccpaCS?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonNull)
+                put("messageId", ccpaMessageMetaData?.messageId)
+                put("uuid", ccpaCS?.uuid)
+                put("sampleRate", BuildConfig.SAMPLE_RATE)
+                put("pubData", pubData)
+            }
+        )
     }
 }
 

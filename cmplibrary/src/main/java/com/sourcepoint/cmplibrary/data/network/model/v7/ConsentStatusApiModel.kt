@@ -87,26 +87,6 @@ data class ConsentStatusResp(
                 )
             }
 
-//            @Serializable
-//            data class ConsentStatus(
-//                @SerialName("consentedAll") val consentedAll: Boolean?,
-//                @SerialName("consentedToAny") val consentedToAny: Boolean?,
-//                @SerialName("granularStatus") val granularStatus: GranularStatus?,
-//                @SerialName("hasConsentData") val hasConsentData: Boolean?,
-//                @SerialName("rejectedAny") val rejectedAny: Boolean?,
-//                @SerialName("rejectedLI") val rejectedLI: Boolean?
-//            ) {
-//                @Serializable
-//                data class GranularStatus(
-//                    @SerialName("defaultConsent") var defaultConsent: Boolean?,
-//                    @SerialName("previousOptInAll") var previousOptInAll: Boolean?,
-//                    @Serializable(with = GranularStateSerializer::class) val purposeConsent: GranularState?,
-//                    @Serializable(with = GranularStateSerializer::class) val purposeLegInt: GranularState?,
-//                    @Serializable(with = GranularStateSerializer::class) val vendorConsent: GranularState?,
-//                    @Serializable(with = GranularStateSerializer::class) val vendorLegInt: GranularState?
-//                )
-//            }
-
             @Serializable
             data class Cooky(
                 @SerialName("key") val key: String?,

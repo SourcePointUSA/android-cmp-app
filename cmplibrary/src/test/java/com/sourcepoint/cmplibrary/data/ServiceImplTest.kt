@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.data
 
-import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.assertNotNull
+import com.sourcepoint.cmplibrary.* //ktlint-disable
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.Either
@@ -10,14 +9,19 @@ import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
+import com.sourcepoint.cmplibrary.data.network.model.v7.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.GenericSDKException
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.messagesParamReq
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.stub.MockDataStorage
+import com.sourcepoint.cmplibrary.stub.MockExecutorManager
 import com.sourcepoint.cmplibrary.stub.MockNetworkClient
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.uwMessDataTest
@@ -26,9 +30,11 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.serialization.decodeFromString
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
+import java.time.temporal.ChronoUnit
 
 class ServiceImplTest {
 
@@ -52,6 +58,9 @@ class ServiceImplTest {
 
     @MockK
     private lateinit var successMock: (UnifiedMessageResp) -> Unit
+
+    @MockK
+    private lateinit var successMockV7: (MessagesResp) -> Unit
 
     @MockK
     private lateinit var errorMock: (Throwable) -> Unit
@@ -109,7 +118,8 @@ class ServiceImplTest {
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
         val res = sut.sendCustomConsent(mockk(), Env.STAGE).getOrNull()!!
-        res.content.getJSONObject("grants").toTreeMap().assertEquals(JSONObject(newConsent).getJSONObject("grants").toTreeMap())
+        res.content.getJSONObject("grants").toTreeMap()
+            .assertEquals(JSONObject(newConsent).getJSONObject("grants").toTreeMap())
     }
 
     @Test
@@ -140,7 +150,12 @@ class ServiceImplTest {
         every { ds.getGdprConsentResp() }.returns(storedConsent)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
-        val res = sut.sendConsent(localState = "{}", pmId = null, env = Env.STAGE, consentActionImpl = consentAction) as? Right
+        val res = sut.sendConsent(
+            localState = "{}",
+            pmId = null,
+            env = Env.STAGE,
+            consentActionImpl = consentAction
+        ) as? Right
 
         verify(exactly = 1) { ds.saveLocalState("localstate") }
         verify(exactly = 1) { ds.saveGdprConsentResp("userConsent") }
@@ -179,7 +194,12 @@ class ServiceImplTest {
         every { ds.getGdprConsentResp() }.returns(storedConsent)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
-        val res = sut.sendConsent(localState = "{}", pmId = null, env = Env.STAGE, consentActionImpl = consentAction) as? Right
+        val res = sut.sendConsent(
+            localState = "{}",
+            pmId = null,
+            env = Env.STAGE,
+            consentActionImpl = consentAction
+        ) as? Right
 
         verify(exactly = 1) { ds.saveLocalState("localstate") }
         verify(exactly = 1) { ds.saveCcpaConsentResp("userConsent") }
@@ -219,7 +239,12 @@ class ServiceImplTest {
         every { ds.saveLocalState(any()) }.throws(RuntimeException("test"))
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
-        val res = sut.sendConsent(localState = "{}", pmId = null, env = Env.STAGE, consentActionImpl = consentAction) as? Either.Left
+        val res = sut.sendConsent(
+            localState = "{}",
+            pmId = null,
+            env = Env.STAGE,
+            consentActionImpl = consentAction
+        ) as? Either.Left
 
         verify(exactly = 1) { ds.saveLocalState(any()) }
         verify(exactly = 0) { ds.saveCcpaConsentResp(any()) }
@@ -326,5 +351,139 @@ class ServiceImplTest {
         val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
         val res = sut.sendCustomConsentServ(mockk(), Env.STAGE)
         (res as? Either.Left).assertNotNull()
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun `GIVEN a Left object during a MetaData throw an exception`() {
+
+        every { ncMock.getMetaData(any()) }.returns(Either.Left(RuntimeException()))
+
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+
+        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 0) { successMockV7(any()) }
+    }
+
+    @Test
+    fun `GIVEN a MetaData resp VERIFY that the consentStatus call is called`() {
+
+        val metadataJson = "v7/meta_data.json".file2String()
+        val metadata = JsonConverter.converter.decodeFromString<MetaDataResp>(metadataJson)
+
+        every { ncMock.getMetaData(any()) }.returns(Either.Right(metadata))
+        every { cm.consentStatusResponse }.returns(null)
+
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+
+//        verify(exactly = 0) { errorMock(any()) }
+        verify(exactly = 1) { ncMock.getConsentStatus(any()) }
+    }
+
+    @Test
+    fun `GIVEN a saved ConsentStatus resp VERIFY that the dates are saved`() {
+
+        val metadataJson = "v7/meta_data.json".file2String()
+        val metadata = JsonConverter.converter.decodeFromString<MetaDataResp>(metadataJson)
+
+        val consentStatusJson = "v7/consent_status_with_auth_id.json".file2String()
+        val consentStatus = JsonConverter.converter.decodeFromString<ConsentStatusResp>(consentStatusJson)
+
+        val messageJson = "v7/messagesObj.json".file2String()
+        val messageResp = JsonConverter.converter.decodeFromString<MessagesResp>(messageJson)
+
+        val gdprConsentStatus: ConsentStatus = JsonConverter.converter.decodeFromString(
+            """
+              {
+                "rejectedAny": true,
+                "rejectedLI": false,
+                "consentedAll": false,
+                "granularStatus": {
+                  "vendorConsent": "NONE",
+                  "vendorLegInt": "ALL",
+                  "purposeConsent": "NONE",
+                  "purposeLegInt": "ALL",
+                  "previousOptInAll": false,
+                  "defaultConsent": true
+                },
+                "hasConsentData": false,
+                "consentedToAny": false
+              } 
+            """.trimIndent()
+        )
+
+        every { ncMock.getMetaData(any()) }.returns(Right(metadata))
+        every { cm.consentStatusResponse }.returns(consentStatus)
+        every { cm.dataRecordedConsent }.returns(consentStatus.consentStatusData!!.gdpr!!.dateCreated)
+        every { cm.gdprConsentStatus }.returns(gdprConsentStatus)
+        every { cm.dataRecordedConsent }.returns(
+            consentStatus.consentStatusData!!.gdpr!!.dateCreated!!.minus(
+                400,
+                ChronoUnit.DAYS
+            )
+        )
+
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+
+        verify {
+            cm.gdprConsentStatus = withArg {
+                it.granularStatus?.previousOptInAll!!.assertTrue()
+                it.legalBasisChanges!!.assertTrue()
+                it.vendorListAdditions!!.assertTrue()
+            }
+        }
+    }
+    @Test
+    fun `GIVEN a saved ConsentStatus resp VERIFY that the dates are saved 2`() {
+
+        val metadataJson = "v7/meta_data.json".file2String()
+        val metadata = JsonConverter.converter.decodeFromString<MetaDataResp>(metadataJson)
+
+        val consentStatusJson = "v7/consent_status_with_auth_id.json".file2String()
+        val consentStatus = JsonConverter.converter.decodeFromString<ConsentStatusResp>(consentStatusJson)
+
+        val messageJson = "v7/messagesObj.json".file2String()
+        val messageResp = JsonConverter.converter.decodeFromString<MessagesResp>(messageJson)
+
+        val gdprConsentStatus: ConsentStatus = JsonConverter.converter.decodeFromString(
+            """
+              {
+                "rejectedAny": true,
+                "rejectedLI": false,
+                "consentedAll": false,
+                "granularStatus": {
+                  "vendorConsent": "NONE",
+                  "vendorLegInt": "ALL",
+                  "purposeConsent": "NONE",
+                  "purposeLegInt": "ALL",
+                  "previousOptInAll": false,
+                  "defaultConsent": true
+                },
+                "hasConsentData": false,
+                "consentedToAny": false
+              } 
+            """.trimIndent()
+        )
+
+        every { ncMock.getMetaData(any()) }.returns(Right(metadata))
+        every { cm.consentStatusResponse }.returns(consentStatus)
+        every { cm.dataRecordedConsent }.returns(consentStatus.consentStatusData!!.gdpr!!.dateCreated)
+        every { cm.gdprConsentStatus }.returns(gdprConsentStatus)
+        every { cm.dataRecordedConsent }.returns(
+            consentStatus.consentStatusData!!.gdpr!!.dateCreated!!
+        )
+
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+
+        verify {
+            cm.gdprConsentStatus = withArg {
+                it.granularStatus?.previousOptInAll!!.assertFalse()
+                it.legalBasisChanges.assertNull()
+                it.vendorListAdditions.assertNull()
+            }
+        }
     }
 }
