@@ -1,5 +1,20 @@
-* [DIA-1054](https://sourcepoint.atlassian.net/browse/DIA-1054) IABUSPrivacy_String inconsistency in DataStorage (#512)
-* [DIA-943](https://sourcepoint.atlassian.net/browse/DIA-943) Updated UI tests on old ott PM (#509)
-* [DIA-547](https://sourcepoint.atlassian.net/browse/DIA-547) Adding docs about SpUtil in the README file (#508)
+* [HCD-303](https://sourcepoint.atlassian.net/browse/HCD-303) Update migration guide with enabling multi-campaign toggle (#537)
+* [DIA-1006](https://sourcepoint.atlassian.net/browse/DIA-1006) Support Native OTT message (#533)
+* [DIA-1212](https://sourcepoint.atlassian.net/browse/DIA-1212) Refresh ext (#531)
+* [DIA-1211](https://sourcepoint.atlassian.net/browse/DIA-1211) Reload btn in the demo Activity (#530)
+* [DIA-1204](https://sourcepoint.atlassian.net/browse/DIA-1204) ClearAll button logic (#528)
+* [DIA-1100](https://sourcepoint.atlassian.net/browse/DIA-1100) Add/Delete property buttons android tv (#520)
+* [DIA-1174](https://sourcepoint.atlassian.net/browse/DIA-1174) Add PmId field in the EditScreen (#524)
+* [DIA-1162](https://sourcepoint.atlassian.net/browse/DIA-1162) Demo Screen tv (#523)
+* [DIA-1161](https://sourcepoint.atlassian.net/browse/DIA-1161) Android tv navigation between activities  (#521)
+* [DIA-1155](https://sourcepoint.atlassian.net/browse/DIA-1155)  Refactory of the tv property card (#519)
+* [HDC-295](https://sourcepoint.atlassian.net/browse/DIA-295) Add FAQ -- deep links (#514)
+* [DIA-572](https://sourcepoint.atlassian.net/browse/DIA-572) Introducing a Sealed class for the CCPA consent status (#517)
+* [DIA-1114](https://sourcepoint.atlassian.net/browse/DIA-1114) Edit screen for the property attributes  (#518)
+* [DIA-515](https://sourcepoint.atlassian.net/browse/DIA-515) Main activity usable with a directional pad/remotecontrol (#502)
+* [DIA-1093](https://sourcepoint.atlassian.net/browse/DIA-1093) Metaapp - Property detail page for OTT (#516)
+* [DIA-280](https://sourcepoint.atlassian.net/browse/DIA-280) Upgrade the SDK project to the latest Gradle version (#515)
+* [DIA-999](https://sourcepoint.atlassian.net/browse/DIA-999) Graceful degradation (#510)
+
 
 
