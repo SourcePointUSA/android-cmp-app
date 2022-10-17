@@ -480,6 +480,7 @@ class ServiceImplTest {
         every { cm.dataRecordedConsent }.returns(consentStatus.consentStatusData!!.gdpr!!.dateCreated)
         every { cm.gdprConsentStatus }.returns(gdprConsentStatus)
         every { cm.shouldCallMessages }.returns(false)
+        every { cm.consentManagerUtils }.returns(false)
         every { cm.messagesV7 }.returns(messageResp)
         every { cm.dataRecordedConsent }.returns(
             consentStatus.consentStatusData!!.gdpr!!.dateCreated!!
@@ -495,5 +496,34 @@ class ServiceImplTest {
                 it.vendorListAdditions.assertNull()
             }
         }
+    }
+
+    @Test
+    fun `GIVEN a Left during getMetaData RETURN a saved MessageResp`() {
+
+        val messageJson = "v7/messagesObj.json".file2String()
+        val messageResp = JsonConverter.converter.decodeFromString<MessagesResp>(messageJson)
+
+        every { ncMock.getMetaData(any()) }.returns(Either.Left(RuntimeException()))
+        every { cm.messagesV7 }.returns(messageResp)
+
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+
+        verify(exactly = 1) { successMockV7(any()) }
+        verify(exactly = 0) { errorMock(any()) }
+    }
+
+    @Test
+    fun `GIVEN a Left during getMetaData CALL onError`() {
+
+        every { ncMock.getMetaData(any()) }.returns(Either.Left(RuntimeException()))
+        every { cm.messagesV7 }.returns(null)
+
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+
+        verify(exactly = 0) { successMockV7(any()) }
+        verify(exactly = 1) { errorMock(any()) }
     }
 }

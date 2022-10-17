@@ -139,13 +139,23 @@ private class ServiceImpl(
         execManager.executeOnWorkerThread {
 
             val meta = this.getMetaData(messageReq.toMetaDataParamReq())
-                .executeOnLeft { execManager.executeOnMain { pError(it) } }
+                .executeOnLeft {
+                    campaignManager.messagesV7
+                        ?.let { execManager.executeOnMain { pSuccess(it) } }
+                        ?: run { execManager.executeOnMain { pError(it) } }
+                    return@executeOnWorkerThread
+                }
                 .executeOnRight { campaignManager.metaDataResp = it }
 
-            if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
+            if ((messageReq.authId != null || campaignManager.shouldCallConsentStatus)) {
 
                 getConsentStatus(messageReq.toConsentStatusParamReq())
-                    .executeOnLeft { execManager.executeOnMain { pError(it) } }
+                    .executeOnLeft {
+                        campaignManager.messagesV7
+                            ?.let { execManager.executeOnMain { pSuccess(it) } }
+                            ?: run { execManager.executeOnMain { pError(it) } }
+                        return@executeOnWorkerThread
+                    }
                     .executeOnRight {
                         campaignManager.consentStatusResponse = it
                         campaignManager.gdprConsentStatus = it.consentStatusData?.gdpr?.consentStatus
@@ -189,18 +199,29 @@ private class ServiceImpl(
                     nonKeyedLocalState = ""
                 )
 
-                getMessages(messagesParamReq)
-                    .executeOnLeft { execManager.executeOnMain { pError(it) } }
+                val statusResp = getMessages(messagesParamReq)
+                    .executeOnLeft {
+                        campaignManager.messagesV7
+                            ?.let { execManager.executeOnMain { pSuccess(it) } }
+                            ?: run { execManager.executeOnMain { pError(it) } }
+                        return@executeOnWorkerThread
+                    }
                     .executeOnRight { campaignManager.messagesV7 = it }
                     .executeOnRight { execManager.executeOnMain { pSuccess(it) } }
 
-                val choiceBody = campaignManager.getChoiceBody(messageReq)
+                if (statusResp.getOrNull() != null) {
+                    val choiceBody = campaignManager.getChoiceBody(messageReq)
+                    getChoice(ChoiceParamReq(env = messageReq.env, body = choiceBody))
+                        .executeOnLeft {
+                            campaignManager.messagesV7
+                                ?.let { execManager.executeOnMain { pSuccess(it) } }
+                                ?: run { execManager.executeOnMain { pError(it) } }
+                            return@executeOnWorkerThread
+                        }
+                        .executeOnRight { campaignManager.choiceResp = it }
+                }
 
-                getChoice(ChoiceParamReq(env = messageReq.env, body = choiceBody))
-                    .executeOnLeft { execManager.executeOnMain { pError(it) } }
-                    .executeOnRight { campaignManager.choiceResp = it }
-
-                if (consentManagerUtils.shouldTriggerBySample) {
+                if (statusResp.getOrNull() != null && consentManagerUtils.shouldTriggerBySample) {
 
                     val pvParams = PvDataParamReq(
                         env = messageReq.env,
@@ -208,12 +229,18 @@ private class ServiceImpl(
                     )
 
                     savePvData(pvParams)
-                        .executeOnLeft { execManager.executeOnMain { pError(it) } }
+                        .executeOnLeft {
+                            campaignManager.messagesV7
+                                ?.let { execManager.executeOnMain { pSuccess(it) } }
+                                ?: run { execManager.executeOnMain { pError(it) } }
+                            return@executeOnWorkerThread
+                        }
                         .executeOnRight { campaignManager.pvDataResp = it }
                 }
-            } else {
+            } else{
                 // pvData
-                campaignManager.messagesV7?.let(pSuccess)
+                campaignManager.messagesV7
+                    ?.let { execManager.executeOnMain { pSuccess(it) } }
             }
         }
     }
