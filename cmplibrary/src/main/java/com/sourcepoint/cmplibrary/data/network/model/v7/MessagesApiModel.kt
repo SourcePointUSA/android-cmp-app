@@ -13,9 +13,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonObject
 
 internal data class MessagesParamReq(
     val accountId: Long,
@@ -26,7 +24,7 @@ internal data class MessagesParamReq(
     val metadata: String,
     val body: String,
     val nonKeyedLocalState: String,
-    val pubData: JsonObject = JsonNull.jsonObject
+    val pubData: JsonObject = JsonObject(mapOf())
 )
 
 @Serializable

@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.core.flatMap
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
-import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceParamReq
@@ -131,16 +130,6 @@ private class ServiceImpl(
         consentManagerUtils.getSpConsent()
     }
 
-//    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> {
-//        return nc.getMetaData(param)
-//            .executeOnRight { campaignManager.metaDataResp = it }
-//    }
-
-//    override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> {
-//        return nc.getConsentStatus(param)
-//            .executeOnRight { campaignManager.consentStatusResponse = it }
-//    }
-
     override fun getMessages(
         messageReq: MessagesParamReq,
         pSuccess: (MessagesResp) -> Unit,
@@ -148,62 +137,38 @@ private class ServiceImpl(
     ) {
 
         execManager.executeOnWorkerThread {
-            val md = MetaDataParamReq(
-                env = messageReq.env,
-                accountId = messageReq.accountId,
-                propertyId = messageReq.propertyId,
-                metadata = messageReq.metadata
-            )
 
-            val meta = this.getMetaData(md)
+            val meta = this.getMetaData(messageReq.toMetaDataParamReq())
+                .executeOnLeft { execManager.executeOnMain { pError(it) } }
                 .executeOnRight { campaignManager.metaDataResp = it }
-                .executeOnLeft { pError(it) }
-                .getOrNull() ?: failParam("MessageData call")
 
-            val gdprUUID = consentStatusResponse?.consentStatusData?.gdpr?.uuid
-            val ccpaUUID = consentStatusResponse?.consentStatusData?.ccpa?.uuid
+            if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
 
-            if (messageReq.authId != null || ((gdprUUID == null || ccpaUUID == null) && consentStatusResponse == null)) {
-                val csParam = ConsentStatusParamReq(
-                    env = messageReq.env,
-                    accountId = messageReq.accountId,
-                    propertyId = messageReq.propertyId,
-                    metadata = messageReq.metadata,
-                    authId = messageReq.authId
-                )
-                campaignManager.run {
-                    getConsentStatus(csParam).executeOnRight {
-                        consentStatusResponse = it
-                        gdprConsentStatus = it.consentStatusData?.gdpr?.consentStatus
+                getConsentStatus(messageReq.toConsentStatusParamReq())
+                    .executeOnLeft { execManager.executeOnMain { pError(it) } }
+                    .executeOnRight {
+                        campaignManager.consentStatusResponse = it
+                        campaignManager.gdprConsentStatus = it.consentStatusData?.gdpr?.consentStatus
                     }
-                }
             }
 
             val gdprConsentStatus = campaignManager.gdprConsentStatus
-
-            val additionsChangeDate = meta.gdpr?.additionsChangeDate
-            val legalBasisChangeDate = meta.gdpr?.legalBasisChangeDate
+            val additionsChangeDate = meta.getOrNull()?.gdpr?.additionsChangeDate
+            val legalBasisChangeDate = meta.getOrNull()?.gdpr?.legalBasisChangeDate
             val dataRecordedConsent = campaignManager.dataRecordedConsent
 
-            if (dataRecordedConsent != null && gdprConsentStatus != null && additionsChangeDate != null && legalBasisChangeDate != null) {
-                val creationLessThanAdditions = dataRecordedConsent.epochSecond < additionsChangeDate.epochSecond
-                val creationLessThanLegalBasis = dataRecordedConsent.epochSecond < legalBasisChangeDate.epochSecond
-
-                if (creationLessThanAdditions) {
-                    gdprConsentStatus.vendorListAdditions = true
-                }
-                if (creationLessThanLegalBasis) {
-                    gdprConsentStatus.legalBasisChanges = true
-                }
-                if (creationLessThanAdditions || creationLessThanLegalBasis) {
-                    if (gdprConsentStatus.consentedAll == true) {
-                        gdprConsentStatus.granularStatus?.previousOptInAll = true
-                    }
-                }
+            if (dataRecordedConsent != null &&
+                gdprConsentStatus != null &&
+                additionsChangeDate != null &&
+                legalBasisChangeDate != null
+            ) {
+                campaignManager.gdprConsentStatus = consentManagerUtils.updateGdprConsentV7(
+                    dataRecordedConsent = dataRecordedConsent,
+                    gdprConsentStatus = gdprConsentStatus,
+                    additionsChangeDate = additionsChangeDate,
+                    legalBasisChangeDate = legalBasisChangeDate
+                )
             }
-
-            // update consentStatus
-            campaignManager.gdprConsentStatus = gdprConsentStatus
 
             if (campaignManager.shouldCallMessages) {
 
@@ -224,29 +189,27 @@ private class ServiceImpl(
                     nonKeyedLocalState = ""
                 )
 
-                getMessages(messagesParamReq).executeOnRight {
-                    pSuccess(it)
-                }
+                getMessages(messagesParamReq)
+                    .executeOnLeft { execManager.executeOnMain { pError(it) } }
+                    .executeOnRight { campaignManager.messagesV7 = it }
+                    .executeOnRight { execManager.executeOnMain { pSuccess(it) } }
 
                 val choiceBody = campaignManager.getChoiceBody(messageReq)
-                val choice = getChoice(
-                    ChoiceParamReq(
-                        env = messageReq.env,
-                        body = choiceBody
-                    )
-                )
-                campaignManager.choiceResp = choice.getOrNull()
+
+                getChoice(ChoiceParamReq(env = messageReq.env, body = choiceBody))
+                    .executeOnLeft { execManager.executeOnMain { pError(it) } }
+                    .executeOnRight { campaignManager.choiceResp = it }
 
                 if (consentManagerUtils.shouldTriggerBySample) {
 
-                    val pvBody = campaignManager.getPvDataBody(messageReq)
-
                     val pvParams = PvDataParamReq(
                         env = messageReq.env,
-                        body = pvBody
+                        body = campaignManager.getPvDataBody(messageReq)
                     )
 
-                    val pvData = savePvData(pvParams)
+                    savePvData(pvParams)
+                        .executeOnLeft { execManager.executeOnMain { pError(it) } }
+                        .executeOnRight { campaignManager.pvDataResp = it }
                 }
             } else {
                 // pvData

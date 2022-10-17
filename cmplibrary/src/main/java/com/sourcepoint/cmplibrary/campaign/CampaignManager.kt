@@ -77,6 +77,7 @@ internal interface CampaignManager {
 
     // V7
     val shouldCallMessages: Boolean
+    val shouldCallConsentStatus: Boolean
     var messagesV7: MessagesResp?
     var consentStatusResponse: ConsentStatusResp?
     var gdprConsentStatus: ConsentStatus?
@@ -461,6 +462,13 @@ private class CampaignManagerImpl(
                 (consentStatusResponse?.consentStatusData?.gdpr?.gdprApplies == true && consentStatusResponse?.consentStatusData?.gdpr?.consentStatus?.consentedAll == false) ||
 
                 (consentStatusResponse?.consentStatusData?.ccpa?.ccpaApplies == true && consentStatusResponse?.consentStatusData?.ccpa?.status != CcpaStatus.consentedAll)
+        }
+
+    override val shouldCallConsentStatus: Boolean
+        get() {
+            val gdprUUID = consentStatusResponse?.consentStatusData?.gdpr?.uuid
+            val ccpaUUID = consentStatusResponse?.consentStatusData?.ccpa?.uuid
+            return ((gdprUUID == null || ccpaUUID == null) && consentStatusResponse == null)
         }
 
     private var messagesV7Local: MessagesResp? = null

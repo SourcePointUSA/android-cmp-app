@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.* //ktlint-disable
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.campaign.create
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.Either.Right
@@ -20,16 +21,14 @@ import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.messagesParamReq
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.stub.MockDataStorage
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
 import com.sourcepoint.cmplibrary.stub.MockNetworkClient
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.uwMessDataTest
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.serialization.decodeFromString
 import org.json.JSONObject
 import org.junit.Before
@@ -69,6 +68,14 @@ class ServiceImplTest {
         accountId = 22,
         propertyName = "tcfv2.mobile.demo",
         pmId = "179657"
+    )
+
+    private val spConfig = SpConfig(
+        22,
+        "asfa",
+        emptyList(),
+        MessageLanguage.ENGLISH,
+        3000
     )
 
     @Before
@@ -435,6 +442,7 @@ class ServiceImplTest {
             }
         }
     }
+
     @Test
     fun `GIVEN a saved ConsentStatus resp VERIFY that the dates are saved 2`() {
 
@@ -471,6 +479,8 @@ class ServiceImplTest {
         every { cm.consentStatusResponse }.returns(consentStatus)
         every { cm.dataRecordedConsent }.returns(consentStatus.consentStatusData!!.gdpr!!.dateCreated)
         every { cm.gdprConsentStatus }.returns(gdprConsentStatus)
+        every { cm.shouldCallMessages }.returns(false)
+        every { cm.messagesV7 }.returns(messageResp)
         every { cm.dataRecordedConsent }.returns(
             consentStatus.consentStatusData!!.gdpr!!.dateCreated!!
         )

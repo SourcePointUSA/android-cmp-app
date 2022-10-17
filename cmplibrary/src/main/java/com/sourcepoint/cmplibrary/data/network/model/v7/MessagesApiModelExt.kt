@@ -60,3 +60,22 @@ internal fun List<CampaignReq>.toMetadataBody(): JsonObject {
         }
     }
 }
+
+internal fun MessagesParamReq.toMetaDataParamReq(): MetaDataParamReq {
+    return MetaDataParamReq(
+        env = env,
+        accountId = accountId,
+        propertyId = propertyId,
+        metadata = metadata
+    )
+}
+
+internal fun MessagesParamReq.toConsentStatusParamReq(): ConsentStatusParamReq {
+    return ConsentStatusParamReq(
+        env = env,
+        accountId = accountId,
+        propertyId = propertyId,
+        metadata = metadata,
+        authId = authId
+    )
+}

@@ -203,4 +203,7 @@ internal class MockDataStorage : DataStorage {
     override var pvDataResp: String?
         get() = TODO("Not yet implemented")
         set(value) {}
+    override var choiceResp: String?
+        get() = TODO("Not yet implemented")
+        set(value) {}
 }

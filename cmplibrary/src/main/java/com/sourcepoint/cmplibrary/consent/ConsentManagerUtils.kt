@@ -10,6 +10,7 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
+import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatus
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
@@ -18,6 +19,7 @@ import com.sourcepoint.cmplibrary.model.IncludeData
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
+import java.time.Instant
 import java.util.* // ktlint-disable
 
 internal interface ConsentManagerUtils {
@@ -32,6 +34,13 @@ internal interface ConsentManagerUtils {
     fun hasCcpaConsent(): Boolean
 
     fun getSpConsent(): SPConsents?
+
+    fun updateGdprConsentV7(
+        dataRecordedConsent: Instant,
+        gdprConsentStatus: ConsentStatus,
+        additionsChangeDate: Instant,
+        legalBasisChangeDate: Instant
+    ): ConsentStatus
 
     val shouldTriggerBySample: Boolean
     var messagesResp: MessagesResp?
@@ -107,6 +116,32 @@ private class ConsentManagerUtilsImpl(
             gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
             ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
         )
+    }
+
+    override fun updateGdprConsentV7(
+        dataRecordedConsent: Instant,
+        gdprConsentStatus: ConsentStatus,
+        additionsChangeDate: Instant,
+        legalBasisChangeDate: Instant
+    ): ConsentStatus {
+        val creationLessThanAdditions = dataRecordedConsent.epochSecond < additionsChangeDate.epochSecond
+        val creationLessThanLegalBasis = dataRecordedConsent.epochSecond < legalBasisChangeDate.epochSecond
+
+        val updatedCS = gdprConsentStatus.copy()
+
+        if (creationLessThanAdditions) {
+            updatedCS.vendorListAdditions = true
+        }
+        if (creationLessThanLegalBasis) {
+            updatedCS.legalBasisChanges = true
+        }
+        if (creationLessThanAdditions || creationLessThanLegalBasis) {
+            if (updatedCS.consentedAll == true) {
+                updatedCS.granularStatus?.previousOptInAll = true
+            }
+        }
+
+        return updatedCS
     }
 
     override fun getGdprConsent(): Either<GDPRConsentInternal> {
