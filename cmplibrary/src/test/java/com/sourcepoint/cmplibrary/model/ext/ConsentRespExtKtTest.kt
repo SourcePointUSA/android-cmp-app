@@ -120,7 +120,7 @@ class ConsentRespExtKtTest {
         val test = ccpaConsent.toCCPAUserConsent("1234", true)
         test.run {
             uspstring.assertEquals("1---")
-            status.assertEquals("consentedAll")
+            status!!.name.assertEquals("consentedAll")
             rejectedCategories.size.assertEquals(0)
             rejectedVendors.size.assertEquals(0)
             uuid.assertEquals("1234")

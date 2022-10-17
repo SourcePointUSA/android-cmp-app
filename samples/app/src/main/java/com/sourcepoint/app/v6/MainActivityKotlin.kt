@@ -1,6 +1,7 @@
 package com.sourcepoint.app.v6
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
@@ -46,11 +47,16 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if (dataProvider.resetAll) {
             clearAllData(this)
         }
+
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
+
+        gracefulDegradationTest(sp, dataProvider) // 4 testing
+
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
@@ -90,6 +96,17 @@ class MainActivityKotlin : AppCompatActivity() {
             spConsentLib.dispose()
             finish()
             startActivity(Intent(this, MainActivityViewConsent::class.java))
+        }
+    }
+
+    private fun gracefulDegradationTest(sp: SharedPreferences, dataProvider: DataProvider) {
+        if(dataProvider.storeStateGdpr){
+            sp.edit().putString("sp.gdpr.consent.resp", "fake state").apply()
+            sp.edit().putBoolean("sp.key.saved.consent", true).apply()
+        }
+        if(dataProvider.storeStateCcpa){
+            sp.edit().putString("sp.ccpa.consent.resp", "fake state").apply()
+            sp.edit().putBoolean("sp.key.saved.consent", true).apply()
         }
     }
 

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<!--    <item android:state_pressed="true"-->
+<!--          android:drawable="@drawable/ic_baseline_add_24" /> &lt;!&ndash; pressed &ndash;&gt;-->
+    <item android:state_focused="true"
+          android:drawable="@drawable/ic_baseline_add_48" /> <!-- focused -->
+<!--    <item android:state_hovered="true"-->
+<!--          android:drawable="@drawable/ic_baseline_add_64" /> &lt;!&ndash; hovered &ndash;&gt;-->
+    <item android:drawable="@drawable/ic_baseline_add_48_low" /> <!-- default -->
+</selector>

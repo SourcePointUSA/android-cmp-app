@@ -24,13 +24,13 @@ internal class PropertyListViewModel(
     private val mutableLiveData by lazy { MutableLiveData<BaseState>() }
     val liveData: LiveData<BaseState> get() = mutableLiveData
 
-    fun fetchPropertyList() {
+    fun fetchPropertyList(selectLast: Boolean = false) {
         viewModelScope.launch {
             val either = withContext(workerDispatcher) { dataSource.fetchProperties() }
             either.fold(
                 { /* handle the exception */ },
                 {
-                    mutableLiveData.value = StatePropertyList(it)
+                    mutableLiveData.value = StatePropertyList(it, selectLast)
                 }
             )
         }

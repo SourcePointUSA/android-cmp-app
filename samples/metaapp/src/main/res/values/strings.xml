@@ -130,4 +130,11 @@
     <string name="saving">Saving ...</string>
     <string name="json_analyzer_title">JSON Analyzer</string>
     <string name="deeplink_placeholder">DeepLink</string>
+    <string name="remove_all">Remove All</string>
+    <string name="title_deletell_dialog">Delete all properties</string>
+    <string name="descr_deleteall_dialog">Delete all saved properties in the Metaapp</string>
+    <string name="title_cancel_action">Cancel</string>
+    <string name="descr_cancel_action">Return to the property list</string>
+    <string name="title_deleteall_action">Delete all</string>
+    <string name="descr_deleteall_action">Delete all</string>
 </resources>

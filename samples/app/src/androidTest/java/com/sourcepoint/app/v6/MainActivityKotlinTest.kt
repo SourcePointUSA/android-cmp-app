@@ -36,6 +36,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapNetworkOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapOptionWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapPartnersOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapPurposesOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectAllWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSiteVendorsWebView
@@ -44,6 +45,7 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
@@ -220,6 +222,36 @@ class MainActivityKotlinTest {
                 sp.getString("IABUSPrivacy_String", null).assertEquals("1YNN")
             }
         }
+    }
+
+    @Test
+    fun GIVEN_a_ccpa_campaign_CHECK_the_different_status() = runBlocking<Unit> {
+
+        val spClient = SpClientMock()
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfCcpa,
+                gdprPmId = "1",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptOnWebView() }
+
+        // check consentedAll
+        wr { clickOnCcpaReviewConsent() }
+        wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
+        wr{ spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.consentedAll) }
+
+        // check consentedAll
+        wr { clickOnCcpaReviewConsent() }
+        wr(backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
+        wr{ spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.rejectedAll) }
+
     }
 
     @Test
@@ -577,6 +609,143 @@ class MainActivityKotlinTest {
             }
         }
 
+
+    }
+
+    @Test
+    fun test_GracefulDegradation_gdpr_consent_present() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr.copy(messageTimeout = 3),
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient),
+                pStoreStateGdpr = true
+            )
+        )
+
+        scenario = launchActivity()
+
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+    }
+
+    @Test
+    fun test_GracefulDegradation_gdpr_and_ccpa_consent_present() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr.copy(messageTimeout = 3),
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient),
+                pStoreStateGdpr = true,
+                pStoreStateCcpa = true
+            )
+        )
+
+        scenario = launchActivity()
+
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+    }
+
+    @Test
+    fun test_GracefulDegradation_ccpa_consent_present() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr.copy(messageTimeout = 3),
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient),
+                pStoreStateCcpa = true
+            )
+        )
+
+        scenario = launchActivity()
+
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+    }
+
+    @Test
+    fun test_GracefulDegradation_consent_absent() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr.copy(messageTimeout = 3),
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+
+        wr { verify(exactly = 1) { spClient.onError(any()) } }
+        wr { verify(exactly = 0) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 0) { spClient.onSpFinished(any()) } }
+
+    }
+
+    @Test
+    fun GracefulDegradation_GIVEN_a_backend_error_EXECUTE_the_onError() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr.copy(propertyName = "invalid.property"),
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+
+        wr { verify(exactly = 1) { spClient.onError(any()) } }
+        wr { verify(exactly = 0) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 0) { spClient.onSpFinished(any()) } }
+
+    }
+
+    @Test
+    fun GracefulDegradation_GIVEN_a__backend_error_and_a_saved_consent_EXECUTE_the_onConsentReady() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr.copy(propertyName = "invalid.property"),
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient),
+                pStoreStateCcpa = true
+            )
+        )
+
+        scenario = launchActivity()
+
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
     }
 

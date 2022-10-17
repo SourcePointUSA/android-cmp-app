@@ -1,7 +1,9 @@
-package com.sourcepointmeta.metaapp
+package com.sourcepointmeta.metaapp.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.sourcepointmeta.metaapp.BuildConfig
+import com.sourcepointmeta.metaapp.R
 import kotlinx.android.synthetic.main.activity_demo.*
 
 class LinkActivity : AppCompatActivity() {

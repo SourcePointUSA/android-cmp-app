@@ -46,7 +46,7 @@ class JsonConverterExtKtTest {
             userConsent.also {
                 it.rejectedCategories.size.assertEquals(0)
                 it.rejectedVendors.size.assertEquals(0)
-                it.status.assertEquals("rejectedNone")
+                it.status!!.name.assertEquals("rejectedNone")
                 it.uspstring.assertEquals("1---")
             }
         }

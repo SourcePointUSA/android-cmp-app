@@ -65,6 +65,9 @@ private class ClientEventManagerImpl(
                         if (cNumber > 0) cNumber--
                     }
                 }
+                ActionType.GET_MSG_ERROR -> {
+                    cNumber = 0
+                }
             }
             checkStatus()
         }
@@ -81,6 +84,9 @@ private class ClientEventManagerImpl(
                 }
                 NativeMessageActionType.MSG_CANCEL -> {
                     if (cNumber > 0) cNumber--
+                }
+                NativeMessageActionType.GET_MSG_ERROR -> {
+                    cNumber = 0
                 }
             }
             checkStatus()

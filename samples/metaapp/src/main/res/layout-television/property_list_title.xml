@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sourcepointmeta.metaapp.tv.properties.PropertyListTitleView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/browse_title_group"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:focusable="false"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    tools:ignore="MissingDefaultResource">
+
+    <ImageButton
+        android:id="@+id/add_property_button"
+        style="@style/Widget.Leanback.ImageCardView"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginStart="50dp"
+        android:background="@null"
+        android:clickable="true"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:src="@drawable/add_selector"
+        android:stateListAnimator="@xml/animate_scale"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/remove_all_btn"
+        style="@style/Widget.Leanback.ImageCardView"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:background="@null"
+        android:clickable="true"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:src="@drawable/delete_selector"
+        android:stateListAnimator="@xml/animate_scale"
+        app:layout_constraintStart_toEndOf="@id/add_property_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:layout_centerVertical="true"
+        android:focusable="false"
+        android:gravity="center"
+        tools:text="MetaApp 6.7.0"
+        style="@style/Widget.Leanback.Title.Text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</com.sourcepointmeta.metaapp.tv.properties.PropertyListTitleView>

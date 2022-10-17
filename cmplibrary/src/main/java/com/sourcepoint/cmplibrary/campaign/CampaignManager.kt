@@ -16,6 +16,7 @@ import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
@@ -27,7 +28,7 @@ internal interface CampaignManager {
     fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate)
 
     fun isAppliedCampaign(campaignType: CampaignType): Boolean
-    fun isCampaignOtt(campaignType: CampaignType): Boolean
+    fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory
     fun getUnifiedMessageResp(): Either<UnifiedMessageResp>
 
     fun getGdpr(): Either<Gdpr>
@@ -263,10 +264,10 @@ private class CampaignManagerImpl(
             ?: false
     }
 
-    override fun isCampaignOtt(campaignType: CampaignType): Boolean {
+    override fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory {
         return when (campaignType) {
-            CampaignType.GDPR -> dataStorage.isGdprOtt
-            CampaignType.CCPA -> dataStorage.isCcpaOtt
+            CampaignType.GDPR -> dataStorage.gdprMessageSubCategory
+            CampaignType.CCPA -> dataStorage.ccpaMessageSubCategory
         }
     }
 

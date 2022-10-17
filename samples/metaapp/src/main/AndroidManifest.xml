@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+    <uses-feature android:name="android.software.leanback" android:required="false" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
     <application
             android:allowBackup="true"
@@ -16,16 +18,36 @@
             android:supportsRtl="true"
             android:name=".App"
             android:theme="@style/Theme.MyApp">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.sourcepointmeta.metaapp.tv.detail.DetailPropertyActivity"
+                  android:label="@string/app_name"
+                  android:banner="@mipmap/ic_launcher"
+                  android:exported="true"
+                  android:theme="@style/Theme.MyAppTv">
+        </activity>
+
         <activity android:name=".ui.demo.DemoActivity"/>
+        <activity android:name=".tv.demo.DemoActivityTv" android:theme="@style/Theme.DemoAppTv"/>
         <activity android:name=".ui.viewer.JsonViewerActivity"/>
-        <activity android:name=".LinkActivity">
+        <activity android:name=".tv.viewer.JsonViewerActivityTv" android:theme="@style/Theme.JsonViewerAppTv"/>
+
+        <activity android:name=".tv.MainActivityTV"
+            android:banner="@mipmap/ic_launcher"
+            android:configChanges="keyboard|keyboardHidden|navigation"
+            android:exported="true"
+            android:theme="@style/Theme.MainActivityAppTv">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.LinkActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
