@@ -64,4 +64,12 @@ internal interface NetworkClient {
     fun savePvData(
         param: PvDataParamReq
     ): Either<PvDataResp>
+
+    fun choiceRejectAll(
+        param: ChoiceAllParamReq
+    ): Either<ChoiceAllResp>
+
+    fun choiceConsentAll(
+        param: ChoiceAllParamReq
+    ): Either<ChoiceAllResp>
 }

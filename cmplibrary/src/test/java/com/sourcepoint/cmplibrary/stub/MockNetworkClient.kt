@@ -42,4 +42,12 @@ internal class MockNetworkClient(
     override fun savePvData(param: PvDataParamReq): Either<PvDataResp> {
         TODO("Not yet implemented")
     }
+
+    override fun choiceRejectAll(param: ChoiceAllParamReq): Either<ChoiceAllResp> {
+        TODO("Not yet implemented")
+    }
+
+    override fun choiceConsentAll(param: ChoiceAllParamReq): Either<ChoiceAllResp> {
+        TODO("Not yet implemented")
+    }
 }

@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.example.cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceAllParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
@@ -27,6 +28,8 @@ internal interface HttpUrlManager {
     fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
     fun getPvDataUrl(env: Env): HttpUrl
     fun getMessagesUrl(param: MessagesParamReq): HttpUrl
+    fun getChoiceAllRejectUrl(param: ChoiceAllParamReq): HttpUrl
+    fun getChoiceAllConsentUrl(param: ChoiceAllParamReq): HttpUrl
 }
 
 /**
@@ -200,6 +203,50 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("env", param.env.queryParam)
             .addEncodedQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState)
             .addEncodedQueryParameter("body", param.body)
+            .addEncodedQueryParameter("metadata", param.metadata)
+            .build()
+    }
+
+    override fun getChoiceAllRejectUrl(param: ChoiceAllParamReq): HttpUrl {
+        // http://localhost:3000/wrapper/v2/choice/reject-all?
+        // env=localProd
+        // &accountId=22
+        // &hasCsp=true
+        // &propertyId=17801
+        // &withSiteActions=true
+        // &includeCustomVendorsRes=true
+        // &metadata={"ccpa":{"applies":true}, "gdpr":{"applies":true}}
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(param.env.host)
+            .addPathSegments("wrapper/v2/choice/reject-all")
+            .addQueryParameter("env", param.env.queryParam)
+            .addQueryParameter("accountId", param.accountId.toString())
+            .addQueryParameter("hasCsp", param.hasCsp.toString())
+            .addQueryParameter("propertyId", param.propertyId.toString())
+            .addQueryParameter("includeCustomVendorsRes", param.includeCustomVendorsRes.toString())
+            .addEncodedQueryParameter("metadata", param.metadata)
+            .build()
+    }
+
+    override fun getChoiceAllConsentUrl(param: ChoiceAllParamReq): HttpUrl {
+        // http://localhost:3000/wrapper/v2/choice/consent-all?
+        // env=localProd
+        // &accountId=22
+        // &hasCsp=true
+        // &propertyId=17801
+        // &withSiteActions=true
+        // &includeCustomVendorsRes=true
+        // &metadata={"ccpa":{"applies":true}, "gdpr":{"applies":true}}
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(param.env.host)
+            .addPathSegments("wrapper/v2/choice/consent-all")
+            .addQueryParameter("env", param.env.queryParam)
+            .addQueryParameter("accountId", param.accountId.toString())
+            .addQueryParameter("hasCsp", param.hasCsp.toString())
+            .addQueryParameter("propertyId", param.propertyId.toString())
+            .addQueryParameter("includeCustomVendorsRes", param.includeCustomVendorsRes.toString())
             .addEncodedQueryParameter("metadata", param.metadata)
             .build()
     }

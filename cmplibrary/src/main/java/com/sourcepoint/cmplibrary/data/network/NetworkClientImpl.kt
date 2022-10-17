@@ -245,4 +245,44 @@ private class NetworkClientImpl(
 
         responseManager.parsePvDataResp(response)
     }
+
+    override fun choiceRejectAll(param: ChoiceAllParamReq): Either<ChoiceAllResp> = check {
+        val url = urlManager.getChoiceAllRejectUrl(param)
+
+        logger.req(
+            tag = "choiceRejectAll",
+            url = url.toString(),
+            body = "",
+            type = "GET"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseChoiceAllRes(response)
+    }
+
+    override fun choiceConsentAll(param: ChoiceAllParamReq): Either<ChoiceAllResp> = check {
+        val url = urlManager.getChoiceAllConsentUrl(param)
+
+        logger.req(
+            tag = "choiceConsentAll",
+            url = url.toString(),
+            body = "",
+            type = "GET"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseChoiceAllRes(response)
+    }
 }

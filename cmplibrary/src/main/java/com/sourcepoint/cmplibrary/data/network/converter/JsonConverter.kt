@@ -2,6 +2,8 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
+import com.sourcepoint.cmplibrary.data.network.model.v7.*
+import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceAllResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
@@ -42,6 +44,8 @@ internal interface JsonConverter {
     fun toPvDataResp(body: String): Either<PvDataResp>
 
     fun toMessagesResp(body: String): Either<MessagesResp>
+
+    fun toChoiceAllResp(body: String): Either<ChoiceAllResp>
 
     companion object
 }

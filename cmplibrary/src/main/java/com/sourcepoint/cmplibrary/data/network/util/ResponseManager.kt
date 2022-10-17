@@ -1,6 +1,8 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.data.network.model.v7.*
+import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceAllResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
@@ -41,6 +43,7 @@ internal interface ResponseManager {
     fun parseConsentStatusResp(r: Response): ConsentStatusResp
     fun parsePvDataResp(r: Response): PvDataResp
     fun parseMessagesResp(r: Response): MessagesResp
+    fun parseChoiceAllRes(r: Response): ChoiceAllResp
 
     companion object
 }

@@ -86,6 +86,10 @@ private class JsonConverterImpl : JsonConverter {
         JSONObject(body).toTreeMap().toMessagesResp()
     }
 
+    override fun toChoiceAllResp(body: String): Either<ChoiceAllResp> = check {
+        JSONObject(body).toTreeMap().toChoiceAllResp()
+    }
+
     /**
      * Util method to throws a [ConsentLibExceptionK] with a custom message
      * @param param name of the null object

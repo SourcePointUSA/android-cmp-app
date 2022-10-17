@@ -6,6 +6,8 @@ import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
+import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceAllParamReq
+import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceAllResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
@@ -396,4 +398,49 @@ class NetworkClientImplTest {
         val res = sut.getMetaData(param) as? Either.Left
         res.assertNotNull()
     }
+
+    @Test
+    fun `EXECUTE choiceRejectAll and VERIFY that the result is a RIGHT obj`() {
+        val respConsent = JSONObject("v7/choice_reject_all.json".file2String())
+        val mockResp = mockResponse("https://mock.com", respConsent.toString())
+        val mockCall = mockk<Call>()
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.returns(mockResp)
+        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(respConsent, null, null))
+
+        val param = ChoiceAllParamReq(
+            accountId = 22,
+            propertyId = 17801,
+            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
+            env = Env.LOCAL_PROD,
+            includeCustomVendorsRes = false,
+            hasCsp = true
+        )
+
+        val res = sut.choiceRejectAll(param) as? Either.Right<ChoiceAllResp>
+        res.assertNotNull()
+    }
+
+    @Test
+    fun `EXECUTE choiceConsentAll and VERIFY that the result is a RIGHT obj`() {
+        val respConsent = JSONObject("v7/choice_consent_all.json".file2String())
+        val mockResp = mockResponse("https://mock.com", respConsent.toString())
+        val mockCall = mockk<Call>()
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.returns(mockResp)
+        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(respConsent, null, null))
+
+        val param = ChoiceAllParamReq(
+            accountId = 22,
+            propertyId = 17801,
+            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
+            env = Env.LOCAL_PROD,
+            includeCustomVendorsRes = false,
+            hasCsp = true
+        )
+
+        val res = sut.choiceRejectAll(param) as? Either.Right<ChoiceAllResp>
+        res.assertNotNull()
+    }
+
 }
