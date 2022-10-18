@@ -401,7 +401,7 @@ class NetworkClientImplTest {
 
     @Test
     fun `EXECUTE choiceRejectAll and VERIFY that the result is a RIGHT obj`() {
-        val respConsent = JSONObject("v7/choice_reject_all.json".file2String())
+        val respConsent = JSONObject("v7/choice_all.json".file2String())
         val mockResp = mockResponse("https://mock.com", respConsent.toString())
         val mockCall = mockk<Call>()
         every { okHttp.newCall(any()) }.returns(mockCall)
