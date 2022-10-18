@@ -406,7 +406,7 @@ class NetworkClientImplTest {
         val mockCall = mockk<Call>()
         every { okHttp.newCall(any()) }.returns(mockCall)
         every { mockCall.execute() }.returns(mockResp)
-        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(respConsent, null, null))
+        every { responseManager.parseChoiceAllRes(any()) }.returns(ChoiceAllResp(respConsent, null, null))
 
         val param = ChoiceAllParamReq(
             accountId = 22,
@@ -422,13 +422,12 @@ class NetworkClientImplTest {
     }
 
     @Test
-    fun `EXECUTE choiceConsentAll and VERIFY that the result is a RIGHT obj`() {
-        val respConsent = JSONObject("v7/choice_consent_all.json".file2String())
-        val mockResp = mockResponse("https://mock.com", respConsent.toString())
+    fun `EXECUTE choiceRejectAll THROWS an exception and the result is a LEFT obj`() {
+        val respConsent = JSONObject("v7/choice_all.json".file2String())
         val mockCall = mockk<Call>()
         every { okHttp.newCall(any()) }.returns(mockCall)
-        every { mockCall.execute() }.returns(mockResp)
-        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(respConsent, null, null))
+        every { mockCall.execute() }.throws(RuntimeException("exception"))
+        every { responseManager.parseChoiceAllRes(any()) }.returns(ChoiceAllResp(respConsent, null, null))
 
         val param = ChoiceAllParamReq(
             accountId = 22,
@@ -439,7 +438,50 @@ class NetworkClientImplTest {
             hasCsp = true
         )
 
-        val res = sut.choiceRejectAll(param) as? Either.Right<ChoiceAllResp>
+        val res = sut.choiceRejectAll(param) as? Either.Left
+        res.assertNotNull()
+    }
+
+    @Test
+    fun `EXECUTE choiceConsentAll and VERIFY that the result is a RIGHT obj`() {
+        val respConsent = JSONObject("v7/choice_all.json".file2String())
+        val mockResp = mockResponse("https://mock.com", respConsent.toString())
+        val mockCall = mockk<Call>()
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.returns(mockResp)
+        every { responseManager.parseChoiceAllRes(any()) }.returns(ChoiceAllResp(respConsent, null, null))
+
+        val param = ChoiceAllParamReq(
+            accountId = 22,
+            propertyId = 17801,
+            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
+            env = Env.LOCAL_PROD,
+            includeCustomVendorsRes = false,
+            hasCsp = true
+        )
+
+        val res = sut.choiceConsentAll(param) as? Either.Right<ChoiceAllResp>
+        res.assertNotNull()
+    }
+
+    @Test
+    fun `EXECUTE choiceConsentAll THROWS an exception and the result is a LEFT obj`() {
+        val respConsent = JSONObject("v7/choice_all.json".file2String())
+        val mockCall = mockk<Call>()
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.throws(RuntimeException("exception"))
+        every { responseManager.parseChoiceAllRes(any()) }.returns(ChoiceAllResp(respConsent, null, null))
+
+        val param = ChoiceAllParamReq(
+            accountId = 22,
+            propertyId = 17801,
+            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
+            env = Env.LOCAL_PROD,
+            includeCustomVendorsRes = false,
+            hasCsp = true
+        )
+
+        val res = sut.choiceConsentAll(param) as? Either.Left
         res.assertNotNull()
     }
 

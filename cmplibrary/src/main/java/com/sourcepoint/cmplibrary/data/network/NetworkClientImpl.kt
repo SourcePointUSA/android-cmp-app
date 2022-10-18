@@ -247,7 +247,7 @@ private class NetworkClientImpl(
     }
 
     override fun choiceRejectAll(param: ChoiceAllParamReq): Either<ChoiceAllResp> = check {
-        val url = urlManager.getChoiceAllRejectUrl(param)
+        val url = urlManager.getChoiceRejectAllUrl(param)
 
         logger.req(
             tag = "choiceRejectAll",
@@ -267,7 +267,7 @@ private class NetworkClientImpl(
     }
 
     override fun choiceConsentAll(param: ChoiceAllParamReq): Either<ChoiceAllResp> = check {
-        val url = urlManager.getChoiceAllConsentUrl(param)
+        val url = urlManager.getChoiceConsentAllUrl(param)
 
         logger.req(
             tag = "choiceConsentAll",

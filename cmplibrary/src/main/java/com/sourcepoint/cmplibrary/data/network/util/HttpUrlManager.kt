@@ -28,8 +28,8 @@ internal interface HttpUrlManager {
     fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
     fun getPvDataUrl(env: Env): HttpUrl
     fun getMessagesUrl(param: MessagesParamReq): HttpUrl
-    fun getChoiceAllRejectUrl(param: ChoiceAllParamReq): HttpUrl
-    fun getChoiceAllConsentUrl(param: ChoiceAllParamReq): HttpUrl
+    fun getChoiceRejectAllUrl(param: ChoiceAllParamReq): HttpUrl
+    fun getChoiceConsentAllUrl(param: ChoiceAllParamReq): HttpUrl
 }
 
 /**
@@ -207,7 +207,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    override fun getChoiceAllRejectUrl(param: ChoiceAllParamReq): HttpUrl {
+    override fun getChoiceRejectAllUrl(param: ChoiceAllParamReq): HttpUrl {
         // http://localhost:3000/wrapper/v2/choice/reject-all?
         // env=localProd
         // &accountId=22
@@ -229,7 +229,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    override fun getChoiceAllConsentUrl(param: ChoiceAllParamReq): HttpUrl {
+    override fun getChoiceConsentAllUrl(param: ChoiceAllParamReq): HttpUrl {
         // http://localhost:3000/wrapper/v2/choice/consent-all?
         // env=localProd
         // &accountId=22
