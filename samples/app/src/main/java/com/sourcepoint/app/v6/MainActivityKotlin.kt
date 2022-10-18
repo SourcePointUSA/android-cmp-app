@@ -37,8 +37,10 @@ class MainActivityKotlin : AppCompatActivity() {
         spConfig = dataProvider.spConfig
 //        config {
 //            accountId = 22
-//            propertyName = "mobile.multicampaign.native.demo"
+//            propertyId = 17801
+//            propertyName = "tests.unified-script.com"
 //            messLanguage = MessageLanguage.ENGLISH
+//            messageTimeout = 10000
 //            +(CampaignType.GDPR)
 //            +(CampaignType.CCPA to listOf(("location" to "US")))
 //        }

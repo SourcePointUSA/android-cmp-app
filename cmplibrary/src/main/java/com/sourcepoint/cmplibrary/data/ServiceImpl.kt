@@ -135,7 +135,6 @@ private class ServiceImpl(
         pSuccess: (MessagesResp) -> Unit,
         pError: (Throwable) -> Unit
     ) {
-        // TODO This logic is still in PROGRESS
         execManager.executeOnWorkerThread {
 
             val meta = this.getMetaData(messageReq.toMetaDataParamReq())
@@ -195,7 +194,7 @@ private class ServiceImpl(
                     propertyHref = messageReq.propertyHref,
                     env = messageReq.env,
                     body = body.toString(),
-                    metadata = meta.toString(),
+                    metadata = meta.getOrNull()?.toString() ?: "",
                     nonKeyedLocalState = ""
                 )
 
