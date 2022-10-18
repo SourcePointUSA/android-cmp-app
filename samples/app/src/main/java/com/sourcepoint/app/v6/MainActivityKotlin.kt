@@ -14,7 +14,6 @@ import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
@@ -35,16 +34,14 @@ class MainActivityKotlin : AppCompatActivity() {
     private val spConsentLib by spConsentLibLazy {
         activity = this@MainActivityKotlin
         spClient = LocalClient()
-//        spConfig = dataProvider.spConfig
-        config {
-            accountId = 22
-            propertyId = 17801
-            propertyName = "tests.unified-script.com"
-            messLanguage = MessageLanguage.ENGLISH
-            messageTimeout = 10000
-            +(CampaignType.GDPR)
-            +(CampaignType.CCPA to listOf(("location" to "US")))
-        }
+        spConfig = dataProvider.spConfig
+//        config {
+//            accountId = 22
+//            propertyName = "mobile.multicampaign.native.demo"
+//            messLanguage = MessageLanguage.ENGLISH
+//            +(CampaignType.GDPR)
+//            +(CampaignType.CCPA to listOf(("location" to "US")))
+//        }
     }
 
 
@@ -115,8 +112,8 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-//        spConsentLib.loadMessage()
-        spConsentLib.loadMessageV7("test")
+        spConsentLib.loadMessage()
+//        spConsentLib.loadMessageV7("test")
     }
 
     override fun onDestroy() {
