@@ -98,9 +98,9 @@ data class ConsentStatusResp(
 
             @Serializable
             data class CustomVendorsResponse(
-                @SerialName("consentedPurposes") val consentedPurposes: List<ConsentedPurpose?>?,
-                @SerialName("consentedVendors") val consentedVendors: List<ConsentedVendor?>?,
-                @SerialName("legIntPurposes") val legIntPurposes: List<LegIntPurpose?>?
+                @SerialName("consentedPurposes") val consentedPurposes: List<ConsentedPurpose>?,
+                @SerialName("consentedVendors") val consentedVendors: List<ConsentedVendor>?,
+                @SerialName("legIntPurposes") val legIntPurposes: List<LegIntPurpose>?
             ) {
                 @Serializable
                 data class ConsentedPurpose(

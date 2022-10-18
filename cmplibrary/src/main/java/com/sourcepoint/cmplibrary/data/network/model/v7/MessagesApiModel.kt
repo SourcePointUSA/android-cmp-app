@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.model.v7
 
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp.ConsentStatusData.GdprCS.CustomVendorsResponse
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -114,21 +115,7 @@ data class GDPR(
     @Serializable(with = TcDataSerializer::class) val TCData: Map<String, String>?,
     @Serializable(with = CampaignTypeSerializer::class) override val type: CampaignType,
     @SerialName("url") override val url: String?
-) : CampaignMessage {
-
-    @Serializable
-    data class CustomVendorsResponse(
-        @SerialName("consentedPurposes") val consentedPurposes: List<String?>?,
-        @SerialName("consentedVendors") val consentedVendors: List<String?>?,
-        @SerialName("legIntPurposes") val legIntPurposes: List<LegIntPurpose?>?
-    ) {
-        @Serializable
-        data class LegIntPurpose(
-            @SerialName("_id") val id: String?,
-            @SerialName("name") val name: String?
-        )
-    }
-}
+) : CampaignMessage
 
 @Serializable
 data class ConsentStatus(

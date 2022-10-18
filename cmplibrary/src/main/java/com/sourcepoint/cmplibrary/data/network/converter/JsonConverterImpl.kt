@@ -92,6 +92,10 @@ private class JsonConverterImpl : JsonConverter {
         JsonConverter.converter.decodeFromString(body)
     }
 
+    override fun toChoiceResp(body: String): Either<ChoiceResp> = check {
+        JsonConverter.converter.decodeFromString(body)
+    }
+
     override fun toPvDataResp(body: String): Either<PvDataResp> = check {
         JsonConverter.converter.decodeFromString(body)
     }

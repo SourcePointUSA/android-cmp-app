@@ -36,6 +36,8 @@ internal interface JsonConverter {
 
     fun toConsentStatusResp(body: String): Either<ConsentStatusResp>
 
+    fun toChoiceResp(body: String): Either<ChoiceResp>
+
     fun toPvDataResp(body: String): Either<PvDataResp>
 
     fun toMessagesResp(body: String): Either<MessagesResp>

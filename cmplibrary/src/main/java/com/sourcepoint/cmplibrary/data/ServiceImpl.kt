@@ -135,7 +135,7 @@ private class ServiceImpl(
         pSuccess: (MessagesResp) -> Unit,
         pError: (Throwable) -> Unit
     ) {
-
+        // TODO This logic is still in PROGRESS
         execManager.executeOnWorkerThread {
 
             val meta = this.getMetaData(messageReq.toMetaDataParamReq())
@@ -211,7 +211,16 @@ private class ServiceImpl(
 
                 if (statusResp.getOrNull() != null) {
                     val choiceBody = campaignManager.getChoiceBody(messageReq)
-                    getChoice(ChoiceParamReq(env = messageReq.env, body = choiceBody))
+                    getChoice(
+                        ChoiceParamReq(
+                            env = messageReq.env,
+                            body = choiceBody,
+                            choiceType = ChoiceTypeParam.CONSENT_ALL,
+                            propertyId = messageReq.propertyId,
+                            accountId = messageReq.accountId,
+                            metadata = messageReq.metadata
+                        )
+                    )
                         .executeOnLeft {
                             campaignManager.messagesV7
                                 ?.let { execManager.executeOnMain { pSuccess(it) } }

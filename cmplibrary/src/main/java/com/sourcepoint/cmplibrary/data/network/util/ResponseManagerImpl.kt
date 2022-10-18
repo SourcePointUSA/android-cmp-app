@@ -172,6 +172,26 @@ private class ResponseManagerImpl(
         }
     }
 
+    override fun parseGetChoiceResp(r: Response): ChoiceResp {
+        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code()
+        val mess = r.message()
+        logger.res(
+            tag = "ChoiceResp",
+            msg = mess,
+            body = body,
+            status = status.toString()
+        )
+        return if (r.isSuccessful) {
+            when (val either: Either<ChoiceResp> = jsonConverter.toChoiceResp(body)) {
+                is Either.Right -> either.r
+                is Either.Left -> throw either.t
+            }
+        } else {
+            throw InvalidRequestException(description = body)
+        }
+    }
+
     override fun parsePvDataResp(r: Response): PvDataResp {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         val status = r.code()

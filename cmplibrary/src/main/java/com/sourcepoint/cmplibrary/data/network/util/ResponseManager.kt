@@ -36,6 +36,7 @@ internal interface ResponseManager {
     // V7
     fun parseMetaDataRes(r: Response): MetaDataResp
     fun parseConsentStatusResp(r: Response): ConsentStatusResp
+    fun parseGetChoiceResp(r: Response): ChoiceResp
     fun parsePvDataResp(r: Response): PvDataResp
     fun parseMessagesResp(r: Response): MessagesResp
     fun parseMessagesResp2(r: Response): Either<MessagesResp>

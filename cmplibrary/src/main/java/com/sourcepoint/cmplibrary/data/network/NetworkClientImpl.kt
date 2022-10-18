@@ -280,6 +280,22 @@ private class NetworkClientImpl(
     }
 
     override fun getChoice(param: ChoiceParamReq): Either<ChoiceResp> = check {
-        ChoiceResp(JSONObject())
+        val url = urlManager.getChoiceUrl(param)
+
+        logger.req(
+            tag = "getChoiceUrl",
+            url = url.toString(),
+            body = "",
+            type = "GET"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseGetChoiceResp(response)
     }
 }
