@@ -237,7 +237,7 @@ private class ServiceImpl(
                         }
                         .executeOnRight { campaignManager.pvDataResp = it }
                 }
-            } else{
+            } else {
                 // pvData
                 campaignManager.messagesV7
                     ?.let { execManager.executeOnMain { pSuccess(it) } }

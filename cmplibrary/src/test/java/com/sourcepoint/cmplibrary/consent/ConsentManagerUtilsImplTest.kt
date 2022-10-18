@@ -102,6 +102,7 @@ class ConsentManagerUtilsImplTest {
             .run {
                 vendorListAdditions!!.assertTrue()
                 legalBasisChanges.assertNull()
+                consentedAll!!.assertFalse()
                 granularStatus!!.previousOptInAll!!.assertTrue()
             }
     }

@@ -360,10 +360,11 @@ class ServiceImplTest {
         (res as? Either.Left).assertNotNull()
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test
     fun `GIVEN a Left object during a MetaData throw an exception`() {
 
         every { ncMock.getMetaData(any()) }.returns(Either.Left(RuntimeException()))
+        every { cm.messagesV7 }.returns(null)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(messagesParamReq, successMockV7, errorMock)
@@ -373,19 +374,41 @@ class ServiceImplTest {
     }
 
     @Test
-    fun `GIVEN a MetaData resp VERIFY that the consentStatus call is called`() {
+    fun `GIVEN a MetaData resp VERIFY that the consentStatus call is executed`() {
 
         val metadataJson = "v7/meta_data.json".file2String()
         val metadata = JsonConverter.converter.decodeFromString<MetaDataResp>(metadataJson)
 
         every { ncMock.getMetaData(any()) }.returns(Either.Right(metadata))
         every { cm.consentStatusResponse }.returns(null)
+        every { cm.shouldCallConsentStatus }.returns(true)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(messagesParamReq, successMockV7, errorMock)
 
 //        verify(exactly = 0) { errorMock(any()) }
         verify(exactly = 1) { ncMock.getConsentStatus(any()) }
+    }
+
+    @Test
+    fun `GIVEN a consentStatus resp VERIFY that the consentStatus is saved`() {
+
+        val metadataJson = "v7/meta_data.json".file2String()
+        val metadata = JsonConverter.converter.decodeFromString<MetaDataResp>(metadataJson)
+
+        val consentStatusJson = "v7/consent_status_with_auth_id.json".file2String()
+        val consentStatus = JsonConverter.converter.decodeFromString<ConsentStatusResp>(consentStatusJson)
+
+        every { ncMock.getMetaData(any()) }.returns(Either.Right(metadata))
+        every { ncMock.getConsentStatus(any()) }.returns(Either.Right(consentStatus))
+        every { cm.consentStatusResponse }.returns(null)
+        every { cm.shouldCallConsentStatus }.returns(true)
+
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+
+        verify(exactly = 1) { cm.consentStatusResponse = any() }
+        verify(exactly = 2) { cm.gdprConsentStatus = any() } // it gets also updated from updateGdprConsentV7
     }
 
     @Test
@@ -396,9 +419,6 @@ class ServiceImplTest {
 
         val consentStatusJson = "v7/consent_status_with_auth_id.json".file2String()
         val consentStatus = JsonConverter.converter.decodeFromString<ConsentStatusResp>(consentStatusJson)
-
-        val messageJson = "v7/messagesObj.json".file2String()
-        val messageResp = JsonConverter.converter.decodeFromString<MessagesResp>(messageJson)
 
         val gdprConsentStatus: ConsentStatus = JsonConverter.converter.decodeFromString(
             """
@@ -423,6 +443,7 @@ class ServiceImplTest {
         every { ncMock.getMetaData(any()) }.returns(Right(metadata))
         every { cm.consentStatusResponse }.returns(consentStatus)
         every { cm.dataRecordedConsent }.returns(consentStatus.consentStatusData!!.gdpr!!.dateCreated)
+        every { cmu.updateGdprConsentV7(any(), any(), any(), any()) }.returns(gdprConsentStatus)
         every { cm.gdprConsentStatus }.returns(gdprConsentStatus)
         every { cm.dataRecordedConsent }.returns(
             consentStatus.consentStatusData!!.gdpr!!.dateCreated!!.minus(
@@ -434,13 +455,7 @@ class ServiceImplTest {
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(messagesParamReq, successMockV7, errorMock)
 
-        verify {
-            cm.gdprConsentStatus = withArg {
-                it.granularStatus?.previousOptInAll!!.assertTrue()
-                it.legalBasisChanges!!.assertTrue()
-                it.vendorListAdditions!!.assertTrue()
-            }
-        }
+        verify(exactly = 1) { cm.gdprConsentStatus = any() }
     }
 
     @Test
@@ -480,7 +495,7 @@ class ServiceImplTest {
         every { cm.dataRecordedConsent }.returns(consentStatus.consentStatusData!!.gdpr!!.dateCreated)
         every { cm.gdprConsentStatus }.returns(gdprConsentStatus)
         every { cm.shouldCallMessages }.returns(false)
-        every { cm.consentManagerUtils }.returns(false)
+        every { cmu.updateGdprConsentV7(any(), any(), any(), any()) }.returns(gdprConsentStatus)
         every { cm.messagesV7 }.returns(messageResp)
         every { cm.dataRecordedConsent }.returns(
             consentStatus.consentStatusData!!.gdpr!!.dateCreated!!

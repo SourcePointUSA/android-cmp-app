@@ -138,6 +138,7 @@ private class ConsentManagerUtilsImpl(
         if (creationLessThanAdditions || creationLessThanLegalBasis) {
             if (updatedCS.consentedAll == true) {
                 updatedCS.granularStatus?.previousOptInAll = true
+                updatedCS.consentedAll = false
             }
         }
 
