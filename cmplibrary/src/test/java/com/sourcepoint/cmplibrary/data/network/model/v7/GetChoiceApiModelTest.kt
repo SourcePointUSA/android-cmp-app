@@ -7,12 +7,12 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.encodeToJsonElement
 import org.junit.Test
 
-class PvDataApiModelExtKtTest {
+class GetChoiceApiModelTest {
 
     @Test
-    fun `GIVEN a PvData resp RETURN the parsed obj`() {
-        val metadataJson = "v7/pv_data.json".file2String()
-        val metadata = JsonConverter.converter.decodeFromString<PvDataResp>(metadataJson)
-        JsonConverter.converter.encodeToJsonElement(metadata)
+    fun `GIVEN a ChoiceResp RETURN the parsed obj`() {
+        val getChoiceJson = "v7/get-choice-consent-all.json".file2String()
+        val choiceResp = JsonConverter.converter.decodeFromString<ChoiceResp>(getChoiceJson)
+        JsonConverter.converter.encodeToJsonElement(choiceResp)
     }
 }

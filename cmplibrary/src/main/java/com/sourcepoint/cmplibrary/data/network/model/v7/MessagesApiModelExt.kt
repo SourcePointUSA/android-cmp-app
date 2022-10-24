@@ -1,137 +1,81 @@
 package com.sourcepoint.cmplibrary.data.network.model.v7
 
-import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.core.map
-import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
-import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
-import com.sourcepoint.cmplibrary.model.getFieldValue
-import com.sourcepoint.cmplibrary.model.getMap
-import com.sourcepoint.cmplibrary.model.toJSONObj
-import com.sourcepoint.cmplibrary.util.check
-import okhttp3.HttpUrl
-import org.json.JSONObject
-import java.util.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.CampaignReq
+import kotlinx.serialization.json.* // ktlint-disable
 
-internal fun Map<String, Any?>.toMessagesResp(): MessagesResp {
-    val propertyId = getFieldValue<Int>("propertyId") ?: failParam("propertyId")
-    val localState = getMap("localState")?.toJSONObj()
-
-    val listEither: List<Either<MessagesCampaign?>> = getFieldValue<List<Map<String, Any?>>>("campaigns")
-        ?.map { check { it.toMessageCampaignResp() } }
-        ?: emptyList()
-
-    val list = listEither.fold(mutableListOf<MessagesCampaign>()) { acc, elem ->
-        elem.map { content -> content?.let { acc.add(content) } }
-        acc
-    }
-
-    return MessagesResp(
-        localState = localState,
-        campaigns = list,
-        propertyId = propertyId,
-        thisContent = JSONObject(this)
-    )
-}
-
-internal fun Map<String, Any?>.toMessageCampaignResp(): MessagesCampaign? {
-    return when (getFieldValue<String>("type")?.uppercase(Locale.getDefault()) ?: failParam("type")) {
-        CampaignType.GDPR.name -> this.toGdprMess()
-        CampaignType.CCPA.name -> this.toCcpaMess()
-        else -> null
-    }
-}
-
-internal fun Map<String, Any?>.toGdprMess(): GdprMessage {
-
-    val message = getMap("message")?.toJSONObj()
-    val messageMetaData = getMap("messageMetaData")?.toMessageMetaData()
-    val url = getFieldValue<String>("url")
-    val consentStatusCS = getMap("consentStatus")?.toConsentStatus()
-    val dateCreated = getFieldValue<String>("dateCreated")
-    val euconsent = getFieldValue<String>("euconsent")
-    val addtlConsent = getFieldValue<String>("addtlConsent")
-    val childPmId = getFieldValue<String>("childPmId")
-    val hasLocalData = getFieldValue<Boolean>("hasLocalData")
-    val vendorsGranted: Map<String, GDPRPurposeGrants> = getMap("grants")
-        ?.map {
-            Pair(
-                it.key,
-                GDPRPurposeGrants(
-                    granted = ((it.value as? Map<String, Any?>)?.get("vendorGrant") as? Boolean) ?: false,
-                    purposeGrants = ((it.value as? Map<String, Any?>)?.get("purposeGrants") as? Map<String, Boolean>)
-                        ?: emptyMap()
-                )
-            )
-        }
-        ?.toMap() ?: emptyMap()
-
-    return GdprMessage(
-        thisContent = JSONObject(this),
-        message = message,
-        url = url?.let { HttpUrl.parse(it) },
-        messageMetaData = messageMetaData,
-        consentStatusCS = consentStatusCS,
-        dateCreated = dateCreated,
-        type = CampaignType.GDPR.name,
-        customVendorsResponse = getMap("customVendorsResponse")?.toJSONObj(),
-        euconsent = euconsent,
-        addtlConsent = addtlConsent,
-        childPmId = childPmId,
-        grants = vendorsGranted,
-        hasLocalData = hasLocalData ?: false,
-        messageSubCategory = messageMetaData?.subCategoryId ?: MessageSubCategory.TCFv2,
-    )
-}
-
-internal fun Map<String, Any?>.toCcpaMess(): CcpaMessage {
-
-    val message = getMap("message")?.toJSONObj()
-    val messageMetaData = getMap("messageMetaData")?.toMessageMetaData()
-    val url = getFieldValue<String>("url")
-    val applies = getFieldValue<Boolean>("applies") ?: false
-    val dateCreated = getFieldValue<String>("dateCreated")
-    val newUser = getFieldValue<Boolean>("newUser") ?: false
-    val signedLspa = getFieldValue<Boolean>("signedLspa") ?: false
-    val rejectedAll = getFieldValue<Boolean>("rejectedAll") ?: false
-    val consentedAll = getFieldValue<Boolean>("consentedAll") ?: false
-    val uspString: String = getFieldValue("uspstring") ?: failParam("uspString")
-    val status: CcpaStatus = getFieldValue<String>("status")
-        ?.let { s ->
-            CcpaStatus.values().find {
-                it.name == s
+internal fun getMessageBody(
+    cs: ConsentStatusResp?,
+    propertyHref: String,
+    accountId: Long
+): JsonObject {
+    return buildJsonObject {
+        put("accountId", accountId)
+        putJsonObject("includeData") {
+            putJsonObject("TCData") {
+                put("type", "RecordString")
+            }
+            putJsonObject("campaigns") {
+                put("type", "RecordString")
             }
         }
-        ?: fail("CCPAStatus cannot be null!!!")
+        put("propertyHref", "https://$propertyHref")
+        put("hasCSP", true)
+        putJsonObject("campaigns") {
+            putJsonObject("ccpa") {
+                put("hasLocalData", false)
+            }
+            putJsonObject("gdpr") {
+                put("hasLocalData", false)
+                putJsonObject("consentStatus") {
+                    put("hasConsentData", cs?.consentStatusData?.gdpr?.consentStatus?.hasConsentData ?: false)
+                    put("consentedToAll", cs?.consentStatusData?.gdpr?.consentStatus?.consentedAll ?: false)
+                    put("consentedToAny", cs?.consentStatusData?.gdpr?.consentStatus?.consentedToAny ?: false)
+                    put("rejectedAny", cs?.consentStatusData?.gdpr?.consentStatus?.rejectedAny ?: false)
+                    put("legalBasisChanges", cs?.consentStatusData?.gdpr?.consentStatus?.rejectedAny ?: false)
+                    put("vendorListAdditions", cs?.consentStatusData?.gdpr?.consentStatus?.rejectedAny ?: false)
+                }
+            }
+        }
+    }
+}
 
-    return CcpaMessage(
-        thisContent = JSONObject(this),
-        applies = applies,
-        type = CampaignType.CCPA.name,
-        message = message,
-        dateCreated = dateCreated,
-        url = url?.let { HttpUrl.parse(it) },
-        messageMetaData = messageMetaData,
-        newUser = newUser,
-        messageSubCategory = messageMetaData?.subCategoryId ?: MessageSubCategory.TCFv2,
-        status = status,
-        uspstring = uspString,
-        signedLspa = signedLspa,
-        consentedAll = consentedAll,
-        rejectedAll = rejectedAll
+internal fun List<CampaignReq>.toMetadataBody(): JsonObject {
+    return buildJsonObject {
+        putJsonObject("gdpr") {
+            find { it.campaignType == CampaignType.GDPR }?.let { c ->
+                putJsonObject("targetingParams") {
+                    c.targetingParams.forEach { t -> put(t.key, t.value) }
+                }
+                put("groupPmId", c.groupPmId)
+            }
+        }
+        putJsonObject("ccpa") {
+            find { it.campaignType == CampaignType.CCPA }?.let { c ->
+                putJsonObject("targetingParams") {
+                    c.targetingParams.forEach { t -> put(t.key, t.value) }
+                }
+                put("groupPmId", c.groupPmId)
+            }
+        }
+    }
+}
+
+internal fun MessagesParamReq.toMetaDataParamReq(): MetaDataParamReq {
+    return MetaDataParamReq(
+        env = env,
+        accountId = accountId,
+        propertyId = propertyId,
+        metadata = metadata
     )
 }
 
-internal fun MessageMetaData.toJsonObj(): JSONObject {
-    return JSONObject().apply {
-        put("bucket", bucket)
-        put("categoryId", categoryId)
-        put("messageId", messageId)
-        put("msgDescription", msgDescription)
-        put("prtnUUID", prtnUUID)
-        put("subCategoryId", subCategoryId.code)
-    }
+internal fun MessagesParamReq.toConsentStatusParamReq(): ConsentStatusParamReq {
+    return ConsentStatusParamReq(
+        env = env,
+        accountId = accountId,
+        propertyId = propertyId,
+        metadata = metadata,
+        authId = authId
+    )
 }

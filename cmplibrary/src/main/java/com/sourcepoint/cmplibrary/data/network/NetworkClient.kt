@@ -3,10 +3,8 @@ package com.sourcepoint.cmplibrary.data.network
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
@@ -58,10 +56,20 @@ internal interface NetworkClient {
     ): Either<ConsentStatusResp>
 
     fun getMessages(
+        messageReq: MessagesParamReq,
+        pSuccess: (MessagesResp) -> Unit,
+        pError: (Throwable) -> Unit
+    )
+
+    fun getMessages(
         param: MessagesParamReq
     ): Either<MessagesResp>
 
     fun savePvData(
         param: PvDataParamReq
     ): Either<PvDataResp>
+
+    fun getChoice(
+        param: ChoiceParamReq
+    ): Either<ChoiceResp>
 }
