@@ -10,6 +10,9 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
+import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceParamReq
+import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
@@ -35,8 +38,9 @@ internal fun Service.Companion.create(
     campaignManager: CampaignManager,
     consentManagerUtils: ConsentManagerUtils,
     dataStorage: DataStorage,
-    logger: Logger
-): Service = ServiceImpl(nc, campaignManager, consentManagerUtils, dataStorage, logger)
+    logger: Logger,
+    execManager: ExecutorManager
+): Service = ServiceImpl(nc, campaignManager, consentManagerUtils, dataStorage, logger, execManager)
 
 /**
  * Implementation os the [Service] interface
@@ -46,7 +50,8 @@ private class ServiceImpl(
     private val campaignManager: CampaignManager,
     private val consentManagerUtils: ConsentManagerUtils,
     private val dataStorage: DataStorage,
-    private val logger: Logger
+    private val logger: Logger,
+    private val execManager: ExecutorManager
 ) : Service, NetworkClient by nc, CampaignManager by campaignManager {
 
     override fun getUnifiedMessage(
@@ -123,5 +128,128 @@ private class ServiceImpl(
                 dataStorage.saveGdprConsentResp(existingConsent.toString())
             }
         consentManagerUtils.getSpConsent()
+    }
+
+    override fun getMessages(
+        messageReq: MessagesParamReq,
+        pSuccess: (MessagesResp) -> Unit,
+        pError: (Throwable) -> Unit
+    ) {
+        execManager.executeOnWorkerThread {
+
+            val meta = this.getMetaData(messageReq.toMetaDataParamReq())
+                .executeOnLeft {
+                    campaignManager.messagesV7
+                        ?.let { execManager.executeOnMain { pSuccess(it) } }
+                        ?: run { execManager.executeOnMain { pError(it) } }
+                    return@executeOnWorkerThread
+                }
+                .executeOnRight { campaignManager.metaDataResp = it }
+
+            if ((messageReq.authId != null || campaignManager.shouldCallConsentStatus)) {
+
+                getConsentStatus(messageReq.toConsentStatusParamReq())
+                    .executeOnLeft {
+                        campaignManager.messagesV7
+                            ?.let { execManager.executeOnMain { pSuccess(it) } }
+                            ?: run { execManager.executeOnMain { pError(it) } }
+                        return@executeOnWorkerThread
+                    }
+                    .executeOnRight {
+                        campaignManager.consentStatusResponse = it
+                        campaignManager.gdprConsentStatus = it.consentStatusData?.gdpr?.consentStatus
+                    }
+            }
+
+            val gdprConsentStatus = campaignManager.gdprConsentStatus
+            val additionsChangeDate = meta.getOrNull()?.gdpr?.additionsChangeDate
+            val legalBasisChangeDate = meta.getOrNull()?.gdpr?.legalBasisChangeDate
+            val dataRecordedConsent = campaignManager.dataRecordedConsent
+
+            if (dataRecordedConsent != null &&
+                gdprConsentStatus != null &&
+                additionsChangeDate != null &&
+                legalBasisChangeDate != null
+            ) {
+                campaignManager.gdprConsentStatus = consentManagerUtils.updateGdprConsentV7(
+                    dataRecordedConsent = dataRecordedConsent,
+                    gdprConsentStatus = gdprConsentStatus,
+                    additionsChangeDate = additionsChangeDate,
+                    legalBasisChangeDate = legalBasisChangeDate
+                )
+            }
+
+            if (campaignManager.shouldCallMessages) {
+
+                val body = getMessageBody(
+                    accountId = messageReq.accountId,
+                    propertyHref = messageReq.propertyHref,
+                    cs = consentStatusResponse
+                )
+
+                val messagesParamReq = MessagesParamReq(
+                    accountId = messageReq.accountId,
+                    propertyId = messageReq.propertyId,
+                    authId = messageReq.authId,
+                    propertyHref = messageReq.propertyHref,
+                    env = messageReq.env,
+                    body = body.toString(),
+                    metadata = meta.getOrNull()?.toString() ?: "",
+                    nonKeyedLocalState = ""
+                )
+
+                val statusResp = getMessages(messagesParamReq)
+                    .executeOnLeft {
+                        campaignManager.messagesV7
+                            ?.let { execManager.executeOnMain { pSuccess(it) } }
+                            ?: run { execManager.executeOnMain { pError(it) } }
+                        return@executeOnWorkerThread
+                    }
+                    .executeOnRight { campaignManager.messagesV7 = it }
+                    .executeOnRight { execManager.executeOnMain { pSuccess(it) } }
+
+                if (statusResp.getOrNull() != null) {
+                    val choiceBody = campaignManager.getChoiceBody(messageReq)
+                    getChoice(
+                        ChoiceParamReq(
+                            env = messageReq.env,
+                            body = choiceBody,
+                            choiceType = ChoiceTypeParam.CONSENT_ALL,
+                            propertyId = messageReq.propertyId,
+                            accountId = messageReq.accountId,
+                            metadata = messageReq.metadata
+                        )
+                    )
+                        .executeOnLeft {
+                            campaignManager.messagesV7
+                                ?.let { execManager.executeOnMain { pSuccess(it) } }
+                                ?: run { execManager.executeOnMain { pError(it) } }
+                            return@executeOnWorkerThread
+                        }
+                        .executeOnRight { campaignManager.choiceResp = it }
+                }
+
+                if (statusResp.getOrNull() != null && consentManagerUtils.shouldTriggerBySample) {
+
+                    val pvParams = PvDataParamReq(
+                        env = messageReq.env,
+                        body = campaignManager.getPvDataBody(messageReq)
+                    )
+
+                    savePvData(pvParams)
+                        .executeOnLeft {
+                            campaignManager.messagesV7
+                                ?.let { execManager.executeOnMain { pSuccess(it) } }
+                                ?: run { execManager.executeOnMain { pError(it) } }
+                            return@executeOnWorkerThread
+                        }
+                        .executeOnRight { campaignManager.pvDataResp = it }
+                }
+            } else {
+                // pvData
+                campaignManager.messagesV7
+                    ?.let { execManager.executeOnMain { pSuccess(it) } }
+            }
+        }
     }
 }

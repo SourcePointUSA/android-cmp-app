@@ -1,0 +1,288 @@
+{
+  "ccpa": {
+    "signedLspa": false,
+    "dateCreated": "2022-10-18T14:02:34.319Z",
+    "cookies": [
+      {
+        "key": "ccpaConsentAll",
+        "value": true,
+        "setPath": true,
+        "maxAge": 31536000
+      },
+      {
+        "key": "ccpaReject",
+        "value": false,
+        "setPath": true,
+        "maxAge": 31536000
+      },
+      {
+        "key": "consentStatus",
+        "value": "consentedAll",
+        "setPath": true,
+        "maxAge": 31536000
+      }
+    ],
+    "actions": [
+      {
+        "_id": "632c98d1d74a9b037317bff4",
+        "type": "inline",
+        "url": "",
+        "js": "try {\n    window.consentAction('accept', 'amazon')\n} catch (err) {\n    console.error(err);\n}",
+        "tagManager": null,
+        "onStatusChangeOnly": true
+      },
+      {
+        "_id": "632c98d1d74a9b037317bff5",
+        "type": "inline",
+        "url": "",
+        "js": "window.dataLayer && window.dataLayer.push({ 'event': 'consent_amazon' });",
+        "tagManager": {
+          "_id": "632c98d1d74a9b037317bff6",
+          "name": "google",
+          "key": "event",
+          "value": "'consent_amazon'"
+        },
+        "onStatusChangeOnly": true
+      },
+      {
+        "_id": "632c98d1d74a9b037317bfff",
+        "type": "inline",
+        "url": "",
+        "js": "try {\n    window.consentAction('accept', 'google')\n} catch (err) {\n    console.error(err);\n}",
+        "tagManager": null
+      },
+      {
+        "_id": "632c98d1d74a9b037317c000",
+        "type": "inline",
+        "url": "",
+        "js": "window.dataLayer && window.dataLayer.push({ 'event': 'consent_google' });",
+        "tagManager": {
+          "_id": "632c98d1d74a9b037317c001",
+          "name": "google",
+          "key": "event",
+          "value": "'consent_google'"
+        }
+      },
+      {
+        "type": "inline",
+        "js": "var cookie='google_consent=accept; Path=/; Max-Age=86400; expires=Wed, 19 Oct 2022 14:02:34 GMT;';\n    if (true) {\n      var h = window.location && window.location.hostname;\n      if (h) {\n        var rc = (/.co.uk$/.test(h) || /.com.br$/.test(h) || /.com.au$/.test(h) || /.co.nz$/.test(h) ) ? 3 : 2;\n        var ha = h.split('.');\n        var rda = ha.slice(ha.length - rc);\n        if (rda.length > 1) {\n          var rd = rda.join('.');\n          cookie += ' Domain=' + rd + ';';\n        }\n      }\n    }\n    document.cookie = cookie;\n"
+      }
+    ],
+    "rejectedAll": false,
+    "consentedAll": true,
+    "rejectedVendors": [],
+    "rejectedCategories": [],
+    "status": "consentedAll",
+    "gpcEnabled": false,
+    "applies": true
+  },
+  "gdpr": {
+    "gdprApplies": true,
+    "consentAllRef": "634e871311bf3d42cb2bd22a",
+    "euconsent": "CPhCz0APhCz0AAGABCENClCsAP_AAHAAAAYgGMwBAAMgA0AXmAxkDGYAIDGQCgkAMADIANAF5hQAIDGQ4AEBjIkACAxkVABAXmMgAgLzHQAwAMgA0AXmQgAgAZJQAgAMgLzKQAwAMgA0AXmA.YAAAAAAAAAAA",
+    "addtlConsent": "1~",
+    "categories": [
+      "5fa9a8fb455f9533d77500fb",
+      "5fa9a8fb455f9533d7750103",
+      "5fa9a8fb455f9533d775010b",
+      "5fa9a8fb455f9533d7750113",
+      "5fa9a8fb455f9533d775011b",
+      "5fa9a8fb455f9533d7750122",
+      "5fa9a8fb455f9533d7750129",
+      "5fa9a8fb455f9533d7750131",
+      "5fa9a8fb455f9533d7750137",
+      "5fa9a8fb455f9533d775013f",
+      "627c250c5abdfe0873e995ad"
+    ],
+    "legIntCategories": [
+      "5fa9a8fb455f9533d7750103",
+      "5fa9a8fb455f9533d775010b",
+      "5fa9a8fb455f9533d7750113"
+    ],
+    "vendors": [
+      "5ebe70ceb8e05c43d547d7b4",
+      "5e7ced56b8e05c4854221bb3",
+      "5e7ced57b8e05c485246cce5",
+      "5f1aada6b8e05c306c0597d7",
+      "5f369a02b8e05c308701f829"
+    ],
+    "legIntVendors": [
+      "5f369a02b8e05c308701f829"
+    ],
+    "specialFeatures": [
+      "5e37fc3e973acf1e955b8966",
+      "5e37fc3e973acf1e955b8967"
+    ],
+    "consentedToAll": true,
+    "rejectedAny": false,
+    "consentStatus": {
+      "rejectedAny": false,
+      "rejectedLI": false,
+      "consentedAll": true,
+      "granularStatus": {
+        "vendorConsent": "ALL",
+        "vendorLegInt": "ALL",
+        "purposeConsent": "ALL",
+        "purposeLegInt": "ALL",
+        "previousOptInAll": false,
+        "defaultConsent": false
+      },
+      "hasConsentData": true,
+      "consentedToAny": true
+    },
+    "customVendorsResponse": {
+      "consentedVendors": [
+        {
+          "_id": "5ebe70ceb8e05c43d547d7b4",
+          "name": "Akamai Technologies, Inc.",
+          "vendorType": "CUSTOM"
+        }
+      ],
+      "consentedPurposes": [
+        {
+          "_id": "5fa9a8fb455f9533d77500fb",
+          "name": "Store and/or access information on a device"
+        },
+        {
+          "_id": "5fa9a8fb455f9533d7750103",
+          "name": "Select basic ads"
+        },
+        {
+          "_id": "5fa9a8fb455f9533d775010b",
+          "name": "Create a personalised ads profile"
+        },
+        {
+          "_id": "5fa9a8fb455f9533d7750113",
+          "name": "Select personalised ads"
+        },
+        {
+          "_id": "5fa9a8fb455f9533d775011b",
+          "name": "Create a personalised content profile"
+        },
+        {
+          "_id": "5fa9a8fb455f9533d7750122",
+          "name": "Select personalised content"
+        },
+        {
+          "_id": "5fa9a8fb455f9533d7750129",
+          "name": "Measure ad performance"
+        },
+        {
+          "_id": "5fa9a8fb455f9533d7750131",
+          "name": "Measure content performance"
+        },
+        {
+          "_id": "5fa9a8fb455f9533d7750137",
+          "name": "Apply market research to generate audience insights"
+        },
+        {
+          "_id": "5fa9a8fb455f9533d775013f",
+          "name": "Develop and improve products"
+        },
+        {
+          "_id": "627c250c5abdfe0873e995ad",
+          "name": "GCM Purpose"
+        }
+      ],
+      "legIntPurposes": [
+        {
+          "_id": "5fa9a8fb455f9533d7750103",
+          "name": "Select basic ads"
+        },
+        {
+          "_id": "5fa9a8fb455f9533d775010b",
+          "name": "Create a personalised ads profile"
+        },
+        {
+          "_id": "5fa9a8fb455f9533d7750113",
+          "name": "Select personalised ads"
+        }
+      ]
+    },
+    "cookies": [
+      {
+        "key": "euconsent-v2",
+        "value": "CPhCz0APhCz0AAGABCENClCsAP_AAHAAAAYgGMwBAAMgA0AXmAxkDGYAIDGQCgkAMADIANAF5hQAIDGQ4AEBjIkACAxkVABAXmMgAgLzHQAwAMgA0AXmQgAgAZJQAgAMgLzKQAwAMgA0AXmA.YAAAAAAAAAAA",
+        "maxAge": 31536000,
+        "shareRootDomain": false
+      }
+    ],
+    "grants": {
+      "5f369a02b8e05c308701f829": {
+        "vendorGrant": true,
+        "purposeGrants": {
+          "5fa9a8fb455f9533d77500fb": true,
+          "5fa9a8fb455f9533d7750103": true,
+          "5fa9a8fb455f9533d775010b": true,
+          "5fa9a8fb455f9533d7750113": true,
+          "5fa9a8fb455f9533d7750129": true,
+          "5fa9a8fb455f9533d7750137": true,
+          "5fa9a8fb455f9533d775013f": true
+        }
+      },
+      "5f1aada6b8e05c306c0597d7": {
+        "vendorGrant": true,
+        "purposeGrants": {
+          "5fa9a8fb455f9533d77500fb": true,
+          "5fa9a8fb455f9533d7750103": true,
+          "5fa9a8fb455f9533d775010b": true,
+          "5fa9a8fb455f9533d7750113": true,
+          "5fa9a8fb455f9533d775011b": true,
+          "5fa9a8fb455f9533d7750122": true,
+          "5fa9a8fb455f9533d7750129": true,
+          "5fa9a8fb455f9533d7750137": true,
+          "5fa9a8fb455f9533d775013f": true,
+          "627c250c5abdfe0873e995ad": true
+        }
+      },
+      "5e7ced57b8e05c485246cce5": {
+        "vendorGrant": true,
+        "purposeGrants": {
+          "5fa9a8fb455f9533d77500fb": true,
+          "5fa9a8fb455f9533d7750103": true,
+          "5fa9a8fb455f9533d7750129": true,
+          "5fa9a8fb455f9533d775013f": true
+        }
+      },
+      "5e7ced56b8e05c4854221bb3": {
+        "vendorGrant": true,
+        "purposeGrants": {
+          "5fa9a8fb455f9533d77500fb": true,
+          "5fa9a8fb455f9533d7750103": true,
+          "5fa9a8fb455f9533d775010b": true,
+          "5fa9a8fb455f9533d7750113": true,
+          "5fa9a8fb455f9533d775011b": true,
+          "5fa9a8fb455f9533d7750122": true,
+          "5fa9a8fb455f9533d7750129": true,
+          "5fa9a8fb455f9533d7750131": true,
+          "5fa9a8fb455f9533d7750137": true,
+          "5fa9a8fb455f9533d775013f": true
+        }
+      },
+      "5ebe70ceb8e05c43d547d7b4": {
+        "vendorGrant": true,
+        "purposeGrants": {
+          "5fa9a8fb455f9533d77500fb": true,
+          "5fa9a8fb455f9533d7750103": true,
+          "5fa9a8fb455f9533d775010b": true,
+          "5fa9a8fb455f9533d7750113": true,
+          "5fa9a8fb455f9533d775011b": true
+        }
+      }
+    },
+    "vendorListId": "5fa9a8fda228635eaf24ceb5",
+    "applies": true,
+    "postPayload": {
+      "consentAllRef": "634e871311bf3d42cb2bd22a",
+      "granularStatus": {
+        "vendorConsent": "ALL",
+        "vendorLegInt": "ALL",
+        "purposeConsent": "ALL",
+        "purposeLegInt": "ALL",
+        "previousOptInAll": false,
+        "defaultConsent": false
+      },
+      "vendorListId": "5fa9a8fda228635eaf24ceb5"
+    }
+  }
+}

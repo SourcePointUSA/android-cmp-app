@@ -1,20 +1,48 @@
 package com.sourcepoint.cmplibrary.data.network.model.v7
 
+import com.sourcepoint.cmplibrary.core.getOrNull
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.Env
-import org.json.JSONObject
-
-internal data class PvDataResp(
-    val thisContent: JSONObject,
-    val gdprPv: GdprPv?
-)
-
-internal data class GdprPv(
-    val thisContent: JSONObject,
-    val uuid: String,
-    val cookies: List<JSONObject>
-)
+import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.JsonObject
 
 internal data class PvDataParamReq(
     val env: Env,
-    val body: JSONObject
+    val body: JsonObject
+)
+
+@Serializable
+data class PvDataResp(
+    @SerialName("ccpa") val ccpa: Ccpa?,
+    @SerialName("gdpr") val gdpr: Gdpr?
+) {
+    @Serializable
+    data class Ccpa(
+        @SerialName("cookies") val cookies: List<Cooky?>?,
+        @SerialName("uuid") val uuid: String?
+    )
+
+    @Serializable
+    data class Gdpr(
+        @SerialName("cookies") val cookies: List<Cooky>?,
+        @SerialName("uuid") val uuid: String?
+    )
+
+    override fun toString(): String {
+        return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
+            ?: super.toString()
+    }
+}
+
+@Serializable
+data class Cooky(
+    @SerialName("key") val key: String?,
+    @SerialName("maxAge") val maxAge: Int?,
+    @SerialName("session") val session: Boolean?,
+    @SerialName("shareRootDomain") val shareRootDomain: Boolean?,
+    @SerialName("value") val value: String?
 )

@@ -3,15 +3,11 @@ package com.sourcepoint.cmplibrary
 import android.content.Context
 import android.view.View
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
-import com.sourcepoint.cmplibrary.consent.* // ktlint-disable
 import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
+import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.consent.LocalStateStatus
 import com.sourcepoint.cmplibrary.core.* // ktlint-disable
-import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.core.ExecutorManager
-import com.sourcepoint.cmplibrary.core.executeOnLeft
-import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.core.nativemessage.toNativeMessageDTO
 import com.sourcepoint.cmplibrary.core.web.CampaignModel
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
@@ -19,21 +15,30 @@ import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.model.v7.CampaignMessage
+import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
-import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
-import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
+import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
+import com.sourcepoint.cmplibrary.exception.GenericSDKException
+import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.LoggerType.NL
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.CampaignResp
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
-import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
+import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
-import com.sourcepoint.cmplibrary.util.* // ktlint-disable
+import com.sourcepoint.cmplibrary.util.ViewsManager
+import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.checkMainThread
+import com.sourcepoint.cmplibrary.util.toConsentLibException
+import okhttp3.HttpUrl
 import org.json.JSONObject
-import java.util.* //ktlint-disable
+import java.util.* // ktlint-disable
 
 internal class SpConsentLibImpl(
     internal val context: Context,
@@ -75,6 +80,30 @@ internal class SpConsentLibImpl(
                     type = CampaignType.valueOf(it.type),
                     url = it.url!!,
                     messageSubCategory = it.messageSubCategory,
+                )
+            }
+        }
+
+        fun MessagesResp.toCampaignModelList(logger: Logger): List<CampaignModel> {
+            val campaignList = this.campaignList
+            if (campaignList.isEmpty()) return emptyList()
+
+            val partition: Pair<List<CampaignMessage>, List<CampaignMessage>> = campaignList
+                .partition { it.message != null && it.url != null }
+
+            logger.computation(
+                tag = "toCampaignModelList",
+                msg = "parsed campaigns${NL.t}${partition.second.size} Null messages${NL.t}${partition.first.size} Not Null message"
+            )
+
+            return partition.first.map {
+
+                CampaignModel(
+                    message = JSONObject(it.message.toString()),
+                    messageMetaData = JSONObject(it.messageMetaData.toString()),
+                    type = it.type,
+                    url = HttpUrl.parse(it.url!!)!!, // at this stage we are sure that url is not null
+                    messageSubCategory = it.messageMetaData.subCategoryId,
                 )
             }
         }
@@ -207,6 +236,59 @@ internal class SpConsentLibImpl(
                 }
             },
             env = env
+        )
+    }
+
+    override fun loadMessageV7(authId: String?) {
+        service.getMessages(
+            messageReq = campaignManager.getMessageV7Req(authId),
+            pSuccess = {
+                val list = it.toCampaignModelList(logger = pLogger)
+                clientEventManager.setCampaignNumber(list.size)
+                if (list.isEmpty()) {
+                    consentManager.sendStoredConsentToClient()
+                    return@getMessages
+                }
+                val firstCampaign2Process: CampaignModel = list.first()
+                remainingCampaigns.run {
+                    clear()
+                    addAll(LinkedList(list.drop(1)))
+                }
+                executor.executeOnMain {
+                    val legislation = firstCampaign2Process.type
+                    when (firstCampaign2Process.messageSubCategory) {
+                        TCFv2, OTT, NATIVE_OTT -> {
+                            /** create a instance of WebView */
+                            val webView = viewManager.createWebView(
+                                this,
+                                JSReceiverDelegate(),
+                                remainingCampaigns,
+                                firstCampaign2Process.messageSubCategory,
+                                null
+                            )
+                                .executeOnLeft { spClient.onError(it) }
+                                .getOrNull()
+
+                            /** inject the message into the WebView */
+                            val url = firstCampaign2Process.url
+                            webView?.loadConsentUI(firstCampaign2Process, url, legislation)
+                        }
+                        NATIVE_IN_APP -> {
+//                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(legislation)
+//                            currentNativeMessageCampaign = firstCampaign2Process
+//                            spClient.onNativeMessageReady(nmDto, this)
+//                            pLogger.nativeMessageAction(
+//                                tag = "onNativeMessageReady",
+//                                msg = "onNativeMessageReady",
+//                                json = firstCampaign2Process.message
+//                            )
+                        }
+                    }
+                }
+            },
+            pError = {
+                println()
+            }
         )
     }
 
