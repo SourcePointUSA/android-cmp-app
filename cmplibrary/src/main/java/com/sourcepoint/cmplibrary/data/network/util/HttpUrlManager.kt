@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.example.cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
@@ -25,6 +26,7 @@ internal interface HttpUrlManager {
     // V7
     fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
     fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
+    fun getChoiceUrl(param: ChoiceParamReq): HttpUrl
     fun getPvDataUrl(env: Env): HttpUrl
     fun getMessagesUrl(param: MessagesParamReq): HttpUrl
 }
@@ -48,7 +50,12 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         }
     }
 
-    override fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig, messSubCat: MessageSubCategory): HttpUrl {
+    override fun pmUrl(
+        env: Env,
+        campaignType: CampaignType,
+        pmConfig: PmUrlConfig,
+        messSubCat: MessageSubCategory
+    ): HttpUrl {
         return when (campaignType) {
             CampaignType.GDPR -> urlPmGdpr(pmConfig, env, messSubCat)
             CampaignType.CCPA -> urlPmCcpa(pmConfig, env, messSubCat)
@@ -171,6 +178,32 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("hasCsp", true.toString())
             .addQueryParameter("withSiteActions", false.toString())
             .apply { param.authId?.let { p -> addQueryParameter("authId", p) } }
+            .addEncodedQueryParameter("metadata", param.metadata)
+            .build()
+    }
+
+    override fun getChoiceUrl(param: ChoiceParamReq): HttpUrl {
+        // http://localhost:3000/wrapper/v2/choice
+        // /consent-all
+        // ?env=localProd
+        // &accountId=22
+        // &hasCsp=true
+        // &propertyId=17801
+        // &withSiteActions=false
+        // &includeCustomVendorsRes=false
+        // &metadata={"ccpa":{"applies":true}, "gdpr":{"applies":true}}
+
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(param.env.host)
+            .addPathSegments("wrapper/v2/choice")
+            .addPathSegments(param.choiceType.type)
+            .addQueryParameter("env", param.env.queryParam)
+            .addQueryParameter("accountId", param.accountId.toString())
+            .addQueryParameter("propertyId", param.propertyId.toString())
+            .addQueryParameter("hasCsp", true.toString())
+            .addQueryParameter("withSiteActions", false.toString())
+            .addQueryParameter("includeCustomVendorsRes", false.toString())
             .addEncodedQueryParameter("metadata", param.metadata)
             .build()
     }

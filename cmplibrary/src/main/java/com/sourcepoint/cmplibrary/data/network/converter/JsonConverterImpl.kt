@@ -7,12 +7,12 @@ import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.json.JSONObject
 
 /**
@@ -20,6 +20,20 @@ import org.json.JSONObject
  * @return an instance of the [JsonConverterImpl] implementation
  */
 internal fun JsonConverter.Companion.create(): JsonConverter = JsonConverterImpl()
+internal val JsonConverter.Companion.converter: Json by lazy {
+    Json {
+        encodeDefaults = true
+        ignoreUnknownKeys = true
+        isLenient = true
+        allowStructuredMapKeys = true
+        explicitNulls = false
+        prettyPrint = true
+        prettyPrintIndent = "  "
+        coerceInputValues = true
+        useArrayPolymorphism = true
+        allowSpecialFloatingPointValues = true
+    }
+}
 
 /**
  * Implementation of the [JsonConverter] interface
@@ -71,19 +85,23 @@ private class JsonConverterImpl : JsonConverter {
     }
 
     override fun toMetaDataRespResp(body: String): Either<MetaDataResp> = check {
-        JSONObject(body).toTreeMap().toMetaDataResp()
+        JsonConverter.converter.decodeFromString(body)
     }
 
     override fun toConsentStatusResp(body: String): Either<ConsentStatusResp> = check {
-        JSONObject(body).toTreeMap().toConsentStatusResp()
+        JsonConverter.converter.decodeFromString(body)
+    }
+
+    override fun toChoiceResp(body: String): Either<ChoiceResp> = check {
+        JsonConverter.converter.decodeFromString(body)
     }
 
     override fun toPvDataResp(body: String): Either<PvDataResp> = check {
-        JSONObject(body).toTreeMap().toPvDataResp()
+        JsonConverter.converter.decodeFromString(body)
     }
 
     override fun toMessagesResp(body: String): Either<MessagesResp> = check {
-        JSONObject(body).toTreeMap().toMessagesResp()
+        JsonConverter.converter.decodeFromString(body)
     }
 
     /**

@@ -39,6 +39,7 @@ data class DataType(val type: String)
 data class IncludeData(
     val localState: DataType = DataType("RecordString"),
     val tCData: DataType = DataType("RecordString"),
+    val campaigns: DataType = DataType("RecordString"),
     val customVendorsResponse: DataType = DataType("RecordString"),
     val messageMetaData: DataType = DataType("RecordString")
 )
