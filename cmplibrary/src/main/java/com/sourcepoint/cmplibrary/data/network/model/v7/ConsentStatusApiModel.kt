@@ -1,80 +1,25 @@
 package com.sourcepoint.cmplibrary.data.network.model.v7
 
+import com.sourcepoint.cmplibrary.core.getOrNull
+import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
-import org.json.JSONObject
-
-internal class ConsentStatusResp(
-    val thisContent: JSONObject,
-    val consentStatusData: ConsentStatusData,
-    val localState: JSONObject
-)
+import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.JsonElement
+import java.time.Instant
 
 internal data class ConsentStatusParamReq(
     val env: Env,
     val metadata: String,
-    val propertyId: Int,
-    val accountId: Int,
-    val authId: String? = null
-)
-
-internal data class ConsentStatusData(
-    val thisContent: JSONObject,
-    val gdprCS: GdprCS?,
-    val ccpaCS: CcpaCS?
-)
-
-internal data class GdprCS(
-    val thisContent: JSONObject,
-    var grants: Map<String, GDPRPurposeGrants> = emptyMap(),
-    val euconsent: String,
-    val addtlConsent: String,
-    val dateCreated: String,
-    val vendorListId: String,
-    val uuid: String,
-    val gdprApplies: Boolean,
-    val localDataCurrent: Boolean,
-    val cookieExpirationDays: Int,
-    val consentStatus: ConsentStatusCS
-)
-
-internal data class CustomVendorsResponse(
-    val consentedVendors: List<String>,
-    val consentedPurposes: List<String>,
-    val legIntPurposes: List<String>,
-)
-
-internal data class CcpaCS(
-    val thisContent: JSONObject,
-    val dateCreated: String?,
-    val newUser: Boolean,
-    val consentedAll: Boolean,
-    val rejectedCategories: List<String> = listOf(),
-    val rejectedVendors: List<String> = listOf(),
-    val rejectedAll: Boolean,
-    val status: CcpaStatus? = null,
-    val signedLspa: Boolean,
-    val uspstring: String,
-    val gpcEnabled: Boolean,
-    val uuid: String?,
-    val ccpaApplies: Boolean
-)
-
-internal data class Vendor(
-    val id: String,
-    val name: String,
-    val type: String
-)
-
-internal data class GranularStatus(
-    val thisContent: JSONObject,
-    val vendorConsent: GranularState,
-    val vendorLegInt: GranularState,
-    val purposeConsent: GranularState,
-    val purposeLegInt: GranularState,
-    val previousOptInAll: Boolean,
-    val defaultConsent: Boolean
+    val propertyId: Long,
+    val accountId: Long,
+    val authId: String?
 )
 
 enum class GranularState {
@@ -83,34 +28,104 @@ enum class GranularState {
     NONE
 }
 
-internal data class ConsentStatusCS(
-    val thisContent: JSONObject,
-    val rejectedAny: Boolean,
-    val rejectedLI: Boolean,
-    val consentedAll: Boolean,
-    val hasConsentData: Boolean,
-    val consentedToAny: Boolean?,
-    val granularStatus: GranularStatus?
-)
+@Serializable
+data class ConsentStatusResp(
+    @SerialName("consentStatusData") val consentStatusData: ConsentStatusData?,
+    @SerialName("localState") val localState: JsonElement?
+) {
+    @Serializable
+    data class ConsentStatusData(
+        @SerialName("ccpa") val ccpa: CcpaCS?,
+        @SerialName("gdpr") val gdpr: GdprCS?
+    ) {
+        @Serializable
+        data class CcpaCS(
+            @SerialName("ccpaApplies") val ccpaApplies: Boolean?,
+            @SerialName("consentedAll") val consentedAll: Boolean?,
+            @Serializable(with = DateSerializer::class) val dateCreated: Instant?,
+            @SerialName("gpcEnabled") val gpcEnabled: Boolean?,
+            @SerialName("newUser") val newUser: Boolean?,
+            @SerialName("rejectedAll") val rejectedAll: Boolean?,
+            @SerialName("rejectedCategories") val rejectedCategories: List<String>?,
+            @SerialName("rejectedVendors") val rejectedVendors: List<String>?,
+            @SerialName("signedLspa") val signedLspa: Boolean?,
+            @Serializable(with = CcpaStatusSerializer::class) val status: CcpaStatus?,
+            @SerialName("uspstring") val uspstring: String?,
+            @SerialName("uuid") val uuid: String?
+        )
 
-internal fun ConsentStatusCS.toJsonObject(): JSONObject {
-    return JSONObject().apply {
-        put("rejectedAny", rejectedAny)
-        put("rejectedLI", rejectedLI)
-        put("consentedAll", consentedAll)
-        put("hasConsentData", hasConsentData)
-        put("consentedToAny", consentedToAny)
-        put("granularStatus", granularStatus?.toJsonObject())
+        @Serializable
+        data class GdprCS(
+            @SerialName("addtlConsent") val addtlConsent: String?,
+            @SerialName("consentStatus") val consentStatus: ConsentStatus?,
+            @SerialName("consentUUID") val consentUUID: String?,
+            @SerialName("cookieExpirationDays") val cookieExpirationDays: Int?,
+            @SerialName("cookies") val cookies: List<Cooky?>?,
+            @SerialName("customVendorsResponse") val customVendorsResponse: CustomVendorsResponse?,
+            @Serializable(with = DateSerializer::class) val dateCreated: Instant?,
+            @SerialName("euconsent") val euconsent: String?,
+            @SerialName("gdprApplies") val gdprApplies: Boolean?,
+            @Serializable(with = GrantsSerializer::class) val grants: Map<String, GDPRPurposeGrants>?,
+            @SerialName("localDataCurrent") val localDataCurrent: Boolean?,
+            @SerialName("uuid") val uuid: String?,
+            @SerialName("vendorListId") val vendorListId: String?
+        ) {
+            @Serializable
+            data class Action(
+                @SerialName("_id") val id: String?,
+                @SerialName("js") val js: String?,
+                @SerialName("tagManager") val tagManager: TagManager?,
+                @SerialName("type") val type: String?,
+                @SerialName("url") val url: String?
+            ) {
+                @Serializable
+                data class TagManager(
+                    @SerialName("_id") val id: String?,
+                    @SerialName("key") val key: String?,
+                    @SerialName("name") val name: String?,
+                    @SerialName("value") val value: String?
+                )
+            }
+
+            @Serializable
+            data class Cooky(
+                @SerialName("key") val key: String?,
+                @SerialName("maxAge") val maxAge: Int?,
+                @SerialName("session") val session: Boolean?,
+                @SerialName("shareRootDomain") val shareRootDomain: Boolean?,
+                @SerialName("value") val value: String?
+            )
+
+            @Serializable
+            data class CustomVendorsResponse(
+                @SerialName("consentedPurposes") val consentedPurposes: List<ConsentedPurpose>?,
+                @SerialName("consentedVendors") val consentedVendors: List<ConsentedVendor>?,
+                @SerialName("legIntPurposes") val legIntPurposes: List<LegIntPurpose>?
+            ) {
+                @Serializable
+                data class ConsentedPurpose(
+                    @SerialName("_id") val id: String?,
+                    @SerialName("name") val name: String?
+                )
+
+                @Serializable
+                data class ConsentedVendor(
+                    @SerialName("_id") val id: String?,
+                    @SerialName("name") val name: String?,
+                    @SerialName("vendorType") val vendorType: String?
+                )
+
+                @Serializable
+                data class LegIntPurpose(
+                    @SerialName("_id") val id: String?,
+                    @SerialName("name") val name: String?
+                )
+            }
+        }
     }
-}
 
-internal fun GranularStatus.toJsonObject(): JSONObject {
-    return JSONObject().apply {
-        put("vendorConsent", vendorConsent)
-        put("vendorLegInt", vendorLegInt)
-        put("purposeConsent", purposeConsent)
-        put("purposeLegInt", purposeLegInt)
-        put("previousOptInAll", previousOptInAll)
-        put("defaultConsent", defaultConsent)
+    override fun toString(): String {
+        return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
+            ?: super.toString()
     }
 }

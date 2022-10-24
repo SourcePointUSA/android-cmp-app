@@ -17,6 +17,7 @@ class SpConfigDataBuilder {
 
     private val campaigns = mutableListOf<SpCampaign>()
     var accountId by Delegates.notNull<Int>()
+    var propertyId: Int? = null
     var propertyName by Delegates.notNull<String>()
     var messLanguage: MessageLanguage = MessageLanguage.ENGLISH
     var campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC
@@ -37,6 +38,10 @@ class SpConfigDataBuilder {
 
     fun addAccountId(accountId: Int): SpConfigDataBuilder = apply {
         this.accountId = accountId
+    }
+
+    fun addPropertyId(propertyId: Int): SpConfigDataBuilder = apply {
+        this.propertyId = propertyId
     }
 
     fun addPropertyName(propertyName: String): SpConfigDataBuilder = apply {
@@ -101,7 +106,8 @@ class SpConfigDataBuilder {
             messageLanguage = messLanguage,
             messageTimeout = messageTimeout,
             campaignsEnv = campaignsEnv,
-            logger = logger
+            logger = logger,
+            propertyId = propertyId
         )
     }
 }

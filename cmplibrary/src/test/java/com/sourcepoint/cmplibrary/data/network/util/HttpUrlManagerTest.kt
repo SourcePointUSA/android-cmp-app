@@ -4,14 +4,16 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.assertTrue
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
+import com.sourcepoint.cmplibrary.util.file2String
+import kotlinx.serialization.decodeFromString
 import org.json.JSONObject
 import org.junit.Test
 
@@ -235,12 +237,26 @@ class HttpUrlManagerTest {
     }
 
     @Test
+    fun `GIVEN a PROD env getChoiceUrl RETURN the prod link`() {
+        val param = ChoiceParamReq(
+            accountId = 22,
+            env = Env.PROD,
+            metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
+            propertyId = 17801,
+            choiceType = ChoiceTypeParam.CONSENT_ALL
+        )
+        val sut = HttpUrlManagerSingleton.getChoiceUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/choice/consent-all?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&includeCustomVendorsRes=false&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}")
+    }
+
+    @Test
     fun `GIVEN a PROD env getConsentStatus with authId NULL RETURN the prod link`() {
         val param = ConsentStatusParamReq(
             accountId = 22,
             env = Env.PROD,
             metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
             propertyId = 17801,
+            authId = null
         )
         val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}")
@@ -254,13 +270,27 @@ class HttpUrlManagerTest {
 
     @Test
     fun `GIVEN a PROD env getMessages RETURN the prod link`() {
+
+        val json = "v7/message_body_cs.json".file2String()
+        val cs = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
+
+        val body = getMessageBody(
+            accountId = 22,
+            cs = cs,
+            propertyHref = "tests.unified-script.com"
+        )
+
         val param = MessagesParamReq(
             env = Env.PROD,
             nonKeyedLocalState = """{"gdpr":{"_sp_v1_uid":null,"_sp_v1_data":null},"ccpa":{"_sp_v1_uid":null,"_sp_v1_data":null}}""",
-            body = """{"accountId":22,"propertyHref":"https://tests.unified-script.com","hasCSP":true,"campaigns":{"ccpa":{"hasLocalData": false},"gdpr":{"hasLocalData": false, "consentStatus": {}}}, "includeData": {"TCData": {"type": "RecordString"}}}""",
+            body = body.toString(),
             metadata = """{"ccpa":{"applies":true},"gdpr":{"applies":true}}""",
+            authId = null,
+            accountId = 1212,
+            propertyId = 12,
+            propertyHref = "asdfasdfasd"
         )
         val sut = HttpUrlManagerSingleton.getMessagesUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages?env=prod&nonKeyedLocalState={%22gdpr%22:{%22_sp_v1_uid%22:null,%22_sp_v1_data%22:null},%22ccpa%22:{%22_sp_v1_uid%22:null,%22_sp_v1_data%22:null}}&body={%22accountId%22:22,%22propertyHref%22:%22https://tests.unified-script.com%22,%22hasCSP%22:true,%22campaigns%22:{%22ccpa%22:{%22hasLocalData%22:%20false},%22gdpr%22:{%22hasLocalData%22:%20false,%20%22consentStatus%22:%20{}}},%20%22includeData%22:%20{%22TCData%22:%20{%22type%22:%20%22RecordString%22}}}&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true}}")
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages?env=prod&nonKeyedLocalState={%22gdpr%22:{%22_sp_v1_uid%22:null,%22_sp_v1_data%22:null},%22ccpa%22:{%22_sp_v1_uid%22:null,%22_sp_v1_data%22:null}}&body={%22accountId%22:22,%22includeData%22:{%22TCData%22:{%22type%22:%22RecordString%22},%22campaigns%22:{%22type%22:%22RecordString%22}},%22propertyHref%22:%22https://tests.unified-script.com%22,%22hasCSP%22:true,%22campaigns%22:{%22ccpa%22:{%22hasLocalData%22:false},%22gdpr%22:{%22hasLocalData%22:false,%22consentStatus%22:{%22hasConsentData%22:false,%22consentedToAll%22:true,%22consentedToAny%22:false,%22rejectedAny%22:false,%22legalBasisChanges%22:false,%22vendorListAdditions%22:false}}}}&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true}}")
     }
 }

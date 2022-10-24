@@ -1,13 +1,25 @@
 {
   "gdpr": {
-    "uuid": "86ac1e2e-ef53-451a-9e65-27c51f95adb8",
+    "uuid": "65596b93-07d5-479c-b8f7-bc4b32f323a1",
     "cookies": [
       {
         "key": "consentUUID",
-        "value": "86ac1e2e-ef53-451a-9e65-27c51f95adb8",
+        "value": "65596b93-07d5-479c-b8f7-bc4b32f323a1",
         "maxAge": 31536000,
         "shareRootDomain": false,
         "session": false
+      }
+    ]
+  },
+  "ccpa": {
+    "uuid": "6553333-07d5-479c-b8f7-bc4b32fafsgv",
+    "cookies": [
+      {
+        "key": "consentUUID",
+        "value": "6553333-07d5-479c-b8f7-bc4b32fafsgv",
+        "maxAge": 31536000,
+        "shareRootDomain": true,
+        "session": true
       }
     ]
   }

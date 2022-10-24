@@ -6,20 +6,15 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
-import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
-import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.v7.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.ConsentResp
-import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
-import okhttp3.* // ktlint-disable
+import okhttp3.MediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
 import org.json.JSONObject
 
 internal fun createNetworkClient(
@@ -244,5 +239,63 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parsePvDataResp(response)
+    }
+
+    override fun getMessages(
+        messageReq: MessagesParamReq,
+        pSuccess: (MessagesResp) -> Unit,
+        pError: (Throwable) -> Unit
+    ) {
+        val url = urlManager.getMessagesUrl(messageReq)
+
+        logger.req(
+            tag = "getMessages",
+            url = url.toString(),
+            body = "",
+            type = "GET"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        httpClient
+            .newCall(request)
+            .enqueue {
+                onFailure { _, exception ->
+                    pError(exception)
+                }
+                onResponse { _, r ->
+                    responseManager
+                        .parseMessagesResp2(r)
+                        .map {
+                            pSuccess(it)
+                        }
+                        .executeOnLeft {
+                            pError(it)
+                        }
+                }
+            }
+    }
+
+    override fun getChoice(param: ChoiceParamReq): Either<ChoiceResp> = check {
+        val url = urlManager.getChoiceUrl(param)
+
+        logger.req(
+            tag = "getChoiceUrl",
+            url = url.toString(),
+            body = "",
+            type = "GET"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseGetChoiceResp(response)
     }
 }

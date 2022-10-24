@@ -7,12 +7,12 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.encodeToJsonElement
 import org.junit.Test
 
-class PvDataApiModelExtKtTest {
+class MetaDataRespTest {
 
     @Test
-    fun `GIVEN a PvData resp RETURN the parsed obj`() {
-        val metadataJson = "v7/pv_data.json".file2String()
-        val metadata = JsonConverter.converter.decodeFromString<PvDataResp>(metadataJson)
+    fun `GIVEN a MetaData RETURN the parsed obj`() {
+        val metadataJson = "v7/meta_data.json".file2String()
+        val metadata = JsonConverter.converter.decodeFromString<MetaDataResp>(metadataJson)
         JsonConverter.converter.encodeToJsonElement(metadata)
     }
 }
