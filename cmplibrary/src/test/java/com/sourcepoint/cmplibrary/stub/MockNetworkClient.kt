@@ -54,4 +54,12 @@ internal class MockNetworkClient(
     override fun getChoice(param: ChoiceParamReq): Either<ChoiceResp> {
         TODO("Not yet implemented")
     }
+
+    override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprPostChoiceResp> {
+        TODO("Not yet implemented")
+    }
+
+    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaPostChoiceResp> {
+        TODO("Not yet implemented")
+    }
 }

@@ -72,4 +72,12 @@ internal interface NetworkClient {
     fun getChoice(
         param: ChoiceParamReq
     ): Either<ChoiceResp>
+
+    fun storeGdprChoice(
+        param: PostChoiceParamReq
+    ): Either<GdprPostChoiceResp>
+
+    fun storeCcpaChoice(
+        param: PostChoiceParamReq
+    ): Either<CcpaPostChoiceResp>
 }

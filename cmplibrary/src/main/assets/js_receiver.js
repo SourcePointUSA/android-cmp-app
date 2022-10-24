@@ -75,6 +75,9 @@ function handleEvent(event) {
             case 'sp.hideMessage':
                 sdk.onAction(JSON.stringify(actionData(payload)));
                 break;
+            case 'sp.renderingAppError':
+                sdk.onError(JSON.stringify(payload));
+                break;
             default:
                 sdk.log("Unexpected event name: " + payload.name);
         }

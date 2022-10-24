@@ -109,13 +109,12 @@ internal class RenderingAppException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false,
-    pCode: String
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description,
     isConsumed = isConsumed
 ) {
-    override val code: ExceptionCodes = ExceptionCodes(pCode)
+    override val code: ExceptionCodes = CodeList.RENDERING_APP_ERROR
 }
 
 /**
