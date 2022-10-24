@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.model.toJSONObj
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
+import kotlinx.serialization.Serializable
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -22,6 +23,7 @@ data class SPCCPAConsent(
     val consent: CCPAConsent
 )
 
+@Serializable
 data class GDPRPurposeGrants(
     val granted: Boolean = false,
     val purposeGrants: Map<String, Boolean> = emptyMap()

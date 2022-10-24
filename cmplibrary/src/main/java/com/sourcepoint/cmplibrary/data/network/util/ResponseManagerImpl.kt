@@ -2,10 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.PvDataResp
+import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
@@ -175,6 +172,26 @@ private class ResponseManagerImpl(
         }
     }
 
+    override fun parseGetChoiceResp(r: Response): ChoiceResp {
+        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code()
+        val mess = r.message()
+        logger.res(
+            tag = "ChoiceResp",
+            msg = mess,
+            body = body,
+            status = status.toString()
+        )
+        return if (r.isSuccessful) {
+            when (val either: Either<ChoiceResp> = jsonConverter.toChoiceResp(body)) {
+                is Either.Right -> either.r
+                is Either.Left -> throw either.t
+            }
+        } else {
+            throw InvalidRequestException(description = body)
+        }
+    }
+
     override fun parsePvDataResp(r: Response): PvDataResp {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         val status = r.code()
@@ -206,6 +223,26 @@ private class ResponseManagerImpl(
             status = status.toString()
         )
         return if (r.isSuccessful) {
+            when (val either: Either<MessagesResp> = jsonConverter.toMessagesResp(body)) {
+                is Either.Right -> either.r
+                is Either.Left -> throw either.t
+            }
+        } else {
+            throw InvalidRequestException(description = body)
+        }
+    }
+
+    override fun parseMessagesResp2(r: Response): Either<MessagesResp> = check {
+        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code()
+        val mess = r.message()
+        logger.res(
+            tag = "PvDataResp",
+            msg = mess,
+            body = body,
+            status = status.toString()
+        )
+        if (r.isSuccessful) {
             when (val either: Either<MessagesResp> = jsonConverter.toMessagesResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t

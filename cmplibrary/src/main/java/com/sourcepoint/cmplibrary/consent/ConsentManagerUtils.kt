@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.consent
 
+import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
@@ -9,6 +10,8 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
+import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatus
+import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
@@ -16,6 +19,7 @@ import com.sourcepoint.cmplibrary.model.IncludeData
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
+import java.time.Instant
 import java.util.* // ktlint-disable
 
 internal interface ConsentManagerUtils {
@@ -30,6 +34,16 @@ internal interface ConsentManagerUtils {
     fun hasCcpaConsent(): Boolean
 
     fun getSpConsent(): SPConsents?
+
+    fun updateGdprConsentV7(
+        dataRecordedConsent: Instant,
+        gdprConsentStatus: ConsentStatus,
+        additionsChangeDate: Instant,
+        legalBasisChangeDate: Instant
+    ): ConsentStatus
+
+    val shouldTriggerBySample: Boolean
+    var messagesResp: MessagesResp?
 
     companion object
 }
@@ -104,6 +118,33 @@ private class ConsentManagerUtilsImpl(
         )
     }
 
+    override fun updateGdprConsentV7(
+        dataRecordedConsent: Instant,
+        gdprConsentStatus: ConsentStatus,
+        additionsChangeDate: Instant,
+        legalBasisChangeDate: Instant
+    ): ConsentStatus {
+        val creationLessThanAdditions = dataRecordedConsent.epochSecond < additionsChangeDate.epochSecond
+        val creationLessThanLegalBasis = dataRecordedConsent.epochSecond < legalBasisChangeDate.epochSecond
+
+        val updatedCS = gdprConsentStatus.copy()
+
+        if (creationLessThanAdditions) {
+            updatedCS.vendorListAdditions = true
+        }
+        if (creationLessThanLegalBasis) {
+            updatedCS.legalBasisChanges = true
+        }
+        if (creationLessThanAdditions || creationLessThanLegalBasis) {
+            if (updatedCS.consentedAll == true) {
+                updatedCS.granularStatus?.previousOptInAll = true
+                updatedCS.consentedAll = false
+            }
+        }
+
+        return updatedCS
+    }
+
     override fun getGdprConsent(): Either<GDPRConsentInternal> {
         return cm.getGDPRConsent()
     }
@@ -115,4 +156,28 @@ private class ConsentManagerUtilsImpl(
     override fun hasGdprConsent(): Boolean = ds.getGdprConsentResp() != null
 
     override fun hasCcpaConsent(): Boolean = ds.getGdprConsentResp() != null
+
+    override val shouldTriggerBySample: Boolean
+        get() {
+            return if (ds.preference.contains(DataStorage.TRIGGER_BY_SAMPLE)) {
+                ds.shouldTriggerBySample
+            } else {
+                val res = when {
+                    BuildConfig.SAMPLE_RATE <= 0 -> false
+                    BuildConfig.SAMPLE_RATE >= 100 -> true
+                    else -> {
+                        val num = (1 until 100).random()
+                        num in (1..BuildConfig.SAMPLE_RATE)
+                    }
+                }
+                ds.shouldTriggerBySample = res
+                res
+            }
+        }
+
+    override var messagesResp: MessagesResp?
+        get() = TODO("Not yet implemented")
+        set(value) {
+            ds
+        }
 }
