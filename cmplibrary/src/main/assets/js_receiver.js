@@ -42,7 +42,8 @@ function actionFromPM(payload) {
         pmId: null,
         pmTab: null,
         saveAndExitVariables: payload.payload,
-        consentLanguage: payload.consentLanguage
+        consentLanguage: payload.consentLanguage,
+        customActionId: payload.customAction
     };
 }
 
