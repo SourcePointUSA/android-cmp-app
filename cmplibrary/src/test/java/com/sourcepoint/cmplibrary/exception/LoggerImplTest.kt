@@ -53,7 +53,7 @@ class LoggerImplTest {
 
     @Test
     fun `GIVEN a RenderingAppException VERIFY the generated call`() {
-        val ex = RenderingAppException(cause = null, description = "description", pCode = "custom_code")
+        val ex = RenderingAppException(cause = null, description = "description")
         val json = json(ExceptionCodes("custom_code"))
         every { messageManager.build(ex) } returns json
 
