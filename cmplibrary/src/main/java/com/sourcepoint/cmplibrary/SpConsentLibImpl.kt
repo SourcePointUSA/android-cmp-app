@@ -426,7 +426,7 @@ internal class SpConsentLibImpl(
         }
 
         override fun onError(view: View, errorMessage: String) {
-            spClient.onError(GenericSDKException(description = errorMessage))
+            spClient.onError(RenderingAppException(description = errorMessage))
             pLogger.clientEvent(
                 event = "onError",
                 msg = errorMessage,
