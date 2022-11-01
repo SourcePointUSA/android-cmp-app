@@ -37,12 +37,3 @@ data class PvDataResp(
             ?: super.toString()
     }
 }
-
-@Serializable
-data class Cooky(
-    @SerialName("key") val key: String?,
-    @SerialName("maxAge") val maxAge: Int?,
-    @SerialName("session") val session: Boolean?,
-    @SerialName("shareRootDomain") val shareRootDomain: Boolean?,
-    @SerialName("value") val value: String?
-)

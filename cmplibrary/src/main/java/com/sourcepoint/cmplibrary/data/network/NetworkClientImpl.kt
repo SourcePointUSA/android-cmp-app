@@ -298,4 +298,44 @@ private class NetworkClientImpl(
 
         responseManager.parseGetChoiceResp(response)
     }
+
+    override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprPostChoiceResp> = check {
+        val url = urlManager.getGdprChoiceUrl(param)
+
+        logger.req(
+            tag = "storeGdprChoice",
+            url = url.toString(),
+            body = "",
+            type = "POST"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parsePostGdprChoiceResp(response)
+    }
+
+    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaPostChoiceResp> = check {
+        val url = urlManager.getCcpaChoiceUrl(param)
+
+        logger.req(
+            tag = "storeCcpaChoice",
+            url = url.toString(),
+            body = "",
+            type = "POST"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parsePostCcpaChoiceResp(response)
+    }
 }

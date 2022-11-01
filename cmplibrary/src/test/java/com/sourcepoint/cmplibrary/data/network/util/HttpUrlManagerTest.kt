@@ -250,6 +250,26 @@ class HttpUrlManagerTest {
     }
 
     @Test
+    fun `GIVEN a PROD env getGdprChoiceUrl RETURN the prod link`() {
+        val param = PostChoiceParamReq(
+            env = Env.PROD,
+            actionType = ActionType.ACCEPT_ALL
+        )
+        val sut = HttpUrlManagerSingleton.getGdprChoiceUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/choice/gdpr/11?env=prod&hasCsp=true")
+    }
+
+    @Test
+    fun `GIVEN a PROD env getCcpaChoiceUrl RETURN the prod link`() {
+        val param = PostChoiceParamReq(
+            env = Env.PROD,
+            actionType = ActionType.ACCEPT_ALL
+        )
+        val sut = HttpUrlManagerSingleton.getCcpaChoiceUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/choice/ccpa/11?env=prod&hasCsp=true")
+    }
+
+    @Test
     fun `GIVEN a PROD env getConsentStatus with authId NULL RETURN the prod link`() {
         val param = ConsentStatusParamReq(
             accountId = 22,
