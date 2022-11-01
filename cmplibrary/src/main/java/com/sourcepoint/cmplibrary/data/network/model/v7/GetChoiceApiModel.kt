@@ -50,14 +50,6 @@ data class ChoiceResp(
             @SerialName("type") val type: String?,
             @SerialName("url") val url: String?
         )
-
-        @Serializable
-        data class Cooky(
-            @SerialName("key") val key: String?,
-            @SerialName("maxAge") val maxAge: Int?,
-            @SerialName("setPath") val setPath: Boolean?,
-            @SerialName("value") val value: String?
-        )
     }
 
     @Serializable
@@ -89,14 +81,6 @@ data class ChoiceResp(
             @SerialName("hasConsentData") val hasConsentData: Boolean?,
             @SerialName("rejectedAny") val rejectedAny: Boolean?,
             @SerialName("rejectedLI") val rejectedLI: Boolean?
-        )
-
-        @Serializable
-        data class Cooky(
-            @SerialName("key") val key: String?,
-            @SerialName("maxAge") val maxAge: Int?,
-            @SerialName("shareRootDomain") val shareRootDomain: Boolean?,
-            @SerialName("value") val value: String?
         )
 
         @Serializable

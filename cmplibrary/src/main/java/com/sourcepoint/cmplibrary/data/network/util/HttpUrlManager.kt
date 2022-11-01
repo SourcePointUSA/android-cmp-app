@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.example.cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.data.network.model.v7.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
@@ -27,6 +28,8 @@ internal interface HttpUrlManager {
     fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
     fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
     fun getChoiceUrl(param: ChoiceParamReq): HttpUrl
+    fun getGdprChoiceUrl(param: PostChoiceParamReq): HttpUrl
+    fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun getPvDataUrl(env: Env): HttpUrl
     fun getMessagesUrl(param: MessagesParamReq): HttpUrl
 }
@@ -205,6 +208,28 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("withSiteActions", false.toString())
             .addQueryParameter("includeCustomVendorsRes", false.toString())
             .addEncodedQueryParameter("metadata", param.metadata)
+            .build()
+    }
+
+    override fun getGdprChoiceUrl(param: PostChoiceParamReq): HttpUrl {
+        // http://localhost:3000/wrapper/v2/choice/gdpr/11?env=localProd&hasCsp=true
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(param.env.host)
+            .addPathSegments("wrapper/v2/choice/gdpr/${param.actionType.code}")
+            .addQueryParameter("env", param.env.queryParam)
+            .addQueryParameter("hasCsp", true.toString())
+            .build()
+    }
+
+    override fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl {
+        // http://localhost:3000/wrapper/v2/choice/ccpa/11?env=localProd&hasCsp=true
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(param.env.host)
+            .addPathSegments("wrapper/v2/choice/ccpa/${param.actionType.code}")
+            .addQueryParameter("env", param.env.queryParam)
+            .addQueryParameter("hasCsp", true.toString())
             .build()
     }
 
