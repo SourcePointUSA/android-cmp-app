@@ -88,15 +88,6 @@ data class ConsentStatusResp(
             }
 
             @Serializable
-            data class Cooky(
-                @SerialName("key") val key: String?,
-                @SerialName("maxAge") val maxAge: Int?,
-                @SerialName("session") val session: Boolean?,
-                @SerialName("shareRootDomain") val shareRootDomain: Boolean?,
-                @SerialName("value") val value: String?
-            )
-
-            @Serializable
             data class CustomVendorsResponse(
                 @SerialName("consentedPurposes") val consentedPurposes: List<ConsentedPurpose>?,
                 @SerialName("consentedVendors") val consentedVendors: List<ConsentedVendor>?,
@@ -129,3 +120,13 @@ data class ConsentStatusResp(
             ?: super.toString()
     }
 }
+
+@Serializable
+data class Cooky(
+    @SerialName("key") val key: String?,
+    @SerialName("maxAge") val maxAge: Int?,
+    @SerialName("session") val session: Boolean?,
+    @SerialName("shareRootDomain") val shareRootDomain: Boolean?,
+    @SerialName("value") val value: String?,
+    @SerialName("setPath") val setPath: Boolean?,
+)
