@@ -96,6 +96,14 @@ private class JsonConverterImpl : JsonConverter {
         JsonConverter.converter.decodeFromString(body)
     }
 
+    override fun toGdprPostChoiceResp(body: String): Either<GdprPostChoiceResp> = check {
+        JsonConverter.converter.decodeFromString(body)
+    }
+
+    override fun toCcpaPostChoiceResp(body: String): Either<CcpaPostChoiceResp> = check {
+        JsonConverter.converter.decodeFromString(body)
+    }
+
     override fun toPvDataResp(body: String): Either<PvDataResp> = check {
         JsonConverter.converter.decodeFromString(body)
     }
