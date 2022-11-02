@@ -61,9 +61,9 @@ class AddUpdatePropertyFragment : Fragment() {
 
         val messageOptionAdapter: ArrayAdapter<String> =
             ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, MessageType)
-        message_type_autocomplete.setAdapter(messageOptionAdapter)
-        message_type_autocomplete.setText(MessageType.first())
-        message_type_autocomplete.threshold = 1
+//        message_type_autocomplete.setAdapter(messageOptionAdapter)
+//        message_type_autocomplete.setText(MessageType.first())
+//        message_type_autocomplete.threshold = 1
 
         val languages = messageLanguage.map { it.name }
         val messageLanguageAdapter: ArrayAdapter<String> =
