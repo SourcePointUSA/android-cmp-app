@@ -233,7 +233,7 @@ class HttpUrlManagerTest {
             authId = "user_auth_id"
         )
         val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&authId=user_auth_id&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}")
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&includeData=%7B%22TCData%22%3A%20%7B%22type%22%3A%20%22RecordString%22%7D%7D&authId=user_auth_id&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}")
     }
 
     @Test
@@ -259,7 +259,7 @@ class HttpUrlManagerTest {
             authId = null
         )
         val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}")
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&includeData=%7B%22TCData%22%3A%20%7B%22type%22%3A%20%22RecordString%22%7D%7D&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}")
     }
 
     @Test
