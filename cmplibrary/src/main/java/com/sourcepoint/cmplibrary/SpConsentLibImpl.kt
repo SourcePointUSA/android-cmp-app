@@ -74,7 +74,7 @@ internal class SpConsentLibImpl(
                     messageMetaData = it.messageMetaData!!,
                     type = CampaignType.valueOf(it.type),
                     url = it.url!!,
-                    messageSubCategory = it.messageSubCategory,
+                    messageSubCategory = it.messageSubCategory!!,
                 )
             }
         }

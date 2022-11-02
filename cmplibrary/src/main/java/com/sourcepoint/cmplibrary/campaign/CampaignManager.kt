@@ -344,7 +344,7 @@ private class CampaignManagerImpl(
             saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
             gdprApplies = gdpr.applies
             gdprChildPmId = gdpr.userConsent.childPmId
-            gdprMessageSubCategory = gdpr.messageSubCategory
+            gdpr.messageSubCategory.let{ gdprMessageSubCategory = it!!}
         }
     }
 
