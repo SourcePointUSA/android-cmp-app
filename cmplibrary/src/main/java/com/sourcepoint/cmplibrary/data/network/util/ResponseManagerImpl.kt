@@ -192,7 +192,7 @@ private class ResponseManagerImpl(
         }
     }
 
-    override fun parsePostGdprChoiceResp(r: Response): GdprPostChoiceResp {
+    override fun parsePostGdprChoiceResp(r: Response): GdprCS {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         val status = r.code()
         val mess = r.message()
@@ -203,7 +203,7 @@ private class ResponseManagerImpl(
             status = status.toString()
         )
         return if (r.isSuccessful) {
-            when (val either: Either<GdprPostChoiceResp> = jsonConverter.toGdprPostChoiceResp(body)) {
+            when (val either: Either<GdprCS> = jsonConverter.toGdprPostChoiceResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }
@@ -212,7 +212,7 @@ private class ResponseManagerImpl(
         }
     }
 
-    override fun parsePostCcpaChoiceResp(r: Response): CcpaPostChoiceResp {
+    override fun parsePostCcpaChoiceResp(r: Response): CcpaCS {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         val status = r.code()
         val mess = r.message()
@@ -223,7 +223,7 @@ private class ResponseManagerImpl(
             status = status.toString()
         )
         return if (r.isSuccessful) {
-            when (val either: Either<CcpaPostChoiceResp> = jsonConverter.toCcpaPostChoiceResp(body)) {
+            when (val either: Either<CcpaCS> = jsonConverter.toCcpaPostChoiceResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }

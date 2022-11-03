@@ -87,7 +87,7 @@ internal class SpConsentLibImpl(
             if (campaignList.isEmpty()) return emptyList()
 
             val partition: Pair<List<CampaignMessage>, List<CampaignMessage>> = campaignList
-                .partition { it.message != null && it.url != null }
+                .partition { it.message != null && it.url != null && it.messageMetaData?.subCategoryId != null }
 
             logger.computation(
                 tag = "toCampaignModelList",
@@ -101,7 +101,7 @@ internal class SpConsentLibImpl(
                     messageMetaData = JSONObject(it.messageMetaData.toString()),
                     type = it.type,
                     url = HttpUrl.parse(it.url!!)!!, // at this stage we are sure that url is not null
-                    messageSubCategory = it.messageMetaData.subCategoryId,
+                    messageSubCategory = it.messageMetaData?.subCategoryId!!,
                 )
             }
         }
@@ -242,6 +242,14 @@ internal class SpConsentLibImpl(
             messageReq = campaignManager.getMessageV7Req(authId),
             pSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)
+                println(
+                    """
+                    Number of messages:
+                    =============================================
+                    ============> ${list.size} <=================
+                    =============================================
+                    """.trimIndent()
+                )
                 clientEventManager.setCampaignNumber(list.size)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
@@ -297,7 +305,7 @@ internal class SpConsentLibImpl(
         success: (SPConsents?) -> Unit,
     ) {
         val customConsentReq = CustomConsentReq(
-            consentUUID = dataStorage.getGdprConsentUuid() ?: "",
+            consentUUID = dataStorage.gdprConsentUuid ?: "",
             propertyId = dataStorage.getPropertyId(),
             categories = categories,
             legIntCategories = legIntCategories,
@@ -330,7 +338,7 @@ internal class SpConsentLibImpl(
         success: (SPConsents?) -> Unit
     ) {
         val customConsentReq = CustomConsentReq(
-            consentUUID = dataStorage.getGdprConsentUuid() ?: "",
+            consentUUID = dataStorage.gdprConsentUuid ?: "",
             propertyId = dataStorage.getPropertyId(),
             categories = categories,
             legIntCategories = legIntCategories,
@@ -619,6 +627,7 @@ internal class SpConsentLibImpl(
                     val editedAction = spClient.onAction(view, actionImpl) as? ConsentActionImpl
                     editedAction?.let {
                         consentManager.enqueueConsent(consentActionImpl = editedAction)
+                        consentManager.enqueueConsentV7(consentActionImpl = editedAction)
                     }
                 }
             }

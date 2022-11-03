@@ -24,11 +24,15 @@ import java.util.* //ktlint-disable
 internal interface ConsentManager {
     var localStateStatus: LocalStateStatus
     fun enqueueConsent(consentActionImpl: ConsentActionImpl)
+    fun enqueueConsentV7(consentActionImpl: ConsentActionImpl)
     fun enqueueConsent(nativeConsentAction: NativeConsentAction)
     fun sendStoredConsentToClient()
     fun sendConsent(
         actionImpl: ConsentActionImpl,
         localState: String
+    )
+    fun sendConsentV7(
+        actionImpl: ConsentActionImpl
     )
 
     val enqueuedActions: Int
@@ -76,10 +80,10 @@ private class ConsentManagerImpl(
         get() = consentQueueImpl.size
 
     override val gdprUuid: String?
-        get() = dataStorage.getGdprConsentUuid()
+        get() = dataStorage.gdprConsentUuid
 
     override val ccpaUuid: String?
-        get() = dataStorage.getCcpaConsentUuid()
+        get() = dataStorage.ccpaConsentUuid
 
     override val storedConsent: Boolean
         get() = dataStorage.getCcpaConsentResp() != null ||
@@ -93,6 +97,10 @@ private class ConsentManagerImpl(
             val action = consentQueueImpl.poll()
             sendConsent(action, localState)
         }
+    }
+
+    override fun enqueueConsentV7(consentActionImpl: ConsentActionImpl) {
+        sendConsentV7(consentActionImpl)
     }
 
     override fun enqueueConsent(nativeConsentAction: NativeConsentAction) {
@@ -134,6 +142,17 @@ private class ConsentManagerImpl(
                     sPConsentsSuccess?.invoke(sPConsents)
                     this.localStateStatus = updatedLocalState
                     clientEventManager.storedConsent()
+                }
+                is Left -> sPConsentsError?.invoke(either.t)
+            }
+        }
+    }
+
+    override fun sendConsentV7(actionImpl: ConsentActionImpl) {
+        executorManager.executeOnSingleThread {
+            when (val either = service.sendConsentV7(actionImpl, env, actionImpl.privacyManagerId)) {
+                is Right -> {
+                    println(either)
                 }
                 is Left -> sPConsentsError?.invoke(either.t)
             }

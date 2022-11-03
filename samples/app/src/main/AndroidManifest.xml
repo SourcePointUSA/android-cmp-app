@@ -13,6 +13,9 @@
             android:name=".App"
             android:theme="@style/AppTheme">
         <activity android:name=".MainActivityKotlin">
+
+        </activity>
+        <activity android:name=".MainActivityKotlinV7">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

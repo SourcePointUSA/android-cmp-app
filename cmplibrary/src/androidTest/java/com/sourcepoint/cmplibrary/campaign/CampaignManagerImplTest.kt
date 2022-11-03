@@ -215,23 +215,26 @@ class CampaignManagerImplTest {
         val json = "v7/consent_status_with_auth_id.json".file2String()
         val obj = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
 
-        cm.consentStatusResponse = obj
+        cm.gdprConsentStatus = obj.consentStatusData!!.gdpr
+        cm.ccpaConsentStatus = obj.consentStatusData!!.ccpa
+        cm.messagesV7LocalState = obj.localState
 
-        cm.consentStatusResponse?.consentStatusData.also { csd ->
-            csd?.gdpr?.also {
-                it.uuid.assertEquals("69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10")
-                it.dateCreated.toString().assertEquals("2022-08-25T20:56:38.551Z")
-                it.TCData!!.size.assertEquals(27)
-            }
-            csd?.ccpa?.also {
-                it.uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
-                it.dateCreated.toString().assertEquals("2022-08-25T20:56:39.010Z")
-            }
+        cm.gdprConsentStatus!!.also {
+            it.uuid.assertEquals("69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10")
+            it.dateCreated.toString().assertEquals("2022-08-25T20:56:38.551Z")
+            it.TCData!!.size.assertEquals(27)
+        }
+        cm.ccpaConsentStatus!!.also {
+            it.uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
+            it.dateCreated.toString().assertEquals("2022-08-25T20:56:39.010Z")
         }
 
-        cm.consentStatusResponse = null
+        cm.gdprConsentStatus = null
+        cm.ccpaConsentStatus = null
 
-        cm.consentStatusResponse.assertNull()
+        cm.gdprConsentStatus.assertNull()
+        cm.ccpaConsentStatus.assertNull()
+        cm.messagesV7LocalState.assertNotNull()
     }
 
     @Test
