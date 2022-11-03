@@ -169,7 +169,17 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         // &metadata={"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}
         // &hasCsp=true
         // &withSiteActions=true
+        // &includeData={"TCData": {"type": "RecordString"}}
         // &propertyId=17801
+
+        // https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=localProd
+        // &authId=user_auth_id
+        // &metadata={"ccpa":{"applies":true},"gdpr":{"applies":true}}
+        // &hasCsp=true
+        // &propertyId=17801
+        // &localState=
+        // &includeData={"TCData": {"type": "RecordString"}}
+        // &withSiteActions=true
 
         return HttpUrl.Builder()
             .scheme("https")
@@ -180,6 +190,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("propertyId", param.propertyId.toString())
             .addQueryParameter("hasCsp", true.toString())
             .addQueryParameter("withSiteActions", false.toString())
+            .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}}""")
             .apply { param.authId?.let { p -> addQueryParameter("authId", p) } }
             .addEncodedQueryParameter("metadata", param.metadata)
             .build()
