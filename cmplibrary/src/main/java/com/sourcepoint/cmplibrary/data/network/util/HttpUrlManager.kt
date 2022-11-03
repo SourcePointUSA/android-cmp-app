@@ -1,6 +1,8 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.example.cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.v7.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
@@ -12,6 +14,7 @@ import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
+import kotlinx.serialization.encodeToString
 import okhttp3.HttpUrl
 
 /**
@@ -207,6 +210,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         // &includeCustomVendorsRes=false
         // &metadata={"ccpa":{"applies":true}, "gdpr":{"applies":true}}
 
+        val metaData: String? = param.metadataArg?.let { JsonConverter.converter.encodeToString(it) }
+
         return HttpUrl.Builder()
             .scheme("https")
             .host(param.env.host)
@@ -218,7 +223,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("hasCsp", true.toString())
             .addQueryParameter("withSiteActions", false.toString())
             .addQueryParameter("includeCustomVendorsRes", false.toString())
-            .addEncodedQueryParameter("metadata", param.metadata)
+            .addEncodedQueryParameter("metadata", metaData)
             .build()
     }
 
@@ -262,6 +267,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         // &metadata={"ccpa":{"applies":true},"gdpr":{"applies":true}}
         // &includeData=
 
+        val metaData: String? = param.metadataArg?.let { JsonConverter.converter.encodeToString(it) }
+
         return HttpUrl.Builder()
             .scheme("https")
             .host(param.env.host)
@@ -269,7 +276,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("env", param.env.queryParam)
             .addEncodedQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState)
             .addEncodedQueryParameter("body", param.body)
-            .addEncodedQueryParameter("metadata", param.metadata)
+            .addEncodedQueryParameter("metadata", metaData)
             .build()
     }
 }
@@ -293,9 +300,9 @@ enum class Env(
         "prod"
     ),
     LOCAL_PROD(
-        "preprod-cdn.privacy-mgmt.com",
-        "preprod-cdn.privacy-mgmt.com",
-        "ccpa-inapp-pm.sp-prod.net",
+        "cdn.privacy-mgmt.com",
+        "cdn.privacy-mgmt.com",
+        "cdn.privacy-mgmt.com",
         "localProd"
     ),
     PROD(

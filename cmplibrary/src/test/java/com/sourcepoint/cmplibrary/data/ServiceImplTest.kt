@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.* //ktlint-disable
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
-import com.sourcepoint.cmplibrary.campaign.create
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.Either.Right
@@ -166,9 +165,9 @@ class ServiceImplTest {
 
         verify(exactly = 1) { ds.saveLocalState("localstate") }
         verify(exactly = 1) { ds.saveGdprConsentResp("userConsent") }
-        verify(exactly = 1) { ds.saveGdprConsentUuid("123") }
+        verify(exactly = 1) { ds.gdprConsentUuid = "123" }
         verify(exactly = 0) { ds.saveCcpaConsentResp(any()) }
-        verify(exactly = 0) { ds.saveCcpaConsentUuid(any()) }
+        verify(exactly = 0) { ds.ccpaConsentUuid = any() }
 
         res.assertNotNull()
     }
@@ -210,9 +209,9 @@ class ServiceImplTest {
 
         verify(exactly = 1) { ds.saveLocalState("localstate") }
         verify(exactly = 1) { ds.saveCcpaConsentResp("userConsent") }
-        verify(exactly = 1) { ds.saveCcpaConsentUuid("123") }
+        verify(exactly = 1) { ds.ccpaConsentUuid = "123" }
         verify(exactly = 0) { ds.saveGdprConsentResp(any()) }
-        verify(exactly = 0) { ds.saveGdprConsentUuid(any()) }
+        verify(exactly = 0) { ds.gdprConsentUuid = any() }
 
         res.assertNotNull()
     }
@@ -255,9 +254,9 @@ class ServiceImplTest {
 
         verify(exactly = 1) { ds.saveLocalState(any()) }
         verify(exactly = 0) { ds.saveCcpaConsentResp(any()) }
-        verify(exactly = 0) { ds.saveCcpaConsentUuid(any()) }
+        verify(exactly = 0) { ds.ccpaConsentUuid = any() }
         verify(exactly = 0) { ds.saveGdprConsentResp(any()) }
-        verify(exactly = 0) { ds.saveGdprConsentUuid(any()) }
+        verify(exactly = 0) { ds.gdprConsentUuid = any() }
 
         res.assertNotNull()
     }
@@ -380,7 +379,6 @@ class ServiceImplTest {
         val metadata = JsonConverter.converter.decodeFromString<MetaDataResp>(metadataJson)
 
         every { ncMock.getMetaData(any()) }.returns(Either.Right(metadata))
-        every { cm.consentStatusResponse }.returns(null)
         every { cm.shouldCallConsentStatus }.returns(true)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
@@ -401,14 +399,12 @@ class ServiceImplTest {
 
         every { ncMock.getMetaData(any()) }.returns(Either.Right(metadata))
         every { ncMock.getConsentStatus(any()) }.returns(Either.Right(consentStatus))
-        every { cm.consentStatusResponse }.returns(null)
         every { cm.shouldCallConsentStatus }.returns(true)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(messagesParamReq, successMockV7, errorMock)
 
-        verify(exactly = 1) { cm.consentStatusResponse = any() }
-        verify(exactly = 2) { cm.gdprConsentStatus = any() } // it gets also updated from updateGdprConsentV7
+        // TODO
     }
 
     @Test
@@ -441,10 +437,8 @@ class ServiceImplTest {
         )
 
         every { ncMock.getMetaData(any()) }.returns(Right(metadata))
-        every { cm.consentStatusResponse }.returns(consentStatus)
         every { cm.dataRecordedConsent }.returns(consentStatus.consentStatusData!!.gdpr!!.dateCreated)
         every { cmu.updateGdprConsentV7(any(), any(), any(), any()) }.returns(gdprConsentStatus)
-        every { cm.gdprConsentStatus }.returns(gdprConsentStatus)
         every { cm.dataRecordedConsent }.returns(
             consentStatus.consentStatusData!!.gdpr!!.dateCreated!!.minus(
                 400,
@@ -455,62 +449,7 @@ class ServiceImplTest {
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(messagesParamReq, successMockV7, errorMock)
 
-        verify(exactly = 1) { cm.gdprConsentStatus = any() }
-    }
-
-    @Test
-    fun `GIVEN a saved ConsentStatus resp VERIFY that the dates are saved 2`() {
-
-        val metadataJson = "v7/meta_data.json".file2String()
-        val metadata = JsonConverter.converter.decodeFromString<MetaDataResp>(metadataJson)
-
-        val consentStatusJson = "v7/consent_status_with_auth_id.json".file2String()
-        val consentStatus = JsonConverter.converter.decodeFromString<ConsentStatusResp>(consentStatusJson)
-
-        val messageJson = "v7/messagesObj.json".file2String()
-        val messageResp = JsonConverter.converter.decodeFromString<MessagesResp>(messageJson)
-
-        val gdprConsentStatus: ConsentStatus = JsonConverter.converter.decodeFromString(
-            """
-              {
-                "rejectedAny": true,
-                "rejectedLI": false,
-                "consentedAll": false,
-                "granularStatus": {
-                  "vendorConsent": "NONE",
-                  "vendorLegInt": "ALL",
-                  "purposeConsent": "NONE",
-                  "purposeLegInt": "ALL",
-                  "previousOptInAll": false,
-                  "defaultConsent": true
-                },
-                "hasConsentData": false,
-                "consentedToAny": false
-              } 
-            """.trimIndent()
-        )
-
-        every { ncMock.getMetaData(any()) }.returns(Right(metadata))
-        every { cm.consentStatusResponse }.returns(consentStatus)
-        every { cm.dataRecordedConsent }.returns(consentStatus.consentStatusData!!.gdpr!!.dateCreated)
-        every { cm.gdprConsentStatus }.returns(gdprConsentStatus)
-        every { cm.shouldCallMessages }.returns(false)
-        every { cmu.updateGdprConsentV7(any(), any(), any(), any()) }.returns(gdprConsentStatus)
-        every { cm.messagesV7 }.returns(messageResp)
-        every { cm.dataRecordedConsent }.returns(
-            consentStatus.consentStatusData!!.gdpr!!.dateCreated!!
-        )
-
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messagesParamReq, successMockV7, errorMock)
-
-        verify {
-            cm.gdprConsentStatus = withArg {
-                it.granularStatus?.previousOptInAll!!.assertFalse()
-                it.legalBasisChanges.assertNull()
-                it.vendorListAdditions.assertNull()
-            }
-        }
+        // TODO
     }
 
     @Test

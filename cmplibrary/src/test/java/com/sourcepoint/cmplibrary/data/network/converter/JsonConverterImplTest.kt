@@ -210,8 +210,8 @@ class JsonConverterImplTest {
             val gdprTester = testMap.getMap("campaigns")!!.getMap("GDPR")!!
             type.assertEquals(CampaignType.GDPR)
             message.assertNotNull()
-            dateCreated.assertEquals(gdprTester["dateCreated"])
-            messageMetaData.subCategoryId.assertEquals(MessageSubCategory.TCFv2)
+            dateCreated.toString().assertEquals(gdprTester["dateCreated"])
+            messageMetaData!!.subCategoryId.assertEquals(MessageSubCategory.TCFv2)
             url.toString().assertEquals(gdprTester["url"].toString())
             grants!!.size.assertEquals(5)
             consentStatus!!.also {
@@ -230,8 +230,8 @@ class JsonConverterImplTest {
             val ccpaTester = testMap.getMap("campaigns")!!.getMap("CCPA")!!
             type.assertEquals(CampaignType.CCPA)
             message.assertNotNull()
-            dateCreated.assertEquals(ccpaTester["dateCreated"])
-            messageMetaData.subCategoryId.assertEquals(MessageSubCategory.TCFv2)
+            dateCreated.toString().assertEquals(ccpaTester["dateCreated"])
+            messageMetaData!!.subCategoryId.assertEquals(MessageSubCategory.TCFv2)
             url.toString().assertEquals(ccpaTester["url"].toString())
             newUser!!.assertTrue()
             consentedAll!!.assertFalse()

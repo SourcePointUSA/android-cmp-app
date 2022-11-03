@@ -299,19 +299,22 @@ private class NetworkClientImpl(
         responseManager.parseGetChoiceResp(response)
     }
 
-    override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprPostChoiceResp> = check {
+    override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprCS> = check {
         val url = urlManager.getGdprChoiceUrl(param)
+        val mediaType = MediaType.parse("application/json")
+        val jsonBody = param.body.toString()
+        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
 
         logger.req(
             tag = "storeGdprChoice",
             url = url.toString(),
-            body = "",
+            body = jsonBody,
             type = "POST"
         )
 
         val request: Request = Request.Builder()
             .url(url)
-            .get()
+            .post(body)
             .build()
 
         val response = httpClient.newCall(request).execute()
@@ -319,23 +322,28 @@ private class NetworkClientImpl(
         responseManager.parsePostGdprChoiceResp(response)
     }
 
-    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaPostChoiceResp> = check {
+    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> {
         val url = urlManager.getCcpaChoiceUrl(param)
+        val mediaType = MediaType.parse("application/json")
+        val jsonBody = param.body.toString()
+        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
 
         logger.req(
             tag = "storeCcpaChoice",
             url = url.toString(),
-            body = "",
+            body = jsonBody,
             type = "POST"
         )
 
         val request: Request = Request.Builder()
             .url(url)
-            .get()
+            .post(body)
             .build()
 
         val response = httpClient.newCall(request).execute()
 
-        responseManager.parsePostCcpaChoiceResp(response)
+        return check { responseManager.parsePostCcpaChoiceResp(response) }.executeOnLeft {
+            println()
+        }
     }
 }

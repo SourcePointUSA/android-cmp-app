@@ -14,16 +14,18 @@ import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
+import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
-class MainActivityKotlin : AppCompatActivity() {
+class MainActivityKotlinV7 : AppCompatActivity() {
 
     companion object {
-        private const val TAG = "**MainActivity"
+        private const val TAG = "**MainActivityV7"
         const val CLIENT_PREF_KEY = "client_pref_key"
         const val CLIENT_PREF_VAL = "client_pref_val"
     }
@@ -32,13 +34,15 @@ class MainActivityKotlin : AppCompatActivity() {
     private val spClientObserver: List<SpClient> by inject()
 
     private val spConsentLib by spConsentLibLazy {
-        activity = this@MainActivityKotlin
+        activity = this@MainActivityKotlinV7
         spClient = LocalClient()
         spConfig = dataProvider.spConfig
 //        config {
 //            accountId = 22
-//            propertyName = "mobile.multicampaign.native.demo"
+//            propertyId = 17801
+//            propertyName = "tests.unified-script.com"
 //            messLanguage = MessageLanguage.ENGLISH
+//            messageTimeout = 10000
 //            +(CampaignType.GDPR)
 //            +(CampaignType.CCPA to listOf(("location" to "US")))
 //        }
@@ -58,25 +62,25 @@ class MainActivityKotlin : AppCompatActivity() {
         gracefulDegradationTest(sp, dataProvider) // 4 testing
 
         setContentView(R.layout.activity_main)
-        findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
+        review_consents_gdpr.setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
                 dataProvider.gdprPmId,
                 PMTab.PURPOSES,
                 CampaignType.GDPR
             )
         }
-        findViewById<View>(R.id.review_consents_ccpa).setOnClickListener { _v: View? ->
+        review_consents_ccpa.setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
                 dataProvider.ccpaPmId,
                 PMTab.PURPOSES,
                 CampaignType.CCPA
             )
         }
-        findViewById<View>(R.id.clear_all).setOnClickListener { _v: View? -> clearAllData(this) }
-        findViewById<View>(R.id.auth_id_activity).setOnClickListener { _v: View? ->
+        clear_all.setOnClickListener { _v: View? -> clearAllData(this) }
+        auth_id_activity.setOnClickListener { _v: View? ->
             startActivity(Intent(this, MainActivityAuthId::class.java))
         }
-        findViewById<View>(R.id.custom_consent).setOnClickListener { _v: View? ->
+        custom_consent.setOnClickListener { _v: View? ->
             spConsentLib.customConsentGDPR(
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
@@ -84,7 +88,7 @@ class MainActivityKotlin : AppCompatActivity() {
                 success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
             )
         }
-        findViewById<View>(R.id.delete_custom_consent).setOnClickListener { _v: View? ->
+        delete_custom_consent.setOnClickListener { _v: View? ->
             spConsentLib.deleteCustomConsentTo(
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
@@ -92,11 +96,12 @@ class MainActivityKotlin : AppCompatActivity() {
                 success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
             )
         }
-        findViewById<View>(R.id.consent_btn).setOnClickListener {
+        consent_btn.setOnClickListener {
             spConsentLib.dispose()
             finish()
             startActivity(Intent(this, MainActivityViewConsent::class.java))
         }
+        refresh_btn.setOnClickListener { executeCmpLib() }
     }
 
     private fun gracefulDegradationTest(sp: SharedPreferences, dataProvider: DataProvider) {
@@ -112,7 +117,11 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        spConsentLib.loadMessage()
+        executeCmpLib()
+    }
+
+    private fun executeCmpLib(){
+        spConsentLib.loadMessageV7()
     }
 
     override fun onDestroy() {

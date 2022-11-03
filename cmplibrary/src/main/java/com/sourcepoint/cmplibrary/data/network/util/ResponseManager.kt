@@ -37,8 +37,8 @@ internal interface ResponseManager {
     fun parseMetaDataRes(r: Response): MetaDataResp
     fun parseConsentStatusResp(r: Response): ConsentStatusResp
     fun parseGetChoiceResp(r: Response): ChoiceResp
-    fun parsePostGdprChoiceResp(r: Response): GdprPostChoiceResp
-    fun parsePostCcpaChoiceResp(r: Response): CcpaPostChoiceResp
+    fun parsePostGdprChoiceResp(r: Response): GdprCS
+    fun parsePostCcpaChoiceResp(r: Response): CcpaCS
     fun parsePvDataResp(r: Response): PvDataResp
     fun parseMessagesResp(r: Response): MessagesResp
     fun parseMessagesResp2(r: Response): Either<MessagesResp>
