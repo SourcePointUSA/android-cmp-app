@@ -71,7 +71,6 @@ internal class AddUpdatePropertyViewModel(
     private fun validateProperty(property: Property): Either<Property> = validationManager.run {
         validatePropertyName(property)
             .flatMap { validateAccountId(property) }
-//            .flatMap { validateMessageType(property) }
             .flatMap { validateCcpaPmId(property) }
             .flatMap { validateGdprPmId(property) }
             .flatMap { validateAuthId(property) }
