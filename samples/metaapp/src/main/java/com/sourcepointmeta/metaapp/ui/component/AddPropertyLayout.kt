@@ -29,7 +29,6 @@ class AddPropertyLayout : ConstraintLayout {
 internal fun AddPropertyLayout.bind(property: Property) {
     prop_name_ed.setText(property.propertyName)
     account_id_ed.setText(property.accountId.toString())
-//    message_type_autocomplete.setText(property.messageType)
     radio_stage.isChecked = property.is_staging
     radio_prod.isChecked = !property.is_staging
     chip_gdpr.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.GDPR }?.enabled ?: false
@@ -93,7 +92,6 @@ internal fun AddPropertyLayout.toProperty(): Property {
         is_staging = radio_stage.isChecked,
         targetingParameters = ccpaTp + gdprTp,
         statusCampaignSet = setOf(gdprStatus, ccpaStatus),
-//        messageType = message_type_autocomplete.text.toString(),
         messageType = "SAMPLE_STRING",
         gdprPmId = gdpr_pm_id_ed.text.toString().toLongOrNull(),
         ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull(),
@@ -129,12 +127,6 @@ fun AddPropertyLayout.errorField(it: BaseState.StateErrorValidationField) = when
             requestFocus()
             error = it.message
         }
-    }
-    UIErrorCode.MessageType -> {
-//        message_type_autocomplete.run {
-//            requestFocus()
-//            error = it.message
-//        }
     }
     UIErrorCode.CcpaPmId -> {
         ccpa_pm_id_ed.run {
