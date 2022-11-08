@@ -9,7 +9,6 @@ data class PropertyDTO(
     val propertyName: String,
     val accountId: Long,
     val campaignEnv: String,
-    val messageType: String,
     val gdprPmId: String,
     val ccpaPmId: String,
     val authId: String,
@@ -28,7 +27,6 @@ fun Property.toPropertyDTO(): PropertyDTO {
         campaignEnv = env,
         propertyName = propertyName,
         accountId = accountId,
-        messageType = messageType,
         ccpaEnabled = statusCampaignSet.find { s -> s.campaignType == CampaignType.CCPA }?.enabled
             ?: false,
         gdprEnabled = statusCampaignSet.find { s -> s.campaignType == CampaignType.GDPR }?.enabled

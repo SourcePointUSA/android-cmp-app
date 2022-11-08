@@ -13,7 +13,6 @@ internal interface ValidationManager {
 
     fun validatePropertyName(property: Property): Either<Property>
     fun validateAccountId(property: Property): Either<Property>
-    fun validateMessageType(property: Property): Either<Property>
     fun validateMessageLanguage(property: Property): Either<Property>
     fun validateGdprPmId(property: Property): Either<Property>
     fun validateCcpaPmId(property: Property): Either<Property>
@@ -46,12 +45,6 @@ private class ValidationManagerImpl : ValidationManager {
     override fun validateAccountId(property: Property): Either<Property> = check {
         if (property.accountId == 0L)
             throw MetaException(UIErrorCode.AccountId, "AccountId not valid!")
-        property
-    }
-
-    override fun validateMessageType(property: Property): Either<Property> = check {
-        AddUpdatePropertyFragment.MessageType.find { it == property.messageType }
-            ?: throw MetaException(UIErrorCode.MessageType, "MessageType not valid!")
         property
     }
 

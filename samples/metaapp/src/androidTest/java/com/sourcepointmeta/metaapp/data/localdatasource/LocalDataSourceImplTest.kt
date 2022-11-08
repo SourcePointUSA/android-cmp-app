@@ -24,18 +24,17 @@ class LocalDataSourceImplTest {
     )
 
     private val prop1 = Property(
-        accountId = 1,
         propertyName = "prop1",
+        accountId = 1,
+        gdprPmId = 1212L,
+        ccpaPmId = 1313L,
+        is_staging = false,
+        targetingParameters = tp,
         timeout = 1,
         authId = null,
         messageLanguage = "ENGLISH",
         pmTab = "DEFAULT",
-        is_staging = false,
-        targetingParameters = tp,
         statusCampaignSet = setOf(StatusCampaign("prop1", CampaignType.GDPR, true)),
-        messageType = "App",
-        gdprPmId = 1212L,
-        ccpaPmId = 1313L,
         campaignsEnv = CampaignsEnv.STAGE
     )
 

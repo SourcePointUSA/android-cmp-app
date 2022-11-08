@@ -10,7 +10,6 @@ data class Property(
     val accountId: Long,
     val gdprPmId: Long?,
     val ccpaPmId: Long?,
-    val messageType: String,
     val is_staging: Boolean = false,
     val targetingParameters: List<MetaTargetingParam> = emptyList(),
     val timeout: Long? = null,
@@ -72,20 +71,19 @@ fun Targeting_param.toTargetingParam() = MetaTargetingParam(
 )
 
 fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<StatusCampaign>) = Property(
-    timeout = timeout,
     propertyName = property_name,
-    is_staging = is_staging != 0L,
     accountId = account_id,
-    pmTab = pm_tab,
-    messageLanguage = message_language,
-    authId = if (auth_Id.isNullOrEmpty()) null else auth_Id,
-    targetingParameters = tp,
-    statusCampaignSet = statusCampaign,
-    messageType = message_type,
-    timestamp = timestamp,
     gdprPmId = gdpr_pm_id,
     ccpaPmId = ccpa_pm_id,
+    is_staging = is_staging != 0L,
+    targetingParameters = tp,
+    timeout = timeout,
+    authId = if (auth_Id.isNullOrEmpty()) null else auth_Id,
+    messageLanguage = message_language,
+    pmTab = pm_tab,
+    statusCampaignSet = statusCampaign,
     campaignsEnv = CampaignsEnv.values().find { it.env == campaign_env } ?: CampaignsEnv.PUBLIC,
+    timestamp = timestamp,
     gdprGroupPmId = group_pm_id,
     useGdprGroupPmIfAvailable = use_gdpr_groupid_if_available != 0L
 )
