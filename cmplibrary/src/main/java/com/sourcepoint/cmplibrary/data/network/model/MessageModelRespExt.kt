@@ -85,7 +85,7 @@ internal fun Map<String, Any?>.toGDPR(uuid: String?): Gdpr {
     val message = getMap("message")?.toJSONObj()
     val messageMetaData = getMap("messageMetaData")?.toJSONObj()
     val url = getFieldValue<String>("url")
-    val messageSubCategory = MessageSubCategory.values().find { m -> m.code == messageMetaData?.getInt("subCategoryId") }
+    val messageSubCategory = MessageSubCategory.values().find { m -> m.code == messageMetaData?.getInt("subCategoryId") } ?: MessageSubCategory.TCFv2
     val applies = getFieldValue<Boolean>("applies") ?: false
 
     return Gdpr(
