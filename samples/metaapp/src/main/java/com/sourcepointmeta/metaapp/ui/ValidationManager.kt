@@ -6,7 +6,6 @@ import com.sourcepointmeta.metaapp.core.Either
 import com.sourcepointmeta.metaapp.core.MetaException
 import com.sourcepointmeta.metaapp.core.UIErrorCode
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
 import com.sourcepointmeta.metaapp.util.check
 
 internal interface ValidationManager {
