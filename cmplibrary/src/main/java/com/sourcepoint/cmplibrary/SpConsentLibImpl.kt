@@ -60,7 +60,7 @@ internal class SpConsentLibImpl(
             if (campaignList.isEmpty()) return emptyList()
 
             val partition: Pair<List<CampaignResp>, List<CampaignResp>> = campaignList
-                .partition { it.message != null && it.url != null }
+                .partition { it.message != null && it.url != null && it.messageSubCategory != null }
 
             logger.computation(
                 tag = "toCampaignModelList",
@@ -74,7 +74,7 @@ internal class SpConsentLibImpl(
                     messageMetaData = it.messageMetaData!!,
                     type = CampaignType.valueOf(it.type),
                     url = it.url!!,
-                    messageSubCategory = it.messageSubCategory,
+                    messageSubCategory = it.messageSubCategory!!,
                 )
             }
         }
