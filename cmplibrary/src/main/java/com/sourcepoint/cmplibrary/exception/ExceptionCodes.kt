@@ -21,6 +21,7 @@ internal object CodeList {
     val UNABLE_TO_LOAD_JS_RECEIVER = ExceptionCodes("sp_metric_unable_to_load_jsreceiver")
     val INVALID_REQUEST_ERROR = ExceptionCodes("sp_metric_invalid_request_error")
     val CHILD_PM_ID_NOT_FOUND = ExceptionCodes("sp_log_child_pm_id_custom_metrics")
+    val RENDERING_APP_ERROR = ExceptionCodes("sp_metric_rendering_app_error")
 }
 
 internal inline class ExceptionCodes(val code: String)

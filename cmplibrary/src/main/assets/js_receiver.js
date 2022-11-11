@@ -42,7 +42,8 @@ function actionFromPM(payload) {
         pmId: null,
         pmTab: null,
         saveAndExitVariables: payload.payload,
-        consentLanguage: payload.consentLanguage
+        consentLanguage: payload.consentLanguage,
+        customActionId: payload.customAction
     };
 }
 
@@ -73,6 +74,9 @@ function handleEvent(event) {
                 break;
             case 'sp.hideMessage':
                 sdk.onAction(JSON.stringify(actionData(payload)));
+                break;
+            case 'sp.renderingAppError':
+                sdk.onError(JSON.stringify(payload));
                 break;
             default:
                 sdk.log("Unexpected event name: " + payload.name);
