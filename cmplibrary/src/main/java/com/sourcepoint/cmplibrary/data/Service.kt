@@ -3,6 +3,8 @@ package com.sourcepoint.cmplibrary.data
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
+import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
+import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.PostChoiceResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
@@ -38,6 +40,13 @@ internal interface Service : NetworkClient, CampaignManager {
         customConsentReq: CustomConsentReq,
         env: Env
     ): Either<SPConsents?>
+
+    fun getMessages(
+        messageReq: MessagesParamReq,
+        pSuccess: (MessagesResp) -> Unit,
+        showConsent: () -> Unit,
+        pError: (Throwable) -> Unit
+    )
 
     companion object
 }

@@ -240,6 +240,7 @@ internal class SpConsentLibImpl(
     override fun loadMessageV7(authId: String?) {
         service.getMessages(
             messageReq = campaignManager.getMessageV7Req(authId),
+            showConsent = { consentManager.sendStoredConsentToClientV7() },
             pSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)
                 println(
@@ -253,6 +254,7 @@ internal class SpConsentLibImpl(
                 clientEventManager.setCampaignNumber(list.size)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
+                    consentManager.sendStoredConsentToClientV7()
                     return@getMessages
                 }
                 val firstCampaign2Process: CampaignModel = list.first()
@@ -626,7 +628,10 @@ internal class SpConsentLibImpl(
                 executor.executeOnSingleThread {
                     val editedAction = spClient.onAction(view, actionImpl) as? ConsentActionImpl
                     editedAction?.let {
-                        consentManager.enqueueConsent(consentActionImpl = editedAction)
+                        /**
+                         * DO NOT DELETE THE enqueueConsent comment
+                         */
+//                        consentManager.enqueueConsent(consentActionImpl = editedAction)
                         consentManager.enqueueConsentV7(consentActionImpl = editedAction)
                     }
                 }

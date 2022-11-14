@@ -3,11 +3,16 @@ package com.sourcepoint.cmplibrary.consent
 import com.sourcepoint.cmplibrary.core.Either.Left
 import com.sourcepoint.cmplibrary.core.Either.Right
 import com.sourcepoint.cmplibrary.core.ExecutorManager
+import com.sourcepoint.cmplibrary.core.executeOnLeft
+import com.sourcepoint.cmplibrary.core.executeOnRight
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toGDPRUserConsent
+import com.sourcepoint.cmplibrary.data.network.model.v7.PostChoiceResp
+import com.sourcepoint.cmplibrary.data.network.model.v7.toCCPAConsentInternal
+import com.sourcepoint.cmplibrary.data.network.model.v7.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
@@ -27,6 +32,7 @@ internal interface ConsentManager {
     fun enqueueConsentV7(consentActionImpl: ConsentActionImpl)
     fun enqueueConsent(nativeConsentAction: NativeConsentAction)
     fun sendStoredConsentToClient()
+    fun sendStoredConsentToClientV7()
     fun sendConsent(
         actionImpl: ConsentActionImpl,
         localState: String
@@ -133,6 +139,17 @@ private class ConsentManagerImpl(
         }
     }
 
+    override fun sendStoredConsentToClientV7() {
+        check {
+            val ccpaCached = consentManagerUtils.ccpaConsentV7.getOrNull()
+            val gdprCached = consentManagerUtils.gdprConsentV7.getOrNull()
+            SPConsents(
+                gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
+                ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
+            ).let { sPConsentsSuccess?.invoke(it) }
+        }
+    }
+
     override fun sendConsent(actionImpl: ConsentActionImpl, localState: String) {
         executorManager.executeOnSingleThread {
             when (val either = service.sendConsent(localState, actionImpl, env, actionImpl.privacyManagerId)) {
@@ -150,12 +167,12 @@ private class ConsentManagerImpl(
 
     override fun sendConsentV7(actionImpl: ConsentActionImpl) {
         executorManager.executeOnSingleThread {
-            when (val either = service.sendConsentV7(actionImpl, env, actionImpl.privacyManagerId)) {
-                is Right -> {
-                    println(either)
+            service.sendConsentV7(actionImpl, env, actionImpl.privacyManagerId)
+                .executeOnRight {
+                    val cr = responseConsentHandlerV7(it, actionImpl, consentManagerUtils)
+                    sPConsentsSuccess?.invoke(cr)
                 }
-                is Left -> sPConsentsError?.invoke(either.t)
-            }
+                .executeOnLeft { sPConsentsError?.invoke(it) }
         }
     }
 }
@@ -193,4 +210,27 @@ internal fun responseConsentHandler(
                 }
             }
         } ?: SPConsents()
+}
+
+internal fun responseConsentHandlerV7(
+    pcr: PostChoiceResp,
+    actionImpl: ConsentActionImpl,
+    consentManagerUtils: ConsentManagerUtils
+): SPConsents {
+    return when (actionImpl.campaignType) {
+        CampaignType.GDPR -> {
+            val ccpaCached = consentManagerUtils.ccpaConsentV7.getOrNull()
+            SPConsents(
+                gdpr = pcr.gdprPostChoiceResp?.let { SPGDPRConsent(it.toGDPRUserConsent()) },
+                ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
+            )
+        }
+        CampaignType.CCPA -> {
+            val gdprCached = consentManagerUtils.gdprConsentV7.getOrNull()
+            SPConsents(
+                gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
+                ccpa = pcr.ccpaPostChoiceResp?.let { SPCCPAConsent(it.toCCPAConsentInternal()) },
+            )
+        }
+    }
 }

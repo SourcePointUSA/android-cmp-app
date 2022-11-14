@@ -61,6 +61,9 @@ class ServiceImplTest {
     private lateinit var successMockV7: (MessagesResp) -> Unit
 
     @MockK
+    private lateinit var consentMockV7: () -> Unit
+
+    @MockK
     private lateinit var errorMock: (Throwable) -> Unit
 
     private val nativeCampaign = Campaign(
@@ -366,7 +369,7 @@ class ServiceImplTest {
         every { cm.messagesV7 }.returns(null)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
 
         verify(exactly = 1) { errorMock(any()) }
         verify(exactly = 0) { successMockV7(any()) }
@@ -382,7 +385,7 @@ class ServiceImplTest {
         every { cm.shouldCallConsentStatus }.returns(true)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
 
 //        verify(exactly = 0) { errorMock(any()) }
         verify(exactly = 1) { ncMock.getConsentStatus(any()) }
@@ -402,7 +405,7 @@ class ServiceImplTest {
         every { cm.shouldCallConsentStatus }.returns(true)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
 
         // TODO
     }
@@ -447,7 +450,7 @@ class ServiceImplTest {
         )
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
 
         // TODO
     }
@@ -462,7 +465,7 @@ class ServiceImplTest {
         every { cm.messagesV7 }.returns(messageResp)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
 
         verify(exactly = 1) { successMockV7(any()) }
         verify(exactly = 0) { errorMock(any()) }
@@ -475,7 +478,7 @@ class ServiceImplTest {
         every { cm.messagesV7 }.returns(null)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messagesParamReq, successMockV7, errorMock)
+        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
 
         verify(exactly = 0) { successMockV7(any()) }
         verify(exactly = 1) { errorMock(any()) }

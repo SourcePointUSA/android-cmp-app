@@ -81,7 +81,6 @@ internal interface CampaignManager {
     // V7
     val shouldCallMessages: Boolean
     val shouldCallConsentStatus: Boolean
-    var messagesV7: MessagesResp?
     var gdprMessageMetaData: MessageMetaData?
     var ccpaMessageMetaData: MessageMetaData?
 
@@ -541,15 +540,6 @@ private class CampaignManagerImpl(
             return ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0)
         }
 
-    override var messagesV7: MessagesResp?
-        get() {
-            return dataStorage.messagesV7?.let { JsonConverter.converter.decodeFromString<MessagesResp>(it) }
-        }
-        set(value) {
-            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.messagesV7 = serialised
-        }
-
     override var gdprMessageMetaData: MessageMetaData?
         get() {
             return dataStorage.gdprMessageMetaData?.let { JsonConverter.converter.decodeFromString<MessageMetaData>(it) }
@@ -664,7 +654,7 @@ private class CampaignManagerImpl(
             accountId = spConfig.accountId,
             propertyId = spConfig.propertyId,
             gdprCs = gdprConsentStatus?.consentStatus,
-            gdprMessageMetaData = messagesV7?.campaigns?.gdpr?.messageMetaData,
+            gdprMessageMetaData = gdprMessageMetaData,
             gdprApplies = gdprConsentStatus?.gdprApplies,
         )
     }
@@ -674,10 +664,10 @@ private class CampaignManagerImpl(
             accountId = messageReq.accountId,
             propertyId = messageReq.propertyId,
             gdprCs = gdprConsentStatus?.consentStatus,
-            gdprMessageMetaData = messagesV7?.campaigns?.gdpr?.messageMetaData,
-            ccpaMessageMetaData = messagesV7?.campaigns?.ccpa?.messageMetaData,
+            gdprMessageMetaData = gdprMessageMetaData,
+            ccpaMessageMetaData = ccpaMessageMetaData,
             gdprApplies = gdprConsentStatus?.gdprApplies,
-            ccpaApplies = messagesV7?.campaigns?.ccpa?.applies,
+            ccpaApplies = ccpaConsentStatus?.ccpaApplies,
             pubData = messageReq.pubData,
             ccpaCS = ccpaConsentStatus
         )
