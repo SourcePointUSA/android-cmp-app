@@ -366,12 +366,11 @@ class ServiceImplTest {
     fun `GIVEN a Left object during a MetaData throw an exception`() {
 
         every { ncMock.getMetaData(any()) }.returns(Either.Left(RuntimeException()))
-        every { cm.messagesV7 }.returns(null)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
 
-        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 1) { consentMockV7() }
         verify(exactly = 0) { successMockV7(any()) }
     }
 
@@ -462,12 +461,11 @@ class ServiceImplTest {
         val messageResp = JsonConverter.converter.decodeFromString<MessagesResp>(messageJson)
 
         every { ncMock.getMetaData(any()) }.returns(Either.Left(RuntimeException()))
-        every { cm.messagesV7 }.returns(messageResp)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
 
-        verify(exactly = 1) { successMockV7(any()) }
+        verify(exactly = 1) { consentMockV7() }
         verify(exactly = 0) { errorMock(any()) }
     }
 
@@ -475,12 +473,11 @@ class ServiceImplTest {
     fun `GIVEN a Left during getMetaData CALL onError`() {
 
         every { ncMock.getMetaData(any()) }.returns(Either.Left(RuntimeException()))
-        every { cm.messagesV7 }.returns(null)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
 
-        verify(exactly = 0) { successMockV7(any()) }
-        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 0) { successMock(any()) }
+        verify(exactly = 1) { consentMockV7() }
     }
 }

@@ -608,9 +608,15 @@ private class CampaignManagerImpl(
             dataStorage.messagesV7LocalState = serialised
         }
 
-    override val gdprUuid: String? = dataStorage.gdprConsentUuid
+    override val gdprUuid: String?
+        get() {
+            return dataStorage.gdprConsentUuid
+        }
 
-    override val ccpaUuid: String? = dataStorage.ccpaConsentUuid
+    override val ccpaUuid: String?
+        get() {
+            return dataStorage.ccpaConsentUuid
+        }
 
     override var metaDataResp: MetaDataResp?
         get() {
