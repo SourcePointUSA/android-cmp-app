@@ -29,7 +29,7 @@ val appModule = module {
 
     single<DataProvider> {
         val gdprPmId = "488393" // stage "13111"
-        val ccpaPmId = "509688" // "14967"
+        val ccpaPmId = "704111" // "14967"
         val customVendorDataList = customVendorDataListProd.map { it.first }
         val customCategoriesData = customCategoriesDataProd.map { it.first }
         DataProvider.create(
@@ -68,11 +68,11 @@ val appModule = module {
         } else {
             config {
                 accountId = 22
-                propertyName = "mobile.multicampaign.demo"
+                propertyName = "sca-ott-newwebpm"
                 messLanguage = MessageLanguage.ENGLISH
                 messageTimeout = 5000
                 campaignsEnv = CampaignsEnv.PUBLIC
-                propertyId = 16893
+                propertyId = 27927
                 +(CampaignType.GDPR)
                 +(CampaignType.CCPA to listOf(("location" to "US")))
             }
