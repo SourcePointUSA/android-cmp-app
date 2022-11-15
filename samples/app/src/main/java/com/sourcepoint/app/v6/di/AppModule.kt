@@ -74,7 +74,7 @@ val appModule = module {
                 campaignsEnv = CampaignsEnv.PUBLIC
                 propertyId = 27927
                 +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
+//                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
 
         }
