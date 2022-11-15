@@ -28,8 +28,8 @@ val customCategoriesDataProd = listOf(
 val appModule = module {
 
     single<DataProvider> {
-        val gdprPmId = "594218" // stage "13111"
-        val ccpaPmId = "704111" // "14967"
+        val gdprPmId = "488393" // stage "13111"
+        val ccpaPmId = "509688" // "14967"
         val customVendorDataList = customVendorDataListProd.map { it.first }
         val customCategoriesData = customCategoriesDataProd.map { it.first }
         DataProvider.create(
@@ -63,16 +63,15 @@ val appModule = module {
                 campaignsEnv = CampaignsEnv.PUBLIC
                 propertyId = 16893
                 +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
         } else {
             config {
                 accountId = 22
-                propertyName = "mobile.multicampaign.fully.native2"
+                propertyName = "mobile.multicampaign.demo"
                 messLanguage = MessageLanguage.ENGLISH
                 messageTimeout = 5000
                 campaignsEnv = CampaignsEnv.PUBLIC
-                propertyId = 22932
+                propertyId = 16893
                 +(CampaignType.GDPR)
                 +(CampaignType.CCPA to listOf(("location" to "US")))
             }
