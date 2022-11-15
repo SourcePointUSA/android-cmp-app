@@ -31,6 +31,7 @@ internal interface ConsentManager {
     fun enqueueConsent(consentActionImpl: ConsentActionImpl)
     fun enqueueConsentV7(consentActionImpl: ConsentActionImpl)
     fun enqueueConsent(nativeConsentAction: NativeConsentAction)
+    fun enqueueConsentV7(nativeConsentAction: NativeConsentAction)
     fun sendStoredConsentToClient()
     fun sendStoredConsentToClientV7()
     fun sendConsent(
@@ -111,6 +112,10 @@ private class ConsentManagerImpl(
 
     override fun enqueueConsent(nativeConsentAction: NativeConsentAction) {
         enqueueConsent(nativeConsentAction.toConsentAction())
+    }
+
+    override fun enqueueConsentV7(nativeConsentAction: NativeConsentAction) {
+        sendConsentV7(nativeConsentAction.toConsentAction())
     }
 
     fun changeLocalState(newState: LocalStateStatus) {

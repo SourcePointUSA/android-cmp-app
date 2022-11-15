@@ -237,9 +237,25 @@ internal class SpConsentLibImpl(
         )
     }
 
-    override fun loadMessageV7(authId: String?) {
+    override fun loadMessageV7() {
+        localLoadMessageV7(authId = null, pubData = null, cmpViewId = null)
+    }
+
+    override fun loadMessageV7(cmpViewId: Int) {
+        localLoadMessageV7(authId = null, pubData = null, cmpViewId = cmpViewId)
+    }
+
+    override fun loadMessageV7(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
+        localLoadMessageV7(authId = authId, pubData = pubData, cmpViewId = cmpViewId)
+    }
+
+    override fun loadMessageV7(pubData: JSONObject?) {
+        localLoadMessageV7(authId = null, pubData = pubData, cmpViewId = null)
+    }
+
+    private fun localLoadMessageV7(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
         service.getMessages(
-            messageReq = campaignManager.getMessageV7Req(authId),
+            messageReq = campaignManager.getMessageV7Req(authId, pubData),
             showConsent = { consentManager.sendStoredConsentToClientV7() },
             pSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)
@@ -272,7 +288,7 @@ internal class SpConsentLibImpl(
                                 JSReceiverDelegate(),
                                 remainingCampaigns,
                                 firstCampaign2Process.messageSubCategory,
-                                null
+                                cmpViewId
                             )
                                 .executeOnLeft { spClient.onError(it) }
                                 .getOrNull()
@@ -282,14 +298,14 @@ internal class SpConsentLibImpl(
                             webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                         }
                         NATIVE_IN_APP -> {
-//                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(legislation)
-//                            currentNativeMessageCampaign = firstCampaign2Process
-//                            spClient.onNativeMessageReady(nmDto, this)
-//                            pLogger.nativeMessageAction(
-//                                tag = "onNativeMessageReady",
-//                                msg = "onNativeMessageReady",
-//                                json = firstCampaign2Process.message
-//                            )
+                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(legislation)
+                            currentNativeMessageCampaign = firstCampaign2Process
+                            spClient.onNativeMessageReady(nmDto, this)
+                            pLogger.nativeMessageAction(
+                                tag = "onNativeMessageReady",
+                                msg = "onNativeMessageReady",
+                                json = firstCampaign2Process.message
+                            )
                         }
                     }
                 }
@@ -298,6 +314,10 @@ internal class SpConsentLibImpl(
                 println()
             }
         )
+    }
+
+    override fun loadMessageV7(authId: String?) {
+        localLoadMessageV7(authId = authId, pubData = null, cmpViewId = null)
     }
 
     override fun customConsentGDPR(
@@ -445,7 +465,8 @@ internal class SpConsentLibImpl(
                 val webView = viewManager.createWebView(this, JSReceiverDelegate(), messSubCat, null)
                     .executeOnLeft { e -> spClient.onError(e) }
                     .getOrNull()
-                val url = urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, messSubCat = messSubCat)
+                val url =
+                    urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, messSubCat = messSubCat)
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
                     url = url.toString(),
@@ -808,7 +829,8 @@ internal class SpConsentLibImpl(
             }
             NativeMessageActionType.ACCEPT_ALL,
             NativeMessageActionType.REJECT_ALL -> {
-                consentManager.enqueueConsent(nativeConsentAction = nca)
+//                consentManager.enqueueConsent(nativeConsentAction = nca)
+                consentManager.enqueueConsentV7(nativeConsentAction = nca)
                 moveToNextCampaign(remainingCampaigns, viewManager, spClient)
             }
         }

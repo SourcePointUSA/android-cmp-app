@@ -63,7 +63,7 @@ internal interface CampaignManager {
     ): Either<PmUrlConfig>
 
     fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest
-    fun getMessageV7Req(authId: String?): MessagesParamReq
+    fun getMessageV7Req(authId: String?, pubData: JSONObject?): MessagesParamReq
 
     fun getGDPRConsent(): Either<GDPRConsentInternal>
     fun getCCPAConsent(): Either<CCPAConsentInternal>
@@ -397,7 +397,7 @@ private class CampaignManagerImpl(
         )
     }
 
-    override fun getMessageV7Req(authId: String?): MessagesParamReq {
+    override fun getMessageV7Req(authId: String?, pubData: JSONObject?): MessagesParamReq {
         val campaigns = mutableListOf<CampaignReq>()
         mapTemplate[CampaignType.GDPR.name]
             ?.let {
@@ -425,8 +425,10 @@ private class CampaignManagerImpl(
             propertyHref = spConfig.propertyName,
             accountId = spConfig.accountId.toLong(),
             authId = authId,
-            propertyId = spConfig.propertyId?.let { it.toLong() }
-                ?: fail("The propertyId field is missing in the setup phase!!!!!")
+            propertyId = spConfig.propertyId?.toLong()
+                ?: fail("The propertyId field is missing in the setup phase!!!!!"),
+            pubData = pubData?.toString()?.let { check { JsonConverter.converter.decodeFromString<JsonObject>(it) }.getOrNull() }
+                ?: JsonObject(mapOf())
         )
     }
 
@@ -512,9 +514,7 @@ private class CampaignManagerImpl(
                 ?: false
 
             val ccpaToBeComplete: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.CCPA }
-                ?.let {
-                    dataStorage.ccpaApplies && ccpaConsentStatus?.status != CcpaStatus.consentedAll
-                }
+                ?.let { true }
                 ?: false
 
             val res = isNewUser || ccpaToBeComplete || gdprToBeComplete
@@ -560,6 +560,7 @@ private class CampaignManagerImpl(
 
     override fun saveConsentStatusResponse(c: ConsentStatusResp) {
         gdprConsentStatus = c.consentStatusData?.gdpr
+        consentStatus = c.consentStatusData?.gdpr?.consentStatus
         ccpaConsentStatus = c.consentStatusData?.ccpa
         messagesV7LocalState = c.localState
     }
@@ -580,6 +581,9 @@ private class CampaignManagerImpl(
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.apply {
+                value?.gdprApplies?.let {
+                    gdprApplies = it
+                }
                 gdprConsentStatus = serialised
                 value?.TCData
                     ?.let { this.tcData = it }
@@ -594,6 +598,9 @@ private class CampaignManagerImpl(
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.apply {
+                value?.ccpaApplies?.let {
+                    ccpaApplies = it
+                }
                 ccpaConsentStatus = serialised
                 usPrivacyString = value?.uspstring
             }

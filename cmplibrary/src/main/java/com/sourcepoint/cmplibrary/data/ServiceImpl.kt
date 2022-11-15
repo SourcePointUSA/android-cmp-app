@@ -155,7 +155,10 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        campaignManager.saveConsentStatusResponse(it)
+                        campaignManager.gdprConsentStatus = it.consentStatusData?.gdpr
+                        campaignManager.consentStatus = it.consentStatusData?.gdpr?.consentStatus
+                        campaignManager.ccpaConsentStatus = it.consentStatusData?.ccpa
+                        campaignManager.messagesV7LocalState = it.localState
                     }
             }
 
@@ -243,7 +246,6 @@ private class ServiceImpl(
                         body = campaignManager.getPvDataBody(messageReq)
                     )
 
-                    // Adding the CCPA in the body we get a "504 Gateway Time-out"
                     savePvData(pvParams)
                         .executeOnLeft {
                             execManager.executeOnMain { showConsent() }

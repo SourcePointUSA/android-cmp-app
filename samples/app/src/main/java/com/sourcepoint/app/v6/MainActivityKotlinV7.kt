@@ -4,21 +4,27 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toColorInt
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
+import com.sourcepoint.cmplibrary.core.nativemessage.NativeAction
+import com.sourcepoint.cmplibrary.core.nativemessage.NativeComponent
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.native_message.view.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
@@ -136,7 +142,7 @@ class MainActivityKotlinV7 : AppCompatActivity() {
             message: MessageStructure,
             messageController: NativeMessageController
         ) {
-
+            setNativeMessage(message, messageController)
         }
 
         override fun onMessageReady(message: JSONObject) {
@@ -187,6 +193,118 @@ class MainActivityKotlinV7 : AppCompatActivity() {
         override fun onNoIntentActivitiesFound(url: String) {
             Log.i(TAG, "onNoIntentActivitiesFound: $url")
             spClientObserver.forEach { it.onNoIntentActivitiesFound(url) }
+        }
+    }
+
+    fun setNativeMessage(message: MessageStructure, messageController: NativeMessageController) {
+        val customLayout = View.inflate(this, R.layout.native_message, null)
+        customLayout.run {
+            message.messageComponents?.let {
+                setTitle(customLayout, it.title ?: throw RuntimeException())
+                setBody(customLayout, it.body ?: throw RuntimeException())
+                setAgreeBtn(customLayout, it.body ?: throw RuntimeException())
+                it.actions.forEach { a ->
+                    when (a.choiceType) {
+                        NativeMessageActionType.REJECT_ALL -> setRejectAllBtn(customLayout, a)
+                        NativeMessageActionType.ACCEPT_ALL -> setAcceptAllBtn(customLayout, a)
+                        NativeMessageActionType.MSG_CANCEL -> setCancelBtn(customLayout, a)
+                        NativeMessageActionType.SHOW_OPTIONS -> setOptionBtn(customLayout, a)
+                    }
+                }
+            }
+            accept_all.setOnClickListener {
+                messageController.run {
+                    removeNativeView(customLayout)
+                    sendConsent(NativeMessageActionType.ACCEPT_ALL, message.campaignType)
+                }
+            }
+            cancel.setOnClickListener {
+                messageController.run {
+                    removeNativeView(customLayout)
+                    sendConsent(NativeMessageActionType.MSG_CANCEL, message.campaignType)
+                }
+            }
+            reject_all.setOnClickListener {
+                messageController.run {
+                    removeNativeView(customLayout)
+                    sendConsent(NativeMessageActionType.REJECT_ALL, message.campaignType)
+                }
+            }
+            show_options_btn.setOnClickListener {
+                messageController.run {
+                    removeNativeView(customLayout)
+                    when (message.campaignType) {
+                        CampaignType.GDPR -> dataProvider.gdprPmId
+                        CampaignType.CCPA -> dataProvider.ccpaPmId
+                    }?.let { pmId ->
+                        messageController.showOptionNativeMessage(message.campaignType, pmId.toString())
+                    }
+                }
+            }
+        }
+        messageController.showNativeView(customLayout)
+    }
+
+    fun setTitle(view: View, t: NativeComponent) {
+        view.title_nm.run {
+            text = t.text ?: ""
+            setBackgroundColor(t.style?.backgroundColor?.toColorInt() ?: throw RuntimeException())
+            setTextColor(t.style?.color?.toColorInt() ?: throw RuntimeException())
+            textSize = t.style?.fontSize ?: 10F
+        }
+    }
+
+    fun setBody(view: View, t: NativeComponent) {
+        view.body_nm.run {
+            text = t.text ?: ""
+            setBackgroundColor(t.style?.backgroundColor?.toColorInt() ?: throw RuntimeException())
+            setTextColor(t.style?.color?.toColorInt() ?: throw RuntimeException())
+            textSize = t.style?.fontSize ?: 10F
+            movementMethod = ScrollingMovementMethod()
+        }
+    }
+
+    fun setAgreeBtn(view: View, t: NativeComponent) {
+        view.body_nm.run {
+            text = t.text ?: ""
+            setBackgroundColor(t.style?.backgroundColor?.toColorInt() ?: throw RuntimeException())
+            setTextColor(t.style?.color?.toColorInt() ?: throw RuntimeException())
+        }
+    }
+
+    fun setCancelBtn(view: View, na: NativeAction) {
+        view.cancel.run {
+            text = na.text
+            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
+            textSize = na.style.fontSize ?: 10F
+        }
+    }
+
+    fun setOptionBtn(view: View, na: NativeAction) {
+        view.show_options_btn.run {
+            text = na.text
+            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
+            textSize = na.style.fontSize ?: 10F
+        }
+    }
+
+    fun setRejectAllBtn(view: View, na: NativeAction) {
+        view.reject_all.run {
+            text = na.text
+            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
+            textSize = na.style.fontSize ?: 10F
+        }
+    }
+
+    fun setAcceptAllBtn(view: View, na: NativeAction) {
+        view.accept_all.run {
+            text = na.text
+            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
+            textSize = na.style.fontSize ?: 10F
         }
     }
 }
