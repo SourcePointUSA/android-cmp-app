@@ -38,7 +38,7 @@ class MainActivityNativeMessTest {
 
     private val spConfGdpr = config {
         accountId = 22
-        propertyName = "mobile.multicampaign.fully.native"  //594218
+        propertyName = "mobile.multicampaign.fully.native"  //594218 - 22758 propId
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
         +(CampaignType.GDPR)

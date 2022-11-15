@@ -197,7 +197,10 @@ internal class SpConsentLibImpl(
                             webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                         }
                         NATIVE_IN_APP -> {
-                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(legislation)
+                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(
+                                dataStorage = dataStorage,
+                                campaignType = legislation
+                            )
                             currentNativeMessageCampaign = firstCampaign2Process
                             spClient.onNativeMessageReady(nmDto, this)
                             pLogger.nativeMessageAction(
@@ -298,7 +301,10 @@ internal class SpConsentLibImpl(
                             webView?.loadConsentUI(firstCampaign2Process, url, legislation)
                         }
                         NATIVE_IN_APP -> {
-                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(legislation)
+                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(
+                                dataStorage = dataStorage,
+                                campaignType = legislation
+                            )
                             currentNativeMessageCampaign = firstCampaign2Process
                             spClient.onNativeMessageReady(nmDto, this)
                             pLogger.nativeMessageAction(
@@ -592,7 +598,8 @@ internal class SpConsentLibImpl(
                                         currentNativeMessageCampaign = nextCampaign
                                         spClient.onNativeMessageReady(
                                             nextCampaign.message.toNativeMessageDTO(
-                                                legislation
+                                                dataStorage = dataStorage,
+                                                campaignType = legislation
                                             ),
                                             this@SpConsentLibImpl
                                         )
@@ -845,7 +852,10 @@ internal class SpConsentLibImpl(
             val legislation = it.type
             when (it.messageSubCategory) {
                 NATIVE_IN_APP -> {
-                    val nm = it.message.toNativeMessageDTO(legislation)
+                    val nm = it.message.toNativeMessageDTO(
+                        dataStorage = dataStorage,
+                        campaignType = legislation
+                    )
                     currentNativeMessageCampaign = it
                     spClient.onNativeMessageReady(nm, this@SpConsentLibImpl)
                     pLogger.nativeMessageAction(

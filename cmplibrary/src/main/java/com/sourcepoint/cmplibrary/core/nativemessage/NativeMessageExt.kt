@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.core.nativemessage
 
+import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType.UNKNOWN
@@ -9,7 +10,14 @@ import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONObject
 import java.lang.RuntimeException
 
-fun JSONObject.toNativeMessageDTO(campaignType: CampaignType): MessageStructure {
+internal fun JSONObject.toNativeMessageDTO(campaignType: CampaignType, dataStorage: DataStorage): MessageStructure {
+    return when (dataStorage.messagesV7LocalState) {
+        null -> toNativeMessageDTO(campaignType)
+        else -> toNativeMessageDTOV7(campaignType)
+    }
+}
+
+internal fun JSONObject.toNativeMessageDTO(campaignType: CampaignType): MessageStructure {
     val nmMap: Map<String, Any?> = this.toTreeMap()
 
     return MessageStructure(
@@ -18,7 +26,16 @@ fun JSONObject.toNativeMessageDTO(campaignType: CampaignType): MessageStructure 
     )
 }
 
-fun Map<String, Any?>.toMessageComponents(legislation: CampaignType): MessageComponents {
+internal fun JSONObject.toNativeMessageDTOV7(campaignType: CampaignType): MessageStructure {
+    val nmMap: Map<String, Any?> = this.toTreeMap()
+
+    return MessageStructure(
+        messageComponents = nmMap.getMap("message_json")?.toMessageComponentsV7(campaignType),
+        campaignType = campaignType
+    )
+}
+
+internal fun Map<String, Any?>.toMessageComponents(legislation: CampaignType): MessageComponents {
     val componentsMap = this
     return MessageComponents(
         name = componentsMap.getFieldValue<String>("name") ?: "",
@@ -29,12 +46,24 @@ fun Map<String, Any?>.toMessageComponents(legislation: CampaignType): MessageCom
     )
 }
 
-fun Map<String, Any?>.toNativeActions(legislation: CampaignType): List<NativeAction> = getFieldValue<Iterable<Any?>>("actions")
+internal fun Map<String, Any?>.toMessageComponentsV7(legislation: CampaignType): MessageComponents {
+    val componentsMap = this
+    val messageJsonStructure: Map<String, Any?>? = componentsMap.getFieldValue<String>("message_json_string")?.let { JSONObject(it).toTreeMap() }
+    return MessageComponents(
+        name = messageJsonStructure?.getFieldValue<String>("name") ?: "",
+        title = messageJsonStructure?.getMap("title")?.toNativeComponent(),
+        body = messageJsonStructure?.getMap("body")?.toNativeComponent(),
+        customFields = (messageJsonStructure?.getMap("customFields") as? Map<String, String>) ?: emptyMap(),
+        actions = messageJsonStructure?.toNativeActions(legislation) ?: emptyList()
+    )
+}
+
+internal fun Map<String, Any?>.toNativeActions(legislation: CampaignType): List<NativeAction> = getFieldValue<Iterable<Any?>>("actions")
     ?.filterIsInstance(Map::class.java)
     ?.map { it.toNativeAction(legislation) }
     ?: emptyList()
 
-fun Map<*, *>.toNativeAction(legislation: CampaignType): NativeAction {
+internal fun Map<*, *>.toNativeAction(legislation: CampaignType): NativeAction {
     val choiceType: NativeMessageActionType = (this["choiceType"] as? Int)
         ?.let { nmCode ->
             NativeMessageActionType.values().find { it.code == nmCode }
@@ -47,7 +76,7 @@ fun Map<*, *>.toNativeAction(legislation: CampaignType): NativeAction {
     )
 }
 
-fun Map<String, Any?>.toNativeComponent(): NativeComponent {
+internal fun Map<String, Any?>.toNativeComponent(): NativeComponent {
     return NativeComponent(
         text = this.getFieldValue<String>("text"),
         style = this.getMap("style")?.toNativeStyle(),
@@ -55,7 +84,7 @@ fun Map<String, Any?>.toNativeComponent(): NativeComponent {
     )
 }
 
-fun Map<String, Any?>.toNativeStyle(): NativeStyle {
+internal fun Map<String, Any?>.toNativeStyle(): NativeStyle {
     val styleMap = this
     return NativeStyle(
         fontFamily = styleMap.getFieldValue<String>("fontFamily") ?: "Arial",
@@ -66,7 +95,7 @@ fun Map<String, Any?>.toNativeStyle(): NativeStyle {
     )
 }
 
-fun Map<*, *>.toStringOrNull(key: String): String? {
+internal fun Map<*, *>.toStringOrNull(key: String): String? {
     return if (this[key] == null || this[key].toString() == "null") null
     else this[key].toString()
 }
