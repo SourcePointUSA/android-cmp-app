@@ -24,6 +24,14 @@ import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.auth_id_activity
+import kotlinx.android.synthetic.main.activity_main.clear_all
+import kotlinx.android.synthetic.main.activity_main.consent_btn
+import kotlinx.android.synthetic.main.activity_main.custom_consent
+import kotlinx.android.synthetic.main.activity_main.delete_custom_consent
+import kotlinx.android.synthetic.main.activity_main.review_consents_ccpa
+import kotlinx.android.synthetic.main.activity_main.review_consents_gdpr
+import kotlinx.android.synthetic.main.activity_main_v7.*
 import kotlinx.android.synthetic.main.native_message.view.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
@@ -67,7 +75,7 @@ class MainActivityKotlinV7 : AppCompatActivity() {
 
         gracefulDegradationTest(sp, dataProvider) // 4 testing
 
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_v7)
         review_consents_gdpr.setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
                 dataProvider.gdprPmId,
