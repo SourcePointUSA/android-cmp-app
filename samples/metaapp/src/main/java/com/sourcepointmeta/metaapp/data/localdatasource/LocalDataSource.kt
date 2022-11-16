@@ -179,7 +179,7 @@ private class LocalDataSourceImpl(
                     campaign_env = property.campaignsEnv.env,
                     group_pm_id = property.gdprGroupPmId,
                     use_gdpr_groupid_if_available = if (property.useGdprGroupPmIfAvailable) 1 else 0,
-                    property_id = property.propertyId
+                    property_id = property.propertyId?.toString()
                 )
                 deleteTargetingParameterByPropName(property.propertyName)
                 property.targetingParameters.forEach {
