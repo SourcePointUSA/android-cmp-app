@@ -28,6 +28,7 @@ class AddPropertyLayout : ConstraintLayout {
 
 internal fun AddPropertyLayout.bind(property: Property) {
     prop_name_ed.setText(property.propertyName)
+    prop_id_ed.setText(property.propertyId)
     account_id_ed.setText(property.accountId.toString())
     message_type_autocomplete.setText(property.messageType)
     radio_stage.isChecked = property.is_staging
@@ -84,6 +85,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
     val gdprGroupPmId = group_pm_id_ed.text.toString()
 
     return Property(
+        propertyId = prop_id_ed.text.toString(),
         propertyName = prop_name_ed.text.toString(),
         accountId = account_id_ed.text.toString().toLongOrNull() ?: 0L,
         timeout = timeout_ed.text.toString().toTimeout(),
@@ -105,6 +107,12 @@ internal fun AddPropertyLayout.toProperty(): Property {
 fun String.toTimeout(): Long = check { toLong() }.getOrNull() ?: 3000L
 
 fun AddPropertyLayout.errorField(it: BaseState.StateErrorValidationField) = when (it.uiCode) {
+    UIErrorCode.PropertyId -> {
+        prop_id_ed.run {
+            requestFocus()
+            error = it.message
+        }
+    }
     UIErrorCode.PropertyName -> {
         prop_name_ed.run {
             requestFocus()
