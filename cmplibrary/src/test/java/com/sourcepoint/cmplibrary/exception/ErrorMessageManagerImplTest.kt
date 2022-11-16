@@ -189,11 +189,11 @@ class ErrorMessageManagerImplTest {
     fun `GIVEN an RenderingAppException VERIFY the generated message`() {
 
         val originalException = RuntimeException("test_message")
-        val exception = RenderingAppException(cause = originalException, description = "test_description", pCode = "test_code")
+        val exception = RenderingAppException(cause = originalException, description = "test_description")
 
         val expected = """
             {
-                "code" : "test_code",
+                "code" : "sp_metric_rendering_app_error",
                 "accountId" : "$accountId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",

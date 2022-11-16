@@ -1,3 +1,9 @@
+## 6.7.3 (November, 11, 2022)
+* [DIA-1484](https://sourcepoint.atlassian.net/browse/DIA-1484)  Fix crash with payload.customAction during a PM action (#552)
+* [DIA-1302](https://sourcepoint.atlassian.net/browse/DIA-1302) Issues with Resurfacing the OTT Privacy Manager (#550)
+* [DIA-1368](https://sourcepoint.atlassian.net/browse/DIA-1368) sp.renderingAppError errors are not being listened by the SDK (#542)
+* [DIA-1391](https://sourcepoint.atlassian.net/browse/DIA-1391) Add customActionId to pm action payload (#544)
+
 ## 6.7.2 (October, 17, 2022)
 * [HCD-303](https://sourcepoint.atlassian.net/browse/HCD-303) Update migration guide with enabling multi-campaign toggle (#537)
 * [DIA-1006](https://sourcepoint.atlassian.net/browse/DIA-1006) Support Native OTT message (#533)
