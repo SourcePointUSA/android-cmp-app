@@ -28,7 +28,7 @@ class AddPropertyLayout : ConstraintLayout {
 
 internal fun AddPropertyLayout.bind(property: Property) {
     prop_name_ed.setText(property.propertyName)
-    prop_id_ed.setText(property.propertyId?.toString()?:"")
+    prop_id_ed.setText(property.propertyId?.toString() ?: "")
     account_id_ed.setText(property.accountId.toString())
     message_type_autocomplete.setText(property.messageType)
     radio_stage.isChecked = property.is_staging

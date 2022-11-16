@@ -257,8 +257,15 @@ internal class SpConsentLibImpl(
     }
 
     private fun localLoadMessageV7(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
+
+        val param = check { campaignManager.getMessageV7Req(authId, pubData) }
+            .executeOnLeft {
+                pLogger.e(this.javaClass.simpleName, it.message ?: it.stackTraceToString())
+                spClient.onError(it)
+            }
+            .getOrNull() ?: return
         service.getMessages(
-            messageReq = campaignManager.getMessageV7Req(authId, pubData),
+            messageReq = param,
             showConsent = { consentManager.sendStoredConsentToClientV7() },
             pSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)

@@ -61,7 +61,6 @@ val appModule = module {
                 messLanguage = MessageLanguage.ENGLISH
                 messageTimeout = 5000
                 campaignsEnv = CampaignsEnv.PUBLIC
-                propertyId = 16893
                 +(CampaignType.GDPR)
             }
         } else {
@@ -71,9 +70,8 @@ val appModule = module {
                 messLanguage = MessageLanguage.ENGLISH
                 messageTimeout = 5000
                 campaignsEnv = CampaignsEnv.PUBLIC
-                propertyId = 16893
                 +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
+//                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
 
         }

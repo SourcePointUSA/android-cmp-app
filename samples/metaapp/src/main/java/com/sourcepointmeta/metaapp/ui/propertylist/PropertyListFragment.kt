@@ -24,7 +24,7 @@ import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
 import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
-import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
+import com.sourcepointmeta.metaapp.ui.demo.DemoActivityV7
 import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
 import kotlinx.android.synthetic.main.fragment_property_list.*// ktlint-disable
 import kotlinx.android.synthetic.main.fragment_property_list.tool_bar
@@ -161,7 +161,7 @@ class PropertyListFragment : Fragment() {
     private fun runDemo(property: Property) {
         val bundle = Bundle()
         bundle.putString("property_name", property.propertyName)
-        val i = Intent(activity, DemoActivity::class.java)
+        val i = Intent(activity, DemoActivityV7::class.java)
         i.putExtras(bundle)
         startActivity(i)
     }

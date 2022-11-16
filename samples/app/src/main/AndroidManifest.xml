@@ -13,14 +13,14 @@
             android:name=".App"
             android:theme="@style/AppTheme">
         <activity android:name=".MainActivityKotlin">
-
-        </activity>
-        <activity android:name=".MainActivityKotlinV7">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".MainActivityKotlinV7">
+
         </activity>
         <activity android:name=".OnlyGdprKotlin">
         </activity>
