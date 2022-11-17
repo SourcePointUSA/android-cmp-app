@@ -113,7 +113,7 @@ class DemoActivityV7 : FragmentActivity() {
         setContentView(R.layout.activity_demo)
 
         tool_bar.run {
-            title = "${BuildConfig.VERSION_NAME} - ${config.propertyName}"
+            title = "V7 - ${config.propertyName}"
             setNavigationOnClickListener { onBackPressed() }
         }
 
