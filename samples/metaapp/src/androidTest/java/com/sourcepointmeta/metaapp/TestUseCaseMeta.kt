@@ -227,7 +227,8 @@ class TestUseCaseMeta {
                 pm_tab = "PURPOSES",
                 message_language = "ENGLISH",
                 group_pm_id = null,
-                use_gdpr_groupid_if_available = null
+                use_gdpr_groupid_if_available = null,
+                property_id = null
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.demo",
@@ -256,7 +257,8 @@ class TestUseCaseMeta {
                 pm_tab = "PURPOSES",
                 message_language = "ENGLISH",
                 group_pm_id = null,
-                use_gdpr_groupid_if_available = null
+                use_gdpr_groupid_if_available = null,
+                property_id = null
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.fully.native",
@@ -295,7 +297,8 @@ class TestUseCaseMeta {
                 pm_tab = "PURPOSES",
                 message_language = "ENGLISH",
                 group_pm_id = null,
-                use_gdpr_groupid_if_available = null
+                use_gdpr_groupid_if_available = null,
+                property_id = null
             )
             campaignQueries.insertStatusCampaign(
                 property_name = propertyName,

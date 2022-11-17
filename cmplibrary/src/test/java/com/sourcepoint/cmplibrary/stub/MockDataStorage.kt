@@ -17,6 +17,8 @@ internal class MockDataStorage : DataStorage {
     var storage: MutableMap<String, Any> = mutableMapOf()
     var mockLocalState: String? = null
     var savedConsentVar: Boolean = false
+    var localStateV7: String? = null
+
 
     override var tcDataV7: Map<String, String>?
         get() = TODO("Not yet implemented")
@@ -156,6 +158,10 @@ internal class MockDataStorage : DataStorage {
         return mockLocalState
     }
 
+    override var messagesV7LocalState: String?
+        get() = localStateV7
+        set(value) { localStateV7 = value}
+
     override fun saveGdpr(value: String) {
         TODO("Not yet implemented")
     }
@@ -222,9 +228,6 @@ internal class MockDataStorage : DataStorage {
         get() = TODO("Not yet implemented")
         set(value) {}
     override var ccpaConsentStatus: String?
-        get() = TODO("Not yet implemented")
-        set(value) {}
-    override var messagesV7LocalState: String?
         get() = TODO("Not yet implemented")
         set(value) {}
     override var ccpaStatus: String?

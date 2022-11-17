@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.campaign
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.uitestutil.* // ktlint-disable
+import com.example.uitestutil.*
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -13,11 +13,10 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.*
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
@@ -235,29 +234,6 @@ class CampaignManagerImplTest {
         cm.gdprConsentStatus.assertNull()
         cm.ccpaConsentStatus.assertNull()
         cm.messagesV7LocalState.assertNotNull()
-    }
-
-    @Test
-    fun `GIVEN_a_v7_messagesResp_STORE_it_into_the_local_data_storage`() {
-        val json = "v7/messagesObj.json".file2String()
-        val obj = JsonConverter.converter.decodeFromString<MessagesResp>(json)
-
-        cm.messagesV7 = obj
-
-        cm.messagesV7?.campaigns.also { csd ->
-            csd?.gdpr?.also {
-                it.TCData!!.size.assertEquals(21)
-                it.dateCreated.toString().assertEquals("2022-09-27T11:34:34.350Z")
-            }
-            csd?.ccpa?.also {
-                it.uspstring.assertEquals("1YNN")
-                it.dateCreated.toString().assertEquals("2022-09-27T11:34:34.746Z")
-            }
-        }
-
-        cm.messagesV7 = null
-
-        cm.messagesV7.assertNull()
     }
 
     @Test
