@@ -19,7 +19,6 @@ internal class MockDataStorage : DataStorage {
     var savedConsentVar: Boolean = false
     var localStateV7: String? = null
 
-
     override var tcDataV7: Map<String, String>?
         get() = TODO("Not yet implemented")
         set(value) {}
@@ -160,7 +159,7 @@ internal class MockDataStorage : DataStorage {
 
     override var messagesV7LocalState: String?
         get() = localStateV7
-        set(value) { localStateV7 = value}
+        set(value) { localStateV7 = value }
 
     override fun saveGdpr(value: String) {
         TODO("Not yet implemented")

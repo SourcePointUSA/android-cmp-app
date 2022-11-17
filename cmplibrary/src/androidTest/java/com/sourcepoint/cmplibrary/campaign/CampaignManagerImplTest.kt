@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.campaign
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.uitestutil.*
+import com.example.uitestutil.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -16,7 +16,7 @@ import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.*
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
