@@ -97,12 +97,18 @@ private class ConsentManagerImpl(
             dataStorage.getGdprConsentResp() != null
 
     override fun enqueueConsent(consentActionImpl: ConsentActionImpl) {
-        consentQueueImpl.offer(consentActionImpl)
-        val lState: LocalStateStatus.Present? = localStateStatus as? LocalStateStatus.Present
-        if (lState != null) {
-            val localState = lState.value
-            val action = consentQueueImpl.poll()
-            sendConsent(action, localState)
+
+        when (dataStorage.messagesV7LocalState) {
+            null -> {
+                consentQueueImpl.offer(consentActionImpl)
+                val lState: LocalStateStatus.Present? = localStateStatus as? LocalStateStatus.Present
+                if (lState != null) {
+                    val localState = lState.value
+                    val action = consentQueueImpl.poll()
+                    sendConsent(action, localState)
+                }
+            }
+            else -> sendConsentV7(consentActionImpl)
         }
     }
 
@@ -111,7 +117,10 @@ private class ConsentManagerImpl(
     }
 
     override fun enqueueConsent(nativeConsentAction: NativeConsentAction) {
-        enqueueConsent(nativeConsentAction.toConsentAction())
+        when (dataStorage.messagesV7LocalState) {
+            null -> enqueueConsent(nativeConsentAction.toConsentAction())
+            else -> enqueueConsentV7(nativeConsentAction.toConsentAction())
+        }
     }
 
     override fun enqueueConsentV7(nativeConsentAction: NativeConsentAction) {

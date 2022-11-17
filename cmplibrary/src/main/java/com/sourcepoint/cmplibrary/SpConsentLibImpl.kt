@@ -663,11 +663,7 @@ internal class SpConsentLibImpl(
                 executor.executeOnSingleThread {
                     val editedAction = spClient.onAction(view, actionImpl) as? ConsentActionImpl
                     editedAction?.let {
-                        /**
-                         * DO NOT DELETE THE enqueueConsent comment
-                         */
-//                        consentManager.enqueueConsent(consentActionImpl = editedAction)
-                        consentManager.enqueueConsentV7(consentActionImpl = editedAction)
+                        consentManager.enqueueConsent(consentActionImpl = editedAction)
                     }
                 }
             }
@@ -843,8 +839,7 @@ internal class SpConsentLibImpl(
             }
             NativeMessageActionType.ACCEPT_ALL,
             NativeMessageActionType.REJECT_ALL -> {
-//                consentManager.enqueueConsent(nativeConsentAction = nca)
-                consentManager.enqueueConsentV7(nativeConsentAction = nca)
+                consentManager.enqueueConsent(nativeConsentAction = nca)
                 moveToNextCampaign(remainingCampaigns, viewManager, spClient)
             }
         }
