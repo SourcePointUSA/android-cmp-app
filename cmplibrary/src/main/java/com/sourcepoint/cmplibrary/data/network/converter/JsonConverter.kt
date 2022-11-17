@@ -38,9 +38,9 @@ internal interface JsonConverter {
 
     fun toChoiceResp(body: String): Either<ChoiceResp>
 
-    fun toGdprPostChoiceResp(body: String): Either<GdprPostChoiceResp>
+    fun toGdprPostChoiceResp(body: String): Either<GdprCS>
 
-    fun toCcpaPostChoiceResp(body: String): Either<CcpaPostChoiceResp>
+    fun toCcpaPostChoiceResp(body: String): Either<CcpaCS>
 
     fun toPvDataResp(body: String): Either<PvDataResp>
 

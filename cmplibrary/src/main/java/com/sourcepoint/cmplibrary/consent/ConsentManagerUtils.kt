@@ -12,7 +12,10 @@ import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatus
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
+import com.sourcepoint.cmplibrary.data.network.model.v7.toCCPAConsentInternal
+import com.sourcepoint.cmplibrary.data.network.model.v7.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.IncludeData
@@ -32,6 +35,9 @@ internal interface ConsentManagerUtils {
     fun getCcpaConsent(): Either<CCPAConsentInternal>
     fun hasGdprConsent(): Boolean
     fun hasCcpaConsent(): Boolean
+
+    val gdprConsentV7: Either<GDPRConsentInternal>
+    val ccpaConsentV7: Either<CCPAConsentInternal>
 
     fun getSpConsent(): SPConsents?
 
@@ -152,6 +158,12 @@ private class ConsentManagerUtilsImpl(
     override fun getCcpaConsent(): Either<CCPAConsentInternal> {
         return cm.getCCPAConsent()
     }
+
+    override val gdprConsentV7: Either<GDPRConsentInternal>
+        get() = check { cm.gdprConsentStatus?.toGDPRUserConsent() ?: throw InvalidConsentResponse(cause = null, "The GDPR consent v7 is null!!!") }
+
+    override val ccpaConsentV7: Either<CCPAConsentInternal>
+        get() = check { cm.ccpaConsentStatus?.toCCPAConsentInternal() ?: throw InvalidConsentResponse(cause = null, "The CCPA consent v7 is null!!!") }
 
     override fun hasGdprConsent(): Boolean = ds.getGdprConsentResp() != null
 

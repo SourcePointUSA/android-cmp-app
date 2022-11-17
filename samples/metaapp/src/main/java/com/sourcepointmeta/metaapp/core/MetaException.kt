@@ -4,6 +4,7 @@ class MetaException(val uiCode: UIErrorCode, val errorMessage: String) : Throwab
 
 sealed class UIErrorCode {
     object PropertyName : UIErrorCode()
+    object PropertyId : UIErrorCode()
     object AccountId : UIErrorCode()
     object MessageType : UIErrorCode()
     object MessageLanguage : UIErrorCode()

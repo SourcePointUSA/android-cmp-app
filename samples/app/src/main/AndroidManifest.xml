@@ -19,6 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivityKotlinV7">
+
+        </activity>
         <activity android:name=".OnlyGdprKotlin">
         </activity>
         <activity android:name=".MainActivityJava">

@@ -1,6 +1,7 @@
 package com.sourcepointmeta.metaapp.ui.propertylist
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -25,6 +26,7 @@ import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
 import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
+import com.sourcepointmeta.metaapp.ui.demo.DemoActivityV7
 import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
 import kotlinx.android.synthetic.main.fragment_property_list.*// ktlint-disable
 import kotlinx.android.synthetic.main.fragment_property_list.tool_bar
@@ -48,6 +50,22 @@ class PropertyListFragment : Fragment() {
         SwipeToDeleteCallback(requireContext()) { showDeleteDialog(it, adapter) }
     }
 
+    private var v7: Boolean
+        get() {
+            return requireActivity()
+                .getSharedPreferences("meta", Context.MODE_PRIVATE)
+                .getBoolean("v7", false)
+        }
+        set(value) {
+            arguments?.putBoolean("v7", value)
+            requireActivity()
+                .getSharedPreferences("meta", Context.MODE_PRIVATE)
+                .apply {
+                    val e = edit().putBoolean("v7", value)
+                    e.commit()
+                }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,13 +74,20 @@ class PropertyListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_property_list, container, false)
     }
 
+    private fun updateTitle() {
+        val version = when (v7) {
+            true -> "V7"
+            false -> BuildConfig.VERSION_NAME
+        }
+        tool_bar.title = "${getString(R.string.app_name)} - $version"
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (clearDb) {
             viewModel.clearDB()
         }
-
-        tool_bar.title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
+        updateTitle()
 
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
@@ -98,6 +123,14 @@ class PropertyListFragment : Fragment() {
             when (item.itemId) {
                 R.id.action_clear_sp -> {
                     context?.let { clearAllData(it) }
+                }
+                R.id.action_v7 -> {
+                    v7 = true
+                    updateTitle()
+                }
+                R.id.action_v6 -> {
+                    v7 = false
+                    updateTitle()
                 }
             }
             true
@@ -145,9 +178,19 @@ class PropertyListFragment : Fragment() {
             .setTitle("Metaapp version ${BuildConfig.VERSION_NAME} out of date, new version $version is available.")
             .setPositiveButton("Update it") { _, _ ->
                 try {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.sourcepointmeta.metaapp")))
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=com.sourcepointmeta.metaapp")
+                        )
+                    )
                 } catch (e: ActivityNotFoundException) {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp")))
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp")
+                        )
+                    )
                 }
             }
             .setNegativeButton("Continue") { _, _ -> }
@@ -161,7 +204,11 @@ class PropertyListFragment : Fragment() {
     private fun runDemo(property: Property) {
         val bundle = Bundle()
         bundle.putString("property_name", property.propertyName)
-        val i = Intent(activity, DemoActivity::class.java)
+        val c = when (v7) {
+            true -> DemoActivityV7::class.java
+            false -> DemoActivity::class.java
+        }
+        val i = Intent(activity, c)
         i.putExtras(bundle)
         startActivity(i)
     }

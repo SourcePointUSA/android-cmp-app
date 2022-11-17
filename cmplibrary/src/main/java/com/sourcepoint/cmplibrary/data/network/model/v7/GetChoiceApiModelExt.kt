@@ -7,8 +7,8 @@ import kotlinx.serialization.json.* //ktlint-disable
 
 internal fun toChoiceBody(
     gdprCs: ConsentStatus?,
-    accountId: Long?,
-    propertyId: Long?,
+    accountId: Int?,
+    propertyId: Int?,
     gdprApplies: Boolean?,
     gdprMessageMetaData: MessageMetaData?,
     fromTest: Boolean = true,
