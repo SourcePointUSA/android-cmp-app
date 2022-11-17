@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.campaign
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.uitestutil.* // ktlint-disable
+import com.example.uitestutil.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -13,11 +13,10 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
@@ -37,7 +36,7 @@ class CampaignManagerImplTest {
         campaignsEnv = CampaignsEnv.STAGE,
         targetingParams = listOf(TargetingParam("location", "EU")),
         campaignType = CampaignType.GDPR,
-        groupPmId = "111"
+        groupPmId = "111" // 111
     )
 
     private val ccpa = CampaignTemplate(
@@ -215,46 +214,26 @@ class CampaignManagerImplTest {
         val json = "v7/consent_status_with_auth_id.json".file2String()
         val obj = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
 
-        cm.consentStatusResponse = obj
+        cm.gdprConsentStatus = obj.consentStatusData!!.gdpr
+        cm.ccpaConsentStatus = obj.consentStatusData!!.ccpa
+        cm.messagesV7LocalState = obj.localState
 
-        cm.consentStatusResponse?.consentStatusData.also { csd ->
-            csd?.gdpr?.also {
-                it.uuid.assertEquals("69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10")
-                it.dateCreated.toString().assertEquals("2022-08-25T20:56:38.551Z")
-                it.TCData!!.size.assertEquals(27)
-            }
-            csd?.ccpa?.also {
-                it.uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
-                it.dateCreated.toString().assertEquals("2022-08-25T20:56:39.010Z")
-            }
+        cm.gdprConsentStatus!!.also {
+            it.uuid.assertEquals("69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10")
+            it.dateCreated.toString().assertEquals("2022-08-25T20:56:38.551Z")
+            it.TCData!!.size.assertEquals(27)
+        }
+        cm.ccpaConsentStatus!!.also {
+            it.uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
+            it.dateCreated.toString().assertEquals("2022-08-25T20:56:39.010Z")
         }
 
-        cm.consentStatusResponse = null
+        cm.gdprConsentStatus = null
+        cm.ccpaConsentStatus = null
 
-        cm.consentStatusResponse.assertNull()
-    }
-
-    @Test
-    fun `GIVEN_a_v7_messagesResp_STORE_it_into_the_local_data_storage`() {
-        val json = "v7/messagesObj.json".file2String()
-        val obj = JsonConverter.converter.decodeFromString<MessagesResp>(json)
-
-        cm.messagesV7 = obj
-
-        cm.messagesV7?.campaigns.also { csd ->
-            csd?.gdpr?.also {
-                it.TCData!!.size.assertEquals(21)
-                it.dateCreated.toString().assertEquals("2022-09-27T11:34:34.350Z")
-            }
-            csd?.ccpa?.also {
-                it.uspstring.assertEquals("1YNN")
-                it.dateCreated.toString().assertEquals("2022-09-27T11:34:34.746Z")
-            }
-        }
-
-        cm.messagesV7 = null
-
-        cm.messagesV7.assertNull()
+        cm.gdprConsentStatus.assertNull()
+        cm.ccpaConsentStatus.assertNull()
+        cm.messagesV7LocalState.assertNotNull()
     }
 
     @Test

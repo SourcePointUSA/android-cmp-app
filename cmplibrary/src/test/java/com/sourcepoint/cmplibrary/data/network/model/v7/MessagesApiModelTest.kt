@@ -2,8 +2,12 @@ package com.sourcepoint.cmplibrary.data.network.model.v7
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
+import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import org.junit.Test
 
@@ -32,11 +36,22 @@ class MessagesApiModelTest {
 
         val json = "v7/consent_status_with_auth_id.json".file2String()
         val cs = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
+        val list = listOf(
+            CampaignReqImpl(
+                targetingParams = emptyList(),
+                campaignsEnv = CampaignsEnv.PUBLIC,
+                campaignType = CampaignType.GDPR,
+                groupPmId = null
+            )
+        )
 
         val body = getMessageBody(
             accountId = 22,
-            cs = cs,
-            propertyHref = "tests.unified-script.com"
+            cs = cs.consentStatusData?.gdpr?.consentStatus,
+            propertyHref = "tests.unified-script.com",
+            campaigns = list,
+            localState = JsonObject(emptyMap()),
+            ccpaStatus = null
         )
 
         println(body)

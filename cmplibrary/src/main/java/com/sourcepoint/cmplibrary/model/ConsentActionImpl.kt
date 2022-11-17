@@ -1,14 +1,17 @@
 package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
+import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceTypeParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
+import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 
 interface ConsentAction {
     val actionType: ActionType
     val pubData: JSONObject
+    val pubData2: JsonObject
     val campaignType: CampaignType
     val customActionId: String?
 }
@@ -16,11 +19,13 @@ interface ConsentAction {
 internal data class ConsentActionImpl(
     override val campaignType: CampaignType,
     override val pubData: JSONObject = JSONObject(),
+    override val pubData2: JsonObject = JsonObject(mapOf()),
     override val actionType: ActionType,
     override val customActionId: String? = null,
     val requestFromPm: Boolean,
     val singleShotPM: Boolean = false,
     val saveAndExitVariables: JSONObject = JSONObject(),
+    val saveAndExitVariablesV7: JsonObject = JsonObject(mapOf()),
     val pmTab: String? = null,
     val privacyManagerId: String? = null,
     val choiceId: String? = null,
@@ -44,3 +49,9 @@ internal fun NativeConsentAction.toConsentAction() = ConsentActionImpl(
     campaignType = campaignType,
     requestFromPm = false
 )
+
+internal fun ActionType.toChoiceTypeParam(): ChoiceTypeParam = when (this) {
+    ActionType.ACCEPT_ALL -> ChoiceTypeParam.CONSENT_ALL
+    ActionType.REJECT_ALL -> ChoiceTypeParam.REJECT_ALL
+    else -> throw RuntimeException("ChoiceTypeParam doesn't match the ActionType")
+}

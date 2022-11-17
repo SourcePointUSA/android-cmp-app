@@ -7,4 +7,5 @@
     <string name="clear_all_data">Clear all data</string>
     <string name="custom_consent">Custom consent</string>
     <string name="delete_custom_consent">Delete custom consent</string>
+    <string name="refresh_data">REFRESH DATA</string>
 </resources>

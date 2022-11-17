@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.data.network.model.v7
 
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp.ConsentStatusData.GdprCS.CustomVendorsResponse
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -15,6 +14,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import java.time.Instant
 
 internal data class MessagesParamReq(
     val accountId: Long,
@@ -22,7 +22,7 @@ internal data class MessagesParamReq(
     val authId: String?,
     val propertyHref: String,
     val env: Env,
-    val metadata: String,
+    val metadataArg: MetaDataArg?,
     val body: String,
     val nonKeyedLocalState: String,
     val pubData: JsonObject = JsonObject(mapOf())
@@ -41,7 +41,7 @@ data class MessagesResp(
             val list = mutableListOf<CampaignMessage>().apply {
                 campaigns?.gdpr?.let { add(it) }
                 campaigns?.ccpa?.let { add(it) }
-            }.associateBy { it.messageMetaData.categoryId.code }
+            }.associateBy { it.type.toCategoryId() }
             return priority.mapNotNull { list[it] }
         }
 
@@ -53,10 +53,15 @@ data class MessagesResp(
 
 interface CampaignMessage {
     val type: CampaignType
-    val messageMetaData: MessageMetaData
+    val messageMetaData: MessageMetaData?
     val message: JsonElement?
     val url: String?
-    val dateCreated: String?
+    val dateCreated: Instant?
+}
+
+internal fun CampaignType.toCategoryId() = when (this) {
+    CampaignType.GDPR -> 1
+    CampaignType.CCPA -> 2
 }
 
 @Serializable
@@ -85,9 +90,9 @@ data class Campaigns(
 data class CCPA(
     @SerialName("applies") val applies: Boolean?,
     @SerialName("consentedAll") val consentedAll: Boolean?,
-    @SerialName("dateCreated") override val dateCreated: String?,
+    @Serializable(with = DateSerializer::class) override val dateCreated: Instant?,
     @SerialName("message") override val message: JsonElement?,
-    @SerialName("messageMetaData") override val messageMetaData: MessageMetaData,
+    @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
     @SerialName("newUser") val newUser: Boolean?,
     @SerialName("rejectedAll") val rejectedAll: Boolean?,
     @SerialName("rejectedCategories") val rejectedCategories: List<String?>?,
@@ -105,13 +110,13 @@ data class GDPR(
     @SerialName("addtlConsent") val addtlConsent: String?,
     @SerialName("childPmId") val childPmId: String?,
     @SerialName("consentStatus") val consentStatus: ConsentStatus?,
-    @SerialName("customVendorsResponse") val customVendorsResponse: CustomVendorsResponse?,
-    @SerialName("dateCreated") override val dateCreated: String?,
+    @SerialName("customVendorsResponse") val customVendorsResponse: GdprCS.CustomVendorsResponse?,
+    @Serializable(with = DateSerializer::class) override val dateCreated: Instant?,
     @SerialName("euconsent") val euconsent: String?,
     @Serializable(with = GrantsSerializer::class) val grants: Map<String, GDPRPurposeGrants>?,
     @SerialName("hasLocalData") val hasLocalData: Boolean?,
     @SerialName("message") override val message: JsonElement?,
-    @SerialName("messageMetaData") override val messageMetaData: MessageMetaData,
+    @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
     @Serializable(with = TcDataSerializer::class) val TCData: Map<String, String>?,
     @Serializable(with = CampaignTypeSerializer::class) override val type: CampaignType,
     @SerialName("url") override val url: String?

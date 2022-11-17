@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.data.network.model.v7
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp.ConsentStatusData.CcpaCS
 import kotlinx.serialization.json.* //ktlint-disable
 import org.json.JSONObject
 
@@ -17,38 +16,42 @@ internal fun toPvDataBody2(
     ccpaMessageMetaData: MessageMetaData?,
     ccpaCS: CcpaCS?,
     fromTest: Boolean = true,
-    pubData: JsonObject = JsonNull.jsonObject
+    pubData: JsonObject = JsonObject(mapOf())
 ): JsonObject {
 
     return buildJsonObject {
-        put(
-            "gdpr",
-            buildJsonObject {
-                put("accountId", accountId)
-                put("applies", gdprApplies)
-                put("siteId", propertyId)
-                put("consentStatus", gdprCs?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonNull)
-                put("msgId", gdprMessageMetaData?.messageId)
-                put("categoryId", gdprMessageMetaData?.categoryId?.code)
-                put("subCategoryId", gdprMessageMetaData?.subCategoryId?.code)
-                put("prtnUUID", gdprMessageMetaData?.prtnUUID)
-                put("fromTest", fromTest)
-                put("sampleRate", BuildConfig.SAMPLE_RATE)
-            }
-        )
-        put(
-            "ccpa",
-            buildJsonObject {
-                put("accountId", accountId)
-                put("applies", ccpaApplies)
-                put("siteId", propertyId)
-                put("consentStatus", ccpaCS?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonNull)
-                put("messageId", ccpaMessageMetaData?.messageId)
-                put("uuid", ccpaCS?.uuid)
-                put("sampleRate", BuildConfig.SAMPLE_RATE)
-                put("pubData", pubData)
-            }
-        )
+        gdprCs?.let { cs ->
+            put(
+                "gdpr",
+                buildJsonObject {
+                    put("accountId", accountId)
+                    put("applies", gdprApplies)
+                    put("siteId", propertyId)
+                    put("consentStatus", JsonConverter.converter.encodeToJsonElement(cs))
+                    put("msgId", gdprMessageMetaData?.messageId)
+                    put("categoryId", gdprMessageMetaData?.categoryId?.code)
+                    put("subCategoryId", gdprMessageMetaData?.subCategoryId?.code)
+                    put("prtnUUID", gdprMessageMetaData?.prtnUUID)
+                    put("fromTest", fromTest)
+                    put("sampleRate", BuildConfig.SAMPLE_RATE)
+                }
+            )
+        }
+        ccpaCS?.let { cs ->
+            put(
+                "ccpa",
+                buildJsonObject {
+                    put("accountId", accountId)
+                    put("applies", ccpaApplies)
+                    put("siteId", propertyId)
+                    put("consentStatus", JsonConverter.converter.encodeToJsonElement(cs))
+                    put("messageId", ccpaMessageMetaData?.messageId)
+                    put("uuid", cs.uuid)
+                    put("sampleRate", BuildConfig.SAMPLE_RATE)
+                    put("pubData", pubData)
+                }
+            )
+        }
     }
 }
 
@@ -72,10 +75,10 @@ internal fun toPvDataBody(
                     put("siteId", siteId)
                     put("euconsent", it.euconsent)
                     put("pubData", "string")
-                    put("msgId", it.messageMetaData.messageId)
-                    put("categoryId", it.messageMetaData.categoryId.code)
-                    put("subCategoryId", it.messageMetaData.subCategoryId?.code)
-                    put("prtnUUID", it.messageMetaData.prtnUUID)
+                    put("msgId", it.messageMetaData?.messageId)
+                    put("categoryId", it.messageMetaData?.categoryId?.code)
+                    put("subCategoryId", it.messageMetaData?.subCategoryId?.code)
+                    put("prtnUUID", it.messageMetaData?.prtnUUID)
                     put("sampleRate", BuildConfig.SAMPLE_RATE)
                     put("consentStatus", "string")
                 }
@@ -89,7 +92,7 @@ internal fun toPvDataBody(
                     put("uuid", ccpaUuid)
                     put("accountId", accountId)
                     put("siteId", siteId)
-                    put("messageId", it.messageMetaData.messageId)
+                    put("messageId", it.messageMetaData?.messageId)
                     put("pubData", "string")
                     put("sampleRate", BuildConfig.SAMPLE_RATE)
                     put("consentStatus", "string")
