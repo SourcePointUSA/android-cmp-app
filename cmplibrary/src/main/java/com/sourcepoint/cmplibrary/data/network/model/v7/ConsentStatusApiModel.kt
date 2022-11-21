@@ -14,12 +14,13 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 import java.time.Instant
 
+@Serializable
 internal data class ConsentStatusParamReq(
-    val env: Env,
-    val metadata: String,
-    val propertyId: Long,
-    val accountId: Long,
-    val authId: String?
+    @SerialName("env") val env: Env,
+    @SerialName("metadata") val metadata: String,
+    @SerialName("propertyId") val propertyId: Long,
+    @SerialName("accountId") val accountId: Long,
+    @SerialName("authId") val authId: String?
 )
 
 enum class GranularState {

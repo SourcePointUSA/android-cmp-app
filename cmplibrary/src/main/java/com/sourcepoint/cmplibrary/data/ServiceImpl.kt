@@ -157,7 +157,7 @@ private class ServiceImpl(
                     }
                     .executeOnRight {
                         campaignManager.messagesV7LocalState = it.localState
-                        //GDPR
+                        // GDPR
                         campaignManager.gdprConsentStatus = it.consentStatusData?.gdpr
                         campaignManager.consentStatus = it.consentStatusData?.gdpr?.consentStatus
                         campaignManager.gdprDateCreated = it.consentStatusData?.gdpr?.dateCreated
@@ -380,8 +380,6 @@ private class ServiceImpl(
         val at = consentActionImpl.actionType
         if (at == ActionType.ACCEPT_ALL || at == ActionType.REJECT_ALL) {
 
-            val choiceBody = campaignManager.getChoiceBody()
-
             val gcParam = ChoiceParamReq(
                 choiceType = at.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
@@ -389,18 +387,14 @@ private class ServiceImpl(
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.copy(gdpr = null)?.toMetaDataArg()
             )
-            val getResp = nc.getChoice(gcParam)
+            nc.getChoice(gcParam)
                 .executeOnRight { r ->
-                    r.ccpa?.let { campaignManager.ccpaConsentStatus = it }
-                    execManager.executeOnMain { }
-                }
-                .executeOnRight {
-                    it.ccpa?.let { c ->
-                        val cr = ConsentManager.responseConsentHandler(c, consentManagerUtils)
+                    r.ccpa?.let {
+                        campaignManager.ccpaConsentStatus = it
+                        val cr = ConsentManager.responseConsentHandler(it, consentManagerUtils)
                         sPConsentsSuccess?.invoke(cr)
                     }
                 }
-                .getOrNull()
         }
 
         if (spConfig.propertyId == null) return Either.Left(InvalidParameterException("PropertyId cannot be null!!!"))

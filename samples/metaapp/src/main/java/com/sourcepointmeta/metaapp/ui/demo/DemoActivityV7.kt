@@ -181,7 +181,7 @@ class DemoActivityV7 : FragmentActivity() {
         triggerLib()
     }
 
-    private fun triggerLib(){
+    private fun triggerLib() {
         if (intent.getBooleanExtra("run_demo", true)) {
             Handler().postDelayed(
                 {

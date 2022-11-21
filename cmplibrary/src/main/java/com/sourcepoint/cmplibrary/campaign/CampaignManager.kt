@@ -623,9 +623,9 @@ private class CampaignManagerImpl(
         get() {
             return dataStorage.gdprConsentUuid
         }
-    set(value) {
-        dataStorage.gdprConsentUuid = value
-    }
+        set(value) {
+            dataStorage.gdprConsentUuid = value
+        }
 
     override var ccpaUuid: String?
         get() {

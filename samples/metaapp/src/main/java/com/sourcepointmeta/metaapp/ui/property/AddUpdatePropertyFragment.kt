@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp.ui.property
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -42,6 +43,22 @@ class AddUpdatePropertyFragment : Fragment() {
         }
     }
 
+    private var v7: Boolean
+        get() {
+            return requireActivity()
+                .getSharedPreferences("meta", Context.MODE_PRIVATE)
+                .getBoolean("v7", false)
+        }
+        set(value) {
+            arguments?.putBoolean("v7", value)
+            requireActivity()
+                .getSharedPreferences("meta", Context.MODE_PRIVATE)
+                .apply {
+                    val e = edit().putBoolean("v7", value)
+                    e.commit()
+                }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,6 +74,11 @@ class AddUpdatePropertyFragment : Fragment() {
         tool_bar.run {
             title = "${BuildConfig.VERSION_NAME} - ${getString(R.string.add_prop_title)}"
             setNavigationOnClickListener { activity?.onBackPressed() }
+        }
+
+        when (v7) {
+            true -> prop_id_container.visibility = View.VISIBLE
+            false -> prop_id_container.visibility = View.GONE
         }
 
         val languages = messageLanguage.map { it.name }
