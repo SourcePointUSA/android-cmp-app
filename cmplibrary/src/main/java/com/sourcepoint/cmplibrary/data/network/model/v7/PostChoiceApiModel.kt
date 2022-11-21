@@ -9,8 +9,3 @@ internal class PostChoiceParamReq(
     val actionType: ActionType,
     val body: JsonObject = JsonObject(mapOf())
 )
-
-data class PostChoiceResp(
-    val gdprPostChoiceResp: GdprCS? = null,
-    val ccpaPostChoiceResp: CcpaCS? = null
-)

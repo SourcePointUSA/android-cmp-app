@@ -90,4 +90,8 @@ class LogFragment : Fragment() {
             }
         }
     }
+
+    fun clearLog(){
+        adapter.deleteAllItems()
+    }
 }

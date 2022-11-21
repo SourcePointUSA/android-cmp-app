@@ -90,8 +90,12 @@ internal interface CampaignManager {
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
     var messagesV7LocalState: JsonElement?
-    val gdprUuid: String?
-    val ccpaUuid: String?
+    var gdprUuid: String?
+    var ccpaUuid: String?
+
+    // dateCreated
+    var gdprDateCreated: Instant?
+    var ccpaDateCreated: Instant?
 
 //    var consentStatus: ConsentStatus?zvz
 //    var ccpaStatus: CcpaStatus?
@@ -615,14 +619,36 @@ private class CampaignManagerImpl(
             dataStorage.messagesV7LocalState = serialised
         }
 
-    override val gdprUuid: String?
+    override var gdprUuid: String?
         get() {
             return dataStorage.gdprConsentUuid
         }
+    set(value) {
+        dataStorage.gdprConsentUuid = value
+    }
 
-    override val ccpaUuid: String?
+    override var ccpaUuid: String?
         get() {
             return dataStorage.ccpaConsentUuid
+        }
+        set(value) {
+            dataStorage.ccpaConsentUuid = value
+        }
+
+    override var gdprDateCreated: Instant?
+        get() {
+            return dataStorage.gdprDateCreated?.let { Instant.parse(it) }
+        }
+        set(value) {
+            dataStorage.gdprDateCreated = value?.toString()
+        }
+
+    override var ccpaDateCreated: Instant?
+        get() {
+            return dataStorage.ccpaDateCreated?.let { Instant.parse(it) }
+        }
+        set(value) {
+            dataStorage.ccpaDateCreated = value?.toString()
         }
 
     override var metaDataResp: MetaDataResp?
