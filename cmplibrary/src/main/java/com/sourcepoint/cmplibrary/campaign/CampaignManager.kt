@@ -511,25 +511,25 @@ private class CampaignManagerImpl(
     override val shouldCallMessages: Boolean
         get() {
 
-            val gdprToBeComplete: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.GDPR }
+            val gdprToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.GDPR }
                 ?.let {
                     dataStorage.gdprApplies && (gdprConsentStatus?.consentStatus?.consentedAll == null || gdprConsentStatus?.consentStatus?.consentedAll == false)
                 }
                 ?: false
 
-            val ccpaToBeComplete: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.CCPA }
+            val ccpaToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.CCPA }
                 ?.let { true }
                 ?: false
 
-            val res = isNewUser || ccpaToBeComplete || gdprToBeComplete
+            val res = isNewUser || ccpaToBeCompleted || gdprToBeCompleted
 
-            println(
-                """
-                xxx isNewUser[$isNewUser]
-                xxx ccpaToBeComplete[$ccpaToBeComplete]
-                xxx gdprToBeComplete[$gdprToBeComplete]
-                xxx shouldCallMessages[$res]  
-                xxx =====================================
+            logger?.computation(
+                tag = "shouldCallMessages",
+                msg = """
+                isNewUser[$isNewUser]
+                ccpaToBeCompleted[$ccpaToBeCompleted]
+                gdprToBeCompleted[$gdprToBeCompleted]
+                shouldCallMessages[$res]  
                 """.trimIndent()
             )
 
