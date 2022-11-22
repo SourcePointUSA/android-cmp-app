@@ -156,16 +156,22 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        campaignManager.messagesV7LocalState = it.localState
-                        // GDPR
-                        campaignManager.gdprConsentStatus = it.consentStatusData?.gdpr
-                        campaignManager.consentStatus = it.consentStatusData?.gdpr?.consentStatus
-                        campaignManager.gdprDateCreated = it.consentStatusData?.gdpr?.dateCreated
-                        campaignManager.gdprUuid = it.consentStatusData?.gdpr?.uuid
-                        // CCPA
-                        campaignManager.ccpaConsentStatus = it.consentStatusData?.ccpa
-                        campaignManager.ccpaDateCreated = it.consentStatusData?.ccpa?.dateCreated
-                        campaignManager.ccpaUuid = it.consentStatusData?.ccpa?.uuid
+                        campaignManager.apply {
+                            messagesV7LocalState = it.localState
+                            it.consentStatusData?.let { csd ->
+                                // GDPR
+                                gdprConsentStatus = csd.gdpr
+                                consentStatus = csd.gdpr?.consentStatus
+                                gdprDateCreated = csd.gdpr?.dateCreated
+                                gdprUuid = csd.gdpr?.uuid
+                                gdprDateCreated = csd.gdpr?.dateCreated
+                                // CCPA
+                                ccpaConsentStatus = csd.ccpa
+                                ccpaDateCreated = csd.ccpa?.dateCreated
+                                ccpaUuid = csd.ccpa?.uuid
+                                ccpaDateCreated = csd.ccpa?.dateCreated
+                            }
+                        }
                     }
             }
 
