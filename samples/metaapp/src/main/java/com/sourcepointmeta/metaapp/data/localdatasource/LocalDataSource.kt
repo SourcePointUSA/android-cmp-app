@@ -165,17 +165,17 @@ private class LocalDataSourceImpl(
         cQueries.run {
             transactionWithResult {
                 insertProperty(
-                    property_name = property.propertyName,
-                    account_id = property.accountId,
-                    is_staging = if (property.is_staging) 1 else 0,
-                    timestamp = property.timestamp,
                     timeout = property.timeout ?: 3000,
                     auth_Id = property.authId,
-                    gdpr_pm_id = property.gdprPmId,
-                    ccpa_pm_id = property.ccpaPmId,
-                    message_type = "MESSAGE_TYPE",
                     message_language = property.messageLanguage,
                     pm_tab = property.pmTab,
+                    account_id = property.accountId,
+                    is_staging = if (property.is_staging) 1 else 0,
+                    property_name = property.propertyName,
+                    message_type = "MESSAGE_TYPE",
+                    timestamp = property.timestamp,
+                    ccpa_pm_id = property.ccpaPmId,
+                    gdpr_pm_id = property.gdprPmId,
                     campaign_env = property.campaignsEnv.env,
                     group_pm_id = property.gdprGroupPmId,
                     use_gdpr_groupid_if_available = if (property.useGdprGroupPmIfAvailable) 1 else 0
