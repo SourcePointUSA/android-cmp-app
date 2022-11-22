@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/prop_name_container"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/message_type_autocomplete_container"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:hint="Acount Id"
                 app:helperText="Account Id"
                 app:helperTextEnabled="true"
@@ -73,38 +73,8 @@
                     android:maxLines="1"
                     android:inputType="number"
                     android:layout_width="match_parent"
-                    android:nextFocusDown="@id/message_type_autocomplete"
+                    android:nextFocusDown="@id/gdpr_pm_id_ed"
                     android:layout_height="60dp"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/message_type_autocomplete_container"
-                app:layout_constraintTop_toBottomOf="@id/prop_name_container"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintStart_toEndOf="@id/account_id_container"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:helperText="Message Type"
-                app:helperTextEnabled="true"
-                app:placeholderText="i.e. mobile.prop.com"
-                android:hint="@string/message_type">
-
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/message_type_autocomplete"
-                    style="@style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center_vertical"
-                    android:singleLine="true"
-                    android:lines="1"
-                    android:nextFocusDown="@+id/active"
-                    android:imeOptions="actionNext"
-            />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

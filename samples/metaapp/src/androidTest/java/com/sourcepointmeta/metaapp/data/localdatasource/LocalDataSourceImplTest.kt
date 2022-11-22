@@ -33,7 +33,6 @@ class LocalDataSourceImplTest {
         is_staging = false,
         targetingParameters = tp,
         statusCampaignSet = setOf(StatusCampaign("prop1", CampaignType.GDPR, true)),
-        messageType = "App",
         gdprPmId = 1212L,
         ccpaPmId = 1313L,
         campaignsEnv = CampaignsEnv.STAGE

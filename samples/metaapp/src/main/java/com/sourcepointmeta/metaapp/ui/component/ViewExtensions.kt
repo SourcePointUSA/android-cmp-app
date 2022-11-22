@@ -18,7 +18,6 @@ fun PropertyItemView.bind(
     campaign_env.text = item.campaignEnv
     property_name.text = item.propertyName
     account_id.text = "${item.accountId}"
-    message_type.text = item.messageType
     chip_gdpr.isChecked = item.gdprEnabled
     chip_ccpa.isChecked = item.ccpaEnabled
     play_demo_group.saving = item.saving

@@ -74,7 +74,6 @@ val defaultProperty = Property(
     is_staging = false,
     targetingParameters = emptyList(),
     statusCampaignSet = setOf(StatusCampaign("ott.test.suite", CampaignType.GDPR, true)),
-    messageType = "App",
     gdprPmId = 579231L,
     ccpaPmId = 1L,
     campaignsEnv = CampaignsEnv.PUBLIC

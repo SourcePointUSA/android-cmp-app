@@ -172,7 +172,7 @@ private class LocalDataSourceImpl(
                     account_id = property.accountId,
                     is_staging = if (property.is_staging) 1 else 0,
                     property_name = property.propertyName,
-                    message_type = property.messageType,
+                    message_type = "MESSAGE_TYPE",
                     timestamp = property.timestamp,
                     ccpa_pm_id = property.ccpaPmId,
                     gdpr_pm_id = property.gdprPmId,
