@@ -65,8 +65,8 @@ internal class MockDataStorage : DataStorage {
             this.tcDataMap = value
         }
 
-    override fun saveAuthId(value: String) {
-        storage[DataStorageGdpr.AUTH_ID_KEY] = value
+    override fun saveAuthId(value: String?) {
+        storage[DataStorageGdpr.AUTH_ID_KEY] = value ?: ""
     }
 
     override fun saveEuConsent(value: String) {

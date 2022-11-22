@@ -258,6 +258,8 @@ internal class SpConsentLibImpl(
 
     private fun localLoadMessageV7(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
 
+        dataStorage.saveAuthId(authId)
+
         val param = check { campaignManager.getMessageV7Req(authId, pubData) }
             .executeOnLeft {
                 pLogger.e(this.javaClass.simpleName, it.message ?: it.stackTraceToString())

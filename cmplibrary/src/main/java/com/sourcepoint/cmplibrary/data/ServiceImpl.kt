@@ -147,7 +147,8 @@ private class ServiceImpl(
 
                 val csParams = messageReq.toConsentStatusParamReq(
                     gdprUuid = campaignManager.gdprUuid,
-                    ccpaUuid = campaignManager.ccpaUuid
+                    ccpaUuid = campaignManager.ccpaUuid,
+                    localState = campaignManager.messagesV7LocalState
                 )
 
                 getConsentStatus(csParams)
@@ -347,7 +348,9 @@ private class ServiceImpl(
             granularStatus = campaignManager.consentStatus?.granularStatus,
             consentAllRef = getResp?.gdpr?.consentAllRef,
             vendorListId = getResp?.gdpr?.vendorListId,
-            saveAndExitVariables = consentActionImpl.saveAndExitVariablesV7
+            saveAndExitVariables = consentActionImpl.saveAndExitVariablesV7,
+            uuid = campaignManager.gdprUuid,
+            authid = authId
         )
 
         val pcParam = PostChoiceParamReq(
@@ -410,7 +413,9 @@ private class ServiceImpl(
             sampleRate = BuildConfig.SAMPLE_RATE,
             propertyId = spConfig.propertyId.toLong(),
             messageId = messageId,
-            saveAndExitVariables = consentActionImpl.saveAndExitVariablesV7
+            saveAndExitVariables = consentActionImpl.saveAndExitVariablesV7,
+            authid = authId,
+            uuid = campaignManager.ccpaUuid
         )
 
         val pcParam = PostChoiceParamReq(

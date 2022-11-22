@@ -104,6 +104,7 @@ internal interface CampaignManager {
     var pvDataResp: PvDataResp?
     var choiceResp: ChoiceResp?
     var dataRecordedConsent: Instant?
+    var authId: String?
 
     fun getChoiceBody(): JsonObject
     fun getPvDataBody(messageReq: MessagesParamReq): JsonObject
@@ -496,6 +497,10 @@ private class CampaignManagerImpl(
         dataStorage.clearGdprConsent()
         dataStorage.clearCcpaConsent()
     }
+
+    override var authId: String?
+        get() = dataStorage.getAuthId()
+        set(value) { dataStorage.saveAuthId(authId) }
 
     // V7 Implementation below
 

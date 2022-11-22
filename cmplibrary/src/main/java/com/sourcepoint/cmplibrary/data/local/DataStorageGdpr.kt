@@ -56,7 +56,7 @@ internal interface DataStorageGdpr {
     fun getGdpr(): String?
 
     /** store data */
-    fun saveAuthId(value: String)
+    fun saveAuthId(value: String?)
     fun saveEuConsent(value: String)
     fun saveMetaData(value: String)
     fun saveGdprConsentResp(value: String)
@@ -204,10 +204,10 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             spEditor.apply()
         }
 
-    override fun saveAuthId(value: String) {
+    override fun saveAuthId(value: String?) {
         preference
             .edit()
-            .putString(DataStorageGdpr.AUTH_ID_KEY, value)
+            .putString(AUTH_ID_KEY, value)
             .apply()
     }
 

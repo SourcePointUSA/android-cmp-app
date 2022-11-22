@@ -193,6 +193,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("propertyId", param.propertyId.toString())
             .addQueryParameter("hasCsp", true.toString())
             .addQueryParameter("withSiteActions", false.toString())
+            .addQueryParameter("localState", param.localState?.toString())
             .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}}""")
             .apply { param.authId?.let { p -> addQueryParameter("authId", p) } }
             .addEncodedQueryParameter("metadata", param.metadata)
