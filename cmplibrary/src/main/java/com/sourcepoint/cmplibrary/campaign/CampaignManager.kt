@@ -541,7 +541,19 @@ private class CampaignManagerImpl(
             val gdprUUID = dataStorage.gdprConsentUuid
             val ccpaUUID = dataStorage.ccpaConsentUuid
             val localStateSize = messagesV7LocalState?.jsonObject?.size ?: 0
-            return ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0)
+            val res = ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0)
+
+            logger?.computation(
+                tag = "shouldCallConsentStatus",
+                msg = """
+                gdprUUID != null [${gdprUUID != null}]
+                ccpaUUID != null [${ccpaUUID != null}]
+                localStateSize empty [${localStateSize == 0}]
+                shouldCallMessages[$res]  
+                """.trimIndent()
+            )
+
+            return res
         }
 
     override var gdprMessageMetaData: MessageMetaData?

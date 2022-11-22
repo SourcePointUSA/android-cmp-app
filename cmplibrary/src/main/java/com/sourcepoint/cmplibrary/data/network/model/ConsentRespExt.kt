@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
+import com.sourcepoint.cmplibrary.core.executeOnLeft
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
@@ -14,10 +15,15 @@ import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
 import java.util.* //ktlint-disable
+
+internal fun String.toConsentActionV7(): ConsentActionImplV7? {
+    return check { JsonConverter.converter.decodeFromString<ConsentActionImplV7>(this) }.executeOnLeft { throw it }.getOrNull()
+}
 
 internal fun String.toConsentAction(): ConsentActionImpl {
 
