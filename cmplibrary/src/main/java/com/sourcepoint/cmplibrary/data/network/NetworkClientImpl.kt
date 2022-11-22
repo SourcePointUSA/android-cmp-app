@@ -325,7 +325,7 @@ private class NetworkClientImpl(
         responseManager.parsePostGdprChoiceResp(response)
     }
 
-    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> {
+    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> = check {
         val url = urlManager.getCcpaChoiceUrl(param)
         val mediaType = MediaType.parse("application/json")
         val jsonBody = param.body.toString()
@@ -345,8 +345,6 @@ private class NetworkClientImpl(
 
         val response = httpClient.newCall(request).execute()
 
-        return check { responseManager.parsePostCcpaChoiceResp(response) }.executeOnLeft {
-            println()
-        }
+        responseManager.parsePostCcpaChoiceResp(response)
     }
 }

@@ -218,7 +218,6 @@ private class ServiceImpl(
 
                 val statusResp = getMessages(messagesParamReq)
                     .executeOnLeft {
-                        println(it)
                         execManager.executeOnMain { showConsent() }
                         return@executeOnWorkerThread
                     }
