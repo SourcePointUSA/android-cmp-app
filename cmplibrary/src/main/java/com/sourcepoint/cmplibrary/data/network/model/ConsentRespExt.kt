@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
-import com.sourcepoint.cmplibrary.core.executeOnLeft
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
@@ -21,8 +21,8 @@ import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
 import java.util.* //ktlint-disable
 
-internal fun String.toConsentActionV7(): ConsentActionImplV7? {
-    return check { JsonConverter.converter.decodeFromString<ConsentActionImplV7>(this) }.executeOnLeft { throw it }.getOrNull()
+internal fun String.toConsentActionV7(): Either<ConsentActionImplV7> = check {
+    JsonConverter.converter.decodeFromString<ConsentActionImplV7>(this)
 }
 
 internal fun String.toConsentAction(): ConsentActionImpl {

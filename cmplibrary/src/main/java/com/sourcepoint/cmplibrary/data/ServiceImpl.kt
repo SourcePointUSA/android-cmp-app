@@ -338,8 +338,7 @@ private class ServiceImpl(
         }
 
         if (spConfig.propertyId == null) throw InvalidParameterException("PropertyId cannot be null!!!")
-        val messageId: Long = campaignManager.gdprMessageMetaData?.messageId?.toLong()
-            ?: throw InvalidParameterException("Gdpr messageId cannot be null!!!")
+        val messageId: Long? = campaignManager.gdprMessageMetaData?.messageId?.toLong()
 
         val body = postChoiceGdprBody(
             sampleRate = BuildConfig.SAMPLE_RATE,
@@ -349,10 +348,6 @@ private class ServiceImpl(
             consentAllRef = getResp?.gdpr?.consentAllRef,
             vendorListId = getResp?.gdpr?.vendorListId,
             saveAndExitVariables = consentActionImpl.saveAndExitVariablesV7
-
-//            ,
-//            uuid = campaignManager.gdprUuid,
-//            authid = authId
         )
 
         val pcParam = PostChoiceParamReq(
@@ -408,8 +403,7 @@ private class ServiceImpl(
         }
 
         if (spConfig.propertyId == null) return Either.Left(InvalidParameterException("PropertyId cannot be null!!!"))
-        val messageId: Long = campaignManager.ccpaMessageMetaData?.messageId?.toLong()
-            ?: return Either.Left(InvalidParameterException("Ccpa messageId cannot be null!!!"))
+        val messageId: Long? = campaignManager.ccpaMessageMetaData?.messageId?.toLong()
 
         val body = postChoiceCcpaBody(
             sampleRate = BuildConfig.SAMPLE_RATE,

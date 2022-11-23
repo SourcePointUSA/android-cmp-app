@@ -500,7 +500,7 @@ private class CampaignManagerImpl(
 
     override var authId: String?
         get() = dataStorage.getAuthId()
-        set(value) { dataStorage.saveAuthId(authId) }
+        set(value) { dataStorage.saveAuthId(value) }
 
     // V7 Implementation below
 
@@ -518,7 +518,7 @@ private class CampaignManagerImpl(
 
             val gdprToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.GDPR }
                 ?.let {
-                    dataStorage.gdprApplies && (gdprConsentStatus?.consentStatus?.consentedAll == null || gdprConsentStatus?.consentStatus?.consentedAll == false)
+                    dataStorage.gdprApplies && (gdprConsentStatus?.consentStatus?.consentedAll != true)
                 }
                 ?: false
 
