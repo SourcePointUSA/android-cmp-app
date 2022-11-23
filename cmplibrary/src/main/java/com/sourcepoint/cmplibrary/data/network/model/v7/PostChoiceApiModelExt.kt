@@ -22,8 +22,8 @@ internal fun postChoiceGdprBody(
         put("sampleRate", sampleRate)
         put("propertyId", propertyId)
         put("messageId", messageId)
-        put("authid", authid)
-        put("uuid", uuid)
+//        put("authid", authid)
+//        put("uuid", uuid)
         put("consentAllRef", consentAllRef)
         saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
         put("granularStatus", granularStatus?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonNull)

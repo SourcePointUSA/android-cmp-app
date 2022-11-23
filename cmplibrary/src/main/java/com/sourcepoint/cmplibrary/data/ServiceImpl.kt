@@ -348,9 +348,11 @@ private class ServiceImpl(
             granularStatus = campaignManager.consentStatus?.granularStatus,
             consentAllRef = getResp?.gdpr?.consentAllRef,
             vendorListId = getResp?.gdpr?.vendorListId,
-            saveAndExitVariables = consentActionImpl.saveAndExitVariablesV7,
-            uuid = campaignManager.gdprUuid,
-            authid = authId
+            saveAndExitVariables = consentActionImpl.saveAndExitVariablesV7
+
+//            ,
+//            uuid = campaignManager.gdprUuid,
+//            authid = authId
         )
 
         val pcParam = PostChoiceParamReq(
