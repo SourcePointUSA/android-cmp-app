@@ -14,6 +14,11 @@ interface ConsentAction {
     val pubData2: JsonObject
     val campaignType: CampaignType
     val customActionId: String?
+    val privacyManagerId: String?
+    val choiceId: String?
+    val requestFromPm: Boolean
+    val saveAndExitVariables: JSONObject
+    val consentLanguage: String?
 }
 
 internal data class ConsentActionImpl(
@@ -22,14 +27,14 @@ internal data class ConsentActionImpl(
     override val pubData2: JsonObject = JsonObject(mapOf()),
     override val actionType: ActionType,
     override val customActionId: String? = null,
-    val requestFromPm: Boolean,
+    override val privacyManagerId: String? = null,
+    override val choiceId: String? = null,
+    override val requestFromPm: Boolean,
+    override val saveAndExitVariables: JSONObject = JSONObject(),
+    override val consentLanguage: String? = MessageLanguage.ENGLISH.value,
     val singleShotPM: Boolean = false,
-    val saveAndExitVariables: JSONObject = JSONObject(),
     val saveAndExitVariablesV7: JsonObject = JsonObject(mapOf()),
     val pmTab: String? = null,
-    val privacyManagerId: String? = null,
-    val choiceId: String? = null,
-    val consentLanguage: String? = MessageLanguage.ENGLISH.value,
     val thisContent: JSONObject = JSONObject()
 ) : ConsentAction
 

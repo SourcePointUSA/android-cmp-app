@@ -33,7 +33,7 @@ internal interface ConsentManager {
     fun sendStoredConsentToClient()
     fun sendStoredConsentToClientV7()
     fun sendConsent(
-        actionImpl: ConsentActionImpl,
+        actionImpl: ConsentAction,
         localState: String
     )
 
@@ -104,7 +104,7 @@ private class ConsentManagerImpl(
             changeLocalState(value)
         }
         get() = dataStorage.getLocalState()?.let { LocalStateStatus.Present(it) } ?: LocalStateStatus.Absent
-    private val consentQueueImpl: Queue<ConsentActionImpl> = LinkedList()
+    private val consentQueueImpl: Queue<ConsentAction> = LinkedList()
     override val enqueuedActions: Int
         get() = consentQueueImpl.size
 
@@ -186,7 +186,8 @@ private class ConsentManagerImpl(
         }
     }
 
-    override fun sendConsent(actionImpl: ConsentActionImpl, localState: String) {
+    override fun sendConsent(actionImpl: ConsentAction, localState: String) {
+
         executorManager.executeOnSingleThread {
             when (val either = service.sendConsent(localState, actionImpl, env, actionImpl.privacyManagerId)) {
                 is Right -> {
@@ -217,7 +218,7 @@ internal sealed class LocalStateStatus {
 
 internal fun responseConsentHandler(
     either: Right<ConsentResp>,
-    actionImpl: ConsentActionImpl,
+    actionImpl: ConsentAction,
     consentManagerUtils: ConsentManagerUtils,
     dataStorage: DataStorage
 ): SPConsents {

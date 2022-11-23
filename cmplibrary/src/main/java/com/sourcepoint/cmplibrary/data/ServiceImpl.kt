@@ -72,13 +72,13 @@ private class ServiceImpl(
 
     override fun sendConsent(
         localState: String,
-        consentActionImpl: ConsentActionImpl,
+        consentAction: ConsentAction,
         env: Env,
         pmId: String?
     ): Either<ConsentResp> = check {
-        consentManagerUtils.buildConsentReq(consentActionImpl, localState, pmId)
+        consentManagerUtils.buildConsentReq(consentAction, localState, pmId)
             .flatMap {
-                nc.sendConsent(it, env, consentActionImpl)
+                nc.sendConsent(it, env, consentAction)
             }
             .executeOnRight {
                 dataStorage.run {
