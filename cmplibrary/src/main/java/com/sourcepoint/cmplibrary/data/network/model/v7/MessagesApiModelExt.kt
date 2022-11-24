@@ -83,7 +83,8 @@ internal fun MessagesParamReq.toMetaDataParamReq(): MetaDataParamReq {
 
 internal fun MessagesParamReq.toConsentStatusParamReq(
     gdprUuid: String?,
-    ccpaUuid: String?
+    ccpaUuid: String?,
+    localState: JsonElement?
 ): ConsentStatusParamReq {
 
     val mdArg = metadataArg?.copy(
@@ -96,6 +97,7 @@ internal fun MessagesParamReq.toConsentStatusParamReq(
         accountId = accountId,
         propertyId = propertyId,
         metadata = mdArg?.let { JsonConverter.converter.encodeToString(it) } ?: "{}",
-        authId = authId
+        authId = authId,
+        localState = localState
     )
 }

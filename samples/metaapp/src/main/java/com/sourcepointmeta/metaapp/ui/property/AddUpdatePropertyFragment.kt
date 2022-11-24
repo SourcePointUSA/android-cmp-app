@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp.ui.property
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_demo.*
 import kotlinx.android.synthetic.main.add_property_fragment.*
 import kotlinx.android.synthetic.main.add_property_fragment.tool_bar
 import kotlinx.android.synthetic.main.add_targeting_parameter.*
+import kotlinx.android.synthetic.main.fragment_property_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AddUpdatePropertyFragment : Fragment() {
@@ -42,6 +44,22 @@ class AddUpdatePropertyFragment : Fragment() {
         }
     }
 
+    private var v7: Boolean
+        get() {
+            return requireActivity()
+                .getSharedPreferences("meta", Context.MODE_PRIVATE)
+                .getBoolean("v7", false)
+        }
+        set(value) {
+            arguments?.putBoolean("v7", value)
+            requireActivity()
+                .getSharedPreferences("meta", Context.MODE_PRIVATE)
+                .apply {
+                    val e = edit().putBoolean("v7", value)
+                    e.commit()
+                }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,13 +68,27 @@ class AddUpdatePropertyFragment : Fragment() {
         return inflater.inflate(R.layout.add_property_fragment, container, false)
     }
 
+    private fun updateTitle() {
+        val version = when (v7) {
+            true -> "V7"
+            false -> BuildConfig.VERSION_NAME
+        }
+
+        tool_bar.run {
+            title = "$version - ${getString(R.string.add_prop_title)}"
+            setNavigationOnClickListener { activity?.onBackPressed() }
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tool_bar.run {
-            title = "${BuildConfig.VERSION_NAME} - ${getString(R.string.add_prop_title)}"
-            setNavigationOnClickListener { activity?.onBackPressed() }
+        updateTitle()
+
+        when (v7) {
+            true -> prop_id_container.visibility = View.VISIBLE
+            false -> prop_id_container.visibility = View.GONE
         }
 
         val languages = messageLanguage.map { it.name }

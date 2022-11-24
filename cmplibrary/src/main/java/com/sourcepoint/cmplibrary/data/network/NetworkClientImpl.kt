@@ -2,8 +2,10 @@ package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.executeOnLeft
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
 import com.sourcepoint.cmplibrary.data.network.model.v7.* //ktlint-disable
@@ -11,6 +13,7 @@ import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.encodeToString
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -76,7 +79,7 @@ private class NetworkClientImpl(
     override fun sendConsent(
         consentReq: JSONObject,
         env: Env,
-        consentActionImpl: ConsentActionImpl
+        consentAction: ConsentAction
     ): Either<ConsentResp> = check {
 
         val mediaType = MediaType.parse("application/json")
@@ -84,9 +87,9 @@ private class NetworkClientImpl(
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
         val url = urlManager
             .sendConsentUrl(
-                campaignType = consentActionImpl.campaignType,
+                campaignType = consentAction.campaignType,
                 env = env,
-                actionType = consentActionImpl.actionType
+                actionType = consentAction.actionType
             )
 
         logger.req(
@@ -103,7 +106,7 @@ private class NetworkClientImpl(
 
         val response = httpClient.newCall(request).execute()
 
-        responseManager.parseConsentRes(response, consentActionImpl.campaignType)
+        responseManager.parseConsentRes(response, consentAction.campaignType)
     }
 
     override fun sendCustomConsent(
@@ -184,7 +187,7 @@ private class NetworkClientImpl(
         logger.req(
             tag = "getConsentStatus",
             url = url.toString(),
-            body = "",
+            body = check { JsonConverter.converter.encodeToString(param) }.getOrNull() ?: "",
             type = "GET"
         )
 
@@ -204,7 +207,7 @@ private class NetworkClientImpl(
         logger.req(
             tag = "getMessages",
             url = url.toString(),
-            body = "",
+            body = param.body,
             type = "GET"
         )
 
@@ -322,7 +325,7 @@ private class NetworkClientImpl(
         responseManager.parsePostGdprChoiceResp(response)
     }
 
-    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> {
+    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> = check {
         val url = urlManager.getCcpaChoiceUrl(param)
         val mediaType = MediaType.parse("application/json")
         val jsonBody = param.body.toString()
@@ -342,8 +345,6 @@ private class NetworkClientImpl(
 
         val response = httpClient.newCall(request).execute()
 
-        return check { responseManager.parsePostCcpaChoiceResp(response) }.executeOnLeft {
-            println()
-        }
+        responseManager.parsePostCcpaChoiceResp(response)
     }
 }

@@ -163,7 +163,7 @@ class ServiceImplTest {
             localState = "{}",
             pmId = null,
             env = Env.STAGE,
-            consentActionImpl = consentAction
+            consentAction = consentAction
         ) as? Right
 
         verify(exactly = 1) { ds.saveLocalState("localstate") }
@@ -207,7 +207,7 @@ class ServiceImplTest {
             localState = "{}",
             pmId = null,
             env = Env.STAGE,
-            consentActionImpl = consentAction
+            consentAction = consentAction
         ) as? Right
 
         verify(exactly = 1) { ds.saveLocalState("localstate") }
@@ -252,7 +252,7 @@ class ServiceImplTest {
             localState = "{}",
             pmId = null,
             env = Env.STAGE,
-            consentActionImpl = consentAction
+            consentAction = consentAction
         ) as? Either.Left
 
         verify(exactly = 1) { ds.saveLocalState(any()) }

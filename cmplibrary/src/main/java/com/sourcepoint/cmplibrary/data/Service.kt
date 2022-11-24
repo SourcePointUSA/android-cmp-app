@@ -3,10 +3,11 @@ package com.sourcepoint.cmplibrary.data
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
+import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.PostChoiceResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
+import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
@@ -20,7 +21,7 @@ internal interface Service : NetworkClient, CampaignManager {
 
     fun sendConsent(
         localState: String,
-        consentActionImpl: ConsentActionImpl,
+        consentAction: ConsentAction,
         env: Env,
         pmId: String?
     ): Either<ConsentResp>
@@ -28,8 +29,9 @@ internal interface Service : NetworkClient, CampaignManager {
     fun sendConsentV7(
         consentActionImpl: ConsentActionImpl,
         env: Env,
+        sPConsentsSuccess: ((SPConsents) -> Unit)?,
         pmId: String?
-    ): Either<PostChoiceResp>
+    ): Either<ChoiceResp>
 
     fun sendCustomConsentServ(
         customConsentReq: CustomConsentReq,

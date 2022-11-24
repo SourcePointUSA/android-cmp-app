@@ -269,14 +269,6 @@ internal class SpConsentLibImpl(
             showConsent = { consentManager.sendStoredConsentToClientV7() },
             pSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)
-                println(
-                    """
-                    Number of messages:
-                    =============================================
-                    ============> ${list.size} <=================
-                    =============================================
-                    """.trimIndent()
-                )
                 clientEventManager.setCampaignNumber(list.size)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
@@ -324,7 +316,6 @@ internal class SpConsentLibImpl(
                 }
             },
             pError = {
-                println()
             }
         )
     }

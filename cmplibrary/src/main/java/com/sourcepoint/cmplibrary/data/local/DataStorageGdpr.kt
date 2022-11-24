@@ -14,6 +14,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_E
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_META_DATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_CONSENT_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_DATE_CREATED
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_MESSAGE_METADATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_POST_CHOICE_RESP
@@ -49,11 +50,13 @@ internal interface DataStorageGdpr {
     var tcData: Map<String, Any?>
     var tcDataV7: Map<String, String>?
 
+    var gdprDateCreated: String?
+
     fun saveGdpr(value: String)
     fun getGdpr(): String?
 
     /** store data */
-    fun saveAuthId(value: String)
+    fun saveAuthId(value: String?)
     fun saveEuConsent(value: String)
     fun saveMetaData(value: String)
     fun saveGdprConsentResp(value: String)
@@ -94,6 +97,7 @@ internal interface DataStorageGdpr {
         const val GDPR_TCData = "TCData"
         const val GDPR_POST_CHOICE_RESP = "sp.key.gdpr.post.choice"
         const val GDPR_MESSAGE_METADATA = "sp.key.gdpr.message.metadata"
+        const val GDPR_DATE_CREATED = "sp.key.gdpr.date.created"
     }
 }
 
@@ -200,10 +204,10 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             spEditor.apply()
         }
 
-    override fun saveAuthId(value: String) {
+    override fun saveAuthId(value: String?) {
         preference
             .edit()
-            .putString(DataStorageGdpr.AUTH_ID_KEY, value)
+            .putString(AUTH_ID_KEY, value)
             .apply()
     }
 
@@ -282,6 +286,15 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 .apply()
         }
 
+    override var gdprDateCreated: String?
+        get() = preference.getString(GDPR_DATE_CREATED, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(GDPR_DATE_CREATED, value)
+                .apply()
+        }
+
     override var gdprConsentUuid: String?
         get() = preference.getString(CONSENT_UUID_KEY, null)
         set(value) {
@@ -327,6 +340,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 remove(KEY_GDPR)
                 remove(KEY_GDPR_CHILD_PM_ID)
                 remove(GDPR_POST_CHOICE_RESP)
+                remove(GDPR_DATE_CREATED)
                 remove(GDPR_MESSAGE_METADATA)
                 listIABTCF.forEach { remove(it) }
             }.apply()
