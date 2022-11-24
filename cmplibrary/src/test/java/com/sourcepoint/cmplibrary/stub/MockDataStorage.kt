@@ -65,8 +65,8 @@ internal class MockDataStorage : DataStorage {
             this.tcDataMap = value
         }
 
-    override fun saveAuthId(value: String) {
-        storage[DataStorageGdpr.AUTH_ID_KEY] = value
+    override fun saveAuthId(value: String?) {
+        storage[DataStorageGdpr.AUTH_ID_KEY] = value ?: ""
     }
 
     override fun saveEuConsent(value: String) {
@@ -237,4 +237,10 @@ internal class MockDataStorage : DataStorage {
         set(value) {
             value?.let { storage[DataStorageGdpr.CONSENT_UUID_KEY] = it }
         }
+    override var ccpaDateCreated: String?
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var gdprDateCreated: String?
+        get() = TODO("Not yet implemented")
+        set(value) {}
 }

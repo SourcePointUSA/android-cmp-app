@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_DATE_CREATED
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_MESSAGE_METADATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_POST_CHOICE_RESP
@@ -38,6 +39,8 @@ internal interface DataStorageCcpa {
     var ccpaMessageMetaData: String?
     var ccpaConsentUuid: String?
 
+    var ccpaDateCreated: String?
+
     fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
     var usPrivacyString: String?
@@ -61,6 +64,7 @@ internal interface DataStorageCcpa {
         const val CCPA_POST_CHOICE_RESP = "sp.key.ccpa.post.choice"
         const val CCPA_STATUS = "sp.key.ccpa.v7.status"
         const val CCPA_MESSAGE_METADATA = "sp.key.ccpa.message.metadata"
+        const val CCPA_DATE_CREATED = "sp.key.ccpa.date.created"
     }
 }
 
@@ -146,6 +150,17 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             }
         }
 
+    override var ccpaDateCreated: String?
+        get() = preference.getString(CCPA_DATE_CREATED, null)
+        set(value) {
+            value?.let {
+                preference
+                    .edit()
+                    .putString(CCPA_DATE_CREATED, it)
+                    .apply()
+            }
+        }
+
     override fun saveCcpaMessage(value: String) {
         preference
             .edit()
@@ -214,6 +229,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .remove(CCPA_POST_CHOICE_RESP)
             .remove(CCPA_STATUS)
             .remove(CCPA_MESSAGE_METADATA)
+            .remove(CCPA_DATE_CREATED)
             .apply()
     }
 }

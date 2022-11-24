@@ -19,7 +19,7 @@ internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
         euconsent = euconsent ?: "",
         acceptedCategories = acceptedCategories ?: emptyList(),
         childPmId = null,
-        applies = applies ?: false,
+        applies = gdprApplies ?: applies ?: false,
         thisContent = JSONObject()
     )
 }

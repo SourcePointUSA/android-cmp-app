@@ -15,8 +15,10 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
+import com.sourcepoint.cmplibrary.core.executeOnLeft
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
+import com.sourcepoint.cmplibrary.data.network.model.toConsentActionV7
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
@@ -197,7 +199,12 @@ internal class ConsentWebView(
         @JavascriptInterface
         override fun onAction(actionData: String) {
             checkWorkerThread("ConsentWebView on action")
-            val action = actionData.toConsentAction()
+
+            val action = actionData.toConsentActionV7()
+                .executeOnLeft { jsClientLib.onError(this@ConsentWebView, it) }
+                .getOrNull()
+                ?: return
+
             if (action.actionType == ActionType.PM_DISMISS && currentCampaignModel != null) {
                 jsClientLib.onAction(this@ConsentWebView, actionData, currentCampaignModel!!)
             } else if (action.actionType != ActionType.SHOW_OPTIONS && campaignQueue.isNotEmpty()) {

@@ -33,7 +33,7 @@ internal interface NetworkClient {
     fun sendConsent(
         consentReq: JSONObject,
         env: Env,
-        consentActionImpl: ConsentActionImpl
+        consentAction: ConsentAction
     ): Either<ConsentResp>
 
     fun sendCustomConsent(

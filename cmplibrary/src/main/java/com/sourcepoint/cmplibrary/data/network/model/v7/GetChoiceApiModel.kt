@@ -21,6 +21,6 @@ enum class ChoiceTypeParam(val type: String) {
 
 @Serializable
 data class ChoiceResp(
-    @SerialName("ccpa") val ccpa: CcpaCS?,
-    @SerialName("gdpr") val gdpr: GdprCS?
+    @SerialName("ccpa") val ccpa: CcpaCS? = null,
+    @SerialName("gdpr") val gdpr: GdprCS? = null
 )

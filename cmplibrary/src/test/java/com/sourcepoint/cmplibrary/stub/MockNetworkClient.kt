@@ -15,7 +15,7 @@ internal class MockNetworkClient(
         logicUnifiedMess?.invoke(messageReq, pSuccess, pError)
     }
 
-    override fun sendConsent(consentReq: JSONObject, env: Env, consentActionImpl: ConsentActionImpl): Either<ConsentResp> {
+    override fun sendConsent(consentReq: JSONObject, env: Env, consentAction: ConsentAction): Either<ConsentResp> {
         TODO("Not yet implemented")
     }
 

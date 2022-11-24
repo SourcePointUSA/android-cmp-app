@@ -257,7 +257,7 @@ private class ResponseManagerImpl(
         val status = r.code()
         val mess = r.message()
         logger.res(
-            tag = "PvDataResp",
+            tag = "MessagesResp",
             msg = mess,
             body = body,
             status = status.toString()
@@ -277,7 +277,7 @@ private class ResponseManagerImpl(
         val status = r.code()
         val mess = r.message()
         logger.res(
-            tag = "PvDataResp",
+            tag = "MessagesResp",
             msg = mess,
             body = body,
             status = status.toString()

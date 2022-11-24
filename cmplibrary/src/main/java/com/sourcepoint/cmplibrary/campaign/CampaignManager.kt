@@ -90,8 +90,12 @@ internal interface CampaignManager {
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
     var messagesV7LocalState: JsonElement?
-    val gdprUuid: String?
-    val ccpaUuid: String?
+    var gdprUuid: String?
+    var ccpaUuid: String?
+
+    // dateCreated
+    var gdprDateCreated: Instant?
+    var ccpaDateCreated: Instant?
 
 //    var consentStatus: ConsentStatus?zvz
 //    var ccpaStatus: CcpaStatus?
@@ -100,6 +104,7 @@ internal interface CampaignManager {
     var pvDataResp: PvDataResp?
     var choiceResp: ChoiceResp?
     var dataRecordedConsent: Instant?
+    var authId: String?
 
     fun getChoiceBody(): JsonObject
     fun getPvDataBody(messageReq: MessagesParamReq): JsonObject
@@ -493,6 +498,10 @@ private class CampaignManagerImpl(
         dataStorage.clearCcpaConsent()
     }
 
+    override var authId: String?
+        get() = dataStorage.getAuthId()
+        set(value) { dataStorage.saveAuthId(value) }
+
     // V7 Implementation below
 
     val isNewUser: Boolean
@@ -507,25 +516,25 @@ private class CampaignManagerImpl(
     override val shouldCallMessages: Boolean
         get() {
 
-            val gdprToBeComplete: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.GDPR }
+            val gdprToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.GDPR }
                 ?.let {
-                    dataStorage.gdprApplies && (gdprConsentStatus?.consentStatus?.consentedAll == null || gdprConsentStatus?.consentStatus?.consentedAll == false)
+                    dataStorage.gdprApplies && (gdprConsentStatus?.consentStatus?.consentedAll != true)
                 }
                 ?: false
 
-            val ccpaToBeComplete: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.CCPA }
+            val ccpaToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.CCPA }
                 ?.let { true }
                 ?: false
 
-            val res = isNewUser || ccpaToBeComplete || gdprToBeComplete
+            val res = isNewUser || ccpaToBeCompleted || gdprToBeCompleted
 
-            println(
-                """
-                xxx isNewUser[$isNewUser]
-                xxx ccpaToBeComplete[$ccpaToBeComplete]
-                xxx gdprToBeComplete[$gdprToBeComplete]
-                xxx shouldCallMessages[$res]  
-                xxx =====================================
+            logger?.computation(
+                tag = "shouldCallMessages",
+                msg = """
+                isNewUser[$isNewUser]
+                ccpaToBeCompleted[$ccpaToBeCompleted]
+                gdprToBeCompleted[$gdprToBeCompleted]
+                shouldCallMessages[$res]  
                 """.trimIndent()
             )
 
@@ -537,7 +546,19 @@ private class CampaignManagerImpl(
             val gdprUUID = dataStorage.gdprConsentUuid
             val ccpaUUID = dataStorage.ccpaConsentUuid
             val localStateSize = messagesV7LocalState?.jsonObject?.size ?: 0
-            return ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0)
+            val res = ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0)
+
+            logger?.computation(
+                tag = "shouldCallConsentStatus",
+                msg = """
+                gdprUUID != null [${gdprUUID != null}]
+                ccpaUUID != null [${ccpaUUID != null}]
+                localStateSize empty [${localStateSize == 0}]
+                shouldCallMessages[$res]  
+                """.trimIndent()
+            )
+
+            return res
         }
 
     override var gdprMessageMetaData: MessageMetaData?
@@ -615,14 +636,36 @@ private class CampaignManagerImpl(
             dataStorage.messagesV7LocalState = serialised
         }
 
-    override val gdprUuid: String?
+    override var gdprUuid: String?
         get() {
             return dataStorage.gdprConsentUuid
         }
+        set(value) {
+            dataStorage.gdprConsentUuid = value
+        }
 
-    override val ccpaUuid: String?
+    override var ccpaUuid: String?
         get() {
             return dataStorage.ccpaConsentUuid
+        }
+        set(value) {
+            dataStorage.ccpaConsentUuid = value
+        }
+
+    override var gdprDateCreated: Instant?
+        get() {
+            return dataStorage.gdprDateCreated?.let { Instant.parse(it) }
+        }
+        set(value) {
+            dataStorage.gdprDateCreated = value?.toString()
+        }
+
+    override var ccpaDateCreated: Instant?
+        get() {
+            return dataStorage.ccpaDateCreated?.let { Instant.parse(it) }
+        }
+        set(value) {
+            dataStorage.ccpaDateCreated = value?.toString()
         }
 
     override var metaDataResp: MetaDataResp?
