@@ -90,6 +90,7 @@ private class ServiceImpl(
                     CCPA -> {
                         dataStorage.saveCcpaConsentResp(it.userConsent ?: "")
                         dataStorage.saveCcpaConsentUuid(it.uuid)
+                        dataStorage.saveUsPrivacyString(it.content.getJSONObject("userConsent").getString("uspstring")?:"")
                     }
                 }
             }
