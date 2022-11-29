@@ -53,6 +53,10 @@ class SpFragment : Fragment() {
         viewModel.fetchItems()
     }
 
+    fun update(){
+        viewModel.fetchItems()
+    }
+
     private fun stateHandler(state: BaseState) {
         (state as? BaseState.StateSpItemList)?.let { adapter.addAndClearElements(it.spList) }
     }
