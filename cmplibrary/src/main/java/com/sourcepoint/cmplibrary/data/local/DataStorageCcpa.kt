@@ -53,18 +53,18 @@ internal interface DataStorageCcpa {
     fun clearAll()
 
     companion object {
-        const val KEY_CCPA = "sp.key.ccpa"
+        const val KEY_CCPA = "sp.ccpa.key"
         const val KEY_CCPA_APPLIES = "sp.ccpa.key.applies"
-        const val KEY_CCPA_CHILD_PM_ID = "sp.key.ccpa.childPmId"
+        const val KEY_CCPA_CHILD_PM_ID = "sp.ccpa.key.childPmId"
         const val CCPA_CONSENT_RESP = "sp.ccpa.consent.resp"
         const val CCPA_JSON_MESSAGE = "sp.ccpa.json.message"
         const val CONSENT_CCPA_UUID_KEY = "sp.ccpa.consentUUID"
         const val KEY_IAB_US_PRIVACY_STRING = "IABUSPrivacy_String"
-        const val KEY_CCPA_MESSAGE_SUBCATEGORY = "sp.key.ccpa.message.subcategory"
-        const val CCPA_POST_CHOICE_RESP = "sp.key.ccpa.post.choice"
-        const val CCPA_STATUS = "sp.key.ccpa.v7.status"
-        const val CCPA_MESSAGE_METADATA = "sp.key.ccpa.message.metadata"
-        const val CCPA_DATE_CREATED = "sp.key.ccpa.date.created"
+        const val KEY_CCPA_MESSAGE_SUBCATEGORY = "sp.ccpa.key.message.subcategory"
+        const val CCPA_POST_CHOICE_RESP = "sp.ccpa.key.post.choice"
+        const val CCPA_STATUS = "sp.ccpa.key.v7.status"
+        const val CCPA_MESSAGE_METADATA = "sp.ccpa.key.message.metadata"
+        const val CCPA_DATE_CREATED = "sp.ccpa.key.date.created"
     }
 }
 

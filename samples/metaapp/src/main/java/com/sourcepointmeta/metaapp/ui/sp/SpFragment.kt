@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.BaseState
-import kotlinx.android.synthetic.main.fragment_item_list.*
+import kotlinx.android.synthetic.main.sp_fragment_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SpFragment : Fragment() {
@@ -34,7 +34,7 @@ class SpFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_item_list, container, false)
+        return inflater.inflate(R.layout.sp_fragment_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,8 +53,10 @@ class SpFragment : Fragment() {
         viewModel.fetchItems()
     }
 
-    fun update(){
-        viewModel.fetchItems()
+    fun update() {
+        if (isAdded) {
+            viewModel.fetchItems()
+        }
     }
 
     private fun stateHandler(state: BaseState) {

@@ -33,11 +33,11 @@ import com.sourcepointmeta.metaapp.data.localdatasource.RemoteDataSource
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
 import com.sourcepointmeta.metaapp.ui.sp.SpFragment
-import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4LogFragment.Companion.LOG_ID
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4LogFragment.Companion.TITLE
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4SharedPrefFragment.Companion.SP_KEY
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4SharedPrefFragment.Companion.SP_VALUE
+import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
 import io.github.g00fy2.versioncompare.Version
 import kotlinx.android.synthetic.main.activity_demo.* // ktlint-disable
 import kotlinx.android.synthetic.main.native_message.view.* // ktlint-disable
