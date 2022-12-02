@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <TextView
+            android:id="@+id/expandedListItem"
+            tools:text="Content"
+            app:layout_constraintTop_toBottomOf="@id/log_body"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:layout_width="match_parent"
+            android:textColor="?android:attr/textColorAlertDialogListItem"
+            android:paddingBottom="8dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="8dp"
+            android:maxLines="5"
+            android:ellipsize="marquee"
+            android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
+            android:divider="?android:attr/textColorAlertDialogListItem"
+            android:dividerHeight="0.5dp"
+    />
+
+</LinearLayout>
