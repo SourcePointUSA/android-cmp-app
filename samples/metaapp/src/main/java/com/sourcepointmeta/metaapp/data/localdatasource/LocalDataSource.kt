@@ -269,7 +269,7 @@ private class LocalDataSourceImpl(
                         propertyName = p.propertyName
                         messageTimeout = p.timeout ?: 3000L
                         campaignsEnv = p.campaignsEnv
-                        propertyId = p.propertyId?.toInt()
+                        propertyId = p.propertyId.toInt()
                         messLanguage = MessageLanguage.values()
                             .find { it.name == p.messageLanguage }
                             ?: MessageLanguage.ENGLISH

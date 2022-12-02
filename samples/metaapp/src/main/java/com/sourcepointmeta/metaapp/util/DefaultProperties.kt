@@ -17,7 +17,8 @@ val defaultProperty = Property(
     statusCampaignSet = setOf(StatusCampaign("ott.test.suite", CampaignType.GDPR, true)),
     gdprPmId = 579231L,
     ccpaPmId = 1L,
-    campaignsEnv = CampaignsEnv.PUBLIC
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 22231
 )
 
 val defaultProperty1 = Property(

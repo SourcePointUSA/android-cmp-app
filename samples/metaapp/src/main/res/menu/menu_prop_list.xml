@@ -10,18 +10,6 @@
             app:showAsAction="always"/>
 
     <item
-            android:id="@+id/action_v7"
-            android:icon="@drawable/ic_baseline_filter_7_24"
-            android:title="V7"
-            app:showAsAction="never"/>
-
-    <item
-            android:id="@+id/action_v6"
-            android:icon="@drawable/ic_baseline_looks_6_24"
-            android:title="V6"
-            app:showAsAction="never"/>
-
-    <item
             android:id="@+id/action_add_prop"
             android:icon="@drawable/ic_baseline_playlist_add_24"
             android:title="@string/add_properties"

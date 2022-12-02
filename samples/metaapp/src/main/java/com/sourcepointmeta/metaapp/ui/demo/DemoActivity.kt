@@ -180,8 +180,8 @@ class DemoActivity : FragmentActivity() {
         tool_bar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_share -> logFr.shareLogs()
-                R.id.action_refresh -> triggerLib()
                 R.id.action_clear_log -> logFr.clearLog()
+                R.id.action_refresh -> triggerLib()
             }
             true
         }
@@ -189,6 +189,7 @@ class DemoActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
+        checkVersion()
         triggerLib()
     }
 
@@ -248,6 +249,7 @@ class DemoActivity : FragmentActivity() {
 
         override fun onSpFinished(sPConsents: SPConsents) {
             spClientObserver.forEach { it.onSpFinished(sPConsents) }
+            spFr.update()
         }
 
         override fun onNoIntentActivitiesFound(url: String) {
