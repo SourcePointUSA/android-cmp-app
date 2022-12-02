@@ -66,6 +66,7 @@ class MainActivityKotlinTest {
 
     private val spConfCcpa = config {
         accountId = 22
+        propertyId = 16893
         propertyName = "mobile.multicampaign.demo"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
@@ -74,6 +75,7 @@ class MainActivityKotlinTest {
 
     private val spConfGdpr = config {
         accountId = 22
+        propertyId = 16893
         propertyName = "mobile.multicampaign.demo"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
@@ -82,6 +84,7 @@ class MainActivityKotlinTest {
 
     private val spConfGdprGroupId = config {
         accountId = 22
+        propertyId = 24188
         propertyName = "mobile.prop-1"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
@@ -90,6 +93,7 @@ class MainActivityKotlinTest {
 
     private val spConf = config {
         accountId = 22
+        propertyId = 16893
         propertyName = "mobile.multicampaign.demo"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
@@ -99,6 +103,7 @@ class MainActivityKotlinTest {
 
     private val spConfNative = config {
         accountId = 22
+        propertyId = 18958
         propertyName = "mobile.multicampaign.native.demo" // gdprPmId = 545258
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000

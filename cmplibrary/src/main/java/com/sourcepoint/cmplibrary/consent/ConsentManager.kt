@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.core.Either.Left
 import com.sourcepoint.cmplibrary.core.Either.Right
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
+import com.sourcepoint.cmplibrary.core.executeOnRight
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -206,6 +207,9 @@ private class ConsentManagerImpl(
         executorManager.executeOnSingleThread {
             service.sendConsentV7(actionImpl, env, sPConsentsSuccess, actionImpl.privacyManagerId)
                 .executeOnLeft { sPConsentsError?.invoke(it) }
+                .executeOnRight {
+                    clientEventManager.storedConsent()
+                }
         }
     }
 }
