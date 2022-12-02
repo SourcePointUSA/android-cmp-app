@@ -1,10 +1,9 @@
 package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.assertTrue
-import com.sourcepoint.cmplibrary.data.network.model.toAcceptedCategories
-import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
-import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
+import com.sourcepoint.cmplibrary.data.network.model.*
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.file2String
@@ -287,4 +286,37 @@ class ConsentRespExtKtTest {
           }
         }
     """.trimIndent()
+
+    @Test
+    fun `GIVEN a JSON consent with NOT EMPTY uspstring and rejectedVendors RETURN a consent object`() {
+        val jsonObject = JSONObject(
+            """
+            { "consents": { "uspstring": "1---" } }
+            """.trimIndent()
+        )
+        val test = jsonObject.getJSONObjectOrNullByKey("consents")?.getStringOrNullByKey("uspstring")
+        test.assertEquals("1---")
+    }
+
+    @Test
+    fun `GIVEN a JSON consent with NO uspstring and rejectedVendors RETURN a consent object`() {
+        val jsonObject = JSONObject(
+            """
+            { "consents": {  } }
+            """.trimIndent()
+        )
+        val test = jsonObject.getJSONObjectOrNullByKey("consents")?.getStringOrNullByKey("uspstring")
+        test.assertNull()
+    }
+
+    @Test
+    fun `GIVEN a JSON consent with NO consents and rejectedVendors RETURN a consent object`() {
+        val jsonObject = JSONObject(
+            """
+            {  }
+            """.trimIndent()
+        )
+        val test = jsonObject.getJSONObjectOrNullByKey("consents")?.getStringOrNullByKey("uspstring")
+        test.assertNull()
+    }
 }
