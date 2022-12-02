@@ -17,6 +17,7 @@ import com.sourcepointmeta.metaapp.tv.initEntranceTransition
 import com.sourcepointmeta.metaapp.tv.updatePListAndSelectLast
 import com.sourcepointmeta.metaapp.tv.updatePropertyListAndClose
 import com.sourcepointmeta.metaapp.ui.BaseState
+import com.sourcepointmeta.metaapp.util.defaultProperty
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailPropertyFragment : DetailsSupportFragment() {

@@ -18,8 +18,8 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
         const val DATA_RECORDED_CONSENT = "sp.key.data.recorded.consent"
 
         const val CONSENT_STATUS_RESPONSE = "sp.key.consent.status.response"
-        const val GDPR_CONSENT_STATUS = "sp.key.gdpr.consent.status"
-        const val CCPA_CONSENT_STATUS = "sp.key.ccpa.consent.status"
+        const val GDPR_CONSENT_STATUS = "sp.gdpr.key.consent.status"
+        const val CCPA_CONSENT_STATUS = "sp.ccpa.key.consent.status"
         const val MESSAGES_V7_LOCAL_STATE = "sp.key.messages.v7.local.state"
     }
 

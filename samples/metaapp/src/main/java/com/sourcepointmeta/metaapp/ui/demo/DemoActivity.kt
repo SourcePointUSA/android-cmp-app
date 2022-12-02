@@ -32,9 +32,12 @@ import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.RemoteDataSource
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
+import com.sourcepointmeta.metaapp.ui.sp.SpFragment
+import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4LogFragment.Companion.LOG_ID
+import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4LogFragment.Companion.TITLE
+import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4SharedPrefFragment.Companion.SP_KEY
+import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4SharedPrefFragment.Companion.SP_VALUE
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
-import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.LOG_ID
-import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.TITLE
 import io.github.g00fy2.versioncompare.Version
 import kotlinx.android.synthetic.main.activity_demo.* // ktlint-disable
 import kotlinx.android.synthetic.main.native_message.view.* // ktlint-disable
@@ -106,6 +109,7 @@ class DemoActivity : FragmentActivity() {
 
     private val demoFr by lazy { DemoFragment.instance(config.propertyName) }
     private val logFr by lazy { LogFragment.instance(config.propertyName) }
+    private val spFr by lazy { SpFragment.instance() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -162,6 +166,14 @@ class DemoActivity : FragmentActivity() {
             val intent = Intent(baseContext, JsonViewerActivity::class.java)
             intent.putExtra(LOG_ID, it.id ?: -1L)
             intent.putExtra(TITLE, "${it.type} - ${it.tag}")
+            startActivity(intent)
+        }
+
+        spFr.spItemClickListener = { key, value ->
+            intent.putExtra("run_demo", false)
+            val intent = Intent(baseContext, JsonViewerActivity::class.java)
+            intent.putExtra(SP_KEY, key)
+            intent.putExtra(SP_VALUE, value)
             startActivity(intent)
         }
 
@@ -252,12 +264,13 @@ class DemoActivity : FragmentActivity() {
 
     inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
 
-        override fun getItemCount(): Int = 2
+        override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> logFr
-                else -> demoFr
+                1 -> demoFr
+                else -> spFr
             }
         }
     }

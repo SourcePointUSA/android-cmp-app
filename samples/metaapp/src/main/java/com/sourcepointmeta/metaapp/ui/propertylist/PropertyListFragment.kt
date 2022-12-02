@@ -132,6 +132,9 @@ class PropertyListFragment : Fragment() {
                     v7 = false
                     updateTitle()
                 }
+                R.id.action_add_prop -> {
+                    viewModel.addDefaultProperties()
+                }
             }
             true
         }

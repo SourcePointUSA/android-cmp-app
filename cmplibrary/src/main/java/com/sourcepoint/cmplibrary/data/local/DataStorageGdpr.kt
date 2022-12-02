@@ -89,15 +89,15 @@ internal interface DataStorageGdpr {
         const val DEFAULT_META_DATA = "{}"
         val DEFAULT_AUTH_ID: String? = null
         const val IABTCF_KEY_PREFIX = "IABTCF_"
-        const val KEY_GDPR_APPLIES = "sp.key.gdpr.applies"
-        const val KEY_GDPR_CHILD_PM_ID = "sp.key.gdpr.childPmId"
-        const val KEY_GDPR_MESSAGE_SUBCATEGORY = "sp.key.gdpr.message.subcategory"
+        const val KEY_GDPR_APPLIES = "sp.gdpr.key.applies"
+        const val KEY_GDPR_CHILD_PM_ID = "sp.gdpr.key.childPmId"
+        const val KEY_GDPR_MESSAGE_SUBCATEGORY = "sp.gdpr.key.message.subcategory"
         const val GDPR_CONSENT_RESP = "sp.gdpr.consent.resp"
         const val GDPR_JSON_MESSAGE = "sp.gdpr.json.message"
         const val GDPR_TCData = "TCData"
-        const val GDPR_POST_CHOICE_RESP = "sp.key.gdpr.post.choice"
-        const val GDPR_MESSAGE_METADATA = "sp.key.gdpr.message.metadata"
-        const val GDPR_DATE_CREATED = "sp.key.gdpr.date.created"
+        const val GDPR_POST_CHOICE_RESP = "sp.gdpr.key.post.choice"
+        const val GDPR_MESSAGE_METADATA = "sp.gdpr.key.message.metadata"
+        const val GDPR_DATE_CREATED = "sp.gdpr.key.date.created"
     }
 }
 
@@ -108,7 +108,7 @@ internal fun DataStorageGdpr.Companion.create(
 private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
 
     companion object {
-        const val KEY_GDPR = "sp.key.gdpr"
+        const val KEY_GDPR = "sp.gdpr.key"
     }
 
     override val preference: SharedPreferences by lazy {
