@@ -177,15 +177,7 @@ internal class MockDataStorage : DataStorage {
         TODO("Not yet implemented")
     }
 
-    override fun savePropertyId(value: Int) {
-        TODO("Not yet implemented")
-    }
-
     override fun savePropertyPriorityData(value: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getPropertyId(): Int {
         TODO("Not yet implemented")
     }
 

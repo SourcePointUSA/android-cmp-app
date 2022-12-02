@@ -190,8 +190,8 @@ class TestUseCase {
             checkElementWithText("authId", autId)
         }
 
-        fun checkUUID(uuid : String) {
-            containsText(R.id.consent_uuid, uuid)
+        fun checkEuconsent(euconsent : String) {
+            containsText(R.id.consent_uuid, euconsent)
         }
 
         fun checkAuthIdIsNotDisplayed() {

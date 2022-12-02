@@ -121,8 +121,8 @@ private class ClientEventManagerImpl(
     }
 
     private fun getSPConsents() = check<SPConsents> {
-        val ccpaCached = consentManagerUtils.getCcpaConsent().getOrNull()
-        val gdprCached = consentManagerUtils.getGdprConsent().getOrNull()
+        val ccpaCached = consentManagerUtils.ccpaConsentV7.getOrNull()
+        val gdprCached = consentManagerUtils.gdprConsentV7.getOrNull()
         SPConsents(
             gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
             ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }

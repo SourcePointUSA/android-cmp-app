@@ -255,7 +255,7 @@ private class CampaignManagerImpl(
         groupPmId: String?
     ): Either<PmUrlConfig> = check {
         val uuid = dataStorage.gdprConsentUuid
-        val siteId = spConfig.propertyId?.toString() ?: dataStorage.getPropertyId().toString()
+        val siteId = spConfig.propertyId.toString()
 
         val childPmId: String? = dataStorage.gdprChildPmId
         val isChildPmIdAbsent: Boolean = childPmId == null
@@ -296,7 +296,7 @@ private class CampaignManagerImpl(
 
     private fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = check {
         val uuid = dataStorage.ccpaConsentUuid
-        val siteId = spConfig.propertyId?.toString() ?: dataStorage.getPropertyId().toString()
+        val siteId = spConfig.propertyId.toString()
 
         val childPmId: String? = dataStorage.ccpaChildPmId
         val isChildPmIdAbsent: Boolean = childPmId == null
@@ -472,12 +472,10 @@ private class CampaignManagerImpl(
         // save GDPR uuid
         map.getMap("gdpr")?.apply {
             getFieldValue<String>("uuid")?.let { dataStorage.gdprConsentUuid = it }
-            getFieldValue<Int>("propertyId")?.let { dataStorage.savePropertyId(it) }
         }
         // save GDPR uuid
         map.getMap("ccpa")?.apply {
             getFieldValue<String>("uuid")?.let { dataStorage.ccpaConsentUuid = it }
-            getFieldValue<Int>("propertyId")?.let { dataStorage.savePropertyId(it) }
         }
 
         // save campaigns and consents

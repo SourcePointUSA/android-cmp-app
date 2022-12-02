@@ -17,8 +17,8 @@ class MainActivityViewConsent : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_consent)
         val consent = userConsents(this.applicationContext)
-        val uuid = consent.gdpr?.consent?.uuid ?: "NO DATA"
-        consent_uuid.text = uuid
-        Log.i(TAG, "uuid: $uuid")
+        val euconsent = consent.gdpr?.consent?.euconsent ?: "NO DATA"
+        consent_uuid.text = euconsent
+        Log.i(TAG, "euconsent: $euconsent")
     }
 }
