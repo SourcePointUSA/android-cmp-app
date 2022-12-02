@@ -18,6 +18,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_DATE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_MESSAGE_METADATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_POST_CHOICE_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_SAMPLING_VALUE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_TCData
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES
@@ -51,6 +52,8 @@ internal interface DataStorageGdpr {
     var tcDataV7: Map<String, String>?
 
     var gdprDateCreated: String?
+
+    var gdprSamplingValue: Double
 
     fun saveGdpr(value: String)
     fun getGdpr(): String?
@@ -98,6 +101,7 @@ internal interface DataStorageGdpr {
         const val GDPR_POST_CHOICE_RESP = "sp.gdpr.key.post.choice"
         const val GDPR_MESSAGE_METADATA = "sp.gdpr.key.message.metadata"
         const val GDPR_DATE_CREATED = "sp.gdpr.key.date.created"
+        const val GDPR_SAMPLING_VALUE = "sp.gdpr.key.sampling"
     }
 }
 
@@ -295,6 +299,15 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 .apply()
         }
 
+    override var gdprSamplingValue: Double
+        get() = preference.getFloat(GDPR_SAMPLING_VALUE, 1.0F).toDouble()
+        set(value) {
+            preference
+                .edit()
+                .putFloat(GDPR_SAMPLING_VALUE, value.toFloat())
+                .apply()
+        }
+
     override var gdprConsentUuid: String?
         get() = preference.getString(CONSENT_UUID_KEY, null)
         set(value) {
@@ -342,6 +355,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 remove(GDPR_POST_CHOICE_RESP)
                 remove(GDPR_DATE_CREATED)
                 remove(GDPR_MESSAGE_METADATA)
+                remove(GDPR_SAMPLING_VALUE)
                 listIABTCF.forEach { remove(it) }
             }.apply()
     }

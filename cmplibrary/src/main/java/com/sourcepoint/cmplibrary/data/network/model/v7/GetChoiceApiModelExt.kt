@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.data.network.model.v7
 
-import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import kotlinx.serialization.json.* //ktlint-disable
@@ -11,6 +10,7 @@ internal fun toChoiceBody(
     propertyId: Int?,
     gdprApplies: Boolean?,
     gdprMessageMetaData: MessageMetaData?,
+    sampleRate: Double,
     fromTest: Boolean = true,
 ): JsonObject {
     return buildJsonObject {
@@ -23,6 +23,6 @@ internal fun toChoiceBody(
         put("subCategoryId", gdprMessageMetaData?.subCategoryId?.code)
         put("prtnUUID", gdprMessageMetaData?.prtnUUID)
         put("fromTest", fromTest)
-        put("sampleRate", BuildConfig.SAMPLE_RATE)
+        put("sampleRate", sampleRate)
     }
 }

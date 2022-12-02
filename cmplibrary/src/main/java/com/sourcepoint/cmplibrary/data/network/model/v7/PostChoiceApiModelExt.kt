@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.converter
 import kotlinx.serialization.json.* // ktlint-disable
 
 internal fun postChoiceGdprBody(
-    sampleRate: Int,
+    sampleRate: Double,
     propertyId: Long,
     messageId: Long?,
     consentAllRef: String?,
@@ -40,7 +40,7 @@ internal fun postChoiceGdprBody(
 }
 
 internal fun postChoiceCcpaBody(
-    sampleRate: Int,
+    sampleRate: Double,
     propertyId: Long,
     messageId: Long?,
     pubData: JsonObject? = null,

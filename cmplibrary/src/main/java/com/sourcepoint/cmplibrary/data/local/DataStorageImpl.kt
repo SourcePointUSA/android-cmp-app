@@ -17,7 +17,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_PRIORITY_DATA
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PV_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.SAVED_CONSENT
-import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.TRIGGER_BY_SAMPLE
 
 /**
  * Factory method to create an instance of a [DataStorage] using its implementation
@@ -48,15 +47,6 @@ private class DataStorageImpl(
             preference
                 .edit()
                 .putBoolean(SAVED_CONSENT, value)
-                .apply()
-        }
-
-    override var shouldTriggerBySample: Boolean
-        get() = preference.getBoolean(TRIGGER_BY_SAMPLE, false)
-        set(value) {
-            preference
-                .edit()
-                .putBoolean(TRIGGER_BY_SAMPLE, value)
                 .apply()
         }
 
@@ -192,7 +182,6 @@ private class DataStorageImpl(
             .remove(PROPERTY_PRIORITY_DATA)
             .remove(PROPERTY_ID)
             .remove(SAVED_CONSENT)
-            .remove(TRIGGER_BY_SAMPLE)
             .remove(MESSAGES_V7)
             .remove(META_DATA_RESP)
             .remove(PV_DATA_RESP)
