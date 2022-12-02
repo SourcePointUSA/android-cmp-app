@@ -139,7 +139,8 @@ private class ServiceImpl(
 
             val meta = this.getMetaData(messageReq.toMetaDataParamReq())
                 .executeOnLeft {
-                    execManager.executeOnMain { showConsent() }
+                    pError(it)
+//                    execManager.executeOnMain { showConsent() }
                     return@executeOnWorkerThread
                 }
                 .executeOnRight { campaignManager.metaDataResp = it }
@@ -154,7 +155,8 @@ private class ServiceImpl(
 
                 getConsentStatus(csParams)
                     .executeOnLeft {
-                        execManager.executeOnMain { showConsent() }
+                        pError(it)
+//                        execManager.executeOnMain { showConsent() }
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
@@ -220,7 +222,8 @@ private class ServiceImpl(
 
                 val statusResp = getMessages(messagesParamReq)
                     .executeOnLeft {
-                        execManager.executeOnMain { showConsent() }
+                        pError(it)
+//                        execManager.executeOnMain { showConsent() }
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
@@ -245,10 +248,13 @@ private class ServiceImpl(
                         )
                     )
                         .executeOnLeft {
-                            execManager.executeOnMain { showConsent() }
+                            pError(it)
+//                            execManager.executeOnMain { showConsent() }
                             return@executeOnWorkerThread
                         }
-                        .executeOnRight { campaignManager.choiceResp = it }
+                        .executeOnRight {
+                            campaignManager.choiceResp = it
+                        }
                 }
 
                 if ((campaignManager.gdprConsentStatus != null || campaignManager.ccpaConsentStatus != null) &&
@@ -262,7 +268,8 @@ private class ServiceImpl(
 
                     savePvData(pvParams)
                         .executeOnLeft {
-                            execManager.executeOnMain { showConsent() }
+                            pError(it)
+//                            execManager.executeOnMain { showConsent() }
                             return@executeOnWorkerThread
                         }
                         .executeOnRight {
@@ -316,7 +323,7 @@ private class ServiceImpl(
             val gcParam = ChoiceParamReq(
                 choiceType = consentActionImpl.actionType.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
-                propertyId = spConfig.propertyId!!.toLong(),
+                propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.copy(ccpa = null)?.toMetaDataArg(),
                 body = choiceBody

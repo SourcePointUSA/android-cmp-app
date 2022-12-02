@@ -31,6 +31,7 @@ import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread
+import com.sourcepoint.cmplibrary.util.toConsentLibException
 import okhttp3.HttpUrl
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -316,7 +317,29 @@ internal class SpConsentLibImpl(
                     }
                 }
             },
-            pError = {
+            pError = { throwable ->
+                if (consentManager.storedConsent) {
+                    executor.executeOnSingleThread {
+                        consentManager.sendStoredConsentToClient()
+                        clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
+                    }
+                } else {
+                    (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
+                    val ex = throwable.toConsentLibException()
+                    spClient.onError(ex)
+                    pLogger.clientEvent(
+                        event = "onError",
+                        msg = "${throwable.message}",
+                        content = "${throwable.message}"
+                    )
+                    pLogger.e(
+                        "SpConsentLib",
+                        """
+                    onError
+                    ${throwable.message}
+                        """.trimIndent()
+                    )
+                }
             }
         )
     }
