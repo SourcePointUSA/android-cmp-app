@@ -601,7 +601,7 @@ internal class SpConsentLibImpl(
                             val legislation = nextCampaign.type
                             val url = nextCampaign.url
                             when (nextCampaign.messageSubCategory) {
-                                TCFv2 -> {
+                                TCFv2, OTT, NATIVE_OTT -> {
                                     executor.executeOnMain {
                                         iConsentWebView.loadConsentUI(
                                             nextCampaign,

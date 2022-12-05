@@ -140,7 +140,6 @@ private class ServiceImpl(
             val meta = this.getMetaData(messageReq.toMetaDataParamReq())
                 .executeOnLeft {
                     pError(it)
-//                    execManager.executeOnMain { showConsent() }
                     return@executeOnWorkerThread
                 }
                 .executeOnRight { campaignManager.metaDataResp = it }
@@ -156,7 +155,6 @@ private class ServiceImpl(
                 getConsentStatus(csParams)
                     .executeOnLeft {
                         pError(it)
-//                        execManager.executeOnMain { showConsent() }
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
@@ -223,7 +221,6 @@ private class ServiceImpl(
                 val statusResp = getMessages(messagesParamReq)
                     .executeOnLeft {
                         pError(it)
-//                        execManager.executeOnMain { showConsent() }
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
@@ -249,7 +246,6 @@ private class ServiceImpl(
                     )
                         .executeOnLeft {
                             pError(it)
-//                            execManager.executeOnMain { showConsent() }
                             return@executeOnWorkerThread
                         }
                         .executeOnRight {
@@ -269,7 +265,6 @@ private class ServiceImpl(
                     savePvData(pvParams)
                         .executeOnLeft {
                             pError(it)
-//                            execManager.executeOnMain { showConsent() }
                             return@executeOnWorkerThread
                         }
                         .executeOnRight {

@@ -43,7 +43,7 @@ data class MessagesResp(
                 campaigns?.gdpr?.let { add(it) }
                 campaigns?.ccpa?.let { add(it) }
             }.associateBy { it.type.toCategoryId() }
-            return priority.mapNotNull { list[it] }
+            return priority.mapNotNull { list[it] }.toSet().toList()
         }
 
     override fun toString(): String {
