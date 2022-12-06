@@ -135,19 +135,17 @@ internal fun Map<String, Map<String, Boolean>>.toAcceptedCategories(): Iterable<
 fun JSONObject.getStringOrNullByKey(
     key: String
 ): String?{
-    return try {
+    return if (!isNull(key))
         getString(key)
-    } catch (ex: JSONException){
-        return null
-    }
+    else
+        null
 }
 
 fun JSONObject.getJSONObjectOrNullByKey(
     key: String
 ): JSONObject?{
-    return try {
+    return if (!isNull(key))
         getJSONObject(key)
-    } catch (ex: JSONException){
-        return null
-    }
+    else
+        null
 }
