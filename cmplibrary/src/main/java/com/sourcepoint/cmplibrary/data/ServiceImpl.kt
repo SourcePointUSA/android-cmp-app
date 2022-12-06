@@ -233,7 +233,7 @@ private class ServiceImpl(
                     }
 
                 if (statusResp.getOrNull() != null) {
-                    val choiceBody = campaignManager.getChoiceBody()
+                    val choiceBody = campaignManager.getGdprChoiceBody()
                     getChoice(
                         ChoiceParamReq(
                             env = messageReq.env,
@@ -313,14 +313,14 @@ private class ServiceImpl(
         val at = consentActionImpl.actionType
         if (at == ActionType.ACCEPT_ALL || at == ActionType.REJECT_ALL) {
 
-            val choiceBody = campaignManager.getChoiceBody()
+            val choiceBody = campaignManager.getGdprChoiceBody()
 
             val gcParam = ChoiceParamReq(
                 choiceType = consentActionImpl.actionType.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
-                metadataArg = campaignManager.metaDataResp?.copy(ccpa = null)?.toMetaDataArg(),
+                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null),
                 body = choiceBody
             )
 
@@ -332,10 +332,8 @@ private class ServiceImpl(
                     }
                 }
                 .executeOnRight {
-                    it.gdpr?.let { g ->
-                        val cr = ConsentManager.responseConsentHandler(g, consentManagerUtils)
-                        sPConsentsSuccess?.invoke(cr)
-                    }
+                    val cr = ConsentManager.responseConsentHandler(it.gdpr, consentManagerUtils)
+                    sPConsentsSuccess?.invoke(cr)
                 }
                 .getOrNull()
         }
@@ -399,20 +397,21 @@ private class ServiceImpl(
         val at = consentActionImpl.actionType
         if (at == ActionType.ACCEPT_ALL || at == ActionType.REJECT_ALL) {
 
+            val choiceBody = campaignManager.getCcpaChoiceBody()
+
             val gcParam = ChoiceParamReq(
                 choiceType = at.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
-                propertyId = spConfig.propertyId!!.toLong(),
+                propertyId = spConfig.propertyId.toLong(),
                 env = env,
-                metadataArg = campaignManager.metaDataResp?.copy(gdpr = null)?.toMetaDataArg()
+                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null),
+                body = choiceBody
             )
             nc.getChoice(gcParam)
                 .executeOnRight { r ->
-                    r.ccpa?.let {
-                        campaignManager.ccpaConsentStatus = it
-                        val cr = ConsentManager.responseConsentHandler(it, consentManagerUtils)
-                        sPConsentsSuccess?.invoke(cr)
-                    }
+                    campaignManager.ccpaConsentStatus = r.ccpa
+                    val cr = ConsentManager.responseConsentHandler(r.ccpa, consentManagerUtils)
+                    sPConsentsSuccess?.invoke(cr)
                 }
         }
 

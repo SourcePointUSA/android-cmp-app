@@ -52,8 +52,9 @@ class MainActivityKotlin : AppCompatActivity() {
         spConfig = dataProvider.spConfig
 //        config {
 //            accountId = 22
-//            propertyName = "mobile.multicampaign.native.demo"
+//            propertyName = "sca-ott-newwebpm"
 //            messLanguage = MessageLanguage.ENGLISH
+//            propertyId = 27927
 //            +(CampaignType.GDPR)
 //            +(CampaignType.CCPA to listOf(("location" to "US")))
 //        }

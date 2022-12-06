@@ -11,6 +11,7 @@ enum class ActionType(val code: Int) {
     SAVE_AND_EXIT(1),
     PM_DISMISS(2),
     GET_MSG_ERROR(-2),
+    GET_MSG_NOT_CALLED(-3),
     UNKNOWN(-1);
 }
 
@@ -20,6 +21,7 @@ enum class NativeMessageActionType(val code: Int) {
     ACCEPT_ALL(11),
     MSG_CANCEL(15),
     GET_MSG_ERROR(-2),
+    GET_MSG_NOT_CALLED(-3),
     UNKNOWN(-1),
 }
 

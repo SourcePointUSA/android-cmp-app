@@ -116,10 +116,29 @@ val defaultProperty5 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC
 )
 
+val defaultProperty6 = Property(
+    accountId = 22,
+    propertyName = "sca-ott-newwebpm",
+    propertyId = 27927,
+    timeout = 3000,
+    authId = null,
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    is_staging = false,
+    targetingParameters = emptyList(),
+    statusCampaignSet = setOf(
+        StatusCampaign("sca-ott-newwebpm", CampaignType.GDPR, true),
+    ),
+    gdprPmId = 704111L,
+    ccpaPmId = 704111L,
+    campaignsEnv = CampaignsEnv.PUBLIC,
+)
+
 val propList = listOf(
     defaultProperty1,
     defaultProperty2,
     defaultProperty3,
     defaultProperty4,
-    defaultProperty5
+    defaultProperty5,
+    defaultProperty6,
 )

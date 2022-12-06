@@ -377,6 +377,43 @@ class MainActivityKotlinTest {
             }
         }
     }
+    @Test
+    fun GIVEN_a_camapignList_ACCEPT_all_legislation() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        periodicWr(backup = { scenario.recreateAndResume() }) { tapAcceptAllOnWebView() }
+        wr { tapAcceptAllOnWebView() }
+
+        verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
+        wr { verify(atLeast = 2) { spClient.onUIReady(any()) } }
+        wr { verify(exactly = 2) { spClient.onAction(any(), any()) } }
+        verify(exactly = 1) { spClient.onUIFinished(any()) }
+
+        verify {
+            spClient.run {
+                onUIReady(any())
+                onUIFinished(any())
+                onUIReady(any())
+                onAction(any(), any())
+                onUIReady(any())
+                onConsentReady(any())
+            }
+        }
+    }
 
     @Test
     fun GIVEN_consent_USING_gdpr_pm() = runBlocking<Unit> {

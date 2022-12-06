@@ -268,12 +268,14 @@ internal class SpConsentLibImpl(
             .getOrNull() ?: return
         service.getMessages(
             messageReq = param,
-            showConsent = { consentManager.sendStoredConsentToClientV7() },
+            showConsent = {
+                consentManager.sendStoredConsentToClientV7()
+                clientEventManager.setAction(NativeMessageActionType.GET_MSG_NOT_CALLED)
+            },
             pSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)
                 clientEventManager.setCampaignNumber(list.size)
                 if (list.isEmpty()) {
-                    consentManager.sendStoredConsentToClient()
                     consentManager.sendStoredConsentToClientV7()
                     return@getMessages
                 }
@@ -320,7 +322,7 @@ internal class SpConsentLibImpl(
             pError = { throwable ->
                 if (consentManager.storedConsent) {
                     executor.executeOnSingleThread {
-                        consentManager.sendStoredConsentToClient()
+                        consentManager.sendStoredConsentToClientV7()
                         clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
                     }
                 } else {
@@ -569,6 +571,10 @@ internal class SpConsentLibImpl(
             )
         }
 
+        override fun dismiss(view: View) {
+            viewManager.removeView(view)
+        }
+
         override fun onNoIntentActivitiesFoundFor(view: View, url: String) {
             spClient.onNoIntentActivitiesFound(url)
             pLogger.clientEvent(
@@ -674,7 +680,7 @@ internal class SpConsentLibImpl(
                 executor.executeOnSingleThread {
                     val editedAction = spClient.onAction(view, actionImpl) as? ConsentActionImpl
                     editedAction?.let {
-                        consentManager.enqueueConsent(consentActionImpl = editedAction)
+                        consentManager.enqueueConsentV7(consentActionImpl = editedAction)
                     }
                 }
             }
@@ -850,7 +856,7 @@ internal class SpConsentLibImpl(
             }
             NativeMessageActionType.ACCEPT_ALL,
             NativeMessageActionType.REJECT_ALL -> {
-                consentManager.enqueueConsent(nativeConsentAction = nca)
+                consentManager.enqueueConsentV7(nativeConsentAction = nca)
                 moveToNextCampaign(remainingCampaigns, viewManager, spClient)
             }
         }

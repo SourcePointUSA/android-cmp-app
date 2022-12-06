@@ -106,7 +106,8 @@ internal interface CampaignManager {
     var dataRecordedConsent: Instant?
     var authId: String?
 
-    fun getChoiceBody(): JsonObject
+    fun getGdprChoiceBody(): JsonObject
+    fun getCcpaChoiceBody(): JsonObject
     fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
 
@@ -704,8 +705,19 @@ private class CampaignManagerImpl(
             dataStorage.dataRecordedConsent = value?.toString()
         }
 
-    override fun getChoiceBody(): JsonObject {
-        return toChoiceBody(
+    override fun getGdprChoiceBody(): JsonObject {
+        return toGdprChoiceBody(
+            accountId = spConfig.accountId,
+            propertyId = spConfig.propertyId,
+            gdprCs = gdprConsentStatus?.consentStatus,
+            gdprMessageMetaData = gdprMessageMetaData,
+            gdprApplies = gdprConsentStatus?.gdprApplies,
+            sampleRate = dataStorage.gdprSamplingValue
+        )
+    }
+
+    override fun getCcpaChoiceBody(): JsonObject {
+        return toCcpaChoiceBody(
             accountId = spConfig.accountId,
             propertyId = spConfig.propertyId,
             gdprCs = gdprConsentStatus?.consentStatus,

@@ -15,6 +15,7 @@ class SpConfigDataBuilderTest {
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
             messLanguage = MessageLanguage.ENGLISH
+            propertyId = 16893
             +(CampaignType.GDPR)
             +(CampaignType.CCPA)
         }
@@ -37,6 +38,7 @@ class SpConfigDataBuilderTest {
             accountId = 22
             propertyName = "mobile.multicampaign.demo"
             messLanguage = MessageLanguage.ENGLISH
+            propertyId = 16893
             +((CampaignType.GDPR) to listOf(("location" to "EU")))
             +((CampaignType.CCPA) to listOf(("location" to "US")))
         }

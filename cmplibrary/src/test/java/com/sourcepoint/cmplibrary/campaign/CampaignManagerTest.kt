@@ -55,8 +55,8 @@ class CampaignManagerTest {
             gdprCampaign
         ),
         MessageLanguage.ENGLISH,
-        3000,
-        123
+        propertyId = 9090,
+        messageTimeout = 3000,
     )
 
     @Before
@@ -150,7 +150,7 @@ class CampaignManagerTest {
             pmTab.assertEquals(PMTab.DEFAULT)
             consentLanguage.assertEquals("EN")
             uuid.assertEquals("")
-            siteId.assertEquals("0")
+            siteId.assertEquals("9090")
             messageId.assertEquals("11")
         }
     }
@@ -167,7 +167,7 @@ class CampaignManagerTest {
             pmTab.assertEquals(PMTab.PURPOSES)
             consentLanguage.assertEquals("BG")
             uuid.assertEquals("")
-            siteId.assertEquals("0")
+            siteId.assertEquals("9090")
             messageId.assertEquals("22")
         }
     }
@@ -194,7 +194,7 @@ class CampaignManagerTest {
             pmTab.assertEquals(PMTab.PURPOSES)
             consentLanguage.assertEquals("ES")
             uuid.assertEquals("uuid-test")
-            siteId.assertEquals("1234")
+            siteId.assertEquals("9090")
             messageId.assertEquals("22")
         }
     }

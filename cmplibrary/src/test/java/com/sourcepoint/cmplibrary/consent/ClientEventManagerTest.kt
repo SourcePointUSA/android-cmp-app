@@ -46,6 +46,9 @@ class ClientEventManagerTest {
     @Test
     fun `GIVEN 2 successfully sendConsent (GDPR, CCPA) calls, TRIGGER 1 onSpFinish`() {
 
+        every { consentManagerUtils.gdprConsentV7 }.returns(Either.Right(GDPRConsentInternal()))
+        every { consentManagerUtils.ccpaConsentV7 }.returns(Either.Right(CCPAConsentInternal()))
+
         clientEventManager.run {
             setCampaignNumber(2) // 2 campaigns GDPR and CCPA
             setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
@@ -61,6 +64,9 @@ class ClientEventManagerTest {
     @Test
     fun `GIVEN 1 successfully sendConsent call and 1 dismiss action, TRIGGER 1 onSpFinish`() {
 
+        every { consentManagerUtils.gdprConsentV7 }.returns(Either.Right(GDPRConsentInternal()))
+        every { consentManagerUtils.ccpaConsentV7 }.returns(Either.Right(CCPAConsentInternal()))
+
         clientEventManager.run {
             setCampaignNumber(2) // 2 campaigns GDPR and CCPA
             setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
@@ -75,6 +81,9 @@ class ClientEventManagerTest {
     @Test
     fun `GIVEN 2 dismiss action2, TRIGGER 1 onSpFinish`() {
 
+        every { consentManagerUtils.gdprConsentV7 }.returns(Either.Right(GDPRConsentInternal()))
+        every { consentManagerUtils.ccpaConsentV7 }.returns(Either.Right(CCPAConsentInternal()))
+
         clientEventManager.run {
             setCampaignNumber(2) // 2 campaigns GDPR and CCPA
             setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
@@ -87,6 +96,9 @@ class ClientEventManagerTest {
 
     @Test
     fun `GIVEN PM flow TRIGGER 1 onSpFinish`() {
+
+        every { consentManagerUtils.gdprConsentV7 }.returns(Either.Right(GDPRConsentInternal()))
+        every { consentManagerUtils.ccpaConsentV7 }.returns(Either.Right(CCPAConsentInternal()))
 
         clientEventManager.run {
             setCampaignNumber(2) // 2 campaigns GDPR and CCPA
@@ -104,6 +116,9 @@ class ClientEventManagerTest {
     @Test
     fun `GIVEN 0 campaigns TRIGGER 1 onSpFinish`() {
 
+        every { consentManagerUtils.gdprConsentV7 }.returns(Either.Right(GDPRConsentInternal()))
+        every { consentManagerUtils.ccpaConsentV7 }.returns(Either.Right(CCPAConsentInternal()))
+
         clientEventManager.run {
             setCampaignNumber(0) // 0 campaigns GDPR and CCPA
             checkStatus() // check the status
@@ -114,6 +129,9 @@ class ClientEventManagerTest {
 
     @Test
     fun `GIVEN 1 campaigns and 1 ACCEPT_ALL TRIGGER 1 onSpFinish`() {
+
+        every { consentManagerUtils.gdprConsentV7 }.returns(Either.Right(GDPRConsentInternal()))
+        every { consentManagerUtils.ccpaConsentV7 }.returns(Either.Right(CCPAConsentInternal()))
 
         clientEventManager.run {
             setCampaignNumber(1) // 1 campaigns GDPR and CCPA
@@ -127,6 +145,9 @@ class ClientEventManagerTest {
 
     @Test
     fun `GIVEN 1 campaigns and 1 MSG_CANCEL TRIGGER 1 onSpFinish`() {
+
+        every { consentManagerUtils.gdprConsentV7 }.returns(Either.Right(GDPRConsentInternal()))
+        every { consentManagerUtils.ccpaConsentV7 }.returns(Either.Right(CCPAConsentInternal()))
 
         clientEventManager.run {
             setCampaignNumber(1) // 1 campaigns GDPR and CCPA

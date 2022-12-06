@@ -27,11 +27,9 @@ import java.util.* //ktlint-disable
 
 internal interface ConsentManager {
     var localStateStatus: LocalStateStatus
-    fun enqueueConsent(consentActionImpl: ConsentActionImpl)
+    fun enqueueConsent(consentActionImpl: ConsentActionImpl) // to delete
     fun enqueueConsentV7(consentActionImpl: ConsentActionImpl)
-    fun enqueueConsent(nativeConsentAction: NativeConsentAction)
     fun enqueueConsentV7(nativeConsentAction: NativeConsentAction)
-    fun sendStoredConsentToClient()
     fun sendStoredConsentToClientV7()
     fun sendConsent(
         actionImpl: ConsentAction,
@@ -53,24 +51,24 @@ internal interface ConsentManager {
     companion object {
 
         internal fun responseConsentHandler(
-            gdpr: GdprCS,
+            gdpr: GdprCS?,
             consentManagerUtils: ConsentManagerUtils
         ): SPConsents {
             val ccpaCached = consentManagerUtils.ccpaConsentV7.getOrNull()
             return SPConsents(
-                gdpr = SPGDPRConsent(gdpr.toGDPRUserConsent()),
+                gdpr = gdpr?.let { SPGDPRConsent(it.toGDPRUserConsent()) },
                 ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
             )
         }
 
         internal fun responseConsentHandler(
-            ccpa: CcpaCS,
+            ccpa: CcpaCS?,
             consentManagerUtils: ConsentManagerUtils
         ): SPConsents {
             val gdprCached = consentManagerUtils.gdprConsentV7.getOrNull()
             return SPConsents(
                 gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
-                ccpa = SPCCPAConsent(ccpa.toCCPAConsentInternal()),
+                ccpa = ccpa?.let { SPCCPAConsent(it.toCCPAConsentInternal()) },
             )
         }
     }
@@ -139,13 +137,6 @@ private class ConsentManagerImpl(
         sendConsentV7(consentActionImpl)
     }
 
-    override fun enqueueConsent(nativeConsentAction: NativeConsentAction) {
-        when (dataStorage.messagesV7LocalState) {
-            null -> enqueueConsent(nativeConsentAction.toConsentAction())
-            else -> enqueueConsentV7(nativeConsentAction.toConsentAction())
-        }
-    }
-
     override fun enqueueConsentV7(nativeConsentAction: NativeConsentAction) {
         sendConsentV7(nativeConsentAction.toConsentAction())
     }
@@ -162,17 +153,6 @@ private class ConsentManagerImpl(
             }
             LocalStateStatus.Absent,
             LocalStateStatus.Consumed -> return
-        }
-    }
-
-    override fun sendStoredConsentToClient() {
-        check {
-            val ccpaCached = consentManagerUtils.getCcpaConsent().getOrNull()
-            val gdprCached = consentManagerUtils.getGdprConsent().getOrNull()
-            SPConsents(
-                gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
-                ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
-            ).let { sPConsentsSuccess?.invoke(it) }
         }
     }
 
