@@ -10,6 +10,8 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
+import com.sourcepoint.cmplibrary.data.network.model.getJSONObjectOrNullByKey
+import com.sourcepoint.cmplibrary.data.network.model.getStringOrNullByKey
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
@@ -90,6 +92,9 @@ private class ServiceImpl(
                     CCPA -> {
                         dataStorage.saveCcpaConsentResp(it.userConsent ?: "")
                         dataStorage.saveCcpaConsentUuid(it.uuid)
+                        val uspString = it.content.getJSONObjectOrNullByKey("userConsent")?.getStringOrNullByKey("uspstring")
+                        if(uspString != null)
+                            dataStorage.saveUsPrivacyString(uspString)
                     }
                 }
             }
