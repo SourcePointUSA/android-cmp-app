@@ -113,14 +113,13 @@ class MainActivityKotlinNativeOttTest {
         }
 
         wr { clickOnGdprReviewConsent() }
-        // TODO remove the comment here
-//        wr(backup = { clickOnGdprReviewConsent() }){
-//            tapAcceptOnWebView()
-//            device.pressEnter()
-//        }
+        wr(backup = { clickOnGdprReviewConsent() }){
+            tapAcceptOnWebView()
+            device.pressEnter()
+        }
 
-//        verify(exactly = 0) { spClient.onError(any()) }
-//        wr{ verify(atLeast = 2) { spClient.onConsentReady(any()) } }
+        verify(exactly = 0) { spClient.onError(any()) }
+        wr{ verify(atLeast = 2) { spClient.onConsentReady(any()) } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         wr {
