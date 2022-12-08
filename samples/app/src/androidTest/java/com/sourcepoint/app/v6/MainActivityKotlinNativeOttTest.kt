@@ -54,7 +54,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "704111",
+                gdprPmId = "701546",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )
@@ -99,7 +99,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "704111",
+                gdprPmId = "701546",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )

@@ -16,6 +16,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_CHILD_PM_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_MESSAGE_SUBCATEGORY
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_IAB_US_PRIVACY_STRING
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
@@ -57,6 +58,7 @@ internal interface DataStorageCcpa {
 
     companion object {
         const val KEY_CCPA = "sp.ccpa.key"
+        const val KEY_CCPA_OLD = "sp.key.ccpa"
         const val KEY_CCPA_APPLIES = "sp.ccpa.key.applies"
         const val KEY_CCPA_CHILD_PM_ID = "sp.ccpa.key.childPmId"
         const val CCPA_CONSENT_RESP = "sp.ccpa.consent.resp"
@@ -232,6 +234,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         preference
             .edit()
             .remove(KEY_CCPA)
+            .remove(KEY_CCPA_OLD)
             .remove(KEY_CCPA_APPLIES)
             .remove(CCPA_CONSENT_RESP)
             .remove(CCPA_JSON_MESSAGE)

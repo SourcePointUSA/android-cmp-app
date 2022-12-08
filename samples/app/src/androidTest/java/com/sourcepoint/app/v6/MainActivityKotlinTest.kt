@@ -815,22 +815,20 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr {
-            scenario.onActivity { activity ->
-                /**
-                 * Store an old v6 localState
-                 */
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                val spEditor = sp.edit()
-                v6LocalState.keys().forEach {
-                    check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
-                    check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
-                    check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
-                }
-                spEditor.apply()
-                // verify that before the migration the local state is present
-                sp.contains("sp.key.local.state").assertTrue()
+        scenario.onActivity { activity ->
+            /**
+             * Store an old v6 localState
+             */
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            val spEditor = sp.edit()
+            v6LocalState.keys().forEach {
+                check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
+                check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
+                check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
             }
+            spEditor.apply()
+            // verify that before the migration the local state is present
+            sp.contains("sp.key.local.state").assertTrue()
         }
 
         wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
@@ -866,22 +864,20 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr {
-            scenario.onActivity { activity ->
-                /**
-                 * Store an old v6 localState
-                 */
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                val spEditor = sp.edit()
-                v6LocalState.keys().forEach {
-                    check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
-                    check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
-                    check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
-                }
-                spEditor.apply()
-                // verify that before the migration the local state is present
-                sp.contains("sp.key.local.state").assertTrue()
+        scenario.onActivity { activity ->
+            /**
+             * Store an old v6 localState
+             */
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            val spEditor = sp.edit()
+            v6LocalState.keys().forEach {
+                check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
+                check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
+                check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
             }
+            spEditor.apply()
+            // verify that before the migration the local state is present
+            sp.contains("sp.key.local.state").assertTrue()
         }
 
         wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
@@ -917,22 +913,20 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr {
-            scenario.onActivity { activity ->
-                /**
-                 * Store an old v6 localState
-                 */
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                val spEditor = sp.edit()
-                v6LocalState.keys().forEach {
-                    check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
-                    check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
-                    check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
-                }
-                spEditor.apply()
-                // verify that before the migration the local state is present
-                sp.contains("sp.key.local.state").assertTrue()
+        scenario.onActivity { activity ->
+            /**
+             * Store an old v6 localState
+             */
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            val spEditor = sp.edit()
+            v6LocalState.keys().forEach {
+                check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
+                check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
+                check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
             }
+            spEditor.apply()
+            // verify that before the migration the local state is present
+            sp.contains("sp.key.local.state").assertTrue()
         }
 
         wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }

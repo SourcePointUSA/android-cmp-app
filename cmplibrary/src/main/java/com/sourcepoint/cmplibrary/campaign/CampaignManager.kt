@@ -37,6 +37,8 @@ internal interface CampaignManager {
     val spConfig: SpConfig
     val messageLanguage: MessageLanguage
     val campaigns4Config: List<CampaignReq>
+    val ccpaMessageSubCategory: MessageSubCategory
+    val gdprMessageSubCategory: MessageSubCategory
     fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate)
 
     fun isAppliedCampaign(campaignType: CampaignType): Boolean
@@ -135,6 +137,7 @@ private class CampaignManagerImpl(
 
     override val messageLanguage: MessageLanguage = spConfig.messageLanguage
 
+
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
     private val campaignsEnv: CampaignsEnv = spConfig.campaignsEnv
     val logger: Logger? = spConfig.logger
@@ -210,6 +213,12 @@ private class CampaignManagerImpl(
                 ?.let { campaigns.add(it) }
             return campaigns
         }
+
+    override val ccpaMessageSubCategory: MessageSubCategory
+        get() = ccpaMessageMetaData?.subCategoryId?: MessageSubCategory.TCFv2
+
+    override val gdprMessageSubCategory: MessageSubCategory
+        get() = gdprMessageMetaData?.subCategoryId?: MessageSubCategory.TCFv2
 
     override fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate) {
         mapTemplate[campaignType.name] = campaign
@@ -342,8 +351,8 @@ private class CampaignManagerImpl(
 
     override fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory {
         return when (campaignType) {
-            CampaignType.GDPR -> dataStorage.gdprMessageSubCategory
-            CampaignType.CCPA -> dataStorage.ccpaMessageSubCategory
+            CampaignType.GDPR -> gdprMessageSubCategory
+            CampaignType.CCPA -> ccpaMessageSubCategory
         }
     }
 
