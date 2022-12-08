@@ -273,6 +273,7 @@ internal class SpConsentLibImpl(
                 clientEventManager.setAction(NativeMessageActionType.GET_MSG_NOT_CALLED)
             },
             pSuccess = {
+                println("=============================== pSucces ==============================")
                 val list = it.toCampaignModelList(logger = pLogger)
                 clientEventManager.setCampaignNumber(list.size)
                 if (list.isEmpty()) {

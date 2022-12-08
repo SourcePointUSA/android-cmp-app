@@ -159,6 +159,7 @@ private class ServiceImpl(
                     }
                     .executeOnRight {
                         campaignManager.apply {
+                            campaignManager.removeOldLocalData()
                             messagesV7LocalState = it.localState
                             it.consentStatusData?.let { csd ->
                                 // GDPR

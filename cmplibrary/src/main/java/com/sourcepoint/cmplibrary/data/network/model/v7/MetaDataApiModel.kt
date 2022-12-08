@@ -55,6 +55,7 @@ data class MetaDataArg(
     @Serializable
     data class CcpaArg(
         @SerialName("applies") val applies: Boolean?,
+        @SerialName("hasLocalData") val hasLocalData: Boolean? = null,
         @SerialName("groupPmId") val groupPmId: String? = null,
         @SerialName("targetingParams") val targetingParams: JsonElement? = null,
         @SerialName("uuid") val uuid: String? = null
@@ -63,6 +64,7 @@ data class MetaDataArg(
     @Serializable
     data class GdprArg(
         @SerialName("applies") val applies: Boolean?,
+        @SerialName("hasLocalData") val hasLocalData: Boolean? = null,
         @SerialName("groupPmId") val groupPmId: String? = null,
         @SerialName("targetingParams") val targetingParams: JsonElement? = null,
         @SerialName("uuid") val uuid: String? = null

@@ -92,6 +92,7 @@ internal interface CampaignManager {
     var messagesV7LocalState: JsonElement?
     var gdprUuid: String?
     var ccpaUuid: String?
+    val hasLocalData: Boolean
 
     // dateCreated
     var gdprDateCreated: Instant?
@@ -106,6 +107,7 @@ internal interface CampaignManager {
     var dataRecordedConsent: Instant?
     var authId: String?
 
+    fun removeOldLocalData(): Unit
     fun getGdprChoiceBody(): JsonObject
     fun getCcpaChoiceBody(): JsonObject
     fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
@@ -526,7 +528,9 @@ private class CampaignManagerImpl(
                 ?.let { true }
                 ?: false
 
-            val res = isNewUser || ccpaToBeCompleted || gdprToBeCompleted
+            val isV6LocalStateAbsent = !dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE)
+
+            val res = (isNewUser || ccpaToBeCompleted || gdprToBeCompleted) && isV6LocalStateAbsent
 
             logger?.computation(
                 tag = "shouldCallMessages",
@@ -534,7 +538,18 @@ private class CampaignManagerImpl(
                 isNewUser[$isNewUser]
                 ccpaToBeCompleted[$ccpaToBeCompleted]
                 gdprToBeCompleted[$gdprToBeCompleted]
+                isV6LocalStateAbsent[$isV6LocalStateAbsent]  
                 shouldCallMessages[$res]  
+                """.trimIndent()
+            )
+
+            println(
+                """
+                                isNewUser[$isNewUser]
+                                ccpaToBeCompleted[$ccpaToBeCompleted]
+                                gdprToBeCompleted[$gdprToBeCompleted]
+                                isV6LocalStateAbsent[$isV6LocalStateAbsent]  
+                                shouldCallMessages[$res]  
                 """.trimIndent()
             )
 
@@ -546,7 +561,8 @@ private class CampaignManagerImpl(
             val gdprUUID = dataStorage.gdprConsentUuid
             val ccpaUUID = dataStorage.ccpaConsentUuid
             val localStateSize = messagesV7LocalState?.jsonObject?.size ?: 0
-            val res = ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0)
+            val isV6LocalStatePresent = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE)
+            val res = ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0) || isV6LocalStatePresent
 
             logger?.computation(
                 tag = "shouldCallConsentStatus",
@@ -554,6 +570,7 @@ private class CampaignManagerImpl(
                 gdprUUID != null [${gdprUUID != null}]
                 ccpaUUID != null [${ccpaUUID != null}]
                 localStateSize empty [${localStateSize == 0}]
+                isV6LocalStatePresent[$isV6LocalStatePresent]  
                 shouldCallMessages[$res]  
                 """.trimIndent()
             )
@@ -651,6 +668,13 @@ private class CampaignManagerImpl(
         set(value) {
             dataStorage.ccpaConsentUuid = value
         }
+
+    override val hasLocalData: Boolean
+        get() = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE)
+
+    override fun removeOldLocalData() {
+        dataStorage.preference.edit().remove(DataStorage.LOCAL_STATE).apply()
+    }
 
     override var gdprDateCreated: Instant?
         get() {
