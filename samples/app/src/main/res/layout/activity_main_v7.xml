@@ -61,6 +61,15 @@
             android:layout_height="wrap_content"/>
 
     <Button
+            android:id="@+id/add_old_consent"
+            android:text="@string/add_old_consent"
+            app:layout_constraintStart_toStartOf="@id/review_consents_gdpr"
+            app:layout_constraintEnd_toEndOf="@id/review_consents_gdpr"
+            app:layout_constraintBottom_toTopOf="@id/delete_custom_consent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <Button
             android:id="@+id/clear_all"
             android:text="@string/clear_all_data"
             app:layout_constraintStart_toStartOf="@id/review_consents_gdpr"

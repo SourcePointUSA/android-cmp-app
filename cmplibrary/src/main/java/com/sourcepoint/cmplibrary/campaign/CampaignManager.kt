@@ -543,16 +543,6 @@ private class CampaignManagerImpl(
                 """.trimIndent()
             )
 
-            println(
-                """
-                                isNewUser[$isNewUser]
-                                ccpaToBeCompleted[$ccpaToBeCompleted]
-                                gdprToBeCompleted[$gdprToBeCompleted]
-                                isV6LocalStateAbsent[$isV6LocalStateAbsent]  
-                                shouldCallMessages[$res]  
-                """.trimIndent()
-            )
-
             return res
         }
 
