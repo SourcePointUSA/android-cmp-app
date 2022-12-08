@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.v7.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.v7.*
 import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq

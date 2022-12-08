@@ -798,15 +798,117 @@ class MainActivityKotlinTest {
         }
 
     @Test
-    fun GIVEN_an_old_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
+    fun GIVEN_an_old_CCPA_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
-        val v6LocalState = JSONObject(TestData.v6StoredConsent)
+        val v6LocalState = JSONObject(TestData.storedConsentGdprCcap)
 
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(
             mockModule(
                 spConfig = spConf,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr {
+            scenario.onActivity { activity ->
+                /**
+                 * Store an old v6 localState
+                 */
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                val spEditor = sp.edit()
+                v6LocalState.keys().forEach {
+                    check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
+                    check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
+                    check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
+                }
+                spEditor.apply()
+                // verify that before the migration the local state is present
+                sp.contains("sp.key.local.state").assertTrue()
+            }
+        }
+
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
+        wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
+        wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
+
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                // verify that after the migration the local state is cancelled
+                sp.contains("sp.key.local.state").assertFalse()
+            }
+        }
+    }
+
+    @Test
+    fun GIVEN_an_old_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
+
+        val v6LocalState = JSONObject(TestData.storedConsentGdpr)
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr {
+            scenario.onActivity { activity ->
+                /**
+                 * Store an old v6 localState
+                 */
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                val spEditor = sp.edit()
+                v6LocalState.keys().forEach {
+                    check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
+                    check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
+                    check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
+                }
+                spEditor.apply()
+                // verify that before the migration the local state is present
+                sp.contains("sp.key.local.state").assertTrue()
+            }
+        }
+
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
+        wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
+        wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
+
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                // verify that after the migration the local state is cancelled
+                sp.contains("sp.key.local.state").assertFalse()
+            }
+        }
+    }
+
+    @Test
+    fun GIVEN_an_old_CCPAv6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
+
+        val v6LocalState = JSONObject(TestData.storedConsentCcap)
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfCcpa,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient)
