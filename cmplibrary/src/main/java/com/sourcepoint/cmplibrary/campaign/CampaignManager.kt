@@ -137,7 +137,6 @@ private class CampaignManagerImpl(
 
     override val messageLanguage: MessageLanguage = spConfig.messageLanguage
 
-
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
     private val campaignsEnv: CampaignsEnv = spConfig.campaignsEnv
     val logger: Logger? = spConfig.logger
@@ -215,10 +214,10 @@ private class CampaignManagerImpl(
         }
 
     override val ccpaMessageSubCategory: MessageSubCategory
-        get() = ccpaMessageMetaData?.subCategoryId?: MessageSubCategory.TCFv2
+        get() = ccpaMessageMetaData?.subCategoryId ?: MessageSubCategory.TCFv2
 
     override val gdprMessageSubCategory: MessageSubCategory
-        get() = gdprMessageMetaData?.subCategoryId?: MessageSubCategory.TCFv2
+        get() = gdprMessageMetaData?.subCategoryId ?: MessageSubCategory.TCFv2
 
     override fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate) {
         mapTemplate[campaignType.name] = campaign
@@ -464,7 +463,6 @@ private class CampaignManagerImpl(
             saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
             gdprApplies = gdpr.applies
             gdprChildPmId = gdpr.userConsent.childPmId
-            gdpr.messageSubCategory?.let { gdprMessageSubCategory = it }
         }
     }
 
@@ -570,7 +568,7 @@ private class CampaignManagerImpl(
                 ccpaUUID != null [${ccpaUUID != null}]
                 localStateSize empty [${localStateSize == 0}]
                 isV6LocalStatePresent[$isV6LocalStatePresent]  
-                shouldCallMessages[$res]  
+                shouldCallConsentStatus[$res]  
                 """.trimIndent()
             )
 
@@ -734,7 +732,7 @@ private class CampaignManagerImpl(
             propertyId = spConfig.propertyId,
             gdprCs = gdprConsentStatus?.consentStatus,
             gdprMessageMetaData = gdprMessageMetaData,
-            gdprApplies = gdprConsentStatus?.gdprApplies,
+            gdprApplies = metaDataResp?.gdpr?.applies,
             sampleRate = dataStorage.gdprSamplingValue
         )
     }
@@ -745,7 +743,7 @@ private class CampaignManagerImpl(
             propertyId = spConfig.propertyId,
             gdprCs = gdprConsentStatus?.consentStatus,
             gdprMessageMetaData = gdprMessageMetaData,
-            gdprApplies = gdprConsentStatus?.gdprApplies,
+            gdprApplies = metaDataResp?.gdpr?.applies,
             sampleRate = dataStorage.gdprSamplingValue
         )
     }
@@ -756,8 +754,8 @@ private class CampaignManagerImpl(
             propertyId = messageReq.propertyId,
             gdprMessageMetaData = gdprMessageMetaData,
             ccpaMessageMetaData = ccpaMessageMetaData,
-            gdprApplies = gdprConsentStatus?.gdprApplies,
-            ccpaApplies = ccpaConsentStatus?.ccpaApplies,
+            gdprApplies = metaDataResp?.gdpr?.applies,
+            ccpaApplies = metaDataResp?.ccpa?.applies,
             pubData = messageReq.pubData,
             gdprCs = gdprConsentStatus?.consentStatus,
             ccpaCS = null,
@@ -770,8 +768,8 @@ private class CampaignManagerImpl(
             propertyId = messageReq.propertyId,
             gdprMessageMetaData = gdprMessageMetaData,
             ccpaMessageMetaData = ccpaMessageMetaData,
-            gdprApplies = gdprConsentStatus?.gdprApplies,
-            ccpaApplies = ccpaConsentStatus?.ccpaApplies,
+            gdprApplies = metaDataResp?.gdpr?.applies,
+            ccpaApplies = metaDataResp?.ccpa?.applies,
             pubData = messageReq.pubData,
             gdprCs = null,
             ccpaCS = ccpaConsentStatus

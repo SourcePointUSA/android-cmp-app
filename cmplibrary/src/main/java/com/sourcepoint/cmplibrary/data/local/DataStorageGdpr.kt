@@ -31,7 +31,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.USER_CONS
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
@@ -44,8 +43,6 @@ internal interface DataStorageGdpr {
 
     var gdprApplies: Boolean
     var gdprChildPmId: String?
-    var gdprMessageSubCategory: MessageSubCategory
-    val isGdprOtt: Boolean
     var gdprPostChoiceResp: String?
     var gdprConsentUuid: String?
     var gdprMessageMetaData: String?
@@ -141,21 +138,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 .putString(KEY_GDPR_CHILD_PM_ID, value)
                 .apply()
         }
-
-    override var gdprMessageSubCategory: MessageSubCategory
-        get() {
-            return preference.getInt(KEY_GDPR_MESSAGE_SUBCATEGORY, MessageSubCategory.TCFv2.code)
-                .run { MessageSubCategory.values().find { i -> i.code == this } ?: MessageSubCategory.TCFv2 }
-        }
-        set(value) {
-            preference
-                .edit()
-                .putInt(KEY_GDPR_MESSAGE_SUBCATEGORY, value.code)
-                .apply()
-        }
-
-    override val isGdprOtt: Boolean
-        get() = gdprMessageSubCategory == MessageSubCategory.OTT
 
     override fun saveGdpr(value: String) {
         preference

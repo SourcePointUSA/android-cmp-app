@@ -27,10 +27,6 @@ internal class MockDataStorage : DataStorage {
         TODO("Not yet implemented")
     }
 
-    override var ccpaMessageSubCategory: MessageSubCategory = MessageSubCategory.TCFv2
-    override val isCcpaOtt: Boolean
-        get() = ccpaMessageSubCategory == MessageSubCategory.OTT
-
     override var ccpaChildPmId: String? = null
     override var gdprChildPmId: String? = null
 
@@ -40,11 +36,6 @@ internal class MockDataStorage : DataStorage {
     override var savedConsent: Boolean
         get() = savedConsentVar
         set(value) { savedConsentVar = value }
-
-    override var gdprMessageSubCategory: MessageSubCategory = MessageSubCategory.TCFv2
-
-    override val isGdprOtt: Boolean
-        get() = gdprMessageSubCategory == MessageSubCategory.OTT
 
     override var ccpaMessageMetaData: String?
         get() = TODO("Not yet implemented")

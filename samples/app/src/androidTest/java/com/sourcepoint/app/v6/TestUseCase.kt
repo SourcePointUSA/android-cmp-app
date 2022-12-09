@@ -29,6 +29,7 @@ import com.sourcepoint.app.v6.di.customCategoriesDataProd
 import com.sourcepoint.app.v6.di.customVendorDataListProd
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import kotlinx.android.synthetic.main.activity_main_consent.*
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -192,6 +193,10 @@ class TestUseCase {
 
         fun checkEuconsent(euconsent : String) {
             containsText(R.id.consent_uuid, euconsent)
+        }
+
+        fun checkGdprApplies(value : String) {
+            containsText(R.id.gdpr_applies, value)
         }
 
         fun checkAuthIdIsNotDisplayed() {

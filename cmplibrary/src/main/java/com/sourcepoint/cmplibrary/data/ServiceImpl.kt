@@ -238,7 +238,6 @@ private class ServiceImpl(
                     getChoice(
                         ChoiceParamReq(
                             env = messageReq.env,
-                            body = choiceBody,
                             choiceType = ChoiceTypeParam.CONSENT_ALL,
                             propertyId = messageReq.propertyId,
                             accountId = messageReq.accountId,
@@ -322,7 +321,6 @@ private class ServiceImpl(
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null),
-                body = choiceBody
             )
 
             getResp = nc.getChoice(gcParam)
@@ -406,7 +404,6 @@ private class ServiceImpl(
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null),
-                body = choiceBody
             )
             nc.getChoice(gcParam)
                 .executeOnRight { r ->

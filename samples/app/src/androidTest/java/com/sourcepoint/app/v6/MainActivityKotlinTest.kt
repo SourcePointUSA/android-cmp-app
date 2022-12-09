@@ -18,6 +18,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeletedCustomCategories
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeletedCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkEuconsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkFeaturesTab
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkGdprApplies
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkPurposesTab
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkWebViewDisplayedGDPRFirstLayerMessage
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCcpaReviewConsent
@@ -154,8 +155,7 @@ class MainActivityKotlinTest {
         scenario.onActivity { activity ->
             val IABTCF_TCString = PreferenceManager.getDefaultSharedPreferences(activity)
                 .getString("IABTCF_TCString", null)
-            // Currently the send consent Accept App does not return the tcfdata, bug in the BE
-            //IABTCF_TCString.assertNotNull()
+            IABTCF_TCString.assertNotNull()
         }
 
     }
@@ -179,9 +179,11 @@ class MainActivityKotlinTest {
         wr {
             verify {
                 spClient.onSpFinished(withArg {
-                    val euconsent = it.gdpr?.consent?.euconsent.assertNotNull()!!
+                    val euconsent = it.gdpr!!.consent.euconsent.assertNotNull()
+                    val gdprApplies = it.gdpr!!.consent.applies.toString().assertNotNull()
                     clickOnConsentActivity()
                     checkEuconsent(euconsent)
+                    checkGdprApplies(gdprApplies)
                 })
             }
         }

@@ -3,15 +3,14 @@ package com.sourcepoint.cmplibrary.data.network.model.v7
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonObject
 
+@Serializable
 internal class ChoiceParamReq(
     val env: Env,
     val choiceType: ChoiceTypeParam,
     val metadataArg: MetaDataArg?,
     val propertyId: Long,
-    val accountId: Long,
-    val body: JsonObject = JsonObject(mapOf())
+    val accountId: Long
 )
 
 enum class ChoiceTypeParam(val type: String) {

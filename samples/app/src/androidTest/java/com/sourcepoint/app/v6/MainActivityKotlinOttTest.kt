@@ -85,8 +85,7 @@ class MainActivityKotlinOttTest {
         scenario.onActivity { activity ->
             val IABTCF_TCString = PreferenceManager.getDefaultSharedPreferences(activity)
                 .getString("IABTCF_TCString", null)
-            // Currently the send consent Accept App does not return the tcfdata, bug in the BE
-//            IABTCF_TCString.assertNotNull()
+            IABTCF_TCString.assertNotNull()
         }
 
     }
@@ -137,8 +136,7 @@ class MainActivityKotlinOttTest {
         scenario.onActivity { activity ->
             val IABTCF_TCString = PreferenceManager.getDefaultSharedPreferences(activity)
                 .getString("IABTCF_TCString", null)
-            // Currently the send consent Accept App does not return the tcfdata, bug in the BE
-//            IABTCF_TCString.assertNotNull()
+            IABTCF_TCString.assertNotNull()
         }
 
     }

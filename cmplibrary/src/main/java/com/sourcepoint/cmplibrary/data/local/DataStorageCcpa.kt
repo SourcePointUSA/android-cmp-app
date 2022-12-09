@@ -21,7 +21,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_IAB_U
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
 import org.json.JSONObject
@@ -32,9 +31,6 @@ internal interface DataStorageCcpa {
 
     var ccpaApplies: Boolean
     var ccpaChildPmId: String?
-
-    var ccpaMessageSubCategory: MessageSubCategory
-    val isCcpaOtt: Boolean
 
     var ccpaPostChoiceResp: String?
     var ccpaStatus: String?
@@ -112,21 +108,6 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
                 .putString(KEY_CCPA_CHILD_PM_ID, value)
                 .apply()
         }
-
-    override var ccpaMessageSubCategory: MessageSubCategory
-        get() {
-            return preference.getInt(KEY_CCPA_MESSAGE_SUBCATEGORY, MessageSubCategory.TCFv2.code)
-                .run { MessageSubCategory.values().find { i -> i.code == this } ?: MessageSubCategory.TCFv2 }
-        }
-        set(value) {
-            preference
-                .edit()
-                .putInt(KEY_CCPA_MESSAGE_SUBCATEGORY, value.code)
-                .apply()
-        }
-
-    override val isCcpaOtt: Boolean
-        get() = ccpaMessageSubCategory == MessageSubCategory.OTT
 
     override fun saveCcpaConsentResp(value: String) {
 

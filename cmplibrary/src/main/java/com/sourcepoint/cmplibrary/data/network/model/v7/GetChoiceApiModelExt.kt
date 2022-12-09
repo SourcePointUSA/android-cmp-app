@@ -24,6 +24,14 @@ internal fun toGdprChoiceBody(
         put("prtnUUID", gdprMessageMetaData?.prtnUUID)
         put("fromTest", fromTest)
         put("sampleRate", sampleRate)
+        putJsonObject("includeData") {
+            putJsonObject("TCData") {
+                put("type", "RecordString")
+            }
+            putJsonObject("localState") {
+                put("type", "RecordString")
+            }
+        }
     }
 }
 

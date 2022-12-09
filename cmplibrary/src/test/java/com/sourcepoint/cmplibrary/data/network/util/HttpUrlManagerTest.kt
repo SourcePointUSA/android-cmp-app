@@ -249,7 +249,7 @@ class HttpUrlManagerTest {
             choiceType = ChoiceTypeParam.CONSENT_ALL
         )
         val sut = HttpUrlManagerSingleton.getChoiceUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/choice/consent-all?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&includeCustomVendorsRes=false&metadata={%20%20%22ccpa%22:%20{%20%20%20%20%22applies%22:%20true%20%20},%20%20%22gdpr%22:%20{%20%20%20%20%22applies%22:%20true,%20%20%20%20%22hasLocalData%22:%20false,%20%20%20%20%22uuid%22:%20%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22%20%20}}")
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/choice/consent-all?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&includeCustomVendorsRes=false&metadata={%20%20%22ccpa%22:%20{%20%20%20%20%22applies%22:%20true%20%20},%20%20%22gdpr%22:%20{%20%20%20%20%22applies%22:%20true,%20%20%20%20%22hasLocalData%22:%20false,%20%20%20%20%22uuid%22:%20%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22%20%20}}&includeData=%7B%22TCData%22%3A%20%7B%22type%22%3A%20%22RecordString%22%7D%7D")
     }
 
     @Test

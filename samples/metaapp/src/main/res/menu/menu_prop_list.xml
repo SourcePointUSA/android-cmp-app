@@ -15,4 +15,10 @@
             android:title="@string/add_properties"
             app:showAsAction="never"/>
 
+    <item
+            android:id="@+id/action_save_old_v6_consent"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="@string/save_old_v6_consent"
+            app:showAsAction="never"/>
+
 </menu>

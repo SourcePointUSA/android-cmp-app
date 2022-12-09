@@ -224,6 +224,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("withSiteActions", false.toString())
             .addQueryParameter("includeCustomVendorsRes", false.toString())
             .addEncodedQueryParameter("metadata", metaData)
+            .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}}""")
             .build()
     }
 
