@@ -732,7 +732,7 @@ private class CampaignManagerImpl(
             propertyId = spConfig.propertyId,
             gdprCs = gdprConsentStatus?.consentStatus,
             gdprMessageMetaData = gdprMessageMetaData,
-            gdprApplies = metaDataResp?.gdpr?.applies,
+            gdprApplies = dataStorage.gdprApplies,
             sampleRate = dataStorage.gdprSamplingValue
         )
     }
@@ -743,7 +743,7 @@ private class CampaignManagerImpl(
             propertyId = spConfig.propertyId,
             gdprCs = gdprConsentStatus?.consentStatus,
             gdprMessageMetaData = gdprMessageMetaData,
-            gdprApplies = metaDataResp?.gdpr?.applies,
+            gdprApplies = dataStorage.gdprApplies,
             sampleRate = dataStorage.gdprSamplingValue
         )
     }
@@ -754,8 +754,8 @@ private class CampaignManagerImpl(
             propertyId = messageReq.propertyId,
             gdprMessageMetaData = gdprMessageMetaData,
             ccpaMessageMetaData = ccpaMessageMetaData,
-            gdprApplies = metaDataResp?.gdpr?.applies,
-            ccpaApplies = metaDataResp?.ccpa?.applies,
+            gdprApplies = dataStorage.gdprApplies,
+            ccpaApplies = dataStorage.ccpaApplies,
             pubData = messageReq.pubData,
             gdprCs = gdprConsentStatus?.consentStatus,
             ccpaCS = null,
@@ -768,8 +768,8 @@ private class CampaignManagerImpl(
             propertyId = messageReq.propertyId,
             gdprMessageMetaData = gdprMessageMetaData,
             ccpaMessageMetaData = ccpaMessageMetaData,
-            gdprApplies = metaDataResp?.gdpr?.applies,
-            ccpaApplies = metaDataResp?.ccpa?.applies,
+            gdprApplies = dataStorage.gdprApplies,
+            ccpaApplies = dataStorage.ccpaApplies,
             pubData = messageReq.pubData,
             gdprCs = null,
             ccpaCS = ccpaConsentStatus
