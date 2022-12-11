@@ -51,9 +51,9 @@ data class ConsentStatusResp(
 data class CcpaCS(
     @SerialName("actions") val actions: List<Action>?,
     @SerialName("applies") val applies: Boolean?,
+    @SerialName("ccpaApplies") val ccpaApplies: Boolean?,
     @SerialName("consentedAll") val consentedAll: Boolean?,
     @SerialName("cookies") val cookies: List<Cooky>?,
-    @SerialName("ccpaApplies") val ccpaApplies: Boolean?,
     @Serializable(with = DateSerializer::class) val dateCreated: Instant?,
     @SerialName("gpcEnabled") val gpcEnabled: Boolean?,
     @SerialName("newUser") val newUser: Boolean?,
@@ -69,6 +69,7 @@ data class CcpaCS(
 @Serializable
 data class GdprCS(
     @SerialName("applies") val applies: Boolean?,
+    @SerialName("gdprApplies") val gdprApplies: Boolean?,
     @SerialName("categories") val categories: List<String>?,
     @SerialName("consentAllRef") val consentAllRef: String?,
     @SerialName("consentedToAll") val consentedToAll: Boolean?,
@@ -86,7 +87,6 @@ data class GdprCS(
     @SerialName("customVendorsResponse") val customVendorsResponse: CustomVendorsResponse?,
     @Serializable(with = DateSerializer::class) val dateCreated: Instant?,
     @SerialName("euconsent") val euconsent: String?,
-    @SerialName("gdprApplies") val gdprApplies: Boolean?,
     @Serializable(with = GrantsSerializer::class) val grants: Map<String, GDPRPurposeGrants>?,
     @Serializable(with = TcDataSerializer::class) val TCData: Map<String, String>?,
     @SerialName("localDataCurrent") val localDataCurrent: Boolean?,

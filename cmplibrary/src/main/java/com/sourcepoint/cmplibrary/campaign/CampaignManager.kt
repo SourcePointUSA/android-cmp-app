@@ -542,9 +542,7 @@ private class CampaignManagerImpl(
                 ?.let { true }
                 ?: false
 
-            val isV6LocalStateAbsent = !dataStorage.preference.all.containsKey(LOCAL_STATE)
-
-            val res = (isNewUser || ccpaToBeCompleted || gdprToBeCompleted) && isV6LocalStateAbsent
+            val res = (isNewUser || ccpaToBeCompleted || gdprToBeCompleted)
 
             logger?.computation(
                 tag = "shouldCallMessages",
@@ -552,7 +550,6 @@ private class CampaignManagerImpl(
                 isNewUser[$isNewUser]
                 ccpaToBeCompleted[$ccpaToBeCompleted]
                 gdprToBeCompleted[$gdprToBeCompleted]
-                isV6LocalStateAbsent[$isV6LocalStateAbsent]  
                 shouldCallMessages[$res]  
                 """.trimIndent()
             )
@@ -573,11 +570,9 @@ private class CampaignManagerImpl(
             logger?.computation(
                 tag = "shouldCallConsentStatus",
                 msg = """
-                gdprUUID != null [${gdprUUID != null}]
-                ccpaUUID != null [${ccpaUUID != null}]
+                gdprUUID != null [${gdprUUID != null}] - ccpaUUID != null [${ccpaUUID != null}]
                 localStateSize empty [${localStateSize == 0}]
-                isV6LocalStatePresent[$isV6LocalStatePresent]  
-                isV6LocalStatePresent_2[$isV6LocalStatePresent2]  
+                V6.7 ls [$isV6LocalStatePresent] or V6.3 ls [$isV6LocalStatePresent2]  
                 shouldCallConsentStatus[$res]  
                 """.trimIndent()
             )

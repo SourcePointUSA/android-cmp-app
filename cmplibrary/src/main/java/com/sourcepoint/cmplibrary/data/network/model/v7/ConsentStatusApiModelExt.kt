@@ -28,7 +28,7 @@ internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
     return CCPAConsentInternal(
         uuid = uuid,
         uspstring = uspstring ?: "",
-        applies = applies ?: false,
+        applies = ccpaApplies ?: applies ?: false,
         status = status,
         childPmId = null,
         rejectedVendors = rejectedVendors ?: emptyList(),
