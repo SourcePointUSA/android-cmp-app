@@ -16,6 +16,12 @@
             app:showAsAction="never"/>
 
     <item
+            android:id="@+id/action_show_pref"
+            android:icon="@drawable/ic_baseline_list_24"
+            android:title="@string/show_preferences"
+            app:showAsAction="never"/>
+
+    <item
             android:id="@+id/action_save_old_v6_consent"
             android:icon="@drawable/ic_baseline_old_6_24"
             android:title="@string/save_old_v6_consent"

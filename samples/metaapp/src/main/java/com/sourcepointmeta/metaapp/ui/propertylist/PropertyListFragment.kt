@@ -27,6 +27,7 @@ import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
 import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
+import com.sourcepointmeta.metaapp.ui.sp.PreferencesActivity
 import com.sourcepointmeta.metaapp.util.oldV6Consent
 import com.sourcepointmeta.metaapp.util.oldV6Consent630
 import kotlinx.android.synthetic.main.fragment_property_list.*// ktlint-disable
@@ -120,6 +121,9 @@ class PropertyListFragment : Fragment() {
                 }
                 R.id.action_add_prop -> {
                     viewModel.addDefaultProperties()
+                }
+                R.id.action_show_pref -> {
+                    startActivity(Intent(requireActivity(), PreferencesActivity::class.java))
                 }
                 R.id.action_save_old_v6_consent -> {
                     val editor = sp.edit()
