@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE_OLD
-import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_MESSAGE_SUBCATEGORY_OLD
 import com.sourcepoint.cmplibrary.data.local.getCCPAConsent
@@ -114,7 +113,7 @@ internal interface CampaignManager {
     var dataRecordedConsent: Instant?
     var authId: String?
 
-    fun removeOldLocalData(): Unit
+    fun handleOldLocalData(): Unit
     fun getGdprChoiceBody(): JsonObject
     fun getCcpaChoiceBody(): JsonObject
     fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
@@ -682,15 +681,22 @@ private class CampaignManagerImpl(
             LOCAL_STATE_OLD
         )
 
-    override fun removeOldLocalData() {
-        dataStorage.preference
-            .edit().apply {
-                remove(LOCAL_STATE)
-                remove(LOCAL_STATE_OLD)
-                remove(KEY_GDPR_APPLIES_OLD)
-                remove(KEY_GDPR_MESSAGE_SUBCATEGORY_OLD)
-            }
-            .apply()
+    override fun handleOldLocalData() {
+        if (dataStorage.preference.contains(DataStorage.LOCAL_STATE) || dataStorage.preference.contains(DataStorage.LOCAL_STATE_OLD)) {
+            dataStorage.preference
+                .edit().apply {
+                    remove(LOCAL_STATE)
+                    remove(LOCAL_STATE_OLD)
+                    remove(KEY_GDPR_APPLIES_OLD)
+                    remove(KEY_GDPR_MESSAGE_SUBCATEGORY_OLD)
+                    remove("key_property_id")
+                    remove("key_ccpa")
+                    remove("key_gdpr")
+                    remove("ccpa_consent_resp")
+                    remove("gdpr_consent_resp")
+                }
+                .apply()
+        }
     }
 
     override var gdprDateCreated: Instant?

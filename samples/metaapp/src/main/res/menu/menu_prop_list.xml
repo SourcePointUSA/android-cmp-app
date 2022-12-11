@@ -21,4 +21,10 @@
             android:title="@string/save_old_v6_consent"
             app:showAsAction="never"/>
 
+    <item
+            android:id="@+id/action_save_old_v6_consent630"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="Save old v6.3 consent"
+            app:showAsAction="never"/>
+
 </menu>

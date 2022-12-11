@@ -6,7 +6,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import io.mockk.mockk
 
 internal class MockDataStorage : DataStorage {
