@@ -10,6 +10,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATU
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.DATA_RECORDED_CONSENT
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_V7
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_V7_LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.META_DATA_RESP
@@ -168,6 +169,7 @@ private class DataStorageImpl(
         preference
             .edit()
             .remove(LOCAL_STATE)
+            .remove(LOCAL_STATE_OLD)
             .remove(PROPERTY_PRIORITY_DATA)
             .remove(PROPERTY_ID)
             .remove(SAVED_CONSENT)

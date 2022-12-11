@@ -6,6 +6,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
 
     companion object {
         const val LOCAL_STATE = "sp.key.local.state"
+        const val LOCAL_STATE_OLD = "key_local_state"
         const val PROPERTY_PRIORITY_DATA = "sp.key.property.priority.data"
         const val PROPERTY_ID = "sp.key.property.id"
         const val SAVED_CONSENT = "sp.key.saved.consent"

@@ -7,6 +7,11 @@ import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE_OLD
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES_OLD
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_MESSAGE_SUBCATEGORY_OLD
 import com.sourcepoint.cmplibrary.data.local.getCCPAConsent
 import com.sourcepoint.cmplibrary.data.local.getGDPRConsent
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
@@ -444,7 +449,8 @@ private class CampaignManagerImpl(
             authId = authId,
             propertyId = spConfig.propertyId?.toLong()
                 ?: fail("The propertyId field is missing in the setup phase!!!!!"),
-            pubData = pubData?.toString()?.let { check { JsonConverter.converter.decodeFromString<JsonObject>(it) }.getOrNull() }
+            pubData = pubData?.toString()
+                ?.let { check { JsonConverter.converter.decodeFromString<JsonObject>(it) }.getOrNull() }
                 ?: JsonObject(mapOf())
         )
     }
@@ -509,7 +515,9 @@ private class CampaignManagerImpl(
 
     override var authId: String?
         get() = dataStorage.getAuthId()
-        set(value) { dataStorage.saveAuthId(value) }
+        set(value) {
+            dataStorage.saveAuthId(value)
+        }
 
     // V7 Implementation below
 
@@ -535,7 +543,7 @@ private class CampaignManagerImpl(
                 ?.let { true }
                 ?: false
 
-            val isV6LocalStateAbsent = !dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE)
+            val isV6LocalStateAbsent = !dataStorage.preference.all.containsKey(LOCAL_STATE)
 
             val res = (isNewUser || ccpaToBeCompleted || gdprToBeCompleted) && isV6LocalStateAbsent
 
@@ -558,8 +566,10 @@ private class CampaignManagerImpl(
             val gdprUUID = dataStorage.gdprConsentUuid
             val ccpaUUID = dataStorage.ccpaConsentUuid
             val localStateSize = messagesV7LocalState?.jsonObject?.size ?: 0
-            val isV6LocalStatePresent = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE)
-            val res = ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0) || isV6LocalStatePresent
+            val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
+            val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE_OLD)
+            val res =
+                ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0) || isV6LocalStatePresent || isV6LocalStatePresent2
 
             logger?.computation(
                 tag = "shouldCallConsentStatus",
@@ -568,6 +578,7 @@ private class CampaignManagerImpl(
                 ccpaUUID != null [${ccpaUUID != null}]
                 localStateSize empty [${localStateSize == 0}]
                 isV6LocalStatePresent[$isV6LocalStatePresent]  
+                isV6LocalStatePresent_2[$isV6LocalStatePresent2]  
                 shouldCallConsentStatus[$res]  
                 """.trimIndent()
             )
@@ -667,10 +678,19 @@ private class CampaignManagerImpl(
         }
 
     override val hasLocalData: Boolean
-        get() = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE)
+        get() = dataStorage.preference.all.containsKey(LOCAL_STATE) || dataStorage.preference.all.containsKey(
+            LOCAL_STATE_OLD
+        )
 
     override fun removeOldLocalData() {
-        dataStorage.preference.edit().remove(DataStorage.LOCAL_STATE).apply()
+        dataStorage.preference
+            .edit().apply {
+                remove(LOCAL_STATE)
+                remove(LOCAL_STATE_OLD)
+                remove(KEY_GDPR_APPLIES_OLD)
+                remove(KEY_GDPR_MESSAGE_SUBCATEGORY_OLD)
+            }
+            .apply()
     }
 
     override var gdprDateCreated: Instant?
