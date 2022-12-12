@@ -193,9 +193,6 @@ internal class MockDataStorage : DataStorage {
         TODO("Not yet implemented")
     }
 
-    override var shouldTriggerBySample: Boolean
-        get() = TODO("Not yet implemented")
-        set(value) {}
     override var messagesV7: String?
         get() = TODO("Not yet implemented")
         set(value) {}
@@ -241,6 +238,12 @@ internal class MockDataStorage : DataStorage {
         get() = TODO("Not yet implemented")
         set(value) {}
     override var gdprDateCreated: String?
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var ccpaSamplingValue: Double
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var gdprSamplingValue: Double
         get() = TODO("Not yet implemented")
         set(value) {}
 }

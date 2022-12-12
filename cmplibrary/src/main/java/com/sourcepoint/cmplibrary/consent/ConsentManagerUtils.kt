@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.consent
 
-import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
@@ -48,10 +47,13 @@ internal interface ConsentManagerUtils {
         legalBasisChangeDate: Instant
     ): ConsentStatus
 
-    val shouldTriggerBySample: Boolean
+    val shouldTriggerByGdprSample: Boolean
+    val shouldTriggerByCcpaSample: Boolean
     var messagesResp: MessagesResp?
 
-    companion object
+    companion object {
+        const val DEFAULT_SAMPLE_RATE: Double = 1.0
+    }
 }
 
 internal fun ConsentManagerUtils.Companion.create(
@@ -169,22 +171,32 @@ private class ConsentManagerUtilsImpl(
 
     override fun hasCcpaConsent(): Boolean = ds.getGdprConsentResp() != null
 
-    override val shouldTriggerBySample: Boolean
+    override val shouldTriggerByGdprSample: Boolean
         get() {
-            return if (ds.preference.contains(DataStorage.TRIGGER_BY_SAMPLE)) {
-                ds.shouldTriggerBySample
-            } else {
-                val res = when {
-                    BuildConfig.SAMPLE_RATE <= 0 -> false
-                    BuildConfig.SAMPLE_RATE >= 100 -> true
-                    else -> {
-                        val num = (1 until 100).random()
-                        num in (1..BuildConfig.SAMPLE_RATE)
-                    }
+            val sampling = (ds.gdprSamplingValue * 100).toInt()
+            val res = when {
+                sampling <= 0 -> false
+                sampling >= 100 -> true
+                else -> {
+                    val num = (1 until 100).random()
+                    num in (1..sampling)
                 }
-                ds.shouldTriggerBySample = res
-                res
             }
+            return res
+        }
+
+    override val shouldTriggerByCcpaSample: Boolean
+        get() {
+            val sampling = (ds.ccpaSamplingValue * 100).toInt()
+            val res = when {
+                sampling <= 0 -> false
+                sampling >= 100 -> true
+                else -> {
+                    val num = (1 until 100).random()
+                    num in (1..sampling)
+                }
+            }
+            return res
         }
 
     override var messagesResp: MessagesResp?

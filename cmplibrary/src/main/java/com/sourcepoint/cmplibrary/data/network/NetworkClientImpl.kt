@@ -230,7 +230,7 @@ private class NetworkClientImpl(
         logger.req(
             tag = "savePvData",
             url = url.toString(),
-            body = "",
+            body = jsonBody,
             type = "POST"
         )
 

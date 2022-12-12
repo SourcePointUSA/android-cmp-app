@@ -107,7 +107,8 @@ internal interface CampaignManager {
     var authId: String?
 
     fun getChoiceBody(): JsonObject
-    fun getPvDataBody(messageReq: MessagesParamReq): JsonObject
+    fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
+    fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
 
     companion object {
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
@@ -712,19 +713,34 @@ private class CampaignManagerImpl(
             gdprCs = gdprConsentStatus?.consentStatus,
             gdprMessageMetaData = gdprMessageMetaData,
             gdprApplies = gdprConsentStatus?.gdprApplies,
+            sampleRate = dataStorage.gdprSamplingValue
         )
     }
 
-    override fun getPvDataBody(messageReq: MessagesParamReq): JsonObject {
-        return toPvDataBody2(
+    override fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject {
+        return toPvDataBody(
             accountId = messageReq.accountId,
             propertyId = messageReq.propertyId,
-            gdprCs = gdprConsentStatus?.consentStatus,
             gdprMessageMetaData = gdprMessageMetaData,
             ccpaMessageMetaData = ccpaMessageMetaData,
             gdprApplies = gdprConsentStatus?.gdprApplies,
             ccpaApplies = ccpaConsentStatus?.ccpaApplies,
             pubData = messageReq.pubData,
+            gdprCs = gdprConsentStatus?.consentStatus,
+            ccpaCS = null,
+        )
+    }
+
+    override fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject {
+        return toPvDataBody(
+            accountId = messageReq.accountId,
+            propertyId = messageReq.propertyId,
+            gdprMessageMetaData = gdprMessageMetaData,
+            ccpaMessageMetaData = ccpaMessageMetaData,
+            gdprApplies = gdprConsentStatus?.gdprApplies,
+            ccpaApplies = ccpaConsentStatus?.ccpaApplies,
+            pubData = messageReq.pubData,
+            gdprCs = null,
             ccpaCS = ccpaConsentStatus
         )
     }

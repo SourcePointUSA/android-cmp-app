@@ -26,7 +26,8 @@ data class MetaDataResp(
 ) {
     @Serializable
     data class Ccpa(
-        @SerialName("applies") val applies: Boolean?
+        @SerialName("applies") val applies: Boolean?,
+        @SerialName("sampleRate") val sampleRate: Double?
     )
 
     @Serializable
@@ -36,7 +37,8 @@ data class MetaDataResp(
         @SerialName("getMessageAlways") val getMessageAlways: Boolean?,
         @SerialName("_id") val id: String?,
         @Serializable(with = DateSerializer::class) val legalBasisChangeDate: Instant?,
-        @SerialName("version") val version: Int?
+        @SerialName("version") val version: Int?,
+        @SerialName("sampleRate") val sampleRate: Double?
     )
 
     override fun toString(): String {

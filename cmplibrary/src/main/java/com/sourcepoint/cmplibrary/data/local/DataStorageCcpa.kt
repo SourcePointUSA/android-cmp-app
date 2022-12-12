@@ -9,6 +9,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_DATE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_MESSAGE_METADATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_POST_CHOICE_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_SAMPLING_VALUE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CONSENT_CCPA_UUID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA
@@ -41,6 +42,8 @@ internal interface DataStorageCcpa {
 
     var ccpaDateCreated: String?
 
+    var ccpaSamplingValue: Double
+
     fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
     var usPrivacyString: String?
@@ -65,6 +68,7 @@ internal interface DataStorageCcpa {
         const val CCPA_STATUS = "sp.ccpa.key.v7.status"
         const val CCPA_MESSAGE_METADATA = "sp.ccpa.key.message.metadata"
         const val CCPA_DATE_CREATED = "sp.ccpa.key.date.created"
+        const val CCPA_SAMPLING_VALUE = "sp.ccpa.key.sampling"
     }
 }
 
@@ -161,6 +165,15 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             }
         }
 
+    override var ccpaSamplingValue: Double
+        get() = preference.getFloat(CCPA_SAMPLING_VALUE, 1.0F).toDouble()
+        set(value) {
+            preference
+                .edit()
+                .putFloat(CCPA_SAMPLING_VALUE, value.toFloat())
+                .apply()
+        }
+
     override fun saveCcpaMessage(value: String) {
         preference
             .edit()
@@ -230,6 +243,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .remove(CCPA_STATUS)
             .remove(CCPA_MESSAGE_METADATA)
             .remove(CCPA_DATE_CREATED)
+            .remove(CCPA_SAMPLING_VALUE)
             .apply()
     }
 }

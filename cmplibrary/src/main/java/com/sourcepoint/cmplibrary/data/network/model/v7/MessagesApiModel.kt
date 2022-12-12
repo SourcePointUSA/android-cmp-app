@@ -16,16 +16,17 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import java.time.Instant
 
+@Serializable
 internal data class MessagesParamReq(
-    val accountId: Long,
-    val propertyId: Long,
-    val authId: String?,
-    val propertyHref: String,
-    val env: Env,
-    val metadataArg: MetaDataArg?,
-    val body: String,
-    val nonKeyedLocalState: String,
-    val pubData: JsonObject = JsonObject(mapOf())
+    @SerialName("accountId") val accountId: Long,
+    @SerialName("propertyId") val propertyId: Long,
+    @SerialName("authId") val authId: String?,
+    @SerialName("propertyHref") val propertyHref: String,
+    @SerialName("env") val env: Env,
+    @SerialName("metadataArg") val metadataArg: MetaDataArg?,
+    @SerialName("body") val body: String,
+    @SerialName("nonKeyedLocalState") val nonKeyedLocalState: String,
+    @SerialName("pubData") val pubData: JsonObject = JsonObject(mapOf())
 )
 
 @Serializable
