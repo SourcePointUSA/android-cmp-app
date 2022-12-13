@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListFragment
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4SharedPrefFragment
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
 import kotlinx.android.synthetic.main.activity_demo.*
