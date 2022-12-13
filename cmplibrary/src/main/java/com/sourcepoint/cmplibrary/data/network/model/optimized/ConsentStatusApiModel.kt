@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.model.v7
+package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
@@ -99,7 +99,7 @@ data class GdprCS(
     @Serializable
     data class PostPayload(
         @SerialName("consentAllRef") val consentAllRef: String?,
-        @SerialName("granularStatus") val granularStatus: com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatus.GranularStatus,
+        @SerialName("granularStatus") val granularStatus: com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus.GranularStatus,
         @SerialName("vendorListId") val vendorListId: String?
     )
 

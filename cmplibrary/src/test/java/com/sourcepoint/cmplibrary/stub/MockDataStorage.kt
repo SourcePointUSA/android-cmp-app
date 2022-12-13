@@ -18,7 +18,7 @@ internal class MockDataStorage : DataStorage {
     var savedConsentVar: Boolean = false
     var localStateV7: String? = null
 
-    override var tcDataV7: Map<String, String>?
+    override var tcDataOptimized: Map<String, String>?
         get() = TODO("Not yet implemented")
         set(value) {}
 
@@ -75,12 +75,12 @@ internal class MockDataStorage : DataStorage {
         storage[DataStorageGdpr.GDPR_JSON_MESSAGE] = value
     }
 
-    override fun getAuthId(): String {
-        return storage[DataStorageGdpr.AUTH_ID_KEY] as? String ?: ""
+    override fun getAuthId(): String? {
+        return storage[DataStorageGdpr.AUTH_ID_KEY] as? String
     }
 
-    override fun getEuConsent(): String {
-        return storage[DataStorageGdpr.EU_CONSENT_KEY] as? String ?: ""
+    override fun getEuConsent(): String? {
+        return storage[DataStorageGdpr.EU_CONSENT_KEY] as? String
     }
 
     override fun getMetaData(): String {
@@ -147,7 +147,7 @@ internal class MockDataStorage : DataStorage {
         return mockLocalState
     }
 
-    override var messagesV7LocalState: String?
+    override var messagesOptimizedLocalState: String?
         get() = localStateV7
         set(value) { localStateV7 = value }
 
@@ -175,7 +175,7 @@ internal class MockDataStorage : DataStorage {
         TODO("Not yet implemented")
     }
 
-    override var messagesV7: String?
+    override var messagesOptimized: String?
         get() = TODO("Not yet implemented")
         set(value) {}
     override var consentStatusResponse: String?
@@ -226,6 +226,12 @@ internal class MockDataStorage : DataStorage {
         get() = TODO("Not yet implemented")
         set(value) {}
     override var gdprSamplingValue: Double
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var ccpaSamplingResult: Boolean?
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var gdprSamplingResult: Boolean?
         get() = TODO("Not yet implemented")
         set(value) {}
 }

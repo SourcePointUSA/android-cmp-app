@@ -11,9 +11,9 @@ import org.json.JSONObject
 import java.lang.RuntimeException
 
 internal fun JSONObject.toNativeMessageDTO(campaignType: CampaignType, dataStorage: DataStorage): MessageStructure {
-    return when (dataStorage.messagesV7LocalState) {
+    return when (dataStorage.messagesOptimizedLocalState) {
         null -> toNativeMessageDTO(campaignType)
-        else -> toNativeMessageDTOV7(campaignType)
+        else -> toNativeMessageDTOOptimized(campaignType)
     }
 }
 
@@ -26,11 +26,11 @@ internal fun JSONObject.toNativeMessageDTO(campaignType: CampaignType): MessageS
     )
 }
 
-internal fun JSONObject.toNativeMessageDTOV7(campaignType: CampaignType): MessageStructure {
+internal fun JSONObject.toNativeMessageDTOOptimized(campaignType: CampaignType): MessageStructure {
     val nmMap: Map<String, Any?> = this.toTreeMap()
 
     return MessageStructure(
-        messageComponents = nmMap.getMap("message_json")?.toMessageComponentsV7(campaignType),
+        messageComponents = nmMap.getMap("message_json")?.toMessageComponentsOptimized(campaignType),
         campaignType = campaignType
     )
 }
@@ -46,7 +46,7 @@ internal fun Map<String, Any?>.toMessageComponents(legislation: CampaignType): M
     )
 }
 
-internal fun Map<String, Any?>.toMessageComponentsV7(legislation: CampaignType): MessageComponents {
+internal fun Map<String, Any?>.toMessageComponentsOptimized(legislation: CampaignType): MessageComponents {
     val componentsMap = this
     val messageJsonStructure: Map<String, Any?>? = componentsMap.getFieldValue<String>("message_json_string")?.let { JSONObject(it).toTreeMap() }
     return MessageComponents(

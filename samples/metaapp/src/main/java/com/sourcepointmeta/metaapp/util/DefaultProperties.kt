@@ -134,6 +134,24 @@ val defaultProperty6 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
 )
 
+val defaultProperty7 = Property(
+    accountId = 22,
+    propertyName = "tests.unified-script.com",
+    propertyId = 17801,
+    timeout = 3000,
+    authId = "user_auth_id",
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    is_staging = false,
+    targetingParameters = emptyList(),
+    statusCampaignSet = setOf(
+        StatusCampaign("tests.unified-script.com", CampaignType.GDPR, true),
+    ),
+    gdprPmId = 521350L,
+    ccpaPmId = 521354L,
+    campaignsEnv = CampaignsEnv.PUBLIC,
+)
+
 val propList = listOf(
     defaultProperty1,
     defaultProperty2,
@@ -141,6 +159,7 @@ val propList = listOf(
     defaultProperty4,
     defaultProperty5,
     defaultProperty6,
+    defaultProperty7,
 )
 
 val oldV6Consent = """

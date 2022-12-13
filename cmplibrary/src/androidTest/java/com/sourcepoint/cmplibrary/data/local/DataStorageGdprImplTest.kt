@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.local
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertEquals
+import com.example.uitestutil.assertNotNull
 import com.example.uitestutil.assertTrue
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import org.junit.Test
@@ -55,7 +56,7 @@ class DataStorageGdprImplTest {
         /** clearInternalData delete only these prefs */
         storage.getAuthId().assertEquals("")
         storage.gdprConsentUuid.assertEquals(null)
-        storage.getEuConsent().assertEquals("")
+        storage.getEuConsent().assertNotNull()
         storage.getMetaData().assertEquals("")
 
         /** clearInternalData DOES NOT delete these prefs */

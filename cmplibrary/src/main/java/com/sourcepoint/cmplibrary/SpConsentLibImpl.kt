@@ -14,8 +14,8 @@ import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.model.v7.CampaignMessage
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CampaignMessage
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
@@ -239,28 +239,28 @@ internal class SpConsentLibImpl(
 //    }
 
     override fun loadMessage() {
-        localLoadMessageV7(authId = null, pubData = null, cmpViewId = null)
+        localLoadMessageOptimized(authId = null, pubData = null, cmpViewId = null)
     }
 
     override fun loadMessage(cmpViewId: Int) {
-        localLoadMessageV7(authId = null, pubData = null, cmpViewId = cmpViewId)
+        localLoadMessageOptimized(authId = null, pubData = null, cmpViewId = cmpViewId)
     }
 
     override fun loadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
-        localLoadMessageV7(authId = authId, pubData = pubData, cmpViewId = cmpViewId)
+        localLoadMessageOptimized(authId = authId, pubData = pubData, cmpViewId = cmpViewId)
     }
 
     override fun loadMessage(pubData: JSONObject?) {
-        localLoadMessageV7(authId = null, pubData = pubData, cmpViewId = null)
+        localLoadMessageOptimized(authId = null, pubData = pubData, cmpViewId = null)
     }
 
     override fun loadMessage(authId: String?) {
-        localLoadMessageV7(authId = authId, pubData = null, cmpViewId = null)
+        localLoadMessageOptimized(authId = authId, pubData = null, cmpViewId = null)
     }
 
-    private fun localLoadMessageV7(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
+    private fun localLoadMessageOptimized(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
 
-        val param = check { campaignManager.getMessageV7Req(authId, pubData) }
+        val param = check { campaignManager.getMessageOptimizedReq(authId, pubData) }
             .executeOnLeft {
                 pLogger.e(this.javaClass.simpleName, it.message ?: it.stackTraceToString())
                 spClient.onError(it)
@@ -269,14 +269,14 @@ internal class SpConsentLibImpl(
         service.getMessages(
             messageReq = param,
             showConsent = {
-                consentManager.sendStoredConsentToClientV7()
+                consentManager.sendStoredConsentToClientOptimized()
                 clientEventManager.setAction(NativeMessageActionType.GET_MSG_NOT_CALLED)
             },
             pSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)
                 clientEventManager.setCampaignNumber(list.size)
                 if (list.isEmpty()) {
-                    consentManager.sendStoredConsentToClientV7()
+                    consentManager.sendStoredConsentToClientOptimized()
                     return@getMessages
                 }
                 val firstCampaign2Process: CampaignModel = list.first()
@@ -322,7 +322,7 @@ internal class SpConsentLibImpl(
             pError = { throwable ->
                 if (consentManager.storedConsent) {
                     executor.executeOnSingleThread {
-                        consentManager.sendStoredConsentToClientV7()
+                        consentManager.sendStoredConsentToClientOptimized()
                         clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
                     }
                 } else {
@@ -680,7 +680,7 @@ internal class SpConsentLibImpl(
                 executor.executeOnSingleThread {
                     val editedAction = spClient.onAction(view, actionImpl) as? ConsentActionImpl
                     editedAction?.let {
-                        consentManager.enqueueConsentV7(consentActionImpl = editedAction)
+                        consentManager.enqueueConsentOptimized(consentActionImpl = editedAction)
                     }
                 }
             }
@@ -856,7 +856,7 @@ internal class SpConsentLibImpl(
             }
             NativeMessageActionType.ACCEPT_ALL,
             NativeMessageActionType.REJECT_ALL -> {
-                consentManager.enqueueConsentV7(nativeConsentAction = nca)
+                consentManager.enqueueConsentOptimized(nativeConsentAction = nca)
                 moveToNextCampaign(remainingCampaigns, viewManager, spClient)
             }
         }

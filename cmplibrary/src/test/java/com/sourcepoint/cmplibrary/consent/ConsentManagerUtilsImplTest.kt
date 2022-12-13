@@ -8,7 +8,7 @@ import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatus
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
 import com.sourcepoint.cmplibrary.exception.Logger
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
@@ -65,7 +65,7 @@ class ConsentManagerUtilsImplTest {
             """.trimIndent()
         )
         sut
-            .updateGdprConsentV7(dataRecordedConsent, gdprConsentStatus, additionsChangeDate, legalBasisChangeDate)
+            .updateGdprConsentOptimized(dataRecordedConsent, gdprConsentStatus, additionsChangeDate, legalBasisChangeDate)
             .run {
                 vendorListAdditions.assertNull()
                 legalBasisChanges!!.assertTrue()
@@ -98,7 +98,7 @@ class ConsentManagerUtilsImplTest {
             """.trimIndent()
         )
         sut
-            .updateGdprConsentV7(dataRecordedConsent, gdprConsentStatus, additionsChangeDate, legalBasisChangeDate)
+            .updateGdprConsentOptimized(dataRecordedConsent, gdprConsentStatus, additionsChangeDate, legalBasisChangeDate)
             .run {
                 vendorListAdditions!!.assertTrue()
                 legalBasisChanges.assertNull()
@@ -132,7 +132,7 @@ class ConsentManagerUtilsImplTest {
             """.trimIndent()
         )
         sut
-            .updateGdprConsentV7(dataRecordedConsent, gdprConsentStatus, additionsChangeDate, legalBasisChangeDate)
+            .updateGdprConsentOptimized(dataRecordedConsent, gdprConsentStatus, additionsChangeDate, legalBasisChangeDate)
             .run {
                 vendorListAdditions.assertNull()
                 legalBasisChanges.assertNull()

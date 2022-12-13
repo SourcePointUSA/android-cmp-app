@@ -16,9 +16,9 @@ import com.sourcepoint.cmplibrary.data.local.getGDPRConsent
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.fail
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.toCCPA
 import com.sourcepoint.cmplibrary.data.network.model.toGDPR
-import com.sourcepoint.cmplibrary.data.network.model.v7.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
@@ -69,7 +69,7 @@ internal interface CampaignManager {
     ): Either<PmUrlConfig>
 
     fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest
-    fun getMessageV7Req(authId: String?, pubData: JSONObject?): MessagesParamReq
+    fun getMessageOptimizedReq(authId: String?, pubData: JSONObject?): MessagesParamReq
 
     fun getGDPRConsent(): Either<GDPRConsentInternal>
     fun getCCPAConsent(): Either<CCPAConsentInternal>
@@ -84,7 +84,7 @@ internal interface CampaignManager {
 
     fun clearConsents()
 
-    // V7
+    // Optimized
     val shouldCallMessages: Boolean
     val shouldCallConsentStatus: Boolean
     var gdprMessageMetaData: MessageMetaData?
@@ -95,7 +95,7 @@ internal interface CampaignManager {
     var consentStatus: ConsentStatus?
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
-    var messagesV7LocalState: JsonElement?
+    var messagesOptimizedLocalState: JsonElement?
     var gdprUuid: String?
     var ccpaUuid: String?
     val hasLocalData: Boolean
@@ -418,7 +418,7 @@ private class CampaignManagerImpl(
         )
     }
 
-    override fun getMessageV7Req(authId: String?, pubData: JSONObject?): MessagesParamReq {
+    override fun getMessageOptimizedReq(authId: String?, pubData: JSONObject?): MessagesParamReq {
         val campaigns = mutableListOf<CampaignReq>()
         mapTemplate[CampaignType.GDPR.name]
             ?.let {
@@ -518,12 +518,12 @@ private class CampaignManagerImpl(
             dataStorage.saveAuthId(value)
         }
 
-    // V7 Implementation below
+    // Optimized Implementation below
 
     val isNewUser: Boolean
         get() {
-            val localStateSize = messagesV7LocalState?.jsonObject?.size ?: 0
-            return messagesV7LocalState == null || localStateSize == 0 || (
+            val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
+            return messagesOptimizedLocalState == null || localStateSize == 0 || (
                 dataStorage.gdprConsentUuid == null &&
                     (ccpaConsentStatus?.newUser == null || ccpaConsentStatus?.newUser == true)
                 )
@@ -561,7 +561,7 @@ private class CampaignManagerImpl(
         get() {
             val gdprUUID = dataStorage.gdprConsentUuid
             val ccpaUUID = dataStorage.ccpaConsentUuid
-            val localStateSize = messagesV7LocalState?.jsonObject?.size ?: 0
+            val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
             val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE_OLD)
             val res =
@@ -602,7 +602,7 @@ private class CampaignManagerImpl(
         gdprConsentStatus = c.consentStatusData?.gdpr
         consentStatus = c.consentStatusData?.gdpr?.consentStatus
         ccpaConsentStatus = c.consentStatusData?.ccpa
-        messagesV7LocalState = c.localState
+        messagesOptimizedLocalState = c.localState
     }
 
     override var consentStatus: ConsentStatus?
@@ -646,13 +646,13 @@ private class CampaignManagerImpl(
             }
         }
 
-    override var messagesV7LocalState: JsonElement?
+    override var messagesOptimizedLocalState: JsonElement?
         get() {
-            return dataStorage.messagesV7LocalState?.let { JsonConverter.converter.decodeFromString<JsonElement>(it) }
+            return dataStorage.messagesOptimizedLocalState?.let { JsonConverter.converter.decodeFromString<JsonElement>(it) }
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.messagesV7LocalState = serialised
+            dataStorage.messagesOptimizedLocalState = serialised
         }
 
     override var gdprUuid: String?
@@ -717,8 +717,6 @@ private class CampaignManagerImpl(
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.metaDataResp = serialised
-            value?.gdpr?.applies?.let { dataStorage.gdprApplies = it }
-            value?.ccpa?.applies?.let { dataStorage.ccpaApplies = it }
         }
 
     override var pvDataResp: PvDataResp?

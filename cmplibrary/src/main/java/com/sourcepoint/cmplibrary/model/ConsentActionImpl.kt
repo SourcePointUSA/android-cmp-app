@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
-import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceTypeParam
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ChoiceTypeParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
@@ -33,7 +33,7 @@ internal data class ConsentActionImpl(
     override val saveAndExitVariables: JSONObject = JSONObject(),
     override val consentLanguage: String? = MessageLanguage.ENGLISH.value,
     val singleShotPM: Boolean = false,
-    val saveAndExitVariablesV7: JsonObject = JsonObject(mapOf()),
+    val saveAndExitVariablesOptimized: JsonObject = JsonObject(mapOf()),
     val pmTab: String? = null,
     val thisContent: JSONObject = JSONObject()
 ) : ConsentAction

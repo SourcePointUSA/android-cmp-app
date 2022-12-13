@@ -9,6 +9,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_DATE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_MESSAGE_METADATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_POST_CHOICE_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_SAMPLING_RESULT
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_SAMPLING_VALUE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CONSENT_CCPA_UUID_KEY
@@ -40,6 +41,7 @@ internal interface DataStorageCcpa {
     var ccpaDateCreated: String?
 
     var ccpaSamplingValue: Double
+    var ccpaSamplingResult: Boolean?
 
     fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
@@ -67,6 +69,7 @@ internal interface DataStorageCcpa {
         const val CCPA_MESSAGE_METADATA = "sp.ccpa.key.message.metadata"
         const val CCPA_DATE_CREATED = "sp.ccpa.key.date.created"
         const val CCPA_SAMPLING_VALUE = "sp.ccpa.key.sampling"
+        const val CCPA_SAMPLING_RESULT = "sp.ccpa.key.sampling.result"
     }
 }
 
@@ -157,6 +160,21 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
                 .apply()
         }
 
+    override var ccpaSamplingResult: Boolean?
+        get() {
+            return if (preference.contains(CCPA_SAMPLING_RESULT))
+                preference.getBoolean(CCPA_SAMPLING_RESULT, false)
+            else null
+        }
+        set(value) {
+            value?.let {
+                preference
+                    .edit()
+                    .putBoolean(CCPA_SAMPLING_RESULT, it)
+                    .apply()
+            }
+        }
+
     override fun saveCcpaMessage(value: String) {
         preference
             .edit()
@@ -228,6 +246,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .remove(CCPA_MESSAGE_METADATA)
             .remove(CCPA_DATE_CREATED)
             .remove(CCPA_SAMPLING_VALUE)
+            .remove(CCPA_SAMPLING_RESULT)
             .apply()
     }
 }

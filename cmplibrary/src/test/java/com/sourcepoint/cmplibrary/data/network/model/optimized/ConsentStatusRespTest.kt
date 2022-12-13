@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.model.v7
+package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String

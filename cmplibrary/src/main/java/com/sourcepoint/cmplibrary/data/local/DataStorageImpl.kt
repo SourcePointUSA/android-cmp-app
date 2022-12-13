@@ -11,8 +11,8 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.DATA_RECORDED
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE_OLD
-import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_V7
-import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_V7_LOCAL_STATE
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_OPTIMIZED
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_OPTIMIZED_LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.META_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_PRIORITY_DATA
@@ -51,12 +51,12 @@ private class DataStorageImpl(
                 .apply()
         }
 
-    override var messagesV7: String?
-        get() = preference.getString(MESSAGES_V7, null)
+    override var messagesOptimized: String?
+        get() = preference.getString(MESSAGES_OPTIMIZED, null)
         set(value) {
             preference
                 .edit()
-                .putString(MESSAGES_V7, value)
+                .putString(MESSAGES_OPTIMIZED, value)
                 .apply()
         }
 
@@ -87,12 +87,12 @@ private class DataStorageImpl(
                 .apply()
         }
 
-    override var messagesV7LocalState: String?
-        get() = preference.getString(MESSAGES_V7_LOCAL_STATE, null)
+    override var messagesOptimizedLocalState: String?
+        get() = preference.getString(MESSAGES_OPTIMIZED_LOCAL_STATE, null)
         set(value) {
             preference
                 .edit()
-                .putString(MESSAGES_V7_LOCAL_STATE, value)
+                .putString(MESSAGES_OPTIMIZED_LOCAL_STATE, value)
                 .apply()
         }
 
@@ -173,7 +173,7 @@ private class DataStorageImpl(
             .remove(PROPERTY_PRIORITY_DATA)
             .remove(PROPERTY_ID)
             .remove(SAVED_CONSENT)
-            .remove(MESSAGES_V7)
+            .remove(MESSAGES_OPTIMIZED)
             .remove(META_DATA_RESP)
             .remove(PV_DATA_RESP)
             .remove(CHOICE_RESP)
@@ -182,7 +182,7 @@ private class DataStorageImpl(
             .remove(GDPR_CONSENT_STATUS)
             .remove(CONSENT_STATUS)
             .remove(CCPA_CONSENT_STATUS)
-            .remove(MESSAGES_V7_LOCAL_STATE)
+            .remove(MESSAGES_OPTIMIZED_LOCAL_STATE)
             .apply()
     }
 

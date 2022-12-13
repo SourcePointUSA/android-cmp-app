@@ -18,7 +18,7 @@ import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.model.toConsentActionV7
+import com.sourcepoint.cmplibrary.data.network.model.toConsentActionOptimized
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
@@ -201,7 +201,7 @@ internal class ConsentWebView(
         override fun onAction(actionData: String) {
             checkWorkerThread("ConsentWebView on action")
 
-            val action = actionData.toConsentActionV7()
+            val action = actionData.toConsentActionOptimized()
                 .executeOnLeft {
                     logger.webAppAction(
                         tag = "Action from the RenderingApp",

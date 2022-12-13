@@ -13,7 +13,7 @@ import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
-import com.sourcepoint.cmplibrary.data.network.model.v7.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.GenericSDKException
@@ -437,7 +437,7 @@ class ServiceImplTest {
 
         every { ncMock.getMetaData(any()) }.returns(Right(metadata))
         every { cm.dataRecordedConsent }.returns(consentStatus.consentStatusData!!.gdpr!!.dateCreated)
-        every { cmu.updateGdprConsentV7(any(), any(), any(), any()) }.returns(gdprConsentStatus)
+        every { cmu.updateGdprConsentOptimized(any(), any(), any(), any()) }.returns(gdprConsentStatus)
         every { cm.dataRecordedConsent }.returns(
             consentStatus.consentStatusData!!.gdpr!!.dateCreated!!.minus(
                 400,
@@ -498,7 +498,7 @@ class ServiceImplTest {
         every { ncMock.getConsentStatus(any()) }.returns(Right(mockConsentStatusResp))
         every { ncMock.getMessages(any()) }.returns(Left(RuntimeException()))
         every { cm.shouldCallMessages }.returns(true)
-        every { cm.messagesV7LocalState }.returns(JsonObject(emptyMap()))
+        every { cm.messagesOptimizedLocalState }.returns(JsonObject(emptyMap()))
         every { cm.campaigns4Config }.returns(emptyList())
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())

@@ -7,8 +7,8 @@ import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.create
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
-import com.sourcepoint.cmplibrary.data.network.model.v7.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -228,7 +228,7 @@ private class NetworkClientImpl(
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
 
         logger.req(
-            tag = "savePvData",
+            tag = "savePvData - ${param.campaignType.name}",
             url = url.toString(),
             body = jsonBody,
             type = "POST"

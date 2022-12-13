@@ -10,7 +10,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
         const val PROPERTY_PRIORITY_DATA = "sp.key.property.priority.data"
         const val PROPERTY_ID = "sp.key.property.id"
         const val SAVED_CONSENT = "sp.key.saved.consent"
-        const val MESSAGES_V7 = "sp.key.messages"
+        const val MESSAGES_OPTIMIZED = "sp.key.messages"
         const val CONSENT_STATUS = "sp.key.consent.status"
         const val META_DATA_RESP = "sp.key.meta.data"
         const val PV_DATA_RESP = "sp.key.pv.data"
@@ -20,13 +20,13 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
         const val CONSENT_STATUS_RESPONSE = "sp.key.consent.status.response"
         const val GDPR_CONSENT_STATUS = "sp.gdpr.key.consent.status"
         const val CCPA_CONSENT_STATUS = "sp.ccpa.key.consent.status"
-        const val MESSAGES_V7_LOCAL_STATE = "sp.key.messages.v7.local.state"
+        const val MESSAGES_OPTIMIZED_LOCAL_STATE = "sp.key.messages.v7.local.state"
     }
 
     override val preference: SharedPreferences
 
     var savedConsent: Boolean
-    var messagesV7: String?
+    var messagesOptimized: String?
     var consentStatus: String?
     var metaDataResp: String?
     var pvDataResp: String?
@@ -36,7 +36,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     var consentStatusResponse: String?
     var gdprConsentStatus: String?
     var ccpaConsentStatus: String?
-    var messagesV7LocalState: String?
+    var messagesOptimizedLocalState: String?
 
     fun savePropertyPriorityData(value: String)
     fun saveLocalState(value: String)

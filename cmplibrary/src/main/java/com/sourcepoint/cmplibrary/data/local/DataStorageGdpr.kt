@@ -18,6 +18,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_DATE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_MESSAGE_METADATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_POST_CHOICE_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_SAMPLING_RESULT
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_SAMPLING_VALUE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_TCData
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
@@ -48,11 +49,12 @@ internal interface DataStorageGdpr {
     var gdprMessageMetaData: String?
 
     var tcData: Map<String, Any?>
-    var tcDataV7: Map<String, String>?
+    var tcDataOptimized: Map<String, String>?
 
     var gdprDateCreated: String?
 
     var gdprSamplingValue: Double
+    var gdprSamplingResult: Boolean?
 
     fun saveGdpr(value: String)
     fun getGdpr(): String?
@@ -65,8 +67,8 @@ internal interface DataStorageGdpr {
     fun saveGdprMessage(value: String)
 
     /** fetch data */
-    fun getAuthId(): String
-    fun getEuConsent(): String
+    fun getAuthId(): String?
+    fun getEuConsent(): String?
     fun getMetaData(): String
     fun getGdprConsentResp(): String?
     fun getGdprMessage(): String
@@ -103,6 +105,7 @@ internal interface DataStorageGdpr {
         const val GDPR_MESSAGE_METADATA = "sp.gdpr.key.message.metadata"
         const val GDPR_DATE_CREATED = "sp.gdpr.key.date.created"
         const val GDPR_SAMPLING_VALUE = "sp.gdpr.key.sampling"
+        const val GDPR_SAMPLING_RESULT = "sp.gdpr.key.sampling.result"
     }
 }
 
@@ -150,7 +153,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         return preference.getString(KEY_GDPR, null)
     }
 
-    override var tcDataV7: Map<String, String>?
+    override var tcDataOptimized: Map<String, String>?
         get() {
             val res = TreeMap<String, String>()
             val map: Map<String, *> = preference.all
@@ -238,12 +241,12 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .apply()
     }
 
-    override fun getAuthId(): String {
-        return preference.getString(AUTH_ID_KEY, "")!!
+    override fun getAuthId(): String? {
+        return preference.getString(AUTH_ID_KEY, null)
     }
 
-    override fun getEuConsent(): String {
-        return preference.getString(EU_CONSENT_KEY, "")!!
+    override fun getEuConsent(): String? {
+        return preference.getString(EU_CONSENT_KEY, null)
     }
 
     override fun getMetaData(): String {
@@ -293,6 +296,21 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 .edit()
                 .putFloat(GDPR_SAMPLING_VALUE, value.toFloat())
                 .apply()
+        }
+
+    override var gdprSamplingResult: Boolean?
+        get() {
+            return if (preference.contains(GDPR_SAMPLING_RESULT))
+                preference.getBoolean(GDPR_SAMPLING_RESULT, false)
+            else null
+        }
+        set(value) {
+            value?.let {
+                preference
+                    .edit()
+                    .putBoolean(GDPR_SAMPLING_RESULT, it)
+                    .apply()
+            }
         }
 
     override var gdprConsentUuid: String?
@@ -346,6 +364,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 remove(GDPR_DATE_CREATED)
                 remove(GDPR_MESSAGE_METADATA)
                 remove(GDPR_SAMPLING_VALUE)
+                remove(GDPR_SAMPLING_RESULT)
                 listIABTCF.forEach { remove(it) }
             }.apply()
     }
