@@ -216,8 +216,8 @@ private class ServiceImpl(
             logger.computation(
                 tag = "PvData condition GdprSample",
                 msg = """
-                    isCcpaInConfig[$isGdprInConfig]
-                    shouldTriggerByCcpaSample[${consentManagerUtils.shouldTriggerByGdprSample}]
+                    isGdprInConfig[$isGdprInConfig]
+                    shouldTriggerByGdprSample[${consentManagerUtils.shouldTriggerByGdprSample}]
                     res[${consentManagerUtils.shouldTriggerByGdprSample && isGdprInConfig}]
                 """.trimIndent()
             )
