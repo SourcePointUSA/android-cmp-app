@@ -146,7 +146,7 @@ private class ServiceImpl(
                 .executeOnRight { handleMetaDataLogic(it) }
 
             if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
-                triggeronsentStatus(messageReq)
+                triggerConsentStatus(messageReq)
                     .executeOnLeft {
                         pError(it)
                         return@executeOnWorkerThread
@@ -364,7 +364,7 @@ private class ServiceImpl(
                 }
             }
 
-        pMessageReq?.let { triggeronsentStatus(it) }
+        pMessageReq?.let { triggerConsentStatus(it) }
 
         campaignManager.gdprConsentStatus ?: throw InvalidConsentResponse(
             cause = null,
@@ -430,7 +430,7 @@ private class ServiceImpl(
         )
     }
 
-    private fun triggeronsentStatus(messageReq: MessagesParamReq): Either<ConsentStatusResp> {
+    private fun triggerConsentStatus(messageReq: MessagesParamReq): Either<ConsentStatusResp> {
         val csParams = messageReq.toConsentStatusParamReq(
             gdprUuid = campaignManager.gdprUuid,
             ccpaUuid = campaignManager.ccpaUuid,
