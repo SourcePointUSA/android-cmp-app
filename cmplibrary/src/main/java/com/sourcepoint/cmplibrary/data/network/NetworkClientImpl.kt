@@ -288,7 +288,7 @@ private class NetworkClientImpl(
         logger.req(
             tag = "getChoiceUrl",
             url = url.toString(),
-            body = "",
+            body = param.toJsonObject().toString(),
             type = "GET"
         )
 
