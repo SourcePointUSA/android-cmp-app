@@ -364,7 +364,7 @@ private class ServiceImpl(
                 }
             }
 
-        pMessageReq?.let { triggerConsentStatus(it) }
+        pMessageReq?.apply { authId?.let{ triggerConsentStatus(this) } }
 
         campaignManager.gdprConsentStatus ?: throw InvalidConsentResponse(
             cause = null,
