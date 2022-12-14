@@ -1,6 +1,35 @@
-# Migrate to v7 (Unified SDK) -- Java
+# Migrate from v6 to v7 (Unified SDK) -- Kotlin/Java
+In order to migrate our SDK from v6 to v7, it is necessary just to add the `propertyId` parameter into the config object:
 
-In this guide we will cover how to migrate your app to the latest version of Sourcepoint's SDK (v7).
+Kotlin
+```kotlin
+    val cmpConfig : SpConfig = config {
+                  accountId = 22
+                  propertyId = 16893  // NEW FIELD
+                  propertyName = "mobile.multicampaign.demo"
+                  messLanguage = MessageLanguage.ENGLISH
+                  campaignsEnv = CampaignsEnv.PUBLIC
+                  messageTimeout = 4000
+                  +CampaignType.CCPA
+                  +CampaignType.GDPR
+                }
+```
+
+Java
+```java
+    private final SpConfig spConfig = new SpConfigDataBuilder()
+            .addAccountId(22)
+            .addPropertyId(16893)   // NEW FIELD
+            .addPropertyName("mobile.multicampaign.demo")
+            .addMessageLanguage(MessageLanguage.ENGLISH) 
+            .addCampaign(CampaignType.GDPR)
+            .addCampaign(CampaignType.CCPA)
+            .build();
+```
+
+# Migrate to v6 (Unified SDK) -- Java
+
+In this guide we will cover how to migrate your app to the version 6.X.X of Sourcepoint's SDK (from v5.X.X).
 
 >**Note:** In addition to the technical migration below, you will also need to enable the **Multi-Campaign** toggle for the app property within the Sourcepoint portal. 
 
@@ -8,13 +37,13 @@ In this guide we will cover how to migrate your app to the latest version of Sou
 
 Navigate to your build.gradle file and upgrade the `cmplibrary`:
 
-**v7 (Unified SDK)**
+**v6 (Unified SDK)**
 ```java
 implementation 'com.sourcepoint.cmplibrary:cmplibrary:<latest-version>'
 ```
 
 ## Remove out of date code from project
-With the change to v7 (Unified SDK) the following configurations are no longer used and can be safely removed from your project.
+With the change to v6 (Unified SDK) the following configurations are no longer used and can be safely removed from your project.
 
 ```java
 //remove from project
@@ -71,13 +100,12 @@ private void removeView(View view) {
     }
 ```
 ## Create new _Config_ object
-Use the data builder to obtain a configuration for v7 (Unified SDK). This contains your organization's account information and includes the type of campaigns that will be run on this property. This object will be called when you instantiate your CMP SDK.
+Use the data builder to obtain a configuration for v6 (Unified SDK). This contains your organization's account information and includes the type of campaigns that will be run on this property. This object will be called when you instantiate your CMP SDK.
 
 ```java
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
-	    .addPropertyId(16893)
             .addMessageLanguage(MessageLanguage.ENGLISH)        //or desired language
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
@@ -86,7 +114,7 @@ Use the data builder to obtain a configuration for v7 (Unified SDK). This contai
 ## Delegate Methods
 Previously, in order to receive events from the CMP SDK, you needed to provide multiple delegates/clients using the sets method available.
 
-The v7 (Unified SDK) needs just one delegate which you need to implement and add it to you CMP instance.
+The v6 (Unified SDK) needs just one delegate which you need to implement and add it to you CMP instance.
 
 ```java
 class LocalClient implements SpClient {
@@ -133,7 +161,7 @@ Call `loadMessage` inside `onResume`
         buildGDPRConsentLib().run();
     }
 ```
-**v7 (Unified SDK)**
+**v6 (Unified SDK)**
 ```java
     @Override
     protected void onResume() {
@@ -162,7 +190,7 @@ Replace `showPM` with the Privacy Managers that will be shown for each campaign
 ```java
                 buildGDPRConsentLib().showPm();
 ```
-**v7 (Unified SDK)**
+**v6 (Unified SDK)**
 ```java
                 spConsentLib.loadPrivacyManager(
                         "10000", //PM id
