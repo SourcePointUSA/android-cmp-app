@@ -236,6 +236,13 @@ private class ServiceImpl(
             } else {
                 execManager.executeOnMain { showConsent() }
             }
+            logger.computation(
+                tag = "shouldTriggerByGdprSample",
+                msg = """
+                      ${consentManagerUtils.shouldTriggerByGdprSample}
+                """.trimIndent()
+            )
+
             if (consentManagerUtils.shouldTriggerByGdprSample && spConfig.campaigns.find { it.campaignType == GDPR } != null) {
 
                 val pvParams = PvDataParamReq(
@@ -253,6 +260,13 @@ private class ServiceImpl(
                         campaignManager.pvDataResp = it
                     }
             }
+
+            logger.computation(
+                tag = "shouldTriggerByCcpaSample",
+                msg = """
+                      ${consentManagerUtils.shouldTriggerByCcpaSample}
+                """.trimIndent()
+            )
 
             if (consentManagerUtils.shouldTriggerByCcpaSample && spConfig.campaigns.find { it.campaignType == CCPA } != null) {
 
