@@ -379,6 +379,7 @@ class ServiceImplTest {
 
         every { ncMock.getMetaData(any()) }.returns(Either.Right(metadata))
         every { cm.shouldCallConsentStatus }.returns(true)
+        every { cm.spConfig }.returns(spConfig)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
@@ -399,6 +400,7 @@ class ServiceImplTest {
         every { ncMock.getMetaData(any()) }.returns(Either.Right(metadata))
         every { ncMock.getConsentStatus(any()) }.returns(Either.Right(consentStatus))
         every { cm.shouldCallConsentStatus }.returns(true)
+        every { cm.spConfig }.returns(spConfig)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
@@ -438,6 +440,7 @@ class ServiceImplTest {
         every { ncMock.getMetaData(any()) }.returns(Right(metadata))
         every { cm.dataRecordedConsent }.returns(consentStatus.consentStatusData!!.gdpr!!.dateCreated)
         every { cmu.updateGdprConsentOptimized(any(), any(), any(), any()) }.returns(gdprConsentStatus)
+        every { cm.spConfig }.returns(spConfig)
         every { cm.dataRecordedConsent }.returns(
             consentStatus.consentStatusData!!.gdpr!!.dateCreated!!.minus(
                 400,
