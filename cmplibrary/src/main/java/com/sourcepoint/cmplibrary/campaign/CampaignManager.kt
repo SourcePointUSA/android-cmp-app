@@ -113,7 +113,8 @@ internal interface CampaignManager {
     var dataRecordedConsent: Instant?
     var authId: String?
 
-    fun handleOldLocalData(): Unit
+    fun handleMetaDataLogic(md: MetaDataResp?)
+    fun handleOldLocalData()
     fun getGdprChoiceBody(): JsonObject
     fun getCcpaChoiceBody(): JsonObject
     fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
@@ -648,7 +649,11 @@ private class CampaignManagerImpl(
 
     override var messagesOptimizedLocalState: JsonElement?
         get() {
-            return dataStorage.messagesOptimizedLocalState?.let { JsonConverter.converter.decodeFromString<JsonElement>(it) }
+            return dataStorage.messagesOptimizedLocalState?.let {
+                JsonConverter.converter.decodeFromString<JsonElement>(
+                    it
+                )
+            }
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
@@ -675,6 +680,30 @@ private class CampaignManagerImpl(
         get() = dataStorage.preference.all.containsKey(LOCAL_STATE) || dataStorage.preference.all.containsKey(
             LOCAL_STATE_OLD
         )
+
+    override fun handleMetaDataLogic(md: MetaDataResp?) {
+        metaDataResp = md
+        md?.let {
+            it.ccpa?.apply {
+                applies?.let { i -> dataStorage.ccpaApplies = i }
+                sampleRate?.let { i ->
+                    if (i != dataStorage.ccpaSamplingValue) {
+                        dataStorage.ccpaSamplingValue = i
+                        dataStorage.ccpaSamplingResult = null
+                    }
+                }
+            }
+            it.gdpr?.apply {
+                applies?.let { i -> dataStorage.gdprApplies = i }
+                sampleRate?.let { i ->
+                    if (i != dataStorage.gdprSamplingValue) {
+                        dataStorage.gdprSamplingValue = i
+                        dataStorage.gdprSamplingResult = null
+                    }
+                }
+            }
+        }
+    }
 
     override fun handleOldLocalData() {
         if (dataStorage.preference.contains(DataStorage.LOCAL_STATE) || dataStorage.preference.contains(DataStorage.LOCAL_STATE_OLD)) {

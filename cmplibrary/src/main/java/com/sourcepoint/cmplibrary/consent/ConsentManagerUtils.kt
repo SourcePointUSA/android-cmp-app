@@ -210,8 +210,14 @@ private class ConsentManagerUtilsImpl(
             return ds.ccpaSamplingResult ?: kotlin.run {
                 val sampling = (ds.ccpaSamplingValue * 100).toInt()
                 when {
-                    sampling <= 0 -> false
-                    sampling >= 100 -> true
+                    sampling <= 0 -> {
+                        ds.ccpaSamplingResult = false
+                        false
+                    }
+                    sampling >= 100 -> {
+                        ds.ccpaSamplingResult = true
+                        true
+                    }
                     else -> {
                         val num = (1 until 100).random()
                         val res = num in (1..sampling)

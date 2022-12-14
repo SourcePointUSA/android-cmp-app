@@ -172,6 +172,11 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
                     .edit()
                     .putBoolean(CCPA_SAMPLING_RESULT, it)
                     .apply()
+            } ?: kotlin.run {
+                preference
+                    .edit()
+                    .remove(CCPA_SAMPLING_RESULT)
+                    .apply()
             }
         }
 

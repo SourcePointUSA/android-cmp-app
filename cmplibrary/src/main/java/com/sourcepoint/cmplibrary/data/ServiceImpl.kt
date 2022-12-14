@@ -143,17 +143,7 @@ private class ServiceImpl(
                     pError(it)
                     return@executeOnWorkerThread
                 }
-                .executeOnRight {
-                    campaignManager.metaDataResp = it
-                    it.ccpa?.apply {
-                        applies?.let { i -> dataStorage.ccpaApplies = i }
-                        sampleRate?.let { i -> dataStorage.ccpaSamplingValue = i }
-                    }
-                    it.gdpr?.apply {
-                        applies?.let { i -> dataStorage.gdprApplies = i }
-                        sampleRate?.let { i -> dataStorage.gdprSamplingValue = i }
-                    }
-                }
+                .executeOnRight { handleMetaDataLogic(it) }
 
             if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
 
