@@ -40,6 +40,7 @@
   - [The ConsentAction object](#the-consentaction-object)
   - [`pubData`](#pubData)
   - [The Nativemessage](NATIVEMESSAGE_GUIDE.md)
+  - [Google Additional Consent](#Google-Additional-Consent)
   - [Delete user data](#Delete-user-data)
   - [Frequently Asked Questions](#Frequently-Asked-Questions)
   - [Artifact Release Process](#Artifact-Release-Process)
@@ -846,6 +847,12 @@ Java
         spConsentLib.loadMessage(pubData);
     }
 ```
+
+## Google Additional Consent
+
+Google additional consent is a concept created by Google and the IAB Framework to pass end-user consent to Google Ad Technology Providers (ATP) despite not adhering to the IAB TCF framework. [Click here](https://docs.sourcepoint.com/hc/en-us/articles/4405115143955) for more information.
+
+Google additional consent is supported in our mobile SDKs and is stored in the `IABTCF_AddtlConsent` key in the user's local storage. Look for the key in the user's local storage and pass the value to Google's SDKs.
 
 ## Delete user data
 Utilize the following method if an end-user requests to have their data deleted:
