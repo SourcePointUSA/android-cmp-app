@@ -24,6 +24,7 @@ class OnlyGdprKotlin : AppCompatActivity() {
         spClient = LocalClient()
         config {
             accountId = 22
+            propertyId = 16893
             propertyName = "mobile.multicampaign.demo"
             messLanguage = MessageLanguage.ENGLISH
             messageTimeout = 3000
