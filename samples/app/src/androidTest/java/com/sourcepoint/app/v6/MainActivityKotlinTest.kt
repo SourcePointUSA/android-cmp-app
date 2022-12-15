@@ -891,7 +891,6 @@ class MainActivityKotlinTest {
         wr {
             scenario.onActivity { activity ->
                 val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                // verify that after the migration the local state is cancelled
                 sp.contains("sp.key.local.state").assertFalse()
             }
         }
