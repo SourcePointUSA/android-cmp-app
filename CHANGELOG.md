@@ -1,3 +1,6 @@
+## 7.0.0 (December, 15, 2022)
+* [DIA-740](https://sourcepoint.atlassian.net/browse/DIA-740) New SDK architecture which optimise the usage of all the resources involve in the process of fetching the consent. The new architecture bring only a new extra parameter from the client prospective, the  `propertyId`. More info about its usage in the [Migration Guide](https://github.com/SourcePointUSA/android-cmp-app/blob/develop/MIGRATION_GUIDE.md).
+
 ## 6.7.3 (November, 11, 2022)
 * [DIA-1484](https://sourcepoint.atlassian.net/browse/DIA-1484)  Fix crash with payload.customAction during a PM action (#552)
 * [DIA-1302](https://sourcepoint.atlassian.net/browse/DIA-1302) Issues with Resurfacing the OTT Privacy Manager (#550)
