@@ -3,8 +3,8 @@ package com.sourcepointmeta.metaapp.tv.viewer
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.LOG_ID
-import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerFragment.Companion.TITLE
+import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4LogFragment.Companion.LOG_ID
+import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4LogFragment.Companion.TITLE
 
 class JsonViewerActivityTv : FragmentActivity() {
 

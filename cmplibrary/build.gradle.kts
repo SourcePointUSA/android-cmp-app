@@ -5,6 +5,7 @@ plugins {
     id("io.github.dryrum.update-changelog")
     id("io.github.dryrum.replace-in-file")
     id("io.github.dryrum.git-utils")
+    id("kotlinx-serialization")
 }
 
 apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
@@ -62,6 +63,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
     }
     tasks {
         withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -85,10 +87,15 @@ android {
 dependencies {
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
+    // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
+    coreLibraryDesugaring( "com.android.tools:desugar_jdk_libs:1.1.5")
+
 
     // Unfortunately we depend on a outdated version of okhttp due to its support to older versions of Android
     //noinspection GradleDependency
     api(Libs.okHttpCmp)
+
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.0")
 
     testImplementation(Libs.mockk)
     testImplementation(Libs.mockwebserver)

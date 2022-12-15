@@ -8,30 +8,52 @@ import com.sourcepoint.cmplibrary.core.flatMap
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInternal
+import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.ConsentActionImpl
+import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.IncludeData
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
+import java.time.Instant
 import java.util.* // ktlint-disable
 
 internal interface ConsentManagerUtils {
 
-    fun buildConsentReq(actionImpl: ConsentActionImpl, localState: String, pmId: String?): Either<JSONObject>
-    fun buildGdprConsentReq(actionImpl: ConsentActionImpl, localState: String, pmId: String?): Either<JSONObject>
-    fun buildCcpaConsentReq(actionImpl: ConsentActionImpl, localState: String, pmId: String?): Either<JSONObject>
+    fun buildConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject>
+    fun buildGdprConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject>
+    fun buildCcpaConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject>
 
     fun getGdprConsent(): Either<GDPRConsentInternal>
     fun getCcpaConsent(): Either<CCPAConsentInternal>
     fun hasGdprConsent(): Boolean
     fun hasCcpaConsent(): Boolean
 
+    val gdprConsentOptimized: Either<GDPRConsentInternal>
+    val ccpaConsentOptimized: Either<CCPAConsentInternal>
+
     fun getSpConsent(): SPConsents?
 
-    companion object
+    fun updateGdprConsentOptimized(
+        dataRecordedConsent: Instant,
+        gdprConsentStatus: ConsentStatus,
+        additionsChangeDate: Instant,
+        legalBasisChangeDate: Instant
+    ): ConsentStatus
+
+    val shouldTriggerByGdprSample: Boolean
+    val shouldTriggerByCcpaSample: Boolean
+    var messagesResp: MessagesResp?
+
+    companion object {
+        const val DEFAULT_SAMPLE_RATE: Double = 1.0
+    }
 }
 
 internal fun ConsentManagerUtils.Companion.create(
@@ -48,14 +70,14 @@ private class ConsentManagerUtilsImpl(
     val uuid: String = UUID.randomUUID().toString()
 ) : ConsentManagerUtils {
 
-    override fun buildConsentReq(actionImpl: ConsentActionImpl, localState: String, pmId: String?): Either<JSONObject> {
-        return when (actionImpl.campaignType) {
-            CampaignType.GDPR -> buildGdprConsentReq(actionImpl, localState, pmId)
-            CampaignType.CCPA -> buildCcpaConsentReq(actionImpl, localState, pmId)
+    override fun buildConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject> {
+        return when (action.campaignType) {
+            CampaignType.GDPR -> buildGdprConsentReq(action, localState, pmId)
+            CampaignType.CCPA -> buildCcpaConsentReq(action, localState, pmId)
         }
     }
 
-    override fun buildGdprConsentReq(actionImpl: ConsentActionImpl, localState: String, pmId: String?): Either<JSONObject> =
+    override fun buildGdprConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject> =
         check {
             cm
                 .getCampaignTemplate(CampaignType.GDPR)
@@ -64,15 +86,15 @@ private class ConsentManagerUtilsImpl(
                     JSONObject().apply {
                         put("propertyHref", cm.spConfig.propertyName)
                         put("accountId", cm.spConfig.accountId)
-                        put("actionType", actionImpl.actionType.code)
-                        put("choiceId", actionImpl.choiceId)
-                        put("requestFromPM", actionImpl.requestFromPm)
+                        put("actionType", action.actionType.code)
+                        put("choiceId", action.choiceId)
+                        put("requestFromPM", action.requestFromPm)
                         put("privacyManagerId", pmId)
                         put("requestUUID", uuid)
-                        put("pmSaveAndExitVariables", actionImpl.saveAndExitVariables)
+                        put("pmSaveAndExitVariables", action.saveAndExitVariables)
                         put("localState", localState)
-                        put("pubData", actionImpl.pubData)
-                        put("consentLanguage", actionImpl.consentLanguage)
+                        put("pubData", action.pubData)
+                        put("consentLanguage", action.consentLanguage)
                         put("uuid", uuid)
                         put("includeData", IncludeData().toJsonObject())
                     }
@@ -83,17 +105,18 @@ private class ConsentManagerUtilsImpl(
                 .getOrNull() ?: fail("Error trying to build the gdpr body to send consents.")
         }
 
-    override fun buildCcpaConsentReq(actionImpl: ConsentActionImpl, localState: String, pmId: String?): Either<JSONObject> = check {
-        JSONObject().apply {
-            put("accountId", cm.spConfig.accountId)
-            put("privacyManagerId", pmId)
-            put("localState", localState)
-            put("pubData", actionImpl.pubData)
-            put("requestUUID", uuid)
-            put("pmSaveAndExitVariables", actionImpl.saveAndExitVariables)
-            put("includeData", IncludeData().toJsonObject())
+    override fun buildCcpaConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject> =
+        check {
+            JSONObject().apply {
+                put("accountId", cm.spConfig.accountId)
+                put("privacyManagerId", pmId)
+                put("localState", localState)
+                put("pubData", action.pubData)
+                put("requestUUID", uuid)
+                put("pmSaveAndExitVariables", action.saveAndExitVariables)
+                put("includeData", IncludeData().toJsonObject())
+            }
         }
-    }
 
     override fun getSpConsent(): SPConsents {
         val gdprCached = getGdprConsent().getOrNull()
@@ -104,6 +127,33 @@ private class ConsentManagerUtilsImpl(
         )
     }
 
+    override fun updateGdprConsentOptimized(
+        dataRecordedConsent: Instant,
+        gdprConsentStatus: ConsentStatus,
+        additionsChangeDate: Instant,
+        legalBasisChangeDate: Instant
+    ): ConsentStatus {
+        val creationLessThanAdditions = dataRecordedConsent.epochSecond < additionsChangeDate.epochSecond
+        val creationLessThanLegalBasis = dataRecordedConsent.epochSecond < legalBasisChangeDate.epochSecond
+
+        val updatedCS = gdprConsentStatus.copy()
+
+        if (creationLessThanAdditions) {
+            updatedCS.vendorListAdditions = true
+        }
+        if (creationLessThanLegalBasis) {
+            updatedCS.legalBasisChanges = true
+        }
+        if (creationLessThanAdditions || creationLessThanLegalBasis) {
+            if (updatedCS.consentedAll == true) {
+                updatedCS.granularStatus?.previousOptInAll = true
+                updatedCS.consentedAll = false
+            }
+        }
+
+        return updatedCS
+    }
+
     override fun getGdprConsent(): Either<GDPRConsentInternal> {
         return cm.getGDPRConsent()
     }
@@ -112,7 +162,75 @@ private class ConsentManagerUtilsImpl(
         return cm.getCCPAConsent()
     }
 
+    override val gdprConsentOptimized: Either<GDPRConsentInternal>
+        get() = check {
+            cm.gdprConsentStatus?.toGDPRUserConsent() ?: throw InvalidConsentResponse(
+                cause = null,
+                "The GDPR consent is null!!!"
+            )
+        }
+
+    override val ccpaConsentOptimized: Either<CCPAConsentInternal>
+        get() = check {
+            cm.ccpaConsentStatus?.toCCPAConsentInternal() ?: throw InvalidConsentResponse(
+                cause = null,
+                "The CCPA consent is null!!!"
+            )
+        }
+
     override fun hasGdprConsent(): Boolean = ds.getGdprConsentResp() != null
 
     override fun hasCcpaConsent(): Boolean = ds.getGdprConsentResp() != null
+
+    override val shouldTriggerByGdprSample: Boolean
+        get() {
+            return ds.gdprSamplingResult ?: kotlin.run {
+                val sampling = (ds.gdprSamplingValue * 100).toInt()
+                when {
+                    sampling <= 0 -> {
+                        ds.gdprSamplingResult = false
+                        false
+                    }
+                    sampling >= 100 -> {
+                        ds.gdprSamplingResult = true
+                        true
+                    }
+                    else -> {
+                        val num = (1 until 100).random()
+                        val res = num in (1..sampling)
+                        ds.gdprSamplingResult = res
+                        res
+                    }
+                }
+            }
+        }
+
+    override val shouldTriggerByCcpaSample: Boolean
+        get() {
+            return ds.ccpaSamplingResult ?: kotlin.run {
+                val sampling = (ds.ccpaSamplingValue * 100).toInt()
+                when {
+                    sampling <= 0 -> {
+                        ds.ccpaSamplingResult = false
+                        false
+                    }
+                    sampling >= 100 -> {
+                        ds.ccpaSamplingResult = true
+                        true
+                    }
+                    else -> {
+                        val num = (1 until 100).random()
+                        val res = num in (1..sampling)
+                        ds.ccpaSamplingResult = res
+                        res
+                    }
+                }
+            }
+        }
+
+    override var messagesResp: MessagesResp?
+        get() = TODO("Not yet implemented")
+        set(value) {
+            ds
+        }
 }

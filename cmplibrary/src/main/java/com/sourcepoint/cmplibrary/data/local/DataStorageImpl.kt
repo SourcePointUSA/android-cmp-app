@@ -3,9 +3,20 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CCPA_CONSENT_STATUS
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CHOICE_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATUS
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATUS_RESPONSE
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.DATA_RECORDED_CONSENT
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE_OLD
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_OPTIMIZED
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_OPTIMIZED_LOCAL_STATE
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.META_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_PRIORITY_DATA
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PV_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.SAVED_CONSENT
 
 /**
@@ -40,6 +51,96 @@ private class DataStorageImpl(
                 .apply()
         }
 
+    override var messagesOptimized: String?
+        get() = preference.getString(MESSAGES_OPTIMIZED, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(MESSAGES_OPTIMIZED, value)
+                .apply()
+        }
+
+    override var consentStatusResponse: String?
+        get() = preference.getString(CONSENT_STATUS_RESPONSE, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(CONSENT_STATUS_RESPONSE, value)
+                .apply()
+        }
+
+    override var gdprConsentStatus: String?
+        get() = preference.getString(GDPR_CONSENT_STATUS, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(GDPR_CONSENT_STATUS, value)
+                .apply()
+        }
+
+    override var ccpaConsentStatus: String?
+        get() = preference.getString(CCPA_CONSENT_STATUS, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(CCPA_CONSENT_STATUS, value)
+                .apply()
+        }
+
+    override var messagesOptimizedLocalState: String?
+        get() = preference.getString(MESSAGES_OPTIMIZED_LOCAL_STATE, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(MESSAGES_OPTIMIZED_LOCAL_STATE, value)
+                .apply()
+        }
+
+    override var consentStatus: String?
+        get() = preference.getString(CONSENT_STATUS, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(CONSENT_STATUS, value)
+                .apply()
+        }
+
+    override var metaDataResp: String?
+        get() = preference.getString(META_DATA_RESP, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(META_DATA_RESP, value)
+                .apply()
+        }
+
+    override var pvDataResp: String?
+        get() = preference.getString(PV_DATA_RESP, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(PV_DATA_RESP, value)
+                .apply()
+        }
+
+    override var choiceResp: String?
+        get() = preference.getString(CHOICE_RESP, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(CHOICE_RESP, value)
+                .apply()
+        }
+
+    override var dataRecordedConsent: String?
+        get() = preference.getString(DATA_RECORDED_CONSENT, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(DATA_RECORDED_CONSENT, value)
+                .apply()
+        }
+
     override fun saveLocalState(value: String) {
         preference
             .edit()
@@ -51,22 +152,11 @@ private class DataStorageImpl(
         return preference.getString(LOCAL_STATE, null)
     }
 
-    override fun savePropertyId(value: Int) {
-        preference
-            .edit()
-            .putInt(PROPERTY_ID, value)
-            .apply()
-    }
-
     override fun savePropertyPriorityData(value: String) {
         preference
             .edit()
             .putString(PROPERTY_PRIORITY_DATA, value)
             .apply()
-    }
-
-    override fun getPropertyId(): Int {
-        return preference.getInt(PROPERTY_ID, -1)
     }
 
     override fun getPropertyPriorityData(): String? {
@@ -79,9 +169,20 @@ private class DataStorageImpl(
         preference
             .edit()
             .remove(LOCAL_STATE)
+            .remove(LOCAL_STATE_OLD)
             .remove(PROPERTY_PRIORITY_DATA)
             .remove(PROPERTY_ID)
             .remove(SAVED_CONSENT)
+            .remove(MESSAGES_OPTIMIZED)
+            .remove(META_DATA_RESP)
+            .remove(PV_DATA_RESP)
+            .remove(CHOICE_RESP)
+            .remove(DATA_RECORDED_CONSENT)
+            .remove(CONSENT_STATUS_RESPONSE)
+            .remove(GDPR_CONSENT_STATUS)
+            .remove(CONSENT_STATUS)
+            .remove(CCPA_CONSENT_STATUS)
+            .remove(MESSAGES_OPTIMIZED_LOCAL_STATE)
             .apply()
     }
 

@@ -6,6 +6,13 @@ import org.json.JSONObject
 import java.util.* // ktlint-disable
 import kotlin.collections.ArrayList
 
+internal fun String.jsonToTreeMap(): Map<String, Any?> {
+    return when (this) {
+        JSONObject.NULL -> TreeMap()
+        else -> toMap(JSONObject(this))
+    }
+}
+
 internal fun JSONObject.toTreeMap(): Map<String, Any?> {
     return when (this) {
         JSONObject.NULL -> TreeMap()
@@ -48,6 +55,7 @@ private fun toMap(jsonObj: JSONObject): Map<String, Any?> {
     val keysItr = jsonObj.keys()
     while (keysItr.hasNext()) {
         val key = keysItr.next()
+        if (jsonObj.isNull(key)) continue
         var value = jsonObj[key]
         when (value) {
             is JSONArray -> value = toList(value)

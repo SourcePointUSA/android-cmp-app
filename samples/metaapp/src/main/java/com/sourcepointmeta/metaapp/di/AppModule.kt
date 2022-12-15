@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp.di
 
+import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
@@ -14,6 +15,7 @@ import com.sourcepointmeta.metaapp.ui.create
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogViewModel
 import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyViewModel
 import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListViewModel
+import com.sourcepointmeta.metaapp.ui.sp.SpViewModel
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -21,6 +23,8 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val appModule = module {
+
+    viewModel { SpViewModel(get()) }
 
     viewModel { LogViewModel(get()) }
 
@@ -43,6 +47,8 @@ val appModule = module {
     single { RemoteDataSource.create(BuildConfig.URL_PROPERTY_FILE) }
 
     single { createDb(androidApplication()) }
+
+    single { PreferenceManager.getDefaultSharedPreferences(androidApplication()) }
 
     single(qualifier = named("clear_db")) { false }
 

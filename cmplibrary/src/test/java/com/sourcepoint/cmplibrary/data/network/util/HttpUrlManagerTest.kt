@@ -4,11 +4,19 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.assertTrue
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
+import com.sourcepoint.cmplibrary.util.file2String
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.JsonObject
+import org.json.JSONObject
 import org.junit.Test
 
 class HttpUrlManagerTest {
@@ -203,5 +211,122 @@ class HttpUrlManagerTest {
         )
         val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messSubCat = TCFv2).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_pm/index.html?site_id&ccpaUUID=uuid&message_id=111")
+    }
+
+    @Test
+    fun `GIVEN a PROD env getMetaData RETURN the prod link`() {
+        val param = MetaDataParamReq(
+            accountId = 22,
+            env = Env.PROD,
+            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
+            propertyId = 17801
+        )
+        val sut = HttpUrlManagerSingleton.getMetaDataUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/meta-data?env=prod&accountId=22&propertyId=17801&metadata={%22gdpr%22:{},%22ccpa%22:{}}")
+    }
+
+    @Test
+    fun `GIVEN a PROD env getConsentStatus RETURN the prod link`() {
+        val param = ConsentStatusParamReq(
+            accountId = 22,
+            env = Env.PROD,
+            metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
+            propertyId = 17801,
+            authId = "user_auth_id",
+            localState = null
+        )
+        val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&includeData=%7B%22TCData%22%3A%20%7B%22type%22%3A%20%22RecordString%22%7D%7D&authId=user_auth_id&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}")
+    }
+
+    @Test
+    fun `GIVEN a PROD env getChoiceUrl RETURN the prod link`() {
+        val param = ChoiceParamReq(
+            accountId = 22,
+            env = Env.PROD,
+            metadataArg = JsonConverter.converter.decodeFromString("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}"""),
+            propertyId = 17801,
+            choiceType = ChoiceTypeParam.CONSENT_ALL
+        )
+        val sut = HttpUrlManagerSingleton.getChoiceUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/choice/consent-all?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&includeCustomVendorsRes=false&metadata={%20%20%22ccpa%22:%20{%20%20%20%20%22applies%22:%20true%20%20},%20%20%22gdpr%22:%20{%20%20%20%20%22applies%22:%20true,%20%20%20%20%22hasLocalData%22:%20false,%20%20%20%20%22uuid%22:%20%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22%20%20}}&includeData=%7B%22TCData%22%3A%20%7B%22type%22%3A%20%22RecordString%22%7D%7D")
+    }
+
+    @Test
+    fun `GIVEN a PROD env getGdprChoiceUrl RETURN the prod link`() {
+        val param = PostChoiceParamReq(
+            env = Env.PROD,
+            actionType = ActionType.ACCEPT_ALL
+        )
+        val sut = HttpUrlManagerSingleton.getGdprChoiceUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/choice/gdpr/11?env=prod&hasCsp=true")
+    }
+
+    @Test
+    fun `GIVEN a PROD env getCcpaChoiceUrl RETURN the prod link`() {
+        val param = PostChoiceParamReq(
+            env = Env.PROD,
+            actionType = ActionType.ACCEPT_ALL
+        )
+        val sut = HttpUrlManagerSingleton.getCcpaChoiceUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/choice/ccpa/11?env=prod&hasCsp=true")
+    }
+
+    @Test
+    fun `GIVEN a PROD env getConsentStatus with authId NULL RETURN the prod link`() {
+        val param = ConsentStatusParamReq(
+            accountId = 22,
+            env = Env.PROD,
+            metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
+            propertyId = 17801,
+            authId = null,
+            localState = null
+        )
+        val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&includeData=%7B%22TCData%22%3A%20%7B%22type%22%3A%20%22RecordString%22%7D%7D&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}")
+    }
+
+    @Test
+    fun `GIVEN a PROD env getPvData RETURN the prod link`() {
+        val sut = HttpUrlManagerSingleton.getPvDataUrl(Env.PROD).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/pv-data?env=prod")
+    }
+
+    @Test
+    fun `GIVEN a PROD env getMessages RETURN the prod link`() {
+
+        val json = "v7/message_body_cs.json".file2String()
+        val cs = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
+
+        val list = listOf(
+            CampaignReqImpl(
+                targetingParams = emptyList(),
+                campaignsEnv = CampaignsEnv.PUBLIC,
+                campaignType = CampaignType.GDPR,
+                groupPmId = null
+            )
+        )
+
+        val body = getMessageBody(
+            accountId = 22,
+            cs = cs.consentStatusData?.gdpr?.consentStatus,
+            propertyHref = "tests.unified-script.com",
+            campaigns = list,
+            localState = JsonObject(emptyMap()),
+            ccpaStatus = null
+        )
+
+        val param = MessagesParamReq(
+            env = Env.PROD,
+            nonKeyedLocalState = """{"gdpr":{"_sp_v1_uid":null,"_sp_v1_data":null},"ccpa":{"_sp_v1_uid":null,"_sp_v1_data":null}}""",
+            body = body.toString(),
+            metadataArg = JsonConverter.converter.decodeFromString("""{"ccpa":{"applies":true},"gdpr":{"applies":true}}"""),
+            authId = null,
+            accountId = 1212,
+            propertyId = 12,
+            propertyHref = "asdfasdfasd"
+        )
+        val sut = HttpUrlManagerSingleton.getMessagesUrl(param).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages?env=prod&nonKeyedLocalState={%22gdpr%22:{%22_sp_v1_uid%22:null,%22_sp_v1_data%22:null},%22ccpa%22:{%22_sp_v1_uid%22:null,%22_sp_v1_data%22:null}}&body={%22accountId%22:22,%22includeData%22:{%22TCData%22:{%22type%22:%22RecordString%22},%22campaigns%22:{%22type%22:%22RecordString%22}},%22propertyHref%22:%22https://tests.unified-script.com%22,%22hasCSP%22:true,%22campaigns%22:{%22gdpr%22:{%22consentStatus%22:{%22consentedAll%22:true,%22consentedToAny%22:false,%22granularStatus%22:{%22defaultConsent%22:false,%22previousOptInAll%22:false,%22purposeConsent%22:%22ALL%22,%22purposeLegInt%22:%22ALL%22,%22vendorConsent%22:%22ALL%22,%22vendorLegInt%22:%22ALL%22},%22hasConsentData%22:false,%22rejectedAny%22:false,%22rejectedLI%22:false},%22targetingParams%22:{},%22groupPmId%22:null}},%22localState%22:{}}&metadata={%20%20%22ccpa%22:%20{%20%20%20%20%22applies%22:%20true%20%20},%20%20%22gdpr%22:%20{%20%20%20%20%22applies%22:%20true%20%20}}")
     }
 }

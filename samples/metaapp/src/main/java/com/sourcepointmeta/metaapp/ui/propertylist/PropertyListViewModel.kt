@@ -9,6 +9,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.RemoteDataSource
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.BaseState.*// ktlint-disable
+import com.sourcepointmeta.metaapp.util.propList
 import io.github.g00fy2.versioncompare.Version
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,6 +34,15 @@ internal class PropertyListViewModel(
                     mutableLiveData.value = StatePropertyList(it, selectLast)
                 }
             )
+        }
+    }
+
+    fun addDefaultProperties() {
+        viewModelScope.launch {
+            propList.forEach {
+                dataSource.storeOrUpdateProperty(it)
+            }
+            fetchPropertyList()
         }
     }
 

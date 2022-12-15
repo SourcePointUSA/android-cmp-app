@@ -67,4 +67,9 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
         list.removeAt(position)
         notifyItemRemoved(position)
     }
+
+    fun deleteAllItems() {
+        list.clear()
+        notifyDataSetChanged()
+    }
 }

@@ -22,6 +22,7 @@ data class Property(
     val gdprGroupPmId: String? = null,
     val useGdprGroupPmIfAvailable: Boolean = false,
     val ccpaGroupPmId: String? = null,
+    val propertyId: Int,
     val useCcpaGroupPmIfAvailable: Boolean = false
 )
 
@@ -85,7 +86,8 @@ fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<Statu
     ccpaPmId = ccpa_pm_id,
     campaignsEnv = CampaignsEnv.values().find { it.env == campaign_env } ?: CampaignsEnv.PUBLIC,
     gdprGroupPmId = group_pm_id,
-    useGdprGroupPmIfAvailable = use_gdpr_groupid_if_available != 0L
+    useGdprGroupPmIfAvailable = use_gdpr_groupid_if_available != 0L,
+    propertyId = property_id.toString().toInt()
 )
 
 fun CampaignQueries.getTargetingParams(propName: String) =

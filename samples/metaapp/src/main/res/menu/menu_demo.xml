@@ -3,9 +3,21 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".ui.demo.DemoActivity">
 
+    <item android:id="@+id/action_refresh"
+          android:title="@string/action_refresh"
+          android:orderInCategory="100"
+          android:icon="@drawable/ic_baseline_refresh_24"
+          app:showAsAction="always"/>
+
     <item android:id="@+id/action_share"
           android:title="@string/action_share"
           android:orderInCategory="100"
           android:icon="@drawable/ic_baseline_ios_share_24"
-          app:showAsAction="always"/>
+          app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/action_clear_log"
+            android:icon="@drawable/ic_baseline_delete_48"
+            android:title="@string/clear_log"
+            app:showAsAction="never"/>
 </menu>

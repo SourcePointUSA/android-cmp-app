@@ -32,6 +32,7 @@ class SpConsentLibDelegateTest {
                     accountId = 22
                     propertyName = "mobile.multicampaign.demo"
                     messLanguage = MessageLanguage.ENGLISH
+                    propertyId = 16893
                     +(CampaignType.CCPA to listOf(("location" to "US")))
                     +(CampaignType.GDPR to listOf(("location" to "EU")))
                 }
@@ -57,6 +58,7 @@ class SpConsentLibDelegateTest {
                     accountId = 22
                     propertyName = "mobile.multicampaign.demo"
                     messLanguage = MessageLanguage.ENGLISH
+                    propertyId = 16893
                     +(CampaignType.CCPA to listOf(("location" to "US")))
                     +(CampaignType.GDPR to listOf(("location" to "EU")))
                 }

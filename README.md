@@ -65,6 +65,7 @@ Kotlin
 ```kotlin
     val cmpConfig : SpConfig = config {
                   accountId = 22
+                  propertyId = 16893
                   propertyName = "mobile.multicampaign.demo"
                   messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
                   campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
@@ -81,6 +82,7 @@ Java
     // Cmp SDK config
     private final SpConfig cmpConfig = new SpConfigDataBuilder()
             .addAccountId(22)
+            .addPropertyId(16893)
             .addPropertyName("mobile.multicampaign.demo")
             .addMessageLanguage(MessageLanguage.ENGLISH) // Optional, default ENGLISH
             .addCampaignsEnv(CampaignsEnv.PUBLIC) // Optional, default PUBLIC

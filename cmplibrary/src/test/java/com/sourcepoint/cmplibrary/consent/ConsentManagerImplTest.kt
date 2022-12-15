@@ -102,6 +102,7 @@ class ConsentManagerImplTest {
     fun `GIVEN a localState and an action VERIFY that sendConsent is Not invoked`() {
 
         every { service.sendConsent(any(), any(), any(), any()) }.returns(Either.Right(consentResp))
+        every { dataStorage.messagesOptimizedLocalState }.returns(null)
 
         consentManager.sPConsentsSuccess = { spConsents -> sPSuccessMock(spConsents) }
         consentManager.sPConsentsError = { throwable -> sPErrorMock(throwable) }
@@ -121,6 +122,7 @@ class ConsentManagerImplTest {
         val times: Int = Random.nextInt(10)
 
         every { service.sendConsent(any(), any(), any(), any()) }.returns(Either.Right(consentResp))
+        every { dataStorage.messagesOptimizedLocalState }.returns(null)
 
         consentManager.sPConsentsSuccess = { spConsents -> sPSuccessMock(spConsents) }
         consentManager.sPConsentsError = { throwable -> sPErrorMock(throwable) }
@@ -140,6 +142,7 @@ class ConsentManagerImplTest {
         val times: Int = Random.nextInt(10)
 
         every { service.sendConsent(any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
+        every { dataStorage.messagesOptimizedLocalState }.returns(null)
 
         consentManager.sPConsentsSuccess = { spConsents -> sPSuccessMock(spConsents) }
         consentManager.sPConsentsError = { throwable -> sPErrorMock(throwable) }
@@ -196,6 +199,8 @@ class ConsentManagerImplTest {
 
     @Test
     fun `GIVEN a localState three actions executed from different threads VERIFY that sPConsentsSuccess is invoked three times`() = runBlocking<Unit> {
+
+        every { dataStorage.messagesOptimizedLocalState }.returns(null)
 
         class RandomExecutorManager : ExecutorManager by MockExecutorManager() {
 

@@ -10,7 +10,15 @@
     <TextView
             android:id="@+id/consent_uuid"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+    />
+
+    <TextView
+            android:id="@+id/gdpr_applies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/consent_uuid"
     />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

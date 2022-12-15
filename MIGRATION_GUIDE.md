@@ -1,6 +1,35 @@
+# Migrate from v6 to v7 (Unified SDK) -- Kotlin/Java
+In order to migrate our SDK from v6 to v7, it is necessary just to add the `propertyId` parameter into the config object:
+
+Kotlin
+```kotlin
+    val cmpConfig : SpConfig = config {
+                  accountId = 22
+                  propertyId = 16893  // NEW FIELD
+                  propertyName = "mobile.multicampaign.demo"
+                  messLanguage = MessageLanguage.ENGLISH
+                  campaignsEnv = CampaignsEnv.PUBLIC
+                  messageTimeout = 4000
+                  +CampaignType.CCPA
+                  +CampaignType.GDPR
+                }
+```
+
+Java
+```java
+    private final SpConfig spConfig = new SpConfigDataBuilder()
+            .addAccountId(22)
+            .addPropertyId(16893)   // NEW FIELD
+            .addPropertyName("mobile.multicampaign.demo")
+            .addMessageLanguage(MessageLanguage.ENGLISH) 
+            .addCampaign(CampaignType.GDPR)
+            .addCampaign(CampaignType.CCPA)
+            .build();
+```
+
 # Migrate to v6 (Unified SDK) -- Java
 
-In this guide we will cover how to migrate your app to the latest version of Sourcepoint's SDK (v6).
+In this guide we will cover how to migrate your app to the version 6.X.X of Sourcepoint's SDK (from v5.X.X).
 
 >**Note:** In addition to the technical migration below, you will also need to enable the **Multi-Campaign** toggle for the app property within the Sourcepoint portal. 
 

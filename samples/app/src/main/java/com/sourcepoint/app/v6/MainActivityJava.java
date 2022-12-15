@@ -37,6 +37,7 @@ public class MainActivityJava extends AppCompatActivity {
     private final SpConfig spConfig = new SpConfigDataBuilder()
             .addAccountId(22)
             .addPropertyName("mobile.multicampaign.demo")
+            .addPropertyId(16893)
             .addMessageLanguage(MessageLanguage.ENGLISH)
             .addMessageTimeout(5000)
             .addCampaignsEnv(CampaignsEnv.PUBLIC)
