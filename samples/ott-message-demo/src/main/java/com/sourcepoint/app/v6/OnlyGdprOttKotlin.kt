@@ -23,8 +23,9 @@ class OnlyGdprOttKotlin : AppCompatActivity() {
         activity = this@OnlyGdprOttKotlin
         spClient = LocalClient()
         config {
-            accountId = 75
-            propertyName = "BILD-SMARTTV-ANDROID"
+            accountId = 22
+            propertyId = 22231
+            propertyName = "ott.test.suite"
             messLanguage = MessageLanguage.ENGLISH
             messageTimeout = 3000
             +(CampaignType.GDPR)
