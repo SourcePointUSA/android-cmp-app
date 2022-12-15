@@ -2,18 +2,22 @@ package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.executeOnLeft
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.create
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
-import com.sourcepoint.cmplibrary.data.network.util.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.ConsentResp
-import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
-import okhttp3.* // ktlint-disable
+import kotlinx.serialization.encodeToString
+import okhttp3.MediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
 import org.json.JSONObject
 
 internal fun createNetworkClient(
@@ -75,7 +79,7 @@ private class NetworkClientImpl(
     override fun sendConsent(
         consentReq: JSONObject,
         env: Env,
-        consentActionImpl: ConsentActionImpl
+        consentAction: ConsentAction
     ): Either<ConsentResp> = check {
 
         val mediaType = MediaType.parse("application/json")
@@ -83,9 +87,9 @@ private class NetworkClientImpl(
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
         val url = urlManager
             .sendConsentUrl(
-                campaignType = consentActionImpl.campaignType,
+                campaignType = consentAction.campaignType,
                 env = env,
-                actionType = consentActionImpl.actionType
+                actionType = consentAction.actionType
             )
 
         logger.req(
@@ -102,7 +106,7 @@ private class NetworkClientImpl(
 
         val response = httpClient.newCall(request).execute()
 
-        responseManager.parseConsentRes(response, consentActionImpl.campaignType)
+        responseManager.parseConsentRes(response, consentAction.campaignType)
     }
 
     override fun sendCustomConsent(
@@ -155,5 +159,192 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseCustomConsentRes(response)
+    }
+
+    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> = check {
+        val url = urlManager.getMetaDataUrl(param)
+
+        logger.req(
+            tag = "getMetaData",
+            url = url.toString(),
+            body = "",
+            type = "GET"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseMetaDataRes(response)
+    }
+
+    override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> = check {
+        val url = urlManager.getConsentStatusUrl(param)
+
+        logger.req(
+            tag = "getConsentStatus",
+            url = url.toString(),
+            body = check { JsonConverter.converter.encodeToString(param) }.getOrNull() ?: "",
+            type = "GET"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseConsentStatusResp(response)
+    }
+
+    override fun getMessages(param: MessagesParamReq): Either<MessagesResp> = check {
+        val url = urlManager.getMessagesUrl(param)
+
+        logger.req(
+            tag = "getMessages",
+            url = url.toString(),
+            body = param.body,
+            type = "GET"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseMessagesResp(response)
+    }
+
+    override fun savePvData(param: PvDataParamReq): Either<PvDataResp> = check {
+        val url = urlManager.getPvDataUrl(param.env)
+        val mediaType = MediaType.parse("application/json")
+        val jsonBody = param.body.toString()
+        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
+
+        logger.req(
+            tag = "savePvData - ${param.campaignType.name}",
+            url = url.toString(),
+            body = jsonBody,
+            type = "POST"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parsePvDataResp(response)
+    }
+
+    override fun getMessages(
+        messageReq: MessagesParamReq,
+        pSuccess: (MessagesResp) -> Unit,
+        pError: (Throwable) -> Unit
+    ) {
+        val url = urlManager.getMessagesUrl(messageReq)
+
+        logger.req(
+            tag = "getMessages",
+            url = url.toString(),
+            body = "",
+            type = "GET"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        httpClient
+            .newCall(request)
+            .enqueue {
+                onFailure { _, exception ->
+                    pError(exception)
+                }
+                onResponse { _, r ->
+                    responseManager
+                        .parseMessagesResp2(r)
+                        .map {
+                            pSuccess(it)
+                        }
+                        .executeOnLeft {
+                            pError(it)
+                        }
+                }
+            }
+    }
+
+    override fun getChoice(param: ChoiceParamReq): Either<ChoiceResp> = check {
+        val url = urlManager.getChoiceUrl(param)
+
+        logger.req(
+            tag = "getChoiceUrl",
+            url = url.toString(),
+            body = param.toJsonObject().toString(),
+            type = "GET"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parseGetChoiceResp(response)
+    }
+
+    override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprCS> = check {
+        val url = urlManager.getGdprChoiceUrl(param)
+        val mediaType = MediaType.parse("application/json")
+        val jsonBody = param.body.toString()
+        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
+
+        logger.req(
+            tag = "storeGdprChoice",
+            url = url.toString(),
+            body = jsonBody,
+            type = "POST"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parsePostGdprChoiceResp(response)
+    }
+
+    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> = check {
+        val url = urlManager.getCcpaChoiceUrl(param)
+        val mediaType = MediaType.parse("application/json")
+        val jsonBody = param.body.toString()
+        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
+
+        logger.req(
+            tag = "storeCcpaChoice",
+            url = url.toString(),
+            body = jsonBody,
+            type = "POST"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parsePostCcpaChoiceResp(response)
     }
 }

@@ -4,6 +4,8 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
 import com.sourcepoint.cmplibrary.data.network.util.Env
@@ -353,6 +355,45 @@ class NetworkClientImplTest {
         )
 
         val res = sut.deleteCustomConsentTo(req, Env.STAGE) as? Either.Left
+        res.assertNotNull()
+    }
+
+    @Test
+    fun `EXECUTE getMetaData and VERIFY that the result is a RIGHT obj`() {
+        val respConsent = JSONObject("v7/meta_data.json".file2String())
+        val mockResp = mockResponse("https://mock.com", respConsent.toString())
+        val mockCall = mockk<Call>()
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.returns(mockResp)
+        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null))
+
+        val param = MetaDataParamReq(
+            accountId = 22,
+            propertyId = 17801,
+            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
+            env = Env.LOCAL_PROD
+        )
+
+        val res = sut.getMetaData(param) as? Either.Right<MetaDataResp>
+        res.assertNotNull()
+    }
+
+    @Test
+    fun `EXECUTE getMetaData THROWS an exception and the result is a LEFT obj`() {
+        val respConsent = JSONObject("v7/meta_data.json".file2String())
+        val mockCall = mockk<Call>()
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.throws(RuntimeException("exception"))
+        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null))
+
+        val param = MetaDataParamReq(
+            accountId = 22,
+            propertyId = 17801,
+            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
+            env = Env.LOCAL_PROD
+        )
+
+        val res = sut.getMetaData(param) as? Either.Left
         res.assertNotNull()
     }
 }

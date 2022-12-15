@@ -58,6 +58,7 @@ val appModule = module {
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
+                propertyId = 16893
                 messLanguage = MessageLanguage.ENGLISH
                 messageTimeout = 5000
                 campaignsEnv = CampaignsEnv.PUBLIC
@@ -67,11 +68,12 @@ val appModule = module {
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
+                propertyId = 16893
                 messLanguage = MessageLanguage.ENGLISH
                 messageTimeout = 5000
                 campaignsEnv = CampaignsEnv.PUBLIC
                 +(CampaignType.GDPR)
-//                +(CampaignType.CCPA to listOf(("location" to "US")))
+                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
 
         }

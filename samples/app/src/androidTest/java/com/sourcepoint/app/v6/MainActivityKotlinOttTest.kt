@@ -38,6 +38,7 @@ class MainActivityKotlinOttTest {
     private val spConfOtt = config {
         accountId = 22
         propertyName = "ott.test.suite"
+        propertyId = 22231
         campaignsEnv = CampaignsEnv.PUBLIC
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000

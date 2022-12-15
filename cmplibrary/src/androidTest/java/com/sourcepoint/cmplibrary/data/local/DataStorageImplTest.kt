@@ -35,12 +35,4 @@ class DataStorageImplTest {
             getPropertyPriorityData().assertEquals("test_ppd")
         }
     }
-
-    @Test
-    fun check_used_key_for_save_get_PropertyId() {
-        sut.run {
-            savePropertyId(100)
-            getPropertyId().assertEquals(100)
-        }
-    }
 }

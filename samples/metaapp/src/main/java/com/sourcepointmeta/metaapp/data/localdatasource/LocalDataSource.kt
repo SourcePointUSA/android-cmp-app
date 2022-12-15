@@ -172,13 +172,14 @@ private class LocalDataSourceImpl(
                     account_id = property.accountId,
                     is_staging = if (property.is_staging) 1 else 0,
                     property_name = property.propertyName,
-                    message_type = property.messageType,
+                    message_type = "MESSAGE_TYPE",
                     timestamp = property.timestamp,
                     ccpa_pm_id = property.ccpaPmId,
                     gdpr_pm_id = property.gdprPmId,
                     campaign_env = property.campaignsEnv.env,
                     group_pm_id = property.gdprGroupPmId,
-                    use_gdpr_groupid_if_available = if (property.useGdprGroupPmIfAvailable) 1 else 0
+                    use_gdpr_groupid_if_available = if (property.useGdprGroupPmIfAvailable) 1 else 0,
+                    property_id = property.propertyId.toString()
                 )
                 deleteTargetingParameterByPropName(property.propertyName)
                 property.targetingParameters.forEach {
@@ -268,6 +269,7 @@ private class LocalDataSourceImpl(
                         propertyName = p.propertyName
                         messageTimeout = p.timeout ?: 3000L
                         campaignsEnv = p.campaignsEnv
+                        propertyId = p.propertyId.toInt()
                         messLanguage = MessageLanguage.values()
                             .find { it.name == p.messageLanguage }
                             ?: MessageLanguage.ENGLISH

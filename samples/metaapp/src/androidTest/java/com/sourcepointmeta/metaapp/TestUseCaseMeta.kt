@@ -88,6 +88,7 @@ class TestUseCaseMeta {
         fun addTestProperty() {
             addProperty(
                 propertyName = "mobile.multicampaign.demo",
+                propertyId = 16893,
                 accountId = "22",
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
@@ -100,6 +101,7 @@ class TestUseCaseMeta {
 
         fun addProperty(
             propertyName: String,
+            propertyId: Int,
             accountId: String,
             gdprPmId: String,
             ccpaPmId: String? = null,
@@ -107,6 +109,7 @@ class TestUseCaseMeta {
             gdprTps: List<Pair<String, String>>? = null,
             ccpaTps: List<Pair<String, String>>? = null
         ) {
+            addTextById(R.id.prop_id_ed, propertyId.toString())
             addTextById(R.id.prop_name_ed, propertyName)
             addTextById(R.id.account_id_ed, accountId)
             addTextById(R.id.gdpr_pm_id_ed, gdprPmId)
@@ -227,7 +230,8 @@ class TestUseCaseMeta {
                 pm_tab = "PURPOSES",
                 message_language = "ENGLISH",
                 group_pm_id = null,
-                use_gdpr_groupid_if_available = null
+                use_gdpr_groupid_if_available = null,
+                property_id = null
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.demo",
@@ -256,7 +260,8 @@ class TestUseCaseMeta {
                 pm_tab = "PURPOSES",
                 message_language = "ENGLISH",
                 group_pm_id = null,
-                use_gdpr_groupid_if_available = null
+                use_gdpr_groupid_if_available = null,
+                property_id = null
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.fully.native",
@@ -295,7 +300,8 @@ class TestUseCaseMeta {
                 pm_tab = "PURPOSES",
                 message_language = "ENGLISH",
                 group_pm_id = null,
-                use_gdpr_groupid_if_available = null
+                use_gdpr_groupid_if_available = null,
+                property_id = null
             )
             campaignQueries.insertStatusCampaign(
                 property_name = propertyName,

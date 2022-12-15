@@ -2,23 +2,26 @@ package com.sourcepoint.cmplibrary.campaign
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.uitestutil.assertEquals
-import com.example.uitestutil.assertNotNull
-import com.example.uitestutil.assertNull
-import com.example.uitestutil.jsonFile2String
+import com.example.uitestutil.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
+import com.sourcepoint.cmplibrary.util.file2String
+import kotlinx.serialization.decodeFromString
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
@@ -33,7 +36,7 @@ class CampaignManagerImplTest {
         campaignsEnv = CampaignsEnv.STAGE,
         targetingParams = listOf(TargetingParam("location", "EU")),
         campaignType = CampaignType.GDPR,
-        groupPmId = "111"
+        groupPmId = "111" // 111
     )
 
     private val ccpa = CampaignTemplate(
@@ -69,7 +72,8 @@ class CampaignManagerImplTest {
             gdprCampaign
         ),
         MessageLanguage.ENGLISH,
-        3000
+        propertyId = 1234,
+        messageTimeout = 3000,
     )
 
     private val cm by lazy {
@@ -204,5 +208,54 @@ class CampaignManagerImplTest {
                 uc.uspstring.assertEquals(ccpa.userConsent.uspstring)
             }
         }
+    }
+
+    @Test
+    fun `GIVEN_a_v7_consent_status_STORE_it_into_the_local_data_storage`() {
+        val json = "v7/consent_status_with_auth_id.json".file2String()
+        val obj = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
+
+        cm.gdprConsentStatus = obj.consentStatusData!!.gdpr
+        cm.ccpaConsentStatus = obj.consentStatusData!!.ccpa
+        cm.messagesOptimizedLocalState = obj.localState
+
+        cm.gdprConsentStatus!!.also {
+            it.uuid.assertEquals("69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10")
+            it.dateCreated.toString().assertEquals("2022-08-25T20:56:38.551Z")
+            it.TCData!!.size.assertEquals(27)
+        }
+        cm.ccpaConsentStatus!!.also {
+            it.uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
+            it.dateCreated.toString().assertEquals("2022-08-25T20:56:39.010Z")
+        }
+
+        cm.gdprConsentStatus = null
+        cm.ccpaConsentStatus = null
+
+        cm.gdprConsentStatus.assertNull()
+        cm.ccpaConsentStatus.assertNull()
+        cm.messagesOptimizedLocalState.assertNotNull()
+    }
+
+    @Test
+    fun `GIVEN_a_v7_MetaData_STORE_it_into_the_local_data_storage`() {
+        val json = "v7/meta_data.json".file2String()
+        val obj = JsonConverter.converter.decodeFromString<MetaDataResp>(json)
+
+        cm.metaDataResp = obj
+
+        cm.metaDataResp?.run {
+            gdpr?.also {
+                it.applies!!.assertFalse()
+                it.id!!.assertEquals("5fa9a8fda228635eaf24ceb5")
+            }
+            ccpa?.also {
+                it.applies!!.assertTrue()
+            }
+        }
+
+        cm.metaDataResp = null
+
+        cm.metaDataResp.assertNull()
     }
 }

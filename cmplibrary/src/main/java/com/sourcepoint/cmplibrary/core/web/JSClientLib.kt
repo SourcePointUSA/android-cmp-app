@@ -6,6 +6,7 @@ internal interface JSClientLib {
     fun log(view: View, tag: String?, msg: String?)
     fun log(view: View, msg: String?)
     fun onError(view: View, errorMessage: String)
+    fun dismiss(view: View)
     fun onConsentUIReady(view: View, isFromPM: Boolean)
     fun onAction(view: View, actionData: String)
     fun onAction(view: IConsentWebView, actionData: String, nextCampaign: CampaignModel)

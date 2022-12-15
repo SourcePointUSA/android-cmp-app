@@ -1,6 +1,10 @@
 package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
@@ -29,7 +33,7 @@ internal interface NetworkClient {
     fun sendConsent(
         consentReq: JSONObject,
         env: Env,
-        consentActionImpl: ConsentActionImpl
+        consentAction: ConsentAction
     ): Either<ConsentResp>
 
     fun sendCustomConsent(
@@ -41,4 +45,39 @@ internal interface NetworkClient {
         customConsentReq: CustomConsentReq,
         env: Env
     ): Either<CustomConsentResp>
+
+    // Optimized
+    fun getMetaData(
+        param: MetaDataParamReq
+    ): Either<MetaDataResp>
+
+    fun getConsentStatus(
+        param: ConsentStatusParamReq
+    ): Either<ConsentStatusResp>
+
+    fun getMessages(
+        messageReq: MessagesParamReq,
+        pSuccess: (MessagesResp) -> Unit,
+        pError: (Throwable) -> Unit
+    )
+
+    fun getMessages(
+        param: MessagesParamReq
+    ): Either<MessagesResp>
+
+    fun savePvData(
+        param: PvDataParamReq
+    ): Either<PvDataResp>
+
+    fun getChoice(
+        param: ChoiceParamReq
+    ): Either<ChoiceResp>
+
+    fun storeGdprChoice(
+        param: PostChoiceParamReq
+    ): Either<GdprCS>
+
+    fun storeCcpaChoice(
+        param: PostChoiceParamReq
+    ): Either<CcpaCS>
 }

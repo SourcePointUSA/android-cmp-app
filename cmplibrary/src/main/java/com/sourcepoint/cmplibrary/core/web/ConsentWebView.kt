@@ -15,8 +15,10 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
+import com.sourcepoint.cmplibrary.core.executeOnLeft
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
+import com.sourcepoint.cmplibrary.data.network.model.toConsentActionOptimized
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
@@ -25,6 +27,7 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import okhttp3.HttpUrl
+import org.json.JSONObject
 import java.util.* //ktlint-disable
 
 @SuppressLint("ViewConstructor")
@@ -197,7 +200,20 @@ internal class ConsentWebView(
         @JavascriptInterface
         override fun onAction(actionData: String) {
             checkWorkerThread("ConsentWebView on action")
-            val action = actionData.toConsentAction()
+
+            val action = actionData.toConsentActionOptimized()
+                .executeOnLeft {
+                    logger.webAppAction(
+                        tag = "Action from the RenderingApp",
+                        msg = "Error during the parsing process",
+                        json = JSONObject(actionData)
+                    )
+                    jsClientLib.onError(this@ConsentWebView, it)
+                    jsClientLib.dismiss(this@ConsentWebView)
+                }
+                .getOrNull()
+                ?: return
+
             if (action.actionType == ActionType.PM_DISMISS && currentCampaignModel != null) {
                 jsClientLib.onAction(this@ConsentWebView, actionData, currentCampaignModel!!)
             } else if (action.actionType != ActionType.SHOW_OPTIONS && campaignQueue.isNotEmpty()) {

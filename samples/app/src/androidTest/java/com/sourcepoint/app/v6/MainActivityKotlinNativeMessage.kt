@@ -39,6 +39,7 @@ class MainActivityNativeMessTest {
     private val spConfGdpr = config {
         accountId = 22
         propertyName = "mobile.multicampaign.fully.native"  //594218
+        propertyId = 22758
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
         +(CampaignType.GDPR)
@@ -47,13 +48,14 @@ class MainActivityNativeMessTest {
     private val spConf = config {
         accountId = 22
         propertyName = "mobile.multicampaign.fully.native"  //594218
+        propertyId = 22758
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
         +(CampaignType.GDPR)
         +(CampaignType.CCPA)
     }
 
-//    @Test
+    @Test
     fun GIVEN_a_native_message_DISMISS_all_messages() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
 
@@ -76,6 +78,36 @@ class MainActivityNativeMessTest {
         verify(exactly = 2) { spClient.onNativeMessageReady(any(), any()) }
         verify(exactly = 1) { spClient.onSpFinished(any()) }
         verify(exactly = 0) { spClient.onConsentReady(any()) }
+        verify(exactly = 0) { spClient.onUIReady(any()) }
+        verify(exactly = 0) { spClient.onError(any()) }
+        verify(exactly = 0) { spClient.onUIFinished(any()) }
+        verify(exactly = 0) { spClient.onNoIntentActivitiesFound(any()) }
+        verify(exactly = 0) { spClient.onAction(any(), any()) }
+    }
+
+    @Test
+    fun GIVEN_a_gdpr_and_ccpa_native_message_ACCEPT_ALL_and_verify() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf,
+                gdprPmId = "594218",
+                ccpaPmId = "594219",
+                pResetAll = true,
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        periodicWr(backup = { scenario.recreateAndResume() }) { checkGdprNativeTitle() }
+        wr { tapNmAcceptAll() }
+        wr { tapNmAcceptAll() }
+
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        verify(exactly = 2) { spClient.onNativeMessageReady(any(), any()) }
+        wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         verify(exactly = 0) { spClient.onUIReady(any()) }
         verify(exactly = 0) { spClient.onError(any()) }
         verify(exactly = 0) { spClient.onUIFinished(any()) }
@@ -107,9 +139,9 @@ class MainActivityNativeMessTest {
         wr {
             verify(atLeast = 1) { spClient.onSpFinished(any()) }
         }
-        verify(atLeast = 1) { spClient.onNativeMessageReady(any(), any()) }
-        verify(atLeast = 1) { spClient.onConsentReady(any()) }
-        verify(atLeast = 1) { spClient.onUIReady(any()) }
+        verify(exactly = 1) { spClient.onNativeMessageReady(any(), any()) }
+        verify(exactly = 1) { spClient.onConsentReady(any()) }
+        verify(exactly = 1) { spClient.onUIReady(any()) }
         verify(exactly = 0) { spClient.onError(any()) }
         verify(exactly = 0) { spClient.onUIFinished(any()) }
         verify(exactly = 0) { spClient.onNoIntentActivitiesFound(any()) }

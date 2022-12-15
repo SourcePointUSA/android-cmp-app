@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.Menu
@@ -26,8 +27,12 @@ import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
 import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
+import com.sourcepointmeta.metaapp.ui.sp.PreferencesActivity
+import com.sourcepointmeta.metaapp.util.oldV6Consent
+import com.sourcepointmeta.metaapp.util.oldV6Consent630
 import kotlinx.android.synthetic.main.fragment_property_list.*// ktlint-disable
 import kotlinx.android.synthetic.main.fragment_property_list.tool_bar
+import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
@@ -46,6 +51,20 @@ class PropertyListFragment : Fragment() {
     private val itemTouchHelper by lazy { ItemTouchHelper(swipeToDeleteCallback) }
     private val swipeToDeleteCallback: SwipeToDeleteCallback by lazy {
         SwipeToDeleteCallback(requireContext()) { showDeleteDialog(it, adapter) }
+    }
+
+    companion object {
+        const val OLD_V6_CONSENT = "sp.old.v6.consent"
+    }
+
+    private val sp by lazy { PreferenceManager.getDefaultSharedPreferences(requireActivity()) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (sp.contains(OLD_V6_CONSENT)) {
+            context?.let { clearAllData(it) }
+            sp.edit().remove(OLD_V6_CONSENT).apply()
+        }
     }
 
     override fun onCreateView(
@@ -98,6 +117,35 @@ class PropertyListFragment : Fragment() {
             when (item.itemId) {
                 R.id.action_clear_sp -> {
                     context?.let { clearAllData(it) }
+                    sp.edit().remove(OLD_V6_CONSENT).apply()
+                }
+                R.id.action_add_prop -> {
+                    viewModel.addDefaultProperties()
+                }
+                R.id.action_show_pref -> {
+                    startActivity(Intent(requireActivity(), PreferencesActivity::class.java))
+                }
+                R.id.action_save_old_v6_consent -> {
+                    val editor = sp.edit()
+                    editor.putBoolean(OLD_V6_CONSENT, true)
+                    val v6LocalState = JSONObject(oldV6Consent)
+                    v6LocalState.keys().forEach {
+                        check { v6LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
+                        check { v6LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
+                        check { v6LocalState.getInt(it) }?.let { v -> editor.putInt(it, v) }
+                    }
+                    editor.apply()
+                }
+                R.id.action_save_old_v6_consent630 -> {
+                    val editor = sp.edit()
+                    editor.putBoolean(OLD_V6_CONSENT, true)
+                    val v6LocalState = JSONObject(oldV6Consent630)
+                    v6LocalState.keys().forEach {
+                        check { v6LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
+                        check { v6LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
+                        check { v6LocalState.getInt(it) }?.let { v -> editor.putInt(it, v) }
+                    }
+                    editor.apply()
                 }
             }
             true
@@ -145,9 +193,19 @@ class PropertyListFragment : Fragment() {
             .setTitle("Metaapp version ${BuildConfig.VERSION_NAME} out of date, new version $version is available.")
             .setPositiveButton("Update it") { _, _ ->
                 try {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.sourcepointmeta.metaapp")))
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=com.sourcepointmeta.metaapp")
+                        )
+                    )
                 } catch (e: ActivityNotFoundException) {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp")))
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp")
+                        )
+                    )
                 }
             }
             .setNegativeButton("Continue") { _, _ -> }
@@ -164,5 +222,13 @@ class PropertyListFragment : Fragment() {
         val i = Intent(activity, DemoActivity::class.java)
         i.putExtras(bundle)
         startActivity(i)
+    }
+
+    private fun <E> check(block: () -> E): E? {
+        return try {
+            block.invoke()
+        } catch (e: Exception) {
+            null
+        }
     }
 }

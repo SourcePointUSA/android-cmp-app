@@ -15,13 +15,9 @@ package com.sourcepointmeta.metaapp.tv.detail
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
-import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
-import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
 import com.sourcepointmeta.metaapp.core.replaceFragment
-import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 import com.sourcepointmeta.metaapp.tv.edit.EditProperty
 import com.sourcepointmeta.metaapp.tv.edit.PropertyField
 import com.sourcepointmeta.metaapp.tv.updatePropertyList
@@ -63,19 +59,3 @@ class DetailPropertyActivity : FragmentActivity(), UpdateScreen {
         updatePropertyList()
     }
 }
-
-val defaultProperty = Property(
-    accountId = 22,
-    propertyName = "ott.test.suite",
-    timeout = 3000,
-    authId = null,
-    messageLanguage = "ENGLISH",
-    pmTab = "DEFAULT",
-    is_staging = false,
-    targetingParameters = emptyList(),
-    statusCampaignSet = setOf(StatusCampaign("ott.test.suite", CampaignType.GDPR, true)),
-    messageType = "App",
-    gdprPmId = 579231L,
-    ccpaPmId = 1L,
-    campaignsEnv = CampaignsEnv.PUBLIC
-)

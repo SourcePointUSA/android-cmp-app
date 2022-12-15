@@ -1,6 +1,9 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -12,8 +15,15 @@ import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
 import java.util.* //ktlint-disable
+
+internal fun String.toConsentActionOptimized(): Either<ConsentActionImplOptimized> = check {
+    JsonConverter.converter.decodeFromString<ConsentActionImplOptimized>(this)
+}
 
 internal fun String.toConsentAction(): ConsentActionImpl {
 
@@ -27,6 +37,11 @@ internal fun String.toConsentAction(): ConsentActionImpl {
     val pmTab = (map["pmTab"] as? String)
     val requestFromPm = map.getFieldValue<Boolean>("requestFromPm") ?: false
     val saveAndExitVariables = map.getMap("saveAndExitVariables")?.let { JSONObject(it) } ?: JSONObject()
+    val saveAndExitVariables2 = map.getMap("saveAndExitVariables")
+        ?.let { it.toJSONObj().toString() }
+        ?.let { check { JsonConverter.converter.parseToJsonElement(it) }.getOrNull() }
+        ?.let { it.jsonObject }
+        ?: JsonObject(mapOf())
     val consentLanguage = map.getFieldValue<String>("consentLanguage") ?: "EN"
     val customActionId = map.getFieldValue<String>("customActionId")
 
@@ -37,6 +52,7 @@ internal fun String.toConsentAction(): ConsentActionImpl {
         pmTab = pmTab,
         requestFromPm = requestFromPm,
         saveAndExitVariables = saveAndExitVariables,
+        saveAndExitVariablesOptimized = saveAndExitVariables2,
         consentLanguage = consentLanguage,
         campaignType = CampaignType.valueOf(legislation),
         customActionId = customActionId,

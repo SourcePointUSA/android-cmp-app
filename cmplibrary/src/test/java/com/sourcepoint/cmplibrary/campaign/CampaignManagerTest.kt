@@ -55,7 +55,8 @@ class CampaignManagerTest {
             gdprCampaign
         ),
         MessageLanguage.ENGLISH,
-        3000
+        propertyId = 9090,
+        messageTimeout = 3000,
     )
 
     @Before
@@ -149,7 +150,7 @@ class CampaignManagerTest {
             pmTab.assertEquals(PMTab.DEFAULT)
             consentLanguage.assertEquals("EN")
             uuid.assertEquals("")
-            siteId.assertEquals("0")
+            siteId.assertEquals("9090")
             messageId.assertEquals("11")
         }
     }
@@ -166,7 +167,7 @@ class CampaignManagerTest {
             pmTab.assertEquals(PMTab.PURPOSES)
             consentLanguage.assertEquals("BG")
             uuid.assertEquals("")
-            siteId.assertEquals("0")
+            siteId.assertEquals("9090")
             messageId.assertEquals("22")
         }
     }
@@ -174,8 +175,7 @@ class CampaignManagerTest {
     @Test
     fun `GIVEN a GDPR config RETURN the configuration with language ES`() {
 
-        every { dataStorage.getGdprConsentUuid() }.returns("uuid-test")
-        every { dataStorage.getPropertyId() }.returns(1234)
+        every { dataStorage.gdprConsentUuid }.returns("uuid-test")
 
         val sut = CampaignManager.create(
             dataStorage,
@@ -194,7 +194,7 @@ class CampaignManagerTest {
             pmTab.assertEquals(PMTab.PURPOSES)
             consentLanguage.assertEquals("ES")
             uuid.assertEquals("uuid-test")
-            siteId.assertEquals("1234")
+            siteId.assertEquals("9090")
             messageId.assertEquals("22")
         }
     }
@@ -202,8 +202,7 @@ class CampaignManagerTest {
     @Test
     fun `GIVEN a GDPR config RETURN the configuration with language NL and groupPmId not empty`() {
 
-        every { dataStorage.getGdprConsentUuid() }.returns("uuid")
-        every { dataStorage.getPropertyId() }.returns(9090)
+        every { dataStorage.gdprConsentUuid }.returns("uuid")
         every { dataStorage.gdprChildPmId }.returns("8989")
 
         val sut = CampaignManager.create(

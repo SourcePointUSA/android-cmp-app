@@ -23,6 +23,22 @@ class SpCmpBuilderTest {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
     }
 
+    @Test(expected = RuntimeException::class)
+    fun `GIVEN a DLS config without propertyId THROW an exception`() {
+        val sut by spConsentLibLazy {
+            activity = mockContext
+            spClient = mockClient
+            config {
+                accountId = 22
+                propertyName = "mobile.multicampaign.demo"
+                messLanguage = MessageLanguage.ENGLISH
+                +(CampaignType.GDPR)
+                +(CampaignType.CCPA to listOf(("location" to "US")))
+            }
+        }
+        sut.assertNotNull()
+    }
+
     @Test
     fun `GIVEN a DLS config VERIFY the spConfig object created`() {
         val sut by spConsentLibLazy {
@@ -32,6 +48,7 @@ class SpCmpBuilderTest {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
                 messLanguage = MessageLanguage.ENGLISH
+                propertyId = 16893
                 +(CampaignType.GDPR)
                 +(CampaignType.CCPA to listOf(("location" to "US")))
             }
@@ -56,6 +73,7 @@ class SpCmpBuilderTest {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
                 messLanguage = MessageLanguage.ENGLISH
+                propertyId = 16893
                 +(CampaignType.GDPR)
                 +(CampaignType.CCPA to listOf(("location" to "US")))
             }
@@ -71,6 +89,7 @@ class SpCmpBuilderTest {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
                 messLanguage = MessageLanguage.ENGLISH
+                propertyId = 16893
                 +(CampaignType.GDPR)
                 +(CampaignType.CCPA to listOf(("location" to "US")))
             }

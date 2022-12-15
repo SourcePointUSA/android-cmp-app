@@ -11,8 +11,9 @@ data class SpConfig(
     @JvmField val campaigns: List<SpCampaign>,
     @JvmField val messageLanguage: MessageLanguage,
     @JvmField val messageTimeout: Long,
+    @JvmField val propertyId: Int,
     @JvmField val campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC,
-    @JvmField val logger: Logger? = null
+    @JvmField val logger: Logger? = null,
 )
 
 data class SpCampaign(

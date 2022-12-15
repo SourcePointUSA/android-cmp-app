@@ -42,6 +42,7 @@ class MainActivityKotlinNativeOttTest {
         campaignsEnv = CampaignsEnv.PUBLIC
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
+        propertyId = 27927
         +(CampaignType.GDPR)
     }
 
@@ -53,7 +54,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "704111",
+                gdprPmId = "701546",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )
@@ -97,7 +98,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "704111",
+                gdprPmId = "701546",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )

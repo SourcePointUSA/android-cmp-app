@@ -1,4 +1,5 @@
 ## 6.7.3 (November, 11, 2022)
+* [DIA-1484](https://sourcepoint.atlassian.net/browse/DIA-1484)  Fix crash with payload.customAction during a PM action (#552)
 * [DIA-1302](https://sourcepoint.atlassian.net/browse/DIA-1302) Issues with Resurfacing the OTT Privacy Manager (#550)
 * [DIA-1368](https://sourcepoint.atlassian.net/browse/DIA-1368) sp.renderingAppError errors are not being listened by the SDK (#542)
 * [DIA-1391](https://sourcepoint.atlassian.net/browse/DIA-1391) Add customActionId to pm action payload (#544)

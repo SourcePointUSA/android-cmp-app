@@ -28,8 +28,8 @@ class AddPropertyLayout : ConstraintLayout {
 
 internal fun AddPropertyLayout.bind(property: Property) {
     prop_name_ed.setText(property.propertyName)
+    prop_id_ed.setText(property.propertyId?.toString() ?: "")
     account_id_ed.setText(property.accountId.toString())
-    message_type_autocomplete.setText(property.messageType)
     radio_stage.isChecked = property.is_staging
     radio_prod.isChecked = !property.is_staging
     chip_gdpr.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.GDPR }?.enabled ?: false
@@ -84,6 +84,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
     val gdprGroupPmId = group_pm_id_ed.text.toString()
 
     return Property(
+        propertyId = prop_id_ed.text.toString().toInt(),
         propertyName = prop_name_ed.text.toString(),
         accountId = account_id_ed.text.toString().toLongOrNull() ?: 0L,
         timeout = timeout_ed.text.toString().toTimeout(),
@@ -93,7 +94,6 @@ internal fun AddPropertyLayout.toProperty(): Property {
         is_staging = radio_stage.isChecked,
         targetingParameters = ccpaTp + gdprTp,
         statusCampaignSet = setOf(gdprStatus, ccpaStatus),
-        messageType = message_type_autocomplete.text.toString(),
         gdprPmId = gdpr_pm_id_ed.text.toString().toLongOrNull(),
         ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull(),
         campaignsEnv = if (radio_stage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC,
@@ -105,6 +105,12 @@ internal fun AddPropertyLayout.toProperty(): Property {
 fun String.toTimeout(): Long = check { toLong() }.getOrNull() ?: 3000L
 
 fun AddPropertyLayout.errorField(it: BaseState.StateErrorValidationField) = when (it.uiCode) {
+    UIErrorCode.PropertyId -> {
+        prop_id_ed.run {
+            requestFocus()
+            error = it.message
+        }
+    }
     UIErrorCode.PropertyName -> {
         prop_name_ed.run {
             requestFocus()
@@ -125,12 +131,6 @@ fun AddPropertyLayout.errorField(it: BaseState.StateErrorValidationField) = when
     }
     UIErrorCode.MessageLanguage -> {
         message_language_autocomplete.run {
-            requestFocus()
-            error = it.message
-        }
-    }
-    UIErrorCode.MessageType -> {
-        message_type_autocomplete.run {
             requestFocus()
             error = it.message
         }

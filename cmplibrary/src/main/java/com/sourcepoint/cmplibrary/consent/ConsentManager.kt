@@ -3,9 +3,13 @@ package com.sourcepoint.cmplibrary.consent
 import com.sourcepoint.cmplibrary.core.Either.Left
 import com.sourcepoint.cmplibrary.core.Either.Right
 import com.sourcepoint.cmplibrary.core.ExecutorManager
+import com.sourcepoint.cmplibrary.core.executeOnLeft
+import com.sourcepoint.cmplibrary.core.executeOnRight
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.util.Env
@@ -23,12 +27,17 @@ import java.util.* //ktlint-disable
 
 internal interface ConsentManager {
     var localStateStatus: LocalStateStatus
-    fun enqueueConsent(consentActionImpl: ConsentActionImpl)
-    fun enqueueConsent(nativeConsentAction: NativeConsentAction)
-    fun sendStoredConsentToClient()
+    fun enqueueConsent(consentActionImpl: ConsentActionImpl) // to delete
+    fun enqueueConsentOptimized(consentActionImpl: ConsentActionImpl)
+    fun enqueueConsentOptimized(nativeConsentAction: NativeConsentAction)
+    fun sendStoredConsentToClientOptimized()
     fun sendConsent(
-        actionImpl: ConsentActionImpl,
+        actionImpl: ConsentAction,
         localState: String
+    )
+
+    fun sendConsentOptimized(
+        actionImpl: ConsentActionImpl
     )
 
     val enqueuedActions: Int
@@ -39,7 +48,30 @@ internal interface ConsentManager {
 
     val storedConsent: Boolean
 
-    companion object
+    companion object {
+
+        internal fun responseConsentHandler(
+            gdpr: GdprCS?,
+            consentManagerUtils: ConsentManagerUtils
+        ): SPConsents {
+            val ccpaCached = consentManagerUtils.ccpaConsentOptimized.getOrNull()
+            return SPConsents(
+                gdpr = gdpr?.let { SPGDPRConsent(it.toGDPRUserConsent()) },
+                ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
+            )
+        }
+
+        internal fun responseConsentHandler(
+            ccpa: CcpaCS?,
+            consentManagerUtils: ConsentManagerUtils
+        ): SPConsents {
+            val gdprCached = consentManagerUtils.gdprConsentOptimized.getOrNull()
+            return SPConsents(
+                gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
+                ccpa = ccpa?.let { SPCCPAConsent(it.toCCPAConsentInternal()) },
+            )
+        }
+    }
 }
 
 internal fun ConsentManager.Companion.create(
@@ -71,32 +103,42 @@ private class ConsentManagerImpl(
             changeLocalState(value)
         }
         get() = dataStorage.getLocalState()?.let { LocalStateStatus.Present(it) } ?: LocalStateStatus.Absent
-    private val consentQueueImpl: Queue<ConsentActionImpl> = LinkedList()
+    private val consentQueueImpl: Queue<ConsentAction> = LinkedList()
     override val enqueuedActions: Int
         get() = consentQueueImpl.size
 
     override val gdprUuid: String?
-        get() = dataStorage.getGdprConsentUuid()
+        get() = dataStorage.gdprConsentUuid
 
     override val ccpaUuid: String?
-        get() = dataStorage.getCcpaConsentUuid()
+        get() = dataStorage.ccpaConsentUuid
 
     override val storedConsent: Boolean
         get() = dataStorage.getCcpaConsentResp() != null ||
             dataStorage.getGdprConsentResp() != null
 
     override fun enqueueConsent(consentActionImpl: ConsentActionImpl) {
-        consentQueueImpl.offer(consentActionImpl)
-        val lState: LocalStateStatus.Present? = localStateStatus as? LocalStateStatus.Present
-        if (lState != null) {
-            val localState = lState.value
-            val action = consentQueueImpl.poll()
-            sendConsent(action, localState)
+
+        when (dataStorage.messagesOptimizedLocalState) {
+            null -> {
+                consentQueueImpl.offer(consentActionImpl)
+                val lState: LocalStateStatus.Present? = localStateStatus as? LocalStateStatus.Present
+                if (lState != null) {
+                    val localState = lState.value
+                    val action = consentQueueImpl.poll()
+                    sendConsent(action, localState)
+                }
+            }
+            else -> sendConsentOptimized(consentActionImpl)
         }
     }
 
-    override fun enqueueConsent(nativeConsentAction: NativeConsentAction) {
-        enqueueConsent(nativeConsentAction.toConsentAction())
+    override fun enqueueConsentOptimized(consentActionImpl: ConsentActionImpl) {
+        sendConsentOptimized(consentActionImpl)
+    }
+
+    override fun enqueueConsentOptimized(nativeConsentAction: NativeConsentAction) {
+        sendConsentOptimized(nativeConsentAction.toConsentAction())
     }
 
     fun changeLocalState(newState: LocalStateStatus) {
@@ -114,10 +156,10 @@ private class ConsentManagerImpl(
         }
     }
 
-    override fun sendStoredConsentToClient() {
+    override fun sendStoredConsentToClientOptimized() {
         check {
-            val ccpaCached = consentManagerUtils.getCcpaConsent().getOrNull()
-            val gdprCached = consentManagerUtils.getGdprConsent().getOrNull()
+            val ccpaCached = consentManagerUtils.ccpaConsentOptimized.getOrNull()
+            val gdprCached = consentManagerUtils.gdprConsentOptimized.getOrNull()
             SPConsents(
                 gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
                 ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
@@ -125,7 +167,8 @@ private class ConsentManagerImpl(
         }
     }
 
-    override fun sendConsent(actionImpl: ConsentActionImpl, localState: String) {
+    override fun sendConsent(actionImpl: ConsentAction, localState: String) {
+
         executorManager.executeOnSingleThread {
             when (val either = service.sendConsent(localState, actionImpl, env, actionImpl.privacyManagerId)) {
                 is Right -> {
@@ -139,6 +182,16 @@ private class ConsentManagerImpl(
             }
         }
     }
+
+    override fun sendConsentOptimized(actionImpl: ConsentActionImpl) {
+        executorManager.executeOnSingleThread {
+            service.sendConsentOptimized(actionImpl, env, sPConsentsSuccess, actionImpl.privacyManagerId)
+                .executeOnLeft { sPConsentsError?.invoke(it) }
+                .executeOnRight {
+                    clientEventManager.storedConsent()
+                }
+        }
+    }
 }
 
 internal sealed class LocalStateStatus {
@@ -149,7 +202,7 @@ internal sealed class LocalStateStatus {
 
 internal fun responseConsentHandler(
     either: Right<ConsentResp>,
-    actionImpl: ConsentActionImpl,
+    actionImpl: ConsentAction,
     consentManagerUtils: ConsentManagerUtils,
     dataStorage: DataStorage
 ): SPConsents {

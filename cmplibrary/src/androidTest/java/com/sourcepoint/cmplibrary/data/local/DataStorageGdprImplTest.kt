@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.local
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertEquals
+import com.example.uitestutil.assertNull
 import com.example.uitestutil.assertTrue
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import org.junit.Test
@@ -21,8 +22,8 @@ class DataStorageGdprImplTest {
         val storage = DataStorageGdpr.create(appContext).apply { clearAll() }
         val map = TreeMap<String, String>()
         (1..10).forEach { map["IABTCF_$it"] = "$it" }
-        storage.saveTcData(map)
-        val output = storage.getTcData()
+        storage.tcData = map
+        val output = storage.tcData
         map.forEach {
             output[it.key].assertEquals(it.value)
         }
@@ -35,32 +36,32 @@ class DataStorageGdprImplTest {
         val storage = DataStorageGdpr.create(appContext).apply { clearAll() }
 
         storage.saveAuthId("auth")
-        storage.saveGdprConsentUuid("uuid")
+        storage.gdprConsentUuid = "uuid"
         storage.saveEuConsent("eu")
         storage.saveMetaData("meta")
         storage.gdprApplies = true
         storage.saveGdpr("{\"type\":\"GDPR\"}")
-        storage.saveTcData(getMap())
+        storage.tcData = getMap()
 
         storage.getAuthId().assertEquals("auth")
-        storage.getGdprConsentUuid().assertEquals("uuid")
+        storage.gdprConsentUuid.assertEquals("uuid")
         storage.getEuConsent().assertEquals("eu")
         storage.getMetaData().assertEquals("meta")
         storage.gdprApplies.assertTrue()
         storage.getGdpr().assertEquals("{\"type\":\"GDPR\"}")
-        storage.getTcData().assertEquals(getMap())
+        storage.tcData.assertEquals(getMap())
 
         storage.clearInternalData()
 
         /** clearInternalData delete only these prefs */
-        storage.getAuthId().assertEquals("")
-        storage.getGdprConsentUuid().assertEquals(null)
-        storage.getEuConsent().assertEquals("")
+        storage.getAuthId().assertNull()
+        storage.gdprConsentUuid.assertEquals(null)
+        storage.getEuConsent().assertNull()
         storage.getMetaData().assertEquals("")
 
         /** clearInternalData DOES NOT delete these prefs */
         storage.gdprApplies.assertTrue()
-        storage.getTcData().assertEquals(getMap())
+        storage.tcData.assertEquals(getMap())
         storage.getGdpr().assertEquals("{\"type\":\"GDPR\"}")
     }
 
