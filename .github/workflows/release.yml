@@ -1,7 +1,7 @@
 name: RELEASE
 on:
   push:
-    branches: [ master ]
+    branches: [ master, upgrade_target_metaapp ]
 #    paths:
 #      - '!*.yml'
 #      - '!README.md'
