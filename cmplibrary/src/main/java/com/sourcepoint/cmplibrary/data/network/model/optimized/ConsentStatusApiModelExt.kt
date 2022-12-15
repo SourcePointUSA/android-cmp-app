@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.model.v7
+package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
@@ -28,7 +28,7 @@ internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
     return CCPAConsentInternal(
         uuid = uuid,
         uspstring = uspstring ?: "",
-        applies = applies ?: false,
+        applies = ccpaApplies ?: applies ?: false,
         status = status,
         childPmId = null,
         rejectedVendors = rejectedVendors ?: emptyList(),

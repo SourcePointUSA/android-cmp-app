@@ -42,6 +42,7 @@ class MainActivityKotlinNativeOttTest {
         campaignsEnv = CampaignsEnv.PUBLIC
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
+        propertyId = 27927
         +(CampaignType.GDPR)
     }
 
@@ -53,7 +54,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "704111",
+                gdprPmId = "701546",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )
@@ -97,7 +98,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "704111",
+                gdprPmId = "701546",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )
@@ -111,14 +112,13 @@ class MainActivityKotlinNativeOttTest {
         }
 
         wr { clickOnGdprReviewConsent() }
-        // TODO remove the comment here
-//        wr(backup = { clickOnGdprReviewConsent() }){
-//            tapAcceptOnWebView()
-//            device.pressEnter()
-//        }
+        wr(backup = { clickOnGdprReviewConsent() }){
+            tapAcceptOnWebView()
+            device.pressEnter()
+        }
 
-//        verify(exactly = 0) { spClient.onError(any()) }
-//        wr{ verify(atLeast = 2) { spClient.onConsentReady(any()) } }
+        verify(exactly = 0) { spClient.onError(any()) }
+        wr{ verify(atLeast = 2) { spClient.onConsentReady(any()) } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         wr {

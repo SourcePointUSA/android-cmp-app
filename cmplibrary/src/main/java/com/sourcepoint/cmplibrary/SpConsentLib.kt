@@ -38,15 +38,6 @@ interface SpConsentLib {
      */
     fun loadMessage(authId: String? = null)
 
-    /**
-     * V7
-     */
-    fun loadMessageV7()
-    fun loadMessageV7(authId: String? = null)
-    fun loadMessageV7(cmpViewId: Int)
-    fun loadMessageV7(authId: String? = null, pubData: JSONObject? = null, cmpViewId: Int? = null)
-    fun loadMessageV7(pubData: JSONObject? = null)
-
     fun customConsentGDPR(
         vendors: List<String>,
         categories: List<String>,

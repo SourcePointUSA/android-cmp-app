@@ -11,9 +11,9 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -72,7 +72,8 @@ class CampaignManagerImplTest {
             gdprCampaign
         ),
         MessageLanguage.ENGLISH,
-        3000
+        propertyId = 1234,
+        messageTimeout = 3000,
     )
 
     private val cm by lazy {
@@ -216,7 +217,7 @@ class CampaignManagerImplTest {
 
         cm.gdprConsentStatus = obj.consentStatusData!!.gdpr
         cm.ccpaConsentStatus = obj.consentStatusData!!.ccpa
-        cm.messagesV7LocalState = obj.localState
+        cm.messagesOptimizedLocalState = obj.localState
 
         cm.gdprConsentStatus!!.also {
             it.uuid.assertEquals("69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10")
@@ -233,7 +234,7 @@ class CampaignManagerImplTest {
 
         cm.gdprConsentStatus.assertNull()
         cm.ccpaConsentStatus.assertNull()
-        cm.messagesV7LocalState.assertNotNull()
+        cm.messagesOptimizedLocalState.assertNotNull()
     }
 
     @Test

@@ -3,11 +3,11 @@ package com.sourcepoint.cmplibrary.data.network.util
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.v7.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ChoiceParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
@@ -27,7 +27,7 @@ internal interface HttpUrlManager {
     fun deleteCustomConsentToUrl(host: String, params: CustomConsentReq): HttpUrl
     fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig, messSubCat: MessageSubCategory): HttpUrl
 
-    // V7
+    // Optimized
     fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
     fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
     fun getChoiceUrl(param: ChoiceParamReq): HttpUrl
@@ -224,6 +224,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("withSiteActions", false.toString())
             .addQueryParameter("includeCustomVendorsRes", false.toString())
             .addEncodedQueryParameter("metadata", metaData)
+            .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}}""")
             .build()
     }
 

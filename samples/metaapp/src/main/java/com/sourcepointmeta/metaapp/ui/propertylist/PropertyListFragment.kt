@@ -1,10 +1,10 @@
 package com.sourcepointmeta.metaapp.ui.propertylist
 
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.Menu
@@ -26,10 +26,13 @@ import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
 import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
-import com.sourcepointmeta.metaapp.ui.demo.DemoActivityV7
 import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
+import com.sourcepointmeta.metaapp.ui.sp.PreferencesActivity
+import com.sourcepointmeta.metaapp.util.oldV6Consent
+import com.sourcepointmeta.metaapp.util.oldV6Consent630
 import kotlinx.android.synthetic.main.fragment_property_list.*// ktlint-disable
 import kotlinx.android.synthetic.main.fragment_property_list.tool_bar
+import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
@@ -50,21 +53,19 @@ class PropertyListFragment : Fragment() {
         SwipeToDeleteCallback(requireContext()) { showDeleteDialog(it, adapter) }
     }
 
-    private var v7: Boolean
-        get() {
-            return requireActivity()
-                .getSharedPreferences("meta", Context.MODE_PRIVATE)
-                .getBoolean("v7", false)
+    companion object {
+        const val OLD_V6_CONSENT = "sp.old.v6.consent"
+    }
+
+    private val sp by lazy { PreferenceManager.getDefaultSharedPreferences(requireActivity()) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (sp.contains(OLD_V6_CONSENT)) {
+            context?.let { clearAllData(it) }
+            sp.edit().remove(OLD_V6_CONSENT).apply()
         }
-        set(value) {
-            arguments?.putBoolean("v7", value)
-            requireActivity()
-                .getSharedPreferences("meta", Context.MODE_PRIVATE)
-                .apply {
-                    val e = edit().putBoolean("v7", value)
-                    e.commit()
-                }
-        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,20 +75,13 @@ class PropertyListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_property_list, container, false)
     }
 
-    private fun updateTitle() {
-        val version = when (v7) {
-            true -> "V7"
-            false -> BuildConfig.VERSION_NAME
-        }
-        tool_bar.title = "${getString(R.string.app_name)} - $version"
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (clearDb) {
             viewModel.clearDB()
         }
-        updateTitle()
+
+        tool_bar.title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
 
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
@@ -123,17 +117,35 @@ class PropertyListFragment : Fragment() {
             when (item.itemId) {
                 R.id.action_clear_sp -> {
                     context?.let { clearAllData(it) }
-                }
-                R.id.action_v7 -> {
-                    v7 = true
-                    updateTitle()
-                }
-                R.id.action_v6 -> {
-                    v7 = false
-                    updateTitle()
+                    sp.edit().remove(OLD_V6_CONSENT).apply()
                 }
                 R.id.action_add_prop -> {
                     viewModel.addDefaultProperties()
+                }
+                R.id.action_show_pref -> {
+                    startActivity(Intent(requireActivity(), PreferencesActivity::class.java))
+                }
+                R.id.action_save_old_v6_consent -> {
+                    val editor = sp.edit()
+                    editor.putBoolean(OLD_V6_CONSENT, true)
+                    val v6LocalState = JSONObject(oldV6Consent)
+                    v6LocalState.keys().forEach {
+                        check { v6LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
+                        check { v6LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
+                        check { v6LocalState.getInt(it) }?.let { v -> editor.putInt(it, v) }
+                    }
+                    editor.apply()
+                }
+                R.id.action_save_old_v6_consent630 -> {
+                    val editor = sp.edit()
+                    editor.putBoolean(OLD_V6_CONSENT, true)
+                    val v6LocalState = JSONObject(oldV6Consent630)
+                    v6LocalState.keys().forEach {
+                        check { v6LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
+                        check { v6LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
+                        check { v6LocalState.getInt(it) }?.let { v -> editor.putInt(it, v) }
+                    }
+                    editor.apply()
                 }
             }
             true
@@ -207,12 +219,16 @@ class PropertyListFragment : Fragment() {
     private fun runDemo(property: Property) {
         val bundle = Bundle()
         bundle.putString("property_name", property.propertyName)
-        val c = when (v7) {
-            true -> DemoActivityV7::class.java
-            false -> DemoActivity::class.java
-        }
-        val i = Intent(activity, c)
+        val i = Intent(activity, DemoActivity::class.java)
         i.putExtras(bundle)
         startActivity(i)
+    }
+
+    private fun <E> check(block: () -> E): E? {
+        return try {
+            block.invoke()
+        } catch (e: Exception) {
+            null
+        }
     }
 }

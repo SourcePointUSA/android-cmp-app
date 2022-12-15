@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.model.v7
+package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
@@ -11,6 +11,7 @@ internal fun postChoiceGdprBody(
     consentAllRef: String?,
     vendorListId: String?,
     granularStatus: ConsentStatus.GranularStatus?,
+    sendPvData: Boolean?,
     pubData: JsonObject? = null,
     saveAndExitVariables: JsonObject? = null,
     authid: String? = null,
@@ -18,7 +19,7 @@ internal fun postChoiceGdprBody(
 ): JsonObject {
     return buildJsonObject {
         pubData?.let { put("pubData", it) }
-        put("sendPVData", true)
+        put("sendPVData", sendPvData)
         put("sampleRate", sampleRate)
         put("propertyId", propertyId)
         put("messageId", messageId)
@@ -43,6 +44,7 @@ internal fun postChoiceCcpaBody(
     sampleRate: Double,
     propertyId: Long,
     messageId: Long?,
+    sendPvData: Boolean?,
     pubData: JsonObject? = null,
     saveAndExitVariables: JsonObject? = null,
     authid: String? = null,
@@ -50,7 +52,7 @@ internal fun postChoiceCcpaBody(
 ): JsonObject {
     return buildJsonObject {
         pubData?.let { put("pubData", pubData) }
-        put("sendPVData", true)
+        put("sendPVData", sendPvData)
         put("sampleRate", sampleRate)
         put("propertyId", propertyId)
         put("messageId", messageId)

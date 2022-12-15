@@ -8,11 +8,11 @@ import com.sourcepoint.cmplibrary.core.flatMap
 import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInternal
+import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatus
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.toCCPAConsentInternal
-import com.sourcepoint.cmplibrary.data.network.model.v7.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
@@ -35,12 +35,12 @@ internal interface ConsentManagerUtils {
     fun hasGdprConsent(): Boolean
     fun hasCcpaConsent(): Boolean
 
-    val gdprConsentV7: Either<GDPRConsentInternal>
-    val ccpaConsentV7: Either<CCPAConsentInternal>
+    val gdprConsentOptimized: Either<GDPRConsentInternal>
+    val ccpaConsentOptimized: Either<CCPAConsentInternal>
 
     fun getSpConsent(): SPConsents?
 
-    fun updateGdprConsentV7(
+    fun updateGdprConsentOptimized(
         dataRecordedConsent: Instant,
         gdprConsentStatus: ConsentStatus,
         additionsChangeDate: Instant,
@@ -105,17 +105,18 @@ private class ConsentManagerUtilsImpl(
                 .getOrNull() ?: fail("Error trying to build the gdpr body to send consents.")
         }
 
-    override fun buildCcpaConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject> = check {
-        JSONObject().apply {
-            put("accountId", cm.spConfig.accountId)
-            put("privacyManagerId", pmId)
-            put("localState", localState)
-            put("pubData", action.pubData)
-            put("requestUUID", uuid)
-            put("pmSaveAndExitVariables", action.saveAndExitVariables)
-            put("includeData", IncludeData().toJsonObject())
+    override fun buildCcpaConsentReq(action: ConsentAction, localState: String, pmId: String?): Either<JSONObject> =
+        check {
+            JSONObject().apply {
+                put("accountId", cm.spConfig.accountId)
+                put("privacyManagerId", pmId)
+                put("localState", localState)
+                put("pubData", action.pubData)
+                put("requestUUID", uuid)
+                put("pmSaveAndExitVariables", action.saveAndExitVariables)
+                put("includeData", IncludeData().toJsonObject())
+            }
         }
-    }
 
     override fun getSpConsent(): SPConsents {
         val gdprCached = getGdprConsent().getOrNull()
@@ -126,7 +127,7 @@ private class ConsentManagerUtilsImpl(
         )
     }
 
-    override fun updateGdprConsentV7(
+    override fun updateGdprConsentOptimized(
         dataRecordedConsent: Instant,
         gdprConsentStatus: ConsentStatus,
         additionsChangeDate: Instant,
@@ -161,11 +162,21 @@ private class ConsentManagerUtilsImpl(
         return cm.getCCPAConsent()
     }
 
-    override val gdprConsentV7: Either<GDPRConsentInternal>
-        get() = check { cm.gdprConsentStatus?.toGDPRUserConsent() ?: throw InvalidConsentResponse(cause = null, "The GDPR consent v7 is null!!!") }
+    override val gdprConsentOptimized: Either<GDPRConsentInternal>
+        get() = check {
+            cm.gdprConsentStatus?.toGDPRUserConsent() ?: throw InvalidConsentResponse(
+                cause = null,
+                "The GDPR consent is null!!!"
+            )
+        }
 
-    override val ccpaConsentV7: Either<CCPAConsentInternal>
-        get() = check { cm.ccpaConsentStatus?.toCCPAConsentInternal() ?: throw InvalidConsentResponse(cause = null, "The CCPA consent v7 is null!!!") }
+    override val ccpaConsentOptimized: Either<CCPAConsentInternal>
+        get() = check {
+            cm.ccpaConsentStatus?.toCCPAConsentInternal() ?: throw InvalidConsentResponse(
+                cause = null,
+                "The CCPA consent is null!!!"
+            )
+        }
 
     override fun hasGdprConsent(): Boolean = ds.getGdprConsentResp() != null
 
@@ -173,30 +184,48 @@ private class ConsentManagerUtilsImpl(
 
     override val shouldTriggerByGdprSample: Boolean
         get() {
-            val sampling = (ds.gdprSamplingValue * 100).toInt()
-            val res = when {
-                sampling <= 0 -> false
-                sampling >= 100 -> true
-                else -> {
-                    val num = (1 until 100).random()
-                    num in (1..sampling)
+            return ds.gdprSamplingResult ?: kotlin.run {
+                val sampling = (ds.gdprSamplingValue * 100).toInt()
+                when {
+                    sampling <= 0 -> {
+                        ds.gdprSamplingResult = false
+                        false
+                    }
+                    sampling >= 100 -> {
+                        ds.gdprSamplingResult = true
+                        true
+                    }
+                    else -> {
+                        val num = (1 until 100).random()
+                        val res = num in (1..sampling)
+                        ds.gdprSamplingResult = res
+                        res
+                    }
                 }
             }
-            return res
         }
 
     override val shouldTriggerByCcpaSample: Boolean
         get() {
-            val sampling = (ds.ccpaSamplingValue * 100).toInt()
-            val res = when {
-                sampling <= 0 -> false
-                sampling >= 100 -> true
-                else -> {
-                    val num = (1 until 100).random()
-                    num in (1..sampling)
+            return ds.ccpaSamplingResult ?: kotlin.run {
+                val sampling = (ds.ccpaSamplingValue * 100).toInt()
+                when {
+                    sampling <= 0 -> {
+                        ds.ccpaSamplingResult = false
+                        false
+                    }
+                    sampling >= 100 -> {
+                        ds.ccpaSamplingResult = true
+                        true
+                    }
+                    else -> {
+                        val num = (1 until 100).random()
+                        val res = num in (1..sampling)
+                        ds.ccpaSamplingResult = res
+                        res
+                    }
                 }
             }
-            return res
         }
 
     override var messagesResp: MessagesResp?

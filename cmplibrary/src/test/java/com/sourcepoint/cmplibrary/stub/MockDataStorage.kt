@@ -6,7 +6,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import io.mockk.mockk
 
 internal class MockDataStorage : DataStorage {
@@ -19,17 +18,13 @@ internal class MockDataStorage : DataStorage {
     var savedConsentVar: Boolean = false
     var localStateV7: String? = null
 
-    override var tcDataV7: Map<String, String>?
+    override var tcDataOptimized: Map<String, String>?
         get() = TODO("Not yet implemented")
         set(value) {}
 
     override fun clearTCData() {
         TODO("Not yet implemented")
     }
-
-    override var ccpaMessageSubCategory: MessageSubCategory = MessageSubCategory.TCFv2
-    override val isCcpaOtt: Boolean
-        get() = ccpaMessageSubCategory == MessageSubCategory.OTT
 
     override var ccpaChildPmId: String? = null
     override var gdprChildPmId: String? = null
@@ -40,11 +35,6 @@ internal class MockDataStorage : DataStorage {
     override var savedConsent: Boolean
         get() = savedConsentVar
         set(value) { savedConsentVar = value }
-
-    override var gdprMessageSubCategory: MessageSubCategory = MessageSubCategory.TCFv2
-
-    override val isGdprOtt: Boolean
-        get() = gdprMessageSubCategory == MessageSubCategory.OTT
 
     override var ccpaMessageMetaData: String?
         get() = TODO("Not yet implemented")
@@ -85,12 +75,12 @@ internal class MockDataStorage : DataStorage {
         storage[DataStorageGdpr.GDPR_JSON_MESSAGE] = value
     }
 
-    override fun getAuthId(): String {
-        return storage[DataStorageGdpr.AUTH_ID_KEY] as? String ?: ""
+    override fun getAuthId(): String? {
+        return storage[DataStorageGdpr.AUTH_ID_KEY] as? String
     }
 
-    override fun getEuConsent(): String {
-        return storage[DataStorageGdpr.EU_CONSENT_KEY] as? String ?: ""
+    override fun getEuConsent(): String? {
+        return storage[DataStorageGdpr.EU_CONSENT_KEY] as? String
     }
 
     override fun getMetaData(): String {
@@ -157,7 +147,7 @@ internal class MockDataStorage : DataStorage {
         return mockLocalState
     }
 
-    override var messagesV7LocalState: String?
+    override var messagesOptimizedLocalState: String?
         get() = localStateV7
         set(value) { localStateV7 = value }
 
@@ -177,15 +167,7 @@ internal class MockDataStorage : DataStorage {
         TODO("Not yet implemented")
     }
 
-    override fun savePropertyId(value: Int) {
-        TODO("Not yet implemented")
-    }
-
     override fun savePropertyPriorityData(value: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getPropertyId(): Int {
         TODO("Not yet implemented")
     }
 
@@ -193,7 +175,7 @@ internal class MockDataStorage : DataStorage {
         TODO("Not yet implemented")
     }
 
-    override var messagesV7: String?
+    override var messagesOptimized: String?
         get() = TODO("Not yet implemented")
         set(value) {}
     override var consentStatusResponse: String?
@@ -244,6 +226,12 @@ internal class MockDataStorage : DataStorage {
         get() = TODO("Not yet implemented")
         set(value) {}
     override var gdprSamplingValue: Double
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var ccpaSamplingResult: Boolean?
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var gdprSamplingResult: Boolean?
         get() = TODO("Not yet implemented")
         set(value) {}
 }

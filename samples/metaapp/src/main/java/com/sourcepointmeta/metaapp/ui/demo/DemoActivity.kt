@@ -10,6 +10,7 @@ import android.view.View
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepoint.cmplibrary.NativeMessageController
@@ -32,6 +33,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.RemoteDataSource
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
+import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListFragment
 import com.sourcepointmeta.metaapp.ui.sp.SpFragment
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4LogFragment.Companion.LOG_ID
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4LogFragment.Companion.TITLE
@@ -111,9 +113,13 @@ class DemoActivity : FragmentActivity() {
     private val logFr by lazy { LogFragment.instance(config.propertyName) }
     private val spFr by lazy { SpFragment.instance() }
 
+    private val sp by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        clearAllData(this)
+        if (!sp.contains(PropertyListFragment.OLD_V6_CONSENT)) {
+            clearAllData(this)
+        }
         setContentView(R.layout.activity_demo)
 
         tool_bar.run {
@@ -180,8 +186,8 @@ class DemoActivity : FragmentActivity() {
         tool_bar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_share -> logFr.shareLogs()
-                R.id.action_refresh -> triggerLib()
                 R.id.action_clear_log -> logFr.clearLog()
+                R.id.action_refresh -> triggerLib()
             }
             true
         }
@@ -189,6 +195,7 @@ class DemoActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
+        checkVersion()
         triggerLib()
     }
 
@@ -248,6 +255,7 @@ class DemoActivity : FragmentActivity() {
 
         override fun onSpFinished(sPConsents: SPConsents) {
             spClientObserver.forEach { it.onSpFinished(sPConsents) }
+            spFr.update()
         }
 
         override fun onNoIntentActivitiesFound(url: String) {

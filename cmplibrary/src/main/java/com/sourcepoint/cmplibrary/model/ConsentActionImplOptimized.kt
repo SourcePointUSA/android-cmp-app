@@ -10,7 +10,7 @@ import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 
 @Serializable
-data class ConsentActionImplV7(
+data class ConsentActionImplOptimized(
     @Serializable(with = ActionTypeSerializer::class) override val actionType: ActionType,
     @SerialName("choiceId") override val choiceId: String? = null,
     @SerialName("consentLanguage") override val consentLanguage: String? = MessageLanguage.ENGLISH.value,
@@ -21,7 +21,7 @@ data class ConsentActionImplV7(
     @SerialName("pmId") val pmId: String?,
     @SerialName("pmTab") val pmTab: String? = null,
     @SerialName("requestFromPm") override val requestFromPm: Boolean,
-    @SerialName("saveAndExitVariables") val saveAndExitVariablesV7: JsonObject = JsonObject(mapOf()),
+    @SerialName("saveAndExitVariables") val saveAndExitVariablesOptimized: JsonObject = JsonObject(mapOf()),
     @SerialName("singleShot") val singleShot: Boolean?,
     @SerialName("pubData") override val pubData2: JsonObject = JsonObject(mapOf()),
     @SerialName("singleShotPM") val singleShotPM: Boolean = false,
@@ -34,5 +34,5 @@ data class ConsentActionImplV7(
         get() = legislation
 
     override val saveAndExitVariables: JSONObject
-        get() = JSONObject(saveAndExitVariablesV7)
+        get() = JSONObject(saveAndExitVariablesOptimized)
 }

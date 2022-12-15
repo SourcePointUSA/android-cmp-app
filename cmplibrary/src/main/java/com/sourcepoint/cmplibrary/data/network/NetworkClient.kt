@@ -1,10 +1,10 @@
 package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.v7.ConsentStatusParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.MetaDataParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
@@ -46,7 +46,7 @@ internal interface NetworkClient {
         env: Env
     ): Either<CustomConsentResp>
 
-    // V7
+    // Optimized
     fun getMetaData(
         param: MetaDataParamReq
     ): Either<MetaDataResp>

@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.model.v7
+package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.* // ktlint-disable
@@ -43,7 +43,7 @@ data class MessagesResp(
                 campaigns?.gdpr?.let { add(it) }
                 campaigns?.ccpa?.let { add(it) }
             }.associateBy { it.type.toCategoryId() }
-            return priority.mapNotNull { list[it] }
+            return priority.mapNotNull { list[it] }.toSet().toList()
         }
 
     override fun toString(): String {

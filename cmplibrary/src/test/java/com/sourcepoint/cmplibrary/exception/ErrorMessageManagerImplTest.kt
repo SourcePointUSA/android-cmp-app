@@ -38,7 +38,8 @@ class ErrorMessageManagerImplTest {
         propertyName = "http://dev.local",
         campaigns = listOf(gdpr),
         messageLanguage = MessageLanguage.ENGLISH,
-        3000
+        propertyId = 1234,
+        messageTimeout = 3000,
     )
 
     @MockK

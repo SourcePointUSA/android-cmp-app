@@ -9,12 +9,17 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.data.local.getCCPAConsent
-import com.sourcepoint.cmplibrary.data.local.getGDPRConsent
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInternal
+import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SPGDPRConsent
+import kotlinx.serialization.decodeFromString
 
 fun userConsents(context: Context): SPConsents {
     val dataStorageGdpr = fetchOrStore(DataStorageGdpr::class.java) { DataStorageGdpr.create(context) }
@@ -41,15 +46,21 @@ internal fun userConsents(
 ): SPConsents {
 
     return SPConsents(
-        ccpa = dataStorage.getCCPAConsent().getOrNull()?.let {
-            SPCCPAConsent(
-                consent = it
-            )
-        },
-        gdpr = dataStorage.getGDPRConsent().getOrNull()?.let {
-            SPGDPRConsent(
-                consent = it
-            )
-        }
+        ccpa = dataStorage.ccpaConsentStatus
+            ?.let { check { JsonConverter.converter.decodeFromString<CcpaCS>(it) }.getOrNull() }
+            ?.toCCPAConsentInternal()
+            ?.let {
+                SPCCPAConsent(
+                    consent = it
+                )
+            },
+        gdpr = dataStorage.gdprConsentStatus
+            ?.let { check { JsonConverter.converter.decodeFromString<GdprCS>(it) }.getOrNull() }
+            ?.toGDPRUserConsent()
+            ?.let {
+                SPGDPRConsent(
+                    consent = it
+                )
+            }
     )
 }

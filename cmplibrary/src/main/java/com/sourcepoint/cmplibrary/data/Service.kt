@@ -3,9 +3,9 @@ package com.sourcepoint.cmplibrary.data
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
-import com.sourcepoint.cmplibrary.data.network.model.v7.ChoiceResp
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ChoiceResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
@@ -26,7 +26,7 @@ internal interface Service : NetworkClient, CampaignManager {
         pmId: String?
     ): Either<ConsentResp>
 
-    fun sendConsentV7(
+    fun sendConsentOptimized(
         consentActionImpl: ConsentActionImpl,
         env: Env,
         sPConsentsSuccess: ((SPConsents) -> Unit)?,

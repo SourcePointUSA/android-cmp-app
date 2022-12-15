@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
@@ -33,7 +33,7 @@ internal interface ResponseManager {
     fun parseConsentRes(r: Response, campaignType: CampaignType): ConsentResp
     fun parseCustomConsentRes(r: Response): CustomConsentResp
 
-    // V7
+    // Optimized
     fun parseMetaDataRes(r: Response): MetaDataResp
     fun parseConsentStatusResp(r: Response): ConsentStatusResp
     fun parseGetChoiceResp(r: Response): ChoiceResp

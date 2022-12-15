@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import kotlinx.serialization.decodeFromString
 

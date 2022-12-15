@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.model.toJSONObj
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.json.JSONArray
 import org.json.JSONObject
@@ -25,7 +26,7 @@ data class SPCCPAConsent(
 
 @Serializable
 data class GDPRPurposeGrants(
-    val granted: Boolean = false,
+    @SerialName("vendorGrant") val granted: Boolean = false,
     val purposeGrants: Map<String, Boolean> = emptyMap()
 )
 
@@ -50,7 +51,6 @@ internal data class GDPRConsentInternal(
 ) : GDPRConsent
 
 interface CCPAConsent {
-    val uuid: String?
     val rejectedCategories: List<String>
     val rejectedVendors: List<String>
     val status: CcpaStatus?
@@ -60,7 +60,7 @@ interface CCPAConsent {
 }
 
 internal data class CCPAConsentInternal(
-    override val uuid: String? = null,
+    val uuid: String? = null,
     override val rejectedCategories: List<String> = listOf(),
     override val rejectedVendors: List<String> = listOf(),
     override val status: CcpaStatus? = null,
@@ -79,7 +79,6 @@ enum class CcpaStatus {
 
 internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
-        put("uuid", uuid)
         put("tcData", tcData.toJSONObj())
         put("grants", grants.toJSONObjGrant())
         put("euconsent", euconsent)
@@ -90,7 +89,6 @@ internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
 
 internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
-        put("uuid", uuid)
         put("status", status)
         put("uspstring", uspstring)
         put("rejectedCategories", JSONArray(rejectedCategories))

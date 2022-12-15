@@ -84,7 +84,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
     val gdprGroupPmId = group_pm_id_ed.text.toString()
 
     return Property(
-        propertyId = check { prop_id_ed.text.toString().toInt() }.getOrNull(),
+        propertyId = prop_id_ed.text.toString().toInt(),
         propertyName = prop_name_ed.text.toString(),
         accountId = account_id_ed.text.toString().toLongOrNull() ?: 0L,
         timeout = timeout_ed.text.toString().toTimeout(),

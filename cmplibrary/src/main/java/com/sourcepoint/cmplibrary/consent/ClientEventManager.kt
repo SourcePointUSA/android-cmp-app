@@ -65,7 +65,7 @@ private class ClientEventManagerImpl(
                         if (cNumber > 0) cNumber--
                     }
                 }
-                ActionType.GET_MSG_ERROR -> {
+                ActionType.GET_MSG_ERROR, ActionType.GET_MSG_NOT_CALLED -> {
                     cNumber = 0
                 }
             }
@@ -85,7 +85,7 @@ private class ClientEventManagerImpl(
                 NativeMessageActionType.MSG_CANCEL -> {
                     if (cNumber > 0) cNumber--
                 }
-                NativeMessageActionType.GET_MSG_ERROR -> {
+                NativeMessageActionType.GET_MSG_ERROR, NativeMessageActionType.GET_MSG_NOT_CALLED -> {
                     cNumber = 0
                 }
             }
@@ -121,8 +121,8 @@ private class ClientEventManagerImpl(
     }
 
     private fun getSPConsents() = check<SPConsents> {
-        val ccpaCached = consentManagerUtils.getCcpaConsent().getOrNull()
-        val gdprCached = consentManagerUtils.getGdprConsent().getOrNull()
+        val ccpaCached = consentManagerUtils.ccpaConsentOptimized.getOrNull()
+        val gdprCached = consentManagerUtils.gdprConsentOptimized.getOrNull()
         SPConsents(
             gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
             ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }

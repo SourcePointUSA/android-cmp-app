@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.model.v7.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
@@ -236,16 +236,27 @@ private class ResponseManagerImpl(
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         val status = r.code()
         val mess = r.message()
-        logger.res(
-            tag = "PvDataResp",
-            msg = mess,
-            body = body,
-            status = status.toString()
-        )
         return if (r.isSuccessful) {
             when (val either: Either<PvDataResp> = jsonConverter.toPvDataResp(body)) {
-                is Either.Right -> either.r
-                is Either.Left -> throw either.t
+                is Either.Right -> {
+                    val campaign = either.r.gdpr?.let { "GDPR" } ?: ("" + either.r.ccpa?.let { "CCPA" }) ?: ""
+                    logger.res(
+                        tag = "PvDataResp - $campaign",
+                        msg = mess,
+                        body = body,
+                        status = status.toString()
+                    )
+                    either.r
+                }
+                is Either.Left -> {
+                    logger.res(
+                        tag = "PvDataResp",
+                        msg = mess,
+                        body = body,
+                        status = status.toString()
+                    )
+                    throw either.t
+                }
             }
         } else {
             throw InvalidRequestException(description = body)

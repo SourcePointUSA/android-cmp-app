@@ -21,8 +21,8 @@ import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
 import java.util.* //ktlint-disable
 
-internal fun String.toConsentActionV7(): Either<ConsentActionImplV7> = check {
-    JsonConverter.converter.decodeFromString<ConsentActionImplV7>(this)
+internal fun String.toConsentActionOptimized(): Either<ConsentActionImplOptimized> = check {
+    JsonConverter.converter.decodeFromString<ConsentActionImplOptimized>(this)
 }
 
 internal fun String.toConsentAction(): ConsentActionImpl {
@@ -52,7 +52,7 @@ internal fun String.toConsentAction(): ConsentActionImpl {
         pmTab = pmTab,
         requestFromPm = requestFromPm,
         saveAndExitVariables = saveAndExitVariables,
-        saveAndExitVariablesV7 = saveAndExitVariables2,
+        saveAndExitVariablesOptimized = saveAndExitVariables2,
         consentLanguage = consentLanguage,
         campaignType = CampaignType.valueOf(legislation),
         customActionId = customActionId,

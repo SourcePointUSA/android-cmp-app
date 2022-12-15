@@ -6,7 +6,6 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
-import com.sourcepoint.cmplibrary.consent.LocalStateStatus
 import com.sourcepoint.cmplibrary.core.* // ktlint-disable
 import com.sourcepoint.cmplibrary.core.nativemessage.toNativeMessageDTO
 import com.sourcepoint.cmplibrary.core.web.CampaignModel
@@ -15,13 +14,12 @@ import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.model.v7.CampaignMessage
-import com.sourcepoint.cmplibrary.data.network.model.v7.MessagesResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CampaignMessage
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
-import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.LoggerType.NL
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.* // ktlint-disable
@@ -136,41 +134,150 @@ internal class SpConsentLibImpl(
         }
     }
 
+//    override fun loadMessage() {
+//        localLoadMessage(authId = null, pubData = null, cmpViewId = null)
+//    }
+//
+//    override fun loadMessage(cmpViewId: Int) {
+//        localLoadMessage(authId = null, pubData = null, cmpViewId = cmpViewId)
+//    }
+//
+//    override fun loadMessage(authId: String?) {
+//        localLoadMessage(authId = authId, pubData = null, cmpViewId = null)
+//    }
+//
+//    override fun loadMessage(pubData: JSONObject?) {
+//        localLoadMessage(authId = null, pubData = pubData, cmpViewId = null)
+//    }
+//
+//    /** Start Client's methods */
+//    override fun loadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
+//        localLoadMessage(authId = authId, pubData = pubData, cmpViewId = cmpViewId)
+//    }
+
+//    private fun localLoadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
+//        checkMainThread("loadMessage")
+//
+//        if (viewManager.isViewInLayout) return
+//
+//        service.getUnifiedMessage(
+//            messageReq = campaignManager.getUnifiedMessageReq(authId, pubData),
+//            pSuccess = { messageResp ->
+//                consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
+//                val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
+//                clientEventManager.setCampaignNumber(list.size)
+//                if (list.isEmpty()) {
+//                    consentManager.sendStoredConsentToClient()
+//                    return@getUnifiedMessage
+//                }
+//                val firstCampaign2Process: CampaignModel = list.first()
+//                remainingCampaigns.run {
+//                    clear()
+//                    addAll(LinkedList(list.drop(1)))
+//                }
+//                executor.executeOnMain {
+//                    val legislation = firstCampaign2Process.type
+//                    when (firstCampaign2Process.messageSubCategory) {
+//                        TCFv2, OTT, NATIVE_OTT -> {
+//                            /** create a instance of WebView */
+//                            val webView = viewManager.createWebView(
+//                                this,
+//                                JSReceiverDelegate(),
+//                                remainingCampaigns,
+//                                firstCampaign2Process.messageSubCategory,
+//                                cmpViewId
+//                            )
+//                                .executeOnLeft { spClient.onError(it) }
+//                                .getOrNull()
+//
+//                            /** inject the message into the WebView */
+//                            val url = firstCampaign2Process.url
+//                            webView?.loadConsentUI(firstCampaign2Process, url, legislation)
+//                        }
+//                        NATIVE_IN_APP -> {
+//                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(
+//                                dataStorage = dataStorage,
+//                                campaignType = legislation
+//                            )
+//                            currentNativeMessageCampaign = firstCampaign2Process
+//                            spClient.onNativeMessageReady(nmDto, this)
+//                            pLogger.nativeMessageAction(
+//                                tag = "onNativeMessageReady",
+//                                msg = "onNativeMessageReady",
+//                                json = firstCampaign2Process.message
+//                            )
+//                        }
+//                    }
+//                }
+//            },
+//            pError = { throwable ->
+//                if (consentManager.storedConsent) {
+//                    executor.executeOnSingleThread {
+//                        consentManager.sendStoredConsentToClient()
+//                        clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
+//                    }
+//                } else {
+//                    (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
+//                    val ex = throwable.toConsentLibException()
+//                    spClient.onError(ex)
+//                    pLogger.clientEvent(
+//                        event = "onError",
+//                        msg = "${throwable.message}",
+//                        content = "${throwable.message}"
+//                    )
+//                    pLogger.e(
+//                        "SpConsentLib",
+//                        """
+//                    onError
+//                    ${throwable.message}
+//                        """.trimIndent()
+//                    )
+//                }
+//            },
+//            env = env
+//        )
+//    }
+
     override fun loadMessage() {
-        localLoadMessage(authId = null, pubData = null, cmpViewId = null)
+        localLoadMessageOptimized(authId = null, pubData = null, cmpViewId = null)
     }
 
     override fun loadMessage(cmpViewId: Int) {
-        localLoadMessage(authId = null, pubData = null, cmpViewId = cmpViewId)
+        localLoadMessageOptimized(authId = null, pubData = null, cmpViewId = cmpViewId)
     }
 
-    override fun loadMessage(authId: String?) {
-        localLoadMessage(authId = authId, pubData = null, cmpViewId = null)
+    override fun loadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
+        localLoadMessageOptimized(authId = authId, pubData = pubData, cmpViewId = cmpViewId)
     }
 
     override fun loadMessage(pubData: JSONObject?) {
-        localLoadMessage(authId = null, pubData = pubData, cmpViewId = null)
+        localLoadMessageOptimized(authId = null, pubData = pubData, cmpViewId = null)
     }
 
-    /** Start Client's methods */
-    override fun loadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
-        localLoadMessage(authId = authId, pubData = pubData, cmpViewId = cmpViewId)
+    override fun loadMessage(authId: String?) {
+        localLoadMessageOptimized(authId = authId, pubData = null, cmpViewId = null)
     }
 
-    private fun localLoadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
-        checkMainThread("loadMessage")
+    private fun localLoadMessageOptimized(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
 
-        if (viewManager.isViewInLayout) return
-
-        service.getUnifiedMessage(
-            messageReq = campaignManager.getUnifiedMessageReq(authId, pubData),
-            pSuccess = { messageResp ->
-                consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
-                val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
+        val param = check { campaignManager.getMessageOptimizedReq(authId, pubData) }
+            .executeOnLeft {
+                pLogger.e(this.javaClass.simpleName, it.message ?: it.stackTraceToString())
+                spClient.onError(it)
+            }
+            .getOrNull() ?: return
+        service.getMessages(
+            messageReq = param,
+            showConsent = {
+                consentManager.sendStoredConsentToClientOptimized()
+                clientEventManager.setAction(NativeMessageActionType.GET_MSG_NOT_CALLED)
+            },
+            pSuccess = {
+                val list = it.toCampaignModelList(logger = pLogger)
                 clientEventManager.setCampaignNumber(list.size)
                 if (list.isEmpty()) {
-                    consentManager.sendStoredConsentToClient()
-                    return@getUnifiedMessage
+                    consentManager.sendStoredConsentToClientOptimized()
+                    return@getMessages
                 }
                 val firstCampaign2Process: CampaignModel = list.first()
                 remainingCampaigns.run {
@@ -215,7 +322,7 @@ internal class SpConsentLibImpl(
             pError = { throwable ->
                 if (consentManager.storedConsent) {
                     executor.executeOnSingleThread {
-                        consentManager.sendStoredConsentToClient()
+                        consentManager.sendStoredConsentToClientOptimized()
                         clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
                     }
                 } else {
@@ -235,93 +342,8 @@ internal class SpConsentLibImpl(
                         """.trimIndent()
                     )
                 }
-            },
-            env = env
-        )
-    }
-
-    override fun loadMessageV7() {
-        localLoadMessageV7(authId = null, pubData = null, cmpViewId = null)
-    }
-
-    override fun loadMessageV7(cmpViewId: Int) {
-        localLoadMessageV7(authId = null, pubData = null, cmpViewId = cmpViewId)
-    }
-
-    override fun loadMessageV7(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
-        localLoadMessageV7(authId = authId, pubData = pubData, cmpViewId = cmpViewId)
-    }
-
-    override fun loadMessageV7(pubData: JSONObject?) {
-        localLoadMessageV7(authId = null, pubData = pubData, cmpViewId = null)
-    }
-
-    private fun localLoadMessageV7(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
-
-        val param = check { campaignManager.getMessageV7Req(authId, pubData) }
-            .executeOnLeft {
-                pLogger.e(this.javaClass.simpleName, it.message ?: it.stackTraceToString())
-                spClient.onError(it)
-            }
-            .getOrNull() ?: return
-        service.getMessages(
-            messageReq = param,
-            showConsent = { consentManager.sendStoredConsentToClientV7() },
-            pSuccess = {
-                val list = it.toCampaignModelList(logger = pLogger)
-                clientEventManager.setCampaignNumber(list.size)
-                if (list.isEmpty()) {
-                    consentManager.sendStoredConsentToClient()
-                    consentManager.sendStoredConsentToClientV7()
-                    return@getMessages
-                }
-                val firstCampaign2Process: CampaignModel = list.first()
-                remainingCampaigns.run {
-                    clear()
-                    addAll(LinkedList(list.drop(1)))
-                }
-                executor.executeOnMain {
-                    val legislation = firstCampaign2Process.type
-                    when (firstCampaign2Process.messageSubCategory) {
-                        TCFv2, OTT, NATIVE_OTT -> {
-                            /** create a instance of WebView */
-                            val webView = viewManager.createWebView(
-                                this,
-                                JSReceiverDelegate(),
-                                remainingCampaigns,
-                                firstCampaign2Process.messageSubCategory,
-                                cmpViewId
-                            )
-                                .executeOnLeft { spClient.onError(it) }
-                                .getOrNull()
-
-                            /** inject the message into the WebView */
-                            val url = firstCampaign2Process.url
-                            webView?.loadConsentUI(firstCampaign2Process, url, legislation)
-                        }
-                        NATIVE_IN_APP -> {
-                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(
-                                dataStorage = dataStorage,
-                                campaignType = legislation
-                            )
-                            currentNativeMessageCampaign = firstCampaign2Process
-                            spClient.onNativeMessageReady(nmDto, this)
-                            pLogger.nativeMessageAction(
-                                tag = "onNativeMessageReady",
-                                msg = "onNativeMessageReady",
-                                json = firstCampaign2Process.message
-                            )
-                        }
-                    }
-                }
-            },
-            pError = {
             }
         )
-    }
-
-    override fun loadMessageV7(authId: String?) {
-        localLoadMessageV7(authId = authId, pubData = null, cmpViewId = null)
     }
 
     override fun customConsentGDPR(
@@ -332,7 +354,7 @@ internal class SpConsentLibImpl(
     ) {
         val customConsentReq = CustomConsentReq(
             consentUUID = dataStorage.gdprConsentUuid ?: "",
-            propertyId = dataStorage.getPropertyId(),
+            propertyId = campaignManager.spConfig.propertyId,
             categories = categories,
             legIntCategories = legIntCategories,
             vendors = vendors
@@ -365,7 +387,7 @@ internal class SpConsentLibImpl(
     ) {
         val customConsentReq = CustomConsentReq(
             consentUUID = dataStorage.gdprConsentUuid ?: "",
-            propertyId = dataStorage.getPropertyId(),
+            propertyId = campaignManager.spConfig.propertyId,
             categories = categories,
             legIntCategories = legIntCategories,
             vendors = vendors
@@ -549,6 +571,10 @@ internal class SpConsentLibImpl(
             )
         }
 
+        override fun dismiss(view: View) {
+            viewManager.removeView(view)
+        }
+
         override fun onNoIntentActivitiesFoundFor(view: View, url: String) {
             spClient.onNoIntentActivitiesFound(url)
             pLogger.clientEvent(
@@ -581,7 +607,7 @@ internal class SpConsentLibImpl(
                             val legislation = nextCampaign.type
                             val url = nextCampaign.url
                             when (nextCampaign.messageSubCategory) {
-                                TCFv2 -> {
+                                TCFv2, OTT, NATIVE_OTT -> {
                                     executor.executeOnMain {
                                         iConsentWebView.loadConsentUI(
                                             nextCampaign,
@@ -654,7 +680,7 @@ internal class SpConsentLibImpl(
                 executor.executeOnSingleThread {
                     val editedAction = spClient.onAction(view, actionImpl) as? ConsentActionImpl
                     editedAction?.let {
-                        consentManager.enqueueConsent(consentActionImpl = editedAction)
+                        consentManager.enqueueConsentOptimized(consentActionImpl = editedAction)
                     }
                 }
             }
@@ -830,7 +856,7 @@ internal class SpConsentLibImpl(
             }
             NativeMessageActionType.ACCEPT_ALL,
             NativeMessageActionType.REJECT_ALL -> {
-                consentManager.enqueueConsent(nativeConsentAction = nca)
+                consentManager.enqueueConsentOptimized(nativeConsentAction = nca)
                 moveToNextCampaign(remainingCampaigns, viewManager, spClient)
             }
         }

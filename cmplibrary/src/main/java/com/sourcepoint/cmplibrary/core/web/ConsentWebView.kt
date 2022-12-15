@@ -18,7 +18,7 @@ import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.model.toConsentActionV7
+import com.sourcepoint.cmplibrary.data.network.model.toConsentActionOptimized
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
@@ -27,6 +27,7 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import okhttp3.HttpUrl
+import org.json.JSONObject
 import java.util.* //ktlint-disable
 
 @SuppressLint("ViewConstructor")
@@ -200,8 +201,16 @@ internal class ConsentWebView(
         override fun onAction(actionData: String) {
             checkWorkerThread("ConsentWebView on action")
 
-            val action = actionData.toConsentActionV7()
-                .executeOnLeft { jsClientLib.onError(this@ConsentWebView, it) }
+            val action = actionData.toConsentActionOptimized()
+                .executeOnLeft {
+                    logger.webAppAction(
+                        tag = "Action from the RenderingApp",
+                        msg = "Error during the parsing process",
+                        json = JSONObject(actionData)
+                    )
+                    jsClientLib.onError(this@ConsentWebView, it)
+                    jsClientLib.dismiss(this@ConsentWebView)
+                }
                 .getOrNull()
                 ?: return
 
