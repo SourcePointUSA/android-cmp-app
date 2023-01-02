@@ -94,7 +94,7 @@ Java
 ```
 
 ## Create an instance of the CMP library
-The CMP SDK library is designed to follow the Activity lifecycle, this means that is **mandatory** to instantiate the library in the Activity in which you are planning to use the CMP SDK.
+The CMP SDK library is designed to follow the Activity lifecycle, this means you will to instantiate the library in the Activity in which you are planning to use the CMP SDK (_not on a `Fragment`).
 
 Kotlin 
 ```kotlin
