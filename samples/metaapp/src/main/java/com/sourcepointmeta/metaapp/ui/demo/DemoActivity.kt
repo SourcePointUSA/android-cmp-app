@@ -152,6 +152,26 @@ class DemoActivity : FragmentActivity() {
                         }
                         ?: pmNotValid()
                 }
+                DemoFragment.DemoAction.CCPA_PM_OTT -> {
+                    ccpaPmId?.toString()
+                        ?.let {
+                            spConsentLib.loadOTTPrivacyManager(
+                                it,
+                                CampaignType.CCPA,
+                            )
+                        }
+                        ?: pmNotValid()
+                }
+                DemoFragment.DemoAction.GDPR_PM_OTT -> {
+                    gdprPmId?.toString()
+                        ?.let {
+                            spConsentLib.loadOTTPrivacyManager(
+                                it,
+                                CampaignType.GDPR,
+                            )
+                        }
+                        ?: pmNotValid()
+                }
                 DemoFragment.DemoAction.LOG -> {
                 }
             }
