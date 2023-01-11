@@ -1,7 +1,7 @@
 name: RELEASE  - disabled
-#on:
-#  push:
-#    branches: [ master ]
+on:
+  push:
+    branches: [ disable ]
 #    paths:
 #      - '!*.yml'
 #      - '!README.md'
