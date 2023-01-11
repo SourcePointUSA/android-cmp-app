@@ -72,6 +72,12 @@ class MainActivityKotlin : AppCompatActivity() {
                 CampaignType.CCPA
             )
         }
+        findViewById<View>(R.id.review_consents_ccpa_ott).setOnClickListener { _v: View? ->
+            spConsentLib.loadOTTPrivacyManager(
+                dataProvider.ccpaPmId,
+                CampaignType.CCPA
+            )
+        }
         findViewById<View>(R.id.clear_all).setOnClickListener { _v: View? -> clearAllData(this) }
         findViewById<View>(R.id.auth_id_activity).setOnClickListener { _v: View? ->
             startActivity(Intent(this, MainActivityAuthId::class.java))
