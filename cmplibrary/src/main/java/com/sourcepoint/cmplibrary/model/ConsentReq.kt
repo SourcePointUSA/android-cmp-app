@@ -48,7 +48,7 @@ internal fun ConsentReq.toBodyRequest(): String {
 
 internal class CustomConsentReq(
     val consentUUID: String,
-    val propertyId: Int,
+    val propertyId: Int?,
     val vendors: List<String>,
     val categories: List<String>,
     val legIntCategories: List<String>,

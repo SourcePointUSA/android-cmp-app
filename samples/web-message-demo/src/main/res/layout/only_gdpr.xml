@@ -52,4 +52,13 @@
         app:srcCompat="@drawable/source_point_logo"
         android:contentDescription="@string/source_point_logo" />
 
+    <Button
+            android:id="@+id/review_consents_ccpa_ott"
+            android:text="CCPA OTT CONSENT"
+            app:layout_constraintStart_toStartOf="@id/review_consents_gdpr"
+            app:layout_constraintEnd_toEndOf="@id/review_consents_gdpr"
+            app:layout_constraintBottom_toTopOf="@id/review_consents_gdpr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

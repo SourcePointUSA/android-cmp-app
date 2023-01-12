@@ -36,6 +36,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://s01.oss.sonatype.org/content/groups/staging/"} // repo to test the release
         maven { url "https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/" }
         maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
         mavenCentral()

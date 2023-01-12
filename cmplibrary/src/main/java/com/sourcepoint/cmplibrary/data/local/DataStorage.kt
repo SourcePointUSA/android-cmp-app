@@ -19,6 +19,6 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     fun savePropertyPriorityData(value: String)
     fun saveLocalState(value: String)
     fun getLocalState(): String?
-    fun getPropertyId(): Int
+    fun getPropertyId(): Int?
     fun getPropertyPriorityData(): String?
 }

@@ -93,7 +93,7 @@ private class ServiceImpl(
                         dataStorage.saveCcpaConsentResp(it.userConsent ?: "")
                         dataStorage.saveCcpaConsentUuid(it.uuid)
                         val uspString = it.content.getJSONObjectOrNullByKey("userConsent")?.getStringOrNullByKey("uspstring")
-                        if(uspString != null)
+                        if (uspString != null)
                             dataStorage.saveUsPrivacyString(uspString)
                     }
                 }

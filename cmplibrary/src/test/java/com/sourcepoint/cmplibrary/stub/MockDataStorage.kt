@@ -170,7 +170,7 @@ internal class MockDataStorage : DataStorage {
         TODO("Not yet implemented")
     }
 
-    override fun getPropertyId(): Int {
+    override fun getPropertyId(): Int? {
         TODO("Not yet implemented")
     }
 

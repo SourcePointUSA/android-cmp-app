@@ -149,7 +149,7 @@ class CampaignManagerTest {
             pmTab.assertEquals(PMTab.DEFAULT)
             consentLanguage.assertEquals("EN")
             uuid.assertEquals("")
-            siteId.assertEquals("0")
+            siteId.assertEquals(0)
             messageId.assertEquals("11")
         }
     }
@@ -166,7 +166,7 @@ class CampaignManagerTest {
             pmTab.assertEquals(PMTab.PURPOSES)
             consentLanguage.assertEquals("BG")
             uuid.assertEquals("")
-            siteId.assertEquals("0")
+            siteId.assertEquals(0)
             messageId.assertEquals("22")
         }
     }
@@ -194,7 +194,7 @@ class CampaignManagerTest {
             pmTab.assertEquals(PMTab.PURPOSES)
             consentLanguage.assertEquals("ES")
             uuid.assertEquals("uuid-test")
-            siteId.assertEquals("1234")
+            siteId.assertEquals(1234)
             messageId.assertEquals("22")
         }
     }
@@ -223,7 +223,7 @@ class CampaignManagerTest {
             pmTab.assertEquals(PMTab.PURPOSES)
             consentLanguage.assertEquals("NL")
             uuid.assertEquals("uuid")
-            siteId.assertEquals("9090")
+            siteId.assertEquals(9090)
             messageId.assertEquals("8989")
         }
     }

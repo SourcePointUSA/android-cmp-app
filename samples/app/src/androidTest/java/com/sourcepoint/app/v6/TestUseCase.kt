@@ -19,6 +19,7 @@ import com.sourcepoint.app.v6.TestData.PURPOSES
 import com.sourcepoint.app.v6.TestData.REJECT
 import com.sourcepoint.app.v6.TestData.REJECT_ALL
 import com.sourcepoint.app.v6.TestData.SAVE_AND_EXIT
+import com.sourcepoint.app.v6.TestData.SAVE_AND_EXIT_UP
 import com.sourcepoint.app.v6.TestData.SETTINGS_DE
 import com.sourcepoint.app.v6.TestData.SITE_VENDORS
 import com.sourcepoint.app.v6.TestData.TITLE_GDPR
@@ -174,6 +175,10 @@ class TestUseCase {
             performClickById(resId = R.id.delete_custom_consent)
         }
 
+        fun clickOnOttCcpaReviewConsent() {
+            performClickById(resId = R.id.review_consents_ccpa_ott)
+        }
+
         fun clickOnCcpaReviewConsent() {
             performClickById(resId = R.id.review_consents_ccpa)
         }
@@ -256,6 +261,10 @@ class TestUseCase {
             performClickOnWebViewByContent(ACCEPT_ALL)
         }
 
+        fun tapSwitchOnWebView() {
+            tapOnSwitch(false)
+        }
+
         fun tapNetworkOnWebView() {
             performClickOnLabelWebViewByContent(NETWORK)
         }
@@ -266,6 +275,10 @@ class TestUseCase {
 
         fun tapSaveAndExitWebView() {
             performClickOnWebViewByContent(SAVE_AND_EXIT)
+        }
+
+        fun tapSaveAndExitUPWebView() {
+            performClickOnWebViewByContent(SAVE_AND_EXIT_UP)
         }
 
         fun tapRejectAllWebView() {

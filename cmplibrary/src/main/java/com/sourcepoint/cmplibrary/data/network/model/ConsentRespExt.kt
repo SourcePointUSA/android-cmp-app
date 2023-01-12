@@ -12,7 +12,6 @@ import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
-import org.json.JSONException
 import org.json.JSONObject
 import java.util.* //ktlint-disable
 
@@ -134,7 +133,7 @@ internal fun Map<String, Map<String, Boolean>>.toAcceptedCategories(): Iterable<
 
 fun JSONObject.getStringOrNullByKey(
     key: String
-): String?{
+): String? {
     return if (!isNull(key))
         getString(key)
     else
@@ -143,7 +142,7 @@ fun JSONObject.getStringOrNullByKey(
 
 fun JSONObject.getJSONObjectOrNullByKey(
     key: String
-): JSONObject?{
+): JSONObject? {
     return if (!isNull(key))
         getJSONObject(key)
     else

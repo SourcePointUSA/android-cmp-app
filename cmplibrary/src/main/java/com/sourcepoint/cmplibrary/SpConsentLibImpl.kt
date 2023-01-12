@@ -309,6 +309,16 @@ internal class SpConsentLibImpl(
         loadPrivacyManager(pmId, pmTab, campaignType, false)
     }
 
+    override fun loadOTTPrivacyManager(pmId: String, campaignType: CampaignType) {
+        loadPm(
+            pmId = pmId,
+            pmTab = PMTab.DEFAULT,
+            campaignType = campaignType,
+            messSubCat = OTT,
+            useGroupPmIfAvailable = false
+        )
+    }
+
     override fun loadPrivacyManager(
         pmId: String,
         pmTab: PMTab,

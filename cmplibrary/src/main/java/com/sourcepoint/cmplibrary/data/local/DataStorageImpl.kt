@@ -65,8 +65,8 @@ private class DataStorageImpl(
             .apply()
     }
 
-    override fun getPropertyId(): Int {
-        return preference.getInt(PROPERTY_ID, -1)
+    override fun getPropertyId(): Int? {
+        return if (preference.contains(PROPERTY_ID)) preference.getInt(PROPERTY_ID, -1) else null
     }
 
     override fun getPropertyPriorityData(): String? {

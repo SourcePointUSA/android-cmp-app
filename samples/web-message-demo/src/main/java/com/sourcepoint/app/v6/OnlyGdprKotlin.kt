@@ -24,10 +24,10 @@ class OnlyGdprKotlin : AppCompatActivity() {
         spClient = LocalClient()
         config {
             accountId = 22
-            propertyName = "mobile.multicampaign.demo"
+            propertyName = "ccpa.mobile.demo"
             messLanguage = MessageLanguage.ENGLISH
             messageTimeout = 3000
-            +(CampaignType.GDPR)
+            +(CampaignType.CCPA)
         }
     }
 
@@ -41,6 +41,13 @@ class OnlyGdprKotlin : AppCompatActivity() {
                 "488393",
                 PMTab.PURPOSES,
                 CampaignType.GDPR
+            )
+        }
+
+        review_consents_ccpa_ott.setOnClickListener {
+            spConsentLib.loadOTTPrivacyManager(
+                "758669",
+                CampaignType.CCPA
             )
         }
 

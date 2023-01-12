@@ -1,13 +1,13 @@
 name: Test
 on:
   push:
-    branches: [ develop ]
+    branches: [ v6/develop ]
     paths:
       - '!README.md'
       - '!release_note.txt'
 #      - '!samples/nativemessage/*'
   pull_request:
-    branches: [ develop ]
+    branches: [ v6/develop ]
 #    paths:
 #      - '!README.md'
 #      - '!samples/nativemessage/*'
