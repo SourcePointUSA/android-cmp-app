@@ -7,9 +7,14 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.example.uitestutil.*
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCcpaReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnOttCcpaReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitUPWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapSwitchOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
@@ -17,6 +22,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
@@ -42,6 +48,15 @@ class MainActivityKotlinOttTest {
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
         +(CampaignType.GDPR)
+    }
+
+    private val spConfOttCcpa = config {
+        accountId = 22
+        propertyName = "ott-ccpa-22"
+        campaignsEnv = CampaignsEnv.PUBLIC
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 3000
+        +(CampaignType.CCPA)
     }
 
     @Test
@@ -136,6 +151,54 @@ class MainActivityKotlinOttTest {
             val IABTCF_TCString = PreferenceManager.getDefaultSharedPreferences(activity)
                 .getString("IABTCF_TCString", null)
             IABTCF_TCString.assertNotNull()
+        }
+
+    }
+
+    @Test
+    fun GIVEN_an_OTT_campaign_ACCEPT_ALL_from_PM() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfOttCcpa,
+                gdprPmId = "1",
+                ccpaPmId = "756686",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr{ verify(atLeast = 1) { spClient.onConsentReady(any()) } }
+
+        wr { clickOnOttCcpaReviewConsent() }
+        wr(backup = { clickOnOttCcpaReviewConsent() }){
+            tapSwitchOnWebView()
+            device.pressEnter()
+            tapSaveAndExitUPWebView()
+            device.pressEnter()
+        }
+
+        verify(exactly = 0) { spClient.onError(any()) }
+
+        wr {
+            verify {
+                spClient.run {
+                    onUIReady(any())
+                    onUIFinished(any())
+                    onAction(any(), any())
+                    onConsentReady(any())
+                }
+            }
+        }
+
+
+        scenario.onActivity { activity ->
+            val IABUSPrivacy_String = PreferenceManager.getDefaultSharedPreferences(activity)
+                .getString("IABUSPrivacy_String", "1YYN")
+            IABUSPrivacy_String.assertNotNull()
         }
 
     }

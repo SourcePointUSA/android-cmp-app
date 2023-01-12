@@ -317,6 +317,16 @@ fun tapOnToggle2(property: String, tapOnlyWhen: Boolean) {
 }
 
 @Throws(Throwable::class)
+fun tapOnSwitch(tapOnlyWhen: Boolean) {
+    onWebView()
+//        .withElement(findElement(Locator.XPATH, "//div[@class='tcfv2-stack']"))
+//        .withElement( findElement(Locator.XPATH, "//span[(text()='$property') ]"))
+        .withElement(findElement(Locator.XPATH, "//button[@role='switch' and @aria-checked='$tapOnlyWhen']"))
+        .perform(webScrollIntoView())
+        .perform(webClick())
+}
+
+@Throws(Throwable::class)
 fun checkConsentWebView(consent: String) {
     onWebView()
             .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='slider round']"))

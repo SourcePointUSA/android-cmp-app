@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.model.ext
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.assertTrue
-import com.sourcepoint.cmplibrary.data.network.model.*
+import com.sourcepoint.cmplibrary.data.network.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.file2String

@@ -64,6 +64,7 @@ object TestData {
     var NETWORK = "Network"
     var REJECT_ALL = "Reject All"
     var SAVE_AND_EXIT = "Save & Exit"
+    var SAVE_AND_EXIT_UP = "SAVE & EXIT"
     var PRIVACY_MANAGER = "privacy-manager"
     var SITE_VENDORS = "Site Vendors"
     var VENDOR_NAME = "google"
