@@ -21,9 +21,19 @@ enum class NativeMessageActionType(val code: Int) {
     UNKNOWN(-1),
 }
 
-enum class MessageSubCategory(val code: Int) {
+internal enum class MessageSubCategory(val code: Int) {
     TCFv2(5),
     NATIVE_IN_APP(6),
     OTT(7),
     NATIVE_OTT(14)
+}
+
+enum class OttPmType {
+    LEGACY_OTT,
+    OTT
+}
+
+internal fun OttPmType.toMessageSubCategory() = when (this) {
+    OttPmType.LEGACY_OTT -> MessageSubCategory.OTT
+    OttPmType.OTT -> MessageSubCategory.NATIVE_OTT
 }

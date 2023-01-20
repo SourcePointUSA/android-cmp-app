@@ -6,15 +6,15 @@ import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import com.example.uitestutil.*
-import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCcpaReviewConsent
+import com.example.uitestutil.* // ktlint-disable
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkSwitchOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnClearConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnOttCcpaReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitUPWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapSwitchOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.turnOnSwitchOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
@@ -81,7 +81,7 @@ class MainActivityKotlinOttTest {
         }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr{ verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         wr {
@@ -126,13 +126,13 @@ class MainActivityKotlinOttTest {
         }
 
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }){
+        wr(backup = { clickOnGdprReviewConsent() }) {
             tapAcceptAllOnWebView()
             device.pressEnter()
         }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr{ verify(atLeast = 2) { spClient.onConsentReady(any()) } }
+        wr { verify(atLeast = 2) { spClient.onConsentReady(any()) } }
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         wr {
@@ -171,11 +171,19 @@ class MainActivityKotlinOttTest {
 
         scenario = launchActivity()
 
-        wr{ verify(atLeast = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(atLeast = 1) { spClient.onConsentReady(any()) } }
+        // test execution with the loadMessageCall (in the onResume)
+        ccpaOttTextSteps(spClient)
+        // clear data
+        clickOnClearConsent()
+        // test execution without the loadMessageCall
+        ccpaOttTextSteps(spClient)
+    }
 
+    private suspend fun ccpaOttTextSteps(spClient : SpClient){
         wr { clickOnOttCcpaReviewConsent() }
-        wr(backup = { clickOnOttCcpaReviewConsent() }){
-            tapSwitchOnWebView()
+        wr(backup = { clickOnOttCcpaReviewConsent() }) {
+            turnOnSwitchOnWebView()
             device.pressEnter()
             tapSaveAndExitUPWebView()
             device.pressEnter()
@@ -194,13 +202,18 @@ class MainActivityKotlinOttTest {
             }
         }
 
-
         scenario.onActivity { activity ->
-            val IABUSPrivacy_String = PreferenceManager.getDefaultSharedPreferences(activity)
-                .getString("IABUSPrivacy_String", "1YYN")
-            IABUSPrivacy_String.assertNotNull()
+            PreferenceManager
+                .getDefaultSharedPreferences(activity)
+                .getString("IABUSPrivacy_String", null)
+                .assertEquals("1YYN")
         }
 
+        clickOnOttCcpaReviewConsent()
+        wr(backup = { clickOnOttCcpaReviewConsent() }) {
+            checkSwitchOnWebView(true)
+            device.pressEnter()
+        }
     }
 
 }

@@ -15,6 +15,7 @@ import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.exposed.OttPmType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
 import org.json.JSONObject
@@ -73,9 +74,10 @@ class MainActivityKotlin : AppCompatActivity() {
             )
         }
         findViewById<View>(R.id.review_consents_ccpa_ott).setOnClickListener { _v: View? ->
-            spConsentLib.loadOTTPrivacyManager(
+            spConsentLib.loadPrivacyManager(
                 dataProvider.ccpaPmId,
-                CampaignType.CCPA
+                CampaignType.CCPA,
+                OttPmType.LEGACY_OTT
             )
         }
         findViewById<View>(R.id.clear_all).setOnClickListener { _v: View? -> clearAllData(this) }

@@ -4,6 +4,7 @@ import android.view.View
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.exposed.OttPmType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import org.json.JSONObject
 
@@ -59,8 +60,7 @@ interface SpConsentLib {
         successCallback: CustomConsentClient
     )
 
-    @Deprecated("loadOTTPrivacyManager will be removed in the next releases.")
-    fun loadOTTPrivacyManager(pmId: String, campaignType: CampaignType)
+    fun loadPrivacyManager(pmId: String, campaignType: CampaignType, ottType: OttPmType)
     fun loadPrivacyManager(pmId: String, campaignType: CampaignType)
     fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType)
     fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType, useGroupPmIfAvailable: Boolean)

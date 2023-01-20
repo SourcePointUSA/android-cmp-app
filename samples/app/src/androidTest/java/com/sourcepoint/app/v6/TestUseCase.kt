@@ -261,8 +261,12 @@ class TestUseCase {
             performClickOnWebViewByContent(ACCEPT_ALL)
         }
 
-        fun tapSwitchOnWebView() {
+        fun turnOnSwitchOnWebView() {
             tapOnSwitch(false)
+        }
+
+        fun checkSwitchOnWebView(value : Boolean) {
+            checkOnSwitch(value)
         }
 
         fun tapNetworkOnWebView() {

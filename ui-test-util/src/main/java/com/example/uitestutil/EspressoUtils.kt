@@ -327,6 +327,15 @@ fun tapOnSwitch(tapOnlyWhen: Boolean) {
 }
 
 @Throws(Throwable::class)
+fun checkOnSwitch(checkVal: Boolean) {
+    onWebView()
+//        .withElement(findElement(Locator.XPATH, "//div[@class='tcfv2-stack']"))
+//        .withElement( findElement(Locator.XPATH, "//span[(text()='$property') ]"))
+        .withElement(findElement(Locator.XPATH, "//button[@role='switch' and @aria-checked='$checkVal']"))
+        .perform(webScrollIntoView())
+}
+
+@Throws(Throwable::class)
 fun checkConsentWebView(consent: String) {
     onWebView()
             .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='slider round']"))
