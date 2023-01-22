@@ -153,9 +153,31 @@ class MainActivityKotlinTest {
         }
 
         scenario.onActivity { activity ->
-            val IABTCF_TCString = PreferenceManager.getDefaultSharedPreferences(activity)
-                .getString("IABTCF_TCString", null)
-            IABTCF_TCString.assertNotNull()
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+                getString("IABTCF_TCString", null).assertNotNull()
+                getInt("IABTCF_CmpSdkVersion", -1).assertNotEquals(-1)
+                getInt("IABTCF_CmpSdkID", -1).assertNotEquals(-1)
+                getInt("IABTCF_PolicyVersion", -1).assertNotEquals(-1)
+                getInt("IABTCF_UseNonStandardStacks", -1).assertNotEquals(-1)
+                getInt("IABTCF_gdprApplies", -1).assertNotEquals(-1)
+                getInt("IABTCF_PurposeOneTreatment", -1).assertNotEquals(-1)
+                getString("IABTCF_PurposeConsents", null).assertNotNull()
+                getString("IABTCF_TCString", null).assertNotNull()
+                getString("IABTCF_PublisherRestrictions10", null).assertNotNull()
+                getString("IABTCF_PublisherLegitimateInterests", null).assertNotNull()
+                getString("IABTCF_SpecialFeaturesOptIns", null).assertNotNull()
+                getString("IABTCF_PublisherCC", null).assertNotNull()
+                getString("IABTCF_VendorConsents", null).assertNotNull()
+                getString("IABTCF_PublisherCustomPurposesLegitimateInterests", null).assertNotNull()
+                getString("IABTCF_PurposeLegitimateInterests", null).assertNotNull()
+                getString("IABTCF_AddtlConsent", null).assertNotNull()
+                getString("IABTCF_PublisherCustomPurposesConsents", null).assertNotNull()
+                getString("IABTCF_AddtlConsent", null).assertNotNull()
+                getString("IABTCF_PublisherRestrictions7", null).assertNotNull()
+                getString("IABTCF_PublisherRestrictions2", null).assertNotNull()
+                getString("IABTCF_PublisherRestrictions4", null).assertNotNull()
+                getString("IABTCF_PublisherConsent", null).assertNotNull()
+            }
         }
 
     }

@@ -6,8 +6,8 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonTransformingSerializer
 
-object TcDataSerializer : JsonTransformingSerializer<Map<String, String>>(
-    tSerializer = MapSerializer(String.serializer(), String.serializer())
+object TcDataSerializer : JsonTransformingSerializer<Map<String, JsonElement>>(
+    tSerializer = MapSerializer(String.serializer(), JsonElement.serializer())
 ) {
     override fun transformDeserialize(element: JsonElement): JsonElement {
         val map =
@@ -17,4 +17,10 @@ object TcDataSerializer : JsonTransformingSerializer<Map<String, String>>(
             } ?: emptyMap()
         return JsonObject(map)
     }
+}
+
+internal fun Map<String, JsonElement>?.toMapOfAny(): Map<String, Any?> {
+    val map = mutableMapOf<String, Any?>()
+    this?.forEach { (t, u) -> map[t] = u }
+    return map
 }
