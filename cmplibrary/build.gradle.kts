@@ -21,7 +21,7 @@ android {
     compileSdkVersion(28)
     testOptions.unitTests.isIncludeAndroidResources = true
     defaultConfig {
-        minSdkVersion(16)
+        minSdkVersion(19)
         targetSdkVersion(28)
         versionCode = 300
         versionName = versionLib
