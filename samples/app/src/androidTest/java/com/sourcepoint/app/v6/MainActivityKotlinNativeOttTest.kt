@@ -61,7 +61,7 @@ class MainActivityKotlinNativeOttTest {
 
         scenario = launchActivity()
 
-        periodicWr(period = 3000, backup = { scenario.recreateAndResume() }) {
+        periodicWr(period = 5000, backup = { scenario.recreateAndResume() }) {
             tapAcceptOnWebView()
             device.pressEnter()
         }
@@ -105,7 +105,7 @@ class MainActivityKotlinNativeOttTest {
 
         scenario = launchActivity()
 
-        periodicWr(period = 3000, backup = { scenario.recreateAndResume() }) {
+        periodicWr(period = 5000, backup = { scenario.recreateAndResume() }) {
             tapAcceptOnWebView()
             device.pressEnter()
         }
