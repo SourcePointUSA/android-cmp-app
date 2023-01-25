@@ -28,12 +28,14 @@ internal enum class MessageSubCategory(val code: Int) {
     NATIVE_OTT(14)
 }
 
-enum class OttPmType {
-    LEGACY_OTT,
-    OTT
+enum class PmType {
+    OTT_V1,
+    OTT_V2,
+    APP_V1
 }
 
-internal fun OttPmType.toMessageSubCategory() = when (this) {
-    OttPmType.LEGACY_OTT -> MessageSubCategory.OTT
-    OttPmType.OTT -> MessageSubCategory.NATIVE_OTT
+internal fun PmType.toMessageSubCategory() = when (this) {
+    PmType.OTT_V1 -> MessageSubCategory.OTT
+    PmType.OTT_V2 -> MessageSubCategory.NATIVE_OTT
+    PmType.APP_V1 -> MessageSubCategory.TCFv2
 }

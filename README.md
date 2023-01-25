@@ -290,14 +290,27 @@ Another option to use to **resurface** the privacy manager, is the following:
 
 Kotlin
 ```kotlin
-    spConsentLib.loadPrivacyManager("<PM_ID>", CampaignType.GDPR, OttPmType.LEGACY_OTT) // For a GDPR campaign
+    spConsentLib.loadPrivacyManager("<PM_ID>", CampaignType.GDPR, PmType.OTT_V1) // For a GDPR campaign
 ```
 Java
 ```java
-    spConsentLib.loadPrivacyManager("<PM_ID>", CampaignType.CCPA, OttPmType.LEGACY_OTT); // For a CCPA campaign
+    spConsentLib.loadPrivacyManager("<PM_ID>", CampaignType.CCPA, PmType.OTT_V1); // For a CCPA campaign
 ```
 
-it enables you to choose between the old `LEGACY_OTT` and the new `OTT` privacy manager.
+it enables you to choose three privacy managers:
+
+Kotlin
+```kotlin
+    enum class PmType {
+        OTT_V1,
+        OTT_V2,
+        APP_V1
+    }
+```
+
+- OTT_V1: old OTT privacy manager,
+- OTT_V2: new OTT privacy manager and
+- APP_V1: a privacy manager used for TCF campaigns.
 
 >In case a property was created from the web builder as OTT/CTV, the Privacy Manager is the first layer message itself, this means that as pmId you should use the message id of your first layer message.
 

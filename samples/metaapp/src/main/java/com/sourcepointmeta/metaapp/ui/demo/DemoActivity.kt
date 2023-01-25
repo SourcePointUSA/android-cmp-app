@@ -22,7 +22,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
-import com.sourcepoint.cmplibrary.model.exposed.OttPmType
+import com.sourcepoint.cmplibrary.model.exposed.PmType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.util.clearAllData
@@ -159,7 +159,7 @@ class DemoActivity : FragmentActivity() {
                             spConsentLib.loadPrivacyManager(
                                 it,
                                 CampaignType.CCPA,
-                                OttPmType.LEGACY_OTT
+                                PmType.OTT_V1
                             )
                         }
                         ?: pmNotValid()
@@ -170,7 +170,7 @@ class DemoActivity : FragmentActivity() {
                             spConsentLib.loadPrivacyManager(
                                 it,
                                 CampaignType.GDPR,
-                                OttPmType.LEGACY_OTT
+                                PmType.OTT_V1
                             )
                         }
                         ?: pmNotValid()
