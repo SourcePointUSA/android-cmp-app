@@ -41,12 +41,10 @@ internal class SPWebViewClient(
         try {
             jsReceiverConfig
                 ?.let {
-//                    view.loadUrl(it())
                     view.evaluateJavascript(it()){}
                 }
                 ?: let {
                     view.loadUrl("javascript:" + "js_receiver.js".file2String())
-//                    view.evaluateJavascript("javascript:" + "js_receiver.js".file2String()){}
                     logger.d(
                         SPWebViewClient::class.java.name,
                         """
