@@ -1,4 +1,4 @@
-* [DIA-1601](https://sourcepoint.atlassian.net/browse/DIA-1601) Allow OTT SDKs to surface OTT Privacy Managers without active campaign
+* [DIA-1708](https://sourcepoint.atlassian.net/browse/DIA-1708) Create a new ott enum type to be used in the loadPrivacyManager api (#567)
 
 
 

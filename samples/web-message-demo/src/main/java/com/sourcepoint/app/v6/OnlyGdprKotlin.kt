@@ -12,6 +12,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.exposed.PmType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
 import kotlinx.android.synthetic.main.only_gdpr.*
@@ -24,7 +25,7 @@ class OnlyGdprKotlin : AppCompatActivity() {
         spClient = LocalClient()
         config {
             accountId = 22
-            propertyName = "ccpa.mobile.demo"
+            propertyName = "ott-ccpa-22"
             messLanguage = MessageLanguage.ENGLISH
             messageTimeout = 3000
             +(CampaignType.CCPA)
@@ -45,9 +46,10 @@ class OnlyGdprKotlin : AppCompatActivity() {
         }
 
         review_consents_ccpa_ott.setOnClickListener {
-            spConsentLib.loadOTTPrivacyManager(
-                "758669",
-                CampaignType.CCPA
+            spConsentLib.loadPrivacyManager(
+                "756686",
+                CampaignType.CCPA,
+                PmType.OTT_V1
             )
         }
 
