@@ -5,29 +5,14 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertEquals
 import com.example.uitestutil.assertNull
 import com.example.uitestutil.assertTrue
-import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.IABTCF_KEY_PREFIX
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.* //ktlint-disable
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class DataStorageGdprImplTest {
 
     private val appContext by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
 
-    @Test
-    fun check_DataStorage_TcData_gets_stored() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val storage = DataStorageGdpr.create(appContext).apply { clearAll() }
-        val map = TreeMap<String, String>()
-        (1..10).forEach { map["IABTCF_$it"] = "$it" }
-        storage.tcData = map
-        val output = storage.tcData
-        map.forEach {
-            output[it.key].assertEquals(it.value)
-        }
-    }
 
     @Test
     fun clear_data_DataStorage() {
@@ -41,7 +26,6 @@ class DataStorageGdprImplTest {
         storage.saveMetaData("meta")
         storage.gdprApplies = true
         storage.saveGdpr("{\"type\":\"GDPR\"}")
-        storage.tcData = getMap()
 
         storage.getAuthId().assertEquals("auth")
         storage.gdprConsentUuid.assertEquals("uuid")
@@ -49,7 +33,6 @@ class DataStorageGdprImplTest {
         storage.getMetaData().assertEquals("meta")
         storage.gdprApplies.assertTrue()
         storage.getGdpr().assertEquals("{\"type\":\"GDPR\"}")
-        storage.tcData.assertEquals(getMap())
 
         storage.clearInternalData()
 
@@ -61,11 +44,6 @@ class DataStorageGdprImplTest {
 
         /** clearInternalData DOES NOT delete these prefs */
         storage.gdprApplies.assertTrue()
-        storage.tcData.assertEquals(getMap())
         storage.getGdpr().assertEquals("{\"type\":\"GDPR\"}")
-    }
-
-    private fun getMap(): TreeMap<String, String> {
-        return TreeMap<String, String>().apply { this["${IABTCF_KEY_PREFIX}key"] = "value" }
     }
 }
