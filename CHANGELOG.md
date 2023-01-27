@@ -1,3 +1,6 @@
+## 7.0.1 (January, 27, 2023)
+* [DIA-1696](https://sourcepoint.atlassian.net/browse/DIA-1696) Fix IABTCF type (#569)
+
 ## 7.0.0 (December, 15, 2022)
 * [DIA-740](https://sourcepoint.atlassian.net/browse/DIA-740) New SDK architecture which optimise the usage of all the resources involve in the process of fetching the consent. The new architecture bring only a new extra parameter from the client prospective, the  `propertyId`. More info about its usage in the [Migration Guide](https://github.com/SourcePointUSA/android-cmp-app/blob/develop/MIGRATION_GUIDE.md).
 
