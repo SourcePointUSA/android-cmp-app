@@ -1,7 +1,9 @@
 name: RELEASE
 on:
   push:
-    branches: [ master ]
+    branches: [ master, metaapp-release-701 ]
+
+
 #    paths:
 #      - '!*.yml'
 #      - '!README.md'
