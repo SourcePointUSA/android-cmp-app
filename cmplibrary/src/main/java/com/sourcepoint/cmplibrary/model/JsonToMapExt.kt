@@ -1,6 +1,8 @@
 package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.intOrNull
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -30,6 +32,22 @@ internal fun Map<String, Any?>.getList(key: String): List<Map<String, Any?>>? {
 
 internal fun Map<String, Any?>.toJSONObj(): JSONObject {
     return JSONObject(this)
+}
+
+internal fun Map<String, Any?>.toTcfJSONObj(): JSONObject {
+    val newMap: Map<String, Any?> = this
+        .toList()
+        .associate { el ->
+            val isThisAString = (el.second as? JsonPrimitive)?.isString ?: false
+            if (isThisAString) {
+                Pair(el.first, el.second.toString())
+            } else {
+                (el.second as? JsonPrimitive)?.intOrNull
+                    ?.let { Pair(el.first, it) }
+                    ?: Pair(el.first, el.second.toString())
+            }
+        }
+    return JSONObject(newMap)
 }
 
 internal fun Map<String, GDPRPurposeGrants?>.toJSONObjGrant(): JSONObject {

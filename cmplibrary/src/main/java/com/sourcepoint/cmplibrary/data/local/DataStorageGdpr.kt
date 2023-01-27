@@ -35,6 +35,8 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.intOrNull
 import org.json.JSONObject
 import java.util.TreeMap
 
@@ -49,7 +51,6 @@ internal interface DataStorageGdpr {
     var gdprMessageMetaData: String?
 
     var tcData: Map<String, Any?>
-    var tcDataOptimized: Map<String, String>?
 
     var gdprDateCreated: String?
 
@@ -153,27 +154,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         return preference.getString(KEY_GDPR, null)
     }
 
-    override var tcDataOptimized: Map<String, String>?
-        get() {
-            val res = TreeMap<String, String>()
-            val map: Map<String, *> = preference.all
-            map
-                .filter { it.key.startsWith(IABTCF_KEY_PREFIX) }
-                .forEach { res[it.key] = it.value?.toString() ?: "" }
-            return res
-        }
-        set(value) {
-            if (value == null) {
-                clearTCData()
-            } else {
-                val spEditor = preference.edit()
-                value.forEach { entry ->
-                    spEditor.putString(entry.key, entry.value)
-                }
-                spEditor.apply()
-            }
-        }
-
     override var tcData: Map<String, Any?>
         get() {
             val res = TreeMap<String, Any?>()
@@ -186,13 +166,12 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         set(value) {
             val spEditor = preference.edit()
             value.forEach { entry ->
-                when (val value = entry.value) {
-                    is Int -> {
-                        spEditor.putInt(entry.key, value)
-                    }
-                    is String -> {
-                        spEditor.putString(entry.key, value)
-                    }
+                val isThisAString = (entry.value as? JsonPrimitive)?.isString ?: false
+                if (isThisAString) {
+                    spEditor.putString(entry.key, value.toString())
+                } else {
+                    (entry.value as? JsonPrimitive)?.intOrNull
+                        ?.let { spEditor.putInt(entry.key, it) }
                 }
             }
             spEditor.apply()

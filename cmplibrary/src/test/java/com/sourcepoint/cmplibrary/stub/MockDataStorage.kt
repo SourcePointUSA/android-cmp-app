@@ -18,10 +18,6 @@ internal class MockDataStorage : DataStorage {
     var savedConsentVar: Boolean = false
     var localStateV7: String? = null
 
-    override var tcDataOptimized: Map<String, String>?
-        get() = TODO("Not yet implemented")
-        set(value) {}
-
     override fun clearTCData() {
         TODO("Not yet implemented")
     }
