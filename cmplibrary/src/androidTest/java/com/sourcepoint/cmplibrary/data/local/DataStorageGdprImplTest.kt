@@ -11,9 +11,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class DataStorageGdprImplTest {
 
-    private val appContext by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
-
-
     @Test
     fun clear_data_DataStorage() {
         // Context of the app under test.
