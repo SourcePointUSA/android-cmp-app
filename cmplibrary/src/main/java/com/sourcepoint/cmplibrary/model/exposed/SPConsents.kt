@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
-import com.sourcepoint.cmplibrary.model.toJSONObj
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
+import com.sourcepoint.cmplibrary.model.toTcfJSONObj
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.json.JSONArray
@@ -79,7 +79,7 @@ enum class CcpaStatus {
 
 internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
-        put("tcData", tcData.toJSONObj())
+        put("tcData", tcData.toTcfJSONObj())
         put("grants", grants.toJSONObjGrant())
         put("euconsent", euconsent)
         put("apply", applies)

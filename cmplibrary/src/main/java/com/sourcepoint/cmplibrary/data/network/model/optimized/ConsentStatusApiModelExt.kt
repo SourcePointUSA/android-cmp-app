@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.converter.toMapOfAny
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal

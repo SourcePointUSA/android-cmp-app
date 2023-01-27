@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.core.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
+import com.sourcepoint.cmplibrary.data.network.converter.toMapOfAny
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
@@ -203,7 +204,7 @@ private class ServiceImpl(
                         campaignManager.messagesOptimizedLocalState = it.localState
                         it.campaigns?.gdpr?.messageMetaData?.let { gmd -> campaignManager.gdprMessageMetaData = gmd }
                         it.campaigns?.ccpa?.messageMetaData?.let { cmd -> campaignManager.ccpaMessageMetaData = cmd }
-                        dataStorage.tcDataOptimized = it.campaigns?.gdpr?.TCData
+                        dataStorage.tcData = it.campaigns?.gdpr?.TCData?.toMapOfAny() ?: emptyMap()
                         campaignManager.gdprDateCreated = it.campaigns?.gdpr?.dateCreated
                         execManager.executeOnMain { pSuccess(it) }
                     }

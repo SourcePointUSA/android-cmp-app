@@ -118,7 +118,7 @@ data class GDPR(
     @SerialName("hasLocalData") val hasLocalData: Boolean?,
     @SerialName("message") override val message: JsonElement?,
     @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
-    @Serializable(with = TcDataSerializer::class) val TCData: Map<String, String>?,
+    @Serializable(with = TcDataSerializer::class) val TCData: Map<String, JsonElement>?,
     @Serializable(with = CampaignTypeSerializer::class) override val type: CampaignType,
     @SerialName("url") override val url: String?
 ) : CampaignMessage
