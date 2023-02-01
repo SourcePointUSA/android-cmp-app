@@ -15,7 +15,6 @@ import io.mockk.impl.annotations.MockK
 import kotlinx.serialization.decodeFromString
 import org.junit.Before
 import org.junit.Test
-import java.time.Instant
 
 class ConsentManagerUtilsImplTest {
 
@@ -42,9 +41,9 @@ class ConsentManagerUtilsImplTest {
 
     @Test
     fun `GIVEN a recent dataRecordedConsent SET legalBasisChanges to true`() {
-        val dataRecordedConsent: Instant = Instant.parse("2022-10-12T14:00:00.63Z")
-        val additionsChangeDate: Instant = Instant.parse("2022-10-12T14:00:00.63Z")
-        val legalBasisChangeDate: Instant = Instant.parse("2022-10-12T14:00:01.63Z")
+        val dataRecordedConsent = "2022-10-12T14:00:00.63Z"
+        val additionsChangeDate = "2022-10-12T14:00:00.63Z"
+        val legalBasisChangeDate = "2022-10-12T14:00:01.63Z"
         val gdprConsentStatus: ConsentStatus = JsonConverter.converter.decodeFromString(
             """
         {
@@ -75,9 +74,9 @@ class ConsentManagerUtilsImplTest {
 
     @Test
     fun `GIVEN a recent dataRecordedConsent SET vendorListAdditions to true`() {
-        val dataRecordedConsent: Instant = Instant.parse("2022-10-12T14:00:00.63Z")
-        val additionsChangeDate: Instant = Instant.parse("2022-10-12T14:00:01.63Z")
-        val legalBasisChangeDate: Instant = Instant.parse("2022-10-12T14:00:00.63Z")
+        val dataRecordedConsent = "2022-10-12T14:00:00.63Z"
+        val additionsChangeDate = "2022-10-12T14:00:01.63Z"
+        val legalBasisChangeDate = "2022-10-12T14:00:00.63Z"
         val gdprConsentStatus: ConsentStatus = JsonConverter.converter.decodeFromString(
             """
                 {
@@ -109,9 +108,9 @@ class ConsentManagerUtilsImplTest {
 
     @Test
     fun `GIVEN an old dataRecordedConsent VERIFY that legalBasisChanges, vendorListAdditions and previousOptInAll aren't edited`() {
-        val dataRecordedConsent: Instant = Instant.parse("2022-10-12T14:00:00.63Z")
-        val additionsChangeDate: Instant = Instant.parse("2022-10-12T14:00:00.63Z")
-        val legalBasisChangeDate: Instant = Instant.parse("2022-10-12T14:00:00.63Z")
+        val dataRecordedConsent = "2022-10-12T14:00:00.63Z"
+        val additionsChangeDate = "2022-10-12T14:00:00.63Z"
+        val legalBasisChangeDate = "2022-10-12T14:00:00.63Z"
         val gdprConsentStatus: ConsentStatus = JsonConverter.converter.decodeFromString(
             """
                 {
