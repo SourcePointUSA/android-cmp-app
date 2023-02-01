@@ -18,9 +18,9 @@ internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
         tcData = TCData?.toMapOfAny() ?: emptyMap(),
         grants = grants ?: emptyMap(),
         euconsent = euconsent ?: "",
-        acceptedCategories = acceptedCategories ?: emptyList(),
+        acceptedCategories = acceptedCategories,
         childPmId = null,
-        applies = gdprApplies ?: applies ?: false,
+        applies = gdprApplies ?: applies,
         thisContent = JSONObject()
     )
 }

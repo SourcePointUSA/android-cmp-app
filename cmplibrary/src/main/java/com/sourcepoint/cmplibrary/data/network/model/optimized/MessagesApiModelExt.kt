@@ -101,3 +101,50 @@ internal fun MessagesParamReq.toConsentStatusParamReq(
         localState = localState
     )
 }
+
+internal fun CCPA.toCcpaCS() = CcpaCS(
+    applies = applies,
+    consentedAll = consentedAll,
+    dateCreated = dateCreated,
+    newUser = newUser,
+    rejectedAll = rejectedAll,
+    rejectedCategories = rejectedCategories,
+    rejectedVendors = rejectedVendors,
+    signedLspa = signedLspa,
+    status = status,
+    uspstring = uspstring,
+    cookies = null,
+    ccpaApplies = null,
+    uuid = null,
+    gpcEnabled = null,
+    actions = null
+)
+
+internal fun GDPR.toGdprCS() = GdprCS(
+    applies = null,
+    gdprApplies = null,
+    categories = null,
+    consentAllRef = null,
+    consentedToAll = null,
+    cookies = null,
+    legIntCategories = null,
+    legIntVendors = null,
+    postPayload = null,
+    rejectedAny = null,
+    specialFeatures = null,
+    vendors = null,
+    addtlConsent = addtlConsent,
+    consentStatus = consentStatus,
+    consentUUID = null,
+    cookieExpirationDays = null,
+    customVendorsResponse = customVendorsResponse,
+    dateCreated = dateCreated,
+    euconsent = euconsent,
+    grants = grants,
+    TCData = TCData,
+    localDataCurrent = null,
+    uuid = null,
+    vendorListId = null,
+    acceptedCategories = null,
+    acceptedVendors = null,
+)
