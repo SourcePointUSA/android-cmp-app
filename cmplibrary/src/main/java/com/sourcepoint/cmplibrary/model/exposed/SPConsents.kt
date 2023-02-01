@@ -44,8 +44,8 @@ internal data class GDPRConsentInternal(
     override val uuid: String? = null,
     override var tcData: Map<String, Any?> = emptyMap(),
     override var grants: Map<String, GDPRPurposeGrants> = emptyMap(),
-    override val acceptedCategories: List<String>?,
-    override val applies: Boolean?,
+    override val acceptedCategories: List<String>? = null,
+    override val applies: Boolean? = null,
     val childPmId: String? = null,
     val thisContent: JSONObject = JSONObject()
 ) : GDPRConsent

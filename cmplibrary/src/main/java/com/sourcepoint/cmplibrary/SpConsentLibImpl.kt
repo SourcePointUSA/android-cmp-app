@@ -686,6 +686,9 @@ internal class SpConsentLibImpl(
             }
             SHOW_OPTIONS -> {
                 executor.executeOnMain { showOption(actionImpl, iConsentWebView) }
+                executor.executeOnSingleThread {
+                    spClient.onAction(view, actionImpl) as? ConsentActionImpl
+                }
             }
             CUSTOM -> {
                 executor.executeOnSingleThread {
