@@ -345,7 +345,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        periodicWr(period = 2000, backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
         wr { tapAcceptCcpaOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }

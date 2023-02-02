@@ -107,6 +107,11 @@ class MainActivityNativeMessTest {
         wr(backup = { clickOnRefreshBtnActivity() })  { checkGdprNativeTitle() }
         wr { tapNmAcceptAll() }
         wr { tapNmAcceptAll() }
+        wr {
+            scenario.onActivity { activity ->
+                PreferenceManager.getDefaultSharedPreferences(activity).contains("sp.gdpr.consentUUID").assertTrue()
+            }
+        }
 
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         verify(exactly = 2) { spClient.onNativeMessageReady(any(), any()) }
@@ -136,12 +141,12 @@ class MainActivityNativeMessTest {
 
         wr(backup = { clickOnRefreshBtnActivity() })  { checkGdprNativeTitle() }
         wr { tapNmAcceptAll() }
-        wr { clickOnGdprReviewConsent() }
         wr {
             scenario.onActivity { activity ->
                 PreferenceManager.getDefaultSharedPreferences(activity).contains("sp.gdpr.consentUUID").assertTrue()
             }
         }
+        wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
 
         wr { verify(atLeast = 1) { spClient.onSpFinished(any()) }        }
