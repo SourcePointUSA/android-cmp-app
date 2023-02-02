@@ -10,6 +10,9 @@ import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonPrimitive
 import org.json.JSONObject
 
 internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
@@ -18,9 +21,9 @@ internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
         tcData = TCData?.toMapOfAny() ?: emptyMap(),
         grants = grants ?: emptyMap(),
         euconsent = euconsent ?: "",
-        acceptedCategories = acceptedCategories ?: emptyList(),
+        acceptedCategories = acceptedCategories,
         childPmId = null,
-        applies = gdprApplies ?: applies ?: false,
+        applies = TCData?.fromTcDataToGdprApplies(),
         thisContent = JSONObject()
     )
 }
@@ -62,4 +65,12 @@ internal fun Map<String, String>.toMapOfAny(): Map<String, Any> {
     val map = mutableMapOf<String, Any>()
     this.forEach { (k, v) -> map[k] = v }
     return map
+}
+
+internal fun Map<String, JsonElement>?.fromTcDataToGdprApplies(): Boolean? {
+    return when (this?.get("IABTCF_gdprApplies")?.jsonPrimitive?.intOrNull) {
+        1 -> true
+        0 -> false
+        else -> null
+    }
 }

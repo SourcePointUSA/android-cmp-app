@@ -99,7 +99,7 @@ data class GdprCS(
     @Serializable
     data class PostPayload(
         @SerialName("consentAllRef") val consentAllRef: String?,
-        @SerialName("granularStatus") val granularStatus: com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus.GranularStatus,
+        @SerialName("granularStatus") val granularStatus: ConsentStatus.GranularStatus,
         @SerialName("vendorListId") val vendorListId: String?
     )
 
