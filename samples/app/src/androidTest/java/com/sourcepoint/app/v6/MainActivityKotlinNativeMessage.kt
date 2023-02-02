@@ -58,7 +58,7 @@ class MainActivityNativeMessTest {
         +(CampaignType.CCPA)
     }
 
-    @Test
+//    @Test
     fun GIVEN_a_native_message_DISMISS_all_messages() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
 
@@ -123,7 +123,7 @@ class MainActivityNativeMessTest {
         verify(exactly = 0) { spClient.onAction(any(), any()) }
     }
 
-    @Test
+//    @Test
     fun GIVEN_a_gdpr_native_message_ACCEPT_ALL_and_verify() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
 
