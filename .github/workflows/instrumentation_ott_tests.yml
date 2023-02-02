@@ -1,4 +1,4 @@
-name: SampleApp UI Tests
+name: SampleApp UI OTT Tests
 on:
   push:
     branches: [ develop, v7 ]
@@ -35,7 +35,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: Build test artifact
         run: |
-          ./gradlew app:assembleDebug app:assembleDebugAndroidTest  -Pandroid.testInstrumentationRunnerArguments.class=com.sourcepoint.app.v6.MainActivityKotlinTest
+          ./gradlew app:assembleDebug app:assembleDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.sourcepoint.app.v6.MainActivityKotlinOttTest
           cp samples/app/build/outputs/apk/debug/app-debug.apk ./app-debug.apk
           cp samples/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk ./app-debug-androidTest.apk
       - name: Run tests SampleApp on Firebase Test Lab
