@@ -1,3 +1,9 @@
+## 7.0.2 (February, 03, 2023)
+* [DIA-1781](https://sourcepoint.atlassian.net/browse/DIA-1781) Fix: Instant class crash (#576)
+* [DIA-1742](https://sourcepoint.atlassian.net/browse/DIA-1742) Fix: empty consent in an edge case (#574)
+* [DIA-1728](https://sourcepoint.atlassian.net/browse/DIA-1728) Update proguard rules on README.md.
+* [DIA-1738](https://sourcepoint.atlassian.net/browse/DIA-1738) Fix: onActions SHOW_OPTIONS Action Type Does Not Fire
+
 ## 7.0.1 (January, 27, 2023)
 * [DIA-1696](https://sourcepoint.atlassian.net/browse/DIA-1696) Fix IABTCF type (#569)
 
