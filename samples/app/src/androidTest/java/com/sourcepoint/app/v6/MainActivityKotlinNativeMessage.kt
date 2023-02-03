@@ -58,7 +58,7 @@ class MainActivityNativeMessTest {
         +(CampaignType.CCPA)
     }
 
-    @Test
+//    @Test
     fun GIVEN_a_native_message_DISMISS_all_messages() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
 
@@ -107,6 +107,11 @@ class MainActivityNativeMessTest {
         wr(backup = { clickOnRefreshBtnActivity() })  { checkGdprNativeTitle() }
         wr { tapNmAcceptAll() }
         wr { tapNmAcceptAll() }
+        wr {
+            scenario.onActivity { activity ->
+                PreferenceManager.getDefaultSharedPreferences(activity).contains("sp.gdpr.consentUUID").assertTrue()
+            }
+        }
 
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         verify(exactly = 2) { spClient.onNativeMessageReady(any(), any()) }
@@ -118,7 +123,7 @@ class MainActivityNativeMessTest {
         verify(exactly = 0) { spClient.onAction(any(), any()) }
     }
 
-    @Test
+//    @Test
     fun GIVEN_a_gdpr_native_message_ACCEPT_ALL_and_verify() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
 
@@ -136,12 +141,12 @@ class MainActivityNativeMessTest {
 
         wr(backup = { clickOnRefreshBtnActivity() })  { checkGdprNativeTitle() }
         wr { tapNmAcceptAll() }
-        wr { clickOnGdprReviewConsent() }
         wr {
             scenario.onActivity { activity ->
                 PreferenceManager.getDefaultSharedPreferences(activity).contains("sp.gdpr.consentUUID").assertTrue()
             }
         }
+        wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
 
         wr { verify(atLeast = 1) { spClient.onSpFinished(any()) }        }

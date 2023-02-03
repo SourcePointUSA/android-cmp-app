@@ -12,7 +12,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
-import java.time.Instant
 
 @Serializable
 internal data class ConsentStatusParamReq(
@@ -54,7 +53,7 @@ data class CcpaCS(
     @SerialName("ccpaApplies") val ccpaApplies: Boolean?,
     @SerialName("consentedAll") val consentedAll: Boolean?,
     @SerialName("cookies") val cookies: List<Cooky>?,
-    @Serializable(with = DateSerializer::class) val dateCreated: Instant?,
+    @SerialName("dateCreated") val dateCreated: String?,
     @SerialName("gpcEnabled") val gpcEnabled: Boolean?,
     @SerialName("newUser") val newUser: Boolean?,
     @SerialName("rejectedAll") val rejectedAll: Boolean?,
@@ -85,7 +84,7 @@ data class GdprCS(
     @SerialName("consentUUID") val consentUUID: String?,
     @SerialName("cookieExpirationDays") val cookieExpirationDays: Int?,
     @SerialName("customVendorsResponse") val customVendorsResponse: CustomVendorsResponse?,
-    @Serializable(with = DateSerializer::class) val dateCreated: Instant?,
+    @SerialName("dateCreated") val dateCreated: String?,
     @SerialName("euconsent") val euconsent: String?,
     @Serializable(with = GrantsSerializer::class) val grants: Map<String, GDPRPurposeGrants>?,
     @Serializable(with = TcDataSerializer::class) val TCData: Map<String, JsonElement>?,

@@ -34,7 +34,6 @@ import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
-import java.time.temporal.ChronoUnit
 
 class ServiceImplTest {
 
@@ -401,52 +400,6 @@ class ServiceImplTest {
         every { ncMock.getConsentStatus(any()) }.returns(Either.Right(consentStatus))
         every { cm.shouldCallConsentStatus }.returns(true)
         every { cm.spConfig }.returns(spConfig)
-
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
-
-        // TODO
-    }
-
-    @Test
-    fun `GIVEN a saved ConsentStatus resp VERIFY that the dates are saved`() {
-
-        val metadataJson = "v7/meta_data.json".file2String()
-        val metadata = JsonConverter.converter.decodeFromString<MetaDataResp>(metadataJson)
-
-        val consentStatusJson = "v7/consent_status_with_auth_id.json".file2String()
-        val consentStatus = JsonConverter.converter.decodeFromString<ConsentStatusResp>(consentStatusJson)
-
-        val gdprConsentStatus: ConsentStatus = JsonConverter.converter.decodeFromString(
-            """
-              {
-                "rejectedAny": true,
-                "rejectedLI": false,
-                "consentedAll": false,
-                "granularStatus": {
-                  "vendorConsent": "NONE",
-                  "vendorLegInt": "ALL",
-                  "purposeConsent": "NONE",
-                  "purposeLegInt": "ALL",
-                  "previousOptInAll": false,
-                  "defaultConsent": true
-                },
-                "hasConsentData": false,
-                "consentedToAny": false
-              } 
-            """.trimIndent()
-        )
-
-        every { ncMock.getMetaData(any()) }.returns(Right(metadata))
-        every { cm.dataRecordedConsent }.returns(consentStatus.consentStatusData!!.gdpr!!.dateCreated)
-        every { cmu.updateGdprConsentOptimized(any(), any(), any(), any()) }.returns(gdprConsentStatus)
-        every { cm.spConfig }.returns(spConfig)
-        every { cm.dataRecordedConsent }.returns(
-            consentStatus.consentStatusData!!.gdpr!!.dateCreated!!.minus(
-                400,
-                ChronoUnit.DAYS
-            )
-        )
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)

@@ -460,12 +460,10 @@ private class ServiceImpl(
                         // GDPR
                         gdprConsentStatus = csd.gdpr
                         consentStatus = csd.gdpr?.consentStatus
-                        gdprDateCreated = csd.gdpr?.dateCreated
                         gdprUuid = csd.gdpr?.uuid
                         gdprDateCreated = csd.gdpr?.dateCreated
                         // CCPA
                         ccpaConsentStatus = csd.ccpa
-                        ccpaDateCreated = csd.ccpa?.dateCreated
                         ccpaUuid = csd.ccpa?.uuid
                         ccpaDateCreated = csd.ccpa?.dateCreated
                     }

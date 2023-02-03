@@ -10,7 +10,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
-import java.time.Instant
 
 internal data class MetaDataParamReq(
     val env: Env,
@@ -32,11 +31,11 @@ data class MetaDataResp(
 
     @Serializable
     data class Gdpr(
-        @Serializable(with = DateSerializer::class) val additionsChangeDate: Instant?,
+        @SerialName("additionsChangeDate") val additionsChangeDate: String?,
         @SerialName("applies") val applies: Boolean?,
         @SerialName("getMessageAlways") val getMessageAlways: Boolean?,
         @SerialName("_id") val id: String?,
-        @Serializable(with = DateSerializer::class) val legalBasisChangeDate: Instant?,
+        @SerialName("legalBasisChangeDate") val legalBasisChangeDate: String?,
         @SerialName("version") val version: Int?,
         @SerialName("sampleRate") val sampleRate: Double?
     )
