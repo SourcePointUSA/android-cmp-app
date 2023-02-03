@@ -65,10 +65,7 @@ internal class ConsentWebView(
     }
 
     private fun setup() {
-        when {
-            viewId != null -> { id = viewId }
-            viewId == null -> { id = View.generateViewId() }
-        }
+        id = viewId ?: View.generateViewId()
         enableDebug()
         setStyle()
         if (messSubCat == MessageSubCategory.OTT) {
