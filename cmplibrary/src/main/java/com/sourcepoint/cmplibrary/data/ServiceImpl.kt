@@ -206,6 +206,19 @@ private class ServiceImpl(
                         it.campaigns?.ccpa?.messageMetaData?.let { cmd -> campaignManager.ccpaMessageMetaData = cmd }
                         dataStorage.tcData = it.campaigns?.gdpr?.TCData?.toMapOfAny() ?: emptyMap()
                         campaignManager.gdprDateCreated = it.campaigns?.gdpr?.dateCreated
+
+                        campaignManager.run {
+                            if (!(messageReq.authId != null || campaignManager.shouldCallConsentStatus)) {
+                                // GDPR
+                                this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS()
+                                consentStatus = it.campaigns?.gdpr?.consentStatus
+                                gdprDateCreated = it.campaigns?.gdpr?.dateCreated
+                                // CCPA
+                                ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS()
+                                ccpaDateCreated = it.campaigns?.ccpa?.dateCreated
+                            }
+                        }
+
                         execManager.executeOnMain { pSuccess(it) }
                     }
             } else {
@@ -447,12 +460,10 @@ private class ServiceImpl(
                         // GDPR
                         gdprConsentStatus = csd.gdpr
                         consentStatus = csd.gdpr?.consentStatus
-                        gdprDateCreated = csd.gdpr?.dateCreated
                         gdprUuid = csd.gdpr?.uuid
                         gdprDateCreated = csd.gdpr?.dateCreated
                         // CCPA
                         ccpaConsentStatus = csd.ccpa
-                        ccpaDateCreated = csd.ccpa?.dateCreated
                         ccpaUuid = csd.ccpa?.uuid
                         ccpaDateCreated = csd.ccpa?.dateCreated
                     }

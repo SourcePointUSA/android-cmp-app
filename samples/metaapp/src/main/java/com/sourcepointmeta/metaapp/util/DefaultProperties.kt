@@ -152,6 +152,25 @@ val defaultProperty7 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
 )
 
+val defaultProperty9 = Property(
+    accountId = 22,
+    propertyName = "ott-ccpa-22",
+    propertyId = 29498,
+    timeout = 3000,
+    authId = null,
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    is_staging = false,
+    targetingParameters = emptyList(),
+    statusCampaignSet = setOf(
+        StatusCampaign("ott-ccpa-22", CampaignType.GDPR, true),
+        StatusCampaign("ott-ccpa-22", CampaignType.CCPA, true),
+    ),
+    gdprPmId = 11111L,
+    ccpaPmId = 756686L,
+    campaignsEnv = CampaignsEnv.PUBLIC,
+)
+
 val propList = listOf(
     defaultProperty1,
     defaultProperty2,
@@ -160,6 +179,7 @@ val propList = listOf(
     defaultProperty5,
     defaultProperty6,
     defaultProperty7,
+    defaultProperty9,
 )
 
 val oldV6Consent = """

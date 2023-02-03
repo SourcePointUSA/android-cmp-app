@@ -14,7 +14,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import java.time.Instant
 
 @Serializable
 internal data class MessagesParamReq(
@@ -57,7 +56,7 @@ interface CampaignMessage {
     val messageMetaData: MessageMetaData?
     val message: JsonElement?
     val url: String?
-    val dateCreated: Instant?
+    val dateCreated: String?
 }
 
 internal fun CampaignType.toCategoryId() = when (this) {
@@ -91,13 +90,13 @@ data class Campaigns(
 data class CCPA(
     @SerialName("applies") val applies: Boolean?,
     @SerialName("consentedAll") val consentedAll: Boolean?,
-    @Serializable(with = DateSerializer::class) override val dateCreated: Instant?,
+    @SerialName("dateCreated") override val dateCreated: String?,
     @SerialName("message") override val message: JsonElement?,
     @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
     @SerialName("newUser") val newUser: Boolean?,
     @SerialName("rejectedAll") val rejectedAll: Boolean?,
-    @SerialName("rejectedCategories") val rejectedCategories: List<String?>?,
-    @SerialName("rejectedVendors") val rejectedVendors: List<String?>?,
+    @SerialName("rejectedCategories") val rejectedCategories: List<String>?,
+    @SerialName("rejectedVendors") val rejectedVendors: List<String>?,
     @SerialName("signedLspa") val signedLspa: Boolean?,
     @Serializable(with = CcpaStatusSerializer::class) val status: CcpaStatus?,
     @Serializable(with = CampaignTypeSerializer::class) override val type: CampaignType,
@@ -112,7 +111,7 @@ data class GDPR(
     @SerialName("childPmId") val childPmId: String?,
     @SerialName("consentStatus") val consentStatus: ConsentStatus?,
     @SerialName("customVendorsResponse") val customVendorsResponse: GdprCS.CustomVendorsResponse?,
-    @Serializable(with = DateSerializer::class) override val dateCreated: Instant?,
+    @SerialName("dateCreated") override val dateCreated: String?,
     @SerialName("euconsent") val euconsent: String?,
     @Serializable(with = GrantsSerializer::class) val grants: Map<String, GDPRPurposeGrants>?,
     @SerialName("hasLocalData") val hasLocalData: Boolean?,

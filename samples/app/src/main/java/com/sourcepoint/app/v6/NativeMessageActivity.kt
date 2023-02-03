@@ -20,6 +20,7 @@ import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
+import kotlinx.android.synthetic.main.activity_main_v7.*
 import kotlinx.android.synthetic.main.native_message.view.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
@@ -45,7 +46,7 @@ class NativeMessageActivity : AppCompatActivity() {
         if (dataProvider.resetAll) {
             clearAllData(this)
         }
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_v7)
         findViewById<View>(R.id.review_consents_gdpr).setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
                 dataProvider.gdprPmId,
@@ -72,15 +73,19 @@ class NativeMessageActivity : AppCompatActivity() {
                 success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
             )
         }
+        refresh_btn.setOnClickListener { executeCmpLib() }
 
     }
 
     override fun onResume() {
         super.onResume()
+        executeCmpLib()
+    }
+
+    private fun executeCmpLib() {
         dataProvider.authId
             ?.let { spConsentLib.loadMessage(it) }
             ?: kotlin.run { spConsentLib.loadMessage() }
-
     }
 
     override fun onDestroy() {

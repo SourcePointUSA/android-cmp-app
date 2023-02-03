@@ -1,11 +1,7 @@
 package com.sourcepoint.cmplibrary.consent
 
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
-import com.sourcepoint.cmplibrary.core.* //ktlint-disable
-import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.core.executeOnLeft
-import com.sourcepoint.cmplibrary.core.flatMap
-import com.sourcepoint.cmplibrary.core.map
+import com.sourcepoint.cmplibrary.core.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
@@ -21,7 +17,8 @@ import com.sourcepoint.cmplibrary.model.IncludeData
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
-import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.* // ktlint-disable
 
 internal interface ConsentManagerUtils {
@@ -41,10 +38,10 @@ internal interface ConsentManagerUtils {
     fun getSpConsent(): SPConsents?
 
     fun updateGdprConsentOptimized(
-        dataRecordedConsent: Instant,
+        dataRecordedConsent: String,
         gdprConsentStatus: ConsentStatus,
-        additionsChangeDate: Instant,
-        legalBasisChangeDate: Instant
+        additionsChangeDate: String,
+        legalBasisChangeDate: String
     ): ConsentStatus
 
     val shouldTriggerByGdprSample: Boolean
@@ -128,13 +125,20 @@ private class ConsentManagerUtilsImpl(
     }
 
     override fun updateGdprConsentOptimized(
-        dataRecordedConsent: Instant,
+        dataRecordedConsent: String,
         gdprConsentStatus: ConsentStatus,
-        additionsChangeDate: Instant,
-        legalBasisChangeDate: Instant
+        additionsChangeDate: String,
+        legalBasisChangeDate: String
     ): ConsentStatus {
-        val creationLessThanAdditions = dataRecordedConsent.epochSecond < additionsChangeDate.epochSecond
-        val creationLessThanLegalBasis = dataRecordedConsent.epochSecond < legalBasisChangeDate.epochSecond
+
+        val formatter: DateTimeFormatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        val dataRecordedConsentDate: LocalDateTime = LocalDateTime.parse(dataRecordedConsent, formatter)
+        val additionsChangeDateDate: LocalDateTime = LocalDateTime.parse(additionsChangeDate, formatter)
+        val legalBasisChangeDateConsentDate: LocalDateTime = LocalDateTime.parse(legalBasisChangeDate, formatter)
+
+        val creationLessThanAdditions = dataRecordedConsentDate.isBefore(additionsChangeDateDate)
+        val creationLessThanLegalBasis = dataRecordedConsentDate.isBefore(legalBasisChangeDateConsentDate)
 
         val updatedCS = gdprConsentStatus.copy()
 

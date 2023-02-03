@@ -8,6 +8,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.cmplibrary.SpClient
@@ -61,7 +62,7 @@ class MainActivityKotlinOttTest {
 
         scenario = launchActivity()
 
-        periodicWr(period = 3000, backup = { scenario.recreateAndResume() }) {
+        wr(backup = { clickOnRefreshBtnActivity() })  {
             tapAcceptAllOnWebView()
             device.pressEnter()
         }
@@ -106,7 +107,7 @@ class MainActivityKotlinOttTest {
 
         scenario = launchActivity()
 
-        periodicWr(period = 3000, backup = { scenario.recreateAndResume() }) {
+        wr(backup = { clickOnRefreshBtnActivity() })  {
             tapAcceptAllOnWebView()
             device.pressEnter()
         }
