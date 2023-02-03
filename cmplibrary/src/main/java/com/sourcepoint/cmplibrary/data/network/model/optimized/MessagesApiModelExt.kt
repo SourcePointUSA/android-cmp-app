@@ -8,12 +8,13 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.* // ktlint-disable
 
 internal fun getMessageBody(
-    propertyHref: String,
-    accountId: Long,
-    localState: JsonObject,
-    campaigns: List<CampaignReq>,
-    cs: ConsentStatus?,
-    ccpaStatus: String?
+        propertyHref: String,
+        accountId: Long,
+        localState: JsonObject,
+        campaigns: List<CampaignReq>,
+        cs: ConsentStatus?,
+        ccpaStatus: String?,
+        consentLanguage: String?
 ): JsonObject {
     return buildJsonObject {
         put("accountId", accountId)
@@ -29,6 +30,7 @@ internal fun getMessageBody(
         put("hasCSP", true)
         put("campaigns", campaigns.toMetadataBody(cs, ccpaStatus))
         put("localState", localState)
+        put("consentLanguage", consentLanguage)
     }
 }
 

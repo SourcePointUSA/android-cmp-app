@@ -181,7 +181,8 @@ private class ServiceImpl(
                     cs = gdprConsentStatus,
                     ccpaStatus = campaignManager.ccpaConsentStatus?.status?.name,
                     localState = campaignManager.messagesOptimizedLocalState?.jsonObject ?: JsonObject(emptyMap()),
-                    campaigns = campaignManager.campaigns4Config
+                    campaigns = campaignManager.campaigns4Config,
+                    consentLanguage = campaignManager.messageLanguage.value
                 )
 
                 val messagesParamReq = MessagesParamReq(
