@@ -65,10 +65,7 @@ internal class ConsentWebView(
     }
 
     private fun setup() {
-        when {
-            viewId != null -> { id = viewId }
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 -> { id = View.generateViewId() }
-        }
+        id = viewId ?: View.generateViewId()
         enableDebug()
         setStyle()
         if (messSubCat == MessageSubCategory.OTT) {
