@@ -3,7 +3,6 @@
 package com.sourcepoint.cmplibrary.util
 
 import android.content.Context
-import android.os.Build
 import android.webkit.WebView
 
 /**
