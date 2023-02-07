@@ -313,7 +313,8 @@ class HttpUrlManagerTest {
             propertyHref = "tests.unified-script.com",
             campaigns = list,
             localState = JsonObject(emptyMap()),
-            ccpaStatus = null
+            ccpaStatus = null,
+            consentLanguage = "ES"
         )
 
         val param = MessagesParamReq(
@@ -327,6 +328,6 @@ class HttpUrlManagerTest {
             propertyHref = "asdfasdfasd"
         )
         val sut = HttpUrlManagerSingleton.getMessagesUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages?env=prod&nonKeyedLocalState={%22gdpr%22:{%22_sp_v1_uid%22:null,%22_sp_v1_data%22:null},%22ccpa%22:{%22_sp_v1_uid%22:null,%22_sp_v1_data%22:null}}&body={%22accountId%22:22,%22includeData%22:{%22TCData%22:{%22type%22:%22RecordString%22},%22campaigns%22:{%22type%22:%22RecordString%22}},%22propertyHref%22:%22https://tests.unified-script.com%22,%22hasCSP%22:true,%22campaigns%22:{%22gdpr%22:{%22consentStatus%22:{%22consentedAll%22:true,%22consentedToAny%22:false,%22granularStatus%22:{%22defaultConsent%22:false,%22previousOptInAll%22:false,%22purposeConsent%22:%22ALL%22,%22purposeLegInt%22:%22ALL%22,%22vendorConsent%22:%22ALL%22,%22vendorLegInt%22:%22ALL%22},%22hasConsentData%22:false,%22rejectedAny%22:false,%22rejectedLI%22:false},%22targetingParams%22:{},%22groupPmId%22:null}},%22localState%22:{}}&metadata={%20%20%22ccpa%22:%20{%20%20%20%20%22applies%22:%20true%20%20},%20%20%22gdpr%22:%20{%20%20%20%20%22applies%22:%20true%20%20}}")
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages?env=prod&nonKeyedLocalState={%22gdpr%22:{%22_sp_v1_uid%22:null,%22_sp_v1_data%22:null},%22ccpa%22:{%22_sp_v1_uid%22:null,%22_sp_v1_data%22:null}}&body={%22accountId%22:22,%22includeData%22:{%22TCData%22:{%22type%22:%22RecordString%22},%22campaigns%22:{%22type%22:%22RecordString%22}},%22propertyHref%22:%22https://tests.unified-script.com%22,%22hasCSP%22:true,%22campaigns%22:{%22gdpr%22:{%22consentStatus%22:{%22consentedAll%22:true,%22consentedToAny%22:false,%22granularStatus%22:{%22defaultConsent%22:false,%22previousOptInAll%22:false,%22purposeConsent%22:%22ALL%22,%22purposeLegInt%22:%22ALL%22,%22vendorConsent%22:%22ALL%22,%22vendorLegInt%22:%22ALL%22},%22hasConsentData%22:false,%22rejectedAny%22:false,%22rejectedLI%22:false},%22targetingParams%22:{},%22groupPmId%22:null}},%22localState%22:{},%22consentLanguage%22:%22ES%22}&metadata={%20%20%22ccpa%22:%20{%20%20%20%20%22applies%22:%20true%20%20},%20%20%22gdpr%22:%20{%20%20%20%20%22applies%22:%20true%20%20}}")
     }
 }
