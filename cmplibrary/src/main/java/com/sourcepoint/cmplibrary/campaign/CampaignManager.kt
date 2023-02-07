@@ -447,8 +447,7 @@ private class CampaignManagerImpl(
             propertyHref = spConfig.propertyName,
             accountId = spConfig.accountId.toLong(),
             authId = authId,
-            propertyId = spConfig.propertyId?.toLong()
-                ?: fail("The propertyId field is missing in the setup phase!!!!!"),
+            propertyId = spConfig.propertyId.toLong(),
             pubData = pubData?.toString()
                 ?.let { check { JsonConverter.converter.decodeFromString<JsonObject>(it) }.getOrNull() }
                 ?: JsonObject(mapOf())

@@ -51,7 +51,8 @@ class MessagesApiModelTest {
             propertyHref = "tests.unified-script.com",
             campaigns = list,
             localState = JsonObject(emptyMap()),
-            ccpaStatus = null
+            ccpaStatus = null,
+            consentLanguage = null
         )
 
         println(body)
