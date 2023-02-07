@@ -552,7 +552,7 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
     }
 
-    //    @Test
+//    @Test
     fun customConsentAction() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))
@@ -567,7 +567,7 @@ class MainActivityKotlinTest {
         wr { checkCustomVendorDataList() }
     }
 
-    //    @Test
+//    @Test
     fun deleteCustomConsentAction() = runBlocking<Unit> {
 
         loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))

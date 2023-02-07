@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
+import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
@@ -21,7 +22,7 @@ internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
         tcData = TCData?.toMapOfAny() ?: emptyMap(),
         grants = grants ?: emptyMap(),
         euconsent = euconsent ?: "",
-        acceptedCategories = acceptedCategories,
+        acceptedCategories = grants?.toAcceptedCategories()?.toList(),
         childPmId = null,
         applies = TCData?.fromTcDataToGdprApplies(),
         thisContent = JSONObject()
@@ -73,4 +74,15 @@ internal fun Map<String, JsonElement>?.fromTcDataToGdprApplies(): Boolean? {
         0 -> false
         else -> null
     }
+}
+
+internal fun Map<String, GDPRPurposeGrants>.toAcceptedCategories(): Iterable<String> {
+    val map = this.toList().fold(mutableMapOf<String, Map<String, Boolean>>()) { acc, elem ->
+        acc[elem.first] = elem.second.purposeGrants
+        acc
+    }
+    val partitions = map.flatMap { it.value.toList() }.partition { it.second }
+    val trueCategories = partitions.first.map { it.first }.toSet()
+    val falseCategories = partitions.second.map { it.first }.toSet()
+    return trueCategories.minus(falseCategories)
 }
