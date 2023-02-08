@@ -137,7 +137,8 @@ private class ViewsManagerImpl(
                     logger = lib.pLogger,
                     executorManager = lib.executor,
                     messageTimeout = messageTimeout,
-                    messSubCat = messSubCat
+                    messSubCat = messSubCat,
+                    viewId = cmpViewId
                 )
             }
         } ?: Either.Left(GenericSDKException(description = "The activity reference in the ViewManager is null!!!"))
@@ -160,7 +161,8 @@ private class ViewsManagerImpl(
                     executorManager = lib.executor,
                     campaignQueue = campaignQueue,
                     messageTimeout = messageTimeout,
-                    messSubCat = messSubCat
+                    messSubCat = messSubCat,
+                    viewId = cmpViewId
                 )
             }
         } ?: Either.Left(GenericSDKException(description = "The activity reference in the ViewManager is null!!!"))

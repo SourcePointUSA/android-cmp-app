@@ -3,7 +3,6 @@
 package com.sourcepoint.cmplibrary.util
 
 import android.content.Context
-import android.os.Build
 import android.webkit.WebView
 
 /**
@@ -13,16 +12,14 @@ import android.webkit.WebView
  * @param webView
  */
 fun setAuthId(authId: String?, webView: WebView) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-        authId?.let {
-            webView.evaluateJavascript(
-                """
-                        document.cookie = "authId=$it";
-                """.trimIndent()
-            ) { res ->
-                if (res == "null") {
-                    setAuthIdOldApi(authId, webView)
-                }
+    authId?.let {
+        webView.evaluateJavascript(
+            """
+                    document.cookie = "authId=$it";
+            """.trimIndent()
+        ) { res ->
+            if (res == "null") {
+                setAuthIdOldApi(authId, webView)
             }
         }
     }
