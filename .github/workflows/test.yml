@@ -1,7 +1,7 @@
 name: Test
 on:
   push:
-    branches: [ develop, v7 ]
+    branches: [ develop-disable, v7 ]
     paths:
       - '!README.md'
       - '!release_note.txt'

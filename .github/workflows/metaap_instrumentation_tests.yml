@@ -1,13 +1,13 @@
 name: Metaap UI Tests
 on:
   push:
-    branches: [ develop, v7 ]
+    branches: [ test-stability, v7 ]
     paths:
       - '!README.md'
       - '!release_note.txt'
   #      - '!samples/nativemessage/*'
   pull_request:
-    branches: [ develop, v7 ]
+    branches: [ test-stability, v7 ]
 #    paths:
 #      - '!README.md'
 #      - '!samples/nativemessage/*'
