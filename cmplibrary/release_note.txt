@@ -1,4 +1,3 @@
-* [DIA-1781](https://sourcepoint.atlassian.net/browse/DIA-1781) Fix: Instant class crash (#576)
-* [DIA-1742](https://sourcepoint.atlassian.net/browse/DIA-1742) Fix: empty consent in an edge case (#574)
-* [DIA-1728](https://sourcepoint.atlassian.net/browse/DIA-1728) Update proguard rules on README.md.
-* [DIA-1738](https://sourcepoint.atlassian.net/browse/DIA-1738) Fix: onActions SHOW_OPTIONS Action Type Does Not Fire
+* [DIA-1725](https://sourcepoint.atlassian.net/browse/DIA-1725) Extract AcceptedCategories from the Grant object (#579)
+* [DIA-1733](https://sourcepoint.atlassian.net/browse/DIA-1733) ConsentLanguage fix (#578)
+* [DIA-1523](https://sourcepoint.atlassian.net/browse/DIA-1523) Switch from loadUrl to a different way of execution for JavaScript
