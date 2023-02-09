@@ -4,7 +4,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.preference.PreferenceManager
 import android.util.TypedValue
 import android.view.*
@@ -183,7 +182,7 @@ class PropertyListFragment : Fragment() {
                 File("/data/data/com.sourcepointmeta.metaapp.debug/databases/newmetaapp.db").safeDelete()
                 File("/data/data/com.sourcepointmeta.metaapp.preprod/databases/newmetaapp.db").safeDelete()
                 File("/data/data/com.sourcepointmeta.metaapp/databases/newmetaapp.db").safeDelete()
-                requireActivity().finish()
+                System.exit(0);
             }
             .setNegativeButton("Cancel") { _, _ -> }
             .show()
