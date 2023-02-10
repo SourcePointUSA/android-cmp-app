@@ -1,3 +1,1 @@
-* [DIA-1725](https://sourcepoint.atlassian.net/browse/DIA-1725) Extract AcceptedCategories from the Grant object (#579)
-* [DIA-1733](https://sourcepoint.atlassian.net/browse/DIA-1733) ConsentLanguage fix (#578)
-* [DIA-1523](https://sourcepoint.atlassian.net/browse/DIA-1523) Switch from loadUrl to a different way of execution for JavaScript
+*  [DIA-1826](https://sourcepoint.atlassian.net/browse/DIA-1826) Issue on the serialisation (#584)
