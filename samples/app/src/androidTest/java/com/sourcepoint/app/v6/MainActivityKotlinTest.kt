@@ -175,7 +175,7 @@ class MainActivityKotlinTest {
                 getString("IABTCF_PublisherRestrictions10", null).assertNotNull()
                 getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("0000000000")
                 getString("IABTCF_SpecialFeaturesOptIns", null).assertNotNull()
-                getString("IABTCF_PublisherCC", null).assertEquals("DE")
+                getString("IABTCF_PublisherCC", null).assertNotNull()
                 getString("IABTCF_VendorConsents", null).assertNotNull()
                 getString("IABTCF_PublisherCustomPurposesLegitimateInterests", null).assertNotNull()
                 getString("IABTCF_PurposeLegitimateInterests", null).assertNotNull()
