@@ -179,9 +179,8 @@ class PropertyListFragment : Fragment() {
             .setTitle("Drop the entire DB")
             .setMessage("After the confirmation the app will be terminated.")
             .setPositiveButton("Confirm") { _, _ ->
-                File("/data/data/com.sourcepointmeta.metaapp.debug/databases/newmetaapp.db").safeDelete()
-                File("/data/data/com.sourcepointmeta.metaapp.preprod/databases/newmetaapp.db").safeDelete()
-                File("/data/data/com.sourcepointmeta.metaapp/databases/newmetaapp.db").safeDelete()
+                val database = requireContext().getDatabasePath("newmetaapp.db")
+                database.safeDelete()
                 System.exit(0);
             }
             .setNegativeButton("Cancel") { _, _ -> }
@@ -246,7 +245,7 @@ class PropertyListFragment : Fragment() {
         }
     }
 
-    private fun File.safeDelete() : Boolean  {
+    private fun File.safeDelete(): Boolean {
         return when (exists()) {
             true -> this.delete()
             else -> false
