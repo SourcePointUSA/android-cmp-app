@@ -1,3 +1,6 @@
+## 7.0.4 (February, 10, 2023)
+*  [DIA-1826](https://sourcepoint.atlassian.net/browse/DIA-1826) Issue on the serialisation (#584)
+
 ## 7.0.3 (February, 08, 2023)
 * [DIA-1725](https://sourcepoint.atlassian.net/browse/DIA-1725) Extract AcceptedCategories from the Grant object (#579)
 * [DIA-1733](https://sourcepoint.atlassian.net/browse/DIA-1733) ConsentLanguage fix (#578)
