@@ -181,7 +181,10 @@ class PropertyListFragment : Fragment() {
             .setPositiveButton("Confirm") { _, _ ->
                 val database = requireContext().getDatabasePath("newmetaapp.db")
                 database.safeDelete()
-                System.exit(0);
+                File("/data/data/com.sourcepointmeta.metaapp.debug/databases/newmetaapp.db").safeDelete()
+                File("/data/data/com.sourcepointmeta.metaapp.preprod/databases/newmetaapp.db").safeDelete()
+                File("/data/data/com.sourcepointmeta.metaapp/databases/newmetaapp.db").safeDelete()
+                System.exit(0)
             }
             .setNegativeButton("Cancel") { _, _ -> }
             .show()
