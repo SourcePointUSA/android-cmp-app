@@ -144,7 +144,6 @@ class PropertyListFragment : Fragment() {
                     editor.apply()
                 }
                 R.id.action_drop_db -> {
-//                    /data/data/com.sourcepointmeta.metaapp.debug/databases/newmetaapp.db
                     showDropDbDialog()
                 }
             }
