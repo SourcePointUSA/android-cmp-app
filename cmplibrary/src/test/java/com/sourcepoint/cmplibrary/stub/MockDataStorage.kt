@@ -55,32 +55,8 @@ internal class MockDataStorage : DataStorage {
         storage[DataStorageGdpr.AUTH_ID_KEY] = value ?: ""
     }
 
-    override fun saveEuConsent(value: String) {
-        storage[DataStorageGdpr.EU_CONSENT_KEY] = value
-    }
-
-    override fun saveMetaData(value: String) {
-        storage[DataStorageGdpr.META_DATA_KEY] = value
-    }
-
-    override fun saveGdprConsentResp(value: String) {
-        storage[DataStorageGdpr.GDPR_CONSENT_RESP] = value
-    }
-
-    override fun saveGdprMessage(value: String) {
-        storage[DataStorageGdpr.GDPR_JSON_MESSAGE] = value
-    }
-
     override fun getAuthId(): String? {
         return storage[DataStorageGdpr.AUTH_ID_KEY] as? String
-    }
-
-    override fun getEuConsent(): String? {
-        return storage[DataStorageGdpr.EU_CONSENT_KEY] as? String
-    }
-
-    override fun getMetaData(): String {
-        return storage[DataStorageGdpr.META_DATA_KEY] as? String ?: ""
     }
 
     override fun getGdprConsentResp(): String? {
@@ -230,4 +206,8 @@ internal class MockDataStorage : DataStorage {
     override var gdprSamplingResult: Boolean?
         get() = TODO("Not yet implemented")
         set(value) {}
+
+    override fun saveGdprConsentResp(value: String) {
+        TODO("Not yet implemented")
+    }
 }
