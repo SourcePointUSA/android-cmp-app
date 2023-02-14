@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ChoiceResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
@@ -36,12 +37,12 @@ internal interface Service : NetworkClient, CampaignManager {
     fun sendCustomConsentServ(
         customConsentReq: CustomConsentReq,
         env: Env
-    ): Either<SPConsents?>
+    ): Either<GdprCS>
 
     fun deleteCustomConsentToServ(
         customConsentReq: CustomConsentReq,
         env: Env
-    ): Either<SPConsents?>
+    ): Either<GdprCS>
 
     fun getMessages(
         messageReq: MessagesParamReq,
