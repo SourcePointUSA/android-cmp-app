@@ -65,6 +65,7 @@ internal interface DataStorageGdpr {
     fun saveGdprConsentResp(value: String)
 
     /** fetch data */
+    fun getAuthId(): String?
     fun getGdprConsentResp(): String?
     fun getGdprMessage(): String
 
@@ -193,6 +194,10 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .edit()
             .putString(GDPR_CONSENT_RESP, value)
             .apply()
+    }
+
+    override fun getAuthId(): String? {
+        return preference.getString(AUTH_ID_KEY, null)
     }
 
     override fun getGdprConsentResp(): String? {

@@ -110,6 +110,7 @@ internal interface CampaignManager {
     var pvDataResp: PvDataResp?
     var choiceResp: ChoiceResp?
     var dataRecordedConsent: Instant?
+    var authId: String?
 
     fun handleMetaDataLogic(md: MetaDataResp?)
     fun handleOldLocalData()
@@ -502,6 +503,12 @@ private class CampaignManagerImpl(
         dataStorage.clearGdprConsent()
         dataStorage.clearCcpaConsent()
     }
+
+    override var authId: String?
+        get() = dataStorage.getAuthId()
+        set(value) {
+            dataStorage.saveAuthId(value)
+        }
 
     // Optimized Implementation below
 

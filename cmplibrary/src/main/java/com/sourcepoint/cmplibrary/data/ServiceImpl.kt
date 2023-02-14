@@ -51,56 +51,6 @@ private class ServiceImpl(
     private val execManager: ExecutorManager
 ) : Service, NetworkClient by nc, CampaignManager by campaignManager {
 
-    override fun getUnifiedMessage(
-        messageReq: UnifiedMessageRequest,
-        pSuccess: (UnifiedMessageResp) -> Unit,
-        pError: (Throwable) -> Unit,
-        env: Env
-    ) {
-        nc.getUnifiedMessage(
-            messageReq,
-            pSuccess = { messageResp ->
-                campaignManager.saveUnifiedMessageResp(messageResp)
-                messageResp.campaigns
-                pSuccess(messageResp)
-            },
-            pError = pError,
-            env = env
-        )
-    }
-
-    override fun sendConsent(
-        localState: String,
-        consentAction: ConsentAction,
-        env: Env,
-        pmId: String?
-    ): Either<ConsentResp> = check {
-        consentManagerUtils.buildConsentReq(consentAction, localState, pmId)
-            .flatMap {
-                nc.sendConsent(it, env, consentAction)
-            }
-            .executeOnRight {
-                dataStorage.run {
-                    saveLocalState(it.localState)
-                    savedConsent = true
-                }
-                when (it.campaignType) {
-                    GDPR -> {
-                        dataStorage.saveGdprConsentResp(it.userConsent ?: "")
-                        dataStorage.gdprConsentUuid = it.uuid
-                    }
-                    CCPA -> {
-                        dataStorage.saveCcpaConsentResp(it.userConsent ?: "")
-                        dataStorage.ccpaConsentUuid = it.uuid
-                    }
-                }
-            }
-            .fold(
-                { throwable -> throw throwable },
-                { consentResp: ConsentResp -> consentResp }
-            )
-    }
-
     override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<SPConsents?> = check {
         nc.sendCustomConsent(customConsentReq, env)
             .map {
