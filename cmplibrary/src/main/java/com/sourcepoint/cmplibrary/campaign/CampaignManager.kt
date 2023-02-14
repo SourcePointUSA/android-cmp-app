@@ -45,7 +45,6 @@ internal interface CampaignManager {
     val gdprMessageSubCategory: MessageSubCategory
     fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate)
 
-    fun isAppliedCampaign(campaignType: CampaignType): Boolean
     fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory
     fun getUnifiedMessageResp(): Either<UnifiedMessageResp>
 
@@ -111,7 +110,6 @@ internal interface CampaignManager {
     var pvDataResp: PvDataResp?
     var choiceResp: ChoiceResp?
     var dataRecordedConsent: Instant?
-    var authId: String?
 
     fun handleMetaDataLogic(md: MetaDataResp?)
     fun handleOldLocalData()
@@ -346,13 +344,6 @@ private class CampaignManagerImpl(
         )
     }
 
-    override fun isAppliedCampaign(campaignType: CampaignType): Boolean {
-        return getAppliedCampaign()
-            .map { it.first == campaignType }
-            .getOrNull()
-            ?: false
-    }
-
     override fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory {
         return when (campaignType) {
             CampaignType.GDPR -> gdprMessageSubCategory
@@ -511,12 +502,6 @@ private class CampaignManagerImpl(
         dataStorage.clearGdprConsent()
         dataStorage.clearCcpaConsent()
     }
-
-    override var authId: String?
-        get() = dataStorage.getAuthId()
-        set(value) {
-            dataStorage.saveAuthId(value)
-        }
 
     // Optimized Implementation below
 

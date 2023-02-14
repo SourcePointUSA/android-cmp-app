@@ -62,15 +62,9 @@ internal interface DataStorageGdpr {
 
     /** store data */
     fun saveAuthId(value: String?)
-    fun saveEuConsent(value: String)
-    fun saveMetaData(value: String)
     fun saveGdprConsentResp(value: String)
-    fun saveGdprMessage(value: String)
 
     /** fetch data */
-    fun getAuthId(): String?
-    fun getEuConsent(): String?
-    fun getMetaData(): String
     fun getGdprConsentResp(): String?
     fun getGdprMessage(): String
 
@@ -186,20 +180,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .apply()
     }
 
-    override fun saveEuConsent(value: String) {
-        preference
-            .edit()
-            .putString(EU_CONSENT_KEY, value)
-            .apply()
-    }
-
-    override fun saveMetaData(value: String) {
-        preference
-            .edit()
-            .putString(META_DATA_KEY, value)
-            .apply()
-    }
-
     override fun saveGdprConsentResp(value: String) {
 
         check {
@@ -213,25 +193,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .edit()
             .putString(GDPR_CONSENT_RESP, value)
             .apply()
-    }
-
-    override fun saveGdprMessage(value: String) {
-        preference
-            .edit()
-            .putString(GDPR_JSON_MESSAGE, value)
-            .apply()
-    }
-
-    override fun getAuthId(): String? {
-        return preference.getString(AUTH_ID_KEY, null)
-    }
-
-    override fun getEuConsent(): String? {
-        return preference.getString(EU_CONSENT_KEY, null)
-    }
-
-    override fun getMetaData(): String {
-        return preference.getString(META_DATA_KEY, "")!!
     }
 
     override fun getGdprConsentResp(): String? {
