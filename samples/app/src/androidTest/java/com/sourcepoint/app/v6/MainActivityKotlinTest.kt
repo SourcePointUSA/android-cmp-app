@@ -551,10 +551,18 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
     }
 
-//    @Test
+    @Test
     fun customConsentAction() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient)
+            )
+        )
 
         scenario = launchActivity()
 
@@ -564,12 +572,30 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkCustomCategoriesData() }
         wr { tapSiteVendorsWebView() }
         wr { checkCustomVendorDataList() }
+
+        verify(exactly = 0) { spClient.onError(any()) }
+        verify {
+            spClient.run {
+                onConsentReady(withArg {
+                    it.gdpr?.consent?.grants!!["5e7ced57b8e05c485246cce0"]!!.purposeGrants.values.first().assertTrue()
+                })
+            }
+        }
+
     }
 
-//    @Test
+    @Test
     fun deleteCustomConsentAction() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient)
+            )
+        )
 
         scenario = launchActivity()
 
@@ -585,6 +611,14 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkDeletedCustomCategoriesData() }
         wr { tapSiteVendorsWebView() }
         wr { checkDeletedCustomVendorDataList() }
+        verify(exactly = 0) { spClient.onError(any()) }
+        verify {
+            spClient.run {
+                onConsentReady(withArg {
+                    it.gdpr?.consent?.grants!!.flatMap { i -> i.value.purposeGrants.values }.all { a -> a == false }.assertTrue()
+                })
+            }
+        }
     }
 
     @Test
