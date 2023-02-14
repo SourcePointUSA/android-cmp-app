@@ -55,13 +55,13 @@ private class ServiceImpl(
     private val execManager: ExecutorManager
 ) : Service, NetworkClient by nc, CampaignManager by campaignManager {
 
-    override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<SPConsents?> = check {
+    override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<GdprCS> = check {
         nc.sendCustomConsent(customConsentReq, env)
             .map {
                 if (campaignManager.gdprConsentStatus == null) {
                     genericFail("CustomConsent cannot be executed. Consent is missing!!!")
                 }
-                val grantsString : String = (it.content.get("grants") as JSONObject).toString()
+                val grantsString: String = (it.content.get("grants") as JSONObject).toString()
                 val grants = JsonConverter.converter.decodeFromString<Map<String, GDPRPurposeGrants>>(grantsString)
                 val updatedGrants = campaignManager.gdprConsentStatus?.copy(grants = grants)
                 campaignManager.gdprConsentStatus = updatedGrants
@@ -75,7 +75,7 @@ private class ServiceImpl(
                 if (campaignManager.gdprConsentStatus == null) {
                     genericFail("CustomConsent cannot be executed. Consent is missing!!!")
                 }
-                val grantsString : String = (it.content.get("grants") as JSONObject).toString()
+                val grantsString: String = (it.content.get("grants") as JSONObject).toString()
                 val grants = JsonConverter.converter.decodeFromString<Map<String, GDPRPurposeGrants>>(grantsString)
                 val updatedGrants = campaignManager.gdprConsentStatus?.copy(grants = grants)
                 campaignManager.gdprConsentStatus = updatedGrants

@@ -28,6 +28,7 @@ import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* // ktlint-d
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
+import com.sourcepoint.cmplibrary.util.*
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread
@@ -364,7 +365,7 @@ internal class SpConsentLibImpl(
                 val ccResp = service.sendCustomConsentServ(customConsentReq, env)
                 executeOnMain {
                     when (ccResp) {
-                        is Either.Right -> success(ccResp.r ?: SPConsents())
+                        is Either.Right -> success(userConsents(context))
                         is Either.Left -> {
                             spClient.onError(ccResp.t)
                             pLogger.clientEvent(
@@ -397,7 +398,7 @@ internal class SpConsentLibImpl(
                 val ccResp = service.deleteCustomConsentToServ(customConsentReq, env)
                 executeOnMain {
                     when (ccResp) {
-                        is Either.Right -> success(ccResp.r ?: SPConsents())
+                        is Either.Right -> success(userConsents(context))
                         is Either.Left -> {
                             spClient.onError(ccResp.t)
                             pLogger.clientEvent(
