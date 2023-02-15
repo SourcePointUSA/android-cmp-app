@@ -13,7 +13,7 @@ import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.encodeToString
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -36,7 +36,7 @@ private class NetworkClientImpl(
         customConsentReq: CustomConsentReq,
         env: Env
     ): Either<CustomConsentResp> = check {
-        val mediaType = MediaType.parse("application/json")
+        val mediaType = "application/json".toMediaType()
         val jsonBody = customConsentReq.toBodyRequest()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
         val url = urlManager.sendCustomConsentUrl(env)
@@ -62,7 +62,7 @@ private class NetworkClientImpl(
         customConsentReq: CustomConsentReq,
         env: Env
     ): Either<CustomConsentResp> = check {
-        val mediaType = MediaType.parse("application/json")
+        val mediaType = "application/json".toMediaType()
         val jsonBody = customConsentReq.toBodyRequestDeleteCustomConsentTo()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
         val url = urlManager.deleteCustomConsentToUrl(env.host, customConsentReq)
@@ -146,7 +146,7 @@ private class NetworkClientImpl(
 
     override fun savePvData(param: PvDataParamReq): Either<PvDataResp> = check {
         val url = urlManager.getPvDataUrl(param.env)
-        val mediaType = MediaType.parse("application/json")
+        val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
 
@@ -227,7 +227,7 @@ private class NetworkClientImpl(
 
     override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprCS> = check {
         val url = urlManager.getGdprChoiceUrl(param)
-        val mediaType = MediaType.parse("application/json")
+        val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
 
@@ -250,7 +250,7 @@ private class NetworkClientImpl(
 
     override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> = check {
         val url = urlManager.getCcpaChoiceUrl(param)
-        val mediaType = MediaType.parse("application/json")
+        val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
 
