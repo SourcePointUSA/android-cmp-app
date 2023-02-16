@@ -28,7 +28,7 @@ import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* // ktlint-d
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
-import com.sourcepoint.cmplibrary.util.*
+import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread

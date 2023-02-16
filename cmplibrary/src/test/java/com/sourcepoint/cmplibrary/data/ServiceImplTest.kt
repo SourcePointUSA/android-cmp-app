@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data
 
-import com.sourcepoint.cmplibrary.*
+import com.sourcepoint.cmplibrary.* // ktlint-disable
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.Either
@@ -157,7 +157,7 @@ class ServiceImplTest {
         val newConsent = "custom_consent/new_consent.json".file2String()
 
         every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
-        every { ds.getGdprConsentResp() }.throws(RuntimeException("test"))
+        every { cm.gdprConsentStatus } answers { null }
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
         val res = sut.sendCustomConsentServ(mockk(), Env.STAGE)

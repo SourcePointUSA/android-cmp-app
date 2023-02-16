@@ -577,7 +577,7 @@ class MainActivityKotlinTest {
         verify {
             spClient.run {
                 onConsentReady(withArg {
-                    it.gdpr?.consent?.grants!!["5e7ced57b8e05c485246cce0"]!!.purposeGrants.values.first().assertTrue()
+                    it  .gdpr?.consent?.grants!!["5e7ced57b8e05c485246cce0"]!!.purposeGrants.values.first().assertTrue()
                 })
             }
         }

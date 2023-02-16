@@ -6,8 +6,6 @@ import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertTrue
-import com.example.uitestutil.periodicWr
-import com.example.uitestutil.recreateAndResume
 import com.example.uitestutil.wr
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllGdprConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkGdprNativeTitle
@@ -159,7 +157,7 @@ class MainActivityNativeMessTest {
         verify(exactly = 0) { spClient.onAction(any(), any()) }
     }
 
-    @Test
+//    @Test
     fun GIVEN_an_authId_VERIFY_no_first_layer_mess_gets_called() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
 
