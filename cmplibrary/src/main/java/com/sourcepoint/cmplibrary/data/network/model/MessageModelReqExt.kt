@@ -7,10 +7,6 @@ import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import kotlinx.serialization.json.* // ktlint-disable
 import org.json.JSONObject
 
-internal fun UnifiedMessageRequest.toBodyRequest(): String {
-    return toJsonObject().toString()
-}
-
 internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
     return JSONObject()
         .apply {

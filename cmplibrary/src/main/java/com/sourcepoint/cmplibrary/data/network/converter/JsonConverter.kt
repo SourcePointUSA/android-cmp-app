@@ -6,7 +6,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disab
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 
 /**
  * Component used to convert the response body of the message call to its DTO
@@ -16,8 +15,6 @@ internal interface JsonConverter {
      * @param body json object
      * @return [Either] object contain either a DTO or an [Throwable]
      */
-
-    fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp>
 
     fun toConsentResp(body: String, campaignType: CampaignType): Either<ConsentResp>
 
