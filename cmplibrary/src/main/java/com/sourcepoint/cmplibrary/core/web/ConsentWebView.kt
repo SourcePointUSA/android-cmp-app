@@ -141,10 +141,39 @@ internal class ConsentWebView(
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             val sb = StringBuffer()
+
+            val obj = JSONObject("""
+                {
+                  "name": "sp.loadConsent",
+                  "fromNativeSDK": true,
+                  "categories": [
+                    "608bad95d08d3112188e0e29",
+                    "608bad95d08d3112188e0e2f"
+                  ],
+                  "legIntCategories": [
+                    "608bad95d08d3112188e0e2f"
+                  ],
+                  "vendors": [
+                    "5f1b2fbeb8e05c306f2a1eb9",
+                    "5ff4d000a228633ac048be41"
+                  ],
+                  "legIntVendors": [
+                    "5f1b2fbeb8e05c306f2a1eb9"
+                  ],
+                  "specialFeatures": [
+                    "5e37fc3e973acf1e955b8966",
+                    "5e37fc3e973acf1e955b8967"
+                  ]
+                }
+            """.trimIndent())
+
             sb.append(
                 """
-                javascript: window.spLegislation = '${campaignType.name}'; window.localPmId ='$pmId'; window.isSingleShot = $singleShot; 
+                javascript: window.spLegislation = '${campaignType.name}'; 
+                window.localPmId ='$pmId'; 
+                window.isSingleShot = $singleShot; 
                 $jsReceiver;
+                window.postMessage($obj, "*");
                 """.trimIndent()
             )
             sb.toString()
@@ -169,20 +198,6 @@ internal class ConsentWebView(
                 "fromNativeSDK": true
                  */
             }
-//            val obj = campaignModel.message.apply {
-//                put("name", "sp.loadConsent")
-//                put("fromNativeSDK", true)
-//                put("categories", """ [ "608bad95d08d3112188e0e29", "608bad95d08d3112188e0e2f"] """.trimIndent())
-//                put("legIntCategories", """ [ "608bad95d08d3112188e0e2f"] """.trimIndent())
-//                put("vendors", """ ["5f1b2fbeb8e05c306f2a1eb9", "5ff4d000a228633ac048be41"]""")
-//                put("legIntVendors", """ [ "5f1b2fbeb8e05c306f2a1eb9"] """)
-//                put("specialFeatures", """["5e37fc3e973acf1e955b8966", "5e37fc3e973acf1e955b8967"]""")
-//                put("hasConsentData", true)
-//                /*
-//                "name": "sp.loadMessage",
-//                "fromNativeSDK": true
-//                 */
-//            }
 
             logger.flm(
                 tag = "$campaignType First Layer Message",
@@ -197,7 +212,7 @@ internal class ConsentWebView(
                 window.postMessage($obj, "*");
             """.trimIndent()
         }
-        loadUrl("${ url}&preload_consent=true")
+        loadUrl(url.toString())
         true
     }
 
