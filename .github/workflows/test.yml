@@ -8,7 +8,7 @@ on:
 #      - '!samples/nativemessage/*'
   pull_request:
     branches: [ develop, v7 ]
-#    paths:
+#    paths:  as
 #      - '!README.md'
 #      - '!samples/nativemessage/*'
 jobs:
