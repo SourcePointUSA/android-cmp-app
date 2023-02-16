@@ -7,7 +7,7 @@ on:
       - '!release_note.txt'
 #      - '!samples/nativemessage/*'
   pull_request:
-    branches: [ develop, v7 ]
+    branches: [ develop, v7, dia-1810-custom-consent-bck  ]
 #    paths:  as
 #      - '!README.md'
 #      - '!samples/nativemessage/*'
