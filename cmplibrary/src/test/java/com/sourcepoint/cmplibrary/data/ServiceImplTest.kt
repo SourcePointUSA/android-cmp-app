@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.data
 
-import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.assertNotNull
+import com.sourcepoint.cmplibrary.*
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.Either
@@ -14,6 +13,7 @@ import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
@@ -108,36 +108,48 @@ class ServiceImplTest {
 
     @Test
     fun `GIVEN a custom consent VERIFY that the data storage is called`() {
-        val storedConsent = "custom_consent/stored_consent.json".file2String()
+        val storedConsentString = "custom_consent/consent_status_optimized.json".file2String()
+        val storedConsent = JsonConverter.converter.decodeFromString<GdprCS>(storedConsentString)
         val newConsent = "custom_consent/new_consent.json".file2String()
 
+        // The Grants in stored consent are ALL true because an action of Accept All
+        storedConsent.grants!!.toList().flatMap { i -> i.second.purposeGrants.values }.all { e -> e }.assertTrue()
+
         every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
-        every { ds.getGdprConsentResp() }.returns(storedConsent)
+        every { cm.gdprConsentStatus } answers { storedConsent }
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
-        val res = sut.sendCustomConsentServ(mockk(), Env.STAGE).getOrNull()!!
+        sut.sendCustomConsentServ(mockk(), Env.STAGE).getOrNull()!!
 
-        verify(exactly = 1) { ds.saveGdprConsentResp(any()) }
-
-        res.gdpr.assertNotNull()
-        res.ccpa.assertNotNull()
+        verify(exactly = 1) {
+            cm.gdprConsentStatus = withArg {
+                // The Grants in stored consent are NOT ALL true because the custom consent edited the values
+                it.grants!!.toList().flatMap { i -> i.second.purposeGrants.values }.all { e -> e }.assertFalse()
+            }
+        }
     }
 
     @Test
     fun `GIVEN a deleted custom consent VERIFY that the data storage is called`() {
-        val storedConsent = "custom_consent/stored_consent.json".file2String()
+        val storedConsentString = "custom_consent/consent_status_optimized.json".file2String()
+        val storedConsent = JsonConverter.converter.decodeFromString<GdprCS>(storedConsentString)
         val newConsent = "custom_consent/new_consent.json".file2String()
 
+        // The Grants in stored consent are ALL true because an action of Accept All
+        storedConsent.grants!!.toList().flatMap { i -> i.second.purposeGrants.values }.all { e -> e }.assertTrue()
+
         every { ncMock.deleteCustomConsentTo(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
-        every { ds.getGdprConsentResp() }.returns(storedConsent)
+        every { cm.gdprConsentStatus } answers { storedConsent }
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
-        val res = sut.deleteCustomConsentToServ(mockk(), Env.STAGE).getOrNull()!!
+        sut.deleteCustomConsentToServ(mockk(), Env.STAGE).getOrNull()!!
 
-        verify(exactly = 1) { ds.saveGdprConsentResp(any()) }
-
-        res.gdpr.assertNotNull()
-        res.ccpa.assertNotNull()
+        verify(exactly = 1) {
+            cm.gdprConsentStatus = withArg {
+                // The Grants in stored consent are NOT ALL true because the custom consent edited the values
+                it.grants!!.toList().flatMap { i -> i.second.purposeGrants.values }.all { e -> e }.assertFalse()
+            }
+        }
     }
 
     @Test
