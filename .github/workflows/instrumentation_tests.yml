@@ -1,7 +1,7 @@
 name: SampleApp UI Tests
 on:
   push:
-    branches: [ develop, v7 ]
+    branches: [ develop, v7, dia-1810-custom-consent-bck ]
     paths:
       - '!README.md'
       - '!release_note.txt'
