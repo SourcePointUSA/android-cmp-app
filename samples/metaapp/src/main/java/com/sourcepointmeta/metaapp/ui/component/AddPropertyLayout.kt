@@ -28,7 +28,7 @@ class AddPropertyLayout : ConstraintLayout {
 
 internal fun AddPropertyLayout.bind(property: Property) {
     prop_name_ed.setText(property.propertyName)
-    prop_id_ed.setText(property.propertyId?.toString() ?: "")
+    prop_id_ed.setText(property.propertyId.toString())
     account_id_ed.setText(property.accountId.toString())
     radio_stage.isChecked = property.is_staging
     radio_prod.isChecked = !property.is_staging
@@ -47,6 +47,7 @@ internal fun AddPropertyLayout.bind(property: Property) {
     timeout_ed.setText("${property.timeout ?: 3000}")
     group_pm_id_ed.setText(property.gdprGroupPmId ?: "")
     gdpr_groupId_switch.isChecked = property.useGdprGroupPmIfAvailable
+    preloading_switch.isChecked = property.preloading
 }
 
 internal fun AddPropertyLayout.toProperty(): Property {
@@ -92,6 +93,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
         messageLanguage = message_language_autocomplete.text.toString(),
         pmTab = pm_tab_autocomplete.text.toString(),
         is_staging = radio_stage.isChecked,
+        preloading = preloading_switch.isChecked,
         targetingParameters = ccpaTp + gdprTp,
         statusCampaignSet = setOf(gdprStatus, ccpaStatus),
         gdprPmId = gdpr_pm_id_ed.text.toString().toLongOrNull(),
