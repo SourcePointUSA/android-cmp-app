@@ -7,18 +7,18 @@ import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 
 val defaultProperty = Property(
     accountId = 22,
-    propertyName = "appletv.demo",
+    propertyName = "ott.test.suite",
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
     is_staging = false,
     targetingParameters = emptyList(),
-    statusCampaignSet = setOf(StatusCampaign("appletv.demo", CampaignType.GDPR, true)),
-    gdprPmId = 713324L,
+    statusCampaignSet = setOf(StatusCampaign("ott.test.suite", CampaignType.GDPR, true)),
+    gdprPmId = 579231L,
     ccpaPmId = 1L,
     campaignsEnv = CampaignsEnv.PUBLIC,
-    propertyId = 21927
+    propertyId = 22231
 )
 
 val defaultProperty1 = Property(
