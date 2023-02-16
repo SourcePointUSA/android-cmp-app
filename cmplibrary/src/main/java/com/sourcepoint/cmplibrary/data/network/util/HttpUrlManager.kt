@@ -104,6 +104,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addPathSegments(urlPostFix)
             .addQueryParameter("pmTab", pmConf.pmTab?.key)
             .addQueryParameter("site_id", pmConf.siteId)
+            .addQueryParameter("preload_consent", "true")
             .apply {
                 pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
                 pmConf.uuid?.let { addQueryParameter("consentUUID", it) }

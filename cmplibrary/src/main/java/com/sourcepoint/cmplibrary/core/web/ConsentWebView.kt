@@ -169,6 +169,20 @@ internal class ConsentWebView(
                 "fromNativeSDK": true
                  */
             }
+//            val obj = campaignModel.message.apply {
+//                put("name", "sp.loadConsent")
+//                put("fromNativeSDK", true)
+//                put("categories", """ [ "608bad95d08d3112188e0e29", "608bad95d08d3112188e0e2f"] """.trimIndent())
+//                put("legIntCategories", """ [ "608bad95d08d3112188e0e2f"] """.trimIndent())
+//                put("vendors", """ ["5f1b2fbeb8e05c306f2a1eb9", "5ff4d000a228633ac048be41"]""")
+//                put("legIntVendors", """ [ "5f1b2fbeb8e05c306f2a1eb9"] """)
+//                put("specialFeatures", """["5e37fc3e973acf1e955b8966", "5e37fc3e973acf1e955b8967"]""")
+//                put("hasConsentData", true)
+//                /*
+//                "name": "sp.loadMessage",
+//                "fromNativeSDK": true
+//                 */
+//            }
 
             logger.flm(
                 tag = "$campaignType First Layer Message",
@@ -183,7 +197,7 @@ internal class ConsentWebView(
                 window.postMessage($obj, "*");
             """.trimIndent()
         }
-        loadUrl(url.toString())
+        loadUrl("${ url}&preload_consent=true")
         true
     }
 
@@ -238,6 +252,11 @@ internal class ConsentWebView(
         @JavascriptInterface
         override fun onError(errorMessage: String) {
             jsClientLib.onError(this@ConsentWebView, errorMessage)
+        }
+
+        @JavascriptInterface
+        override fun readyForPreloadConsent() {
+            println("")
         }
     }
 }
