@@ -73,7 +73,7 @@ val appModule = module {
                 messageTimeout = 5000
                 campaignsEnv = CampaignsEnv.PUBLIC
                 +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
+//                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
 
         }

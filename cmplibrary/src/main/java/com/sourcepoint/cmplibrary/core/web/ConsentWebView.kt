@@ -94,11 +94,9 @@ internal class ConsentWebView(
     }
 
     private fun enableDebug() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (0 != context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
-                setWebContentsDebuggingEnabled(true)
-                enableSlowWholeDocumentDraw()
-            }
+        if (0 != context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
+            setWebContentsDebuggingEnabled(true)
+            enableSlowWholeDocumentDraw()
         }
     }
 
@@ -137,12 +135,18 @@ internal class ConsentWebView(
         true
     }
 
-    override fun loadConsentUIFromUrl(url: HttpUrl, campaignType: CampaignType, pmId: String?, singleShot: Boolean): Either<Boolean> = check {
+    override fun loadConsentUIFromUrl(
+        url: HttpUrl,
+        campaignType: CampaignType,
+        pmId: String?,
+        singleShot: Boolean
+    ): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             val sb = StringBuffer()
 
-            val obj = JSONObject("""
+            val obj = JSONObject(
+                """
                 {
                   "name": "sp.loadConsent",
                   "fromNativeSDK": true,
@@ -165,7 +169,8 @@ internal class ConsentWebView(
                     "5e37fc3e973acf1e955b8967"
                   ]
                 }
-            """.trimIndent())
+            """.trimIndent()
+            )
 
             sb.append(
                 """
@@ -173,7 +178,6 @@ internal class ConsentWebView(
                 window.localPmId ='$pmId'; 
                 window.isSingleShot = $singleShot; 
                 $jsReceiver;
-                window.postMessage($obj, "*");
                 """.trimIndent()
             )
             sb.toString()
@@ -182,7 +186,11 @@ internal class ConsentWebView(
         true
     }
 
-    override fun loadConsentUI(campaignModel: CampaignModel, url: HttpUrl, campaignType: CampaignType): Either<Boolean> = check {
+    override fun loadConsentUI(
+        campaignModel: CampaignModel,
+        url: HttpUrl,
+        campaignType: CampaignType
+    ): Either<Boolean> = check {
         currentCampaignModel = campaignModel
         val campaignType: CampaignType = campaignModel.type
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
