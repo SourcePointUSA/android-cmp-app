@@ -683,7 +683,7 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         // Vendors
-        wr { tapPartnersOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() })  { tapPartnersOnWebView() }
         wr { checkAllVendorsOff() }
         wr { tapCancelOnWebView() }
 
