@@ -1,14 +1,14 @@
 name: Test
 on:
   push:
-    branches: [ develop, v7, dia-1810-custom-consent-bck ]
+    branches: [ develop, v7 ]
     paths:
       - '!README.md'
       - '!release_note.txt'
 #      - '!samples/nativemessage/*'
   pull_request:
-    branches: [ develop, v7, dia-1810-custom-consent-bck  ]
-#    paths:  as
+    branches: [ develop, v7 ]
+#    paths:
 #      - '!README.md'
 #      - '!samples/nativemessage/*'
 jobs:
