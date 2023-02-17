@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.net.Uri
-import android.os.Build
 import android.os.Message
 import android.view.View
 import android.webkit.JavascriptInterface
@@ -170,7 +169,7 @@ internal class ConsentWebView(
                     "5e37fc3e973acf1e955b8967"
                   ]
                 }
-            """.trimIndent()
+                """.trimIndent()
             )
 
             sb.append(
@@ -179,6 +178,7 @@ internal class ConsentWebView(
                 window.localPmId ='$pmId'; 
                 window.isSingleShot = $singleShot; 
                 $jsReceiver;
+                window.postMessage($obj, "*");
                 """.trimIndent()
             )
             sb.toString()
