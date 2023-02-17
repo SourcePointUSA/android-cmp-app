@@ -365,7 +365,7 @@ internal class SpConsentLibImpl(
                     .executeOnLeft { e -> spClient.onError(e) }
                     .getOrNull()
                 val url =
-                    urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, messSubCat = messSubCat)
+                    urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, messSubCat = messSubCat, false)
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
                     url = url.toString(),
@@ -590,7 +590,8 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2
+                                messSubCat = TCFv2,
+                                preload = false
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -616,7 +617,8 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2
+                                messSubCat = TCFv2,
+                                preload = false
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -648,7 +650,8 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2
+                                messSubCat = TCFv2,
+                                preload = false
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
@@ -674,7 +677,8 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2
+                                messSubCat = TCFv2,
+                                preload = false
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",

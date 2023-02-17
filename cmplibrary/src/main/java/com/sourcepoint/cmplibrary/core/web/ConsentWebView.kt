@@ -158,6 +158,7 @@ internal class ConsentWebView(
                     "608bad95d08d3112188e0e2f"
                   ],
                   "vendors": [
+                    "5e7ced57b8e05c485246cce0",
                     "5f1b2fbeb8e05c306f2a1eb9",
                     "5ff4d000a228633ac048be41"
                   ],

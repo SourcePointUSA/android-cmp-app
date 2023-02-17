@@ -25,7 +25,13 @@ internal interface HttpUrlManager {
     fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl
     fun sendCustomConsentUrl(env: Env): HttpUrl
     fun deleteCustomConsentToUrl(host: String, params: CustomConsentReq): HttpUrl
-    fun pmUrl(env: Env, campaignType: CampaignType, pmConfig: PmUrlConfig, messSubCat: MessageSubCategory): HttpUrl
+    fun pmUrl(
+        env: Env,
+        campaignType: CampaignType,
+        pmConfig: PmUrlConfig,
+        messSubCat: MessageSubCategory,
+        preload: Boolean
+    ): HttpUrl
 
     // Optimized
     fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
@@ -60,11 +66,13 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         env: Env,
         campaignType: CampaignType,
         pmConfig: PmUrlConfig,
-        messSubCat: MessageSubCategory
+        messSubCat: MessageSubCategory,
+        preload: Boolean
+
     ): HttpUrl {
         return when (campaignType) {
-            CampaignType.GDPR -> urlPmGdpr(pmConfig, env, messSubCat)
-            CampaignType.CCPA -> urlPmCcpa(pmConfig, env, messSubCat)
+            CampaignType.GDPR -> urlPmGdpr(pmConfig, env, messSubCat, preload)
+            CampaignType.CCPA -> urlPmCcpa(pmConfig, env, messSubCat, preload)
         }
     }
 
@@ -89,7 +97,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    private fun urlPmGdpr(pmConf: PmUrlConfig, env: Env, messSubCat: MessageSubCategory): HttpUrl {
+    private fun urlPmGdpr(pmConf: PmUrlConfig, env: Env, messSubCat: MessageSubCategory, preload: Boolean): HttpUrl {
 
         val urlPostFix = when (messSubCat) {
             OTT -> "privacy-manager-ott/index.html"
@@ -104,7 +112,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addPathSegments(urlPostFix)
             .addQueryParameter("pmTab", pmConf.pmTab?.key)
             .addQueryParameter("site_id", pmConf.siteId)
-            .addQueryParameter("preload_consent", "true")
+            .addQueryParameter("preload_consent", preload.toString())
             .apply {
                 pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
                 pmConf.uuid?.let { addQueryParameter("consentUUID", it) }
@@ -114,7 +122,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    private fun urlPmCcpa(pmConf: PmUrlConfig, env: Env, messSubCat: MessageSubCategory): HttpUrl {
+    private fun urlPmCcpa(pmConf: PmUrlConfig, env: Env, messSubCat: MessageSubCategory, preload: Boolean): HttpUrl {
 
         // ott: https://cdn.privacy-mgmt.com/ccpa_ott/index.html?message_id=527843
         //      https://ccpa-notice.sp-stage.net/ccpa_pm/index.html?message_id=14777
@@ -126,6 +134,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .host(env.pmHostCcpa)
             .addPathSegments(pathSegment)
             .addQueryParameter("site_id", pmConf.siteId)
+            .addQueryParameter("preload_consent", preload.toString())
             .apply {
                 pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
                 pmConf.uuid?.let { addQueryParameter("ccpaUUID", it) }
