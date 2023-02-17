@@ -605,12 +605,22 @@ internal class SpConsentLibImpl(
                             params = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
-                        iConsentWebView.loadConsentUIFromUrl(
-                            url = url,
-                            campaignType = actionImpl.campaignType,
-                            pmId = actionImpl.privacyManagerId,
-                            singleShot = false
-                        )
+                        when (campaignManager.spConfig.clientSideOnly) {
+                            true -> iConsentWebView.loadConsentUIFromUrlPreloading(
+                                url = url,
+                                campaignType = actionImpl.campaignType,
+                                pmId = actionImpl.privacyManagerId,
+                                singleShot = false,
+                                consent = "{}"
+                            )
+                            false -> iConsentWebView.loadConsentUIFromUrl(
+                                url = url,
+                                campaignType = actionImpl.campaignType,
+                                pmId = actionImpl.privacyManagerId,
+                                singleShot = false
+                            )
+                        }
+
                     }
                     .executeOnLeft { spClient.onError(it) }
             }
