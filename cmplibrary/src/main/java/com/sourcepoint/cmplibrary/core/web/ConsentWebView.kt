@@ -155,39 +155,16 @@ internal class ConsentWebView(
         campaignType: CampaignType,
         pmId: String?,
         singleShot: Boolean,
-        consent: String
+        consent: JSONObject
     ): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             val sb = StringBuffer()
 
-            val obj = JSONObject(
-                """
-                {
-                  "name": "sp.loadConsent",
-                  "fromNativeSDK": true,
-                  "categories": [
-                    "608bad95d08d3112188e0e29",
-                    "608bad95d08d3112188e0e2f"
-                  ],
-                  "legIntCategories": [
-                    "608bad95d08d3112188e0e2f"
-                  ],
-                  "vendors": [
-                    "5e7ced57b8e05c485246cce0",
-                    "5f1b2fbeb8e05c306f2a1eb9",
-                    "5ff4d000a228633ac048be41"
-                  ],
-                  "legIntVendors": [
-                    "5f1b2fbeb8e05c306f2a1eb9"
-                  ],
-                  "specialFeatures": [
-                    "5e37fc3e973acf1e955b8966",
-                    "5e37fc3e973acf1e955b8967"
-                  ]
-                }
-                """.trimIndent()
-            )
+            consent.apply {
+                put("name", "sp.loadConsent")
+                put("fromNativeSDK", true)
+            }
 
             sb.append(
                 """
@@ -195,7 +172,7 @@ internal class ConsentWebView(
                 window.localPmId ='$pmId'; 
                 window.isSingleShot = $singleShot; 
                 $jsReceiver;
-                window.postMessage($obj, "*");
+                window.postMessage($consent, "*");
                 """.trimIndent()
             )
             sb.toString()

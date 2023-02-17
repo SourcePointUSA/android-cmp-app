@@ -383,12 +383,22 @@ internal class SpConsentLibImpl(
                     """.trimIndent(),
                     type = "GET"
                 )
-                webView?.loadConsentUIFromUrl(
-                    url = url,
-                    campaignType = campaignType,
-                    pmId = it.messageId,
-                    singleShot = true
-                )
+
+                when (campaignManager.spConfig.clientSideOnly) {
+                    true -> webView?.loadConsentUIFromUrlPreloading(
+                        url = url,
+                        campaignType = campaignType,
+                        pmId = it.messageId,
+                        singleShot = true,
+                        consent = JSONObject(dataStorage.gdprConsentStatus!!)
+                    )
+                    false -> webView?.loadConsentUIFromUrl(
+                        url = url,
+                        campaignType = campaignType,
+                        pmId = it.messageId,
+                        singleShot = true
+                    )
+                }
             }
             .executeOnLeft { logMess("PmUrlConfig is null") }
     }
@@ -611,7 +621,7 @@ internal class SpConsentLibImpl(
                                 campaignType = actionImpl.campaignType,
                                 pmId = actionImpl.privacyManagerId,
                                 singleShot = false,
-                                consent = "{}"
+                                consent = JSONObject(dataStorage.gdprConsentStatus!!)
                             )
                             false -> iConsentWebView.loadConsentUIFromUrl(
                                 url = url,
@@ -620,7 +630,6 @@ internal class SpConsentLibImpl(
                                 singleShot = false
                             )
                         }
-
                     }
                     .executeOnLeft { spClient.onError(it) }
             }
