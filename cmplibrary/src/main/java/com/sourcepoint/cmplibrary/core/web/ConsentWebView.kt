@@ -134,7 +134,32 @@ internal class ConsentWebView(
         true
     }
 
-    override fun loadConsentUIFromUrl(url: HttpUrl, campaignType: CampaignType, pmId: String?, singleShot: Boolean): Either<Boolean> = check {
+    override fun loadConsentUIFromUrlPreloadingOption(
+        url: HttpUrl,
+        campaignType: CampaignType,
+        pmId: String?,
+        singleShot: Boolean,
+        preloading: Boolean,
+        consent: JSONObject
+    ): Either<Boolean> {
+        return when (preloading) {
+            true -> loadConsentUIFromUrlPreloading(
+                url = url,
+                campaignType = campaignType,
+                pmId = pmId,
+                singleShot = true,
+                consent = consent
+            )
+            false -> loadConsentUIFromUrl(
+                url = url,
+                campaignType = campaignType,
+                pmId = pmId,
+                singleShot = true
+            )
+        }
+    }
+
+    private fun loadConsentUIFromUrl(url: HttpUrl, campaignType: CampaignType, pmId: String?, singleShot: Boolean): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             val sb = StringBuffer()
@@ -150,7 +175,7 @@ internal class ConsentWebView(
         true
     }
 
-    override fun loadConsentUIFromUrlPreloading(
+    private fun loadConsentUIFromUrlPreloading(
         url: HttpUrl,
         campaignType: CampaignType,
         pmId: String?,
@@ -161,9 +186,9 @@ internal class ConsentWebView(
         spWebViewClient.jsReceiverConfig = {
             val sb = StringBuffer()
 
-            consent.apply {
+            val obj = JSONObject().apply {
                 put("name", "sp.loadConsent")
-                put("fromNativeSDK", true)
+                put("consent", consent)
             }
 
             sb.append(
@@ -172,7 +197,7 @@ internal class ConsentWebView(
                 window.localPmId ='$pmId'; 
                 window.isSingleShot = $singleShot; 
                 $jsReceiver;
-                window.postMessage($consent, "*");
+                window.postMessage($obj, "*");
                 """.trimIndent()
             )
             sb.toString()

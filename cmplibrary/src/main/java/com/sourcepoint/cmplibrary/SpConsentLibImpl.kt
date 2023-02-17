@@ -384,21 +384,19 @@ internal class SpConsentLibImpl(
                     type = "GET"
                 )
 
-                when (campaignManager.spConfig.clientSideOnly) {
-                    true -> webView?.loadConsentUIFromUrlPreloading(
-                        url = url,
-                        campaignType = campaignType,
-                        pmId = it.messageId,
-                        singleShot = true,
-                        consent = JSONObject(dataStorage.gdprConsentStatus!!)
-                    )
-                    false -> webView?.loadConsentUIFromUrl(
-                        url = url,
-                        campaignType = campaignType,
-                        pmId = it.messageId,
-                        singleShot = true
-                    )
+                val storedConsent = when (campaignType) {
+                    CampaignType.GDPR -> dataStorage.gdprConsentStatus!!
+                    CampaignType.CCPA -> dataStorage.ccpaConsentStatus!!
                 }
+
+                webView?.loadConsentUIFromUrlPreloadingOption(
+                    url = url,
+                    campaignType = campaignType,
+                    pmId = it.messageId,
+                    singleShot = true,
+                    preloading = campaignManager.spConfig.clientSideOnly,
+                    consent = JSONObject(storedConsent)
+                )
             }
             .executeOnLeft { logMess("PmUrlConfig is null") }
     }
@@ -615,21 +613,15 @@ internal class SpConsentLibImpl(
                             params = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
-                        when (campaignManager.spConfig.clientSideOnly) {
-                            true -> iConsentWebView.loadConsentUIFromUrlPreloading(
-                                url = url,
-                                campaignType = actionImpl.campaignType,
-                                pmId = actionImpl.privacyManagerId,
-                                singleShot = false,
-                                consent = JSONObject(dataStorage.gdprConsentStatus!!)
-                            )
-                            false -> iConsentWebView.loadConsentUIFromUrl(
-                                url = url,
-                                campaignType = actionImpl.campaignType,
-                                pmId = actionImpl.privacyManagerId,
-                                singleShot = false
-                            )
-                        }
+
+                        iConsentWebView.loadConsentUIFromUrlPreloadingOption(
+                            url = url,
+                            campaignType = actionImpl.campaignType,
+                            pmId = actionImpl.privacyManagerId,
+                            singleShot = true,
+                            preloading = campaignManager.spConfig.clientSideOnly,
+                            consent = JSONObject(dataStorage.gdprConsentStatus!!)
+                        )
                     }
                     .executeOnLeft { spClient.onError(it) }
             }
@@ -651,11 +643,13 @@ internal class SpConsentLibImpl(
                             params = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
-                        iConsentWebView.loadConsentUIFromUrl(
+                        iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
-                            singleShot = false
+                            singleShot = false,
+                            preloading = campaignManager.spConfig.clientSideOnly,
+                            consent = JSONObject(dataStorage.ccpaConsentStatus!!)
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }

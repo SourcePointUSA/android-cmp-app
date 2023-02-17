@@ -75,7 +75,7 @@ val appModule = module {
                 campaignsEnv = CampaignsEnv.PUBLIC
                 clientSideOnly = true
                 +(CampaignType.GDPR)
-//                +(CampaignType.CCPA to listOf(("location" to "US")))
+                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
 
         }
