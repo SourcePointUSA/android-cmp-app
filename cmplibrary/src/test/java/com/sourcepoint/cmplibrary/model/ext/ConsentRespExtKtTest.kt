@@ -131,7 +131,7 @@ class ConsentRespExtKtTest {
     fun `GIVEN a CCPA consent with status=linkedNoAction RETURN a consent object`() {
 
         val ccpaConsent = JSONObject(
-                """
+            """
             {
               "dateCreated": "2021-10-11T14:34:08.288Z",
               "newUser": false,
@@ -159,7 +159,7 @@ class ConsentRespExtKtTest {
     fun `GIVEN a CCPA consent with status=unknown RETURN a consent object`() {
 
         val ccpaConsent = JSONObject(
-                """
+            """
             {
               "dateCreated": "2021-10-11T14:34:08.288Z",
               "newUser": false,
