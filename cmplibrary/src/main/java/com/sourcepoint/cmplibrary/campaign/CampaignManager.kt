@@ -45,7 +45,6 @@ internal interface CampaignManager {
     val gdprMessageSubCategory: MessageSubCategory
     fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate)
 
-    fun isAppliedCampaign(campaignType: CampaignType): Boolean
     fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory
     fun getUnifiedMessageResp(): Either<UnifiedMessageResp>
 
@@ -344,13 +343,6 @@ private class CampaignManagerImpl(
             siteId = siteId,
             messageId = usedPmId
         )
-    }
-
-    override fun isAppliedCampaign(campaignType: CampaignType): Boolean {
-        return getAppliedCampaign()
-            .map { it.first == campaignType }
-            .getOrNull()
-            ?: false
     }
 
     override fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory {

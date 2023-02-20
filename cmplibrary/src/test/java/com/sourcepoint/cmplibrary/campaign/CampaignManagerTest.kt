@@ -1,9 +1,7 @@
 package com.sourcepoint.cmplibrary.campaign
 
 import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.assertFalse
 import com.sourcepoint.cmplibrary.assertNotNull
-import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -115,28 +113,6 @@ class CampaignManagerTest {
         val pairOutput = sut.getAppliedCampaign()
 
         (pairOutput as Either.Right).r.first.assertEquals(CampaignType.CCPA)
-    }
-
-    @Test
-    fun `GIVEN a gdpr applied campaign RETURN true passing GPDR as parameter`() {
-        every { dataStorage.getGdprMessage() }.returns("GDPR")
-        sut.run {
-            addCampaign(CampaignType.CCPA, ccpa)
-            addCampaign(CampaignType.GDPR, gdpr)
-        }
-        sut.isAppliedCampaign(CampaignType.GDPR).assertTrue()
-        sut.isAppliedCampaign(CampaignType.CCPA).assertFalse()
-    }
-
-    @Test
-    fun `GIVEN a ccpa applied campaign RETURN true passing CCPA as parameter`() {
-        every { dataStorage.getCcpaMessage() }.returns("CCPA")
-        sut.run {
-            addCampaign(CampaignType.CCPA, ccpa)
-            addCampaign(CampaignType.GDPR, gdpr)
-        }
-        sut.isAppliedCampaign(CampaignType.CCPA).assertTrue()
-        sut.isAppliedCampaign(CampaignType.GDPR).assertFalse()
     }
 
     @Test
