@@ -4,12 +4,11 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ChoiceResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
-import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
-import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 
@@ -18,13 +17,6 @@ import com.sourcepoint.cmplibrary.model.exposed.SPConsents
  * storing fields from the Response like the one with prefix `IABTCF_`
  */
 internal interface Service : NetworkClient, CampaignManager {
-
-    fun sendConsent(
-        localState: String,
-        consentAction: ConsentAction,
-        env: Env,
-        pmId: String?
-    ): Either<ConsentResp>
 
     fun sendConsentOptimized(
         consentActionImpl: ConsentActionImpl,
@@ -36,12 +28,12 @@ internal interface Service : NetworkClient, CampaignManager {
     fun sendCustomConsentServ(
         customConsentReq: CustomConsentReq,
         env: Env
-    ): Either<SPConsents?>
+    ): Either<GdprCS>
 
     fun deleteCustomConsentToServ(
         customConsentReq: CustomConsentReq,
         env: Env
-    ): Either<SPConsents?>
+    ): Either<GdprCS>
 
     fun getMessages(
         messageReq: MessagesParamReq,

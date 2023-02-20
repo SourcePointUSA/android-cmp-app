@@ -6,6 +6,8 @@ import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.converter.toMapOfAny
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
@@ -16,8 +18,10 @@ import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
@@ -51,80 +55,32 @@ private class ServiceImpl(
     private val execManager: ExecutorManager
 ) : Service, NetworkClient by nc, CampaignManager by campaignManager {
 
-    override fun getUnifiedMessage(
-        messageReq: UnifiedMessageRequest,
-        pSuccess: (UnifiedMessageResp) -> Unit,
-        pError: (Throwable) -> Unit,
-        env: Env
-    ) {
-        nc.getUnifiedMessage(
-            messageReq,
-            pSuccess = { messageResp ->
-                campaignManager.saveUnifiedMessageResp(messageResp)
-                messageResp.campaigns
-                pSuccess(messageResp)
-            },
-            pError = pError,
-            env = env
-        )
-    }
-
-    override fun sendConsent(
-        localState: String,
-        consentAction: ConsentAction,
-        env: Env,
-        pmId: String?
-    ): Either<ConsentResp> = check {
-        consentManagerUtils.buildConsentReq(consentAction, localState, pmId)
-            .flatMap {
-                nc.sendConsent(it, env, consentAction)
-            }
-            .executeOnRight {
-                dataStorage.run {
-                    saveLocalState(it.localState)
-                    savedConsent = true
-                }
-                when (it.campaignType) {
-                    GDPR -> {
-                        dataStorage.saveGdprConsentResp(it.userConsent ?: "")
-                        dataStorage.gdprConsentUuid = it.uuid
-                    }
-                    CCPA -> {
-                        dataStorage.saveCcpaConsentResp(it.userConsent ?: "")
-                        dataStorage.ccpaConsentUuid = it.uuid
-                    }
-                }
-            }
-            .fold(
-                { throwable -> throw throwable },
-                { consentResp: ConsentResp -> consentResp }
-            )
-    }
-
-    override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<SPConsents?> = check {
+    override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<GdprCS> = check {
         nc.sendCustomConsent(customConsentReq, env)
             .map {
-                if (dataStorage.getGdprConsentResp() == null) {
+                if (campaignManager.gdprConsentStatus == null) {
                     genericFail("CustomConsent cannot be executed. Consent is missing!!!")
                 }
-                val existingConsent = JSONObject(dataStorage.getGdprConsentResp())
-                existingConsent.put("grants", it.content.get("grants"))
-                dataStorage.saveGdprConsentResp(existingConsent.toString())
+                val grantsString: String = (it.content.get("grants") as JSONObject).toString()
+                val grants = JsonConverter.converter.decodeFromString<Map<String, GDPRPurposeGrants>>(grantsString)
+                val updatedGrants = campaignManager.gdprConsentStatus?.copy(grants = grants)
+                campaignManager.gdprConsentStatus = updatedGrants
             }
-        consentManagerUtils.getSpConsent()
+        campaignManager.gdprConsentStatus!!
     }
 
-    override fun deleteCustomConsentToServ(customConsentReq: CustomConsentReq, env: Env): Either<SPConsents?> = check {
+    override fun deleteCustomConsentToServ(customConsentReq: CustomConsentReq, env: Env): Either<GdprCS> = check {
         nc.deleteCustomConsentTo(customConsentReq, env)
             .map {
-                if (dataStorage.getGdprConsentResp() == null) {
+                if (campaignManager.gdprConsentStatus == null) {
                     genericFail("CustomConsent cannot be executed. Consent is missing!!!")
                 }
-                val existingConsent = JSONObject(dataStorage.getGdprConsentResp())
-                existingConsent.put("grants", it.content.get("grants"))
-                dataStorage.saveGdprConsentResp(existingConsent.toString())
+                val grantsString: String = (it.content.get("grants") as JSONObject).toString()
+                val grants = JsonConverter.converter.decodeFromString<Map<String, GDPRPurposeGrants>>(grantsString)
+                val updatedGrants = campaignManager.gdprConsentStatus?.copy(grants = grants)
+                campaignManager.gdprConsentStatus = updatedGrants
             }
-        consentManagerUtils.getSpConsent()
+        campaignManager.gdprConsentStatus!!
     }
 
     var pMessageReq: MessagesParamReq? = null

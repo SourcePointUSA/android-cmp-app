@@ -98,7 +98,7 @@ class MainActivityKotlin : AppCompatActivity() {
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
                 legIntCategories = emptyList(),
-                success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
+                success = { spCustomConsents -> spClientObserver.forEach { it.onConsentReady(spCustomConsents!!) } }
             )
         }
         delete_custom_consent.setOnClickListener { _v: View? ->
@@ -106,7 +106,7 @@ class MainActivityKotlin : AppCompatActivity() {
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
                 legIntCategories = emptyList(),
-                success = { spCustomConsents -> println("custom consent: [$spCustomConsents]") }
+                success = { spCustomConsents -> spClientObserver.forEach { it.onConsentReady(spCustomConsents!!) } }
             )
         }
         consent_btn.setOnClickListener {

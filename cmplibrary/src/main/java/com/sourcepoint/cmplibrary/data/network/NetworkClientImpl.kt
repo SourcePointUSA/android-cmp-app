@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.toBodyRequest
 import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -18,7 +17,6 @@ import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
-import org.json.JSONObject
 
 internal fun createNetworkClient(
     httpClient: OkHttpClient,
@@ -33,81 +31,6 @@ private class NetworkClientImpl(
     private val logger: Logger,
     private val responseManager: ResponseManager = ResponseManager.create(JsonConverter.create(), logger),
 ) : NetworkClient {
-
-    override fun getUnifiedMessage(
-        messageReq: UnifiedMessageRequest,
-        pSuccess: (UnifiedMessageResp) -> Unit,
-        pError: (Throwable) -> Unit,
-        env: Env
-    ) {
-        val mediaType = MediaType.parse("application/json")
-        val jsonBody = messageReq.toBodyRequest()
-        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
-        val url = urlManager.inAppMessageUrl(env)
-
-        logger.req(
-            tag = "UnifiedMessageReq",
-            url = url.toString(),
-            body = jsonBody,
-            type = "POST"
-        )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-
-        httpClient
-            .newCall(request)
-            .enqueue {
-                onFailure { _, exception ->
-                    pError(exception)
-                }
-                onResponse { _, r ->
-                    responseManager
-                        .parseResponse(r)
-                        .map {
-                            pSuccess(it)
-                        }
-                        .executeOnLeft {
-                            pError(it)
-                        }
-                }
-            }
-    }
-
-    override fun sendConsent(
-        consentReq: JSONObject,
-        env: Env,
-        consentAction: ConsentAction
-    ): Either<ConsentResp> = check {
-
-        val mediaType = MediaType.parse("application/json")
-        val jsonBody = consentReq.toString()
-        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
-        val url = urlManager
-            .sendConsentUrl(
-                campaignType = consentAction.campaignType,
-                env = env,
-                actionType = consentAction.actionType
-            )
-
-        logger.req(
-            tag = "sendConsent",
-            url = url.toString(),
-            body = jsonBody,
-            type = "POST"
-        )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-
-        responseManager.parseConsentRes(response, consentAction.campaignType)
-    }
 
     override fun sendCustomConsent(
         customConsentReq: CustomConsentReq,
