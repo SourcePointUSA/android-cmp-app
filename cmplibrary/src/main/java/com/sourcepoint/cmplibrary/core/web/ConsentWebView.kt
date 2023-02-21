@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Message
 import android.view.View
 import android.webkit.JavascriptInterface
@@ -191,6 +192,13 @@ internal class ConsentWebView(
                 put("consent", consent)
             }
 
+            logger.flm(
+                tag = "Preloading - $campaignType Privacy Manager",
+                url = url.toString(),
+                json = obj,
+                type = "GET",
+            )
+
             sb.append(
                 """
                 javascript: window.spLegislation = '${campaignType.name}'; 
@@ -295,11 +303,6 @@ internal class ConsentWebView(
         @JavascriptInterface
         override fun onError(errorMessage: String) {
             jsClientLib.onError(this@ConsentWebView, errorMessage)
-        }
-
-        @JavascriptInterface
-        override fun readyForPreloadConsent() {
-            println("")
         }
     }
 }

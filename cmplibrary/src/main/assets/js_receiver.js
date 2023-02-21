@@ -78,9 +78,6 @@ function handleEvent(event) {
             case 'sp.renderingAppError':
                 sdk.onError(JSON.stringify(payload));
                 break;
-            case 'sp.readyForPreloadConsent':
-                sdk.readyForPreloadConsent();
-                break;
             default:
                 sdk.log("Unexpected event name: " + JSON.stringify(payload.name));
         }

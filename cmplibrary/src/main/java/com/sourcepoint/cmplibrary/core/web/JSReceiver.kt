@@ -21,8 +21,5 @@ internal interface JSReceiver {
     @JavascriptInterface
     fun onConsentUIReady(isFromPM: Boolean)
 
-    @JavascriptInterface
-    fun readyForPreloadConsent()
-
     companion object
 }
