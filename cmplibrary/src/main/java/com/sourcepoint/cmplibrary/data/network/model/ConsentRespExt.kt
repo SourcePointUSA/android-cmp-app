@@ -60,9 +60,9 @@ internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?, applies: Boolean
             val status = CcpaStatus.values().find {
                 it.name == s
             }
-            return@let status ?: CcpaStatus.unknown
+            status ?: CcpaStatus.unknown
         }
-        ?: fail("CCPAStatus cannot be null!!!")
+        ?: CcpaStatus.unknown
 
     val uspString: String = getFieldValue("uspstring") ?: ""
 
