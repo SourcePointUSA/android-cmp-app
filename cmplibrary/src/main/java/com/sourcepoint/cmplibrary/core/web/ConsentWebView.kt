@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.net.Uri
-import android.os.Build
 import android.os.Message
 import android.view.View
 import android.webkit.JavascriptInterface
