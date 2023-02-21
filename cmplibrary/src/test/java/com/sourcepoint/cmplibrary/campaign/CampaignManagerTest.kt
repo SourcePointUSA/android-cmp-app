@@ -55,6 +55,7 @@ class CampaignManagerTest {
         MessageLanguage.ENGLISH,
         propertyId = 9090,
         messageTimeout = 3000,
+        clientSideOnly = false
     )
 
     @Before
