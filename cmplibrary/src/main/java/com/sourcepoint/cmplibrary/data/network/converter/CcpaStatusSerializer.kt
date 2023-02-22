@@ -16,7 +16,7 @@ object CcpaStatusSerializer : KSerializer<CcpaStatus> {
         val code = decoder.decodeString()
         return CcpaStatus.values()
             .find { m -> m.name == code }
-            ?: CcpaStatus.consentedAll
+            ?: CcpaStatus.unknown
     }
 
     override fun serialize(encoder: Encoder, value: CcpaStatus) {
