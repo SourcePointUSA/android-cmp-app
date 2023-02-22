@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model
 
 import com.sourcepoint.cmplibrary.core.getOrNull
-import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -60,7 +59,7 @@ internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?, applies: Boolean
             CcpaStatus.values().find {
                 it.name == s
             }
-            ?: CcpaStatus.unknown
+                ?: CcpaStatus.unknown
         }
         ?: CcpaStatus.unknown
 
