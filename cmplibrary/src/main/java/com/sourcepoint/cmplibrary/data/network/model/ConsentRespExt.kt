@@ -57,10 +57,10 @@ internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?, applies: Boolean
 
     val status: CcpaStatus = getFieldValue<String>("status")
         ?.let { s ->
-            val status = CcpaStatus.values().find {
+            CcpaStatus.values().find {
                 it.name == s
             }
-            status ?: CcpaStatus.unknown
+            ?: CcpaStatus.unknown
         }
         ?: CcpaStatus.unknown
 
