@@ -72,7 +72,9 @@ enum class CcpaStatus {
     rejectedAll,
     rejectedSome,
     rejectedNone,
-    consentedAll
+    consentedAll,
+    linkedNoAction,
+    unknown
 }
 
 internal fun GDPRConsentInternal.toJsonObject(): JSONObject {

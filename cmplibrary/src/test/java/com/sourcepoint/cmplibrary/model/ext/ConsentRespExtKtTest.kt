@@ -128,6 +128,62 @@ class ConsentRespExtKtTest {
     }
 
     @Test
+    fun `GIVEN a CCPA consent with status=linkedNoAction RETURN a consent object`() {
+
+        val ccpaConsent = JSONObject(
+            """
+            {
+              "dateCreated": "2021-10-11T14:34:08.288Z",
+              "newUser": false,
+              "rejectedAll": false,
+              "rejectedCategories": [],
+              "rejectedVendors": [],
+              "signedLspa": false,
+              "status": "linkedNoAction",
+              "uspstring": "1---"
+            }
+            """.trimIndent()
+        ).toTreeMap()
+        val test = ccpaConsent.toCCPAUserConsent("1234", true)
+        test.run {
+            uspstring.assertEquals("1---")
+            status!!.name.assertEquals("linkedNoAction")
+            rejectedCategories.size.assertEquals(0)
+            rejectedVendors.size.assertEquals(0)
+            uuid.assertEquals("1234")
+            applies.assertTrue()
+        }
+    }
+
+    @Test
+    fun `GIVEN a CCPA consent with status=unknown RETURN a consent object`() {
+
+        val ccpaConsent = JSONObject(
+            """
+            {
+              "dateCreated": "2021-10-11T14:34:08.288Z",
+              "newUser": false,
+              "rejectedAll": false,
+              "rejectedCategories": [],
+              "rejectedVendors": [],
+              "signedLspa": false,
+              "status": "adsasdasdasd",
+              "uspstring": "1---"
+            }
+            """.trimIndent()
+        ).toTreeMap()
+        val test = ccpaConsent.toCCPAUserConsent("1234", true)
+        test.run {
+            uspstring.assertEquals("1---")
+            status!!.name.assertEquals("unknown")
+            rejectedCategories.size.assertEquals(0)
+            rejectedVendors.size.assertEquals(0)
+            uuid.assertEquals("1234")
+            applies.assertTrue()
+        }
+    }
+
+    @Test
     fun `GIVEN a CCPA consent with not empty rejectedCategories and rejectedVendors RETURN a consent object`() {
         val ccpaConsent = JSONObject(
             """
