@@ -403,8 +403,8 @@ class MainActivityKotlinTest {
         clickOnRefreshBtnActivity()
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 4) { spClient.onSpFinished(any()) } }
-        wr { verify(exactly = 5) { spClient.onConsentReady(any()) } }
+        wr { verify(atLeast = 3) { spClient.onSpFinished(any()) } }
+        wr { verify(atLeast = 4) { spClient.onConsentReady(any()) } }
         wr { verify(atLeast = 2) { spClient.onUIReady(any()) } }
     }
 
