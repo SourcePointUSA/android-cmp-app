@@ -86,6 +86,15 @@ class MainActivityKotlinTest {
         +(CampaignType.GDPR)
     }
 
+    private val spConfGdprNoMessage = config {
+        accountId = 22
+        propertyId = 29498
+        propertyName = "ott-ccpa-22"
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 3000
+        +(CampaignType.GDPR)
+    }
+
     private val spConfGdprGroupId = config {
         accountId = 22
         propertyId = 24188
@@ -163,6 +172,8 @@ class MainActivityKotlinTest {
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
+                getString("IABTCF_AddtlConsent", null).assertEquals("1~899")
+                getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("0000000000")
                 getString("IABTCF_TCString", null).assertNotNull()
                 getInt("IABTCF_CmpSdkVersion", -1).assertNotEquals(-1)
                 getInt("IABTCF_CmpSdkID", -1).assertNotEquals(-1)
@@ -173,13 +184,11 @@ class MainActivityKotlinTest {
                 getString("IABTCF_PurposeConsents", null).assertNotNull()
                 getString("IABTCF_TCString", null).assertNotNull()
                 getString("IABTCF_PublisherRestrictions10", null).assertNotNull()
-                getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("0000000000")
                 getString("IABTCF_SpecialFeaturesOptIns", null).assertNotNull()
                 getString("IABTCF_PublisherCC", null).assertNotNull()
                 getString("IABTCF_VendorConsents", null).assertNotNull()
                 getString("IABTCF_PublisherCustomPurposesLegitimateInterests", null).assertNotNull()
                 getString("IABTCF_PurposeLegitimateInterests", null).assertNotNull()
-                getString("IABTCF_AddtlConsent", null).assertEquals("1~899")
                 getString("IABTCF_PublisherCustomPurposesConsents", null).assertNotNull()
                 getString("IABTCF_PublisherRestrictions7", null).assertNotNull()
                 getString("IABTCF_PublisherRestrictions2", null).assertNotNull()
@@ -397,6 +406,55 @@ class MainActivityKotlinTest {
         wr { verify(exactly = 4) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 5) { spClient.onConsentReady(any()) } }
         wr { verify(atLeast = 2) { spClient.onUIReady(any()) } }
+    }
+
+    @Test
+    fun GIVEN_a_campaign_without_pupup_to_show_VERIFY_that_the_tddata_gets_saved() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdprNoMessage,
+                gdprPmId = "111111",
+                ccpaPmId = "222222",
+                spClientObserver = listOf(spClient),
+            )
+        )
+
+        scenario = launchActivity()
+
+        verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(atLeast = 0) { spClient.onUIReady(any()) } }
+
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+                getString("IABTCF_AddtlConsent", null).assertEquals("1~")
+                getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("0000000000")
+                getString("IABTCF_TCString", null).assertNotNull()
+                getInt("IABTCF_CmpSdkVersion", -1).assertNotEquals(-1)
+                getInt("IABTCF_CmpSdkID", -1).assertNotEquals(-1)
+                getInt("IABTCF_PolicyVersion", -1).assertNotEquals(-1)
+                getInt("IABTCF_UseNonStandardStacks", -1).assertNotEquals(-1)
+                getInt("IABTCF_gdprApplies", -1).assertNotEquals(-1)
+                getInt("IABTCF_PurposeOneTreatment", -1).assertNotEquals(-1)
+                getString("IABTCF_PurposeConsents", null).assertNotNull()
+                getString("IABTCF_TCString", null).assertNotNull()
+                getString("IABTCF_PublisherRestrictions10", null).assertNotNull()
+                getString("IABTCF_SpecialFeaturesOptIns", null).assertNotNull()
+                getString("IABTCF_PublisherCC", null).assertNotNull()
+                getString("IABTCF_VendorConsents", null).assertNotNull()
+                getString("IABTCF_PublisherCustomPurposesLegitimateInterests", null).assertNotNull()
+                getString("IABTCF_PurposeLegitimateInterests", null).assertNotNull()
+                getString("IABTCF_PublisherCustomPurposesConsents", null).assertNotNull()
+                getString("IABTCF_PublisherRestrictions7", null).assertNotNull()
+                getString("IABTCF_PublisherRestrictions2", null).assertNotNull()
+                getString("IABTCF_PublisherRestrictions4", null).assertNotNull()
+                getString("IABTCF_PublisherConsent", null).assertNotNull()
+            }
+        }
     }
 
     @Test
