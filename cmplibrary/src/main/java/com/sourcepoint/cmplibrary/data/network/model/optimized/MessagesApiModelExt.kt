@@ -46,9 +46,11 @@ internal fun List<CampaignReq>.toMetadataBody(
                         "consentStatus",
                         cs?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonObject(mapOf())
                     )
+                    cs?.let { put("hasLocalData", true) }
                 }
                 if (c.campaignType == CampaignType.CCPA) {
                     put("status", ccpaStatus ?: "")
+                    ccpaStatus?.let { put("hasLocalData", true) }
                 }
                 putJsonObject("targetingParams") {
                     c.targetingParams.forEach { t -> put(t.key, t.value) }

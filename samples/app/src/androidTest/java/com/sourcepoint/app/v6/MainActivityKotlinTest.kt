@@ -372,6 +372,34 @@ class MainActivityKotlinTest {
     }
 
     @Test
+    fun GIVEN_a_campaignList_ACCEPT_all_legislation_and_verify_that_the_popup_apper_1_time() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
+        wr { tapAcceptCcpaOnWebView() }
+        clickOnRefreshBtnActivity()
+        clickOnRefreshBtnActivity()
+        clickOnRefreshBtnActivity()
+
+        verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 4) { spClient.onSpFinished(any()) } }
+        wr { verify(exactly = 5) { spClient.onConsentReady(any()) } }
+        wr { verify(atLeast = 2) { spClient.onUIReady(any()) } }
+    }
+
+    @Test
     fun GIVEN_a_camapignList_ACCEPT_all_legislation_from_option_button() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
