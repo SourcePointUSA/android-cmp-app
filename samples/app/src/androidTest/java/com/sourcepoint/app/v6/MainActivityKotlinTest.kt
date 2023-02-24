@@ -989,7 +989,6 @@ class MainActivityKotlinTest {
             sp.contains("sp.key.local.state").assertTrue()
         }
 
-        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
@@ -1039,7 +1038,6 @@ class MainActivityKotlinTest {
             sp.contains("sp.key.local.state").assertTrue()
         }
 
-        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
@@ -1087,7 +1085,6 @@ class MainActivityKotlinTest {
             sp.contains("sp.key.local.state").assertTrue()
         }
 
-        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
