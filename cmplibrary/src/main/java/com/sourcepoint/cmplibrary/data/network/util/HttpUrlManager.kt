@@ -307,7 +307,7 @@ enum class Env(
     PRE_PROD(
         "preprod-cdn.privacy-mgmt.com",
         "preprod-cdn.privacy-mgmt.com",
-        "ccpa-inapp-pm.sp-prod.net",
+        "preprod-cdn.privacy-mgmt.com",
         "prod"
     ),
     LOCAL_PROD(
