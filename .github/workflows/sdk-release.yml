@@ -2,7 +2,7 @@ name: SDK Release
 
 on:
   push:
-    branches:  [ disable ] #[ release/* ]
+    branches:  [ sdk_v6_release_maven_central ] #[ release/* ]
 #    paths:
 #      - '!*.yml'
 #      - '!README.md'
@@ -73,8 +73,8 @@ jobs:
           SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
           SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
-      - name: Add, commit and push edited files
-        env:
-          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
-        run: ./gradlew addCommitPush
+#      - name: Add, commit and push edited files
+#        env:
+#          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+#          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+#        run: ./gradlew addCommitPush
