@@ -6,11 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.* //ktlint-disable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,7 +17,7 @@ import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
-import com.sourcepointmeta.metaapp.ui.BaseState.* // ktlint-disable
+import com.sourcepointmeta.metaapp.ui.BaseState.* //ktlint-disable
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
 import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
@@ -30,12 +26,12 @@ import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
 import com.sourcepointmeta.metaapp.ui.sp.PreferencesActivity
 import com.sourcepointmeta.metaapp.util.oldV6Consent
 import com.sourcepointmeta.metaapp.util.oldV6Consent630
-import kotlinx.android.synthetic.main.fragment_property_list.*// ktlint-disable
-import kotlinx.android.synthetic.main.fragment_property_list.tool_bar
+import kotlinx.android.synthetic.main.fragment_property_list.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
+import java.io.File
 
 class PropertyListFragment : Fragment() {
 
@@ -147,6 +143,9 @@ class PropertyListFragment : Fragment() {
                     }
                     editor.apply()
                 }
+                R.id.action_drop_db -> {
+                    showDropDbDialog()
+                }
             }
             true
         }
@@ -172,6 +171,19 @@ class PropertyListFragment : Fragment() {
     }
 
     private fun errorState(it: StateError) {
+    }
+
+    private fun showDropDbDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Drop the entire DB")
+            .setMessage("After the confirmation the app will be terminated.")
+            .setPositiveButton("Confirm") { _, _ ->
+                val database = requireContext().getDatabasePath("newmetaapp.db")
+                database.safeDelete()
+                System.exit(0)
+            }
+            .setNegativeButton("Cancel") { _, _ -> }
+            .show()
     }
 
     private fun showDeleteDialog(position: Int, adapter: PropertyAdapter) {
@@ -229,6 +241,13 @@ class PropertyListFragment : Fragment() {
             block.invoke()
         } catch (e: Exception) {
             null
+        }
+    }
+
+    private fun File.safeDelete(): Boolean {
+        return when (exists()) {
+            true -> this.delete()
+            else -> false
         }
     }
 }

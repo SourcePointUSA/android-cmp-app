@@ -45,7 +45,6 @@ internal interface CampaignManager {
     val gdprMessageSubCategory: MessageSubCategory
     fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate)
 
-    fun isAppliedCampaign(campaignType: CampaignType): Boolean
     fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory
     fun getUnifiedMessageResp(): Either<UnifiedMessageResp>
 
@@ -344,13 +343,6 @@ private class CampaignManagerImpl(
             siteId = siteId,
             messageId = usedPmId
         )
-    }
-
-    override fun isAppliedCampaign(campaignType: CampaignType): Boolean {
-        return getAppliedCampaign()
-            .map { it.first == campaignType }
-            .getOrNull()
-            ?: false
     }
 
     override fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory {
@@ -676,9 +668,7 @@ private class CampaignManagerImpl(
         }
 
     override val hasLocalData: Boolean
-        get() = dataStorage.preference.all.containsKey(LOCAL_STATE) || dataStorage.preference.all.containsKey(
-            LOCAL_STATE_OLD
-        )
+        get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaStatus != null
 
     override fun handleMetaDataLogic(md: MetaDataResp?) {
         metaDataResp = md

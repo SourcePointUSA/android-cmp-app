@@ -33,4 +33,10 @@
             android:title="Save old v6.3 consent"
             app:showAsAction="never"/>
 
+    <item
+            android:id="@+id/action_drop_db"
+            android:icon="@drawable/ic_baseline_cancel_24"
+            android:title="Drop DB"
+            app:showAsAction="never"/>
+
 </menu>
