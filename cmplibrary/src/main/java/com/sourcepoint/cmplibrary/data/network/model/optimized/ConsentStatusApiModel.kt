@@ -90,9 +90,7 @@ data class GdprCS(
     @Serializable(with = TcDataSerializer::class) val TCData: Map<String, JsonElement>?,
     @SerialName("localDataCurrent") val localDataCurrent: Boolean?,
     @SerialName("uuid") val uuid: String?,
-    @SerialName("vendorListId") val vendorListId: String?,
-    @SerialName("acceptedCategories") val acceptedCategories: List<String>?,
-    @SerialName("acceptedVendors") val acceptedVendors: List<String>?,
+    @SerialName("vendorListId") val vendorListId: String?
 ) {
 
     @Serializable
