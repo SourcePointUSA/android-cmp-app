@@ -1,3 +1,9 @@
+## 7.0.5 (February, 27, 2023)
+* [DIA-1859](https://sourcepoint.atlassian.net/browse/DIA-1859) Add hasLocalData in the messages request parameters (#595)
+* [DIA-1735](https://sourcepoint.atlassian.net/browse/DIA-1735) Add "linkedNoAction" to CCPA consent status (#594)
+* [DIA-1810](https://sourcepoint.atlassian.net/browse/DIA-1810) Change the structure of the custom consent accordingly to the new consent DTO (#587)
+* [DIA-1763](https://sourcepoint.atlassian.net/browse/DIA-1763) Metaapp - Add drop db feature (#586)
+
 ## 7.0.4 (February, 10, 2023)
 *  [DIA-1826](https://sourcepoint.atlassian.net/browse/DIA-1826) Issue on the serialisation (#584)
 
