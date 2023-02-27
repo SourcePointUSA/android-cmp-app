@@ -2,10 +2,12 @@ name: SDK Release
 
 on:
   push:
-    branches:  [ disable ] #[ release/* ]
+    branches:  [ sdk_v6_release ] #[ release/* ]
 #    paths:
-#      - '!*.yml'
 #      - '!README.md'
+#      - 'cmplibrary/gradle.properties'
+#      - 'cmplibrary/release_note.txt'
+#      - '!*.yml'
 #      - '!CHANGELOG.md'
 #      - '!samples/metaapp/gradle.properties'
 
