@@ -1,4 +1,5 @@
-* [DIA-1813](https://sourcepoint.atlassian.net/browse/DIA-1813) Added new enum values for ccpaStatus and tests for them (#591)
+* [DIA-1708](https://sourcepoint.atlassian.net/browse/DIA-1708) Create a new ott enum type to be used in the loadPrivacyManager api (#567)
+
 
 
 
