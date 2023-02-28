@@ -16,9 +16,10 @@
 4. Then go to `cmplibrary/release_note.txt`, clear it and fulfill with description of every single commit pushed to `v6/develop`
    branch since the last artifact release. Please, stick to style of description which appears in that file!
    This part will appear in changelog after artifact release will be accomplished.
-   ```
+    ```
    git log --oneline
     ```
+   To exit the --oneline command press `q` in the terminal.
 5. Commit and push these two files **ONLY**. The commit message **MUST** be “release/x.y.z”. The reason of such strict
    rules relates to our automated release process;
     ```
