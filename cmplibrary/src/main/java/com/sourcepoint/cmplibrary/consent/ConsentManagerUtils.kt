@@ -17,8 +17,7 @@ import com.sourcepoint.cmplibrary.model.IncludeData
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
 import java.util.* // ktlint-disable
 
 internal interface ConsentManagerUtils {
@@ -131,14 +130,14 @@ private class ConsentManagerUtilsImpl(
         legalBasisChangeDate: String
     ): ConsentStatus {
 
-        val formatter: DateTimeFormatter =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-        val dataRecordedConsentDate: LocalDateTime = LocalDateTime.parse(dataRecordedConsent, formatter)
-        val additionsChangeDateDate: LocalDateTime = LocalDateTime.parse(additionsChangeDate, formatter)
-        val legalBasisChangeDateConsentDate: LocalDateTime = LocalDateTime.parse(legalBasisChangeDate, formatter)
+        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
 
-        val creationLessThanAdditions = dataRecordedConsentDate.isBefore(additionsChangeDateDate)
-        val creationLessThanLegalBasis = dataRecordedConsentDate.isBefore(legalBasisChangeDateConsentDate)
+        val dataRecordedConsentDate = formatter.parse(dataRecordedConsent)
+        val additionsChangeDateDate = formatter.parse(additionsChangeDate)
+        val legalBasisChangeDateConsentDate = formatter.parse(legalBasisChangeDate)
+
+        val creationLessThanAdditions = dataRecordedConsentDate.before(additionsChangeDateDate)
+        val creationLessThanLegalBasis = dataRecordedConsentDate.before(legalBasisChangeDateConsentDate)
 
         val updatedCS = gdprConsentStatus.copy()
 
