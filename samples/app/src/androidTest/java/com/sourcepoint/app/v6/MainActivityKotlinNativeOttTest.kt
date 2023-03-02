@@ -25,14 +25,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 
-//@RunWith(AndroidJUnit4ClassRunner::class)
+@RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinNativeOttTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
     private val device by lazy { UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()) }
 
-//    @After
+    @After
     fun cleanup() {
         if (this::scenario.isLateinit) scenario.close()
     }
@@ -47,7 +47,7 @@ class MainActivityKotlinNativeOttTest {
         +(CampaignType.GDPR)
     }
 
-//    @Test
+    @Test
     fun GIVEN_a_NATIVE_OTT_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
@@ -55,7 +55,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "701546",
+                gdprPmId = "704111",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )
@@ -91,7 +91,7 @@ class MainActivityKotlinNativeOttTest {
         }
     }
 
-//    @Test
+    @Test
     fun GIVEN_a_NATIVE_OTT_campaign_SHOW_message_and_ACCEPT_ALL_from_PM() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
@@ -99,7 +99,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "701546",
+                gdprPmId = "704111",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )
