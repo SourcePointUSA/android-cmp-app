@@ -18,7 +18,7 @@ import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.* // ktlint-disable
 
 internal interface ConsentManagerUtils {
 
@@ -130,7 +130,7 @@ private class ConsentManagerUtilsImpl(
         legalBasisChangeDate: String
     ): ConsentStatus {
 
-         val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
 
         val dataRecordedConsentDate = formatter.parse(dataRecordedConsent)
         val additionsChangeDateDate = formatter.parse(additionsChangeDate)
