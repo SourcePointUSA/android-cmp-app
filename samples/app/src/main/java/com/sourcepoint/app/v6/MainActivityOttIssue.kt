@@ -22,16 +22,14 @@ class MainActivityOttIssue : AppCompatActivity() {
             val scaleFactor = density - (density * 0.6).toInt()
             webview.setInitialScale(scaleFactor)
 
-            val flm = "https://cdn.privacy-mgmt.com/native-ott/index.html?message_id=755022&consentLanguage=EN&preload_message=true&version=v1"
             val preProdRenderingAppHost = "https://preprod-cdn.privacy-mgmt.com"
             val ottPMPath = "/privacy-manager-ott/index.html"
             val messageId = "623981"
-//            webview.loadUrl(
-//                preProdRenderingAppHost +
-//                    ottPMPath +
-//                    "?message_id=" + messageId +
-//                    "&mms_origin=https://cdn.privacy-mgmt.com/mms/v2&cmpv2_origin=https://cdn.privacy-mgmt.com/consent/tcfv2"
-//            )
-            webview.loadUrl(flm)
+            webview.loadUrl(
+                preProdRenderingAppHost +
+                    ottPMPath +
+                    "?message_id=" + messageId +
+                    "&mms_origin=https://cdn.privacy-mgmt.com/mms/v2&cmpv2_origin=https://cdn.privacy-mgmt.com/consent/tcfv2"
+            )
         }
 }
