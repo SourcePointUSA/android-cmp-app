@@ -32,7 +32,7 @@ class MainActivityKotlinNativeOttTest {
 
     private val device by lazy { UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()) }
 
-//    @After
+    @After
     fun cleanup() {
         if (this::scenario.isLateinit) scenario.close()
     }
@@ -55,7 +55,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "701546",
+                gdprPmId = "704111",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )
@@ -99,7 +99,7 @@ class MainActivityKotlinNativeOttTest {
         loadKoinModules(
             mockModule(
                 spConfig = spConfOttNative,
-                gdprPmId = "701546",
+                gdprPmId = "704111",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
             )

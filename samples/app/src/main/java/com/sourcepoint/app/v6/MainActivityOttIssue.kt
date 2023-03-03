@@ -12,7 +12,7 @@ class MainActivityOttIssue : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_main)
+            setContentView(R.layout.activity_main_auth_id)
             val webview = findViewById<WebView>(R.id.webview)
             webview.settings.loadsImagesAutomatically = true
             webview.settings.javaScriptEnabled = true
