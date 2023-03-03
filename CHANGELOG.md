@@ -1,3 +1,6 @@
+## 7.0.6 (March, 03, 2023)
+* [DIA-1854](https://sourcepoint.atlassian.net/browse/DIA-1854) Fix crash Datetime class on Android 6/7 (#607)
+
 ## 7.0.5 (February, 27, 2023)
 * [DIA-1859](https://sourcepoint.atlassian.net/browse/DIA-1859) Add hasLocalData in the messages request parameters (#595)
 * [DIA-1735](https://sourcepoint.atlassian.net/browse/DIA-1735) Add "linkedNoAction" to CCPA consent status (#594)
