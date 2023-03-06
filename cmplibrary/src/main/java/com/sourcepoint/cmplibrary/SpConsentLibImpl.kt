@@ -678,11 +678,13 @@ internal class SpConsentLibImpl(
                             params = "${action.privacyManagerId}",
                             type = "GET"
                         )
-                        iConsentWebView.loadConsentUIFromUrl(
+                        iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
-                            campaignModel = currentNativeMessageCampaign!!,
+                            singleShot = true,
+                            preloading = campaignManager.spConfig.clientSideOnly,
+                            consent = JSONObject(dataStorage.gdprConsentStatus!!)
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -705,11 +707,13 @@ internal class SpConsentLibImpl(
                             params = "${action.privacyManagerId}",
                             type = "GET"
                         )
-                        iConsentWebView.loadConsentUIFromUrl(
+                        iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
-                            campaignModel = currentNativeMessageCampaign!!
+                            singleShot = true,
+                            preloading = campaignManager.spConfig.clientSideOnly,
+                            consent = JSONObject(dataStorage.ccpaConsentStatus!!)
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
