@@ -23,6 +23,7 @@
   - [The *SpConsent* object](#The-SpConsent-object)
   - [Authenticated Consent](#Authenticated-Consent)
   - [Sharing consent with a `WebView`](#Sharing-consent-with-a-WebView)
+  - [Preloading](#Preloading)
   - [The `authId`](#The-authId)
   - [Complete Example](#Complete-Example)
   - [Setting a Targeting Param](#Setting-a-Targeting-Param)
@@ -70,6 +71,7 @@ Kotlin
                   messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
                   campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
                   messageTimeout = 4000 // Optional, default 3000ms
+                  clientSideOnly = false
                   +CampaignType.CCPA
                   +CampaignType.GDPR
                 }
@@ -89,6 +91,7 @@ Java
             .addMessageTimeout(4000) // Optional, default 3000ms
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
+            .isClientSideOnly(false)
             .build();
 
 ```
@@ -388,6 +391,45 @@ Java
 
 ## Sharing consent with a `WebView`
 In order to share the consent between native and webview the SDK will rely on authenticated consent (explained in detail below).
+
+### Preloading
+When configured in the advanced section of the properties vendor list, UUIDs (and subsequently consent data of a user) 
+will no be stored server side.
+From the SDK point of view to enable the preloading capabilities, you need to set, in the [config object](#create-new-config-object), 
+the `clientSideOnly` property to true:
+
+Kotlin
+```kotlin
+    val cmpConfig : SpConfig = config {
+                  accountId = 22
+                  propertyId = 16893
+                  propertyName = "mobile.multicampaign.demo"
+                  messLanguage = MessageLanguage.ENGLISH
+                  campaignsEnv = CampaignsEnv.PUBLIC
+                  messageTimeout = 4000
+                  clientSideOnly = true  // Preloading feature
+                  +CampaignType.CCPA
+                  +CampaignType.GDPR
+                }
+```
+
+In case of Java language you can use a factory method to instantiate the Cmp lib
+
+Java
+```java
+    private final SpConfig cmpConfig = new SpConfigDataBuilder()
+            .addAccountId(22)
+            .addPropertyId(16893)
+            .addPropertyName("mobile.multicampaign.demo")
+            .addMessageLanguage(MessageLanguage.ENGLISH)
+            .addCampaignsEnv(CampaignsEnv.PUBLIC)
+            .addMessageTimeout(4000)
+            .addCampaign(CampaignType.GDPR)
+            .addCampaign(CampaignType.CCPA)
+            .isClientSideOnly(true)  // Preloading feature
+            .build();
+
+```
 
 ### The `authId`:
 This feature makes use of what we call [Authenticated Consent](https://documentation.sourcepoint.com/consent_mp/authenticated-consent/authenticated-consent-overview). In a nutshell, you provide an identifier for the current user (username, user id, uuid or any unique string) and we'll take care of associating the consent profile to that identifier.

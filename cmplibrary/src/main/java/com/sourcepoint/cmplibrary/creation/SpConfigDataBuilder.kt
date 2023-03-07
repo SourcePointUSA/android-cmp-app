@@ -41,7 +41,7 @@ class SpConfigDataBuilder {
         this.accountId = accountId
     }
 
-    fun isClientSideOnly(clientSideOnly: Boolean) {
+    fun isClientSideOnly(clientSideOnly: Boolean): SpConfigDataBuilder = apply {
         this.clientSideOnly = clientSideOnly
     }
 
