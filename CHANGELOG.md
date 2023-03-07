@@ -1,3 +1,6 @@
+## 7.1.0 (March, 07, 2023)
+* [DIA-1808](https://sourcepoint.atlassian.net/browse/DIA-1808) PM's consent preloading (#592), [more info here](https://github.com/SourcePointUSA/android-cmp-app#Preloading)
+
 ## 7.0.6 (March, 03, 2023)
 * [DIA-1854](https://sourcepoint.atlassian.net/browse/DIA-1854) Fix crash Datetime class on Android 6/7 (#607)
 
