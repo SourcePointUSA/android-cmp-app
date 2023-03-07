@@ -49,6 +49,7 @@ class SpUtilsTest {
         MessageLanguage.ENGLISH,
         propertyId = 1234,
         messageTimeout = 3000,
+        clientSideOnly = false
     )
 
     @Test

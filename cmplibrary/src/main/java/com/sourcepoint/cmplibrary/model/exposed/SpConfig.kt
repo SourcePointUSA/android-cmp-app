@@ -12,6 +12,7 @@ data class SpConfig(
     @JvmField val messageLanguage: MessageLanguage,
     @JvmField val messageTimeout: Long,
     @JvmField val propertyId: Int,
+    @JvmField val clientSideOnly: Boolean,
     @JvmField val campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC,
     @JvmField val logger: Logger? = null,
 )

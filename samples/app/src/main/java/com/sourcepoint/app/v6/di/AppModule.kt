@@ -62,6 +62,7 @@ val appModule = module {
                 messLanguage = MessageLanguage.ENGLISH
                 messageTimeout = 5000
                 campaignsEnv = CampaignsEnv.PUBLIC
+                clientSideOnly = false
                 +(CampaignType.GDPR)
             }
         } else {
@@ -72,6 +73,7 @@ val appModule = module {
                 messLanguage = MessageLanguage.ENGLISH
                 messageTimeout = 5000
                 campaignsEnv = CampaignsEnv.PUBLIC
+                clientSideOnly = false
                 +(CampaignType.GDPR)
                 +(CampaignType.CCPA to listOf(("location" to "US")))
             }

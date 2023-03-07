@@ -79,7 +79,7 @@ function handleEvent(event) {
                 sdk.onError(JSON.stringify(payload));
                 break;
             default:
-                sdk.log("Unexpected event name: " + payload.name);
+                sdk.log("Unexpected event name: " + JSON.stringify(payload.name));
         }
     } catch (err) {
         sdk.onError(err.stack);

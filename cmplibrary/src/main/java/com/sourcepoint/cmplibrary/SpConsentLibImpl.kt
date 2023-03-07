@@ -57,30 +57,6 @@ internal class SpConsentLibImpl(
     private var currentNativeMessageCampaign: CampaignModel? = null
 
     companion object {
-        fun UnifiedMessageResp.toCampaignModelList(logger: Logger): List<CampaignModel> {
-            val campaignList = this.campaigns
-            if (campaignList.isEmpty()) return emptyList()
-
-            val partition: Pair<List<CampaignResp>, List<CampaignResp>> = campaignList
-                .partition { it.message != null && it.url != null && it.messageSubCategory != null }
-
-            logger.computation(
-                tag = "toCampaignModelList",
-                msg = "parsed campaigns${NL.t}${partition.second.size} Null messages${NL.t}${partition.first.size} Not Null message"
-            )
-
-            return partition.first.map {
-
-                CampaignModel(
-                    message = it.message!!,
-                    messageMetaData = it.messageMetaData!!,
-                    type = CampaignType.valueOf(it.type),
-                    url = it.url!!,
-                    messageSubCategory = it.messageSubCategory!!,
-                )
-            }
-        }
-
         fun MessagesResp.toCampaignModelList(logger: Logger): List<CampaignModel> {
             val campaignList = this.campaignList
             if (campaignList.isEmpty()) return emptyList()
@@ -134,110 +110,6 @@ internal class SpConsentLibImpl(
             }
         }
     }
-
-//    override fun loadMessage() {
-//        localLoadMessage(authId = null, pubData = null, cmpViewId = null)
-//    }
-//
-//    override fun loadMessage(cmpViewId: Int) {
-//        localLoadMessage(authId = null, pubData = null, cmpViewId = cmpViewId)
-//    }
-//
-//    override fun loadMessage(authId: String?) {
-//        localLoadMessage(authId = authId, pubData = null, cmpViewId = null)
-//    }
-//
-//    override fun loadMessage(pubData: JSONObject?) {
-//        localLoadMessage(authId = null, pubData = pubData, cmpViewId = null)
-//    }
-//
-//    /** Start Client's methods */
-//    override fun loadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
-//        localLoadMessage(authId = authId, pubData = pubData, cmpViewId = cmpViewId)
-//    }
-
-//    private fun localLoadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
-//        checkMainThread("loadMessage")
-//
-//        if (viewManager.isViewInLayout) return
-//
-//        service.getUnifiedMessage(
-//            messageReq = campaignManager.getUnifiedMessageReq(authId, pubData),
-//            pSuccess = { messageResp ->
-//                consentManager.localStateStatus = LocalStateStatus.Present(value = messageResp.localState)
-//                val list: List<CampaignModel> = messageResp.toCampaignModelList(logger = pLogger)
-//                clientEventManager.setCampaignNumber(list.size)
-//                if (list.isEmpty()) {
-//                    consentManager.sendStoredConsentToClient()
-//                    return@getUnifiedMessage
-//                }
-//                val firstCampaign2Process: CampaignModel = list.first()
-//                remainingCampaigns.run {
-//                    clear()
-//                    addAll(LinkedList(list.drop(1)))
-//                }
-//                executor.executeOnMain {
-//                    val legislation = firstCampaign2Process.type
-//                    when (firstCampaign2Process.messageSubCategory) {
-//                        TCFv2, OTT, NATIVE_OTT -> {
-//                            /** create a instance of WebView */
-//                            val webView = viewManager.createWebView(
-//                                this,
-//                                JSReceiverDelegate(),
-//                                remainingCampaigns,
-//                                firstCampaign2Process.messageSubCategory,
-//                                cmpViewId
-//                            )
-//                                .executeOnLeft { spClient.onError(it) }
-//                                .getOrNull()
-//
-//                            /** inject the message into the WebView */
-//                            val url = firstCampaign2Process.url
-//                            webView?.loadConsentUI(firstCampaign2Process, url, legislation)
-//                        }
-//                        NATIVE_IN_APP -> {
-//                            val nmDto = firstCampaign2Process.message.toNativeMessageDTO(
-//                                dataStorage = dataStorage,
-//                                campaignType = legislation
-//                            )
-//                            currentNativeMessageCampaign = firstCampaign2Process
-//                            spClient.onNativeMessageReady(nmDto, this)
-//                            pLogger.nativeMessageAction(
-//                                tag = "onNativeMessageReady",
-//                                msg = "onNativeMessageReady",
-//                                json = firstCampaign2Process.message
-//                            )
-//                        }
-//                    }
-//                }
-//            },
-//            pError = { throwable ->
-//                if (consentManager.storedConsent) {
-//                    executor.executeOnSingleThread {
-//                        consentManager.sendStoredConsentToClient()
-//                        clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
-//                    }
-//                } else {
-//                    (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
-//                    val ex = throwable.toConsentLibException()
-//                    spClient.onError(ex)
-//                    pLogger.clientEvent(
-//                        event = "onError",
-//                        msg = "${throwable.message}",
-//                        content = "${throwable.message}"
-//                    )
-//                    pLogger.e(
-//                        "SpConsentLib",
-//                        """
-//                    onError
-//                    ${throwable.message}
-//                        """.trimIndent()
-//                    )
-//                }
-//            },
-//            env = env
-//        )
-//    }
 
     override fun loadMessage() {
         localLoadMessageOptimized(authId = null, pubData = null, cmpViewId = null)
@@ -493,7 +365,13 @@ internal class SpConsentLibImpl(
                     .executeOnLeft { e -> spClient.onError(e) }
                     .getOrNull()
                 val url =
-                    urlManager.pmUrl(env = env, campaignType = campaignType, pmConfig = it, messSubCat = messSubCat)
+                    urlManager.pmUrl(
+                        env = env,
+                        campaignType = campaignType,
+                        pmConfig = it,
+                        messSubCat = messSubCat,
+                        campaignManager.spConfig.clientSideOnly
+                    )
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
                     url = url.toString(),
@@ -505,11 +383,19 @@ internal class SpConsentLibImpl(
                     """.trimIndent(),
                     type = "GET"
                 )
-                webView?.loadConsentUIFromUrl(
+
+                val storedConsent = when (campaignType) {
+                    CampaignType.GDPR -> dataStorage.gdprConsentStatus!!
+                    CampaignType.CCPA -> dataStorage.ccpaConsentStatus!!
+                }
+
+                webView?.loadConsentUIFromUrlPreloadingOption(
                     url = url,
                     campaignType = campaignType,
                     pmId = it.messageId,
-                    singleShot = true
+                    singleShot = true,
+                    preloading = campaignManager.spConfig.clientSideOnly,
+                    consent = JSONObject(storedConsent)
                 )
             }
             .executeOnLeft { logMess("PmUrlConfig is null") }
@@ -718,7 +604,8 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2
+                                messSubCat = TCFv2,
+                                preload = campaignManager.spConfig.clientSideOnly
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -726,11 +613,14 @@ internal class SpConsentLibImpl(
                             params = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
-                        iConsentWebView.loadConsentUIFromUrl(
+
+                        iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
-                            singleShot = false
+                            singleShot = true,
+                            preloading = campaignManager.spConfig.clientSideOnly,
+                            consent = JSONObject(dataStorage.gdprConsentStatus!!)
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -744,7 +634,8 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2
+                                messSubCat = TCFv2,
+                                preload = campaignManager.spConfig.clientSideOnly
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -752,11 +643,13 @@ internal class SpConsentLibImpl(
                             params = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
-                        iConsentWebView.loadConsentUIFromUrl(
+                        iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
-                            singleShot = false
+                            singleShot = false,
+                            preloading = campaignManager.spConfig.clientSideOnly,
+                            consent = JSONObject(dataStorage.ccpaConsentStatus!!)
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -776,7 +669,8 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2
+                                messSubCat = TCFv2,
+                                preload = campaignManager.spConfig.clientSideOnly
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
@@ -784,11 +678,13 @@ internal class SpConsentLibImpl(
                             params = "${action.privacyManagerId}",
                             type = "GET"
                         )
-                        iConsentWebView.loadConsentUIFromUrl(
+                        iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
-                            campaignModel = currentNativeMessageCampaign!!,
+                            singleShot = true,
+                            preloading = campaignManager.spConfig.clientSideOnly,
+                            consent = JSONObject(dataStorage.gdprConsentStatus!!)
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -802,7 +698,8 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2
+                                messSubCat = TCFv2,
+                                preload = campaignManager.spConfig.clientSideOnly
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
@@ -810,11 +707,13 @@ internal class SpConsentLibImpl(
                             params = "${action.privacyManagerId}",
                             type = "GET"
                         )
-                        iConsentWebView.loadConsentUIFromUrl(
+                        iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
-                            campaignModel = currentNativeMessageCampaign!!
+                            singleShot = true,
+                            preloading = campaignManager.spConfig.clientSideOnly,
+                            consent = JSONObject(dataStorage.ccpaConsentStatus!!)
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }

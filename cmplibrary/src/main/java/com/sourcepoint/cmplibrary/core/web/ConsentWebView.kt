@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.net.Uri
-import android.os.Build
 import android.os.Message
 import android.view.View
 import android.webkit.JavascriptInterface
@@ -94,50 +93,38 @@ internal class ConsentWebView(
     }
 
     private fun enableDebug() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (0 != context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
-                setWebContentsDebuggingEnabled(true)
-                enableSlowWholeDocumentDraw()
-            }
+        if (0 != context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
+            setWebContentsDebuggingEnabled(true)
+            enableSlowWholeDocumentDraw()
         }
     }
 
-    override fun loadConsentUIFromUrl(url: HttpUrl, campaignType: CampaignType): Either<Boolean> = check {
-        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
-        spWebViewClient.jsReceiverConfig = {
-            """
-                javascript: window.spLegislation = '${campaignType.name}';                 
-                $jsReceiver;
-            """.trimIndent()
-        }
-        logger.i("ConsentWebView", "loadConsentUIFromUrl${NL.t}legislation $campaignType${NL.t}{NL.t}url $url ")
-        loadUrl(url.toString())
-        true
-    }
-
-    override fun loadConsentUIFromUrl(
+    override fun loadConsentUIFromUrlPreloadingOption(
         url: HttpUrl,
         campaignType: CampaignType,
         pmId: String?,
-        campaignModel: CampaignModel?
-    ): Either<Boolean> = check {
-        currentCampaignModel = campaignModel
-        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
-        spWebViewClient.jsReceiverConfig = {
-            val sb = StringBuffer()
-            sb.append(
-                """
-                javascript: window.spLegislation = '${campaignType.name}'; window.localPmId ='$pmId';
-                $jsReceiver;
-                """.trimIndent()
+        singleShot: Boolean,
+        preloading: Boolean,
+        consent: JSONObject
+    ): Either<Boolean> {
+        return when (preloading) {
+            true -> loadConsentUIFromUrlPreloading(
+                url = url,
+                campaignType = campaignType,
+                pmId = pmId,
+                singleShot = true,
+                consent = consent
             )
-            sb.toString()
+            false -> loadConsentUIFromUrl(
+                url = url,
+                campaignType = campaignType,
+                pmId = pmId,
+                singleShot = true
+            )
         }
-        loadUrl(url.toString())
-        true
     }
 
-    override fun loadConsentUIFromUrl(url: HttpUrl, campaignType: CampaignType, pmId: String?, singleShot: Boolean): Either<Boolean> = check {
+    private fun loadConsentUIFromUrl(url: HttpUrl, campaignType: CampaignType, pmId: String?, singleShot: Boolean): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             val sb = StringBuffer()
@@ -153,7 +140,49 @@ internal class ConsentWebView(
         true
     }
 
-    override fun loadConsentUI(campaignModel: CampaignModel, url: HttpUrl, campaignType: CampaignType): Either<Boolean> = check {
+    private fun loadConsentUIFromUrlPreloading(
+        url: HttpUrl,
+        campaignType: CampaignType,
+        pmId: String?,
+        singleShot: Boolean,
+        consent: JSONObject
+    ): Either<Boolean> = check {
+        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
+        spWebViewClient.jsReceiverConfig = {
+            val sb = StringBuffer()
+
+            val obj = JSONObject().apply {
+                put("name", "sp.loadConsent")
+                put("consent", consent)
+            }
+
+            logger.flm(
+                tag = "Preloading - $campaignType Privacy Manager",
+                url = url.toString(),
+                json = obj,
+                type = "GET",
+            )
+
+            sb.append(
+                """
+                javascript: window.spLegislation = '${campaignType.name}'; 
+                window.localPmId ='$pmId'; 
+                window.isSingleShot = $singleShot; 
+                $jsReceiver;
+                window.postMessage($obj, "*");
+                """.trimIndent()
+            )
+            sb.toString()
+        }
+        loadUrl(url.toString())
+        true
+    }
+
+    override fun loadConsentUI(
+        campaignModel: CampaignModel,
+        url: HttpUrl,
+        campaignType: CampaignType
+    ): Either<Boolean> = check {
         currentCampaignModel = campaignModel
         val campaignType: CampaignType = campaignModel.type
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")

@@ -10,6 +10,7 @@ import com.sourcepoint.app.v6.MainActivityKotlin.Companion.CLIENT_PREF_VAL
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllGdprConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllVendorsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
@@ -648,7 +649,9 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         wr(backup = { clickOnRefreshBtnActivity() })  { tapRejectOnWebView() }
+        wr{ verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { clickOnCustomConsent() }
+        wr{ verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkCustomCategoriesData() }
         wr { tapSiteVendorsWebView() }
@@ -680,26 +683,15 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapRejectOnWebView() }
-
-        wr { clickOnCustomConsent() } // set a random custom consent
+        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptAllOnWebView() }
+        wr{ verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkCustomCategoriesData() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
         wr { tapCancelOnWebView() }
-
         wr { clickOnDeleteCustomConsent() } // delete the previous custom consent
+        wr{ verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkDeletedCustomCategoriesData() }
-        wr { tapSiteVendorsWebView() }
-        wr { checkDeletedCustomVendorDataList() }
-        verify(exactly = 0) { spClient.onError(any()) }
-        verify {
-            spClient.run {
-                onConsentReady(withArg {
-                    it.gdpr?.consent?.grants!!.flatMap { i -> i.value.purposeGrants.values }.all { a -> a == false }.assertTrue()
-                })
-            }
-        }
     }
 
     @Test

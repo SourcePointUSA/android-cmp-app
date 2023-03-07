@@ -30,7 +30,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = "000"
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, TCFv2)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, TCFv2, true)
         sut.run {
             toString().contains("notice.sp-stage.net").assertTrue()
             queryParameter("pmTab").assertEquals("purposes")
@@ -50,7 +50,7 @@ class HttpUrlManagerTest {
             messageId = null,
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, TCFv2)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, TCFv2, true)
         sut.run {
             toString().contains("notice.sp-stage.net").assertTrue()
             queryParameter("pmTab").assertEquals("features")
@@ -70,7 +70,7 @@ class HttpUrlManagerTest {
             messageId = null,
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, NATIVE_OTT)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, NATIVE_OTT, false)
         sut.run {
             toString().contains("native-ott/index.html").assertTrue()
             queryParameter("pmTab").assertEquals("features")
@@ -90,7 +90,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.CCPA, pmConfig, TCFv2)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.CCPA, pmConfig, TCFv2, true)
         sut.run {
             toString().contains("ccpa-notice.sp-stage.net").assertTrue()
             queryParameter("message_id").assertEquals("111")
@@ -144,8 +144,8 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = OTT).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?pmTab&site_id&consentUUID=uuid&message_id=111")
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = OTT, false).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?pmTab&site_id&preload_consent=false&consentUUID=uuid&message_id=111")
     }
 
     @Test
@@ -157,8 +157,8 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = TCFv2).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager/index.html?pmTab&site_id&consentUUID=uuid&message_id=111")
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = TCFv2, true).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager/index.html?pmTab&site_id&preload_consent=true&consentUUID=uuid&message_id=111")
     }
 
     @Test
@@ -170,8 +170,8 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = NATIVE_OTT).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/native-ott/index.html?pmTab&site_id&consentUUID=uuid&message_id=111")
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = NATIVE_OTT, false).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/native-ott/index.html?pmTab&site_id&preload_consent=false&consentUUID=uuid&message_id=111")
     }
 
     @Test
@@ -183,8 +183,8 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = OTT).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?pmTab&site_id&consentUUID=uuid&message_id=111")
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = OTT, false).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?pmTab&site_id&preload_consent=false&consentUUID=uuid&message_id=111")
     }
 
     @Test
@@ -196,8 +196,8 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messSubCat = OTT).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_ott/index.html?site_id&ccpaUUID=uuid&message_id=111")
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messSubCat = OTT, true).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_ott/index.html?site_id&preload_consent=true&ccpaUUID=uuid&message_id=111")
     }
 
     @Test
@@ -209,8 +209,8 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messSubCat = TCFv2).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_pm/index.html?site_id&ccpaUUID=uuid&message_id=111")
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messSubCat = TCFv2, false).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_pm/index.html?site_id&preload_consent=false&ccpaUUID=uuid&message_id=111")
     }
 
     @Test
