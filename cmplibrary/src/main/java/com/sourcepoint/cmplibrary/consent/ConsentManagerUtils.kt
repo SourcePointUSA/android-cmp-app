@@ -11,7 +11,6 @@ import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.* // ktlint-disable
 
