@@ -22,8 +22,8 @@
   - [Releasing resources](#Releasing-resources)
   - [The *SpConsent* object](#The-SpConsent-object)
   - [Authenticated Consent](#Authenticated-Consent)
-  - [Sharing consent with a `WebView`](#Sharing-consent-with-a-WebView)
   - [Preloading](#Preloading)
+  - [Sharing consent with a `WebView`](#Sharing-consent-with-a-WebView)
   - [The `authId`](#The-authId)
   - [Complete Example](#Complete-Example)
   - [Setting a Targeting Param](#Setting-a-Targeting-Param)
@@ -389,10 +389,8 @@ Java
     }
 ```
 
-## Sharing consent with a `WebView`
-In order to share the consent between native and webview the SDK will rely on authenticated consent (explained in detail below).
+## Preloading
 
-### Preloading
 When configured in the advanced section of the properties vendor list, UUIDs (and subsequently consent data of a user) 
 will no be stored server side.
 However, the unique user identifiers (UUIDs) will continue to be stored on the device.
@@ -431,6 +429,9 @@ Java
             .build();
 
 ```
+
+## Sharing consent with a `WebView`
+In order to share the consent between native and webview the SDK will rely on authenticated consent (explained in detail below).
 
 ### The `authId`:
 This feature makes use of what we call [Authenticated Consent](https://documentation.sourcepoint.com/consent_mp/authenticated-consent/authenticated-consent-overview). In a nutshell, you provide an identifier for the current user (username, user id, uuid or any unique string) and we'll take care of associating the consent profile to that identifier.
