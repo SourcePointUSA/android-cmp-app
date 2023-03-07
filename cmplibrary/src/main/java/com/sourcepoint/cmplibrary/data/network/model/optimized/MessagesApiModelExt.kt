@@ -148,7 +148,5 @@ internal fun GDPR.toGdprCS() = GdprCS(
     TCData = TCData,
     localDataCurrent = null,
     uuid = null,
-    vendorListId = null,
-    acceptedCategories = null,
-    acceptedVendors = null,
+    vendorListId = null
 )

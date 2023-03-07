@@ -74,6 +74,7 @@ class CampaignManagerImplTest {
         MessageLanguage.ENGLISH,
         propertyId = 1234,
         messageTimeout = 3000,
+        clientSideOnly = false
     )
 
     private val cm by lazy {

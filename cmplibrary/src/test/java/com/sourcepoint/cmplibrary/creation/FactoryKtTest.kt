@@ -30,6 +30,7 @@ class FactoryKtTest {
                 MessageLanguage.ENGLISH,
                 propertyId = 1234,
                 messageTimeout = 3000,
+                clientSideOnly = false
             ),
             activity = context,
             spClient = mockk()
