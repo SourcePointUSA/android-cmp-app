@@ -395,6 +395,7 @@ In order to share the consent between native and webview the SDK will rely on au
 ### Preloading
 When configured in the advanced section of the properties vendor list, UUIDs (and subsequently consent data of a user) 
 will no be stored server side.
+However, the unique user identifiers (UUIDs) will continue to be stored on the device.
 From the SDK point of view to enable the preloading capabilities, you need to set, in the [config object](#create-new-config-object), 
 the `clientSideOnly` property to true:
 
