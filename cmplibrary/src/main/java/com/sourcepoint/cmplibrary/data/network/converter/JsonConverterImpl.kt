@@ -6,7 +6,6 @@ import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
-import com.sourcepoint.cmplibrary.data.network.model.toUnifiedMessageRespDto
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
@@ -39,10 +38,6 @@ internal val JsonConverter.Companion.converter: Json by lazy {
  * Implementation of the [JsonConverter] interface
  */
 private class JsonConverterImpl : JsonConverter {
-
-    override fun toUnifiedMessageResp(body: String): Either<UnifiedMessageResp> = check {
-        body.toUnifiedMessageRespDto()
-    }
 
     override fun toConsentAction(body: String): Either<ConsentActionImpl> = check {
         body.toConsentAction()

@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_DATE_CREATED
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
@@ -19,12 +18,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_MESSAGE_SUBCATEGORY
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_IAB_US_PRIVACY_STRING
-import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
-import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
-import com.sourcepoint.cmplibrary.model.toTreeMap
-import com.sourcepoint.cmplibrary.util.check
-import org.json.JSONObject
 
 internal interface DataStorageCcpa {
 
@@ -254,12 +247,4 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .remove(CCPA_SAMPLING_RESULT)
             .apply()
     }
-}
-
-internal fun DataStorageCcpa.getCCPAConsent(): Either<CCPAConsentInternal> = check {
-    getCcpaConsentResp()
-        .also { if (it == null || it.isBlank()) fail("CCPAConsent is not saved in the the storage!!") }
-        .let { JSONObject(it) }
-        .toTreeMap()
-        .toCCPAUserConsent(uuid = this.ccpaConsentUuid, applies = this.ccpaApplies)
 }
