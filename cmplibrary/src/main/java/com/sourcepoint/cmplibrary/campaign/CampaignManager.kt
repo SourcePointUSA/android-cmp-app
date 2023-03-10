@@ -23,7 +23,6 @@ import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
@@ -81,7 +80,7 @@ internal interface CampaignManager {
     var consentStatus: ConsentStatus?
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
-    var messagesOptimizedLocalState: JsonElement?
+    var messagesOptimizedLocalState: String?
     var gdprUuid: String?
     var ccpaUuid: String?
     val hasLocalData: Boolean
@@ -407,7 +406,8 @@ private class CampaignManagerImpl(
             propertyId = spConfig.propertyId.toLong(),
             pubData = pubData?.toString()
                 ?.let { check { JsonConverter.converter.decodeFromString<JsonObject>(it) }.getOrNull() }
-                ?: JsonObject(mapOf())
+                ?: JsonObject(mapOf()),
+            localState = messagesOptimizedLocalState?: "",
         )
     }
 
@@ -475,8 +475,7 @@ private class CampaignManagerImpl(
 
     val isNewUser: Boolean
         get() {
-            val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
-            return messagesOptimizedLocalState == null || localStateSize == 0 || (
+            return messagesOptimizedLocalState == null || messagesOptimizedLocalState == null || (
                 dataStorage.gdprConsentUuid == null &&
                     (ccpaConsentStatus?.newUser == null || ccpaConsentStatus?.newUser == true)
                 )
@@ -514,17 +513,16 @@ private class CampaignManagerImpl(
         get() {
             val gdprUUID = dataStorage.gdprConsentUuid
             val ccpaUUID = dataStorage.ccpaConsentUuid
-            val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
             val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE_OLD)
             val res =
-                ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0) || isV6LocalStatePresent || isV6LocalStatePresent2
+                ((gdprUUID != null || ccpaUUID != null) && messagesOptimizedLocalState == null) || isV6LocalStatePresent || isV6LocalStatePresent2
 
             logger?.computation(
                 tag = "shouldCallConsentStatus",
                 msg = """
                 gdprUUID != null [${gdprUUID != null}] - ccpaUUID != null [${ccpaUUID != null}]
-                localStateSize empty [${localStateSize == 0}]
+                localStateSize empty [${messagesOptimizedLocalState == null}]
                 V6.7 ls [$isV6LocalStatePresent] or V6.3 ls [$isV6LocalStatePresent2]  
                 shouldCallConsentStatus[$res]  
                 """.trimIndent()
@@ -599,17 +597,12 @@ private class CampaignManagerImpl(
             }
         }
 
-    override var messagesOptimizedLocalState: JsonElement?
+    override var messagesOptimizedLocalState: String?
         get() {
-            return dataStorage.messagesOptimizedLocalState?.let {
-                JsonConverter.converter.decodeFromString<JsonElement>(
-                    it
-                )
-            }
+            return dataStorage.messagesOptimizedLocalState
         }
         set(value) {
-            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.messagesOptimizedLocalState = serialised
+            dataStorage.messagesOptimizedLocalState = value
         }
 
     override var gdprUuid: String?

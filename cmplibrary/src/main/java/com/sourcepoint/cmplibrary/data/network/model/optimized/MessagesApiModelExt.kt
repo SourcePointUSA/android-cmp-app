@@ -10,7 +10,6 @@ import kotlinx.serialization.json.* // ktlint-disable
 internal fun getMessageBody(
     propertyHref: String,
     accountId: Long,
-    localState: JsonObject,
     campaigns: List<CampaignReq>,
     cs: ConsentStatus?,
     ccpaStatus: String?,
@@ -29,7 +28,6 @@ internal fun getMessageBody(
         put("propertyHref", "https://$propertyHref")
         put("hasCSP", true)
         put("campaigns", campaigns.toMetadataBody(cs, ccpaStatus))
-        put("localState", localState)
         put("consentLanguage", consentLanguage)
     }
 }
@@ -88,7 +86,7 @@ internal fun MessagesParamReq.toMetaDataParamReq(): MetaDataParamReq {
 internal fun MessagesParamReq.toConsentStatusParamReq(
     gdprUuid: String?,
     ccpaUuid: String?,
-    localState: JsonElement?
+    localState: String?
 ): ConsentStatusParamReq {
 
     val mdArg = metadataArg?.copy(

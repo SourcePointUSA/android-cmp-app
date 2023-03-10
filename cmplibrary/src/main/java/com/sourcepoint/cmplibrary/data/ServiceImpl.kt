@@ -136,7 +136,6 @@ private class ServiceImpl(
                     propertyHref = messageReq.propertyHref,
                     cs = gdprConsentStatus,
                     ccpaStatus = campaignManager.ccpaConsentStatus?.status?.name,
-                    localState = campaignManager.messagesOptimizedLocalState?.jsonObject ?: JsonObject(emptyMap()),
                     campaigns = campaignManager.campaigns4Config,
                     consentLanguage = campaignManager.messageLanguage.value
                 )
@@ -149,7 +148,8 @@ private class ServiceImpl(
                     env = messageReq.env,
                     body = body.toString(),
                     metadataArg = meta.getOrNull()?.toMetaDataArg(),
-                    nonKeyedLocalState = ""
+                    nonKeyedLocalState = messageReq.nonKeyedLocalState,
+                    localState = campaignManager.messagesOptimizedLocalState,
                 )
 
                 getMessages(messagesParamReq)
@@ -158,7 +158,7 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        campaignManager.messagesOptimizedLocalState = it.localState
+                        campaignManager.messagesOptimizedLocalState = it.localState?.toString()
                         it.campaigns?.gdpr?.messageMetaData?.let { gmd -> campaignManager.gdprMessageMetaData = gmd }
                         it.campaigns?.ccpa?.messageMetaData?.let { cmd -> campaignManager.ccpaMessageMetaData = cmd }
 
