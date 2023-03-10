@@ -1,3 +1,6 @@
+## 6.9.2 (March, 10, 2023)
+* [DIA-1813](https://sourcepoint.atlassian.net/browse/DIA-1813) Added new enum values for ccpaStatus and tests for them (#591)
+
 ## 6.7.3 (November, 11, 2022)
 * [DIA-1484](https://sourcepoint.atlassian.net/browse/DIA-1484)  Fix crash with payload.customAction during a PM action (#552)
 * [DIA-1302](https://sourcepoint.atlassian.net/browse/DIA-1302) Issues with Resurfacing the OTT Privacy Manager (#550)
