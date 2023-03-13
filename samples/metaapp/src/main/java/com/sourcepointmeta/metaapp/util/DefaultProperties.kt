@@ -13,8 +13,12 @@ val defaultProperty = Property(
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
     is_staging = false,
+    preloading = true,
     targetingParameters = emptyList(),
-    statusCampaignSet = setOf(StatusCampaign("ott.test.suite", CampaignType.GDPR, true)),
+    statusCampaignSet = setOf(
+        StatusCampaign("ott.test.suite", CampaignType.GDPR, true),
+        StatusCampaign("ott.test.suite", CampaignType.CCPA, true),
+    ),
     gdprPmId = 579231L,
     ccpaPmId = 1L,
     campaignsEnv = CampaignsEnv.PUBLIC,
@@ -128,6 +132,7 @@ val defaultProperty6 = Property(
     targetingParameters = emptyList(),
     statusCampaignSet = setOf(
         StatusCampaign("sca-ott-newwebpm", CampaignType.GDPR, true),
+        StatusCampaign("sca-ott-newwebpm", CampaignType.CCPA, true),
     ),
     gdprPmId = 704111L,
     ccpaPmId = 704111L,
@@ -179,6 +184,11 @@ val propList = listOf(
     defaultProperty5,
     defaultProperty6,
     defaultProperty7,
+    defaultProperty9,
+)
+val tvPropList = listOf(
+    defaultProperty,
+    defaultProperty6,
     defaultProperty9,
 )
 

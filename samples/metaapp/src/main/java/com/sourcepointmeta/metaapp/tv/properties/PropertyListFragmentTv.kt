@@ -52,7 +52,7 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
 //                is BaseState.StateVersion -> showVersionPopup(it.version)
             }
         }
-        viewModel.fetchPropertyList()
+        viewModel.addDefaultTvProperties()
     }
 
     private fun successState(state: BaseState.StatePropertyList) {
