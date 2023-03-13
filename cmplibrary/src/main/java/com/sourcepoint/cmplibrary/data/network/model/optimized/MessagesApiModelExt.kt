@@ -28,7 +28,6 @@ internal fun getMessageBody(
         put("propertyHref", "https://$propertyHref")
         put("hasCSP", true)
         put("campaigns", campaigns.toMetadataBody(cs, ccpaStatus))
-        put("localState", JsonObject(mapOf()))
         put("consentLanguage", consentLanguage)
     }
 }
@@ -87,7 +86,7 @@ internal fun MessagesParamReq.toMetaDataParamReq(): MetaDataParamReq {
 internal fun MessagesParamReq.toConsentStatusParamReq(
     gdprUuid: String?,
     ccpaUuid: String?,
-    localState: String?
+    localState: JsonElement?
 ): ConsentStatusParamReq {
 
     val mdArg = metadataArg?.copy(

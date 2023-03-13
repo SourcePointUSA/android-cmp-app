@@ -14,7 +14,6 @@ import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.toJSONObj
 import kotlinx.serialization.encodeToString
 import okhttp3.HttpUrl
 
@@ -286,12 +285,12 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .host(param.env.host)
             .addPathSegments("wrapper/v2/messages")
             .addQueryParameter("env", param.env.queryParam)
-            .addQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState)
+            .addQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState.toString())
             .addEncodedQueryParameter("body", param.body)
             .addEncodedQueryParameter("metadata", metaData)
-            .addEncodedQueryParameter("localState", param.localState)
+            .addEncodedQueryParameter("localState", param.localState.toString())
+//            .addQueryParameter("cached", Date().time.toString()) // for caching tests
             .build()
-
     }
 }
 

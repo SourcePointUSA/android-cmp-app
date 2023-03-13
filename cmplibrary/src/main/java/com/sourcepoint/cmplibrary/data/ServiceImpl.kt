@@ -22,7 +22,6 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
 
@@ -148,8 +147,8 @@ private class ServiceImpl(
                     env = messageReq.env,
                     body = body.toString(),
                     metadataArg = meta.getOrNull()?.toMetaDataArg(),
-                    nonKeyedLocalState = messageReq.nonKeyedLocalState,
-                    localState = campaignManager.messagesOptimizedLocalState,
+                    nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
+                    localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
                 )
 
                 getMessages(messagesParamReq)
@@ -158,7 +157,8 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        campaignManager.messagesOptimizedLocalState = it.localState?.toString()
+                        campaignManager.messagesOptimizedLocalState = it.localState
+                        campaignManager.nonKeyedLocalState = it.nonKeyedLocalState
                         it.campaigns?.gdpr?.messageMetaData?.let { gmd -> campaignManager.gdprMessageMetaData = gmd }
                         it.campaigns?.ccpa?.messageMetaData?.let { cmd -> campaignManager.ccpaMessageMetaData = cmd }
 
