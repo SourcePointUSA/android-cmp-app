@@ -28,6 +28,7 @@ internal fun getMessageBody(
         put("propertyHref", "https://$propertyHref")
         put("hasCSP", true)
         put("campaigns", campaigns.toMetadataBody(cs, ccpaStatus))
+        put("localState", JsonObject(mapOf()))
         put("consentLanguage", consentLanguage)
     }
 }
