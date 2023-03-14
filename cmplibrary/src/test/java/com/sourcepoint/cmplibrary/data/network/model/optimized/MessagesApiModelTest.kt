@@ -50,7 +50,6 @@ class MessagesApiModelTest {
             cs = cs.consentStatusData?.gdpr?.consentStatus,
             propertyHref = "tests.unified-script.com",
             campaigns = list,
-            localState = JsonObject(emptyMap()),
             ccpaStatus = null,
             consentLanguage = null
         )
