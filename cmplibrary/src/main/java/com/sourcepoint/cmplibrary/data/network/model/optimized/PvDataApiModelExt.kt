@@ -17,7 +17,6 @@ internal fun toPvDataBody(
     ccpaMessageMetaData: MessageMetaData?,
     ccpaCS: CcpaCS?,
     sampleRate: Double? = 1.0,
-    fromTest: Boolean = true,
     pubData: JsonObject = JsonObject(mapOf())
 ): JsonObject {
 
@@ -34,7 +33,6 @@ internal fun toPvDataBody(
                     put("categoryId", gdprMessageMetaData?.categoryId?.code)
                     put("subCategoryId", gdprMessageMetaData?.subCategoryId?.code)
                     put("prtnUUID", gdprMessageMetaData?.prtnUUID)
-                    put("fromTest", fromTest)
                     put("sampleRate", sampleRate)
                 }
             )
