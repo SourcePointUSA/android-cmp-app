@@ -11,7 +11,6 @@ internal fun toGdprChoiceBody(
     gdprApplies: Boolean?,
     gdprMessageMetaData: MessageMetaData?,
     sampleRate: Double,
-    fromTest: Boolean = true,
 ): JsonObject {
     return buildJsonObject {
         put("accountId", accountId)
@@ -22,7 +21,6 @@ internal fun toGdprChoiceBody(
         put("categoryId", gdprMessageMetaData?.categoryId?.code)
         put("subCategoryId", gdprMessageMetaData?.subCategoryId?.code)
         put("prtnUUID", gdprMessageMetaData?.prtnUUID)
-        put("fromTest", fromTest)
         put("sampleRate", sampleRate)
         putJsonObject("includeData") {
             putJsonObject("TCData") {
@@ -42,7 +40,6 @@ internal fun toCcpaChoiceBody(
     gdprApplies: Boolean?,
     gdprMessageMetaData: MessageMetaData?,
     sampleRate: Double,
-    fromTest: Boolean = true,
 ): JsonObject {
     return buildJsonObject {
         put("accountId", accountId)
@@ -53,7 +50,6 @@ internal fun toCcpaChoiceBody(
         put("categoryId", gdprMessageMetaData?.categoryId?.code)
         put("subCategoryId", gdprMessageMetaData?.subCategoryId?.code)
         put("prtnUUID", gdprMessageMetaData?.prtnUUID)
-        put("fromTest", fromTest)
         put("sampleRate", sampleRate)
     }
 }
