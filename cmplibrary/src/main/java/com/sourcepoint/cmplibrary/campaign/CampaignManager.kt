@@ -268,6 +268,14 @@ private class CampaignManagerImpl(
                     """.trimIndent()
                 )
             )
+            logger?.e(
+                tag = "The childPmId is missing",
+                msg = """
+                              childPmId not found!!!
+                              GroupPmId[$groupPmId]
+                              useGroupPmIfAvailable [true] 
+                    """.trimIndent()
+            )
         }
 
         logger?.computation(
