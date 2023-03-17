@@ -7,7 +7,6 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import org.junit.Test
 

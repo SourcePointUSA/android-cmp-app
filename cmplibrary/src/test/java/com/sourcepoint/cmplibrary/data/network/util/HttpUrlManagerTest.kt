@@ -15,7 +15,6 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 import org.junit.Test
 
