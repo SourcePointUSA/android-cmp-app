@@ -8,7 +8,6 @@ import kotlinx.serialization.decodeFromString
 
 internal val messagesParamReq = MessagesParamReq(
     metadataArg = JsonConverter.converter.decodeFromString(""" {"gdpr":{"targetingParams":{},"groupPmId":null},"ccpa":{"targetingParams":{"location":"US"},"groupPmId":null}} """),
-    nonKeyedLocalState = "",
     body = "",
     env = Env.PROD,
     propertyHref = "tests.unified-script.com",

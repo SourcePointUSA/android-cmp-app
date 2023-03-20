@@ -21,6 +21,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
         const val GDPR_CONSENT_STATUS = "sp.gdpr.key.consent.status"
         const val CCPA_CONSENT_STATUS = "sp.ccpa.key.consent.status"
         const val MESSAGES_OPTIMIZED_LOCAL_STATE = "sp.key.messages.v7.local.state"
+        const val NON_KEYED_LOCAL_STATE = "sp.key.messages.v7.nonKeyedLocalState"
     }
 
     override val preference: SharedPreferences
@@ -37,6 +38,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     var gdprConsentStatus: String?
     var ccpaConsentStatus: String?
     var messagesOptimizedLocalState: String?
+    var nonKeyedLocalState: String?
 
     fun savePropertyPriorityData(value: String)
     fun saveLocalState(value: String)

@@ -32,7 +32,9 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnOk
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebViewDE
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapCancelOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapFeaturesOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapNetworkOnWebView
@@ -82,6 +84,15 @@ class MainActivityKotlinTest {
         accountId = 22
         propertyId = 16893
         propertyName = "mobile.multicampaign.demo"
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 3000
+        +(CampaignType.GDPR)
+    }
+
+    private val toggoConfig = config {
+        accountId = 1631
+        propertyId = 18893
+        propertyName = "TOGGO-App-iOS"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 3000
         +(CampaignType.GDPR)
@@ -198,6 +209,27 @@ class MainActivityKotlinTest {
             }
         }
 
+    }
+
+    @Test
+    fun toggo() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = toggoConfig,
+                gdprPmId = "1111",
+                ccpaPmId = "222",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr { tapAcceptOnOk() }
+        wr { clickOnRefreshBtnActivity() }
+        wr{ tapAcceptOnWebViewDE() }
     }
 
     @Test

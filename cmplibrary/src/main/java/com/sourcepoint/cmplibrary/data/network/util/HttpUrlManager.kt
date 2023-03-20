@@ -285,9 +285,11 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .host(param.env.host)
             .addPathSegments("wrapper/v2/messages")
             .addQueryParameter("env", param.env.queryParam)
-            .addEncodedQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState)
+            .addQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState.toString())
             .addEncodedQueryParameter("body", param.body)
             .addEncodedQueryParameter("metadata", metaData)
+            .addEncodedQueryParameter("localState", param.localState.toString())
+//            .addQueryParameter("cached", Date().time.toString()) // for caching tests
             .build()
     }
 }

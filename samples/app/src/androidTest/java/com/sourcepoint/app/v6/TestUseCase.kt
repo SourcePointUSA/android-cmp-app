@@ -4,6 +4,7 @@ import android.webkit.CookieManager
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestData.ACCEPT
 import com.sourcepoint.app.v6.TestData.ACCEPT_ALL
+import com.sourcepoint.app.v6.TestData.ACCEPT_DE
 import com.sourcepoint.app.v6.TestData.CANCEL
 import com.sourcepoint.app.v6.TestData.CCPA_CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST
@@ -288,6 +289,14 @@ class TestUseCase {
 
         fun tapAcceptOnWebView() {
             performClickOnWebViewByContent(ACCEPT)
+        }
+
+        fun tapAcceptOnWebViewDE() {
+            performClickOnWebViewByContent(ACCEPT_DE)
+        }
+
+        fun tapAcceptOnOk() {
+            performClickOnWebViewByContent("OK")
         }
 
         fun tapSettingsOnWebViewDE() {
