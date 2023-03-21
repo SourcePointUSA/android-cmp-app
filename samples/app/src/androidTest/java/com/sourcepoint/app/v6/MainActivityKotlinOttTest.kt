@@ -98,7 +98,7 @@ class MainActivityKotlinOttTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfOtt,
+                spConfig = spConfOtt.copy(clientSideOnly = true),
                 gdprPmId = "579231",
                 ccpaPmId = "1",
                 spClientObserver = listOf(spClient)
