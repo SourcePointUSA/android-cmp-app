@@ -131,7 +131,7 @@ internal class SpConsentLibImpl(
         localLoadMessageOptimized(authId = authId, pubData = null, cmpViewId = null)
     }
 
-    private fun localLoadMessageOptimized(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
+        private fun localLoadMessageOptimized(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
 
         val param = check { campaignManager.getMessageOptimizedReq(authId, pubData) }
             .executeOnLeft {
