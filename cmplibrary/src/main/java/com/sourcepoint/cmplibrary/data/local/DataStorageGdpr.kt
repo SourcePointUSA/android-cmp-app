@@ -274,12 +274,10 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     override var gdprMessageMetaData: String?
         get() = preference.getString(GDPR_MESSAGE_METADATA, null)
         set(value) {
-            value?.let {
-                preference
-                    .edit()
-                    .putString(GDPR_MESSAGE_METADATA, it)
-                    .apply()
-            }
+            preference
+                .edit()
+                .putString(GDPR_MESSAGE_METADATA, value)
+                .apply()
         }
 
     override fun clearAll() {
