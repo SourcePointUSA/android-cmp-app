@@ -312,7 +312,8 @@ class HttpUrlManagerTest {
             propertyHref = "tests.unified-script.com",
             campaigns = list,
             ccpaStatus = null,
-            consentLanguage = "ES"
+            consentLanguage = "ES",
+            campaignEnv = CampaignsEnv.STAGE
         )
 
         val param = MessagesParamReq(

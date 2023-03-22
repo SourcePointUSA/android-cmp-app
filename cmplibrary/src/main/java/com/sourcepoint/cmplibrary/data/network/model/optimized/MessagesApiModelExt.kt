@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReq
 import kotlinx.serialization.encodeToString
@@ -13,10 +14,12 @@ internal fun getMessageBody(
     campaigns: List<CampaignReq>,
     cs: ConsentStatus?,
     ccpaStatus: String?,
-    consentLanguage: String?
+    consentLanguage: String?,
+    campaignEnv : CampaignsEnv?,
 ): JsonObject {
     return buildJsonObject {
         put("accountId", accountId)
+        campaignEnv?.env?.let { put("campaignEnv", it) }
         putJsonObject("includeData") {
             putJsonObject("TCData") {
                 put("type", "RecordString")
