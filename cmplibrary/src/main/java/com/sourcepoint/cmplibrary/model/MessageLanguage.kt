@@ -23,7 +23,7 @@ enum class MessageLanguage(val value: String) {
     LITHUANIAN("LT"),
     NORWEGIAN("NO"),
     POLISH("PL"),
-    PORTUGEESE("PT"),
+    PORTUGUESE("PT"),
     ROMANIAN("RO"),
     RUSSIAN("RU"),
     SERBIAN_CYRILLIC("SR-CYRL"),
