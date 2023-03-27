@@ -157,10 +157,12 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        campaignManager.messagesOptimizedLocalState = it.localState
-                        campaignManager.nonKeyedLocalState = it.nonKeyedLocalState
-                        it.campaigns?.gdpr?.messageMetaData?.let { gmd -> campaignManager.gdprMessageMetaData = gmd }
-                        it.campaigns?.ccpa?.messageMetaData?.let { cmd -> campaignManager.ccpaMessageMetaData = cmd }
+                        campaignManager.also { _ ->
+                            messagesOptimizedLocalState = it.localState
+                            nonKeyedLocalState = it.nonKeyedLocalState
+                            gdprMessageMetaData = it.campaigns?.gdpr?.messageMetaData
+                            ccpaMessageMetaData = it.campaigns?.ccpa?.messageMetaData
+                        }
 
                         if (!campaignManager.hasLocalData) {
                             it.campaigns?.gdpr?.TCData?.let { tc -> dataStorage.tcData = tc.toMapOfAny() }

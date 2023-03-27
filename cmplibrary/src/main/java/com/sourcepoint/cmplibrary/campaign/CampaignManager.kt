@@ -760,7 +760,7 @@ private class CampaignManagerImpl(
             accountId = messageReq.accountId,
             propertyId = messageReq.propertyId,
             gdprMessageMetaData = gdprMessageMetaData,
-            ccpaMessageMetaData = ccpaMessageMetaData,
+            ccpaMessageMetaData = null,
             gdprApplies = dataStorage.gdprApplies,
             ccpaApplies = dataStorage.ccpaApplies,
             pubData = messageReq.pubData,
@@ -773,7 +773,7 @@ private class CampaignManagerImpl(
         return toPvDataBody(
             accountId = messageReq.accountId,
             propertyId = messageReq.propertyId,
-            gdprMessageMetaData = gdprMessageMetaData,
+            gdprMessageMetaData = null,
             ccpaMessageMetaData = ccpaMessageMetaData,
             gdprApplies = dataStorage.gdprApplies,
             ccpaApplies = dataStorage.ccpaApplies,
