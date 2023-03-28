@@ -1,3 +1,12 @@
+## 7.1.1 (March, 28, 2023)
+* [DIA-1956](https://sourcepoint.atlassian.net/browse/DIA-1956) MsgId in PvData only when json_msg is available (#618)
+* [DIA-1970](https://sourcepoint.atlassian.net/browse/DIA-1970) Typo in MessageLanguage (#617)
+* [DIA-1876](https://sourcepoint.atlassian.net/browse/DIA-1876) Regressions tests for the preloading feature (#616)
+* [DIA-1914](https://sourcepoint.atlassian.net/browse/DIA-1914) Localstate query param (#613)
+* [DIA-1929](https://sourcepoint.atlassian.net/browse/DIA-1929) Delete the  test parameter from the network calls (#614)
+* [DIA-1877](https://sourcepoint.atlassian.net/browse/DIA-1877) Add a switch btn (enable/disable preloading) to the Metaapp (#612)
+* [DIA-1835](https://sourcepoint.atlassian.net/browse/DIA-1835) Cleaning code (#609)
+
 ## 7.1.0 (March, 07, 2023)
 * [DIA-1808](https://sourcepoint.atlassian.net/browse/DIA-1808) PM's consent preloading (#592), [more info here](https://github.com/SourcePointUSA/android-cmp-app#Preloading)
 
