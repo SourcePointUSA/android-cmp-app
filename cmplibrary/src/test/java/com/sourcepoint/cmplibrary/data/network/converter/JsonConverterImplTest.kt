@@ -15,24 +15,6 @@ class JsonConverterImplTest {
     private val sut = JsonConverter.create()
 
     @Test
-    fun `GIVEN a response RETURN a Right(MessageResp)`() {
-
-        val json = "unified_wrapper_resp/response_gdpr_and_ccpa.json".file2String()
-        val testMap = JSONObject(json).toTreeMap()
-
-        val output: UnifiedMessageResp = (sut.toUnifiedMessageResp(json) as Either.Right).r
-        output.thisContent.toTreeMap().assertEquals(testMap)
-    }
-
-    @Test
-    fun `GIVEN a response execute toUnifiedMessageResp and RETURN a Left object`() {
-
-        val json = "[]" // invalid json
-        val output: Throwable? = (sut.toUnifiedMessageResp(json) as? Either.Left)?.t
-        output.assertNotNull()
-    }
-
-    @Test
     fun `GIVEN a native_message_resp RETURN a Right(NativeMessageResp)`() {
         val json = "native_message_resp.json".file2String()
         val testMap = JSONObject(json).toTreeMap()
@@ -71,15 +53,6 @@ class JsonConverterImplTest {
 
         val output = (sut.toConsentAction(json) as Either.Right).r
         output.thisContent.toTreeMap().assertEquals(testMap)
-    }
-
-    @Test
-    fun `GIVEN an invalid json EXECUTE toConsentResp and RETURN a Left object`() {
-        val json = "{}"
-        val testMap = JSONObject(json).toTreeMap()
-
-        val output = (sut.toUnifiedMessageResp(json) as? Either.Left)
-        output.assertNotNull()
     }
 
     @Test

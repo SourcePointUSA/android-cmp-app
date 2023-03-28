@@ -10,7 +10,6 @@ import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
-import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
 import com.sourcepoint.cmplibrary.util.check
 import okhttp3.Response
 
@@ -31,30 +30,6 @@ private class ResponseManagerImpl(
     val jsonConverter: JsonConverter,
     val logger: Logger
 ) : ResponseManager {
-
-    /**
-     * @param r http response
-     * @return an [Either] object of a [MessageResp] type parameter
-     */
-    override fun parseResponse(r: Response): Either<UnifiedMessageResp> = check {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-        val status = r.code()
-        val mess = r.message()
-        logger.res(
-            tag = "UnifiedMessageResp",
-            msg = mess,
-            body = body,
-            status = status.toString()
-        )
-        if (r.isSuccessful) {
-            when (val either: Either<UnifiedMessageResp> = jsonConverter.toUnifiedMessageResp(body)) {
-                is Either.Right -> either.r
-                is Either.Left -> throw either.t
-            }
-        } else {
-            throw InvalidRequestException(description = body)
-        }
-    }
 
     override fun parseNativeMessRes(r: Response): Either<NativeMessageResp> = check {
         val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")

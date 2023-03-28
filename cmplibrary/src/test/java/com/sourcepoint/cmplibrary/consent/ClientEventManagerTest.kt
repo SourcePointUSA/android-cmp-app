@@ -38,9 +38,6 @@ class ClientEventManagerTest {
             spClient = spClient,
             executor = MockExecutorManager()
         )
-
-        every { consentManagerUtils.getCcpaConsent() }.returns(Either.Right(CCPAConsentInternal()))
-        every { consentManagerUtils.getGdprConsent() }.returns(Either.Right(GDPRConsentInternal()))
     }
 
     @Test

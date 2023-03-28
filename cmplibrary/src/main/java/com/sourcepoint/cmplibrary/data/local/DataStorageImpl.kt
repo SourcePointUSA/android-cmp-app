@@ -14,6 +14,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE_O
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_OPTIMIZED
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_OPTIMIZED_LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.META_DATA_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.NON_KEYED_LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_PRIORITY_DATA
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PV_DATA_RESP
@@ -93,6 +94,15 @@ private class DataStorageImpl(
             preference
                 .edit()
                 .putString(MESSAGES_OPTIMIZED_LOCAL_STATE, value)
+                .apply()
+        }
+
+    override var nonKeyedLocalState: String?
+        get() = preference.getString(NON_KEYED_LOCAL_STATE, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(NON_KEYED_LOCAL_STATE, value)
                 .apply()
         }
 
@@ -183,6 +193,7 @@ private class DataStorageImpl(
             .remove(CONSENT_STATUS)
             .remove(CCPA_CONSENT_STATUS)
             .remove(MESSAGES_OPTIMIZED_LOCAL_STATE)
+            .remove(NON_KEYED_LOCAL_STATE)
             .apply()
     }
 

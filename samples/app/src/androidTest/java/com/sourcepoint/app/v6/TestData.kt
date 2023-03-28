@@ -53,6 +53,7 @@ object TestData {
     var MESSAGE = "message"
     var ACCEPT = "Accept"
     var ACCEPT_ALL_DE = "ALLE AKZEPTIEREN"
+    var ACCEPT_DE = "Akzeptieren"
     var SETTINGS_DE = "EINSTELLUNGEN"
     var ZUSTIMMEN = "Zustimmen"
     var REJECT = "Reject"

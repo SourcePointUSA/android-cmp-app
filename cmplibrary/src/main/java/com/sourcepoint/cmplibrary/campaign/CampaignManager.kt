@@ -4,29 +4,22 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.campaign.CampaignManager.Companion.selectPmId
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
-import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_MESSAGE_SUBCATEGORY_OLD
-import com.sourcepoint.cmplibrary.data.local.getCCPAConsent
-import com.sourcepoint.cmplibrary.data.local.getGDPRConsent
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.toCCPA
-import com.sourcepoint.cmplibrary.data.network.model.toGDPR
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.Campaigns
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
-import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -46,10 +39,7 @@ internal interface CampaignManager {
     fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate)
 
     fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory
-    fun getUnifiedMessageResp(): Either<UnifiedMessageResp>
 
-    fun getGdpr(): Either<Gdpr>
-    fun getCcpa(): Either<Ccpa>
     fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>>
     fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate>
 
@@ -69,9 +59,6 @@ internal interface CampaignManager {
 
     fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest
     fun getMessageOptimizedReq(authId: String?, pubData: JSONObject?): MessagesParamReq
-
-    fun getGDPRConsent(): Either<GDPRConsentInternal>
-    fun getCCPAConsent(): Either<CCPAConsentInternal>
 
     fun getGroupId(campaignType: CampaignType): String?
 
@@ -95,6 +82,7 @@ internal interface CampaignManager {
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
     var messagesOptimizedLocalState: JsonElement?
+    var nonKeyedLocalState: JsonElement?
     var gdprUuid: String?
     var ccpaUuid: String?
     val hasLocalData: Boolean
@@ -227,14 +215,6 @@ private class CampaignManagerImpl(
         mapTemplate[campaignType.name] = campaign
     }
 
-    override fun getGdpr(): Either<Gdpr> = check {
-        dataStorage.getGdpr()?.toGDPR(dataStorage.gdprConsentUuid) ?: fail("GDPR is not stored in memory!!!")
-    }
-
-    override fun getCcpa(): Either<Ccpa> = check {
-        dataStorage.getCcpa()?.toCCPA(dataStorage.ccpaConsentUuid) ?: fail("CCPA is not stored in memory!!!")
-    }
-
     override fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate> = check {
         mapTemplate[campaignType.name] ?: fail("${campaignType.name} Campain is missing!!!")
     }
@@ -352,20 +332,6 @@ private class CampaignManagerImpl(
         }
     }
 
-    override fun getUnifiedMessageResp(): Either<UnifiedMessageResp> = check {
-        val campaigns = mutableListOf<CampaignResp>()
-        getGdpr().map { campaigns.add(it) }
-        getCcpa().map { campaigns.add(it) }
-        val localState: String = dataStorage.getLocalState() ?: ""
-        val propertyPriorityData: String? = dataStorage.getPropertyPriorityData()
-        UnifiedMessageResp(
-            campaigns = campaigns,
-            localState = localState,
-            propertyPriorityData = propertyPriorityData?.let { JSONObject(it) } ?: JSONObject(),
-            thisContent = JSONObject(),
-        )
-    }
-
     override fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>> = check {
         when {
             dataStorage
@@ -433,7 +399,6 @@ private class CampaignManagerImpl(
 
         return MessagesParamReq(
             metadataArg = campaigns.toMetadataArgs(),
-            nonKeyedLocalState = "",
             body = "",
             env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD,
             propertyHref = spConfig.propertyName,
@@ -445,10 +410,6 @@ private class CampaignManagerImpl(
                 ?: JsonObject(mapOf())
         )
     }
-
-    override fun getGDPRConsent(): Either<GDPRConsentInternal> = dataStorage.getGDPRConsent()
-
-    override fun getCCPAConsent(): Either<CCPAConsentInternal> = dataStorage.getCCPAConsent()
 
     override fun getGroupId(campaignType: CampaignType): String? {
         return spConfig.campaigns.find { it.campaignType == campaignType }?.groupPmId
@@ -651,6 +612,19 @@ private class CampaignManagerImpl(
             dataStorage.messagesOptimizedLocalState = serialised
         }
 
+    override var nonKeyedLocalState: JsonElement?
+        get() {
+            return dataStorage.nonKeyedLocalState?.let {
+                JsonConverter.converter.decodeFromString<JsonElement>(
+                    it
+                )
+            }
+        }
+        set(value) {
+            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
+            dataStorage.nonKeyedLocalState = serialised
+        }
+
     override var gdprUuid: String?
         get() {
             return dataStorage.gdprConsentUuid
@@ -786,7 +760,7 @@ private class CampaignManagerImpl(
             accountId = messageReq.accountId,
             propertyId = messageReq.propertyId,
             gdprMessageMetaData = gdprMessageMetaData,
-            ccpaMessageMetaData = ccpaMessageMetaData,
+            ccpaMessageMetaData = null,
             gdprApplies = dataStorage.gdprApplies,
             ccpaApplies = dataStorage.ccpaApplies,
             pubData = messageReq.pubData,
@@ -799,7 +773,7 @@ private class CampaignManagerImpl(
         return toPvDataBody(
             accountId = messageReq.accountId,
             propertyId = messageReq.propertyId,
-            gdprMessageMetaData = gdprMessageMetaData,
+            gdprMessageMetaData = null,
             ccpaMessageMetaData = ccpaMessageMetaData,
             gdprApplies = dataStorage.gdprApplies,
             ccpaApplies = dataStorage.ccpaApplies,

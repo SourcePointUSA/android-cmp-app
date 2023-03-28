@@ -262,6 +262,7 @@ class ServiceImplTest {
         every { ncMock.getMessages(any()) }.returns(Left(RuntimeException()))
         every { cm.shouldCallMessages }.returns(true)
         every { cm.messagesOptimizedLocalState }.returns(JsonObject(emptyMap()))
+        every { cm.nonKeyedLocalState }.returns(JsonObject(emptyMap()))
         every { cm.campaigns4Config }.returns(emptyList())
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
