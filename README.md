@@ -71,7 +71,6 @@ Kotlin
                   messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
                   campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
                   messageTimeout = 4000 // Optional, default 3000ms
-                  clientSideOnly = false
                   +CampaignType.CCPA
                   +CampaignType.GDPR
                 }
@@ -91,7 +90,6 @@ Java
             .addMessageTimeout(4000) // Optional, default 3000ms
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
-            .isClientSideOnly(false)
             .build();
 
 ```

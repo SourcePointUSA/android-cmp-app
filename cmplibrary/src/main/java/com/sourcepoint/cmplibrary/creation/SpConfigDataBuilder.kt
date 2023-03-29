@@ -19,7 +19,6 @@ class SpConfigDataBuilder {
     var accountId by Delegates.notNull<Int>()
     var propertyId by Delegates.notNull<Int>()
     var propertyName by Delegates.notNull<String>()
-    var clientSideOnly: Boolean = false
     var messLanguage: MessageLanguage = MessageLanguage.ENGLISH
     var campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC
     var messageTimeout: Long = 5000
@@ -39,10 +38,6 @@ class SpConfigDataBuilder {
 
     fun addAccountId(accountId: Int): SpConfigDataBuilder = apply {
         this.accountId = accountId
-    }
-
-    fun isClientSideOnly(clientSideOnly: Boolean): SpConfigDataBuilder = apply {
-        this.clientSideOnly = clientSideOnly
     }
 
     fun addPropertyId(propertyId: Int): SpConfigDataBuilder = apply {
@@ -110,10 +105,9 @@ class SpConfigDataBuilder {
             campaigns = campaigns,
             messageLanguage = messLanguage,
             messageTimeout = messageTimeout,
-            campaignsEnv = campaignsEnv,
-            logger = logger,
             propertyId = propertyId,
-            clientSideOnly = clientSideOnly
+            campaignsEnv = campaignsEnv,
+            logger = logger
         )
     }
 }

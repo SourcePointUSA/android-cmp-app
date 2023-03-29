@@ -50,9 +50,8 @@ class CampaignManagerTest {
             gdprCampaign
         ),
         MessageLanguage.ENGLISH,
-        propertyId = 9090,
         messageTimeout = 3000,
-        clientSideOnly = false
+        propertyId = 9090
     )
 
     @Before

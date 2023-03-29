@@ -6,174 +6,173 @@ import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 
 val defaultProperty = Property(
-    accountId = 22,
     propertyName = "ott.test.suite",
+    accountId = 22,
+    gdprPmId = 579231L,
+    ccpaPmId = 1L,
+    is_staging = false,
+    targetingParameters = emptyList(),
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
-    is_staging = false,
-    preloading = true,
-    targetingParameters = emptyList(),
     statusCampaignSet = setOf(
         StatusCampaign("ott.test.suite", CampaignType.GDPR, true),
         StatusCampaign("ott.test.suite", CampaignType.CCPA, true),
     ),
-    gdprPmId = 579231L,
-    ccpaPmId = 1L,
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 22231
 )
 
 val defaultProperty1 = Property(
-    accountId = 22,
     propertyName = "mobile.multicampaign.demo",
-    propertyId = 16893,
+    accountId = 22,
+    gdprPmId = 488393L,
+    ccpaPmId = 509688L,
+    is_staging = false,
+    targetingParameters = emptyList(),
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
-    is_staging = false,
-    targetingParameters = emptyList(),
     statusCampaignSet = setOf(
         StatusCampaign("mobile.multicampaign.demo", CampaignType.GDPR, true),
         StatusCampaign("mobile.multicampaign.demo", CampaignType.CCPA, true),
     ),
-    gdprPmId = 488393L,
-    ccpaPmId = 509688L,
-    campaignsEnv = CampaignsEnv.PUBLIC
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 16893
 )
 
 val defaultProperty2 = Property(
-    accountId = 22,
     propertyName = "mobile.multicampaign.native.demo",
-    propertyId = 18958,
+    accountId = 22,
+    gdprPmId = 545258L,
+    ccpaPmId = 547869L,
+    is_staging = false,
+    targetingParameters = emptyList(),
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
-    is_staging = false,
-    targetingParameters = emptyList(),
     statusCampaignSet = setOf(
         StatusCampaign("mobile.multicampaign.native.demo", CampaignType.GDPR, true),
         StatusCampaign("mobile.multicampaign.native.demo", CampaignType.CCPA, true),
     ),
-    gdprPmId = 545258L,
-    ccpaPmId = 547869L,
-    campaignsEnv = CampaignsEnv.PUBLIC
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 18958
 )
 
 val defaultProperty3 = Property(
-    accountId = 22,
     propertyName = "mobile.multicampaign.native.demo2",
-    propertyId = 19210,
+    accountId = 22,
+    gdprPmId = 548285L,
+    ccpaPmId = 548276L,
+    is_staging = false,
+    targetingParameters = emptyList(),
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
-    is_staging = false,
-    targetingParameters = emptyList(),
     statusCampaignSet = setOf(
         StatusCampaign("mobile.multicampaign.native.demo2", CampaignType.GDPR, true),
         StatusCampaign("mobile.multicampaign.native.demo2", CampaignType.CCPA, true),
     ),
-    gdprPmId = 548285L,
-    ccpaPmId = 548276L,
-    campaignsEnv = CampaignsEnv.PUBLIC
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 19210
 )
 
 val defaultProperty4 = Property(
-    accountId = 22,
     propertyName = "mobile.multicampaign.fully.native",
-    propertyId = 22758,
+    accountId = 22,
+    gdprPmId = 594218L,
+    ccpaPmId = 594219L,
+    is_staging = false,
+    targetingParameters = emptyList(),
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
-    is_staging = false,
-    targetingParameters = emptyList(),
     statusCampaignSet = setOf(
         StatusCampaign("mobile.multicampaign.fully.native", CampaignType.GDPR, true),
         StatusCampaign("mobile.multicampaign.fully.native", CampaignType.CCPA, true),
     ),
-    gdprPmId = 594218L,
-    ccpaPmId = 594219L,
-    campaignsEnv = CampaignsEnv.PUBLIC
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 22758
 )
 
 val defaultProperty5 = Property(
-    accountId = 22,
     propertyName = "mobile.multicampaign.fully.native2",
-    propertyId = 22932,
+    accountId = 22,
+    gdprPmId = 598486L,
+    ccpaPmId = 598492L,
+    is_staging = false,
+    targetingParameters = emptyList(),
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
-    is_staging = false,
-    targetingParameters = emptyList(),
     statusCampaignSet = setOf(
         StatusCampaign("mobile.multicampaign.fully.native2", CampaignType.GDPR, true),
         StatusCampaign("mobile.multicampaign.fully.native2", CampaignType.CCPA, true),
     ),
-    gdprPmId = 598486L,
-    ccpaPmId = 598492L,
-    campaignsEnv = CampaignsEnv.PUBLIC
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 22932
 )
 
 val defaultProperty6 = Property(
-    accountId = 22,
     propertyName = "sca-ott-newwebpm",
-    propertyId = 27927,
+    accountId = 22,
+    gdprPmId = 704111L,
+    ccpaPmId = 704111L,
+    is_staging = false,
+    targetingParameters = emptyList(),
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
-    is_staging = false,
-    targetingParameters = emptyList(),
     statusCampaignSet = setOf(
         StatusCampaign("sca-ott-newwebpm", CampaignType.GDPR, true),
         StatusCampaign("sca-ott-newwebpm", CampaignType.CCPA, true),
     ),
-    gdprPmId = 704111L,
-    ccpaPmId = 704111L,
     campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 27927,
 )
 
 val defaultProperty7 = Property(
-    accountId = 22,
     propertyName = "tests.unified-script.com",
-    propertyId = 17801,
+    accountId = 22,
+    gdprPmId = 521350L,
+    ccpaPmId = 521354L,
+    is_staging = false,
+    targetingParameters = emptyList(),
     timeout = 3000,
     authId = "user_auth_id",
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
-    is_staging = false,
-    targetingParameters = emptyList(),
     statusCampaignSet = setOf(
         StatusCampaign("tests.unified-script.com", CampaignType.GDPR, true),
     ),
-    gdprPmId = 521350L,
-    ccpaPmId = 521354L,
     campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 17801,
 )
 
 val defaultProperty9 = Property(
-    accountId = 22,
     propertyName = "ott-ccpa-22",
-    propertyId = 29498,
+    accountId = 22,
+    gdprPmId = 11111L,
+    ccpaPmId = 756686L,
+    is_staging = false,
+    targetingParameters = emptyList(),
     timeout = 3000,
     authId = null,
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
-    is_staging = false,
-    targetingParameters = emptyList(),
     statusCampaignSet = setOf(
         StatusCampaign("ott-ccpa-22", CampaignType.GDPR, true),
         StatusCampaign("ott-ccpa-22", CampaignType.CCPA, true),
     ),
-    gdprPmId = 11111L,
-    ccpaPmId = 756686L,
     campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 29498,
 )
 
 val propList = listOf(

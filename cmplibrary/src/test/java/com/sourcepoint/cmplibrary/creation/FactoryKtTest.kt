@@ -28,9 +28,8 @@ class FactoryKtTest {
                 "asfa",
                 emptyList(),
                 MessageLanguage.ENGLISH,
-                propertyId = 1234,
                 messageTimeout = 3000,
-                clientSideOnly = false
+                propertyId = 1234
             ),
             activity = context,
             spClient = mockk()
