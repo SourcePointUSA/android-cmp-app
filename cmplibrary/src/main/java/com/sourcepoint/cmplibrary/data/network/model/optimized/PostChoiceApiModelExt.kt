@@ -23,7 +23,7 @@ internal fun postChoiceGdprBody(
         put("sampleRate", sampleRate)
         put("propertyId", propertyId)
         put("messageId", messageId)
-        put("authid", authid)
+        put("authId", authid)
         put("uuid", uuid)
         put("consentAllRef", consentAllRef)
         saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
@@ -56,7 +56,7 @@ internal fun postChoiceCcpaBody(
         put("sampleRate", sampleRate)
         put("propertyId", propertyId)
         put("messageId", messageId)
-        put("authid", authid)
+        put("authId", authid)
         put("uuid", uuid)
         saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
         putJsonObject("includeData") {

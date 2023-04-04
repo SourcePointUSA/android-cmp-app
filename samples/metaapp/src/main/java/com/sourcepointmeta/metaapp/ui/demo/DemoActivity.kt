@@ -106,7 +106,7 @@ class DemoActivity : FragmentActivity() {
     private val spConsentLib by spConsentLibLazy {
         activity = this@DemoActivity
         spClient = LocalClient()
-        spConfig = config.copy(logger = logger, clientSideOnly = true)
+        spConfig = config.copy(logger = logger)
     }
 
     private val demoFr by lazy { DemoFragment.instance(config.propertyName) }
