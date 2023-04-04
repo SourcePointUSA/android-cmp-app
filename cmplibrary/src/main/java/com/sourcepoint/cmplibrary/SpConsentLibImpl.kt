@@ -384,8 +384,6 @@ internal class SpConsentLibImpl(
                     type = "GET"
                 )
 
-                println("${campaignType.name} Privacy Manager - ${url}")
-
                 val storedConsent = when (campaignType) {
                     CampaignType.GDPR -> dataStorage.gdprConsentStatus!!
                     CampaignType.CCPA -> dataStorage.ccpaConsentStatus!!

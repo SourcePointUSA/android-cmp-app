@@ -229,37 +229,6 @@ private class NetworkClientImpl(
         val url = urlManager.getGdprChoiceUrl(param)
         val mediaType = MediaType.parse("application/json")
         val jsonBody = param.body.toString()
-            """
-            {
-              "applies": true,
-              "authId": ${param.body["authid"]},
-              "messageId": ${param.body["messageId"]},
-              "mmsDomain": "https://cmp.tcfv2.de",
-              "propertyId": 16893,
-              "pubData": {},
-              "includeData": {
-                "actions": {
-                  "type": "RecordString"
-                },
-                "customVendorsResponse": {
-                  "type": "RecordString"
-                }
-              },
-              "uuid": ${param.body["uuid"]},
-              "sampleRate": 1,
-              "sendPVData": true,
-              "consentAllRef": ${param.body["consentAllRef"]},
-              "granularStatus": {
-                "vendorConsent": "ALL",
-                "vendorLegInt": "ALL",
-                "purposeConsent": "ALL",
-                "purposeLegInt": "ALL",
-                "previousOptInAll": false,
-                "defaultConsent": false
-              },
-              "vendorListId": ${param.body["vendorListId"]}
-            }
-        """.trimIndent()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
 
         logger.req(

@@ -214,6 +214,7 @@ internal class LoggerImpl(
     }
 
     override fun pm(tag: String, url: String, type: String, params: String?) {
+        println("$tag - $url")
         loggerScope.launch {
             ds.storeOrUpdateLog(
                 MetaLog(
