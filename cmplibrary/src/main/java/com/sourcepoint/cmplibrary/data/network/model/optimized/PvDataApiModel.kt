@@ -25,15 +25,13 @@ data class PvDataResp(
     @Serializable
     data class Ccpa(
         @SerialName("cookies") val cookies: List<Cooky?>?,
-        @SerialName("uuid") val uuid: String?,
-        @SerialName("dateCreated") val dateCreated: String?
+        @SerialName("uuid") val uuid: String?
     )
 
     @Serializable
     data class Gdpr(
         @SerialName("cookies") val cookies: List<Cooky>?,
-        @SerialName("uuid") val uuid: String?,
-        @SerialName("dateCreated") val dateCreated: String?
+        @SerialName("uuid") val uuid: String?
     )
 
     override fun toString(): String {
