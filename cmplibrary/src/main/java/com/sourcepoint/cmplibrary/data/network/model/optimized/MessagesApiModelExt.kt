@@ -15,7 +15,7 @@ internal fun getMessageBody(
     cs: ConsentStatus?,
     ccpaStatus: String?,
     consentLanguage: String?,
-    campaignEnv : CampaignsEnv?,
+    campaignEnv: CampaignsEnv?,
 ): JsonObject {
     return buildJsonObject {
         put("accountId", accountId)
