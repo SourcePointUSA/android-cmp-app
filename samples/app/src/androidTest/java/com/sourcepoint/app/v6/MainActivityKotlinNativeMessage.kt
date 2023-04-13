@@ -189,7 +189,7 @@ class MainActivityNativeMessTest {
         wr { tapNmAcceptAll() }
     }
 
-//    @Test
+    @Test
     fun GIVEN_an_authId_VERIFY_no_first_layer_mess_gets_called() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
 
