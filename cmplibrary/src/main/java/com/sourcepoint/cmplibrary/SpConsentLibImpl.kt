@@ -385,8 +385,8 @@ internal class SpConsentLibImpl(
                 )
 
                 val storedConsent = when (campaignType) {
-                    CampaignType.GDPR -> dataStorage.gdprConsentStatus!!
-                    CampaignType.CCPA -> dataStorage.ccpaConsentStatus!!
+                    CampaignType.GDPR -> dataStorage.gdprConsentStatus
+                    CampaignType.CCPA -> dataStorage.ccpaConsentStatus
                 }
 
                 webView?.loadConsentUIFromUrlPreloadingOption(

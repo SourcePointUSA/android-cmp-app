@@ -23,6 +23,7 @@ import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.jsonObject
+import org.json.JSONArray
 import org.json.JSONObject
 
 /**
@@ -54,15 +55,36 @@ private class ServiceImpl(
     private val execManager: ExecutorManager
 ) : Service, NetworkClient by nc, CampaignManager by campaignManager {
 
+    private fun JSONArray.toArrayList(): ArrayList<String> {
+        val list = arrayListOf<String>()
+        for (i in 0 until this.length()) {
+            list.add(this.getString(i))
+        }
+
+        return list
+    }
+
     override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<GdprCS> = check {
         nc.sendCustomConsent(customConsentReq, env)
             .map {
                 if (campaignManager.gdprConsentStatus == null) {
                     genericFail("CustomConsent cannot be executed. Consent is missing!!!")
                 }
+
+                val categories: List<String> = (it.content.get("categories") as JSONArray).toArrayList()
+                val vendors: List<String> = (it.content.get("vendors") as JSONArray).toArrayList()
+                val legIntCategories: List<String> = (it.content.get("legIntCategories") as JSONArray).toArrayList()
+                val specialFeatures: List<String> = (it.content.get("specialFeatures") as JSONArray).toArrayList()
+
                 val grantsString: String = (it.content.get("grants") as JSONObject).toString()
                 val grants = JsonConverter.converter.decodeFromString<Map<String, GDPRPurposeGrants>>(grantsString)
-                val updatedGrants = campaignManager.gdprConsentStatus?.copy(grants = grants)
+                val updatedGrants = campaignManager.gdprConsentStatus?.copy(
+                    grants = grants,
+                    categories = categories,
+                    vendors = vendors,
+                    legIntCategories = legIntCategories,
+                    specialFeatures = specialFeatures
+                )
                 campaignManager.gdprConsentStatus = updatedGrants
             }
         campaignManager.gdprConsentStatus!!
@@ -74,9 +96,21 @@ private class ServiceImpl(
                 if (campaignManager.gdprConsentStatus == null) {
                     genericFail("CustomConsent cannot be executed. Consent is missing!!!")
                 }
+
+                val categories: List<String> = (it.content.get("categories") as JSONArray).toArrayList()
+                val vendors: List<String> = (it.content.get("vendors") as JSONArray).toArrayList()
+                val legIntCategories: List<String> = (it.content.get("legIntCategories") as JSONArray).toArrayList()
+                val specialFeatures: List<String> = (it.content.get("specialFeatures") as JSONArray).toArrayList()
+
                 val grantsString: String = (it.content.get("grants") as JSONObject).toString()
                 val grants = JsonConverter.converter.decodeFromString<Map<String, GDPRPurposeGrants>>(grantsString)
-                val updatedGrants = campaignManager.gdprConsentStatus?.copy(grants = grants)
+                val updatedGrants = campaignManager.gdprConsentStatus?.copy(
+                    grants = grants,
+                    categories = categories,
+                    vendors = vendors,
+                    legIntCategories = legIntCategories,
+                    specialFeatures = specialFeatures
+                )
                 campaignManager.gdprConsentStatus = updatedGrants
             }
         campaignManager.gdprConsentStatus!!
