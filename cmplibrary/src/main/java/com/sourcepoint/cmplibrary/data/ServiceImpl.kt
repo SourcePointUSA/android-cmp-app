@@ -60,7 +60,6 @@ private class ServiceImpl(
         for (i in 0 until this.length()) {
             list.add(this.getString(i))
         }
-
         return list
     }
 
