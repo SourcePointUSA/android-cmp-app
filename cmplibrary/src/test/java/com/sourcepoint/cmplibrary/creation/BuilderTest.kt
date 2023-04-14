@@ -37,8 +37,8 @@ class BuilderTest {
             gdprCampaign
         ),
         MessageLanguage.ENGLISH,
+        propertyId = 1234,
         messageTimeout = 3000,
-        propertyId = 1234
     )
 
     @Before

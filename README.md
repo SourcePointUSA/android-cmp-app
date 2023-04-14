@@ -389,10 +389,16 @@ Java
 
 ## Preloading
 
-When configured in the advanced section of the properties vendor list, UUIDs (and subsequently consent data of a user) 
-will no be stored server side.
+The preloding feature was introduced in version `7.1.0`. 
+In version `7.1.X` was possible to enable or disable it using a `clientSideOnly` parameter located into the SDK config object.
+
+From version `7.2.0` on, the option of disable the preloading was removed, this means that the preloading feature is **alway**
+enabled.
+
+With the preloading, the UUIDs (and subsequently consent data of a user) will no be stored server side.
 However, the unique user identifiers (UUIDs) will continue to be stored on the device.
-From the SDK point of view to enable the preloading capabilities, you need to set, in the [config object](#create-new-config-object), 
+
+Only form version `7.1.0` to enable the preloading capabilities, you need to set, in the [config object](#create-new-config-object), 
 the `clientSideOnly` property to true:
 
 Kotlin
@@ -404,7 +410,7 @@ Kotlin
                   messLanguage = MessageLanguage.ENGLISH
                   campaignsEnv = CampaignsEnv.PUBLIC
                   messageTimeout = 4000
-                  clientSideOnly = true  // Preloading feature
+                  clientSideOnly = true  // parameter available only for version 7.1.X
                   +CampaignType.CCPA
                   +CampaignType.GDPR
                 }
@@ -423,7 +429,7 @@ Java
             .addMessageTimeout(4000)
             .addCampaign(CampaignType.GDPR)
             .addCampaign(CampaignType.CCPA)
-            .isClientSideOnly(true)  // Preloading feature
+            .isClientSideOnly(true)   // parameter available only for version 7.1.X
             .build();
 
 ```

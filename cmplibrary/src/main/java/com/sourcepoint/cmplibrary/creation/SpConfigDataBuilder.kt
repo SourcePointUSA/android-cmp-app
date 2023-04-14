@@ -105,9 +105,9 @@ class SpConfigDataBuilder {
             campaigns = campaigns,
             messageLanguage = messLanguage,
             messageTimeout = messageTimeout,
-            propertyId = propertyId,
             campaignsEnv = campaignsEnv,
-            logger = logger
+            logger = logger,
+            propertyId = propertyId,
         )
     }
 }

@@ -69,8 +69,8 @@ class CampaignManagerImplTest {
             gdprCampaign
         ),
         MessageLanguage.ENGLISH,
+        propertyId = 1234,
         messageTimeout = 3000,
-        propertyId = 1234
     )
 
     private val cm by lazy {

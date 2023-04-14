@@ -602,7 +602,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2
+                                messSubCat = TCFv2,
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -630,7 +630,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2
+                                messSubCat = TCFv2,
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -663,7 +663,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2
+                                messSubCat = TCFv2,
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
@@ -690,7 +690,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2
+                                messSubCat = TCFv2,
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
