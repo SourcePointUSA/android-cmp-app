@@ -672,7 +672,7 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfGdpr,
+                spConfig = spConfGdpr.copy(clientSideOnly = true),
                 gdprPmId = "488393",
                 spClientObserver = listOf(spClient)
             )
@@ -707,7 +707,7 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfGdpr,
+                spConfig = spConfGdpr.copy(clientSideOnly = true),
                 gdprPmId = "488393",
                 spClientObserver = listOf(spClient)
             )
