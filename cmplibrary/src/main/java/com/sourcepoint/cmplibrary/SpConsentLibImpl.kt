@@ -33,7 +33,7 @@ import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread
 import com.sourcepoint.cmplibrary.util.toConsentLibException
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.json.JSONObject
 import java.util.* // ktlint-disable
 
@@ -75,7 +75,7 @@ internal class SpConsentLibImpl(
                     message = JSONObject(it.message.toString()),
                     messageMetaData = JSONObject(it.messageMetaData.toString()),
                     type = it.type,
-                    url = HttpUrl.parse(it.url!!)!!, // at this stage we are sure that url is not null
+                    url = it.url!!.toHttpUrl(), // at this stage we are sure that url is not null
                     messageSubCategory = it.messageMetaData?.subCategoryId!!,
                 )
             }
