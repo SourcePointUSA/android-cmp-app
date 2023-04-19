@@ -22,7 +22,6 @@
   - [Releasing resources](#Releasing-resources)
   - [The *SpConsent* object](#The-SpConsent-object)
   - [Authenticated Consent](#Authenticated-Consent)
-  - [Preloading](#Preloading)
   - [Sharing consent with a `WebView`](#Sharing-consent-with-a-WebView)
   - [The `authId`](#The-authId)
   - [Complete Example](#Complete-Example)
@@ -385,53 +384,6 @@ Java
         super.onResume();
         spConsentLib.loadMessage("<authId>");
     }
-```
-
-## Preloading
-
-The preloding feature was introduced in version `7.1.0`. 
-In version `7.1.X` was possible to enable or disable it using a `clientSideOnly` parameter located into the SDK config object.
-
-From version `7.2.0` on, the option of disable the preloading was removed, this means that the preloading feature is **alway**
-enabled.
-
-With the preloading, the UUIDs (and subsequently consent data of a user) will no be stored server side.
-However, the unique user identifiers (UUIDs) will continue to be stored on the device.
-
-Only form version `7.1.0` to enable the preloading capabilities, you need to set, in the [config object](#create-new-config-object), 
-the `clientSideOnly` property to true:
-
-Kotlin
-```kotlin
-    val cmpConfig : SpConfig = config {
-                  accountId = 22
-                  propertyId = 16893
-                  propertyName = "mobile.multicampaign.demo"
-                  messLanguage = MessageLanguage.ENGLISH
-                  campaignsEnv = CampaignsEnv.PUBLIC
-                  messageTimeout = 4000
-                  clientSideOnly = true  // parameter available only for version 7.1.X
-                  +CampaignType.CCPA
-                  +CampaignType.GDPR
-                }
-```
-
-In case of Java language you can use a factory method to instantiate the Cmp lib
-
-Java
-```java
-    private final SpConfig cmpConfig = new SpConfigDataBuilder()
-            .addAccountId(22)
-            .addPropertyId(16893)
-            .addPropertyName("mobile.multicampaign.demo")
-            .addMessageLanguage(MessageLanguage.ENGLISH)
-            .addCampaignsEnv(CampaignsEnv.PUBLIC)
-            .addMessageTimeout(4000)
-            .addCampaign(CampaignType.GDPR)
-            .addCampaign(CampaignType.CCPA)
-            .isClientSideOnly(true)   // parameter available only for version 7.1.X
-            .build();
-
 ```
 
 ## Sharing consent with a `WebView`
