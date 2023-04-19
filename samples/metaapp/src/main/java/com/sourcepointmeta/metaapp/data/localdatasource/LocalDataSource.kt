@@ -180,7 +180,7 @@ private class LocalDataSourceImpl(
                     group_pm_id = property.gdprGroupPmId,
                     use_gdpr_groupid_if_available = if (property.useGdprGroupPmIfAvailable) 1 else 0,
                     property_id = property.propertyId.toString(),
-                    preloading = if (property.preloading) 1 else 0,
+                    preloading = 0,
                 )
                 deleteTargetingParameterByPropName(property.propertyName)
                 property.targetingParameters.forEach {
@@ -271,7 +271,6 @@ private class LocalDataSourceImpl(
                         messageTimeout = p.timeout ?: 3000L
                         campaignsEnv = p.campaignsEnv
                         propertyId = p.propertyId
-                        clientSideOnly = p.preloading
                         messLanguage = MessageLanguage.values()
                             .find { it.name == p.messageLanguage }
                             ?: MessageLanguage.ENGLISH

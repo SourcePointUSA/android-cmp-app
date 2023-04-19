@@ -6,6 +6,12 @@ import okhttp3.HttpUrl
 import org.json.JSONObject
 
 internal interface IConsentWebView {
-    fun loadConsentUIFromUrlPreloadingOption(url: HttpUrl, campaignType: CampaignType, pmId: String?, singleShot: Boolean, preloading: Boolean, consent: JSONObject): Either<Boolean>
+    fun loadConsentUIFromUrlPreloadingOption(
+        url: HttpUrl,
+        campaignType: CampaignType,
+        pmId: String?,
+        singleShot: Boolean,
+        consent: JSONObject
+    ): Either<Boolean>
     fun loadConsentUI(campaignModel: CampaignModel, url: HttpUrl, campaignType: CampaignType): Either<Boolean>
 }

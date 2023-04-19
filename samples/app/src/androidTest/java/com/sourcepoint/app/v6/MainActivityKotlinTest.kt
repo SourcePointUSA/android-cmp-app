@@ -269,7 +269,7 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfCcpa.copy(clientSideOnly = true),
+                spConfig = spConfCcpa,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient)
@@ -570,7 +570,7 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfGdpr.copy(clientSideOnly = true),
+                spConfig = spConfGdpr,
                 gdprPmId = "488393",
                 spClientObserver = listOf(spClient)
             )
@@ -602,7 +602,7 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfGdpr.copy(clientSideOnly = true),
+                spConfig = spConfGdpr,
                 gdprPmId = "488393",
                 spClientObserver = listOf(spClient)
             )
@@ -647,7 +647,7 @@ class MainActivityKotlinTest {
     @Test
     fun SAVE_AND_EXIT_action() = runBlocking<Unit> {
 
-        loadKoinModules(mockModule(spConfig = spConfGdpr.copy(clientSideOnly = true), gdprPmId = "488393"))
+        loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))
 
         scenario = launchActivity()
 
@@ -672,7 +672,7 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfGdpr.copy(clientSideOnly = true),
+                spConfig = spConfGdpr,
                 gdprPmId = "488393",
                 spClientObserver = listOf(spClient)
             )
@@ -707,7 +707,7 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfGdpr.copy(clientSideOnly = true),
+                spConfig = spConfGdpr,
                 gdprPmId = "488393",
                 spClientObserver = listOf(spClient)
             )
