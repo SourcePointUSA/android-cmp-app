@@ -18,7 +18,7 @@ val defaultProperty = Property(
     pmTab = "DEFAULT",
     statusCampaignSet = setOf(
         StatusCampaign("ott.test.suite", CampaignType.GDPR, true),
-        StatusCampaign("ott.test.suite", CampaignType.CCPA, true),
+        StatusCampaign("ott.test.suite", CampaignType.CCPA, false),
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 22231
