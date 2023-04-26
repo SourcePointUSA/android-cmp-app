@@ -38,7 +38,7 @@ internal interface HttpUrlManager {
     fun getChoiceUrl(param: ChoiceParamReq): HttpUrl
     fun getGdprChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl
-    fun getPvDataUrl(env: Env): HttpUrl
+    fun getPvDataUrl(env: Env, scriptVersion: String, scriptType: String): HttpUrl
     fun getMessagesUrl(param: MessagesParamReq): HttpUrl
 }
 
@@ -231,6 +231,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("hasCsp", true.toString())
             .addQueryParameter("withSiteActions", false.toString())
             .addQueryParameter("includeCustomVendorsRes", false.toString())
+            .addQueryParameter("scriptType", param.scriptType)
+            .addQueryParameter("scriptVersion", param.scriptVersion)
             .addEncodedQueryParameter("metadata", metaData)
             .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}}""")
             .build()
@@ -258,13 +260,15 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    override fun getPvDataUrl(env: Env): HttpUrl {
+    override fun getPvDataUrl(env: Env, scriptVersion: String, scriptType: String): HttpUrl {
         // http://localhost:3000/wrapper/v2/pv-data?env=localProd
         return HttpUrl.Builder()
             .scheme("https")
             .host(env.host)
             .addPathSegments("wrapper/v2/pv-data")
             .addQueryParameter("env", env.queryParam)
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
 
@@ -287,6 +291,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addEncodedQueryParameter("body", param.body)
             .addEncodedQueryParameter("metadata", metaData)
             .addEncodedQueryParameter("localState", param.localState.toString())
+            .addQueryParameter("scriptType", param.scriptType)
+            .addQueryParameter("scriptVersion", param.scriptVersion)
 //            .addQueryParameter("cached", Date().time.toString()) // for caching tests
             .build()
     }

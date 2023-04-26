@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data
 
+import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
@@ -183,6 +184,8 @@ private class ServiceImpl(
                     metadataArg = meta.getOrNull()?.toMetaDataArg(),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
                     localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
+                    scriptType = "android",
+                    scriptVersion = BuildConfig.VERSION_NAME
                 )
 
                 getMessages(messagesParamReq)
@@ -237,7 +240,9 @@ private class ServiceImpl(
                 val pvParams = PvDataParamReq(
                     env = messageReq.env,
                     body = campaignManager.getGdprPvDataBody(messageReq),
-                    campaignType = GDPR
+                    campaignType = GDPR,
+                    scriptType = "android",
+                    scriptVersion = BuildConfig.VERSION_NAME
                 )
 
                 savePvData(pvParams)
@@ -266,7 +271,9 @@ private class ServiceImpl(
                 val pvParams = PvDataParamReq(
                     env = messageReq.env,
                     body = campaignManager.getCcpaPvDataBody(messageReq),
-                    campaignType = CCPA
+                    campaignType = CCPA,
+                    scriptType = "android",
+                    scriptVersion = BuildConfig.VERSION_NAME
                 )
 
                 savePvData(pvParams)
@@ -322,6 +329,8 @@ private class ServiceImpl(
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null),
+                scriptType = "android",
+                scriptVersion = BuildConfig.VERSION_NAME
             )
 
             getResp = nc.getChoice(gcParam)
@@ -396,6 +405,8 @@ private class ServiceImpl(
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null),
+                scriptType = "android",
+                scriptVersion = BuildConfig.VERSION_NAME
             )
             nc.getChoice(gcParam)
                 .executeOnRight { r ->

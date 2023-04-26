@@ -16,7 +16,9 @@ internal class ChoiceParamReq(
     val choiceType: ChoiceTypeParam,
     val metadataArg: MetaDataArg?,
     val propertyId: Long,
-    val accountId: Long
+    val accountId: Long,
+    val scriptVersion: String,
+    val scriptType: String
 )
 
 enum class ChoiceTypeParam(val type: String) {
@@ -37,5 +39,7 @@ internal fun ChoiceParamReq.toJsonObject(): JSONObject {
         put("metadataArg", check { JsonConverter.converter.encodeToString(metadataArg) }.getOrNull())
         put("propertyId", propertyId)
         put("accountId", accountId)
+        put("scriptVersion", scriptVersion)
+        put("scriptType", scriptType)
     }
 }

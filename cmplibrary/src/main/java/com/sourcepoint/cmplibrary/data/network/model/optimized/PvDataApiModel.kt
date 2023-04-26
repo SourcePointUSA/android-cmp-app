@@ -14,7 +14,9 @@ import kotlinx.serialization.json.JsonObject
 internal data class PvDataParamReq(
     val env: Env,
     val body: JsonObject,
-    val campaignType: CampaignType
+    val campaignType: CampaignType,
+    val scriptVersion: String,
+    val scriptType: String
 )
 
 @Serializable
