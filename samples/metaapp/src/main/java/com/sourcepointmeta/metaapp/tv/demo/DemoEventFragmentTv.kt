@@ -68,7 +68,14 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        gdpr_pm.setOnClickListener { pmListener?.invoke(CampaignType.GDPR) }
+        gdpr_pm.run {
+            visibility = config.getPmVisibility(CampaignType.GDPR)
+            setOnClickListener { pmListener?.invoke(CampaignType.GDPR) }
+        }
+        ccpa_pm.run {
+            visibility = config.getPmVisibility(CampaignType.CCPA)
+            setOnClickListener { pmListener?.invoke(CampaignType.CCPA) }
+        }
         refresh_flm.setOnClickListener { flmListener?.invoke() }
         viewModel.liveDataLog.observe(viewLifecycleOwner) {
             if (it.type != "INFO") {
@@ -77,6 +84,11 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
             }
         }
         viewModel.liveData.observe(viewLifecycleOwner, ::stateHandler)
+    }
+
+    private fun SpConfig.getPmVisibility(cm: CampaignType) = when (campaigns.map { it.campaignType }.contains(cm)) {
+        true -> View.VISIBLE
+        false -> View.GONE
     }
 
     override fun onDestroyView() {
