@@ -19,6 +19,7 @@ import org.junit.Test
 class ErrorMessageManagerImplTest {
 
     private val accountId = 22
+    private val propertyId = 1234
     private val propertyHref = "http://dev.local"
     private val client = ClientInfo(
         clientVersion = "5.X.X",
@@ -64,6 +65,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.RESOURCE_NOT_FOUND.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
