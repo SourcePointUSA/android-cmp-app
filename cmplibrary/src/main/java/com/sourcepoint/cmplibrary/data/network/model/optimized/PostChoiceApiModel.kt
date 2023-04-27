@@ -7,5 +7,5 @@ import kotlinx.serialization.json.JsonObject
 internal class PostChoiceParamReq(
     val env: Env,
     val actionType: ActionType,
-    val body: JsonObject = JsonObject(mapOf())
+    val body: JsonObject = JsonObject(mapOf()),
 )

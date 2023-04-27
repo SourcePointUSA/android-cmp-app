@@ -398,8 +398,6 @@ private class CampaignManagerImpl(
             pubData = pubData?.toString()
                 ?.let { check { JsonConverter.converter.decodeFromString<JsonObject>(it) }.getOrNull() }
                 ?: JsonObject(mapOf()),
-            scriptType = "android",
-            scriptVersion = BuildConfig.VERSION_NAME
         )
     }
 

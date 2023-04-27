@@ -38,7 +38,7 @@ internal interface HttpUrlManager {
     fun getChoiceUrl(param: ChoiceParamReq): HttpUrl
     fun getGdprChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl
-    fun getPvDataUrl(env: Env, scriptVersion: String, scriptType: String): HttpUrl
+    fun getPvDataUrl(env: Env): HttpUrl
     fun getMessagesUrl(param: MessagesParamReq): HttpUrl
 }
 
@@ -46,6 +46,8 @@ internal interface HttpUrlManager {
  * Implementation of the [HttpUrlManager] interface
  */
 internal object HttpUrlManagerSingleton : HttpUrlManager {
+    private const val scriptType = "android"
+    private const val scriptVersion = BuildConfig.VERSION_NAME
 
     override fun inAppMessageUrl(env: Env): HttpUrl = HttpUrl.Builder()
         .scheme("https")
@@ -57,7 +59,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
     override fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl {
         return when (campaignType) {
             CampaignType.CCPA -> sendCcpaConsentUrl(actionType = actionType.code, env = env)
-            CampaignType.GDPR -> sendGdprConsentUrl(actionType = actionType.code, env = env)
+            CampaignType.GDPR -> sendGdprConsentUrl(actionType = actionType.code, env = env,)
         }
     }
 
@@ -82,6 +84,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addPathSegments("wrapper/tcfv2/v1/gdpr/custom-consent")
             .addQueryParameter("env", env.queryParam)
             .addQueryParameter("inApp", "true")
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
 
@@ -92,6 +96,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .host(host)
             .addPathSegments("consent/tcfv2/consent/v3/custom/${params.propertyId}")
             .addQueryParameter("consentUUID", params.consentUUID)
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
 
@@ -117,6 +123,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
                 pmConf.siteId?.let { addQueryParameter("site_id", it) }
                 pmConf.messageId?.let { addQueryParameter("message_id", it) }
             }
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
 
@@ -138,6 +146,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
                 pmConf.uuid?.let { addQueryParameter("ccpaUUID", it) }
                 pmConf.messageId?.let { addQueryParameter("message_id", it) }
             }
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
 
@@ -148,6 +158,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .host(env.host)
             .addPathSegments("wrapper/v2/messages/choice/ccpa/$actionType")
             .addQueryParameter("env", env.queryParam)
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
 
@@ -158,6 +170,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .host(env.host)
             .addPathSegments("wrapper/v2/messages/choice/gdpr/$actionType")
             .addQueryParameter("env", env.queryParam)
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
 
@@ -172,6 +186,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("accountId", param.accountId.toString())
             .addQueryParameter("propertyId", param.propertyId.toString())
             .addEncodedQueryParameter("metadata", param.metadata)
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
 
@@ -204,6 +220,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}}""")
             .apply { param.authId?.let { p -> addQueryParameter("authId", p) } }
             .addEncodedQueryParameter("metadata", param.metadata)
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
 
@@ -231,10 +249,10 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("hasCsp", true.toString())
             .addQueryParameter("withSiteActions", false.toString())
             .addQueryParameter("includeCustomVendorsRes", false.toString())
-            .addQueryParameter("scriptType", param.scriptType)
-            .addQueryParameter("scriptVersion", param.scriptVersion)
             .addEncodedQueryParameter("metadata", metaData)
             .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}}""")
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
 
@@ -246,6 +264,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addPathSegments("wrapper/v2/choice/gdpr/${param.actionType.code}")
             .addQueryParameter("env", param.env.queryParam)
             .addQueryParameter("hasCsp", true.toString())
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
 
@@ -257,18 +277,20 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addPathSegments("wrapper/v2/choice/ccpa/${param.actionType.code}")
             .addQueryParameter("env", param.env.queryParam)
             .addQueryParameter("hasCsp", true.toString())
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
 
-    override fun getPvDataUrl(env: Env, scriptVersion: String, scriptType: String): HttpUrl {
+    override fun getPvDataUrl(env: Env): HttpUrl {
         // http://localhost:3000/wrapper/v2/pv-data?env=localProd
         return HttpUrl.Builder()
             .scheme("https")
             .host(env.host)
             .addPathSegments("wrapper/v2/pv-data")
             .addQueryParameter("env", env.queryParam)
-            .addQueryParameter("scriptType", scriptType)
-            .addQueryParameter("scriptVersion", scriptVersion)
+            .addQueryParameter("scriptType", "android")
+            .addQueryParameter("scriptVersion", BuildConfig.VERSION_NAME)
             .build()
     }
 
@@ -291,8 +313,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addEncodedQueryParameter("body", param.body)
             .addEncodedQueryParameter("metadata", metaData)
             .addEncodedQueryParameter("localState", param.localState.toString())
-            .addQueryParameter("scriptType", param.scriptType)
-            .addQueryParameter("scriptVersion", param.scriptVersion)
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
 //            .addQueryParameter("cached", Date().time.toString()) // for caching tests
             .build()
     }

@@ -15,7 +15,7 @@ internal data class MetaDataParamReq(
     val env: Env,
     val propertyId: Long,
     val accountId: Long,
-    val metadata: String
+    val metadata: String,
 )
 
 @Serializable

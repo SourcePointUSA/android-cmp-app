@@ -59,8 +59,8 @@ private class LoggerImpl(
         val body: RequestBody = RequestBody.create(mediaType, errorMessageManager.build(e))
 
         val httpBuilder = url.toHttpUrl().newBuilder()
-        httpBuilder.addQueryParameter("scriptVersion", BuildConfig.VERSION_NAME)
         httpBuilder.addQueryParameter("scriptType", "android")
+        httpBuilder.addQueryParameter("scriptVersion", BuildConfig.VERSION_NAME)
 
         val request: Request = Request.Builder().url(httpBuilder.build()).post(body)
             .header("Accept", mediaType?.type ?: "")

@@ -79,7 +79,7 @@ class NetworkClientImplTest {
         /** capture the Request and test the parameters */
         slot.captured.run {
             readText().let { JSONObject(it).toTreeMap() }.assertEquals(request)
-            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?env=${BuildConfig.ENV_QUERY_PARAM}&inApp=true")
+            url.toString().assertEquals("https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?env=${BuildConfig.ENV_QUERY_PARAM}&inApp=true&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
             method.assertEquals("POST")
             url.queryParameter("env").assertEquals(BuildConfig.ENV_QUERY_PARAM)
         }
@@ -109,7 +109,7 @@ class NetworkClientImplTest {
         /** capture the Request and test the parameters */
         slot.captured.run {
             readText().let { JSONObject(it).toTreeMap() }.assertEquals(request)
-            url.toString().assertEquals("https://cdn.privacy-mgmt.com/consent/tcfv2/consent/v3/custom/${req.propertyId}?consentUUID=${req.consentUUID}")
+            url.toString().assertEquals("https://cdn.privacy-mgmt.com/consent/tcfv2/consent/v3/custom/${req.propertyId}?consentUUID=${req.consentUUID}&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
             method.assertEquals("DELETE")
         }
     }

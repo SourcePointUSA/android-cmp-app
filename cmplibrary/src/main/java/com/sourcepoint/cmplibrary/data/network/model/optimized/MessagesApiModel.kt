@@ -27,8 +27,6 @@ internal data class MessagesParamReq(
     @SerialName("nonKeyedLocalState") val nonKeyedLocalState: JsonObject? = JsonObject(mapOf()),
     @SerialName("pubData") val pubData: JsonObject = JsonObject(mapOf()),
     @SerialName("localState") val localState: JsonObject? = JsonObject(mapOf()),
-    @SerialName("scriptVersion") val scriptVersion: String,
-    @SerialName("scriptType") val scriptType: String,
 )
 
 @Serializable
