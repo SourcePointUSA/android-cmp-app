@@ -227,7 +227,7 @@ internal class InvalidArgumentException @JvmOverloads constructor(
  */
 internal class ConnectionTimeoutException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String,
+    description: String = "A timeout has occurred when requesting the message data. You can extend the timeout using the messageTimeout config parameter.",
     isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
