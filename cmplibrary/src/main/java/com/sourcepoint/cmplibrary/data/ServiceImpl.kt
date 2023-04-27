@@ -356,7 +356,7 @@ private class ServiceImpl(
         val pcParam = PostChoiceParamReq(
             env = env,
             actionType = consentActionImpl.actionType,
-            body = body,
+            body = body
         )
 
         nc.storeGdprChoice(pcParam)
@@ -420,7 +420,7 @@ private class ServiceImpl(
         val pcParam = PostChoiceParamReq(
             env = env,
             actionType = at,
-            body = body,
+            body = body
         )
 
         nc.storeCcpaChoice(pcParam)

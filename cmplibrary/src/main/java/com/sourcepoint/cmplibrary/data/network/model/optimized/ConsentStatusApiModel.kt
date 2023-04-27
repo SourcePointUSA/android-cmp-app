@@ -20,7 +20,7 @@ internal data class ConsentStatusParamReq(
     @SerialName("propertyId") val propertyId: Long,
     @SerialName("accountId") val accountId: Long,
     @SerialName("authId") val authId: String?,
-    @SerialName("localState") val localState: JsonElement?,
+    @SerialName("localState") val localState: JsonElement?
 )
 
 enum class GranularState {

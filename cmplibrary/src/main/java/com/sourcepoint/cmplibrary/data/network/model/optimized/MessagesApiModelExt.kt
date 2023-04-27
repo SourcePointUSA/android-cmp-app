@@ -103,7 +103,7 @@ internal fun MessagesParamReq.toConsentStatusParamReq(
         propertyId = propertyId,
         metadata = mdArg?.let { JsonConverter.converter.encodeToString(it) } ?: "{}",
         authId = authId,
-        localState = localState,
+        localState = localState
     )
 }
 

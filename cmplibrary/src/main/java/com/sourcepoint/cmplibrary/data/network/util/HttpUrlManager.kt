@@ -59,7 +59,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
     override fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl {
         return when (campaignType) {
             CampaignType.CCPA -> sendCcpaConsentUrl(actionType = actionType.code, env = env)
-            CampaignType.GDPR -> sendGdprConsentUrl(actionType = actionType.code, env = env,)
+            CampaignType.GDPR -> sendGdprConsentUrl(actionType = actionType.code, env = env)
         }
     }
 
