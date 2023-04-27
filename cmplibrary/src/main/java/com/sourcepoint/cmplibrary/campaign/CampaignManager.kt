@@ -397,7 +397,7 @@ private class CampaignManagerImpl(
             propertyId = spConfig.propertyId.toLong(),
             pubData = pubData?.toString()
                 ?.let { check { JsonConverter.converter.decodeFromString<JsonObject>(it) }.getOrNull() }
-                ?: JsonObject(mapOf()),
+                ?: JsonObject(mapOf())
         )
     }
 

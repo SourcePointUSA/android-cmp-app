@@ -16,7 +16,7 @@ internal class ChoiceParamReq(
     val choiceType: ChoiceTypeParam,
     val metadataArg: MetaDataArg?,
     val propertyId: Long,
-    val accountId: Long,
+    val accountId: Long
 )
 
 enum class ChoiceTypeParam(val type: String) {

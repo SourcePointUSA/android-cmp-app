@@ -237,7 +237,7 @@ private class ServiceImpl(
                 val pvParams = PvDataParamReq(
                     env = messageReq.env,
                     body = campaignManager.getGdprPvDataBody(messageReq),
-                    campaignType = GDPR,
+                    campaignType = GDPR
                 )
 
                 savePvData(pvParams)
@@ -266,7 +266,7 @@ private class ServiceImpl(
                 val pvParams = PvDataParamReq(
                     env = messageReq.env,
                     body = campaignManager.getCcpaPvDataBody(messageReq),
-                    campaignType = CCPA,
+                    campaignType = CCPA
                 )
 
                 savePvData(pvParams)
