@@ -156,7 +156,6 @@ private class NetworkClientImpl(
             body = jsonBody,
             type = "POST"
         )
-        logger.error(RuntimeException("-----------EEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRROOOOORRRRRRRRRRRRRR-----------"))
 
         val request: Request = Request.Builder()
             .url(url)
