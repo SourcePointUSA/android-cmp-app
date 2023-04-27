@@ -44,7 +44,7 @@ class LoggerImplTest {
                 verify(exactly = 1) { client.newCall(capture(slot)) }
                 slot.captured.run {
                     readText().assertEquals(json)
-                    url.toString().assertEquals("https://myserver.com/")
+                    url.toString().assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
                     method.assertEquals("POST")
                 }
             }
@@ -69,7 +69,7 @@ class LoggerImplTest {
                 verify(exactly = 1) { client.newCall(capture(slot)) }
                 slot.captured.run {
                     readText().assertEquals(json)
-                    url.toString().assertEquals("https://myserver.com/")
+                    url.toString().assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
                     method.assertEquals("POST")
                 }
             }
