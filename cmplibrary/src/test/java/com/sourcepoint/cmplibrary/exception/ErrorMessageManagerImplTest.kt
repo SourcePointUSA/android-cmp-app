@@ -19,6 +19,7 @@ import org.junit.Test
 class ErrorMessageManagerImplTest {
 
     private val accountId = 22
+    private val propertyId = 1234
     private val propertyHref = "http://dev.local"
     private val client = ClientInfo(
         clientVersion = "5.X.X",
@@ -64,6 +65,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.RESOURCE_NOT_FOUND.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -86,6 +88,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.INTERNAL_SERVER_ERROR.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -108,6 +111,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.WEB_VIEW_ERROR.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -130,6 +134,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.URL_LOADING_ERROR.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -152,6 +157,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.INVALID_EVENT_PAYLOAD.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -174,6 +180,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.INVALID_ON_ACTION_EVENT_PAYLOAD.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -196,6 +203,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "sp_metric_rendering_app_error",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -218,6 +226,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.INVALID_RESPONSE_WEB_MESSAGE.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -240,6 +249,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.INVALID_RESPONSE_NATIVE_MESSAGE.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -262,6 +272,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.INVALID_RESPONSE_CONSENT.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -284,6 +295,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.INVALID_RESPONSE_CUSTOM_CONSENT.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -306,6 +318,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.INVALID_LOCAL_DATA.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -328,6 +341,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.CONNECTION_TIMEOUT.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -350,6 +364,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.GENERIC_NETWORK_REQUEST.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -372,6 +387,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.GENERIC_SDK_ERROR.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -394,6 +410,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.INVALID_REQUEST_ERROR.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -416,6 +433,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "${CodeList.UNABLE_TO_LOAD_JS_RECEIVER.code}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",

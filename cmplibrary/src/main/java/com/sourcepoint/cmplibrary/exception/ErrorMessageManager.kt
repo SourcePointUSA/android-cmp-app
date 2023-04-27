@@ -55,6 +55,7 @@ private class ErrorMessageManagerImpl(
             {
                 "code" : "${exception.code.code}",
                 "accountId" : "${spConf.accountId}",
+                "propertyId" : "${spConf.propertyId}",
                 "propertyHref" : "${spConf.propertyName}",
                 "description" : "${exception.description}",
                 "clientVersion" : "${clientInfo.clientVersion}",
