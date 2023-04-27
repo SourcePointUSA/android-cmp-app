@@ -257,11 +257,9 @@ internal class InvalidArgumentException @JvmOverloads constructor(
  * This exception is thrown when we receive a request timeout
  */
 
-val TIMEOUT_MESSAGE = """
-    A timeout has occurred when requesting the message data. 
-    Please check your internet connection. 
-    You can extend the timeout using the messageTimeout config parameter.
-""".trimIndent()
+val TIMEOUT_MESSAGE = "A timeout has occurred when requesting the message data. " +
+    "Please check your internet connection. " +
+    "You can extend the timeout using the messageTimeout config parameter."
 
 internal class ConnectionTimeoutException @JvmOverloads constructor(
     cause: Throwable? = null,

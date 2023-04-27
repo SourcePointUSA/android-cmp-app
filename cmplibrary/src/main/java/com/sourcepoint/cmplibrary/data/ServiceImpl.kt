@@ -232,24 +232,6 @@ private class ServiceImpl(
                 """.trimIndent()
             )
 
-            if (consentManagerUtils.shouldTriggerByGdprSample && isGdprInConfig) {
-
-                val pvParams = PvDataParamReq(
-                    env = messageReq.env,
-                    body = campaignManager.getGdprPvDataBody(messageReq),
-                    campaignType = GDPR
-                )
-
-                savePvData(pvParams)
-                    .executeOnLeft {
-                        pError(it)
-                        return@executeOnWorkerThread
-                    }
-                    .executeOnRight {
-                        campaignManager.pvDataResp = it
-                    }
-            }
-
             val isCcpaInConfig = spConfig.campaigns.find { it.campaignType == CCPA } != null
 
             logger.computation(
@@ -260,24 +242,6 @@ private class ServiceImpl(
                     res[${consentManagerUtils.shouldTriggerByCcpaSample && isCcpaInConfig}]
                 """.trimIndent()
             )
-
-            if (consentManagerUtils.shouldTriggerByCcpaSample && isCcpaInConfig) {
-
-                val pvParams = PvDataParamReq(
-                    env = messageReq.env,
-                    body = campaignManager.getCcpaPvDataBody(messageReq),
-                    campaignType = CCPA
-                )
-
-                savePvData(pvParams)
-                    .executeOnLeft {
-                        pError(it)
-                        return@executeOnWorkerThread
-                    }
-                    .executeOnRight {
-                        campaignManager.pvDataResp = it
-                    }
-            }
         }
     }
 
@@ -289,14 +253,14 @@ private class ServiceImpl(
     ): Either<ChoiceResp> {
         return when (consentActionImpl.campaignType) {
             GDPR -> {
-                sendConsentGdprOptimized(
+                sendConsentGdpr(
                     consentActionImpl,
                     env,
                     sPConsentsSuccess
                 ).map { ChoiceResp(gdpr = it) }
             }
             CCPA -> {
-                sendConsentCcpaOptimized(
+                sendConsentCcpa(
                     consentActionImpl,
                     env,
                     sPConsentsSuccess
@@ -305,11 +269,25 @@ private class ServiceImpl(
         }
     }
 
-    fun sendConsentGdprOptimized(
+    fun sendConsentGdpr(
         consentActionImpl: ConsentActionImpl,
         env: Env,
         sPConsentsSuccess: ((SPConsents) -> Unit)?
     ): Either<GdprCS> = check {
+
+        if (consentManagerUtils.shouldTriggerByGdprSample && spConfig.campaigns.find { it.campaignType == GDPR } != null) {
+
+            val pvParams = PvDataParamReq(
+                env = pMessageReq!!.env,
+                body = campaignManager.getGdprPvDataBody(pMessageReq!!),
+                campaignType = GDPR
+            )
+
+            savePvData(pvParams)
+                .executeOnRight {
+                    campaignManager.gdprPvData = it.gdprPvData
+                }
+        }
 
         var getResp: ChoiceResp? = null
 
@@ -382,11 +360,26 @@ private class ServiceImpl(
         )
     }
 
-    fun sendConsentCcpaOptimized(
+    fun sendConsentCcpa(
         consentActionImpl: ConsentActionImpl,
         env: Env,
         sPConsentsSuccess: ((SPConsents) -> Unit)?
     ): Either<CcpaCS> = check {
+
+        if (consentManagerUtils.shouldTriggerByCcpaSample && spConfig.campaigns.find { it.campaignType == CCPA } != null) {
+
+            val pvParams = PvDataParamReq(
+                env = pMessageReq!!.env,
+                body = campaignManager.getCcpaPvDataBody(pMessageReq!!),
+                campaignType = CCPA
+            )
+
+            savePvData(pvParams)
+                .executeOnRight {
+                    campaignManager.ccpaPvData = it.ccpaPvData
+                }
+        }
+
         val at = consentActionImpl.actionType
         if (at == ActionType.ACCEPT_ALL || at == ActionType.REJECT_ALL) {
 

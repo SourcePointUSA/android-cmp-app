@@ -14,6 +14,8 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
         const val CONSENT_STATUS = "sp.key.consent.status"
         const val META_DATA_RESP = "sp.key.meta.data"
         const val PV_DATA_RESP = "sp.key.pv.data"
+        const val CCPA_PV_DATA_RESP = "sp.key.ccpa.pv.data"
+        const val GDPR_PV_DATA_RESP = "sp.key.gdpr.pv.data"
         const val CHOICE_RESP = "sp.key.choice"
         const val DATA_RECORDED_CONSENT = "sp.key.data.recorded.consent"
 
@@ -30,7 +32,8 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     var messagesOptimized: String?
     var consentStatus: String?
     var metaDataResp: String?
-    var pvDataResp: String?
+    var gdprPvData: String?
+    var ccpaPvData: String?
     var choiceResp: String?
     var dataRecordedConsent: String?
 

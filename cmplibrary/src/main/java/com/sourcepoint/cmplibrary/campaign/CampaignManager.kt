@@ -95,7 +95,8 @@ internal interface CampaignManager {
 //    var ccpaStatus: CcpaStatus?
 
     var metaDataResp: MetaDataResp?
-    var pvDataResp: PvDataResp?
+    var ccpaPvData: PvDataResp.CcpaPvData?
+    var gdprPvData: PvDataResp.GdprPvData?
     var choiceResp: ChoiceResp?
     var dataRecordedConsent: Instant?
     var authId: String?
@@ -697,13 +698,22 @@ private class CampaignManagerImpl(
             dataStorage.metaDataResp = serialised
         }
 
-    override var pvDataResp: PvDataResp?
+    override var ccpaPvData: PvDataResp.CcpaPvData?
         get() {
-            return dataStorage.pvDataResp?.let { JsonConverter.converter.decodeFromString<PvDataResp>(it) }
+            return dataStorage.ccpaPvData?.let { JsonConverter.converter.decodeFromString<PvDataResp.CcpaPvData>(it) }
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.pvDataResp = serialised
+            dataStorage.ccpaPvData = serialised
+        }
+
+    override var gdprPvData: PvDataResp.GdprPvData?
+        get() {
+            return dataStorage.gdprPvData?.let { JsonConverter.converter.decodeFromString<PvDataResp.GdprPvData>(it) }
+        }
+        set(value) {
+            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
+            dataStorage.gdprPvData = serialised
         }
 
     override var choiceResp: ChoiceResp?
@@ -712,7 +722,7 @@ private class CampaignManagerImpl(
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.pvDataResp = serialised
+            dataStorage.choiceResp = serialised
         }
 
     override var dataRecordedConsent: Instant?

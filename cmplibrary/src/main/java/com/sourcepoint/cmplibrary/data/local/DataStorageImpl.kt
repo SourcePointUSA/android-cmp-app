@@ -4,11 +4,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CCPA_CONSENT_STATUS
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CCPA_PV_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CHOICE_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATUS_RESPONSE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.DATA_RECORDED_CONSENT
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_CONSENT_STATUS
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_PV_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_OPTIMIZED
@@ -124,12 +126,21 @@ private class DataStorageImpl(
                 .apply()
         }
 
-    override var pvDataResp: String?
-        get() = preference.getString(PV_DATA_RESP, null)
+    override var gdprPvData: String?
+        get() = preference.getString(GDPR_PV_DATA_RESP, null)
         set(value) {
             preference
                 .edit()
-                .putString(PV_DATA_RESP, value)
+                .putString(GDPR_PV_DATA_RESP, value)
+                .apply()
+        }
+
+    override var ccpaPvData: String?
+        get() = preference.getString(CCPA_PV_DATA_RESP, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(CCPA_PV_DATA_RESP, value)
                 .apply()
         }
 
@@ -186,6 +197,8 @@ private class DataStorageImpl(
             .remove(MESSAGES_OPTIMIZED)
             .remove(META_DATA_RESP)
             .remove(PV_DATA_RESP)
+            .remove(GDPR_PV_DATA_RESP)
+            .remove(CCPA_PV_DATA_RESP)
             .remove(CHOICE_RESP)
             .remove(DATA_RECORDED_CONSENT)
             .remove(CONSENT_STATUS_RESPONSE)

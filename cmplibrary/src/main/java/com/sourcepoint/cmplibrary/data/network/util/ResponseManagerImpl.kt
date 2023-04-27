@@ -214,7 +214,7 @@ private class ResponseManagerImpl(
         return if (r.isSuccessful) {
             when (val either: Either<PvDataResp> = jsonConverter.toPvDataResp(body)) {
                 is Either.Right -> {
-                    val campaign = either.r.gdpr?.let { "GDPR" } ?: ("" + either.r.ccpa?.let { "CCPA" }) ?: ""
+                    val campaign = either.r.gdprPvData?.let { "GDPR" } ?: ("" + either.r.ccpaPvData?.let { "CCPA" }) ?: ""
                     logger.res(
                         tag = "PvDataResp - $campaign",
                         msg = mess,
