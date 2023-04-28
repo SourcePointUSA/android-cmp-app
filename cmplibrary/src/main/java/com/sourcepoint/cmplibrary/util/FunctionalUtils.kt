@@ -29,3 +29,15 @@ internal fun Throwable.toConsentLibException(): ConsentLibExceptionK {
         else -> GenericSDKException(cause = this, description = this.message ?: "${this::class.java}")
     }
 }
+
+internal fun ConsentLibExceptionK.addEndPointInfo(endPointName: String): ConsentLibExceptionK {
+    return when (this) {
+        is ConnectionTimeoutException -> ConnectionTimeoutException(
+            cause = this.cause,
+            endPointName = endPointName,
+            description = description,
+            isConsumed = isConsumed
+        )
+        else -> this
+    }
+}

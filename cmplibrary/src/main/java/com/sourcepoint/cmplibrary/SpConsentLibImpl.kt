@@ -199,7 +199,6 @@ internal class SpConsentLibImpl(
                         clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
                     }
                 } else {
-                    (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
                     val ex = throwable.toConsentLibException()
                     spClient.onError(ex)
                     pLogger.clientEvent(
