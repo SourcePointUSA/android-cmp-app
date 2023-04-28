@@ -33,12 +33,6 @@ internal interface NetworkClient {
     ): Either<ConsentStatusResp>
 
     fun getMessages(
-        messageReq: MessagesParamReq,
-        pSuccess: (MessagesResp) -> Unit,
-        pError: (Throwable) -> Unit
-    )
-
-    fun getMessages(
         param: MessagesParamReq
     ): Either<MessagesResp>
 
