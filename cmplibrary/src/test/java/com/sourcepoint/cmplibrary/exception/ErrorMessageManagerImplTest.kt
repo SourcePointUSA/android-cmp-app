@@ -335,7 +335,7 @@ class ErrorMessageManagerImplTest {
     fun `GIVEN a ConnectionTimeoutException VERIFY the generated message`() {
 
         val originalException = RuntimeException("test_message")
-        val exception = ConnectionTimeoutException(originalException, "test_description")
+        val exception = ConnectionTimeoutException(cause = originalException, description = "test_description")
 
         val expected = """
             {
