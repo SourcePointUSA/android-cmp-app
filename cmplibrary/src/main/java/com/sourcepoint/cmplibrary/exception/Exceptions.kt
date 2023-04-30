@@ -227,15 +227,15 @@ internal class InvalidArgumentException @JvmOverloads constructor(
  */
 internal class ConnectionTimeoutException @JvmOverloads constructor(
     cause: Throwable? = null,
-    endPointName: String? = null,
     description: String = "A timeout has occurred when requesting the message data. You can extend the timeout using the messageTimeout config parameter.",
-    isConsumed: Boolean = false
+    isConsumed: Boolean = false,
+    networkCode: String = ""
 ) : ConsentLibExceptionK(
     cause = cause,
-    description = "${endPointName?.let { "$it - " } ?: ""}$description",
+    description = description,
     isConsumed = isConsumed
 ) {
-    override val code: ExceptionCodes = CodeList.CONNECTION_TIMEOUT
+    override val code: ExceptionCodes = ExceptionCodes(CodeList.CONNECTION_TIMEOUT.code + networkCode)
 }
 
 /**

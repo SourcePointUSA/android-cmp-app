@@ -27,3 +27,10 @@ internal object CodeList {
 }
 
 internal inline class ExceptionCodes(val code: String)
+
+internal enum class NetworkCallErrorsCode(val code: String) {
+    META_DATA("_meta-data"),
+    CONSENT_STATUS("_consent-status"),
+    PV_DATA("_pv-data"),
+    MESSAGES("_messages")
+}
