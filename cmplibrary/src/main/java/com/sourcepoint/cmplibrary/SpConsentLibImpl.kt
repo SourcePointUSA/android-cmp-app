@@ -448,6 +448,7 @@ internal class SpConsentLibImpl(
 
         override fun onError(view: View, errorMessage: String) {
             spClient.onError(RenderingAppException(description = errorMessage))
+            pLogger.error(RenderingAppException(description = errorMessage))
             pLogger.clientEvent(
                 event = "onError",
                 msg = errorMessage,
