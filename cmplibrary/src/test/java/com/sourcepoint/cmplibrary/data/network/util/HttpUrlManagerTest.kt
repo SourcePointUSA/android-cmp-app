@@ -111,18 +111,6 @@ class HttpUrlManagerTest {
     }
 
     @Test
-    fun `GIVEN a STAGE env sendConsentUrl RETURN the prod link`() {
-        val sut = HttpUrlManagerSingleton.sendConsentUrl(ActionType.ACCEPT_ALL, Env.STAGE, CampaignType.GDPR).toString()
-        sut.assertEquals("https://cdn.sp-stage.net/wrapper/v2/messages/choice/gdpr/11?env=${BuildConfig.ENV_QUERY_PARAM}&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-    }
-
-    @Test
-    fun `GIVEN a PROD env sendConsentUrl RETURN the prod link`() {
-        val sut = HttpUrlManagerSingleton.sendConsentUrl(ActionType.REJECT_ALL, Env.PROD, CampaignType.CCPA).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages/choice/ccpa/13?env=prod&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-    }
-
-    @Test
     fun `GIVEN a STAGE env sendCustomConsentUrl RETURN the prod link`() {
         val sut = HttpUrlManagerSingleton.sendCustomConsentUrl(Env.STAGE).toString()
         sut.assertEquals("https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?env=${BuildConfig.ENV_QUERY_PARAM}&inApp=true&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")

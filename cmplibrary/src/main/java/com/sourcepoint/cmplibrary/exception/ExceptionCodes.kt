@@ -26,7 +26,7 @@ internal object CodeList {
     val RENDERING_APP_ERROR = ExceptionCodes("sp_metric_rendering_app_error")
 }
 
-internal inline class ExceptionCodes(val code: String)
+internal inline class ExceptionCodes(val errorCode: String)
 
 internal enum class NetworkCallErrorsCode(val code: String) {
     META_DATA("_meta-data"),

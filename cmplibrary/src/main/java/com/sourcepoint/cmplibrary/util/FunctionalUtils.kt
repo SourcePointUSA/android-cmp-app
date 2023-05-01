@@ -32,14 +32,6 @@ internal fun <E> check(networkCode: NetworkCallErrorsCode? = null, block: () -> 
     }
 }
 
-internal fun Throwable.toConsentLibException(): ConsentLibExceptionK {
-    return when (this) {
-        is ConsentLibExceptionK -> this
-        is InterruptedIOException -> ConnectionTimeoutException(cause = this)
-        else -> GenericSDKException(cause = this, description = this.message ?: "${this::class.java}")
-    }
-}
-
 internal fun Throwable.toConsentLibException(networkCode: NetworkCallErrorsCode? = null): ConsentLibExceptionK {
     return when (this) {
         is ConsentLibExceptionK -> this

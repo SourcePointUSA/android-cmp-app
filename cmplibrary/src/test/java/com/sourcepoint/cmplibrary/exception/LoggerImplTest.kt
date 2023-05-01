@@ -78,7 +78,7 @@ class LoggerImplTest {
 
     private fun json(errorCode: ExceptionCodes) = """
             {
-                "code" : "${errorCode.code}",
+                "code" : "${errorCode.errorCode}",
                 "accountId" : "accountId",
                 "propertyHref" : "https://ref.com",
                 "propertyId" : "propertyId",

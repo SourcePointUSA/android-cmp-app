@@ -2,11 +2,10 @@ package com.sourcepoint.cmplibrary.util
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
-import com.sourcepoint.cmplibrary.exception.GenericSDKException
-import com.sourcepoint.cmplibrary.exception.MissingClientException
+import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import org.junit.Test
 import java.io.IOException
+import java.io.InterruptedIOException
 
 class FunctionalUtilsKtTest {
 
@@ -28,6 +27,18 @@ class FunctionalUtilsKtTest {
             (this as GenericSDKException)
             message.assertEquals("test")
             description.assertEquals("test")
+            isConsumed.assertEquals(false)
+        }
+    }
+
+    @Test
+    fun `GIVEN a InterruptedIOException with meta-data message RETURN a ConnectionTimeoutException`() {
+        val sut = check(NetworkCallErrorsCode.META_DATA) { throw InterruptedIOException() }
+        (sut as Either.Left).t.run {
+            (this as ConnectionTimeoutException)
+            message.assertEquals("A timeout has occurred when requesting the message data. You can extend the timeout using the messageTimeout config parameter.")
+            description.assertEquals("A timeout has occurred when requesting the message data. You can extend the timeout using the messageTimeout config parameter.")
+            code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.META_DATA.code)
             isConsumed.assertEquals(false)
         }
     }

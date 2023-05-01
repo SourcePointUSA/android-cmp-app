@@ -63,7 +63,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.RESOURCE_NOT_FOUND.code}",
+                "code" : "${CodeList.RESOURCE_NOT_FOUND.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -86,7 +86,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INTERNAL_SERVER_ERROR.code}",
+                "code" : "${CodeList.INTERNAL_SERVER_ERROR.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -109,7 +109,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.WEB_VIEW_ERROR.code}",
+                "code" : "${CodeList.WEB_VIEW_ERROR.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -132,7 +132,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.URL_LOADING_ERROR.code}",
+                "code" : "${CodeList.URL_LOADING_ERROR.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -155,7 +155,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_EVENT_PAYLOAD.code}",
+                "code" : "${CodeList.INVALID_EVENT_PAYLOAD.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -178,7 +178,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_ON_ACTION_EVENT_PAYLOAD.code}",
+                "code" : "${CodeList.INVALID_ON_ACTION_EVENT_PAYLOAD.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -224,7 +224,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_RESPONSE_WEB_MESSAGE.code}",
+                "code" : "${CodeList.INVALID_RESPONSE_WEB_MESSAGE.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -247,7 +247,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_RESPONSE_NATIVE_MESSAGE.code}",
+                "code" : "${CodeList.INVALID_RESPONSE_NATIVE_MESSAGE.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -270,7 +270,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_RESPONSE_CONSENT.code}",
+                "code" : "${CodeList.INVALID_RESPONSE_CONSENT.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -293,7 +293,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_RESPONSE_CUSTOM_CONSENT.code}",
+                "code" : "${CodeList.INVALID_RESPONSE_CUSTOM_CONSENT.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -316,7 +316,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_LOCAL_DATA.code}",
+                "code" : "${CodeList.INVALID_LOCAL_DATA.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -339,7 +339,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.CONNECTION_TIMEOUT.code}",
+                "code" : "${CodeList.CONNECTION_TIMEOUT.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -362,7 +362,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.GENERIC_NETWORK_REQUEST.code}",
+                "code" : "${CodeList.GENERIC_NETWORK_REQUEST.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -385,7 +385,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.GENERIC_SDK_ERROR.code}",
+                "code" : "${CodeList.GENERIC_SDK_ERROR.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -408,7 +408,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_REQUEST_ERROR.code}",
+                "code" : "${CodeList.INVALID_REQUEST_ERROR.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -431,7 +431,7 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.UNABLE_TO_LOAD_JS_RECEIVER.code}",
+                "code" : "${CodeList.UNABLE_TO_LOAD_JS_RECEIVER.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",

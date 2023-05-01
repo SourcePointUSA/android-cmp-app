@@ -4,12 +4,15 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.toJsonObject
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
+import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.CodeList
+import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
+import com.sourcepoint.cmplibrary.exception.NetworkCallErrorsCode
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.UnifiedMessageResp
@@ -20,12 +23,14 @@ import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.uwMessDataTest
 import io.mockk.* //ktlint-disable
 import io.mockk.impl.annotations.MockK
+import kotlinx.serialization.json.buildJsonObject
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
+import java.io.InterruptedIOException
 
 class NetworkClientImplTest {
 
@@ -275,5 +280,81 @@ class NetworkClientImplTest {
 
         val res = sut.getMetaData(param) as? Either.Left
         res.assertNotNull()
+    }
+
+    @Test
+    fun `EXECUTE getMetaData THROWS an InterruptedIOException and the result is a LEFT obj`() {
+        val respConsent = JSONObject()
+        val mockCall = mockk<Call>()
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.throws(InterruptedIOException("exception"))
+        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null))
+
+        val param = MetaDataParamReq(
+            accountId = 22,
+            propertyId = 17801,
+            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
+            env = Env.LOCAL_PROD
+        )
+
+        val res = sut.getMetaData(param) as? Either.Left
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.META_DATA.code)
+    }
+
+    @Test
+    fun `EXECUTE getConsentStatus THROWS an InterruptedIOException and the result is a LEFT obj`() {
+        val mockCall = mockk<Call>()
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.throws(InterruptedIOException("exception"))
+
+        val param = ConsentStatusParamReq(
+            accountId = 22,
+            propertyId = 17801,
+            metadata = JSONObject().toString(),
+            env = Env.LOCAL_PROD,
+            authId = null,
+            localState = null
+        )
+
+        val res = sut.getConsentStatus(param) as? Either.Left
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.CONSENT_STATUS.code)
+    }
+
+    @Test
+    fun `EXECUTE getMessages THROWS an InterruptedIOException and the result is a LEFT obj`() {
+        val mockCall = mockk<Call>()
+
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.throws(InterruptedIOException("exception"))
+
+        val param = MessagesParamReq(
+            accountId = 1,
+            propertyId = 1,
+            authId = null,
+            propertyHref = "prop",
+            env = Env.LOCAL_PROD,
+            metadataArg = null,
+            body = "{}",
+        )
+
+        val res = sut.getMessages(param) as? Either.Left
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.MESSAGES.code)
+    }
+
+    @Test
+    fun `EXECUTE savePvData THROWS an InterruptedIOException and the result is a LEFT obj`() {
+        val mockCall = mockk<Call>()
+
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.throws(InterruptedIOException("exception"))
+
+        val param = PvDataParamReq(
+            env = Env.LOCAL_PROD,
+            body = buildJsonObject { },
+            campaignType = CampaignType.GDPR
+        )
+
+        val res = sut.savePvData(param) as? Either.Left
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.PV_DATA.code)
     }
 }

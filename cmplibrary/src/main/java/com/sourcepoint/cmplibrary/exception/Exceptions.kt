@@ -235,7 +235,7 @@ internal class ConnectionTimeoutException @JvmOverloads constructor(
     description = description,
     isConsumed = isConsumed
 ) {
-    override val code: ExceptionCodes = ExceptionCodes(CodeList.CONNECTION_TIMEOUT.code + networkCode)
+    override val code: ExceptionCodes = ExceptionCodes(CodeList.CONNECTION_TIMEOUT.errorCode + networkCode)
 }
 
 /**
