@@ -57,7 +57,11 @@ private class LoggerImpl(
     val errorMessageManager: ErrorMessageManager,
     val url: String
 ) : Logger {
-    override fun error(e: RuntimeException) { /* No log in debug */ }
+    override fun error(e: RuntimeException) {
+        (e as? ConsentLibExceptionK)?.let {
+            Log.e("Logger", "${ it.code.errorCode } - ${ it.message }")
+        }
+    }
     override fun e(tag: String, msg: String) = pError(tag, msg)
     override fun i(tag: String, msg: String) = info(tag, msg)
     override fun d(tag: String, msg: String) = debug(tag, msg)
