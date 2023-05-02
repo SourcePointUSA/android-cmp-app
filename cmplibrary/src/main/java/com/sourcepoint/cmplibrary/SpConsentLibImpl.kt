@@ -204,7 +204,7 @@ internal class SpConsentLibImpl(
                     spClient.onError(ex)
                     pLogger.clientEvent(
                         event = "onError",
-                        msg = "${throwable.message}",
+                        msg = "${ex.code.errorCode}",
                         content = "${throwable.message}"
                     )
                     pLogger.e(
