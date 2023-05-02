@@ -37,7 +37,6 @@ internal class SPWebViewClient(
 
     override fun onPageFinished(view: WebView, url: String?) {
         super.onPageFinished(view, url)
-        timer.cancel()
         try {
             jsReceiverConfig
                 ?.let {
@@ -110,5 +109,9 @@ internal class SPWebViewClient(
 
     override fun onPageCommitVisible(view: WebView?, url: String?) {
         super.onPageCommitVisible(view, url)
+    }
+
+    fun cancelTimer(){
+        timer.cancel()
     }
 }
