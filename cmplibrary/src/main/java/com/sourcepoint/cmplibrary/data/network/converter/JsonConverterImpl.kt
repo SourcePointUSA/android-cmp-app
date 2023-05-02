@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disab
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
+import com.sourcepoint.cmplibrary.exception.NetworkCallErrorsCode.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
@@ -79,11 +80,11 @@ private class JsonConverterImpl : JsonConverter {
         JSONObject(body).toTreeMap().toNativeMessageDto()
     }
 
-    override fun toMetaDataRespResp(body: String): Either<MetaDataResp> = check {
+    override fun toMetaDataRespResp(body: String): Either<MetaDataResp> = check(META_DATA) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toConsentStatusResp(body: String): Either<ConsentStatusResp> = check {
+    override fun toConsentStatusResp(body: String): Either<ConsentStatusResp> = check(CONSENT_STATUS) {
         JsonConverter.converter.decodeFromString(body)
     }
 
@@ -99,11 +100,11 @@ private class JsonConverterImpl : JsonConverter {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toPvDataResp(body: String): Either<PvDataResp> = check {
+    override fun toPvDataResp(body: String): Either<PvDataResp> = check(PV_DATA) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toMessagesResp(body: String): Either<MessagesResp> = check {
+    override fun toMessagesResp(body: String): Either<MessagesResp> = check(MESSAGES) {
         JsonConverter.converter.decodeFromString(body)
     }
 

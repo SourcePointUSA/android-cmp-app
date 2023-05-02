@@ -148,6 +148,22 @@ internal class InvalidResponseException @JvmOverloads constructor(
 }
 
 /**
+ * This exception is thrown when the response from the api is invalid
+ */
+internal class InvalidApiResponseException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false,
+    networkCode: String = ""
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = ExceptionCodes(CodeList.INVALID_RESPONSE_API.errorCode + networkCode)
+}
+
+/**
  * This exception is thrown when the response from getting the native message is invalid
  */
 internal class InvalidResponseNativeMessageException @JvmOverloads constructor(

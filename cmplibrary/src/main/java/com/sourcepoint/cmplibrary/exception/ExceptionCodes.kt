@@ -6,6 +6,7 @@ package com.sourcepoint.cmplibrary.exception
 internal object CodeList {
     val INVALID_LOCAL_DATA = ExceptionCodes("sp_metric_invalid_local_data")
     val INVALID_RESPONSE_WEB_MESSAGE = ExceptionCodes("sp_metric_invalid_response_web_message")
+    val INVALID_RESPONSE_API = ExceptionCodes("sp_metric_invalid_response_api")
     val INVALID_RESPONSE_NATIVE_MESSAGE = ExceptionCodes("sp_metric_invalid_response_native_message")
     val INVALID_RESPONSE_CONSENT = ExceptionCodes("sp_metric_invalid_response_consent")
     val INVALID_RESPONSE_CUSTOM_CONSENT = ExceptionCodes("sp_metric_invalid_response_custom_consent")
