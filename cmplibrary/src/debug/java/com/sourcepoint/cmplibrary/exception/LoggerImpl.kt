@@ -3,8 +3,13 @@
 package com.sourcepoint.cmplibrary.exception
 
 import android.util.Log
-import com.sourcepoint.cmplibrary.exception.LoggerType.NL
+import com.example.cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.util.enqueue
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
 import org.json.JSONObject
 
 /**
@@ -58,9 +63,24 @@ private class LoggerImpl(
     val url: String
 ) : Logger {
     override fun error(e: RuntimeException) {
+        // Log in the console
         (e as? ConsentLibExceptionK)?.let {
             Log.e("Logger", "${ it.code.errorCode } - ${ it.message }")
         }
+        // send data to datadog
+        val mediaType = "application/json".toMediaTypeOrNull()
+        val body: RequestBody = RequestBody.create(mediaType, errorMessageManager.build(e))
+
+        val httpBuilder = url.toHttpUrl().newBuilder()
+        httpBuilder.addQueryParameter("scriptType", "android")
+        httpBuilder.addQueryParameter("scriptVersion", BuildConfig.VERSION_NAME)
+
+        val request: Request = Request.Builder().url(httpBuilder.build()).post(body)
+            .header("Accept", mediaType?.type ?: "")
+            .header("Content-Type", mediaType?.type ?: "")
+            .build()
+
+        networkClient.newCall(request).enqueue { }
     }
     override fun e(tag: String, msg: String) = pError(tag, msg)
     override fun i(tag: String, msg: String) = info(tag, msg)
