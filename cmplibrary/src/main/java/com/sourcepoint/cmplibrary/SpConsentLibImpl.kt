@@ -474,6 +474,7 @@ internal class SpConsentLibImpl(
 
         override fun onError(view: View, error: Throwable) {
             spClient.onError(error)
+            pLogger.error(error.toConsentLibException())
             pLogger.clientEvent(
                 event = "onError",
                 msg = "${error.message}",
