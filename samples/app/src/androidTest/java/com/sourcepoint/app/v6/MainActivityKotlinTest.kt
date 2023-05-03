@@ -76,7 +76,7 @@ class MainActivityKotlinTest {
         propertyId = 16893
         propertyName = "mobile.multicampaign.demo"
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 3000
+        messageTimeout = 5000
         +(CampaignType.CCPA)
     }
 
@@ -85,7 +85,7 @@ class MainActivityKotlinTest {
         propertyId = 16893
         propertyName = "mobile.multicampaign.demo"
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 3000
+        messageTimeout = 5000
         +(CampaignType.GDPR)
     }
 
@@ -94,7 +94,7 @@ class MainActivityKotlinTest {
         propertyId = 18893
         propertyName = "TOGGO-App-iOS"
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 3000
+        messageTimeout = 5000
         +(CampaignType.GDPR)
     }
 
@@ -103,7 +103,7 @@ class MainActivityKotlinTest {
         propertyId = 29498
         propertyName = "ott-ccpa-22"
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 3000
+        messageTimeout = 5000
         +(CampaignType.GDPR)
     }
 
@@ -112,7 +112,7 @@ class MainActivityKotlinTest {
         propertyId = 24188
         propertyName = "mobile.prop-1"
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 3000
+        messageTimeout = 5000
         +(CampaignType.GDPR)
     }
 
@@ -121,7 +121,7 @@ class MainActivityKotlinTest {
         propertyId = 16893
         propertyName = "mobile.multicampaign.demo"
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 3000
+        messageTimeout = 5000
         +(CampaignType.GDPR)
         +(CampaignType.CCPA)
     }
@@ -131,7 +131,7 @@ class MainActivityKotlinTest {
         propertyId = 18958
         propertyName = "mobile.multicampaign.native.demo" // gdprPmId = 545258
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 3000
+        messageTimeout = 5000
         +(CampaignType.GDPR)
     }
 

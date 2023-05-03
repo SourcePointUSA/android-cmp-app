@@ -42,7 +42,7 @@ class MainActivityKotlinOttTest {
         propertyId = 22231
         campaignsEnv = CampaignsEnv.PUBLIC
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 3000
+        messageTimeout = 5000
         +(CampaignType.GDPR)
     }
 

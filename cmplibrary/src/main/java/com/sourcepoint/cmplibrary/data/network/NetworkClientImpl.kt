@@ -1,17 +1,15 @@
 package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.core.executeOnLeft
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
-import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.NetworkCallErrorsCode
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
-import com.sourcepoint.cmplibrary.util.addEndPointInfo
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.encodeToString
 import okhttp3.MediaType.Companion.toMediaType
@@ -57,7 +55,7 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseCustomConsentRes(response)
-    }.executeOnLeft { (it as? ConsentLibExceptionK)?.let { cle -> logger.error(cle.addEndPointInfo(endPointName = "sendCustomConsent")) } }
+    }
 
     override fun deleteCustomConsentTo(
         customConsentReq: CustomConsentReq,
@@ -83,9 +81,9 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseCustomConsentRes(response)
-    }.executeOnLeft { (it as? ConsentLibExceptionK)?.let { cle -> logger.error(cle.addEndPointInfo(endPointName = "deleteCustomConsentTo")) } }
+    }
 
-    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> = check {
+    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> = check(NetworkCallErrorsCode.META_DATA) {
         val url = urlManager.getMetaDataUrl(param)
 
         logger.req(
@@ -103,9 +101,9 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseMetaDataRes(response)
-    }.executeOnLeft { (it as? ConsentLibExceptionK)?.let { cle -> logger.error(cle.addEndPointInfo(endPointName = "getMetaData")) } }
+    }
 
-    override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> = check {
+    override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> = check(NetworkCallErrorsCode.CONSENT_STATUS) {
         val url = urlManager.getConsentStatusUrl(param)
 
         logger.req(
@@ -123,9 +121,9 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseConsentStatusResp(response)
-    }.executeOnLeft { (it as? ConsentLibExceptionK)?.let { cle -> logger.error(cle.addEndPointInfo(endPointName = "getConsentStatus")) } }
+    }
 
-    override fun getMessages(param: MessagesParamReq): Either<MessagesResp> = check {
+    override fun getMessages(param: MessagesParamReq): Either<MessagesResp> = check(NetworkCallErrorsCode.MESSAGES) {
         val url = urlManager.getMessagesUrl(param)
 
         logger.req(
@@ -143,9 +141,9 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseMessagesResp(response)
-    }.executeOnLeft { (it as? ConsentLibExceptionK)?.let { cle -> logger.error(cle.addEndPointInfo(endPointName = "getMessages")) } }
+    }
 
-    override fun savePvData(param: PvDataParamReq): Either<PvDataResp> = check {
+    override fun savePvData(param: PvDataParamReq): Either<PvDataResp> = check(NetworkCallErrorsCode.PV_DATA) {
         val url = urlManager.getPvDataUrl(param.env)
         val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()
@@ -166,7 +164,7 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parsePvDataResp(response)
-    }.executeOnLeft { (it as? ConsentLibExceptionK)?.let { cle -> logger.error(cle.addEndPointInfo(endPointName = "savePvData")) } }
+    }
 
     override fun getChoice(param: ChoiceParamReq): Either<ChoiceResp> = check {
         val url = urlManager.getChoiceUrl(param)
@@ -186,7 +184,7 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parseGetChoiceResp(response)
-    }.executeOnLeft { (it as? ConsentLibExceptionK)?.let { cle -> logger.error(cle.addEndPointInfo(endPointName = "getChoice")) } }
+    }
 
     override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprCS> = check {
         val url = urlManager.getGdprChoiceUrl(param)
@@ -209,7 +207,7 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parsePostGdprChoiceResp(response)
-    }.executeOnLeft { (it as? ConsentLibExceptionK)?.let { cle -> logger.error(cle.addEndPointInfo(endPointName = "storeGdprChoice")) } }
+    }
 
     override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> = check {
         val url = urlManager.getCcpaChoiceUrl(param)
@@ -232,5 +230,5 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parsePostCcpaChoiceResp(response)
-    }.executeOnLeft { (it as? ConsentLibExceptionK)?.let { cle -> logger.error(cle.addEndPointInfo(endPointName = "storeCcpaChoice")) } }
+    }
 }

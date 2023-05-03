@@ -11,7 +11,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
 import kotlinx.serialization.encodeToString
@@ -22,7 +21,6 @@ import okhttp3.HttpUrl
  */
 internal interface HttpUrlManager {
     fun inAppMessageUrl(env: Env): HttpUrl
-    fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl
     fun sendCustomConsentUrl(env: Env): HttpUrl
     fun deleteCustomConsentToUrl(host: String, params: CustomConsentReq): HttpUrl
     fun pmUrl(
@@ -55,13 +53,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addPathSegments("wrapper/v2/get_messages")
         .addQueryParameter("env", env.queryParam)
         .build()
-
-    override fun sendConsentUrl(actionType: ActionType, env: Env, campaignType: CampaignType): HttpUrl {
-        return when (campaignType) {
-            CampaignType.CCPA -> sendCcpaConsentUrl(actionType = actionType.code, env = env)
-            CampaignType.GDPR -> sendGdprConsentUrl(actionType = actionType.code, env = env)
-        }
-    }
 
     override fun pmUrl(
         env: Env,
@@ -146,30 +137,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
                 pmConf.uuid?.let { addQueryParameter("ccpaUUID", it) }
                 pmConf.messageId?.let { addQueryParameter("message_id", it) }
             }
-            .addQueryParameter("scriptType", scriptType)
-            .addQueryParameter("scriptVersion", scriptVersion)
-            .build()
-    }
-
-    private fun sendCcpaConsentUrl(actionType: Int, env: Env): HttpUrl {
-        // https://<spHost>/wrapper/v2/messages/choice/ccpa/11?env=stage
-        return HttpUrl.Builder()
-            .scheme("https")
-            .host(env.host)
-            .addPathSegments("wrapper/v2/messages/choice/ccpa/$actionType")
-            .addQueryParameter("env", env.queryParam)
-            .addQueryParameter("scriptType", scriptType)
-            .addQueryParameter("scriptVersion", scriptVersion)
-            .build()
-    }
-
-    private fun sendGdprConsentUrl(actionType: Int, env: Env): HttpUrl {
-        // https://<spHost>/wrapper/v2/messages/choice/gdpr/:actionType?env=stage
-        return HttpUrl.Builder()
-            .scheme("https")
-            .host(env.host)
-            .addPathSegments("wrapper/v2/messages/choice/gdpr/$actionType")
-            .addQueryParameter("env", env.queryParam)
             .addQueryParameter("scriptType", scriptType)
             .addQueryParameter("scriptVersion", scriptVersion)
             .build()
