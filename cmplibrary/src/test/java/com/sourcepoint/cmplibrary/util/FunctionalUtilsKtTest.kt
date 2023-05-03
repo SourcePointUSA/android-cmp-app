@@ -36,8 +36,8 @@ class FunctionalUtilsKtTest {
         val sut = check(NetworkCallErrorsCode.META_DATA) { throw InterruptedIOException() }
         (sut as Either.Left).t.run {
             (this as ConnectionTimeoutException)
-            message.assertEquals("A timeout has occurred when requesting the message data. You can extend the timeout using the messageTimeout config parameter.")
-            description.assertEquals("A timeout has occurred when requesting the message data. You can extend the timeout using the messageTimeout config parameter.")
+            message.assertEquals(TIMEOUT_MESSAGE)
+            description.assertEquals(TIMEOUT_MESSAGE)
             code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.META_DATA.code)
             isConsumed.assertEquals(false)
         }

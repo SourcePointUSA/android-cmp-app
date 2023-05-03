@@ -36,13 +36,17 @@ class LoggerImplTest {
         val sut = createLogger4Testing(cb, cb, cb, client, messageManager, "https://myserver.com/")
         sut.error(ex)
 
-        val slot = slot<Request>()
-        verify(exactly = 1) { client.newCall(capture(slot)) }
-        slot.captured.run {
-            readText().assertEquals(json)
-            url.toString()
-                .assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-            method.assertEquals("POST")
+        /** We have 2 different implementation for Debug and Release */
+        when (BuildConfig.DEBUG) {
+            true -> {
+                val slot = slot<Request>()
+                verify(exactly = 1) { client.newCall(capture(slot)) }
+                slot.captured.run {
+                    readText().assertEquals(json)
+                    url.toString().assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+                    method.assertEquals("POST")
+                }
+            }
         }
     }
 
@@ -56,13 +60,17 @@ class LoggerImplTest {
         val sut = createLogger4Testing(cb, cb, cb, client, messageManager, "https://myserver.com/")
         sut.error(ex)
 
-        val slot = slot<Request>()
-        verify(exactly = 1) { client.newCall(capture(slot)) }
-        slot.captured.run {
-            readText().assertEquals(json)
-            url.toString()
-                .assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-            method.assertEquals("POST")
+        /** We have 2 different implementation for Debug and Release */
+        when (BuildConfig.DEBUG) {
+            true -> {
+                val slot = slot<Request>()
+                verify(exactly = 1) { client.newCall(capture(slot)) }
+                slot.captured.run {
+                    readText().assertEquals(json)
+                    url.toString().assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+                    method.assertEquals("POST")
+                }
+            }
         }
     }
 
