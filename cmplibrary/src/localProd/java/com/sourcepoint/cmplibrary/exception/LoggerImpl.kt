@@ -3,8 +3,8 @@
 package com.sourcepoint.cmplibrary.exception
 
 import android.util.Log
-import com.sourcepoint.cmplibrary.exception.LoggerType.NL
 import com.example.cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.exception.LoggerType.NL
 import com.sourcepoint.cmplibrary.util.enqueue
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
