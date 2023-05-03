@@ -36,18 +36,13 @@ class LoggerImplTest {
         val sut = createLogger4Testing(cb, cb, cb, client, messageManager, "https://myserver.com/")
         sut.error(ex)
 
-        /** We have 2 different implementation for Debug and Release */
-        when (BuildConfig.DEBUG) {
-            true -> verify(exactly = 0) { client.newCall(any()) }
-            false -> {
-                val slot = slot<Request>()
-                verify(exactly = 1) { client.newCall(capture(slot)) }
-                slot.captured.run {
-                    readText().assertEquals(json)
-                    url.toString().assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-                    method.assertEquals("POST")
-                }
-            }
+        val slot = slot<Request>()
+        verify(exactly = 1) { client.newCall(capture(slot)) }
+        slot.captured.run {
+            readText().assertEquals(json)
+            url.toString()
+                .assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+            method.assertEquals("POST")
         }
     }
 
@@ -61,19 +56,16 @@ class LoggerImplTest {
         val sut = createLogger4Testing(cb, cb, cb, client, messageManager, "https://myserver.com/")
         sut.error(ex)
 
-        /** We have 2 different implementation for Debug and Release */
-        when (BuildConfig.DEBUG) {
-            true -> verify(exactly = 0) { client.newCall(any()) }
-            false -> {
-                val slot = slot<Request>()
-                verify(exactly = 1) { client.newCall(capture(slot)) }
-                slot.captured.run {
-                    readText().assertEquals(json)
-                    url.toString().assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-                    method.assertEquals("POST")
-                }
-            }
+
+        val slot = slot<Request>()
+        verify(exactly = 1) { client.newCall(capture(slot)) }
+        slot.captured.run {
+            readText().assertEquals(json)
+            url.toString()
+                .assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+            method.assertEquals("POST")
         }
+
     }
 
     private fun json(errorCode: ExceptionCodes) = """
