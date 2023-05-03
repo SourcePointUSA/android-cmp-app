@@ -30,7 +30,7 @@ internal class SPWebViewClient(
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         super.onPageStarted(view, url, favicon)
         timer.executeDelay(messageTimeout) {
-            onError(RenderingAppConnectionTimeoutException(description = "A timeout has occurred when loading the consent message"))
+            onError(RenderingAppConnectionTimeoutException(description = "There was an error while loading the rendering app. onConsentReady was not called within $messageTimeout seconds."))
             view?.stopLoading()
         }
     }
