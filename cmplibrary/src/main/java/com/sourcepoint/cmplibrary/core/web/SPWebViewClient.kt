@@ -111,7 +111,7 @@ internal class SPWebViewClient(
         super.onPageCommitVisible(view, url)
     }
 
-    fun cancelTimer(){
+    fun cancelTimer() {
         timer.cancel()
     }
 }
