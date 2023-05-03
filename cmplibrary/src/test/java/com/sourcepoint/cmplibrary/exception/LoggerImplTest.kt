@@ -38,13 +38,12 @@ class LoggerImplTest {
 
         /** We have 2 different implementation for Debug and Release */
         when (BuildConfig.DEBUG) {
-            true -> verify(exactly = 0) { client.newCall(any()) }
-            false -> {
+            true -> {
                 val slot = slot<Request>()
                 verify(exactly = 1) { client.newCall(capture(slot)) }
                 slot.captured.run {
                     readText().assertEquals(json)
-                    url.toString().assertEquals("https://myserver.com/")
+                    url.toString().assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
                     method.assertEquals("POST")
                 }
             }
@@ -63,13 +62,12 @@ class LoggerImplTest {
 
         /** We have 2 different implementation for Debug and Release */
         when (BuildConfig.DEBUG) {
-            true -> verify(exactly = 0) { client.newCall(any()) }
-            false -> {
+            true -> {
                 val slot = slot<Request>()
                 verify(exactly = 1) { client.newCall(capture(slot)) }
                 slot.captured.run {
                     readText().assertEquals(json)
-                    url.toString().assertEquals("https://myserver.com/")
+                    url.toString().assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
                     method.assertEquals("POST")
                 }
             }
@@ -78,7 +76,7 @@ class LoggerImplTest {
 
     private fun json(errorCode: ExceptionCodes) = """
             {
-                "code" : "${errorCode.code}",
+                "code" : "${errorCode.errorCode}",
                 "accountId" : "accountId",
                 "propertyHref" : "https://ref.com",
                 "propertyId" : "propertyId",

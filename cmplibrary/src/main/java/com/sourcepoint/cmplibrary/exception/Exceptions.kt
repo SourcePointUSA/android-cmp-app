@@ -148,6 +148,22 @@ internal class InvalidResponseException @JvmOverloads constructor(
 }
 
 /**
+ * This exception is thrown when the response from the api is invalid
+ */
+internal class InvalidApiResponseException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false,
+    networkCode: String = ""
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = ExceptionCodes(CodeList.INVALID_RESPONSE_API.errorCode + networkCode)
+}
+
+/**
  * This exception is thrown when the response from getting the native message is invalid
  */
 internal class InvalidResponseNativeMessageException @JvmOverloads constructor(
@@ -225,7 +241,27 @@ internal class InvalidArgumentException @JvmOverloads constructor(
 /**
  * This exception is thrown when we receive a request timeout
  */
+
+val TIMEOUT_MESSAGE = """
+    A timeout has occurred when requesting the message data. 
+    Please check your internet connection. 
+    You can extend the timeout using the messageTimeout config parameter.
+""".trimIndent()
+
 internal class ConnectionTimeoutException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String = TIMEOUT_MESSAGE,
+    isConsumed: Boolean = false,
+    networkCode: String = ""
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = ExceptionCodes(CodeList.CONNECTION_TIMEOUT.errorCode + networkCode)
+}
+
+internal class RenderingAppConnectionTimeoutException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -234,7 +270,7 @@ internal class ConnectionTimeoutException @JvmOverloads constructor(
     description = description,
     isConsumed = isConsumed
 ) {
-    override val code: ExceptionCodes = CodeList.CONNECTION_TIMEOUT
+    override val code: ExceptionCodes = ExceptionCodes(CodeList.RENDERING_APP_CONNECTION_TIMEOUT.errorCode)
 }
 
 /**

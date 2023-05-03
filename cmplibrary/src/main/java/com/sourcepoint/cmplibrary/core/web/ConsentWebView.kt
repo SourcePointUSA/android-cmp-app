@@ -104,47 +104,6 @@ internal class ConsentWebView(
         campaignType: CampaignType,
         pmId: String?,
         singleShot: Boolean,
-        preloading: Boolean,
-        consent: JSONObject
-    ): Either<Boolean> {
-        return when (preloading) {
-            true -> loadConsentUIFromUrlPreloading(
-                url = url,
-                campaignType = campaignType,
-                pmId = pmId,
-                singleShot = true,
-                consent = consent
-            )
-            false -> loadConsentUIFromUrl(
-                url = url,
-                campaignType = campaignType,
-                pmId = pmId,
-                singleShot = true
-            )
-        }
-    }
-
-    private fun loadConsentUIFromUrl(url: HttpUrl, campaignType: CampaignType, pmId: String?, singleShot: Boolean): Either<Boolean> = check {
-        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
-        spWebViewClient.jsReceiverConfig = {
-            val sb = StringBuffer()
-            sb.append(
-                """
-                javascript: window.spLegislation = '${campaignType.name}'; window.localPmId ='$pmId'; window.isSingleShot = $singleShot; 
-                $jsReceiver;
-                """.trimIndent()
-            )
-            sb.toString()
-        }
-        loadUrl(url.toString())
-        true
-    }
-
-    private fun loadConsentUIFromUrlPreloading(
-        url: HttpUrl,
-        campaignType: CampaignType,
-        pmId: String?,
-        singleShot: Boolean,
         consent: JSONObject
     ): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
@@ -220,6 +179,7 @@ internal class ConsentWebView(
 
         @JavascriptInterface
         override fun onConsentUIReady(isFromPM: Boolean) {
+            spWebViewClient.cancelTimer()
             jsClientLib.onConsentUIReady(this@ConsentWebView, isFromPM)
         }
 

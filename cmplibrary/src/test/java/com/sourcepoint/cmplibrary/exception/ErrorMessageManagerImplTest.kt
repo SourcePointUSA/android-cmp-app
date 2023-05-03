@@ -19,6 +19,7 @@ import org.junit.Test
 class ErrorMessageManagerImplTest {
 
     private val accountId = 22
+    private val propertyId = 1234
     private val propertyHref = "http://dev.local"
     private val client = ClientInfo(
         clientVersion = "5.X.X",
@@ -40,7 +41,6 @@ class ErrorMessageManagerImplTest {
         messageLanguage = MessageLanguage.ENGLISH,
         propertyId = 1234,
         messageTimeout = 3000,
-        clientSideOnly = false
     )
 
     @MockK
@@ -63,8 +63,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.RESOURCE_NOT_FOUND.code}",
+                "code" : "${CodeList.RESOURCE_NOT_FOUND.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -85,8 +86,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INTERNAL_SERVER_ERROR.code}",
+                "code" : "${CodeList.INTERNAL_SERVER_ERROR.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -107,8 +109,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.WEB_VIEW_ERROR.code}",
+                "code" : "${CodeList.WEB_VIEW_ERROR.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -129,8 +132,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.URL_LOADING_ERROR.code}",
+                "code" : "${CodeList.URL_LOADING_ERROR.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -151,8 +155,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_EVENT_PAYLOAD.code}",
+                "code" : "${CodeList.INVALID_EVENT_PAYLOAD.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -173,8 +178,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_ON_ACTION_EVENT_PAYLOAD.code}",
+                "code" : "${CodeList.INVALID_ON_ACTION_EVENT_PAYLOAD.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -197,6 +203,7 @@ class ErrorMessageManagerImplTest {
             {
                 "code" : "sp_metric_rendering_app_error",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -217,8 +224,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_RESPONSE_WEB_MESSAGE.code}",
+                "code" : "${CodeList.INVALID_RESPONSE_WEB_MESSAGE.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -239,8 +247,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_RESPONSE_NATIVE_MESSAGE.code}",
+                "code" : "${CodeList.INVALID_RESPONSE_NATIVE_MESSAGE.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -261,8 +270,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_RESPONSE_CONSENT.code}",
+                "code" : "${CodeList.INVALID_RESPONSE_CONSENT.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -283,8 +293,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_RESPONSE_CUSTOM_CONSENT.code}",
+                "code" : "${CodeList.INVALID_RESPONSE_CUSTOM_CONSENT.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -305,8 +316,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_LOCAL_DATA.code}",
+                "code" : "${CodeList.INVALID_LOCAL_DATA.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -323,12 +335,13 @@ class ErrorMessageManagerImplTest {
     fun `GIVEN a ConnectionTimeoutException VERIFY the generated message`() {
 
         val originalException = RuntimeException("test_message")
-        val exception = ConnectionTimeoutException(originalException, "test_description")
+        val exception = ConnectionTimeoutException(cause = originalException, description = "test_description")
 
         val expected = """
             {
-                "code" : "${CodeList.CONNECTION_TIMEOUT.code}",
+                "code" : "${CodeList.CONNECTION_TIMEOUT.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -349,8 +362,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.GENERIC_NETWORK_REQUEST.code}",
+                "code" : "${CodeList.GENERIC_NETWORK_REQUEST.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -371,8 +385,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.GENERIC_SDK_ERROR.code}",
+                "code" : "${CodeList.GENERIC_SDK_ERROR.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -393,8 +408,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.INVALID_REQUEST_ERROR.code}",
+                "code" : "${CodeList.INVALID_REQUEST_ERROR.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",
@@ -415,8 +431,9 @@ class ErrorMessageManagerImplTest {
 
         val expected = """
             {
-                "code" : "${CodeList.UNABLE_TO_LOAD_JS_RECEIVER.code}",
+                "code" : "${CodeList.UNABLE_TO_LOAD_JS_RECEIVER.errorCode}",
                 "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
                 "description" : "test_description",
                 "clientVersion" : "${client.clientVersion}",

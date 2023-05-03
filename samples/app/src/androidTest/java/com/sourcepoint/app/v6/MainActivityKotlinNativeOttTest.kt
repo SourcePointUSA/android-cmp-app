@@ -42,7 +42,7 @@ class MainActivityKotlinNativeOttTest {
         propertyName = "sca-ott-newwebpm"
         campaignsEnv = CampaignsEnv.PUBLIC
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 3000
+        messageTimeout = 5000
         propertyId = 27927
         +(CampaignType.GDPR)
     }

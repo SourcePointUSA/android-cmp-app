@@ -6,7 +6,7 @@ object Versions {
     const val mockWSVersion: String = "4.4.0"
     const val robolectricVersion: String = "4.4"
     const val androidxTestVersion: String = "1.3.0"
-    const val okHttpCmpVersion: String = "3.12.10"
+    const val okHttpCmpVersion: String = "4.9.0"
     const val okHttpLatestVersion: String = "4.9.0"
     const val koinVersion: String = "3.0.1"
     const val androidxCoreVersion: String = "1.5.0"

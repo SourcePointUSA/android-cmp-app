@@ -12,10 +12,12 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.checkGdprNativeTitle
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapNmAcceptAll
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapNmDismiss
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import io.mockk.mockk
@@ -42,7 +44,7 @@ class MainActivityNativeMessTest {
         propertyName = "mobile.multicampaign.fully.native"  //594218
         propertyId = 22758
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 3000
+        messageTimeout = 5000
         +(CampaignType.GDPR)
     }
 
@@ -51,7 +53,17 @@ class MainActivityNativeMessTest {
         propertyName = "mobile.multicampaign.fully.native"  //594218
         propertyId = 22758
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 3000
+        messageTimeout = 5000
+        +(CampaignType.GDPR)
+        +(CampaignType.CCPA)
+    }
+
+    private val spConf2 = config {
+        accountId = 22
+        propertyName = "mobile.multicampaign.native.demo2"  //594218
+        propertyId = 19210
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 5000
         +(CampaignType.GDPR)
         +(CampaignType.CCPA)
     }
@@ -157,7 +169,27 @@ class MainActivityNativeMessTest {
         verify(exactly = 0) { spClient.onAction(any(), any()) }
     }
 
-//    @Test
+    @Test
+    fun VERIFY_that_the_stage_and_prod_configuration_work() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf2.copy(campaignsEnv = CampaignsEnv.STAGE),
+                gdprPmId = "598486",
+                ccpaPmId = "598492",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
+        wr { checkGdprNativeTitle() } // The order matters because in the stage env the CCPA is configured before the GDPR
+        wr { tapNmAcceptAll() }
+    }
+
+    @Test
     fun GIVEN_an_authId_VERIFY_no_first_layer_mess_gets_called() = runBlocking<Unit> {
         val spClient = mockk<SpClient>(relaxed = true)
 

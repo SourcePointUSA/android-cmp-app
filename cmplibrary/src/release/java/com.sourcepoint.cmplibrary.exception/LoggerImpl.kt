@@ -2,8 +2,10 @@
 
 package com.sourcepoint.cmplibrary.exception
 
+import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.util.enqueue
-import okhttp3.MediaType
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -53,11 +55,16 @@ private class LoggerImpl(
     val url: String
 ) : Logger {
     override fun error(e: RuntimeException) {
-        val mediaType = MediaType.parse("application/json")
+        val mediaType = "application/json".toMediaTypeOrNull()
         val body: RequestBody = RequestBody.create(mediaType, errorMessageManager.build(e))
-        val request: Request = Request.Builder().url(url).post(body)
-            .header("Accept", mediaType?.type() ?: "")
-            .header("Content-Type", mediaType?.type() ?: "")
+
+        val httpBuilder = url.toHttpUrl().newBuilder()
+        httpBuilder.addQueryParameter("scriptType", "android")
+        httpBuilder.addQueryParameter("scriptVersion", BuildConfig.VERSION_NAME)
+
+        val request: Request = Request.Builder().url(httpBuilder.build()).post(body)
+            .header("Accept", mediaType?.type ?: "")
+            .header("Content-Type", mediaType?.type ?: "")
             .build()
 
         networkClient.newCall(request).enqueue { }

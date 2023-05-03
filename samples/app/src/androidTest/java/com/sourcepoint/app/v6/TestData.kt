@@ -41,7 +41,7 @@ object TestData {
     val VENDORS_LIST_2 = listOf(
         "Deutsche Post AG",
         "Jivox Corporation",
-        "Rockabox Media Ltd t/a Scoota",
+        "Rockabox Media Ltd",
         "brand eins Medien AG",
         "Insticator"
     )

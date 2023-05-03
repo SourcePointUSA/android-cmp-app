@@ -46,6 +46,7 @@ class DemoActivityTv : FragmentActivity() {
     val fragment by lazy { DemoEventFragmentTv.instance(propertyName = property.propertyName) }
 
     private val gdprPmId by lazy { property.gdprPmId }
+    private val ccpaPmId by lazy { property.ccpaPmId }
 
     private val logger by lazy {
         LoggerImpl(
@@ -70,7 +71,7 @@ class DemoActivityTv : FragmentActivity() {
         fragment.pmListener = {
             when (it) {
                 CampaignType.GDPR -> spConsentLib.loadPrivacyManager(gdprPmId.toString(), CampaignType.GDPR)
-                CampaignType.CCPA -> {}
+                CampaignType.CCPA -> spConsentLib.loadPrivacyManager(ccpaPmId.toString(), CampaignType.CCPA)
             }
         }
         fragment.logClickListener = {

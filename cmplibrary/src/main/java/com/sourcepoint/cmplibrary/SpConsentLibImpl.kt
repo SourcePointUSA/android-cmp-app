@@ -33,7 +33,7 @@ import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread
 import com.sourcepoint.cmplibrary.util.toConsentLibException
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.json.JSONObject
 import java.util.* // ktlint-disable
 
@@ -75,7 +75,7 @@ internal class SpConsentLibImpl(
                     message = JSONObject(it.message.toString()),
                     messageMetaData = JSONObject(it.messageMetaData.toString()),
                     type = it.type,
-                    url = HttpUrl.parse(it.url!!)!!, // at this stage we are sure that url is not null
+                    url = it.url!!.toHttpUrl(), // at this stage we are sure that url is not null
                     messageSubCategory = it.messageMetaData?.subCategoryId!!,
                 )
             }
@@ -204,7 +204,7 @@ internal class SpConsentLibImpl(
                     spClient.onError(ex)
                     pLogger.clientEvent(
                         event = "onError",
-                        msg = "${throwable.message}",
+                        msg = ex.code.errorCode,
                         content = "${throwable.message}"
                     )
                     pLogger.e(
@@ -369,8 +369,7 @@ internal class SpConsentLibImpl(
                         env = env,
                         campaignType = campaignType,
                         pmConfig = it,
-                        messSubCat = messSubCat,
-                        campaignManager.spConfig.clientSideOnly
+                        messSubCat = messSubCat
                     )
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
@@ -385,8 +384,8 @@ internal class SpConsentLibImpl(
                 )
 
                 val storedConsent = when (campaignType) {
-                    CampaignType.GDPR -> dataStorage.gdprConsentStatus!!
-                    CampaignType.CCPA -> dataStorage.ccpaConsentStatus!!
+                    CampaignType.GDPR -> dataStorage.gdprConsentStatus
+                    CampaignType.CCPA -> dataStorage.ccpaConsentStatus
                 }
 
                 webView?.loadConsentUIFromUrlPreloadingOption(
@@ -394,7 +393,6 @@ internal class SpConsentLibImpl(
                     campaignType = campaignType,
                     pmId = it.messageId,
                     singleShot = true,
-                    preloading = campaignManager.spConfig.clientSideOnly,
                     consent = JSONObject(storedConsent)
                 )
             }
@@ -450,10 +448,12 @@ internal class SpConsentLibImpl(
         }
 
         override fun onError(view: View, errorMessage: String) {
-            spClient.onError(RenderingAppException(description = errorMessage))
+            val ex = RenderingAppException(description = errorMessage)
+            spClient.onError(ex)
+            pLogger.error(ex)
             pLogger.clientEvent(
                 event = "onError",
-                msg = errorMessage,
+                msg = ex.code.errorCode,
                 content = ""
             )
         }
@@ -475,9 +475,11 @@ internal class SpConsentLibImpl(
 
         override fun onError(view: View, error: Throwable) {
             spClient.onError(error)
+            val ex = error.toConsentLibException()
+            pLogger.error(ex)
             pLogger.clientEvent(
                 event = "onError",
-                msg = "${error.message}",
+                msg = ex.code.errorCode,
                 content = "$error"
             )
         }
@@ -605,7 +607,6 @@ internal class SpConsentLibImpl(
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
                                 messSubCat = TCFv2,
-                                preload = campaignManager.spConfig.clientSideOnly
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -619,7 +620,6 @@ internal class SpConsentLibImpl(
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
                             singleShot = true,
-                            preloading = campaignManager.spConfig.clientSideOnly,
                             consent = JSONObject(dataStorage.gdprConsentStatus!!)
                         )
                     }
@@ -635,7 +635,6 @@ internal class SpConsentLibImpl(
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
                                 messSubCat = TCFv2,
-                                preload = campaignManager.spConfig.clientSideOnly
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -648,7 +647,6 @@ internal class SpConsentLibImpl(
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
                             singleShot = false,
-                            preloading = campaignManager.spConfig.clientSideOnly,
                             consent = JSONObject(dataStorage.ccpaConsentStatus!!)
                         )
                     }
@@ -670,7 +668,6 @@ internal class SpConsentLibImpl(
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
                                 messSubCat = TCFv2,
-                                preload = campaignManager.spConfig.clientSideOnly
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
@@ -683,7 +680,6 @@ internal class SpConsentLibImpl(
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
                             singleShot = true,
-                            preloading = campaignManager.spConfig.clientSideOnly,
                             consent = JSONObject(dataStorage.gdprConsentStatus!!)
                         )
                     }
@@ -699,7 +695,6 @@ internal class SpConsentLibImpl(
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
                                 messSubCat = TCFv2,
-                                preload = campaignManager.spConfig.clientSideOnly
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
@@ -712,7 +707,6 @@ internal class SpConsentLibImpl(
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
                             singleShot = true,
-                            preloading = campaignManager.spConfig.clientSideOnly,
                             consent = JSONObject(dataStorage.ccpaConsentStatus!!)
                         )
                     }

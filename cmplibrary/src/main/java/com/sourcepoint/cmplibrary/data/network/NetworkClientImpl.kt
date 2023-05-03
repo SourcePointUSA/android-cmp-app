@@ -1,19 +1,18 @@
 package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.core.executeOnLeft
 import com.sourcepoint.cmplibrary.core.getOrNull
-import com.sourcepoint.cmplibrary.core.map
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.NetworkCallErrorsCode
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.encodeToString
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -36,7 +35,7 @@ private class NetworkClientImpl(
         customConsentReq: CustomConsentReq,
         env: Env
     ): Either<CustomConsentResp> = check {
-        val mediaType = MediaType.parse("application/json")
+        val mediaType = "application/json".toMediaType()
         val jsonBody = customConsentReq.toBodyRequest()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
         val url = urlManager.sendCustomConsentUrl(env)
@@ -62,7 +61,7 @@ private class NetworkClientImpl(
         customConsentReq: CustomConsentReq,
         env: Env
     ): Either<CustomConsentResp> = check {
-        val mediaType = MediaType.parse("application/json")
+        val mediaType = "application/json".toMediaType()
         val jsonBody = customConsentReq.toBodyRequestDeleteCustomConsentTo()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
         val url = urlManager.deleteCustomConsentToUrl(env.host, customConsentReq)
@@ -84,7 +83,7 @@ private class NetworkClientImpl(
         responseManager.parseCustomConsentRes(response)
     }
 
-    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> = check {
+    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> = check(NetworkCallErrorsCode.META_DATA) {
         val url = urlManager.getMetaDataUrl(param)
 
         logger.req(
@@ -104,7 +103,7 @@ private class NetworkClientImpl(
         responseManager.parseMetaDataRes(response)
     }
 
-    override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> = check {
+    override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> = check(NetworkCallErrorsCode.CONSENT_STATUS) {
         val url = urlManager.getConsentStatusUrl(param)
 
         logger.req(
@@ -124,7 +123,7 @@ private class NetworkClientImpl(
         responseManager.parseConsentStatusResp(response)
     }
 
-    override fun getMessages(param: MessagesParamReq): Either<MessagesResp> = check {
+    override fun getMessages(param: MessagesParamReq): Either<MessagesResp> = check(NetworkCallErrorsCode.MESSAGES) {
         val url = urlManager.getMessagesUrl(param)
 
         logger.req(
@@ -144,9 +143,9 @@ private class NetworkClientImpl(
         responseManager.parseMessagesResp(response)
     }
 
-    override fun savePvData(param: PvDataParamReq): Either<PvDataResp> = check {
+    override fun savePvData(param: PvDataParamReq): Either<PvDataResp> = check(NetworkCallErrorsCode.PV_DATA) {
         val url = urlManager.getPvDataUrl(param.env)
-        val mediaType = MediaType.parse("application/json")
+        val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
 
@@ -165,44 +164,6 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parsePvDataResp(response)
-    }
-
-    override fun getMessages(
-        messageReq: MessagesParamReq,
-        pSuccess: (MessagesResp) -> Unit,
-        pError: (Throwable) -> Unit
-    ) {
-        val url = urlManager.getMessagesUrl(messageReq)
-
-        logger.req(
-            tag = "getMessages",
-            url = url.toString(),
-            body = "",
-            type = "GET"
-        )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .get()
-            .build()
-
-        httpClient
-            .newCall(request)
-            .enqueue {
-                onFailure { _, exception ->
-                    pError(exception)
-                }
-                onResponse { _, r ->
-                    responseManager
-                        .parseMessagesResp2(r)
-                        .map {
-                            pSuccess(it)
-                        }
-                        .executeOnLeft {
-                            pError(it)
-                        }
-                }
-            }
     }
 
     override fun getChoice(param: ChoiceParamReq): Either<ChoiceResp> = check {
@@ -227,7 +188,7 @@ private class NetworkClientImpl(
 
     override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprCS> = check {
         val url = urlManager.getGdprChoiceUrl(param)
-        val mediaType = MediaType.parse("application/json")
+        val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
 
@@ -250,7 +211,7 @@ private class NetworkClientImpl(
 
     override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> = check {
         val url = urlManager.getCcpaChoiceUrl(param)
-        val mediaType = MediaType.parse("application/json")
+        val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
 

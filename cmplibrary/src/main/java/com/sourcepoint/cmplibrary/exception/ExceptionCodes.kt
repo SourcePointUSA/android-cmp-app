@@ -6,6 +6,7 @@ package com.sourcepoint.cmplibrary.exception
 internal object CodeList {
     val INVALID_LOCAL_DATA = ExceptionCodes("sp_metric_invalid_local_data")
     val INVALID_RESPONSE_WEB_MESSAGE = ExceptionCodes("sp_metric_invalid_response_web_message")
+    val INVALID_RESPONSE_API = ExceptionCodes("sp_metric_invalid_response_api")
     val INVALID_RESPONSE_NATIVE_MESSAGE = ExceptionCodes("sp_metric_invalid_response_native_message")
     val INVALID_RESPONSE_CONSENT = ExceptionCodes("sp_metric_invalid_response_consent")
     val INVALID_RESPONSE_CUSTOM_CONSENT = ExceptionCodes("sp_metric_invalid_response_custom_consent")
@@ -16,6 +17,7 @@ internal object CodeList {
     val INTERNAL_SERVER_ERROR = ExceptionCodes("sp_metric_internal_server_error_5xx")
     val RESOURCE_NOT_FOUND = ExceptionCodes("sp_metric_resource_not_found_4xx")
     val CONNECTION_TIMEOUT = ExceptionCodes("sp_metric_connection_timeout")
+    val RENDERING_APP_CONNECTION_TIMEOUT = ExceptionCodes("sp_metric_rendering_app_timeout")
     val GENERIC_NETWORK_REQUEST = ExceptionCodes("sp_metric_generic_network_request")
     val GENERIC_SDK_ERROR = ExceptionCodes("sp_metric_generic_sdk_error")
     val UNABLE_TO_LOAD_JS_RECEIVER = ExceptionCodes("sp_metric_unable_to_load_jsreceiver")
@@ -26,4 +28,11 @@ internal object CodeList {
     val RENDERING_APP_ERROR = ExceptionCodes("sp_metric_rendering_app_error")
 }
 
-internal inline class ExceptionCodes(val code: String)
+internal inline class ExceptionCodes(val errorCode: String)
+
+internal enum class NetworkCallErrorsCode(val code: String) {
+    META_DATA("_meta-data"),
+    CONSENT_STATUS("_consent-status"),
+    PV_DATA("_pv-data"),
+    MESSAGES("_messages")
+}

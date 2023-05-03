@@ -53,8 +53,9 @@ private class ErrorMessageManagerImpl(
             val spConf = campaignManager.spConfig
             """
             {
-                "code" : "${exception.code.code}",
+                "code" : "${exception.code.errorCode}",
                 "accountId" : "${spConf.accountId}",
+                "propertyId" : "${spConf.propertyId}",
                 "propertyHref" : "${spConf.propertyName}",
                 "description" : "${exception.description}",
                 "clientVersion" : "${clientInfo.clientVersion}",

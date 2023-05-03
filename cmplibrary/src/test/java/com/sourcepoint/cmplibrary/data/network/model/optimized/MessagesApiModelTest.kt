@@ -1,5 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
+import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
@@ -7,6 +9,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.encodeToJsonElement
 import org.junit.Test
 
@@ -50,10 +53,15 @@ class MessagesApiModelTest {
             propertyHref = "tests.unified-script.com",
             campaigns = list,
             ccpaStatus = null,
-            consentLanguage = null
+            consentLanguage = null,
+            campaignEnv = CampaignsEnv.STAGE
         )
 
-        println(body)
+        (body["accountId"] as JsonPrimitive).content.assertEquals("22")
+        (body["campaignEnv"] as JsonPrimitive).content.assertEquals("stage")
+        (body["propertyHref"] as JsonPrimitive).content.assertEquals("https://tests.unified-script.com")
+        (body["hasCSP"] as JsonPrimitive).content.assertEquals("true")
+        body.contains("campaigns").assertTrue()
     }
 
     @Test

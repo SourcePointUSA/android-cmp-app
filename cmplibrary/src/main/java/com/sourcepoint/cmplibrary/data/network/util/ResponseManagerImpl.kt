@@ -32,7 +32,7 @@ private class ResponseManagerImpl(
 ) : ResponseManager {
 
     override fun parseNativeMessRes(r: Response): Either<NativeMessageResp> = check {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         if (r.isSuccessful) {
             when (val either: Either<NativeMessageResp> = jsonConverter.toNativeMessageResp(body)) {
                 is Either.Right -> either.r
@@ -44,7 +44,7 @@ private class ResponseManagerImpl(
     }
 
     override fun parseNativeMessResK(r: Response): Either<NativeMessageRespK> = check {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         if (r.isSuccessful) {
             when (val either: Either<NativeMessageRespK> = jsonConverter.toNativeMessageRespK(body)) {
                 is Either.Right -> either.r
@@ -56,7 +56,7 @@ private class ResponseManagerImpl(
     }
 
     override fun parseConsentResEither(r: Response, campaignType: CampaignType): Either<ConsentResp> = check {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
         if (r.isSuccessful) {
             when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body, campaignType)) {
                 is Either.Right -> either.r
@@ -68,9 +68,9 @@ private class ResponseManagerImpl(
     }
 
     override fun parseConsentRes(r: Response, campaignType: CampaignType): ConsentResp {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-        val status = r.code()
-        val mess = r.message()
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code
+        val mess = r.message
         logger.res(
             tag = "ConsentResp",
             msg = mess,
@@ -88,9 +88,9 @@ private class ResponseManagerImpl(
     }
 
     override fun parseCustomConsentRes(r: Response): CustomConsentResp {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-        val status = r.code()
-        val mess = r.message()
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code
+        val mess = r.message
         logger.res(
             tag = "CustomConsentResp",
             msg = mess,
@@ -108,9 +108,9 @@ private class ResponseManagerImpl(
     }
 
     override fun parseMetaDataRes(r: Response): MetaDataResp {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-        val status = r.code()
-        val mess = r.message()
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code
+        val mess = r.message
         logger.res(
             tag = "MetaDataResp",
             msg = mess,
@@ -128,9 +128,9 @@ private class ResponseManagerImpl(
     }
 
     override fun parseConsentStatusResp(r: Response): ConsentStatusResp {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-        val status = r.code()
-        val mess = r.message()
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code
+        val mess = r.message
         logger.res(
             tag = "ConsentStatusResp",
             msg = mess,
@@ -148,9 +148,9 @@ private class ResponseManagerImpl(
     }
 
     override fun parseGetChoiceResp(r: Response): ChoiceResp {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-        val status = r.code()
-        val mess = r.message()
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code
+        val mess = r.message
         logger.res(
             tag = "ChoiceResp",
             msg = mess,
@@ -168,9 +168,9 @@ private class ResponseManagerImpl(
     }
 
     override fun parsePostGdprChoiceResp(r: Response): GdprCS {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-        val status = r.code()
-        val mess = r.message()
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code
+        val mess = r.message
         logger.res(
             tag = "PostGdprChoiceResp",
             msg = mess,
@@ -188,9 +188,9 @@ private class ResponseManagerImpl(
     }
 
     override fun parsePostCcpaChoiceResp(r: Response): CcpaCS {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-        val status = r.code()
-        val mess = r.message()
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code
+        val mess = r.message
         logger.res(
             tag = "PostCcpaChoiceResp",
             msg = mess,
@@ -208,9 +208,9 @@ private class ResponseManagerImpl(
     }
 
     override fun parsePvDataResp(r: Response): PvDataResp {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-        val status = r.code()
-        val mess = r.message()
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code
+        val mess = r.message
         return if (r.isSuccessful) {
             when (val either: Either<PvDataResp> = jsonConverter.toPvDataResp(body)) {
                 is Either.Right -> {
@@ -239,9 +239,9 @@ private class ResponseManagerImpl(
     }
 
     override fun parseMessagesResp(r: Response): MessagesResp {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-        val status = r.code()
-        val mess = r.message()
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code
+        val mess = r.message
         logger.res(
             tag = "MessagesResp",
             msg = mess,
@@ -259,9 +259,9 @@ private class ResponseManagerImpl(
     }
 
     override fun parseMessagesResp2(r: Response): Either<MessagesResp> = check {
-        val body = r.body()?.byteStream()?.reader()?.readText() ?: fail("Body Response")
-        val status = r.code()
-        val mess = r.message()
+        val body = r.body?.byteStream()?.reader()?.readText() ?: fail("Body Response")
+        val status = r.code
+        val mess = r.message
         logger.res(
             tag = "MessagesResp",
             msg = mess,
