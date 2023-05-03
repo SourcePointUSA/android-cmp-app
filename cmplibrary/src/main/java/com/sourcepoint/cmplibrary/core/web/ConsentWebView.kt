@@ -179,6 +179,7 @@ internal class ConsentWebView(
 
         @JavascriptInterface
         override fun onConsentUIReady(isFromPM: Boolean) {
+            spWebViewClient.cancelTimer()
             jsClientLib.onConsentUIReady(this@ConsentWebView, isFromPM)
         }
 

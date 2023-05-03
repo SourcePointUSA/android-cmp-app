@@ -204,7 +204,7 @@ internal class SpConsentLibImpl(
                     spClient.onError(ex)
                     pLogger.clientEvent(
                         event = "onError",
-                        msg = "${ex.code.errorCode}",
+                        msg = ex.code.errorCode,
                         content = "${throwable.message}"
                     )
                     pLogger.e(
@@ -448,11 +448,12 @@ internal class SpConsentLibImpl(
         }
 
         override fun onError(view: View, errorMessage: String) {
-            spClient.onError(RenderingAppException(description = errorMessage))
-            pLogger.error(RenderingAppException(description = errorMessage))
+            val ex = RenderingAppException(description = errorMessage)
+            spClient.onError(ex)
+            pLogger.error(ex)
             pLogger.clientEvent(
                 event = "onError",
-                msg = errorMessage,
+                msg = ex.code.errorCode,
                 content = ""
             )
         }
@@ -474,9 +475,11 @@ internal class SpConsentLibImpl(
 
         override fun onError(view: View, error: Throwable) {
             spClient.onError(error)
+            val ex = error.toConsentLibException()
+            pLogger.error(ex)
             pLogger.clientEvent(
                 event = "onError",
-                msg = "${error.message}",
+                msg = ex.code.errorCode,
                 content = "$error"
             )
         }
