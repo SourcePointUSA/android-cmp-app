@@ -17,6 +17,7 @@ internal object CodeList {
     val INTERNAL_SERVER_ERROR = ExceptionCodes("sp_metric_internal_server_error_5xx")
     val RESOURCE_NOT_FOUND = ExceptionCodes("sp_metric_resource_not_found_4xx")
     val CONNECTION_TIMEOUT = ExceptionCodes("sp_metric_connection_timeout")
+    val RENDERING_APP_CONNECTION_TIMEOUT = ExceptionCodes("sp_metric_rendering_app_connection_timeout")
     val GENERIC_NETWORK_REQUEST = ExceptionCodes("sp_metric_generic_network_request")
     val GENERIC_SDK_ERROR = ExceptionCodes("sp_metric_generic_sdk_error")
     val UNABLE_TO_LOAD_JS_RECEIVER = ExceptionCodes("sp_metric_unable_to_load_jsreceiver")

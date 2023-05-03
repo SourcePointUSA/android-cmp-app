@@ -261,6 +261,18 @@ internal class ConnectionTimeoutException @JvmOverloads constructor(
     override val code: ExceptionCodes = ExceptionCodes(CodeList.CONNECTION_TIMEOUT.errorCode + networkCode)
 }
 
+internal class RenderingAppConnectionTimeoutException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = ExceptionCodes(CodeList.RENDERING_APP_CONNECTION_TIMEOUT.errorCode)
+}
+
 /**
  * This exception is thrown when we don't have connection
  */

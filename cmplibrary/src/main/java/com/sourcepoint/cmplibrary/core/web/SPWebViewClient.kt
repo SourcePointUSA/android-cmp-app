@@ -4,9 +4,9 @@ import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.Build
 import android.webkit.*  //ktlint-disable
-import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
+import com.sourcepoint.cmplibrary.exception.*  //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
-import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.RenderingAppConnectionTimeoutException
 import com.sourcepoint.cmplibrary.exception.UrlLoadingException
 import com.sourcepoint.cmplibrary.exception.WebViewException
 import com.sourcepoint.cmplibrary.util.file2String
@@ -30,7 +30,7 @@ internal class SPWebViewClient(
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         super.onPageStarted(view, url, favicon)
         timer.executeDelay(messageTimeout) {
-            onError(ConnectionTimeoutException(description = "A timeout has occurred when loading the message"))
+            onError(RenderingAppConnectionTimeoutException(description = "A timeout has occurred when loading the consent message"))
             view?.stopLoading()
         }
     }
