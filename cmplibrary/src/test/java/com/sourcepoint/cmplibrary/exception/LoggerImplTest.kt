@@ -56,7 +56,6 @@ class LoggerImplTest {
         val sut = createLogger4Testing(cb, cb, cb, client, messageManager, "https://myserver.com/")
         sut.error(ex)
 
-
         val slot = slot<Request>()
         verify(exactly = 1) { client.newCall(capture(slot)) }
         slot.captured.run {
@@ -65,7 +64,6 @@ class LoggerImplTest {
                 .assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
             method.assertEquals("POST")
         }
-
     }
 
     private fun json(errorCode: ExceptionCodes) = """
