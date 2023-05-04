@@ -10,7 +10,7 @@ import com.sourcepoint.cmplibrary.core.web.CampaignModel
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.exception.GenericSDKException
+import com.sourcepoint.cmplibrary.exception.ViewManagerException
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import java.lang.ref.WeakReference
 import java.util.* // ktlint-disable
@@ -141,7 +141,7 @@ private class ViewsManagerImpl(
                     viewId = cmpViewId
                 )
             }
-        } ?: Either.Left(GenericSDKException(description = "The activity reference in the ViewManager is null!!!"))
+        } ?: Either.Left(ViewManagerException(description = "The activity reference in the ViewManager is null!!!"))
     }
 
     override fun createWebView(
@@ -165,7 +165,7 @@ private class ViewsManagerImpl(
                     viewId = cmpViewId
                 )
             }
-        } ?: Either.Left(GenericSDKException(description = "The activity reference in the ViewManager is null!!!"))
+        } ?: Either.Left(ViewManagerException(description = "The activity reference in the ViewManager is null!!!"))
     }
 
     override fun dispose() {

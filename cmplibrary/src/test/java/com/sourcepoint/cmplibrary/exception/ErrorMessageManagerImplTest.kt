@@ -125,6 +125,29 @@ class ErrorMessageManagerImplTest {
     }
 
     @Test
+    fun `GIVEN a ViewManagerException VERIFY the generated message`() {
+
+        val originalException = RuntimeException("test_message")
+        val exception = ViewManagerException(originalException, "test_description")
+
+        val expected = """
+            {
+                "code" : "${CodeList.VIEW_MANAGER_ERROR.errorCode}",
+                "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
+                "propertyHref" : "$propertyHref",
+                "description" : "test_description",
+                "clientVersion" : "${client.clientVersion}",
+                "OSVersion" : "${client.osVersion}",
+                "deviceFamily" : "${client.deviceFamily}",
+                "legislation" : "${CampaignType.GDPR.name}"
+            }
+        """.trimIndent()
+
+        sut.build(exception).assertEquals(expected)
+    }
+
+    @Test
     fun `GIVEN a UrlLoadingException VERIFY the generated message`() {
 
         val originalException = RuntimeException("test_message")
