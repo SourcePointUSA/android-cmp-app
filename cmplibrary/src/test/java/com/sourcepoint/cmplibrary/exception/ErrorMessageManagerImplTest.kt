@@ -125,6 +125,29 @@ class ErrorMessageManagerImplTest {
     }
 
     @Test
+    fun `GIVEN a WebViewCreationException VERIFY the generated message`() {
+
+        val originalException = RuntimeException("test_message")
+        val exception = WebViewCreationException(originalException, "test_description")
+
+        val expected = """
+            {
+                "code" : "${CodeList.WEB_VIEW_CREATION_ERROR.errorCode}",
+                "accountId" : "$accountId",
+                "propertyId" : "$propertyId",
+                "propertyHref" : "$propertyHref",
+                "description" : "test_description",
+                "clientVersion" : "${client.clientVersion}",
+                "OSVersion" : "${client.osVersion}",
+                "deviceFamily" : "${client.deviceFamily}",
+                "legislation" : "${CampaignType.GDPR.name}"
+            }
+        """.trimIndent()
+
+        sut.build(exception).assertEquals(expected)
+    }
+
+    @Test
     fun `GIVEN a UrlLoadingException VERIFY the generated message`() {
 
         val originalException = RuntimeException("test_message")

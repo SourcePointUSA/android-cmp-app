@@ -14,6 +14,7 @@ internal object CodeList {
     val INVALID_ON_ACTION_EVENT_PAYLOAD = ExceptionCodes("sp_metric_invalid_onAction_event_payload")
     val URL_LOADING_ERROR = ExceptionCodes("sp_metric_url_loading_error")
     val WEB_VIEW_ERROR = ExceptionCodes("sp_metric_web_view_error")
+    val WEB_VIEW_CREATION_ERROR = ExceptionCodes("sp_metric_webview_creation_error")
     val INTERNAL_SERVER_ERROR = ExceptionCodes("sp_metric_internal_server_error_5xx")
     val RESOURCE_NOT_FOUND = ExceptionCodes("sp_metric_resource_not_found_4xx")
     val CONNECTION_TIMEOUT = ExceptionCodes("sp_metric_connection_timeout")
