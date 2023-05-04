@@ -60,7 +60,7 @@ internal class WebViewException @JvmOverloads constructor(
 /**
  * This exception is thrown when in the ViewManager a problem has occurred
  */
-internal class ViewManagerException @JvmOverloads constructor(
+internal class WebViewCreationException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false
@@ -69,7 +69,7 @@ internal class ViewManagerException @JvmOverloads constructor(
     description = description,
     isConsumed = isConsumed
 ) {
-    override val code: ExceptionCodes = CodeList.VIEW_MANAGER_ERROR
+    override val code: ExceptionCodes = CodeList.WEB_VIEW_CREATION_ERROR
 }
 
 /**

@@ -125,14 +125,14 @@ class ErrorMessageManagerImplTest {
     }
 
     @Test
-    fun `GIVEN a ViewManagerException VERIFY the generated message`() {
+    fun `GIVEN a WebViewCreationException VERIFY the generated message`() {
 
         val originalException = RuntimeException("test_message")
-        val exception = ViewManagerException(originalException, "test_description")
+        val exception = WebViewCreationException(originalException, "test_description")
 
         val expected = """
             {
-                "code" : "${CodeList.VIEW_MANAGER_ERROR.errorCode}",
+                "code" : "${CodeList.WEB_VIEW_CREATION_ERROR.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
