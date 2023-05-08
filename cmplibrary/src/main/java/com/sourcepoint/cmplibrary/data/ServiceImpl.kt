@@ -152,7 +152,7 @@ private class ServiceImpl(
                 additionsChangeDate != null &&
                 legalBasisChangeDate != null
             ) {
-                val consentStatus = consentManagerUtils.updateGdprConsentOptimized(
+                val consentStatus = consentManagerUtils.updateGdprConsent(
                     dataRecordedConsent = dataRecordedConsent,
                     gdprConsentStatus = gdprConsentStatus,
                     additionsChangeDate = additionsChangeDate,
@@ -281,7 +281,7 @@ private class ServiceImpl(
         }
     }
 
-    override fun sendConsentOptimized(
+    override fun sendConsent(
         consentActionImpl: ConsentActionImpl,
         env: Env,
         sPConsentsSuccess: ((SPConsents) -> Unit)?,
@@ -289,14 +289,14 @@ private class ServiceImpl(
     ): Either<ChoiceResp> {
         return when (consentActionImpl.campaignType) {
             GDPR -> {
-                sendConsentGdprOptimized(
+                sendConsentGdpr(
                     consentActionImpl,
                     env,
                     sPConsentsSuccess
                 ).map { ChoiceResp(gdpr = it) }
             }
             CCPA -> {
-                sendConsentCcpaOptimized(
+                sendConsentCcpa(
                     consentActionImpl,
                     env,
                     sPConsentsSuccess
@@ -305,7 +305,7 @@ private class ServiceImpl(
         }
     }
 
-    fun sendConsentGdprOptimized(
+    fun sendConsentGdpr(
         consentActionImpl: ConsentActionImpl,
         env: Env,
         sPConsentsSuccess: ((SPConsents) -> Unit)?
@@ -382,7 +382,7 @@ private class ServiceImpl(
         )
     }
 
-    fun sendConsentCcpaOptimized(
+    fun sendConsentCcpa(
         consentActionImpl: ConsentActionImpl,
         env: Env,
         sPConsentsSuccess: ((SPConsents) -> Unit)?
