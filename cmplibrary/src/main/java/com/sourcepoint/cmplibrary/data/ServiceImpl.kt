@@ -246,7 +246,6 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        campaignManager.pvDataResp = it
                         it.gdpr?.uuid?.let { u -> campaignManager.gdprUuid = u }
                     }
             }
@@ -276,9 +275,7 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        campaignManager.pvDataResp = it
                         it.ccpa?.uuid?.let { u -> campaignManager.ccpaUuid = u }
-
                     }
             }
         }
