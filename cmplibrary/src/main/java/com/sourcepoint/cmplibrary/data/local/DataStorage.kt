@@ -30,7 +30,6 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     var messagesOptimized: String?
     var consentStatus: String?
     var metaDataResp: String?
-    var pvDataResp: String?
     var choiceResp: String?
     var dataRecordedConsent: String?
 

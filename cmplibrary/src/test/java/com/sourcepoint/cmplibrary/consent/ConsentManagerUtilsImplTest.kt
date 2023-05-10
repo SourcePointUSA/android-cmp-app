@@ -64,7 +64,7 @@ class ConsentManagerUtilsImplTest {
             """.trimIndent()
         )
         sut
-            .updateGdprConsentOptimized(dataRecordedConsent, gdprConsentStatus, additionsChangeDate, legalBasisChangeDate)
+            .updateGdprConsent(dataRecordedConsent, gdprConsentStatus, additionsChangeDate, legalBasisChangeDate)
             .run {
                 vendorListAdditions.assertNull()
                 legalBasisChanges!!.assertTrue()
@@ -97,7 +97,7 @@ class ConsentManagerUtilsImplTest {
             """.trimIndent()
         )
         sut
-            .updateGdprConsentOptimized(dataRecordedConsent, gdprConsentStatus, additionsChangeDate, legalBasisChangeDate)
+            .updateGdprConsent(dataRecordedConsent, gdprConsentStatus, additionsChangeDate, legalBasisChangeDate)
             .run {
                 vendorListAdditions!!.assertTrue()
                 legalBasisChanges.assertNull()
@@ -131,7 +131,7 @@ class ConsentManagerUtilsImplTest {
             """.trimIndent()
         )
         sut
-            .updateGdprConsentOptimized(dataRecordedConsent, gdprConsentStatus, additionsChangeDate, legalBasisChangeDate)
+            .updateGdprConsent(dataRecordedConsent, gdprConsentStatus, additionsChangeDate, legalBasisChangeDate)
             .run {
                 vendorListAdditions.assertNull()
                 legalBasisChanges.assertNull()

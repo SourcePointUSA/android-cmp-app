@@ -58,6 +58,21 @@ internal class WebViewException @JvmOverloads constructor(
 }
 
 /**
+ * This exception is thrown when in the ViewManager a problem has occurred
+ */
+internal class WebViewCreationException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = CodeList.WEB_VIEW_CREATION_ERROR
+}
+
+/**
  * This exception is thrown when the WebView cannot load the url received
  */
 internal class UrlLoadingException @JvmOverloads constructor(
@@ -242,11 +257,9 @@ internal class InvalidArgumentException @JvmOverloads constructor(
  * This exception is thrown when we receive a request timeout
  */
 
-val TIMEOUT_MESSAGE = """
-    A timeout has occurred when requesting the message data. 
-    Please check your internet connection. 
-    You can extend the timeout using the messageTimeout config parameter.
-""".trimIndent()
+val TIMEOUT_MESSAGE = "A timeout has occurred when requesting the message data. " +
+    "Please check your internet connection. " +
+    "You can extend the timeout using the messageTimeout config parameter."
 
 internal class ConnectionTimeoutException @JvmOverloads constructor(
     cause: Throwable? = null,

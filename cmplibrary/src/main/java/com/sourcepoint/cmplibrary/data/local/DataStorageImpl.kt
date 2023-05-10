@@ -124,15 +124,6 @@ private class DataStorageImpl(
                 .apply()
         }
 
-    override var pvDataResp: String?
-        get() = preference.getString(PV_DATA_RESP, null)
-        set(value) {
-            preference
-                .edit()
-                .putString(PV_DATA_RESP, value)
-                .apply()
-        }
-
     override var choiceResp: String?
         get() = preference.getString(CHOICE_RESP, null)
         set(value) {
