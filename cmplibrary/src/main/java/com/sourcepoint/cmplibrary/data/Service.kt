@@ -18,7 +18,7 @@ import com.sourcepoint.cmplibrary.model.exposed.SPConsents
  */
 internal interface Service : NetworkClient, CampaignManager {
 
-    fun sendConsentOptimized(
+    fun sendConsent(
         consentActionImpl: ConsentActionImpl,
         env: Env,
         sPConsentsSuccess: ((SPConsents) -> Unit)?,

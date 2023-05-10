@@ -22,7 +22,7 @@ internal interface ConsentManagerUtils {
     val gdprConsentOptimized: Either<GDPRConsentInternal>
     val ccpaConsentOptimized: Either<CCPAConsentInternal>
 
-    fun updateGdprConsentOptimized(
+    fun updateGdprConsent(
         dataRecordedConsent: String,
         gdprConsentStatus: ConsentStatus,
         additionsChangeDate: String,
@@ -52,7 +52,7 @@ private class ConsentManagerUtilsImpl(
     val uuid: String = UUID.randomUUID().toString()
 ) : ConsentManagerUtils {
 
-    override fun updateGdprConsentOptimized(
+    override fun updateGdprConsent(
         dataRecordedConsent: String,
         gdprConsentStatus: ConsentStatus,
         additionsChangeDate: String,

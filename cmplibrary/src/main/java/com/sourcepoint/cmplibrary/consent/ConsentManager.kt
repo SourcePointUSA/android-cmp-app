@@ -21,10 +21,10 @@ import com.sourcepoint.cmplibrary.model.toConsentAction
 import com.sourcepoint.cmplibrary.util.check
 
 internal interface ConsentManager {
-    fun enqueueConsentOptimized(consentActionImpl: ConsentActionImpl)
-    fun enqueueConsentOptimized(nativeConsentAction: NativeConsentAction)
-    fun sendStoredConsentToClientOptimized()
-    fun sendConsentOptimized(
+    fun enqueueConsent(consentActionImpl: ConsentActionImpl)
+    fun enqueueConsent(nativeConsentAction: NativeConsentAction)
+    fun sendStoredConsentToClient()
+    fun sendConsent(
         actionImpl: ConsentActionImpl
     )
 
@@ -87,15 +87,15 @@ private class ConsentManagerImpl(
         get() = dataStorage.getCcpaConsentResp() != null ||
             dataStorage.getGdprConsentResp() != null
 
-    override fun enqueueConsentOptimized(consentActionImpl: ConsentActionImpl) {
-        sendConsentOptimized(consentActionImpl)
+    override fun enqueueConsent(consentActionImpl: ConsentActionImpl) {
+        sendConsent(consentActionImpl)
     }
 
-    override fun enqueueConsentOptimized(nativeConsentAction: NativeConsentAction) {
-        sendConsentOptimized(nativeConsentAction.toConsentAction())
+    override fun enqueueConsent(nativeConsentAction: NativeConsentAction) {
+        sendConsent(nativeConsentAction.toConsentAction())
     }
 
-    override fun sendStoredConsentToClientOptimized() {
+    override fun sendStoredConsentToClient() {
         check {
             val ccpaCached = consentManagerUtils.ccpaConsentOptimized.getOrNull()
             val gdprCached = consentManagerUtils.gdprConsentOptimized.getOrNull()
@@ -106,9 +106,9 @@ private class ConsentManagerImpl(
         }
     }
 
-    override fun sendConsentOptimized(actionImpl: ConsentActionImpl) {
+    override fun sendConsent(actionImpl: ConsentActionImpl) {
         executorManager.executeOnSingleThread {
-            service.sendConsentOptimized(actionImpl, env, sPConsentsSuccess, actionImpl.privacyManagerId)
+            service.sendConsent(actionImpl, env, sPConsentsSuccess, actionImpl.privacyManagerId)
                 .executeOnLeft { sPConsentsError?.invoke(it) }
                 .executeOnRight {
                     clientEventManager.storedConsent()

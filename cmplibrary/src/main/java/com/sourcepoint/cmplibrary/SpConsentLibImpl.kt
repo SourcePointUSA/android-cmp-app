@@ -112,26 +112,26 @@ internal class SpConsentLibImpl(
     }
 
     override fun loadMessage() {
-        localLoadMessageOptimized(authId = null, pubData = null, cmpViewId = null)
+        localLoadMessage(authId = null, pubData = null, cmpViewId = null)
     }
 
     override fun loadMessage(cmpViewId: Int) {
-        localLoadMessageOptimized(authId = null, pubData = null, cmpViewId = cmpViewId)
+        localLoadMessage(authId = null, pubData = null, cmpViewId = cmpViewId)
     }
 
     override fun loadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
-        localLoadMessageOptimized(authId = authId, pubData = pubData, cmpViewId = cmpViewId)
+        localLoadMessage(authId = authId, pubData = pubData, cmpViewId = cmpViewId)
     }
 
     override fun loadMessage(pubData: JSONObject?) {
-        localLoadMessageOptimized(authId = null, pubData = pubData, cmpViewId = null)
+        localLoadMessage(authId = null, pubData = pubData, cmpViewId = null)
     }
 
     override fun loadMessage(authId: String?) {
-        localLoadMessageOptimized(authId = authId, pubData = null, cmpViewId = null)
+        localLoadMessage(authId = authId, pubData = null, cmpViewId = null)
     }
 
-    private fun localLoadMessageOptimized(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
+    private fun localLoadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
 
         val param = check { campaignManager.getMessageOptimizedReq(authId, pubData) }
             .executeOnLeft {
@@ -142,14 +142,14 @@ internal class SpConsentLibImpl(
         service.getMessages(
             messageReq = param,
             showConsent = {
-                consentManager.sendStoredConsentToClientOptimized()
+                consentManager.sendStoredConsentToClient()
                 clientEventManager.setAction(NativeMessageActionType.GET_MSG_NOT_CALLED)
             },
             pSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)
                 clientEventManager.setCampaignNumber(list.size)
                 if (list.isEmpty()) {
-                    consentManager.sendStoredConsentToClientOptimized()
+                    consentManager.sendStoredConsentToClient()
                     return@getMessages
                 }
                 val firstCampaign2Process: CampaignModel = list.first()
@@ -195,7 +195,7 @@ internal class SpConsentLibImpl(
             pError = { throwable ->
                 if (consentManager.storedConsent) {
                     executor.executeOnSingleThread {
-                        consentManager.sendStoredConsentToClientOptimized()
+                        consentManager.sendStoredConsentToClient()
                         clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
                     }
                 } else {
@@ -569,7 +569,7 @@ internal class SpConsentLibImpl(
                 executor.executeOnSingleThread {
                     val editedAction = spClient.onAction(view, actionImpl) as? ConsentActionImpl
                     editedAction?.let {
-                        consentManager.enqueueConsentOptimized(consentActionImpl = editedAction)
+                        consentManager.enqueueConsent(consentActionImpl = editedAction)
                     }
                 }
             }
@@ -753,7 +753,7 @@ internal class SpConsentLibImpl(
             }
             NativeMessageActionType.ACCEPT_ALL,
             NativeMessageActionType.REJECT_ALL -> {
-                consentManager.enqueueConsentOptimized(nativeConsentAction = nca)
+                consentManager.enqueueConsent(nativeConsentAction = nca)
                 moveToNextCampaign(remainingCampaigns, viewManager, spClient)
             }
         }
