@@ -39,6 +39,7 @@ val appModule = module {
             ccpaPmId = ccpaPmId,
             customVendorList = customVendorDataList,
             customCategories = customCategoriesData,
+            useGdprGroupPmIfAvailable = false,
             authId = null //get(qualifier = named("authId")))
         )
     }

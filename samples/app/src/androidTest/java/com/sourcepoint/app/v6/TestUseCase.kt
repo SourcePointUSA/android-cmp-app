@@ -25,6 +25,7 @@ import com.sourcepoint.app.v6.TestData.SITE_VENDORS
 import com.sourcepoint.app.v6.TestData.TITLE_GDPR
 import com.sourcepoint.app.v6.TestData.VENDORS_LIST
 import com.sourcepoint.app.v6.TestData.VENDORS_LIST_2
+import com.sourcepoint.app.v6.TestData.ZUSTIMMEN
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.di.customCategoriesDataProd
 import com.sourcepoint.app.v6.di.customVendorDataListProd
@@ -267,6 +268,10 @@ class TestUseCase {
             performClickOnWebViewByContent(ACCEPT_ALL)
         }
 
+        fun tapZustimmenAllOnWebView() {
+            performClickOnWebViewByContent(ZUSTIMMEN)
+        }
+
         fun tapNetworkOnWebView() {
             performClickOnLabelWebViewByContent(NETWORK)
         }
@@ -378,6 +383,7 @@ class TestUseCase {
             ccpaPmId: String = "",
             pAuthId: String? = null,
             url: String = "",
+            useGdprGroupPmIfAvailable: Boolean = false,
             pResetAll: Boolean = true,
             pStoreStateGdpr: Boolean = false,
             pStoreStateCcpa: Boolean = false,
@@ -390,6 +396,7 @@ class TestUseCase {
                         override val authId = pAuthId
                         override val resetAll = pResetAll
                         override val storeStateGdpr: Boolean = pStoreStateGdpr
+                        override val useGdprGroupPmIfAvailable: Boolean = useGdprGroupPmIfAvailable
                         override val storeStateCcpa: Boolean = pStoreStateCcpa
                         override val url = url
                         override val spConfig: SpConfig = spConfig

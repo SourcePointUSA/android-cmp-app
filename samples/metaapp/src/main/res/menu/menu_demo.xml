@@ -15,6 +15,12 @@
           android:icon="@drawable/ic_baseline_ios_share_24"
           app:showAsAction="never"/>
 
+    <item android:id="@+id/action_share_sp"
+          android:title="@string/action_share_sp"
+          android:orderInCategory="100"
+          android:icon="@drawable/ic_baseline_text_snippet_24"
+          app:showAsAction="never"/>
+
     <item
             android:id="@+id/action_clear_log"
             android:icon="@drawable/ic_baseline_delete_48"

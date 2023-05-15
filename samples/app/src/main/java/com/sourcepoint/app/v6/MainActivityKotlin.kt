@@ -77,9 +77,10 @@ class MainActivityKotlin : AppCompatActivity() {
         setContentView(R.layout.activity_main_v7)
         review_consents_gdpr.setOnClickListener { _v: View? ->
             spConsentLib.loadPrivacyManager(
-                dataProvider.gdprPmId,
-                PMTab.PURPOSES,
-                CampaignType.GDPR
+                pmId = dataProvider.gdprPmId,
+                pmTab = PMTab.PURPOSES,
+                campaignType = CampaignType.GDPR,
+                useGroupPmIfAvailable = dataProvider.useGdprGroupPmIfAvailable
             )
         }
         review_consents_ccpa.setOnClickListener { _v: View? ->
