@@ -21,6 +21,7 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONArray
@@ -350,7 +351,8 @@ private class ServiceImpl(
             saveAndExitVariables = consentActionImpl.saveAndExitVariablesOptimized,
             authid = authId,
             uuid = campaignManager.gdprUuid,
-            sendPvData = dataStorage.gdprSamplingResult
+            sendPvData = dataStorage.gdprSamplingResult,
+            pubData = consentActionImpl.pubData.toJsonObject(),
         )
 
         val pcParam = PostChoiceParamReq(
@@ -414,7 +416,8 @@ private class ServiceImpl(
             saveAndExitVariables = consentActionImpl.saveAndExitVariablesOptimized,
             authid = authId,
             uuid = campaignManager.ccpaUuid,
-            sendPvData = dataStorage.ccpaSamplingResult
+            sendPvData = dataStorage.ccpaSamplingResult,
+            pubData = consentActionImpl.pubData.toJsonObject(),
         )
 
         val pcParam = PostChoiceParamReq(
