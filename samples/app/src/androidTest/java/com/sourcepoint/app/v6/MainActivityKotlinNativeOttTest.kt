@@ -3,14 +3,12 @@ package com.sourcepoint.app.v6
 import android.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
@@ -20,9 +18,8 @@ import com.sourcepoint.cmplibrary.model.MessageLanguage
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 
 //@RunWith(AndroidJUnit4ClassRunner::class)
@@ -70,7 +67,11 @@ class MainActivityKotlinNativeOttTest {
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr{ verify(exactly = 1) { spClient.onConsentReady(any()) } }
-        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
+        verify {
+            spClient.onAction(
+                any(),
+                withArg { it.pubData["pb_key"]?.jsonPrimitive?.content.assertEquals("pb_value") })
+        }
 
         wr {
             verify {
@@ -120,7 +121,11 @@ class MainActivityKotlinNativeOttTest {
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr{ verify(atLeast = 2) { spClient.onConsentReady(any()) } }
-        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
+        verify {
+            spClient.onAction(
+                any(),
+                withArg { it.pubData["pb_key"]?.jsonPrimitive?.content.assertEquals("pb_value") })
+        }
 
         wr {
             verify {

@@ -10,8 +10,7 @@ import org.json.JSONObject
 
 interface ConsentAction {
     val actionType: ActionType
-    val pubData: JSONObject
-    val pubData2: JsonObject
+    var pubData: JsonObject
     val campaignType: CampaignType
     val customActionId: String?
     val privacyManagerId: String?
@@ -23,8 +22,7 @@ interface ConsentAction {
 
 internal data class ConsentActionImpl(
     override val campaignType: CampaignType,
-    override val pubData: JSONObject = JSONObject(),
-    override val pubData2: JsonObject = JsonObject(mapOf()),
+    override var pubData: JsonObject = JsonObject(mapOf()),
     override val actionType: ActionType,
     override val customActionId: String? = null,
     override val privacyManagerId: String? = null,

@@ -18,12 +18,11 @@ import com.sourcepoint.cmplibrary.core.nativemessage.NativeComponent
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
-import kotlinx.android.synthetic.main.activity_main.*
+import com.sourcepoint.cmplibrary.util.extensions.putAdditionalData
 import kotlinx.android.synthetic.main.activity_main.auth_id_activity
 import kotlinx.android.synthetic.main.activity_main.clear_all
 import kotlinx.android.synthetic.main.activity_main.consent_btn
@@ -189,7 +188,10 @@ class MainActivityKotlin : AppCompatActivity() {
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
             spClientObserver.forEach { it.onAction(view, consentAction) }
             Log.i(TAG, "onAction ActionType: $consentAction")
-            consentAction.pubData.put("pb_key", "pb_value")
+            val additionalData = mapOf(
+                "pb_key" to "pb_value"
+            )
+            consentAction.pubData = consentAction.pubData.putAdditionalData(additionalData)
             return consentAction
         }
 

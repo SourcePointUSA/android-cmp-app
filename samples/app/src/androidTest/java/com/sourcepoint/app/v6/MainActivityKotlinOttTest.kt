@@ -19,6 +19,7 @@ import com.sourcepoint.cmplibrary.model.MessageLanguage
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -69,7 +70,11 @@ class MainActivityKotlinOttTest {
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr{ verify(exactly = 1) { spClient.onConsentReady(any()) } }
-        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
+        verify {
+            spClient.onAction(
+                any(),
+                withArg { it.pubData["pb_key"].assertEquals("pb_value") })
+        }
 
         wr {
             verify {
@@ -120,7 +125,11 @@ class MainActivityKotlinOttTest {
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr{ verify(atLeast = 2) { spClient.onConsentReady(any()) } }
-        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
+        verify {
+            spClient.onAction(
+                any(),
+                withArg { it.pubData["pb_key"]?.jsonPrimitive?.content.assertEquals("pb_value") })
+        }
 
         wr {
             verify {

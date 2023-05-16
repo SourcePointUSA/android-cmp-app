@@ -26,6 +26,7 @@ import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.util.clearAllData
+import com.sourcepoint.cmplibrary.util.extensions.putAdditionalData
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
@@ -255,6 +256,10 @@ class DemoActivity : FragmentActivity() {
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
             spClientObserver.forEach { it.onAction(view, consentAction) }
             Log.i(this::class.java.name, "ActionType: $consentAction")
+            val additionalData = mapOf(
+                "pb_key" to "pb_value"
+            )
+            consentAction.pubData = consentAction.pubData.putAdditionalData(additionalData)
             return consentAction
         }
 

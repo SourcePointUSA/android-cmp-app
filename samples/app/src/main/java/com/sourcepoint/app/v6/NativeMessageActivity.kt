@@ -20,6 +20,7 @@ import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
+import com.sourcepoint.cmplibrary.util.extensions.putAdditionalData
 import kotlinx.android.synthetic.main.activity_main_v7.*
 import kotlinx.android.synthetic.main.native_message.view.*
 import org.json.JSONObject
@@ -134,7 +135,10 @@ class NativeMessageActivity : AppCompatActivity() {
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
             spClientObserver.forEach { it.onAction(view, consentAction) }
             Log.i(NativeMessageActivity.TAG, "onAction ActionType: $consentAction")
-            consentAction.pubData.put("pb_key", "pb_value")
+            val additionalData = mapOf(
+                "pb_key" to "pb_value"
+            )
+            consentAction.pubData = consentAction.pubData.putAdditionalData(additionalData)
             return consentAction
         }
 
