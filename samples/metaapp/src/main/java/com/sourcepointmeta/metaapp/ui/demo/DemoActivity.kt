@@ -1,6 +1,5 @@
 package com.sourcepointmeta.metaapp.ui.demo
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -195,7 +194,7 @@ class DemoActivity : FragmentActivity() {
         }
     }
 
-    private fun getAllPref(): String{
+    private fun getAllPref(): String {
         return JSONObject(PreferenceManager.getDefaultSharedPreferences(this).all.toMap()).toString()
     }
 

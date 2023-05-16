@@ -51,6 +51,7 @@ internal data class GDPRConsentInternal(
 ) : GDPRConsent
 
 interface CCPAConsent {
+    val uuid: String?
     val rejectedCategories: List<String>
     val rejectedVendors: List<String>
     val status: CcpaStatus?
@@ -60,7 +61,7 @@ interface CCPAConsent {
 }
 
 internal data class CCPAConsentInternal(
-    val uuid: String? = null,
+    override val uuid: String? = null,
     override val rejectedCategories: List<String> = listOf(),
     override val rejectedVendors: List<String> = listOf(),
     override val status: CcpaStatus? = null,

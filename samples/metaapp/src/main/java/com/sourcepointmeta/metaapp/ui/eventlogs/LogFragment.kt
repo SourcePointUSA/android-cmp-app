@@ -80,7 +80,7 @@ class LogFragment : Fragment() {
         }
     }
 
-    fun sendEmail(stringifyJson : String){
+    fun sendEmail(stringifyJson: String) {
         val uri: Uri = FileProvider.getUriForFile(
             requireContext(),
             requireContext().applicationContext.packageName.toString() + ".provider",
