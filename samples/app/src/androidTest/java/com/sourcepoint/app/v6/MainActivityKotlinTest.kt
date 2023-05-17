@@ -16,6 +16,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeepLinkDisplayed
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeletedCustomCategoriesData
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeletedCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkEuconsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkFeaturesTab
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkGdprApplies
@@ -56,7 +57,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.jsonPrimitive
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Test
@@ -171,11 +171,7 @@ class MainActivityKotlinTest {
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-        verify {
-            spClient.onAction(
-                any(),
-                withArg { it.pubData["pb_key"]?.jsonPrimitive?.content.assertEquals("pb_value") })
-        }
+        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verify {
             spClient.run {
@@ -290,11 +286,7 @@ class MainActivityKotlinTest {
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-        verify {
-            spClient.onAction(
-                any(),
-                withArg { it.pubData["pb_key"]?.jsonPrimitive?.content.assertEquals("pb_value") })
-        }
+        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verify {
             spClient.run {
@@ -365,11 +357,7 @@ class MainActivityKotlinTest {
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-        verify {
-            spClient.onAction(
-                any(),
-                withArg { it.pubData["pb_key"]?.jsonPrimitive?.content.assertEquals("pb_value") })
-        }
+        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verify {
             spClient.run {
@@ -411,7 +399,7 @@ class MainActivityKotlinTest {
             verify(exactly = 2) {
                 spClient.onAction(
                     any(),
-                    withArg { it.pubData["pb_key"]?.jsonPrimitive?.content.assertEquals("pb_value") })
+                    withArg { it.pubData["pb_key"].assertEquals("pb_value") })
             }
         }
         verify(exactly = 1) { spClient.onUIFinished(any()) }

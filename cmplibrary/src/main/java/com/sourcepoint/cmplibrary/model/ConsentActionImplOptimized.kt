@@ -23,10 +23,12 @@ data class ConsentActionImplOptimized(
     @SerialName("requestFromPm") override val requestFromPm: Boolean,
     @SerialName("saveAndExitVariables") val saveAndExitVariablesOptimized: JsonObject = JsonObject(mapOf()),
     @SerialName("singleShot") val singleShot: Boolean?,
-    @SerialName("pubData") override var pubData: JsonObject = JsonObject(mapOf()),
+    @SerialName("pubData") override val pubData2: JsonObject = JsonObject(mapOf()),
     @SerialName("singleShotPM") val singleShotPM: Boolean = false,
     @SerialName("privacyManagerId") override val privacyManagerId: String? = null,
 ) : ConsentAction {
+    override val pubData: JSONObject
+        get() = JSONObject(pubData2)
 
     override val campaignType: CampaignType
         get() = legislation
