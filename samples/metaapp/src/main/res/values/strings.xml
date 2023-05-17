@@ -3,6 +3,7 @@
     <string name="demo_fragment">Demo</string>
     <string name="action_settings">Settings</string>
     <string name="action_share">Share</string>
+    <string name="action_share_sp">Share SP</string>
     <string name="action_refresh">Load Message</string>
     <string name="action_share_all">Share All</string>
     <!-- Strings used for fragments for navigation -->

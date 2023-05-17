@@ -18,7 +18,6 @@ import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.Campaigns
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
@@ -57,16 +56,9 @@ internal interface CampaignManager {
         pmTab: PMTab?
     ): Either<PmUrlConfig>
 
-    fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest
     fun getMessageOptimizedReq(authId: String?, pubData: JSONObject?): MessagesParamReq
 
     fun getGroupId(campaignType: CampaignType): String?
-
-    fun saveGdpr(gdpr: Gdpr)
-    fun saveCcpa(ccpa: Ccpa)
-    fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp)
-
-    fun parseRenderingMessage()
 
     fun clearConsents()
 
@@ -257,6 +249,14 @@ private class CampaignManagerImpl(
                     """.trimIndent()
                 )
             )
+            logger?.e(
+                tag = "The childPmId is missing",
+                msg = """
+                              childPmId [null]
+                              GroupPmId[$groupPmId]
+                              useGroupPmIfAvailable [true] 
+                """.trimIndent()
+            )
         }
 
         logger?.computation(
@@ -331,41 +331,6 @@ private class CampaignManagerImpl(
         }
     }
 
-    override fun getUnifiedMessageReq(authId: String?, pubData: JSONObject?): UnifiedMessageRequest {
-        val campaigns = mutableListOf<CampaignReq>()
-        mapTemplate[CampaignType.GDPR.name]
-            ?.let {
-                it.toCampaignReqImpl(
-                    targetingParams = it.targetingParams,
-                    campaignsEnv = it.campaignsEnv,
-                    groupPmId = it.groupPmId
-                )
-            }
-            ?.let { campaigns.add(it) }
-        mapTemplate[CampaignType.CCPA.name]
-            ?.let {
-                it.toCampaignReqImpl(
-                    targetingParams = it.targetingParams,
-                    campaignsEnv = it.campaignsEnv
-                )
-            }
-            ?.let { campaigns.add(it) }
-
-        val localState = dataStorage.getLocalState()
-
-        return UnifiedMessageRequest(
-            requestUUID = "test",
-            propertyHref = spConfig.propertyName,
-            accountId = spConfig.accountId,
-            campaigns = Campaigns(list = campaigns),
-            consentLanguage = messageLanguage,
-            localState = localState,
-            authId = authId,
-            campaignsEnv = campaignsEnv,
-            pubData = pubData
-        )
-    }
-
     override fun getMessageOptimizedReq(authId: String?, pubData: JSONObject?): MessagesParamReq {
         val campaigns = mutableListOf<CampaignReq>()
         mapTemplate[CampaignType.GDPR.name]
@@ -402,51 +367,6 @@ private class CampaignManagerImpl(
 
     override fun getGroupId(campaignType: CampaignType): String? {
         return spConfig.campaigns.find { it.campaignType == campaignType }?.groupPmId
-    }
-
-    override fun saveGdpr(gdpr: Gdpr) {
-        dataStorage.run {
-            saveGdpr(gdpr.thisContent.toString())
-            saveGdprConsentResp(gdpr.userConsent.thisContent.toString())
-            gdprApplies = gdpr.applies
-            gdprChildPmId = gdpr.userConsent.childPmId
-        }
-    }
-
-    override fun saveCcpa(ccpa: Ccpa) {
-        dataStorage.run {
-            saveCcpa(ccpa.thisContent.toString())
-            saveCcpaConsentResp(ccpa.userConsent.thisContent.toString())
-            usPrivacyString = ccpa.userConsent.uspstring
-            ccpaApplies = ccpa.applies
-            ccpaChildPmId = ccpa.userConsent.childPmId
-        }
-    }
-
-    override fun saveUnifiedMessageResp(unifiedMessageResp: UnifiedMessageResp) {
-        dataStorage.saveLocalState(unifiedMessageResp.localState)
-        val map = JSONObject(unifiedMessageResp.localState).toTreeMap()
-        // save GDPR uuid
-        map.getMap("gdpr")?.apply {
-            getFieldValue<String>("uuid")?.let { dataStorage.gdprConsentUuid = it }
-        }
-        // save GDPR uuid
-        map.getMap("ccpa")?.apply {
-            getFieldValue<String>("uuid")?.let { dataStorage.ccpaConsentUuid = it }
-        }
-
-        // save campaigns and consents
-        unifiedMessageResp
-            .campaigns
-            .forEach {
-                when (it) {
-                    is Gdpr -> saveGdpr(it)
-                    is Ccpa -> saveCcpa(it)
-                }
-            }
-    }
-
-    override fun parseRenderingMessage() {
     }
 
     override fun clearConsents() {
@@ -647,6 +567,7 @@ private class CampaignManagerImpl(
             }
             it.gdpr?.apply {
                 applies?.let { i -> dataStorage.gdprApplies = i }
+                childPmId?.let { i -> dataStorage.gdprChildPmId = i }
                 sampleRate?.let { i ->
                     if (i != dataStorage.gdprSamplingValue) {
                         dataStorage.gdprSamplingValue = i

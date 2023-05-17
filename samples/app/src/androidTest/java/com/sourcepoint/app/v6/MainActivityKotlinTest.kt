@@ -46,11 +46,13 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSiteVendorsWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableAllConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapZustimmenAllOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
+import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.delay
@@ -113,7 +115,7 @@ class MainActivityKotlinTest {
         propertyName = "mobile.prop-1"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
-        +(CampaignType.GDPR)
+        +SpCampaign(campaignType = CampaignType.GDPR, groupPmId = "613056" )
     }
 
     private val spConf = config {
@@ -771,6 +773,28 @@ class MainActivityKotlinTest {
 
         verify(exactly = 0) { spClient.onConsentReady(any()) }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+    }
+
+    @Test
+    fun GIVEN_a_groupId_VERIFY_that_the_right_pm_is_displayed() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdprGroupId,
+                gdprPmId = "613058", // it is the wrong pmId because the right pmId should be selected automatically
+                ccpaPmId = "-",
+                useGdprGroupPmIfAvailable = true,
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr(backup = { clickOnRefreshBtnActivity() })  { tapZustimmenAllOnWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkTextInParagraph("Privacy Notice Prop 1") }
+
     }
 
     @Test

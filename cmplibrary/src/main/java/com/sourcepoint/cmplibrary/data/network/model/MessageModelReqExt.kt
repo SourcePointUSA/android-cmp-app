@@ -2,26 +2,9 @@ package com.sourcepoint.cmplibrary.data.network.model
 
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.Campaigns
-import com.sourcepoint.cmplibrary.model.UnifiedMessageRequest
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import kotlinx.serialization.json.* // ktlint-disable
 import org.json.JSONObject
-
-internal fun UnifiedMessageRequest.toJsonObject(): JSONObject {
-    return JSONObject()
-        .apply {
-            put("requestUUID", requestUUID)
-            put("propertyHref", "http://$propertyHref")
-            put("accountId", accountId)
-            put("pubData", pubData)
-            put("campaignEnv", campaignsEnv.env)
-            put("campaigns", campaigns.toJsonObject())
-            put("consentLanguage", consentLanguage.value)
-            put("localState", localState)
-            put("authId", authId)
-            put("includeData", includeData.toJsonObject())
-        }
-}
 
 internal fun Campaigns.toJsonObject(): JSONObject {
 

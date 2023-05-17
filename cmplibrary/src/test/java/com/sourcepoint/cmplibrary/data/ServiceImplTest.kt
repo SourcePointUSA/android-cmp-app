@@ -61,9 +61,6 @@ class ServiceImplTest {
     private lateinit var execManager: ExecutorManager
 
     @MockK
-    private lateinit var successMock: (UnifiedMessageResp) -> Unit
-
-    @MockK
     private lateinit var successMockV7: (MessagesResp) -> Unit
 
     @MockK

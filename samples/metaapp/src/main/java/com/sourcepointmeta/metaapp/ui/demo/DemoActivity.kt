@@ -186,11 +186,16 @@ class DemoActivity : FragmentActivity() {
         tool_bar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_share -> logFr.shareLogs()
+                R.id.action_share_sp -> logFr.sendEmail(getAllPref())
                 R.id.action_clear_log -> logFr.clearLog()
                 R.id.action_refresh -> triggerLib()
             }
             true
         }
+    }
+
+    private fun getAllPref(): String {
+        return JSONObject(PreferenceManager.getDefaultSharedPreferences(this).all.toMap()).toString()
     }
 
     override fun onResume() {
