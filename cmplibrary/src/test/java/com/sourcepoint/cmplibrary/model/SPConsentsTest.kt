@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
-import com.sourcepoint.cmplibrary.model.exposed.*
+import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import org.json.JSONObject
 import org.junit.Test
 
