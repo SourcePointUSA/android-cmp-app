@@ -1,3 +1,8 @@
+## 7.2.2 (May, 19, 2023)
+* [DIA-2181](https://sourcepoint.atlassian.net/browse/DIA-2181) Fix for onAction callback to send pubData (#639)
+* [DIA-1936](https://sourcepoint.atlassian.net/browse/DIA-1936) Support Group Pm Id (#640)
+* [DIA-2106](https://sourcepoint.atlassian.net/browse/DIA-2106) Make ccpa uuid public on CCPAConsent
+
 ## 7.2.1 (May, 10, 2023)
 * [DIA-2119](https://sourcepoint.atlassian.net/browse/DIA-2119) Wait on pv-data before sending POST choice request (#633)
 * [DIA-2121](https://sourcepoint.atlassian.net/browse/DIA-2121) Added ViewManagerException (#632)
