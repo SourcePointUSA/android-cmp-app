@@ -592,7 +592,7 @@ Kotlin
                   messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
                   campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
                   messageTimeout = 4000 // Optional, default 3000ms
-                  + SpCampaign(CampaignType.GDPR, "1234") // 1234 is the id of the privacy manager for the property group
+                  + SpCampaign(campaignType = CampaignType.GDPR, groupPmId = "1234" ) // 1234 is the id of the privacy manager for the property group
                 }
 ```
 
@@ -605,7 +605,7 @@ Java
             .addMessageLanguage(MessageLanguage.ENGLISH) // Optional, default ENGLISH
             .addCampaignsEnv(CampaignsEnv.PUBLIC) // Optional, default PUBLIC
             .addMessageTimeout(4000) // Optional, default 3000ms
-            .addCampaign(new SpCampaign(CampaignType.GDPR, "1234")) // 1234 is the property group
+            .addCampaign(new SpCampaign(CampaignType.GDPR, Collections.emptyList(), "1234")) // 1234 is the property group
             .build();
 
 ```

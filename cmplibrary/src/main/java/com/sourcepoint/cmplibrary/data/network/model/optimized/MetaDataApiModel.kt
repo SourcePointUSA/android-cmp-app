@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.core.getOrNull
-import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.Env
@@ -37,7 +36,8 @@ data class MetaDataResp(
         @SerialName("_id") val id: String?,
         @SerialName("legalBasisChangeDate") val legalBasisChangeDate: String?,
         @SerialName("version") val version: Int?,
-        @SerialName("sampleRate") val sampleRate: Double?
+        @SerialName("sampleRate") val sampleRate: Double?,
+        @SerialName("childPmId") val childPmId: String?,
     )
 
     override fun toString(): String {

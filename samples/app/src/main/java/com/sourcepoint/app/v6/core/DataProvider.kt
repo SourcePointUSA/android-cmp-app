@@ -12,6 +12,7 @@ interface DataProvider {
     val storeStateCcpa: Boolean
     val url: String
     val gdprPmId: String
+    val useGdprGroupPmIfAvailable: Boolean
     val ccpaPmId: String
     val spConfig: SpConfig
     val customVendorList: List<String>
@@ -23,6 +24,7 @@ fun DataProvider.Companion.create(
     context: Context,
     spConfig: SpConfig,
     gdprPmId: String,
+    useGdprGroupPmIfAvailable: Boolean,
     ccpaPmId: String,
     customVendorList: List<String>,
     customCategories: List<String>,
@@ -31,6 +33,7 @@ fun DataProvider.Companion.create(
     context = context,
     spConfig = spConfig,
     gdprPmId = gdprPmId,
+    useGdprGroupPmIfAvailable = useGdprGroupPmIfAvailable,
     ccpaPmId = ccpaPmId,
     pAuthId = authId,
     customCategories = customCategories,
@@ -44,6 +47,7 @@ private class DataProviderImpl(
     override val customCategories: List<String>,
     override val gdprPmId: String,
     override val ccpaPmId: String,
+    override val useGdprGroupPmIfAvailable: Boolean= false,
     override val resetAll: Boolean = false,
     override val storeStateGdpr: Boolean = false,
     override val storeStateCcpa: Boolean = false,

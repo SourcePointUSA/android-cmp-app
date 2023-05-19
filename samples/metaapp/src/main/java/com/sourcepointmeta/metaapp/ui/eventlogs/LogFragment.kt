@@ -74,21 +74,23 @@ class LogFragment : Fragment() {
 
     private fun stateHandler(state: BaseState) {
         when (state) {
-            is StateSharingLogs -> {
-                val uri: Uri = FileProvider.getUriForFile(
-                    requireContext(),
-                    requireContext().applicationContext.packageName.toString() + ".provider",
-                    requireContext().createFileWithContent(config.propertyName, state.stringifyJson)
-                )
-                activity?.composeEmail(
-                    config = config,
-                    text = "Log",
-                    attachment = uri
-                )
-            }
+            is StateSharingLogs -> sendEmail(state.stringifyJson)
             else -> { /* nothing */
             }
         }
+    }
+
+    fun sendEmail(stringifyJson: String) {
+        val uri: Uri = FileProvider.getUriForFile(
+            requireContext(),
+            requireContext().applicationContext.packageName.toString() + ".provider",
+            requireContext().createFileWithContent(config.propertyName, stringifyJson)
+        )
+        activity?.composeEmail(
+            config = config,
+            text = "Log",
+            attachment = uri
+        )
     }
 
     fun clearLog() {
