@@ -108,7 +108,6 @@ data class CCPA(
     @SerialName("uspstring")
     val uspstring: String
         get() = generateConsentString()
-
 }
 
 @Serializable
