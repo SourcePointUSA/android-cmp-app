@@ -1,11 +1,13 @@
 package com.sourcepoint.cmplibrary.util.extensions
 
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CCPA
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import org.junit.Test
 
-internal class CcpaCSExtKtTest {
+internal class CCPAExtKtTest {
 
     /**
      * Test case that covers the case when:
@@ -15,30 +17,30 @@ internal class CcpaCSExtKtTest {
     @Test
     fun `generateConsentString - WHEN called with applies as null THEN should return default CCPA consent string`() {
         // GIVEN
-        val ccpaCS = CcpaCS(
-            actions = null,
+        val ccpa = CCPA(
             applies = null,
-            ccpaApplies = null,
             consentedAll = null,
-            cookies = null,
             dateCreated = null,
-            gpcEnabled = null,
+            message = null,
+            messageMetaData = null,
             newUser = null,
             rejectedAll = null,
             rejectedCategories = null,
             rejectedVendors = null,
-            signedLspa = false,
+            signedLspa = null,
             status = null,
-            uspstring = null,
-            uuid = null,
+            type = CampaignType.CCPA,
+            url = null,
         )
         val expected = "1---"
+        val generated = ccpa.generateConsentString()
 
         // WHEN
-        val actual = ccpaCS.generateConsentString()
+        val actual = ccpa.uspstring
 
         // THEN
         actual.assertEquals(expected)
+        actual.assertEquals(generated)
     }
 
     /**
@@ -49,30 +51,30 @@ internal class CcpaCSExtKtTest {
     @Test
     fun `generateConsentString - WHEN called with applies as false THEN should return default CCPA consent string`() {
         // GIVEN
-        val ccpaCS = CcpaCS(
-            actions = null,
+        val ccpa = CCPA(
             applies = false,
-            ccpaApplies = null,
             consentedAll = null,
-            cookies = null,
             dateCreated = null,
-            gpcEnabled = null,
+            message = null,
+            messageMetaData = null,
             newUser = null,
             rejectedAll = null,
             rejectedCategories = null,
             rejectedVendors = null,
-            signedLspa = false,
+            signedLspa = null,
             status = null,
-            uspstring = "",
-            uuid = null,
+            type = CampaignType.CCPA,
+            url = null,
         )
         val expected = "1---"
+        val generated = ccpa.generateConsentString()
 
         // WHEN
-        val actual = ccpaCS.generateConsentString()
+        val actual = ccpa.uspstring
 
         // THEN
         actual.assertEquals(expected)
+        actual.assertEquals(generated)
     }
 
     /**
@@ -85,30 +87,30 @@ internal class CcpaCSExtKtTest {
     @Test
     fun `generateConsentString - WHEN called with applies==true, status == rejectedAll, signedLspa == true THEN should return 1YYY`() {
         // GIVEN
-        val ccpaCS = CcpaCS(
-            actions = null,
+        val ccpa = CCPA(
             applies = true,
-            ccpaApplies = null,
             consentedAll = null,
-            cookies = null,
             dateCreated = null,
-            gpcEnabled = null,
+            message = null,
+            messageMetaData = null,
             newUser = null,
             rejectedAll = null,
             rejectedCategories = null,
             rejectedVendors = null,
             signedLspa = true,
             status = CcpaStatus.rejectedAll,
-            uspstring = "",
-            uuid = null,
+            type = CampaignType.CCPA,
+            url = null,
         )
         val expected = "1YYY"
+        val generated = ccpa.generateConsentString()
 
         // WHEN
-        val actual = ccpaCS.generateConsentString()
+        val actual = ccpa.uspstring
 
         // THEN
         actual.assertEquals(expected)
+        actual.assertEquals(generated)
     }
 
     /**
@@ -121,30 +123,30 @@ internal class CcpaCSExtKtTest {
     @Test
     fun `generateConsentString - WHEN called with applies==true, status == rejectedSome, signedLspa == false THEN should return 1YYN`() {
         // GIVEN
-        val ccpaCS = CcpaCS(
-            actions = null,
+        val ccpa = CCPA(
             applies = true,
-            ccpaApplies = null,
             consentedAll = null,
-            cookies = null,
             dateCreated = null,
-            gpcEnabled = null,
+            message = null,
+            messageMetaData = null,
             newUser = null,
             rejectedAll = null,
             rejectedCategories = null,
             rejectedVendors = null,
             signedLspa = false,
             status = CcpaStatus.rejectedSome,
-            uspstring = "",
-            uuid = null,
+            type = CampaignType.CCPA,
+            url = null,
         )
         val expected = "1YYN"
+        val generated = ccpa.generateConsentString()
 
         // WHEN
-        val actual = ccpaCS.generateConsentString()
+        val actual = ccpa.uspstring
 
         // THEN
         actual.assertEquals(expected)
+        actual.assertEquals(generated)
     }
 
     /**
@@ -157,29 +159,29 @@ internal class CcpaCSExtKtTest {
     @Test
     fun `generateConsentString - WHEN called with applies==true, status == consentedAll, signedLspa == false THEN should return 1YNN`() {
         // GIVEN
-        val ccpaCS = CcpaCS(
-            actions = null,
+        val ccpa = CCPA(
             applies = true,
-            ccpaApplies = null,
             consentedAll = null,
-            cookies = null,
             dateCreated = null,
-            gpcEnabled = null,
+            message = null,
+            messageMetaData = null,
             newUser = null,
             rejectedAll = null,
             rejectedCategories = null,
             rejectedVendors = null,
             signedLspa = false,
             status = CcpaStatus.consentedAll,
-            uspstring = "",
-            uuid = null,
+            type = CampaignType.CCPA,
+            url = null,
         )
         val expected = "1YNN"
+        val generated = ccpa.generateConsentString()
 
         // WHEN
-        val actual = ccpaCS.generateConsentString()
+        val actual = ccpa.uspstring
 
         // THEN
         actual.assertEquals(expected)
+        actual.assertEquals(generated)
     }
 }

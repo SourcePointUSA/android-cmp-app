@@ -10,7 +10,6 @@ import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.extensions.generateConsentString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.intOrNull
@@ -33,7 +32,7 @@ internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
 internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
     return CCPAConsentInternal(
         uuid = uuid,
-        uspstring = generateConsentString(),
+        uspstring = uspstring ?: "",
         applies = ccpaApplies ?: applies ?: false,
         status = status,
         childPmId = null,

@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.util.extensions
 
-import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CCPA
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 
 /**
@@ -9,7 +9,7 @@ import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
  * This function depends on the standard of generating the CCPA consent string.
  * @see <a href="https://github.com/InteractiveAdvertisingBureau/USPrivacy/blob/master/CCPA/US%20Privacy%20String.md#us-privacy-string-format">US Privacy String Format</a>
  */
-internal fun CcpaCS.generateConsentString(): String {
+internal fun CCPA.generateConsentString(): String {
     return if (applies == null || applies == false) {
         DEFAULT_CCPA_CONSENT_STRING
     } else {
