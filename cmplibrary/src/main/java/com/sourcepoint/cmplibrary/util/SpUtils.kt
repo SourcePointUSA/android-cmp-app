@@ -16,10 +16,30 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInternal
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SPGDPRConsent
 import kotlinx.serialization.decodeFromString
+
+fun generateCcpaUspString(
+    applies: Boolean?,
+    ccpaStatus: CcpaStatus?,
+    signedLspa: Boolean?,
+): String {
+    return if (applies == null || applies == false) {
+        "1---"
+    } else {
+        val specificationVersion = "1"
+        val opportunityToOptOut = "Y"
+        val optOutSale = when (ccpaStatus) {
+            CcpaStatus.rejectedAll, CcpaStatus.rejectedSome -> "Y"
+            else -> "N"
+        }
+        val lspaCoveredTransaction = if (signedLspa == null || signedLspa == false) "N" else "Y"
+        "$specificationVersion$opportunityToOptOut$optOutSale$lspaCoveredTransaction"
+    }
+}
 
 fun userConsents(context: Context): SPConsents {
     val dataStorageGdpr = fetchOrStore(DataStorageGdpr::class.java) { DataStorageGdpr.create(context) }
