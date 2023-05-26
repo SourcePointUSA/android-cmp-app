@@ -22,14 +22,14 @@ import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SPGDPRConsent
 import kotlinx.serialization.decodeFromString
 
+private const val DEFAULT_CCPA_USP_STRING = "1---"
+
 fun generateCcpaUspString(
     applies: Boolean?,
     ccpaStatus: CcpaStatus?,
     signedLspa: Boolean?,
 ): String {
-    return if (applies == null || applies == false) {
-        "1---"
-    } else {
+    return if (applies == true) {
         val specificationVersion = "1"
         val opportunityToOptOut = "Y"
         val optOutSale = when (ccpaStatus) {
@@ -38,7 +38,7 @@ fun generateCcpaUspString(
         }
         val lspaCoveredTransaction = if (signedLspa == null || signedLspa == false) "N" else "Y"
         "$specificationVersion$opportunityToOptOut$optOutSale$lspaCoveredTransaction"
-    }
+    } else DEFAULT_CCPA_USP_STRING
 }
 
 fun userConsents(context: Context): SPConsents {
