@@ -16,20 +16,8 @@ internal class CCPAExtKtTest {
     @Test
     fun `generateConsentString - WHEN called with applies as null THEN should return default CCPA consent string`() {
         // GIVEN
-        val ccpa = CCPA(
+        val ccpa = createCCPA(
             applies = null,
-            consentedAll = null,
-            dateCreated = null,
-            message = null,
-            messageMetaData = null,
-            newUser = null,
-            rejectedAll = null,
-            rejectedCategories = null,
-            rejectedVendors = null,
-            signedLspa = null,
-            status = null,
-            type = CampaignType.CCPA,
-            url = null,
         )
         val expected = "1---"
         val generated = ccpa.generateConsentString()
@@ -50,20 +38,8 @@ internal class CCPAExtKtTest {
     @Test
     fun `generateConsentString - WHEN called with applies as false THEN should return default CCPA consent string`() {
         // GIVEN
-        val ccpa = CCPA(
+        val ccpa = createCCPA(
             applies = false,
-            consentedAll = null,
-            dateCreated = null,
-            message = null,
-            messageMetaData = null,
-            newUser = null,
-            rejectedAll = null,
-            rejectedCategories = null,
-            rejectedVendors = null,
-            signedLspa = null,
-            status = null,
-            type = CampaignType.CCPA,
-            url = null,
         )
         val expected = "1---"
         val generated = ccpa.generateConsentString()
@@ -86,21 +62,12 @@ internal class CCPAExtKtTest {
     @Test
     fun `generateConsentString - WHEN called with applies==true, status == rejectedAll, signedLspa == true THEN should return 1YYY`() {
         // GIVEN
-        val ccpa = CCPA(
+        val ccpa = createCCPA(
             applies = true,
-            consentedAll = null,
-            dateCreated = null,
-            message = null,
-            messageMetaData = null,
-            newUser = null,
-            rejectedAll = null,
-            rejectedCategories = null,
-            rejectedVendors = null,
+            ccpaStatus = CcpaStatus.rejectedAll,
             signedLspa = true,
-            status = CcpaStatus.rejectedAll,
-            type = CampaignType.CCPA,
-            url = null,
         )
+
         val expected = "1YYY"
         val generated = ccpa.generateConsentString()
 
@@ -122,20 +89,10 @@ internal class CCPAExtKtTest {
     @Test
     fun `generateConsentString - WHEN called with applies==true, status == rejectedSome, signedLspa == false THEN should return 1YYN`() {
         // GIVEN
-        val ccpa = CCPA(
+        val ccpa = createCCPA(
             applies = true,
-            consentedAll = null,
-            dateCreated = null,
-            message = null,
-            messageMetaData = null,
-            newUser = null,
-            rejectedAll = null,
-            rejectedCategories = null,
-            rejectedVendors = null,
+            ccpaStatus = CcpaStatus.rejectedSome,
             signedLspa = false,
-            status = CcpaStatus.rejectedSome,
-            type = CampaignType.CCPA,
-            url = null,
         )
         val expected = "1YYN"
         val generated = ccpa.generateConsentString()
@@ -158,20 +115,10 @@ internal class CCPAExtKtTest {
     @Test
     fun `generateConsentString - WHEN called with applies==true, status == consentedAll, signedLspa == false THEN should return 1YNN`() {
         // GIVEN
-        val ccpa = CCPA(
+        val ccpa = createCCPA(
             applies = true,
-            consentedAll = null,
-            dateCreated = null,
-            message = null,
-            messageMetaData = null,
-            newUser = null,
-            rejectedAll = null,
-            rejectedCategories = null,
-            rejectedVendors = null,
+            ccpaStatus = CcpaStatus.consentedAll,
             signedLspa = false,
-            status = CcpaStatus.consentedAll,
-            type = CampaignType.CCPA,
-            url = null,
         )
         val expected = "1YNN"
         val generated = ccpa.generateConsentString()
@@ -183,4 +130,24 @@ internal class CCPAExtKtTest {
         actual.assertEquals(expected)
         actual.assertEquals(generated)
     }
+
+    private fun createCCPA(
+        applies: Boolean? = null,
+        ccpaStatus: CcpaStatus? = null,
+        signedLspa: Boolean? = null,
+    ): CCPA = CCPA(
+        applies = applies,
+        consentedAll = null,
+        dateCreated = null,
+        message = null,
+        messageMetaData = null,
+        newUser = null,
+        rejectedAll = null,
+        rejectedCategories = null,
+        rejectedVendors = null,
+        signedLspa = signedLspa,
+        status = ccpaStatus,
+        type = CampaignType.CCPA,
+        url = null,
+    )
 }
