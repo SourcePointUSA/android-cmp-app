@@ -21,7 +21,6 @@ class SPConsentsTest {
             rejectedCategories = listOf(),
             rejectedVendors = listOf(),
             status = CcpaStatus.consentedAll,
-            uspstring = "up_string",
             childPmId = "child_pm_id",
             applies = true,
             thisContent = JSONObject(),

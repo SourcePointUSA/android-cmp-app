@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.generateCcpaUspString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -61,9 +62,16 @@ data class CcpaCS(
     @SerialName("rejectedVendors") val rejectedVendors: List<String>?,
     @SerialName("signedLspa") val signedLspa: Boolean?,
     @Serializable(with = CcpaStatusSerializer::class) val status: CcpaStatus?,
-    @SerialName("uspstring") val uspstring: String?,
     @SerialName("uuid") val uuid: String?
-)
+) {
+
+    val uspstring: String
+        get() = generateCcpaUspString(
+            applies = ccpaApplies ?: applies ?: false,
+            ccpaStatus = status,
+            signedLspa = signedLspa,
+        )
+}
 
 @Serializable
 data class GdprCS(
