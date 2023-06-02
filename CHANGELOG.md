@@ -1,3 +1,9 @@
+## 7.2.3 (June, 02, 2023)
+* [DIA-2188](https://sourcepoint.atlassian.net/browse/DIA-2188) Fix reconsent message not showing (#644)
+* [DIA-2196](https://sourcepoint.atlassian.net/browse/DIA-2196) Fix sdk throwing error on CCPA campaign only (#644)
+* [DIA-2198](https://sourcepoint.atlassian.net/browse/DIA-2198) Manipulate CCPA String (#643)
+* [DIA-2210](https://sourcepoint.atlassian.net/browse/DIA-2210) Create a regression test for DIA-2106 (#641)
+
 ## 7.2.2 (May, 19, 2023)
 * [DIA-2181](https://sourcepoint.atlassian.net/browse/DIA-2181) Fix for onAction callback to send pubData (#639)
 * [DIA-1936](https://sourcepoint.atlassian.net/browse/DIA-1936) Support Group Pm Id (#640)
