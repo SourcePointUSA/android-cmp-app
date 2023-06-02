@@ -27,7 +27,6 @@ class OnlyGdprOttKotlin : AppCompatActivity() {
             propertyId = 22231
             propertyName = "ott.test.suite"
             messLanguage = MessageLanguage.ENGLISH
-            messageTimeout = 3000
             +(CampaignType.GDPR)
         }
     }

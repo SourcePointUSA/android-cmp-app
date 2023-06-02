@@ -540,7 +540,7 @@ private class CampaignManagerImpl(
         }
 
     override val hasLocalData: Boolean
-        get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaStatus != null
+        get() = dataStorage.gdprConsentStatus != null || dataStorage.usPrivacyString != null
 
     override fun handleMetaDataLogic(md: MetaDataResp?) {
         metaDataResp = md

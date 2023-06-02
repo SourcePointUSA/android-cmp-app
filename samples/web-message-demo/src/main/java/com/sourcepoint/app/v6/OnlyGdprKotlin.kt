@@ -27,7 +27,6 @@ class OnlyGdprKotlin : AppCompatActivity() {
             propertyId = 16893
             propertyName = "mobile.multicampaign.demo"
             messLanguage = MessageLanguage.ENGLISH
-            messageTimeout = 3000
             +(CampaignType.GDPR)
         }
     }
