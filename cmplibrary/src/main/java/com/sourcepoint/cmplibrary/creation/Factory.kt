@@ -48,7 +48,6 @@ fun makeConsentLib(
             .connectTimeout(it, TimeUnit.MILLISECONDS)
             .writeTimeout(it, TimeUnit.MILLISECONDS)
             .readTimeout(it, TimeUnit.MILLISECONDS)
-            .callTimeout(it, TimeUnit.MILLISECONDS)
             .build()
     }
 

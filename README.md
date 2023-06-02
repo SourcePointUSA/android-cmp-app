@@ -69,7 +69,7 @@ Kotlin
                   propertyName = "mobile.multicampaign.demo"
                   messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
                   campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
-                  messageTimeout = 4000 // Optional, default 3000ms
+                  messageTimeout = 15000 // Optional, default 10000ms
                   +CampaignType.CCPA
                   +CampaignType.GDPR
                 }

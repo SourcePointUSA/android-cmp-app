@@ -8,6 +8,8 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 
+const val DEFAULT_TIMEOUT = 10000L
+
 /**
  * Component used to handle the network request
  */

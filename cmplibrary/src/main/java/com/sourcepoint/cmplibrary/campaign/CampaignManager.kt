@@ -70,7 +70,6 @@ internal interface CampaignManager {
 
     // Consent Status
     fun saveConsentStatusResponse(c: ConsentStatusResp)
-    var consentStatus: ConsentStatus?
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
     var messagesOptimizedLocalState: JsonElement?
@@ -462,19 +461,9 @@ private class CampaignManagerImpl(
 
     override fun saveConsentStatusResponse(c: ConsentStatusResp) {
         gdprConsentStatus = c.consentStatusData?.gdpr
-        consentStatus = c.consentStatusData?.gdpr?.consentStatus
         ccpaConsentStatus = c.consentStatusData?.ccpa
         messagesOptimizedLocalState = c.localState
     }
-
-    override var consentStatus: ConsentStatus?
-        get() {
-            return dataStorage.consentStatus?.let { JsonConverter.converter.decodeFromString<ConsentStatus>(it) }
-        }
-        set(value) {
-            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.consentStatus = serialised
-        }
 
     override var gdprConsentStatus: GdprCS?
         get() {
@@ -551,7 +540,7 @@ private class CampaignManagerImpl(
         }
 
     override val hasLocalData: Boolean
-        get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaStatus != null
+        get() = dataStorage.gdprConsentStatus != null || dataStorage.usPrivacyString != null
 
     override fun handleMetaDataLogic(md: MetaDataResp?) {
         metaDataResp = md

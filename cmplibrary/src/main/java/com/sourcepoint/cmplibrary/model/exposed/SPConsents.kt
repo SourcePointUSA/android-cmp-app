@@ -92,6 +92,7 @@ enum class CcpaStatus {
 
 internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
+        put("uuid", uuid)
         put("tcData", tcData.toTcfJSONObj())
         put("grants", grants.toJSONObjGrant())
         put("euconsent", euconsent)
@@ -102,6 +103,7 @@ internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
 
 internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
+        put("uuid", uuid)
         put("status", status)
         put("uspstring", uspstring)
         put("rejectedCategories", JSONArray(rejectedCategories))
