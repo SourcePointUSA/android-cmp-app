@@ -44,7 +44,6 @@ class MainActivityNativeMessTest {
         propertyName = "mobile.multicampaign.fully.native"  //594218
         propertyId = 22758
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
         +(CampaignType.GDPR)
     }
 
@@ -53,7 +52,6 @@ class MainActivityNativeMessTest {
         propertyName = "mobile.multicampaign.fully.native"  //594218
         propertyId = 22758
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
         +(CampaignType.GDPR)
         +(CampaignType.CCPA)
     }
@@ -63,7 +61,6 @@ class MainActivityNativeMessTest {
         propertyName = "mobile.multicampaign.native.demo2"  //594218
         propertyId = 19210
         messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
         +(CampaignType.GDPR)
         +(CampaignType.CCPA)
     }

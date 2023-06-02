@@ -79,8 +79,6 @@ internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?, applies: Boolean
         }
         ?: fail("CCPAStatus cannot be null!!!")
 
-    val uspString: String = getFieldValue("uspstring") ?: ""
-
     val childPmId: String? = check { getFieldValue<String>("childPmId") }.getOrNull()
 
     return CCPAConsentInternal(
@@ -88,7 +86,6 @@ internal fun Map<String, Any?>.toCCPAUserConsent(uuid: String?, applies: Boolean
         rejectedCategories = rejectedCategories,
         rejectedVendors = rejectedVendors,
         status = status,
-        uspstring = uspString,
         childPmId = childPmId,
         applies = applies,
         thisContent = JSONObject(this)

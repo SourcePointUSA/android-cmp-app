@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
+import com.sourcepoint.cmplibrary.data.network.DEFAULT_TIMEOUT
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
@@ -10,7 +11,7 @@ data class SpConfig(
     @JvmField val propertyName: String,
     @JvmField val campaigns: List<SpCampaign>,
     @JvmField val messageLanguage: MessageLanguage,
-    @JvmField val messageTimeout: Long,
+    @JvmField val messageTimeout: Long = DEFAULT_TIMEOUT,
     @JvmField val propertyId: Int,
     @JvmField val campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC,
     @JvmField val logger: Logger? = null,

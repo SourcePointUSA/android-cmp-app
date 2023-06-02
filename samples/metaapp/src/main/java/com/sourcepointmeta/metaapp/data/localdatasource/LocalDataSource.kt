@@ -165,7 +165,7 @@ private class LocalDataSourceImpl(
         cQueries.run {
             transactionWithResult {
                 insertProperty(
-                    timeout = property.timeout ?: 3000,
+                    timeout = property.timeout,
                     auth_Id = property.authId,
                     message_language = property.messageLanguage,
                     pm_tab = property.pmTab,
@@ -268,7 +268,7 @@ private class LocalDataSourceImpl(
                     config {
                         accountId = p.accountId.toInt()
                         propertyName = p.propertyName
-                        messageTimeout = p.timeout ?: 3000L
+                        messageTimeout = p.timeout
                         campaignsEnv = p.campaignsEnv
                         propertyId = p.propertyId
                         messLanguage = MessageLanguage.values()

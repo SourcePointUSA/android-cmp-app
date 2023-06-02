@@ -9,6 +9,7 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.MessageCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.generateCcpaUspString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -102,8 +103,15 @@ data class CCPA(
     @Serializable(with = CcpaStatusSerializer::class) val status: CcpaStatus?,
     @Serializable(with = CampaignTypeSerializer::class) override val type: CampaignType,
     @SerialName("url") override val url: String?,
-    @SerialName("uspstring") val uspstring: String?
-) : CampaignMessage
+) : CampaignMessage {
+
+    val uspstring: String
+        get() = generateCcpaUspString(
+            applies = applies,
+            ccpaStatus = status,
+            signedLspa = signedLspa,
+        )
+}
 
 @Serializable
 data class GDPR(

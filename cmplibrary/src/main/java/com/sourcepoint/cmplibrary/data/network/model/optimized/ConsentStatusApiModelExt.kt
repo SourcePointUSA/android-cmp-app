@@ -32,13 +32,13 @@ internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
 internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
     return CCPAConsentInternal(
         uuid = uuid,
-        uspstring = uspstring ?: "",
         applies = ccpaApplies ?: applies ?: false,
         status = status,
         childPmId = null,
         rejectedVendors = rejectedVendors ?: emptyList(),
         rejectedCategories = rejectedCategories ?: emptyList(),
-        thisContent = JSONObject()
+        thisContent = JSONObject(),
+        signedLspa = signedLspa,
     )
 }
 

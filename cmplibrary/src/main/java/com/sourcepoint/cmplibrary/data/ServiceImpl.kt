@@ -143,7 +143,7 @@ private class ServiceImpl(
                     }
             }
 
-            val gdprConsentStatus = campaignManager.consentStatus
+            val gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus
             val additionsChangeDate = meta.getOrNull()?.gdpr?.additionsChangeDate
             val legalBasisChangeDate = meta.getOrNull()?.gdpr?.legalBasisChangeDate
             val dataRecordedConsent = campaignManager.gdprDateCreated
@@ -159,7 +159,7 @@ private class ServiceImpl(
                     additionsChangeDate = additionsChangeDate,
                     legalBasisChangeDate = legalBasisChangeDate
                 )
-                campaignManager.consentStatus = consentStatus
+                campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(consentStatus = consentStatus)
             }
 
             if (campaignManager.shouldCallMessages) {
@@ -167,7 +167,7 @@ private class ServiceImpl(
                 val body = getMessageBody(
                     accountId = messageReq.accountId,
                     propertyHref = messageReq.propertyHref,
-                    cs = gdprConsentStatus,
+                    cs = campaignManager.gdprConsentStatus?.consentStatus,
                     ccpaStatus = campaignManager.ccpaConsentStatus?.status?.name,
                     campaigns = campaignManager.campaigns4Config,
                     consentLanguage = campaignManager.messageLanguage.value,
@@ -207,7 +207,6 @@ private class ServiceImpl(
                                 if (!(messageReq.authId != null || campaignManager.shouldCallConsentStatus)) {
                                     // GDPR
                                     this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS()
-                                    consentStatus = it.campaigns?.gdpr?.consentStatus
                                     gdprDateCreated = it.campaigns?.gdpr?.dateCreated
                                     // CCPA
                                     ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS()
@@ -329,7 +328,6 @@ private class ServiceImpl(
                 .executeOnRight { r ->
                     r.gdpr?.let {
                         campaignManager.gdprConsentStatus = it
-                        campaignManager.consentStatus = it.consentStatus
                     }
                 }
                 .executeOnRight {
@@ -345,7 +343,7 @@ private class ServiceImpl(
             sampleRate = dataStorage.gdprSamplingValue,
             propertyId = spConfig.propertyId.toLong(),
             messageId = messageId,
-            granularStatus = campaignManager.consentStatus?.granularStatus,
+            granularStatus = campaignManager.gdprConsentStatus?.consentStatus?.granularStatus,
             consentAllRef = getResp?.gdpr?.consentAllRef,
             vendorListId = getResp?.gdpr?.vendorListId,
             saveAndExitVariables = consentActionImpl.saveAndExitVariablesOptimized,
@@ -366,7 +364,6 @@ private class ServiceImpl(
                 campaignManager.gdprUuid = it.uuid
                 if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
                     campaignManager.gdprConsentStatus = it
-                    campaignManager.consentStatus = it.consentStatus
                 }
             }
             .executeOnRight {
@@ -458,7 +455,6 @@ private class ServiceImpl(
                     it.consentStatusData?.let { csd ->
                         // GDPR
                         gdprConsentStatus = csd.gdpr
-                        consentStatus = csd.gdpr?.consentStatus
                         gdprUuid = csd.gdpr?.uuid
                         gdprDateCreated = csd.gdpr?.dateCreated
                         // CCPA

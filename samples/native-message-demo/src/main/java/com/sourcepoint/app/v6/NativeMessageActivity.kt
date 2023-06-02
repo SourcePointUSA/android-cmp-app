@@ -33,7 +33,6 @@ class NativeMessageActivity : AppCompatActivity() {
             propertyId = 16893
             propertyName = "mobile.multicampaign.native.demo2"
             messLanguage = MessageLanguage.ENGLISH
-            messageTimeout = 3000
             +(CampaignType.GDPR)
         }
     }
