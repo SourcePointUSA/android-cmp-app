@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp.data.localdatasource
 
+import com.sourcepoint.cmplibrary.data.network.DEFAULT_TIMEOUT
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import comsourcepointmetametaappdb.* // ktlint-disable
@@ -12,7 +13,7 @@ data class Property(
     val ccpaPmId: Long?,
     val is_staging: Boolean = false,
     val targetingParameters: List<MetaTargetingParam> = emptyList(),
-    val timeout: Long? = null,
+    val timeout: Long = DEFAULT_TIMEOUT,
     val authId: String? = null,
     val messageLanguage: String? = null,
     val pmTab: String? = null,
