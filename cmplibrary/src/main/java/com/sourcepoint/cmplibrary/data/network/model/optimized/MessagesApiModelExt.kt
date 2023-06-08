@@ -27,6 +27,9 @@ internal fun getMessageBody(
             putJsonObject("campaigns") {
                 put("type", "RecordString")
             }
+            putJsonObject("webConsentPayload") {
+                put("type", "string")
+            }
         }
         put("propertyHref", "https://$propertyHref")
         put("hasCSP", true)
@@ -121,7 +124,8 @@ internal fun CCPA.toCcpaCS() = CcpaCS(
     ccpaApplies = null,
     uuid = null,
     gpcEnabled = null,
-    actions = null
+    actions = null,
+    webConsentPayload = webConsentPayload,
 )
 
 internal fun GDPR.toGdprCS() = GdprCS(
@@ -148,5 +152,6 @@ internal fun GDPR.toGdprCS() = GdprCS(
     TCData = TCData,
     localDataCurrent = null,
     uuid = null,
-    vendorListId = null
+    vendorListId = null,
+    webConsentPayload = webConsentPayload,
 )

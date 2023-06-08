@@ -25,7 +25,8 @@ internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
         acceptedCategories = grants?.toAcceptedCategories()?.toList(),
         childPmId = null,
         applies = TCData?.fromTcDataToGdprApplies(),
-        thisContent = JSONObject()
+        thisContent = JSONObject(),
+        webConsentPayload = webConsentPayload,
     )
 }
 
@@ -39,6 +40,7 @@ internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
         rejectedCategories = rejectedCategories ?: emptyList(),
         thisContent = JSONObject(),
         signedLspa = signedLspa,
+        webConsentPayload = webConsentPayload,
     )
 }
 

@@ -30,7 +30,7 @@ import org.json.JSONObject
 /**
  * Factory method to create an instance of a [Service] using its implementation
  * @param nc is an instance of [NetworkClient]
- * @param ds is an instance of [DataStorage]
+ * @param dataStorage is an instance of [DataStorage]
  * @param campaignManager is an instance of [CampaignManager]
  * @param consentManagerUtils is an instance of [ConsentManagerUtils]
  * @return an instance of the [ServiceImpl] implementation
@@ -440,9 +440,16 @@ private class ServiceImpl(
         )
 
         nc.storeCcpaChoice(pcParam)
-            .executeOnRight {
-                campaignManager.ccpaUuid = it.uuid
-                campaignManager.ccpaConsentStatus = it
+            .executeOnRight { ccpaConsentStatus ->
+                campaignManager.ccpaUuid = ccpaConsentStatus.uuid
+                campaignManager.ccpaConsentStatus =
+                    if (ccpaConsentStatus.webConsentPayload != null) {
+                        ccpaConsentStatus
+                    } else {
+                        ccpaConsentStatus.copy(
+                            webConsentPayload = campaignManager.ccpaConsentStatus?.webConsentPayload
+                        )
+                    }
             }.executeOnRight {
                 if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
                     val cr = ConsentManager.responseConsentHandler(it, consentManagerUtils)

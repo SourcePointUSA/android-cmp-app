@@ -37,6 +37,7 @@ internal fun IncludeData.toJsonObject(): JSONObject {
             put("TCData", JSONObject().apply { put("type", tCData.type) })
             put("localState", JSONObject().apply { put("type", localState.type) })
             put("customVendorsResponse", JSONObject().apply { put("type", customVendorsResponse.type) })
+            put("webConsentPayload", JSONObject().apply { put("type", webConsentPayload.type) })
         }
 }
 

@@ -18,6 +18,15 @@
             app:srcCompat="@drawable/source_point_logo"
             android:contentDescription="@string/source_point_logo" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/transfer_consent_to_web_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/transfer_consent_to_web_view"
+        app:layout_constraintBottom_toTopOf="@id/add_old_consent"
+        app:layout_constraintEnd_toEndOf="@id/add_old_consent"
+        app:layout_constraintStart_toStartOf="@id/add_old_consent" />
+
     <Button
         android:id="@+id/review_consents_gdpr"
         android:layout_width="wrap_content"

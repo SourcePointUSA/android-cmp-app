@@ -184,7 +184,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("propertyId", param.propertyId.toString())
             .addQueryParameter("hasCsp", true.toString())
             .addQueryParameter("withSiteActions", false.toString())
-            .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}}""")
+            .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}, "webConsentPayload": {"type": "string"}}""")
             .apply { param.authId?.let { p -> addQueryParameter("authId", p) } }
             .addEncodedQueryParameter("metadata", param.metadata)
             .addQueryParameter("scriptType", scriptType)
@@ -217,7 +217,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("withSiteActions", false.toString())
             .addQueryParameter("includeCustomVendorsRes", false.toString())
             .addEncodedQueryParameter("metadata", metaData)
-            .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}}""")
+            .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}, "webConsentPayload": {"type": "string"}}""")
             .addQueryParameter("scriptType", scriptType)
             .addQueryParameter("scriptVersion", scriptVersion)
             .build()
