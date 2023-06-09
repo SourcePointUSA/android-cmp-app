@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.util.extensions
 
-import android.util.Log
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.toWebViewConsentsJsonObject
@@ -11,7 +10,6 @@ private const val EVENT_SP_READY = "sp.readyForConsent"
 fun WebView.preloadConsent(spConsents: SPConsents) {
 
     val consentsJsonObject = spConsents.toWebViewConsentsJsonObject()
-    Log.d("DIA-1806", "consentsJsonObject || $consentsJsonObject")
 
     val postMessageString = """
         window.postMessage({
@@ -19,8 +17,6 @@ fun WebView.preloadConsent(spConsents: SPConsents) {
             consent: $consentsJsonObject
         }, "*")
     """.trimIndent()
-
-    Log.d("DIA-1806", "postMessageString || $postMessageString")
 
     val jsString = """
         $postMessageString

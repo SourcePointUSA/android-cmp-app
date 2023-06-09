@@ -72,14 +72,6 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
     }
 
     private fun transferConsent() {
-
-        Log.d("DIA-1806", "CCPA")
-        Log.d("DIA-1806", "uuid = ${sourcePointConsent?.ccpa?.consent?.uuid}")
-        Log.d("DIA-1806", "webConsentPayload = ${sourcePointConsent?.ccpa?.consent?.webConsentPayload}")
-        Log.d("DIA-1806", "GDPR")
-        Log.d("DIA-1806", "uuid = ${sourcePointConsent?.gdpr?.consent?.uuid}")
-        Log.d("DIA-1806", "webConsentPayload = ${sourcePointConsent?.gdpr?.consent?.webConsentPayload}")
-
         sourcePointConsent?.let { consent_transfer_web_view.preloadConsent(it) }
     }
 
@@ -131,7 +123,6 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
-            Log.d("DIA-1806", "onConsentReady || $consent")
             Log.i(this::class.java.name, "onConsentReady: $consent")
         }
 
