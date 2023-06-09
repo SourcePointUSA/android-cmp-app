@@ -28,21 +28,6 @@ internal class InvalidResponseWebMessageException @JvmOverloads constructor(
 }
 
 /**
- * This exception is thrown when we receive a 500 status code in the network response
- */
-internal class InternalServerException @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String,
-    isConsumed: Boolean = false
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description,
-    isConsumed = isConsumed
-) {
-    override val code: ExceptionCodes = CodeList.INTERNAL_SERVER_ERROR
-}
-
-/**
  * This exception is thrown when in the WebView a problem has occurred
  */
 internal class WebViewException @JvmOverloads constructor(
@@ -88,36 +73,6 @@ internal class UrlLoadingException @JvmOverloads constructor(
 }
 
 /**
- * This exception is thrown when the event payload coming from the webview is invalid
- */
-internal class InvalidEventPayloadException @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String,
-    isConsumed: Boolean = false
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description,
-    isConsumed = isConsumed
-) {
-    override val code: ExceptionCodes = CodeList.INVALID_EVENT_PAYLOAD
-}
-
-/**
- * This exception is thrown when a not expected event payloads is received
- */
-internal class InvalidOnActionEventPayloadException @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String,
-    isConsumed: Boolean = false
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description,
-    isConsumed = isConsumed
-) {
-    override val code: ExceptionCodes = CodeList.INVALID_ON_ACTION_EVENT_PAYLOAD
-}
-
-/**
  * This exception is thrown when a JS on error is called
  */
 internal class RenderingAppException @JvmOverloads constructor(
@@ -130,36 +85,6 @@ internal class RenderingAppException @JvmOverloads constructor(
     isConsumed = isConsumed
 ) {
     override val code: ExceptionCodes = CodeList.RENDERING_APP_ERROR
-}
-
-/**
- * This exception is thrown when some resource cannot be found locally
- */
-internal class ResourceNotFoundException @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String,
-    isConsumed: Boolean = false
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description,
-    isConsumed = isConsumed
-) {
-    override val code: ExceptionCodes = CodeList.RESOURCE_NOT_FOUND
-}
-
-/**
- * This exception is thrown when the response from getting the web message is invalid
- */
-internal class InvalidResponseException @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String,
-    isConsumed: Boolean = false
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description,
-    isConsumed = isConsumed
-) {
-    override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_WEB_MESSAGE
 }
 
 /**
@@ -191,51 +116,6 @@ internal class InvalidResponseNativeMessageException @JvmOverloads constructor(
     isConsumed = isConsumed
 ) {
     override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_NATIVE_MESSAGE
-}
-
-/**
- * This exception is thrown when the response from posting consent is invalid
- */
-internal class InvalidResponseConsentException @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String,
-    isConsumed: Boolean = false
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description,
-    isConsumed = isConsumed
-) {
-    override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_CONSENT
-}
-
-/**
- * This exception is thrown when the response from posting custom consent is invalid
- */
-internal class InvalidResponseCustomConsent @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String,
-    isConsumed: Boolean = false
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description,
-    isConsumed = isConsumed
-) {
-    override val code: ExceptionCodes = CodeList.INVALID_RESPONSE_CUSTOM_CONSENT
-}
-
-/**
- * This exception is thrown when some resource cannot be found locally
- */
-internal class InvalidLocalDataException @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String,
-    isConsumed: Boolean = false
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description,
-    isConsumed = isConsumed
-) {
-    override val code: ExceptionCodes = CodeList.INVALID_LOCAL_DATA
 }
 
 /**
@@ -302,21 +182,6 @@ internal class NoInternetConnectionException @JvmOverloads constructor(
 }
 
 /**
- * This exception is thrown when a generic network request error occurred
- */
-internal class GenericNetworkRequestException @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String,
-    isConsumed: Boolean = false
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description,
-    isConsumed = isConsumed
-) {
-    override val code: ExceptionCodes = CodeList.GENERIC_NETWORK_REQUEST
-}
-
-/**
  * This exception is thrown when a generic error occurred
  */
 internal class GenericSDKException @JvmOverloads constructor(
@@ -344,36 +209,6 @@ internal class InvalidRequestException @JvmOverloads constructor(
     isConsumed = isConsumed
 ) {
     override val code: ExceptionCodes = CodeList.INVALID_REQUEST_ERROR
-}
-
-/**
- * This exception is thrown when a generic error occurred
- */
-internal class UnableToLoadJSReceiverException @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String,
-    isConsumed: Boolean = false
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description,
-    isConsumed = isConsumed
-) {
-    override val code: ExceptionCodes = CodeList.UNABLE_TO_LOAD_JS_RECEIVER
-}
-
-/**
- * This exception is thrown when a the client is missing
- */
-internal class MissingClientException @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String,
-    isConsumed: Boolean = false
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description,
-    isConsumed = isConsumed
-) {
-    override val code: ExceptionCodes = ExceptionCodes("MISSING_CLIENT")
 }
 
 /**
@@ -434,19 +269,4 @@ internal class InvalidConsentResponse @JvmOverloads constructor(
     isConsumed = isConsumed
 ) {
     override val code: ExceptionCodes = CodeList.INVALID_CONSENT_STATUS_RESPONSE
-}
-
-/**
- * This exception is thrown when a consent response is invalid
- */
-internal class InvalidConsentReqParam @JvmOverloads constructor(
-    cause: Throwable? = null,
-    description: String,
-    isConsumed: Boolean = false
-) : ConsentLibExceptionK(
-    cause = cause,
-    description = description,
-    isConsumed = isConsumed
-) {
-    override val code: ExceptionCodes = CodeList.INVALID_CONSENT_STATUS_REQUEST_PARAM
 }
