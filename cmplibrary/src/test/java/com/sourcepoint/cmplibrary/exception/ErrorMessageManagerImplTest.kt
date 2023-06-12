@@ -12,7 +12,6 @@ import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import org.json.JSONException
 import org.junit.Before
 import org.junit.Test
 
