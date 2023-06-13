@@ -28,7 +28,7 @@ internal fun getMessageBody(
                 put("type", "RecordString")
             }
             putJsonObject("webConsentPayload") {
-                put("type", "string")
+                put("type", "RecordString")
             }
         }
         put("propertyHref", "https://$propertyHref")
