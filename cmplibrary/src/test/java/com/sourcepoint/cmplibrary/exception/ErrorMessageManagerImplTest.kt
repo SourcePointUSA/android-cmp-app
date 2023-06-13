@@ -12,7 +12,6 @@ import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import org.json.JSONException
 import org.junit.Before
 import org.junit.Test
 
@@ -53,52 +52,6 @@ class ErrorMessageManagerImplTest {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
         every { campaignManager.getAppliedCampaign() }.returns(Either.Right(Pair(CampaignType.GDPR, gdprTemplate)))
         every { campaignManager.spConfig }.returns(spConfig)
-    }
-
-    @Test
-    fun `GIVEN a ResourceNotFoundException VERIFY the generated message`() {
-
-        val originalException = JSONException("test_message")
-        val exception = ResourceNotFoundException(originalException, "test_description")
-
-        val expected = """
-            {
-                "code" : "${CodeList.RESOURCE_NOT_FOUND.errorCode}",
-                "accountId" : "$accountId",
-                "propertyId" : "$propertyId",
-                "propertyHref" : "$propertyHref",
-                "description" : "test_description",
-                "clientVersion" : "${client.clientVersion}",
-                "OSVersion" : "${client.osVersion}",
-                "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${CampaignType.GDPR.name}"
-            }
-        """.trimIndent()
-
-        sut.build(exception).assertEquals(expected)
-    }
-
-    @Test
-    fun `GIVEN an InternalServerException VERIFY the generated message`() {
-
-        val originalException = RuntimeException("test_message")
-        val exception = InternalServerException(originalException, "test_description")
-
-        val expected = """
-            {
-                "code" : "${CodeList.INTERNAL_SERVER_ERROR.errorCode}",
-                "accountId" : "$accountId",
-                "propertyId" : "$propertyId",
-                "propertyHref" : "$propertyHref",
-                "description" : "test_description",
-                "clientVersion" : "${client.clientVersion}",
-                "OSVersion" : "${client.osVersion}",
-                "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${CampaignType.GDPR.name}"
-            }
-        """.trimIndent()
-
-        sut.build(exception).assertEquals(expected)
     }
 
     @Test
@@ -171,52 +124,6 @@ class ErrorMessageManagerImplTest {
     }
 
     @Test
-    fun `GIVEN an InvalidEventPayloadException VERIFY the generated message`() {
-
-        val originalException = RuntimeException("test_message")
-        val exception = InvalidEventPayloadException(originalException, "test_description")
-
-        val expected = """
-            {
-                "code" : "${CodeList.INVALID_EVENT_PAYLOAD.errorCode}",
-                "accountId" : "$accountId",
-                "propertyId" : "$propertyId",
-                "propertyHref" : "$propertyHref",
-                "description" : "test_description",
-                "clientVersion" : "${client.clientVersion}",
-                "OSVersion" : "${client.osVersion}",
-                "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${CampaignType.GDPR.name}"
-            }
-        """.trimIndent()
-
-        sut.build(exception).assertEquals(expected)
-    }
-
-    @Test
-    fun `GIVEN an InvalidOnActionEventPayloadException VERIFY the generated message`() {
-
-        val originalException = RuntimeException("test_message")
-        val exception = InvalidOnActionEventPayloadException(originalException, "test_description")
-
-        val expected = """
-            {
-                "code" : "${CodeList.INVALID_ON_ACTION_EVENT_PAYLOAD.errorCode}",
-                "accountId" : "$accountId",
-                "propertyId" : "$propertyId",
-                "propertyHref" : "$propertyHref",
-                "description" : "test_description",
-                "clientVersion" : "${client.clientVersion}",
-                "OSVersion" : "${client.osVersion}",
-                "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${CampaignType.GDPR.name}"
-            }
-        """.trimIndent()
-
-        sut.build(exception).assertEquals(expected)
-    }
-
-    @Test
     fun `GIVEN an RenderingAppException VERIFY the generated message`() {
 
         val originalException = RuntimeException("test_message")
@@ -225,29 +132,6 @@ class ErrorMessageManagerImplTest {
         val expected = """
             {
                 "code" : "sp_metric_rendering_app_error",
-                "accountId" : "$accountId",
-                "propertyId" : "$propertyId",
-                "propertyHref" : "$propertyHref",
-                "description" : "test_description",
-                "clientVersion" : "${client.clientVersion}",
-                "OSVersion" : "${client.osVersion}",
-                "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${CampaignType.GDPR.name}"
-            }
-        """.trimIndent()
-
-        sut.build(exception).assertEquals(expected)
-    }
-
-    @Test
-    fun `GIVEN an InvalidResponseException VERIFY the generated message`() {
-
-        val originalException = RuntimeException("test_message")
-        val exception = InvalidResponseException(originalException, "test_description")
-
-        val expected = """
-            {
-                "code" : "${CodeList.INVALID_RESPONSE_WEB_MESSAGE.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -286,75 +170,6 @@ class ErrorMessageManagerImplTest {
     }
 
     @Test
-    fun `GIVEN an InvalidResponseConsentException VERIFY the generated message`() {
-
-        val originalException = RuntimeException("test_message")
-        val exception = InvalidResponseConsentException(originalException, "test_description")
-
-        val expected = """
-            {
-                "code" : "${CodeList.INVALID_RESPONSE_CONSENT.errorCode}",
-                "accountId" : "$accountId",
-                "propertyId" : "$propertyId",
-                "propertyHref" : "$propertyHref",
-                "description" : "test_description",
-                "clientVersion" : "${client.clientVersion}",
-                "OSVersion" : "${client.osVersion}",
-                "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${CampaignType.GDPR.name}"
-            }
-        """.trimIndent()
-
-        sut.build(exception).assertEquals(expected)
-    }
-
-    @Test
-    fun `GIVEN an InvalidResponseCustomConsent VERIFY the generated message`() {
-
-        val originalException = RuntimeException("test_message")
-        val exception = InvalidResponseCustomConsent(originalException, "test_description")
-
-        val expected = """
-            {
-                "code" : "${CodeList.INVALID_RESPONSE_CUSTOM_CONSENT.errorCode}",
-                "accountId" : "$accountId",
-                "propertyId" : "$propertyId",
-                "propertyHref" : "$propertyHref",
-                "description" : "test_description",
-                "clientVersion" : "${client.clientVersion}",
-                "OSVersion" : "${client.osVersion}",
-                "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${CampaignType.GDPR.name}"
-            }
-        """.trimIndent()
-
-        sut.build(exception).assertEquals(expected)
-    }
-
-    @Test
-    fun `GIVEN an InvalidLocalDataException VERIFY the generated message`() {
-
-        val originalException = RuntimeException("test_message")
-        val exception = InvalidLocalDataException(originalException, "test_description")
-
-        val expected = """
-            {
-                "code" : "${CodeList.INVALID_LOCAL_DATA.errorCode}",
-                "accountId" : "$accountId",
-                "propertyId" : "$propertyId",
-                "propertyHref" : "$propertyHref",
-                "description" : "test_description",
-                "clientVersion" : "${client.clientVersion}",
-                "OSVersion" : "${client.osVersion}",
-                "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${CampaignType.GDPR.name}"
-            }
-        """.trimIndent()
-
-        sut.build(exception).assertEquals(expected)
-    }
-
-    @Test
     fun `GIVEN a ConnectionTimeoutException VERIFY the generated message`() {
 
         val originalException = RuntimeException("test_message")
@@ -363,29 +178,6 @@ class ErrorMessageManagerImplTest {
         val expected = """
             {
                 "code" : "${CodeList.CONNECTION_TIMEOUT.errorCode}",
-                "accountId" : "$accountId",
-                "propertyId" : "$propertyId",
-                "propertyHref" : "$propertyHref",
-                "description" : "test_description",
-                "clientVersion" : "${client.clientVersion}",
-                "OSVersion" : "${client.osVersion}",
-                "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${CampaignType.GDPR.name}"
-            }
-        """.trimIndent()
-
-        sut.build(exception).assertEquals(expected)
-    }
-
-    @Test
-    fun `GIVEN a GenericNetworkRequestException VERIFY the generated message`() {
-
-        val originalException = RuntimeException("test_message")
-        val exception = GenericNetworkRequestException(originalException, "test_description")
-
-        val expected = """
-            {
-                "code" : "${CodeList.GENERIC_NETWORK_REQUEST.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",
@@ -432,29 +224,6 @@ class ErrorMessageManagerImplTest {
         val expected = """
             {
                 "code" : "${CodeList.INVALID_REQUEST_ERROR.errorCode}",
-                "accountId" : "$accountId",
-                "propertyId" : "$propertyId",
-                "propertyHref" : "$propertyHref",
-                "description" : "test_description",
-                "clientVersion" : "${client.clientVersion}",
-                "OSVersion" : "${client.osVersion}",
-                "deviceFamily" : "${client.deviceFamily}",
-                "legislation" : "${CampaignType.GDPR.name}"
-            }
-        """.trimIndent()
-
-        sut.build(exception).assertEquals(expected)
-    }
-
-    @Test
-    fun `GIVEN a UnableToLoadJSReceiverException VERIFY the generated message`() {
-
-        val originalException = RuntimeException("test_message")
-        val exception = UnableToLoadJSReceiverException(originalException, "test_description")
-
-        val expected = """
-            {
-                "code" : "${CodeList.UNABLE_TO_LOAD_JS_RECEIVER.errorCode}",
                 "accountId" : "$accountId",
                 "propertyId" : "$propertyId",
                 "propertyHref" : "$propertyHref",

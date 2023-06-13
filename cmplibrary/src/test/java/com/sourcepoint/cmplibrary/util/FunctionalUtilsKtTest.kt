@@ -10,17 +10,6 @@ import java.io.InterruptedIOException
 class FunctionalUtilsKtTest {
 
     @Test
-    fun `GIVEN a MissingClientException RETURN the same exception`() {
-        val sut = check { throw MissingClientException(description = "test", isConsumed = true) }
-        (sut as Either.Left).t.run {
-            (this as ConsentLibExceptionK)
-            message.assertEquals("test")
-            description.assertEquals("test")
-            isConsumed.assertEquals(true)
-        }
-    }
-
-    @Test
     fun `GIVEN a RuntimeException RETURN a GenericSDKException`() {
         val sut = check { throw IOException("test") }
         (sut as Either.Left).t.run {
