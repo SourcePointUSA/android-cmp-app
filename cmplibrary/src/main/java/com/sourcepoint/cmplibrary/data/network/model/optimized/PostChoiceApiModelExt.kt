@@ -36,6 +36,9 @@ internal fun postChoiceGdprBody(
             putJsonObject("localState") {
                 put("type", "RecordString")
             }
+            putJsonObject("webConsentPayload") {
+                put("type", "RecordString")
+            }
         }
     }
 }
@@ -61,6 +64,9 @@ internal fun postChoiceCcpaBody(
         saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
         putJsonObject("includeData") {
             putJsonObject("localState") {
+                put("type", "RecordString")
+            }
+            putJsonObject("webConsentPayload") {
                 put("type", "RecordString")
             }
         }

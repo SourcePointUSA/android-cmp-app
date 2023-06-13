@@ -42,7 +42,7 @@ interface GDPRConsent {
     var grants: Map<String, GDPRPurposeGrants>
     val acceptedCategories: List<String>?
     val applies: Boolean?
-    val webConsentPayload: String?
+    val webConsentPayload: JsonObject?
 }
 
 internal data class GDPRConsentInternal(
@@ -54,7 +54,7 @@ internal data class GDPRConsentInternal(
     override val applies: Boolean? = null,
     val childPmId: String? = null,
     val thisContent: JSONObject = JSONObject(),
-    override val webConsentPayload: String? = null,
+    override val webConsentPayload: JsonObject? = null,
 ) : GDPRConsent
 
 interface CCPAConsent {
@@ -66,7 +66,7 @@ interface CCPAConsent {
     val childPmId: String?
     val applies: Boolean
     val signedLspa: Boolean?
-    val webConsentPayload: String?
+    val webConsentPayload: JsonObject?
 }
 
 internal data class CCPAConsentInternal(
@@ -78,7 +78,7 @@ internal data class CCPAConsentInternal(
     override val applies: Boolean = false,
     val thisContent: JSONObject = JSONObject(),
     override val signedLspa: Boolean? = null,
-    override val webConsentPayload: String? = null,
+    override val webConsentPayload: JsonObject? = null,
 ) : CCPAConsent {
 
     override val uspstring: String
@@ -103,7 +103,7 @@ internal fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObj
         if (ccpaConsent.isWebConsentEligible()) {
             putJsonObject("ccpa") {
                 put("uuid", JsonPrimitive(ccpaConsent.uuid))
-                put("webConsentPayload", JsonPrimitive(ccpaConsent.webConsentPayload))
+                put("webConsentPayload", JsonPrimitive(ccpaConsent.webConsentPayload.toString()))
             }
         }
     }
@@ -111,7 +111,7 @@ internal fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObj
         if (gdprConsent.isWebConsentEligible()) {
             putJsonObject("gdpr") {
                 put("uuid", JsonPrimitive(gdprConsent.uuid))
-                put("webConsentPayload", JsonPrimitive(gdprConsent.webConsentPayload))
+                put("webConsentPayload", JsonPrimitive(gdprConsent.webConsentPayload.toString()))
             }
         }
     }

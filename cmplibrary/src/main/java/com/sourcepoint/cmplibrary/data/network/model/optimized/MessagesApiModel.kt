@@ -103,7 +103,7 @@ data class CCPA(
     @Serializable(with = CcpaStatusSerializer::class) val status: CcpaStatus?,
     @Serializable(with = CampaignTypeSerializer::class) override val type: CampaignType,
     @SerialName("url") override val url: String?,
-    @SerialName("webConsentPayload") val webConsentPayload: String?,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
 ) : CampaignMessage {
 
     val uspstring: String
@@ -130,7 +130,7 @@ data class GDPR(
     @Serializable(with = TcDataSerializer::class) val TCData: Map<String, JsonElement>?,
     @Serializable(with = CampaignTypeSerializer::class) override val type: CampaignType,
     @SerialName("url") override val url: String?,
-    @SerialName("webConsentPayload") val webConsentPayload: String?,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
 ) : CampaignMessage
 
 @Serializable

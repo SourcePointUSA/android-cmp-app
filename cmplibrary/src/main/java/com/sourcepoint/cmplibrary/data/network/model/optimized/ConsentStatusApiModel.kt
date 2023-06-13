@@ -13,6 +13,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 
 @Serializable
 internal data class ConsentStatusParamReq(
@@ -63,7 +64,7 @@ data class CcpaCS(
     @SerialName("signedLspa") val signedLspa: Boolean?,
     @Serializable(with = CcpaStatusSerializer::class) val status: CcpaStatus?,
     @SerialName("uuid") val uuid: String?,
-    @SerialName("webConsentPayload") val webConsentPayload: String? = null,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
 ) {
 
     val uspstring: String
@@ -100,7 +101,7 @@ data class GdprCS(
     @SerialName("localDataCurrent") val localDataCurrent: Boolean?,
     @SerialName("uuid") val uuid: String?,
     @SerialName("vendorListId") val vendorListId: String?,
-    @SerialName("webConsentPayload") val webConsentPayload: String? = null,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
 ) {
 
     @Serializable

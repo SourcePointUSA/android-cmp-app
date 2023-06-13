@@ -373,10 +373,10 @@ private class ServiceImpl(
         )
 
         nc.storeGdprChoice(pcParam)
-            .executeOnRight {
-                campaignManager.gdprUuid = it.uuid
+            .executeOnRight { gdprConsentStatus ->
+                campaignManager.gdprUuid = gdprConsentStatus.uuid
                 if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
-                    campaignManager.gdprConsentStatus = it
+                    campaignManager.gdprConsentStatus = gdprConsentStatus
                 }
             }
             .executeOnRight {

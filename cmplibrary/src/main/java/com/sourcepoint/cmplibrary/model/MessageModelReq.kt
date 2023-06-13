@@ -27,5 +27,5 @@ data class IncludeData(
     val campaigns: DataType = DataType("RecordString"),
     val customVendorsResponse: DataType = DataType("RecordString"),
     val messageMetaData: DataType = DataType("RecordString"),
-    val webConsentPayload: DataType = DataType("string"),
+    val webConsentPayload: DataType = DataType("RecordString"),
 )
