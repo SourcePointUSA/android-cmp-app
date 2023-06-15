@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.consent
 
+import android.util.Log
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
 import com.sourcepoint.cmplibrary.core.executeOnRight
@@ -102,7 +103,12 @@ private class ConsentManagerImpl(
             SPConsents(
                 gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
                 ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
-            ).let { sPConsentsSuccess?.invoke(it) }
+            ).let {
+                Log.v("DIA-2301", "==================== sendStoredConsentToClient ==================")
+                Log.d("DIA-2301", "GDPR || uuid=${it.gdpr?.consent?.uuid}")
+                Log.d("DIA-2301", "CCPA || uuid=${it.ccpa?.consent?.uuid}")
+                sPConsentsSuccess?.invoke(it)
+            }
         }
     }
 
