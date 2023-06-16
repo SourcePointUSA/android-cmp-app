@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.data
 
-import android.util.Log
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
@@ -247,7 +246,12 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        it.gdpr?.uuid?.let { u -> campaignManager.gdprUuid = u }
+                        it.gdpr?.uuid?.let { u ->
+                            campaignManager.gdprUuid = u
+                            campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
+                                uuid = u
+                            )
+                        }
                     }
             }
 
@@ -276,7 +280,12 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        it.ccpa?.uuid?.let { u -> campaignManager.ccpaUuid = u }
+                        it.ccpa?.uuid?.let { u ->
+                            campaignManager.ccpaUuid = u
+                            campaignManager.ccpaConsentStatus = campaignManager.ccpaConsentStatus?.copy(
+                                uuid = u
+                            )
+                        }
                     }
             }
         }
@@ -328,13 +337,14 @@ private class ServiceImpl(
             getResp = nc.getChoice(gcParam)
                 .executeOnRight { r ->
                     r.gdpr?.let {
-                        campaignManager.gdprConsentStatus = it
+                        campaignManager.gdprConsentStatus = it.copy(uuid = campaignManager.gdprUuid)
                     }
                 }
                 .executeOnRight {
-                    Log.v("DIA-2301", "==================== getChoice ==================")
-                    Log.d("DIA-2301", "GDPR || uuid=${it.gdpr?.uuid}")
-                    val cr = ConsentManager.responseConsentHandler(it.gdpr, consentManagerUtils)
+                    val cr = ConsentManager.responseConsentHandler(
+                        it.gdpr?.copy(uuid = campaignManager.gdprUuid),
+                        consentManagerUtils
+                    )
                     sPConsentsSuccess?.invoke(cr)
                 }
                 .getOrNull()
@@ -371,8 +381,6 @@ private class ServiceImpl(
             }
             .executeOnRight {
                 if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
-                    Log.v("DIA-2301", "==================== storeGdprChoice ==================")
-                    Log.d("DIA-2301", "GDPR || uuid=${it.uuid}")
                     val cr = ConsentManager.responseConsentHandler(it, consentManagerUtils)
                     sPConsentsSuccess?.invoke(cr)
                 }
@@ -403,10 +411,11 @@ private class ServiceImpl(
             )
             nc.getChoice(gcParam)
                 .executeOnRight { r ->
-                    Log.v("DIA-2301", "==================== getChoice ==================")
-                    Log.d("DIA-2301", "CCPA || uuid=${r.ccpa?.uuid}")
-                    campaignManager.ccpaConsentStatus = r.ccpa
-                    val cr = ConsentManager.responseConsentHandler(r.ccpa, consentManagerUtils)
+                    campaignManager.ccpaConsentStatus = r.ccpa?.copy(uuid = campaignManager.ccpaUuid)
+                    val cr = ConsentManager.responseConsentHandler(
+                        r.ccpa?.copy(uuid = campaignManager.ccpaUuid),
+                        consentManagerUtils
+                    )
                     sPConsentsSuccess?.invoke(cr)
                 }
         }
@@ -436,8 +445,6 @@ private class ServiceImpl(
                 campaignManager.ccpaConsentStatus = it
             }.executeOnRight {
                 if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
-                    Log.v("DIA-2301", "==================== storeCcpaChoice ==================")
-                    Log.d("DIA-2301", "CCPA || uuid=${it.uuid}")
                     val cr = ConsentManager.responseConsentHandler(it, consentManagerUtils)
                     sPConsentsSuccess?.invoke(cr)
                 }

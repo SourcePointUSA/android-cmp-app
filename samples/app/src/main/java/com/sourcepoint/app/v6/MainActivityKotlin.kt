@@ -18,12 +18,10 @@ import com.sourcepoint.cmplibrary.core.nativemessage.NativeComponent
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.auth_id_activity
 import kotlinx.android.synthetic.main.activity_main.clear_all
 import kotlinx.android.synthetic.main.activity_main.consent_btn
@@ -164,9 +162,6 @@ class MainActivityKotlin : AppCompatActivity() {
         }
 
         override fun onConsentReady(consent: SPConsents) {
-            Log.v("DIA-2301", "==================== onConsentReady ==================")
-            Log.d("DIA-2301", "GDPR || uuid=${consent.gdpr?.consent?.uuid}")
-            Log.d("DIA-2301", "CCPA || uuid=${consent.ccpa?.consent?.uuid}")
             val grants = consent.gdpr?.consent?.grants
             grants?.forEach { grant ->
                 val granted = grants[grant.key]?.granted
@@ -197,9 +192,6 @@ class MainActivityKotlin : AppCompatActivity() {
         }
 
         override fun onSpFinished(sPConsents: SPConsents) {
-            Log.v("DIA-2301", "==================== onSpFinished ==================")
-            Log.d("DIA-2301", "GDPR || uuid=${sPConsents.gdpr?.consent?.uuid}")
-            Log.d("DIA-2301", "CCPA || uuid=${sPConsents.ccpa?.consent?.uuid}")
             spClientObserver.forEach { it.onSpFinished(sPConsents) }
             Log.i(TAG, "onSpFinish: $sPConsents")
             Log.i(TAG, "==================== onSpFinish ==================")
