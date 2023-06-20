@@ -12,14 +12,13 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.Env
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.messagesParamReq
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
 import com.sourcepoint.cmplibrary.util.file2String
@@ -56,6 +55,12 @@ class ServiceImplTest {
 
     @MockK
     private lateinit var mockConsentStatusResp: ConsentStatusResp
+
+    @MockK
+    private lateinit var mockMessagesResp: MessagesResp
+
+    @MockK
+    private lateinit var mockPvDataResp: PvDataResp
 
     @MockK
     private lateinit var execManager: ExecutorManager
@@ -272,5 +277,55 @@ class ServiceImplTest {
         verify(exactly = 1) { errorMock(any()) }
         verify(exactly = 0) { successMockV7(any()) }
         verify(exactly = 0) { consentMockV7() }
+    }
+
+    /**
+     * Regression tests case that verifies if the UUID is always being present in the consent status
+     * object
+     */
+    @Test
+    fun `getMessages - WHEN called THEN should always have UUIDs for GDPR and CCPA`() {
+        // GIVEN
+        val mockMessagesParamReq = messagesParamReq.copy(
+            authId = "mock_auth_id"
+        )
+        val mockCampaignsList = listOf(
+            SpCampaign(
+                campaignType = CampaignType.GDPR
+            ),
+            SpCampaign(
+                campaignType = CampaignType.CCPA
+            ),
+        )
+
+        // WHEN
+        every { cm.shouldCallMessages } returns true
+        every { cm.shouldCallConsentStatus } returns true
+        every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
+        every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
+        every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
+        every { cmu.shouldTriggerByGdprSample } returns true
+        every { cmu.shouldTriggerByCcpaSample } returns true
+        every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
+        every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
+        every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
+        every { ncMock.savePvData(any()) } returns Right(mockPvDataResp)
+        val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        service.getMessages(
+            messageReq = mockMessagesParamReq,
+            showConsent = consentMockV7,
+            pSuccess = successMockV7,
+            pError = errorMock
+        )
+
+        // THEN
+        verify(exactly = 1) { ncMock.getMetaData(any()) }
+        verify(exactly = 1) { ncMock.getConsentStatus(any()) }
+        verify(exactly = 1) { ncMock.getMessages(any()) }
+        verify(exactly = 2) { ncMock.savePvData(any()) }
+        verify(exactly = 2) { cm.gdprUuid = any() }
+        verify(exactly = 2) { cm.ccpaUuid = any() }
+        cm.gdprConsentStatus?.uuid.assertEquals(cm.gdprUuid)
+        cm.ccpaConsentStatus?.uuid.assertEquals(cm.ccpaUuid)
     }
 }

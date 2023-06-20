@@ -246,7 +246,12 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        it.gdpr?.uuid?.let { u -> campaignManager.gdprUuid = u }
+                        it.gdpr?.uuid?.let { u ->
+                            campaignManager.gdprUuid = u
+                            campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
+                                uuid = u
+                            )
+                        }
                     }
             }
 
@@ -275,7 +280,12 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        it.ccpa?.uuid?.let { u -> campaignManager.ccpaUuid = u }
+                        it.ccpa?.uuid?.let { u ->
+                            campaignManager.ccpaUuid = u
+                            campaignManager.ccpaConsentStatus = campaignManager.ccpaConsentStatus?.copy(
+                                uuid = u
+                            )
+                        }
                     }
             }
         }
@@ -327,11 +337,14 @@ private class ServiceImpl(
             getResp = nc.getChoice(gcParam)
                 .executeOnRight { r ->
                     r.gdpr?.let {
-                        campaignManager.gdprConsentStatus = it
+                        campaignManager.gdprConsentStatus = it.copy(uuid = campaignManager.gdprUuid)
                     }
                 }
                 .executeOnRight {
-                    val cr = ConsentManager.responseConsentHandler(it.gdpr, consentManagerUtils)
+                    val cr = ConsentManager.responseConsentHandler(
+                        it.gdpr?.copy(uuid = campaignManager.gdprUuid),
+                        consentManagerUtils
+                    )
                     sPConsentsSuccess?.invoke(cr)
                 }
                 .getOrNull()
@@ -398,8 +411,11 @@ private class ServiceImpl(
             )
             nc.getChoice(gcParam)
                 .executeOnRight { r ->
-                    campaignManager.ccpaConsentStatus = r.ccpa
-                    val cr = ConsentManager.responseConsentHandler(r.ccpa, consentManagerUtils)
+                    campaignManager.ccpaConsentStatus = r.ccpa?.copy(uuid = campaignManager.ccpaUuid)
+                    val cr = ConsentManager.responseConsentHandler(
+                        r.ccpa?.copy(uuid = campaignManager.ccpaUuid),
+                        consentManagerUtils
+                    )
                     sPConsentsSuccess?.invoke(cr)
                 }
         }
