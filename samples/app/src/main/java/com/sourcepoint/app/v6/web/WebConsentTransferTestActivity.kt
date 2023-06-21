@@ -15,19 +15,15 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.util.clearAllData
 import com.sourcepoint.cmplibrary.util.extensions.preloadConsent
 import kotlinx.android.synthetic.main.activity_web_consent_transfer_test.*
 import org.json.JSONObject
 
 class WebConsentTransferTestActivity : AppCompatActivity() {
 
-    private val consentWebViewClient = object : WebViewClient() {
-        // TODO implement error handling
-    }
-
-    private val consentWebChromeClient = object : WebChromeClient() {
-        // TODO implement error handling
-    }
+    private val consentWebViewClient = object : WebViewClient() { }
+    private val consentWebChromeClient = object : WebChromeClient() { }
 
     private val spConsentLib by spConsentLibLazy {
         activity = this@WebConsentTransferTestActivity
@@ -49,17 +45,23 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_web_consent_transfer_test)
         initConsentWebView()
-        to_web_view_consent_action.setOnClickListener { transferConsent() }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        spConsentLib.loadMessage()
+        initOnClickListeners()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         spConsentLib.dispose()
+    }
+
+    private fun initOnClickListeners() {
+        web_consent_clear_data_button.setOnClickListener {
+            clearAllData(this)
+            ccpa_uuid_value_text_view.text = ""
+            gdpr_uuid_value_text_view.text = ""
+            to_web_view_consent_action.isEnabled = false
+        }
+        web_consent_refresh_button.setOnClickListener { spConsentLib.loadMessage() }
+        to_web_view_consent_action.setOnClickListener { transferConsent() }
     }
 
     private fun initConsentWebView() {

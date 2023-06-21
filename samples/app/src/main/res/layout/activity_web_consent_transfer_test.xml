@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="CCPA UUID"
+        android:text="@string/web_consent_ccpa_uuid"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="GDPR UUID"
+        android:text="@string/web_consent_gdpr_uuid"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ccpa_uuid_value_text_view" />
 
@@ -54,14 +54,34 @@
         app:layout_constraintTop_toBottomOf="@id/gdpr_uuid_value_text_view" />
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/web_consent_clear_data_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/web_consent_clear_data"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/web_consent_refresh_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/web_consent_refresh_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/web_consent_refresh_data"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/to_web_view_consent_action"
+        app:layout_constraintStart_toEndOf="@id/web_consent_clear_data_button" />
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/to_web_view_consent_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="32dp"
+        android:layout_marginBottom="16dp"
         android:enabled="false"
-        android:text="TRANSFER CONSENT"
+        android:text="@string/web_consent_transfer_data"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/web_consent_refresh_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
