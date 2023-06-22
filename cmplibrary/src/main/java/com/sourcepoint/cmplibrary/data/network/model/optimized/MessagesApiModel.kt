@@ -115,7 +115,6 @@ data class CCPA(
 
 @Serializable
 data class GDPR(
-    @SerialName("actions") val actions: List<String?>?,
     @SerialName("addtlConsent") val addtlConsent: String?,
     @SerialName("childPmId") val childPmId: String?,
     @SerialName("consentStatus") val consentStatus: ConsentStatus?,
