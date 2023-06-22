@@ -40,9 +40,28 @@ class TestUseCase {
 
     companion object {
 
+        fun assertTextInWebViewByContainerId(
+            id: String,
+            text: String?,
+        ) = assertTextInWebViewById(
+            id = id,
+            text = text,
+        )
+
+        fun readTextFromTextView(
+            @IdRes id: Int,
+        ): String? = readTextFromTextViewById(
+            id = id
+        )
+
         fun clickAcceptAllOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
             tag = CONSENT_WEB_VIEW_TAG_NAME,
             text = ACCEPT_ALL,
+        )
+
+        fun clickRejectAllOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+            tag = CONSENT_WEB_VIEW_TAG_NAME,
+            text = REJECT_ALL,
         )
 
         fun clickOptionsOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(

@@ -1,6 +1,7 @@
 package com.example.uitestutil
 
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -232,6 +233,43 @@ fun clickOnButtonByTextOnWebViewByTag(
         .withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
         .perform(webScrollIntoView())
         .perform(webClick())
+}
+
+@Throws(Throwable::class)
+fun assertTextInWebViewByTagName(
+    tagName: String,
+    text: String?
+) {
+    if (text == null) throw Exception("Assertion failed, text can't be found in the web view with tagName=$tagName")
+
+    onWebView()
+        .withElement(findElement(Locator.TAG_NAME, tagName))
+        .check(webMatches(getText(), containsString(text)))
+}
+
+@Throws(Throwable::class)
+fun assertTextInWebViewById(
+    id: String,
+    text: String?
+) {
+    if (text == null) throw Exception("Assertion failed, text can't be found in the web view with id=$id")
+
+    onWebView()
+        .withElement(findElement(Locator.ID, id))
+        .check(webMatches(getText(), containsString(text)))
+}
+
+@Throws(Throwable::class)
+fun readTextFromTextViewById(
+    @IdRes id: Int,
+): String? {
+    var text: String? = null
+
+    onView(withId(id))
+        .check(matches(isDisplayed()))
+        .check { view: View, _ -> text = (view as? TextView)?.text.toString() }
+
+    return text
 }
 
 @Throws(Throwable::class)
