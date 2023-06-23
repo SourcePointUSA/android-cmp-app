@@ -42,7 +42,7 @@ allprojects {
         mavenCentral()
         maven { url 'https://www.jetbrains.com/intellij-repository/releases' }
         maven {
-            url "https://nexus.pentaho.org/content/groups/omni"
+            url "https://repo.orl.eng.hitachivantara.com/artifactory/pnt-mvn/"
             artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
         }
     }
