@@ -1,3 +1,8 @@
+## 7.2.4 (June, 23, 2023)
+* [DIA-1806](https://sourcepoint.atlassian.net/browse/DIA-1806) Implement consent transfer to Webview (#649)
+* [DIA-2301](https://sourcepoint.atlassian.net/browse/DIA-2301) Fix for NULL consent UUIDs (#651)
+* [DIA-2244](https://sourcepoint.atlassian.net/browse/DIA-2244) Remove unused error codes (#650)
+
 ## 7.2.3 (June, 02, 2023)
 * [DIA-2188](https://sourcepoint.atlassian.net/browse/DIA-2188) Fix reconsent message not showing (#644)
 * [DIA-2196](https://sourcepoint.atlassian.net/browse/DIA-2196) Fix sdk throwing error on CCPA campaign only (#644)
