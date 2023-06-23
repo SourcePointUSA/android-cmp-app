@@ -5,6 +5,10 @@ import com.sourcepoint.cmplibrary.model.toTcfJSONObj
 import com.sourcepoint.cmplibrary.util.generateCcpaUspString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.putJsonObject
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -38,6 +42,7 @@ interface GDPRConsent {
     var grants: Map<String, GDPRPurposeGrants>
     val acceptedCategories: List<String>?
     val applies: Boolean?
+    val webConsentPayload: JsonObject?
 }
 
 internal data class GDPRConsentInternal(
@@ -48,7 +53,8 @@ internal data class GDPRConsentInternal(
     override val acceptedCategories: List<String>? = null,
     override val applies: Boolean? = null,
     val childPmId: String? = null,
-    val thisContent: JSONObject = JSONObject()
+    val thisContent: JSONObject = JSONObject(),
+    override val webConsentPayload: JsonObject? = null,
 ) : GDPRConsent
 
 interface CCPAConsent {
@@ -60,6 +66,7 @@ interface CCPAConsent {
     val childPmId: String?
     val applies: Boolean
     val signedLspa: Boolean?
+    val webConsentPayload: JsonObject?
 }
 
 internal data class CCPAConsentInternal(
@@ -71,6 +78,7 @@ internal data class CCPAConsentInternal(
     override val applies: Boolean = false,
     val thisContent: JSONObject = JSONObject(),
     override val signedLspa: Boolean? = null,
+    override val webConsentPayload: JsonObject? = null,
 ) : CCPAConsent {
 
     override val uspstring: String
@@ -89,6 +97,31 @@ enum class CcpaStatus {
     linkedNoAction,
     unknown
 }
+
+internal fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObject {
+    ccpa?.consent?.let { ccpaConsent ->
+        if (ccpaConsent.isWebConsentEligible()) {
+            putJsonObject("ccpa") {
+                put("uuid", JsonPrimitive(ccpaConsent.uuid))
+                put("webConsentPayload", JsonPrimitive(ccpaConsent.webConsentPayload.toString()))
+            }
+        }
+    }
+    gdpr?.consent?.let { gdprConsent ->
+        if (gdprConsent.isWebConsentEligible()) {
+            putJsonObject("gdpr") {
+                put("uuid", JsonPrimitive(gdprConsent.uuid))
+                put("webConsentPayload", JsonPrimitive(gdprConsent.webConsentPayload.toString()))
+            }
+        }
+    }
+}
+
+internal fun GDPRConsent.isWebConsentEligible(): Boolean =
+    uuid.isNullOrEmpty().not() && webConsentPayload.isNullOrEmpty().not()
+
+internal fun CCPAConsent.isWebConsentEligible(): Boolean =
+    uuid.isNullOrEmpty().not() && webConsentPayload.isNullOrEmpty().not()
 
 internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {

@@ -169,5 +169,6 @@ internal class SpUtilsTest {
         status = ccpaStatus,
         type = CampaignType.CCPA,
         url = null,
+        webConsentPayload = null
     )
 }
