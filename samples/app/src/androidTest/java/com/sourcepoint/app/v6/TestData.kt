@@ -70,6 +70,7 @@ object TestData {
     var VENDOR_NAME = "google"
     var FEATURES = "Features"
     var PURPOSES = "Purposes"
+    const val CONSENT_WEB_VIEW_TAG_NAME = "consent-web-view"
 
     val storedConsentGdprCcap = """
         {

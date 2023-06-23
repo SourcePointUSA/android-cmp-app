@@ -65,6 +65,7 @@ internal class ConsentWebView(
 
     private fun setup() {
         id = viewId ?: View.generateViewId()
+        tag = CONSENT_WEB_VIEW_TAG_NAME
         enableDebug()
         setStyle()
         if (messSubCat == MessageSubCategory.OTT) {
@@ -228,5 +229,9 @@ internal class ConsentWebView(
         override fun onError(errorMessage: String) {
             jsClientLib.onError(this@ConsentWebView, errorMessage)
         }
+    }
+
+    companion object {
+        const val CONSENT_WEB_VIEW_TAG_NAME = "consent-web-view"
     }
 }

@@ -1,6 +1,7 @@
 package com.example.uitestutil
 
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -10,6 +11,7 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.RootMatchers
@@ -20,6 +22,7 @@ import androidx.test.espresso.web.sugar.Web.onWebView
 import androidx.test.espresso.web.webdriver.DriverAtoms.*
 import androidx.test.espresso.web.webdriver.Locator
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -219,6 +222,70 @@ fun performClickOnWebViewByContent(text: String) {
             .withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
             .perform(webScrollIntoView())
             .perform(webClick())
+}
+
+@Throws(Throwable::class)
+fun clickOnButtonByTextOnWebViewByTag(
+    tag: String,
+    text: String,
+) {
+    onWebView(withTagValue(CoreMatchers.equalTo(tag)))
+        .withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
+        .perform(webScrollIntoView())
+        .perform(webClick())
+}
+
+@Throws(Throwable::class)
+fun assertTextInWebViewByTagName(
+    tagName: String,
+    text: String?
+) {
+    if (text == null) throw Exception("Assertion failed, text can't be found in the web view with tagName=$tagName")
+
+    onWebView()
+        .withElement(findElement(Locator.TAG_NAME, tagName))
+        .check(webMatches(getText(), containsString(text)))
+}
+
+@Throws(Throwable::class)
+fun assertTextInWebViewById(
+    id: String,
+    text: String?
+) {
+    if (text == null) throw Exception("Assertion failed, text can't be found in the web view with id=$id")
+
+    onWebView()
+        .withElement(findElement(Locator.ID, id))
+        .check(webMatches(getText(), containsString(text)))
+}
+
+@Throws(Throwable::class)
+fun readTextFromTextViewById(
+    @IdRes id: Int,
+): String? {
+    var text: String? = null
+
+    onView(withId(id))
+        .check(matches(isDisplayed()))
+        .check { view: View, _ -> text = (view as? TextView)?.text.toString() }
+
+    return text
+}
+
+@Throws(Throwable::class)
+fun checkTextInTextView(
+    @IdRes id: Int,
+    text: String,
+) {
+    onView(withId(id)).check(matches(withText(text)))
+}
+
+@Throws(Throwable::class)
+fun checkTextNotInTextView(
+    @IdRes id: Int,
+    text: String,
+) {
+    onView(withId(id)).check(matches(not(withText(text))))
 }
 
 @Throws(Throwable::class)

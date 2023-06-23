@@ -30,7 +30,7 @@ import org.json.JSONObject
 /**
  * Factory method to create an instance of a [Service] using its implementation
  * @param nc is an instance of [NetworkClient]
- * @param ds is an instance of [DataStorage]
+ * @param dataStorage is an instance of [DataStorage]
  * @param campaignManager is an instance of [CampaignManager]
  * @param consentManagerUtils is an instance of [ConsentManagerUtils]
  * @return an instance of the [ServiceImpl] implementation
@@ -246,7 +246,12 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        it.gdpr?.uuid?.let { u -> campaignManager.gdprUuid = u }
+                        it.gdpr?.uuid?.let { u ->
+                            campaignManager.gdprUuid = u
+                            campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
+                                uuid = u
+                            )
+                        }
                     }
             }
 
@@ -275,7 +280,12 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-                        it.ccpa?.uuid?.let { u -> campaignManager.ccpaUuid = u }
+                        it.ccpa?.uuid?.let { u ->
+                            campaignManager.ccpaUuid = u
+                            campaignManager.ccpaConsentStatus = campaignManager.ccpaConsentStatus?.copy(
+                                uuid = u
+                            )
+                        }
                     }
             }
         }
@@ -327,11 +337,14 @@ private class ServiceImpl(
             getResp = nc.getChoice(gcParam)
                 .executeOnRight { r ->
                     r.gdpr?.let {
-                        campaignManager.gdprConsentStatus = it
+                        campaignManager.gdprConsentStatus = it.copy(uuid = campaignManager.gdprUuid)
                     }
                 }
                 .executeOnRight {
-                    val cr = ConsentManager.responseConsentHandler(it.gdpr, consentManagerUtils)
+                    val cr = ConsentManager.responseConsentHandler(
+                        it.gdpr?.copy(uuid = campaignManager.gdprUuid),
+                        consentManagerUtils
+                    )
                     sPConsentsSuccess?.invoke(cr)
                 }
                 .getOrNull()
@@ -360,10 +373,10 @@ private class ServiceImpl(
         )
 
         nc.storeGdprChoice(pcParam)
-            .executeOnRight {
-                campaignManager.gdprUuid = it.uuid
+            .executeOnRight { gdprConsentStatus ->
+                campaignManager.gdprUuid = gdprConsentStatus.uuid
                 if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
-                    campaignManager.gdprConsentStatus = it
+                    campaignManager.gdprConsentStatus = gdprConsentStatus
                 }
             }
             .executeOnRight {
@@ -398,8 +411,11 @@ private class ServiceImpl(
             )
             nc.getChoice(gcParam)
                 .executeOnRight { r ->
-                    campaignManager.ccpaConsentStatus = r.ccpa
-                    val cr = ConsentManager.responseConsentHandler(r.ccpa, consentManagerUtils)
+                    campaignManager.ccpaConsentStatus = r.ccpa?.copy(uuid = campaignManager.ccpaUuid)
+                    val cr = ConsentManager.responseConsentHandler(
+                        r.ccpa?.copy(uuid = campaignManager.ccpaUuid),
+                        consentManagerUtils
+                    )
                     sPConsentsSuccess?.invoke(cr)
                 }
         }
@@ -424,9 +440,16 @@ private class ServiceImpl(
         )
 
         nc.storeCcpaChoice(pcParam)
-            .executeOnRight {
-                campaignManager.ccpaUuid = it.uuid
-                campaignManager.ccpaConsentStatus = it
+            .executeOnRight { ccpaConsentStatus ->
+                campaignManager.ccpaUuid = ccpaConsentStatus.uuid
+                campaignManager.ccpaConsentStatus =
+                    if (ccpaConsentStatus.webConsentPayload != null) {
+                        ccpaConsentStatus
+                    } else {
+                        ccpaConsentStatus.copy(
+                            webConsentPayload = campaignManager.ccpaConsentStatus?.webConsentPayload
+                        )
+                    }
             }.executeOnRight {
                 if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
                     val cr = ConsentManager.responseConsentHandler(it, consentManagerUtils)
