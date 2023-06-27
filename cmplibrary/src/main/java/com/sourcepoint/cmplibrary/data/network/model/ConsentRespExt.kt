@@ -57,7 +57,6 @@ internal fun String.toConsentAction(): ConsentActionImpl {
         campaignType = CampaignType.valueOf(legislation),
         customActionId = customActionId,
         thisContent = map.toJSONObj(),
-        singleShotPM = singleShot
     )
 }
 

@@ -61,7 +61,7 @@ private class ClientEventManagerImpl(
                 ActionType.CUSTOM,
                 ActionType.MSG_CANCEL,
                 ActionType.PM_DISMISS -> {
-                    if (!action.requestFromPm || action.singleShotPM) {
+                    if (!action.requestFromPm) {
                         if (cNumber > 0) cNumber--
                     }
                 }
