@@ -392,7 +392,6 @@ internal class SpConsentLibImpl(
                     url = url,
                     campaignType = campaignType,
                     pmId = it.messageId,
-                    singleShot = true,
                     consent = JSONObject(storedConsent)
                 )
             }
@@ -619,7 +618,6 @@ internal class SpConsentLibImpl(
                             url = url,
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
-                            singleShot = true,
                             consent = JSONObject(dataStorage.gdprConsentStatus!!)
                         )
                     }
@@ -646,7 +644,6 @@ internal class SpConsentLibImpl(
                             url = url,
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
-                            singleShot = false,
                             consent = JSONObject(dataStorage.ccpaConsentStatus!!)
                         )
                     }
@@ -679,7 +676,6 @@ internal class SpConsentLibImpl(
                             url = url,
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
-                            singleShot = true,
                             consent = JSONObject(dataStorage.gdprConsentStatus!!)
                         )
                     }
@@ -706,7 +702,6 @@ internal class SpConsentLibImpl(
                             url = url,
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
-                            singleShot = true,
                             consent = JSONObject(dataStorage.ccpaConsentStatus!!)
                         )
                     }

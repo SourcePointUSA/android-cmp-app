@@ -32,7 +32,6 @@ internal fun String.toConsentAction(): ConsentActionImpl {
     val actionType = (map["actionType"] as? Int)?.let { ActionType.values().find { v -> v.code == it } }
     val choiceId = (map["choiceId"] as? String)
     val legislation = map.getFieldValue<String>("legislation") ?: "CCPA"
-    val singleShot = map.getFieldValue<Boolean>("singleShot") ?: false
     val privacyManagerId = (map["pmId"] as? String) ?: (map["localPmId"] as? String)
     val pmTab = (map["pmTab"] as? String)
     val requestFromPm = map.getFieldValue<Boolean>("requestFromPm") ?: false
