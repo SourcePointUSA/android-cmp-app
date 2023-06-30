@@ -78,13 +78,6 @@ internal interface CampaignManager {
     var ccpaUuid: String?
     val hasLocalData: Boolean
 
-    // dateCreated
-    var gdprDateCreated: String?
-    var ccpaDateCreated: String?
-
-//    var consentStatus: ConsentStatus?zvz
-//    var ccpaStatus: CcpaStatus?
-
     var metaDataResp: MetaDataResp?
     var choiceResp: ChoiceResp?
     var dataRecordedConsent: Instant?
@@ -584,18 +577,6 @@ private class CampaignManagerImpl(
                 .apply()
         }
     }
-
-    override var gdprDateCreated: String?
-        get() = dataStorage.gdprDateCreated
-        set(value) {
-            dataStorage.gdprDateCreated = value
-        }
-
-    override var ccpaDateCreated: String?
-        get() = dataStorage.ccpaDateCreated
-        set(value) {
-            dataStorage.ccpaDateCreated = value
-        }
 
     override var metaDataResp: MetaDataResp?
         get() {

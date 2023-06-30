@@ -146,7 +146,7 @@ private class ServiceImpl(
             val gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus
             val additionsChangeDate = meta.getOrNull()?.gdpr?.additionsChangeDate
             val legalBasisChangeDate = meta.getOrNull()?.gdpr?.legalBasisChangeDate
-            val dataRecordedConsent = campaignManager.gdprDateCreated
+            val dataRecordedConsent = campaignManager.gdprConsentStatus?.dateCreated
 
             if (dataRecordedConsent != null &&
                 gdprConsentStatus != null &&
@@ -201,16 +201,13 @@ private class ServiceImpl(
 
                         if (!campaignManager.hasLocalData) {
                             it.campaigns?.gdpr?.TCData?.let { tc -> dataStorage.tcData = tc.toMapOfAny() }
-                            it.campaigns?.gdpr?.dateCreated?.let { dc -> campaignManager.gdprDateCreated = dc }
 
                             campaignManager.run {
                                 if (!(messageReq.authId != null || campaignManager.shouldCallConsentStatus)) {
                                     // GDPR
                                     this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS()
-                                    gdprDateCreated = it.campaigns?.gdpr?.dateCreated
                                     // CCPA
                                     ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS()
-                                    ccpaDateCreated = it.campaigns?.ccpa?.dateCreated
                                 }
                             }
                         }
@@ -479,11 +476,9 @@ private class ServiceImpl(
                         // GDPR
                         gdprConsentStatus = csd.gdpr
                         gdprUuid = csd.gdpr?.uuid
-                        gdprDateCreated = csd.gdpr?.dateCreated
                         // CCPA
                         ccpaConsentStatus = csd.ccpa
                         ccpaUuid = csd.ccpa?.uuid
-                        ccpaDateCreated = csd.ccpa?.dateCreated
                     }
                 }
             }
