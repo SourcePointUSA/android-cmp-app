@@ -63,7 +63,7 @@ data class CcpaCS(
     @SerialName("rejectedVendors") val rejectedVendors: List<String>?,
     @SerialName("signedLspa") val signedLspa: Boolean?,
     @Serializable(with = CcpaStatusSerializer::class) val status: CcpaStatus?,
-    @SerialName("uuid") val uuid: String?,
+    @SerialName("uuid") var uuid: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
 ) {
 
@@ -99,7 +99,7 @@ data class GdprCS(
     @Serializable(with = GrantsSerializer::class) val grants: Map<String, GDPRPurposeGrants>?,
     @Serializable(with = TcDataSerializer::class) val TCData: Map<String, JsonElement>?,
     @SerialName("localDataCurrent") val localDataCurrent: Boolean?,
-    @SerialName("uuid") val uuid: String?,
+    @SerialName("uuid") var uuid: String?,
     @SerialName("vendorListId") val vendorListId: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
 ) {

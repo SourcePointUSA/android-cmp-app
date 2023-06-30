@@ -74,8 +74,6 @@ internal interface CampaignManager {
     var ccpaConsentStatus: CcpaCS?
     var messagesOptimizedLocalState: JsonElement?
     var nonKeyedLocalState: JsonElement?
-    var gdprUuid: String?
-    var ccpaUuid: String?
     val hasLocalData: Boolean
 
     var metaDataResp: MetaDataResp?
@@ -514,22 +512,6 @@ private class CampaignManagerImpl(
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.nonKeyedLocalState = serialised
-        }
-
-    override var gdprUuid: String?
-        get() {
-            return dataStorage.gdprConsentUuid
-        }
-        set(value) {
-            dataStorage.gdprConsentUuid = value
-        }
-
-    override var ccpaUuid: String?
-        get() {
-            return dataStorage.ccpaConsentUuid
-        }
-        set(value) {
-            dataStorage.ccpaConsentUuid = value
         }
 
     override val hasLocalData: Boolean
