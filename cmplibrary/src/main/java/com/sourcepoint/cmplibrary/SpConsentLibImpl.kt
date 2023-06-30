@@ -94,7 +94,7 @@ internal class SpConsentLibImpl(
                 spClient.onConsentReady(spConsents)
                 (spClient as? UnitySpClient)?.onConsentReady(spConsentString)
                 executor.executeOnSingleThread {
-                    clientEventManager.checkStatus()
+                    clientEventManager.checkIfAllCampaignsWereProcessed()
                 }
             }
         }
@@ -147,7 +147,7 @@ internal class SpConsentLibImpl(
             },
             pSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)
-                clientEventManager.setCampaignNumber(list.size)
+                clientEventManager.setCampaignsToProcess(list.size)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
                     return@getMessages
@@ -351,7 +351,7 @@ internal class SpConsentLibImpl(
         useGroupPmIfAvailable: Boolean
     ) {
         checkMainThread("loadPrivacyManager")
-        clientEventManager.executingLoadPM()
+        clientEventManager.setCampaignsToProcess(1)
 
         val gdprGroupPmId = campaignManager.getGroupId(campaignType)
 
