@@ -104,7 +104,6 @@ internal class ConsentWebView(
         url: HttpUrl,
         campaignType: CampaignType,
         pmId: String?,
-        singleShot: Boolean,
         consent: JSONObject
     ): Either<Boolean> = check {
         if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
@@ -127,7 +126,6 @@ internal class ConsentWebView(
                 """
                 javascript: window.spLegislation = '${campaignType.name}'; 
                 window.localPmId ='$pmId'; 
-                window.isSingleShot = $singleShot; 
                 $jsReceiver;
                 window.postMessage($obj, "*");
                 """.trimIndent()

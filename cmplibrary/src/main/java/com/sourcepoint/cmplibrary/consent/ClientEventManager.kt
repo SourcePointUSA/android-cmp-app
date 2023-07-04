@@ -9,14 +9,11 @@ import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 
 internal interface ClientEventManager {
-
-    fun setCampaignNumber(campNum: Int)
-    fun executingLoadPM()
-    fun storedConsent()
+    fun setCampaignsToProcess(numberOfCampaigns: Int)
+    fun registerConsentResponse()
     fun setAction(action: ConsentActionImpl)
     fun setAction(action: NativeMessageActionType)
-    fun checkStatus()
-
+    fun checkIfAllCampaignsWereProcessed()
     companion object
 }
 
@@ -34,42 +31,35 @@ private class ClientEventManagerImpl(
     val consentManagerUtils: ConsentManagerUtils,
 ) : ClientEventManager {
 
-    private var cNumber: Int = Int.MAX_VALUE
-    private var storedConsent: Int = 0
+    private var campaignsToProcess: Int = Int.MAX_VALUE
+    private var isFirstLayerMessage = true
 
-    override fun setCampaignNumber(campNum: Int) {
-        cNumber = campNum
-        storedConsent = 0
-    }
-
-    override fun executingLoadPM() {
-        cNumber = 1
-        storedConsent = 0
+    override fun setCampaignsToProcess(numberOfCampaigns: Int) {
+        campaignsToProcess = numberOfCampaigns
     }
 
     override fun setAction(action: ConsentActionImpl) {
         executor.executeOnSingleThread {
             when (action.actionType) {
-                ActionType.ACCEPT_ALL,
-                ActionType.REJECT_ALL,
-                ActionType.SAVE_AND_EXIT -> {
-                }
                 ActionType.SHOW_OPTIONS -> {
-                }
-                ActionType.UNKNOWN -> {
+                    isFirstLayerMessage = false
                 }
                 ActionType.CUSTOM,
                 ActionType.MSG_CANCEL,
                 ActionType.PM_DISMISS -> {
-                    if (!action.requestFromPm || action.singleShotPM) {
-                        if (cNumber > 0) cNumber--
+                    if (isFirstLayerMessage) {
+                        campaignsToProcess--
                     }
+                    isFirstLayerMessage = true
                 }
                 ActionType.GET_MSG_ERROR, ActionType.GET_MSG_NOT_CALLED -> {
-                    cNumber = 0
+                    campaignsToProcess = 0
+                }
+                else -> {
+                    // do nothing
                 }
             }
-            checkStatus()
+            checkIfAllCampaignsWereProcessed()
         }
     }
 
@@ -83,20 +73,19 @@ private class ClientEventManagerImpl(
                 NativeMessageActionType.UNKNOWN -> {
                 }
                 NativeMessageActionType.MSG_CANCEL -> {
-                    if (cNumber > 0) cNumber--
+                    if (campaignsToProcess > 0) campaignsToProcess--
                 }
                 NativeMessageActionType.GET_MSG_ERROR, NativeMessageActionType.GET_MSG_NOT_CALLED -> {
-                    cNumber = 0
+                    campaignsToProcess = 0
                 }
             }
-            checkStatus()
+            checkIfAllCampaignsWereProcessed()
         }
     }
 
-    override fun checkStatus() {
-        if (cNumber == storedConsent) {
-            cNumber = Int.MAX_VALUE
-            storedConsent = 0
+    override fun checkIfAllCampaignsWereProcessed() {
+        if (campaignsToProcess <= 0) {
+            campaignsToProcess = Int.MAX_VALUE
 
             val spConsent: SPConsents? = getSPConsents().getOrNull()
             val spConsentString = spConsent
@@ -116,8 +105,8 @@ private class ClientEventManagerImpl(
         }
     }
 
-    override fun storedConsent() {
-        storedConsent++
+    override fun registerConsentResponse() {
+        campaignsToProcess--
     }
 
     private fun getSPConsents() = check<SPConsents> {
