@@ -328,4 +328,50 @@ class ServiceImplTest {
         cm.gdprConsentStatus?.uuid.assertEquals(cm.gdprUuid)
         cm.ccpaConsentStatus?.uuid.assertEquals(cm.ccpaUuid)
     }
+
+    /**
+     * Test case which verifies that uspstring is being updated each time getMessages() being called
+     */
+    @Test
+    fun `getMessages - WHEN called THEN should update uspstring in data storage`() {
+        // GIVEN
+        val mockMessagesParamReq = messagesParamReq.copy(
+            authId = "mock_auth_id"
+        )
+        val mockCampaignsList = listOf(
+            SpCampaign(
+                campaignType = CampaignType.GDPR
+            ),
+            SpCampaign(
+                campaignType = CampaignType.CCPA
+            ),
+        )
+
+        // WHEN
+        every { cm.shouldCallMessages } returns true
+        every { cm.shouldCallConsentStatus } returns true
+        every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
+        every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
+        every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
+        every { cmu.shouldTriggerByGdprSample } returns true
+        every { cmu.shouldTriggerByCcpaSample } returns true
+        every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
+        every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
+        every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
+        every { ncMock.savePvData(any()) } returns Right(mockPvDataResp)
+        val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        service.getMessages(
+            messageReq = mockMessagesParamReq,
+            showConsent = consentMockV7,
+            pSuccess = successMockV7,
+            pError = errorMock
+        )
+
+        // THEN
+        verify(exactly = 1) { ncMock.getMetaData(any()) }
+        verify(exactly = 1) { ncMock.getConsentStatus(any()) }
+        verify(exactly = 1) { ncMock.getMessages(any()) }
+        verify(exactly = 2) { ncMock.savePvData(any()) }
+        verify(atLeast = 2) { cm.ccpaConsentStatus = any() }
+    }
 }
