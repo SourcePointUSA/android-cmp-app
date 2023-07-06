@@ -94,7 +94,7 @@ internal class SpConsentLibImpl(
                 spClient.onConsentReady(spConsents)
                 (spClient as? UnitySpClient)?.onConsentReady(spConsentString)
                 executor.executeOnSingleThread {
-                    clientEventManager.checkStatus()
+                    clientEventManager.checkIfAllCampaignsWereProcessed()
                 }
             }
         }
@@ -147,7 +147,7 @@ internal class SpConsentLibImpl(
             },
             pSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)
-                clientEventManager.setCampaignNumber(list.size)
+                clientEventManager.setCampaignsToProcess(list.size)
                 if (list.isEmpty()) {
                     consentManager.sendStoredConsentToClient()
                     return@getMessages
@@ -351,7 +351,7 @@ internal class SpConsentLibImpl(
         useGroupPmIfAvailable: Boolean
     ) {
         checkMainThread("loadPrivacyManager")
-        clientEventManager.executingLoadPM()
+        clientEventManager.setCampaignsToProcess(1)
 
         val gdprGroupPmId = campaignManager.getGroupId(campaignType)
 
@@ -392,7 +392,6 @@ internal class SpConsentLibImpl(
                     url = url,
                     campaignType = campaignType,
                     pmId = it.messageId,
-                    singleShot = true,
                     consent = JSONObject(storedConsent)
                 )
             }
@@ -619,7 +618,6 @@ internal class SpConsentLibImpl(
                             url = url,
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
-                            singleShot = true,
                             consent = JSONObject(dataStorage.gdprConsentStatus!!)
                         )
                     }
@@ -646,7 +644,6 @@ internal class SpConsentLibImpl(
                             url = url,
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
-                            singleShot = false,
                             consent = JSONObject(dataStorage.ccpaConsentStatus!!)
                         )
                     }
@@ -679,7 +676,6 @@ internal class SpConsentLibImpl(
                             url = url,
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
-                            singleShot = true,
                             consent = JSONObject(dataStorage.gdprConsentStatus!!)
                         )
                     }
@@ -706,7 +702,6 @@ internal class SpConsentLibImpl(
                             url = url,
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
-                            singleShot = true,
                             consent = JSONObject(dataStorage.ccpaConsentStatus!!)
                         )
                     }
