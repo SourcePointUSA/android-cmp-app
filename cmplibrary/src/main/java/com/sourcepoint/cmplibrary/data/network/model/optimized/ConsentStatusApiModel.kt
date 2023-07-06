@@ -50,11 +50,9 @@ data class ConsentStatusResp(
 
 @Serializable
 data class CcpaCS(
-    @SerialName("actions") val actions: List<Action>?,
     @SerialName("applies") val applies: Boolean?,
     @SerialName("ccpaApplies") val ccpaApplies: Boolean?,
     @SerialName("consentedAll") val consentedAll: Boolean?,
-    @SerialName("cookies") val cookies: List<Cooky>?,
     @SerialName("dateCreated") val dateCreated: String?,
     @SerialName("gpcEnabled") val gpcEnabled: Boolean?,
     @SerialName("newUser") val newUser: Boolean?,
@@ -82,7 +80,6 @@ data class GdprCS(
     @SerialName("categories") val categories: List<String>?,
     @SerialName("consentAllRef") val consentAllRef: String?,
     @SerialName("consentedToAll") val consentedToAll: Boolean?,
-    @SerialName("cookies") val cookies: List<Cooky>?,
     @SerialName("legIntCategories") val legIntCategories: List<String>?,
     @SerialName("legIntVendors") val legIntVendors: List<String>?,
     @SerialName("postPayload") val postPayload: PostPayload?,
@@ -137,23 +134,3 @@ data class GdprCS(
         )
     }
 }
-
-@Serializable
-data class Action(
-    @SerialName("_id") val id: String?,
-    @SerialName("js") val js: String?,
-    @SerialName("onStatusChangeOnly") val onStatusChangeOnly: Boolean?,
-    @SerialName("tagManager") val tagManager: JsonElement?,
-    @SerialName("type") val type: String?,
-    @SerialName("url") val url: String?
-)
-
-@Serializable
-data class Cooky(
-    @SerialName("key") val key: String?,
-    @SerialName("maxAge") val maxAge: Int?,
-    @SerialName("session") val session: Boolean?,
-    @SerialName("shareRootDomain") val shareRootDomain: Boolean?,
-    @SerialName("value") val value: String?,
-    @SerialName("setPath") val setPath: Boolean?,
-)

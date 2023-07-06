@@ -120,11 +120,9 @@ internal fun CCPA.toCcpaCS() = CcpaCS(
     rejectedVendors = rejectedVendors,
     signedLspa = signedLspa,
     status = status,
-    cookies = null,
     ccpaApplies = null,
     uuid = null,
     gpcEnabled = null,
-    actions = null,
     webConsentPayload = webConsentPayload,
 )
 
@@ -134,7 +132,6 @@ internal fun GDPR.toGdprCS() = GdprCS(
     categories = null,
     consentAllRef = null,
     consentedToAll = null,
-    cookies = null,
     legIntCategories = null,
     legIntVendors = null,
     postPayload = null,
