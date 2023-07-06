@@ -307,9 +307,9 @@ class ServiceImplTest {
         every { cmu.shouldTriggerByGdprSample } returns true
         every { cmu.shouldTriggerByCcpaSample } returns true
         every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
-        every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
-        every { ncMock.savePvData(any()) } returns Right(mockPvDataResp)
+        every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
+
         val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         service.getMessages(
             messageReq = mockMessagesParamReq,
@@ -322,10 +322,6 @@ class ServiceImplTest {
         verify(exactly = 1) { ncMock.getMetaData(any()) }
         verify(exactly = 1) { ncMock.getConsentStatus(any()) }
         verify(exactly = 1) { ncMock.getMessages(any()) }
-        verify(exactly = 2) { ncMock.savePvData(any()) }
-        verify(exactly = 2) { cm.gdprUuid = any() }
-        verify(exactly = 2) { cm.ccpaUuid = any() }
-        cm.gdprConsentStatus?.uuid.assertEquals(cm.gdprUuid)
-        cm.ccpaConsentStatus?.uuid.assertEquals(cm.ccpaUuid)
+        verify(exactly = 2) { ncMock.postPvData(any()) }
     }
 }

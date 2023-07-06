@@ -143,7 +143,7 @@ private class NetworkClientImpl(
         responseManager.parseMessagesResp(response)
     }
 
-    override fun savePvData(param: PvDataParamReq): Either<PvDataResp> = check(NetworkCallErrorsCode.PV_DATA) {
+    override fun postPvData(param: PvDataParamReq): Either<PvDataResp> = check(NetworkCallErrorsCode.PV_DATA) {
         val url = urlManager.getPvDataUrl(param.env)
         val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()

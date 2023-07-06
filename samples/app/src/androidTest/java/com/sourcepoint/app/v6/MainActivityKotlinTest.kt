@@ -840,12 +840,8 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
-
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { clickOnClearConsent() }
-
-
-
         wr {
             scenario.onActivity { activity ->
                 val sp = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -854,8 +850,6 @@ class MainActivityKotlinTest {
                 sp.getString(CLIENT_PREF_KEY, "").assertEquals(CLIENT_PREF_VAL)
             }
         }
-
-
     }
 
     @Test
