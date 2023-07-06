@@ -140,7 +140,6 @@ internal fun GDPR.toGdprCS() = GdprCS(
     vendors = null,
     addtlConsent = addtlConsent,
     consentStatus = consentStatus,
-    consentUUID = null,
     cookieExpirationDays = null,
     customVendorsResponse = customVendorsResponse,
     dateCreated = dateCreated,

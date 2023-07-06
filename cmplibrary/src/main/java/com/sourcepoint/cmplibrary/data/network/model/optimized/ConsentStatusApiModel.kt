@@ -88,7 +88,6 @@ data class GdprCS(
     @SerialName("vendors") val vendors: List<String>?,
     @SerialName("addtlConsent") val addtlConsent: String?,
     @SerialName("consentStatus") val consentStatus: ConsentStatus?,
-    @SerialName("consentUUID") val consentUUID: String?,
     @SerialName("cookieExpirationDays") val cookieExpirationDays: Int?,
     @SerialName("customVendorsResponse") val customVendorsResponse: CustomVendorsResponse?,
     @SerialName("dateCreated") val dateCreated: String?,
