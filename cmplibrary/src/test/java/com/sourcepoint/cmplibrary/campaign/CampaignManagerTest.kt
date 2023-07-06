@@ -208,6 +208,6 @@ class CampaignManagerTest {
         sut.ccpaConsentStatus = mockCcpaConsentStatus
 
         // THEN
-        verify(atLeast = 1) { dataStorage.usPrivacyString = mockCcpaConsentStatus.uspstring }
+        verify(atLeast = 1) { dataStorage.uspstring = mockCcpaConsentStatus.uspstring }
     }
 }
