@@ -198,7 +198,6 @@ private class ServiceImpl(
                             ccpaMessageMetaData = it.campaigns?.ccpa?.messageMetaData
                         }
 
-
                         if (!campaignManager.hasLocalData) {
                             it.campaigns?.gdpr?.TCData?.let { tc -> dataStorage.tcData = tc.toMapOfAny() }
 
