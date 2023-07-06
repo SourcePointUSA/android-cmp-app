@@ -34,7 +34,6 @@ function actionFromPM(payload) {
     return {
         localPmId: window.localPmId,
         legislation: window.spLegislation,
-        singleShot: window.isSingleShot,
         name: payload.name,
         actionType: payload.actionType,
         choiceId: null,

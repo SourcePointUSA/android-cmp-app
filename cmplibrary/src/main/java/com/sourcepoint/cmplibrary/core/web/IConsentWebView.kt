@@ -10,7 +10,6 @@ internal interface IConsentWebView {
         url: HttpUrl,
         campaignType: CampaignType,
         pmId: String?,
-        singleShot: Boolean,
         consent: JSONObject
     ): Either<Boolean>
     fun loadConsentUI(campaignModel: CampaignModel, url: HttpUrl, campaignType: CampaignType): Either<Boolean>
