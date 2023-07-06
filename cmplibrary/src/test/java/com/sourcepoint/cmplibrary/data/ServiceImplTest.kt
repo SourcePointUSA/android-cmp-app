@@ -354,7 +354,7 @@ class ServiceImplTest {
         every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
         every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
-        every { ncMock.savePvData(any()) } returns Right(mockPvDataResp)
+        every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
         val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         service.getMessages(
             messageReq = mockMessagesParamReq,
@@ -367,7 +367,7 @@ class ServiceImplTest {
         verify(exactly = 1) { ncMock.getMetaData(any()) }
         verify(exactly = 1) { ncMock.getConsentStatus(any()) }
         verify(exactly = 1) { ncMock.getMessages(any()) }
-        verify(exactly = 2) { ncMock.savePvData(any()) }
+        verify(exactly = 2) { ncMock.postPvData(any()) }
         verify(atLeast = 2) { cm.ccpaConsentStatus = any() }
     }
 }
