@@ -29,7 +29,6 @@ import org.json.JSONObject
 import java.time.Instant
 
 internal interface CampaignManager {
-
     val spConfig: SpConfig
     val messageLanguage: MessageLanguage
     val campaigns4Config: List<CampaignReq>
@@ -111,7 +110,6 @@ private class CampaignManagerImpl(
     override val messageLanguage: MessageLanguage = spConfig.messageLanguage
 
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
-    private val campaignsEnv: CampaignsEnv = spConfig.campaignsEnv
     val logger: Logger? = spConfig.logger
 
     init {
