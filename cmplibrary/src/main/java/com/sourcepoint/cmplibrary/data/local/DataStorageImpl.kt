@@ -15,8 +15,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_OPTI
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_OPTIMIZED_LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.META_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.NON_KEYED_LOCAL_STATE
-import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_ID
-import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_PRIORITY_DATA
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PV_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.SAVED_CONSENT
 
@@ -153,17 +151,6 @@ private class DataStorageImpl(
         return preference.getString(LOCAL_STATE, null)
     }
 
-    override fun savePropertyPriorityData(value: String) {
-        preference
-            .edit()
-            .putString(PROPERTY_PRIORITY_DATA, value)
-            .apply()
-    }
-
-    override fun getPropertyPriorityData(): String? {
-        return preference.getString(PROPERTY_PRIORITY_DATA, null)
-    }
-
     override fun clearAll() {
         dsCcpa.clearAll()
         dsGdpr.clearAll()
@@ -171,8 +158,6 @@ private class DataStorageImpl(
             .edit()
             .remove(LOCAL_STATE)
             .remove(LOCAL_STATE_OLD)
-            .remove(PROPERTY_PRIORITY_DATA)
-            .remove(PROPERTY_ID)
             .remove(SAVED_CONSENT)
             .remove(MESSAGES_OPTIMIZED)
             .remove(META_DATA_RESP)

@@ -7,8 +7,6 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     companion object {
         const val LOCAL_STATE = "sp.key.local.state"
         const val LOCAL_STATE_OLD = "key_local_state"
-        const val PROPERTY_PRIORITY_DATA = "sp.key.property.priority.data"
-        const val PROPERTY_ID = "sp.key.property.id"
         const val SAVED_CONSENT = "sp.key.saved.consent"
         const val MESSAGES_OPTIMIZED = "sp.key.messages"
         const val CONSENT_STATUS = "sp.key.consent.status"
@@ -39,8 +37,6 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     var messagesOptimizedLocalState: String?
     var nonKeyedLocalState: String?
 
-    fun savePropertyPriorityData(value: String)
     fun saveLocalState(value: String)
     fun getLocalState(): String?
-    fun getPropertyPriorityData(): String?
 }
