@@ -50,8 +50,6 @@ internal interface DataStorageGdpr {
 
     var tcData: Map<String, Any?>
 
-    var gdprDateCreated: String?
-
     var gdprSamplingValue: Double
     var gdprSamplingResult: Boolean?
 
@@ -220,15 +218,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             preference
                 .edit()
                 .putString(GDPR_POST_CHOICE_RESP, value)
-                .apply()
-        }
-
-    override var gdprDateCreated: String?
-        get() = preference.getString(GDPR_DATE_CREATED, null)
-        set(value) {
-            preference
-                .edit()
-                .putString(GDPR_DATE_CREATED, value)
                 .apply()
         }
 
