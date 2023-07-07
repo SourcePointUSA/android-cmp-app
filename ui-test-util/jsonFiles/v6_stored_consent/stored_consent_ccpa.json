@@ -4,6 +4,5 @@
   "sp.ccpa.key.applies": true,
   "sp.key.local.state": "{\"ccpa\":{\"dnsDisplayed\":true,\"expiration\":\"2023-12-08T11:30:43.844Z\",\"messageId\":616558,\"mmsCookies\":[\"_sp_v1_uid=1:469:748aeec5-f29b-499d-b3c3-bcf7d680cf83\",\"_sp_v1_data=2:458337:1670499043:0:1:0:1:0:0:_:-1\",\"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbKKBjLyQAyD2lidGKVUEDOvNCcHyC4BK6iurVWKBQAW54XRMAAAAA%3D%3D\",\"_sp_v1_opt=1:\",\"_sp_v1_consent=1!0:-1:-1:-1:-1:-1\",\"_sp_v1_stage=\",\"_sp_v1_csv=null\",\"_sp_v1_lt=1:\"],\"propertyId\":16893,\"status\":\"consentedAll\",\"uuid\":\"41590576-163b-4acf-851e-820e41f415fa\"}}",
   "sp.key.saved.consent": true,
-  "sp.key.property.id": 16893,
   "sp.ccpa.consent.resp": "{\"uspstring\":\"1YNN\",\"status\":\"consentedAll\",\"rejectedVendors\":[],\"rejectedCategories\":[],\"signedLspa\":false,\"rejectedAll\":false}"
 }
