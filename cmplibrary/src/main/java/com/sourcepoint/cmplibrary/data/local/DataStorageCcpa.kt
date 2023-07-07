@@ -99,7 +99,6 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         }
 
     override fun saveCcpaConsentResp(value: String) {
-
         preference
             .edit()
             .putString(CCPA_CONSENT_RESP, value)

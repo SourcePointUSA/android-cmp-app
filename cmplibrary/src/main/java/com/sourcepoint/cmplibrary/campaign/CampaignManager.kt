@@ -284,11 +284,6 @@ private class CampaignManagerImpl(
 
         val usedPmId = childPmId ?: pmId
 
-//        logger?.computation(
-//            tag = "Property group - CCPA PM",
-//            msg = "pmId[$pmId] - childPmId[$childPmId] -> used[$usedPmId]"
-//        )
-
         PmUrlConfig(
             consentLanguage = spConfig.messageLanguage.value,
             uuid = ccpaUuid,
@@ -406,7 +401,7 @@ private class CampaignManagerImpl(
         get() {
             val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
-            val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE_OLD)
+            val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
             val res =
                 ((gdprUuid != null || ccpaUuid != null) && localStateSize == 0) || isV6LocalStatePresent || isV6LocalStatePresent2
 

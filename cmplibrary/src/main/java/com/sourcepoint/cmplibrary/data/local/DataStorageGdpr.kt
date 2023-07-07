@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_VERSION_KEY
@@ -28,9 +27,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_MESSAGE_SUBCATEGORY_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.USER_CONSENT_KEY
-import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.data.network.model.toGDPRUserConsent
-import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
@@ -305,14 +301,4 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .forEach { entry -> spEditor.remove(entry.key) }
         spEditor.apply()
     }
-
-    private fun fail(param: String): Nothing = throw RuntimeException("$param not fund in local storage.")
-}
-
-internal fun DataStorageGdpr.getGDPRConsent(): Either<GDPRConsentInternal> = check {
-    getGdprConsentResp()
-        .also { if (it == null || it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
-        .let { JSONObject(it) }
-        .toTreeMap()
-        .toGDPRUserConsent(uuid = this.gdprConsentUuid, applies = this.gdprApplies)
 }
