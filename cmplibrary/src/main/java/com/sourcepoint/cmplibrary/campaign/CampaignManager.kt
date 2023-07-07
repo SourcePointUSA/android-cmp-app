@@ -500,7 +500,6 @@ private class CampaignManagerImpl(
             dataStorage.nonKeyedLocalState = serialised
         }
 
-
     override var gdprUuid: String?
         get() {
             return gdprConsentStatus?.uuid
