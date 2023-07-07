@@ -358,7 +358,6 @@ val consent = """
   "sp.gdpr.key.date.created": "2022-12-08T13:56:00.766Z",
   "sp.ccpa.key.consent.status": "{\n  \"consentedAll\": true,\n  \"cookies\": [\n    {\n      \"key\": \"ccpaUUID\",\n      \"maxAge\": 31536000,\n      \"shareRootDomain\": true,\n      \"value\": \"08dcd5d5-738f-4e0d-8bd8-7ee9f24ac053\",\n      \"setPath\": true\n    },\n    {\n      \"key\": \"dnsDisplayed\",\n      \"maxAge\": 31536000,\n      \"value\": \"false\",\n      \"setPath\": true\n    },\n    {\n      \"key\": \"ccpaApplies\",\n      \"maxAge\": 31536000,\n      \"value\": \"true\",\n      \"setPath\": true\n    },\n    {\n      \"key\": \"signedLspa\",\n      \"maxAge\": 31536000,\n      \"value\": \"false\",\n      \"setPath\": true\n    }\n  ],\n  \"ccpaApplies\": true,\n  \"dateCreated\": \"2022-12-08T09:24:13.542Z\",\n  \"newUser\": false,\n  \"rejectedAll\": false,\n  \"rejectedCategories\": [\n  ],\n  \"rejectedVendors\": [\n  ],\n  \"signedLspa\": false,\n  \"status\": \"consentedAll\",\n  \"uspstring\": \"1YNN\",\n  \"uuid\": \"08dcd5d5-738f-4e0d-8bd8-7ee9f24ac053\"\n}",
   "IABTCF_PurposeOneTreatment": 0,
-  "sp.ccpa.consentUUID": "175dbca3-a884-433c-98d5-df4b679a9f62",
   "IABTCF_PublisherConsent": "0000000000",
   "IABTCF_gdprApplies": 1,
   "sp.ccpa.key.applies": true,

@@ -73,6 +73,7 @@ internal interface CampaignManager {
     var messagesOptimizedLocalState: JsonElement?
     var nonKeyedLocalState: JsonElement?
     var gdprUuid: String?
+    var ccpaUuid: String?
     val hasLocalData: Boolean
 
     var metaDataResp: MetaDataResp?
@@ -264,9 +265,6 @@ private class CampaignManagerImpl(
     }
 
     private fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = check {
-        val uuid = dataStorage.ccpaConsentUuid
-        val siteId = spConfig.propertyId.toString()
-
         val childPmId: String? = dataStorage.ccpaChildPmId
         val isChildPmIdAbsent: Boolean = childPmId == null
         val hasGroupPmId = false // feature not yet implemented
@@ -293,8 +291,8 @@ private class CampaignManagerImpl(
 
         PmUrlConfig(
             consentLanguage = spConfig.messageLanguage.value,
-            uuid = uuid,
-            siteId = siteId,
+            uuid = ccpaUuid,
+            siteId = spConfig.propertyId.toString(),
             messageId = usedPmId
         )
     }
@@ -406,7 +404,6 @@ private class CampaignManagerImpl(
 
     override val shouldCallConsentStatus: Boolean
         get() {
-            val ccpaUUID = dataStorage.ccpaConsentUuid
             val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
             val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE_OLD)
@@ -516,6 +513,15 @@ private class CampaignManagerImpl(
         set(value) {
             gdprConsentStatus = gdprConsentStatus?.copy(uuid = value)
         }
+
+    override var ccpaUuid: String?
+        get() {
+            return ccpaConsentStatus?.uuid
+        }
+        set(value) {
+            ccpaConsentStatus = ccpaConsentStatus?.copy(uuid = value)
+        }
+
     override val hasLocalData: Boolean
         get() = dataStorage.gdprConsentStatus != null || dataStorage.usPrivacyString != null
 

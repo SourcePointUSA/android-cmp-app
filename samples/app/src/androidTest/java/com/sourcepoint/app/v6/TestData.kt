@@ -76,7 +76,6 @@ object TestData {
         {
           "sp.gdpr.key.date.created": "2022-12-07T15:00:48.255Z",
           "IABTCF_PurposeOneTreatment": 0,
-          "sp.ccpa.consentUUID": "08dcd5d5-738f-4e0d-8bd8-7ee9f24ac053",
           "IABTCF_PublisherConsent": "0000000000",
           "IABTCF_gdprApplies": 1,
           "sp.ccpa.key.applies": true,
