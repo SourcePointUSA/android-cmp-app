@@ -104,14 +104,13 @@ private class ServiceImpl(
 
                 val grantsString: String = (it.content.get("grants") as JSONObject).toString()
                 val grants = JsonConverter.converter.decodeFromString<Map<String, GDPRPurposeGrants>>(grantsString)
-                val updatedGrants = campaignManager.gdprConsentStatus?.copy(
+                campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
                     grants = grants,
                     categories = categories,
                     vendors = vendors,
                     legIntCategories = legIntCategories,
                     specialFeatures = specialFeatures
                 )
-                campaignManager.gdprConsentStatus = updatedGrants
             }
         campaignManager.gdprConsentStatus!!
     }
@@ -311,9 +310,8 @@ private class ServiceImpl(
 
         var getResp: ChoiceResp? = null
 
-        val at = consentActionImpl.actionType
-        if (at == ActionType.ACCEPT_ALL || at == ActionType.REJECT_ALL) {
-
+        val actionType = consentActionImpl.actionType
+        if (actionType == ActionType.ACCEPT_ALL || actionType == ActionType.REJECT_ALL) {
             val gcParam = ChoiceParamReq(
                 choiceType = consentActionImpl.actionType.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
@@ -365,9 +363,9 @@ private class ServiceImpl(
                 // don't overwrite gdpr consents if the action is accept all or reject all
                 // because the response from those endpoints does not contain a full consent
                 // object.
-                if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
-                    campaignManager.gdprConsentStatus = gdprConsentStatus
-                    val cr = ConsentManager.responseConsentHandler(gdprConsentStatus, consentManagerUtils)
+                if (actionType != ActionType.ACCEPT_ALL && actionType != ActionType.REJECT_ALL) {
+                    campaignManager.gdprConsentStatus = postConsentResponse
+                    val cr = ConsentManager.responseConsentHandler(postConsentResponse, consentManagerUtils)
                     sPConsentsSuccess?.invoke(cr)
                 }
             }

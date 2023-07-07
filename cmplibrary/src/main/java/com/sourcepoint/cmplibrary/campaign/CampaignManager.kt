@@ -620,7 +620,7 @@ private class CampaignManagerImpl(
             gdprApplies = dataStorage.gdprApplies,
             ccpaApplies = dataStorage.ccpaApplies,
             pubData = messageReq.pubData,
-            gdprCs = gdprConsentStatus?.consentStatus,
+            gdprCs = gdprConsentStatus,
             ccpaCS = null,
         )
     }

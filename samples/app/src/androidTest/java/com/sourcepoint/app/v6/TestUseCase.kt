@@ -161,7 +161,7 @@ class TestUseCase {
                 checkConsentState(consent, false, "tcfv2-stack")
             }
             // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
-            CONSENT_LIST_2.subtract(customCategoriesDataProd.map { it.second }).forEach { consent ->
+            CONSENT_LIST_2.subtract(customCategoriesDataProd.map { it.second }.toSet()).forEach { consent ->
                 checkConsentState(consent, false, "tcfv2-stack")
             }
         }
