@@ -72,6 +72,7 @@ internal interface CampaignManager {
     var ccpaConsentStatus: CcpaCS?
     var messagesOptimizedLocalState: JsonElement?
     var nonKeyedLocalState: JsonElement?
+    var gdprUuid: String?
     val hasLocalData: Boolean
 
     var metaDataResp: MetaDataResp?
@@ -217,9 +218,6 @@ private class CampaignManagerImpl(
         useGroupPmIfAvailable: Boolean,
         groupPmId: String?
     ): Either<PmUrlConfig> = check {
-        val uuid = dataStorage.gdprConsentUuid
-        val siteId = spConfig.propertyId.toString()
-
         val childPmId: String? = dataStorage.gdprChildPmId
         val isChildPmIdAbsent: Boolean = childPmId == null
         val hasGroupPmId: Boolean = groupPmId != null
@@ -259,8 +257,8 @@ private class CampaignManagerImpl(
         PmUrlConfig(
             pmTab = pmTab,
             consentLanguage = spConfig.messageLanguage.value,
-            uuid = uuid,
-            siteId = siteId,
+            uuid = gdprUuid,
+            siteId = spConfig.propertyId.toString(),
             messageId = usedPmId
         )
     }
@@ -373,7 +371,7 @@ private class CampaignManagerImpl(
         get() {
             val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
             return messagesOptimizedLocalState == null || localStateSize == 0 || (
-                dataStorage.gdprConsentUuid == null &&
+                gdprUuid == null &&
                     (ccpaConsentStatus?.newUser == null || ccpaConsentStatus?.newUser == true)
                 )
         }
@@ -408,18 +406,17 @@ private class CampaignManagerImpl(
 
     override val shouldCallConsentStatus: Boolean
         get() {
-            val gdprUUID = dataStorage.gdprConsentUuid
             val ccpaUUID = dataStorage.ccpaConsentUuid
             val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
             val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE_OLD)
             val res =
-                ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0) || isV6LocalStatePresent || isV6LocalStatePresent2
+                ((gdprUuid != null || ccpaUuid != null) && localStateSize == 0) || isV6LocalStatePresent || isV6LocalStatePresent2
 
             logger?.computation(
                 tag = "shouldCallConsentStatus",
                 msg = """
-                gdprUUID != null [${gdprUUID != null}] - ccpaUUID != null [${ccpaUUID != null}]
+                gdprUUID != null [${gdprUuid != null}] - ccpaUUID != null [${ccpaUuid != null}]
                 localStateSize empty [${localStateSize == 0}]
                 V6.7 ls [$isV6LocalStatePresent] or V6.3 ls [$isV6LocalStatePresent2]  
                 shouldCallConsentStatus[$res]  
@@ -511,6 +508,14 @@ private class CampaignManagerImpl(
             dataStorage.nonKeyedLocalState = serialised
         }
 
+
+    override var gdprUuid: String?
+        get() {
+            return gdprConsentStatus?.uuid
+        }
+        set(value) {
+            gdprConsentStatus = gdprConsentStatus?.copy(uuid = value)
+        }
     override val hasLocalData: Boolean
         get() = dataStorage.gdprConsentStatus != null || dataStorage.usPrivacyString != null
 

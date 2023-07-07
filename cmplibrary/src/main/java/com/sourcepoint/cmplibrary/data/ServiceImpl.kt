@@ -325,10 +325,10 @@ private class ServiceImpl(
             getResp = networkClient.getChoice(gcParam)
                 .executeOnRight { response ->
                     response.gdpr?.let { responseGdpr ->
-                        campaignManager.gdprConsentStatus = responseGdpr.copy(uuid = campaignManager.gdprConsentStatus?.uuid)
+                        campaignManager.gdprConsentStatus = responseGdpr.copy(uuid = campaignManager.gdprUuid)
                     }
                     val consentHandler = ConsentManager.responseConsentHandler(
-                        response.gdpr?.copy(uuid = campaignManager.gdprConsentStatus?.uuid),
+                        response.gdpr?.copy(uuid = campaignManager.gdprUuid),
                         consentManagerUtils
                     )
                     sPConsentsSuccess?.invoke(consentHandler)
@@ -347,7 +347,7 @@ private class ServiceImpl(
             vendorListId = getResp?.gdpr?.vendorListId,
             saveAndExitVariables = consentActionImpl.saveAndExitVariablesOptimized,
             authid = authId,
-            uuid = campaignManager.gdprConsentStatus?.uuid,
+            uuid = campaignManager.gdprUuid,
             sendPvData = dataStorage.gdprSamplingResult,
             pubData = consentActionImpl.pubData.toJsonObject(),
         )
@@ -359,8 +359,8 @@ private class ServiceImpl(
         )
 
         networkClient.storeGdprChoice(postConsentParams)
-            .executeOnRight { gdprConsentStatus ->
-                campaignManager.gdprConsentStatus?.uuid = gdprConsentStatus.uuid
+            .executeOnRight { postConsentResponse ->
+                campaignManager.gdprUuid = postConsentResponse.uuid
 
                 // don't overwrite gdpr consents if the action is accept all or reject all
                 // because the response from those endpoints does not contain a full consent

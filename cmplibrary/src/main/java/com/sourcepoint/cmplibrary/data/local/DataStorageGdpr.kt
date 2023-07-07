@@ -7,7 +7,6 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_VERSION_KEY
-import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CONSENT_UUID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_AUTH_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_EMPTY_CONSENT_STRING
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_EMPTY_UUID
@@ -47,7 +46,6 @@ internal interface DataStorageGdpr {
     var gdprApplies: Boolean
     var gdprChildPmId: String?
     var gdprPostChoiceResp: String?
-    var gdprConsentUuid: String?
     var gdprMessageMetaData: String?
 
     var tcData: Map<String, Any?>
@@ -75,7 +73,6 @@ internal interface DataStorageGdpr {
     fun clearAll()
 
     companion object {
-        const val CONSENT_UUID_KEY = "sp.gdpr.consentUUID"
         const val META_DATA_KEY = "sp.gdpr.metaData"
         const val EU_CONSENT_KEY = "sp.gdpr.euconsent"
         const val USER_CONSENT_KEY = "sp.gdpr.userConsent"
@@ -211,7 +208,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     override fun clearInternalData() {
         preference
             .edit()
-            .remove(CONSENT_UUID_KEY)
             .remove(META_DATA_KEY)
             .remove(EU_CONSENT_KEY)
             .remove(AUTH_ID_KEY)
@@ -260,17 +256,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             }
         }
 
-    override var gdprConsentUuid: String?
-        get() = preference.getString(CONSENT_UUID_KEY, null)
-        set(value) {
-            value?.let {
-                preference
-                    .edit()
-                    .putString(CONSENT_UUID_KEY, it)
-                    .apply()
-            }
-        }
-
     override var gdprMessageMetaData: String?
         get() = preference.getString(GDPR_MESSAGE_METADATA, null)
         set(value) {
@@ -284,7 +269,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         val listIABTCF = preference.all.filter { prefix -> prefix.key.startsWith(IABTCF_KEY_PREFIX) }.keys
         preference.edit()
             .apply {
-                remove(CONSENT_UUID_KEY)
                 remove(META_DATA_KEY)
                 remove(EU_CONSENT_KEY)
                 remove(USER_CONSENT_KEY)

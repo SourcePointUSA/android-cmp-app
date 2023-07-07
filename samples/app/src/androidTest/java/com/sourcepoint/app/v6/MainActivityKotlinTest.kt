@@ -158,12 +158,6 @@ class MainActivityKotlinTest {
 
         wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
 
-        wr {
-            scenario.onActivity { activity ->
-                PreferenceManager.getDefaultSharedPreferences(activity).contains("sp.gdpr.consentUUID").assertTrue()
-            }
-        }
-
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
 
@@ -176,8 +170,9 @@ class MainActivityKotlinTest {
                 onUIReady(any())
                 onUIFinished(any())
                 onAction(any(), any())
-                onConsentReady(withArg {
-                    it.gdpr!!.consent.grants.map { k -> k.key }.sorted().assertEquals(grantsTester)
+                onConsentReady(withArg { spConsents ->
+                    spConsents.gdpr?.consent?.uuid.assertNotNull()
+                    spConsents.gdpr?.consent?.grants?.map { k -> k.key }?.sorted().assertEquals(grantsTester)
                 })
             }
         }
@@ -652,11 +647,6 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
-        wr {
-            scenario.onActivity { activity ->
-                PreferenceManager.getDefaultSharedPreferences(activity).contains("sp.gdpr.consentUUID").assertTrue()
-            }
-        }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapToDisableAllConsent() }
         wr { tapSaveAndExitWebView() }

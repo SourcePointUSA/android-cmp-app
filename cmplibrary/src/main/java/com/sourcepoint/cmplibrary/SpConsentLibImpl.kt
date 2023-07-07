@@ -226,7 +226,7 @@ internal class SpConsentLibImpl(
         success: (SPConsents?) -> Unit,
     ) {
         val customConsentReq = CustomConsentReq(
-            consentUUID = dataStorage.gdprConsentUuid ?: "",
+            consentUUID = campaignManager.gdprUuid ?: "",
             propertyId = campaignManager.spConfig.propertyId,
             categories = categories,
             legIntCategories = legIntCategories,
@@ -259,7 +259,7 @@ internal class SpConsentLibImpl(
         success: (SPConsents?) -> Unit
     ) {
         val customConsentReq = CustomConsentReq(
-            consentUUID = dataStorage.gdprConsentUuid ?: "",
+            consentUUID = campaignManager.gdprUuid ?: "",
             propertyId = campaignManager.spConfig.propertyId,
             categories = categories,
             legIntCategories = legIntCategories,
