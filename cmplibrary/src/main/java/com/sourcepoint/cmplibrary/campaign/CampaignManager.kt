@@ -443,9 +443,7 @@ private class CampaignManagerImpl(
     }
 
     override var gdprConsentStatus: GdprCS?
-        get() {
-            return dataStorage.gdprConsentStatus?.let { JsonConverter.converter.decodeFromString<GdprCS>(it) }
-        }
+        get() = dataStorage.gdprConsentStatus?.let { JsonConverter.converter.decodeFromString<GdprCS>(it) }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.apply {
@@ -475,12 +473,8 @@ private class CampaignManagerImpl(
         }
 
     override var messagesOptimizedLocalState: JsonElement?
-        get() {
-            return dataStorage.messagesOptimizedLocalState?.let {
-                JsonConverter.converter.decodeFromString<JsonElement>(
-                    it
-                )
-            }
+        get() = dataStorage.messagesOptimizedLocalState?.let {
+            JsonConverter.converter.decodeFromString<JsonElement>(it)
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
@@ -501,17 +495,13 @@ private class CampaignManagerImpl(
         }
 
     override var gdprUuid: String?
-        get() {
-            return gdprConsentStatus?.uuid
-        }
+        get() = gdprConsentStatus?.uuid
         set(value) {
             gdprConsentStatus = gdprConsentStatus?.copy(uuid = value)
         }
 
     override var ccpaUuid: String?
-        get() {
-            return ccpaConsentStatus?.uuid
-        }
+        get() = ccpaConsentStatus?.uuid
         set(value) {
             ccpaConsentStatus = ccpaConsentStatus?.copy(uuid = value)
         }

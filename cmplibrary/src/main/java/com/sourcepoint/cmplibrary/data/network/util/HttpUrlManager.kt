@@ -235,7 +235,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
-
     override fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl {
         // http://localhost:3000/wrapper/v2/choice/ccpa/11?env=localProd&hasCsp=true
         return HttpUrl.Builder()

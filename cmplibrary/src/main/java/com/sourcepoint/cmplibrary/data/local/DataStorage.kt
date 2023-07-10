@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.SharedPreferences
 
 internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
-
     companion object {
         const val LOCAL_STATE = "sp.key.local.state"
         const val LOCAL_STATE_OLD = "key_local_state"
