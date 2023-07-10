@@ -133,7 +133,7 @@ private class ServiceImpl(
                     pError(it)
                     return@executeOnWorkerThread
                 }
-                .executeOnRight { handleMetaDataLogic(it) }
+                .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
 
             if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
                 triggerConsentStatus(messageReq)

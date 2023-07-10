@@ -111,7 +111,7 @@ private class ConsentManagerImpl(
             service.sendConsent(actionImpl, env, sPConsentsSuccess, actionImpl.privacyManagerId)
                 .executeOnLeft { sPConsentsError?.invoke(it) }
                 .executeOnRight {
-                    clientEventManager.storedConsent()
+                    clientEventManager.registerConsentResponse()
                 }
         }
     }

@@ -19,13 +19,10 @@ class ClientEventManagerTest {
 
     @MockK
     private lateinit var consentManagerUtils: ConsentManagerUtils
-
     @MockK
     private lateinit var logger: Logger
-
     @MockK
     private lateinit var spClient: SpClient
-
     private lateinit var clientEventManager: ClientEventManager
 
     @Before
@@ -38,21 +35,20 @@ class ClientEventManagerTest {
             spClient = spClient,
             executor = MockExecutorManager()
         )
+
+        every { consentManagerUtils.gdprConsentOptimized }.returns(Either.Right(GDPRConsentInternal()))
+        every { consentManagerUtils.ccpaConsentOptimized }.returns(Either.Right(CCPAConsentInternal()))
     }
 
     @Test
     fun `GIVEN 2 successfully sendConsent (GDPR, CCPA) calls, TRIGGER 1 onSpFinish`() {
-
-        every { consentManagerUtils.gdprConsentOptimized }.returns(Either.Right(GDPRConsentInternal()))
-        every { consentManagerUtils.ccpaConsentOptimized }.returns(Either.Right(CCPAConsentInternal()))
-
         clientEventManager.run {
-            setCampaignNumber(2) // 2 campaigns GDPR and CCPA
+            setCampaignsToProcess(2) // 2 campaigns GDPR and CCPA
             setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
             setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
-            storedConsent() // first consent saved
-            storedConsent() // second consent saved
-            checkStatus() // check the status
+            registerConsentResponse() // first consent saved
+            registerConsentResponse() // second consent saved
+            checkIfAllCampaignsWereProcessed() // check the status
         }
 
         verify(exactly = 1) { spClient.onSpFinished(any()) }
@@ -60,16 +56,35 @@ class ClientEventManagerTest {
 
     @Test
     fun `GIVEN 1 successfully sendConsent call and 1 dismiss action, TRIGGER 1 onSpFinish`() {
-
-        every { consentManagerUtils.gdprConsentOptimized }.returns(Either.Right(GDPRConsentInternal()))
-        every { consentManagerUtils.ccpaConsentOptimized }.returns(Either.Right(CCPAConsentInternal()))
-
         clientEventManager.run {
-            setCampaignNumber(2) // 2 campaigns GDPR and CCPA
+            setCampaignsToProcess(2) // 2 campaigns GDPR and CCPA
             setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
             setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
-            storedConsent() // first consent saved
-            checkStatus() // check the status
+            registerConsentResponse() // first consent saved
+            checkIfAllCampaignsWereProcessed() // check the status
+        }
+
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
+    }
+
+    @Test
+    fun `GIVEN 1 campaign to process WHEN in the 2nd layer message AND user cancels the PM, TRIGGER 0 onSPFinished`() {
+        clientEventManager.run {
+            setCampaignsToProcess(1)
+            setAction(ConsentActionImpl(actionType = SHOW_OPTIONS, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
+            setAction(ConsentActionImpl(actionType = PM_DISMISS, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
+            checkIfAllCampaignsWereProcessed() // check the status
+        }
+
+        verify(exactly = 0) { spClient.onSpFinished(any()) }
+    }
+
+    @Test
+    fun `GIVEN 1 campaign to process WHEN in the 1st layer message AND user cancels the PM, TRIGGER 1 onSPFinished`() {
+        clientEventManager.run {
+            setCampaignsToProcess(1)
+            setAction(ConsentActionImpl(actionType = PM_DISMISS, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
+            checkIfAllCampaignsWereProcessed() // check the status
         }
 
         verify(exactly = 1) { spClient.onSpFinished(any()) }
@@ -77,15 +92,11 @@ class ClientEventManagerTest {
 
     @Test
     fun `GIVEN 2 dismiss action2, TRIGGER 1 onSpFinish`() {
-
-        every { consentManagerUtils.gdprConsentOptimized }.returns(Either.Right(GDPRConsentInternal()))
-        every { consentManagerUtils.ccpaConsentOptimized }.returns(Either.Right(CCPAConsentInternal()))
-
         clientEventManager.run {
-            setCampaignNumber(2) // 2 campaigns GDPR and CCPA
+            setCampaignsToProcess(2) // 2 campaigns GDPR and CCPA
             setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
             setAction(ConsentActionImpl(actionType = PM_DISMISS, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
-            checkStatus() // check the status
+            checkIfAllCampaignsWereProcessed() // check the status
         }
 
         verify(exactly = 1) { spClient.onSpFinished(any()) }
@@ -93,18 +104,14 @@ class ClientEventManagerTest {
 
     @Test
     fun `GIVEN PM flow TRIGGER 1 onSpFinish`() {
-
-        every { consentManagerUtils.gdprConsentOptimized }.returns(Either.Right(GDPRConsentInternal()))
-        every { consentManagerUtils.ccpaConsentOptimized }.returns(Either.Right(CCPAConsentInternal()))
-
         clientEventManager.run {
-            setCampaignNumber(2) // 2 campaigns GDPR and CCPA
+            setCampaignsToProcess(2) // 2 campaigns GDPR and CCPA
             setAction(ConsentActionImpl(actionType = SHOW_OPTIONS, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
             setAction(ConsentActionImpl(actionType = PM_DISMISS, requestFromPm = true, campaignType = CampaignType.GDPR)) // accept the GDPR
             setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
             setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
-            storedConsent()
-            checkStatus() // check the status
+            registerConsentResponse()
+            checkIfAllCampaignsWereProcessed() // check the status
         }
 
         verify(exactly = 1) { spClient.onSpFinished(any()) }
@@ -112,13 +119,9 @@ class ClientEventManagerTest {
 
     @Test
     fun `GIVEN 0 campaigns TRIGGER 1 onSpFinish`() {
-
-        every { consentManagerUtils.gdprConsentOptimized }.returns(Either.Right(GDPRConsentInternal()))
-        every { consentManagerUtils.ccpaConsentOptimized }.returns(Either.Right(CCPAConsentInternal()))
-
         clientEventManager.run {
-            setCampaignNumber(0) // 0 campaigns GDPR and CCPA
-            checkStatus() // check the status
+            setCampaignsToProcess(0) // 0 campaigns GDPR and CCPA
+            checkIfAllCampaignsWereProcessed() // check the status
         }
 
         verify(exactly = 1) { spClient.onSpFinished(any()) }
@@ -126,15 +129,11 @@ class ClientEventManagerTest {
 
     @Test
     fun `GIVEN 1 campaigns and 1 ACCEPT_ALL TRIGGER 1 onSpFinish`() {
-
-        every { consentManagerUtils.gdprConsentOptimized }.returns(Either.Right(GDPRConsentInternal()))
-        every { consentManagerUtils.ccpaConsentOptimized }.returns(Either.Right(CCPAConsentInternal()))
-
         clientEventManager.run {
-            setCampaignNumber(1) // 1 campaigns GDPR and CCPA
+            setCampaignsToProcess(1) // 1 campaigns GDPR and CCPA
             setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
-            storedConsent()
-            checkStatus() // check the status
+            registerConsentResponse()
+            checkIfAllCampaignsWereProcessed() // check the status
         }
 
         verify(exactly = 1) { spClient.onSpFinished(any()) }
@@ -142,14 +141,10 @@ class ClientEventManagerTest {
 
     @Test
     fun `GIVEN 1 campaigns and 1 MSG_CANCEL TRIGGER 1 onSpFinish`() {
-
-        every { consentManagerUtils.gdprConsentOptimized }.returns(Either.Right(GDPRConsentInternal()))
-        every { consentManagerUtils.ccpaConsentOptimized }.returns(Either.Right(CCPAConsentInternal()))
-
         clientEventManager.run {
-            setCampaignNumber(1) // 1 campaigns GDPR and CCPA
+            setCampaignsToProcess(1) // 1 campaigns GDPR and CCPA
             setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
-            checkStatus() // check the status
+            checkIfAllCampaignsWereProcessed() // check the status
         }
 
         verify(exactly = 1) { spClient.onSpFinished(any()) }

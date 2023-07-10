@@ -5,12 +5,15 @@ import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.verify
+import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
@@ -173,5 +176,38 @@ class CampaignManagerTest {
             siteId.assertEquals("9090")
             messageId.assertEquals("8989")
         }
+    }
+
+    /**
+     * Test case which verifies that when ccpaConsentStatus is being set the value of uspstring is
+     * being changed as well
+     */
+    @Test
+    fun `ccpaConsentStatus - WHEN set THEN should update update uspstring value in data storage`() {
+
+        // GIVEN
+        val mockCcpaConsentStatus = CcpaCS(
+            actions = listOf(),
+            applies = true,
+            ccpaApplies = true,
+            consentedAll = true,
+            cookies = listOf(),
+            dateCreated = "fake_date",
+            gpcEnabled = false,
+            newUser = false,
+            rejectedAll = false,
+            rejectedCategories = listOf(),
+            rejectedVendors = listOf(),
+            signedLspa = true,
+            status = CcpaStatus.rejectedSome,
+            uuid = "fake_uuid",
+            webConsentPayload = JsonObject(mapOf()),
+        )
+
+        // WHEN
+        sut.ccpaConsentStatus = mockCcpaConsentStatus
+
+        // THEN
+        verify(atLeast = 1) { dataStorage.uspstring = mockCcpaConsentStatus.uspstring }
     }
 }

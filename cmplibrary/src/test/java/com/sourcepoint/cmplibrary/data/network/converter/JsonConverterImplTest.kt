@@ -148,7 +148,7 @@ class JsonConverterImplTest {
             rejectedAll!!.assertFalse()
             status!!.name.assertEquals("rejectedNone")
             signedLspa!!.assertFalse()
-            uspstring.assertEquals("1YNN")
+            uspstring.assertEquals("1---")
             gpcEnabled!!.assertFalse()
             uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
             ccpaApplies!!.assertTrue()
