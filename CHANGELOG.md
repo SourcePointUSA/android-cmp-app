@@ -1,3 +1,9 @@
+## 7.2.5 (July, 10, 2023)
+* [DIA-2198](https://sourcepoint.atlassian.net/browse/DIA-2198) Manipulate CCPA consent string based on applies (#658)
+* [DIA-2243](https://sourcepoint.atlassian.net/browse/DIA-2243) Add tests to verify uspstring is being updated in the DataStorage (#656)
+* [DIA-2151](https://sourcepoint.atlassian.net/browse/DIA-2151) Removed singleShotPM from ConsentActionImpl (#657)
+* [DIA-2273](https://sourcepoint.atlassian.net/browse/DIA-2273) Removed actions var from GDPR (#652)
+
 ## 7.2.4 (June, 23, 2023)
 * [DIA-1806](https://sourcepoint.atlassian.net/browse/DIA-1806) Implement consent transfer to Webview (#649)
 * [DIA-2301](https://sourcepoint.atlassian.net/browse/DIA-2301) Fix for NULL consent UUIDs (#651)
