@@ -67,7 +67,7 @@ data class CcpaCS(
 
     val uspstring: String
         get() = generateCcpaUspString(
-            applies = ccpaApplies ?: applies ?: false,
+            applies = applies ?: false,
             ccpaStatus = status,
             signedLspa = signedLspa,
         )
