@@ -49,9 +49,16 @@ fun userConsents(context: Context): SPConsents {
 }
 
 fun campaignApplies(context: Context, campaign: CampaignType): Boolean {
+    val dataStorageGdpr = DataStorageGdpr.create(context)
+    val dataStorageCcpa = DataStorageCcpa.create(context)
+    val dataStorage = DataStorage.create(
+        context = context,
+        dsGdpr = dataStorageGdpr,
+        dsCcpa = dataStorageCcpa,
+    )
     return when (campaign) {
         CampaignType.GDPR -> DataStorageGdpr.create(context).gdprApplies
-        CampaignType.CCPA -> DataStorageCcpa.create(context).ccpaApplies
+        CampaignType.CCPA -> dataStorage.ccpaApplies
     }
 }
 

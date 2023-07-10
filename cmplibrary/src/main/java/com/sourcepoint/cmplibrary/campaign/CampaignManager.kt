@@ -20,6 +20,7 @@ import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.generateCcpaUspString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
@@ -90,7 +91,7 @@ internal interface CampaignManager {
     var dataRecordedConsent: Instant?
     var authId: String?
 
-    fun handleMetaDataLogic(md: MetaDataResp?)
+    fun handleMetaDataResponse(response: MetaDataResp?)
     fun handleOldLocalData()
     fun getGdprChoiceBody(): JsonObject
     fun getCcpaChoiceBody(): JsonObject
@@ -488,13 +489,14 @@ private class CampaignManagerImpl(
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.apply {
-                value?.ccpaApplies?.let {
-                    ccpaApplies = it
-                }
-                ccpaConsentStatus = serialised
-                usPrivacyString = value?.uspstring
-            }
+            dataStorage.ccpaConsentStatus = serialised
+
+            // regenerate and update US privacy string with new values in the data storage
+            dataStorage.uspstring = generateCcpaUspString(
+                applies = value?.applies,
+                ccpaStatus = value?.status,
+                signedLspa = value?.signedLspa,
+            )
         }
 
     override var messagesOptimizedLocalState: JsonElement?
@@ -540,28 +542,39 @@ private class CampaignManagerImpl(
         }
 
     override val hasLocalData: Boolean
-        get() = dataStorage.gdprConsentStatus != null || dataStorage.usPrivacyString != null
+        get() = dataStorage.gdprConsentStatus != null || dataStorage.uspstring.isNullOrEmpty().not()
 
-    override fun handleMetaDataLogic(md: MetaDataResp?) {
-        metaDataResp = md
-        md?.let {
-            it.ccpa?.apply {
-                applies?.let { i -> dataStorage.ccpaApplies = i }
-                sampleRate?.let { i ->
-                    if (i != dataStorage.ccpaSamplingValue) {
-                        dataStorage.ccpaSamplingValue = i
-                        dataStorage.ccpaSamplingResult = null
-                    }
+    override fun handleMetaDataResponse(response: MetaDataResp?) {
+        // update meta data response in the data storage
+        metaDataResp = response
+
+        if (response == null) return
+
+        // handle ccpa
+        response.ccpa?.apply {
+            applies?.let { i ->
+                ccpaConsentStatus?.let { ccpaCS ->
+                    val updatedCcpaConsentStatus = ccpaCS.copy(applies = i)
+                    ccpaConsentStatus = updatedCcpaConsentStatus
                 }
             }
-            it.gdpr?.apply {
-                applies?.let { i -> dataStorage.gdprApplies = i }
-                childPmId?.let { i -> dataStorage.gdprChildPmId = i }
-                sampleRate?.let { i ->
-                    if (i != dataStorage.gdprSamplingValue) {
-                        dataStorage.gdprSamplingValue = i
-                        dataStorage.gdprSamplingResult = null
-                    }
+
+            sampleRate?.let { i ->
+                if (i != dataStorage.ccpaSamplingValue) {
+                    dataStorage.ccpaSamplingValue = i
+                    dataStorage.ccpaSamplingResult = null
+                }
+            }
+        }
+
+        // handle gdpr
+        response.gdpr?.apply {
+            applies?.let { i -> dataStorage.gdprApplies = i }
+            childPmId?.let { i -> dataStorage.gdprChildPmId = i }
+            sampleRate?.let { i ->
+                if (i != dataStorage.gdprSamplingValue) {
+                    dataStorage.gdprSamplingValue = i
+                    dataStorage.gdprSamplingResult = null
                 }
             }
         }

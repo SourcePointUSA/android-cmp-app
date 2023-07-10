@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CCPA_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CHOICE_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATUS
@@ -19,6 +20,11 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PROPERTY_PRIORITY_DATA
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PV_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.SAVED_CONSENT
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
+import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.decodeFromString
 
 /**
  * Factory method to create an instance of a [DataStorage] using its implementation
@@ -78,6 +84,18 @@ private class DataStorageImpl(
                 .putString(GDPR_CONSENT_STATUS, value)
                 .apply()
         }
+
+    /**
+     * Parameter that accesses applies value from ccpaConsentStatus directly
+     *
+     * By default - false (if there are no ccpaConsentStatus in data storage or applies value is null)
+     */
+    override val ccpaApplies: Boolean
+        get() = ccpaConsentStatus?.let { verifiedCcpaConsentStatusString ->
+            check { JsonConverter.converter.decodeFromString<CcpaCS>(verifiedCcpaConsentStatusString) }
+                .getOrNull()
+                ?.applies ?: false
+        } ?: false
 
     override var ccpaConsentStatus: String?
         get() = preference.getString(CCPA_CONSENT_STATUS, null)
