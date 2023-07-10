@@ -555,8 +555,7 @@ private class CampaignManagerImpl(
             applies?.let { i ->
                 ccpaConsentStatus?.let { ccpaCS ->
                     val updatedCcpaConsentStatus = ccpaCS.copy(applies = i)
-                    dataStorage.ccpaConsentStatus =
-                        JsonConverter.converter.encodeToString(updatedCcpaConsentStatus)
+                    ccpaConsentStatus = updatedCcpaConsentStatus
                 }
             }
 
@@ -579,13 +578,6 @@ private class CampaignManagerImpl(
                 }
             }
         }
-
-        // update uspstring based on applies value (even if applies value is null we still need to update it)
-        dataStorage.uspstring = generateCcpaUspString(
-            applies = response.ccpa?.applies,
-            ccpaStatus = ccpaConsentStatus?.status,
-            signedLspa = ccpaConsentStatus?.signedLspa,
-        )
     }
 
     override fun handleOldLocalData() {
