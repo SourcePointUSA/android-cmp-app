@@ -21,7 +21,6 @@ internal interface DataStorageCcpa {
 
     val preference: SharedPreferences
 
-    var ccpaApplies: Boolean
     var ccpaChildPmId: String?
 
     var ccpaPostChoiceResp: String?
@@ -33,7 +32,7 @@ internal interface DataStorageCcpa {
 
     fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
-    var usPrivacyString: String?
+    var uspstring: String?
     fun saveCcpaMessage(value: String)
 
     fun getCcpa(): String?
@@ -80,15 +79,6 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         return preference.getString(KEY_CCPA, null)
     }
 
-    override var ccpaApplies: Boolean
-        get() = preference.getBoolean(KEY_CCPA_APPLIES, false)
-        set(value) {
-            preference
-                .edit()
-                .putBoolean(KEY_CCPA_APPLIES, value)
-                .apply()
-        }
-
     override var ccpaChildPmId: String?
         get() = preference.getString(KEY_CCPA_CHILD_PM_ID, null)
         set(value) {
@@ -105,7 +95,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .apply()
     }
 
-    override var usPrivacyString: String?
+    override var uspstring: String?
         get() = preference.getString(KEY_IAB_US_PRIVACY_STRING, null)
         set(value) {
             preference
