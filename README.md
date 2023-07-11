@@ -722,7 +722,7 @@ public class MainActivityJava {
 }
 ```
 
-Note: Keep in mind that injecting the consent into a WebView should happen on UI thread, and it is up to you to choose the best approach!
+Note: Keep in mind that injecting the consent into a WebView should happen on UI thread, and it is up to you to choose the best approach.
 
 ## Adding or Removing custom consents
 It's possible to programmatically consent the current user to a list of vendors, categories and legitimate interest categories by using the following method from the consent lib:
