@@ -30,7 +30,7 @@
   - [Set a Privacy Manager Id for the Property Group](#set-a-privacy-manager-id-for-the-property-group)
   - [ProGuard](#ProGuard)
   - [Adding or Removing custom consents](#adding-or-removing-custom-consents)
-  - [Sharing consent with a WebView](#sharing-consent-with-a-webview)
+  - [Injecting consent into a WebView](#injecting-consent-into-a-webview)
   - [The SpUtils file](#The-SpUtils-file)
     - `userConsents`
     - `clearAllData`
@@ -682,7 +682,7 @@ Using ProGuard in your project you might need to add the following rules
 
 ```
 
-## Sharing consent with a WebView
+## Injecting consent into a WebView
 After the user grants consent to all the applicable campaigns, the `onSpFinished` callback from `LocalClient` is being triggered with according consent statuses. This SDK provides an API to inject this consent into a WebView, so the web portion of your application does not invoke a consent dialog and will contain the same consent data as the native part.
 
 Kotlin
