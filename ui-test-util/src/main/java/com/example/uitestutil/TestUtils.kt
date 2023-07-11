@@ -75,14 +75,6 @@ infix fun <T> T.assertEquals(t: T) = apply { Assert.assertEquals(t, this) }
 infix fun <T> T.assertNotEquals(t: T) = apply { Assert.assertNotEquals(t, this) }
 fun <T : Any?> T.assertNotNull() = apply { Assert.assertNotNull(this) }
 
-/**
- * Receive file.json and return the content as string
- */
-fun String.jsonFile2String(): String = Thread.currentThread()
-    .contextClassLoader
-    .getResourceAsStream(this)
-    .bufferedReader().use { it.readText() }
-
 fun<A : Activity> ActivityScenario<A>.recreateAndResume(){
     this.moveToState(Lifecycle.State.RESUMED)
     this.recreate()
