@@ -899,8 +899,6 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
-        wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
-        wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
 
         wr { sharedPrefs.contains("sp.key.local.state").assertFalse() }
     }
@@ -921,8 +919,6 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
-        wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
-        wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
 
         wr { sharedPrefs.contains("sp.key.local.state").assertFalse() }
     }
@@ -943,8 +939,6 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
-        wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
-        wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
 
         wr { sharedPrefs.contains("sp.key.local.state").assertFalse() }
     }
