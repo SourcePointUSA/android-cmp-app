@@ -30,6 +30,7 @@
   - [Set a Privacy Manager Id for the Property Group](#set-a-privacy-manager-id-for-the-property-group)
   - [ProGuard](#ProGuard)
   - [Adding or Removing custom consents](#adding-or-removing-custom-consents)
+  - [Sharing consent with a WebView](#sharing-consent-with-a-webview)
   - [The SpUtils file](#The-SpUtils-file)
     - `userConsents`
     - `clearAllData`
@@ -680,6 +681,48 @@ Using ProGuard in your project you might need to add the following rules
 -dontwarn kotlinx.serialization.internal.ParametrizedClassValueWrapper
 
 ```
+
+## Sharing consent with a WebView
+After the user grants consent to all the applicable campaigns, the `onSpFinished` callback from `LocalClient` is being triggered with according consent statuses. This SDK provides an API to inject this consent into a WebView, so the web portion of your application does not invoke a consent dialog and will contain the same consent data as the native part.
+
+Kotlin
+```kotlin
+class YourKotlinActivity {
+    // ...
+    private var yourWebView: WebView
+    // ...
+    internal inner class LocalClient : SpClient {
+        // ...
+        override fun onSpFinished(sPConsents: SPConsents) {
+            // ...
+            yourWebView.preloadConsent(sPConsents)
+            // ...
+        }
+        // ...
+    }
+}
+```
+
+Java
+```java
+public class MainActivityJava {
+    // ...
+    private WebView yourWebView;
+    // ...
+    class LocalClient implements SpClient {
+        // ...
+        @Override
+        public void onSpFinished(@NotNull SPConsents sPConsents) {
+            // ...
+            WebViewExtKt.preloadConsent(yourWebView, sPConsents);
+            // ...
+        }
+        // ...
+    }
+}
+```
+
+Note: Keep in mind that injecting the consent into a WebView should happen on UI thread, and it is up to you to choose the best approach.
 
 ## Adding or Removing custom consents
 It's possible to programmatically consent the current user to a list of vendors, categories and legitimate interest categories by using the following method from the consent lib:
