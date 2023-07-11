@@ -93,7 +93,7 @@ class WebConsentTransferTestActivityTest {
             .perform(click())
 
         // check if CCPA and GDPR UUIDs are empty
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             checkTextMatchesInView(
                 id = R.id.ccpa_uuid_value_text_view,
                 text = "",
@@ -112,17 +112,17 @@ class WebConsentTransferTestActivityTest {
             .perform(click())
 
         // choose ACCEPT ALL for GDPR
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             clickAcceptAllOnConsentWebView()
         }
 
         // choose ACCEPT ALL for CCPA
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             clickAcceptAllOnConsentWebView()
         }
 
         // check if the sdk returned proper CCPA and GDPR UUIDs
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             checkTextDoesNotMatchInView(id = R.id.ccpa_uuid_value_text_view, text = "")
             checkTextDoesNotMatchInView(id = R.id.ccpa_uuid_value_text_view, text = "NULL")
             checkTextDoesNotMatchInView(id = R.id.gdpr_uuid_value_text_view, text = "")
@@ -130,7 +130,7 @@ class WebConsentTransferTestActivityTest {
         }
 
         // transfer consent to the web view
-        wr(delay = 1000L) { tapOn(R.id.to_web_view_consent_action) }
+        wr(delayInMs = 1000L) { tapOn(R.id.to_web_view_consent_action) }
 
         // check if the callbacks are returned inside the web view
         assertTextInWebViewByContainerId(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_LOAD_CONSENT)
@@ -157,7 +157,7 @@ class WebConsentTransferTestActivityTest {
             .perform(click())
 
         // check if CCPA and GDPR UUIDs are empty
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             checkTextMatchesInView(
                 id = R.id.ccpa_uuid_value_text_view,
                 text = "",
@@ -176,18 +176,18 @@ class WebConsentTransferTestActivityTest {
             .perform(click())
 
         // choose OPTIONS and then SAVE AND EXIT for GDPR
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             clickOptionsOnConsentWebView()
             clickSaveAndExitOnConsentWebView()
         }
 
         // choose ACCEPT ALL for CCPA
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             clickAcceptAllOnConsentWebView()
         }
 
         // check if the sdk returned proper CCPA and GDPR UUIDs
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             checkTextDoesNotMatchInView(id = R.id.ccpa_uuid_value_text_view, text = "")
             checkTextDoesNotMatchInView(id = R.id.ccpa_uuid_value_text_view, text = "NULL")
             checkTextDoesNotMatchInView(id = R.id.gdpr_uuid_value_text_view, text = "")
@@ -195,7 +195,7 @@ class WebConsentTransferTestActivityTest {
         }
 
         // transfer consent to the web view
-        wr(delay = 1000L) { tapOn(R.id.to_web_view_consent_action) }
+        wr(delayInMs = 1000L) { tapOn(R.id.to_web_view_consent_action) }
 
         // check if the callbacks are returned inside the web view
         assertTextInWebViewByContainerId(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_LOAD_CONSENT)
@@ -222,7 +222,7 @@ class WebConsentTransferTestActivityTest {
             .perform(click())
 
         // check if CCPA and GDPR UUIDs are empty
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             checkTextMatchesInView(
                 id = R.id.ccpa_uuid_value_text_view,
                 text = "",
@@ -241,18 +241,18 @@ class WebConsentTransferTestActivityTest {
             .perform(click())
 
         // choose ACCEPT ALL for GDPR
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             clickAcceptAllOnConsentWebView()
         }
 
         // choose OPTIONS and then SAVE AND EXIT for CCPA
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             clickOptionsOnConsentWebView()
             clickSaveAndExitOnConsentWebView()
         }
 
         // check if the sdk returned proper CCPA and GDPR UUIDs
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             checkTextDoesNotMatchInView(id = R.id.ccpa_uuid_value_text_view, text = "")
             checkTextDoesNotMatchInView(id = R.id.ccpa_uuid_value_text_view, text = "NULL")
             checkTextDoesNotMatchInView(id = R.id.gdpr_uuid_value_text_view, text = "")
@@ -260,7 +260,7 @@ class WebConsentTransferTestActivityTest {
         }
 
         // transfer consent to the web view
-        wr(delay = 1000L) { tapOn(R.id.to_web_view_consent_action) }
+        wr(delayInMs = 1000L) { tapOn(R.id.to_web_view_consent_action) }
 
         // check if the callbacks are returned inside the web view
         assertTextInWebViewByContainerId(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_LOAD_CONSENT)
@@ -287,7 +287,7 @@ class WebConsentTransferTestActivityTest {
             .perform(click())
 
         // check if CCPA and GDPR UUIDs are empty
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             checkTextMatchesInView(
                 id = R.id.ccpa_uuid_value_text_view,
                 text = "",
@@ -306,17 +306,17 @@ class WebConsentTransferTestActivityTest {
             .perform(click())
 
         // choose REJECT ALL for GDPR
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             clickRejectAllOnConsentWebView()
         }
 
         // choose REJECT ALL for CCPA
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             clickRejectAllOnConsentWebView()
         }
 
         // check if the sdk returned proper CCPA and GDPR UUIDs
-        wr(delay = 1000L) {
+        wr(delayInMs = 1000L) {
             checkTextDoesNotMatchInView(id = R.id.ccpa_uuid_value_text_view, text = "")
             checkTextDoesNotMatchInView(id = R.id.ccpa_uuid_value_text_view, text = "NULL")
             checkTextDoesNotMatchInView(id = R.id.gdpr_uuid_value_text_view, text = "")
@@ -324,7 +324,7 @@ class WebConsentTransferTestActivityTest {
         }
 
         // transfer consent to the web view
-        wr(delay = 1000L) { tapOn(R.id.to_web_view_consent_action) }
+        wr(delayInMs = 1000L) { tapOn(R.id.to_web_view_consent_action) }
 
         // check if the callbacks are returned inside the web view
         assertTextInWebViewByContainerId(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_LOAD_CONSENT)

@@ -9,15 +9,15 @@ import kotlin.jvm.Throws
 
 @Throws(Throwable::class)
 suspend fun wr(
-    delay: Long = 200,
-    times: Int = 30,
+    delayInMs: Long = 10,
+    times: Int = 2000,
     backup: (() -> Unit)? = null,
     task: () -> Unit
 ) {
     var res: TestRes.NotVerified = TestRes.NotVerified(RuntimeException("Condition Not initialized!"))
-    delay(delay)
+    delay(delayInMs)
     repeat(times) {
-        delay(250)
+        delay(delayInMs)
         when (val t = checkCondition(task)) {
             TestRes.Verified -> return
             is TestRes.NotVerified -> {
@@ -27,7 +27,6 @@ suspend fun wr(
                 res = t
             }
         }
-
     }
     throw res.th
 }
