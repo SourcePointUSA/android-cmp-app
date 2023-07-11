@@ -1,6 +1,7 @@
 package com.sourcepoint.app.v6.web
 
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -23,6 +24,7 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.util.clearAllData
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
@@ -58,6 +60,8 @@ class WebConsentTransferTestActivityTest {
 
     @Before
     fun setUp() = runBlocking {
+        clearAllData(ApplicationProvider.getApplicationContext())
+
         loadKoinModules(
             TestUseCase.mockModule(
                 spConfig = sourcePointConfig,

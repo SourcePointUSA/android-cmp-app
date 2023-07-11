@@ -1,7 +1,10 @@
+@file:Suppress("DEPRECATION")
+
 package com.sourcepoint.app.v6
 
 import android.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.*
@@ -16,7 +19,6 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeepLinkDisplayed
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeletedCustomCategoriesData
-import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeletedCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkEuconsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkFeaturesTab
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkGdprApplies
@@ -32,9 +34,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnOk
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebViewDE
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapCancelOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapFeaturesOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapNetworkOnWebView
@@ -53,12 +53,15 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
-import io.mockk.mockk
+import com.sourcepoint.cmplibrary.util.clearAllData
+import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
@@ -66,12 +69,7 @@ import org.koin.core.context.loadKoinModules
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinTest {
 
-    lateinit var scenario: ActivityScenario<MainActivityKotlin>
-
-    @After
-    fun cleanup() {
-        if (this::scenario.isLateinit) scenario.close()
-    }
+    private lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
     private val spConfCcpa = config {
         accountId = 22
@@ -126,9 +124,41 @@ class MainActivityKotlinTest {
         +(CampaignType.GDPR)
     }
 
+    @MockK
+    lateinit var spClient: SpClient
+
+    private var sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+
+    private fun storeStateFrom(oldState: String) {
+        val oldStateJson = JSONObject(oldState)
+        val spEditor = sharedPrefs.edit()
+        oldStateJson.keys().forEach {
+            check { oldStateJson.getString(it) }?.let { v -> spEditor.putString(it, v) }
+            check { oldStateJson.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
+            check { oldStateJson.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
+        }
+        spEditor.apply()
+        // verify that before the migration the local state is present
+        sharedPrefs.contains("sp.key.local.state").assertTrue()
+    }
+
+    @Before
+    fun cleanLocalStorage() {
+        clearAllData(getApplicationContext())
+    }
+
+    @Before
+    fun setupMocks() {
+        MockKAnnotations.init(this, relaxed = true)
+    }
+
+    @After
+    fun cleanup() {
+        if (this::scenario.isLateinit) scenario.close()
+    }
+
     @Test
-    fun GIVEN_a_gdpr_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
-        val spClient = mockk<SpClient>(relaxed = true)
+    fun GIVEN_a_gdpr_campaign_SHOW_message_and_ACCEPT_ALL():Unit = runBlocking {
         val grantsTester = listOf(
             "5ff4d000a228633ac048be41",
             "5f1b2fbeb8e05c306f2a1eb9",
@@ -167,39 +197,34 @@ class MainActivityKotlinTest {
             }
         }
 
-        scenario.onActivity { activity ->
-            PreferenceManager.getDefaultSharedPreferences(activity).run {
-                getString("IABTCF_AddtlConsent", null).assertEquals("1~899")
-                getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("0000000000")
-                getString("IABTCF_TCString", null).assertNotNull()
-                getInt("IABTCF_CmpSdkVersion", -1).assertNotEquals(-1)
-                getInt("IABTCF_CmpSdkID", -1).assertNotEquals(-1)
-                getInt("IABTCF_PolicyVersion", -1).assertNotEquals(-1)
-                getInt("IABTCF_UseNonStandardStacks", -1).assertNotEquals(-1)
-                getInt("IABTCF_gdprApplies", -1).assertNotEquals(-1)
-                getInt("IABTCF_PurposeOneTreatment", -1).assertNotEquals(-1)
-                getString("IABTCF_PurposeConsents", null).assertNotNull()
-                getString("IABTCF_TCString", null).assertNotNull()
-                getString("IABTCF_PublisherRestrictions10", null).assertNotNull()
-                getString("IABTCF_SpecialFeaturesOptIns", null).assertNotNull()
-                getString("IABTCF_PublisherCC", null).assertNotNull()
-                getString("IABTCF_VendorConsents", null).assertNotNull()
-                getString("IABTCF_PublisherCustomPurposesLegitimateInterests", null).assertNotNull()
-                getString("IABTCF_PurposeLegitimateInterests", null).assertNotNull()
-                getString("IABTCF_PublisherCustomPurposesConsents", null).assertNotNull()
-                getString("IABTCF_PublisherRestrictions7", null).assertNotNull()
-                getString("IABTCF_PublisherRestrictions2", null).assertNotNull()
-                getString("IABTCF_PublisherRestrictions4", null).assertNotNull()
-                getString("IABTCF_PublisherConsent", null).assertNotNull()
-            }
+        sharedPrefs.run {
+            getString("IABTCF_AddtlConsent", null).assertEquals("1~899")
+            getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("0000000000")
+            getString("IABTCF_TCString", null).assertNotNull()
+            getInt("IABTCF_CmpSdkVersion", -1).assertNotEquals(-1)
+            getInt("IABTCF_CmpSdkID", -1).assertNotEquals(-1)
+            getInt("IABTCF_PolicyVersion", -1).assertNotEquals(-1)
+            getInt("IABTCF_UseNonStandardStacks", -1).assertNotEquals(-1)
+            getInt("IABTCF_gdprApplies", -1).assertNotEquals(-1)
+            getInt("IABTCF_PurposeOneTreatment", -1).assertNotEquals(-1)
+            getString("IABTCF_PurposeConsents", null).assertNotNull()
+            getString("IABTCF_TCString", null).assertNotNull()
+            getString("IABTCF_PublisherRestrictions10", null).assertNotNull()
+            getString("IABTCF_SpecialFeaturesOptIns", null).assertNotNull()
+            getString("IABTCF_PublisherCC", null).assertNotNull()
+            getString("IABTCF_VendorConsents", null).assertNotNull()
+            getString("IABTCF_PublisherCustomPurposesLegitimateInterests", null).assertNotNull()
+            getString("IABTCF_PurposeLegitimateInterests", null).assertNotNull()
+            getString("IABTCF_PublisherCustomPurposesConsents", null).assertNotNull()
+            getString("IABTCF_PublisherRestrictions7", null).assertNotNull()
+            getString("IABTCF_PublisherRestrictions2", null).assertNotNull()
+            getString("IABTCF_PublisherRestrictions4", null).assertNotNull()
+            getString("IABTCF_PublisherConsent", null).assertNotNull()
         }
     }
 
     @Test
-    fun GIVEN_a_gdpr_campaign_CHECK_the_consent_from_a_second_activity() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_gdpr_campaign_CHECK_the_consent_from_a_second_activity():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr,
@@ -222,14 +247,10 @@ class MainActivityKotlinTest {
                 })
             }
         }
-
     }
 
     @Test
-    fun GIVEN_a_ccpa_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_ccpa_campaign_SHOW_message_and_ACCEPT_ALL():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfCcpa,
@@ -258,19 +279,11 @@ class MainActivityKotlinTest {
             }
         }
 
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                sp.getString("IABUSPrivacy_String", null).assertEquals("1YNN")
-            }
-        }
+        wr { sharedPrefs.getString("IABUSPrivacy_String", null).assertEquals("1YNN") }
     }
 
     @Test
-    fun GIVEN_a_ccpa_campaign_CHECK_the_different_status() = runBlocking<Unit> {
-
-        val spClient = SpClientMock()
-
+    fun GIVEN_a_ccpa_campaign_CHECK_the_different_status():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfCcpa,
@@ -287,20 +300,20 @@ class MainActivityKotlinTest {
         // check consentedAll
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
-        wr { spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.consentedAll) }
+        wr { verify { spClient.onConsentReady(withArg { consents ->
+            consents.ccpa?.consent?.status.assertEquals(CcpaStatus.consentedAll)
+        })}}
 
         // check consentedAll
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
-        wr { spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.rejectedAll) }
-
+        wr { verify { spClient.onConsentReady(withArg { consents ->
+            consents.ccpa?.consent?.status.assertEquals(CcpaStatus.rejectedAll)
+        })}}
     }
 
     @Test
-    fun GIVEN_a_dgpr_campaign_SHOW_message_and_REJECT_ALL() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_dgpr_campaign_SHOW_message_and_REJECT_ALL():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr,
@@ -334,10 +347,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_campaignList_ACCEPT_all_legislation() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_campaignList_ACCEPT_all_legislation():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConf,
@@ -377,10 +387,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_campaignList_ACCEPT_all_legislation_and_verify_that_the_popup_apper_1_time() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_campaignList_ACCEPT_all_legislation_and_verify_that_the_popup_apper_1_time():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConf,
@@ -405,10 +412,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_campaign_without_pupup_to_show_VERIFY_that_the_tddata_gets_saved() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_campaign_without_pupup_to_show_VERIFY_that_the_tddata_gets_saved():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdprNoMessage,
@@ -425,34 +429,29 @@ class MainActivityKotlinTest {
         wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
 
-        scenario.onActivity { activity ->
-            PreferenceManager.getDefaultSharedPreferences(activity).run {
-                getString("IABTCF_AddtlConsent", null).assertEquals("1~")
-                getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("0000000000")
-                getString("IABTCF_TCString", null).assertNotNull()
-                getInt("IABTCF_CmpSdkVersion", -1).assertNotEquals(-1)
-                getInt("IABTCF_CmpSdkID", -1).assertNotEquals(-1)
-                getInt("IABTCF_PolicyVersion", -1).assertNotEquals(-1)
-                getInt("IABTCF_UseNonStandardStacks", -1).assertNotEquals(-1)
-                getInt("IABTCF_gdprApplies", -1).assertNotEquals(-1)
-                getInt("IABTCF_PurposeOneTreatment", -1).assertNotEquals(-1)
-                getString("IABTCF_PurposeConsents", null).assertNotNull()
-                getString("IABTCF_TCString", null).assertNotNull()
-                getString("IABTCF_SpecialFeaturesOptIns", null).assertNotNull()
-                getString("IABTCF_PublisherCC", null).assertNotNull()
-                getString("IABTCF_PublisherCustomPurposesLegitimateInterests", null).assertNotNull()
-                getString("IABTCF_PurposeLegitimateInterests", null).assertNotNull()
-                getString("IABTCF_PublisherCustomPurposesConsents", null).assertNotNull()
-                getString("IABTCF_PublisherConsent", null).assertNotNull()
-            }
+        sharedPrefs.run {
+            getString("IABTCF_AddtlConsent", null).assertEquals("1~")
+            getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("0000000000")
+            getString("IABTCF_TCString", null).assertNotNull()
+            getInt("IABTCF_CmpSdkVersion", -1).assertNotEquals(-1)
+            getInt("IABTCF_CmpSdkID", -1).assertNotEquals(-1)
+            getInt("IABTCF_PolicyVersion", -1).assertNotEquals(-1)
+            getInt("IABTCF_UseNonStandardStacks", -1).assertNotEquals(-1)
+            getInt("IABTCF_gdprApplies", -1).assertNotEquals(-1)
+            getInt("IABTCF_PurposeOneTreatment", -1).assertNotEquals(-1)
+            getString("IABTCF_PurposeConsents", null).assertNotNull()
+            getString("IABTCF_TCString", null).assertNotNull()
+            getString("IABTCF_SpecialFeaturesOptIns", null).assertNotNull()
+            getString("IABTCF_PublisherCC", null).assertNotNull()
+            getString("IABTCF_PublisherCustomPurposesLegitimateInterests", null).assertNotNull()
+            getString("IABTCF_PurposeLegitimateInterests", null).assertNotNull()
+            getString("IABTCF_PublisherCustomPurposesConsents", null).assertNotNull()
+            getString("IABTCF_PublisherConsent", null).assertNotNull()
         }
     }
 
     @Test
-    fun GIVEN_a_camapignList_ACCEPT_all_legislation_from_option_button() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_camapignList_ACCEPT_all_legislation_from_option_button():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConf,
@@ -489,10 +488,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_camapignList_ACCEPT_all_legislation() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_camapignList_ACCEPT_all_legislation():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConf,
@@ -527,10 +523,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_consent_USING_gdpr_pm() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_consent_USING_gdpr_pm():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr,
@@ -559,10 +552,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_gdpr_consent_ACCEPT_ALL() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_gdpr_consent_ACCEPT_ALL():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr,
@@ -595,8 +585,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_deeplink_OPEN_an_activity() = runBlocking<Unit> {
-
+    fun GIVEN_a_deeplink_OPEN_an_activity():Unit = runBlocking {
         loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))
 
         scenario = launchActivity()
@@ -608,8 +597,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun SAVE_AND_EXIT_action() = runBlocking<Unit> {
-
+    fun SAVE_AND_EXIT_action():Unit = runBlocking {
         loadKoinModules(mockModule(spConfig = spConfGdpr, gdprPmId = "488393"))
 
         scenario = launchActivity()
@@ -624,10 +612,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun customConsentAction() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun customConsentAction():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr,
@@ -651,18 +636,14 @@ class MainActivityKotlinTest {
         verify {
             spClient.run {
                 onConsentReady(withArg {
-                    it  .gdpr?.consent?.grants!!["5e7ced57b8e05c485246cce0"]!!.purposeGrants.values.first().assertTrue()
+                    it.gdpr?.consent?.grants!!["5e7ced57b8e05c485246cce0"]!!.purposeGrants.values.first().assertTrue()
                 })
             }
         }
-
     }
 
     @Test
-    fun deleteCustomConsentAction() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun deleteCustomConsentAction():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr,
@@ -685,9 +666,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_camapignList_VERIFY_back_btn() = runBlocking<Unit> {
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_camapignList_VERIFY_back_btn():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConf,
@@ -711,9 +690,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_camapignList_PRESS_cancel_VERIFY_onConsentReady_NOT_called() = runBlocking<Unit> {
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_camapignList_PRESS_cancel_VERIFY_onConsentReady_NOT_called():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdprGroupId,
@@ -732,9 +709,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_groupId_VERIFY_that_the_right_pm_is_displayed() = runBlocking<Unit> {
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_groupId_VERIFY_that_the_right_pm_is_displayed():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdprGroupId,
@@ -750,13 +725,10 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnRefreshBtnActivity() })  { tapZustimmenAllOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkTextInParagraph("Privacy Notice Prop 1") }
-
     }
 
     @Test
-    fun TAPPING_on_aVENDORS_link_SHOW_the_PM_VENDORS_tab() = runBlocking<Unit> {
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun TAPPING_on_aVENDORS_link_SHOW_the_PM_VENDORS_tab():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfNative,
@@ -783,10 +755,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_saved_consent_CLEAR_all_SDK_variables() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_a_saved_consent_CLEAR_all_SDK_variables():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr,
@@ -801,20 +770,13 @@ class MainActivityKotlinTest {
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { clickOnClearConsent() }
         wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                val numberOfItemInSP = sp.all.size
-                numberOfItemInSP.assertEquals(1)
-                sp.getString(CLIENT_PREF_KEY, "").assertEquals(CLIENT_PREF_VAL)
-            }
+            sharedPrefs.all.size.assertEquals(1)
+            sharedPrefs.getString(CLIENT_PREF_KEY, "").assertEquals(CLIENT_PREF_VAL)
         }
     }
 
     @Test
-    fun test_GracefulDegradation_gdpr_consent_present() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun test_GracefulDegradation_gdpr_consent_present():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr.copy(messageTimeout = 3),
@@ -826,18 +788,13 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-
         wr { verify(exactly = 0) { spClient.onError(any()) } }
         wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-
     }
 
     @Test
-    fun test_GracefulDegradation_gdpr_and_ccpa_consent_present() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun test_GracefulDegradation_gdpr_and_ccpa_consent_present():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr.copy(messageTimeout = 3),
@@ -850,18 +807,13 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-
         wr { verify(exactly = 0) { spClient.onError(any()) } }
         wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-
     }
 
     @Test
-    fun test_GracefulDegradation_ccpa_consent_present() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun test_GracefulDegradation_ccpa_consent_present():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr.copy(messageTimeout = 3),
@@ -873,18 +825,13 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-
         wr { verify(exactly = 0) { spClient.onError(any()) } }
         wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-
     }
 
     @Test
-    fun test_GracefulDegradation_consent_absent() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun test_GracefulDegradation_consent_absent():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr.copy(messageTimeout = 3),
@@ -895,18 +842,13 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-
         wr { verify(exactly = 1) { spClient.onError(any()) } }
         wr { verify(exactly = 0) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 0) { spClient.onSpFinished(any()) } }
-
     }
 
     @Test
-    fun GracefulDegradation_GIVEN_a_backend_error_EXECUTE_the_onError() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GracefulDegradation_GIVEN_a_backend_error_EXECUTE_the_onError():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr.copy(propertyName = "invalid.property"),
@@ -917,19 +859,14 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-
         wr { verify(exactly = 1) { spClient.onError(any()) } }
         wr { verify(exactly = 0) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 0) { spClient.onSpFinished(any()) } }
-
     }
 
     @Test
     fun GracefulDegradation_GIVEN_a__backend_error_and_a_saved_consent_EXECUTE_the_onConsentReady() =
-        runBlocking<Unit> {
-
-            val spClient = mockk<SpClient>(relaxed = true)
-
+        runBlocking {
             loadKoinModules(
                 mockModule(
                     spConfig = spConfGdpr.copy(propertyName = "invalid.property"),
@@ -941,20 +878,13 @@ class MainActivityKotlinTest {
 
             scenario = launchActivity()
 
-
             wr { verify(exactly = 0) { spClient.onError(any()) } }
             wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
             wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-
         }
 
     @Test
-    fun GIVEN_an_old_CCPA_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
-
-        val v6LocalState = JSONObject(TestData.storedConsentGdprCcap)
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_an_old_CCPA_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConf,
@@ -964,45 +894,19 @@ class MainActivityKotlinTest {
             )
         )
 
-        scenario = launchActivity()
+        storeStateFrom(TestData.storedConsentGdprCcap)
 
-        scenario.onActivity { activity ->
-            /**
-             * Store an old v6 localState
-             */
-            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            val spEditor = sp.edit()
-            v6LocalState.keys().forEach {
-                check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
-                check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
-                check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
-            }
-            spEditor.apply()
-            // verify that before the migration the local state is present
-            sp.contains("sp.key.local.state").assertTrue()
-        }
+        scenario = launchActivity()
 
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
 
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                // verify that after the migration the local state is cancelled
-                sp.contains("sp.key.local.state").assertFalse()
-                // testr test
-            }
-        }
+        wr { sharedPrefs.contains("sp.key.local.state").assertFalse() }
     }
 
     @Test
-    fun GIVEN_an_old_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
-
-        val v6LocalState = JSONObject(TestData.storedConsentGdpr)
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_an_old_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdpr,
@@ -1012,43 +916,19 @@ class MainActivityKotlinTest {
             )
         )
 
-        scenario = launchActivity()
+        storeStateFrom(TestData.storedConsentGdpr)
 
-        scenario.onActivity { activity ->
-            /**
-             * Store an old v6 localState
-             */
-            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            val spEditor = sp.edit()
-            v6LocalState.keys().forEach {
-                check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
-                check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
-                check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
-            }
-            spEditor.apply()
-            // verify that before the migration the local state is present
-            sp.contains("sp.key.local.state").assertTrue()
-        }
+        scenario = launchActivity()
 
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
 
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                sp.contains("sp.key.local.state").assertFalse()
-            }
-        }
+        wr { sharedPrefs.contains("sp.key.local.state").assertFalse() }
     }
 
     @Test
-    fun GIVEN_an_old_CCPAv6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
-
-        val v6LocalState = JSONObject(TestData.storedConsentCcap)
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
+    fun GIVEN_an_old_CCPAv6LocalState_VERIFY_that_the_migration_is_performed():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfCcpa,
@@ -1058,35 +938,15 @@ class MainActivityKotlinTest {
             )
         )
 
-        scenario = launchActivity()
+        storeStateFrom(TestData.storedConsentCcap)
 
-        scenario.onActivity { activity ->
-            /**
-             * Store an old v6 localState
-             */
-            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            val spEditor = sp.edit()
-            v6LocalState.keys().forEach {
-                check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
-                check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
-                check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
-            }
-            spEditor.apply()
-            // verify that before the migration the local state is present
-            sp.contains("sp.key.local.state").assertTrue()
-        }
+        scenario = launchActivity()
 
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
 
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                // verify that after the migration the local state is cancelled
-                sp.contains("sp.key.local.state").assertFalse()
-            }
-        }
+        wr { sharedPrefs.contains("sp.key.local.state").assertFalse() }
     }
 
     private fun <E> check(block: () -> E): E? {
@@ -1096,5 +956,4 @@ class MainActivityKotlinTest {
             null
         }
     }
-
 }
