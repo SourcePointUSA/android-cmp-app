@@ -50,11 +50,9 @@ data class ConsentStatusResp(
 
 @Serializable
 data class CcpaCS(
-    @SerialName("actions") val actions: List<Action>?,
     @SerialName("applies") val applies: Boolean?,
     @SerialName("ccpaApplies") val ccpaApplies: Boolean?,
     @SerialName("consentedAll") val consentedAll: Boolean?,
-    @SerialName("cookies") val cookies: List<Cooky>?,
     @SerialName("dateCreated") val dateCreated: String?,
     @SerialName("gpcEnabled") val gpcEnabled: Boolean?,
     @SerialName("newUser") val newUser: Boolean?,
@@ -63,7 +61,7 @@ data class CcpaCS(
     @SerialName("rejectedVendors") val rejectedVendors: List<String>?,
     @SerialName("signedLspa") val signedLspa: Boolean?,
     @Serializable(with = CcpaStatusSerializer::class) val status: CcpaStatus?,
-    @SerialName("uuid") val uuid: String?,
+    @SerialName("uuid") var uuid: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
 ) {
 
@@ -82,7 +80,6 @@ data class GdprCS(
     @SerialName("categories") val categories: List<String>?,
     @SerialName("consentAllRef") val consentAllRef: String?,
     @SerialName("consentedToAll") val consentedToAll: Boolean?,
-    @SerialName("cookies") val cookies: List<Cooky>?,
     @SerialName("legIntCategories") val legIntCategories: List<String>?,
     @SerialName("legIntVendors") val legIntVendors: List<String>?,
     @SerialName("postPayload") val postPayload: PostPayload?,
@@ -91,7 +88,6 @@ data class GdprCS(
     @SerialName("vendors") val vendors: List<String>?,
     @SerialName("addtlConsent") val addtlConsent: String?,
     @SerialName("consentStatus") val consentStatus: ConsentStatus?,
-    @SerialName("consentUUID") val consentUUID: String?,
     @SerialName("cookieExpirationDays") val cookieExpirationDays: Int?,
     @SerialName("customVendorsResponse") val customVendorsResponse: CustomVendorsResponse?,
     @SerialName("dateCreated") val dateCreated: String?,
@@ -99,7 +95,7 @@ data class GdprCS(
     @Serializable(with = GrantsSerializer::class) val grants: Map<String, GDPRPurposeGrants>?,
     @Serializable(with = TcDataSerializer::class) val TCData: Map<String, JsonElement>?,
     @SerialName("localDataCurrent") val localDataCurrent: Boolean?,
-    @SerialName("uuid") val uuid: String?,
+    @SerialName("uuid") var uuid: String?,
     @SerialName("vendorListId") val vendorListId: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
 ) {
@@ -137,23 +133,3 @@ data class GdprCS(
         )
     }
 }
-
-@Serializable
-data class Action(
-    @SerialName("_id") val id: String?,
-    @SerialName("js") val js: String?,
-    @SerialName("onStatusChangeOnly") val onStatusChangeOnly: Boolean?,
-    @SerialName("tagManager") val tagManager: JsonElement?,
-    @SerialName("type") val type: String?,
-    @SerialName("url") val url: String?
-)
-
-@Serializable
-data class Cooky(
-    @SerialName("key") val key: String?,
-    @SerialName("maxAge") val maxAge: Int?,
-    @SerialName("session") val session: Boolean?,
-    @SerialName("shareRootDomain") val shareRootDomain: Boolean?,
-    @SerialName("value") val value: String?,
-    @SerialName("setPath") val setPath: Boolean?,
-)

@@ -48,13 +48,13 @@ internal fun Service.Companion.create(
  * Implementation os the [Service] interface
  */
 private class ServiceImpl(
-    private val nc: NetworkClient,
+    private val networkClient: NetworkClient,
     private val campaignManager: CampaignManager,
     private val consentManagerUtils: ConsentManagerUtils,
     private val dataStorage: DataStorage,
     private val logger: Logger,
     private val execManager: ExecutorManager
-) : Service, NetworkClient by nc, CampaignManager by campaignManager {
+) : Service, NetworkClient by networkClient, CampaignManager by campaignManager {
 
     private fun JSONArray.toArrayList(): ArrayList<String> {
         val list = arrayListOf<String>()
@@ -65,7 +65,7 @@ private class ServiceImpl(
     }
 
     override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<GdprCS> = check {
-        nc.sendCustomConsent(customConsentReq, env)
+        networkClient.sendCustomConsent(customConsentReq, env)
             .map {
                 if (campaignManager.gdprConsentStatus == null) {
                     genericFail("CustomConsent cannot be executed. Consent is missing!!!")
@@ -91,7 +91,7 @@ private class ServiceImpl(
     }
 
     override fun deleteCustomConsentToServ(customConsentReq: CustomConsentReq, env: Env): Either<GdprCS> = check {
-        nc.deleteCustomConsentTo(customConsentReq, env)
+        networkClient.deleteCustomConsentTo(customConsentReq, env)
             .map {
                 if (campaignManager.gdprConsentStatus == null) {
                     genericFail("CustomConsent cannot be executed. Consent is missing!!!")
@@ -104,31 +104,27 @@ private class ServiceImpl(
 
                 val grantsString: String = (it.content.get("grants") as JSONObject).toString()
                 val grants = JsonConverter.converter.decodeFromString<Map<String, GDPRPurposeGrants>>(grantsString)
-                val updatedGrants = campaignManager.gdprConsentStatus?.copy(
+                campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
                     grants = grants,
                     categories = categories,
                     vendors = vendors,
                     legIntCategories = legIntCategories,
                     specialFeatures = specialFeatures
                 )
-                campaignManager.gdprConsentStatus = updatedGrants
             }
         campaignManager.gdprConsentStatus!!
     }
 
-    var pMessageReq: MessagesParamReq? = null
     override fun getMessages(
         messageReq: MessagesParamReq,
         pSuccess: (MessagesResp) -> Unit,
         showConsent: () -> Unit,
         pError: (Throwable) -> Unit
     ) {
-        pMessageReq = messageReq
         execManager.executeOnWorkerThread {
-
             campaignManager.authId = messageReq.authId
 
-            val meta = this.getMetaData(messageReq.toMetaDataParamReq())
+            val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq())
                 .executeOnLeft {
                     pError(it)
                     return@executeOnWorkerThread
@@ -144,9 +140,9 @@ private class ServiceImpl(
             }
 
             val gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus
-            val additionsChangeDate = meta.getOrNull()?.gdpr?.additionsChangeDate
-            val legalBasisChangeDate = meta.getOrNull()?.gdpr?.legalBasisChangeDate
-            val dataRecordedConsent = campaignManager.gdprDateCreated
+            val additionsChangeDate = metadataResponse.getOrNull()?.gdpr?.additionsChangeDate
+            val legalBasisChangeDate = metadataResponse.getOrNull()?.gdpr?.legalBasisChangeDate
+            val dataRecordedConsent = campaignManager.gdprConsentStatus?.dateCreated
 
             if (dataRecordedConsent != null &&
                 gdprConsentStatus != null &&
@@ -181,7 +177,7 @@ private class ServiceImpl(
                     propertyHref = messageReq.propertyHref,
                     env = messageReq.env,
                     body = body.toString(),
-                    metadataArg = meta.getOrNull()?.toMetaDataArg(),
+                    metadataArg = metadataResponse.getOrNull()?.toMetaDataArg(),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
                     localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
                 )
@@ -201,16 +197,13 @@ private class ServiceImpl(
 
                         if (!campaignManager.hasLocalData) {
                             it.campaigns?.gdpr?.TCData?.let { tc -> dataStorage.tcData = tc.toMapOfAny() }
-                            it.campaigns?.gdpr?.dateCreated?.let { dc -> campaignManager.gdprDateCreated = dc }
 
                             campaignManager.run {
                                 if (!(messageReq.authId != null || campaignManager.shouldCallConsentStatus)) {
                                     // GDPR
                                     this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS()
-                                    gdprDateCreated = it.campaigns?.gdpr?.dateCreated
                                     // CCPA
                                     ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS()
-                                    ccpaDateCreated = it.campaigns?.ccpa?.dateCreated
                                 }
                             }
                         }
@@ -233,25 +226,21 @@ private class ServiceImpl(
             )
 
             if (consentManagerUtils.shouldTriggerByGdprSample && isGdprInConfig) {
-
                 val pvParams = PvDataParamReq(
                     env = messageReq.env,
                     body = campaignManager.getGdprPvDataBody(messageReq),
                     campaignType = GDPR
                 )
 
-                savePvData(pvParams)
+                postPvData(pvParams)
                     .executeOnLeft {
                         pError(it)
                         return@executeOnWorkerThread
                     }
-                    .executeOnRight {
-                        it.gdpr?.uuid?.let { u ->
-                            campaignManager.gdprUuid = u
-                            campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
-                                uuid = u
-                            )
-                        }
+                    .executeOnRight { pvDataResponse ->
+                        campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
+                            uuid = pvDataResponse.gdpr?.uuid
+                        )
                     }
             }
 
@@ -267,25 +256,21 @@ private class ServiceImpl(
             )
 
             if (consentManagerUtils.shouldTriggerByCcpaSample && isCcpaInConfig) {
-
                 val pvParams = PvDataParamReq(
                     env = messageReq.env,
                     body = campaignManager.getCcpaPvDataBody(messageReq),
                     campaignType = CCPA
                 )
 
-                savePvData(pvParams)
+                postPvData(pvParams)
                     .executeOnLeft {
                         pError(it)
                         return@executeOnWorkerThread
                     }
-                    .executeOnRight {
-                        it.ccpa?.uuid?.let { u ->
-                            campaignManager.ccpaUuid = u
-                            campaignManager.ccpaConsentStatus = campaignManager.ccpaConsentStatus?.copy(
-                                uuid = u
-                            )
-                        }
+                    .executeOnRight { pvDataResponse ->
+                        campaignManager.ccpaConsentStatus = campaignManager.ccpaConsentStatus?.copy(
+                            uuid = pvDataResponse.ccpa?.uuid
+                        )
                     }
             }
         }
@@ -323,9 +308,8 @@ private class ServiceImpl(
 
         var getResp: ChoiceResp? = null
 
-        val at = consentActionImpl.actionType
-        if (at == ActionType.ACCEPT_ALL || at == ActionType.REJECT_ALL) {
-
+        val actionType = consentActionImpl.actionType
+        if (actionType == ActionType.ACCEPT_ALL || actionType == ActionType.REJECT_ALL) {
             val gcParam = ChoiceParamReq(
                 choiceType = consentActionImpl.actionType.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
@@ -334,18 +318,16 @@ private class ServiceImpl(
                 metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null),
             )
 
-            getResp = nc.getChoice(gcParam)
-                .executeOnRight { r ->
-                    r.gdpr?.let {
-                        campaignManager.gdprConsentStatus = it.copy(uuid = campaignManager.gdprUuid)
+            getResp = networkClient.getChoice(gcParam)
+                .executeOnRight { response ->
+                    response.gdpr?.let { responseGdpr ->
+                        campaignManager.gdprConsentStatus = responseGdpr.copy(uuid = campaignManager.gdprUuid)
                     }
-                }
-                .executeOnRight {
-                    val cr = ConsentManager.responseConsentHandler(
-                        it.gdpr?.copy(uuid = campaignManager.gdprUuid),
+                    val consentHandler = ConsentManager.responseConsentHandler(
+                        response.gdpr?.copy(uuid = campaignManager.gdprUuid),
                         consentManagerUtils
                     )
-                    sPConsentsSuccess?.invoke(cr)
+                    sPConsentsSuccess?.invoke(consentHandler)
                 }
                 .getOrNull()
         }
@@ -366,22 +348,22 @@ private class ServiceImpl(
             pubData = consentActionImpl.pubData.toJsonObject(),
         )
 
-        val pcParam = PostChoiceParamReq(
+        val postConsentParams = PostChoiceParamReq(
             env = env,
             actionType = consentActionImpl.actionType,
             body = body
         )
 
-        nc.storeGdprChoice(pcParam)
-            .executeOnRight { gdprConsentStatus ->
-                campaignManager.gdprUuid = gdprConsentStatus.uuid
-                if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
-                    campaignManager.gdprConsentStatus = gdprConsentStatus
-                }
-            }
-            .executeOnRight {
-                if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
-                    val cr = ConsentManager.responseConsentHandler(it, consentManagerUtils)
+        networkClient.storeGdprChoice(postConsentParams)
+            .executeOnRight { postConsentResponse ->
+                campaignManager.gdprUuid = postConsentResponse.uuid
+
+                // don't overwrite gdpr consents if the action is accept all or reject all
+                // because the response from those endpoints does not contain a full consent
+                // object.
+                if (actionType != ActionType.ACCEPT_ALL && actionType != ActionType.REJECT_ALL) {
+                    campaignManager.gdprConsentStatus = postConsentResponse
+                    val cr = ConsentManager.responseConsentHandler(postConsentResponse, consentManagerUtils)
                     sPConsentsSuccess?.invoke(cr)
                 }
             }
@@ -402,21 +384,21 @@ private class ServiceImpl(
         val at = consentActionImpl.actionType
         if (at == ActionType.ACCEPT_ALL || at == ActionType.REJECT_ALL) {
 
-            val gcParam = ChoiceParamReq(
+            val getConsentParams = ChoiceParamReq(
                 choiceType = at.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null),
             )
-            nc.getChoice(gcParam)
-                .executeOnRight { r ->
-                    campaignManager.ccpaConsentStatus = r.ccpa?.copy(uuid = campaignManager.ccpaUuid)
-                    val cr = ConsentManager.responseConsentHandler(
-                        r.ccpa?.copy(uuid = campaignManager.ccpaUuid),
+            networkClient.getChoice(getConsentParams)
+                .executeOnRight { ccpaResponse ->
+                    campaignManager.ccpaConsentStatus = ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid)
+                    val consentHandler = ConsentManager.responseConsentHandler(
+                        ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid),
                         consentManagerUtils
                     )
-                    sPConsentsSuccess?.invoke(cr)
+                    sPConsentsSuccess?.invoke(consentHandler)
                 }
         }
 
@@ -428,32 +410,35 @@ private class ServiceImpl(
             messageId = messageId,
             saveAndExitVariables = consentActionImpl.saveAndExitVariablesOptimized,
             authid = authId,
-            uuid = campaignManager.ccpaUuid,
+            uuid = campaignManager.ccpaConsentStatus?.uuid,
             sendPvData = dataStorage.ccpaSamplingResult,
             pubData = consentActionImpl.pubData.toJsonObject(),
         )
 
-        val pcParam = PostChoiceParamReq(
+        val postConsentParams = PostChoiceParamReq(
             env = env,
             actionType = at,
             body = body
         )
 
-        nc.storeCcpaChoice(pcParam)
-            .executeOnRight { ccpaConsentStatus ->
-                campaignManager.ccpaUuid = ccpaConsentStatus.uuid
+        networkClient.storeCcpaChoice(postConsentParams)
+            .executeOnRight { postConsentResponse ->
+                campaignManager.ccpaConsentStatus?.uuid = postConsentResponse.uuid
                 campaignManager.ccpaConsentStatus =
-                    if (ccpaConsentStatus.webConsentPayload != null) {
-                        ccpaConsentStatus
+                    if (postConsentResponse.webConsentPayload != null) {
+                        postConsentResponse
                     } else {
-                        ccpaConsentStatus.copy(
+                        postConsentResponse.copy(
                             webConsentPayload = campaignManager.ccpaConsentStatus?.webConsentPayload
                         )
                     }
-            }.executeOnRight {
+
+                // don't overwrite gdpr consents if the action is accept all or reject all
+                // because the response from those endpoints does not contain a full consent
+                // object.
                 if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
-                    val cr = ConsentManager.responseConsentHandler(it, consentManagerUtils)
-                    sPConsentsSuccess?.invoke(cr)
+                    val consentHandler = ConsentManager.responseConsentHandler(postConsentResponse, consentManagerUtils)
+                    sPConsentsSuccess?.invoke(consentHandler)
                 }
             }
 
@@ -465,25 +450,19 @@ private class ServiceImpl(
 
     private fun triggerConsentStatus(messageReq: MessagesParamReq): Either<ConsentStatusResp> {
         val csParams = messageReq.toConsentStatusParamReq(
-            gdprUuid = campaignManager.gdprUuid,
-            ccpaUuid = campaignManager.ccpaUuid,
+            gdprUuid = campaignManager.gdprConsentStatus?.uuid,
+            ccpaUuid = campaignManager.ccpaConsentStatus?.uuid,
             localState = campaignManager.messagesOptimizedLocalState
         )
 
         return getConsentStatus(csParams)
-            .executeOnRight {
+            .executeOnRight { consentStatusResponse ->
                 campaignManager.apply {
-                    campaignManager.handleOldLocalData()
-                    messagesOptimizedLocalState = it.localState
-                    it.consentStatusData?.let { csd ->
-                        // GDPR
-                        gdprConsentStatus = csd.gdpr
-                        gdprUuid = csd.gdpr?.uuid
-                        gdprDateCreated = csd.gdpr?.dateCreated
-                        // CCPA
-                        ccpaConsentStatus = csd.ccpa
-                        ccpaUuid = csd.ccpa?.uuid
-                        ccpaDateCreated = csd.ccpa?.dateCreated
+                    handleOldLocalData()
+                    messagesOptimizedLocalState = consentStatusResponse.localState
+                    consentStatusResponse.consentStatusData?.let { consentStatusData ->
+                        gdprConsentStatus = consentStatusData.gdpr
+                        ccpaConsentStatus = consentStatusData.ccpa
                     }
                 }
             }

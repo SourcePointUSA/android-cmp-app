@@ -85,7 +85,7 @@ class MainActivityTest {
         periodicWr(period = 2000, times = 2, backup = { scenario.recreateAndResume() }) { runDemo() }
         wr { checkOnConsentReady(position = 1) }
         wr { checkOnSpFinish(position = 0) }
-        wr(delay = 200) { swipeLeftPager() }
+        wr(delayInMs = 200) { swipeLeftPager() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapMetaDeepLinkOnWebView() }
         wr { checkDeepLinkDisplayed() }

@@ -289,7 +289,7 @@ class NetworkClientImplTest {
             campaignType = CampaignType.GDPR
         )
 
-        val res = sut.savePvData(param) as? Either.Left
+        val res = sut.postPvData(param) as? Either.Left
         (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.PV_DATA.code)
     }
 
