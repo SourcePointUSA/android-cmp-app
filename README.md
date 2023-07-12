@@ -44,7 +44,6 @@
   - [Google Additional Consent](#Google-Additional-Consent)
   - [Delete user data](#Delete-user-data)
   - [Frequently Asked Questions](#Frequently-Asked-Questions)
-  - [Artifact Release Process](#Artifact-Release-Process)
 - [React Native Integration](docs-reactnative/README-REACTNATIVE.md)
  
 # How to Install 
@@ -977,49 +976,3 @@ override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
     return consentAction
 }
 ```
----
-
-# Artifact Release Process
-## Release
-To publish new release artifact you need to do following:
-* Checkout `develop` branch and pull the latest commits.
-```
-git checkout develop
-git pull
-```
-* Create a new branch based on pure develop branch code named `release/x.y.z` where x.y.z stands for ordinal version of upcoming release. Push it to `origin`. 
-```
-git checkout -b release/x.y.z
-git push --set-upstream origin release/x.y.z
-```
-* Using your preffered text editor, go to `cmplibrary/grade.property` and upgrade `VERSION_NAME = x.y.z`. Don't forget to save the changes!
-* Then go to `cmplibrary/release_note.txt`, clear it and fulfill with description of every single commit pushed to `develop` branch since the last artifact release. Please, stick to style of description which appears in that file! This part will appear in changelog after artifact release will be accomplished.
-* Commit and push these two files **ONLY**. The commit message **MUST** be “release/x.y.z”. The reason of such strict rules relates to our automated release process; please, take a note that **from now on, committing to `develop` branch is forbidden until successful artifact release.**
-```
-git add .
-git commit -m “release/x.y.z”
-git push
-```
-* Go to your browser and create a new pull request from your `release/x.y.z` branch to `master` branch.
-* Hit `Squash and merge` button.
-* Go to `Actions` tab of github and wait patientfully unless release process ends. Regularly, it takes no longer than 5 minutes.
-* Go to sonatype repository https://s01.oss.sonatype.org/
-* Log in with your credentials. Please take a note you should receive permission in order to access to SourcePoint repo.
-* Select artifact and click “close” then “confirm”
-* Refresh the page and click “release” then ”confirm”
- 
-From now, you may count your release successful. Artifact will appear on Maven Central in few hours and must be already accesible on GitHub repository page.
-## Post-release
-However, after you have accomplished artifact release process, few more steps need to be done:
-* Checkout `master` branch and pull the commits.
-```
-git checkout master
-git pull
-```
-* Merge the `master` branch into the `develop` branch and push.
-```
-git checkout develop 
-git merge master
-git push
-```
-Now post-release process is done and you have consistent solution. Enjoy!
