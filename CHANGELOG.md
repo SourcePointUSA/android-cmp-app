@@ -1,3 +1,8 @@
+## 7.2.6 (July, 13, 2023)
+* [DIA-2263](https://sourcepoint.atlassian.net/browse/DIA-2263) Create confluence page for the SDK release process (#663)
+* [DIA-2360](https://sourcepoint.atlassian.net/browse/DIA-2360) Fix message showing multiple times on reconsent flow (#659)
+* [DIA-2353](https://sourcepoint.atlassian.net/browse/DIA-2353) Document consent transfer API (#662)
+
 ## 7.2.5 (July, 10, 2023)
 * [DIA-2198](https://sourcepoint.atlassian.net/browse/DIA-2198) Manipulate CCPA consent string based on applies (#658)
 * [DIA-2243](https://sourcepoint.atlassian.net/browse/DIA-2243) Add tests to verify uspstring is being updated in the DataStorage (#656)
