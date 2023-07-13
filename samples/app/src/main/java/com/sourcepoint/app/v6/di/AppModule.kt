@@ -22,7 +22,6 @@ val customVendorDataListProd = listOf("5e7ced57b8e05c485246cce0" to "Unruly Grou
 val customCategoriesDataProd = listOf(
     "608bad95d08d3112188e0e29" to "Store and/or access information on a device",
     "608bad95d08d3112188e0e2f" to "Select basic ads"
-
 )
 
 val appModule = module {

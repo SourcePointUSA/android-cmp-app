@@ -1,11 +1,9 @@
 package com.sourcepoint.app.v6
 
-import android.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.platform.app.InstrumentationRegistry
-import com.example.uitestutil.assertTrue
 import com.example.uitestutil.wr
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllGdprConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkGdprNativeTitle
@@ -20,10 +18,12 @@ import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.util.clearAllData
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
@@ -32,8 +32,11 @@ import org.koin.core.context.loadKoinModules
 class MainActivityNativeMessTest {
 
     lateinit var scenario: ActivityScenario<NativeMessageActivity>
-    private val appContext by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
 
+    @Before
+    fun cleanLocalStorage() {
+        clearAllData(ApplicationProvider.getApplicationContext())
+    }
     @After
     fun cleanup() {
         if (this::scenario.isLateinit) scenario.close()
@@ -114,11 +117,6 @@ class MainActivityNativeMessTest {
         wr(backup = { clickOnRefreshBtnActivity() })  { checkGdprNativeTitle() }
         wr { tapNmAcceptAll() }
         wr { tapNmAcceptAll() }
-        wr {
-            scenario.onActivity { activity ->
-                PreferenceManager.getDefaultSharedPreferences(activity).contains("sp.gdpr.consentUUID").assertTrue()
-            }
-        }
 
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         verify(exactly = 2) { spClient.onNativeMessageReady(any(), any()) }
@@ -148,11 +146,7 @@ class MainActivityNativeMessTest {
 
         wr(backup = { clickOnRefreshBtnActivity() })  { checkGdprNativeTitle() }
         wr { tapNmAcceptAll() }
-        wr {
-            scenario.onActivity { activity ->
-                PreferenceManager.getDefaultSharedPreferences(activity).contains("sp.gdpr.consentUUID").assertTrue()
-            }
-        }
+
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
 
