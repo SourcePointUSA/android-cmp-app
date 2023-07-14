@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ClientEventManager
@@ -419,6 +420,7 @@ internal class SpConsentLibImpl(
     inner class JSReceiverDelegate : JSClientLib {
 
         override fun onConsentUIReady(view: View, isFromPM: Boolean) {
+            Log.i("DIA-1716", "=== JSReceiverDelegate || onConsentUIReady ===")
             executor.executeOnMain { spClient.onUIReady(view) }
         }
 
@@ -447,6 +449,8 @@ internal class SpConsentLibImpl(
         }
 
         override fun onError(view: View, errorMessage: String) {
+            Log.e("DIA-1716", "=== JSReceiverDelegate || onError ===")
+            Log.e("DIA-1716", "error = $errorMessage")
             val ex = RenderingAppException(description = errorMessage)
             spClient.onError(ex)
             pLogger.error(ex)
@@ -458,6 +462,7 @@ internal class SpConsentLibImpl(
         }
 
         override fun dismiss(view: View) {
+            Log.i("DIA-1716", "=== JSReceiverDelegate || dismiss ===")
             viewManager.removeView(view)
         }
 
