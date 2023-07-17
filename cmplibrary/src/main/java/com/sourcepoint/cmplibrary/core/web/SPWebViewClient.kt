@@ -61,7 +61,6 @@ internal class SPWebViewClient(
     override fun onReceivedError(view: WebView, request: WebResourceRequest?, error: WebResourceError) {
         Log.e("DIA-1716", "=== SPWebViewClient || onReceivedError #1 ===")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Log.e("DIA-1716", "=== SPWebViewClient || onReceivedError #1 ===")
             Log.e("DIA-1716", "code = ${error.errorCode}, error = ${error.description}")
         } else {
             Log.e("DIA-1716", "no code or description")
