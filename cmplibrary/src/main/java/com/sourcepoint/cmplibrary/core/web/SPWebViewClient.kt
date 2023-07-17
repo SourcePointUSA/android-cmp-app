@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.core.web
 import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.Build
+import android.util.Log
 import android.webkit.*  //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.*  //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
@@ -58,21 +59,33 @@ internal class SPWebViewClient(
     }
 
     override fun onReceivedError(view: WebView, request: WebResourceRequest?, error: WebResourceError) {
+        Log.e("DIA-1716", "=== SPWebViewClient || onReceivedError #1 ===")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Log.e("DIA-1716", "=== SPWebViewClient || onReceivedError #1 ===")
+            Log.e("DIA-1716", "code = ${error.errorCode}, error = ${error.description}")
+        } else {
+            Log.e("DIA-1716", "no code or description")
+        }
         super.onReceivedError(view, request, error)
         onError(WebViewException(description = error.toString()))
     }
 
     override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String?) {
+        Log.e("DIA-1716", "=== SPWebViewClient || onReceivedError #2 ===")
+        Log.e("DIA-1716", "errorCode = $errorCode, description = $description")
         super.onReceivedError(view, errorCode, description, failingUrl)
         onError(WebViewException(description = description))
     }
 
     override fun onReceivedSslError(view: WebView, handler: SslErrorHandler?, error: SslError) {
+        Log.e("DIA-1716", "=== SPWebViewClient || onReceivedSslError ===")
+        Log.e("DIA-1716", "error = $error")
         super.onReceivedSslError(view, handler, error)
         onError(WebViewException(description = error.toString()))
     }
 
     override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail?): Boolean {
+        Log.e("DIA-1716", "=== SPWebViewClient || onRenderProcessGone ===")
         val message = "The WebView rendering process crashed!"
         onError(WebViewException(description = message))
         return false
@@ -94,6 +107,8 @@ internal class SPWebViewClient(
         request: WebResourceRequest?,
         errorResponse: WebResourceResponse?
     ) {
+        Log.e("DIA-1716", "=== SPWebViewClient || onReceivedHttpError ===")
+        Log.e("DIA-1716", "code = ${errorResponse?.statusCode}, error = ${errorResponse?.reasonPhrase}")
         super.onReceivedHttpError(view, request, errorResponse)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val nl = System.getProperty("line.separator")
