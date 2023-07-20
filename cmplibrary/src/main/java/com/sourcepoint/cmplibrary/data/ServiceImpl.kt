@@ -124,7 +124,7 @@ private class ServiceImpl(
         execManager.executeOnWorkerThread {
             campaignManager.authId = messageReq.authId
 
-            val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq())
+            val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq(campaigns4Config))
                 .executeOnLeft {
                     pError(it)
                     return@executeOnWorkerThread
