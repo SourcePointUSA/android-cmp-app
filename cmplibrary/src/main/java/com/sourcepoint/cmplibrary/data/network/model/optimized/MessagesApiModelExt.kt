@@ -4,7 +4,6 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.CampaignReq
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.* // ktlint-disable
@@ -86,18 +85,20 @@ internal fun MessagesParamReq.toMetaDataParamReq(campaigns: List<CampaignReq>): 
         env = env,
         accountId = accountId,
         propertyId = propertyId,
-        metadata = JsonConverter.converter.encodeToString(MetaDataMetaDataParam(
-            gdpr = campaigns
-                .firstOrNull { it.campaignType == CampaignType.GDPR }
-                ?.let {
-                    MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
-                },
-            ccpa = campaigns
-                .firstOrNull { it.campaignType == CampaignType.CCPA }
-                ?.let {
-                    MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
-                }
-        )),
+        metadata = JsonConverter.converter.encodeToString(
+            MetaDataMetaDataParam(
+                gdpr = campaigns
+                    .firstOrNull { it.campaignType == CampaignType.GDPR }
+                    ?.let {
+                        MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
+                    },
+                ccpa = campaigns
+                    .firstOrNull { it.campaignType == CampaignType.CCPA }
+                    ?.let {
+                        MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
+                    }
+            )
+        ),
     )
 }
 
