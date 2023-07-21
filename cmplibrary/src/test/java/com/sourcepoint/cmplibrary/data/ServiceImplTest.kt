@@ -74,6 +74,9 @@ class ServiceImplTest {
     @MockK
     private lateinit var errorMock: (Throwable) -> Unit
 
+    @MockK
+    private lateinit var onErrorFromPvDataMock: (Throwable, Boolean) -> Unit
+
     private val nativeCampaign = Campaign(
         accountId = 22,
         propertyName = "tcfv2.mobile.demo",
@@ -189,7 +192,13 @@ class ServiceImplTest {
         every { cm.spConfig }.returns(spConfig)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
+        sut.getMessages(
+            messageReq = messagesParamReq,
+            showConsent = consentMockV7,
+            pSuccess = successMockV7,
+            pError = errorMock,
+            onErrorFromPvData = onErrorFromPvDataMock,
+        )
 
 //        verify(exactly = 0) { errorMock(any()) }
         verify(exactly = 1) { ncMock.getConsentStatus(any()) }
@@ -210,7 +219,13 @@ class ServiceImplTest {
         every { cm.spConfig }.returns(spConfig)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
+        sut.getMessages(
+            messageReq = messagesParamReq,
+            showConsent = consentMockV7,
+            pSuccess = successMockV7,
+            pError = errorMock,
+            onErrorFromPvData = onErrorFromPvDataMock,
+        )
 
         // TODO
     }
@@ -228,7 +243,8 @@ class ServiceImplTest {
             messageReq = messagesParamReq,
             showConsent = consentMockV7,
             pSuccess = successMockV7,
-            pError = errorMock
+            pError = errorMock,
+            onErrorFromPvData = onErrorFromPvDataMock,
         )
 
         verify(exactly = 1) { errorMock(any()) }
@@ -247,7 +263,8 @@ class ServiceImplTest {
             messageReq = messagesParamReq.copy(authId = "test"),
             showConsent = consentMockV7,
             pSuccess = successMockV7,
-            pError = errorMock
+            pError = errorMock,
+            onErrorFromPvData = onErrorFromPvDataMock,
         )
 
         verify(exactly = 1) { errorMock(any()) }
@@ -271,7 +288,8 @@ class ServiceImplTest {
             messageReq = messagesParamReq,
             showConsent = consentMockV7,
             pSuccess = successMockV7,
-            pError = errorMock
+            pError = errorMock,
+            onErrorFromPvData = onErrorFromPvDataMock,
         )
 
         verify(exactly = 1) { errorMock(any()) }
@@ -315,7 +333,8 @@ class ServiceImplTest {
             messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
             pSuccess = successMockV7,
-            pError = errorMock
+            pError = errorMock,
+            onErrorFromPvData = onErrorFromPvDataMock,
         )
 
         // THEN
@@ -360,7 +379,8 @@ class ServiceImplTest {
             messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
             pSuccess = successMockV7,
-            pError = errorMock
+            pError = errorMock,
+            onErrorFromPvData = onErrorFromPvDataMock,
         )
 
         // THEN
