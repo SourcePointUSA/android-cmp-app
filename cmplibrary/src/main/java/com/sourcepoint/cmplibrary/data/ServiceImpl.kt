@@ -119,7 +119,8 @@ private class ServiceImpl(
         messageReq: MessagesParamReq,
         pSuccess: (MessagesResp) -> Unit,
         showConsent: () -> Unit,
-        pError: (Throwable) -> Unit
+        pError: (Throwable) -> Unit,
+        onErrorFromPvData: (Throwable, Boolean) -> Unit,
     ) {
         execManager.executeOnWorkerThread {
             campaignManager.authId = messageReq.authId
@@ -233,8 +234,8 @@ private class ServiceImpl(
                 )
 
                 postPvData(pvParams)
-                    .executeOnLeft {
-                        pError(it)
+                    .executeOnLeft { gdprPvDataError ->
+                        onErrorFromPvData(gdprPvDataError, false)
                         return@executeOnWorkerThread
                     }
                     .executeOnRight { pvDataResponse ->
@@ -263,8 +264,8 @@ private class ServiceImpl(
                 )
 
                 postPvData(pvParams)
-                    .executeOnLeft {
-                        pError(it)
+                    .executeOnLeft { ccpaPvDataError ->
+                        onErrorFromPvData(ccpaPvDataError, false)
                         return@executeOnWorkerThread
                     }
                     .executeOnRight { pvDataResponse ->
