@@ -72,10 +72,7 @@ class ServiceImplTest {
     private lateinit var consentMockV7: () -> Unit
 
     @MockK
-    private lateinit var errorMock: (Throwable) -> Unit
-
-    @MockK
-    private lateinit var onErrorFromPvDataMock: (Throwable, Boolean) -> Unit
+    private lateinit var errorMock: (Throwable, Boolean) -> Unit
 
     private val nativeCampaign = Campaign(
         accountId = 22,
@@ -197,7 +194,6 @@ class ServiceImplTest {
             showConsent = consentMockV7,
             pSuccess = successMockV7,
             onFailure = errorMock,
-            onErrorFromPvData = onErrorFromPvDataMock,
         )
 
 //        verify(exactly = 0) { errorMock(any()) }
@@ -224,7 +220,6 @@ class ServiceImplTest {
             showConsent = consentMockV7,
             pSuccess = successMockV7,
             onFailure = errorMock,
-            onErrorFromPvData = onErrorFromPvDataMock,
         )
 
         // TODO
@@ -244,10 +239,9 @@ class ServiceImplTest {
             showConsent = consentMockV7,
             pSuccess = successMockV7,
             onFailure = errorMock,
-            onErrorFromPvData = onErrorFromPvDataMock,
         )
 
-        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 1) { errorMock(any(), any()) }
         verify(exactly = 0) { successMockV7(any()) }
         verify(exactly = 0) { consentMockV7() }
     }
@@ -264,10 +258,9 @@ class ServiceImplTest {
             showConsent = consentMockV7,
             pSuccess = successMockV7,
             onFailure = errorMock,
-            onErrorFromPvData = onErrorFromPvDataMock,
         )
 
-        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 1) { errorMock(any(), any()) }
         verify(exactly = 0) { successMockV7(any()) }
         verify(exactly = 0) { consentMockV7() }
     }
@@ -289,10 +282,9 @@ class ServiceImplTest {
             showConsent = consentMockV7,
             pSuccess = successMockV7,
             onFailure = errorMock,
-            onErrorFromPvData = onErrorFromPvDataMock,
         )
 
-        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 1) { errorMock(any(), any()) }
         verify(exactly = 0) { successMockV7(any()) }
         verify(exactly = 0) { consentMockV7() }
     }
@@ -334,7 +326,6 @@ class ServiceImplTest {
             showConsent = consentMockV7,
             pSuccess = successMockV7,
             onFailure = errorMock,
-            onErrorFromPvData = onErrorFromPvDataMock,
         )
 
         // THEN
@@ -380,7 +371,6 @@ class ServiceImplTest {
             showConsent = consentMockV7,
             pSuccess = successMockV7,
             onFailure = errorMock,
-            onErrorFromPvData = onErrorFromPvDataMock,
         )
 
         // THEN
