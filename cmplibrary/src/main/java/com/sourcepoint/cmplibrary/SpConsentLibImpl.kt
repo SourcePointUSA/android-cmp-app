@@ -145,7 +145,7 @@ internal class SpConsentLibImpl(
                 consentManager.sendStoredConsentToClient()
                 clientEventManager.setAction(NativeMessageActionType.GET_MSG_NOT_CALLED)
             },
-            pSuccess = {
+            onSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)
                 clientEventManager.setCampaignsToProcess(list.size)
                 if (list.isEmpty()) {

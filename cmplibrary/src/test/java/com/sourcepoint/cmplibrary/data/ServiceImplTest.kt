@@ -192,7 +192,7 @@ class ServiceImplTest {
         sut.getMessages(
             messageReq = messagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
+            onSuccess = successMockV7,
             onFailure = errorMock,
         )
 
@@ -218,7 +218,7 @@ class ServiceImplTest {
         sut.getMessages(
             messageReq = messagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
+            onSuccess = successMockV7,
             onFailure = errorMock,
         )
 
@@ -237,7 +237,7 @@ class ServiceImplTest {
         sut.getMessages(
             messageReq = messagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
+            onSuccess = successMockV7,
             onFailure = errorMock,
         )
 
@@ -256,7 +256,7 @@ class ServiceImplTest {
         sut.getMessages(
             messageReq = messagesParamReq.copy(authId = "test"),
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
+            onSuccess = successMockV7,
             onFailure = errorMock,
         )
 
@@ -280,7 +280,7 @@ class ServiceImplTest {
         sut.getMessages(
             messageReq = messagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
+            onSuccess = successMockV7,
             onFailure = errorMock,
         )
 
@@ -324,7 +324,7 @@ class ServiceImplTest {
         service.getMessages(
             messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
+            onSuccess = successMockV7,
             onFailure = errorMock,
         )
 
@@ -369,7 +369,7 @@ class ServiceImplTest {
         service.getMessages(
             messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
+            onSuccess = successMockV7,
             onFailure = errorMock,
         )
 

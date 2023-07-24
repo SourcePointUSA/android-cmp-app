@@ -117,7 +117,7 @@ private class ServiceImpl(
 
     override fun getMessages(
         messageReq: MessagesParamReq,
-        pSuccess: (MessagesResp) -> Unit,
+        onSuccess: (MessagesResp) -> Unit,
         showConsent: () -> Unit,
         onFailure: (Throwable, Boolean) -> Unit,
     ) {
@@ -208,7 +208,7 @@ private class ServiceImpl(
                             }
                         }
 
-                        execManager.executeOnMain { pSuccess(it) }
+                        execManager.executeOnMain { onSuccess(it) }
                     }
             } else {
                 execManager.executeOnMain { showConsent() }
