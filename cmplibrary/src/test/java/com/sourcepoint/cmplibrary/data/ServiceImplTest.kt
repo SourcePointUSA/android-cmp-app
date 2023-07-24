@@ -196,7 +196,7 @@ class ServiceImplTest {
             messageReq = messagesParamReq,
             showConsent = consentMockV7,
             pSuccess = successMockV7,
-            pError = errorMock,
+            onFailure = errorMock,
             onErrorFromPvData = onErrorFromPvDataMock,
         )
 
@@ -223,7 +223,7 @@ class ServiceImplTest {
             messageReq = messagesParamReq,
             showConsent = consentMockV7,
             pSuccess = successMockV7,
-            pError = errorMock,
+            onFailure = errorMock,
             onErrorFromPvData = onErrorFromPvDataMock,
         )
 
@@ -243,7 +243,7 @@ class ServiceImplTest {
             messageReq = messagesParamReq,
             showConsent = consentMockV7,
             pSuccess = successMockV7,
-            pError = errorMock,
+            onFailure = errorMock,
             onErrorFromPvData = onErrorFromPvDataMock,
         )
 
@@ -263,7 +263,7 @@ class ServiceImplTest {
             messageReq = messagesParamReq.copy(authId = "test"),
             showConsent = consentMockV7,
             pSuccess = successMockV7,
-            pError = errorMock,
+            onFailure = errorMock,
             onErrorFromPvData = onErrorFromPvDataMock,
         )
 
@@ -288,7 +288,7 @@ class ServiceImplTest {
             messageReq = messagesParamReq,
             showConsent = consentMockV7,
             pSuccess = successMockV7,
-            pError = errorMock,
+            onFailure = errorMock,
             onErrorFromPvData = onErrorFromPvDataMock,
         )
 
@@ -333,7 +333,7 @@ class ServiceImplTest {
             messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
             pSuccess = successMockV7,
-            pError = errorMock,
+            onFailure = errorMock,
             onErrorFromPvData = onErrorFromPvDataMock,
         )
 
@@ -379,7 +379,7 @@ class ServiceImplTest {
             messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
             pSuccess = successMockV7,
-            pError = errorMock,
+            onFailure = errorMock,
             onErrorFromPvData = onErrorFromPvDataMock,
         )
 

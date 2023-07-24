@@ -119,23 +119,22 @@ private class ServiceImpl(
         messageReq: MessagesParamReq,
         pSuccess: (MessagesResp) -> Unit,
         showConsent: () -> Unit,
-        pError: (Throwable) -> Unit,
-        onErrorFromPvData: (Throwable, Boolean) -> Unit,
+        onFailure: (Throwable, Boolean) -> Unit,
     ) {
         execManager.executeOnWorkerThread {
             campaignManager.authId = messageReq.authId
 
             val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq())
-                .executeOnLeft {
-                    pError(it)
+                .executeOnLeft { metaDataError ->
+                    onFailure(metaDataError, true)
                     return@executeOnWorkerThread
                 }
                 .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
 
             if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
                 triggerConsentStatus(messageReq)
-                    .executeOnLeft {
-                        pError(it)
+                    .executeOnLeft { consentStatusError ->
+                        onFailure(consentStatusError, true)
                         return@executeOnWorkerThread
                     }
             }
@@ -184,8 +183,8 @@ private class ServiceImpl(
                 )
 
                 getMessages(messagesParamReq)
-                    .executeOnLeft {
-                        pError(it)
+                    .executeOnLeft { messagesError ->
+                        onFailure(messagesError, true)
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
@@ -235,7 +234,7 @@ private class ServiceImpl(
 
                 postPvData(pvParams)
                     .executeOnLeft { gdprPvDataError ->
-                        onErrorFromPvData(gdprPvDataError, false)
+                        onFailure(gdprPvDataError, false)
                         return@executeOnWorkerThread
                     }
                     .executeOnRight { pvDataResponse ->
@@ -265,7 +264,7 @@ private class ServiceImpl(
 
                 postPvData(pvParams)
                     .executeOnLeft { ccpaPvDataError ->
-                        onErrorFromPvData(ccpaPvDataError, false)
+                        onFailure(ccpaPvDataError, false)
                         return@executeOnWorkerThread
                     }
                     .executeOnRight { pvDataResponse ->

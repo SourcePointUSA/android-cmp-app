@@ -192,53 +192,33 @@ internal class SpConsentLibImpl(
                     }
                 }
             },
-            pError = { throwable ->
-                onErrorInMessageFlow(
-                    error = throwable
-                )
-            },
-            onErrorFromPvData = { error, shouldCallOnErrorCallback ->
-                onErrorInMessageFlow(
-                    error = error,
-                    shouldCallOnErrorCallback = shouldCallOnErrorCallback
-                )
-            },
-        )
-    }
-
-    /**
-     * This method handles the error from any network call of a message flow.
-     *
-     * @param error - an error that occurred during the network call
-     * @param shouldCallOnErrorCallback - a flag that decides whether or not to invoke a callback
-     * from the [SpClient] (e.g. business requirements stating that if the error occurs in postPvData()
-     * method then the onError() callback should not be called).
-     */
-    private fun onErrorInMessageFlow(error: Throwable, shouldCallOnErrorCallback: Boolean = true) {
-        if (consentManager.storedConsent) {
-            executor.executeOnSingleThread {
-                consentManager.sendStoredConsentToClient()
-                clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
-            }
-        } else {
-            (error as? ConsentLibExceptionK)?.let { pLogger.error(it) }
-            val ex = error.toConsentLibException()
-            if (shouldCallOnErrorCallback) {
-                spClient.onError(ex)
-            }
-            pLogger.clientEvent(
-                event = "onError",
-                msg = ex.code.errorCode,
-                content = "${error.message}"
-            )
-            pLogger.e(
-                "SpConsentLib",
-                """
+            onFailure = { error, shouldCallOnErrorCallback ->
+                if (consentManager.storedConsent) {
+                    executor.executeOnSingleThread {
+                        consentManager.sendStoredConsentToClient()
+                        clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
+                    }
+                } else {
+                    (error as? ConsentLibExceptionK)?.let { pLogger.error(it) }
+                    val ex = error.toConsentLibException()
+                    if (shouldCallOnErrorCallback) {
+                        spClient.onError(ex)
+                    }
+                    pLogger.clientEvent(
+                        event = "onError",
+                        msg = ex.code.errorCode,
+                        content = "${error.message}"
+                    )
+                    pLogger.e(
+                        "SpConsentLib",
+                        """
                     onError
                     ${error.message}
                 """.trimIndent()
-            )
-        }
+                    )
+                }
+            },
+        )
     }
 
     override fun customConsentGDPR(

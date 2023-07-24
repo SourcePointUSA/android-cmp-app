@@ -39,8 +39,8 @@ internal interface Service : NetworkClient, CampaignManager {
         messageReq: MessagesParamReq,
         pSuccess: (MessagesResp) -> Unit,
         showConsent: () -> Unit,
-        pError: (Throwable) -> Unit,
-        onErrorFromPvData: (Throwable, Boolean) -> Unit,
+        onFailure: (Throwable, Boolean) -> Unit,
+//        onErrorFromPvData: (Throwable, Boolean) -> Unit,
     )
 
     companion object
