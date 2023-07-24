@@ -80,12 +80,25 @@ internal fun List<CampaignReq>.toMetadataArgs(): MetaDataArg {
     return JsonConverter.converter.decodeFromJsonElement<MetaDataArg>(json)
 }
 
-internal fun MessagesParamReq.toMetaDataParamReq(): MetaDataParamReq {
+internal fun MessagesParamReq.toMetaDataParamReq(campaigns: List<CampaignReq>): MetaDataParamReq {
     return MetaDataParamReq(
         env = env,
         accountId = accountId,
         propertyId = propertyId,
-        metadata = metadataArg?.let { JsonConverter.converter.encodeToString(it) } ?: "{}",
+        metadata = JsonConverter.converter.encodeToString(
+            MetaDataMetaDataParam(
+                gdpr = campaigns
+                    .firstOrNull { it.campaignType == CampaignType.GDPR }
+                    ?.let {
+                        MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
+                    },
+                ccpa = campaigns
+                    .firstOrNull { it.campaignType == CampaignType.CCPA }
+                    ?.let {
+                        MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
+                    }
+            )
+        ),
     )
 }
 
