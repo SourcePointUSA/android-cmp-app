@@ -212,9 +212,9 @@ internal class SpConsentLibImpl(
                     pLogger.e(
                         "SpConsentLib",
                         """
-                    onError
-                    ${error.message}
-                """.trimIndent()
+                            onError
+                            ${error.message}
+                        """.trimIndent()
                     )
                 }
             },
