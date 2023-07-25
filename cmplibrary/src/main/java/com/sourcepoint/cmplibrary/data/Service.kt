@@ -37,9 +37,9 @@ internal interface Service : NetworkClient, CampaignManager {
 
     fun getMessages(
         messageReq: MessagesParamReq,
-        pSuccess: (MessagesResp) -> Unit,
+        onSuccess: (MessagesResp) -> Unit,
         showConsent: () -> Unit,
-        pError: (Throwable) -> Unit
+        onFailure: (Throwable, Boolean) -> Unit,
     )
 
     companion object

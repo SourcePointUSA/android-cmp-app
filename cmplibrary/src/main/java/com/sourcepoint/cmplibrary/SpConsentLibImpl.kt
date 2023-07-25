@@ -145,7 +145,7 @@ internal class SpConsentLibImpl(
                 consentManager.sendStoredConsentToClient()
                 clientEventManager.setAction(NativeMessageActionType.GET_MSG_NOT_CALLED)
             },
-            pSuccess = {
+            onSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)
                 clientEventManager.setCampaignsToProcess(list.size)
                 if (list.isEmpty()) {
@@ -192,30 +192,32 @@ internal class SpConsentLibImpl(
                     }
                 }
             },
-            pError = { throwable ->
+            onFailure = { error, shouldCallOnErrorCallback ->
                 if (consentManager.storedConsent) {
                     executor.executeOnSingleThread {
                         consentManager.sendStoredConsentToClient()
                         clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
                     }
                 } else {
-                    (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
-                    val ex = throwable.toConsentLibException()
-                    spClient.onError(ex)
+                    (error as? ConsentLibExceptionK)?.let { pLogger.error(it) }
+                    val ex = error.toConsentLibException()
+                    if (shouldCallOnErrorCallback) {
+                        spClient.onError(ex)
+                    }
                     pLogger.clientEvent(
                         event = "onError",
                         msg = ex.code.errorCode,
-                        content = "${throwable.message}"
+                        content = "${error.message}"
                     )
                     pLogger.e(
                         "SpConsentLib",
                         """
-                    onError
-                    ${throwable.message}
+                            onError
+                            ${error.message}
                         """.trimIndent()
                     )
                 }
-            }
+            },
         )
     }
 

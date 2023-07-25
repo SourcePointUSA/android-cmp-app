@@ -117,24 +117,24 @@ private class ServiceImpl(
 
     override fun getMessages(
         messageReq: MessagesParamReq,
-        pSuccess: (MessagesResp) -> Unit,
+        onSuccess: (MessagesResp) -> Unit,
         showConsent: () -> Unit,
-        pError: (Throwable) -> Unit
+        onFailure: (Throwable, Boolean) -> Unit,
     ) {
         execManager.executeOnWorkerThread {
             campaignManager.authId = messageReq.authId
 
             val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq(campaigns4Config))
-                .executeOnLeft {
-                    pError(it)
+                .executeOnLeft { metaDataError ->
+                    onFailure(metaDataError, true)
                     return@executeOnWorkerThread
                 }
                 .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
 
             if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
                 triggerConsentStatus(messageReq)
-                    .executeOnLeft {
-                        pError(it)
+                    .executeOnLeft { consentStatusError ->
+                        onFailure(consentStatusError, true)
                         return@executeOnWorkerThread
                     }
             }
@@ -183,8 +183,8 @@ private class ServiceImpl(
                 )
 
                 getMessages(messagesParamReq)
-                    .executeOnLeft {
-                        pError(it)
+                    .executeOnLeft { messagesError ->
+                        onFailure(messagesError, true)
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
@@ -208,7 +208,7 @@ private class ServiceImpl(
                             }
                         }
 
-                        execManager.executeOnMain { pSuccess(it) }
+                        execManager.executeOnMain { onSuccess(it) }
                     }
             } else {
                 execManager.executeOnMain { showConsent() }
@@ -233,8 +233,8 @@ private class ServiceImpl(
                 )
 
                 postPvData(pvParams)
-                    .executeOnLeft {
-                        pError(it)
+                    .executeOnLeft { gdprPvDataError ->
+                        onFailure(gdprPvDataError, false)
                         return@executeOnWorkerThread
                     }
                     .executeOnRight { pvDataResponse ->
@@ -263,8 +263,8 @@ private class ServiceImpl(
                 )
 
                 postPvData(pvParams)
-                    .executeOnLeft {
-                        pError(it)
+                    .executeOnLeft { ccpaPvDataError ->
+                        onFailure(ccpaPvDataError, false)
                         return@executeOnWorkerThread
                     }
                     .executeOnRight { pvDataResponse ->
