@@ -45,6 +45,11 @@ data class MetaDataResp(
             ?: super.toString()
     }
 }
+@Serializable
+data class MetaDataMetaDataParam(val gdpr: MetaDataCampaign?, val ccpa: MetaDataCampaign?) {
+    @Serializable
+    data class MetaDataCampaign(val groupPmId: String?)
+}
 
 @Serializable
 data class MetaDataArg(
