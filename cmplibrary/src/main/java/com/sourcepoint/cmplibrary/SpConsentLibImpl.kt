@@ -591,6 +591,7 @@ internal class SpConsentLibImpl(
                     spClient.onAction(view, actionImpl) as? ConsentActionImpl
                 }
             }
+            else -> {}
         }
         clientEventManager.setAction(actionImpl)
     }
@@ -753,6 +754,7 @@ internal class SpConsentLibImpl(
                 consentManager.enqueueConsent(nativeConsentAction = nca)
                 moveToNextCampaign(remainingCampaigns, viewManager, spClient)
             }
+            else -> {}
         }
     }
 
