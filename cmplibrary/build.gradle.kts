@@ -18,11 +18,11 @@ group = "com.sourcepoint.cmplibrary"
 version = versionLib
 
 android {
-    compileSdkVersion(28)
+    compileSdkVersion(33)
     testOptions.unitTests.isIncludeAndroidResources = true
     defaultConfig {
         minSdkVersion(21)
-        targetSdkVersion(28)
+        targetSdkVersion(33)
         versionCode = 300
         versionName = versionLib
         multiDexEnabled = true
