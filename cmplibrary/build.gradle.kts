@@ -18,11 +18,11 @@ group = "com.sourcepoint.cmplibrary"
 version = versionLib
 
 android {
-    compileSdkVersion(28)
+    compileSdkVersion(33)
     testOptions.unitTests.isIncludeAndroidResources = true
     defaultConfig {
         minSdkVersion(21)
-        targetSdkVersion(28)
+        targetSdkVersion(33)
         versionCode = 300
         versionName = versionLib
         multiDexEnabled = true
@@ -89,7 +89,6 @@ dependencies {
     implementation(Libs.kotlinxCoroutinesCore)
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
     coreLibraryDesugaring( "com.android.tools:desugar_jdk_libs:1.1.5")
-
 
     // Unfortunately we depend on a outdated version of okhttp due to its support to older versions of Android
     //noinspection GradleDependency
