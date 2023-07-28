@@ -160,14 +160,15 @@ private class ServiceImpl(
 
             if (campaignManager.shouldCallMessages) {
 
-                val body = getMessageBody(
+                val body = createGetMessagesRequestBody(
                     accountId = messageReq.accountId,
                     propertyHref = messageReq.propertyHref,
-                    cs = campaignManager.gdprConsentStatus?.consentStatus,
-                    ccpaStatus = campaignManager.ccpaConsentStatus?.status?.name,
                     campaigns = campaignManager.campaigns4Config,
+                    gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus,
+                    ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
+                    campaignEnv = campaignManager.spConfig.campaignsEnv,
                     consentLanguage = campaignManager.messageLanguage.value,
-                    campaignEnv = campaignManager.spConfig.campaignsEnv
+                    localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
                 )
 
                 val messagesParamReq = MessagesParamReq(
@@ -179,7 +180,6 @@ private class ServiceImpl(
                     body = body.toString(),
                     metadataArg = metadataResponse.getOrNull()?.toMetaDataArg(),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
-                    localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
                 )
 
                 getMessages(messagesParamReq)

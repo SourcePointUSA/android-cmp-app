@@ -294,12 +294,12 @@ class HttpUrlManagerTest {
             )
         )
 
-        val body = getMessageBody(
+        val body = createGetMessagesRequestBody(
             accountId = 22,
-            cs = cs.consentStatusData?.gdpr?.consentStatus,
+            gdprConsentStatus = cs.consentStatusData?.gdpr?.consentStatus,
             propertyHref = "tests.unified-script.com",
             campaigns = list,
-            ccpaStatus = null,
+            ccpaConsentStatus = null,
             consentLanguage = "ES",
             campaignEnv = CampaignsEnv.STAGE
         )

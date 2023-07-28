@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
+import android.os.Build
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
@@ -8,19 +9,44 @@ import com.sourcepoint.cmplibrary.model.CampaignReq
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.* // ktlint-disable
 
-internal fun getMessageBody(
-    propertyHref: String,
+private const val GET_MESSAGES_REQ_BODY_ACCOUNT_ID_KEY = "accountId"
+private const val GET_MESSAGES_REQ_BODY_PROPERTY_HREF_KEY = "propertyHref"
+private const val GET_MESSAGES_REQ_BODY_CAMPAIGNS_KEY = "campaigns"
+private const val GET_MESSAGES_REQ_BODY_CAMPAIGN_ENV_KEY = "campaignEnv"
+private const val GET_MESSAGES_REQ_BODY_CONSENT_LANGUAGE_KEY = "consentLanguage"
+private const val GET_MESSAGES_REQ_BODY_HAS_CSP_KEY = "hasCSP"
+private const val GET_MESSAGES_REQ_INCLUDE_DATA_KEY = "includeData"
+private const val GET_MESSAGES_REQ_LOCAL_STATE_KEY = "localState"
+private const val GET_MESSAGES_REQ_OS_KEY = "os"
+
+internal fun createGetMessagesRequestBody(
     accountId: Long,
+    propertyHref: String,
     campaigns: List<CampaignReq>,
-    cs: ConsentStatus?,
-    ccpaStatus: String?,
-    consentLanguage: String?,
+    gdprConsentStatus: ConsentStatus?,
+    ccpaConsentStatus: String?,
     campaignEnv: CampaignsEnv?,
+    consentLanguage: String?,
+    localState: JsonObject?,
 ): JsonObject {
     return buildJsonObject {
-        put("accountId", accountId)
-        campaignEnv?.env?.let { put("campaignEnv", it) }
-        putJsonObject("includeData") {
+
+        put(GET_MESSAGES_REQ_BODY_ACCOUNT_ID_KEY, accountId)
+
+        put(GET_MESSAGES_REQ_BODY_PROPERTY_HREF_KEY, "https://$propertyHref")
+
+        put(
+            GET_MESSAGES_REQ_BODY_CAMPAIGNS_KEY,
+            campaigns.toMetadataBody(gdprConsentStatus, ccpaConsentStatus)
+        )
+
+        campaignEnv?.env?.let { put(GET_MESSAGES_REQ_BODY_CAMPAIGN_ENV_KEY, it) }
+
+        put(GET_MESSAGES_REQ_BODY_CONSENT_LANGUAGE_KEY, consentLanguage)
+
+        put(GET_MESSAGES_REQ_BODY_HAS_CSP_KEY, false)
+
+        putJsonObject(GET_MESSAGES_REQ_INCLUDE_DATA_KEY) {
             putJsonObject("TCData") {
                 put("type", "RecordString")
             }
@@ -31,10 +57,13 @@ internal fun getMessageBody(
                 put("type", "RecordString")
             }
         }
-        put("propertyHref", "https://$propertyHref")
-        put("hasCSP", true)
-        put("campaigns", campaigns.toMetadataBody(cs, ccpaStatus))
-        put("consentLanguage", consentLanguage)
+
+        put(GET_MESSAGES_REQ_LOCAL_STATE_KEY, localState ?: JsonObject(mapOf()))
+
+        putJsonObject(GET_MESSAGES_REQ_OS_KEY) {
+            put("name", "android")
+            put("version", "${Build.VERSION.SDK_INT}")
+        }
     }
 }
 
@@ -50,16 +79,15 @@ internal fun List<CampaignReq>.toMetadataBody(
                         "consentStatus",
                         cs?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonObject(mapOf())
                     )
-                    cs?.let { put("hasLocalData", true) }
+                    put("hasLocalData", cs != null)
                 }
                 if (c.campaignType == CampaignType.CCPA) {
                     put("status", ccpaStatus ?: "")
-                    ccpaStatus?.let { put("hasLocalData", true) }
+                    put("hasLocalData", ccpaStatus != null)
                 }
                 putJsonObject("targetingParams") {
                     c.targetingParams.forEach { t -> put(t.key, t.value) }
                 }
-                put("groupPmId", c.groupPmId)
             }
         }
     }
