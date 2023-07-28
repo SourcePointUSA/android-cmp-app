@@ -9,6 +9,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.encodeToJsonElement
 import org.junit.Test
@@ -54,13 +55,14 @@ class MessagesApiModelTest {
             campaigns = list,
             ccpaConsentStatus = null,
             consentLanguage = null,
-            campaignEnv = CampaignsEnv.STAGE
+            campaignEnv = CampaignsEnv.STAGE,
+            localState = JsonObject(mapOf()),
         )
 
         (body["accountId"] as JsonPrimitive).content.assertEquals("22")
         (body["campaignEnv"] as JsonPrimitive).content.assertEquals("stage")
         (body["propertyHref"] as JsonPrimitive).content.assertEquals("https://tests.unified-script.com")
-        (body["hasCSP"] as JsonPrimitive).content.assertEquals("true")
+        (body["hasCSP"] as JsonPrimitive).content.assertEquals("false")
         body.contains("campaigns").assertTrue()
     }
 

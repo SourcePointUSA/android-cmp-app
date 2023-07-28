@@ -15,6 +15,7 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 import org.junit.Test
 
@@ -301,7 +302,8 @@ class HttpUrlManagerTest {
             campaigns = list,
             ccpaConsentStatus = null,
             consentLanguage = "ES",
-            campaignEnv = CampaignsEnv.STAGE
+            campaignEnv = CampaignsEnv.STAGE,
+            localState = JsonObject(mapOf()),
         )
 
         val param = MessagesParamReq(
@@ -314,6 +316,6 @@ class HttpUrlManagerTest {
             propertyHref = "asdfasdfasd"
         )
         val sut = HttpUrlManagerSingleton.getMessagesUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages?env=prod&nonKeyedLocalState=%7B%7D&body={%22accountId%22:22,%22campaignEnv%22:%22stage%22,%22includeData%22:{%22TCData%22:{%22type%22:%22RecordString%22},%22campaigns%22:{%22type%22:%22RecordString%22},%22webConsentPayload%22:{%22type%22:%22RecordString%22}},%22propertyHref%22:%22https://tests.unified-script.com%22,%22hasCSP%22:true,%22campaigns%22:{%22gdpr%22:{%22consentStatus%22:{%22consentedAll%22:true,%22consentedToAny%22:false,%22granularStatus%22:{%22defaultConsent%22:false,%22previousOptInAll%22:false,%22purposeConsent%22:%22ALL%22,%22purposeLegInt%22:%22ALL%22,%22vendorConsent%22:%22ALL%22,%22vendorLegInt%22:%22ALL%22},%22hasConsentData%22:false,%22rejectedAny%22:false,%22rejectedLI%22:false},%22hasLocalData%22:true,%22targetingParams%22:{},%22groupPmId%22:null}},%22consentLanguage%22:%22ES%22}&metadata={%20%20%22ccpa%22:%20{%20%20%20%20%22applies%22:%20true%20%20},%20%20%22gdpr%22:%20{%20%20%20%20%22applies%22:%20true%20%20}}&localState={}&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages?env=prod&nonKeyedLocalState=%7B%7D&body={%22accountId%22:22,%22propertyHref%22:%22https://tests.unified-script.com%22,%22campaigns%22:{%22gdpr%22:{%22consentStatus%22:{%22consentedAll%22:true,%22consentedToAny%22:false,%22granularStatus%22:{%22defaultConsent%22:false,%22previousOptInAll%22:false,%22purposeConsent%22:%22ALL%22,%22purposeLegInt%22:%22ALL%22,%22vendorConsent%22:%22ALL%22,%22vendorLegInt%22:%22ALL%22},%22hasConsentData%22:false,%22rejectedAny%22:false,%22rejectedLI%22:false},%22hasLocalData%22:true,%22targetingParams%22:{}}},%22campaignEnv%22:%22stage%22,%22consentLanguage%22:%22ES%22,%22hasCSP%22:false,%22includeData%22:{%22TCData%22:{%22type%22:%22RecordString%22},%22campaigns%22:{%22type%22:%22RecordString%22},%22webConsentPayload%22:{%22type%22:%22RecordString%22}},%22localState%22:{},%22os%22:{%22name%22:%22android%22,%22version%22:%220%22}}&metadata={%20%20%22ccpa%22:%20{%20%20%20%20%22applies%22:%20true%20%20},%20%20%22gdpr%22:%20{%20%20%20%20%22applies%22:%20true%20%20}}&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
     }
 }
