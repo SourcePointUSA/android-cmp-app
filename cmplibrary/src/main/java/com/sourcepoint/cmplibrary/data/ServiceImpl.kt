@@ -11,6 +11,9 @@ import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.converter.toMapOfAny
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.generateIncludeDataForMessages
+import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
@@ -23,6 +26,8 @@ import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONArray
 import org.json.JSONObject
@@ -160,15 +165,24 @@ private class ServiceImpl(
 
             if (campaignManager.shouldCallMessages) {
 
-                val body = createGetMessagesRequestBody(
+                val operatingSystemInfo = OperatingSystemInfoParam()
+
+                val localState = campaignManager.messagesOptimizedLocalState?.jsonObject
+                    ?: JsonObject(mapOf())
+
+                val body = MessagesBodyReq(
                     accountId = messageReq.accountId,
-                    propertyHref = messageReq.propertyHref,
-                    campaigns = campaignManager.campaigns4Config,
-                    gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus,
-                    ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
-                    campaignEnv = campaignManager.spConfig.campaignsEnv,
+                    propertyHref = "https://${messageReq.propertyHref}",
+                    campaigns = campaignManager.campaigns4Config.toMetadataBody(
+                        gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus,
+                        ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
+                    ),
+                    campaignEnv = campaignManager.spConfig.campaignsEnv.env,
                     consentLanguage = campaignManager.messageLanguage.value,
-                    localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
+                    hasCSP = false,
+                    includeData = generateIncludeDataForMessages(),
+                    localState = localState,
+                    operatingSystem = operatingSystemInfo,
                 )
 
                 val messagesParamReq = MessagesParamReq(
@@ -177,7 +191,7 @@ private class ServiceImpl(
                     authId = messageReq.authId,
                     propertyHref = messageReq.propertyHref,
                     env = messageReq.env,
-                    body = body.toString(),
+                    body = JsonConverter.converter.encodeToString(body),
                     metadataArg = metadataResponse.getOrNull()?.toMetaDataArg(),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
                 )

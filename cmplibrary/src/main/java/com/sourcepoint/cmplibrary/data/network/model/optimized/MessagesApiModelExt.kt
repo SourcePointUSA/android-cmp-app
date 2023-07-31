@@ -68,8 +68,8 @@ internal fun createGetMessagesRequestBody(
 }
 
 internal fun List<CampaignReq>.toMetadataBody(
-    cs: ConsentStatus? = null,
-    ccpaStatus: String? = null
+    gdprConsentStatus: ConsentStatus? = null,
+    ccpaConsentStatus: String? = null
 ): JsonObject {
     return buildJsonObject {
         this@toMetadataBody.forEach { c ->
@@ -77,13 +77,13 @@ internal fun List<CampaignReq>.toMetadataBody(
                 if (c.campaignType == CampaignType.GDPR) {
                     put(
                         "consentStatus",
-                        cs?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonObject(mapOf())
+                        gdprConsentStatus?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonObject(mapOf())
                     )
-                    put("hasLocalData", cs != null)
+                    put("hasLocalData", gdprConsentStatus != null)
                 }
                 if (c.campaignType == CampaignType.CCPA) {
-                    put("status", ccpaStatus ?: "")
-                    put("hasLocalData", ccpaStatus != null)
+                    put("status", ccpaConsentStatus ?: "")
+                    put("hasLocalData", ccpaConsentStatus != null)
                 }
                 putJsonObject("targetingParams") {
                     c.targetingParams.forEach { t -> put(t.key, t.value) }
