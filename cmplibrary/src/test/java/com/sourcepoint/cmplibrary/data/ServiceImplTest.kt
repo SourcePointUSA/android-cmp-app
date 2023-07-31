@@ -13,6 +13,7 @@ import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
@@ -268,9 +269,22 @@ class ServiceImplTest {
     @Test
     fun `GIVEN a Left object during the getConsentStatus req CALL the error cb`() {
 
+        val mockMessagesParamReq = messagesParamReq.copy(
+            authId = "mock_auth_id"
+        )
+        val mockCampaignsList = listOf(
+            SpCampaign(
+                campaignType = CampaignType.GDPR
+            ),
+            SpCampaign(
+                campaignType = CampaignType.CCPA
+            ),
+        )
+        every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { ncMock.getMetaData(any()) }.returns(Right(mockMetaDataResp))
         every { ncMock.getConsentStatus(any()) }.returns(Right(mockConsentStatusResp))
         every { ncMock.getMessages(any()) }.returns(Left(RuntimeException()))
+        every { cm.messageLanguage } returns MessageLanguage.ENGLISH
         every { cm.shouldCallMessages }.returns(true)
         every { cm.messagesOptimizedLocalState }.returns(JsonObject(emptyMap()))
         every { cm.nonKeyedLocalState }.returns(JsonObject(emptyMap()))
@@ -278,7 +292,7 @@ class ServiceImplTest {
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(
-            messageReq = messagesParamReq,
+            messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
             onSuccess = successMockV7,
             onFailure = errorMock,
