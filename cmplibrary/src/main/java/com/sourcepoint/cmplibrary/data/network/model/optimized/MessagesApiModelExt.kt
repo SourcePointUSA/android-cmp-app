@@ -2,45 +2,14 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReq
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.* // ktlint-disable
 
-internal fun getMessageBody(
-    propertyHref: String,
-    accountId: Long,
-    campaigns: List<CampaignReq>,
-    cs: ConsentStatus?,
-    ccpaStatus: String?,
-    consentLanguage: String?,
-    campaignEnv: CampaignsEnv?,
-): JsonObject {
-    return buildJsonObject {
-        put("accountId", accountId)
-        campaignEnv?.env?.let { put("campaignEnv", it) }
-        putJsonObject("includeData") {
-            putJsonObject("TCData") {
-                put("type", "RecordString")
-            }
-            putJsonObject("campaigns") {
-                put("type", "RecordString")
-            }
-            putJsonObject("webConsentPayload") {
-                put("type", "RecordString")
-            }
-        }
-        put("propertyHref", "https://$propertyHref")
-        put("hasCSP", true)
-        put("campaigns", campaigns.toMetadataBody(cs, ccpaStatus))
-        put("consentLanguage", consentLanguage)
-    }
-}
-
 internal fun List<CampaignReq>.toMetadataBody(
-    cs: ConsentStatus? = null,
-    ccpaStatus: String? = null
+    gdprConsentStatus: ConsentStatus? = null,
+    ccpaConsentStatus: String? = null
 ): JsonObject {
     return buildJsonObject {
         this@toMetadataBody.forEach { c ->
@@ -48,18 +17,17 @@ internal fun List<CampaignReq>.toMetadataBody(
                 if (c.campaignType == CampaignType.GDPR) {
                     put(
                         "consentStatus",
-                        cs?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonObject(mapOf())
+                        gdprConsentStatus?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonObject(mapOf())
                     )
-                    cs?.let { put("hasLocalData", true) }
+                    put("hasLocalData", gdprConsentStatus != null)
                 }
                 if (c.campaignType == CampaignType.CCPA) {
-                    put("status", ccpaStatus ?: "")
-                    ccpaStatus?.let { put("hasLocalData", true) }
+                    put("status", ccpaConsentStatus ?: "")
+                    put("hasLocalData", ccpaConsentStatus != null)
                 }
                 putJsonObject("targetingParams") {
                     c.targetingParams.forEach { t -> put(t.key, t.value) }
                 }
-                put("groupPmId", c.groupPmId)
             }
         }
     }

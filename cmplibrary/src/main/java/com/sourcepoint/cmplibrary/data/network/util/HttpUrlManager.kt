@@ -278,10 +278,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState.toString())
             .addEncodedQueryParameter("body", param.body)
             .addEncodedQueryParameter("metadata", metaData)
-            .addEncodedQueryParameter("localState", param.localState.toString())
             .addQueryParameter("scriptType", scriptType)
             .addQueryParameter("scriptVersion", scriptVersion)
-//            .addQueryParameter("cached", Date().time.toString()) // for caching tests
             .build()
     }
 }
