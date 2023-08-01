@@ -77,7 +77,5 @@ data class MetaDataArg(
 
 internal fun MetaDataResp.toMetaDataArg() = MetaDataArg(
     ccpa = MetaDataArg.CcpaArg(applies = ccpa?.applies),
-    gdpr = MetaDataArg.GdprArg(
-        applies = gdpr?.applies
-    )
+    gdpr = MetaDataArg.GdprArg(applies = gdpr?.applies),
 )
