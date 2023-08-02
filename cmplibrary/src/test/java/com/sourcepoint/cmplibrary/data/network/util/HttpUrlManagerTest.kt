@@ -7,7 +7,9 @@ import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.generateIncludeDataForMessages
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -233,15 +235,19 @@ class HttpUrlManagerTest {
 
     @Test
     fun `GIVEN a PROD env getChoiceUrl RETURN the prod link`() {
-        val param = ChoiceParamReq(
+        val param = GetChoiceParamReq(
+            choiceType = ChoiceTypeParam.CONSENT_ALL,
             accountId = 22,
+            propertyId = 17801,
             env = Env.PROD,
             metadataArg = JsonConverter.converter.decodeFromString("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}"""),
-            propertyId = 17801,
-            choiceType = ChoiceTypeParam.CONSENT_ALL
+            includeData = IncludeData.generateIncludeDataForGetChoice(),
+            hasCsp = true,
+            includeCustomVendorsRes = false,
+            withSiteActions = false,
         )
         val sut = HttpUrlManagerSingleton.getChoiceUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/choice/consent-all?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&includeCustomVendorsRes=false&metadata={%20%20%22ccpa%22:%20{%20%20%20%20%22applies%22:%20true%20%20},%20%20%22gdpr%22:%20{%20%20%20%20%22applies%22:%20true,%20%20%20%20%22hasLocalData%22:%20false,%20%20%20%20%22uuid%22:%20%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22%20%20}}&includeData=%7B%22TCData%22%3A%20%7B%22type%22%3A%20%22RecordString%22%7D%2C%20%22webConsentPayload%22%3A%20%7B%22type%22%3A%20%22RecordString%22%7D%7D&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/choice/consent-all?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&includeCustomVendorsRes=false&metadata={%20%20%22ccpa%22:%20{%20%20%20%20%22applies%22:%20true%20%20},%20%20%22gdpr%22:%20{%20%20%20%20%22applies%22:%20true,%20%20%20%20%22hasLocalData%22:%20false,%20%20%20%20%22uuid%22:%20%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22%20%20}}&includeData=%7B%0A%20%20%22TCData%22%3A%20%7B%0A%20%20%20%20%22type%22%3A%20%22RecordString%22%0A%20%20%7D%2C%0A%20%20%22webConsentPayload%22%3A%20%7B%0A%20%20%20%20%22type%22%3A%20%22RecordString%22%0A%20%20%7D%0A%7D&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
     }
 
     @Test
@@ -311,7 +317,7 @@ class HttpUrlManagerTest {
             campaignEnv = CampaignsEnv.STAGE.env,
             consentLanguage = "ES",
             hasCSP = false,
-            includeData = generateIncludeDataForMessages(),
+            includeData = IncludeData.generateIncludeDataForMessages(),
             localState = JsonObject(mapOf()),
             operatingSystem = operatingSystemInfo,
         )

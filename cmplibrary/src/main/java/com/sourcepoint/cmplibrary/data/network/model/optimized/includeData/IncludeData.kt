@@ -17,4 +17,26 @@ data class IncludeData(
     val messageMetaData: IncludeDataParam? = null,
     @SerialName("webConsentPayload")
     val webConsentPayload: IncludeDataParam? = null,
-)
+) {
+
+    companion object {
+        /**
+         * Method that generates include data for /messages request. This method pick out proper
+         * params to add to the IncludeData param of the request.
+         */
+        fun generateIncludeDataForMessages(): IncludeData = IncludeData(
+            tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+            campaigns = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+            webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+        )
+
+        /**
+         * Method that generates include data for GET /choice request. This method pick out proper
+         * params to add to the IncludeData param of the request.
+         */
+        fun generateIncludeDataForGetChoice(): IncludeData = IncludeData(
+            tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+            webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+        )
+    }
+}

@@ -6,6 +6,8 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.NetworkCallErrorsCode
@@ -166,13 +168,13 @@ private class NetworkClientImpl(
         responseManager.parsePvDataResp(response)
     }
 
-    override fun getChoice(param: ChoiceParamReq): Either<ChoiceResp> = check {
+    override fun getChoice(param: GetChoiceParamReq): Either<ChoiceResp> = check {
         val url = urlManager.getChoiceUrl(param)
 
         logger.req(
             tag = "getChoiceUrl",
             url = url.toString(),
-            body = param.toJsonObject().toString(),
+            body = check { JsonConverter.converter.encodeToString(param) }.getOrNull() ?: "",
             type = "GET"
         )
 

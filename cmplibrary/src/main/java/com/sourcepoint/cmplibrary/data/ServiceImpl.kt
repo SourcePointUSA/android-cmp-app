@@ -11,7 +11,9 @@ import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.converter.toMapOfAny
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.generateIncludeDataForMessages
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.data.network.util.Env
@@ -180,7 +182,7 @@ private class ServiceImpl(
                     campaignEnv = campaignManager.spConfig.campaignsEnv.env,
                     consentLanguage = campaignManager.messageLanguage.value,
                     hasCSP = false,
-                    includeData = generateIncludeDataForMessages(),
+                    includeData = IncludeData.generateIncludeDataForMessages(),
                     localState = localState,
                     operatingSystem = operatingSystemInfo,
                 )
@@ -324,15 +326,20 @@ private class ServiceImpl(
 
         val actionType = consentActionImpl.actionType
         if (actionType == ActionType.ACCEPT_ALL || actionType == ActionType.REJECT_ALL) {
-            val gcParam = ChoiceParamReq(
+
+            val getChoiceParamReq = GetChoiceParamReq(
                 choiceType = consentActionImpl.actionType.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null),
+                includeData = IncludeData.generateIncludeDataForGetChoice(),
+                hasCsp = true,
+                includeCustomVendorsRes = false,
+                withSiteActions = false,
             )
 
-            getResp = networkClient.getChoice(gcParam)
+            getResp = networkClient.getChoice(getChoiceParamReq)
                 .executeOnRight { response ->
                     response.gdpr?.let { responseGdpr ->
                         campaignManager.gdprConsentStatus = responseGdpr.copy(uuid = campaignManager.gdprUuid)
@@ -398,14 +405,19 @@ private class ServiceImpl(
         val at = consentActionImpl.actionType
         if (at == ActionType.ACCEPT_ALL || at == ActionType.REJECT_ALL) {
 
-            val getConsentParams = ChoiceParamReq(
+            val getChoiceParamReq = GetChoiceParamReq(
                 choiceType = at.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null),
+                includeData = IncludeData.generateIncludeDataForGetChoice(),
+                hasCsp = true,
+                includeCustomVendorsRes = false,
+                withSiteActions = false,
             )
-            networkClient.getChoice(getConsentParams)
+
+            networkClient.getChoice(getChoiceParamReq)
                 .executeOnRight { ccpaResponse ->
                     campaignManager.ccpaConsentStatus = ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid)
                     val consentHandler = ConsentManager.responseConsentHandler(
