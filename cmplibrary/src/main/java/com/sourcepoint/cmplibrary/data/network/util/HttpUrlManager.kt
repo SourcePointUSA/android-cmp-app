@@ -175,6 +175,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         // &includeData={"TCData": {"type": "RecordString"}}
         // &withSiteActions=true
 
+        val includeData = JsonConverter.converter.encodeToString(param.includeData)
+
         return HttpUrl.Builder()
             .scheme("https")
             .host(param.env.host)
@@ -182,10 +184,10 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("env", param.env.queryParam)
             .addQueryParameter("accountId", param.accountId.toString())
             .addQueryParameter("propertyId", param.propertyId.toString())
-            .addQueryParameter("hasCsp", true.toString())
-            .addQueryParameter("withSiteActions", false.toString())
-            .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}, "webConsentPayload": {"type": "RecordString"}}""")
-            .apply { param.authId?.let { p -> addQueryParameter("authId", p) } }
+            .addQueryParameter("hasCsp", param.hasCsp.toString())
+            .addQueryParameter("withSiteActions", param.withSiteActions.toString())
+            .addQueryParameter("includeData", includeData)
+            .addQueryParameter("authId", param.authId.toString())
             .addEncodedQueryParameter("metadata", param.metadata)
             .addQueryParameter("scriptType", scriptType)
             .addQueryParameter("scriptVersion", scriptVersion)

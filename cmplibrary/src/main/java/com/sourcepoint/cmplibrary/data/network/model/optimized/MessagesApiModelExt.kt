@@ -70,27 +70,6 @@ internal fun MessagesParamReq.toMetaDataParamReq(campaigns: List<CampaignReq>): 
     )
 }
 
-internal fun MessagesParamReq.toConsentStatusParamReq(
-    gdprUuid: String?,
-    ccpaUuid: String?,
-    localState: JsonElement?
-): ConsentStatusParamReq {
-
-    val mdArg = metadataArg?.copy(
-        gdpr = metadataArg.gdpr?.copy(uuid = gdprUuid),
-        ccpa = metadataArg.ccpa?.copy(uuid = ccpaUuid)
-    )
-
-    return ConsentStatusParamReq(
-        env = env,
-        accountId = accountId,
-        propertyId = propertyId,
-        metadata = mdArg?.let { JsonConverter.converter.encodeToString(it) } ?: "{}",
-        authId = authId,
-        localState = localState
-    )
-}
-
 internal fun CCPA.toCcpaCS() = CcpaCS(
     applies = applies,
     consentedAll = consentedAll,

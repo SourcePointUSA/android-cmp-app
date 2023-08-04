@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
@@ -17,12 +18,24 @@ import kotlinx.serialization.json.JsonObject
 
 @Serializable
 internal data class ConsentStatusParamReq(
-    @SerialName("env") val env: Env,
-    @SerialName("metadata") val metadata: String,
-    @SerialName("propertyId") val propertyId: Long,
-    @SerialName("accountId") val accountId: Long,
-    @SerialName("authId") val authId: String?,
-    @SerialName("localState") val localState: JsonElement?
+    @SerialName("env")
+    val env: Env,
+    @SerialName("metadata")
+    val metadata: String,
+    @SerialName("propertyId")
+    val propertyId: Long,
+    @SerialName("accountId")
+    val accountId: Long,
+    @SerialName("authId")
+    val authId: String?,
+    @SerialName("localState")
+    val localState: JsonElement?,
+    @SerialName("hasCsp")
+    val hasCsp: Boolean = false,
+    @SerialName("withSiteActions")
+    val withSiteActions: Boolean = false,
+    @SerialName("includeData")
+    val includeData: IncludeData,
 )
 
 enum class GranularState {
