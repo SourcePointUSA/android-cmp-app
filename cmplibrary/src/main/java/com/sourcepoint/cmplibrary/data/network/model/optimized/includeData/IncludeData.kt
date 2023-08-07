@@ -20,9 +20,17 @@ data class IncludeData(
 ) {
 
     companion object {
+
         /**
-         * Method that generates include data for /messages request. This method pick out proper
-         * params to add to the IncludeData param of the request.
+         * Method that generates include data for /consent-status request.
+         */
+        fun generateIncludeDataForConsentStatus(): IncludeData = IncludeData(
+            tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+            webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+        )
+
+        /**
+         * Method that generates include data for /messages request.
          */
         fun generateIncludeDataForMessages(): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
@@ -31,8 +39,7 @@ data class IncludeData(
         )
 
         /**
-         * Method that generates include data for GET /choice request. This method pick out proper
-         * params to add to the IncludeData param of the request.
+         * Method that generates include data for GET /choice request.
          */
         fun generateIncludeDataForGetChoice(): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),

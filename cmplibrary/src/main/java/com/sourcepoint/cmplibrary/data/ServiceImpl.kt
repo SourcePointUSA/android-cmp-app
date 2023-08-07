@@ -13,6 +13,8 @@ import com.sourcepoint.cmplibrary.data.network.converter.toMapOfAny
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.consentStatus.ConsentStatusMetaData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.consentStatus.ConsentStatusMetaDataArg
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
@@ -139,7 +141,50 @@ private class ServiceImpl(
                 .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
 
             if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
-                triggerConsentStatus(messageReq)
+
+                val ccpaConsentStatusMetaData = ConsentStatusMetaDataArg(
+                    uuid = campaignManager.ccpaConsentStatus?.uuid,
+                    applies = metadataResponse.getOrNull()?.ccpa?.applies
+                        ?: campaignManager.ccpaConsentStatus?.applies,
+                    hasLocalData = campaignManager.ccpaConsentStatus != null,
+                    dateCreated = campaignManager.ccpaConsentStatus?.dateCreated,
+                )
+                val gdprConsentStatusMetaData = ConsentStatusMetaDataArg(
+                    uuid = campaignManager.gdprConsentStatus?.uuid,
+                    applies = metadataResponse.getOrNull()?.gdpr?.applies
+                        ?: campaignManager.gdprConsentStatus?.applies,
+                    hasLocalData = campaignManager.gdprConsentStatus != null,
+                    dateCreated = campaignManager.gdprConsentStatus?.dateCreated,
+                )
+
+                val consentStatusMetaData = ConsentStatusMetaData(
+                    ccpa = ccpaConsentStatusMetaData,
+                    gdpr = gdprConsentStatusMetaData,
+                )
+
+                val consentStatusParamReq = ConsentStatusParamReq(
+                    env = messageReq.env,
+                    metadata = JsonConverter.converter.encodeToString(consentStatusMetaData),
+                    propertyId = messageReq.propertyId,
+                    accountId = messageReq.accountId,
+                    authId = messageReq.authId,
+                    localState = campaignManager.messagesOptimizedLocalState,
+                    hasCsp = false,
+                    withSiteActions = false,
+                    includeData = IncludeData.generateIncludeDataForConsentStatus(),
+                )
+
+                networkClient.getConsentStatus(consentStatusParamReq)
+                    .executeOnRight { consentStatusResponse ->
+                        campaignManager.apply {
+                            handleOldLocalData()
+                            messagesOptimizedLocalState = consentStatusResponse.localState
+                            consentStatusResponse.consentStatusData?.let { consentStatusData ->
+                                gdprConsentStatus = consentStatusData.gdpr
+                                ccpaConsentStatus = consentStatusData.ccpa
+                            }
+                        }
+                    }
                     .executeOnLeft { consentStatusError ->
                         onFailure(consentStatusError, true)
                         return@executeOnWorkerThread
@@ -389,8 +434,6 @@ private class ServiceImpl(
                 }
             }
 
-//        pMessageReq?.apply { authId?.let{ triggerConsentStatus(this) } }
-
         campaignManager.gdprConsentStatus ?: throw InvalidConsentResponse(
             cause = null,
             "The GDPR consent object cannot be null!!!"
@@ -472,25 +515,5 @@ private class ServiceImpl(
             cause = null,
             "The CCPA consent object cannot be null!!!"
         )
-    }
-
-    private fun triggerConsentStatus(messageReq: MessagesParamReq): Either<ConsentStatusResp> {
-        val csParams = messageReq.toConsentStatusParamReq(
-            gdprUuid = campaignManager.gdprConsentStatus?.uuid,
-            ccpaUuid = campaignManager.ccpaConsentStatus?.uuid,
-            localState = campaignManager.messagesOptimizedLocalState
-        )
-
-        return getConsentStatus(csParams)
-            .executeOnRight { consentStatusResponse ->
-                campaignManager.apply {
-                    handleOldLocalData()
-                    messagesOptimizedLocalState = consentStatusResponse.localState
-                    consentStatusResponse.consentStatusData?.let { consentStatusData ->
-                        gdprConsentStatus = consentStatusData.gdpr
-                        ccpaConsentStatus = consentStatusData.ccpa
-                    }
-                }
-            }
     }
 }
