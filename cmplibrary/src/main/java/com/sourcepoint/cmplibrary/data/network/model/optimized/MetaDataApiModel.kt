@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.JsonElement
 
 internal data class MetaDataParamReq(
     val env: Env,
