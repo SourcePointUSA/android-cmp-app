@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesMetaData
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReq
 import kotlinx.serialization.encodeToString
@@ -33,19 +34,19 @@ internal fun List<CampaignReq>.toMetadataBody(
     }
 }
 
-internal fun List<CampaignReq>.toMetadataArgs(): MetaDataArg {
+internal fun List<CampaignReq>.toMessagesMetaData(): MessagesMetaData {
     val json = buildJsonObject {
-        this@toMetadataArgs.forEach { c ->
-            putJsonObject(c.campaignType.name.lowercase()) {
+        this@toMessagesMetaData.forEach { campaign ->
+            putJsonObject(campaign.campaignType.name.lowercase()) {
                 putJsonObject("targetingParams") {
-                    c.targetingParams.forEach { t -> put(t.key, t.value) }
+                    campaign.targetingParams.forEach { t -> put(t.key, t.value) }
                 }
-                put("groupPmId", c.groupPmId)
+                put("groupPmId", campaign.groupPmId)
             }
         }
     }
 
-    return JsonConverter.converter.decodeFromJsonElement<MetaDataArg>(json)
+    return JsonConverter.converter.decodeFromJsonElement(json)
 }
 
 internal fun MessagesParamReq.toMetaDataParamReq(campaigns: List<CampaignReq>): MetaDataParamReq {

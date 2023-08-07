@@ -13,11 +13,12 @@ import com.sourcepoint.cmplibrary.data.network.converter.toMapOfAny
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.consentStatus.ConsentStatusMetaData
-import com.sourcepoint.cmplibrary.data.network.model.optimized.consentStatus.ConsentStatusMetaDataArg
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
+import com.sourcepoint.cmplibrary.data.network.model.optimized.metaData.toChoiceMetaData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.metaData.toConsentStatusMetaData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.metaData.toMessagesMetaData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
@@ -142,25 +143,8 @@ private class ServiceImpl(
 
             if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
 
-                val ccpaConsentStatusMetaData = ConsentStatusMetaDataArg(
-                    uuid = campaignManager.ccpaConsentStatus?.uuid,
-                    applies = metadataResponse.getOrNull()?.ccpa?.applies
-                        ?: campaignManager.ccpaConsentStatus?.applies,
-                    hasLocalData = campaignManager.ccpaConsentStatus != null,
-                    dateCreated = campaignManager.ccpaConsentStatus?.dateCreated,
-                )
-                val gdprConsentStatusMetaData = ConsentStatusMetaDataArg(
-                    uuid = campaignManager.gdprConsentStatus?.uuid,
-                    applies = metadataResponse.getOrNull()?.gdpr?.applies
-                        ?: campaignManager.gdprConsentStatus?.applies,
-                    hasLocalData = campaignManager.gdprConsentStatus != null,
-                    dateCreated = campaignManager.gdprConsentStatus?.dateCreated,
-                )
-
-                val consentStatusMetaData = ConsentStatusMetaData(
-                    ccpa = ccpaConsentStatusMetaData,
-                    gdpr = gdprConsentStatusMetaData,
-                )
+                val consentStatusMetaData = metadataResponse.getOrNull()
+                    ?.toConsentStatusMetaData(campaignManager)
 
                 val consentStatusParamReq = ConsentStatusParamReq(
                     env = messageReq.env,
@@ -239,7 +223,7 @@ private class ServiceImpl(
                     propertyHref = messageReq.propertyHref,
                     env = messageReq.env,
                     body = JsonConverter.converter.encodeToString(body),
-                    metadataArg = metadataResponse.getOrNull()?.toMetaDataArg(),
+                    metadataArg = metadataResponse.getOrNull()?.toMessagesMetaData(),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
                 )
 
@@ -377,7 +361,7 @@ private class ServiceImpl(
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
-                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null),
+                metadataArg = campaignManager.metaDataResp?.toChoiceMetaData()?.copy(ccpa = null),
                 includeData = IncludeData.generateIncludeDataForGetChoice(),
                 hasCsp = true,
                 includeCustomVendorsRes = false,
@@ -453,7 +437,7 @@ private class ServiceImpl(
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
-                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null),
+                metadataArg = campaignManager.metaDataResp?.toChoiceMetaData()?.copy(gdpr = null),
                 includeData = IncludeData.generateIncludeDataForGetChoice(),
                 hasCsp = true,
                 includeCustomVendorsRes = false,
