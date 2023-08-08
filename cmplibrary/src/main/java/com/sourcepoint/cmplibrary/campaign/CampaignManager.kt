@@ -330,7 +330,7 @@ private class CampaignManagerImpl(
             ?.let { campaigns.add(it) }
 
         return MessagesParamReq(
-            metadataArg = campaigns.toMetadataArgs(),
+            metadataArg = campaigns.toMessagesMetaData(),
             body = "",
             env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD,
             propertyHref = spConfig.propertyName,

@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.JsonElement
 
 internal data class MetaDataParamReq(
     val env: Env,
@@ -50,32 +49,3 @@ data class MetaDataMetaDataParam(val gdpr: MetaDataCampaign?, val ccpa: MetaData
     @Serializable
     data class MetaDataCampaign(val groupPmId: String?)
 }
-
-@Serializable
-data class MetaDataArg(
-    @SerialName("ccpa") val ccpa: CcpaArg?,
-    @SerialName("gdpr") val gdpr: GdprArg?
-) {
-    @Serializable
-    data class CcpaArg(
-        @SerialName("applies") val applies: Boolean?,
-        @SerialName("hasLocalData") val hasLocalData: Boolean? = null,
-        @SerialName("groupPmId") val groupPmId: String? = null,
-        @SerialName("targetingParams") val targetingParams: JsonElement? = null,
-        @SerialName("uuid") val uuid: String? = null
-    )
-
-    @Serializable
-    data class GdprArg(
-        @SerialName("applies") val applies: Boolean?,
-        @SerialName("hasLocalData") val hasLocalData: Boolean? = null,
-        @SerialName("groupPmId") val groupPmId: String? = null,
-        @SerialName("targetingParams") val targetingParams: JsonElement? = null,
-        @SerialName("uuid") val uuid: String? = null
-    )
-}
-
-internal fun MetaDataResp.toMetaDataArg() = MetaDataArg(
-    ccpa = MetaDataArg.CcpaArg(applies = ccpa?.applies),
-    gdpr = MetaDataArg.GdprArg(applies = gdpr?.applies),
-)
