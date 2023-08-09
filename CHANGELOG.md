@@ -1,3 +1,13 @@
+## 7.2.7 (August, 09, 2023)
+* [DIA-2531](https://sourcepoint.atlassian.net/browse/DIA-2531) Refactor metadata param for each request (#675)
+* [DIA-2462](https://sourcepoint.atlassian.net/browse/DIA-2462) Review params to GET /consent-status endpoint (#673)
+* [DIA-1961](https://sourcepoint.atlassian.net/browse/DIA-1961) Extended UnitySpClient for actual Unity port (#669)
+* [DIA-2460](https://sourcepoint.atlassian.net/browse/DIA-2460) Review params to GET /choice endpoint (#672)
+* [DIA-2458](https://sourcepoint.atlassian.net/browse/DIA-2458) Review params to GET /messages endpoint (#671)
+* [DIA-2447](https://sourcepoint.atlassian.net/browse/DIA-2447) Update project dependencies (#668)
+* [DIA-2449](https://sourcepoint.atlassian.net/browse/DIA-2449) Not call onError if pv-data fails (#667)
+* [DIA-2452](https://sourcepoint.atlassian.net/browse/DIA-2452) Remove unnecessary query params from meta-data (#666)
+
 ## 7.2.6 (July, 13, 2023)
 * [DIA-2263](https://sourcepoint.atlassian.net/browse/DIA-2263) Create confluence page for the SDK release process (#663)
 * [DIA-2360](https://sourcepoint.atlassian.net/browse/DIA-2360) Fix message showing multiple times on reconsent flow (#659)
