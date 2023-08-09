@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesMetaData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -23,11 +24,10 @@ internal data class MessagesParamReq(
     @SerialName("authId") val authId: String?,
     @SerialName("propertyHref") val propertyHref: String,
     @SerialName("env") val env: Env,
-    @SerialName("metadataArg") val metadataArg: MetaDataArg?,
+    @SerialName("metadataArg") val metadataArg: MessagesMetaData?,
     @SerialName("body") val body: String,
     @SerialName("nonKeyedLocalState") val nonKeyedLocalState: JsonObject? = JsonObject(mapOf()),
     @SerialName("pubData") val pubData: JsonObject = JsonObject(mapOf()),
-    @SerialName("localState") val localState: JsonObject? = JsonObject(mapOf()),
 )
 
 @Serializable

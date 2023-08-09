@@ -11,6 +11,14 @@ import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.converter.toMapOfAny
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
+import com.sourcepoint.cmplibrary.data.network.model.optimized.metaData.toChoiceMetaData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.metaData.toConsentStatusMetaData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.metaData.toMessagesMetaData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
@@ -23,6 +31,8 @@ import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONArray
 import org.json.JSONObject
@@ -117,24 +127,50 @@ private class ServiceImpl(
 
     override fun getMessages(
         messageReq: MessagesParamReq,
-        pSuccess: (MessagesResp) -> Unit,
+        onSuccess: (MessagesResp) -> Unit,
         showConsent: () -> Unit,
-        pError: (Throwable) -> Unit
+        onFailure: (Throwable, Boolean) -> Unit,
     ) {
         execManager.executeOnWorkerThread {
             campaignManager.authId = messageReq.authId
 
-            val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq())
-                .executeOnLeft {
-                    pError(it)
+            val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq(campaigns4Config))
+                .executeOnLeft { metaDataError ->
+                    onFailure(metaDataError, true)
                     return@executeOnWorkerThread
                 }
                 .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
 
             if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
-                triggerConsentStatus(messageReq)
-                    .executeOnLeft {
-                        pError(it)
+
+                val consentStatusMetaData = metadataResponse.getOrNull()
+                    ?.toConsentStatusMetaData(campaignManager)
+
+                val consentStatusParamReq = ConsentStatusParamReq(
+                    env = messageReq.env,
+                    metadata = JsonConverter.converter.encodeToString(consentStatusMetaData),
+                    propertyId = messageReq.propertyId,
+                    accountId = messageReq.accountId,
+                    authId = messageReq.authId,
+                    localState = campaignManager.messagesOptimizedLocalState,
+                    hasCsp = false,
+                    withSiteActions = false,
+                    includeData = IncludeData.generateIncludeDataForConsentStatus(),
+                )
+
+                networkClient.getConsentStatus(consentStatusParamReq)
+                    .executeOnRight { consentStatusResponse ->
+                        campaignManager.apply {
+                            handleOldLocalData()
+                            messagesOptimizedLocalState = consentStatusResponse.localState
+                            consentStatusResponse.consentStatusData?.let { consentStatusData ->
+                                gdprConsentStatus = consentStatusData.gdpr
+                                ccpaConsentStatus = consentStatusData.ccpa
+                            }
+                        }
+                    }
+                    .executeOnLeft { consentStatusError ->
+                        onFailure(consentStatusError, true)
                         return@executeOnWorkerThread
                     }
             }
@@ -160,14 +196,24 @@ private class ServiceImpl(
 
             if (campaignManager.shouldCallMessages) {
 
-                val body = getMessageBody(
+                val operatingSystemInfo = OperatingSystemInfoParam()
+
+                val localState = campaignManager.messagesOptimizedLocalState?.jsonObject
+                    ?: JsonObject(mapOf())
+
+                val body = MessagesBodyReq(
                     accountId = messageReq.accountId,
-                    propertyHref = messageReq.propertyHref,
-                    cs = campaignManager.gdprConsentStatus?.consentStatus,
-                    ccpaStatus = campaignManager.ccpaConsentStatus?.status?.name,
-                    campaigns = campaignManager.campaigns4Config,
+                    propertyHref = "https://${messageReq.propertyHref}",
+                    campaigns = campaignManager.campaigns4Config.toMetadataBody(
+                        gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus,
+                        ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
+                    ),
+                    campaignEnv = campaignManager.spConfig.campaignsEnv.env,
                     consentLanguage = campaignManager.messageLanguage.value,
-                    campaignEnv = campaignManager.spConfig.campaignsEnv
+                    hasCSP = false,
+                    includeData = IncludeData.generateIncludeDataForMessages(),
+                    localState = localState,
+                    operatingSystem = operatingSystemInfo,
                 )
 
                 val messagesParamReq = MessagesParamReq(
@@ -176,15 +222,14 @@ private class ServiceImpl(
                     authId = messageReq.authId,
                     propertyHref = messageReq.propertyHref,
                     env = messageReq.env,
-                    body = body.toString(),
-                    metadataArg = metadataResponse.getOrNull()?.toMetaDataArg(),
+                    body = JsonConverter.converter.encodeToString(body),
+                    metadataArg = metadataResponse.getOrNull()?.toMessagesMetaData(),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
-                    localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
                 )
 
                 getMessages(messagesParamReq)
-                    .executeOnLeft {
-                        pError(it)
+                    .executeOnLeft { messagesError ->
+                        onFailure(messagesError, true)
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
@@ -208,7 +253,7 @@ private class ServiceImpl(
                             }
                         }
 
-                        execManager.executeOnMain { pSuccess(it) }
+                        execManager.executeOnMain { onSuccess(it) }
                     }
             } else {
                 execManager.executeOnMain { showConsent() }
@@ -233,8 +278,8 @@ private class ServiceImpl(
                 )
 
                 postPvData(pvParams)
-                    .executeOnLeft {
-                        pError(it)
+                    .executeOnLeft { gdprPvDataError ->
+                        onFailure(gdprPvDataError, false)
                         return@executeOnWorkerThread
                     }
                     .executeOnRight { pvDataResponse ->
@@ -263,8 +308,8 @@ private class ServiceImpl(
                 )
 
                 postPvData(pvParams)
-                    .executeOnLeft {
-                        pError(it)
+                    .executeOnLeft { ccpaPvDataError ->
+                        onFailure(ccpaPvDataError, false)
                         return@executeOnWorkerThread
                     }
                     .executeOnRight { pvDataResponse ->
@@ -310,15 +355,20 @@ private class ServiceImpl(
 
         val actionType = consentActionImpl.actionType
         if (actionType == ActionType.ACCEPT_ALL || actionType == ActionType.REJECT_ALL) {
-            val gcParam = ChoiceParamReq(
+
+            val getChoiceParamReq = GetChoiceParamReq(
                 choiceType = consentActionImpl.actionType.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
-                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null),
+                metadataArg = campaignManager.metaDataResp?.toChoiceMetaData()?.copy(ccpa = null),
+                includeData = IncludeData.generateIncludeDataForGetChoice(),
+                hasCsp = true,
+                includeCustomVendorsRes = false,
+                withSiteActions = false,
             )
 
-            getResp = networkClient.getChoice(gcParam)
+            getResp = networkClient.getChoice(getChoiceParamReq)
                 .executeOnRight { response ->
                     response.gdpr?.let { responseGdpr ->
                         campaignManager.gdprConsentStatus = responseGdpr.copy(uuid = campaignManager.gdprUuid)
@@ -368,8 +418,6 @@ private class ServiceImpl(
                 }
             }
 
-//        pMessageReq?.apply { authId?.let{ triggerConsentStatus(this) } }
-
         campaignManager.gdprConsentStatus ?: throw InvalidConsentResponse(
             cause = null,
             "The GDPR consent object cannot be null!!!"
@@ -384,14 +432,19 @@ private class ServiceImpl(
         val at = consentActionImpl.actionType
         if (at == ActionType.ACCEPT_ALL || at == ActionType.REJECT_ALL) {
 
-            val getConsentParams = ChoiceParamReq(
+            val getChoiceParamReq = GetChoiceParamReq(
                 choiceType = at.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
-                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null),
+                metadataArg = campaignManager.metaDataResp?.toChoiceMetaData()?.copy(gdpr = null),
+                includeData = IncludeData.generateIncludeDataForGetChoice(),
+                hasCsp = true,
+                includeCustomVendorsRes = false,
+                withSiteActions = false,
             )
-            networkClient.getChoice(getConsentParams)
+
+            networkClient.getChoice(getChoiceParamReq)
                 .executeOnRight { ccpaResponse ->
                     campaignManager.ccpaConsentStatus = ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid)
                     val consentHandler = ConsentManager.responseConsentHandler(
@@ -446,25 +499,5 @@ private class ServiceImpl(
             cause = null,
             "The CCPA consent object cannot be null!!!"
         )
-    }
-
-    private fun triggerConsentStatus(messageReq: MessagesParamReq): Either<ConsentStatusResp> {
-        val csParams = messageReq.toConsentStatusParamReq(
-            gdprUuid = campaignManager.gdprConsentStatus?.uuid,
-            ccpaUuid = campaignManager.ccpaConsentStatus?.uuid,
-            localState = campaignManager.messagesOptimizedLocalState
-        )
-
-        return getConsentStatus(csParams)
-            .executeOnRight { consentStatusResponse ->
-                campaignManager.apply {
-                    handleOldLocalData()
-                    messagesOptimizedLocalState = consentStatusResponse.localState
-                    consentStatusResponse.consentStatusData?.let { consentStatusData ->
-                        gdprConsentStatus = consentStatusData.gdpr
-                        ccpaConsentStatus = consentStatusData.ccpa
-                    }
-                }
-            }
     }
 }

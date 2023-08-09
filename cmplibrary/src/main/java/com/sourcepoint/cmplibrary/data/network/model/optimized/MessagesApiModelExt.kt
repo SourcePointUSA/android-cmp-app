@@ -2,45 +2,15 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
+import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesMetaData
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReq
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.* // ktlint-disable
 
-internal fun getMessageBody(
-    propertyHref: String,
-    accountId: Long,
-    campaigns: List<CampaignReq>,
-    cs: ConsentStatus?,
-    ccpaStatus: String?,
-    consentLanguage: String?,
-    campaignEnv: CampaignsEnv?,
-): JsonObject {
-    return buildJsonObject {
-        put("accountId", accountId)
-        campaignEnv?.env?.let { put("campaignEnv", it) }
-        putJsonObject("includeData") {
-            putJsonObject("TCData") {
-                put("type", "RecordString")
-            }
-            putJsonObject("campaigns") {
-                put("type", "RecordString")
-            }
-            putJsonObject("webConsentPayload") {
-                put("type", "RecordString")
-            }
-        }
-        put("propertyHref", "https://$propertyHref")
-        put("hasCSP", true)
-        put("campaigns", campaigns.toMetadataBody(cs, ccpaStatus))
-        put("consentLanguage", consentLanguage)
-    }
-}
-
 internal fun List<CampaignReq>.toMetadataBody(
-    cs: ConsentStatus? = null,
-    ccpaStatus: String? = null
+    gdprConsentStatus: ConsentStatus? = null,
+    ccpaConsentStatus: String? = null
 ): JsonObject {
     return buildJsonObject {
         this@toMetadataBody.forEach { c ->
@@ -48,65 +18,56 @@ internal fun List<CampaignReq>.toMetadataBody(
                 if (c.campaignType == CampaignType.GDPR) {
                     put(
                         "consentStatus",
-                        cs?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonObject(mapOf())
+                        gdprConsentStatus?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonObject(mapOf())
                     )
-                    cs?.let { put("hasLocalData", true) }
+                    put("hasLocalData", gdprConsentStatus != null)
                 }
                 if (c.campaignType == CampaignType.CCPA) {
-                    put("status", ccpaStatus ?: "")
-                    ccpaStatus?.let { put("hasLocalData", true) }
+                    put("status", ccpaConsentStatus ?: "")
+                    put("hasLocalData", ccpaConsentStatus != null)
                 }
                 putJsonObject("targetingParams") {
                     c.targetingParams.forEach { t -> put(t.key, t.value) }
                 }
-                put("groupPmId", c.groupPmId)
             }
         }
     }
 }
 
-internal fun List<CampaignReq>.toMetadataArgs(): MetaDataArg {
+internal fun List<CampaignReq>.toMessagesMetaData(): MessagesMetaData {
     val json = buildJsonObject {
-        this@toMetadataArgs.forEach { c ->
-            putJsonObject(c.campaignType.name.lowercase()) {
+        this@toMessagesMetaData.forEach { campaign ->
+            putJsonObject(campaign.campaignType.name.lowercase()) {
                 putJsonObject("targetingParams") {
-                    c.targetingParams.forEach { t -> put(t.key, t.value) }
+                    campaign.targetingParams.forEach { t -> put(t.key, t.value) }
                 }
-                put("groupPmId", c.groupPmId)
+                put("groupPmId", campaign.groupPmId)
             }
         }
     }
 
-    return JsonConverter.converter.decodeFromJsonElement<MetaDataArg>(json)
+    return JsonConverter.converter.decodeFromJsonElement(json)
 }
 
-internal fun MessagesParamReq.toMetaDataParamReq(): MetaDataParamReq {
+internal fun MessagesParamReq.toMetaDataParamReq(campaigns: List<CampaignReq>): MetaDataParamReq {
     return MetaDataParamReq(
         env = env,
         accountId = accountId,
         propertyId = propertyId,
-        metadata = metadataArg?.let { JsonConverter.converter.encodeToString(it) } ?: "{}",
-    )
-}
-
-internal fun MessagesParamReq.toConsentStatusParamReq(
-    gdprUuid: String?,
-    ccpaUuid: String?,
-    localState: JsonElement?
-): ConsentStatusParamReq {
-
-    val mdArg = metadataArg?.copy(
-        gdpr = metadataArg.gdpr?.copy(uuid = gdprUuid),
-        ccpa = metadataArg.ccpa?.copy(uuid = ccpaUuid)
-    )
-
-    return ConsentStatusParamReq(
-        env = env,
-        accountId = accountId,
-        propertyId = propertyId,
-        metadata = mdArg?.let { JsonConverter.converter.encodeToString(it) } ?: "{}",
-        authId = authId,
-        localState = localState
+        metadata = JsonConverter.converter.encodeToString(
+            MetaDataMetaDataParam(
+                gdpr = campaigns
+                    .firstOrNull { it.campaignType == CampaignType.GDPR }
+                    ?.let {
+                        MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
+                    },
+                ccpa = campaigns
+                    .firstOrNull { it.campaignType == CampaignType.CCPA }
+                    ?.let {
+                        MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
+                    }
+            )
+        ),
     )
 }
 

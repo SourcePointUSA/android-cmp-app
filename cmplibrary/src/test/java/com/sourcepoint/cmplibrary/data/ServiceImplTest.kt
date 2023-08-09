@@ -72,7 +72,7 @@ class ServiceImplTest {
     private lateinit var consentMockV7: () -> Unit
 
     @MockK
-    private lateinit var errorMock: (Throwable) -> Unit
+    private lateinit var errorMock: (Throwable, Boolean) -> Unit
 
     private val nativeCampaign = Campaign(
         accountId = 22,
@@ -189,7 +189,12 @@ class ServiceImplTest {
         every { cm.spConfig }.returns(spConfig)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
+        sut.getMessages(
+            messageReq = messagesParamReq,
+            showConsent = consentMockV7,
+            onSuccess = successMockV7,
+            onFailure = errorMock,
+        )
 
 //        verify(exactly = 0) { errorMock(any()) }
         verify(exactly = 1) { ncMock.getConsentStatus(any()) }
@@ -210,7 +215,12 @@ class ServiceImplTest {
         every { cm.spConfig }.returns(spConfig)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
+        sut.getMessages(
+            messageReq = messagesParamReq,
+            showConsent = consentMockV7,
+            onSuccess = successMockV7,
+            onFailure = errorMock,
+        )
 
         // TODO
     }
@@ -227,11 +237,11 @@ class ServiceImplTest {
         sut.getMessages(
             messageReq = messagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
-            pError = errorMock
+            onSuccess = successMockV7,
+            onFailure = errorMock,
         )
 
-        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 1) { errorMock(any(), any()) }
         verify(exactly = 0) { successMockV7(any()) }
         verify(exactly = 0) { consentMockV7() }
     }
@@ -246,11 +256,11 @@ class ServiceImplTest {
         sut.getMessages(
             messageReq = messagesParamReq.copy(authId = "test"),
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
-            pError = errorMock
+            onSuccess = successMockV7,
+            onFailure = errorMock,
         )
 
-        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 1) { errorMock(any(), any()) }
         verify(exactly = 0) { successMockV7(any()) }
         verify(exactly = 0) { consentMockV7() }
     }
@@ -258,9 +268,22 @@ class ServiceImplTest {
     @Test
     fun `GIVEN a Left object during the getConsentStatus req CALL the error cb`() {
 
+        val mockMessagesParamReq = messagesParamReq.copy(
+            authId = "mock_auth_id"
+        )
+        val mockCampaignsList = listOf(
+            SpCampaign(
+                campaignType = CampaignType.GDPR
+            ),
+            SpCampaign(
+                campaignType = CampaignType.CCPA
+            ),
+        )
+        every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { ncMock.getMetaData(any()) }.returns(Right(mockMetaDataResp))
         every { ncMock.getConsentStatus(any()) }.returns(Right(mockConsentStatusResp))
         every { ncMock.getMessages(any()) }.returns(Left(RuntimeException()))
+        every { cm.messageLanguage } returns MessageLanguage.ENGLISH
         every { cm.shouldCallMessages }.returns(true)
         every { cm.messagesOptimizedLocalState }.returns(JsonObject(emptyMap()))
         every { cm.nonKeyedLocalState }.returns(JsonObject(emptyMap()))
@@ -268,13 +291,13 @@ class ServiceImplTest {
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(
-            messageReq = messagesParamReq,
+            messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
-            pError = errorMock
+            onSuccess = successMockV7,
+            onFailure = errorMock,
         )
 
-        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 1) { errorMock(any(), any()) }
         verify(exactly = 0) { successMockV7(any()) }
         verify(exactly = 0) { consentMockV7() }
     }
@@ -314,8 +337,8 @@ class ServiceImplTest {
         service.getMessages(
             messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
-            pError = errorMock
+            onSuccess = successMockV7,
+            onFailure = errorMock,
         )
 
         // THEN
@@ -359,8 +382,8 @@ class ServiceImplTest {
         service.getMessages(
             messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
-            pError = errorMock
+            onSuccess = successMockV7,
+            onFailure = errorMock,
         )
 
         // THEN

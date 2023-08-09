@@ -19,13 +19,3 @@ internal data class CampaignReqImpl(
     override val campaignType: CampaignType,
     override val groupPmId: String? = null
 ) : CampaignReq
-
-data class DataType(val type: String)
-data class IncludeData(
-    val localState: DataType = DataType("RecordString"),
-    val tCData: DataType = DataType("RecordString"),
-    val campaigns: DataType = DataType("RecordString"),
-    val customVendorsResponse: DataType = DataType("RecordString"),
-    val messageMetaData: DataType = DataType("RecordString"),
-    val webConsentPayload: DataType = DataType("RecordString"),
-)

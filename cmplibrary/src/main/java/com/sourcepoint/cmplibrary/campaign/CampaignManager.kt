@@ -14,6 +14,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -84,8 +85,6 @@ internal interface CampaignManager {
 
     fun handleMetaDataResponse(response: MetaDataResp?)
     fun handleOldLocalData()
-    fun getGdprChoiceBody(): JsonObject
-    fun getCcpaChoiceBody(): JsonObject
     fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
 
@@ -331,7 +330,7 @@ private class CampaignManagerImpl(
             ?.let { campaigns.add(it) }
 
         return MessagesParamReq(
-            metadataArg = campaigns.toMetadataArgs(),
+            metadataArg = campaigns.toMessagesMetaData(),
             body = "",
             env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD,
             propertyHref = spConfig.propertyName,
@@ -548,7 +547,7 @@ private class CampaignManagerImpl(
     }
 
     override fun handleOldLocalData() {
-        if (dataStorage.preference.contains(DataStorage.LOCAL_STATE) || dataStorage.preference.contains(DataStorage.LOCAL_STATE_OLD)) {
+        if (dataStorage.preference.contains(LOCAL_STATE) || dataStorage.preference.contains(LOCAL_STATE_OLD)) {
             dataStorage.preference
                 .edit().apply {
                     remove(LOCAL_STATE)
@@ -590,28 +589,6 @@ private class CampaignManagerImpl(
         set(value) {
             dataStorage.dataRecordedConsent = value?.toString()
         }
-
-    override fun getGdprChoiceBody(): JsonObject {
-        return toGdprChoiceBody(
-            accountId = spConfig.accountId,
-            propertyId = spConfig.propertyId,
-            gdprCs = gdprConsentStatus?.consentStatus,
-            gdprMessageMetaData = gdprMessageMetaData,
-            gdprApplies = dataStorage.gdprApplies,
-            sampleRate = dataStorage.gdprSamplingValue
-        )
-    }
-
-    override fun getCcpaChoiceBody(): JsonObject {
-        return toCcpaChoiceBody(
-            accountId = spConfig.accountId,
-            propertyId = spConfig.propertyId,
-            gdprCs = gdprConsentStatus?.consentStatus,
-            gdprMessageMetaData = gdprMessageMetaData,
-            gdprApplies = dataStorage.gdprApplies,
-            sampleRate = dataStorage.gdprSamplingValue
-        )
-    }
 
     override fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject {
         return toPvDataBody(

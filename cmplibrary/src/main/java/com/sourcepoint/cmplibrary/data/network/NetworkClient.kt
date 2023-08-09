@@ -5,6 +5,8 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disab
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 
@@ -43,7 +45,7 @@ internal interface NetworkClient {
     ): Either<PvDataResp>
 
     fun getChoice(
-        param: ChoiceParamReq
+        param: GetChoiceParamReq
     ): Either<ChoiceResp>
 
     fun storeGdprChoice(

@@ -3,10 +3,10 @@ package com.sourcepoint.cmplibrary.data
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
-import com.sourcepoint.cmplibrary.data.network.model.optimized.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
@@ -37,9 +37,9 @@ internal interface Service : NetworkClient, CampaignManager {
 
     fun getMessages(
         messageReq: MessagesParamReq,
-        pSuccess: (MessagesResp) -> Unit,
+        onSuccess: (MessagesResp) -> Unit,
         showConsent: () -> Unit,
-        pError: (Throwable) -> Unit
+        onFailure: (Throwable, Boolean) -> Unit,
     )
 
     companion object
