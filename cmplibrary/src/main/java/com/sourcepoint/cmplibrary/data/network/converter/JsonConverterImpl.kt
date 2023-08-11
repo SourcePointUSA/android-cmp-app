@@ -3,13 +3,11 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
-import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
-import com.sourcepoint.cmplibrary.exception.NetworkCallErrorsCode.* // ktlint-disable
+import com.sourcepoint.cmplibrary.exception.ApiRequestSuffix.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
@@ -43,12 +41,6 @@ private class JsonConverterImpl : JsonConverter {
 
     override fun toConsentAction(body: String): Either<ConsentActionImpl> = check {
         body.toConsentAction()
-    }
-
-    override fun toNativeMessageResp(body: String): Either<NativeMessageResp> = check {
-        val map: Map<String, Any?> = JSONObject(body).toTreeMap()
-        val msgJSON = map.getMap("msgJSON") ?: fail("msgJSON")
-        NativeMessageResp(msgJSON = JSONObject(msgJSON))
     }
 
     override fun toNativeMessageRespK(body: String): Either<NativeMessageRespK> = check {
@@ -89,15 +81,15 @@ private class JsonConverterImpl : JsonConverter {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toChoiceResp(body: String): Either<ChoiceResp> = check {
+    override fun toChoiceResp(body: String): Either<ChoiceResp> = check(GET_CHOICE) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toGdprPostChoiceResp(body: String): Either<GdprCS> = check {
+    override fun toGdprPostChoiceResp(body: String): Either<GdprCS> = check(POST_CHOICE_GDPR) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toCcpaPostChoiceResp(body: String): Either<CcpaCS> = check {
+    override fun toCcpaPostChoiceResp(body: String): Either<CcpaCS> = check(POST_CHOICE_CCPA) {
         JsonConverter.converter.decodeFromString(body)
     }
 
@@ -107,13 +99,5 @@ private class JsonConverterImpl : JsonConverter {
 
     override fun toMessagesResp(body: String): Either<MessagesResp> = check(MESSAGES) {
         JsonConverter.converter.decodeFromString(body)
-    }
-
-    /**
-     * Util method to throws a [ConsentLibExceptionK] with a custom message
-     * @param param name of the null object
-     */
-    private fun fail(param: String): Nothing {
-        throw InvalidResponseWebMessageException(description = "$param object is null")
     }
 }

@@ -10,14 +10,13 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.exception.NetworkCallErrorsCode
+import com.sourcepoint.cmplibrary.exception.ApiRequestSuffix
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.encodeToString
+import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 
 internal fun createNetworkClient(
     httpClient: OkHttpClient,
@@ -85,7 +84,7 @@ private class NetworkClientImpl(
         responseManager.parseCustomConsentRes(response)
     }
 
-    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> = check(NetworkCallErrorsCode.META_DATA) {
+    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> = check(ApiRequestSuffix.META_DATA) {
         val url = urlManager.getMetaDataUrl(param)
 
         logger.req(
@@ -105,7 +104,7 @@ private class NetworkClientImpl(
         responseManager.parseMetaDataRes(response)
     }
 
-    override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> = check(NetworkCallErrorsCode.CONSENT_STATUS) {
+    override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> = check(ApiRequestSuffix.CONSENT_STATUS) {
         val url = urlManager.getConsentStatusUrl(param)
 
         logger.req(
@@ -125,7 +124,7 @@ private class NetworkClientImpl(
         responseManager.parseConsentStatusResp(response)
     }
 
-    override fun getMessages(param: MessagesParamReq): Either<MessagesResp> = check(NetworkCallErrorsCode.MESSAGES) {
+    override fun getMessages(param: MessagesParamReq): Either<MessagesResp> = check(ApiRequestSuffix.MESSAGES) {
         val url = urlManager.getMessagesUrl(param)
 
         logger.req(
@@ -145,7 +144,7 @@ private class NetworkClientImpl(
         responseManager.parseMessagesResp(response)
     }
 
-    override fun postPvData(param: PvDataParamReq): Either<PvDataResp> = check(NetworkCallErrorsCode.PV_DATA) {
+    override fun postPvData(param: PvDataParamReq): Either<PvDataResp> = check(ApiRequestSuffix.PV_DATA) {
         val url = urlManager.getPvDataUrl(param.env)
         val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()
@@ -168,7 +167,7 @@ private class NetworkClientImpl(
         responseManager.parsePvDataResp(response)
     }
 
-    override fun getChoice(param: GetChoiceParamReq): Either<ChoiceResp> = check {
+    override fun getChoice(param: GetChoiceParamReq): Either<ChoiceResp> = check(ApiRequestSuffix.GET_CHOICE) {
         val url = urlManager.getChoiceUrl(param)
 
         logger.req(
@@ -183,12 +182,19 @@ private class NetworkClientImpl(
             .get()
             .build()
 
-        val response = httpClient.newCall(request).execute()
+//        val response = httpClient.newCall(request).execute()
+        val response = Response.Builder()
+            .code(444)
+            .protocol(Protocol.HTTP_1_1)
+            .request(Request.Builder().url(url).build())
+            .message("")
+            .body(ResponseBody.create("application/json".toMediaTypeOrNull(), ""))
+            .build()
 
         responseManager.parseGetChoiceResp(response)
     }
 
-    override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprCS> = check {
+    override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprCS> = check(ApiRequestSuffix.POST_CHOICE_GDPR) {
         val url = urlManager.getGdprChoiceUrl(param)
         val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()
@@ -211,7 +217,7 @@ private class NetworkClientImpl(
         responseManager.parsePostGdprChoiceResp(response)
     }
 
-    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> = check {
+    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> = check(ApiRequestSuffix.POST_CHOICE_CCPA) {
         val url = urlManager.getCcpaChoiceUrl(param)
         val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()

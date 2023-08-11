@@ -11,7 +11,7 @@ import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.CodeList
 import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
-import com.sourcepoint.cmplibrary.exception.NetworkCallErrorsCode
+import com.sourcepoint.cmplibrary.exception.ApiRequestSuffix
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
@@ -234,7 +234,7 @@ class NetworkClientImplTest {
         )
 
         val res = sut.getMetaData(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.META_DATA.code)
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestSuffix.META_DATA.apiSuffix)
     }
 
     @Test
@@ -256,7 +256,7 @@ class NetworkClientImplTest {
         )
 
         val res = sut.getConsentStatus(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.CONSENT_STATUS.code)
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestSuffix.CONSENT_STATUS.apiSuffix)
     }
 
     @Test
@@ -277,7 +277,7 @@ class NetworkClientImplTest {
         )
 
         val res = sut.getMessages(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.MESSAGES.code)
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestSuffix.MESSAGES.apiSuffix)
     }
 
     @Test
@@ -294,7 +294,7 @@ class NetworkClientImplTest {
         )
 
         val res = sut.postPvData(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.PV_DATA.code)
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestSuffix.PV_DATA.apiSuffix)
     }
 
     @Test

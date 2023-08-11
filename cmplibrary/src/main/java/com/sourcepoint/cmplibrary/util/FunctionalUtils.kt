@@ -1,11 +1,12 @@
 package com.sourcepoint.cmplibrary.util
 
+import android.util.Log
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.GenericSDKException
-import com.sourcepoint.cmplibrary.exception.NetworkCallErrorsCode
+import com.sourcepoint.cmplibrary.exception.ApiRequestSuffix
 import kotlinx.serialization.SerializationException
 import java.io.InterruptedIOException
 
@@ -25,20 +26,30 @@ internal fun <E> check(block: () -> E): Either<E> {
     }
 }
 
-internal fun <E> check(networkCode: NetworkCallErrorsCode? = null, block: () -> E): Either<E> {
+internal fun <E> check(requestSuffix: ApiRequestSuffix? = null, block: () -> E): Either<E> {
     return try {
         val res = block.invoke()
         Either.Right(res)
     } catch (e: Exception) {
-        Either.Left(e.toConsentLibException(networkCode = networkCode))
+        Either.Left(e.toConsentLibException(requestSuffix = requestSuffix))
     }
 }
 
-internal fun Throwable.toConsentLibException(networkCode: NetworkCallErrorsCode? = null): ConsentLibExceptionK {
+internal fun Throwable.toConsentLibException(requestSuffix: ApiRequestSuffix? = null): ConsentLibExceptionK {
     return when (this) {
         is ConsentLibExceptionK -> this
-        is SerializationException -> InvalidApiResponseException(cause = this, networkCode = networkCode?.code ?: "", description = this.message ?: "${this::class.java}")
-        is InterruptedIOException -> ConnectionTimeoutException(cause = this, networkCode = networkCode?.code ?: "")
-        else -> GenericSDKException(cause = this, description = this.message ?: "${this::class.java}")
+        is SerializationException -> UnableToParseResponseException(
+            cause = this,
+            description = this.message ?: "${this::class.java}",
+            apiRequestSuffix = requestSuffix?.apiSuffix ?: "",
+        )
+        is InterruptedIOException -> ConnectionTimeoutException(
+            cause = this,
+            networkCode = requestSuffix?.apiSuffix ?: ""
+        )
+        else -> GenericSDKException(
+            cause = this,
+            description = this.message ?: "${this::class.java}"
+        )
     }
 }

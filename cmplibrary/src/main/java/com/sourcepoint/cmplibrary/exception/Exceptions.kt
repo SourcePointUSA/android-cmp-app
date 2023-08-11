@@ -202,13 +202,17 @@ internal class GenericSDKException @JvmOverloads constructor(
 internal class InvalidRequestException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
-    isConsumed: Boolean = false
+    isConsumed: Boolean = false,
+    apiRequestSuffix: String = "",
+    httpStatusCode: String = "",
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description,
     isConsumed = isConsumed
 ) {
-    override val code: ExceptionCodes = CodeList.INVALID_REQUEST_ERROR
+    override val code: ExceptionCodes = ExceptionCodes(
+        errorCode = "${CodeList.INVALID_REQUEST_ERROR.errorCode}${apiRequestSuffix}${httpStatusCode}"
+    )
 }
 
 /**
@@ -269,4 +273,21 @@ internal class InvalidConsentResponse @JvmOverloads constructor(
     isConsumed = isConsumed
 ) {
     override val code: ExceptionCodes = CodeList.INVALID_CONSENT_STATUS_RESPONSE
+}
+
+/**
+ * This exception is thrown when the SDK is not being able to parse the network response
+ */
+internal class UnableToParseResponseException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false,
+    apiRequestSuffix: String = "",
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed,
+) {
+    override val code: ExceptionCodes =
+        ExceptionCodes(CodeList.UNABLE_TO_PARSE_RESPONSE.errorCode + apiRequestSuffix)
 }
