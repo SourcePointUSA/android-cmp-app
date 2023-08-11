@@ -4,9 +4,9 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
-import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import okhttp3.Response
@@ -85,7 +85,7 @@ private class ResponseManagerImpl(
                 is Either.Left -> throw either.t
             }
         } else {
-            throw InvalidRequestException(
+            throw RequestFailedException(
                 description = body,
                 apiRequestSuffix = ApiRequestSuffix.META_DATA.apiSuffix,
                 httpStatusCode = "_$status",
@@ -109,7 +109,7 @@ private class ResponseManagerImpl(
                 is Either.Left -> throw either.t
             }
         } else {
-            throw InvalidRequestException(
+            throw RequestFailedException(
                 description = body,
                 apiRequestSuffix = ApiRequestSuffix.CONSENT_STATUS.apiSuffix,
                 httpStatusCode = "_$status",
@@ -117,7 +117,7 @@ private class ResponseManagerImpl(
         }
     }
 
-    override fun parseGetChoiceResp(r: Response): ChoiceResp {
+    override fun parseGetChoiceResp(r: Response, choice: ChoiceTypeParam): ChoiceResp {
         val body = r.body?.byteStream()?.reader()?.readText() ?: ""
         val status = r.code
         val mess = r.message
@@ -133,9 +133,10 @@ private class ResponseManagerImpl(
                 is Either.Left -> throw either.t
             }
         } else {
-            throw InvalidRequestException(
+            throw RequestFailedException(
                 description = body,
                 apiRequestSuffix = ApiRequestSuffix.GET_CHOICE.apiSuffix,
+                choice = "_${choice.type}",
                 httpStatusCode = "_$status",
             )
         }
@@ -157,7 +158,7 @@ private class ResponseManagerImpl(
                 is Either.Left -> throw either.t
             }
         } else {
-            throw InvalidRequestException(
+            throw RequestFailedException(
                 description = body,
                 apiRequestSuffix = ApiRequestSuffix.POST_CHOICE_GDPR.apiSuffix,
                 httpStatusCode = "_$status",
@@ -181,7 +182,7 @@ private class ResponseManagerImpl(
                 is Either.Left -> throw either.t
             }
         } else {
-            throw InvalidRequestException(
+            throw RequestFailedException(
                 description = body,
                 apiRequestSuffix = ApiRequestSuffix.POST_CHOICE_CCPA.apiSuffix,
                 httpStatusCode = "_$status",
@@ -216,7 +217,7 @@ private class ResponseManagerImpl(
                 }
             }
         } else {
-            throw InvalidRequestException(
+            throw RequestFailedException(
                 description = body,
                 apiRequestSuffix = ApiRequestSuffix.PV_DATA.apiSuffix,
                 httpStatusCode = "_$status",
@@ -240,7 +241,7 @@ private class ResponseManagerImpl(
                 is Either.Left -> throw either.t
             }
         } else {
-            throw InvalidRequestException(
+            throw RequestFailedException(
                 description = body,
                 apiRequestSuffix = ApiRequestSuffix.MESSAGES.apiSuffix,
                 httpStatusCode = "_$status",

@@ -204,6 +204,7 @@ internal class InvalidRequestException @JvmOverloads constructor(
     description: String,
     isConsumed: Boolean = false,
     apiRequestSuffix: String = "",
+    choice: String = "",
     httpStatusCode: String = "",
 ) : ConsentLibExceptionK(
     cause = cause,
@@ -211,7 +212,7 @@ internal class InvalidRequestException @JvmOverloads constructor(
     isConsumed = isConsumed
 ) {
     override val code: ExceptionCodes = ExceptionCodes(
-        errorCode = "${CodeList.INVALID_REQUEST_ERROR.errorCode}${apiRequestSuffix}${httpStatusCode}"
+        errorCode = CodeList.INVALID_REQUEST_ERROR.errorCode + apiRequestSuffix + choice + httpStatusCode
     )
 }
 
@@ -290,4 +291,24 @@ internal class UnableToParseResponseException @JvmOverloads constructor(
 ) {
     override val code: ExceptionCodes =
         ExceptionCodes(CodeList.UNABLE_TO_PARSE_RESPONSE.errorCode + apiRequestSuffix)
+}
+
+/**
+ * This exception is thrown when the network request failed.
+ */
+internal class RequestFailedException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false,
+    apiRequestSuffix: String = "",
+    choice: String = "",
+    httpStatusCode: String = "",
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = ExceptionCodes(
+        errorCode = CodeList.REQUEST_FAILED.errorCode + apiRequestSuffix + choice + httpStatusCode
+    )
 }

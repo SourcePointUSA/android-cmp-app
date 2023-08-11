@@ -19,6 +19,7 @@ internal object CodeList {
     val INVALID_CONSENT_STATUS_RESPONSE = ExceptionCodes("sp_metric_invalid_consent_status_response")
     val RENDERING_APP_ERROR = ExceptionCodes("sp_metric_rendering_app_error")
     val UNABLE_TO_PARSE_RESPONSE = ExceptionCodes("sp_metric_unable_to_parse_response")
+    val REQUEST_FAILED = ExceptionCodes("sp_metric_request_failed")
 }
 
 internal inline class ExceptionCodes(val errorCode: String)

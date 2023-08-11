@@ -8,19 +8,19 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.Inclu
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
+import com.sourcepoint.cmplibrary.exception.ApiRequestSuffix
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.CodeList
 import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
-import com.sourcepoint.cmplibrary.exception.ApiRequestSuffix
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockLogger
 import com.sourcepoint.cmplibrary.util.file2String
-import io.mockk.* //ktlint-disable
+import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK
-import kotlinx.serialization.json.* //ktlint-disable
+import kotlinx.serialization.json.* // ktlint-disable
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
