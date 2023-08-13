@@ -29,26 +29,6 @@ private class ResponseManagerImpl(
     val logger: Logger
 ) : ResponseManager {
 
-    override fun parseConsentRes(r: Response, campaignType: CampaignType): ConsentResp {
-        val body = r.body?.byteStream()?.reader()?.readText() ?: ""
-        val status = r.code
-        val mess = r.message
-        logger.res(
-            tag = "ConsentResp",
-            msg = mess,
-            body = body,
-            status = status.toString()
-        )
-        return if (r.isSuccessful) {
-            when (val either: Either<ConsentResp> = jsonConverter.toConsentResp(body, campaignType)) {
-                is Either.Right -> either.r
-                is Either.Left -> throw either.t
-            }
-        } else {
-            throw InvalidRequestException(description = body)
-        }
-    }
-
     override fun parseCustomConsentRes(r: Response): CustomConsentResp {
         val body = r.body?.byteStream()?.reader()?.readText() ?: ""
         val status = r.code

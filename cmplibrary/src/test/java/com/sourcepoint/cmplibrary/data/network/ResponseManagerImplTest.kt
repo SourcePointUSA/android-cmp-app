@@ -9,6 +9,7 @@ import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
+import com.sourcepoint.cmplibrary.exception.UnableToParseResponseException
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.stub.MockLogger
 import io.mockk.every
@@ -24,36 +25,7 @@ import org.junit.Test
  */
 class ResponseManagerImplTest {
 
-    @Test(expected = InvalidRequestException::class)
-    fun `GIVEN a 500 response code RETURN a Left object`() = runBlocking<Unit> {
-        val jsonConverter = mockk<JsonConverter>()
-        val sut = ResponseManager.create(jsonConverter, MockLogger)
-        val resp = mockResponse(code = 500, message = "error", url = "https://mock.com", body = "{}")
-        sut.parseConsentRes(resp, CampaignType.GDPR)
-    }
-
     @Test(expected = java.lang.RuntimeException::class)
-    fun `GIVEN a crash in jsonConverter RETURN a Left object`() = runBlocking<Unit> {
-        val jsonConverter = mockk<JsonConverter>().also { every { it.toConsentResp(any(), any()) }.throws(RuntimeException("test")) }
-        val sut = ResponseManager.create(jsonConverter, MockLogger)
-        val resp = mockResponse(url = "https://mock.com", body = "{}")
-        sut.parseConsentRes(resp, CampaignType.GDPR)
-    }
-
-    @Test(expected = InvalidResponseWebMessageException::class)
-    fun `GIVEN a response body empty RETURN a Left object`() = runBlocking<Unit> {
-        val jsonConverter = mockk<JsonConverter>()
-        val sut = ResponseManager.create(jsonConverter, MockLogger)
-        val resp = Response.Builder() //
-            .code(200)
-            .message("OK")
-            .protocol(Protocol.HTTP_1_1)
-            .request(Request.Builder().url("http://localhost/").build())
-            .build()
-        sut.parseConsentRes(resp, CampaignType.GDPR)
-    }
-
-    @Test(expected = InvalidResponseWebMessageException::class)
     fun `EXECUNTING parseCustomConsentRes with a response body empty RETURN a Left object`() = runBlocking<Unit> {
         val jsonConverter = mockk<JsonConverter>()
         val sut = ResponseManager.create(jsonConverter, MockLogger)
