@@ -28,6 +28,7 @@ internal fun toPvDataBody(
                     put("uuid", cs.uuid)
                     put("euconsent", gdpr.euconsent)
                     put("accountId", accountId)
+                    put("pubData", pubData)
                     put("applies", gdprApplies)
                     put("siteId", propertyId)
                     put("consentStatus", JsonConverter.converter.encodeToJsonElement(cs.consentStatus))
