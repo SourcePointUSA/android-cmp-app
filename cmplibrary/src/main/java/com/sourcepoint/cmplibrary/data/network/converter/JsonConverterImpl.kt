@@ -3,14 +3,16 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
-import com.sourcepoint.cmplibrary.data.network.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
+import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
-import com.sourcepoint.cmplibrary.exception.NetworkCallErrorsCode.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.ConsentActionImpl
+import com.sourcepoint.cmplibrary.model.ConsentResp
+import com.sourcepoint.cmplibrary.model.getMap
+import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -45,12 +47,6 @@ private class JsonConverterImpl : JsonConverter {
         body.toConsentAction()
     }
 
-    override fun toNativeMessageResp(body: String): Either<NativeMessageResp> = check {
-        val map: Map<String, Any?> = JSONObject(body).toTreeMap()
-        val msgJSON = map.getMap("msgJSON") ?: fail("msgJSON")
-        NativeMessageResp(msgJSON = JSONObject(msgJSON))
-    }
-
     override fun toNativeMessageRespK(body: String): Either<NativeMessageRespK> = check {
         val map: Map<String, Any?> = JSONObject(body).toTreeMap()
         val bean: NativeMessageDto = map.getMap("msgJSON")!!.toNativeMessageDto()
@@ -81,39 +77,31 @@ private class JsonConverterImpl : JsonConverter {
         JSONObject(body).toTreeMap().toNativeMessageDto()
     }
 
-    override fun toMetaDataRespResp(body: String): Either<MetaDataResp> = check(META_DATA) {
+    override fun toMetaDataRespResp(body: String): Either<MetaDataResp> = check(ApiRequestPostfix.META_DATA) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toConsentStatusResp(body: String): Either<ConsentStatusResp> = check(CONSENT_STATUS) {
+    override fun toConsentStatusResp(body: String): Either<ConsentStatusResp> = check(ApiRequestPostfix.CONSENT_STATUS) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toChoiceResp(body: String): Either<ChoiceResp> = check {
+    override fun toChoiceResp(body: String): Either<ChoiceResp> = check(ApiRequestPostfix.GET_CHOICE) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toGdprPostChoiceResp(body: String): Either<GdprCS> = check {
+    override fun toGdprPostChoiceResp(body: String): Either<GdprCS> = check(ApiRequestPostfix.POST_CHOICE_GDPR) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toCcpaPostChoiceResp(body: String): Either<CcpaCS> = check {
+    override fun toCcpaPostChoiceResp(body: String): Either<CcpaCS> = check(ApiRequestPostfix.POST_CHOICE_CCPA) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toPvDataResp(body: String): Either<PvDataResp> = check(PV_DATA) {
+    override fun toPvDataResp(body: String): Either<PvDataResp> = check(ApiRequestPostfix.PV_DATA) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toMessagesResp(body: String): Either<MessagesResp> = check(MESSAGES) {
+    override fun toMessagesResp(body: String): Either<MessagesResp> = check(ApiRequestPostfix.MESSAGES) {
         JsonConverter.converter.decodeFromString(body)
-    }
-
-    /**
-     * Util method to throws a [ConsentLibExceptionK] with a custom message
-     * @param param name of the null object
-     */
-    private fun fail(param: String): Nothing {
-        throw InvalidResponseWebMessageException(description = "$param object is null")
     }
 }
