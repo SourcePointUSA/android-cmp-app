@@ -9,29 +9,29 @@ import kotlinx.serialization.json.put
 
 internal fun toPvDataBody(
     gdprCs: GdprCS?,
-    accountId: Long?,
-    propertyId: Long?,
-    gdprApplies: Boolean?,
-    ccpaApplies: Boolean?,
+    accountId: Long,
+    propertyId: Long,
+    gdprApplies: Boolean,
+    ccpaApplies: Boolean,
     gdprMessageMetaData: MessageMetaData?,
     ccpaMessageMetaData: MessageMetaData?,
     ccpaCS: CcpaCS?,
-    sampleRate: Double? = 1.0,
+    sampleRate: Double = 1.0,
     pubData: JsonObject = JsonObject(mapOf())
 ): JsonObject {
 
     return buildJsonObject {
-        gdprCs?.let { cs ->
+        gdprCs?.let { gdpr ->
             put(
                 "gdpr",
                 buildJsonObject {
-                    put("uuid", cs.uuid)
+                    put("uuid", gdpr.uuid)
                     put("euconsent", gdpr.euconsent)
                     put("accountId", accountId)
                     put("pubData", pubData)
                     put("applies", gdprApplies)
                     put("siteId", propertyId)
-                    put("consentStatus", JsonConverter.converter.encodeToJsonElement(cs.consentStatus))
+                    put("consentStatus", JsonConverter.converter.encodeToJsonElement(gdpr.consentStatus))
                     put("msgId", gdprMessageMetaData?.messageId)
                     put("categoryId", gdprMessageMetaData?.categoryId?.code)
                     put("subCategoryId", gdprMessageMetaData?.subCategoryId?.code)
@@ -40,17 +40,16 @@ internal fun toPvDataBody(
                 }
             )
         }
-        ccpaCS?.let { cs ->
+        ccpaCS?.let { ccpa ->
             put(
                 "ccpa",
                 buildJsonObject {
-                    put("uuid", cs.uuid)
+                    put("uuid", ccpa.uuid)
                     put("accountId", accountId)
                     put("applies", ccpaApplies)
                     put("siteId", propertyId)
-                    put("consentStatus", JsonConverter.converter.encodeToJsonElement(cs))
+                    put("consentStatus", JsonConverter.converter.encodeToJsonElement(ccpa))
                     put("messageId", ccpaMessageMetaData?.messageId)
-                    put("uuid", cs.uuid)
                     put("sampleRate", sampleRate)
                     put("pubData", pubData)
                 }
