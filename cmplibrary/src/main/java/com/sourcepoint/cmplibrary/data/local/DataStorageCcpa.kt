@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
-import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_MESSAGE_METADATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_POST_CHOICE_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_SAMPLING_RESULT
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_SAMPLING_VALUE
@@ -25,7 +24,6 @@ internal interface DataStorageCcpa {
 
     var ccpaPostChoiceResp: String?
     var ccpaStatus: String?
-    var ccpaMessageMetaData: String?
 
     var ccpaSamplingValue: Double
     var ccpaSamplingResult: Boolean?
@@ -52,7 +50,6 @@ internal interface DataStorageCcpa {
         const val KEY_CCPA_MESSAGE_SUBCATEGORY = "sp.ccpa.key.message.subcategory"
         const val CCPA_POST_CHOICE_RESP = "sp.ccpa.key.post.choice"
         const val CCPA_STATUS = "sp.ccpa.key.v7.status"
-        const val CCPA_MESSAGE_METADATA = "sp.ccpa.key.message.metadata"
         const val CCPA_SAMPLING_VALUE = "sp.ccpa.key.sampling"
         const val CCPA_SAMPLING_RESULT = "sp.ccpa.key.sampling.result"
     }
@@ -178,14 +175,6 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
                 .apply()
         }
 
-    override var ccpaMessageMetaData: String?
-        get() = preference.getString(CCPA_MESSAGE_METADATA, null)
-        set(value) {
-            preference
-                .edit()
-                .putString(CCPA_MESSAGE_METADATA, value)
-                .apply()
-        }
 
     override fun clearAll() {
         preference
@@ -200,7 +189,6 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .remove(KEY_CCPA_MESSAGE_SUBCATEGORY)
             .remove(CCPA_POST_CHOICE_RESP)
             .remove(CCPA_STATUS)
-            .remove(CCPA_MESSAGE_METADATA)
             .remove(CCPA_SAMPLING_VALUE)
             .remove(CCPA_SAMPLING_RESULT)
             .apply()
