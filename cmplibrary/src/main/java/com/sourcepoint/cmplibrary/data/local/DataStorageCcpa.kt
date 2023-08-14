@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
-import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_POST_CHOICE_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_SAMPLING_RESULT
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_SAMPLING_VALUE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_STATUS
@@ -22,7 +21,6 @@ internal interface DataStorageCcpa {
 
     var ccpaChildPmId: String?
 
-    var ccpaPostChoiceResp: String?
     var ccpaStatus: String?
 
     var ccpaSamplingValue: Double
@@ -48,7 +46,6 @@ internal interface DataStorageCcpa {
         const val CCPA_JSON_MESSAGE = "sp.ccpa.json.message"
         const val KEY_IAB_US_PRIVACY_STRING = "IABUSPrivacy_String"
         const val KEY_CCPA_MESSAGE_SUBCATEGORY = "sp.ccpa.key.message.subcategory"
-        const val CCPA_POST_CHOICE_RESP = "sp.ccpa.key.post.choice"
         const val CCPA_STATUS = "sp.ccpa.key.v7.status"
         const val CCPA_SAMPLING_VALUE = "sp.ccpa.key.sampling"
         const val CCPA_SAMPLING_RESULT = "sp.ccpa.key.sampling.result"
@@ -157,14 +154,6 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .apply()
     }
 
-    override var ccpaPostChoiceResp: String?
-        get() = preference.getString(CCPA_POST_CHOICE_RESP, null)
-        set(value) {
-            preference
-                .edit()
-                .putString(CCPA_POST_CHOICE_RESP, value)
-                .apply()
-        }
 
     override var ccpaStatus: String?
         get() = preference.getString(CCPA_STATUS, null)
@@ -187,7 +176,6 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .remove(KEY_CCPA_CHILD_PM_ID)
             .remove(KEY_IAB_US_PRIVACY_STRING)
             .remove(KEY_CCPA_MESSAGE_SUBCATEGORY)
-            .remove(CCPA_POST_CHOICE_RESP)
             .remove(CCPA_STATUS)
             .remove(CCPA_SAMPLING_VALUE)
             .remove(CCPA_SAMPLING_RESULT)
