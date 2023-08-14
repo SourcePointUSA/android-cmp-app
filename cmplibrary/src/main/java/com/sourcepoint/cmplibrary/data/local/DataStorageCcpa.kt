@@ -153,7 +153,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .remove(KEY_IAB_US_PRIVACY_STRING)
             .apply()
     }
-    
+
     override var ccpaStatus: String?
         get() = preference.getString(CCPA_STATUS, null)
         set(value) {
