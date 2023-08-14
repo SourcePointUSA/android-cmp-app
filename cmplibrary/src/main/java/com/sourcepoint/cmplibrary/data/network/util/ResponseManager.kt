@@ -1,11 +1,8 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
-import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
-import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.ConsentResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import okhttp3.Response
 
@@ -14,27 +11,16 @@ import okhttp3.Response
  */
 internal interface ResponseManager {
 
-    /**
-     * @param r http response
-     * @return [Either] object
-     */
-    fun parseNativeMessRes(r: Response): Either<NativeMessageResp>
-
-    fun parseNativeMessResK(r: Response): Either<NativeMessageRespK>
-
-    fun parseConsentResEither(r: Response, campaignType: CampaignType): Either<ConsentResp>
-    fun parseConsentRes(r: Response, campaignType: CampaignType): ConsentResp
     fun parseCustomConsentRes(r: Response): CustomConsentResp
 
     // Optimized
     fun parseMetaDataRes(r: Response): MetaDataResp
     fun parseConsentStatusResp(r: Response): ConsentStatusResp
-    fun parseGetChoiceResp(r: Response): ChoiceResp
+    fun parseGetChoiceResp(r: Response, choice: ChoiceTypeParam): ChoiceResp
     fun parsePostGdprChoiceResp(r: Response): GdprCS
     fun parsePostCcpaChoiceResp(r: Response): CcpaCS
     fun parsePvDataResp(r: Response): PvDataResp
     fun parseMessagesResp(r: Response): MessagesResp
-    fun parseMessagesResp2(r: Response): Either<MessagesResp>
 
     companion object
 }
