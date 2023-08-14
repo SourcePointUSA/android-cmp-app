@@ -26,7 +26,7 @@ internal fun toPvDataBody(
                 "gdpr",
                 buildJsonObject {
                     put("uuid", cs.uuid)
-                    put("euconsent", cs.uuid)
+                    put("euconsent", gdpr.euconsent)
                     put("accountId", accountId)
                     put("applies", gdprApplies)
                     put("siteId", propertyId)
