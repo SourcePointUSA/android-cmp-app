@@ -69,10 +69,7 @@ private class LoggerImpl(
         }
         // send data to datadog
         val mediaType = "application/json".toMediaTypeOrNull()
-        val error = errorMessageManager.build(e)
-        Log.v("DIA-2555", "===== error request =====")
-        Log.d("DIA-2555", "error = $error")
-        val body: RequestBody = RequestBody.create(mediaType, error)
+        val body: RequestBody = RequestBody.create(mediaType, errorMessageManager.build(e))
 
         val httpBuilder = url.toHttpUrl().newBuilder()
         httpBuilder.addQueryParameter("scriptType", "android")
