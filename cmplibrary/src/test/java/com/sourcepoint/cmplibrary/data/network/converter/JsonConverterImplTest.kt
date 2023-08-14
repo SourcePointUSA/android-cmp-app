@@ -15,19 +15,6 @@ class JsonConverterImplTest {
     private val sut = JsonConverter.create()
 
     @Test
-    fun `GIVEN a native_message_resp RETURN a Right(NativeMessageResp)`() {
-        val json = "native_message_resp.json".file2String()
-
-        val output: Either<NativeMessageResp> = sut.toNativeMessageResp(json)
-        (output as Either.Right).r.also { m ->
-            m.msgJSON.get("name").assertEquals("GDPR Native Message")
-            (m.msgJSON.get("title") as JSONObject).get("text").assertEquals("Personalised Ads")
-            (m.msgJSON.get("body") as JSONObject).get("text")
-                .assertEquals("GDPR - Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.")
-        }
-    }
-
-    @Test
     fun `GIVEN a ACCEPT_ALL consent body resp RETURN a right object`() {
         val json = "consent_resp/consent_accept_all.json".file2String()
         val testMap = JSONObject(json).toTreeMap()

@@ -25,8 +25,6 @@ internal interface JsonConverter {
 
     fun toNativeMessageDto(body: String): Either<NativeMessageDto>
 
-    fun toNativeMessageResp(body: String): Either<NativeMessageResp>
-
     fun toNativeMessageRespK(body: String): Either<NativeMessageRespK>
 
     // Optimized
