@@ -202,7 +202,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .apply()
     }
 
-
     override var gdprSamplingValue: Double
         get() = preference.getFloat(GDPR_SAMPLING_VALUE, 1.0F).toDouble()
         set(value) {
@@ -226,7 +225,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                     .apply()
             }
         }
-
 
     override fun clearAll() {
         val listIABTCF = preference.all.filter { prefix -> prefix.key.startsWith(IABTCF_KEY_PREFIX) }.keys

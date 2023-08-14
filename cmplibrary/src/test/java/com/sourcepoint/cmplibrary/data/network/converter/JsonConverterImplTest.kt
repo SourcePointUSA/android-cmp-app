@@ -17,7 +17,6 @@ class JsonConverterImplTest {
     @Test
     fun `GIVEN a native_message_resp RETURN a Right(NativeMessageResp)`() {
         val json = "native_message_resp.json".file2String()
-        val testMap = JSONObject(json).toTreeMap()
 
         val output: Either<NativeMessageResp> = sut.toNativeMessageResp(json)
         (output as Either.Right).r.also { m ->
@@ -107,7 +106,6 @@ class JsonConverterImplTest {
     @Test
     fun `GIVEN a metadata body resp RETURN a Right(MetaDataResp)`() {
         val json = "v7/meta_data.json".file2String()
-        val testMap = JSONObject(json).toTreeMap()
         val nm = (sut.toMetaDataRespResp(json) as Either.Right).r
         nm.run {
             gdpr.also {
@@ -158,8 +156,6 @@ class JsonConverterImplTest {
     @Test
     fun `GIVEN a consent_status without authId body resp RETURN a Right(ConsentStatusResp)`() {
         val json = "v7/consent_status_without_auth_id.json".file2String()
-        val testMap = JSONObject(json).toTreeMap()
-        // talk with Sid to fix the boolean-null value
         val nm = (sut.toConsentStatusResp(json) as Either.Right).r
         nm.consentStatusData!!.gdpr!!.run {
             addtlConsent.assertEquals("1~")
