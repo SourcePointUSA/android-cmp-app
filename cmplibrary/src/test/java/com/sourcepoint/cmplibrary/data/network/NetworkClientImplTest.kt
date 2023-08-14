@@ -8,7 +8,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.Inclu
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
-import com.sourcepoint.cmplibrary.exception.ApiRequestSuffix
+import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.CodeList
 import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
@@ -234,7 +234,7 @@ class NetworkClientImplTest {
         )
 
         val res = sut.getMetaData(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestSuffix.META_DATA.apiSuffix)
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.META_DATA.apiPostfix)
     }
 
     @Test
@@ -256,7 +256,7 @@ class NetworkClientImplTest {
         )
 
         val res = sut.getConsentStatus(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestSuffix.CONSENT_STATUS.apiSuffix)
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.CONSENT_STATUS.apiPostfix)
     }
 
     @Test
@@ -277,7 +277,7 @@ class NetworkClientImplTest {
         )
 
         val res = sut.getMessages(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestSuffix.MESSAGES.apiSuffix)
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.MESSAGES.apiPostfix)
     }
 
     @Test
@@ -294,7 +294,7 @@ class NetworkClientImplTest {
         )
 
         val res = sut.postPvData(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestSuffix.PV_DATA.apiSuffix)
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.PV_DATA.apiPostfix)
     }
 
     @Test

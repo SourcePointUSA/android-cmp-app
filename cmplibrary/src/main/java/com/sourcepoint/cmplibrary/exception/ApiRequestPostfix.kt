@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.exception
 
-internal enum class ApiRequestSuffix(
-    val apiSuffix: String
+internal enum class ApiRequestPostfix(
+    val apiPostfix: String
 ) {
     META_DATA("_meta-data"),
     CONSENT_STATUS("_consent-status"),

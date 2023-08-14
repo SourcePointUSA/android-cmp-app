@@ -22,12 +22,12 @@ class FunctionalUtilsKtTest {
 
     @Test
     fun `GIVEN a InterruptedIOException with meta-data message RETURN a ConnectionTimeoutException`() {
-        val sut = check(ApiRequestSuffix.META_DATA) { throw InterruptedIOException() }
+        val sut = check(ApiRequestPostfix.META_DATA) { throw InterruptedIOException() }
         (sut as Either.Left).t.run {
             (this as ConnectionTimeoutException)
             message.assertEquals(TIMEOUT_MESSAGE)
             description.assertEquals(TIMEOUT_MESSAGE)
-            code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestSuffix.META_DATA.apiSuffix)
+            code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.META_DATA.apiPostfix)
             isConsumed.assertEquals(false)
         }
     }

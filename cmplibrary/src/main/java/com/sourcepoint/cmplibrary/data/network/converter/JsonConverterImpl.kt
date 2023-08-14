@@ -6,7 +6,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
-import com.sourcepoint.cmplibrary.exception.ApiRequestSuffix
+import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
@@ -77,31 +77,31 @@ private class JsonConverterImpl : JsonConverter {
         JSONObject(body).toTreeMap().toNativeMessageDto()
     }
 
-    override fun toMetaDataRespResp(body: String): Either<MetaDataResp> = check(ApiRequestSuffix.META_DATA) {
+    override fun toMetaDataRespResp(body: String): Either<MetaDataResp> = check(ApiRequestPostfix.META_DATA) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toConsentStatusResp(body: String): Either<ConsentStatusResp> = check(ApiRequestSuffix.CONSENT_STATUS) {
+    override fun toConsentStatusResp(body: String): Either<ConsentStatusResp> = check(ApiRequestPostfix.CONSENT_STATUS) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toChoiceResp(body: String): Either<ChoiceResp> = check(ApiRequestSuffix.GET_CHOICE) {
+    override fun toChoiceResp(body: String): Either<ChoiceResp> = check(ApiRequestPostfix.GET_CHOICE) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toGdprPostChoiceResp(body: String): Either<GdprCS> = check(ApiRequestSuffix.POST_CHOICE_GDPR) {
+    override fun toGdprPostChoiceResp(body: String): Either<GdprCS> = check(ApiRequestPostfix.POST_CHOICE_GDPR) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toCcpaPostChoiceResp(body: String): Either<CcpaCS> = check(ApiRequestSuffix.POST_CHOICE_CCPA) {
+    override fun toCcpaPostChoiceResp(body: String): Either<CcpaCS> = check(ApiRequestPostfix.POST_CHOICE_CCPA) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toPvDataResp(body: String): Either<PvDataResp> = check(ApiRequestSuffix.PV_DATA) {
+    override fun toPvDataResp(body: String): Either<PvDataResp> = check(ApiRequestPostfix.PV_DATA) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toMessagesResp(body: String): Either<MessagesResp> = check(ApiRequestSuffix.MESSAGES) {
+    override fun toMessagesResp(body: String): Either<MessagesResp> = check(ApiRequestPostfix.MESSAGES) {
         JsonConverter.converter.decodeFromString(body)
     }
 }
