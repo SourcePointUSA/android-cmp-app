@@ -66,7 +66,7 @@ private class ResponseManagerImpl(
         } else {
             throw RequestFailedException(
                 description = body,
-                apiRequestSuffix = ApiRequestPostfix.META_DATA.apiPostfix,
+                apiRequestPostfix = ApiRequestPostfix.META_DATA.apiPostfix,
                 httpStatusCode = "_$status",
             )
         }
@@ -90,7 +90,7 @@ private class ResponseManagerImpl(
         } else {
             throw RequestFailedException(
                 description = body,
-                apiRequestSuffix = ApiRequestPostfix.CONSENT_STATUS.apiPostfix,
+                apiRequestPostfix = ApiRequestPostfix.CONSENT_STATUS.apiPostfix,
                 httpStatusCode = "_$status",
             )
         }
@@ -114,7 +114,7 @@ private class ResponseManagerImpl(
         } else {
             throw RequestFailedException(
                 description = body,
-                apiRequestSuffix = ApiRequestPostfix.GET_CHOICE.apiPostfix,
+                apiRequestPostfix = ApiRequestPostfix.GET_CHOICE.apiPostfix,
                 choice = "_${choice.type}",
                 httpStatusCode = "_$status",
             )
@@ -139,7 +139,7 @@ private class ResponseManagerImpl(
         } else {
             throw RequestFailedException(
                 description = body,
-                apiRequestSuffix = ApiRequestPostfix.POST_CHOICE_GDPR.apiPostfix,
+                apiRequestPostfix = ApiRequestPostfix.POST_CHOICE_GDPR.apiPostfix,
                 httpStatusCode = "_$status",
             )
         }
@@ -163,7 +163,7 @@ private class ResponseManagerImpl(
         } else {
             throw RequestFailedException(
                 description = body,
-                apiRequestSuffix = ApiRequestPostfix.POST_CHOICE_CCPA.apiPostfix,
+                apiRequestPostfix = ApiRequestPostfix.POST_CHOICE_CCPA.apiPostfix,
                 httpStatusCode = "_$status",
             )
         }
@@ -198,7 +198,7 @@ private class ResponseManagerImpl(
         } else {
             throw RequestFailedException(
                 description = body,
-                apiRequestSuffix = ApiRequestPostfix.PV_DATA.apiPostfix,
+                apiRequestPostfix = ApiRequestPostfix.PV_DATA.apiPostfix,
                 httpStatusCode = "_$status",
             )
         }
@@ -222,7 +222,7 @@ private class ResponseManagerImpl(
         } else {
             throw RequestFailedException(
                 description = body,
-                apiRequestSuffix = ApiRequestPostfix.MESSAGES.apiPostfix,
+                apiRequestPostfix = ApiRequestPostfix.MESSAGES.apiPostfix,
                 httpStatusCode = "_$status",
             )
         }

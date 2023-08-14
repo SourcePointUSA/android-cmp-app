@@ -203,7 +203,7 @@ internal class InvalidRequestException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false,
-    apiRequestSuffix: String = "",
+    apiRequestPostfix: String = "",
     choice: String = "",
     httpStatusCode: String = "",
 ) : ConsentLibExceptionK(
@@ -212,7 +212,7 @@ internal class InvalidRequestException @JvmOverloads constructor(
     isConsumed = isConsumed
 ) {
     override val code: ExceptionCodes = ExceptionCodes(
-        errorCode = CodeList.INVALID_REQUEST_ERROR.errorCode + apiRequestSuffix + choice + httpStatusCode
+        errorCode = CodeList.INVALID_REQUEST_ERROR.errorCode + apiRequestPostfix + choice + httpStatusCode
     )
 }
 
@@ -283,14 +283,14 @@ internal class UnableToParseResponseException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false,
-    apiRequestSuffix: String = "",
+    apiRequestPostfix: String = "",
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description,
     isConsumed = isConsumed,
 ) {
     override val code: ExceptionCodes =
-        ExceptionCodes(CodeList.UNABLE_TO_PARSE_RESPONSE.errorCode + apiRequestSuffix)
+        ExceptionCodes(CodeList.UNABLE_TO_PARSE_RESPONSE.errorCode + apiRequestPostfix)
 }
 
 /**
@@ -300,7 +300,7 @@ internal class RequestFailedException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
     isConsumed: Boolean = false,
-    apiRequestSuffix: String = "",
+    apiRequestPostfix: String = "",
     choice: String = "",
     httpStatusCode: String = "",
 ) : ConsentLibExceptionK(
@@ -309,6 +309,6 @@ internal class RequestFailedException @JvmOverloads constructor(
     isConsumed = isConsumed
 ) {
     override val code: ExceptionCodes = ExceptionCodes(
-        errorCode = CodeList.REQUEST_FAILED.errorCode + apiRequestSuffix + choice + httpStatusCode
+        errorCode = CodeList.REQUEST_FAILED.errorCode + apiRequestPostfix + choice + httpStatusCode
     )
 }

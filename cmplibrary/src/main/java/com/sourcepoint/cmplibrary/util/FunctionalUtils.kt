@@ -26,29 +26,29 @@ internal fun <E> check(block: () -> E): Either<E> {
 }
 
 internal fun <E> check(
-    requestSuffix: ApiRequestPostfix? = null,
+    requestPostfix: ApiRequestPostfix? = null,
     block: () -> E,
 ): Either<E> {
     return try {
         val res = block.invoke()
         Either.Right(res)
     } catch (e: Exception) {
-        Either.Left(e.toConsentLibException(requestSuffix = requestSuffix))
+        Either.Left(e.toConsentLibException(requestPostfix = requestPostfix))
     }
 }
 
 internal fun Throwable.toConsentLibException(
-    requestSuffix: ApiRequestPostfix? = null
+    requestPostfix: ApiRequestPostfix? = null
 ): ConsentLibExceptionK = when (this) {
     is ConsentLibExceptionK -> this
     is SerializationException -> UnableToParseResponseException(
         cause = this,
         description = this.message ?: "${this::class.java}",
-        apiRequestSuffix = requestSuffix?.apiPostfix ?: "",
+        apiRequestPostfix = requestPostfix?.apiPostfix ?: "",
     )
     is InterruptedIOException -> ConnectionTimeoutException(
         cause = this,
-        networkCode = requestSuffix?.apiPostfix ?: ""
+        networkCode = requestPostfix?.apiPostfix ?: ""
     )
     else -> GenericSDKException(
         cause = this,
