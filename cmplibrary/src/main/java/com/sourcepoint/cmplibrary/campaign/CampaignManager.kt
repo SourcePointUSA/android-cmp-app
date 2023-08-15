@@ -418,23 +418,9 @@ private class CampaignManagerImpl(
             return res
         }
 
-    override var gdprMessageMetaData: MessageMetaData?
-        get() {
-            return dataStorage.gdprMessageMetaData?.let { JsonConverter.converter.decodeFromString<MessageMetaData>(it) }
-        }
-        set(value) {
-            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.gdprMessageMetaData = serialised
-        }
+    override var gdprMessageMetaData: MessageMetaData? = null
 
-    override var ccpaMessageMetaData: MessageMetaData?
-        get() {
-            return dataStorage.ccpaMessageMetaData?.let { JsonConverter.converter.decodeFromString<MessageMetaData>(it) }
-        }
-        set(value) {
-            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.ccpaMessageMetaData = serialised
-        }
+    override var ccpaMessageMetaData: MessageMetaData? = null
 
     override fun saveConsentStatusResponse(c: ConsentStatusResp) {
         gdprConsentStatus = c.consentStatusData?.gdpr

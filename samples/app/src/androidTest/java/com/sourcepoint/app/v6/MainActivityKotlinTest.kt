@@ -563,11 +563,11 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapRejectOnWebView() }
+        wr { tapRejectOnWebView() }
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
+        wr { tapAcceptAllOnWebView() }
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
+        wr { checkAllConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 2) { spClient.onSpFinished(any()) } }

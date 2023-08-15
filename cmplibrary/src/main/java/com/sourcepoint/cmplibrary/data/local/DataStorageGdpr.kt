@@ -14,8 +14,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSEN
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_DATE_CREATED
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON_MESSAGE
-import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_MESSAGE_METADATA
-import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_POST_CHOICE_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_SAMPLING_RESULT
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_SAMPLING_VALUE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_TCData
@@ -41,8 +39,6 @@ internal interface DataStorageGdpr {
 
     var gdprApplies: Boolean
     var gdprChildPmId: String?
-    var gdprPostChoiceResp: String?
-    var gdprMessageMetaData: String?
 
     var tcData: Map<String, Any?>
 
@@ -88,8 +84,6 @@ internal interface DataStorageGdpr {
         const val GDPR_CONSENT_RESP = "sp.gdpr.consent.resp"
         const val GDPR_JSON_MESSAGE = "sp.gdpr.json.message"
         const val GDPR_TCData = "TCData"
-        const val GDPR_POST_CHOICE_RESP = "sp.gdpr.key.post.choice"
-        const val GDPR_MESSAGE_METADATA = "sp.gdpr.key.message.metadata"
         const val GDPR_DATE_CREATED = "sp.gdpr.key.date.created"
         const val GDPR_SAMPLING_VALUE = "sp.gdpr.key.sampling"
         const val GDPR_SAMPLING_RESULT = "sp.gdpr.key.sampling.result"
@@ -208,15 +202,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .apply()
     }
 
-    override var gdprPostChoiceResp: String?
-        get() = preference.getString(GDPR_POST_CHOICE_RESP, null)
-        set(value) {
-            preference
-                .edit()
-                .putString(GDPR_POST_CHOICE_RESP, value)
-                .apply()
-        }
-
     override var gdprSamplingValue: Double
         get() = preference.getFloat(GDPR_SAMPLING_VALUE, 1.0F).toDouble()
         set(value) {
@@ -239,15 +224,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                     .putBoolean(GDPR_SAMPLING_RESULT, it)
                     .apply()
             }
-        }
-
-    override var gdprMessageMetaData: String?
-        get() = preference.getString(GDPR_MESSAGE_METADATA, null)
-        set(value) {
-            preference
-                .edit()
-                .putString(GDPR_MESSAGE_METADATA, value)
-                .apply()
         }
 
     override fun clearAll() {
@@ -274,9 +250,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 remove(KEY_GDPR)
                 remove(KEY_GDPR_OLD)
                 remove(KEY_GDPR_CHILD_PM_ID)
-                remove(GDPR_POST_CHOICE_RESP)
                 remove(GDPR_DATE_CREATED)
-                remove(GDPR_MESSAGE_METADATA)
                 remove(GDPR_SAMPLING_VALUE)
                 remove(GDPR_SAMPLING_RESULT)
                 listIABTCF.forEach { remove(it) }
