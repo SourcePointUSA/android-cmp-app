@@ -104,15 +104,21 @@ internal class ConsentWebView(
         url: HttpUrl,
         campaignType: CampaignType,
         pmId: String?,
-        consent: JSONObject
+        consent: String?,
     ): Either<Boolean> = check {
-        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
+
+        if (connectionManager.isConnected.not()) throw NoInternetConnectionException(
+            description = "No internet connection"
+        )
+
+        val ensuredConsentJson = consent?.let { JSONObject(it) } ?: JSONObject()
+
         spWebViewClient.jsReceiverConfig = {
             val sb = StringBuffer()
 
             val obj = JSONObject().apply {
                 put("name", "sp.loadConsent")
-                put("consent", consent)
+                put("consent", ensuredConsentJson)
             }
 
             logger.flm(
