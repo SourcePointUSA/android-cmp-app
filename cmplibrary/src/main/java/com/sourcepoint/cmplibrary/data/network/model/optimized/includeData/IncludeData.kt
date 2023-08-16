@@ -1,10 +1,11 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized.includeData
 
+import com.sourcepoint.cmplibrary.gpp.dto.GppDataDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class IncludeData(
+internal data class IncludeData(
     @SerialName("localState")
     val localState: IncludeDataParam? = null,
     @SerialName("TCData")
@@ -17,6 +18,8 @@ data class IncludeData(
     val messageMetaData: IncludeDataParam? = null,
     @SerialName("webConsentPayload")
     val webConsentPayload: IncludeDataParam? = null,
+    @SerialName("GPPData")
+    val gppData: GppDataDto? = null
 ) {
 
     companion object {
@@ -32,10 +35,11 @@ data class IncludeData(
         /**
          * Method that generates include data for /messages request.
          */
-        fun generateIncludeDataForMessages(): IncludeData = IncludeData(
+        fun generateIncludeDataForMessages(gppData: GppDataDto): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             campaigns = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+            gppData = gppData,
         )
 
         /**

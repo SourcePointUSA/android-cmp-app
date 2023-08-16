@@ -25,6 +25,10 @@ import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.gpp.dto.GppBinaryType
+import com.sourcepoint.cmplibrary.gpp.dto.GppData
+import com.sourcepoint.cmplibrary.gpp.dto.GppTernaryType
+import com.sourcepoint.cmplibrary.gpp.utils.toGppDataDto
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
@@ -202,6 +206,8 @@ private class ServiceImpl(
                 val localState = campaignManager.messagesOptimizedLocalState?.jsonObject
                     ?: JsonObject(mapOf())
 
+                val gppDataDto = GppData().toGppDataDto()
+
                 val body = MessagesBodyReq(
                     accountId = messageReq.accountId,
                     propertyHref = "https://${messageReq.propertyHref}",
@@ -212,7 +218,7 @@ private class ServiceImpl(
                     campaignEnv = campaignManager.spConfig.campaignsEnv.env,
                     consentLanguage = campaignManager.messageLanguage.value,
                     hasCSP = false,
-                    includeData = IncludeData.generateIncludeDataForMessages(),
+                    includeData = IncludeData.generateIncludeDataForMessages(gppDataDto),
                     localState = localState,
                     operatingSystem = operatingSystemInfo,
                 )
