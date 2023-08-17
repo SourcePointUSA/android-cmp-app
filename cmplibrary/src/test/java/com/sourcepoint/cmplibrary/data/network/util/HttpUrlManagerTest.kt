@@ -16,7 +16,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.Messages
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.gpp.dto.GppData
-import com.sourcepoint.cmplibrary.gpp.utils.toGppDataDto
+import com.sourcepoint.cmplibrary.gpp.utils.toIncludeDataGppParam
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
@@ -326,7 +326,7 @@ class HttpUrlManagerTest {
         )
 
         val operatingSystemInfo = OperatingSystemInfoParam()
-        val mockGppData = GppData().toGppDataDto()
+        val mockGppData = GppData().toIncludeDataGppParam()
 
         val body = MessagesBodyReq(
             accountId = 22,
