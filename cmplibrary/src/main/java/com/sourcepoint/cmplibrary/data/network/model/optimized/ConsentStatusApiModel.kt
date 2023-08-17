@@ -106,7 +106,7 @@ data class GdprCS(
     @SerialName("dateCreated") val dateCreated: String?,
     @SerialName("euconsent") val euconsent: String?,
     @Serializable(with = GrantsSerializer::class) val grants: Map<String, GDPRPurposeGrants>?,
-    @Serializable(with = TcDataSerializer::class) val TCData: Map<String, JsonElement>?,
+    @Serializable(with = JsonMapSerializer::class) val TCData: Map<String, JsonElement>?,
     @SerialName("localDataCurrent") val localDataCurrent: Boolean?,
     @SerialName("uuid") var uuid: String?,
     @SerialName("vendorListId") val vendorListId: String?,
