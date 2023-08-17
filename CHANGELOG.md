@@ -1,3 +1,8 @@
+## 7.2.8 (August, 17, 2023)
+* [DIA-2561](https://sourcepoint.atlassian.net/browse/DIA-2561) Crash fix for NPE in SPConsentLib (#679)
+* [DIA-2525](https://sourcepoint.atlassian.net/browse/DIA-2525) Fix no action wrong numbers in our reports (#678)
+* [DIA-2555](https://sourcepoint.atlassian.net/browse/DIA-2555) Refactor network client (#677)
+
 ## 7.2.7 (August, 09, 2023)
 * [DIA-2531](https://sourcepoint.atlassian.net/browse/DIA-2531) Refactor metadata param for each request (#675)
 * [DIA-2462](https://sourcepoint.atlassian.net/browse/DIA-2462) Review params to GET /consent-status endpoint (#673)
