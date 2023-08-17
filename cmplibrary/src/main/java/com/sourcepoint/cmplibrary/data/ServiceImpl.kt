@@ -22,6 +22,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.metaData.toMessag
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
+import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -379,6 +380,9 @@ private class ServiceImpl(
                     )
                     sPConsentsSuccess?.invoke(consentHandler)
                 }
+                .executeOnLeft { error ->
+                    (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+                }
                 .getOrNull()
         }
 
@@ -417,6 +421,9 @@ private class ServiceImpl(
                     sPConsentsSuccess?.invoke(cr)
                 }
             }
+            .executeOnLeft { error ->
+                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+            }
 
         campaignManager.gdprConsentStatus ?: throw InvalidConsentResponse(
             cause = null,
@@ -452,6 +459,9 @@ private class ServiceImpl(
                         consentManagerUtils
                     )
                     sPConsentsSuccess?.invoke(consentHandler)
+                }
+                .executeOnLeft { error ->
+                    (error as? ConsentLibExceptionK)?.let { logger.error(error) }
                 }
         }
 
@@ -493,6 +503,9 @@ private class ServiceImpl(
                     val consentHandler = ConsentManager.responseConsentHandler(postConsentResponse, consentManagerUtils)
                     sPConsentsSuccess?.invoke(consentHandler)
                 }
+            }
+            .executeOnLeft { error ->
+                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
             }
 
         campaignManager.ccpaConsentStatus ?: throw InvalidConsentResponse(
