@@ -135,9 +135,6 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             }
         }
 
-    /**
-     *
-     */
     override var gppData: Map<String, Any?>
         get() {
             val result = TreeMap<String, Any?>()
