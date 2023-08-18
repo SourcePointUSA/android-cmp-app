@@ -144,21 +144,21 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             return result
         }
         set(value) {
-            val spEditor = preference.edit()
+            val editor = preference.edit()
             value.forEach { entry ->
                 val primitive = entry.value as? JsonPrimitive
                 val isString = primitive?.isString ?: false
                 if (isString) {
                     primitive?.content?.let {
-                        spEditor.putString(entry.key, it)
+                        editor.putString(entry.key, it)
                     }
                 } else {
                     primitive?.intOrNull?.let {
-                        spEditor.putInt(entry.key, it)
+                        editor.putInt(entry.key, it)
                     }
                 }
             }
-            spEditor.apply()
+            editor.apply()
         }
 
     /**
