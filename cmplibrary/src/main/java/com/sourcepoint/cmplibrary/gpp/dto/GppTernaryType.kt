@@ -5,5 +5,5 @@ internal enum class GppTernaryType(
 ) {
     YES("yes"),
     NO("no"),
-    NON_APPLICABLE("na"),
+    NOT_APPLICABLE("na"),
 }

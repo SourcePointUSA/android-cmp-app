@@ -137,9 +137,10 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
 
     override var gppData: Map<String, Any?>
         get() {
+            clearGppData()
             val result = TreeMap<String, Any?>()
             preference.all
-                .filter { it.key.startsWith(DataStorageGdpr.IABTCF_KEY_PREFIX) }
+                .filter { it.key.startsWith(KEY_IABGPP_PREFIX) }
                 .forEach { result[it.key] = it.value }
             return result
         }

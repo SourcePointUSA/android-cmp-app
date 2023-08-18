@@ -452,10 +452,9 @@ private class CampaignManagerImpl(
             dataStorage.ccpaConsentStatus = serialised
 
             // clear previous gpp data and save a new one if exists
-            dataStorage.clearGppData()
             value?.gppData?.let { ensuredGppData ->
                 dataStorage.gppData = ensuredGppData
-            }
+            } ?: run { dataStorage.clearGppData() }
 
             // regenerate and update US privacy string with new values in the data storage
             dataStorage.uspstring = generateCcpaUspString(
