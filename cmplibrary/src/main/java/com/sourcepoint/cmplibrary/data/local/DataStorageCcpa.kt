@@ -30,7 +30,7 @@ internal interface DataStorageCcpa {
     var ccpaSamplingValue: Double
     var ccpaSamplingResult: Boolean?
 
-    var gppData: Map<String, Any?>
+    var gppData: Map<String, Any?>?
 
     fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
@@ -135,18 +135,18 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             }
         }
 
-    override var gppData: Map<String, Any?>
+    override var gppData: Map<String, Any?>?
         get() {
             val result = TreeMap<String, Any?>()
             preference.all
                 .filter { it.key.startsWith(KEY_IABGPP_PREFIX) }
                 .forEach { result[it.key] = it.value }
-            return result
+            return if (result.isEmpty()) null else result
         }
         set(value) {
             clearGppData()
             val editor = preference.edit()
-            value.forEach { entry ->
+            value?.forEach { entry ->
                 val primitive = entry.value as? JsonPrimitive
                 val isString = primitive?.isString ?: false
                 if (isString) {

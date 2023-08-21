@@ -248,10 +248,7 @@ private class ServiceImpl(
                                 dataStorage.tcData = tcData.toMapOfAny()
                             }
 
-                            // clear out previous and save new gpp data in the data storage
-                            it.campaigns?.ccpa?.gppData?.let { gppData ->
-                                dataStorage.gppData = gppData.toMapOfAny()
-                            } ?: run { dataStorage.clearGppData() }
+                            dataStorage.gppData = it.campaigns?.ccpa?.gppData?.toMapOfAny()
 
                             campaignManager.run {
                                 if ((messageReq.authId != null || campaignManager.shouldCallConsentStatus).not()) {
