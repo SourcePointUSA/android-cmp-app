@@ -137,7 +137,6 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
 
     override var gppData: Map<String, Any?>
         get() {
-            clearGppData()
             val result = TreeMap<String, Any?>()
             preference.all
                 .filter { it.key.startsWith(KEY_IABGPP_PREFIX) }
@@ -145,6 +144,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             return result
         }
         set(value) {
+            clearGppData()
             val editor = preference.edit()
             value.forEach { entry ->
                 val primitive = entry.value as? JsonPrimitive

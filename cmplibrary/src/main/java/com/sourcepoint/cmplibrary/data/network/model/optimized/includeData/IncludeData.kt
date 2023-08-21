@@ -1,5 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized.includeData
 
+import com.sourcepoint.cmplibrary.gpp.dto.GppData
+import com.sourcepoint.cmplibrary.gpp.utils.toIncludeDataGppParam
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -26,16 +28,19 @@ internal data class IncludeData(
         /**
          * Method that generates include data for /consent-status request.
          */
-        fun generateIncludeDataForConsentStatus(): IncludeData = IncludeData(
+        fun generateIncludeDataForConsentStatus(
+            includeDataGppParam: IncludeDataGppParam = GppData().toIncludeDataGppParam(),
+        ): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+            gppData = includeDataGppParam,
         )
 
         /**
          * Method that generates include data for /messages request.
          */
         fun generateIncludeDataForMessages(
-            includeDataGppParam: IncludeDataGppParam,
+            includeDataGppParam: IncludeDataGppParam = GppData().toIncludeDataGppParam(),
         ): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             campaigns = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
@@ -46,9 +51,12 @@ internal data class IncludeData(
         /**
          * Method that generates include data for GET /choice request.
          */
-        fun generateIncludeDataForGetChoice(): IncludeData = IncludeData(
+        fun generateIncludeDataForGetChoice(
+            includeDataGppParam: IncludeDataGppParam = GppData().toIncludeDataGppParam(),
+        ): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+            gppData = includeDataGppParam,
         )
     }
 }
