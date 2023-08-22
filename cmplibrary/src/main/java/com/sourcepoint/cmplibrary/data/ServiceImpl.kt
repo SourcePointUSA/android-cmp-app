@@ -24,6 +24,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.gpp.utils.toIncludeDataGppParam
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
@@ -147,6 +148,10 @@ private class ServiceImpl(
                 val consentStatusMetaData = metadataResponse.getOrNull()
                     ?.toConsentStatusMetaData(campaignManager)
 
+                val consentStatusIncludeData = IncludeData.generateIncludeDataForConsentStatus(
+                    includeDataGppParam = spConfig.gppConfig?.toIncludeDataGppParam(),
+                )
+
                 val consentStatusParamReq = ConsentStatusParamReq(
                     env = messageReq.env,
                     metadata = JsonConverter.converter.encodeToString(consentStatusMetaData),
@@ -156,7 +161,7 @@ private class ServiceImpl(
                     localState = campaignManager.messagesOptimizedLocalState,
                     hasCsp = false,
                     withSiteActions = false,
-                    includeData = IncludeData.generateIncludeDataForConsentStatus(),
+                    includeData = consentStatusIncludeData,
                 )
 
                 networkClient.getConsentStatus(consentStatusParamReq)
@@ -202,6 +207,10 @@ private class ServiceImpl(
                 val localState = campaignManager.messagesOptimizedLocalState?.jsonObject
                     ?: JsonObject(mapOf())
 
+                val getMessagesIncludeData = IncludeData.generateIncludeDataForMessages(
+                    includeDataGppParam = spConfig.gppConfig?.toIncludeDataGppParam(),
+                )
+
                 val body = MessagesBodyReq(
                     accountId = messageReq.accountId,
                     propertyHref = "https://${messageReq.propertyHref}",
@@ -212,7 +221,7 @@ private class ServiceImpl(
                     campaignEnv = campaignManager.spConfig.campaignsEnv.env,
                     consentLanguage = campaignManager.messageLanguage.value,
                     hasCSP = false,
-                    includeData = IncludeData.generateIncludeDataForMessages(),
+                    includeData = getMessagesIncludeData,
                     localState = localState,
                     operatingSystem = operatingSystemInfo,
                 )
@@ -361,13 +370,17 @@ private class ServiceImpl(
         val actionType = consentActionImpl.actionType
         if (actionType == ActionType.ACCEPT_ALL || actionType == ActionType.REJECT_ALL) {
 
+            val getChoiceIncludeData = IncludeData.generateIncludeDataForGetChoice(
+                includeDataGppParam = spConfig.gppConfig?.toIncludeDataGppParam(),
+            )
+
             val getChoiceParamReq = GetChoiceParamReq(
                 choiceType = consentActionImpl.actionType.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toChoiceMetaData()?.copy(ccpa = null),
-                includeData = IncludeData.generateIncludeDataForGetChoice(),
+                includeData = getChoiceIncludeData,
                 hasCsp = true,
                 includeCustomVendorsRes = false,
                 withSiteActions = false,
@@ -443,13 +456,17 @@ private class ServiceImpl(
         val at = consentActionImpl.actionType
         if (at == ActionType.ACCEPT_ALL || at == ActionType.REJECT_ALL) {
 
+            val getChoiceIncludeData = IncludeData.generateIncludeDataForGetChoice(
+                includeDataGppParam = spConfig.gppConfig?.toIncludeDataGppParam(),
+            )
+
             val getChoiceParamReq = GetChoiceParamReq(
                 choiceType = at.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toChoiceMetaData()?.copy(gdpr = null),
-                includeData = IncludeData.generateIncludeDataForGetChoice(),
+                includeData = getChoiceIncludeData,
                 hasCsp = true,
                 includeCustomVendorsRes = false,
                 withSiteActions = false,

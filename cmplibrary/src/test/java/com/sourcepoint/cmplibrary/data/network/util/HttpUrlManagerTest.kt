@@ -15,7 +15,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.Inclu
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.gpp.dto.GppData
+import com.sourcepoint.cmplibrary.exposed.gpp.GppConfig
 import com.sourcepoint.cmplibrary.gpp.utils.toIncludeDataGppParam
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.model.PMTab
@@ -225,6 +225,12 @@ class HttpUrlManagerTest {
 
     @Test
     fun `GIVEN a PROD env getConsentStatus RETURN the prod link`() {
+
+        val fakeGppConfig = GppConfig()
+        val consentStatusIncludeData = IncludeData.generateIncludeDataForConsentStatus(
+            includeDataGppParam = fakeGppConfig.toIncludeDataGppParam(),
+        )
+
         val param = ConsentStatusParamReq(
             accountId = 22,
             env = Env.PROD,
@@ -234,7 +240,7 @@ class HttpUrlManagerTest {
             localState = null,
             hasCsp = false,
             withSiteActions = false,
-            includeData = IncludeData.generateIncludeDataForConsentStatus(),
+            includeData = consentStatusIncludeData,
         )
         val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=false&withSiteActions=false&includeData=%7B%0A%20%20%22TCData%22%3A%20%7B%0A%20%20%20%20%22type%22%3A%20%22RecordString%22%0A%20%20%7D%2C%0A%20%20%22webConsentPayload%22%3A%20%7B%0A%20%20%20%20%22type%22%3A%20%22RecordString%22%0A%20%20%7D%2C%0A%20%20%22GPPData%22%3A%20%7B%0A%20%20%20%20%22MspaCoveredTransaction%22%3A%20%22no%22%2C%0A%20%20%20%20%22MspaOptOutOptionMode%22%3A%20%22na%22%2C%0A%20%20%20%20%22MspaServiceProviderMode%22%3A%20%22na%22%0A%20%20%7D%0A%7D&authId=user_auth_id&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
@@ -252,13 +258,18 @@ class HttpUrlManagerTest {
             ),
         )
 
+        val fakeGppConfig = GppConfig()
+        val getChoiceIncludeData = IncludeData.generateIncludeDataForGetChoice(
+            includeDataGppParam = fakeGppConfig.toIncludeDataGppParam(),
+        )
+
         val param = GetChoiceParamReq(
             choiceType = ChoiceTypeParam.CONSENT_ALL,
             accountId = 22,
             propertyId = 17801,
             env = Env.PROD,
             metadataArg = choiceMetaData,
-            includeData = IncludeData.generateIncludeDataForGetChoice(),
+            includeData = getChoiceIncludeData,
             hasCsp = true,
             includeCustomVendorsRes = false,
             withSiteActions = false,
@@ -289,6 +300,12 @@ class HttpUrlManagerTest {
 
     @Test
     fun `GIVEN a PROD env getConsentStatus with authId NULL RETURN the prod link`() {
+
+        val fakeGppConfig = GppConfig()
+        val consentStatusIncludeData = IncludeData.generateIncludeDataForConsentStatus(
+            includeDataGppParam = fakeGppConfig.toIncludeDataGppParam(),
+        )
+
         val param = ConsentStatusParamReq(
             accountId = 22,
             env = Env.PROD,
@@ -298,7 +315,7 @@ class HttpUrlManagerTest {
             localState = null,
             hasCsp = false,
             withSiteActions = false,
-            includeData = IncludeData.generateIncludeDataForConsentStatus(),
+            includeData = consentStatusIncludeData,
         )
         val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=false&withSiteActions=false&includeData=%7B%0A%20%20%22TCData%22%3A%20%7B%0A%20%20%20%20%22type%22%3A%20%22RecordString%22%0A%20%20%7D%2C%0A%20%20%22webConsentPayload%22%3A%20%7B%0A%20%20%20%20%22type%22%3A%20%22RecordString%22%0A%20%20%7D%2C%0A%20%20%22GPPData%22%3A%20%7B%0A%20%20%20%20%22MspaCoveredTransaction%22%3A%20%22no%22%2C%0A%20%20%20%20%22MspaOptOutOptionMode%22%3A%20%22na%22%2C%0A%20%20%20%20%22MspaServiceProviderMode%22%3A%20%22na%22%0A%20%20%7D%0A%7D&authId=null&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
@@ -326,7 +343,7 @@ class HttpUrlManagerTest {
         )
 
         val operatingSystemInfo = OperatingSystemInfoParam()
-        val mockGppData = GppData().toIncludeDataGppParam()
+        val mockGppData = GppConfig().toIncludeDataGppParam()
 
         val body = MessagesBodyReq(
             accountId = 22,
