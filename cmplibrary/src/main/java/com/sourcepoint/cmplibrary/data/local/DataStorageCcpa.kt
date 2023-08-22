@@ -15,7 +15,11 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_CHILD_PM_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_MESSAGE_SUBCATEGORY
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_OLD
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_IABGPP_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_IAB_US_PRIVACY_STRING
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.intOrNull
+import java.util.* // ktlint-disable
 
 internal interface DataStorageCcpa {
 
@@ -30,6 +34,8 @@ internal interface DataStorageCcpa {
     var ccpaSamplingValue: Double
     var ccpaSamplingResult: Boolean?
 
+    var gppData: Map<String, Any?>?
+
     fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
     var uspstring: String?
@@ -39,6 +45,7 @@ internal interface DataStorageCcpa {
     fun getCcpaConsentResp(): String?
     fun getCcpaMessage(): String
     fun clearCcpaConsent()
+    fun clearGppData()
     fun clearAll()
 
     companion object {
@@ -49,6 +56,7 @@ internal interface DataStorageCcpa {
         const val CCPA_CONSENT_RESP = "sp.ccpa.consent.resp"
         const val CCPA_JSON_MESSAGE = "sp.ccpa.json.message"
         const val KEY_IAB_US_PRIVACY_STRING = "IABUSPrivacy_String"
+        const val KEY_IABGPP_PREFIX = "IABGPP_"
         const val KEY_CCPA_MESSAGE_SUBCATEGORY = "sp.ccpa.key.message.subcategory"
         const val CCPA_POST_CHOICE_RESP = "sp.ccpa.key.post.choice"
         const val CCPA_STATUS = "sp.ccpa.key.v7.status"
@@ -133,6 +141,49 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             }
         }
 
+    override var gppData: Map<String, Any?>?
+        get() {
+            val result = TreeMap<String, Any?>()
+            preference.all
+                .filter { it.key.startsWith(KEY_IABGPP_PREFIX) }
+                .forEach { result[it.key] = it.value }
+            return if (result.isEmpty()) null else result
+        }
+        set(value) {
+            clearGppData()
+            val editor = preference.edit()
+            value?.forEach { entry ->
+                val primitive = entry.value as? JsonPrimitive
+                val isString = primitive?.isString ?: false
+                if (isString) {
+                    primitive?.content?.let {
+                        editor.putString(entry.key, it)
+                    }
+                } else {
+                    primitive?.intOrNull?.let {
+                        editor.putInt(entry.key, it)
+                    }
+                }
+            }
+            editor.apply()
+        }
+
+    /**
+     * Method that clears out all the locally stored values of the GPP data. Since the response of
+     * the GPP data is not static (meaning that we don't know how many parameters are there in the
+     * response) we should find each and every entry with a proper prefix and delete it.
+     */
+    override fun clearGppData() {
+
+        val gppKeysList = preference.all.filter { entry ->
+            entry.key.startsWith(KEY_IABGPP_PREFIX)
+        }.keys
+
+        preference.edit().apply {
+            gppKeysList.forEach { gppKey -> remove(gppKey) }
+        }.apply()
+    }
+
     override fun saveCcpaMessage(value: String) {
         preference
             .edit()
@@ -188,6 +239,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         }
 
     override fun clearAll() {
+        clearGppData()
         preference
             .edit()
             .remove(KEY_CCPA)

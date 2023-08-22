@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
-import com.sourcepoint.cmplibrary.data.network.converter.toMapOfAny
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
@@ -28,6 +27,7 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
+import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonObject
@@ -212,15 +212,19 @@ private class ServiceImpl(
                             ccpaMessageMetaData = it.campaigns?.ccpa?.messageMetaData
                         }
 
-                        if (!campaignManager.hasLocalData) {
-                            it.campaigns?.gdpr?.TCData?.let { tc -> dataStorage.tcData = tc.toMapOfAny() }
+                        if (campaignManager.hasLocalData.not()) {
+
+                            // save tc data in the data storage
+                            it.campaigns?.gdpr?.TCData?.let { tcData ->
+                                dataStorage.tcData = tcData.toMapOfAny()
+                            }
+
+                            dataStorage.gppData = it.campaigns?.ccpa?.gppData?.toMapOfAny()
 
                             campaignManager.run {
-                                if (!(messageReq.authId != null || campaignManager.shouldCallConsentStatus)) {
-                                    // GDPR
+                                if ((messageReq.authId != null || campaignManager.shouldCallConsentStatus).not()) {
                                     this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS()
-                                    // CCPA
-                                    ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS()
+                                    this.ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS()
                                 }
                             }
                         }

@@ -101,6 +101,7 @@ internal fun CCPA.toCcpaCS() = CcpaCS(
     rejectedVendors = rejectedVendors,
     signedLspa = signedLspa,
     status = status,
+    gppData = gppData,
     ccpaApplies = null,
     uuid = null,
     gpcEnabled = null,

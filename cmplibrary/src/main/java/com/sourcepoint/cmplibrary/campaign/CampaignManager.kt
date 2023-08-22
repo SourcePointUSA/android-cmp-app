@@ -464,6 +464,7 @@ private class CampaignManagerImpl(
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.ccpaConsentStatus = serialised
+            dataStorage.gppData = value?.gppData
 
             // regenerate and update US privacy string with new values in the data storage
             dataStorage.uspstring = generateCcpaUspString(
