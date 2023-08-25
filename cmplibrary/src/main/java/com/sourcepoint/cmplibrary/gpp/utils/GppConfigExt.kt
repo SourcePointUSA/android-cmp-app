@@ -1,10 +1,10 @@
 package com.sourcepoint.cmplibrary.gpp.utils
 
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeDataGppParam
-import com.sourcepoint.cmplibrary.exposed.gpp.GppConfig
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppConfig
 
-internal fun GppConfig.toIncludeDataGppParam(): IncludeDataGppParam = IncludeDataGppParam(
-    coveredTransaction = this.coveredTransaction.type,
-    optOutOptionMode = this.optOutOptionMode.type,
-    serviceProviderMode = this.serviceProviderMode.type,
+internal fun SpGppConfig?.toIncludeDataGppParam(): IncludeDataGppParam = IncludeDataGppParam(
+    coveredTransaction = this?.coveredTransaction?.type,
+    optOutOptionMode = this?.optOutOptionMode?.type,
+    serviceProviderMode = this?.serviceProviderMode?.type,
 )

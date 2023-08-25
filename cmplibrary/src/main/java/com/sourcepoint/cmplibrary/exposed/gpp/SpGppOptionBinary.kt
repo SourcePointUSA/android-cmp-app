@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.exposed.gpp
 
-enum class GppOptionBinary(
+enum class SpGppOptionBinary(
     val type: String,
 ) {
     YES("yes"),

@@ -3,7 +3,7 @@ package com.sourcepoint.cmplibrary.creation
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.exposed.gpp.GppConfig
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppConfig
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -24,7 +24,7 @@ class SpConfigDataBuilder {
     var campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC
     var messageTimeout: Long = 5000
     var logger: Logger? = null
-    var gppConfig: GppConfig? = null
+    var spGppConfig: SpGppConfig? = null
 
     operator fun CampaignType.unaryPlus() {
         campaigns.add(SpCampaign(this, emptyList()))
@@ -66,8 +66,8 @@ class SpConfigDataBuilder {
         this.logger = logger
     }
 
-    fun addGppConfig(gppConfig: GppConfig) = apply {
-        this.gppConfig = gppConfig
+    fun addGppConfig(spGppConfig: SpGppConfig) = apply {
+        this.spGppConfig = spGppConfig
     }
 
     fun addCampaign(
@@ -114,7 +114,7 @@ class SpConfigDataBuilder {
             campaignsEnv = campaignsEnv,
             logger = logger,
             propertyId = propertyId,
-            gppConfig = gppConfig,
+            spGppConfig = spGppConfig,
         )
     }
 }

@@ -30,6 +30,7 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.extensions.containsCcpa
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import kotlinx.serialization.decodeFromString
@@ -149,7 +150,9 @@ private class ServiceImpl(
                     ?.toConsentStatusMetaData(campaignManager)
 
                 val consentStatusIncludeData = IncludeData.generateIncludeDataForConsentStatus(
-                    includeDataGppParam = spConfig.gppConfig?.toIncludeDataGppParam(),
+                    gppData = spConfig.spGppConfig
+                        .takeIf { spConfig.campaigns.containsCcpa() }
+                        .toIncludeDataGppParam(),
                 )
 
                 val consentStatusParamReq = ConsentStatusParamReq(
@@ -207,8 +210,10 @@ private class ServiceImpl(
                 val localState = campaignManager.messagesOptimizedLocalState?.jsonObject
                     ?: JsonObject(mapOf())
 
-                val getMessagesIncludeData = IncludeData.generateIncludeDataForMessages(
-                    includeDataGppParam = spConfig.gppConfig?.toIncludeDataGppParam(),
+                val getMessagesIncludeData = IncludeData.generateIncludeDataForConsentStatus(
+                    gppData = spConfig.spGppConfig
+                        .takeIf { spConfig.campaigns.containsCcpa() }
+                        .toIncludeDataGppParam(),
                 )
 
                 val body = MessagesBodyReq(
@@ -371,7 +376,9 @@ private class ServiceImpl(
         if (actionType == ActionType.ACCEPT_ALL || actionType == ActionType.REJECT_ALL) {
 
             val getChoiceIncludeData = IncludeData.generateIncludeDataForGetChoice(
-                includeDataGppParam = spConfig.gppConfig?.toIncludeDataGppParam(),
+                gppData = spConfig.spGppConfig
+                    .takeIf { spConfig.campaigns.containsCcpa() }
+                    .toIncludeDataGppParam(),
             )
 
             val getChoiceParamReq = GetChoiceParamReq(
@@ -457,7 +464,9 @@ private class ServiceImpl(
         if (at == ActionType.ACCEPT_ALL || at == ActionType.REJECT_ALL) {
 
             val getChoiceIncludeData = IncludeData.generateIncludeDataForGetChoice(
-                includeDataGppParam = spConfig.gppConfig?.toIncludeDataGppParam(),
+                gppData = spConfig.spGppConfig
+                    .takeIf { spConfig.campaigns.containsCcpa() }
+                    .toIncludeDataGppParam(),
             )
 
             val getChoiceParamReq = GetChoiceParamReq(

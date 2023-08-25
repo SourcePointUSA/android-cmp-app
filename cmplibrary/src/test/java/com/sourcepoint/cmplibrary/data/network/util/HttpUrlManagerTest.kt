@@ -15,7 +15,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.Inclu
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.exposed.gpp.GppConfig
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppConfig
 import com.sourcepoint.cmplibrary.gpp.utils.toIncludeDataGppParam
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.model.PMTab
@@ -226,9 +226,9 @@ class HttpUrlManagerTest {
     @Test
     fun `GIVEN a PROD env getConsentStatus RETURN the prod link`() {
 
-        val fakeGppConfig = GppConfig()
+        val fakeSpGppConfig = SpGppConfig()
         val consentStatusIncludeData = IncludeData.generateIncludeDataForConsentStatus(
-            includeDataGppParam = fakeGppConfig.toIncludeDataGppParam(),
+            gppData = fakeSpGppConfig.toIncludeDataGppParam(),
         )
 
         val param = ConsentStatusParamReq(
@@ -258,9 +258,9 @@ class HttpUrlManagerTest {
             ),
         )
 
-        val fakeGppConfig = GppConfig()
+        val fakeSpGppConfig = SpGppConfig()
         val getChoiceIncludeData = IncludeData.generateIncludeDataForGetChoice(
-            includeDataGppParam = fakeGppConfig.toIncludeDataGppParam(),
+            gppData = fakeSpGppConfig.toIncludeDataGppParam(),
         )
 
         val param = GetChoiceParamReq(
@@ -301,9 +301,9 @@ class HttpUrlManagerTest {
     @Test
     fun `GIVEN a PROD env getConsentStatus with authId NULL RETURN the prod link`() {
 
-        val fakeGppConfig = GppConfig()
+        val fakeSpGppConfig = SpGppConfig()
         val consentStatusIncludeData = IncludeData.generateIncludeDataForConsentStatus(
-            includeDataGppParam = fakeGppConfig.toIncludeDataGppParam(),
+            gppData = fakeSpGppConfig.toIncludeDataGppParam(),
         )
 
         val param = ConsentStatusParamReq(
@@ -343,7 +343,7 @@ class HttpUrlManagerTest {
         )
 
         val operatingSystemInfo = OperatingSystemInfoParam()
-        val mockGppData = GppConfig().toIncludeDataGppParam()
+        val mockGppData = SpGppConfig().toIncludeDataGppParam()
 
         val body = MessagesBodyReq(
             accountId = 22,
