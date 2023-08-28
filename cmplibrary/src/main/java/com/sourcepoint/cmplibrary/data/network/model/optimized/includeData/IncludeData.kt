@@ -50,7 +50,7 @@ internal data class IncludeData(
          * Method that generates include data for GET /choice request.
          */
         fun generateIncludeDataForGetChoice(
-            gppData: IncludeDataGppParam? = null
+            gppData: IncludeDataGppParam? = null,
         ): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),

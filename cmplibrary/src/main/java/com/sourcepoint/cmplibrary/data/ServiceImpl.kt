@@ -210,7 +210,7 @@ private class ServiceImpl(
                 val localState = campaignManager.messagesOptimizedLocalState?.jsonObject
                     ?: JsonObject(mapOf())
 
-                val getMessagesIncludeData = IncludeData.generateIncludeDataForConsentStatus(
+                val getMessagesIncludeData = IncludeData.generateIncludeDataForMessages(
                     gppData = spConfig.spGppConfig
                         .takeIf { spConfig.campaigns.containsCcpa() }
                         .toIncludeDataGppParam(),
