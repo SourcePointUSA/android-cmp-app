@@ -142,7 +142,7 @@ private class ServiceImpl(
                 }
                 .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
 
-            if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
+            if (messageReq.authId != null || campaignManager.shouldCallConsentStatus || campaignManager.requiresNewConsentData) {
 
                 val consentStatusMetaData = metadataResponse.getOrNull()
                     ?.toConsentStatusMetaData(campaignManager)
@@ -161,6 +161,7 @@ private class ServiceImpl(
 
                 networkClient.getConsentStatus(consentStatusParamReq)
                     .executeOnRight { consentStatusResponse ->
+                        dataStorage.updateLocalDataVersion()
                         campaignManager.apply {
                             handleOldLocalData()
                             messagesOptimizedLocalState = consentStatusResponse.localState

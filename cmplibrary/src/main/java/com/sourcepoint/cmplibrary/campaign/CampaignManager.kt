@@ -65,6 +65,7 @@ internal interface CampaignManager {
     // Optimized
     val shouldCallMessages: Boolean
     val shouldCallConsentStatus: Boolean
+    val requiresNewConsentData: Boolean
     var gdprMessageMetaData: MessageMetaData?
     var ccpaMessageMetaData: MessageMetaData?
 
@@ -417,6 +418,9 @@ private class CampaignManagerImpl(
 
             return res
         }
+
+    override val requiresNewConsentData: Boolean
+        get() = dataStorage.localDataVersion < DataStorage.HARDCODED_LOCAL_DATA_VERSION
 
     override var gdprMessageMetaData: MessageMetaData? = null
 
