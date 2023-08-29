@@ -24,13 +24,12 @@ import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.gpp.utils.toIncludeDataGppParam
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.extensions.containsCcpa
+import com.sourcepoint.cmplibrary.util.extensions.extractIncludeGppDataParamIfEligible
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import kotlinx.serialization.decodeFromString
@@ -149,12 +148,6 @@ private class ServiceImpl(
                 val consentStatusMetaData = metadataResponse.getOrNull()
                     ?.toConsentStatusMetaData(campaignManager)
 
-                val consentStatusIncludeData = IncludeData.generateIncludeDataForConsentStatus(
-                    gppData = spConfig.spGppConfig
-                        .takeIf { spConfig.campaigns.containsCcpa() }
-                        .toIncludeDataGppParam(),
-                )
-
                 val consentStatusParamReq = ConsentStatusParamReq(
                     env = messageReq.env,
                     metadata = JsonConverter.converter.encodeToString(consentStatusMetaData),
@@ -164,7 +157,9 @@ private class ServiceImpl(
                     localState = campaignManager.messagesOptimizedLocalState,
                     hasCsp = false,
                     withSiteActions = false,
-                    includeData = consentStatusIncludeData,
+                    includeData = IncludeData.generateIncludeDataForConsentStatus(
+                        gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                    ),
                 )
 
                 networkClient.getConsentStatus(consentStatusParamReq)
@@ -210,12 +205,6 @@ private class ServiceImpl(
                 val localState = campaignManager.messagesOptimizedLocalState?.jsonObject
                     ?: JsonObject(mapOf())
 
-                val getMessagesIncludeData = IncludeData.generateIncludeDataForMessages(
-                    gppData = spConfig.spGppConfig
-                        .takeIf { spConfig.campaigns.containsCcpa() }
-                        .toIncludeDataGppParam(),
-                )
-
                 val body = MessagesBodyReq(
                     accountId = messageReq.accountId,
                     propertyHref = "https://${messageReq.propertyHref}",
@@ -226,7 +215,9 @@ private class ServiceImpl(
                     campaignEnv = campaignManager.spConfig.campaignsEnv.env,
                     consentLanguage = campaignManager.messageLanguage.value,
                     hasCSP = false,
-                    includeData = getMessagesIncludeData,
+                    includeData = IncludeData.generateIncludeDataForMessages(
+                        gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                    ),
                     localState = localState,
                     operatingSystem = operatingSystemInfo,
                 )
@@ -375,19 +366,15 @@ private class ServiceImpl(
         val actionType = consentActionImpl.actionType
         if (actionType == ActionType.ACCEPT_ALL || actionType == ActionType.REJECT_ALL) {
 
-            val getChoiceIncludeData = IncludeData.generateIncludeDataForGetChoice(
-                gppData = spConfig.spGppConfig
-                    .takeIf { spConfig.campaigns.containsCcpa() }
-                    .toIncludeDataGppParam(),
-            )
-
             val getChoiceParamReq = GetChoiceParamReq(
                 choiceType = consentActionImpl.actionType.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toChoiceMetaData()?.copy(ccpa = null),
-                includeData = getChoiceIncludeData,
+                includeData = IncludeData.generateIncludeDataForGetChoice(
+                    gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                ),
                 hasCsp = true,
                 includeCustomVendorsRes = false,
                 withSiteActions = false,
@@ -463,19 +450,15 @@ private class ServiceImpl(
         val at = consentActionImpl.actionType
         if (at == ActionType.ACCEPT_ALL || at == ActionType.REJECT_ALL) {
 
-            val getChoiceIncludeData = IncludeData.generateIncludeDataForGetChoice(
-                gppData = spConfig.spGppConfig
-                    .takeIf { spConfig.campaigns.containsCcpa() }
-                    .toIncludeDataGppParam(),
-            )
-
             val getChoiceParamReq = GetChoiceParamReq(
                 choiceType = at.toChoiceTypeParam(),
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toChoiceMetaData()?.copy(gdpr = null),
-                includeData = getChoiceIncludeData,
+                includeData = IncludeData.generateIncludeDataForGetChoice(
+                    gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                ),
                 hasCsp = true,
                 includeCustomVendorsRes = false,
                 withSiteActions = false,
