@@ -3,8 +3,11 @@ package com.sourcepoint.cmplibrary.data.network.util
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import com.sourcepoint.cmplibrary.model.CustomConsentResp

@@ -8,7 +8,7 @@ import kotlinx.serialization.json.JsonObject
 @Serializable
 internal data class MessagesBodyReq(
     @SerialName("accountId")
-    val accountId: Long,
+    val accountId: Int,
     @SerialName("propertyHref")
     val propertyHref: String,
     @SerialName("campaigns")

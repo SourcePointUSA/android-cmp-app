@@ -32,6 +32,7 @@ import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread
+import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.toConsentLibException
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.json.JSONObject
@@ -132,15 +133,10 @@ internal class SpConsentLibImpl(
     }
 
     private fun localLoadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
-
-        val param = check { campaignManager.getMessageOptimizedReq(authId, pubData) }
-            .executeOnLeft {
-                pLogger.e(this.javaClass.simpleName, it.message ?: it.stackTraceToString())
-                spClient.onError(it)
-            }
-            .getOrNull() ?: return
         service.getMessages(
-            messageReq = param,
+            env = env,
+            authId = authId,
+            pubData = pubData?.toJsonObject(),
             showConsent = {
                 consentManager.sendStoredConsentToClient()
                 clientEventManager.setAction(NativeMessageActionType.GET_MSG_NOT_CALLED)
@@ -415,7 +411,7 @@ internal class SpConsentLibImpl(
         viewManager.removeAllViews()
     }
 
-    private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, "$mess")
+    private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, mess)
 
     /** Start Receiver methods */
     inner class JSReceiverDelegate : JSClientLib {

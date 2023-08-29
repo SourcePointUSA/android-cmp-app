@@ -4,7 +4,10 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.CampaignType

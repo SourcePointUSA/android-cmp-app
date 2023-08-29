@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton

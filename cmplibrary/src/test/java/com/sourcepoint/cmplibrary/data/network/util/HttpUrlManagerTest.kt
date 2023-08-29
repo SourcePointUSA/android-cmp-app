@@ -4,13 +4,15 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.assertTrue
-import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceMetaData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceMetaDataArg
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
@@ -18,10 +20,10 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.gpp.dto.GppData
 import com.sourcepoint.cmplibrary.gpp.utils.toIncludeDataGppParam
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
-import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString

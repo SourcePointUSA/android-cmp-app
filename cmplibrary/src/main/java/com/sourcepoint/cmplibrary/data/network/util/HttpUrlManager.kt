@@ -152,7 +152,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("env", param.env.queryParam)
             .addQueryParameter("accountId", param.accountId.toString())
             .addQueryParameter("propertyId", param.propertyId.toString())
-            .addEncodedQueryParameter("metadata", param.metadata)
+            .addEncodedQueryParameter("metadata", JsonConverter.converter.encodeToString(param.metadata))
             .addQueryParameter("scriptType", scriptType)
             .addQueryParameter("scriptVersion", scriptVersion)
             .build()
@@ -188,7 +188,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("withSiteActions", param.withSiteActions.toString())
             .addQueryParameter("includeData", includeData)
             .addQueryParameter("authId", param.authId.toString())
-            .addEncodedQueryParameter("metadata", param.metadata)
+            .addEncodedQueryParameter("metadata", JsonConverter.converter.encodeToString(param.metadata))
             .addQueryParameter("scriptType", scriptType)
             .addQueryParameter("scriptVersion", scriptVersion)
             .build()
@@ -271,16 +271,14 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         // &metadata={"ccpa":{"applies":true},"gdpr":{"applies":true}}
         // &includeData=
 
-        val metaData: String? = param.metadataArg?.let { JsonConverter.converter.encodeToString(it) }
-
         return HttpUrl.Builder()
             .scheme("https")
             .host(param.env.host)
             .addPathSegments("wrapper/v2/messages")
             .addQueryParameter("env", param.env.queryParam)
             .addQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState.toString())
-            .addEncodedQueryParameter("body", param.body)
-            .addEncodedQueryParameter("metadata", metaData)
+            .addEncodedQueryParameter("body", JsonConverter.converter.encodeToString(param.body))
+            .addEncodedQueryParameter("metadata", JsonConverter.converter.encodeToString(param.metadata))
             .addQueryParameter("scriptType", scriptType)
             .addQueryParameter("scriptVersion", scriptVersion)
             .build()

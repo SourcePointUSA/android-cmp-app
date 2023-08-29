@@ -3,6 +3,9 @@ package com.sourcepoint.cmplibrary.data.network.util
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import okhttp3.Response
 

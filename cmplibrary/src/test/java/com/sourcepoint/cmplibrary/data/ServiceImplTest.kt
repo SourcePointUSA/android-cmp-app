@@ -13,6 +13,8 @@ import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
