@@ -1,7 +1,5 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized.includeData
 
-import com.sourcepoint.cmplibrary.gpp.dto.GppData
-import com.sourcepoint.cmplibrary.gpp.utils.toIncludeDataGppParam
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -28,23 +26,23 @@ internal data class IncludeData(
          * Method that generates include data for /consent-status request.
          */
         fun generateIncludeDataForConsentStatus(
-            includeDataGppParam: IncludeDataGppParam = GppData().toIncludeDataGppParam(),
+            gppData: IncludeDataGppParam? = null,
         ): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
-            gppData = includeDataGppParam,
+            gppData = gppData,
         )
 
         /**
          * Method that generates include data for /messages request.
          */
         fun generateIncludeDataForMessages(
-            includeDataGppParam: IncludeDataGppParam = GppData().toIncludeDataGppParam(),
+            gppData: IncludeDataGppParam? = null,
         ): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             campaigns = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
-            gppData = includeDataGppParam,
+            gppData = gppData,
         )
 
         /**
@@ -52,11 +50,11 @@ internal data class IncludeData(
          * params to add to the IncludeData param of the request.
          */
         fun generateIncludeDataForGetChoice(
-            includeDataGppParam: IncludeDataGppParam = GppData().toIncludeDataGppParam(),
+            gppData: IncludeDataGppParam? = null,
         ): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
-            gppData = includeDataGppParam,
+            gppData = gppData,
         )
     }
 }
