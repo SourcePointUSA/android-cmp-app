@@ -2,12 +2,12 @@ package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
 import com.sourcepoint.cmplibrary.util.generateCcpaUspString
-import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.putJsonObject
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 import org.json.JSONObject
 
 @Serializable

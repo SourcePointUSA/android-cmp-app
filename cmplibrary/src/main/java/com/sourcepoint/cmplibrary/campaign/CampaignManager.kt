@@ -8,24 +8,35 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_APPLIES_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_MESSAGE_SUBCATEGORY_OLD
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
-import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessageMetaData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
+import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.ChildPmIdNotFound
+import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
+import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.MissingPropertyException
+import com.sourcepoint.cmplibrary.model.CampaignReq
+import com.sourcepoint.cmplibrary.model.CampaignTemplate
+import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.PmUrlConfig
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import com.sourcepoint.cmplibrary.model.toCampaignReqImpl
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.generateCcpaUspString
-import java.time.Instant
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
+import java.time.Instant
 
 internal interface CampaignManager {
     val spConfig: SpConfig
