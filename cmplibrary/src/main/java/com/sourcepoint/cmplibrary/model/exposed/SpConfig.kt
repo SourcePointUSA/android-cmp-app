@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.data.network.DEFAULT_TIMEOUT
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppConfig
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 
 data class SpConfig(
@@ -15,6 +16,7 @@ data class SpConfig(
     @JvmField val propertyId: Int,
     @JvmField val campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC,
     @JvmField val logger: Logger? = null,
+    @JvmField val spGppConfig: SpGppConfig? = null,
 )
 
 data class SpCampaign(

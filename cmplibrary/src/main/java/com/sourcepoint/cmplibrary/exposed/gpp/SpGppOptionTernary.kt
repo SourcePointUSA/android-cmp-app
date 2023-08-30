@@ -1,6 +1,6 @@
-package com.sourcepoint.cmplibrary.gpp.dto
+package com.sourcepoint.cmplibrary.exposed.gpp
 
-internal enum class GppTernaryType(
+enum class SpGppOptionTernary(
     val type: String,
 ) {
     YES("yes"),

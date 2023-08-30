@@ -251,6 +251,16 @@ class ServiceImplTest {
     @Test
     fun `GIVEN a Left during getMetaData req CALL onError`() {
 
+        val mockCampaignsList = listOf(
+            SpCampaign(
+                campaignType = CampaignType.GDPR
+            ),
+            SpCampaign(
+                campaignType = CampaignType.CCPA
+            ),
+        )
+
+        every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { ncMock.getMetaData(any()) }.returns(Right(mockMetaDataResp))
         every { ncMock.getConsentStatus(any()) }.returns(Left(RuntimeException()))
 
