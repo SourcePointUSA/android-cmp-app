@@ -1,13 +1,16 @@
 package com.sourcepoint.cmplibrary.consent
 
-import com.sourcepoint.cmplibrary.SpClient
-import com.sourcepoint.cmplibrary.UnitySpClient
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.getOrNull
+import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
+import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.UnitySpClient
 import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.encodeToString
 
 internal interface ClientEventManager {
     fun setCampaignsToProcess(numberOfCampaigns: Int)
@@ -88,22 +91,20 @@ private class ClientEventManagerImpl(
         if (campaignsToProcess <= 0) {
             campaignsToProcess = Int.MAX_VALUE
 
-            val spConsent: SPConsents? = getSPConsents().getOrNull()
-            val spConsentString = spConsent
-                ?.let {
-                    spClient.onSpFinished(it)
-                    (spClient as? UnitySpClient)?.onSpFinished(it.toJsonObject().toString())
-                    it.toJsonObject().toString()
-                }
-                ?: run {
-                    spClient.onError(Throwable("Something went wrong during the consent fetching process."))
-                    "{}"
-                }
-            logger.clientEvent(
-                event = "onSpFinish",
-                msg = "All campaigns have been processed.",
-                content = spConsentString
-            )
+            getSPConsents().getOrNull()?.let {
+                val consentJson = JsonConverter.converter.encodeToString(it)
+                spClient.onSpFinished(it)
+                (spClient as? UnitySpClient)?.onSpFinished(consentJson)
+                logger.clientEvent(
+                    event = "onSpFinish",
+                    msg = "All campaigns have been processed.",
+                    content = consentJson
+                )
+                consentJson
+            } ?: run {
+                spClient.onError(Throwable("Something went wrong during the consent fetching process."))
+                "{}"
+            }
         }
     }
 

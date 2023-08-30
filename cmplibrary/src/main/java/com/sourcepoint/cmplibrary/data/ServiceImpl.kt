@@ -225,7 +225,7 @@ private class ServiceImpl(
                             ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
                         ),
                         campaignEnv = campaignManager.spConfig.campaignsEnv.env,
-                        consentLanguage = campaignManager.messageLanguage.value,
+                        consentLanguage = spConfig.messageLanguage.value,
                         hasCSP = false,
                         includeData = IncludeData.generateIncludeDataForMessages(),
                         localState = campaignManager.messagesOptimizedLocalState?.jsonObject

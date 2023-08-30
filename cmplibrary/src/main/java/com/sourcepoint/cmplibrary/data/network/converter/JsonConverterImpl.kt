@@ -33,8 +33,8 @@ internal val JsonConverter.Companion.converter: Json by lazy {
         isLenient = true
         allowStructuredMapKeys = true
         explicitNulls = false
-        prettyPrint = true
-        prettyPrintIndent = "  "
+//        prettyPrint = true
+//        prettyPrintIndent = "  "
         coerceInputValues = true
         useArrayPolymorphism = true
         allowSpecialFloatingPointValues = true

@@ -1,24 +1,27 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
+import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
-import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import org.json.JSONObject
 
 internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
     return GDPRConsentInternal(
         uuid = uuid,
-        tcData = TCData?.toMapOfAny() ?: emptyMap(),
+        tcData = JsonObject(TCData ?: emptyMap()),
         grants = grants ?: emptyMap(),
         euconsent = euconsent ?: "",
         acceptedCategories = grants?.toAcceptedCategories()?.toList(),
         childPmId = null,
         applies = TCData?.fromTcDataToGdprApplies(),
-        thisContent = JSONObject(),
+        thisContent = JsonConverter.converter.encodeToJsonElement(this).jsonObject,
         webConsentPayload = webConsentPayload,
     )
 }
@@ -31,7 +34,7 @@ internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
         childPmId = null,
         rejectedVendors = rejectedVendors ?: emptyList(),
         rejectedCategories = rejectedCategories ?: emptyList(),
-        thisContent = JSONObject(),
+        thisContent = JsonConverter.converter.encodeToJsonElement(this).jsonObject,
         signedLspa = signedLspa,
         webConsentPayload = webConsentPayload,
     )

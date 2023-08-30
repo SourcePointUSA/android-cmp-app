@@ -2,10 +2,12 @@ package com.sourcepoint.cmplibrary.model.ext
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertTrue
+import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.toAcceptedCategories
-import com.sourcepoint.cmplibrary.data.network.model.toCCPAUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.file2String
 import org.json.JSONObject
@@ -102,9 +104,7 @@ class ConsentRespExtKtTest {
 
     @Test
     fun `GIVEN a CCPA consent RETURN a consent object`() {
-
-        val ccpaConsent = JSONObject(
-            """
+        val ccpaConsent = """
             {
               "dateCreated": "2021-10-11T14:34:08.288Z",
               "newUser": false,
@@ -115,9 +115,9 @@ class ConsentRespExtKtTest {
               "status": "consentedAll",
               "uspstring": "1---"
             }
-            """.trimIndent()
-        ).toTreeMap()
-        val test = ccpaConsent.toCCPAUserConsent("1234", true)
+        """
+        val test: CCPAConsentInternal = JsonConverter.converter.decodeFromString(CCPAConsentInternal.serializer(), ccpaConsent)
+
         test.run {
             uspstring.assertEquals("1YNN")
             status!!.name.assertEquals("consentedAll")
@@ -130,8 +130,7 @@ class ConsentRespExtKtTest {
 
     @Test
     fun `GIVEN a CCPA consent with not empty rejectedCategories and rejectedVendors RETURN a consent object`() {
-        val ccpaConsent = JSONObject(
-            """
+        val ccpaConsent = """
             {
               "dateCreated": "2021-10-11T14:34:08.288Z",
               "newUser": false,
@@ -142,9 +141,8 @@ class ConsentRespExtKtTest {
               "status": "consentedAll",
               "uspstring": "1---"
             }
-            """.trimIndent()
-        ).toTreeMap()
-        val test = ccpaConsent.toCCPAUserConsent("1234", true)
+        """
+        val test: CCPAConsentInternal = JsonConverter.converter.decodeFromString(CCPAConsentInternal.serializer(), ccpaConsent)
         test.run {
             rejectedCategories.size.assertEquals(2)
             rejectedCategories[0].assertEquals("rejectedCategory0")
@@ -156,8 +154,7 @@ class ConsentRespExtKtTest {
 
     @Test
     fun `GIVEN a CCPA consent with malformed rejectedCategories and rejectedVendors RETURN a consent object`() {
-        val ccpaConsent = JSONObject(
-            """
+        val ccpaConsent = """
             {
               "dateCreated": "2021-10-11T14:34:08.288Z",
               "newUser": false,
@@ -168,9 +165,8 @@ class ConsentRespExtKtTest {
               "status": "consentedAll",
               "uspstring": "1---"
             }
-            """.trimIndent()
-        ).toTreeMap()
-        val test = ccpaConsent.toCCPAUserConsent("1234", true)
+        """
+        val test: CCPAConsentInternal = JsonConverter.converter.decodeFromString(CCPAConsentInternal.serializer(), ccpaConsent)
         test.run {
             rejectedCategories.size.assertEquals(0)
             rejectedVendors.size.assertEquals(0)

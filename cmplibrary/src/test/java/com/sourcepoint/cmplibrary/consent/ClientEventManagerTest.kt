@@ -1,16 +1,16 @@
 package com.sourcepoint.cmplibrary.consent
 
-import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.* //ktlint-disable
+import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
-import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.MockKAnnotations
 import io.mockk.verify
 import org.junit.Before
 import org.junit.Test

@@ -96,15 +96,14 @@ class JsonConverterImplTest {
         val nm = (sut.toMetaDataRespResp(json) as Either.Right).r
         nm.run {
             gdpr.also {
-                it!!.additionsChangeDate.toString().assertEquals("2022-05-11T21:05:16.262Z")
-                it.getMessageAlways!!.assertFalse()
-                it.legalBasisChangeDate.toString().assertEquals("2022-05-11T21:05:25.600Z")
+                it!!.additionsChangeDate.assertEquals("2022-05-11T21:05:16.262Z")
+                it.legalBasisChangeDate.assertEquals("2022-05-11T21:05:25.600Z")
                 it.version.assertEquals(27)
                 it.id.assertEquals("5fa9a8fda228635eaf24ceb5")
-                it.applies!!.assertTrue()
+                it.applies.assertTrue()
             }
             ccpa.also {
-                it!!.applies!!.assertTrue()
+                it!!.applies.assertTrue()
             }
         }
     }
