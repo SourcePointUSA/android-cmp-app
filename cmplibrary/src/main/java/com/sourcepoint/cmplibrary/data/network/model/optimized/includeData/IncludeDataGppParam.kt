@@ -6,9 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class IncludeDataGppParam(
     @SerialName("MspaCoveredTransaction")
-    val coveredTransaction: String,
+    val coveredTransaction: String? = null,
     @SerialName("MspaOptOutOptionMode")
-    val optOutOptionMode: String,
+    val optOutOptionMode: String? = null,
     @SerialName("MspaServiceProviderMode")
-    val serviceProviderMode: String,
+    val serviceProviderMode: String? = null,
 )

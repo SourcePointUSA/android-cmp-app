@@ -29,6 +29,7 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.extensions.extractIncludeGppDataParamIfEligible
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import kotlinx.serialization.decodeFromString
@@ -156,7 +157,9 @@ private class ServiceImpl(
                     localState = campaignManager.messagesOptimizedLocalState,
                     hasCsp = false,
                     withSiteActions = false,
-                    includeData = IncludeData.generateIncludeDataForConsentStatus(),
+                    includeData = IncludeData.generateIncludeDataForConsentStatus(
+                        gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                    ),
                 )
 
                 networkClient.getConsentStatus(consentStatusParamReq)
@@ -212,7 +215,9 @@ private class ServiceImpl(
                     campaignEnv = campaignManager.spConfig.campaignsEnv.env,
                     consentLanguage = campaignManager.messageLanguage.value,
                     hasCSP = false,
-                    includeData = IncludeData.generateIncludeDataForMessages(),
+                    includeData = IncludeData.generateIncludeDataForMessages(
+                        gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                    ),
                     localState = localState,
                     operatingSystem = operatingSystemInfo,
                 )
@@ -367,7 +372,9 @@ private class ServiceImpl(
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toChoiceMetaData()?.copy(ccpa = null),
-                includeData = IncludeData.generateIncludeDataForGetChoice(),
+                includeData = IncludeData.generateIncludeDataForGetChoice(
+                    gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                ),
                 hasCsp = true,
                 includeCustomVendorsRes = false,
                 withSiteActions = false,
@@ -449,7 +456,9 @@ private class ServiceImpl(
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toChoiceMetaData()?.copy(gdpr = null),
-                includeData = IncludeData.generateIncludeDataForGetChoice(),
+                includeData = IncludeData.generateIncludeDataForGetChoice(
+                    gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                ),
                 hasCsp = true,
                 includeCustomVendorsRes = false,
                 withSiteActions = false,
