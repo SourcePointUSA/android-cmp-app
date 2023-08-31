@@ -225,12 +225,11 @@ class ServiceImplTest {
             onSuccess = successMockV7,
             onFailure = errorMock,
         )
-
-        // TODO
     }
 
     @Test
     fun `GIVEN a Left during getMetaData req RETURN call the error callback`() {
+        every { cm.spConfig }.returns(spConfig)
         every { ncMock.getMetaData(any()) }.returns(Left(RuntimeException()))
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())

@@ -15,6 +15,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
@@ -24,6 +25,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.PostChoiceParamRe
 import com.sourcepoint.cmplibrary.data.network.model.optimized.PvDataParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.consentStatus.ConsentStatusMetaData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
@@ -180,12 +182,13 @@ private class ServiceImpl(
                     return@executeOnWorkerThread
                 }
                 .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
+                .getOrNull()
 
             if (authId != null || campaignManager.shouldCallConsentStatus) {
                 val consentStatusParamReq = ConsentStatusParamReq(
                     env = env,
-                    // TODO: check if it's ok to add this !!
-                    metadata = metadataResponse.getOrNull()!!.toConsentStatusMetaData(campaignManager),
+                    metadata = metadataResponse?.toConsentStatusMetaData(campaignManager)
+                        ?: ConsentStatusMetaData(gdpr = null, ccpa = null),
                     propertyId = spConfig.propertyId,
                     accountId = spConfig.accountId,
                     authId = authId,
@@ -213,8 +216,8 @@ private class ServiceImpl(
             }
 
             val gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus
-            val additionsChangeDate = metadataResponse.getOrNull()?.gdpr?.additionsChangeDate
-            val legalBasisChangeDate = metadataResponse.getOrNull()?.gdpr?.legalBasisChangeDate
+            val additionsChangeDate = metadataResponse?.gdpr?.additionsChangeDate
+            val legalBasisChangeDate = metadataResponse?.gdpr?.legalBasisChangeDate
             val dataRecordedConsent = campaignManager.gdprConsentStatus?.dateCreated
 
             if (dataRecordedConsent != null &&
@@ -253,7 +256,7 @@ private class ServiceImpl(
                             ?: JsonObject(mapOf()),
                         operatingSystem = operatingSystemInfo,
                     ),
-                    metadata = metadataResponse.getOrNull()!!.toMessagesMetaData(),
+                    metadata = metadataResponse!!.toMessagesMetaData(),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
                 )
 
@@ -305,37 +308,38 @@ private class ServiceImpl(
             )
 
             if (consentManagerUtils.shouldTriggerByGdprSample && isGdprInConfig) {
-                val pvParams = PvDataParamReq(
-                    env = env,
-                    body = PvDataParamReq.Body(
-                        gdpr = PvDataParamReq.Body.GDPR(
-                            uuid = campaignManager.gdprConsentStatus?.uuid,
-                            euconsent = campaignManager.gdprConsentStatus?.euconsent,
-                            accountId = spConfig.accountId,
-                            pubData = pubData,
-                            applies = metaDataResp!!.gdpr!!.applies, // TODO: check !!
-                            siteId = spConfig.propertyId,
-                            consentStatus = campaignManager.gdprConsentStatus!!.consentStatus, // TODO: check !!
-                            msgId = gdprMessageMetaData?.messageId,
-                            categoryId = gdprMessageMetaData?.categoryId?.code,
-                            subCategoryId = gdprMessageMetaData?.subCategoryId?.code,
-                            prtnUUID = gdprMessageMetaData?.prtnUUID,
-                            sampleRate = metaDataResp?.gdpr?.sampleRate
-                        )
-                    ),
-                    campaignType = GDPR
-                )
-
-                postPvData(pvParams)
-                    .executeOnLeft { gdprPvDataError ->
-                        onFailure(gdprPvDataError, false)
-                        return@executeOnWorkerThread
-                    }
-                    .executeOnRight { pvDataResponse ->
-                        campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
-                            uuid = pvDataResponse.gdpr?.uuid
-                        )
-                    }
+                metadataResponse?.gdpr?.let { gdpr ->
+                    postPvData(PvDataParamReq(
+                        env = env,
+                        body = PvDataParamReq.Body(
+                            gdpr = PvDataParamReq.Body.GDPR(
+                                uuid = campaignManager.gdprConsentStatus?.uuid,
+                                euconsent = campaignManager.gdprConsentStatus?.euconsent,
+                                accountId = spConfig.accountId,
+                                pubData = pubData,
+                                applies = gdpr.applies,
+                                siteId = spConfig.propertyId,
+                                consentStatus = campaignManager.gdprConsentStatus?.consentStatus
+                                    ?: ConsentStatus(),
+                                msgId = gdprMessageMetaData?.messageId,
+                                categoryId = gdprMessageMetaData?.categoryId?.code,
+                                subCategoryId = gdprMessageMetaData?.subCategoryId?.code,
+                                prtnUUID = gdprMessageMetaData?.prtnUUID,
+                                sampleRate = metaDataResp?.gdpr?.sampleRate
+                            )
+                        ),
+                        campaignType = GDPR
+                    ))
+                        .executeOnLeft { gdprPvDataError ->
+                            onFailure(gdprPvDataError, false)
+                            return@executeOnWorkerThread
+                        }
+                        .executeOnRight { pvDataResponse ->
+                            campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
+                                uuid = pvDataResponse.gdpr?.uuid
+                            )
+                        }
+                }
             }
 
             val isCcpaInConfig = spConfig.campaigns.find { it.campaignType == CCPA } != null
@@ -350,37 +354,37 @@ private class ServiceImpl(
             )
 
             if (consentManagerUtils.shouldTriggerByCcpaSample && isCcpaInConfig) {
-                val pvParams = PvDataParamReq(
-                    env = env,
-                    body = PvDataParamReq.Body(
-                        ccpa = PvDataParamReq.Body.CCPA(
-                            uuid = campaignManager.ccpaConsentStatus?.uuid,
-                            accountId = spConfig.accountId,
-                            pubData = pubData,
-                            applies = metaDataResp!!.ccpa!!.applies, // TODO: check !!
-                            siteId = spConfig.propertyId,
-                            consentStatus = PvDataParamReq.Body.CCPA.ConsentStatus(
-                                hasConsentData = campaignManager.ccpaConsentStatus?.uuid != null,
-                                rejectedCategories = campaignManager.ccpaConsentStatus?.rejectedCategories ?: emptyList(),
-                                rejectedVendors = campaignManager.ccpaConsentStatus?.rejectedVendors ?: emptyList()
-                            ), // TODO: check !!
-                            messageId = ccpaMessageMetaData?.messageId,
-                            sampleRate = metaDataResp?.ccpa?.sampleRate // TODO: check !!
-                        )
-                    ),
-                    campaignType = CCPA
-                )
-
-                postPvData(pvParams)
-                    .executeOnLeft { ccpaPvDataError ->
-                        onFailure(ccpaPvDataError, false)
-                        return@executeOnWorkerThread
-                    }
-                    .executeOnRight { pvDataResponse ->
-                        campaignManager.ccpaConsentStatus = campaignManager.ccpaConsentStatus?.copy(
-                            uuid = pvDataResponse.ccpa?.uuid
-                        )
-                    }
+                metaDataResp?.ccpa?.let { ccpa ->
+                    postPvData(PvDataParamReq(
+                        env = env,
+                        body = PvDataParamReq.Body(
+                            ccpa = PvDataParamReq.Body.CCPA(
+                                uuid = campaignManager.ccpaConsentStatus?.uuid,
+                                accountId = spConfig.accountId,
+                                pubData = pubData,
+                                applies = ccpa.applies,
+                                siteId = spConfig.propertyId,
+                                consentStatus = PvDataParamReq.Body.CCPA.ConsentStatus(
+                                    hasConsentData = campaignManager.ccpaConsentStatus?.uuid != null,
+                                    rejectedCategories = campaignManager.ccpaConsentStatus?.rejectedCategories ?: emptyList(),
+                                    rejectedVendors = campaignManager.ccpaConsentStatus?.rejectedVendors ?: emptyList()
+                                ),
+                                messageId = ccpaMessageMetaData?.messageId,
+                                sampleRate = ccpa.sampleRate
+                            )
+                        ),
+                        campaignType = CCPA
+                    ))
+                        .executeOnLeft { ccpaPvDataError ->
+                            onFailure(ccpaPvDataError, false)
+                            return@executeOnWorkerThread
+                        }
+                        .executeOnRight { pvDataResponse ->
+                            campaignManager.ccpaConsentStatus = campaignManager.ccpaConsentStatus?.copy(
+                                uuid = pvDataResponse.ccpa?.uuid
+                            )
+                        }
+                }
             }
         }
     }

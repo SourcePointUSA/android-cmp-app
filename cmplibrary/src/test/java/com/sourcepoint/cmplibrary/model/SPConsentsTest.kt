@@ -31,7 +31,6 @@ class SPConsentsTest {
             status = CcpaStatus.consentedAll,
             childPmId = "child_pm_id",
             applies = true,
-            thisContent = JsonConverter.converter.encodeToJsonElement(this).jsonObject,
         )
 
         // WHEN
@@ -58,7 +57,6 @@ class SPConsentsTest {
             acceptedCategories = listOf(),
             applies = true,
             childPmId = "child_pm_id",
-            thisContent = JsonConverter.converter.encodeToJsonElement(this).jsonObject,
         )
 
         // WHEN

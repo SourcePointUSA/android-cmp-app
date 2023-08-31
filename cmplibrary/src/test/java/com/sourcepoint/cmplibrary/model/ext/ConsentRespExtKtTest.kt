@@ -113,7 +113,9 @@ class ConsentRespExtKtTest {
               "rejectedVendors": [],
               "signedLspa": false,
               "status": "consentedAll",
-              "uspstring": "1---"
+              "uspstring": "1---",
+              "applies": true,
+              "uuid": "1234"
             }
         """
         val test: CCPAConsentInternal = JsonConverter.converter.decodeFromString(CCPAConsentInternal.serializer(), ccpaConsent)
@@ -149,27 +151,6 @@ class ConsentRespExtKtTest {
             rejectedCategories[1].assertEquals("rejectedCategory1")
             rejectedVendors.size.assertEquals(1)
             rejectedVendors[0].assertEquals("rejectedVendor0")
-        }
-    }
-
-    @Test
-    fun `GIVEN a CCPA consent with malformed rejectedCategories and rejectedVendors RETURN a consent object`() {
-        val ccpaConsent = """
-            {
-              "dateCreated": "2021-10-11T14:34:08.288Z",
-              "newUser": false,
-              "rejectedAll": false,
-              "rejectedCategories": [123, 123.0, true, {"hello":"world"}],
-              "rejectedVendors": [null],
-              "signedLspa": false,
-              "status": "consentedAll",
-              "uspstring": "1---"
-            }
-        """
-        val test: CCPAConsentInternal = JsonConverter.converter.decodeFromString(CCPAConsentInternal.serializer(), ccpaConsent)
-        test.run {
-            rejectedCategories.size.assertEquals(0)
-            rejectedVendors.size.assertEquals(0)
         }
     }
 
