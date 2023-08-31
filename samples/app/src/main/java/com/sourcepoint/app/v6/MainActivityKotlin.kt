@@ -141,11 +141,7 @@ class MainActivityKotlin : AppCompatActivity() {
     }
 
     private fun executeCmpLib() {
-        spConsentLib.loadMessage(authId = "andre_30_08_23_19_111111") // PREVIOUS fc4f13f9-9586-4557-b509-b49c5862d5d7
-        // andre_30_08_23_18:58 ->   e389d177-8455-4a53-ba0e-b2d0f0eadf0d_23
-        // "andre_30_08_23_18:56" -> e389d177-8455-4a53-ba0e-b2d0f0eadf0d_23
-        // andre_30_08_23_19_19 ->  769297a2-183e-4f30-ad31-8d7cc27582fc
-        //
+        spConsentLib.loadMessage()
     }
 
     override fun onDestroy() {

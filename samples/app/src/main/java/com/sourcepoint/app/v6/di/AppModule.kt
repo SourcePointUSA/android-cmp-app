@@ -72,7 +72,7 @@ val appModule = module {
                 messLanguage = MessageLanguage.ENGLISH
                 campaignsEnv = CampaignsEnv.PUBLIC
                 +(CampaignType.GDPR)
-//                +(CampaignType.CCPA to listOf(("location" to "US")))
+                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
         }
     }
