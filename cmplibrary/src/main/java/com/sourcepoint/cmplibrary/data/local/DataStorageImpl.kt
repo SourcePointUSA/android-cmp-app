@@ -51,7 +51,7 @@ private class DataStorageImpl(
 
     override var localDataVersion: Int
         get() = preference
-            .getInt(KEY_LOCAL_DATA_VERSION, 1)
+            .getInt(KEY_LOCAL_DATA_VERSION, 0)
         set(value) = preference
             .edit()
             .putInt(KEY_LOCAL_DATA_VERSION, value)

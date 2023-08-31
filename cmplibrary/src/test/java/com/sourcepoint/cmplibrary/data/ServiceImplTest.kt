@@ -201,6 +201,37 @@ class ServiceImplTest {
     }
 
     @Test
+    fun `getConsentStatus - GIVEN requiresNewConsentData is true THEN should call getConsentStatus`() {
+
+        // GIVEN
+        val metadataJson = "v7/meta_data.json".file2String()
+        val metadata = JsonConverter.converter.decodeFromString<MetaDataResp>(metadataJson)
+
+        val consentStatusJson = "v7/consent_status_with_auth_id.json".file2String()
+        val consentStatus = JsonConverter.converter.decodeFromString<ConsentStatusResp>(consentStatusJson)
+
+        every { ncMock.getMetaData(any()) } returns Right(metadata)
+        every { ncMock.getConsentStatus(any()) } returns Right(consentStatus)
+
+        every { cm.shouldCallConsentStatus } returns false
+        every { cm.requiresNewConsentData } returns true
+        every { cm.spConfig } returns spConfig
+
+        // WHEN
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        sut.getMessages(
+            messageReq = messagesParamReq,
+            showConsent = consentMockV7,
+            onSuccess = successMockV7,
+            onFailure = errorMock,
+        )
+
+        // THEN
+        verify(exactly = 1) { ncMock.getConsentStatus(any()) }
+        verify(exactly = 1) { ds.updateLocalDataVersion() }
+    }
+
+    @Test
     fun `GIVEN a consentStatus resp VERIFY that the consentStatus is saved`() {
 
         val metadataJson = "v7/meta_data.json".file2String()
