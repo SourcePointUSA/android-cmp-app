@@ -1,10 +1,10 @@
 package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CCPAPostChoiceResponse
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GDPRPostChoiceResponse
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
@@ -58,9 +58,9 @@ internal interface NetworkClient {
 
     fun storeGdprChoice(
         param: PostChoiceParamReq
-    ): Either<GdprCS>
+    ): Either<GDPRPostChoiceResponse>
 
     fun storeCcpaChoice(
         param: PostChoiceParamReq
-    ): Either<CcpaCS>
+    ): Either<CCPAPostChoiceResponse>
 }

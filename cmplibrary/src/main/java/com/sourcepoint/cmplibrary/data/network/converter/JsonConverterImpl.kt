@@ -3,9 +3,9 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
-import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CCPAPostChoiceResponse
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GDPRPostChoiceResponse
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.PvDataResp
@@ -95,11 +95,11 @@ private class JsonConverterImpl : JsonConverter {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toGdprPostChoiceResp(body: String): Either<GdprCS> = check(ApiRequestPostfix.POST_CHOICE_GDPR) {
+    override fun toGdprPostChoiceResp(body: String): Either<GDPRPostChoiceResponse> = check(ApiRequestPostfix.POST_CHOICE_GDPR) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toCcpaPostChoiceResp(body: String): Either<CcpaCS> = check(ApiRequestPostfix.POST_CHOICE_CCPA) {
+    override fun toCcpaPostChoiceResp(body: String): Either<CCPAPostChoiceResponse> = check(ApiRequestPostfix.POST_CHOICE_CCPA) {
         JsonConverter.converter.decodeFromString(body)
     }
 

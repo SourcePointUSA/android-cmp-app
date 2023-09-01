@@ -602,13 +602,12 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { tapToDisableAllConsent() }
+        wr { tapAcceptOnWebView() }
+        wr(delayInMs = 300) { clickOnGdprReviewConsent() }
+        wr { tapToDisableAllConsent() }
         wr { tapSaveAndExitWebView() }
-        delay(300)
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
+        wr(delayInMs = 300) { clickOnGdprReviewConsent() }
+        wr { checkAllConsentsOff() }
     }
 
     @Test
@@ -654,15 +653,15 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptAllOnWebView() }
-        wr{ verify(exactly = 1) { spClient.onConsentReady(any()) } }
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
+        wr { tapAcceptAllOnWebView() }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr(delayInMs = 300) { clickOnGdprReviewConsent() }
+        wr { checkAllGdprConsentsOn() }
         wr { tapCancelOnWebView() }
-        wr { clickOnDeleteCustomConsent() } // delete the previous custom consent
-        wr{ verify(exactly = 2) { spClient.onConsentReady(any()) } }
+        wr(delayInMs = 300) { clickOnDeleteCustomConsent() } // delete the previous custom consent
+        wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkDeletedCustomCategoriesData() }
+        wr(delayInMs = 300) { checkDeletedCustomCategoriesData() }
     }
 
     @Test

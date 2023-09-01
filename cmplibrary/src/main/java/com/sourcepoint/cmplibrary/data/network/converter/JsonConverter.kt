@@ -2,9 +2,9 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
-import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CCPAPostChoiceResponse
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GDPRPostChoiceResponse
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.PvDataResp
@@ -41,9 +41,9 @@ internal interface JsonConverter {
 
     fun toChoiceResp(body: String): Either<ChoiceResp>
 
-    fun toGdprPostChoiceResp(body: String): Either<GdprCS>
+    fun toGdprPostChoiceResp(body: String): Either<GDPRPostChoiceResponse>
 
-    fun toCcpaPostChoiceResp(body: String): Either<CcpaCS>
+    fun toCcpaPostChoiceResp(body: String): Either<CCPAPostChoiceResponse>
 
     fun toPvDataResp(body: String): Either<PvDataResp>
 
