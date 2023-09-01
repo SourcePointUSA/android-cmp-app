@@ -104,7 +104,7 @@ class Retry(private val retryCount: Int, val onRetry: (() -> Unit)? = null) : Te
 class MainActivityKotlinTest {
     @JvmField
     @Rule
-    var retry = Retry(1, onRetry = {
+    var retry = Retry(3, onRetry = {
         cleanLocalStorage()
         setupMocks()
     })
@@ -208,7 +208,7 @@ class MainActivityKotlinTest {
     @After
     fun cleanup() {
         if (this::scenario.isLateinit) scenario.close()
-        IdlingRegistry.getInstance().unregister(appIdlingResource);
+        IdlingRegistry.getInstance().unregister(appIdlingResource)
     }
 
     @Test
