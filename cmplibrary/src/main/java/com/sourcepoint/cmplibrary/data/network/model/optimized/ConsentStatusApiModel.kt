@@ -99,6 +99,16 @@ data class CcpaCS(
             ccpaStatus = status,
             signedLspa = signedLspa,
         )
+
+    fun toPreloadConsent(): String {
+        return JsonConverter.converter.encodeToString(
+            CCPAConsentPreload(
+                rejectedCategories = rejectedCategories ?: emptyList(),
+                rejectedVendors = rejectedVendors ?: emptyList(),
+                rejectedAll = rejectedAll ?: false
+            )
+        )
+    }
 }
 
 @Serializable
@@ -183,4 +193,34 @@ data class GdprCS(
             @SerialName("name") val name: String?
         )
     }
+
+    fun toPreloadConsent(): String {
+        return JsonConverter.converter.encodeToString(
+            GDPRConsentPreload(
+                categories = categories ?: emptyList(),
+                legIntCategories = legIntCategories ?: emptyList(),
+                vendors = vendors ?: emptyList(),
+                legIntVendors = legIntVendors ?: emptyList(),
+                specialFeatures = specialFeatures ?: emptyList(),
+                hasConsentData = consentStatus.hasConsentData ?: false
+            )
+        )
+    }
 }
+
+@Serializable
+data class GDPRConsentPreload(
+    val categories: List<String>,
+    val legIntCategories: List<String>,
+    val vendors: List<String>,
+    val legIntVendors: List<String>,
+    val specialFeatures: List<String>,
+    val hasConsentData: Boolean
+)
+
+@Serializable
+data class CCPAConsentPreload(
+    val rejectedAll: Boolean,
+    val rejectedCategories: List<String>,
+    val rejectedVendors: List<String>
+)
