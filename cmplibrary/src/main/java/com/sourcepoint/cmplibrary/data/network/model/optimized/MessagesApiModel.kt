@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesMetaData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -19,15 +20,10 @@ import kotlinx.serialization.json.JsonObject
 
 @Serializable
 internal data class MessagesParamReq(
-    @SerialName("accountId") val accountId: Long,
-    @SerialName("propertyId") val propertyId: Long,
-    @SerialName("authId") val authId: String?,
-    @SerialName("propertyHref") val propertyHref: String,
     @SerialName("env") val env: Env,
-    @SerialName("metadataArg") val metadataArg: MessagesMetaData?,
-    @SerialName("body") val body: String,
+    @SerialName("metadata") val metadata: MessagesMetaData,
+    @SerialName("body") val body: MessagesBodyReq,
     @SerialName("nonKeyedLocalState") val nonKeyedLocalState: JsonObject? = JsonObject(mapOf()),
-    @SerialName("pubData") val pubData: JsonObject = JsonObject(mapOf()),
 )
 
 @Serializable
@@ -165,12 +161,12 @@ data class GDPR(
 
 @Serializable
 data class ConsentStatus(
-    @SerialName("consentedAll") var consentedAll: Boolean?,
-    @SerialName("consentedToAny") val consentedToAny: Boolean?,
-    @SerialName("granularStatus") val granularStatus: GranularStatus?,
-    @SerialName("hasConsentData") val hasConsentData: Boolean?,
-    @SerialName("rejectedAny") val rejectedAny: Boolean?,
-    @SerialName("rejectedLI") val rejectedLI: Boolean?,
+    @SerialName("consentedAll") var consentedAll: Boolean? = null,
+    @SerialName("consentedToAny") val consentedToAny: Boolean? = null,
+    @SerialName("granularStatus") val granularStatus: GranularStatus? = null,
+    @SerialName("hasConsentData") val hasConsentData: Boolean? = null,
+    @SerialName("rejectedAny") val rejectedAny: Boolean? = null,
+    @SerialName("rejectedLI") val rejectedLI: Boolean? = null,
     @SerialName("legalBasisChanges") var legalBasisChanges: Boolean? = null,
     @SerialName("vendorListAdditions") var vendorListAdditions: Boolean? = null
 ) {

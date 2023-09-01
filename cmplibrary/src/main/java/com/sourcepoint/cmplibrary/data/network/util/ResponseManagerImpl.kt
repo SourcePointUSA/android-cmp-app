@@ -2,11 +2,18 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CCPAPostChoiceResponse
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GDPRPostChoiceResponse
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.PvDataResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
-import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
+import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
+import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.RequestFailedException
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import okhttp3.Response
 
@@ -121,7 +128,7 @@ private class ResponseManagerImpl(
         }
     }
 
-    override fun parsePostGdprChoiceResp(r: Response): GdprCS {
+    override fun parsePostGdprChoiceResp(r: Response): GDPRPostChoiceResponse {
         val body = r.body?.byteStream()?.reader()?.readText() ?: ""
         val status = r.code
         val mess = r.message
@@ -132,7 +139,7 @@ private class ResponseManagerImpl(
             status = status.toString()
         )
         return if (r.isSuccessful) {
-            when (val either: Either<GdprCS> = jsonConverter.toGdprPostChoiceResp(body)) {
+            when (val either: Either<GDPRPostChoiceResponse> = jsonConverter.toGdprPostChoiceResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }
@@ -145,7 +152,7 @@ private class ResponseManagerImpl(
         }
     }
 
-    override fun parsePostCcpaChoiceResp(r: Response): CcpaCS {
+    override fun parsePostCcpaChoiceResp(r: Response): CCPAPostChoiceResponse {
         val body = r.body?.byteStream()?.reader()?.readText() ?: ""
         val status = r.code
         val mess = r.message
@@ -156,7 +163,7 @@ private class ResponseManagerImpl(
             status = status.toString()
         )
         return if (r.isSuccessful) {
-            when (val either: Either<CcpaCS> = jsonConverter.toCcpaPostChoiceResp(body)) {
+            when (val either: Either<CCPAPostChoiceResponse> = jsonConverter.toCcpaPostChoiceResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }

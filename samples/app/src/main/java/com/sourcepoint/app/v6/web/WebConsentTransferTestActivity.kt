@@ -5,7 +5,9 @@ import android.util.Log
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
+import com.sourcepoint.app.v6.AppIdlingResource
 import com.sourcepoint.app.v6.R
 import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
@@ -21,7 +23,8 @@ import kotlinx.android.synthetic.main.activity_web_consent_transfer_test.*
 import org.json.JSONObject
 
 class WebConsentTransferTestActivity : AppCompatActivity() {
-
+    @VisibleForTesting
+    var appIdlingResource: AppIdlingResource = AppIdlingResource()
     private val consentWebViewClient = object : WebViewClient() { }
     private val consentWebChromeClient = object : WebChromeClient() { }
 
@@ -60,7 +63,10 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
             gdpr_uuid_value_text_view.text = ""
             to_web_view_consent_action.isEnabled = false
         }
-        web_consent_refresh_button.setOnClickListener { spConsentLib.loadMessage() }
+        web_consent_refresh_button.setOnClickListener {
+            appIdlingResource.setIdleState(false)
+            spConsentLib.loadMessage()
+        }
         to_web_view_consent_action.setOnClickListener { transferConsent() }
     }
 
@@ -98,10 +104,12 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
         override fun onUIReady(view: View) {
             spConsentLib.showView(view)
             Log.i(this::class.java.name, "onUIReady")
+            appIdlingResource.setIdleState(true)
         }
 
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
             Log.i(this::class.java.name, "ActionType: ${consentAction.actionType}")
+            appIdlingResource.setIdleState(false)
             return consentAction
         }
 
@@ -115,6 +123,7 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
         }
 
         override fun onError(error: Throwable) {
+            appIdlingResource.setIdleState(true)
             error.printStackTrace()
         }
 
@@ -122,6 +131,7 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
             processConsentResponse(sPConsents)
             Log.i(this::class.java.name, "onSpFinish: $sPConsents")
             Log.i(this::class.java.name, "==================== onSpFinish ==================")
+            appIdlingResource.setIdleState(true)
         }
 
         override fun onConsentReady(consent: SPConsents) {

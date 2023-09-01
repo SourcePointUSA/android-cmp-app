@@ -1,5 +1,6 @@
 package com.example.uitestutil
 
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.IdRes
@@ -323,9 +324,10 @@ fun checkConsentState(consent: String, selected: Boolean) {
 
 @Throws(Throwable::class)
 fun checkConsentState(consent: String, selected: Boolean, stackType: String) {
+    Log.d("ANDRE", "checkConsentState: $stackType, $consent")
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[@class='$stackType' and @title='$consent']"))
-        .withElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected']"))
+        .withContextualElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected']"))
         .perform(webScrollIntoView())
 }
 

@@ -166,11 +166,11 @@ class CampaignManagerImplTest {
 
         cm.metaDataResp?.run {
             gdpr?.also {
-                it.applies!!.assertFalse()
-                it.id!!.assertEquals("5fa9a8fda228635eaf24ceb5")
+                it.applies.assertFalse()
+                it.id.assertEquals("5fa9a8fda228635eaf24ceb5")
             }
             ccpa?.also {
-                it.applies!!.assertTrue()
+                it.applies.assertTrue()
             }
         }
 

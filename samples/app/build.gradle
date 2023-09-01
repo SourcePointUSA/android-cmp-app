@@ -63,14 +63,12 @@ dependencies {
     implementation(Libs.androidxCore)
 
     implementation project(':cmplibrary')
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.4.0'
 //    implementation 'com.sourcepoint.cmplibrary:cmplibrary:6.0.3'
 
     // Koin
-    implementation "org.koin:koin-core:$koin_version"
-    implementation "org.koin:koin-core-ext:$koin_version"
-    androidTestImplementation "org.koin:koin-test:$koin_version"
-    implementation "org.koin:koin-android:$koin_version"
-    implementation "org.koin:koin-java:$koin_java_version"
+    androidTestImplementation "io.insert-koin:koin-test:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin_version"
 
     // mockk
     androidTestImplementation(Libs.mockkAndroid)

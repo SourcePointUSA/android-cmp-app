@@ -11,6 +11,7 @@ import com.sourcepoint.cmplibrary.campaign.create
 import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
+import com.sourcepoint.cmplibrary.consent.ConsentManagerUtilsImpl
 import com.sourcepoint.cmplibrary.consent.create
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.create
@@ -66,7 +67,7 @@ fun makeConsentLib(
     val viewManager = ViewsManager.create(WeakReference<Activity>(activity), connManager, spConfig.messageTimeout)
     val execManager = ExecutorManager.create(appCtx)
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
-    val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
+    val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtilsImpl(campaignManager, dataStorage)
     val service: Service = Service.create(
         networkClient,
         campaignManager,

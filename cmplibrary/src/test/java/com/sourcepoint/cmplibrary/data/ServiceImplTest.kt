@@ -13,10 +13,11 @@ import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.messagesParamReq
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -190,13 +191,14 @@ class ServiceImplTest {
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(
-            messageReq = messagesParamReq,
+            env = Env.PROD,
+            authId = null,
+            pubData = null,
             showConsent = consentMockV7,
             onSuccess = successMockV7,
             onFailure = errorMock,
         )
 
-//        verify(exactly = 0) { errorMock(any()) }
         verify(exactly = 1) { ncMock.getConsentStatus(any()) }
     }
 
@@ -247,26 +249,25 @@ class ServiceImplTest {
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(
-            messageReq = messagesParamReq,
+            env = Env.PROD,
+            authId = null,
+            pubData = null,
             showConsent = consentMockV7,
             onSuccess = successMockV7,
             onFailure = errorMock,
         )
-
-        // TODO
     }
 
     @Test
     fun `GIVEN a Left during getMetaData req RETURN call the error callback`() {
-
-        val messageJson = "v7/messagesObj.json".file2String()
-        val messageResp = JsonConverter.converter.decodeFromString<MessagesResp>(messageJson)
-
+        every { cm.spConfig }.returns(spConfig)
         every { ncMock.getMetaData(any()) }.returns(Left(RuntimeException()))
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(
-            messageReq = messagesParamReq,
+            env = Env.PROD,
+            authId = null,
+            pubData = null,
             showConsent = consentMockV7,
             onSuccess = successMockV7,
             onFailure = errorMock,
@@ -295,7 +296,9 @@ class ServiceImplTest {
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(
-            messageReq = messagesParamReq.copy(authId = "test"),
+            env = Env.PROD,
+            authId = "test",
+            pubData = null,
             showConsent = consentMockV7,
             onSuccess = successMockV7,
             onFailure = errorMock,
@@ -308,10 +311,6 @@ class ServiceImplTest {
 
     @Test
     fun `GIVEN a Left object during the getConsentStatus req CALL the error cb`() {
-
-        val mockMessagesParamReq = messagesParamReq.copy(
-            authId = "mock_auth_id"
-        )
         val mockCampaignsList = listOf(
             SpCampaign(
                 campaignType = CampaignType.GDPR
@@ -332,7 +331,9 @@ class ServiceImplTest {
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(
-            messageReq = mockMessagesParamReq,
+            env = Env.PROD,
+            authId = "mock_auth_id",
+            pubData = null,
             showConsent = consentMockV7,
             onSuccess = successMockV7,
             onFailure = errorMock,
@@ -350,9 +351,6 @@ class ServiceImplTest {
     @Test
     fun `getMessages - WHEN called THEN should always have UUIDs for GDPR and CCPA`() {
         // GIVEN
-        val mockMessagesParamReq = messagesParamReq.copy(
-            authId = "mock_auth_id"
-        )
         val mockCampaignsList = listOf(
             SpCampaign(
                 campaignType = CampaignType.GDPR
@@ -376,7 +374,9 @@ class ServiceImplTest {
 
         val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         service.getMessages(
-            messageReq = mockMessagesParamReq,
+            env = Env.PROD,
+            authId = "mock_auth_id",
+            pubData = null,
             showConsent = consentMockV7,
             onSuccess = successMockV7,
             onFailure = errorMock,
@@ -395,9 +395,6 @@ class ServiceImplTest {
     @Test
     fun `getMessages - WHEN called THEN should update uspstring in data storage`() {
         // GIVEN
-        val mockMessagesParamReq = messagesParamReq.copy(
-            authId = "mock_auth_id"
-        )
         val mockCampaignsList = listOf(
             SpCampaign(
                 campaignType = CampaignType.GDPR
@@ -421,7 +418,9 @@ class ServiceImplTest {
         every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
         val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         service.getMessages(
-            messageReq = mockMessagesParamReq,
+            env = Env.PROD,
+            authId = "mock_auth_id",
+            pubData = null,
             showConsent = consentMockV7,
             onSuccess = successMockV7,
             onFailure = errorMock,
