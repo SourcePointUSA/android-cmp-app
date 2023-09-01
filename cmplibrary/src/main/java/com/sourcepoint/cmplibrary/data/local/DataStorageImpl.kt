@@ -190,6 +190,7 @@ private class DataStorageImpl(
             .edit()
             .remove(LOCAL_STATE)
             .remove(LOCAL_STATE_OLD)
+            .remove(KEY_LOCAL_DATA_VERSION)
             .remove(SAVED_CONSENT)
             .remove(MESSAGES_OPTIMIZED)
             .remove(META_DATA_RESP)
