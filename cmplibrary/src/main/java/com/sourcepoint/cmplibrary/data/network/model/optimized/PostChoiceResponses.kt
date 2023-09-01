@@ -26,6 +26,6 @@ data class CCPAPostChoiceResponse(
     val status: CcpaStatus,
     val rejectedVendors: List<String>,
     val rejectedCategories: List<String>,
-    val webConsentPayload: JsonObject,
+    val webConsentPayload: JsonObject?,
     val GPPData: JsonObject
 )

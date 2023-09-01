@@ -556,6 +556,9 @@ private class ServiceImpl(
                     uuid = campaignManager.ccpaConsentStatus?.uuid,
                     sendPvData = dataStorage.ccpaSamplingResult,
                     pubData = consentActionImpl.pubData.toJsonObject(),
+                    includeData = IncludeData.generateIncludeDataForGetChoice(
+                        gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                    ),
                 )
             )
         )
@@ -568,11 +571,13 @@ private class ServiceImpl(
                     status = postConsentResponse.status,
                     rejectedCategories = postConsentResponse.rejectedCategories,
                     rejectedVendors = postConsentResponse.rejectedVendors,
-                    webConsentPayload = postConsentResponse.webConsentPayload,
                     gppData = postConsentResponse.GPPData
                 )
 
                 if (actionType == ActionType.SAVE_AND_EXIT) {
+                    campaignManager.ccpaConsentStatus = campaignManager.ccpaConsentStatus?.copy(
+                        webConsentPayload = postConsentResponse.webConsentPayload
+                    )
                     val spConsents = ConsentManager.responseConsentHandler(campaignManager.ccpaConsentStatus, consentManagerUtils)
                     sPConsentsSuccess?.invoke(spConsents)
                 }
