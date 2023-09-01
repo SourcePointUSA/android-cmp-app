@@ -29,7 +29,7 @@ class AppIdlingResource : IdlingResource {
      * Sets the new idle state, if isIdleNow is true, it pings the [ResourceCallback].
      * @param isIdleNow false if there are pending operations, true if idle.
      */
-    fun setIdleState(isIdleNow: Boolean, whoSetIt: String) {
+    fun setIdleState(isIdleNow: Boolean, whoSetIt: String = "") {
         Log.d("AppIdlingResource", "setIdleState($isIdleNow) called by $whoSetIt: ")
         mIsIdleNow.set(isIdleNow)
         if (isIdleNow) {

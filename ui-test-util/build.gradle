@@ -32,11 +32,11 @@ dependencies {
     implementation 'androidx.test:rules:1.5.0'
     implementation 'androidx.test.ext:junit-ktx:1.1.5'
     implementation 'androidx.test:core-ktx:1.5.0'
-    implementation 'androidx.test.espresso:espresso-contrib:3.5.1'
+    implementation 'androidx.test.espresso:espresso-contrib:3.4.0'
 
     // Set this dependency to build and run Espresso tests espresso web
-    implementation 'androidx.test.espresso:espresso-core:3.5.1'
-    implementation 'androidx.test.espresso:espresso-web:3.5.1'
+    implementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'androidx.test.espresso:espresso-web:3.4.0'
     //activity rules for instrumentation test
     implementation('androidx.test:rules:1.5.0') {
         exclude module: 'support-annotations'

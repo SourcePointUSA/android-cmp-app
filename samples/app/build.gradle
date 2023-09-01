@@ -63,7 +63,7 @@ dependencies {
     implementation(Libs.androidxCore)
 
     implementation project(':cmplibrary')
-    implementation 'androidx.test.espresso:espresso-idling-resource:3.5.1'
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.4.0'
 //    implementation 'com.sourcepoint.cmplibrary:cmplibrary:6.0.3'
 
     // Koin
