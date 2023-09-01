@@ -3,10 +3,13 @@ package com.sourcepoint.app.v6
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.preference.PreferenceManager
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.toColorInt
 import com.sourcepoint.app.v6.core.DataProvider
@@ -35,7 +38,10 @@ import kotlinx.android.synthetic.main.native_message.view.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
+
 class MainActivityKotlin : AppCompatActivity() {
+    @VisibleForTesting
+    var appIdlingResource: AppIdlingResource = AppIdlingResource()
 
     companion object {
         private const val TAG = "**MainActivity"
@@ -60,7 +66,6 @@ class MainActivityKotlin : AppCompatActivity() {
 //        }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -74,7 +79,9 @@ class MainActivityKotlin : AppCompatActivity() {
         gracefulDegradationTest(sp, dataProvider) // 4 testing
 
         setContentView(R.layout.activity_main_v7)
+
         review_consents_gdpr.setOnClickListener { _v: View? ->
+            appIdlingResource.setIdleState(false, "review_consents_gdpr")
             spConsentLib.loadPrivacyManager(
                 pmId = dataProvider.gdprPmId,
                 pmTab = PMTab.PURPOSES,
@@ -83,6 +90,7 @@ class MainActivityKotlin : AppCompatActivity() {
             )
         }
         review_consents_ccpa.setOnClickListener { _v: View? ->
+            appIdlingResource.setIdleState(false, "review_consents_ccpa")
             spConsentLib.loadPrivacyManager(
                 dataProvider.ccpaPmId,
                 PMTab.PURPOSES,
@@ -94,19 +102,27 @@ class MainActivityKotlin : AppCompatActivity() {
             startActivity(Intent(this, MainActivityAuthId::class.java))
         }
         custom_consent.setOnClickListener { _v: View? ->
+            appIdlingResource.setIdleState(false, "custom_consents_clicked")
             spConsentLib.customConsentGDPR(
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
                 legIntCategories = emptyList(),
-                success = { spCustomConsents -> spClientObserver.forEach { it.onConsentReady(spCustomConsents!!) } }
+                success = { spCustomConsents ->
+                    appIdlingResource.setIdleState(true, "custom_consents_success")
+                    spClientObserver.forEach { it.onConsentReady(spCustomConsents!!) }
+                }
             )
         }
         delete_custom_consent.setOnClickListener { _v: View? ->
+            appIdlingResource.setIdleState(false, "delete_consents_clicked")
             spConsentLib.deleteCustomConsentTo(
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
                 legIntCategories = emptyList(),
-                success = { spCustomConsents -> spClientObserver.forEach { it.onConsentReady(spCustomConsents!!) } }
+                success = { spCustomConsents ->
+                    appIdlingResource.setIdleState(true, "delete_consents_success")
+                    spClientObserver.forEach { it.onConsentReady(spCustomConsents!!) }
+                }
             )
         }
         consent_btn.setOnClickListener {
@@ -140,6 +156,7 @@ class MainActivityKotlin : AppCompatActivity() {
     }
 
     private fun executeCmpLib() {
+        appIdlingResource.setIdleState(false, "executeCmpLib")
         spConsentLib.loadMessage()
     }
 
@@ -162,6 +179,7 @@ class MainActivityKotlin : AppCompatActivity() {
         }
 
         override fun onError(error: Throwable) {
+            appIdlingResource.setIdleState(true, "onError")
             spClientObserver.forEach { it.onError(error) }
             error.printStackTrace()
             Log.i(TAG, "onError: $error")
@@ -187,10 +205,15 @@ class MainActivityKotlin : AppCompatActivity() {
         override fun onUIReady(view: View) {
             spClientObserver.forEach { it.onUIReady(view) }
             spConsentLib.showView(view)
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                appIdlingResource.setIdleState(true, "onUiready")
+            }, 500)
             Log.i(TAG, "onUIReady")
         }
 
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
+            appIdlingResource.setIdleState(false, "onAction")
             spClientObserver.forEach { it.onAction(view, consentAction) }
             Log.i(TAG, "onAction ActionType: $consentAction")
             consentAction.pubData.put("pb_key", "pb_value")
@@ -199,6 +222,10 @@ class MainActivityKotlin : AppCompatActivity() {
 
         override fun onSpFinished(sPConsents: SPConsents) {
             spClientObserver.forEach { it.onSpFinished(sPConsents) }
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                appIdlingResource.setIdleState(true, "onspfinished")
+            }, 500)
             Log.i(TAG, "onSpFinish: $sPConsents")
             Log.i(TAG, "==================== onSpFinish ==================")
         }

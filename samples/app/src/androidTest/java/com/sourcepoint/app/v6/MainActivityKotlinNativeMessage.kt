@@ -84,7 +84,7 @@ class MainActivityNativeMessTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { checkGdprNativeTitle() }
+        wr { checkGdprNativeTitle() }
         wr { tapNmDismiss() }
         wr { tapNmDismiss() }
 
@@ -114,7 +114,7 @@ class MainActivityNativeMessTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { checkGdprNativeTitle() }
+        wr { checkGdprNativeTitle() }
         wr { tapNmAcceptAll() }
         wr { tapNmAcceptAll() }
 
@@ -144,11 +144,11 @@ class MainActivityNativeMessTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { checkGdprNativeTitle() }
+        wr { checkGdprNativeTitle() }
         wr { tapNmAcceptAll() }
 
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
+        clickOnGdprReviewConsent()
+        checkAllGdprConsentsOn()
 
         wr { verify(atLeast = 1) { spClient.onSpFinished(any()) }        }
         verify { spClient.onNativeMessageReady(any(), any()) }
@@ -175,7 +175,7 @@ class MainActivityNativeMessTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
+        wr { tapAcceptOnWebView() }
         wr { checkGdprNativeTitle() } // The order matters because in the stage env the CCPA is configured before the GDPR
         wr { tapNmAcceptAll() }
     }
