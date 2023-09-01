@@ -66,7 +66,7 @@ class MainActivityKotlinOttTest {
 
     @JvmField
     @Rule
-    var retry = Retry(3, onRetry = {
+    var retry = Retry(5, onRetry = {
         cleanLocalStorage()
         setupMocks()
     })

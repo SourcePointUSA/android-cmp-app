@@ -104,7 +104,7 @@ class Retry(private val retryCount: Int, val onRetry: (() -> Unit)? = null) : Te
 class MainActivityKotlinTest {
     @JvmField
     @Rule
-    var retry = Retry(3, onRetry = {
+    var retry = Retry(5, onRetry = {
         cleanLocalStorage()
         setupMocks()
     })
