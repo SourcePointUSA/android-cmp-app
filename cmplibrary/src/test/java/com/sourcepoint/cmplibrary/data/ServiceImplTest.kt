@@ -222,7 +222,9 @@ class ServiceImplTest {
         // WHEN
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
         sut.getMessages(
-            messageReq = messagesParamReq,
+            env = Env.PROD,
+            authId = null,
+            pubData = null,
             showConsent = consentMockV7,
             onSuccess = successMockV7,
             onFailure = errorMock,
