@@ -88,9 +88,8 @@ dependencies {
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
-    coreLibraryDesugaring( "com.android.tools:desugar_jdk_libs:1.1.5")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
-    // Unfortunately we depend on a outdated version of okhttp due to its support to older versions of Android
     //noinspection GradleDependency
     api(Libs.okHttpCmp)
 

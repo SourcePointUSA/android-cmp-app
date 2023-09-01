@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
-import com.sourcepoint.cmplibrary.model.toJSONObjGrant
-import com.sourcepoint.cmplibrary.model.toTcfJSONObj
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
 import com.sourcepoint.cmplibrary.util.generateCcpaUspString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -9,9 +8,9 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.putJsonObject
-import org.json.JSONArray
 import org.json.JSONObject
 
+@Serializable
 data class SPConsents(
     val gdpr: SPGDPRConsent? = null,
     val ccpa: SPCCPAConsent? = null
@@ -21,10 +20,12 @@ data class SPCustomConsents(
     val gdpr: JSONObject
 )
 
+@Serializable
 data class SPGDPRConsent(
     val consent: GDPRConsent
 )
 
+@Serializable
 data class SPCCPAConsent(
     val consent: CCPAConsent
 )
@@ -35,29 +36,33 @@ data class GDPRPurposeGrants(
     val purposeGrants: Map<String, Boolean> = emptyMap()
 )
 
-interface GDPRConsent {
+@Serializable
+sealed interface GDPRConsent {
     val uuid: String?
     var euconsent: String
-    var tcData: Map<String, Any?>
+    var tcData: JsonObject
     var grants: Map<String, GDPRPurposeGrants>
     val acceptedCategories: List<String>?
     val applies: Boolean?
     val webConsentPayload: JsonObject?
+    val consentStatus: ConsentStatus
 }
 
+@Serializable
 internal data class GDPRConsentInternal(
     override var euconsent: String = "",
     override val uuid: String? = null,
-    override var tcData: Map<String, Any?> = emptyMap(),
+    override var tcData: JsonObject = JsonObject(emptyMap()),
     override var grants: Map<String, GDPRPurposeGrants> = emptyMap(),
     override val acceptedCategories: List<String>? = null,
     override val applies: Boolean? = null,
+    override val consentStatus: ConsentStatus = ConsentStatus(),
     val childPmId: String? = null,
-    val thisContent: JSONObject = JSONObject(),
+    val thisContent: JsonObject = JsonObject(emptyMap()),
     override val webConsentPayload: JsonObject? = null,
 ) : GDPRConsent
-
-interface CCPAConsent {
+@Serializable
+sealed interface CCPAConsent {
     val uuid: String?
     val rejectedCategories: List<String>
     val rejectedVendors: List<String>
@@ -69,6 +74,7 @@ interface CCPAConsent {
     val webConsentPayload: JsonObject?
 }
 
+@Serializable
 internal data class CCPAConsentInternal(
     override val uuid: String? = null,
     override val rejectedCategories: List<String> = listOf(),
@@ -76,7 +82,7 @@ internal data class CCPAConsentInternal(
     override val status: CcpaStatus? = null,
     override val childPmId: String? = null,
     override val applies: Boolean = false,
-    val thisContent: JSONObject = JSONObject(),
+    val thisContent: JsonObject = JsonObject(emptyMap()),
     override val signedLspa: Boolean? = null,
     override val webConsentPayload: JsonObject? = null,
 ) : CCPAConsent {
@@ -122,32 +128,3 @@ internal fun GDPRConsent.isWebConsentEligible(): Boolean =
 
 internal fun CCPAConsent.isWebConsentEligible(): Boolean =
     uuid.isNullOrEmpty().not() && webConsentPayload.isNullOrEmpty().not()
-
-internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
-    return JSONObject().apply {
-        put("uuid", uuid)
-        put("tcData", tcData.toTcfJSONObj())
-        put("grants", grants.toJSONObjGrant())
-        put("euconsent", euconsent)
-        put("apply", applies)
-        put("acceptedCategories", JSONArray(acceptedCategories))
-    }
-}
-
-internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
-    return JSONObject().apply {
-        put("uuid", uuid)
-        put("status", status)
-        put("uspstring", uspstring)
-        put("rejectedCategories", JSONArray(rejectedCategories))
-        put("apply", applies)
-        put("rejectedVendors", JSONArray(rejectedVendors))
-    }
-}
-
-internal fun SPConsents.toJsonObject(): JSONObject {
-    return JSONObject().apply {
-        put("gdpr", (gdpr?.consent as? GDPRConsentInternal)?.toJsonObject())
-        put("ccpa", (ccpa?.consent as? CCPAConsentInternal)?.toJsonObject())
-    }
-}

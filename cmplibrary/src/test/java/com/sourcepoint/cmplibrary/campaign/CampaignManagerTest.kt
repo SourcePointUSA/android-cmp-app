@@ -5,6 +5,8 @@ import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -13,12 +15,12 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonObject
 import org.junit.Before
 import org.junit.Test
 
 class CampaignManagerTest {
-
     @MockK
     private lateinit var dataStorage: DataStorage
 
@@ -56,7 +58,7 @@ class CampaignManagerTest {
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
         gdprConsent = GDPRConsentInternal(uuid = "uuid-test")
-        every { dataStorage.gdprConsentStatus }.returns(gdprConsent.toJsonObject().toString())
+        every { dataStorage.gdprConsentStatus }.returns(JsonConverter.converter.encodeToString(gdprConsent))
         sut.clearConsents()
     }
 

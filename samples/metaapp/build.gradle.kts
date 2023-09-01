@@ -114,10 +114,7 @@ dependencies {
     implementation("androidx.leanback:leanback:1.0.0")
 
     // Koin
-//    implementation(Libs.koinCore)
-//    implementation(Libs.koinCoreExt)
     implementation(Libs.koinAndroid)
-    implementation(Libs.koinViewModel)
 
     // SQLDelight
     implementation(Libs.sqlDelight)

@@ -2,8 +2,12 @@ package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
-import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
-import org.json.JSONObject
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
+import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsent
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
+import kotlinx.serialization.json.JsonObject
 import org.junit.Test
 
 class SPConsentsTest {
@@ -23,7 +27,6 @@ class SPConsentsTest {
             status = CcpaStatus.consentedAll,
             childPmId = "child_pm_id",
             applies = true,
-            thisContent = JSONObject(),
         )
 
         // WHEN
@@ -45,12 +48,11 @@ class SPConsentsTest {
         val mockGDPRConsentInternal = GDPRConsentInternal(
             euconsent = "eu_consent",
             uuid = mockUUID,
-            tcData = mapOf(),
+            tcData = JsonObject(emptyMap()),
             grants = mapOf(),
             acceptedCategories = listOf(),
             applies = true,
             childPmId = "child_pm_id",
-            thisContent = JSONObject(),
         )
 
         // WHEN

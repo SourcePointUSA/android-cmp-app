@@ -4,11 +4,9 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInternal
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
-import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import java.text.SimpleDateFormat
@@ -31,27 +29,12 @@ internal interface ConsentManagerUtils {
 
     val shouldTriggerByGdprSample: Boolean
     val shouldTriggerByCcpaSample: Boolean
-    var messagesResp: MessagesResp?
-
-    companion object {
-        const val DEFAULT_SAMPLE_RATE: Double = 1.0
-    }
 }
 
-internal fun ConsentManagerUtils.Companion.create(
-    campaignManager: CampaignManager,
-    dataStorage: DataStorage,
-    logger: Logger,
-    uuid: String = UUID.randomUUID().toString()
-): ConsentManagerUtils = ConsentManagerUtilsImpl(campaignManager, dataStorage, logger, uuid)
-
-private class ConsentManagerUtilsImpl(
-    val cm: CampaignManager,
-    val ds: DataStorage,
-    val logger: Logger,
-    val uuid: String = UUID.randomUUID().toString()
+internal class ConsentManagerUtilsImpl(
+    private val cm: CampaignManager,
+    private val ds: DataStorage
 ) : ConsentManagerUtils {
-
     override fun updateGdprConsent(
         dataRecordedConsent: String,
         gdprConsentStatus: ConsentStatus,
@@ -65,18 +48,18 @@ private class ConsentManagerUtilsImpl(
         val additionsChangeDateDate = formatter.parse(additionsChangeDate)
         val legalBasisChangeDateConsentDate = formatter.parse(legalBasisChangeDate)
 
-        val creationLessThanAdditions = dataRecordedConsentDate.before(additionsChangeDateDate)
-        val creationLessThanLegalBasis = dataRecordedConsentDate.before(legalBasisChangeDateConsentDate)
+        val creationLessThanAdditions = dataRecordedConsentDate?.before(additionsChangeDateDate)
+        val creationLessThanLegalBasis = dataRecordedConsentDate?.before(legalBasisChangeDateConsentDate)
 
         val updatedCS = gdprConsentStatus.copy()
 
-        if (creationLessThanAdditions) {
+        if (creationLessThanAdditions == true) {
             updatedCS.vendorListAdditions = true
         }
-        if (creationLessThanLegalBasis) {
+        if (creationLessThanLegalBasis == true) {
             updatedCS.legalBasisChanges = true
         }
-        if (creationLessThanAdditions || creationLessThanLegalBasis) {
+        if (creationLessThanAdditions == true || creationLessThanLegalBasis == true) {
             if (updatedCS.consentedAll == true) {
                 updatedCS.granularStatus?.previousOptInAll = true
                 updatedCS.consentedAll = false
@@ -150,11 +133,5 @@ private class ConsentManagerUtilsImpl(
                     }
                 }
             }
-        }
-
-    override var messagesResp: MessagesResp?
-        get() = TODO("Not yet implemented")
-        set(value) {
-            ds
         }
 }

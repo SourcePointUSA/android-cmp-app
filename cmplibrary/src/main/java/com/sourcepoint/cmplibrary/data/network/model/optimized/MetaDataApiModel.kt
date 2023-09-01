@@ -9,12 +9,22 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 
+@Serializable
 internal data class MetaDataParamReq(
     val env: Env,
-    val propertyId: Long,
-    val accountId: Long,
-    val metadata: String
-)
+    val propertyId: Int,
+    val accountId: Int,
+    val metadata: MetaDataMetaDataParam
+) {
+    @Serializable
+    data class MetaDataMetaDataParam(
+        val gdpr: MetaDataCampaign?,
+        val ccpa: MetaDataCampaign?
+    ) {
+        @Serializable
+        data class MetaDataCampaign(val groupPmId: String?)
+    }
+}
 
 @Serializable
 data class MetaDataResp(
@@ -23,19 +33,18 @@ data class MetaDataResp(
 ) {
     @Serializable
     data class Ccpa(
-        @SerialName("applies") val applies: Boolean?,
-        @SerialName("sampleRate") val sampleRate: Double?
+        @SerialName("applies") val applies: Boolean,
+        @SerialName("sampleRate") val sampleRate: Double
     )
 
     @Serializable
     data class Gdpr(
-        @SerialName("additionsChangeDate") val additionsChangeDate: String?,
-        @SerialName("applies") val applies: Boolean?,
-        @SerialName("getMessageAlways") val getMessageAlways: Boolean?,
-        @SerialName("_id") val id: String?,
-        @SerialName("legalBasisChangeDate") val legalBasisChangeDate: String?,
-        @SerialName("version") val version: Int?,
-        @SerialName("sampleRate") val sampleRate: Double?,
+        @SerialName("additionsChangeDate") val additionsChangeDate: String,
+        @SerialName("applies") val applies: Boolean,
+        @SerialName("_id") val id: String,
+        @SerialName("legalBasisChangeDate") val legalBasisChangeDate: String,
+        @SerialName("version") val version: Int,
+        @SerialName("sampleRate") val sampleRate: Double,
         @SerialName("childPmId") val childPmId: String?,
     )
 
@@ -43,9 +52,4 @@ data class MetaDataResp(
         return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
             ?: super.toString()
     }
-}
-@Serializable
-data class MetaDataMetaDataParam(val gdpr: MetaDataCampaign?, val ccpa: MetaDataCampaign?) {
-    @Serializable
-    data class MetaDataCampaign(val groupPmId: String?)
 }

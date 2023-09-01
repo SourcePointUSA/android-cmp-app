@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
 import kotlinx.serialization.json.* // ktlint-disable
 
 internal fun postChoiceGdprBody(
@@ -51,24 +52,18 @@ internal fun postChoiceCcpaBody(
     pubData: JsonObject? = null,
     saveAndExitVariables: JsonObject? = null,
     authid: String? = null,
-    uuid: String? = null
+    uuid: String? = null,
+    includeData: IncludeData
 ): JsonObject {
     return buildJsonObject {
-        pubData?.let { put("pubData", pubData) }
         put("sendPVData", sendPvData)
         put("sampleRate", sampleRate)
         put("propertyId", propertyId)
-        put("messageId", messageId)
-        put("authId", authid)
         put("uuid", uuid)
+        put("includeData", JsonConverter.converter.encodeToJsonElement(includeData))
+        messageId?.let { put("messageId", messageId) }
+        authid?.let { put("authId", authid) }
         saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
-        putJsonObject("includeData") {
-            putJsonObject("localState") {
-                put("type", "RecordString")
-            }
-            putJsonObject("webConsentPayload") {
-                put("type", "RecordString")
-            }
-        }
+        pubData?.let { put("pubData", pubData) }
     }
 }

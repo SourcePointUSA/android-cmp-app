@@ -62,7 +62,7 @@ class MainActivityKotlinNativeOttTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  {
+        wr {
             tapAcceptOnWebView()
             device.pressEnter()
         }
@@ -106,13 +106,13 @@ class MainActivityKotlinNativeOttTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  {
+        wr {
             tapAcceptOnWebView()
             device.pressEnter()
         }
 
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }){
+        clickOnGdprReviewConsent()
+        wr {
             tapAcceptOnWebView()
             device.pressEnter()
         }

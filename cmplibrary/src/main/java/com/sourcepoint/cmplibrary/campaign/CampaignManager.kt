@@ -1,9 +1,7 @@
 package com.sourcepoint.cmplibrary.campaign
 
-import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.campaign.CampaignManager.Companion.selectPmId
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.creation.validPattern
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
@@ -13,20 +11,31 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.fail
-import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessageMetaData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
-import com.sourcepoint.cmplibrary.data.network.util.Env
-import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
+import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.ChildPmIdNotFound
+import com.sourcepoint.cmplibrary.exception.InvalidArgumentException
+import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.MissingPropertyException
+import com.sourcepoint.cmplibrary.model.CampaignReq
+import com.sourcepoint.cmplibrary.model.CampaignTemplate
+import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.PmUrlConfig
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import com.sourcepoint.cmplibrary.model.toCampaignReqImpl
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.generateCcpaUspString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
-import org.json.JSONObject
 import java.time.Instant
 
 internal interface CampaignManager {
@@ -55,9 +64,6 @@ internal interface CampaignManager {
         pmId: String?,
         pmTab: PMTab?
     ): Either<PmUrlConfig>
-
-    fun getMessageOptimizedReq(authId: String?, pubData: JSONObject?): MessagesParamReq
-
     fun getGroupId(campaignType: CampaignType): String?
 
     fun clearConsents()
@@ -83,10 +89,8 @@ internal interface CampaignManager {
     var dataRecordedConsent: Instant?
     var authId: String?
 
-    fun handleMetaDataResponse(response: MetaDataResp?)
+    fun handleMetaDataResponse(response: MetaDataResp)
     fun handleOldLocalData()
-    fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
-    fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
 
     companion object {
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
@@ -309,40 +313,6 @@ private class CampaignManagerImpl(
         }
     }
 
-    override fun getMessageOptimizedReq(authId: String?, pubData: JSONObject?): MessagesParamReq {
-        val campaigns = mutableListOf<CampaignReq>()
-        mapTemplate[CampaignType.GDPR.name]
-            ?.let {
-                it.toCampaignReqImpl(
-                    targetingParams = it.targetingParams,
-                    campaignsEnv = it.campaignsEnv,
-                    groupPmId = it.groupPmId
-                )
-            }
-            ?.let { campaigns.add(it) }
-        mapTemplate[CampaignType.CCPA.name]
-            ?.let {
-                it.toCampaignReqImpl(
-                    targetingParams = it.targetingParams,
-                    campaignsEnv = it.campaignsEnv
-                )
-            }
-            ?.let { campaigns.add(it) }
-
-        return MessagesParamReq(
-            metadataArg = campaigns.toMessagesMetaData(),
-            body = "",
-            env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD,
-            propertyHref = spConfig.propertyName,
-            accountId = spConfig.accountId.toLong(),
-            authId = authId,
-            propertyId = spConfig.propertyId.toLong(),
-            pubData = pubData?.toString()
-                ?.let { check { JsonConverter.converter.decodeFromString<JsonObject>(it) }.getOrNull() }
-                ?: JsonObject(mapOf())
-        )
-    }
-
     override fun getGroupId(campaignType: CampaignType): String? {
         return spConfig.campaigns.find { it.campaignType == campaignType }?.groupPmId
     }
@@ -497,38 +467,30 @@ private class CampaignManagerImpl(
     override val hasLocalData: Boolean
         get() = dataStorage.gdprConsentStatus != null || dataStorage.uspstring.isNullOrEmpty().not()
 
-    override fun handleMetaDataResponse(response: MetaDataResp?) {
+    override fun handleMetaDataResponse(response: MetaDataResp) {
         // update meta data response in the data storage
         metaDataResp = response
 
-        if (response == null) return
-
         // handle ccpa
         response.ccpa?.apply {
-            applies?.let { i ->
-                ccpaConsentStatus?.let { ccpaCS ->
-                    val updatedCcpaConsentStatus = ccpaCS.copy(applies = i)
-                    ccpaConsentStatus = updatedCcpaConsentStatus
-                }
+            ccpaConsentStatus?.let { ccpaCS ->
+                val updatedCcpaConsentStatus = ccpaCS.copy(applies = applies)
+                ccpaConsentStatus = updatedCcpaConsentStatus
             }
 
-            sampleRate?.let { i ->
-                if (i != dataStorage.ccpaSamplingValue) {
-                    dataStorage.ccpaSamplingValue = i
-                    dataStorage.ccpaSamplingResult = null
-                }
+            if (sampleRate != dataStorage.ccpaSamplingValue) {
+                dataStorage.ccpaSamplingValue = sampleRate
+                dataStorage.ccpaSamplingResult = null
             }
         }
 
         // handle gdpr
         response.gdpr?.apply {
-            applies?.let { i -> dataStorage.gdprApplies = i }
-            childPmId?.let { i -> dataStorage.gdprChildPmId = i }
-            sampleRate?.let { i ->
-                if (i != dataStorage.gdprSamplingValue) {
-                    dataStorage.gdprSamplingValue = i
-                    dataStorage.gdprSamplingResult = null
-                }
+            dataStorage.gdprApplies = applies
+            dataStorage.gdprChildPmId = childPmId
+            if (sampleRate != dataStorage.gdprSamplingValue) {
+                dataStorage.gdprSamplingValue = sampleRate
+                dataStorage.gdprSamplingResult = null
             }
         }
     }
@@ -576,32 +538,4 @@ private class CampaignManagerImpl(
         set(value) {
             dataStorage.dataRecordedConsent = value?.toString()
         }
-
-    override fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject {
-        return toPvDataBody(
-            accountId = messageReq.accountId,
-            propertyId = messageReq.propertyId,
-            gdprMessageMetaData = gdprMessageMetaData,
-            ccpaMessageMetaData = null,
-            gdprApplies = dataStorage.gdprApplies,
-            ccpaApplies = dataStorage.ccpaApplies,
-            pubData = messageReq.pubData,
-            gdprCs = gdprConsentStatus,
-            ccpaCS = null,
-        )
-    }
-
-    override fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject {
-        return toPvDataBody(
-            accountId = messageReq.accountId,
-            propertyId = messageReq.propertyId,
-            gdprMessageMetaData = null,
-            ccpaMessageMetaData = ccpaMessageMetaData,
-            gdprApplies = dataStorage.gdprApplies,
-            ccpaApplies = dataStorage.ccpaApplies,
-            pubData = messageReq.pubData,
-            gdprCs = null,
-            ccpaCS = ccpaConsentStatus
-        )
-    }
 }

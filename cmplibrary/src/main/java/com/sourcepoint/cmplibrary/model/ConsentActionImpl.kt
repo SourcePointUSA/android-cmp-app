@@ -32,7 +32,7 @@ internal data class ConsentActionImpl(
     override val requestFromPm: Boolean,
     override val saveAndExitVariables: JSONObject = JSONObject(),
     override val consentLanguage: String? = MessageLanguage.ENGLISH.value,
-    val saveAndExitVariablesOptimized: JsonObject = JsonObject(mapOf()),
+    val saveAndExitVariablesOptimized: JsonObject? = null,
     val pmTab: String? = null,
     val thisContent: JSONObject = JSONObject()
 ) : ConsentAction

@@ -14,6 +14,7 @@ import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CampaignMessage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
@@ -27,12 +28,13 @@ import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
-import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread
+import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.toConsentLibException
+import kotlinx.serialization.encodeToString
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -84,7 +86,7 @@ internal class SpConsentLibImpl(
 
     init {
         consentManager.sPConsentsSuccess = { spConsents ->
-            val spConsentString = spConsents.toJsonObject().toString()
+            val spConsentString = JsonConverter.converter.encodeToString(spConsents)
             executor.executeOnMain {
                 pLogger.clientEvent(
                     event = "onConsentReady",
@@ -132,15 +134,10 @@ internal class SpConsentLibImpl(
     }
 
     private fun localLoadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
-
-        val param = check { campaignManager.getMessageOptimizedReq(authId, pubData) }
-            .executeOnLeft {
-                pLogger.e(this.javaClass.simpleName, it.message ?: it.stackTraceToString())
-                spClient.onError(it)
-            }
-            .getOrNull() ?: return
         service.getMessages(
-            messageReq = param,
+            env = env,
+            authId = authId,
+            pubData = pubData?.toJsonObject(),
             showConsent = {
                 consentManager.sendStoredConsentToClient()
                 clientEventManager.setAction(NativeMessageActionType.GET_MSG_NOT_CALLED)
@@ -298,8 +295,8 @@ internal class SpConsentLibImpl(
             categories = categories.toList(),
             legIntCategories = legIntCategories.toList(),
             success = {
-                it?.let { spc ->
-                    successCallback.transferCustomConsentToUnity(spc.toJsonObject().toString())
+                it?.let {
+                    successCallback.transferCustomConsentToUnity(JsonConverter.converter.encodeToString(it))
                 } ?: run {
                     spClient.onError(RuntimeException("An error occurred during the custom consent request"))
                     pLogger.clientEvent(
@@ -386,8 +383,8 @@ internal class SpConsentLibImpl(
                 )
 
                 val storedConsent = when (campaignType) {
-                    CampaignType.GDPR -> dataStorage.gdprConsentStatus
-                    CampaignType.CCPA -> dataStorage.ccpaConsentStatus
+                    CampaignType.GDPR -> campaignManager.gdprConsentStatus?.toPreloadConsent()
+                    CampaignType.CCPA -> campaignManager.ccpaConsentStatus?.toPreloadConsent()
                 }
 
                 webView?.loadConsentUIFromUrlPreloadingOption(
@@ -415,7 +412,7 @@ internal class SpConsentLibImpl(
         viewManager.removeAllViews()
     }
 
-    private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, "$mess")
+    private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, mess)
 
     /** Start Receiver methods */
     inner class JSReceiverDelegate : JSClientLib {

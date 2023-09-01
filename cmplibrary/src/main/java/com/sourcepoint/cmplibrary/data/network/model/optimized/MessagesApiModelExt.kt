@@ -5,8 +5,13 @@ import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesMetaData
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReq
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonObject
 
 internal fun List<CampaignReq>.toMetadataBody(
     gdprConsentStatus: ConsentStatus? = null,
@@ -49,28 +54,6 @@ internal fun List<CampaignReq>.toMessagesMetaData(): MessagesMetaData {
     return JsonConverter.converter.decodeFromJsonElement(json)
 }
 
-internal fun MessagesParamReq.toMetaDataParamReq(campaigns: List<CampaignReq>): MetaDataParamReq {
-    return MetaDataParamReq(
-        env = env,
-        accountId = accountId,
-        propertyId = propertyId,
-        metadata = JsonConverter.converter.encodeToString(
-            MetaDataMetaDataParam(
-                gdpr = campaigns
-                    .firstOrNull { it.campaignType == CampaignType.GDPR }
-                    ?.let {
-                        MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
-                    },
-                ccpa = campaigns
-                    .firstOrNull { it.campaignType == CampaignType.CCPA }
-                    ?.let {
-                        MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
-                    }
-            )
-        ),
-    )
-}
-
 internal fun CCPA.toCcpaCS() = CcpaCS(
     applies = applies,
     consentedAll = consentedAll,
@@ -80,7 +63,7 @@ internal fun CCPA.toCcpaCS() = CcpaCS(
     rejectedCategories = rejectedCategories,
     rejectedVendors = rejectedVendors,
     signedLspa = signedLspa,
-    status = status,
+    status = status ?: CcpaStatus.rejectedNone,
     gppData = gppData,
     ccpaApplies = null,
     uuid = null,
@@ -101,7 +84,7 @@ internal fun GDPR.toGdprCS() = GdprCS(
     specialFeatures = null,
     vendors = null,
     addtlConsent = addtlConsent,
-    consentStatus = consentStatus,
+    consentStatus = consentStatus ?: ConsentStatus(),
     cookieExpirationDays = null,
     customVendorsResponse = customVendorsResponse,
     dateCreated = dateCreated,
