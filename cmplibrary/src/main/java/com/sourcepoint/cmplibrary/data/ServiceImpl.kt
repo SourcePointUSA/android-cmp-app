@@ -34,8 +34,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.metaData.toConsen
 import com.sourcepoint.cmplibrary.data.network.model.optimized.metaData.toMessagesMetaData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.postChoiceCcpaBody
 import com.sourcepoint.cmplibrary.data.network.model.optimized.postChoiceGdprBody
-import com.sourcepoint.cmplibrary.data.network.model.optimized.toCcpaCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.toGdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toMetadataBody
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
@@ -236,62 +234,57 @@ private class ServiceImpl(
             }
 
             if (campaignManager.shouldCallMessages) {
-                val operatingSystemInfo = OperatingSystemInfoParam()
-
-                val messagesParamReq = MessagesParamReq(
-                    env = env,
-                    body = MessagesBodyReq(
-                        accountId = spConfig.accountId,
-                        propertyHref = "https://${spConfig.propertyName}",
-                        campaigns = campaignManager.campaigns4Config.toMetadataBody(
-                            gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus,
-                            ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
+                getMessages(
+                    MessagesParamReq(
+                        env = env,
+                        body = MessagesBodyReq(
+                            accountId = spConfig.accountId,
+                            propertyHref = "https://${spConfig.propertyName}",
+                            campaigns = campaignManager.campaigns4Config.toMetadataBody(
+                                gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus,
+                                ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
+                            ),
+                            campaignEnv = campaignManager.spConfig.campaignsEnv.env,
+                            consentLanguage = spConfig.messageLanguage.value,
+                            hasCSP = false,
+                            includeData = IncludeData.generateIncludeDataForMessages(
+                                gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                            ),
+                            localState = campaignManager.messagesOptimizedLocalState?.jsonObject
+                                ?: JsonObject(mapOf()),
+                            operatingSystem = OperatingSystemInfoParam(),
                         ),
-                        campaignEnv = campaignManager.spConfig.campaignsEnv.env,
-                        consentLanguage = spConfig.messageLanguage.value,
-                        hasCSP = false,
-                        includeData = IncludeData.generateIncludeDataForMessages(
-                            gppData = spConfig.extractIncludeGppDataParamIfEligible(),
-                        ),
-                        localState = campaignManager.messagesOptimizedLocalState?.jsonObject
-                            ?: JsonObject(mapOf()),
-                        operatingSystem = operatingSystemInfo,
-                    ),
-                    metadata = metadataResponse!!.toMessagesMetaData(),
-                    nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
+                        metadata = metadataResponse!!.toMessagesMetaData(),
+                        nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
+                    )
                 )
-
-                getMessages(messagesParamReq)
                     .executeOnLeft { messagesError ->
                         onFailure(messagesError, true)
                         return@executeOnWorkerThread
                     }
-                    .executeOnRight {
+                    .executeOnRight { messagesResponse ->
                         campaignManager.also { _ ->
-                            messagesOptimizedLocalState = it.localState
-                            nonKeyedLocalState = it.nonKeyedLocalState
-                            gdprMessageMetaData = it.campaigns?.gdpr?.messageMetaData
-                            ccpaMessageMetaData = it.campaigns?.ccpa?.messageMetaData
+                            messagesOptimizedLocalState = messagesResponse.localState
+                            nonKeyedLocalState = messagesResponse.nonKeyedLocalState
+                            gdprMessageMetaData = messagesResponse.campaigns?.gdpr?.messageMetaData
+                            ccpaMessageMetaData = messagesResponse.campaigns?.ccpa?.messageMetaData
                         }
 
-                        if (campaignManager.hasLocalData.not()) {
-
-                            // save tc data in the data storage
-                            it.campaigns?.gdpr?.TCData?.let { tcData ->
-                                dataStorage.tcData = tcData.toMapOfAny()
-                            }
-
-                            dataStorage.gppData = it.campaigns?.ccpa?.gppData?.toMapOfAny()
-
-                            campaignManager.run {
-                                if ((authId != null || campaignManager.shouldCallConsentStatus).not()) {
-                                    this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS()
-                                    this.ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS()
-                                }
+                        if (campaignManager.gdprConsentStatus == null) {
+                            messagesResponse.campaigns?.gdpr?.let { gdpr ->
+                                dataStorage.tcData = gdpr.TCData?.toMapOfAny()
+                                campaignManager.gdprConsentStatus = gdpr.toGdprCS()
                             }
                         }
 
-                        execManager.executeOnMain { onSuccess(it) }
+                        if (campaignManager.ccpaConsentStatus == null) {
+                            messagesResponse.campaigns?.ccpa?.let { ccpa ->
+                                dataStorage.gppData = ccpa.gppData?.toMapOfAny()
+                                campaignManager.ccpaConsentStatus = ccpa.toCcpaCS()
+                            }
+                        }
+
+                        execManager.executeOnMain { onSuccess(messagesResponse) }
                     }
             } else {
                 execManager.executeOnMain { showConsent() }
