@@ -187,7 +187,9 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("hasCsp", param.hasCsp.toString())
             .addQueryParameter("withSiteActions", param.withSiteActions.toString())
             .addQueryParameter("includeData", includeData)
-            .addQueryParameter("authId", param.authId.toString())
+            .apply {
+                param.authId?.let { addQueryParameter("authId", param.authId.toString()) }
+            }
             .addEncodedQueryParameter("metadata", JsonConverter.converter.encodeToString(param.metadata))
             .addQueryParameter("scriptType", scriptType)
             .addQueryParameter("scriptVersion", scriptVersion)

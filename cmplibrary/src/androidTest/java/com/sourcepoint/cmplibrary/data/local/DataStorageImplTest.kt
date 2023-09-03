@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.local
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertEquals
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.HARDCODED_LOCAL_DATA_VERSION
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,5 +27,18 @@ class DataStorageImplTest {
             saveLocalState("test_ls")
             getLocalState().assertEquals("test_ls")
         }
+    }
+
+    @Test
+    fun localDataVersion_when_value_is_set_then_should_return_the_same_value() {
+        val fakeLocalDataVersion = 5
+        sut.localDataVersion = fakeLocalDataVersion
+        sut.localDataVersion.assertEquals(fakeLocalDataVersion)
+    }
+
+    @Test
+    fun updateLocalDataVersion_when_called_then_should_set_local_version_to_the_hardcoded_one() {
+        sut.updateLocalDataVersion()
+        sut.localDataVersion.assertEquals(HARDCODED_LOCAL_DATA_VERSION)
     }
 }

@@ -391,7 +391,8 @@ class HttpUrlManagerTest {
             includeData = consentStatusIncludeData,
         )
         val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=false&withSiteActions=false&includeData=%7B%22TCData%22%3A%7B%22type%22%3A%22RecordString%22%7D%2C%22webConsentPayload%22%3A%7B%22type%22%3A%22RecordString%22%7D%2C%22GPPData%22%3A%7B%22MspaCoveredTransaction%22%3A%22no%22%2C%22MspaOptOutOptionMode%22%3A%22na%22%2C%22MspaServiceProviderMode%22%3A%22na%22%7D%7D&authId=null&metadata={%22ccpa%22:{%22applies%22:true,%22hasLocalData%22:false},%22gdpr%22:{%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22applies%22:true,%22hasLocalData%22:false}}&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+
+        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=false&withSiteActions=false&includeData=%7B%22TCData%22%3A%7B%22type%22%3A%22RecordString%22%7D%2C%22webConsentPayload%22%3A%7B%22type%22%3A%22RecordString%22%7D%2C%22GPPData%22%3A%7B%22MspaCoveredTransaction%22%3A%22no%22%2C%22MspaOptOutOptionMode%22%3A%22na%22%2C%22MspaServiceProviderMode%22%3A%22na%22%7D%7D&metadata={%22ccpa%22:{%22applies%22:true,%22hasLocalData%22:false},%22gdpr%22:{%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22applies%22:true,%22hasLocalData%22:false}}&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
     }
 
     @Test
