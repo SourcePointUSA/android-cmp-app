@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.util
 
 import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.data.network.model.optimized.CCPA
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import org.junit.Test
@@ -155,7 +155,7 @@ internal class SpUtilsTest {
         applies: Boolean? = null,
         ccpaStatus: CcpaStatus? = null,
         signedLspa: Boolean? = null,
-    ): CCPA = CCPA(
+    ): MessagesResp.Campaigns.CCPA = MessagesResp.Campaigns.CCPA(
         applies = applies,
         consentedAll = null,
         dateCreated = null,
