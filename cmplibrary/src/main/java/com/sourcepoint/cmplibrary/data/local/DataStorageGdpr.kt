@@ -40,7 +40,7 @@ internal interface DataStorageGdpr {
     var gdprApplies: Boolean
     var gdprChildPmId: String?
 
-    var tcData: Map<String, Any?>
+    var tcData: Map<String, Any?>?
 
     var gdprSamplingValue: Double
     var gdprSamplingResult: Boolean?
@@ -134,7 +134,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         return preference.getString(KEY_GDPR, null)
     }
 
-    override var tcData: Map<String, Any?>
+    override var tcData: Map<String, Any?>?
         get() {
             val res = TreeMap<String, Any?>()
             val map: Map<String, *> = preference.all
@@ -145,7 +145,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         }
         set(value) {
             val spEditor = preference.edit()
-            value.forEach { entry ->
+            value?.forEach { entry ->
                 val primitive = (entry.value as? JsonPrimitive)
                 val isThisAString = primitive?.isString ?: false
                 if (isThisAString) {
@@ -167,7 +167,6 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     }
 
     override fun saveGdprConsentResp(value: String) {
-
         check {
             JSONObject(value)
                 .toTreeMap()

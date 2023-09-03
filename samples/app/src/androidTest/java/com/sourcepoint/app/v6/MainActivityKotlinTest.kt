@@ -453,7 +453,7 @@ class MainActivityKotlinTest {
     }
 
     @Test
-    fun GIVEN_a_campaign_without_message_to_show_VERIFY_that_the_tddata_gets_saved():Unit = runBlocking {
+    fun GIVEN_a_campaign_without_message_to_show_VERIFY_that_the_TCData_gets_saved():Unit = runBlocking {
         loadKoinModules(
             mockModule(
                 spConfig = spConfGdprNoMessage,
