@@ -58,31 +58,31 @@ class TestUseCase {
             id = id
         )
 
-        fun clickAcceptAllOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+        suspend fun clickAcceptAllOnConsentWebView() = wr { clickOnButtonByTextOnWebViewByTag(
             tag = CONSENT_WEB_VIEW_TAG_NAME,
             text = ACCEPT_ALL,
-        )
+        ) }
 
-        fun clickRejectAllOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+        suspend fun clickRejectAllOnConsentWebView() = wr { clickOnButtonByTextOnWebViewByTag(
             tag = CONSENT_WEB_VIEW_TAG_NAME,
             text = REJECT_ALL,
-        )
+        ) }
 
-        fun clickOptionsOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+        suspend fun clickOptionsOnConsentWebView() = wr { clickOnButtonByTextOnWebViewByTag(
             tag = CONSENT_WEB_VIEW_TAG_NAME,
             text = OPTIONS,
-        )
+        ) }
 
-        fun clickSaveAndExitOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+        suspend fun clickSaveAndExitOnConsentWebView() = wr { clickOnButtonByTextOnWebViewByTag(
             tag = CONSENT_WEB_VIEW_TAG_NAME,
             text = SAVE_AND_EXIT,
-        )
+        ) }
 
-        fun tapOn(
+        suspend fun tapOn(
             @IdRes id: Int
-        ) = performClickByIdCompletelyDisplayed(
+        ) = wr { performClickByIdCompletelyDisplayed(
             resId = id,
-        )
+        ) }
 
         fun checkTextMatchesInView(
             @IdRes id: Int,
