@@ -1,3 +1,9 @@
+## 7.3.0 (September, 04, 2023)
+* [DIA-2542](https://sourcepoint.atlassian.net/browse/DIA-2542) Local data versioning (#685)
+* [DIA-2578](https://sourcepoint.atlassian.net/browse/DIA-2578) Fix error 400 when calling consent status (#686)
+* [DIA-2479](https://sourcepoint.atlassian.net/browse/DIA-2479) Allow user to set GPP Config (#683)
+* [DIA-2390](https://sourcepoint.atlassian.net/browse/DIA-2390) Store GPPData in the local storage (#680)
+
 ## 7.2.8 (August, 17, 2023)
 * [DIA-2561](https://sourcepoint.atlassian.net/browse/DIA-2561) Crash fix for NPE in SPConsentLib (#679)
 * [DIA-2525](https://sourcepoint.atlassian.net/browse/DIA-2525) Fix no action wrong numbers in our reports (#678)
