@@ -4,7 +4,12 @@ import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.consentStatus.ConsentStatusMetaData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesMetaData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
@@ -34,9 +39,6 @@ class NetworkClientImplTest {
 
     @MockK
     lateinit var okHttp: OkHttpClient
-
-    @MockK
-    private lateinit var errorMock: (Throwable) -> Unit
 
     @MockK
     private lateinit var responseManager: ResponseManager
@@ -191,7 +193,14 @@ class NetworkClientImplTest {
         val param = MetaDataParamReq(
             accountId = 22,
             propertyId = 17801,
-            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
+            metadata = MetaDataParamReq.MetaDataMetaDataParam(
+                gdpr = MetaDataParamReq.MetaDataMetaDataParam.MetaDataCampaign(
+                    groupPmId = null
+                ),
+                ccpa = MetaDataParamReq.MetaDataMetaDataParam.MetaDataCampaign(
+                    groupPmId = null
+                )
+            ),
             env = Env.LOCAL_PROD
         )
 
@@ -201,7 +210,6 @@ class NetworkClientImplTest {
 
     @Test
     fun `EXECUTE getMetaData THROWS an exception and the result is a LEFT obj`() {
-        val respConsent = JSONObject("v7/meta_data.json".file2String())
         val mockCall = mockk<Call>()
         every { okHttp.newCall(any()) }.returns(mockCall)
         every { mockCall.execute() }.throws(RuntimeException("exception"))
@@ -210,7 +218,14 @@ class NetworkClientImplTest {
         val param = MetaDataParamReq(
             accountId = 22,
             propertyId = 17801,
-            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
+            metadata = MetaDataParamReq.MetaDataMetaDataParam(
+                gdpr = MetaDataParamReq.MetaDataMetaDataParam.MetaDataCampaign(
+                    groupPmId = null
+                ),
+                ccpa = MetaDataParamReq.MetaDataMetaDataParam.MetaDataCampaign(
+                    groupPmId = null
+                )
+            ),
             env = Env.LOCAL_PROD
         )
 
@@ -220,7 +235,6 @@ class NetworkClientImplTest {
 
     @Test
     fun `EXECUTE getMetaData THROWS an InterruptedIOException and the result is a LEFT obj`() {
-        val respConsent = JSONObject()
         val mockCall = mockk<Call>()
         every { okHttp.newCall(any()) }.returns(mockCall)
         every { mockCall.execute() }.throws(InterruptedIOException("exception"))
@@ -229,7 +243,14 @@ class NetworkClientImplTest {
         val param = MetaDataParamReq(
             accountId = 22,
             propertyId = 17801,
-            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
+            metadata = MetaDataParamReq.MetaDataMetaDataParam(
+                gdpr = MetaDataParamReq.MetaDataMetaDataParam.MetaDataCampaign(
+                    groupPmId = null
+                ),
+                ccpa = MetaDataParamReq.MetaDataMetaDataParam.MetaDataCampaign(
+                    groupPmId = null
+                )
+            ),
             env = Env.LOCAL_PROD
         )
 
@@ -246,7 +267,7 @@ class NetworkClientImplTest {
         val param = ConsentStatusParamReq(
             accountId = 22,
             propertyId = 17801,
-            metadata = JSONObject().toString(),
+            metadata = ConsentStatusMetaData(gdpr = null, ccpa = null),
             env = Env.LOCAL_PROD,
             authId = null,
             localState = null,
@@ -267,13 +288,19 @@ class NetworkClientImplTest {
         every { mockCall.execute() }.throws(InterruptedIOException("exception"))
 
         val param = MessagesParamReq(
-            accountId = 1,
-            propertyId = 1,
-            authId = null,
-            propertyHref = "prop",
             env = Env.LOCAL_PROD,
-            metadataArg = null,
-            body = "{}",
+            body = MessagesBodyReq(
+                accountId = 0,
+                propertyHref = "",
+                campaignEnv = null,
+                campaigns = JsonObject(mapOf()),
+                consentLanguage = null,
+                hasCSP = true,
+                includeData = IncludeData.generateIncludeDataForMessages(),
+                localState = null,
+                operatingSystem = OperatingSystemInfoParam()
+            ),
+            metadata = MessagesMetaData(ccpa = null, gdpr = null)
         )
 
         val res = sut.getMessages(param) as? Either.Left
@@ -289,7 +316,7 @@ class NetworkClientImplTest {
 
         val param = PvDataParamReq(
             env = Env.LOCAL_PROD,
-            body = buildJsonObject { },
+            body = PvDataParamReq.Body(gdpr = null, ccpa = null),
             campaignType = CampaignType.GDPR
         )
 

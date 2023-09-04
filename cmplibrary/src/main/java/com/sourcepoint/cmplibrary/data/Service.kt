@@ -4,13 +4,13 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import kotlinx.serialization.json.JsonObject
 
 /**
  * Encapsulates the logic to fetch the data from the server, using the [NetworkClient], and
@@ -36,7 +36,9 @@ internal interface Service : NetworkClient, CampaignManager {
     ): Either<GdprCS>
 
     fun getMessages(
-        messageReq: MessagesParamReq,
+        authId: String?,
+        pubData: JsonObject?,
+        env: Env,
         onSuccess: (MessagesResp) -> Unit,
         showConsent: () -> Unit,
         onFailure: (Throwable, Boolean) -> Unit,

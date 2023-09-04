@@ -11,6 +11,7 @@ import com.sourcepoint.cmplibrary.campaign.create
 import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
+import com.sourcepoint.cmplibrary.consent.ConsentManagerUtilsImpl
 import com.sourcepoint.cmplibrary.consent.create
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.create
@@ -84,7 +85,7 @@ class Builder {
         val viewManager = ViewsManager.create(activityWeakRef, connManager, spc.messageTimeout)
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
-        val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
+        val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtilsImpl(campaignManager, dataStorage)
         val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, dataStorage, logger, execManager)
         val clientEventManager: ClientEventManager = ClientEventManager.create(logger = logger, executor = execManager, spClient = spClientLocal, consentManagerUtils = consentManagerUtils)
         val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, env, logger, dataStorage, execManager, clientEventManager)

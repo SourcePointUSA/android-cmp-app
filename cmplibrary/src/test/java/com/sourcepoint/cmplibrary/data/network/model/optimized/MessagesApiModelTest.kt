@@ -13,8 +13,8 @@ class MessagesApiModelTest {
     fun `GIVEN a priority {1, 2, 5} GDPR is first`() {
         val mess = "v7/messagesObj.json".file2String()
         val message = JsonConverter.converter.decodeFromString<MessagesResp>(mess)
-        message.campaignList[0] as GDPR
-        message.campaignList[1] as CCPA
+        message.campaignList[0] as MessagesResp.Campaigns.GDPR
+        message.campaignList[1] as MessagesResp.Campaigns.CCPA
 
         JsonConverter.converter.encodeToJsonElement(message)
     }
@@ -23,15 +23,15 @@ class MessagesApiModelTest {
     fun `GIVEN a priority {1, 5, 2} CCPA is first`() {
         val mess = "v7/messagesObjSwitchOrder.json".file2String()
         val message = JsonConverter.converter.decodeFromString<MessagesResp>(mess)
-        message.campaignList[0] as CCPA
-        message.campaignList[1] as GDPR
+        message.campaignList[0] as MessagesResp.Campaigns.CCPA
+        message.campaignList[1] as MessagesResp.Campaigns.GDPR
     }
 
     @Test
     fun `GIVEN IncludeData verify the output`() {
         val mess = "v7/messagesObjSwitchOrder.json".file2String()
         val message = JsonConverter.converter.decodeFromString<MessagesResp>(mess)
-        message.campaignList[0] as CCPA
-        message.campaignList[1] as GDPR
+        message.campaignList[0] as MessagesResp.Campaigns.CCPA
+        message.campaignList[1] as MessagesResp.Campaigns.GDPR
     }
 }

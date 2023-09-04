@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class IncludeData(
+internal data class IncludeData(
     @SerialName("localState")
     val localState: IncludeDataParam? = null,
     @SerialName("TCData")
@@ -17,6 +17,8 @@ data class IncludeData(
     val messageMetaData: IncludeDataParam? = null,
     @SerialName("webConsentPayload")
     val webConsentPayload: IncludeDataParam? = null,
+    @SerialName("GPPData")
+    val gppData: IncludeDataGppParam? = null
 ) {
 
     companion object {
@@ -24,26 +26,35 @@ data class IncludeData(
         /**
          * Method that generates include data for /consent-status request.
          */
-        fun generateIncludeDataForConsentStatus(): IncludeData = IncludeData(
+        fun generateIncludeDataForConsentStatus(
+            gppData: IncludeDataGppParam? = null,
+        ): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+            gppData = gppData,
         )
 
         /**
          * Method that generates include data for /messages request.
          */
-        fun generateIncludeDataForMessages(): IncludeData = IncludeData(
+        fun generateIncludeDataForMessages(
+            gppData: IncludeDataGppParam? = null,
+        ): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             campaigns = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+            gppData = gppData,
         )
 
         /**
          * Method that generates include data for GET /choice request.
          */
-        fun generateIncludeDataForGetChoice(): IncludeData = IncludeData(
+        fun generateIncludeDataForGetChoice(
+            gppData: IncludeDataGppParam? = null,
+        ): IncludeData = IncludeData(
             tcData = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
             webConsentPayload = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
+            gppData = gppData,
         )
     }
 }

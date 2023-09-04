@@ -3,15 +3,23 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
-import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CCPAPostChoiceResponse
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GDPRPostChoiceResponse
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.PvDataResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.ConsentResp
+import com.sourcepoint.cmplibrary.model.CustomConsentResp
+import com.sourcepoint.cmplibrary.model.NativeMessageRespK
+import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
+import com.sourcepoint.cmplibrary.model.toJSONObj
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
@@ -30,8 +38,6 @@ internal val JsonConverter.Companion.converter: Json by lazy {
         isLenient = true
         allowStructuredMapKeys = true
         explicitNulls = false
-        prettyPrint = true
-        prettyPrintIndent = "  "
         coerceInputValues = true
         useArrayPolymorphism = true
         allowSpecialFloatingPointValues = true
@@ -89,11 +95,11 @@ private class JsonConverterImpl : JsonConverter {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toGdprPostChoiceResp(body: String): Either<GdprCS> = check(ApiRequestPostfix.POST_CHOICE_GDPR) {
+    override fun toGdprPostChoiceResp(body: String): Either<GDPRPostChoiceResponse> = check(ApiRequestPostfix.POST_CHOICE_GDPR) {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toCcpaPostChoiceResp(body: String): Either<CcpaCS> = check(ApiRequestPostfix.POST_CHOICE_CCPA) {
+    override fun toCcpaPostChoiceResp(body: String): Either<CCPAPostChoiceResponse> = check(ApiRequestPostfix.POST_CHOICE_CCPA) {
         JsonConverter.converter.decodeFromString(body)
     }
 

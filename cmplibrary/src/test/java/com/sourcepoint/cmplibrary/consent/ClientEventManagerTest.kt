@@ -5,8 +5,12 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
-import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.ActionType.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.ActionType.ACCEPT_ALL
+import com.sourcepoint.cmplibrary.model.exposed.ActionType.MSG_CANCEL
+import com.sourcepoint.cmplibrary.model.exposed.ActionType.PM_DISMISS
+import com.sourcepoint.cmplibrary.model.exposed.ActionType.SHOW_OPTIONS
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
 import io.mockk.MockKAnnotations
 import io.mockk.every

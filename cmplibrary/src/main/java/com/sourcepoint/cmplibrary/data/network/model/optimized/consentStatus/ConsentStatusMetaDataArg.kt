@@ -8,9 +8,9 @@ internal data class ConsentStatusMetaDataArg(
     @SerialName("uuid")
     val uuid: String?,
     @SerialName("applies")
-    val applies: Boolean? = null,
+    val applies: Boolean,
     @SerialName("hasLocalData")
-    val hasLocalData: Boolean? = null,
+    val hasLocalData: Boolean,
     @SerialName("dateCreated")
-    val dateCreated: String? = null,
+    val dateCreated: String?,
 )

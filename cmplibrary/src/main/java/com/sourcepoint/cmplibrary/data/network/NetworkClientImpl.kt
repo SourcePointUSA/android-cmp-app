@@ -5,13 +5,20 @@ import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.create
-import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CCPAPostChoiceResponse
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GDPRPostChoiceResponse
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.PostChoiceParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.PvDataParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.PvDataResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
-import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
@@ -28,6 +35,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 internal fun createNetworkClient(
     httpClient: OkHttpClient,
@@ -42,7 +50,6 @@ private class NetworkClientImpl(
     private val logger: Logger,
     private val responseManager: ResponseManager = ResponseManager.create(JsonConverter.create(), logger),
 ) : NetworkClient {
-
     override fun sendCustomConsent(
         customConsentReq: CustomConsentReq,
         env: Env
@@ -141,7 +148,7 @@ private class NetworkClientImpl(
         logger.req(
             tag = "getMessages",
             url = url.toString(),
-            body = param.body,
+            body = JsonConverter.converter.encodeToString(param.body),
             type = "GET"
         )
 
@@ -158,8 +165,8 @@ private class NetworkClientImpl(
     override fun postPvData(param: PvDataParamReq): Either<PvDataResp> = check(ApiRequestPostfix.PV_DATA) {
         val url = urlManager.getPvDataUrl(param.env)
         val mediaType = "application/json".toMediaType()
-        val jsonBody = param.body.toString()
-        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
+        val jsonBody = JsonConverter.converter.encodeToString(param.body)
+        val body = jsonBody.toRequestBody(mediaType)
 
         logger.req(
             tag = "savePvData - ${param.campaignType.name}",
@@ -198,7 +205,7 @@ private class NetworkClientImpl(
         responseManager.parseGetChoiceResp(response, param.choiceType)
     }
 
-    override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprCS> = check(ApiRequestPostfix.POST_CHOICE_GDPR) {
+    override fun storeGdprChoice(param: PostChoiceParamReq): Either<GDPRPostChoiceResponse> = check(ApiRequestPostfix.POST_CHOICE_GDPR) {
         val url = urlManager.getGdprChoiceUrl(param)
         val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()
@@ -221,7 +228,7 @@ private class NetworkClientImpl(
         responseManager.parsePostGdprChoiceResp(response)
     }
 
-    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> = check(ApiRequestPostfix.POST_CHOICE_CCPA) {
+    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CCPAPostChoiceResponse> = check(ApiRequestPostfix.POST_CHOICE_CCPA) {
         val url = urlManager.getCcpaChoiceUrl(param)
         val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()

@@ -2,6 +2,9 @@ package com.sourcepoint.app.v6
 
 import android.webkit.CookieManager
 import androidx.annotation.IdRes
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestData.ACCEPT
 import com.sourcepoint.app.v6.TestData.ACCEPT_ALL
@@ -33,12 +36,13 @@ import com.sourcepoint.app.v6.di.customCategoriesDataProd
 import com.sourcepoint.app.v6.di.customVendorDataListProd
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import kotlinx.coroutines.delay
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 class TestUseCase {
-
     companion object {
+        private const val magicDelayMs: Long = 100
 
         fun assertTextInWebViewByContainerId(
             id: String,
@@ -54,31 +58,31 @@ class TestUseCase {
             id = id
         )
 
-        fun clickAcceptAllOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+        suspend fun clickAcceptAllOnConsentWebView() = wr { clickOnButtonByTextOnWebViewByTag(
             tag = CONSENT_WEB_VIEW_TAG_NAME,
             text = ACCEPT_ALL,
-        )
+        ) }
 
-        fun clickRejectAllOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+        suspend fun clickRejectAllOnConsentWebView() = wr { clickOnButtonByTextOnWebViewByTag(
             tag = CONSENT_WEB_VIEW_TAG_NAME,
             text = REJECT_ALL,
-        )
+        ) }
 
-        fun clickOptionsOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+        suspend fun clickOptionsOnConsentWebView() = wr { clickOnButtonByTextOnWebViewByTag(
             tag = CONSENT_WEB_VIEW_TAG_NAME,
             text = OPTIONS,
-        )
+        ) }
 
-        fun clickSaveAndExitOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+        suspend fun clickSaveAndExitOnConsentWebView() = wr { clickOnButtonByTextOnWebViewByTag(
             tag = CONSENT_WEB_VIEW_TAG_NAME,
             text = SAVE_AND_EXIT,
-        )
+        ) }
 
-        fun tapOn(
+        suspend fun tapOn(
             @IdRes id: Int
-        ) = performClickByIdCompletelyDisplayed(
+        ) = wr { performClickByIdCompletelyDisplayed(
             resId = id,
-        )
+        ) }
 
         fun checkTextMatchesInView(
             @IdRes id: Int,
@@ -196,7 +200,8 @@ class TestUseCase {
             isDisplayedAllOfByResId(resId = R.id.app_dl_tv)
         }
 
-        fun clickOnGdprReviewConsent() {
+        suspend fun clickOnGdprReviewConsent() {
+            delay(magicDelayMs)
             performClickById(resId = R.id.review_consents_gdpr)
         }
 
@@ -230,11 +235,13 @@ class TestUseCase {
             performClickById(resId = R.id.custom_consent)
         }
 
-        fun clickOnDeleteCustomConsent() {
+        suspend fun clickOnDeleteCustomConsent() {
+            delay(magicDelayMs)
             performClickById(resId = R.id.delete_custom_consent)
         }
 
-        fun clickOnCcpaReviewConsent() {
+        suspend fun clickOnCcpaReviewConsent() {
+            delay(magicDelayMs)
             performClickById(resId = R.id.review_consents_ccpa)
         }
 
@@ -242,7 +249,8 @@ class TestUseCase {
             performClickById(resId = R.id.consent_btn)
         }
 
-        fun clickOnRefreshBtnActivity() {
+        suspend fun clickOnRefreshBtnActivity() {
+            delay(magicDelayMs)
             performClickById(resId = R.id.refresh_btn)
         }
 
