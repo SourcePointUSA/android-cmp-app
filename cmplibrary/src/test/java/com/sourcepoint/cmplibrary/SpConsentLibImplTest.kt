@@ -18,6 +18,7 @@ import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.ViewsManager
+import com.sourcepoint.cmplibrary.util.extensions.isInternetConnected
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -74,6 +75,8 @@ class SpConsentLibImplTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
+
+        every { appCtx.isInternetConnected() } returns true
     }
 
     @Test
