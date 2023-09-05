@@ -80,6 +80,52 @@ class SpConsentLibImplTest {
     }
 
     @Test
+    fun `loadMessage - WHEN called with no Internet THEN should not proceed with the flow`() {
+        // GIVEN
+        val mockIsConnected = false
+        every { appCtx.isInternetConnected() } returns mockIsConnected
+
+        // WHEN
+        val sut = createLib()
+        sut.loadMessage()
+
+        // THEN
+        verify(exactly = 0) {
+            service.getMessages(
+                authId = any(),
+                pubData = any(),
+                env = any(),
+                onSuccess = any(),
+                showConsent = any(),
+                onFailure = any(),
+            )
+        }
+    }
+
+    @Test
+    fun `loadPrivacyManager - WHEN called with no Internet THEN should not proceed with the flow`() {
+        // GIVEN
+        val mockIsConnected = false
+        every { appCtx.isInternetConnected() } returns mockIsConnected
+
+        // WHEN
+        val sut = createLib()
+        sut.loadPrivacyManager("1234", GDPR)
+
+        // THEN
+        verify(exactly = 0) { clientEventManager.setCampaignsToProcess(any()) }
+        verify(exactly = 0) {
+            campaignManager.getPmConfig(
+                campaignType = any(),
+                pmId = any(),
+                pmTab = any(),
+                useGroupPmIfAvailable = any(),
+                groupPmId = any(),
+            )
+        }
+    }
+
+    @Test
     fun `CALLING loadPrivacyManager(pmId, campaignType) VERIFY that getPmConfig receive the right params`() {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
