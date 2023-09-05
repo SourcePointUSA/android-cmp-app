@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary
 
 import android.content.Context
 import android.view.View
+import com.example.cmplibrary.R
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
@@ -13,6 +14,8 @@ import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
+import com.sourcepoint.cmplibrary.data.network.connection.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CampaignMessage
@@ -32,6 +35,7 @@ import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread
+import com.sourcepoint.cmplibrary.util.extensions.isInternetConnected
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.toConsentLibException
 import kotlinx.serialization.encodeToString
@@ -134,6 +138,16 @@ internal class SpConsentLibImpl(
     }
 
     private fun localLoadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
+
+        if (context.isInternetConnected().not()) {
+            spClient.onError(
+                NoInternetConnectionException(
+                    description = context.getString(R.string.exception_no_internet_connection_text)
+                )
+            )
+            return
+        }
+
         service.getMessages(
             env = env,
             authId = authId,
@@ -349,6 +363,16 @@ internal class SpConsentLibImpl(
         messSubCat: MessageSubCategory,
         useGroupPmIfAvailable: Boolean
     ) {
+
+        if (context.isInternetConnected().not()) {
+            spClient.onError(
+                NoInternetConnectionException(
+                    description = context.getString(R.string.exception_no_internet_connection_text)
+                )
+            )
+            return
+        }
+
         checkMainThread("loadPrivacyManager")
         clientEventManager.setCampaignsToProcess(1)
 

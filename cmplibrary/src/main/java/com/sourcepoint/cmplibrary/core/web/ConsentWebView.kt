@@ -12,6 +12,7 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
+import com.example.cmplibrary.R
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
@@ -25,6 +26,7 @@ import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
+import com.sourcepoint.cmplibrary.util.extensions.isInternetConnected
 import okhttp3.HttpUrl
 import org.json.JSONObject
 import java.util.* //ktlint-disable
@@ -107,8 +109,8 @@ internal class ConsentWebView(
         consent: String?,
     ): Either<Boolean> = check {
 
-        if (connectionManager.isConnected.not()) throw NoInternetConnectionException(
-            description = "No internet connection"
+        if (context.isInternetConnected().not()) throw NoInternetConnectionException(
+            description = context.getString(R.string.exception_no_internet_connection_text)
         )
 
         val ensuredConsentJson = consent?.let { JSONObject(it) } ?: JSONObject()
@@ -147,9 +149,13 @@ internal class ConsentWebView(
         url: HttpUrl,
         campaignType: CampaignType
     ): Either<Boolean> = check {
+
+        if (context.isInternetConnected().not()) throw NoInternetConnectionException(
+            description = context.getString(R.string.exception_no_internet_connection_text)
+        )
+
         currentCampaignModel = campaignModel
         val campaignType: CampaignType = campaignModel.type
-        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             /**
              * adding the parameter [sp.loadMessage] needed by the webpage to trigger the loadMessage event
@@ -190,6 +196,18 @@ internal class ConsentWebView(
 
         @JavascriptInterface
         override fun onAction(actionData: String) {
+
+            if (context.isInternetConnected().not()) {
+                jsClientLib.onError(
+                    view = this@ConsentWebView,
+                    error = NoInternetConnectionException(
+                        description = context.getString(R.string.exception_no_internet_connection_text)
+                    )
+                )
+                jsClientLib.dismiss(this@ConsentWebView)
+                return
+            }
+
             checkWorkerThread("ConsentWebView on action")
 
             val action = actionData.toConsentActionOptimized()
