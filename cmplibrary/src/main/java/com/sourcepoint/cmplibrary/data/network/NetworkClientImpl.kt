@@ -1,5 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network
 
+import android.content.Context
+import com.example.cmplibrary.R
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
@@ -25,11 +27,13 @@ import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.toBodyRequest
 import com.sourcepoint.cmplibrary.model.toBodyRequestDeleteCustomConsentTo
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.extensions.isInternetConnected
 import kotlinx.serialization.encodeToString
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -38,13 +42,15 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
 internal fun createNetworkClient(
+    context: Context,
     httpClient: OkHttpClient,
     urlManager: HttpUrlManager,
     logger: Logger,
     responseManager: ResponseManager
-): NetworkClient = NetworkClientImpl(httpClient, urlManager, logger, responseManager)
+): NetworkClient = NetworkClientImpl(context, httpClient, urlManager, logger, responseManager)
 
 private class NetworkClientImpl(
+    private val context: Context,
     private val httpClient: OkHttpClient = OkHttpClient(),
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     private val logger: Logger,
@@ -54,6 +60,9 @@ private class NetworkClientImpl(
         customConsentReq: CustomConsentReq,
         env: Env
     ): Either<CustomConsentResp> = check {
+
+        checkInternetConnection()
+
         val mediaType = "application/json".toMediaType()
         val jsonBody = customConsentReq.toBodyRequest()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
@@ -80,6 +89,9 @@ private class NetworkClientImpl(
         customConsentReq: CustomConsentReq,
         env: Env
     ): Either<CustomConsentResp> = check {
+
+        checkInternetConnection()
+
         val mediaType = "application/json".toMediaType()
         val jsonBody = customConsentReq.toBodyRequestDeleteCustomConsentTo()
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
@@ -103,6 +115,9 @@ private class NetworkClientImpl(
     }
 
     override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> = check(ApiRequestPostfix.META_DATA) {
+
+        checkInternetConnection()
+
         val url = urlManager.getMetaDataUrl(param)
 
         logger.req(
@@ -123,6 +138,9 @@ private class NetworkClientImpl(
     }
 
     override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> = check(ApiRequestPostfix.CONSENT_STATUS) {
+
+        checkInternetConnection()
+
         val url = urlManager.getConsentStatusUrl(param)
 
         logger.req(
@@ -143,6 +161,9 @@ private class NetworkClientImpl(
     }
 
     override fun getMessages(param: MessagesParamReq): Either<MessagesResp> = check(ApiRequestPostfix.MESSAGES) {
+
+        checkInternetConnection()
+
         val url = urlManager.getMessagesUrl(param)
 
         logger.req(
@@ -163,6 +184,9 @@ private class NetworkClientImpl(
     }
 
     override fun postPvData(param: PvDataParamReq): Either<PvDataResp> = check(ApiRequestPostfix.PV_DATA) {
+
+        checkInternetConnection()
+
         val url = urlManager.getPvDataUrl(param.env)
         val mediaType = "application/json".toMediaType()
         val jsonBody = JsonConverter.converter.encodeToString(param.body)
@@ -186,6 +210,9 @@ private class NetworkClientImpl(
     }
 
     override fun getChoice(param: GetChoiceParamReq): Either<ChoiceResp> = check(ApiRequestPostfix.GET_CHOICE) {
+
+        checkInternetConnection()
+
         val url = urlManager.getChoiceUrl(param)
 
         logger.req(
@@ -206,6 +233,9 @@ private class NetworkClientImpl(
     }
 
     override fun storeGdprChoice(param: PostChoiceParamReq): Either<GDPRPostChoiceResponse> = check(ApiRequestPostfix.POST_CHOICE_GDPR) {
+
+        checkInternetConnection()
+
         val url = urlManager.getGdprChoiceUrl(param)
         val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()
@@ -229,6 +259,9 @@ private class NetworkClientImpl(
     }
 
     override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CCPAPostChoiceResponse> = check(ApiRequestPostfix.POST_CHOICE_CCPA) {
+
+        checkInternetConnection()
+
         val url = urlManager.getCcpaChoiceUrl(param)
         val mediaType = "application/json".toMediaType()
         val jsonBody = param.body.toString()
@@ -249,5 +282,11 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parsePostCcpaChoiceResp(response)
+    }
+
+    private fun checkInternetConnection() {
+        if (context.isInternetConnected().not()) throw NoInternetConnectionException(
+            description = context.getString(R.string.exception_no_internet_connection_text)
+        )
     }
 }

@@ -136,16 +136,6 @@ internal class SpConsentLibImpl(
     }
 
     private fun localLoadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
-
-        if (context.isInternetConnected().not()) {
-            spClient.onError(
-                NoInternetConnectionException(
-                    description = context.getString(R.string.exception_no_internet_connection_text)
-                )
-            )
-            return
-        }
-
         service.getMessages(
             env = env,
             authId = authId,
