@@ -16,8 +16,8 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
 import com.sourcepoint.cmplibrary.core.getOrNull
-import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.model.toConsentActionOptimized
+import com.sourcepoint.cmplibrary.data.network.util.isInternetConnected
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
@@ -35,7 +35,6 @@ internal class ConsentWebView(
     private val jsClientLib: JSClientLib,
     private val logger: Logger,
     private val messageTimeout: Long,
-    private val connectionManager: ConnectionManager,
     private val executorManager: ExecutorManager,
     private val campaignQueue: Queue<CampaignModel> = LinkedList(),
     private val messSubCat: MessageSubCategory = MessageSubCategory.TCFv2,
@@ -107,9 +106,7 @@ internal class ConsentWebView(
         consent: String?,
     ): Either<Boolean> = check {
 
-        if (connectionManager.isConnected.not()) throw NoInternetConnectionException(
-            description = "No internet connection"
-        )
+        if (context.isInternetConnected().not()) throw NoInternetConnectionException()
 
         val ensuredConsentJson = consent?.let { JSONObject(it) } ?: JSONObject()
 
@@ -147,9 +144,11 @@ internal class ConsentWebView(
         url: HttpUrl,
         campaignType: CampaignType
     ): Either<Boolean> = check {
+
+        if (context.isInternetConnected().not()) throw NoInternetConnectionException()
+
         currentCampaignModel = campaignModel
         val campaignType: CampaignType = campaignModel.type
-        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             /**
              * adding the parameter [sp.loadMessage] needed by the webpage to trigger the loadMessage event
@@ -190,6 +189,7 @@ internal class ConsentWebView(
 
         @JavascriptInterface
         override fun onAction(actionData: String) {
+
             checkWorkerThread("ConsentWebView on action")
 
             val action = actionData.toConsentActionOptimized()

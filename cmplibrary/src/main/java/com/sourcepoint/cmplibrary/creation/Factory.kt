@@ -21,8 +21,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
 import com.sourcepoint.cmplibrary.data.local.create
-import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.connection.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
@@ -61,10 +59,9 @@ fun makeConsentLib(
     val errorManager = errorMessageManager(campaignManager, client)
     val logger = spConfig.logger ?: createLogger(errorManager)
     val jsonConverter = JsonConverter.create()
-    val connManager = ConnectionManager.create(appCtx)
     val responseManager = ResponseManager.create(jsonConverter, logger)
-    val networkClient = networkClient(okHttpClient, responseManager, logger)
-    val viewManager = ViewsManager.create(WeakReference<Activity>(activity), connManager, spConfig.messageTimeout)
+    val networkClient = networkClient(appCtx, okHttpClient, responseManager, logger)
+    val viewManager = ViewsManager.create(WeakReference<Activity>(activity), spConfig.messageTimeout)
     val execManager = ExecutorManager.create(appCtx)
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
     val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtilsImpl(campaignManager, dataStorage)

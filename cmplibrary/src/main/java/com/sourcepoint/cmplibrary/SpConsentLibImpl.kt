@@ -20,6 +20,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
+import com.sourcepoint.cmplibrary.data.network.util.isInternetConnected
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.LoggerType.NL
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
@@ -349,6 +350,12 @@ internal class SpConsentLibImpl(
         messSubCat: MessageSubCategory,
         useGroupPmIfAvailable: Boolean
     ) {
+
+        if (context.isInternetConnected().not()) {
+            spClient.onError(NoInternetConnectionException())
+            return
+        }
+
         checkMainThread("loadPrivacyManager")
         clientEventManager.setCampaignsToProcess(1)
 

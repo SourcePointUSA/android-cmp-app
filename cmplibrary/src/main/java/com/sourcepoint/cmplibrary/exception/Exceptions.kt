@@ -171,7 +171,7 @@ internal class RenderingAppConnectionTimeoutException @JvmOverloads constructor(
  */
 internal class NoInternetConnectionException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String,
+    description: String = ExceptionDescriptions.EXCEPTION_NO_INTERNET_CONNECTION_DESCRIPTION,
     isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
