@@ -190,15 +190,6 @@ internal class ConsentWebView(
         @JavascriptInterface
         override fun onAction(actionData: String) {
 
-            if (context.isInternetConnected().not()) {
-                jsClientLib.onError(
-                    view = this@ConsentWebView,
-                    error = NoInternetConnectionException()
-                )
-                jsClientLib.dismiss(this@ConsentWebView)
-                return
-            }
-
             checkWorkerThread("ConsentWebView on action")
 
             val action = actionData.toConsentActionOptimized()
