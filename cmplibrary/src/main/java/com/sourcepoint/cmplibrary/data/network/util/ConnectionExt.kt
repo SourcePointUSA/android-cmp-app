@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.util.extensions
+package com.sourcepoint.cmplibrary.data.network.util
 
 import android.content.Context
 import android.net.ConnectivityManager

@@ -12,13 +12,12 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
-import com.example.cmplibrary.R
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
 import com.sourcepoint.cmplibrary.core.getOrNull
-import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.model.toConsentActionOptimized
+import com.sourcepoint.cmplibrary.data.network.util.isInternetConnected
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
@@ -26,7 +25,6 @@ import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
-import com.sourcepoint.cmplibrary.util.extensions.isInternetConnected
 import okhttp3.HttpUrl
 import org.json.JSONObject
 import java.util.* //ktlint-disable
@@ -37,7 +35,6 @@ internal class ConsentWebView(
     private val jsClientLib: JSClientLib,
     private val logger: Logger,
     private val messageTimeout: Long,
-    private val connectionManager: ConnectionManager,
     private val executorManager: ExecutorManager,
     private val campaignQueue: Queue<CampaignModel> = LinkedList(),
     private val messSubCat: MessageSubCategory = MessageSubCategory.TCFv2,
@@ -109,9 +106,7 @@ internal class ConsentWebView(
         consent: String?,
     ): Either<Boolean> = check {
 
-        if (context.isInternetConnected().not()) throw NoInternetConnectionException(
-            description = context.getString(R.string.exception_no_internet_connection_text)
-        )
+        if (context.isInternetConnected().not()) throw NoInternetConnectionException()
 
         val ensuredConsentJson = consent?.let { JSONObject(it) } ?: JSONObject()
 
@@ -150,9 +145,7 @@ internal class ConsentWebView(
         campaignType: CampaignType
     ): Either<Boolean> = check {
 
-        if (context.isInternetConnected().not()) throw NoInternetConnectionException(
-            description = context.getString(R.string.exception_no_internet_connection_text)
-        )
+        if (context.isInternetConnected().not()) throw NoInternetConnectionException()
 
         currentCampaignModel = campaignModel
         val campaignType: CampaignType = campaignModel.type
@@ -200,9 +193,7 @@ internal class ConsentWebView(
             if (context.isInternetConnected().not()) {
                 jsClientLib.onError(
                     view = this@ConsentWebView,
-                    error = NoInternetConnectionException(
-                        description = context.getString(R.string.exception_no_internet_connection_text)
-                    )
+                    error = NoInternetConnectionException()
                 )
                 jsClientLib.dismiss(this@ConsentWebView)
                 return

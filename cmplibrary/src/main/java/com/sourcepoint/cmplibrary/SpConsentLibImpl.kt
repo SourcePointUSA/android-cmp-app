@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary
 
 import android.content.Context
 import android.view.View
-import com.example.cmplibrary.R
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
@@ -21,6 +20,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
+import com.sourcepoint.cmplibrary.data.network.util.isInternetConnected
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.LoggerType.NL
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
@@ -33,7 +33,6 @@ import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread
-import com.sourcepoint.cmplibrary.util.extensions.isInternetConnected
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.toConsentLibException
 import kotlinx.serialization.encodeToString
@@ -353,11 +352,7 @@ internal class SpConsentLibImpl(
     ) {
 
         if (context.isInternetConnected().not()) {
-            spClient.onError(
-                NoInternetConnectionException(
-                    description = context.getString(R.string.exception_no_internet_connection_text)
-                )
-            )
+            spClient.onError(NoInternetConnectionException())
             return
         }
 

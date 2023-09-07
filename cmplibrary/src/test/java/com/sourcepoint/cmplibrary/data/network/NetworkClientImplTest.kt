@@ -15,6 +15,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.Operatin
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
+import com.sourcepoint.cmplibrary.data.network.util.isInternetConnected
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.CodeList
@@ -24,7 +25,6 @@ import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockLogger
-import com.sourcepoint.cmplibrary.util.extensions.isInternetConnected
 import com.sourcepoint.cmplibrary.util.file2String
 import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK

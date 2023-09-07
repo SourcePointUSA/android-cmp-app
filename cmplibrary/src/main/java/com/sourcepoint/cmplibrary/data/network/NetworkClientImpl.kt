@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network
 
 import android.content.Context
-import com.example.cmplibrary.R
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
@@ -25,6 +24,7 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
+import com.sourcepoint.cmplibrary.data.network.util.isInternetConnected
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
@@ -33,7 +33,6 @@ import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.toBodyRequest
 import com.sourcepoint.cmplibrary.model.toBodyRequestDeleteCustomConsentTo
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.extensions.isInternetConnected
 import kotlinx.serialization.encodeToString
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -285,8 +284,6 @@ private class NetworkClientImpl(
     }
 
     private fun checkInternetConnection() {
-        if (context.isInternetConnected().not()) throw NoInternetConnectionException(
-            description = context.getString(R.string.exception_no_internet_connection_text)
-        )
+        if (context.isInternetConnected().not()) throw NoInternetConnectionException()
     }
 }

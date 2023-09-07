@@ -6,7 +6,4 @@
     <string name="cancel_label">X</string>
     <string name="reject_all_label">Reject All</string>
     <string name="show_options_label">Show Options</string>
-
-    <!--  Exceptions  -->
-    <string name="exception_no_internet_connection_text">No Internet connection.</string>
 </resources>
