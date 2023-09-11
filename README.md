@@ -41,6 +41,7 @@
   - [`pubData`](#pubdata)
   - [The Nativemessage](NATIVEMESSAGE_GUIDE.md)
   - [Google Additional Consent](#google-additional-consent)
+  - [Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support](#global-privacy-platform-gpp-multi-state-privacy-msps-support)
   - [Delete user data](#delete-user-data)
   - [Frequently Asked Questions](#frequently-asked-questions)
 - [React Native Integration](docs-reactnative/README-REACTNATIVE.md)
@@ -885,6 +886,56 @@ Java
 Google additional consent is a concept created by Google and the IAB Framework to pass end-user consent to Google Ad Technology Providers (ATP) despite not adhering to the IAB TCF framework. [Click here](https://docs.sourcepoint.com/hc/en-us/articles/4405115143955) for more information.
 
 Google additional consent is supported in our mobile SDKs and is stored in the `IABTCF_AddtlConsent` key in the user's local storage. Look for the key in the user's local storage and pass the value to Google's SDKs.
+
+## Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support
+
+Starting with version 7.3.0, if your configuration contains a ccpa campaign, it will automatically set GPP data. Unless configured otherwise, the following MSPA attributes will default to:
+- MspaCoveredTransaction: `NO`
+- MspaOptOutOptionMode: `NOT_APPLICABLE`
+- MspaServiceProviderMode: `NOT_APPLICABLE`
+
+Optionally, your organization can customize support for the MSPS by configuring the above attributes as part of the GPP config. [Click here](https://github.com/SourcePointUSA/android-cmp-app/wiki/Global-Privacy-Platform-(GPP)-Multi%E2%80%90State-Privacy-(MSPS)) for more information on each attribute, possible values, and examples for signatories and non-signatories of the MSPA.
+
+Kotlin
+
+```kotlin
+class MainActivityKotlin : AppCompatActivity() {
+
+    private val sourcePointGppConfig = SpGppConfig(
+        coveredTransaction = SpGppOptionBinary.NO, // optional
+        optOutOptionMode = SpGppOptionTernary.NOT_APPLICABLE, // optional
+        serviceProviderMode = SpGppOptionTernary.NOT_APPLICABLE, // optional
+    )
+
+    private val spConsentLib by spConsentLibLazy {
+        // ...
+        config {
+            // ...
+            spGppConfig = sourcePointGppConfig
+            // ...
+        }
+    }
+}
+```
+
+Java
+
+```java
+public class MainActivityJava extends AppCompatActivity {
+    
+    private SpGppConfig sourcePointGppConfig = new SpGppConfig(
+            SpGppOptionBinary.NO,
+            SpGppOptionTernary.NOT_APPLICABLE,
+            SpGppOptionTernary.NOT_APPLICABLE
+    );
+
+    private final SpConfig spConfig = new SpConfigDataBuilder()
+            // ...
+            .addGppConfig(sourcePointGppConfig)
+            // ...
+            .build();
+}
+```
 
 ## Delete user data
 
