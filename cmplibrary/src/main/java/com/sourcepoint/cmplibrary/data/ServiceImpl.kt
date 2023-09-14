@@ -154,7 +154,16 @@ private class ServiceImpl(
         onFailure: (Throwable, Boolean) -> Unit,
     ) {
         execManager.executeOnWorkerThread {
+
+            // check if authId or propertyId has changed
+            if (authId != null && campaignManager.authId != authId ||
+                campaignManager.propertyId != spConfig.propertyId
+            ) {
+                dataStorage.clearAll()
+            }
+
             campaignManager.authId = authId
+            campaignManager.propertyId = spConfig.propertyId
 
             val metadataResponse = this.getMetaData(
                 MetaDataParamReq(

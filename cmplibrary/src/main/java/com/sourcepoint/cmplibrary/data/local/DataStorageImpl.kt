@@ -12,6 +12,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.DATA_RECORDED
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.HARDCODED_LOCAL_DATA_VERSION
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.KEY_LOCAL_DATA_VERSION
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.KEY_PROPERTY_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_OPTIMIZED
@@ -132,6 +133,13 @@ private class DataStorageImpl(
                 .apply()
         }
 
+    override var propertyId: Int
+        get() = preference.getInt(KEY_PROPERTY_ID, 0)
+        set(value) = preference
+            .edit()
+            .putInt(KEY_PROPERTY_ID, value)
+            .apply()
+
     override var consentStatus: String?
         get() = preference.getString(CONSENT_STATUS, null)
         set(value) {
@@ -203,6 +211,7 @@ private class DataStorageImpl(
             .remove(CCPA_CONSENT_STATUS)
             .remove(MESSAGES_OPTIMIZED_LOCAL_STATE)
             .remove(NON_KEYED_LOCAL_STATE)
+            .remove(KEY_PROPERTY_ID)
             .apply()
     }
 
