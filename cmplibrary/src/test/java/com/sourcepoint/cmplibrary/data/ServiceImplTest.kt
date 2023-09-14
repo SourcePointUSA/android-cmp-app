@@ -437,6 +437,72 @@ class ServiceImplTest {
     }
 
     @Test
+    fun `getMessages - WHEN called with a different authId THEN should clear local storage`() {
+        // GIVEN
+        val mockAuthId = "mock_auth_id"
+        val mockCampaignManagerAuthId = "mock_campaign_manager_auth_id"
+        val mockPropertyId = 123
+        val mockCampaignManagerPropertyId = 123
+
+        // WHEN
+        every { cm.authId } returns mockCampaignManagerAuthId
+        every { cm.spConfig } returns spConfig.copy(propertyId = mockPropertyId)
+        every { cm.propertyId } returns mockCampaignManagerPropertyId
+        every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
+        every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
+        every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
+        every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
+        every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
+        every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
+
+        val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        service.getMessages(
+            env = Env.PROD,
+            authId = mockAuthId,
+            pubData = null,
+            showConsent = consentMockV7,
+            onSuccess = successMockV7,
+            onFailure = errorMock,
+        )
+
+        // THEN
+        verify(exactly = 1) { ds.clearAll() }
+    }
+
+    @Test
+    fun `getMessages - WHEN called with authId as null and a different propertyId THEN should clear local storage`() {
+        // GIVEN
+        val mockAuthId = null
+        val mockCampaignManagerAuthId = null
+        val mockPropertyId = 123
+        val mockCampaignManagerPropertyId = 456
+
+        // WHEN
+        every { cm.authId } returns mockCampaignManagerAuthId
+        every { cm.spConfig } returns spConfig.copy(propertyId = mockPropertyId)
+        every { cm.propertyId } returns mockCampaignManagerPropertyId
+        every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
+        every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
+        every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
+        every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
+        every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
+        every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
+
+        val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        service.getMessages(
+            env = Env.PROD,
+            authId = mockAuthId,
+            pubData = null,
+            showConsent = consentMockV7,
+            onSuccess = successMockV7,
+            onFailure = errorMock,
+        )
+
+        // THEN
+        verify(exactly = 1) { ds.clearAll() }
+    }
+
+    @Test
     fun `getMessages - WHEN called with authId as null and the same propertyId THEN should not clear local storage`() {
         // GIVEN
         val mockAuthId = null
@@ -470,6 +536,39 @@ class ServiceImplTest {
     }
 
     @Test
+    fun `getMessages - WHEN called with the same authId and a different propertyId THEN should clear local storage`() {
+        // GIVEN
+        val mockAuthId = "mock_auth_id"
+        val mockCampaignManagerAuthId = "mock_auth_id"
+        val mockPropertyId = 123
+        val mockCampaignManagerPropertyId = 456
+
+        // WHEN
+        every { cm.authId } returns mockCampaignManagerAuthId
+        every { cm.spConfig } returns spConfig.copy(propertyId = mockPropertyId)
+        every { cm.propertyId } returns mockCampaignManagerPropertyId
+        every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
+        every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
+        every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
+        every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
+        every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
+        every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
+
+        val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        service.getMessages(
+            env = Env.PROD,
+            authId = mockAuthId,
+            pubData = null,
+            showConsent = consentMockV7,
+            onSuccess = successMockV7,
+            onFailure = errorMock,
+        )
+
+        // THEN
+        verify(exactly = 1) { ds.clearAll() }
+    }
+
+    @Test
     fun `getMessages - WHEN called with the same authId and the same propertyId THEN should not clear local storage`() {
         // GIVEN
         val mockAuthId = "mock_auth_id"
@@ -500,105 +599,5 @@ class ServiceImplTest {
 
         // THEN
         verify(exactly = 0) { ds.clearAll() }
-    }
-
-    @Test
-    fun `getMessages - WHEN called with a different authId and with the same propertyId THEN should clear local storage`() {
-
-        // GIVEN
-        val mockAuthId = "mock_auth_id"
-        val mockCampaignManagerAuthId = "other_mock_auth_id"
-        val mockPropertyId = 123
-        val mockCampaignManagerPropertyId = 123
-
-        // WHEN
-        every { cm.authId } returns mockCampaignManagerAuthId
-        every { cm.spConfig } returns spConfig.copy(propertyId = mockPropertyId)
-        every { cm.propertyId } returns mockCampaignManagerPropertyId
-        every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
-        every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
-        every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
-        every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
-        every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
-        every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
-
-        val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        service.getMessages(
-            env = Env.PROD,
-            authId = mockAuthId,
-            pubData = null,
-            showConsent = consentMockV7,
-            onSuccess = successMockV7,
-            onFailure = errorMock,
-        )
-
-        // THEN
-        verify(exactly = 1) { ds.clearAll() }
-    }
-
-    @Test
-    fun `getMessages - WHEN called with a different authId and the same propertyId THEN should clear local storage`() {
-        // GIVEN
-        val mockAuthId = "mock_auth_id"
-        val mockCampaignManagerAuthId = "other_mock_auth_id"
-        val mockPropertyId = 123
-        val mockCampaignManagerPropertyId = 123
-
-        // WHEN
-        every { cm.authId } returns mockCampaignManagerAuthId
-        every { cm.spConfig } returns spConfig.copy(propertyId = mockPropertyId)
-        every { cm.propertyId } returns mockCampaignManagerPropertyId
-        every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
-        every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
-        every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
-        every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
-        every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
-        every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
-
-        val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        service.getMessages(
-            env = Env.PROD,
-            authId = mockAuthId,
-            pubData = null,
-            showConsent = consentMockV7,
-            onSuccess = successMockV7,
-            onFailure = errorMock,
-        )
-
-        // THEN
-        verify(exactly = 1) { ds.clearAll() }
-    }
-
-    @Test
-    fun `getMessages - WHEN called with a different authId as null and with a different propertyId THEN should clear local storage`() {
-        // GIVEN
-        val mockAuthId = "mock_auth_id"
-        val mockCampaignManagerAuthId = "other_mock_auth_id"
-        val mockPropertyId = 123
-        val mockCampaignManagerPropertyId = 456
-
-        // WHEN
-        every { cm.authId } returns mockCampaignManagerAuthId
-        every { cm.spConfig } returns spConfig.copy(propertyId = mockPropertyId)
-        every { cm.propertyId } returns mockCampaignManagerPropertyId
-        every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
-        every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
-        every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
-        every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
-        every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
-        every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
-
-        val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        service.getMessages(
-            env = Env.PROD,
-            authId = mockAuthId,
-            pubData = null,
-            showConsent = consentMockV7,
-            onSuccess = successMockV7,
-            onFailure = errorMock,
-        )
-
-        // THEN
-        verify(exactly = 1) { ds.clearAll() }
     }
 }
