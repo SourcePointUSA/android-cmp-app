@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary
 
 import android.content.Context
 import android.view.View
-import android.webkit.WebView
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
@@ -419,6 +418,7 @@ internal class SpConsentLibImpl(
     }
 
     override fun dispose() {
+        webview = null
         executor.dispose()
         viewManager.removeAllViews()
     }
@@ -432,6 +432,8 @@ internal class SpConsentLibImpl(
             """.trimIndent(), null)
         }
     }
+
+    override fun isWebviewShown(): Boolean = (webview as ConsentWebView).isShown
 
     /** Start Receiver methods */
     inner class JSReceiverDelegate : JSClientLib {

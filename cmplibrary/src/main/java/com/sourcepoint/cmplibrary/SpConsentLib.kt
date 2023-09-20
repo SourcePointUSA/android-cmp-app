@@ -69,4 +69,5 @@ interface SpConsentLib {
     fun dispose()
 
     fun onBackPressed()
+    fun isWebviewShown(): Boolean
 }
