@@ -171,7 +171,7 @@ internal class SpConsentLibImpl(
                             )
                                 .executeOnLeft { spClient.onError(it) }
                                 .getOrNull()
-                            this.webview = webView
+//                            this.webview = webView
 
                             /** inject the message into the WebView */
                             val url = firstCampaign2Process.url
@@ -427,9 +427,12 @@ internal class SpConsentLibImpl(
 
     override fun onBackPressed() {
         webview.let {
-            (webview as ConsentWebView).evaluateJavascript("""
+            (webview as ConsentWebView).evaluateJavascript(
+                """
                 window.postMessage({ name: 'sp.BACK' })
-            """.trimIndent(), null)
+                """.trimIndent(),
+                null
+            )
         }
     }
 
