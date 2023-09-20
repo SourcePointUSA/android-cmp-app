@@ -171,7 +171,7 @@ internal class SpConsentLibImpl(
                             )
                                 .executeOnLeft { spClient.onError(it) }
                                 .getOrNull()
-//                            this.webview = webView
+                            this.webview = webView
 
                             /** inject the message into the WebView */
                             val url = firstCampaign2Process.url
