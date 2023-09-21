@@ -436,7 +436,7 @@ internal class SpConsentLibImpl(
         }
     }
 
-    override fun isWebviewShown(): Boolean = (webview as ConsentWebView).isShown
+    override fun isWebviewShown(): Boolean = (webview as? ConsentWebView)?.isShown ?: false
 
     /** Start Receiver methods */
     inner class JSReceiverDelegate : JSClientLib {

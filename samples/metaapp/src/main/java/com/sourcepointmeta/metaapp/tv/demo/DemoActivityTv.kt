@@ -84,7 +84,7 @@ class DemoActivityTv : FragmentActivity() {
     }
 
     override fun onBackPressed() {
-        if (!spConsentLib.isWebviewShown())
+        if (spConsentLib.isWebviewShown().not())
             super.onBackPressed()
         else
             spConsentLib.onBackPressed()
