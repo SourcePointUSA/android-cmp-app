@@ -15,12 +15,12 @@ import kotlinx.serialization.json.jsonPrimitive
 internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
     return GDPRConsentInternal(
         uuid = uuid,
+        applies = applies ?: false,
         tcData = JsonObject(TCData ?: emptyMap()),
         grants = grants ?: emptyMap(),
         euconsent = euconsent ?: "",
         acceptedCategories = grants?.toAcceptedCategories()?.toList(),
         childPmId = null,
-        applies = TCData?.fromTcDataToGdprApplies(),
         thisContent = JsonConverter.converter.encodeToJsonElement(this).jsonObject,
         webConsentPayload = webConsentPayload,
     )
