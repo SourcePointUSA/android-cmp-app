@@ -9,15 +9,15 @@ import kotlin.jvm.Throws
 
 @Throws(Throwable::class)
 suspend fun wr(
-    delayInMs: Long = 10,
-    times: Int = 2000,
+    delay: Long = 200,
+    times: Int = 30,
     backup: (() -> Unit)? = null,
     task: () -> Unit
 ) {
     var res: TestRes.NotVerified = TestRes.NotVerified(RuntimeException("Condition Not initialized!"))
-    delay(delayInMs)
+    delay(delay)
     repeat(times) {
-        delay(delayInMs)
+        delay(250)
         when (val t = checkCondition(task)) {
             TestRes.Verified -> return
             is TestRes.NotVerified -> {
@@ -27,6 +27,7 @@ suspend fun wr(
                 res = t
             }
         }
+
     }
     throw res.th
 }
@@ -73,6 +74,14 @@ fun <T : Any?> T.assertNull() = Assert.assertNull(this)
 infix fun <T> T.assertEquals(t: T) = apply { Assert.assertEquals(t, this) }
 infix fun <T> T.assertNotEquals(t: T) = apply { Assert.assertNotEquals(t, this) }
 fun <T : Any?> T.assertNotNull() = apply { Assert.assertNotNull(this) }
+
+/**
+ * Receive file.json and return the content as string
+ */
+fun String.jsonFile2String(): String = Thread.currentThread()
+    .contextClassLoader
+    .getResourceAsStream(this)
+    .bufferedReader().use { it.readText() }
 
 fun<A : Activity> ActivityScenario<A>.recreateAndResume(){
     this.moveToState(Lifecycle.State.RESUMED)

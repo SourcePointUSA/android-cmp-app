@@ -324,10 +324,9 @@ fun checkConsentState(consent: String, selected: Boolean) {
 
 @Throws(Throwable::class)
 fun checkConsentState(consent: String, selected: Boolean, stackType: String) {
-    Log.d("ANDRE", "checkConsentState: $stackType, $consent")
     onWebView()
-        .withElement(findElement(Locator.XPATH, "//div[@class='$stackType' and @title='$consent']"))
-        .withContextualElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected']"))
+        .withElement(findElement(Locator.XPATH, "//div[@class='$stackType']"))
+        .withContextualElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected' and @aria-label='$consent']"))
         .perform(webScrollIntoView())
 }
 
@@ -336,7 +335,7 @@ fun checkConsentStateVendor(consent: String, selected: Boolean, stackType: Strin
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[@class='$stackType']"))
         .withElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected']"))
-        .withElement(findElement(Locator.XPATH, "//span[text()='$consent']"))
+//        .withElement(findElement(Locator.XPATH, "//span[text()='$consent']"))
         .perform(webScrollIntoView())
 }
 
