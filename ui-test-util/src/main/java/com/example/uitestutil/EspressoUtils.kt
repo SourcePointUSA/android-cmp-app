@@ -326,7 +326,18 @@ fun checkConsentState(consent: String, selected: Boolean) {
 fun checkConsentState(consent: String, selected: Boolean, stackType: String) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[@class='$stackType']"))
+//        .withElement( findElement(Locator.XPATH, "//span[(text()='$consent') ]"))
         .withContextualElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected' and @aria-label='$consent']"))
+        .perform(webScrollIntoView())
+}
+
+
+@Throws(Throwable::class)
+fun checkConsentStateCCPA(consent: String, selected: Boolean, stackType: String) {
+    onWebView()
+        .withElement(findElement(Locator.XPATH, "//div[@class='$stackType']"))
+        .withContextualElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected']"))
+        .withElement(findElement(Locator.XPATH, "//span[text()='$consent']"))
         .perform(webScrollIntoView())
 }
 
@@ -378,8 +389,7 @@ fun tapOnToggle(property: String, tapOnlyWhen: Boolean) {
 fun tapOnToggle2(property: String, tapOnlyWhen: Boolean) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[@class='tcfv2-stack']"))
-        .withElement( findElement(Locator.XPATH, "//span[(text()='$property') ]"))
-        .withElement(findElement(Locator.XPATH, "//button[@role='switch' and @aria-checked='$tapOnlyWhen']"))
+        .withContextualElement(findElement(Locator.XPATH, "//button[@aria-checked='$tapOnlyWhen' and @aria-label='$property']"))
         .perform(webScrollIntoView())
         .perform(webClick())
 }

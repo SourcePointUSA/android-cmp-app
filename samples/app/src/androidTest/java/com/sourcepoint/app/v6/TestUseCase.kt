@@ -84,7 +84,7 @@ class TestUseCase {
 
         fun checkAllCcpaConsentsOn() {
             CCPA_CONSENT_LIST.forEach { consent ->
-                checkConsentState(consent, true, "ccpa-stack")
+                checkConsentStateCCPA(consent, true, "ccpa-stack")
             }
         }
 
