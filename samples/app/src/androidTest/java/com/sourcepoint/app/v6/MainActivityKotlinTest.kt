@@ -845,6 +845,14 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
+        // make sure that there are not data in the sp
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.edit().clear().commit()
+            }
+        }
+
         wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
 
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
