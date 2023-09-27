@@ -490,6 +490,11 @@ private class CampaignManagerImpl(
 
         // handle gdpr
         response.gdpr?.apply {
+            gdprConsentStatus?.let { gdprCS ->
+                val updatedGdprConsentStatus = gdprCS.copy(applies = applies)
+                gdprConsentStatus = updatedGdprConsentStatus
+            }
+
             dataStorage.gdprApplies = applies
             dataStorage.gdprChildPmId = childPmId
             if (sampleRate != dataStorage.gdprSamplingValue) {
