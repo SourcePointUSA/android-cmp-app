@@ -850,6 +850,7 @@ class MainActivityKotlinTest {
             scenario.onActivity { activity ->
                 val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                 sp.edit().clear().commit()
+                sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
             }
         }
 
