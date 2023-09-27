@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
-import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.toColorInt
 import com.sourcepoint.app.v6.core.DataProvider
@@ -27,8 +26,6 @@ import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
 class NativeMessageActivity : AppCompatActivity() {
-    @VisibleForTesting
-    var appIdlingResource: AppIdlingResource = AppIdlingResource()
 
     companion object {
         private const val TAG = "**NativeMessageActivity"
@@ -42,6 +39,7 @@ class NativeMessageActivity : AppCompatActivity() {
         spClient = LocalClient()
         spConfig = dataProvider.spConfig
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +74,7 @@ class NativeMessageActivity : AppCompatActivity() {
             )
         }
         refresh_btn.setOnClickListener { executeCmpLib() }
+
     }
 
     override fun onResume() {
@@ -84,7 +83,6 @@ class NativeMessageActivity : AppCompatActivity() {
     }
 
     private fun executeCmpLib() {
-        appIdlingResource.setIdleState(false)
         dataProvider.authId
             ?.let { spConsentLib.loadMessage(it) }
             ?: kotlin.run { spConsentLib.loadMessage() }
@@ -102,14 +100,12 @@ class NativeMessageActivity : AppCompatActivity() {
         override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
             spClientObserver.forEach { it.onNativeMessageReady(message, messageController) }
             setNativeMessage(message, messageController)
-            appIdlingResource.setIdleState(true)
         }
 
         override fun onError(error: Throwable) {
             spClientObserver.forEach { it.onError(error) }
             error.printStackTrace()
-            Log.i(TAG, "onError: $error")
-            appIdlingResource.setIdleState(true)
+            Log.i(NativeMessageActivity.TAG, "onError: $error")
         }
 
         override fun onConsentReady(consent: SPConsents) {
@@ -120,40 +116,36 @@ class NativeMessageActivity : AppCompatActivity() {
                 println("vendor: ${grant.key} - granted: $granted - purposes: $purposes")
             }
             spClientObserver.forEach { it.onConsentReady(consent) }
-            Log.i(TAG, "onConsentReady: $consent")
+            Log.i(NativeMessageActivity.TAG, "onConsentReady: $consent")
         }
 
         override fun onUIFinished(view: View) {
             spClientObserver.forEach { it.onUIFinished(view) }
             spConsentLib.removeView(view)
-            Log.i(TAG, "onUIFinished")
-            appIdlingResource.setIdleState(true)
+            Log.i(NativeMessageActivity.TAG, "onUIFinished")
         }
 
         override fun onUIReady(view: View) {
             spClientObserver.forEach { it.onUIReady(view) }
             spConsentLib.showView(view)
-            Log.i(TAG, "onUIReady")
-            appIdlingResource.setIdleState(true)
+            Log.i(NativeMessageActivity.TAG, "onUIReady")
         }
 
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
             spClientObserver.forEach { it.onAction(view, consentAction) }
-            Log.i(TAG, "onAction ActionType: $consentAction")
+            Log.i(NativeMessageActivity.TAG, "onAction ActionType: $consentAction")
             consentAction.pubData.put("pb_key", "pb_value")
-            appIdlingResource.setIdleState(false)
             return consentAction
         }
 
         override fun onSpFinished(sPConsents: SPConsents) {
             spClientObserver.forEach { it.onSpFinished(sPConsents) }
-            Log.i(TAG, "onSpFinish: $sPConsents")
-            Log.i(TAG, "==================== onSpFinish ==================")
-            appIdlingResource.setIdleState(true)
+            Log.i(NativeMessageActivity.TAG, "onSpFinish: $sPConsents")
+            Log.i(NativeMessageActivity.TAG, "==================== onSpFinish ==================")
         }
 
         override fun onNoIntentActivitiesFound(url: String) {
-            Log.i(TAG, "onNoIntentActivitiesFound: $url")
+            Log.i(NativeMessageActivity.TAG, "onNoIntentActivitiesFound: $url")
             spClientObserver.forEach { it.onNoIntentActivitiesFound(url) }
         }
     }
