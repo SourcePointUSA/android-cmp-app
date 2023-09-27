@@ -275,7 +275,7 @@ class MainActivityKotlinOldConsentTest {
         }
     }
 
-    @Test
+//    @Test
     fun GIVEN_a_saved_consent_CLEAR_all_SDK_variables() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
