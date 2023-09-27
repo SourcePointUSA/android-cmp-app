@@ -856,7 +856,6 @@ class MainActivityKotlinTest {
 
         wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
 
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { clickOnClearConsent() }
 
 
@@ -870,6 +869,7 @@ class MainActivityKotlinTest {
             }
         }
 
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
     }
 
