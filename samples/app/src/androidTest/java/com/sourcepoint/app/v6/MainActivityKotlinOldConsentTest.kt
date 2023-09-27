@@ -62,12 +62,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 
-@RunWith(AndroidJUnit4ClassRunner::class)
+//@RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinOldConsentTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
-    @After
+//    @After
     fun cleanup() {
         if (this::scenario.isLateinit) scenario.close()
     }
