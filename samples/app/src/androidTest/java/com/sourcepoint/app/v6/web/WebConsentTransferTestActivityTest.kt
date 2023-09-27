@@ -1,5 +1,5 @@
 package com.sourcepoint.app.v6.web
-//
+
 //import androidx.test.core.app.ActivityScenario
 //import androidx.test.core.app.ApplicationProvider
 //import androidx.test.core.app.launchActivity
@@ -11,7 +11,6 @@ package com.sourcepoint.app.v6.web
 //import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 //import com.example.uitestutil.wr
 //import com.sourcepoint.app.v6.R
-//import com.sourcepoint.app.v6.Retry
 //import com.sourcepoint.app.v6.TestUseCase
 //import com.sourcepoint.app.v6.TestUseCase.Companion.assertTextInWebViewByContainerId
 //import com.sourcepoint.app.v6.TestUseCase.Companion.checkTextDoesNotMatchInView
@@ -41,8 +40,7 @@ package com.sourcepoint.app.v6.web
 // * consent to the web view. If the user does not accept the consent for either of the campaigns, the
 // * API should show correspondent message (e.g. if the user does not accept the consent for ccpa and
 // * transfers theirs consent to the web view - then ccpa message should be shown).
-// *//*
-//
+// */
 //@RunWith(AndroidJUnit4ClassRunner::class)
 //class WebConsentTransferTestActivityTest {
 //
@@ -62,12 +60,6 @@ package com.sourcepoint.app.v6.web
 //        +(CampaignType.GDPR)
 //        +(CampaignType.CCPA)
 //    }
-//
-//    @JvmField
-//    @Rule
-//    var retry = Retry(5, onRetry = {
-//        clearAllData(ApplicationProvider.getApplicationContext())
-//    })
 //
 //    @Before
 //    fun setUp() {
@@ -125,15 +117,13 @@ package com.sourcepoint.app.v6.web
 //        wr { assertTextInWebViewByContainerId(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = gdprUuid) }
 //    }
 //
-//    */
-///**
+//    /**
 //     * Test case that verifies the flow of:
 //     * 1. user choosing accept all for the GDPR
 //     * 2. user choosing accept all for the CCPA
 //     * 3. user transferring the consent to the web view
 //     * 4. user seeing the consent for both GDPR and CCPA and no message
-//     *//*
-//
+//     */
 //    @Test
 //    fun user_consents_gdpr_as_accept_all_and_ccpa_as_accept_all(): Unit = runBlocking {
 //        triggerMessageFlow()
@@ -145,15 +135,13 @@ package com.sourcepoint.app.v6.web
 //        assertUuidsArePresentOnWebView()
 //    }
 //
-//    */
-///**
+//    /**
 //     * Test case that verifies the flow of:
 //     * 1. user choosing more options and then save and exit for the GDPR
 //     * 2. user choosing accept all for the CCPA
 //     * 3. user transferring the consent to the web view
 //     * 4. user seeing the consent for both GDPR and CCPA and no message
-//     *//*
-//
+//     */
 //    @Test
 //    fun user_consents_gdpr_as_save_and_exit_and_ccpa_as_accept_all(): Unit = runBlocking {
 //        triggerMessageFlow()
@@ -166,15 +154,13 @@ package com.sourcepoint.app.v6.web
 //        assertUuidsArePresentOnWebView()
 //    }
 //
-//    */
-///**
+//    /**
 //     * Test case that verifies the flow of:
 //     * 1. user choosing accept all for the GDPR
 //     * 2. user choosing more options and then save and exit for the CCPA
 //     * 3. user transferring the consent to the web view
 //     * 4. user seeing the consent for both GDPR and CCPA and no message
-//     *//*
-//
+//     */
 //    @Test
 //    fun user_consents_gdpr_as_accept_all_and_ccpa_as_save_and_exit(): Unit = runBlocking {
 //        triggerMessageFlow()
@@ -187,15 +173,13 @@ package com.sourcepoint.app.v6.web
 //        assertUuidsArePresentOnWebView()
 //    }
 //
-//    */
-///**
+//    /**
 //     * Test case that verifies the flow of:
 //     * 1. user choosing reject all for the GDPR
 //     * 2. user choosing reject all for the CCPA
 //     * 3. user transferring the consent to the web view
 //     * 4. user seeing the consent for both GDPR and CCPA and no message
-//     *//*
-//
+//     */
 //    @Test
 //    fun user_consents_gdpr_as_reject_all_and_ccpa_as_reject_all(): Unit = runBlocking {
 //        triggerMessageFlow()
@@ -221,4 +205,3 @@ package com.sourcepoint.app.v6.web
 //        private const val EVENT_SP_ON_CONSENT_READY = "onConsentReady"
 //    }
 //}
-//*/
