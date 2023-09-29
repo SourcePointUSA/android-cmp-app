@@ -966,7 +966,7 @@ class MainActivityKotlinTest {
             wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
             wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
-        }
+        } //t
 
     private fun <E> check(block: () -> E): E? {
         return try {

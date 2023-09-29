@@ -1,13 +1,13 @@
 name: SampleApp UI Tests
 on:
   push:
-    branches: [ develop, v7 ]
-    paths:
-      - '!README.md'
-      - '!release_note.txt'
+    branches: [ develop, v7, dia-2753-404-response ]
+#    paths:
+#      - '!README.md'
+#      - '!release_note.txt'
   #      - '!samples/nativemessage/*'
   pull_request:
-    branches: [ develop, v7 ]
+    branches: [ develop, v7, dia-2753-404-response ]
 #    paths:
 #      - '!README.md'
 #      - '!samples/nativemessage/*'
