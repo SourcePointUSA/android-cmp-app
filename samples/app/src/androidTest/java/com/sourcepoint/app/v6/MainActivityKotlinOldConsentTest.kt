@@ -171,6 +171,7 @@ class MainActivityKotlinOldConsentTest {
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         wr {
             scenario.onActivity { activity ->
@@ -219,6 +220,7 @@ class MainActivityKotlinOldConsentTest {
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         wr {
             scenario.onActivity { activity ->
@@ -265,6 +267,7 @@ class MainActivityKotlinOldConsentTest {
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         wr {
             scenario.onActivity { activity ->
@@ -273,49 +276,6 @@ class MainActivityKotlinOldConsentTest {
                 sp.contains("sp.key.local.state").assertFalse()
             }
         }
-    }
-
-//    @Test
-    fun GIVEN_a_saved_consent_CLEAR_all_SDK_variables() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConfGdpr,
-                gdprPmId = "488393",
-                spClientObserver = listOf(spClient)
-            )
-        )
-
-        scenario = launchActivity()
-
-        // make sure that there are not data in the sp
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                sp.edit().clear().commit()
-                sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
-            }
-        }
-
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
-
-        wr { clickOnClearConsent() }
-
-
-
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                val numberOfItemInSP = sp.all.size
-                numberOfItemInSP.assertEquals(1)
-                sp.getString(CLIENT_PREF_KEY, "").assertEquals(CLIENT_PREF_VAL)
-            }
-        }
-
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-
     }
 
     private fun <E> check(block: () -> E): E? {
