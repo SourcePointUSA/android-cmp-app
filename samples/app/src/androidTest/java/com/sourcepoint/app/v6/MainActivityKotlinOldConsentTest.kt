@@ -168,10 +168,10 @@ class MainActivityKotlinOldConsentTest {
             sp.contains("sp.key.local.state").assertTrue()
         }
 
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         wr {
             scenario.onActivity { activity ->
@@ -217,10 +217,10 @@ class MainActivityKotlinOldConsentTest {
             sp.contains("sp.key.local.state").assertTrue()
         }
 
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         wr {
             scenario.onActivity { activity ->
@@ -264,10 +264,10 @@ class MainActivityKotlinOldConsentTest {
             sp.contains("sp.key.local.state").assertTrue()
         }
 
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         wr {
             scenario.onActivity { activity ->
