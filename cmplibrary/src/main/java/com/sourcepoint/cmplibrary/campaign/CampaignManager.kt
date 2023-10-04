@@ -78,6 +78,13 @@ internal interface CampaignManager {
     var ccpaUuid: String?
     val hasLocalData: Boolean
 
+    // dateCreated
+    var gdprDateCreated: String?
+    var ccpaDateCreated: String?
+
+//    var consentStatus: ConsentStatus?zvz
+//    var ccpaStatus: CcpaStatus?
+
     var metaDataResp: MetaDataResp?
     var choiceResp: ChoiceResp?
     var dataRecordedConsent: Instant?
@@ -399,16 +406,18 @@ private class CampaignManagerImpl(
 
     override val shouldCallConsentStatus: Boolean
         get() {
+            val gdprUUID = dataStorage.gdprConsentUuid
+            val ccpaUUID = dataStorage.ccpaConsentUuid
             val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
-            val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
+            val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE_OLD)
             val res =
-                ((gdprUuid != null || ccpaUuid != null) && localStateSize == 0) || isV6LocalStatePresent || isV6LocalStatePresent2
+                ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0) || isV6LocalStatePresent || isV6LocalStatePresent2
 
             logger?.computation(
                 tag = "shouldCallConsentStatus",
                 msg = """
-                gdprUUID != null [${gdprUuid != null}] - ccpaUUID != null [${ccpaUuid != null}]
+                gdprUUID != null [${gdprUUID != null}] - ccpaUUID != null [${ccpaUUID != null}]
                 localStateSize empty [${localStateSize == 0}]
                 V6.7 ls [$isV6LocalStatePresent] or V6.3 ls [$isV6LocalStatePresent2]  
                 shouldCallConsentStatus[$res]  
@@ -443,7 +452,9 @@ private class CampaignManagerImpl(
     }
 
     override var gdprConsentStatus: GdprCS?
-        get() = dataStorage.gdprConsentStatus?.let { JsonConverter.converter.decodeFromString<GdprCS>(it) }
+        get() {
+            return dataStorage.gdprConsentStatus?.let { JsonConverter.converter.decodeFromString<GdprCS>(it) }
+        }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.apply {
@@ -475,8 +486,12 @@ private class CampaignManagerImpl(
         }
 
     override var messagesOptimizedLocalState: JsonElement?
-        get() = dataStorage.messagesOptimizedLocalState?.let {
-            JsonConverter.converter.decodeFromString<JsonElement>(it)
+        get() {
+            return dataStorage.messagesOptimizedLocalState?.let {
+                JsonConverter.converter.decodeFromString<JsonElement>(
+                    it
+                )
+            }
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
@@ -497,15 +512,19 @@ private class CampaignManagerImpl(
         }
 
     override var gdprUuid: String?
-        get() = gdprConsentStatus?.uuid
+        get() {
+            return dataStorage.gdprConsentUuid
+        }
         set(value) {
-            gdprConsentStatus = gdprConsentStatus?.copy(uuid = value)
+            dataStorage.gdprConsentUuid = value
         }
 
     override var ccpaUuid: String?
-        get() = ccpaConsentStatus?.uuid
+        get() {
+            return dataStorage.ccpaConsentUuid
+        }
         set(value) {
-            ccpaConsentStatus = ccpaConsentStatus?.copy(uuid = value)
+            dataStorage.ccpaConsentUuid = value
         }
 
     override val hasLocalData: Boolean
@@ -552,7 +571,7 @@ private class CampaignManagerImpl(
     }
 
     override fun handleOldLocalData() {
-        if (dataStorage.preference.contains(LOCAL_STATE) || dataStorage.preference.contains(LOCAL_STATE_OLD)) {
+        if (dataStorage.preference.contains(DataStorage.LOCAL_STATE) || dataStorage.preference.contains(DataStorage.LOCAL_STATE_OLD)) {
             dataStorage.preference
                 .edit().apply {
                     remove(LOCAL_STATE)
@@ -568,6 +587,18 @@ private class CampaignManagerImpl(
                 .apply()
         }
     }
+
+    override var gdprDateCreated: String?
+        get() = dataStorage.gdprDateCreated
+        set(value) {
+            dataStorage.gdprDateCreated = value
+        }
+
+    override var ccpaDateCreated: String?
+        get() = dataStorage.ccpaDateCreated
+        set(value) {
+            dataStorage.ccpaDateCreated = value
+        }
 
     override var metaDataResp: MetaDataResp?
         get() {

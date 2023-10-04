@@ -205,6 +205,16 @@ private class ServiceImpl(
                     operatingSystem = operatingSystemInfo,
                 )
 
+                val body = getMessageBody(
+                    accountId = messageReq.accountId,
+                    propertyHref = messageReq.propertyHref,
+                    cs = campaignManager.gdprConsentStatus?.consentStatus,
+                    ccpaStatus = campaignManager.ccpaConsentStatus?.status?.name,
+                    campaigns = campaignManager.campaigns4Config,
+                    consentLanguage = campaignManager.messageLanguage.value,
+                    campaignEnv = campaignManager.spConfig.campaignsEnv
+                )
+
                 val messagesParamReq = MessagesParamReq(
                     accountId = messageReq.accountId,
                     propertyId = messageReq.propertyId,
@@ -512,19 +522,25 @@ private class ServiceImpl(
 
     private fun triggerConsentStatus(messageReq: MessagesParamReq): Either<ConsentStatusResp> {
         val csParams = messageReq.toConsentStatusParamReq(
-            gdprUuid = campaignManager.gdprConsentStatus?.uuid,
-            ccpaUuid = campaignManager.ccpaConsentStatus?.uuid,
+            gdprUuid = campaignManager.gdprUuid,
+            ccpaUuid = campaignManager.ccpaUuid,
             localState = campaignManager.messagesOptimizedLocalState
         )
 
         return getConsentStatus(csParams)
-            .executeOnRight { consentStatusResponse ->
+            .executeOnRight {
                 campaignManager.apply {
-                    handleOldLocalData()
-                    messagesOptimizedLocalState = consentStatusResponse.localState
-                    consentStatusResponse.consentStatusData?.let { consentStatusData ->
-                        gdprConsentStatus = consentStatusData.gdpr
-                        ccpaConsentStatus = consentStatusData.ccpa
+                    campaignManager.handleOldLocalData()
+                    messagesOptimizedLocalState = it.localState
+                    it.consentStatusData?.let { csd ->
+                        // GDPR
+                        gdprConsentStatus = csd.gdpr
+                        gdprUuid = csd.gdpr?.uuid
+                        gdprDateCreated = csd.gdpr?.dateCreated
+                        // CCPA
+                        ccpaConsentStatus = csd.ccpa
+                        ccpaUuid = csd.ccpa?.uuid
+                        ccpaDateCreated = csd.ccpa?.dateCreated
                     }
                 }
             }
