@@ -1,15 +1,12 @@
 package com.sourcepoint.cmplibrary.data.network
 
-import android.content.Context
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.util.Env
-import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
+import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
-import com.sourcepoint.cmplibrary.data.network.util.isInternetConnected
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.CodeList
@@ -35,9 +32,6 @@ import java.io.InterruptedIOException
 class NetworkClientImplTest {
 
     @MockK
-    private lateinit var context: Context
-
-    @MockK
     lateinit var okHttp: OkHttpClient
 
     @MockK
@@ -46,22 +40,16 @@ class NetworkClientImplTest {
     @MockK
     private lateinit var responseManager: ResponseManager
 
-    @MockK
-    private lateinit var urlManager: HttpUrlManager
-
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
-
-        every { context.isInternetConnected() } returns true
     }
 
     private val sut by lazy {
         createNetworkClient(
-            context = context,
             httpClient = okHttp,
             responseManager = responseManager,
-            urlManager = urlManager,
+            urlManager = HttpUrlManagerSingleton,
             logger = MockLogger
         )
     }
@@ -171,25 +159,6 @@ class NetworkClientImplTest {
     }
 
     @Test
-    fun `sendCustomConsent - WHEN called with no Internet THEN should not proceed with the flow`() {
-        // GIVEN
-        val mockIsConnected = false
-        val mockEnv = mockk<Env>()
-        val mockCustomConsentReq = mockk<CustomConsentReq>()
-        every { context.isInternetConnected() } returns mockIsConnected
-
-        // WHEN
-        sut.deleteCustomConsentTo(
-            env = mockEnv,
-            customConsentReq = mockCustomConsentReq,
-        )
-
-        // THEN
-        verify(exactly = 0) { urlManager.sendCustomConsentUrl(any()) }
-        verify(exactly = 0) { responseManager.parseCustomConsentRes(any()) }
-    }
-
-    @Test
     fun `EXECUTE deleteCustomConsentTo okHttp THROWS an exception and the result is a LEFT obj`() {
         val respConsent = JSONObject("custom_consent/custom_consent_res.json".file2String())
         val mockCall = mockk<Call>()
@@ -207,25 +176,6 @@ class NetworkClientImplTest {
 
         val res = sut.deleteCustomConsentTo(req, Env.STAGE) as? Either.Left
         res.assertNotNull()
-    }
-
-    @Test
-    fun `deleteCustomConsentTo - WHEN called with no Internet THEN should not proceed with the flow`() {
-        // GIVEN
-        val mockIsConnected = false
-        val mockEnv = mockk<Env>()
-        val mockCustomConsentReq = mockk<CustomConsentReq>()
-        every { context.isInternetConnected() } returns mockIsConnected
-
-        // WHEN
-        sut.deleteCustomConsentTo(
-            env = mockEnv,
-            customConsentReq = mockCustomConsentReq,
-        )
-
-        // THEN
-        verify(exactly = 0) { urlManager.deleteCustomConsentToUrl(any(), any()) }
-        verify(exactly = 0) { responseManager.parseCustomConsentRes(any()) }
     }
 
     @Test
@@ -287,21 +237,6 @@ class NetworkClientImplTest {
     }
 
     @Test
-    fun `getMetaData - WHEN called with no Internet THEN should not proceed with the flow`() {
-        // GIVEN
-        val mockIsConnected = false
-        val mockMetaDataParam = mockk<MetaDataParamReq>()
-        every { context.isInternetConnected() } returns mockIsConnected
-
-        // WHEN
-        sut.getMetaData(param = mockMetaDataParam)
-
-        // THEN
-        verify(exactly = 0) { urlManager.getMetaDataUrl(any()) }
-        verify(exactly = 0) { responseManager.parseMetaDataRes(any()) }
-    }
-
-    @Test
     fun `EXECUTE getConsentStatus THROWS an InterruptedIOException and the result is a LEFT obj`() {
         val mockCall = mockk<Call>()
         every { okHttp.newCall(any()) }.returns(mockCall)
@@ -318,21 +253,6 @@ class NetworkClientImplTest {
 
         val res = sut.getConsentStatus(param) as? Either.Left
         (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.CONSENT_STATUS.apiPostfix)
-    }
-
-    @Test
-    fun `getConsentStatus - WHEN called with no Internet THEN should not proceed with the flow`() {
-        // GIVEN
-        val mockIsConnected = false
-        val mockConsentStatusParam = mockk<ConsentStatusParamReq>()
-        every { context.isInternetConnected() } returns mockIsConnected
-
-        // WHEN
-        sut.getConsentStatus(param = mockConsentStatusParam)
-
-        // THEN
-        verify(exactly = 0) { urlManager.getConsentStatusUrl(any()) }
-        verify(exactly = 0) { responseManager.parseConsentStatusResp(any()) }
     }
 
     @Test
@@ -357,21 +277,6 @@ class NetworkClientImplTest {
     }
 
     @Test
-    fun `getMessages - WHEN called with no Internet THEN should not proceed with the flow`() {
-        // GIVEN
-        val mockIsConnected = false
-        val mockMessagesParam = mockk<MessagesParamReq>()
-        every { context.isInternetConnected() } returns mockIsConnected
-
-        // WHEN
-        sut.getMessages(param = mockMessagesParam)
-
-        // THEN
-        verify(exactly = 0) { urlManager.getMessagesUrl(any()) }
-        verify(exactly = 0) { responseManager.parseMessagesResp(any()) }
-    }
-
-    @Test
     fun `EXECUTE savePvData THROWS an InterruptedIOException and the result is a LEFT obj`() {
         val mockCall = mockk<Call>()
 
@@ -386,36 +291,6 @@ class NetworkClientImplTest {
 
         val res = sut.postPvData(param) as? Either.Left
         (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.PV_DATA.apiPostfix)
-    }
-
-    @Test
-    fun `postPvData - WHEN called with no Internet THEN should not proceed with the flow`() {
-        // GIVEN
-        val mockIsConnected = false
-        val mockPvDataParam = mockk<PvDataParamReq>()
-        every { context.isInternetConnected() } returns mockIsConnected
-
-        // WHEN
-        sut.postPvData(param = mockPvDataParam)
-
-        // THEN
-        verify(exactly = 0) { urlManager.getPvDataUrl(any()) }
-        verify(exactly = 0) { responseManager.parsePvDataResp(any()) }
-    }
-
-    @Test
-    fun `getChoice - WHEN called with no Internet THEN should not proceed with the flow`() {
-        // GIVEN
-        val mockIsConnected = false
-        val mockChoiceParam = mockk<GetChoiceParamReq>()
-        every { context.isInternetConnected() } returns mockIsConnected
-
-        // WHEN
-        sut.getChoice(param = mockChoiceParam)
-
-        // THEN
-        verify(exactly = 0) { urlManager.getChoiceUrl(any()) }
-        verify(exactly = 0) { responseManager.parseGetChoiceResp(any(), any()) }
     }
 
     @Test
@@ -450,21 +325,6 @@ class NetworkClientImplTest {
     }
 
     @Test
-    fun `storeGdprChoice - WHEN called with no Internet THEN should not proceed with the flow`() {
-        // GIVEN
-        val mockIsConnected = false
-        val mockPostChoiceParam = mockk<PostChoiceParamReq>()
-        every { context.isInternetConnected() } returns mockIsConnected
-
-        // WHEN
-        sut.storeGdprChoice(param = mockPostChoiceParam)
-
-        // THEN
-        verify(exactly = 0) { urlManager.getGdprChoiceUrl(any()) }
-        verify(exactly = 0) { responseManager.parsePostGdprChoiceResp(any()) }
-    }
-
-    @Test
     fun `storeCcpaChoice - WHEN executed with pubData in request params THEN should have pubData in request for GDPR`() {
         // GIVEN
         val slot = slot<Request>()
@@ -493,20 +353,5 @@ class NetworkClientImplTest {
             readText().let { Json.parseToJsonElement(it).jsonObject }.assertEquals(mockBody)
             method.assertEquals("POST")
         }
-    }
-
-    @Test
-    fun `storeCcpaChoice - WHEN called with no Internet THEN should not proceed with the flow`() {
-        // GIVEN
-        val mockIsConnected = false
-        val mockPostChoiceParam = mockk<PostChoiceParamReq>()
-        every { context.isInternetConnected() } returns mockIsConnected
-
-        // WHEN
-        sut.storeCcpaChoice(param = mockPostChoiceParam)
-
-        // THEN
-        verify(exactly = 0) { urlManager.getCcpaChoiceUrl(any()) }
-        verify(exactly = 0) { responseManager.parsePostCcpaChoiceResp(any()) }
     }
 }

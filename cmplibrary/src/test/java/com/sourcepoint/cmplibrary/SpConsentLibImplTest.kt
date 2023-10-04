@@ -9,9 +9,9 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
-import com.sourcepoint.cmplibrary.data.network.util.isInternetConnected
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.Campaign
@@ -40,6 +40,9 @@ class SpConsentLibImplTest {
 
     @MockK
     private lateinit var jsonConverter: JsonConverter
+
+    @MockK
+    private lateinit var connManager: ConnectionManager
 
     @MockK
     private lateinit var dataStorage: DataStorage
@@ -72,14 +75,14 @@ class SpConsentLibImplTest {
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
 
-        every { appCtx.isInternetConnected() } returns true
+        every { connManager.isConnected } returns true
     }
 
     @Test
     fun `loadPrivacyManager - WHEN called with no Internet THEN should not proceed with the flow`() {
         // GIVEN
         val mockIsConnected = false
-        every { appCtx.isInternetConnected() } returns mockIsConnected
+        every { connManager.isConnected } returns mockIsConnected
 
         // WHEN
         val sut = createLib()
@@ -248,6 +251,7 @@ class SpConsentLibImplTest {
         urlManager = urlManager,
         dataStorage = dataStorage,
         spClient = spClient,
-        clientEventManager = clientEventManager
+        clientEventManager = clientEventManager,
+        connectionManager = connManager,
     )
 }

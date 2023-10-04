@@ -16,8 +16,8 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.executeOnLeft
 import com.sourcepoint.cmplibrary.core.getOrNull
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.model.toConsentActionOptimized
-import com.sourcepoint.cmplibrary.data.network.util.isInternetConnected
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.exception.LoggerType.* // ktlint-disable
@@ -35,6 +35,7 @@ internal class ConsentWebView(
     private val jsClientLib: JSClientLib,
     private val logger: Logger,
     private val messageTimeout: Long,
+    private val connectionManager: ConnectionManager,
     private val executorManager: ExecutorManager,
     private val campaignQueue: Queue<CampaignModel> = LinkedList(),
     private val messSubCat: MessageSubCategory = MessageSubCategory.TCFv2,
@@ -106,7 +107,7 @@ internal class ConsentWebView(
         consent: String?,
     ): Either<Boolean> = check {
 
-        if (context.isInternetConnected().not()) throw NoInternetConnectionException()
+        if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
 
         val ensuredConsentJson = consent?.let { JSONObject(it) } ?: JSONObject()
 
@@ -145,7 +146,7 @@ internal class ConsentWebView(
         campaignType: CampaignType
     ): Either<Boolean> = check {
 
-        if (context.isInternetConnected().not()) throw NoInternetConnectionException()
+        if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
 
         currentCampaignModel = campaignModel
         val campaignType: CampaignType = campaignModel.type

@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.creation
 
-import android.content.Context
 import android.os.Build
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
@@ -35,17 +34,13 @@ internal fun createLogger(errorMessageManager: ErrorMessageManager): Logger {
     )
 }
 
-internal fun networkClient(
-        context: Context,
-        netClient: OkHttpClient,
-        responseManage: ResponseManager,
-        logger: Logger
-): NetworkClient = createNetworkClient(
-        context = context,
+internal fun networkClient(netClient: OkHttpClient, responseManage: ResponseManager, logger: Logger): NetworkClient {
+    return createNetworkClient(
         httpClient = netClient,
         responseManager = responseManage,
         urlManager = HttpUrlManagerSingleton,
         logger = logger
-)
+    )
+}
 
 internal val validPattern = "^[a-zA-Z.:/0-9-]*$".toRegex()
