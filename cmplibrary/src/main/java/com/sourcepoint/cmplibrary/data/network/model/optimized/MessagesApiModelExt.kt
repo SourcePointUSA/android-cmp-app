@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeDataGppParam
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -17,6 +18,7 @@ internal fun getMessageBody(
     ccpaStatus: String?,
     consentLanguage: String?,
     campaignEnv: CampaignsEnv?,
+
     os: OperatingSystemInfoParam = OperatingSystemInfoParam()
 ): JsonObject {
     return buildJsonObject {
@@ -32,6 +34,8 @@ internal fun getMessageBody(
             putJsonObject("webConsentPayload") {
                 put("type", "RecordString")
             }
+            // TODO
+            put("", JsonConverter.converter.encodeToJsonElement(IncludeDataGppParam()))
         }
         put("propertyHref", "https://$propertyHref")
         put("hasCSP", true)
