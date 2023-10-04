@@ -183,28 +183,6 @@ private class ServiceImpl(
 
             if (campaignManager.shouldCallMessages) {
 
-                val operatingSystemInfo = OperatingSystemInfoParam()
-
-                val localState = campaignManager.messagesOptimizedLocalState?.jsonObject
-                    ?: JsonObject(mapOf())
-
-                val body = MessagesBodyReq(
-                    accountId = messageReq.accountId,
-                    propertyHref = "https://${messageReq.propertyHref}",
-                    campaigns = campaignManager.campaigns4Config.toMetadataBody(
-                        gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus,
-                        ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
-                    ),
-                    campaignEnv = campaignManager.spConfig.campaignsEnv.env,
-                    consentLanguage = campaignManager.messageLanguage.value,
-                    hasCSP = false,
-                    includeData = IncludeData.generateIncludeDataForMessages(
-                        gppData = spConfig.extractIncludeGppDataParamIfEligible(),
-                    ),
-                    localState = localState,
-                    operatingSystem = operatingSystemInfo,
-                )
-
                 val body = getMessageBody(
                     accountId = messageReq.accountId,
                     propertyHref = messageReq.propertyHref,
@@ -221,9 +199,10 @@ private class ServiceImpl(
                     authId = messageReq.authId,
                     propertyHref = messageReq.propertyHref,
                     env = messageReq.env,
-                    body = JsonConverter.converter.encodeToString(body),
+                    body = body.toString(),
                     metadataArg = metadataResponse.getOrNull()?.toMetaDataArg(),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
+                    localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
                 )
 
                 getMessages(messagesParamReq)

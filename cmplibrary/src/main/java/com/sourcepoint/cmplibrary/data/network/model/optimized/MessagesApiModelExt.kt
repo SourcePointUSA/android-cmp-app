@@ -2,10 +2,47 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReq
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.* // ktlint-disable
+
+internal fun getMessageBody(
+    propertyHref: String,
+    accountId: Long,
+    campaigns: List<CampaignReq>,
+    cs: ConsentStatus?,
+    ccpaStatus: String?,
+    consentLanguage: String?,
+    campaignEnv: CampaignsEnv?,
+    os: OperatingSystemInfoParam = OperatingSystemInfoParam()
+): JsonObject {
+    return buildJsonObject {
+        put("accountId", accountId)
+        campaignEnv?.env?.let { put("campaignEnv", it) }
+        putJsonObject("includeData") {
+            putJsonObject("TCData") {
+                put("type", "RecordString")
+            }
+            putJsonObject("campaigns") {
+                put("type", "RecordString")
+            }
+            putJsonObject("webConsentPayload") {
+                put("type", "RecordString")
+            }
+        }
+        put("propertyHref", "https://$propertyHref")
+        put("hasCSP", true)
+        put("campaigns", campaigns.toMetadataBody(cs, ccpaStatus))
+        put("consentLanguage", consentLanguage)
+        putJsonObject("os") {
+            put("name", os.name)
+            put("version", os.version)
+        }
+    }
+}
 
 internal fun List<CampaignReq>.toMetadataBody(
     gdprConsentStatus: ConsentStatus? = null,

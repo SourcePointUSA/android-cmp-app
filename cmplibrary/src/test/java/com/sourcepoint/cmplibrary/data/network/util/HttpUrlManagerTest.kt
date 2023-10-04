@@ -281,7 +281,7 @@ class HttpUrlManagerTest {
             )
         )
 
-        val body = getBod(
+        val body = getMessageBody(
             accountId = 22,
             cs = cs.consentStatusData?.gdpr?.consentStatus,
             propertyHref = "tests.unified-script.com",
