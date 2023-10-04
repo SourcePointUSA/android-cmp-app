@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
@@ -21,6 +22,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
@@ -50,8 +52,9 @@ internal fun Service.Companion.create(
     consentManagerUtils: ConsentManagerUtils,
     dataStorage: DataStorage,
     logger: Logger,
-    execManager: ExecutorManager
-): Service = ServiceImpl(nc, campaignManager, consentManagerUtils, dataStorage, logger, execManager)
+    execManager: ExecutorManager,
+    connectionManager: ConnectionManager,
+): Service = ServiceImpl(nc, campaignManager, consentManagerUtils, dataStorage, logger, execManager, connectionManager)
 
 /**
  * Implementation os the [Service] interface
@@ -62,7 +65,8 @@ private class ServiceImpl(
     private val consentManagerUtils: ConsentManagerUtils,
     private val dataStorage: DataStorage,
     private val logger: Logger,
-    private val execManager: ExecutorManager
+    private val execManager: ExecutorManager,
+    private val connectionManager: ConnectionManager,
 ) : Service, NetworkClient by networkClient, CampaignManager by campaignManager {
 
     private fun JSONArray.toArrayList(): ArrayList<String> {
@@ -74,6 +78,8 @@ private class ServiceImpl(
     }
 
     override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<GdprCS> = check {
+        if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
+
         networkClient.sendCustomConsent(customConsentReq, env)
             .map {
                 if (campaignManager.gdprConsentStatus == null) {
@@ -100,6 +106,8 @@ private class ServiceImpl(
     }
 
     override fun deleteCustomConsentToServ(customConsentReq: CustomConsentReq, env: Env): Either<GdprCS> = check {
+        if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
+
         networkClient.deleteCustomConsentTo(customConsentReq, env)
             .map {
                 if (campaignManager.gdprConsentStatus == null) {
@@ -132,6 +140,12 @@ private class ServiceImpl(
     ) {
         execManager.executeOnWorkerThread {
             campaignManager.authId = messageReq.authId
+
+            if (connectionManager.isConnected.not()) {
+                val noInternetConnectionException = NoInternetConnectionException()
+                onFailure(noInternetConnectionException, true)
+                return@executeOnWorkerThread
+            }
 
             val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq(campaigns4Config))
                 .executeOnLeft { metaDataError ->
