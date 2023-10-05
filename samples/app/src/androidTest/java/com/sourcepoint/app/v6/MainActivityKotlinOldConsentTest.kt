@@ -62,12 +62,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 
-//@RunWith(AndroidJUnit4ClassRunner::class)
+@RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinOldConsentTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
-//    @After
+    @After
     fun cleanup() {
         if (this::scenario.isLateinit) scenario.close()
     }
@@ -142,7 +142,7 @@ class MainActivityKotlinOldConsentTest {
         +(CampaignType.GDPR)
     }
 
-//    @Test
+    @Test
     fun GIVEN_an_old_CCPA_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
         val v6LocalState = JSONObject(TestData.storedConsentGdprCcap)
@@ -191,7 +191,7 @@ class MainActivityKotlinOldConsentTest {
         }
     }
 
-//    @Test
+    @Test
     fun GIVEN_an_old_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
         val v6LocalState = JSONObject(TestData.storedConsentGdpr)
@@ -238,7 +238,7 @@ class MainActivityKotlinOldConsentTest {
         }
     }
 
-//    @Test
+    @Test
     fun GIVEN_an_old_CCPAv6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
         val v6LocalState = JSONObject(TestData.storedConsentCcap)
