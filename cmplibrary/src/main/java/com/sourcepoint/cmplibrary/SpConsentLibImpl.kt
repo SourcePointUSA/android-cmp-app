@@ -13,6 +13,7 @@ import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CampaignMessage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
@@ -51,6 +52,7 @@ internal class SpConsentLibImpl(
     private val clientEventManager: ClientEventManager,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     private val env: Env = Env.PROD,
+    private val connectionManager: ConnectionManager,
 ) : SpConsentLib, NativeMessageController {
 
     private val remainingCampaigns: Queue<CampaignModel> = LinkedList()
@@ -352,6 +354,12 @@ internal class SpConsentLibImpl(
         messSubCat: MessageSubCategory,
         useGroupPmIfAvailable: Boolean
     ) {
+
+        if (connectionManager.isConnected.not()) {
+            spClient.onError(NoInternetConnectionException())
+            return
+        }
+
         checkMainThread("loadPrivacyManager")
         clientEventManager.setCampaignsToProcess(1)
 

@@ -107,9 +107,7 @@ internal class ConsentWebView(
         consent: String?,
     ): Either<Boolean> = check {
 
-        if (connectionManager.isConnected.not()) throw NoInternetConnectionException(
-            description = "No internet connection"
-        )
+        if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
 
         val ensuredConsentJson = consent?.let { JSONObject(it) } ?: JSONObject()
 
@@ -147,9 +145,11 @@ internal class ConsentWebView(
         url: HttpUrl,
         campaignType: CampaignType
     ): Either<Boolean> = check {
+
+        if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
+
         currentCampaignModel = campaignModel
         val campaignType: CampaignType = campaignModel.type
-        if (!connectionManager.isConnected) throw NoInternetConnectionException(description = "No internet connection")
         spWebViewClient.jsReceiverConfig = {
             /**
              * adding the parameter [sp.loadMessage] needed by the webpage to trigger the loadMessage event

@@ -14,8 +14,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.Messages
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exposed.gpp.SpGppConfig
-import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionBinary
-import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionTernary
 import com.sourcepoint.cmplibrary.gpp.utils.toIncludeDataGppParam
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.model.PMTab
