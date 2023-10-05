@@ -1,3 +1,4 @@
-* [DIA-2263](https://sourcepoint.atlassian.net/browse/DIA-2263) Create confluence page for the SDK release process (#663)
-* [DIA-2360](https://sourcepoint.atlassian.net/browse/DIA-2360) Fix message showing multiple times on reconsent flow (#659)
-* [DIA-2353](https://sourcepoint.atlassian.net/browse/DIA-2353) Document consent transfer API (#662)
+* [DIA-2542](https://sourcepoint.atlassian.net/browse/DIA-2542) Local data versioning (#685)
+* [DIA-2578](https://sourcepoint.atlassian.net/browse/DIA-2578) Fix error 400 when calling consent status (#686)
+* [DIA-2479](https://sourcepoint.atlassian.net/browse/DIA-2479) Allow user to set GPP Config (#683)
+* [DIA-2390](https://sourcepoint.atlassian.net/browse/DIA-2390) Store GPPData in the local storage (#680)

@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_DATE_CREATED
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_MESSAGE_METADATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_POST_CHOICE_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_SAMPLING_RESULT
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_SAMPLING_VALUE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_STATUS
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CONSENT_CCPA_UUID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_CHILD_PM_ID
@@ -30,6 +32,9 @@ internal interface DataStorageCcpa {
     var ccpaPostChoiceResp: String?
     var ccpaStatus: String?
     var ccpaMessageMetaData: String?
+    var ccpaConsentUuid: String?
+
+    var ccpaDateCreated: String?
 
     var ccpaSamplingValue: Double
     var ccpaSamplingResult: Boolean?
@@ -55,12 +60,14 @@ internal interface DataStorageCcpa {
         const val KEY_CCPA_CHILD_PM_ID = "sp.ccpa.key.childPmId"
         const val CCPA_CONSENT_RESP = "sp.ccpa.consent.resp"
         const val CCPA_JSON_MESSAGE = "sp.ccpa.json.message"
+        const val CONSENT_CCPA_UUID_KEY = "sp.ccpa.consentUUID"
         const val KEY_IAB_US_PRIVACY_STRING = "IABUSPrivacy_String"
         const val KEY_IABGPP_PREFIX = "IABGPP_"
         const val KEY_CCPA_MESSAGE_SUBCATEGORY = "sp.ccpa.key.message.subcategory"
         const val CCPA_POST_CHOICE_RESP = "sp.ccpa.key.post.choice"
         const val CCPA_STATUS = "sp.ccpa.key.v7.status"
         const val CCPA_MESSAGE_METADATA = "sp.ccpa.key.message.metadata"
+        const val CCPA_DATE_CREATED = "sp.ccpa.key.date.created"
         const val CCPA_SAMPLING_VALUE = "sp.ccpa.key.sampling"
         const val CCPA_SAMPLING_RESULT = "sp.ccpa.key.sampling.result"
     }
@@ -110,6 +117,28 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
                 .edit()
                 .putString(KEY_IAB_US_PRIVACY_STRING, value)
                 .apply()
+        }
+
+    override var ccpaConsentUuid: String?
+        get() = preference.getString(CONSENT_CCPA_UUID_KEY, null)
+        set(value) {
+            value?.let {
+                preference
+                    .edit()
+                    .putString(CONSENT_CCPA_UUID_KEY, it)
+                    .apply()
+            }
+        }
+
+    override var ccpaDateCreated: String?
+        get() = preference.getString(CCPA_DATE_CREATED, null)
+        set(value) {
+            value?.let {
+                preference
+                    .edit()
+                    .putString(CCPA_DATE_CREATED, it)
+                    .apply()
+            }
         }
 
     override var ccpaSamplingValue: Double
@@ -247,12 +276,14 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .remove(KEY_CCPA_APPLIES)
             .remove(CCPA_CONSENT_RESP)
             .remove(CCPA_JSON_MESSAGE)
+            .remove(CONSENT_CCPA_UUID_KEY)
             .remove(KEY_CCPA_CHILD_PM_ID)
             .remove(KEY_IAB_US_PRIVACY_STRING)
             .remove(KEY_CCPA_MESSAGE_SUBCATEGORY)
             .remove(CCPA_POST_CHOICE_RESP)
             .remove(CCPA_STATUS)
             .remove(CCPA_MESSAGE_METADATA)
+            .remove(CCPA_DATE_CREATED)
             .remove(CCPA_SAMPLING_VALUE)
             .remove(CCPA_SAMPLING_RESULT)
             .apply()

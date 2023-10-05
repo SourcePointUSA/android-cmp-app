@@ -62,12 +62,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 
-//@RunWith(AndroidJUnit4ClassRunner::class)
+@RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinOldConsentTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
-//    @After
+    @After
     fun cleanup() {
         if (this::scenario.isLateinit) scenario.close()
     }
@@ -78,6 +78,14 @@ class MainActivityKotlinOldConsentTest {
         propertyName = "mobile.multicampaign.demo"
         messLanguage = MessageLanguage.ENGLISH
         +(CampaignType.CCPA)
+    }
+
+    private val spConfGdprFinnish = config {
+        accountId = 1047
+        propertyId = 26891
+        propertyName = "OikotieAndroid2022"
+        messLanguage = MessageLanguage.FINNISH
+        +(CampaignType.GDPR)
     }
 
     private val spConfGdpr = config {
@@ -134,7 +142,7 @@ class MainActivityKotlinOldConsentTest {
         +(CampaignType.GDPR)
     }
 
-//    @Test
+    @Test
     fun GIVEN_an_old_CCPA_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
         val v6LocalState = JSONObject(TestData.storedConsentGdprCcap)
@@ -168,6 +176,7 @@ class MainActivityKotlinOldConsentTest {
             sp.contains("sp.key.local.state").assertTrue()
         }
 
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
@@ -182,7 +191,7 @@ class MainActivityKotlinOldConsentTest {
         }
     }
 
-//    @Test
+    @Test
     fun GIVEN_an_old_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
         val v6LocalState = JSONObject(TestData.storedConsentGdpr)
@@ -216,6 +225,7 @@ class MainActivityKotlinOldConsentTest {
             sp.contains("sp.key.local.state").assertTrue()
         }
 
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
@@ -228,7 +238,7 @@ class MainActivityKotlinOldConsentTest {
         }
     }
 
-//    @Test
+    @Test
     fun GIVEN_an_old_CCPAv6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
         val v6LocalState = JSONObject(TestData.storedConsentCcap)
@@ -262,6 +272,7 @@ class MainActivityKotlinOldConsentTest {
             sp.contains("sp.key.local.state").assertTrue()
         }
 
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
@@ -275,47 +286,51 @@ class MainActivityKotlinOldConsentTest {
         }
     }
 
-//    @Test
-    fun GIVEN_a_saved_consent_CLEAR_all_SDK_variables() = runBlocking<Unit> {
+    @Test
+    fun GIVEN_an_old_GDPR_FINNISH_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
+
+        val v6LocalState = JSONObject(TestData.storedConsentGdprFinnish)
 
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfGdpr,
-                gdprPmId = "488393",
+                spConfig = spConfGdprFinnish,
+                gdprPmId = "662122",
+                ccpaPmId = "-",
                 spClientObserver = listOf(spClient)
             )
         )
 
         scenario = launchActivity()
 
-        // make sure that there are not data in the sp
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                sp.edit().clear().commit()
-                sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
+        scenario.onActivity { activity ->
+            /**
+             * Store an old v6 localState
+             */
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            val spEditor = sp.edit()
+            v6LocalState.keys().forEach {
+                check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
+                check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
+                check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
             }
+            spEditor.apply()
+            // verify that before the migration the local state is present
+            sp.contains("sp.key.local.state").assertTrue()
         }
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
-
-        wr { clickOnClearConsent() }
-
-
-
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                val numberOfItemInSP = sp.all.size
-                numberOfItemInSP.assertEquals(1)
-                sp.getString(CLIENT_PREF_KEY, "").assertEquals(CLIENT_PREF_VAL)
-            }
-        }
-
+        wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
+        wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
 
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.contains("sp.key.local.state").assertFalse()
+            }
+        }
     }
 
     private fun <E> check(block: () -> E): E? {

@@ -14,6 +14,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import kotlinx.serialization.json.JsonObject
+import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 
@@ -22,7 +23,11 @@ class CampaignManagerTest {
     @MockK
     private lateinit var dataStorage: DataStorage
 
+    @MockK
     private lateinit var gdprConsent: GDPRConsentInternal
+
+    @MockK
+    private lateinit var ccpaConsent: CCPAConsentInternal
 
     @MockK
     private lateinit var gdpr: CampaignTemplate
@@ -55,8 +60,7 @@ class CampaignManagerTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
-        gdprConsent = GDPRConsentInternal(uuid = "uuid-test")
-        every { dataStorage.gdprConsentStatus }.returns(gdprConsent.toJsonObject().toString())
+        every { gdprConsent.thisContent }.returns(JSONObject())
         sut.clearConsents()
     }
 
@@ -92,25 +96,70 @@ class CampaignManagerTest {
             dataStorage,
             spConfig.copy(messageLanguage = MessageLanguage.ENGLISH)
         )
-        val config = sut.getPmConfig(CampaignType.GDPR, "11", PMTab.DEFAULT).getOrNull().assertNotNull()
-        config?.run {
+        val config = sut.getPmConfig(CampaignType.GDPR, "11", PMTab.DEFAULT).getOrNull().assertNotNull()!!
+        config.run {
             pmTab.assertEquals(PMTab.DEFAULT)
             consentLanguage.assertEquals("EN")
-            uuid.assertEquals(gdprConsent.uuid)
+            uuid.assertEquals("")
             siteId.assertEquals("9090")
             messageId.assertEquals("11")
         }
     }
 
     @Test
+    fun `GIVEN a GDPR config RETURN the configuration with language BG`() {
+        val sut = CampaignManager.create(
+            dataStorage,
+            spConfig.copy(messageLanguage = MessageLanguage.BULGARIAN)
+        )
+        val config = sut.getPmConfig(CampaignType.GDPR, "22", PMTab.PURPOSES).getOrNull().assertNotNull()!!
+
+        config.run {
+            pmTab.assertEquals(PMTab.PURPOSES)
+            consentLanguage.assertEquals("BG")
+            uuid.assertEquals("")
+            siteId.assertEquals("9090")
+            messageId.assertEquals("22")
+        }
+    }
+
+    @Test
+    fun `GIVEN a GDPR config RETURN the configuration with language ES`() {
+
+        every { dataStorage.gdprConsentUuid }.returns("uuid-test")
+
+        val sut = CampaignManager.create(
+            dataStorage,
+            spConfig.copy(messageLanguage = MessageLanguage.SPANISH)
+        )
+
+        val config = sut.getPmConfig(
+            campaignType = CampaignType.GDPR,
+            pmId = "22",
+            pmTab = PMTab.PURPOSES,
+            useGroupPmIfAvailable = true,
+            groupPmId = null
+        ).getOrNull().assertNotNull()!!
+
+        config.run {
+            pmTab.assertEquals(PMTab.PURPOSES)
+            consentLanguage.assertEquals("ES")
+            uuid.assertEquals("uuid-test")
+            siteId.assertEquals("9090")
+            messageId.assertEquals("22")
+        }
+    }
+
+    @Test
     fun `GIVEN a GDPR config RETURN the configuration with language NL and groupPmId not empty`() {
+
+        every { dataStorage.gdprConsentUuid }.returns("uuid")
         every { dataStorage.gdprChildPmId }.returns("8989")
 
         val sut = CampaignManager.create(
             dataStorage,
             spConfig.copy(messageLanguage = MessageLanguage.DUTCH)
         )
-        sut.gdprConsentStatus?.uuid = "uuid"
 
         val config = sut.getPmConfig(
             campaignType = CampaignType.GDPR,
@@ -123,7 +172,7 @@ class CampaignManagerTest {
         config.run {
             pmTab.assertEquals(PMTab.PURPOSES)
             consentLanguage.assertEquals("NL")
-            uuid.assertEquals("uuid-test")
+            uuid.assertEquals("uuid")
             siteId.assertEquals("9090")
             messageId.assertEquals("8989")
         }

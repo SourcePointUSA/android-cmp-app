@@ -3,9 +3,11 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_VERSION_KEY
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CONSENT_UUID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_AUTH_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_EMPTY_CONSENT_STRING
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_EMPTY_UUID
@@ -27,6 +29,9 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.KEY_GDPR_MESSAGE_SUBCATEGORY_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.META_DATA_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.USER_CONSENT_KEY
+import com.sourcepoint.cmplibrary.data.network.converter.fail
+import com.sourcepoint.cmplibrary.data.network.model.toGDPRUserConsent
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
@@ -42,9 +47,12 @@ internal interface DataStorageGdpr {
     var gdprApplies: Boolean
     var gdprChildPmId: String?
     var gdprPostChoiceResp: String?
+    var gdprConsentUuid: String?
     var gdprMessageMetaData: String?
 
     var tcData: Map<String, Any?>
+
+    var gdprDateCreated: String?
 
     var gdprSamplingValue: Double
     var gdprSamplingResult: Boolean?
@@ -67,6 +75,7 @@ internal interface DataStorageGdpr {
     fun clearAll()
 
     companion object {
+        const val CONSENT_UUID_KEY = "sp.gdpr.consentUUID"
         const val META_DATA_KEY = "sp.gdpr.metaData"
         const val EU_CONSENT_KEY = "sp.gdpr.euconsent"
         const val USER_CONSENT_KEY = "sp.gdpr.userConsent"
@@ -202,6 +211,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
     override fun clearInternalData() {
         preference
             .edit()
+            .remove(CONSENT_UUID_KEY)
             .remove(META_DATA_KEY)
             .remove(EU_CONSENT_KEY)
             .remove(AUTH_ID_KEY)
@@ -214,6 +224,15 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             preference
                 .edit()
                 .putString(GDPR_POST_CHOICE_RESP, value)
+                .apply()
+        }
+
+    override var gdprDateCreated: String?
+        get() = preference.getString(GDPR_DATE_CREATED, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(GDPR_DATE_CREATED, value)
                 .apply()
         }
 
@@ -241,6 +260,17 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             }
         }
 
+    override var gdprConsentUuid: String?
+        get() = preference.getString(CONSENT_UUID_KEY, null)
+        set(value) {
+            value?.let {
+                preference
+                    .edit()
+                    .putString(CONSENT_UUID_KEY, it)
+                    .apply()
+            }
+        }
+
     override var gdprMessageMetaData: String?
         get() = preference.getString(GDPR_MESSAGE_METADATA, null)
         set(value) {
@@ -254,6 +284,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         val listIABTCF = preference.all.filter { prefix -> prefix.key.startsWith(IABTCF_KEY_PREFIX) }.keys
         preference.edit()
             .apply {
+                remove(CONSENT_UUID_KEY)
                 remove(META_DATA_KEY)
                 remove(EU_CONSENT_KEY)
                 remove(USER_CONSENT_KEY)
@@ -301,4 +332,14 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .forEach { entry -> spEditor.remove(entry.key) }
         spEditor.apply()
     }
+
+    private fun fail(param: String): Nothing = throw RuntimeException("$param not fund in local storage.")
+}
+
+internal fun DataStorageGdpr.getGDPRConsent(): Either<GDPRConsentInternal> = check {
+    getGdprConsentResp()
+        .also { if (it == null || it.isBlank()) fail("GDPRConsent is not saved in the the storage!!") }
+        .let { JSONObject(it) }
+        .toTreeMap()
+        .toGDPRUserConsent(uuid = this.gdprConsentUuid, applies = this.gdprApplies)
 }

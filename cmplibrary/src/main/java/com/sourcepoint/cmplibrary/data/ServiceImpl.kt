@@ -14,8 +14,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disabl
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
-import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
@@ -32,8 +30,6 @@ import com.sourcepoint.cmplibrary.util.extensions.extractIncludeGppDataParamIfEl
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONArray
 import org.json.JSONObject
@@ -183,26 +179,15 @@ private class ServiceImpl(
 
             if (campaignManager.shouldCallMessages) {
 
-                val operatingSystemInfo = OperatingSystemInfoParam()
-
-                val localState = campaignManager.messagesOptimizedLocalState?.jsonObject
-                    ?: JsonObject(mapOf())
-
-                val body = MessagesBodyReq(
+                val body = getMessageBody(
                     accountId = messageReq.accountId,
-                    propertyHref = "https://${messageReq.propertyHref}",
-                    campaigns = campaignManager.campaigns4Config.toMetadataBody(
-                        gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus,
-                        ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
-                    ),
-                    campaignEnv = campaignManager.spConfig.campaignsEnv.env,
+                    propertyHref = messageReq.propertyHref,
+                    cs = campaignManager.gdprConsentStatus?.consentStatus,
+                    ccpaStatus = campaignManager.ccpaConsentStatus?.status?.name,
+                    campaigns = campaignManager.campaigns4Config,
                     consentLanguage = campaignManager.messageLanguage.value,
-                    hasCSP = false,
-                    includeData = IncludeData.generateIncludeDataForMessages(
-                        gppData = spConfig.extractIncludeGppDataParamIfEligible(),
-                    ),
-                    localState = localState,
-                    operatingSystem = operatingSystemInfo,
+                    campaignEnv = campaignManager.spConfig.campaignsEnv,
+                    includeDataGppParam = spConfig.extractIncludeGppDataParamIfEligible(),
                 )
 
                 val messagesParamReq = MessagesParamReq(
@@ -211,9 +196,10 @@ private class ServiceImpl(
                     authId = messageReq.authId,
                     propertyHref = messageReq.propertyHref,
                     env = messageReq.env,
-                    body = JsonConverter.converter.encodeToString(body),
+                    body = body.toString(),
                     metadataArg = metadataResponse.getOrNull()?.toMetaDataArg(),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
+                    localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
                 )
 
                 getMessages(messagesParamReq)
@@ -512,19 +498,25 @@ private class ServiceImpl(
 
     private fun triggerConsentStatus(messageReq: MessagesParamReq): Either<ConsentStatusResp> {
         val csParams = messageReq.toConsentStatusParamReq(
-            gdprUuid = campaignManager.gdprConsentStatus?.uuid,
-            ccpaUuid = campaignManager.ccpaConsentStatus?.uuid,
+            gdprUuid = campaignManager.gdprUuid,
+            ccpaUuid = campaignManager.ccpaUuid,
             localState = campaignManager.messagesOptimizedLocalState
         )
 
         return getConsentStatus(csParams)
-            .executeOnRight { consentStatusResponse ->
+            .executeOnRight {
                 campaignManager.apply {
-                    handleOldLocalData()
-                    messagesOptimizedLocalState = consentStatusResponse.localState
-                    consentStatusResponse.consentStatusData?.let { consentStatusData ->
-                        gdprConsentStatus = consentStatusData.gdpr
-                        ccpaConsentStatus = consentStatusData.ccpa
+                    campaignManager.handleOldLocalData()
+                    messagesOptimizedLocalState = it.localState
+                    it.consentStatusData?.let { csd ->
+                        // GDPR
+                        gdprConsentStatus = csd.gdpr
+                        gdprUuid = csd.gdpr?.uuid
+                        gdprDateCreated = csd.gdpr?.dateCreated
+                        // CCPA
+                        ccpaConsentStatus = csd.ccpa
+                        ccpaUuid = csd.ccpa?.uuid
+                        ccpaDateCreated = csd.ccpa?.dateCreated
                     }
                 }
             }

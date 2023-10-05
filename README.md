@@ -53,7 +53,7 @@ To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:7.2.6'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:7.3.0'
 }
 ```
 
@@ -922,7 +922,7 @@ Java
 
 ```java
 public class MainActivityJava extends AppCompatActivity {
-
+    
     private SpGppConfig sourcePointGppConfig = new SpGppConfig(
             SpGppOptionBinary.NO,
             SpGppOptionTernary.NOT_APPLICABLE,
