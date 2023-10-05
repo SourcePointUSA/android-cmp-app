@@ -15,7 +15,6 @@ import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
-import io.mockk.mockk
 import kotlinx.serialization.decodeFromString
 import org.json.JSONObject
 import org.junit.Test
