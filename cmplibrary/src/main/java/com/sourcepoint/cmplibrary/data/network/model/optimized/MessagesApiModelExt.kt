@@ -18,7 +18,7 @@ internal fun getMessageBody(
     ccpaStatus: String?,
     consentLanguage: String?,
     campaignEnv: CampaignsEnv?,
-
+    includeDataGppParam: IncludeDataGppParam?,
     os: OperatingSystemInfoParam = OperatingSystemInfoParam()
 ): JsonObject {
     return buildJsonObject {
@@ -34,8 +34,7 @@ internal fun getMessageBody(
             putJsonObject("webConsentPayload") {
                 put("type", "RecordString")
             }
-            // TODO
-            put("", JsonConverter.converter.encodeToJsonElement(IncludeDataGppParam()))
+            put("GPPData", JsonConverter.converter.encodeToJsonElement(includeDataGppParam))
         }
         put("propertyHref", "https://$propertyHref")
         put("hasCSP", true)
