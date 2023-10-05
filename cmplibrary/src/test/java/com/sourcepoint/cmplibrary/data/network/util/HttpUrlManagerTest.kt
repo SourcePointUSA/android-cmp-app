@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeDataGppParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.model.PMTab
@@ -14,6 +15,7 @@ import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
+import io.mockk.mockk
 import kotlinx.serialization.decodeFromString
 import org.json.JSONObject
 import org.junit.Test
@@ -288,7 +290,8 @@ class HttpUrlManagerTest {
             campaigns = list,
             ccpaStatus = null,
             consentLanguage = "ES",
-            campaignEnv = CampaignsEnv.STAGE
+            campaignEnv = CampaignsEnv.STAGE,
+            includeDataGppParam = IncludeDataGppParam()
         )
 
         val param = MessagesParamReq(

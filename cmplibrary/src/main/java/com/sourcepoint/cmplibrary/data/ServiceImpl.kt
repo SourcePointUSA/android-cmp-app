@@ -190,7 +190,8 @@ private class ServiceImpl(
                     ccpaStatus = campaignManager.ccpaConsentStatus?.status?.name,
                     campaigns = campaignManager.campaigns4Config,
                     consentLanguage = campaignManager.messageLanguage.value,
-                    campaignEnv = campaignManager.spConfig.campaignsEnv
+                    campaignEnv = campaignManager.spConfig.campaignsEnv,
+                    includeDataGppParam = spConfig.extractIncludeGppDataParamIfEligible(),
                 )
 
                 val messagesParamReq = MessagesParamReq(
