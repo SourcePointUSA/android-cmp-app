@@ -171,7 +171,7 @@ internal class RenderingAppConnectionTimeoutException @JvmOverloads constructor(
  */
 internal class NoInternetConnectionException @JvmOverloads constructor(
     cause: Throwable? = null,
-    description: String,
+    description: String = "No Internet connection.",
     isConsumed: Boolean = false
 ) : ConsentLibExceptionK(
     cause = cause,
@@ -202,13 +202,18 @@ internal class GenericSDKException @JvmOverloads constructor(
 internal class InvalidRequestException @JvmOverloads constructor(
     cause: Throwable? = null,
     description: String,
-    isConsumed: Boolean = false
+    isConsumed: Boolean = false,
+    apiRequestPostfix: String = "",
+    choice: String = "",
+    httpStatusCode: String = "",
 ) : ConsentLibExceptionK(
     cause = cause,
     description = description,
     isConsumed = isConsumed
 ) {
-    override val code: ExceptionCodes = CodeList.INVALID_REQUEST_ERROR
+    override val code: ExceptionCodes = ExceptionCodes(
+        errorCode = CodeList.INVALID_REQUEST_ERROR.errorCode + apiRequestPostfix + choice + httpStatusCode
+    )
 }
 
 /**
@@ -269,4 +274,41 @@ internal class InvalidConsentResponse @JvmOverloads constructor(
     isConsumed = isConsumed
 ) {
     override val code: ExceptionCodes = CodeList.INVALID_CONSENT_STATUS_RESPONSE
+}
+
+/**
+ * This exception is thrown when the SDK is not being able to parse the network response
+ */
+internal class UnableToParseResponseException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false,
+    apiRequestPostfix: String = "",
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed,
+) {
+    override val code: ExceptionCodes =
+        ExceptionCodes(CodeList.UNABLE_TO_PARSE_RESPONSE.errorCode + apiRequestPostfix)
+}
+
+/**
+ * This exception is thrown when the network request failed.
+ */
+internal class RequestFailedException @JvmOverloads constructor(
+    cause: Throwable? = null,
+    description: String,
+    isConsumed: Boolean = false,
+    apiRequestPostfix: String = "",
+    choice: String = "",
+    httpStatusCode: String = "",
+) : ConsentLibExceptionK(
+    cause = cause,
+    description = description,
+    isConsumed = isConsumed
+) {
+    override val code: ExceptionCodes = ExceptionCodes(
+        errorCode = CodeList.REQUEST_FAILED.errorCode + apiRequestPostfix + choice + httpStatusCode
+    )
 }

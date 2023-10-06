@@ -4,10 +4,10 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.ChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
@@ -33,7 +33,7 @@ internal interface HttpUrlManager {
     // Optimized
     fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
     fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
-    fun getChoiceUrl(param: ChoiceParamReq): HttpUrl
+    fun getChoiceUrl(param: GetChoiceParamReq): HttpUrl
     fun getGdprChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun getPvDataUrl(env: Env): HttpUrl
@@ -192,7 +192,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    override fun getChoiceUrl(param: ChoiceParamReq): HttpUrl {
+    override fun getChoiceUrl(param: GetChoiceParamReq): HttpUrl {
         // http://localhost:3000/wrapper/v2/choice
         // /consent-all
         // ?env=localProd
@@ -204,6 +204,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         // &metadata={"ccpa":{"applies":true}, "gdpr":{"applies":true}}
 
         val metaData: String? = param.metadataArg?.let { JsonConverter.converter.encodeToString(it) }
+        val includeData = JsonConverter.converter.encodeToString(param.includeData)
 
         return HttpUrl.Builder()
             .scheme("https")
@@ -213,11 +214,11 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("env", param.env.queryParam)
             .addQueryParameter("accountId", param.accountId.toString())
             .addQueryParameter("propertyId", param.propertyId.toString())
-            .addQueryParameter("hasCsp", true.toString())
-            .addQueryParameter("withSiteActions", false.toString())
-            .addQueryParameter("includeCustomVendorsRes", false.toString())
+            .addQueryParameter("hasCsp", param.hasCsp.toString())
+            .addQueryParameter("withSiteActions", param.withSiteActions.toString())
+            .addQueryParameter("includeCustomVendorsRes", param.includeCustomVendorsRes.toString())
             .addEncodedQueryParameter("metadata", metaData)
-            .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}, "webConsentPayload": {"type": "RecordString"}}""")
+            .addQueryParameter("includeData", includeData)
             .addQueryParameter("scriptType", scriptType)
             .addQueryParameter("scriptVersion", scriptVersion)
             .build()
@@ -235,7 +236,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
-
     override fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl {
         // http://localhost:3000/wrapper/v2/choice/ccpa/11?env=localProd&hasCsp=true
         return HttpUrl.Builder()
@@ -279,10 +279,8 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState.toString())
             .addEncodedQueryParameter("body", param.body)
             .addEncodedQueryParameter("metadata", metaData)
-            .addEncodedQueryParameter("localState", param.localState.toString())
             .addQueryParameter("scriptType", scriptType)
             .addQueryParameter("scriptVersion", scriptVersion)
-//            .addQueryParameter("cached", Date().time.toString()) // for caching tests
             .build()
     }
 }
