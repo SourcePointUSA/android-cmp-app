@@ -46,6 +46,7 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
                 is BaseState.StatePropertyList -> successState(it)
+                else -> {}
 //                is BaseState.StateError -> errorState(it)
 //                is BaseState.StateProperty -> updateProperty(it)
 //                is BaseState.StateLoading -> savingProperty(it.propertyName, it.loading)

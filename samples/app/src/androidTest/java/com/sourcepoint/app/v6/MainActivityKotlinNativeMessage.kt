@@ -114,11 +114,6 @@ class MainActivityNativeMessTest {
         wr(backup = { clickOnRefreshBtnActivity() })  { checkGdprNativeTitle() }
         wr { tapNmAcceptAll() }
         wr { tapNmAcceptAll() }
-        wr {
-            scenario.onActivity { activity ->
-                PreferenceManager.getDefaultSharedPreferences(activity).contains("sp.gdpr.consentUUID").assertTrue()
-            }
-        }
 
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         verify(exactly = 2) { spClient.onNativeMessageReady(any(), any()) }

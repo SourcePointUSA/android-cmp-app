@@ -165,6 +165,7 @@ class NativeMessageActivity : AppCompatActivity() {
                         NativeMessageActionType.ACCEPT_ALL -> setAcceptAllBtn(customLayout, a)
                         NativeMessageActionType.MSG_CANCEL -> setCancelBtn(customLayout, a)
                         NativeMessageActionType.SHOW_OPTIONS -> setOptionBtn(customLayout, a)
+                        else -> {}
                     }
                 }
             }
