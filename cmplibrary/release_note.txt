@@ -1,4 +1,14 @@
-* [DIA-2198](https://sourcepoint.atlassian.net/browse/DIA-2198) Manipulate CCPA consent string based on applies (#658)
-* [DIA-2243](https://sourcepoint.atlassian.net/browse/DIA-2243) Add tests to verify uspstring is being updated in the DataStorage (#656)
-* [DIA-2151](https://sourcepoint.atlassian.net/browse/DIA-2151) Removed singleShotPM from ConsentActionImpl (#657)
-* [DIA-2273](https://sourcepoint.atlassian.net/browse/DIA-2273) Removed actions var from GDPR (#652)
+* [DIA-2753] 400 Bad request when Passing authId (#702)
+* [DIA-2824] App crashes at second message load (#702)
+* [DIA-2784] Using an AuthId the pop up is always visualised  (#702)
+* [DIA-2840] Reformat and deprecation fix for manifest files (#702)
+* [DIA-2819] Fix of the migration from v6 to v7 (#699)
+* [DIA-2753] 404 from consent-status
+* [DIA-2555] Refactor network client (#677)
+* [DIA-2561] Crash fix for NPE in SPConsentLib (#679)
+* [DIA-2390] Store GPPData in the local storage (#680)
+* [DIA-2479] Allow user to set GPP Config (#683)
+* [DIA-2753] 404 from consent-status
+* [DIA-2710] Doc for GPP solution (#697)
+* [DIA-2628] Needs to handle no-internet better (#696)
+* [DIA-2646] Fix for GDPR applies (#698)

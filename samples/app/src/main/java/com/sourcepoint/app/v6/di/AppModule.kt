@@ -20,9 +20,8 @@ val customCategoriesDataStage = listOf("60657acc9c97c400122f21f3" to "Store and/
 
 val customVendorDataListProd = listOf("5e7ced57b8e05c485246cce0" to "Unruly Group LLC")
 val customCategoriesDataProd = listOf(
-    "608bad95d08d3112188e0e29" to "Store and/or access information on a device",
-    "608bad95d08d3112188e0e2f" to "Select basic ads"
-
+    "608bad95d08d3112188e0e29" to "Store and/or access information on a device cookies",
+    "608bad95d08d3112188e0e2f" to "Use limited data to select advertising cookies",
 )
 
 val appModule = module {

@@ -71,6 +71,7 @@ class DetailPropertyFragment : DetailsSupportFragment() {
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
                 is BaseState.StateProperty -> showProperty(it.property)
+                else -> {}
                 // TO DO handle error case
             }
         }

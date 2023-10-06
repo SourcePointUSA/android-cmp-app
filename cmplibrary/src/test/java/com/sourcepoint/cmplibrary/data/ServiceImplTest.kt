@@ -10,6 +10,7 @@ import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
@@ -66,13 +67,16 @@ class ServiceImplTest {
     private lateinit var execManager: ExecutorManager
 
     @MockK
+    private lateinit var connectionManager: ConnectionManager
+
+    @MockK
     private lateinit var successMockV7: (MessagesResp) -> Unit
 
     @MockK
     private lateinit var consentMockV7: () -> Unit
 
     @MockK
-    private lateinit var errorMock: (Throwable) -> Unit
+    private lateinit var errorMock: (Throwable, Boolean) -> Unit
 
     private val nativeCampaign = Campaign(
         accountId = 22,
@@ -92,6 +96,60 @@ class ServiceImplTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
+
+        every { connectionManager.isConnected } returns true
+    }
+
+    @Test
+    fun `sendCustomConsentServ - WHEN called with no Internet THEN should not proceed with the flow`() {
+        // GIVEN
+        val mockCustomConsentReq: CustomConsentReq = mockk()
+        val mockEnv = Env.PROD
+        every { connectionManager.isConnected } returns false
+
+        // WHEN
+        val service = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
+        service.sendCustomConsentServ(mockCustomConsentReq, mockEnv)
+
+        // THEN
+        verify(exactly = 0) { ncMock.sendCustomConsent(any(), any()) }
+    }
+
+    @Test
+    fun `deleteCustomConsentToServ - WHEN called with no Internet THEN should not proceed with the flow`() {
+        // GIVEN
+        val mockCustomConsentReq: CustomConsentReq = mockk()
+        val mockEnv = Env.PROD
+        every { connectionManager.isConnected } returns false
+
+        // WHEN
+        val service = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
+        service.deleteCustomConsentToServ(mockCustomConsentReq, mockEnv)
+
+        // THEN
+        verify(exactly = 0) { ncMock.deleteCustomConsentTo(any(), any()) }
+    }
+
+    @Test
+    fun `getMessages - WHEN called with no Internet THEN should not proceed with the flow`() {
+        // GIVEN
+        val mockMessagesParamReq: MessagesParamReq = mockk()
+        every { connectionManager.isConnected } returns false
+
+        // WHEN
+        val service = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
+        service.getMessages(
+            messageReq = mockMessagesParamReq,
+            showConsent = consentMockV7,
+            onSuccess = successMockV7,
+            onFailure = errorMock,
+        )
+
+        // THEN
+        verify(exactly = 0) { ncMock.getMetaData(any()) }
+        verify(exactly = 0) { ncMock.getConsentStatus(any()) }
+        verify(exactly = 0) { ncMock.getMessages(any()) }
+        verify(exactly = 0) { ncMock.postPvData(any()) }
     }
 
     @Test
@@ -102,7 +160,7 @@ class ServiceImplTest {
         every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
         every { ds.getGdprConsentResp() }.returns(storedConsent)
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
         val res = sut.sendCustomConsent(mockk(), Env.STAGE).getOrNull()!!
         res.content.getJSONObject("grants").toTreeMap()
             .assertEquals(JSONObject(newConsent).getJSONObject("grants").toTreeMap())
@@ -120,7 +178,7 @@ class ServiceImplTest {
         every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
         every { cm.gdprConsentStatus } answers { storedConsent }
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
         sut.sendCustomConsentServ(mockk(), Env.STAGE).getOrNull()!!
 
         verify(exactly = 1) {
@@ -143,7 +201,7 @@ class ServiceImplTest {
         every { ncMock.deleteCustomConsentTo(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
         every { cm.gdprConsentStatus } answers { storedConsent }
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
         sut.deleteCustomConsentToServ(mockk(), Env.STAGE).getOrNull()!!
 
         verify(exactly = 1) {
@@ -161,7 +219,7 @@ class ServiceImplTest {
         every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
         every { cm.gdprConsentStatus } answers { null }
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
         val res = sut.sendCustomConsentServ(mockk(), Env.STAGE)
         (res as? Left).assertNotNull()
     }
@@ -173,7 +231,7 @@ class ServiceImplTest {
         every { ncMock.deleteCustomConsentTo(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
         every { ds.getGdprConsentResp() }.throws(RuntimeException("test"))
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
         val res = sut.sendCustomConsentServ(mockk(), Env.STAGE)
         (res as? Left).assertNotNull()
     }
@@ -188,8 +246,13 @@ class ServiceImplTest {
         every { cm.shouldCallConsentStatus }.returns(true)
         every { cm.spConfig }.returns(spConfig)
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
+        sut.getMessages(
+            messageReq = messagesParamReq,
+            showConsent = consentMockV7,
+            onSuccess = successMockV7,
+            onFailure = errorMock,
+        )
 
 //        verify(exactly = 0) { errorMock(any()) }
         verify(exactly = 1) { ncMock.getConsentStatus(any()) }
@@ -209,8 +272,13 @@ class ServiceImplTest {
         every { cm.shouldCallConsentStatus }.returns(true)
         every { cm.spConfig }.returns(spConfig)
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
-        sut.getMessages(messageReq = messagesParamReq, showConsent = consentMockV7, pSuccess = successMockV7, pError = errorMock)
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
+        sut.getMessages(
+            messageReq = messagesParamReq,
+            showConsent = consentMockV7,
+            onSuccess = successMockV7,
+            onFailure = errorMock,
+        )
 
         // TODO
     }
@@ -223,15 +291,15 @@ class ServiceImplTest {
 
         every { ncMock.getMetaData(any()) }.returns(Left(RuntimeException()))
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
         sut.getMessages(
             messageReq = messagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
-            pError = errorMock
+            onSuccess = successMockV7,
+            onFailure = errorMock,
         )
 
-        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 1) { errorMock(any(), any()) }
         verify(exactly = 0) { successMockV7(any()) }
         verify(exactly = 0) { consentMockV7() }
     }
@@ -239,18 +307,28 @@ class ServiceImplTest {
     @Test
     fun `GIVEN a Left during getMetaData req CALL onError`() {
 
+        val mockCampaignsList = listOf(
+            SpCampaign(
+                campaignType = CampaignType.GDPR
+            ),
+            SpCampaign(
+                campaignType = CampaignType.CCPA
+            ),
+        )
+
+        every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { ncMock.getMetaData(any()) }.returns(Right(mockMetaDataResp))
         every { ncMock.getConsentStatus(any()) }.returns(Left(RuntimeException()))
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
         sut.getMessages(
             messageReq = messagesParamReq.copy(authId = "test"),
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
-            pError = errorMock
+            onSuccess = successMockV7,
+            onFailure = errorMock,
         )
 
-        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 1) { errorMock(any(), any()) }
         verify(exactly = 0) { successMockV7(any()) }
         verify(exactly = 0) { consentMockV7() }
     }
@@ -258,23 +336,36 @@ class ServiceImplTest {
     @Test
     fun `GIVEN a Left object during the getConsentStatus req CALL the error cb`() {
 
+        val mockMessagesParamReq = messagesParamReq.copy(
+            authId = "mock_auth_id"
+        )
+        val mockCampaignsList = listOf(
+            SpCampaign(
+                campaignType = CampaignType.GDPR
+            ),
+            SpCampaign(
+                campaignType = CampaignType.CCPA
+            ),
+        )
+        every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { ncMock.getMetaData(any()) }.returns(Right(mockMetaDataResp))
         every { ncMock.getConsentStatus(any()) }.returns(Right(mockConsentStatusResp))
         every { ncMock.getMessages(any()) }.returns(Left(RuntimeException()))
+        every { cm.messageLanguage } returns MessageLanguage.ENGLISH
         every { cm.shouldCallMessages }.returns(true)
         every { cm.messagesOptimizedLocalState }.returns(JsonObject(emptyMap()))
         every { cm.nonKeyedLocalState }.returns(JsonObject(emptyMap()))
         every { cm.campaigns4Config }.returns(emptyList())
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
         sut.getMessages(
-            messageReq = messagesParamReq,
+            messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
-            pError = errorMock
+            onSuccess = successMockV7,
+            onFailure = errorMock,
         )
 
-        verify(exactly = 1) { errorMock(any()) }
+        verify(exactly = 1) { errorMock(any(), any()) }
         verify(exactly = 0) { successMockV7(any()) }
         verify(exactly = 0) { consentMockV7() }
     }
@@ -307,26 +398,22 @@ class ServiceImplTest {
         every { cmu.shouldTriggerByGdprSample } returns true
         every { cmu.shouldTriggerByCcpaSample } returns true
         every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
-        every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
-        every { ncMock.savePvData(any()) } returns Right(mockPvDataResp)
-        val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
+
+        val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
         service.getMessages(
             messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
-            pError = errorMock
+            onSuccess = successMockV7,
+            onFailure = errorMock,
         )
 
         // THEN
         verify(exactly = 1) { ncMock.getMetaData(any()) }
         verify(exactly = 1) { ncMock.getConsentStatus(any()) }
         verify(exactly = 1) { ncMock.getMessages(any()) }
-        verify(exactly = 2) { ncMock.savePvData(any()) }
-        verify(exactly = 2) { cm.gdprUuid = any() }
-        verify(exactly = 2) { cm.ccpaUuid = any() }
-        cm.gdprConsentStatus?.uuid.assertEquals(cm.gdprUuid)
-        cm.ccpaConsentStatus?.uuid.assertEquals(cm.ccpaUuid)
+        verify(exactly = 2) { ncMock.postPvData(any()) }
     }
 
     /**
@@ -358,20 +445,20 @@ class ServiceImplTest {
         every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
         every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
-        every { ncMock.savePvData(any()) } returns Right(mockPvDataResp)
-        val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager())
+        every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
+        val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
         service.getMessages(
             messageReq = mockMessagesParamReq,
             showConsent = consentMockV7,
-            pSuccess = successMockV7,
-            pError = errorMock
+            onSuccess = successMockV7,
+            onFailure = errorMock,
         )
 
         // THEN
         verify(exactly = 1) { ncMock.getMetaData(any()) }
         verify(exactly = 1) { ncMock.getConsentStatus(any()) }
         verify(exactly = 1) { ncMock.getMessages(any()) }
-        verify(exactly = 2) { ncMock.savePvData(any()) }
+        verify(exactly = 2) { ncMock.postPvData(any()) }
         verify(atLeast = 2) { cm.ccpaConsentStatus = any() }
     }
 }

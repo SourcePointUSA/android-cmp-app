@@ -14,7 +14,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -30,7 +30,6 @@ import org.json.JSONObject
 import java.time.Instant
 
 internal interface CampaignManager {
-
     val spConfig: SpConfig
     val messageLanguage: MessageLanguage
     val campaigns4Config: List<CampaignReq>
@@ -93,8 +92,6 @@ internal interface CampaignManager {
 
     fun handleMetaDataResponse(response: MetaDataResp?)
     fun handleOldLocalData()
-    fun getGdprChoiceBody(): JsonObject
-    fun getCcpaChoiceBody(): JsonObject
     fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
 
@@ -121,7 +118,6 @@ private class CampaignManagerImpl(
     override val messageLanguage: MessageLanguage = spConfig.messageLanguage
 
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
-    private val campaignsEnv: CampaignsEnv = spConfig.campaignsEnv
     val logger: Logger? = spConfig.logger
 
     init {
@@ -230,9 +226,6 @@ private class CampaignManagerImpl(
         useGroupPmIfAvailable: Boolean,
         groupPmId: String?
     ): Either<PmUrlConfig> = check {
-        val uuid = dataStorage.gdprConsentUuid
-        val siteId = spConfig.propertyId.toString()
-
         val childPmId: String? = dataStorage.gdprChildPmId
         val isChildPmIdAbsent: Boolean = childPmId == null
         val hasGroupPmId: Boolean = groupPmId != null
@@ -272,16 +265,13 @@ private class CampaignManagerImpl(
         PmUrlConfig(
             pmTab = pmTab,
             consentLanguage = spConfig.messageLanguage.value,
-            uuid = uuid,
-            siteId = siteId,
+            uuid = gdprUuid,
+            siteId = spConfig.propertyId.toString(),
             messageId = usedPmId
         )
     }
 
     private fun getCcpaPmConfig(pmId: String?): Either<PmUrlConfig> = check {
-        val uuid = dataStorage.ccpaConsentUuid
-        val siteId = spConfig.propertyId.toString()
-
         val childPmId: String? = dataStorage.ccpaChildPmId
         val isChildPmIdAbsent: Boolean = childPmId == null
         val hasGroupPmId = false // feature not yet implemented
@@ -301,15 +291,10 @@ private class CampaignManagerImpl(
 
         val usedPmId = childPmId ?: pmId
 
-//        logger?.computation(
-//            tag = "Property group - CCPA PM",
-//            msg = "pmId[$pmId] - childPmId[$childPmId] -> used[$usedPmId]"
-//        )
-
         PmUrlConfig(
             consentLanguage = spConfig.messageLanguage.value,
-            uuid = uuid,
-            siteId = siteId,
+            uuid = ccpaUuid,
+            siteId = spConfig.propertyId.toString(),
             messageId = usedPmId
         )
     }
@@ -386,7 +371,7 @@ private class CampaignManagerImpl(
         get() {
             val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
             return messagesOptimizedLocalState == null || localStateSize == 0 || (
-                dataStorage.gdprConsentUuid == null &&
+                gdprUuid == null &&
                     (ccpaConsentStatus?.newUser == null || ccpaConsentStatus?.newUser == true)
                 )
         }
@@ -490,6 +475,7 @@ private class CampaignManagerImpl(
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.ccpaConsentStatus = serialised
+            dataStorage.gppData = value?.gppData
 
             // regenerate and update US privacy string with new values in the data storage
             dataStorage.uspstring = generateCcpaUspString(
@@ -569,6 +555,10 @@ private class CampaignManagerImpl(
 
         // handle gdpr
         response.gdpr?.apply {
+            gdprConsentStatus?.let { gdprCS ->
+                val updatedGdprConsentStatus = gdprCS.copy(applies = applies)
+                gdprConsentStatus = updatedGdprConsentStatus
+            }
             applies?.let { i -> dataStorage.gdprApplies = i }
             childPmId?.let { i -> dataStorage.gdprChildPmId = i }
             sampleRate?.let { i ->
@@ -636,28 +626,6 @@ private class CampaignManagerImpl(
             dataStorage.dataRecordedConsent = value?.toString()
         }
 
-    override fun getGdprChoiceBody(): JsonObject {
-        return toGdprChoiceBody(
-            accountId = spConfig.accountId,
-            propertyId = spConfig.propertyId,
-            gdprCs = gdprConsentStatus?.consentStatus,
-            gdprMessageMetaData = gdprMessageMetaData,
-            gdprApplies = dataStorage.gdprApplies,
-            sampleRate = dataStorage.gdprSamplingValue
-        )
-    }
-
-    override fun getCcpaChoiceBody(): JsonObject {
-        return toCcpaChoiceBody(
-            accountId = spConfig.accountId,
-            propertyId = spConfig.propertyId,
-            gdprCs = gdprConsentStatus?.consentStatus,
-            gdprMessageMetaData = gdprMessageMetaData,
-            gdprApplies = dataStorage.gdprApplies,
-            sampleRate = dataStorage.gdprSamplingValue
-        )
-    }
-
     override fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject {
         return toPvDataBody(
             accountId = messageReq.accountId,
@@ -667,7 +635,7 @@ private class CampaignManagerImpl(
             gdprApplies = dataStorage.gdprApplies,
             ccpaApplies = dataStorage.ccpaApplies,
             pubData = messageReq.pubData,
-            gdprCs = gdprConsentStatus?.consentStatus,
+            gdprCs = gdprConsentStatus,
             ccpaCS = null,
         )
     }

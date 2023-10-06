@@ -11,6 +11,7 @@ import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.* // ktlint-disable
 
@@ -82,6 +83,21 @@ private class ConsentManagerUtilsImpl(
                 updatedCS.consentedAll = false
             }
         }
+
+        val shouldReconsent = creationLessThanAdditions || creationLessThanLegalBasis
+
+        val map = mapOf(
+            "dataRecordedConsentDate" to "$dataRecordedConsentDate",
+            "additionsChangeDateDate" to "$additionsChangeDateDate",
+            "legalBasisChangeDateConsentDate" to "$legalBasisChangeDateConsentDate",
+            "creationLessThanAdditions OR creationLessThanLegalBasis" to "$shouldReconsent",
+        )
+
+        logger.computation(
+            tag = "Reconsent updateGdprConsent",
+            msg = JSONObject(map).toString(),
+            json = JSONObject(map)
+        )
 
         return updatedCS
     }
