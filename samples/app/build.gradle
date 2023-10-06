@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android-extensions'
 apply from: rootDir.path + '/gradleutils/test_config.gradle'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.sourcepoint.app.v6"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 29
         versionCode 2
         versionName "1.0.0"
         multiDexEnabled true
@@ -20,15 +20,26 @@ android {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 
+//    signingConfigs {
+//        debug4test {
+//            storeFile = file("../../keystore4tests.jks")
+//            storePassword = "123456"
+//            keyAlias = "testalias"
+//            keyPassword = "123456"
+//            v2SigningEnabled = true
+//        }
+//    }
+
     buildTypes {
-        debug {
+        debug{
             applicationIdSuffix ".debug"
+//            signingConfig = signingConfigs.debug4test
         }
-        localProd {
+        localProd{
             initWith debug
             applicationIdSuffix ".localProd"
         }
-        preprod {
+        preprod{
             initWith debug
             applicationIdSuffix ".preprod"
         }

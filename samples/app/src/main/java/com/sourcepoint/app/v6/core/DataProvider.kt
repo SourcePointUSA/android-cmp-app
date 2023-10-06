@@ -35,7 +35,7 @@ fun DataProvider.Companion.create(
     gdprPmId = gdprPmId,
     useGdprGroupPmIfAvailable = useGdprGroupPmIfAvailable,
     ccpaPmId = ccpaPmId,
-    authId = authId,
+    pAuthId = authId,
     customCategories = customCategories,
     customVendorList = customVendorList
 )
@@ -51,11 +51,17 @@ private class DataProviderImpl(
     override val resetAll: Boolean = false,
     override val storeStateGdpr: Boolean = false,
     override val storeStateCcpa: Boolean = false,
-    override val authId: String? = null
+    val pAuthId: String?
 ) : DataProvider {
 
     val sharedPref: SharedPreferences by lazy {
         context.getSharedPreferences("myshared", Context.MODE_PRIVATE)
+    }
+
+    init {
+        pAuthId?.let {
+            sharedPref.edit().putString(AUTH_ID_KEY, it).apply()
+        }
     }
 
     companion object {
@@ -64,4 +70,13 @@ private class DataProviderImpl(
 
     override val url: String
         get() = "https://carmelo-iriti.github.io/authid.github.io"
+
+    override val authId: String
+        get() {
+            if (!sharedPref.contains(AUTH_ID_KEY)) {
+                val uniqueID = UUID.randomUUID().toString()
+                sharedPref.edit().putString(AUTH_ID_KEY, uniqueID).apply()
+            }
+            return sharedPref.getString(AUTH_ID_KEY, "") ?: ""
+        }
 }

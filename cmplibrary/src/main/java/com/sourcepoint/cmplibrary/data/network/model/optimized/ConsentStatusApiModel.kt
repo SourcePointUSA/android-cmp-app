@@ -50,35 +50,21 @@ data class ConsentStatusResp(
 
 @Serializable
 data class CcpaCS(
-    @SerialName("applies")
-    val applies: Boolean?,
-    @SerialName("ccpaApplies")
-    val ccpaApplies: Boolean?,
-    @SerialName("consentedAll")
-    val consentedAll: Boolean?,
-    @SerialName("dateCreated")
-    val dateCreated: String?,
-    @SerialName("gpcEnabled")
-    val gpcEnabled: Boolean?,
-    @SerialName("newUser")
-    val newUser: Boolean?,
-    @SerialName("rejectedAll")
-    val rejectedAll: Boolean?,
-    @SerialName("rejectedCategories")
-    val rejectedCategories: List<String>?,
-    @SerialName("rejectedVendors")
-    val rejectedVendors: List<String>?,
-    @SerialName("signedLspa")
-    val signedLspa: Boolean?,
-    @Serializable(with = CcpaStatusSerializer::class)
-    val status: CcpaStatus?,
-    @SerialName("GPPData")
-    @Serializable(with = JsonMapSerializer::class)
-    val gppData: Map<String, JsonElement>? = null,
-    @SerialName("uuid")
-    var uuid: String?,
-    @SerialName("webConsentPayload")
-    val webConsentPayload: JsonObject? = null,
+    @SerialName("actions") val actions: List<Action>?,
+    @SerialName("applies") val applies: Boolean?,
+    @SerialName("ccpaApplies") val ccpaApplies: Boolean?,
+    @SerialName("consentedAll") val consentedAll: Boolean?,
+    @SerialName("cookies") val cookies: List<Cooky>?,
+    @SerialName("dateCreated") val dateCreated: String?,
+    @SerialName("gpcEnabled") val gpcEnabled: Boolean?,
+    @SerialName("newUser") val newUser: Boolean?,
+    @SerialName("rejectedAll") val rejectedAll: Boolean?,
+    @SerialName("rejectedCategories") val rejectedCategories: List<String>?,
+    @SerialName("rejectedVendors") val rejectedVendors: List<String>?,
+    @SerialName("signedLspa") val signedLspa: Boolean?,
+    @Serializable(with = CcpaStatusSerializer::class) val status: CcpaStatus?,
+    @SerialName("uuid") val uuid: String?,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
 ) {
 
     val uspstring: String
@@ -91,52 +77,31 @@ data class CcpaCS(
 
 @Serializable
 data class GdprCS(
-    @SerialName("applies")
-    val applies: Boolean?,
-    @SerialName("gdprApplies")
-    val gdprApplies: Boolean?,
-    @SerialName("categories")
-    val categories: List<String>?,
-    @SerialName("consentAllRef")
-    val consentAllRef: String?,
-    @SerialName("consentedToAll")
-    val consentedToAll: Boolean?,
-    @SerialName("legIntCategories")
-    val legIntCategories: List<String>?,
-    @SerialName("legIntVendors")
-    val legIntVendors: List<String>?,
-    @SerialName("postPayload")
-    val postPayload: PostPayload?,
-    @SerialName("rejectedAny")
-    val rejectedAny: Boolean?,
-    @SerialName("specialFeatures")
-    val specialFeatures: List<String>?,
-    @SerialName("vendors")
-    val vendors: List<String>?,
-    @SerialName("addtlConsent")
-    val addtlConsent: String?,
-    @SerialName("consentStatus")
-    val consentStatus: ConsentStatus?,
-    @SerialName("cookieExpirationDays")
-    val cookieExpirationDays: Int?,
-    @SerialName("customVendorsResponse")
-    val customVendorsResponse: CustomVendorsResponse?,
-    @SerialName("dateCreated")
-    val dateCreated: String?,
-    @SerialName("euconsent")
-    val euconsent: String?,
-    @Serializable(with = GrantsSerializer::class)
-    val grants: Map<String, GDPRPurposeGrants>?,
-    @Serializable(with = JsonMapSerializer::class)
-    val TCData: Map<String, JsonElement>?,
-    @SerialName("localDataCurrent")
-    val localDataCurrent: Boolean?,
-    @SerialName("uuid")
-    var uuid: String?,
-    @SerialName("vendorListId")
-    val vendorListId: String?,
-    @SerialName("webConsentPayload")
-    val webConsentPayload: JsonObject? = null,
+    @SerialName("applies") val applies: Boolean?,
+    @SerialName("gdprApplies") val gdprApplies: Boolean?,
+    @SerialName("categories") val categories: List<String>?,
+    @SerialName("consentAllRef") val consentAllRef: String?,
+    @SerialName("consentedToAll") val consentedToAll: Boolean?,
+    @SerialName("cookies") val cookies: List<Cooky>?,
+    @SerialName("legIntCategories") val legIntCategories: List<String>?,
+    @SerialName("legIntVendors") val legIntVendors: List<String>?,
+    @SerialName("postPayload") val postPayload: PostPayload?,
+    @SerialName("rejectedAny") val rejectedAny: Boolean?,
+    @SerialName("specialFeatures") val specialFeatures: List<String>?,
+    @SerialName("vendors") val vendors: List<String>?,
+    @SerialName("addtlConsent") val addtlConsent: String?,
+    @SerialName("consentStatus") val consentStatus: ConsentStatus?,
+    @SerialName("consentUUID") val consentUUID: String?,
+    @SerialName("cookieExpirationDays") val cookieExpirationDays: Int?,
+    @SerialName("customVendorsResponse") val customVendorsResponse: CustomVendorsResponse?,
+    @SerialName("dateCreated") val dateCreated: String?,
+    @SerialName("euconsent") val euconsent: String?,
+    @Serializable(with = GrantsSerializer::class) val grants: Map<String, GDPRPurposeGrants>?,
+    @Serializable(with = TcDataSerializer::class) val TCData: Map<String, JsonElement>?,
+    @SerialName("localDataCurrent") val localDataCurrent: Boolean?,
+    @SerialName("uuid") val uuid: String?,
+    @SerialName("vendorListId") val vendorListId: String?,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
 ) {
 
     @Serializable
@@ -172,3 +137,23 @@ data class GdprCS(
         )
     }
 }
+
+@Serializable
+data class Action(
+    @SerialName("_id") val id: String?,
+    @SerialName("js") val js: String?,
+    @SerialName("onStatusChangeOnly") val onStatusChangeOnly: Boolean?,
+    @SerialName("tagManager") val tagManager: JsonElement?,
+    @SerialName("type") val type: String?,
+    @SerialName("url") val url: String?
+)
+
+@Serializable
+data class Cooky(
+    @SerialName("key") val key: String?,
+    @SerialName("maxAge") val maxAge: Int?,
+    @SerialName("session") val session: Boolean?,
+    @SerialName("shareRootDomain") val shareRootDomain: Boolean?,
+    @SerialName("value") val value: String?,
+    @SerialName("setPath") val setPath: Boolean?,
+)

@@ -7,19 +7,19 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disab
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
-import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.CodeList
 import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
+import com.sourcepoint.cmplibrary.exception.NetworkCallErrorsCode
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockLogger
 import com.sourcepoint.cmplibrary.util.file2String
-import io.mockk.* // ktlint-disable
+import io.mockk.* //ktlint-disable
 import io.mockk.impl.annotations.MockK
-import kotlinx.serialization.json.* // ktlint-disable
+import kotlinx.serialization.json.* //ktlint-disable
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -233,7 +233,7 @@ class NetworkClientImplTest {
         )
 
         val res = sut.getMetaData(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.META_DATA.apiPostfix)
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.META_DATA.code)
     }
 
     @Test
@@ -252,7 +252,7 @@ class NetworkClientImplTest {
         )
 
         val res = sut.getConsentStatus(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.CONSENT_STATUS.apiPostfix)
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.CONSENT_STATUS.code)
     }
 
     @Test
@@ -273,7 +273,7 @@ class NetworkClientImplTest {
         )
 
         val res = sut.getMessages(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.MESSAGES.apiPostfix)
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.MESSAGES.code)
     }
 
     @Test
@@ -289,8 +289,8 @@ class NetworkClientImplTest {
             campaignType = CampaignType.GDPR
         )
 
-        val res = sut.postPvData(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.PV_DATA.apiPostfix)
+        val res = sut.savePvData(param) as? Either.Left
+        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + NetworkCallErrorsCode.PV_DATA.code)
     }
 
     @Test
