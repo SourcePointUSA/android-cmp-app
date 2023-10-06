@@ -4,18 +4,24 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_DATE_CREATED
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_MESSAGE_METADATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_POST_CHOICE_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_SAMPLING_RESULT
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_SAMPLING_VALUE
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_STATUS
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CONSENT_CCPA_UUID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_APPLIES
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_CHILD_PM_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_MESSAGE_SUBCATEGORY
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_CCPA_OLD
+import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_IABGPP_PREFIX
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.KEY_IAB_US_PRIVACY_STRING
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.intOrNull
+import java.util.* // ktlint-disable
 
 internal interface DataStorageCcpa {
 
@@ -26,9 +32,14 @@ internal interface DataStorageCcpa {
     var ccpaPostChoiceResp: String?
     var ccpaStatus: String?
     var ccpaMessageMetaData: String?
+    var ccpaConsentUuid: String?
+
+    var ccpaDateCreated: String?
 
     var ccpaSamplingValue: Double
     var ccpaSamplingResult: Boolean?
+
+    var gppData: Map<String, Any?>?
 
     fun saveCcpa(value: String)
     fun saveCcpaConsentResp(value: String)
@@ -39,6 +50,7 @@ internal interface DataStorageCcpa {
     fun getCcpaConsentResp(): String?
     fun getCcpaMessage(): String
     fun clearCcpaConsent()
+    fun clearGppData()
     fun clearAll()
 
     companion object {
@@ -48,11 +60,14 @@ internal interface DataStorageCcpa {
         const val KEY_CCPA_CHILD_PM_ID = "sp.ccpa.key.childPmId"
         const val CCPA_CONSENT_RESP = "sp.ccpa.consent.resp"
         const val CCPA_JSON_MESSAGE = "sp.ccpa.json.message"
+        const val CONSENT_CCPA_UUID_KEY = "sp.ccpa.consentUUID"
         const val KEY_IAB_US_PRIVACY_STRING = "IABUSPrivacy_String"
+        const val KEY_IABGPP_PREFIX = "IABGPP_"
         const val KEY_CCPA_MESSAGE_SUBCATEGORY = "sp.ccpa.key.message.subcategory"
         const val CCPA_POST_CHOICE_RESP = "sp.ccpa.key.post.choice"
         const val CCPA_STATUS = "sp.ccpa.key.v7.status"
         const val CCPA_MESSAGE_METADATA = "sp.ccpa.key.message.metadata"
+        const val CCPA_DATE_CREATED = "sp.ccpa.key.date.created"
         const val CCPA_SAMPLING_VALUE = "sp.ccpa.key.sampling"
         const val CCPA_SAMPLING_RESULT = "sp.ccpa.key.sampling.result"
     }
@@ -104,6 +119,28 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
                 .apply()
         }
 
+    override var ccpaConsentUuid: String?
+        get() = preference.getString(CONSENT_CCPA_UUID_KEY, null)
+        set(value) {
+            value?.let {
+                preference
+                    .edit()
+                    .putString(CONSENT_CCPA_UUID_KEY, it)
+                    .apply()
+            }
+        }
+
+    override var ccpaDateCreated: String?
+        get() = preference.getString(CCPA_DATE_CREATED, null)
+        set(value) {
+            value?.let {
+                preference
+                    .edit()
+                    .putString(CCPA_DATE_CREATED, it)
+                    .apply()
+            }
+        }
+
     override var ccpaSamplingValue: Double
         get() = preference.getFloat(CCPA_SAMPLING_VALUE, 1.0F).toDouble()
         set(value) {
@@ -132,6 +169,49 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
                     .apply()
             }
         }
+
+    override var gppData: Map<String, Any?>?
+        get() {
+            val result = TreeMap<String, Any?>()
+            preference.all
+                .filter { it.key.startsWith(KEY_IABGPP_PREFIX) }
+                .forEach { result[it.key] = it.value }
+            return if (result.isEmpty()) null else result
+        }
+        set(value) {
+            clearGppData()
+            val editor = preference.edit()
+            value?.forEach { entry ->
+                val primitive = entry.value as? JsonPrimitive
+                val isString = primitive?.isString ?: false
+                if (isString) {
+                    primitive?.content?.let {
+                        editor.putString(entry.key, it)
+                    }
+                } else {
+                    primitive?.intOrNull?.let {
+                        editor.putInt(entry.key, it)
+                    }
+                }
+            }
+            editor.apply()
+        }
+
+    /**
+     * Method that clears out all the locally stored values of the GPP data. Since the response of
+     * the GPP data is not static (meaning that we don't know how many parameters are there in the
+     * response) we should find each and every entry with a proper prefix and delete it.
+     */
+    override fun clearGppData() {
+
+        val gppKeysList = preference.all.filter { entry ->
+            entry.key.startsWith(KEY_IABGPP_PREFIX)
+        }.keys
+
+        preference.edit().apply {
+            gppKeysList.forEach { gppKey -> remove(gppKey) }
+        }.apply()
+    }
 
     override fun saveCcpaMessage(value: String) {
         preference
@@ -188,6 +268,7 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         }
 
     override fun clearAll() {
+        clearGppData()
         preference
             .edit()
             .remove(KEY_CCPA)
@@ -195,12 +276,14 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             .remove(KEY_CCPA_APPLIES)
             .remove(CCPA_CONSENT_RESP)
             .remove(CCPA_JSON_MESSAGE)
+            .remove(CONSENT_CCPA_UUID_KEY)
             .remove(KEY_CCPA_CHILD_PM_ID)
             .remove(KEY_IAB_US_PRIVACY_STRING)
             .remove(KEY_CCPA_MESSAGE_SUBCATEGORY)
             .remove(CCPA_POST_CHOICE_RESP)
             .remove(CCPA_STATUS)
             .remove(CCPA_MESSAGE_METADATA)
+            .remove(CCPA_DATE_CREATED)
             .remove(CCPA_SAMPLING_VALUE)
             .remove(CCPA_SAMPLING_RESULT)
             .apply()

@@ -6,30 +6,30 @@ import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
-import com.sourcepoint.cmplibrary.data.network.converter.toMapOfAny
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
-import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.MessagesBodyReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
+import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.extensions.extractIncludeGppDataParamIfEligible
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
+import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONArray
 import org.json.JSONObject
@@ -48,8 +48,9 @@ internal fun Service.Companion.create(
     consentManagerUtils: ConsentManagerUtils,
     dataStorage: DataStorage,
     logger: Logger,
-    execManager: ExecutorManager
-): Service = ServiceImpl(nc, campaignManager, consentManagerUtils, dataStorage, logger, execManager)
+    execManager: ExecutorManager,
+    connectionManager: ConnectionManager,
+): Service = ServiceImpl(nc, campaignManager, consentManagerUtils, dataStorage, logger, execManager, connectionManager)
 
 /**
  * Implementation os the [Service] interface
@@ -60,7 +61,8 @@ private class ServiceImpl(
     private val consentManagerUtils: ConsentManagerUtils,
     private val dataStorage: DataStorage,
     private val logger: Logger,
-    private val execManager: ExecutorManager
+    private val execManager: ExecutorManager,
+    private val connectionManager: ConnectionManager,
 ) : Service, NetworkClient by networkClient, CampaignManager by campaignManager {
 
     private fun JSONArray.toArrayList(): ArrayList<String> {
@@ -72,6 +74,8 @@ private class ServiceImpl(
     }
 
     override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<GdprCS> = check {
+        if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
+
         networkClient.sendCustomConsent(customConsentReq, env)
             .map {
                 if (campaignManager.gdprConsentStatus == null) {
@@ -98,6 +102,8 @@ private class ServiceImpl(
     }
 
     override fun deleteCustomConsentToServ(customConsentReq: CustomConsentReq, env: Env): Either<GdprCS> = check {
+        if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
+
         networkClient.deleteCustomConsentTo(customConsentReq, env)
             .map {
                 if (campaignManager.gdprConsentStatus == null) {
@@ -130,6 +136,12 @@ private class ServiceImpl(
     ) {
         execManager.executeOnWorkerThread {
             campaignManager.authId = messageReq.authId
+
+            if (connectionManager.isConnected.not()) {
+                val noInternetConnectionException = NoInternetConnectionException()
+                onFailure(noInternetConnectionException, true)
+                return@executeOnWorkerThread
+            }
 
             val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq(campaigns4Config))
                 .executeOnLeft { metaDataError ->
@@ -167,24 +179,15 @@ private class ServiceImpl(
 
             if (campaignManager.shouldCallMessages) {
 
-                val operatingSystemInfo = OperatingSystemInfoParam()
-
-                val localState = campaignManager.messagesOptimizedLocalState?.jsonObject
-                    ?: JsonObject(mapOf())
-
-                val body = MessagesBodyReq(
+                val body = getMessageBody(
                     accountId = messageReq.accountId,
-                    propertyHref = "https://${messageReq.propertyHref}",
-                    campaigns = campaignManager.campaigns4Config.toMetadataBody(
-                        gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus,
-                        ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
-                    ),
-                    campaignEnv = campaignManager.spConfig.campaignsEnv.env,
+                    propertyHref = messageReq.propertyHref,
+                    cs = campaignManager.gdprConsentStatus?.consentStatus,
+                    ccpaStatus = campaignManager.ccpaConsentStatus?.status?.name,
+                    campaigns = campaignManager.campaigns4Config,
                     consentLanguage = campaignManager.messageLanguage.value,
-                    hasCSP = false,
-                    includeData = IncludeData.generateIncludeDataForMessages(),
-                    localState = localState,
-                    operatingSystem = operatingSystemInfo,
+                    campaignEnv = campaignManager.spConfig.campaignsEnv,
+                    includeDataGppParam = spConfig.extractIncludeGppDataParamIfEligible(),
                 )
 
                 val messagesParamReq = MessagesParamReq(
@@ -193,9 +196,10 @@ private class ServiceImpl(
                     authId = messageReq.authId,
                     propertyHref = messageReq.propertyHref,
                     env = messageReq.env,
-                    body = JsonConverter.converter.encodeToString(body),
+                    body = body.toString(),
                     metadataArg = metadataResponse.getOrNull()?.toMetaDataArg(),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
+                    localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
                 )
 
                 getMessages(messagesParamReq)
@@ -211,15 +215,19 @@ private class ServiceImpl(
                             ccpaMessageMetaData = it.campaigns?.ccpa?.messageMetaData
                         }
 
-                        if (!campaignManager.hasLocalData) {
-                            it.campaigns?.gdpr?.TCData?.let { tc -> dataStorage.tcData = tc.toMapOfAny() }
+                        if (campaignManager.hasLocalData.not()) {
+
+                            // save tc data in the data storage
+                            it.campaigns?.gdpr?.TCData?.let { tcData ->
+                                dataStorage.tcData = tcData.toMapOfAny()
+                            }
+
+                            dataStorage.gppData = it.campaigns?.ccpa?.gppData?.toMapOfAny()
 
                             campaignManager.run {
-                                if (!(messageReq.authId != null || campaignManager.shouldCallConsentStatus)) {
-                                    // GDPR
+                                if ((messageReq.authId != null || campaignManager.shouldCallConsentStatus).not()) {
                                     this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS()
-                                    // CCPA
-                                    ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS()
+                                    this.ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS()
                                 }
                             }
                         }
@@ -333,7 +341,9 @@ private class ServiceImpl(
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null),
-                includeData = IncludeData.generateIncludeDataForGetChoice(),
+                includeData = IncludeData.generateIncludeDataForGetChoice(
+                    gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                ),
                 hasCsp = true,
                 includeCustomVendorsRes = false,
                 withSiteActions = false,
@@ -349,6 +359,9 @@ private class ServiceImpl(
                         consentManagerUtils
                     )
                     sPConsentsSuccess?.invoke(consentHandler)
+                }
+                .executeOnLeft { error ->
+                    (error as? ConsentLibExceptionK)?.let { logger.error(error) }
                 }
                 .getOrNull()
         }
@@ -388,8 +401,9 @@ private class ServiceImpl(
                     sPConsentsSuccess?.invoke(cr)
                 }
             }
-
-//        pMessageReq?.apply { authId?.let{ triggerConsentStatus(this) } }
+            .executeOnLeft { error ->
+                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+            }
 
         campaignManager.gdprConsentStatus ?: throw InvalidConsentResponse(
             cause = null,
@@ -411,7 +425,9 @@ private class ServiceImpl(
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null),
-                includeData = IncludeData.generateIncludeDataForGetChoice(),
+                includeData = IncludeData.generateIncludeDataForGetChoice(
+                    gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                ),
                 hasCsp = true,
                 includeCustomVendorsRes = false,
                 withSiteActions = false,
@@ -425,6 +441,9 @@ private class ServiceImpl(
                         consentManagerUtils
                     )
                     sPConsentsSuccess?.invoke(consentHandler)
+                }
+                .executeOnLeft { error ->
+                    (error as? ConsentLibExceptionK)?.let { logger.error(error) }
                 }
         }
 
@@ -467,6 +486,9 @@ private class ServiceImpl(
                     sPConsentsSuccess?.invoke(consentHandler)
                 }
             }
+            .executeOnLeft { error ->
+                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+            }
 
         campaignManager.ccpaConsentStatus ?: throw InvalidConsentResponse(
             cause = null,
@@ -476,19 +498,25 @@ private class ServiceImpl(
 
     private fun triggerConsentStatus(messageReq: MessagesParamReq): Either<ConsentStatusResp> {
         val csParams = messageReq.toConsentStatusParamReq(
-            gdprUuid = campaignManager.gdprConsentStatus?.uuid,
-            ccpaUuid = campaignManager.ccpaConsentStatus?.uuid,
+            gdprUuid = campaignManager.gdprUuid,
+            ccpaUuid = campaignManager.ccpaUuid,
             localState = campaignManager.messagesOptimizedLocalState
         )
 
         return getConsentStatus(csParams)
-            .executeOnRight { consentStatusResponse ->
+            .executeOnRight {
                 campaignManager.apply {
-                    handleOldLocalData()
-                    messagesOptimizedLocalState = consentStatusResponse.localState
-                    consentStatusResponse.consentStatusData?.let { consentStatusData ->
-                        gdprConsentStatus = consentStatusData.gdpr
-                        ccpaConsentStatus = consentStatusData.ccpa
+                    campaignManager.handleOldLocalData()
+                    messagesOptimizedLocalState = it.localState
+                    it.consentStatusData?.let { csd ->
+                        // GDPR
+                        gdprConsentStatus = csd.gdpr
+                        gdprUuid = csd.gdpr?.uuid
+                        gdprDateCreated = csd.gdpr?.dateCreated
+                        // CCPA
+                        ccpaConsentStatus = csd.ccpa
+                        ccpaUuid = csd.ccpa?.uuid
+                        ccpaDateCreated = csd.ccpa?.dateCreated
                     }
                 }
             }

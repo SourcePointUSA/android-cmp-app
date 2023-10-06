@@ -2,7 +2,6 @@ package com.sourcepoint.app.v6
 
 import android.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,12 +16,10 @@ import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.util.clearAllData
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
@@ -33,11 +30,6 @@ class MainActivityKotlinOttTest {
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
     private val device by lazy { UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()) }
-
-    @Before
-    fun cleanLocalStorage() {
-        clearAllData(ApplicationProvider.getApplicationContext())
-    }
 
     @After
     fun cleanup() {

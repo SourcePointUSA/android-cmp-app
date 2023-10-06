@@ -73,7 +73,8 @@ fun makeConsentLib(
         consentManagerUtils,
         dataStorage,
         logger,
-        execManager
+        execManager,
+        connManager,
     )
     val clientEventManager: ClientEventManager = ClientEventManager.create(logger = logger, executor = execManager, spClient = spClient, consentManagerUtils = consentManagerUtils)
     val consentManager: ConsentManager =
@@ -92,6 +93,7 @@ fun makeConsentLib(
         dataStorage = dataStorage,
         env = env,
         spClient = spClient,
-        clientEventManager = clientEventManager
+        clientEventManager = clientEventManager,
+        connectionManager = connManager,
     )
 }

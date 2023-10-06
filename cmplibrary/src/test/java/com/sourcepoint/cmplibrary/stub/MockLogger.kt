@@ -14,6 +14,7 @@ object MockLogger : Logger {
     override fun webAppAction(tag: String, msg: String, json: JSONObject?) { }
     override fun nativeMessageAction(tag: String, msg: String, json: JSONObject?) { }
     override fun computation(tag: String, msg: String) { }
+    override fun computation(tag: String, msg: String, json: JSONObject?) { }
     override fun clientEvent(event: String, msg: String, content: String) { }
     override fun pm(tag: String, url: String, type: String, params: String?) { }
     override fun flm(tag: String, url: String, type: String, json: JSONObject) { }

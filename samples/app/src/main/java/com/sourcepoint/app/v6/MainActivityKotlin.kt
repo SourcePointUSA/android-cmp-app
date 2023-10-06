@@ -141,7 +141,7 @@ class MainActivityKotlin : AppCompatActivity() {
     }
 
     private fun executeCmpLib() {
-        spConsentLib.loadMessage()
+        spConsentLib.loadMessage(authId = dataProvider.authId)
     }
 
     override fun onDestroy() {

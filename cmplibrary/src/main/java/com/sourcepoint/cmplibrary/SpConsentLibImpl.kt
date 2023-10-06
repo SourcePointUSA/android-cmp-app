@@ -13,6 +13,7 @@ import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CampaignMessage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
@@ -51,6 +52,7 @@ internal class SpConsentLibImpl(
     private val clientEventManager: ClientEventManager,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     private val env: Env = Env.PROD,
+    private val connectionManager: ConnectionManager,
 ) : SpConsentLib, NativeMessageController {
 
     private val remainingCampaigns: Queue<CampaignModel> = LinkedList()
@@ -352,6 +354,12 @@ internal class SpConsentLibImpl(
         messSubCat: MessageSubCategory,
         useGroupPmIfAvailable: Boolean
     ) {
+
+        if (connectionManager.isConnected.not()) {
+            spClient.onError(NoInternetConnectionException())
+            return
+        }
+
         checkMainThread("loadPrivacyManager")
         clientEventManager.setCampaignsToProcess(1)
 
@@ -394,7 +402,7 @@ internal class SpConsentLibImpl(
                     url = url,
                     campaignType = campaignType,
                     pmId = it.messageId,
-                    consent = JSONObject(storedConsent)
+                    consent = storedConsent,
                 )
             }
             .executeOnLeft { logMess("PmUrlConfig is null") }
@@ -621,7 +629,7 @@ internal class SpConsentLibImpl(
                             url = url,
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
-                            consent = JSONObject(dataStorage.gdprConsentStatus!!)
+                            consent = dataStorage.gdprConsentStatus,
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -643,11 +651,12 @@ internal class SpConsentLibImpl(
                             params = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
+
                         iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
-                            consent = JSONObject(dataStorage.ccpaConsentStatus!!)
+                            consent = dataStorage.ccpaConsentStatus,
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -675,11 +684,12 @@ internal class SpConsentLibImpl(
                             params = "${action.privacyManagerId}",
                             type = "GET"
                         )
+
                         iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
-                            consent = JSONObject(dataStorage.gdprConsentStatus!!)
+                            consent = dataStorage.gdprConsentStatus,
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -701,11 +711,12 @@ internal class SpConsentLibImpl(
                             params = "${action.privacyManagerId}",
                             type = "GET"
                         )
+
                         iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
-                            consent = JSONObject(dataStorage.ccpaConsentStatus!!)
+                            consent = dataStorage.ccpaConsentStatus,
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }

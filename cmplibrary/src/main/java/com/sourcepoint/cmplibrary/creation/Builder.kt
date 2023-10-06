@@ -85,7 +85,7 @@ class Builder {
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
         val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage, logger)
-        val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, dataStorage, logger, execManager)
+        val service: Service = Service.create(networkClient, campaignManager, consentManagerUtils, dataStorage, logger, execManager, connManager)
         val clientEventManager: ClientEventManager = ClientEventManager.create(logger = logger, executor = execManager, spClient = spClientLocal, consentManagerUtils = consentManagerUtils)
         val consentManager: ConsentManager = ConsentManager.create(service, consentManagerUtils, env, logger, dataStorage, execManager, clientEventManager)
 
@@ -102,7 +102,8 @@ class Builder {
             dataStorage = dataStorage,
             env = env,
             spClient = spClientLocal,
-            clientEventManager = clientEventManager
+            clientEventManager = clientEventManager,
+            connectionManager = connManager,
         )
     }
 

@@ -91,6 +91,7 @@ private class LoggerImpl(
     override fun webAppAction(tag: String, msg: String, json: JSONObject?) = verbose(tag, "msg[$msg] - json[$json")
     override fun nativeMessageAction(tag: String, msg: String, json: JSONObject?) = verbose(tag, "msg[$msg] - json[$json]")
     override fun computation(tag: String, msg: String) = verbose(tag, msg)
+    override fun computation(tag: String, msg: String, json: JSONObject?) = verbose(tag, msg)
     override fun clientEvent(event: String, msg: String, content: String) = verbose(event, "msg[$msg] - content[$content]")
     override fun pm(tag: String, url: String, type: String, params: String?) = verbose(tag, "type[$type] - url[$url] - params[$params]")
     override fun flm(tag: String, url: String, type: String, json: JSONObject) = verbose(tag, "type[$type] - url[$url] - json[$json]")
