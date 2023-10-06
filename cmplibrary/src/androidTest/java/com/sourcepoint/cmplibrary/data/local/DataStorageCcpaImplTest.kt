@@ -27,12 +27,15 @@ class DataStorageCcpaImplTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val storage = DataStorageCcpa.create(appContext).apply { clearAll() }
 
+        storage.ccpaConsentUuid = "uuid"
         storage.saveCcpa("{\"type\":\"Ccpa\"}")
 
+        storage.ccpaConsentUuid.assertEquals("uuid")
         storage.getCcpa().assertEquals("{\"type\":\"Ccpa\"}")
 
         storage.clearAll()
 
+        storage.ccpaConsentUuid.assertEquals(null)
         storage.getCcpa().assertNull()
     }
 }

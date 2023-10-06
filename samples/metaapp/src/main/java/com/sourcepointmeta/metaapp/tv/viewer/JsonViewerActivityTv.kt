@@ -12,15 +12,11 @@ class JsonViewerActivityTv : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
         val logId = intent.getLongExtra(LOG_ID, -1L)
-        val title = intent.getStringExtra(TITLE) ?: DEFAULT_TITLE
+        val title = intent.getStringExtra(TITLE)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, JsonViewerFragmentTv.instance(logId, title))
                 .commitNow()
         }
-    }
-
-    companion object {
-        private const val DEFAULT_TITLE = ""
     }
 }

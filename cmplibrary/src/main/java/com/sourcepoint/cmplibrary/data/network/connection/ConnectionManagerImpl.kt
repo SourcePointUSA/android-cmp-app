@@ -2,8 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.connection
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
+import android.net.NetworkInfo
 
 /**
  * Factory method to create an instance of a [ConnectionManager] using its implementation
@@ -12,30 +11,11 @@ import android.os.Build
  */
 internal fun ConnectionManager.Companion.create(context: Context): ConnectionManager = ConnectionManagerImpl(context)
 
-private class ConnectionManagerImpl(
-    private val context: Context
-) : ConnectionManager {
-
-    private val connectivityManager by lazy {
+private class ConnectionManagerImpl(context: Context) : ConnectionManager {
+    private val cm by lazy {
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
-
+    private val activeNetwork: NetworkInfo? by lazy { cm.activeNetworkInfo }
     override val isConnected: Boolean
-        get() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val activeNetwork = connectivityManager.activeNetwork
-                    ?: return false
-                val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
-                    ?: return false
-
-                return when {
-                    networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                    networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                    else -> false
-                }
-            } else {
-                val activeNetworkInfo = connectivityManager.activeNetworkInfo
-                return activeNetworkInfo != null && activeNetworkInfo.isConnected
-            }
-        }
+        get() = activeNetwork?.isConnected ?: false
 }

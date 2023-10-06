@@ -45,5 +45,4 @@ interface SpClient {
 
 interface UnitySpClient : SpClient {
     fun onConsentReady(consent: String)
-    fun onSpFinished(consent: String)
 }

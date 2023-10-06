@@ -74,31 +74,6 @@ class SpConsentLibImplTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
-
-        every { connManager.isConnected } returns true
-    }
-
-    @Test
-    fun `loadPrivacyManager - WHEN called with no Internet THEN should not proceed with the flow`() {
-        // GIVEN
-        val mockIsConnected = false
-        every { connManager.isConnected } returns mockIsConnected
-
-        // WHEN
-        val sut = createLib()
-        sut.loadPrivacyManager("1234", GDPR)
-
-        // THEN
-        verify(exactly = 0) { clientEventManager.setCampaignsToProcess(any()) }
-        verify(exactly = 0) {
-            campaignManager.getPmConfig(
-                campaignType = any(),
-                pmId = any(),
-                pmTab = any(),
-                useGroupPmIfAvailable = any(),
-                groupPmId = any(),
-            )
-        }
     }
 
     @Test
@@ -251,7 +226,6 @@ class SpConsentLibImplTest {
         urlManager = urlManager,
         dataStorage = dataStorage,
         spClient = spClient,
-        clientEventManager = clientEventManager,
-        connectionManager = connManager,
+        clientEventManager = clientEventManager
     )
 }

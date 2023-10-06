@@ -19,11 +19,18 @@ internal data class PvDataParamReq(
 
 @Serializable
 data class PvDataResp(
-    @SerialName("ccpa") val ccpa: Campaign?,
-    @SerialName("gdpr") val gdpr: Campaign?
+    @SerialName("ccpa") val ccpa: Ccpa?,
+    @SerialName("gdpr") val gdpr: Gdpr?
 ) {
     @Serializable
-    data class Campaign(
+    data class Ccpa(
+        @SerialName("cookies") val cookies: List<Cooky?>?,
+        @SerialName("uuid") val uuid: String?
+    )
+
+    @Serializable
+    data class Gdpr(
+        @SerialName("cookies") val cookies: List<Cooky>?,
         @SerialName("uuid") val uuid: String?
     )
 

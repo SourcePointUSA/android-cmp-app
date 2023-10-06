@@ -1,6 +1,5 @@
 package com.example.uitestutil
 
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.IdRes
@@ -325,19 +324,8 @@ fun checkConsentState(consent: String, selected: Boolean) {
 @Throws(Throwable::class)
 fun checkConsentState(consent: String, selected: Boolean, stackType: String) {
     onWebView()
-        .withElement(findElement(Locator.XPATH, "//div[@class='$stackType']"))
-//        .withElement( findElement(Locator.XPATH, "//span[(text()='$consent') ]"))
-        .withContextualElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected' and @aria-label='$consent']"))
-        .perform(webScrollIntoView())
-}
-
-
-@Throws(Throwable::class)
-fun checkConsentStateCCPA(consent: String, selected: Boolean, stackType: String) {
-    onWebView()
-        .withElement(findElement(Locator.XPATH, "//div[@class='$stackType']"))
-        .withContextualElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected']"))
-        .withElement(findElement(Locator.XPATH, "//span[text()='$consent']"))
+        .withElement(findElement(Locator.XPATH, "//div[@class='$stackType' and @title='$consent']"))
+        .withElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected']"))
         .perform(webScrollIntoView())
 }
 
@@ -346,7 +334,7 @@ fun checkConsentStateVendor(consent: String, selected: Boolean, stackType: Strin
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[@class='$stackType']"))
         .withElement(findElement(Locator.XPATH, "//button[@aria-checked='$selected']"))
-//        .withElement(findElement(Locator.XPATH, "//span[text()='$consent']"))
+        .withElement(findElement(Locator.XPATH, "//span[text()='$consent']"))
         .perform(webScrollIntoView())
 }
 
@@ -389,7 +377,8 @@ fun tapOnToggle(property: String, tapOnlyWhen: Boolean) {
 fun tapOnToggle2(property: String, tapOnlyWhen: Boolean) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[@class='tcfv2-stack']"))
-        .withContextualElement(findElement(Locator.XPATH, "//button[@aria-checked='$tapOnlyWhen' and @aria-label='$property']"))
+        .withElement( findElement(Locator.XPATH, "//span[(text()='$property') ]"))
+        .withElement(findElement(Locator.XPATH, "//button[@role='switch' and @aria-checked='$tapOnlyWhen']"))
         .perform(webScrollIntoView())
         .perform(webClick())
 }
