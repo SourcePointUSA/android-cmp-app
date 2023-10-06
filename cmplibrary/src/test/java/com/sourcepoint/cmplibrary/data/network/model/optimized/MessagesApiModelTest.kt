@@ -1,9 +1,15 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
+import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
+import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.encodeToJsonElement
 import org.junit.Test
 
@@ -25,6 +31,37 @@ class MessagesApiModelTest {
         val message = JsonConverter.converter.decodeFromString<MessagesResp>(mess)
         message.campaignList[0] as CCPA
         message.campaignList[1] as GDPR
+    }
+
+    @Test
+    fun `GIVEN a ConsentStatus RETURN a messages body`() {
+
+        val json = "v7/consent_status_with_auth_id.json".file2String()
+        val cs = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
+        val list = listOf(
+            CampaignReqImpl(
+                targetingParams = emptyList(),
+                campaignsEnv = CampaignsEnv.PUBLIC,
+                campaignType = CampaignType.GDPR,
+                groupPmId = null
+            )
+        )
+
+        val body = getMessageBody(
+            accountId = 22,
+            cs = cs.consentStatusData?.gdpr?.consentStatus,
+            propertyHref = "tests.unified-script.com",
+            campaigns = list,
+            ccpaStatus = null,
+            consentLanguage = null,
+            campaignEnv = CampaignsEnv.STAGE
+        )
+
+        (body["accountId"] as JsonPrimitive).content.assertEquals("22")
+        (body["campaignEnv"] as JsonPrimitive).content.assertEquals("stage")
+        (body["propertyHref"] as JsonPrimitive).content.assertEquals("https://tests.unified-script.com")
+        (body["hasCSP"] as JsonPrimitive).content.assertEquals("true")
+        body.contains("campaigns").assertTrue()
     }
 
     @Test

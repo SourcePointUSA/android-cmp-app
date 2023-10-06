@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.consent
 
 import com.sourcepoint.cmplibrary.SpClient
-import com.sourcepoint.cmplibrary.UnitySpClient
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.exception.Logger
@@ -92,7 +91,6 @@ private class ClientEventManagerImpl(
             val spConsentString = spConsent
                 ?.let {
                     spClient.onSpFinished(it)
-                    (spClient as? UnitySpClient)?.onSpFinished(it.toJsonObject().toString())
                     it.toJsonObject().toString()
                 }
                 ?: run {

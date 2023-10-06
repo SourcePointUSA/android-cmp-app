@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ChoiceTypeParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType

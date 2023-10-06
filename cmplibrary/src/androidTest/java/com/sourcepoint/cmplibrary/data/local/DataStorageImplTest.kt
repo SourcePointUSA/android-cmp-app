@@ -27,4 +27,12 @@ class DataStorageImplTest {
             getLocalState().assertEquals("test_ls")
         }
     }
+
+    @Test
+    fun check_used_key_for_save_get_PropertyPriorityData() {
+        sut.run {
+            savePropertyPriorityData("test_ppd")
+            getPropertyPriorityData().assertEquals("test_ppd")
+        }
+    }
 }

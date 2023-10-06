@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
@@ -24,6 +23,8 @@ internal interface JsonConverter {
     fun toCustomConsentResp(body: String): Either<CustomConsentResp>
 
     fun toNativeMessageDto(body: String): Either<NativeMessageDto>
+
+    fun toNativeMessageResp(body: String): Either<NativeMessageResp>
 
     fun toNativeMessageRespK(body: String): Either<NativeMessageRespK>
 
