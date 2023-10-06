@@ -181,6 +181,23 @@ internal class LoggerImpl(
         }
     }
 
+    override fun computation(tag: String, msg: String, json: JSONObject?) {
+        loggerScope.launch {
+            ds.storeOrUpdateLog(
+                MetaLog(
+                    id = null,
+                    propertyName = propertyName,
+                    timestamp = Date().time,
+                    type = "COMPUTATION",
+                    tag = tag,
+                    message = msg,
+                    logSession = session,
+                    jsonBody = json.toString()
+                )
+            )
+        }
+    }
+
     override fun clientEvent(event: String, msg: String, content: String) {
         loggerScope.launch {
             if (event == "log" && !content.contains("sp.renderingAppError")) {

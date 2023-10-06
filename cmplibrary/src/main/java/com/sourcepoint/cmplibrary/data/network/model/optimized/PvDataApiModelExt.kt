@@ -8,7 +8,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.put
 
 internal fun toPvDataBody(
-    gdprCs: ConsentStatus?,
+    gdprCs: GdprCS?,
     accountId: Long?,
     propertyId: Long?,
     gdprApplies: Boolean?,
@@ -25,10 +25,12 @@ internal fun toPvDataBody(
             put(
                 "gdpr",
                 buildJsonObject {
+                    put("uuid", cs.uuid)
+                    put("euconsent", cs.uuid)
                     put("accountId", accountId)
                     put("applies", gdprApplies)
                     put("siteId", propertyId)
-                    put("consentStatus", JsonConverter.converter.encodeToJsonElement(cs))
+                    put("consentStatus", JsonConverter.converter.encodeToJsonElement(cs.consentStatus))
                     put("msgId", gdprMessageMetaData?.messageId)
                     put("categoryId", gdprMessageMetaData?.categoryId?.code)
                     put("subCategoryId", gdprMessageMetaData?.subCategoryId?.code)
@@ -41,6 +43,7 @@ internal fun toPvDataBody(
             put(
                 "ccpa",
                 buildJsonObject {
+                    put("uuid", cs.uuid)
                     put("accountId", accountId)
                     put("applies", ccpaApplies)
                     put("siteId", propertyId)

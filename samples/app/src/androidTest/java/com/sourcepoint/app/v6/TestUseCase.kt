@@ -1,7 +1,6 @@
 package com.sourcepoint.app.v6
 
 import android.webkit.CookieManager
-import androidx.annotation.IdRes
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestData.ACCEPT
 import com.sourcepoint.app.v6.TestData.ACCEPT_ALL
@@ -10,7 +9,6 @@ import com.sourcepoint.app.v6.TestData.CANCEL
 import com.sourcepoint.app.v6.TestData.CCPA_CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST_2
-import com.sourcepoint.app.v6.TestData.CONSENT_WEB_VIEW_TAG_NAME
 import com.sourcepoint.app.v6.TestData.FEATURES
 import com.sourcepoint.app.v6.TestData.GDPR_CONSENT_LIST_2
 import com.sourcepoint.app.v6.TestData.MESSAGE
@@ -33,68 +31,14 @@ import com.sourcepoint.app.v6.di.customCategoriesDataProd
 import com.sourcepoint.app.v6.di.customVendorDataListProd
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import kotlinx.android.synthetic.main.activity_main_consent.*
+import kotlinx.android.synthetic.main.activity_main_v7.*
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 class TestUseCase {
 
     companion object {
-
-        fun assertTextInWebViewByContainerId(
-            id: String,
-            text: String?,
-        ) = assertTextInWebViewById(
-            id = id,
-            text = text,
-        )
-
-        fun readTextFromTextView(
-            @IdRes id: Int,
-        ): String? = readTextFromTextViewById(
-            id = id
-        )
-
-        fun clickAcceptAllOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
-            tag = CONSENT_WEB_VIEW_TAG_NAME,
-            text = ACCEPT_ALL,
-        )
-
-        fun clickRejectAllOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
-            tag = CONSENT_WEB_VIEW_TAG_NAME,
-            text = REJECT_ALL,
-        )
-
-        fun clickOptionsOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
-            tag = CONSENT_WEB_VIEW_TAG_NAME,
-            text = OPTIONS,
-        )
-
-        fun clickSaveAndExitOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
-            tag = CONSENT_WEB_VIEW_TAG_NAME,
-            text = SAVE_AND_EXIT,
-        )
-
-        fun tapOn(
-            @IdRes id: Int
-        ) = performClickByIdCompletelyDisplayed(
-            resId = id,
-        )
-
-        fun checkTextMatchesInView(
-            @IdRes id: Int,
-            text: String,
-        ) = checkTextInTextView(
-            id = id,
-            text = text,
-        )
-
-        fun checkTextDoesNotMatchInView(
-            @IdRes id: Int,
-            text: String,
-        ) = checkTextNotInTextView(
-            id = id,
-            text = text,
-        )
 
         fun checkConsentIsNotSelected() {
             CONSENT_LIST.forEach { consent ->
@@ -140,7 +84,7 @@ class TestUseCase {
 
         fun checkAllCcpaConsentsOn() {
             CCPA_CONSENT_LIST.forEach { consent ->
-                checkConsentState(consent, true, "ccpa-stack")
+                checkConsentStateCCPA(consent, true, "ccpa-stack")
             }
         }
 
@@ -162,7 +106,7 @@ class TestUseCase {
             }
             // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
             CONSENT_LIST_2.subtract(customCategoriesDataProd.map { it.second }).forEach { consent ->
-                checkConsentState(consent, false, "tcfv2-stack")
+                checkConsentState(consent, true, "tcfv2-stack")
             }
         }
 
