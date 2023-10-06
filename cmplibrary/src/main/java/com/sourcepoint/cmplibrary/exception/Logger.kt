@@ -58,6 +58,8 @@ interface Logger {
 
     fun computation(tag: String, msg: String)
 
+    fun computation(tag: String, msg: String, json: JSONObject?)
+
     fun clientEvent(event: String, msg: String, content: String)
 
     fun pm(tag: String, url: String, type: String, params: String?)

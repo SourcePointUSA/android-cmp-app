@@ -194,6 +194,25 @@ val defaultProperty10 = Property(
     propertyId = 26891,
 )
 
+val defaultProperty11 = Property(
+    propertyName = "sdk.reconsent.test",
+    accountId = 22,
+    gdprPmId = 662122L,
+    ccpaPmId = 0L,
+    is_staging = false,
+    targetingParameters = emptyList(),
+    timeout = 3000,
+    authId = "test0954052023",
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    statusCampaignSet = setOf(
+        StatusCampaign("sdk.reconsent.test", CampaignType.GDPR, true),
+        StatusCampaign("sdk.reconsent.test", CampaignType.CCPA, false),
+    ),
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 31320,
+)
+
 val propList = listOf(
     defaultProperty1,
     defaultProperty2,
@@ -204,6 +223,7 @@ val propList = listOf(
     defaultProperty7,
     defaultProperty9,
     defaultProperty10,
+    defaultProperty11
 )
 val tvPropList = listOf(
     defaultProperty,
