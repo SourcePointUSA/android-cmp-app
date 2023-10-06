@@ -13,7 +13,6 @@ import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
-import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CampaignMessage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
@@ -52,7 +51,6 @@ internal class SpConsentLibImpl(
     private val clientEventManager: ClientEventManager,
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     private val env: Env = Env.PROD,
-    private val connectionManager: ConnectionManager,
 ) : SpConsentLib, NativeMessageController {
 
     private val remainingCampaigns: Queue<CampaignModel> = LinkedList()
@@ -147,7 +145,7 @@ internal class SpConsentLibImpl(
                 consentManager.sendStoredConsentToClient()
                 clientEventManager.setAction(NativeMessageActionType.GET_MSG_NOT_CALLED)
             },
-            onSuccess = {
+            pSuccess = {
                 val list = it.toCampaignModelList(logger = pLogger)
                 clientEventManager.setCampaignsToProcess(list.size)
                 if (list.isEmpty()) {
@@ -194,32 +192,30 @@ internal class SpConsentLibImpl(
                     }
                 }
             },
-            onFailure = { error, shouldCallOnErrorCallback ->
+            pError = { throwable ->
                 if (consentManager.storedConsent) {
                     executor.executeOnSingleThread {
                         consentManager.sendStoredConsentToClient()
                         clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)
                     }
                 } else {
-                    (error as? ConsentLibExceptionK)?.let { pLogger.error(it) }
-                    val ex = error.toConsentLibException()
-                    if (shouldCallOnErrorCallback) {
-                        spClient.onError(ex)
-                    }
+                    (throwable as? ConsentLibExceptionK)?.let { pLogger.error(it) }
+                    val ex = throwable.toConsentLibException()
+                    spClient.onError(ex)
                     pLogger.clientEvent(
                         event = "onError",
                         msg = ex.code.errorCode,
-                        content = "${error.message}"
+                        content = "${throwable.message}"
                     )
                     pLogger.e(
                         "SpConsentLib",
                         """
-                            onError
-                            ${error.message}
+                    onError
+                    ${throwable.message}
                         """.trimIndent()
                     )
                 }
-            },
+            }
         )
     }
 
@@ -230,7 +226,7 @@ internal class SpConsentLibImpl(
         success: (SPConsents?) -> Unit,
     ) {
         val customConsentReq = CustomConsentReq(
-            consentUUID = campaignManager.gdprUuid ?: "",
+            consentUUID = dataStorage.gdprConsentUuid ?: "",
             propertyId = campaignManager.spConfig.propertyId,
             categories = categories,
             legIntCategories = legIntCategories,
@@ -263,7 +259,7 @@ internal class SpConsentLibImpl(
         success: (SPConsents?) -> Unit
     ) {
         val customConsentReq = CustomConsentReq(
-            consentUUID = campaignManager.gdprUuid ?: "",
+            consentUUID = dataStorage.gdprConsentUuid ?: "",
             propertyId = campaignManager.spConfig.propertyId,
             categories = categories,
             legIntCategories = legIntCategories,
@@ -354,12 +350,6 @@ internal class SpConsentLibImpl(
         messSubCat: MessageSubCategory,
         useGroupPmIfAvailable: Boolean
     ) {
-
-        if (connectionManager.isConnected.not()) {
-            spClient.onError(NoInternetConnectionException())
-            return
-        }
-
         checkMainThread("loadPrivacyManager")
         clientEventManager.setCampaignsToProcess(1)
 
@@ -402,7 +392,7 @@ internal class SpConsentLibImpl(
                     url = url,
                     campaignType = campaignType,
                     pmId = it.messageId,
-                    consent = storedConsent,
+                    consent = JSONObject(storedConsent)
                 )
             }
             .executeOnLeft { logMess("PmUrlConfig is null") }
@@ -599,7 +589,6 @@ internal class SpConsentLibImpl(
                     spClient.onAction(view, actionImpl) as? ConsentActionImpl
                 }
             }
-            else -> {}
         }
         clientEventManager.setAction(actionImpl)
     }
@@ -629,7 +618,7 @@ internal class SpConsentLibImpl(
                             url = url,
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
-                            consent = dataStorage.gdprConsentStatus,
+                            consent = JSONObject(dataStorage.gdprConsentStatus!!)
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -651,12 +640,11 @@ internal class SpConsentLibImpl(
                             params = "${actionImpl.privacyManagerId}",
                             type = "GET"
                         )
-
                         iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = actionImpl.campaignType,
                             pmId = actionImpl.privacyManagerId,
-                            consent = dataStorage.ccpaConsentStatus,
+                            consent = JSONObject(dataStorage.ccpaConsentStatus!!)
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -684,12 +672,11 @@ internal class SpConsentLibImpl(
                             params = "${action.privacyManagerId}",
                             type = "GET"
                         )
-
                         iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
-                            consent = dataStorage.gdprConsentStatus,
+                            consent = JSONObject(dataStorage.gdprConsentStatus!!)
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -711,12 +698,11 @@ internal class SpConsentLibImpl(
                             params = "${action.privacyManagerId}",
                             type = "GET"
                         )
-
                         iConsentWebView.loadConsentUIFromUrlPreloadingOption(
                             url = url,
                             campaignType = action.campaignType,
                             pmId = action.privacyManagerId,
-                            consent = dataStorage.ccpaConsentStatus,
+                            consent = JSONObject(dataStorage.ccpaConsentStatus!!)
                         )
                     }
                     .executeOnLeft { spClient.onError(it) }
@@ -765,7 +751,6 @@ internal class SpConsentLibImpl(
                 consentManager.enqueueConsent(nativeConsentAction = nca)
                 moveToNextCampaign(remainingCampaigns, viewManager, spClient)
             }
-            else -> {}
         }
     }
 

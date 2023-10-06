@@ -150,6 +150,56 @@
         "hasConsentData": false,
         "consentedToAny": false
       },
+      "cookies": [
+        {
+          "key": "consentUUID",
+          "value": "69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10",
+          "maxAge": 31536000,
+          "shareRootDomain": false,
+          "session": false
+        }
+      ],
+      "actions": [
+        {
+          "_id": "6307e06c14641f06b9f62f5c",
+          "type": "google_consent_mode",
+          "url": "",
+          "js": "",
+          "tagManager": {
+            "_id": "6307e06c14641f06b9f62f5d",
+            "name": "consent",
+            "key": "analytics_storage",
+            "value": "granted"
+          }
+        },
+        {
+          "_id": "6307e06c14641f06b9f630a8",
+          "type": "inline",
+          "url": "",
+          "js": "try {\n    window.consentAction('accept', 'google')\n} catch (err) {\n    console.error(err);\n}",
+          "tagManager": null
+        },
+        {
+          "_id": "6307e06c14641f06b9f630a9",
+          "type": "inline",
+          "url": "",
+          "js": "window.dataLayer && window.dataLayer.push({ 'event': 'consent_google' });",
+          "tagManager": {
+            "_id": "6307e06c14641f06b9f630aa",
+            "name": "google",
+            "key": "event",
+            "value": "'consent_google'"
+          }
+        },
+        {
+          "type": "inline",
+          "js": "var cookie='google_consent=accept; Path=/; Max-Age=86400; expires=Tue, 30 Aug 2022 12:43:15 GMT;';\nif (true) {\n  var h = window.location && window.location.hostname;\n  if (h) {\n    var rc = (/.co.uk$/.test(h) || /.com.br$/.test(h) || /.com.au$/.test(h) || /.co.nz$/.test(h) ) ? 3 : 2;\n    var ha = h.split('.');\n    var rda = ha.slice(ha.length - rc);\n    if (rda.length > 1) {\n      var rd = rda.join('.');\n      cookie += ' Domain=' + rd + ';';\n    }\n  }\n}\ndocument.cookie = cookie;\n"
+        },
+        {
+          "type": "inline",
+          "js": "var cookie='_sp_action_cookie=test; Path=/; Max-Age=432000; expires=Sat, 03 Sep 2022 12:43:15 GMT;';\nif (true) {\n  var h = window.location && window.location.hostname;\n  if (h) {\n    var rc = (/.co.uk$/.test(h) || /.com.br$/.test(h) || /.com.au$/.test(h) || /.co.nz$/.test(h) ) ? 3 : 2;\n    var ha = h.split('.');\n    var rda = ha.slice(ha.length - rc);\n    if (rda.length > 1) {\n      var rd = rda.join('.');\n      cookie += ' Domain=' + rd + ';';\n    }\n  }\n}\ndocument.cookie = cookie;\n"
+        }
+      ],
       "dateCreated": "2022-08-25T20:56:38.551Z",
       "consentUUID": "69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10",
       "gdprApplies": true,

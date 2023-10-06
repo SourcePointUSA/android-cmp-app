@@ -32,7 +32,7 @@ private fun setAuthIdOldApi(authId: String?, webView: WebView) {
         if (!sp.contains(authKey)) {
             webView.loadUrl("javascript:document.cookie = \"authId=$authId\";")
             sp.edit().putBoolean(authKey, true).apply()
-            webView.url?.let { verifiedUrl -> webView.loadUrl(verifiedUrl) }
+            webView.loadUrl(webView.url)
         }
     }
 }
