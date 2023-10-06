@@ -2,8 +2,6 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeDataGppParam
-import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReq
@@ -18,8 +16,6 @@ internal fun getMessageBody(
     ccpaStatus: String?,
     consentLanguage: String?,
     campaignEnv: CampaignsEnv?,
-    includeDataGppParam: IncludeDataGppParam?,
-    os: OperatingSystemInfoParam = OperatingSystemInfoParam()
 ): JsonObject {
     return buildJsonObject {
         put("accountId", accountId)
@@ -34,22 +30,17 @@ internal fun getMessageBody(
             putJsonObject("webConsentPayload") {
                 put("type", "RecordString")
             }
-            put("GPPData", JsonConverter.converter.encodeToJsonElement(includeDataGppParam))
         }
         put("propertyHref", "https://$propertyHref")
         put("hasCSP", true)
         put("campaigns", campaigns.toMetadataBody(cs, ccpaStatus))
         put("consentLanguage", consentLanguage)
-        putJsonObject("os") {
-            put("name", os.name)
-            put("version", os.version)
-        }
     }
 }
 
 internal fun List<CampaignReq>.toMetadataBody(
-    gdprConsentStatus: ConsentStatus? = null,
-    ccpaConsentStatus: String? = null
+    cs: ConsentStatus? = null,
+    ccpaStatus: String? = null
 ): JsonObject {
     return buildJsonObject {
         this@toMetadataBody.forEach { c ->
@@ -57,17 +48,18 @@ internal fun List<CampaignReq>.toMetadataBody(
                 if (c.campaignType == CampaignType.GDPR) {
                     put(
                         "consentStatus",
-                        gdprConsentStatus?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonObject(mapOf())
+                        cs?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonObject(mapOf())
                     )
-                    put("hasLocalData", gdprConsentStatus != null)
+                    cs?.let { put("hasLocalData", true) }
                 }
                 if (c.campaignType == CampaignType.CCPA) {
-                    put("status", ccpaConsentStatus ?: "")
-                    put("hasLocalData", ccpaConsentStatus != null)
+                    put("status", ccpaStatus ?: "")
+                    ccpaStatus?.let { put("hasLocalData", true) }
                 }
                 putJsonObject("targetingParams") {
                     c.targetingParams.forEach { t -> put(t.key, t.value) }
                 }
+                put("groupPmId", c.groupPmId)
             }
         }
     }
@@ -88,25 +80,12 @@ internal fun List<CampaignReq>.toMetadataArgs(): MetaDataArg {
     return JsonConverter.converter.decodeFromJsonElement<MetaDataArg>(json)
 }
 
-internal fun MessagesParamReq.toMetaDataParamReq(campaigns: List<CampaignReq>): MetaDataParamReq {
+internal fun MessagesParamReq.toMetaDataParamReq(): MetaDataParamReq {
     return MetaDataParamReq(
         env = env,
         accountId = accountId,
         propertyId = propertyId,
-        metadata = JsonConverter.converter.encodeToString(
-            MetaDataMetaDataParam(
-                gdpr = campaigns
-                    .firstOrNull { it.campaignType == CampaignType.GDPR }
-                    ?.let {
-                        MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
-                    },
-                ccpa = campaigns
-                    .firstOrNull { it.campaignType == CampaignType.CCPA }
-                    ?.let {
-                        MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
-                    }
-            )
-        ),
+        metadata = metadataArg?.let { JsonConverter.converter.encodeToString(it) } ?: "{}",
     )
 }
 
@@ -141,10 +120,11 @@ internal fun CCPA.toCcpaCS() = CcpaCS(
     rejectedVendors = rejectedVendors,
     signedLspa = signedLspa,
     status = status,
-    gppData = gppData,
+    cookies = null,
     ccpaApplies = null,
     uuid = null,
     gpcEnabled = null,
+    actions = null,
     webConsentPayload = webConsentPayload,
 )
 
@@ -154,6 +134,7 @@ internal fun GDPR.toGdprCS() = GdprCS(
     categories = null,
     consentAllRef = null,
     consentedToAll = null,
+    cookies = null,
     legIntCategories = null,
     legIntVendors = null,
     postPayload = null,
@@ -162,6 +143,7 @@ internal fun GDPR.toGdprCS() = GdprCS(
     vendors = null,
     addtlConsent = addtlConsent,
     consentStatus = consentStatus,
+    consentUUID = null,
     cookieExpirationDays = null,
     customVendorsResponse = customVendorsResponse,
     dateCreated = dateCreated,
