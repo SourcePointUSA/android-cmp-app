@@ -154,27 +154,12 @@ class MainActivityKotlinOldConsentTest {
                 spConfig = spConf,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
-                spClientObserver = listOf(spClient)
+                spClientObserver = listOf(spClient),
+                diagnostic = v6LocalState.toList()
             )
         )
 
         scenario = launchActivity()
-
-        scenario.onActivity { activity ->
-            /**
-             * Store an old v6 localState
-             */
-            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            val spEditor = sp.edit()
-            v6LocalState.keys().forEach {
-                check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
-                check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
-                check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
-            }
-            spEditor.apply()
-            // verify that before the migration the local state is present
-            sp.contains("sp.key.local.state").assertTrue()
-        }
 
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
@@ -203,27 +188,12 @@ class MainActivityKotlinOldConsentTest {
                 spConfig = spConfGdpr,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
-                spClientObserver = listOf(spClient)
+                spClientObserver = listOf(spClient),
+                diagnostic = v6LocalState.toList()
             )
         )
 
         scenario = launchActivity()
-
-        scenario.onActivity { activity ->
-            /**
-             * Store an old v6 localState
-             */
-            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            val spEditor = sp.edit()
-            v6LocalState.keys().forEach {
-                check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
-                check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
-                check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
-            }
-            spEditor.apply()
-            // verify that before the migration the local state is present
-            sp.contains("sp.key.local.state").assertTrue()
-        }
 
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
@@ -250,27 +220,12 @@ class MainActivityKotlinOldConsentTest {
                 spConfig = spConfCcpa,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
-                spClientObserver = listOf(spClient)
+                spClientObserver = listOf(spClient),
+                diagnostic = v6LocalState.toList()
             )
         )
 
         scenario = launchActivity()
-
-        scenario.onActivity { activity ->
-            /**
-             * Store an old v6 localState
-             */
-            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            val spEditor = sp.edit()
-            v6LocalState.keys().forEach {
-                check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
-                check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
-                check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
-            }
-            spEditor.apply()
-            // verify that before the migration the local state is present
-            sp.contains("sp.key.local.state").assertTrue()
-        }
 
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
@@ -298,27 +253,12 @@ class MainActivityKotlinOldConsentTest {
                 spConfig = spConfGdprFinnish,
                 gdprPmId = "662122",
                 ccpaPmId = "-",
-                spClientObserver = listOf(spClient)
+                spClientObserver = listOf(spClient),
+                diagnostic = v6LocalState.toList()
             )
         )
 
         scenario = launchActivity()
-
-        scenario.onActivity { activity ->
-            /**
-             * Store an old v6 localState
-             */
-            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            val spEditor = sp.edit()
-            v6LocalState.keys().forEach {
-                check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
-                check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
-                check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
-            }
-            spEditor.apply()
-            // verify that before the migration the local state is present
-            sp.contains("sp.key.local.state").assertTrue()
-        }
 
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
