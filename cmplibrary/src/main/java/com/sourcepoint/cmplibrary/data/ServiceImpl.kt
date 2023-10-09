@@ -135,7 +135,14 @@ private class ServiceImpl(
         onFailure: (Throwable, Boolean) -> Unit,
     ) {
         execManager.executeOnWorkerThread {
+
+            if (messageReq.authId != null && campaignManager.authId != messageReq.authId ||
+                campaignManager.propertyId != spConfig.propertyId
+            ) {
+                dataStorage.clearAll()
+            }
             campaignManager.authId = messageReq.authId
+            campaignManager.propertyId = spConfig.propertyId
 
             if (connectionManager.isConnected.not()) {
                 val noInternetConnectionException = NoInternetConnectionException()

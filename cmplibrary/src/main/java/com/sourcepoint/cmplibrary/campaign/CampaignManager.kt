@@ -88,6 +88,7 @@ internal interface CampaignManager {
     var choiceResp: ChoiceResp?
     var dataRecordedConsent: Instant?
     var authId: String?
+    var propertyId: Int
 
     fun handleMetaDataResponse(response: MetaDataResp?)
     fun handleOldLocalData()
@@ -362,6 +363,11 @@ private class CampaignManagerImpl(
         get() = dataStorage.getAuthId()
         set(value) {
             dataStorage.saveAuthId(value)
+        }
+    override var propertyId: Int
+        get() = dataStorage.propertyId
+        set(value) {
+            dataStorage.propertyId = value
         }
 
     // Optimized Implementation below

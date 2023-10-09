@@ -17,6 +17,8 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
         const val CHOICE_RESP = "sp.key.choice"
         const val DATA_RECORDED_CONSENT = "sp.key.data.recorded.consent"
 
+        const val KEY_PROPERTY_ID = "sp.key.config.propertyId"
+
         const val CONSENT_STATUS_RESPONSE = "sp.key.consent.status.response"
         const val GDPR_CONSENT_STATUS = "sp.gdpr.key.consent.status"
         const val CCPA_CONSENT_STATUS = "sp.ccpa.key.consent.status"
@@ -41,6 +43,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     var ccpaConsentStatus: String?
     var messagesOptimizedLocalState: String?
     var nonKeyedLocalState: String?
+    var propertyId: Int
 
     fun saveLocalState(value: String)
     fun getLocalState(): String?
