@@ -516,6 +516,7 @@ private class ServiceImpl(
 
         return getConsentStatus(csParams)
             .executeOnRight {
+                dataStorage.updateLocalDataVersion()
                 campaignManager.apply {
                     campaignManager.handleOldLocalData()
                     messagesOptimizedLocalState = it.localState
