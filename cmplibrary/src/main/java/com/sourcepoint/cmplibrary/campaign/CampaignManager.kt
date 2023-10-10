@@ -65,7 +65,6 @@ internal interface CampaignManager {
     // Optimized
     val shouldCallMessages: Boolean
     val shouldCallConsentStatus: Boolean
-    val requiresNewConsentData: Boolean
     var gdprMessageMetaData: MessageMetaData?
     var ccpaMessageMetaData: MessageMetaData?
 
@@ -411,23 +410,25 @@ private class CampaignManagerImpl(
             val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
             val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE_OLD)
-            val res =
-                ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0) || isV6LocalStatePresent || isV6LocalStatePresent2
+            val isRequireNewConsentData = dataStorage.localDataVersion < DataStorage.HARDCODED_LOCAL_DATA_VERSION
+            val res = ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0) ||
+                isV6LocalStatePresent ||
+                isV6LocalStatePresent2 ||
+                isRequireNewConsentData
 
             logger?.computation(
                 tag = "shouldCallConsentStatus",
                 msg = """
                 gdprUUID != null [${gdprUUID != null}] - ccpaUUID != null [${ccpaUUID != null}]
                 localStateSize empty [${localStateSize == 0}]
-                V6.7 ls [$isV6LocalStatePresent] or V6.3 ls [$isV6LocalStatePresent2]  
+                V6.7 ls [$isV6LocalStatePresent] or V6.3 ls [$isV6LocalStatePresent2]
+                isRequireNewConsentData [$isRequireNewConsentData]
                 shouldCallConsentStatus[$res]  
                 """.trimIndent()
             )
 
             return res
         }
-    override val requiresNewConsentData: Boolean
-        get() = dataStorage.localDataVersion < DataStorage.HARDCODED_LOCAL_DATA_VERSION
 
     override var gdprMessageMetaData: MessageMetaData?
         get() {
