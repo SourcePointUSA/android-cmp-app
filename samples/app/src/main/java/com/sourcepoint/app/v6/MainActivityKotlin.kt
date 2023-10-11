@@ -66,6 +66,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
         if (dataProvider.resetAll) {
             clearAllData(this)
+            PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply()
         }
 
         storeDiagnosticObj(dataProvider.diagnostic)
