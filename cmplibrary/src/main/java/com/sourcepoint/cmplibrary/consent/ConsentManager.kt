@@ -31,7 +31,7 @@ internal interface ConsentManager {
     var sPConsentsSuccess: ((SPConsents) -> Unit)?
     var sPConsentsError: ((Throwable) -> Unit)?
 
-    val storedConsent: Boolean
+    val hasStoredConsent: Boolean
 
     companion object {
 
@@ -83,7 +83,7 @@ private class ConsentManagerImpl(
     override var sPConsentsSuccess: ((SPConsents) -> Unit)? = null
     override var sPConsentsError: ((Throwable) -> Unit)? = null
 
-    override val storedConsent: Boolean
+    override val hasStoredConsent: Boolean
         get() {
             return dataStorage.ccpaConsentStatus != null ||
                 dataStorage.gdprConsentStatus != null

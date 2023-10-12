@@ -79,20 +79,20 @@ class ConsentManagerImplTest {
     fun `GIVEN a GDPR stored consent in SP VERIFY that savedConsentByUser RETURN true`() {
         every { dataStorage.gdprConsentStatus }.returns("gdpr")
         every { dataStorage.ccpaConsentStatus }.returns(null)
-        consentManager.storedConsent.assertTrue()
+        consentManager.hasStoredConsent.assertTrue()
     }
 
     @Test
     fun `GIVEN a GDPR and CCPA stored consent in SP VERIFY that savedConsentByUser RETURN true`() {
         every { dataStorage.gdprConsentStatus }.returns("gdpr")
         every { dataStorage.ccpaConsentStatus }.returns("ccpa")
-        consentManager.storedConsent.assertTrue()
+        consentManager.hasStoredConsent.assertTrue()
     }
 
     @Test
     fun `GIVEN a CCPA stored consent in SP VERIFY that savedConsentByUser RETURN true`() {
         every { dataStorage.ccpaConsentStatus }.returns("ccpa")
         every { dataStorage.gdprConsentStatus }.returns(null)
-        consentManager.storedConsent.assertTrue()
+        consentManager.hasStoredConsent.assertTrue()
     }
 }
