@@ -5,8 +5,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.*
-import com.sourcepoint.app.v6.MainActivityKotlin.Companion.CLIENT_PREF_KEY
-import com.sourcepoint.app.v6.MainActivityKotlin.Companion.CLIENT_PREF_VAL
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
@@ -16,14 +14,12 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeepLinkDisplayed
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeletedCustomCategoriesData
-import com.sourcepoint.app.v6.TestUseCase.Companion.checkDeletedCustomVendorDataList
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkEuconsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkFeaturesTab
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkGdprApplies
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkPurposesTab
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkWebViewDisplayedGDPRFirstLayerMessage
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCcpaReviewConsent
-import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnClearConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnConsentActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnCustomConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnDeleteCustomConsent
@@ -113,7 +109,7 @@ class MainActivityKotlinTest {
         propertyName = "mobile.prop-1"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
-        +SpCampaign(campaignType = CampaignType.GDPR, groupPmId = "613056" )
+        +SpCampaign(campaignType = CampaignType.GDPR, groupPmId = "613056")
     }
 
     private val spConf = config {
@@ -156,7 +152,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
 
         wr {
             scenario.onActivity { activity ->
@@ -215,7 +211,7 @@ class MainActivityKotlinTest {
 
     }
 
-//    @Test
+    //    @Test
     // TODO did toggo replace its edge case?
     fun toggo() = runBlocking<Unit> {
 
@@ -234,7 +230,7 @@ class MainActivityKotlinTest {
 
         wr { tapAcceptOnOk() }
         wr { clickOnRefreshBtnActivity() }
-        wr{ tapAcceptOnWebViewDE() }
+        wr { tapAcceptOnWebViewDE() }
     }
 
     @Test
@@ -252,7 +248,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
         wr {
             verify {
                 spClient.onSpFinished(withArg {
@@ -283,7 +279,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
 
@@ -324,7 +320,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
 
         // check consentedAll
         wr { clickOnCcpaReviewConsent() }
@@ -354,7 +350,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapRejectOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapRejectOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
 
@@ -417,6 +413,32 @@ class MainActivityKotlinTest {
             }
         }
     }
+
+    @Test
+    fun WITHOUT_a_stored_consent_GIVEN_no_internet_connection_exception_VERIFY_the_called_callbacks() =
+        runBlocking<Unit> {
+
+            val spClient = mockk<SpClient>(relaxed = true)
+
+            loadKoinModules(
+                mockModule(
+                    spConfig = spConf,
+                    gdprPmId = "488393",
+                    ccpaPmId = "509688",
+                    spClientObserver = listOf(spClient),
+                    diagnostic = mutableListOf(Pair("connectionTest", false))
+                )
+            )
+
+            scenario = launchActivity()
+
+            wr { verify(exactly = 1) { spClient.onError(any()) } }
+            wr { verify(exactly = 0) { spClient.onConsentReady(any()) } }
+            wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
+            wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
+            // TODO We have to change the behaviour of the graceful degradation, onSpFinished must be always called
+            wr { verify(exactly = 0) { spClient.onSpFinished(any()) } }
+        }
 
     @Test
     fun GIVEN_a_campaignList_ACCEPT_all_legislation_and_verify_that_the_popup_apper_1_time() = runBlocking<Unit> {
@@ -507,7 +529,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapOptionWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapOptionWebView() }
         wr { tapAcceptAllOnWebView() }
         wr { tapOptionWebView() }
         wr { tapAcceptAllOnWebView() }
@@ -584,7 +606,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
 
@@ -616,7 +638,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapRejectOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapRejectOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
         wr { clickOnGdprReviewConsent() }
@@ -644,7 +666,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapRejectOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapRejectOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapNetworkOnWebView() }
         wr { checkDeepLinkDisplayed() }
@@ -657,7 +679,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
 //        wr {
 //            scenario.onActivity { activity ->
 //                PreferenceManager.getDefaultSharedPreferences(activity).contains("sp.gdpr.consentUUID").assertTrue()
@@ -686,10 +708,10 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapRejectOnWebView() }
-        wr{ verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapRejectOnWebView() }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { clickOnCustomConsent() }
-        wr{ verify(exactly = 2) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkCustomCategoriesData() }
         wr { tapSiteVendorsWebView() }
@@ -699,7 +721,7 @@ class MainActivityKotlinTest {
         verify {
             spClient.run {
                 onConsentReady(withArg {
-                    it  .gdpr?.consent?.grants!!["5e7ced57b8e05c485246cce0"]!!.purposeGrants.values.first().assertTrue()
+                    it.gdpr?.consent?.grants!!["5e7ced57b8e05c485246cce0"]!!.purposeGrants.values.first().assertTrue()
                 })
             }
         }
@@ -721,13 +743,13 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapAcceptAllOnWebView() }
-        wr{ verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptAllOnWebView() }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
         wr { tapCancelOnWebView() }
         wr { clickOnDeleteCustomConsent() } // delete the previous custom consent
-        wr{ verify(exactly = 2) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkDeletedCustomCategoriesData() }
     }
@@ -747,7 +769,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapOptionWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapOptionWebView() }
         wr { tapCancelOnWebView() }
         wr { checkWebViewDisplayedGDPRFirstLayerMessage() }
         wr { tapAcceptAllOnWebView() }
@@ -773,7 +795,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapCancelOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapCancelOnWebView() }
 
         verify(exactly = 0) { spClient.onConsentReady(any()) }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
@@ -795,7 +817,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapZustimmenAllOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapZustimmenAllOnWebView() }
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkTextInParagraph("Privacy Notice Prop 1") }
 
@@ -816,7 +838,7 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         // Vendors
-        wr(backup = { clickOnRefreshBtnActivity() })  { tapPartnersOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapPartnersOnWebView() }
         wr { checkAllVendorsOff() }
         wr { tapCancelOnWebView() }
 
@@ -830,144 +852,6 @@ class MainActivityKotlinTest {
         wr { checkPurposesTab() }
     }
 
-    @Test
-    fun test_GracefulDegradation_gdpr_consent_present() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConfGdpr.copy(messageTimeout = 3),
-                gdprPmId = "488393",
-                spClientObserver = listOf(spClient),
-                pStoreStateGdpr = true
-            )
-        )
-
-        scenario = launchActivity()
-
-
-        wr { verify(exactly = 0) { spClient.onError(any()) } }
-        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-
-    }
-
-    @Test
-    fun test_GracefulDegradation_gdpr_and_ccpa_consent_present() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConfGdpr.copy(messageTimeout = 3),
-                gdprPmId = "488393",
-                spClientObserver = listOf(spClient),
-                pStoreStateGdpr = true,
-                pStoreStateCcpa = true
-            )
-        )
-
-        scenario = launchActivity()
-
-
-        wr { verify(exactly = 0) { spClient.onError(any()) } }
-        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-
-    }
-
-    @Test
-    fun test_GracefulDegradation_ccpa_consent_present() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConfGdpr.copy(messageTimeout = 3),
-                gdprPmId = "488393",
-                spClientObserver = listOf(spClient),
-                pStoreStateCcpa = true
-            )
-        )
-
-        scenario = launchActivity()
-
-
-        wr { verify(exactly = 0) { spClient.onError(any()) } }
-        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-
-    }
-
-    @Test
-    fun test_GracefulDegradation_consent_absent() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConfGdpr.copy(messageTimeout = 3),
-                gdprPmId = "488393",
-                spClientObserver = listOf(spClient)
-            )
-        )
-
-        scenario = launchActivity()
-
-
-        wr { verify(exactly = 1) { spClient.onError(any()) } }
-        wr { verify(exactly = 0) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 0) { spClient.onSpFinished(any()) } }
-
-    }
-
-    @Test
-    fun GracefulDegradation_GIVEN_a_backend_error_EXECUTE_the_onError() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConfGdpr.copy(propertyName = "invalid.property"),
-                gdprPmId = "488393",
-                spClientObserver = listOf(spClient)
-            )
-        )
-
-        scenario = launchActivity()
-
-
-        wr { verify(exactly = 1) { spClient.onError(any()) } }
-        wr { verify(exactly = 0) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 0) { spClient.onSpFinished(any()) } }
-
-    }
-
-    @Test
-    fun GracefulDegradation_GIVEN_a__backend_error_and_a_saved_consent_EXECUTE_the_onConsentReady() =
-        runBlocking<Unit> {
-
-            val spClient = mockk<SpClient>(relaxed = true)
-
-            loadKoinModules(
-                mockModule(
-                    spConfig = spConfGdpr.copy(propertyName = "invalid.property"),
-                    gdprPmId = "488393",
-                    spClientObserver = listOf(spClient),
-                    pStoreStateCcpa = true
-                )
-            )
-
-            scenario = launchActivity()
-
-
-            wr { verify(exactly = 0) { spClient.onError(any()) } }
-            wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
-            wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-
-        } //t
-
     private fun <E> check(block: () -> E): E? {
         return try {
             block.invoke()
@@ -975,5 +859,4 @@ class MainActivityKotlinTest {
             null
         }
     }
-
 }

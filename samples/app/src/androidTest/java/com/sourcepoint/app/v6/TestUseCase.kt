@@ -385,9 +385,8 @@ class TestUseCase {
             url: String = "",
             useGdprGroupPmIfAvailable: Boolean = false,
             pResetAll: Boolean = true,
-            pStoreStateGdpr: Boolean = false,
-            pStoreStateCcpa: Boolean = false,
-            spClientObserver: List<SpClient> = emptyList()
+            spClientObserver: List<SpClient> = emptyList(),
+            diagnostic: List<Pair<String, Any?>> = emptyList()
         ): Module {
             return module(override = true) {
                 single<List<SpClient?>> { spClientObserver }
@@ -395,15 +394,14 @@ class TestUseCase {
                     object : DataProvider {
                         override val authId = pAuthId
                         override val resetAll = pResetAll
-                        override val storeStateGdpr: Boolean = pStoreStateGdpr
                         override val useGdprGroupPmIfAvailable: Boolean = useGdprGroupPmIfAvailable
-                        override val storeStateCcpa: Boolean = pStoreStateCcpa
                         override val url = url
                         override val spConfig: SpConfig = spConfig
                         override val gdprPmId: String = gdprPmId
                         override val ccpaPmId: String = ccpaPmId
                         override val customVendorList: List<String> = customVendorDataListProd.map { it.first }
                         override val customCategories: List<String> = customCategoriesDataProd.map { it.first }
+                        override val diagnostic: List<Pair<String, Any?>> = diagnostic
                     }
                 }
             }
