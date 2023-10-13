@@ -83,6 +83,13 @@ class DemoActivityTv : FragmentActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (spConsentLib.isWebviewShown().not())
+            super.onBackPressed()
+        else
+            spConsentLib.onBackPressed()
+    }
+
     override fun onResume() {
         super.onResume()
         spConsentLib.loadMessage()
