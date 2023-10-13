@@ -79,4 +79,7 @@ interface SpConsentLib {
     fun removeView(view: View)
 
     fun dispose()
+
+    fun onBackPressed()
+    fun isWebviewShown(): Boolean
 }
