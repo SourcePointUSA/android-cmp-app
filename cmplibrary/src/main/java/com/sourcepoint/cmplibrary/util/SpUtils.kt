@@ -24,7 +24,7 @@ import kotlinx.serialization.decodeFromString
 
 private const val DEFAULT_CCPA_USP_STRING = "1---"
 
-fun generateCcpaUspString(
+internal fun generateCcpaUspString(
     applies: Boolean?,
     ccpaStatus: CcpaStatus?,
     signedLspa: Boolean?,

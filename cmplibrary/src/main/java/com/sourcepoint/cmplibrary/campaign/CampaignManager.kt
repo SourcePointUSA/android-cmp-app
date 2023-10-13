@@ -69,7 +69,6 @@ internal interface CampaignManager {
     var ccpaMessageMetaData: MessageMetaData?
 
     // Consent Status
-    fun saveConsentStatusResponse(c: ConsentStatusResp)
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
     var messagesOptimizedLocalState: JsonElement?
@@ -445,12 +444,6 @@ private class CampaignManagerImpl(
             dataStorage.ccpaMessageMetaData = serialised
         }
 
-    override fun saveConsentStatusResponse(c: ConsentStatusResp) {
-        gdprConsentStatus = c.consentStatusData?.gdpr
-        ccpaConsentStatus = c.consentStatusData?.ccpa
-        messagesOptimizedLocalState = c.localState
-    }
-
     override var gdprConsentStatus: GdprCS?
         get() {
             return dataStorage.gdprConsentStatus?.let { JsonConverter.converter.decodeFromString<GdprCS>(it) }
@@ -542,6 +535,12 @@ private class CampaignManagerImpl(
                 ccpaConsentStatus?.let { ccpaCS ->
                     val updatedCcpaConsentStatus = ccpaCS.copy(applies = i)
                     ccpaConsentStatus = updatedCcpaConsentStatus
+                    // regenerate and update US privacy string with new values in the data storage
+                    dataStorage.uspstring = generateCcpaUspString(
+                        applies = updatedCcpaConsentStatus.applies,
+                        ccpaStatus = updatedCcpaConsentStatus.status,
+                        signedLspa = updatedCcpaConsentStatus.signedLspa,
+                    )
                 }
             }
 
