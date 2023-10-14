@@ -469,13 +469,6 @@ private class CampaignManagerImpl(
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.ccpaConsentStatus = serialised
             dataStorage.gppData = value?.gppData
-
-            // regenerate and update US privacy string with new values in the data storage
-            dataStorage.uspstring = generateCcpaUspString(
-                applies = value?.applies,
-                ccpaStatus = value?.status,
-                signedLspa = value?.signedLspa,
-            )
         }
 
     override var messagesOptimizedLocalState: JsonElement?
