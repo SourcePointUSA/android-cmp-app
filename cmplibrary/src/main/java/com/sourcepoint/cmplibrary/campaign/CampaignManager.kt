@@ -423,7 +423,7 @@ private class CampaignManagerImpl(
                 msg = """
                     gdprUUID != null [${dataStorage.gdprConsentUuid != null}] - ccpaUUID != null [${dataStorage.ccpaConsentUuid != null}]
                     isGdprOrCcpaUuidPresent [$isGdprOrCcpaUuidPresent]
-                    isLocalStateEmpty [${isLocalStateEmpty}]
+                    isLocalStateEmpty [$isLocalStateEmpty]
                     V6.7 ls [$isV6LocalStatePresent] or V6.3 ls [$isV6LocalStatePresent2]
                     isEligibleLocalDataVersion [$hasNonEligibleLocalDataVersion]
                     shouldCallConsentStatus[$isRequireNewConsentStatusData]  
