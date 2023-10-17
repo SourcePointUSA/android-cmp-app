@@ -22,12 +22,19 @@ class OnlyGdprKotlin : AppCompatActivity() {
     private val spConsentLib by spConsentLibLazy {
         activity = this@OnlyGdprKotlin
         spClient = LocalClient()
+//        config {
+//            accountId = 22
+//            propertyId = 16893
+//            propertyName = "mobile.multicampaign.demo"
+//            messLanguage = MessageLanguage.ENGLISH
+//            +(CampaignType.GDPR)
+//        }
         config {
-            accountId = 22
-            propertyId = 16893
-            propertyName = "mobile.multicampaign.demo"
+            accountId = 1770
+            propertyId = 33371
+            propertyName = "firetv.android.ccpa"
             messLanguage = MessageLanguage.ENGLISH
-            +(CampaignType.GDPR)
+            +(CampaignType.CCPA)
         }
     }
 
@@ -38,9 +45,9 @@ class OnlyGdprKotlin : AppCompatActivity() {
 
         review_consents_gdpr.setOnClickListener {
             spConsentLib.loadPrivacyManager(
-                "488393",
+                "876027",
                 PMTab.PURPOSES,
-                CampaignType.GDPR
+                CampaignType.CCPA
             )
         }
 

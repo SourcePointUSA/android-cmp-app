@@ -213,6 +213,25 @@ val defaultProperty11 = Property(
     propertyId = 31320,
 )
 
+val defaultProperty12 = Property(
+    propertyName = "demo.sp-demo.com",
+    accountId = 22,
+    gdprPmId = 11L,
+    ccpaPmId = 884193L,
+    is_staging = false,
+    targetingParameters = emptyList(),
+    timeout = 3000,
+    authId = null,
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    statusCampaignSet = setOf(
+        StatusCampaign("demo.sp-demo.com", CampaignType.GDPR, false),
+        StatusCampaign("demo.sp-demo.com", CampaignType.CCPA, true),
+    ),
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 146,
+)
+
 val propList = listOf(
     defaultProperty1,
     defaultProperty2,
@@ -223,7 +242,8 @@ val propList = listOf(
     defaultProperty7,
     defaultProperty9,
     defaultProperty10,
-    defaultProperty11
+    defaultProperty11,
+    defaultProperty12,
 )
 val tvPropList = listOf(
     defaultProperty,

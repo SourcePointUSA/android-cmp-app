@@ -31,6 +31,7 @@ internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
         thisContent = JSONObject(),
         signedLspa = signedLspa,
         webConsentPayload = webConsentPayload,
+        uspstring = this.uspstring ?: "1YNN"
     )
 }
 

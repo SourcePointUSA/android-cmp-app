@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
 import com.sourcepoint.cmplibrary.model.toTcfJSONObj
-import com.sourcepoint.cmplibrary.util.generateCcpaUspString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -74,20 +73,13 @@ internal data class CCPAConsentInternal(
     override val rejectedCategories: List<String> = listOf(),
     override val rejectedVendors: List<String> = listOf(),
     override val status: CcpaStatus? = null,
+    override val uspstring: String = "1YNN",
     override val childPmId: String? = null,
     override val applies: Boolean = false,
     val thisContent: JSONObject = JSONObject(),
     override val signedLspa: Boolean? = null,
     override val webConsentPayload: JsonObject? = null,
-) : CCPAConsent {
-
-    override val uspstring: String
-        get() = generateCcpaUspString(
-            applies = applies,
-            ccpaStatus = status,
-            signedLspa = signedLspa,
-        )
-}
+) : CCPAConsent
 
 enum class CcpaStatus {
     rejectedAll,

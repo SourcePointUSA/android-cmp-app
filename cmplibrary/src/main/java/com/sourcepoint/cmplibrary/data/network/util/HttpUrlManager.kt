@@ -15,6 +15,7 @@ import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
 import kotlinx.serialization.encodeToString
 import okhttp3.HttpUrl
+import kotlin.random.Random
 
 /**
  * Component responsible of building and providing the URLs

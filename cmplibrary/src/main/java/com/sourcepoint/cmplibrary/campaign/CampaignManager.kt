@@ -20,7 +20,7 @@ import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.generateCcpaUspString
+import com.sourcepoint.cmplibrary.util.updateCcpaUspString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
@@ -467,8 +467,11 @@ private class CampaignManagerImpl(
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.ccpaConsentStatus = serialised
-            dataStorage.gppData = value?.gppData
+            dataStorage.run {
+                ccpaConsentStatus = serialised
+                gppData = value?.gppData
+                uspstring = value?.uspstring
+            }
         }
 
     override var messagesOptimizedLocalState: JsonElement?
@@ -526,14 +529,10 @@ private class CampaignManagerImpl(
         response.ccpa?.apply {
             applies?.let { i ->
                 ccpaConsentStatus?.let { ccpaCS ->
-                    val updatedCcpaConsentStatus = ccpaCS.copy(applies = i)
-                    ccpaConsentStatus = updatedCcpaConsentStatus
-                    // regenerate and update US privacy string with new values in the data storage
-                    dataStorage.uspstring = generateCcpaUspString(
-                        applies = updatedCcpaConsentStatus.applies,
-                        ccpaStatus = updatedCcpaConsentStatus.status,
-                        signedLspa = updatedCcpaConsentStatus.signedLspa,
-                    )
+                    val updatedCcpaCS = ccpaCS.copy(applies = i)
+                    // update the new uspstring value based on the applies
+                    val uspstring = updateCcpaUspString(updatedCcpaCS, logger)
+                    ccpaConsentStatus = updatedCcpaCS.copy(uspstring = uspstring)
                 }
             }
 

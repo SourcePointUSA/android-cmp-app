@@ -332,6 +332,13 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
         wr { spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.rejectedAll) }
 
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.getString("IABUSPrivacy_String", null).assertEquals("1YYN")
+            }
+        }
+
     }
 
     @Test
@@ -850,6 +857,100 @@ class MainActivityKotlinTest {
         // Purposes
         wr { tapPurposesOnWebView() }
         wr { checkPurposesTab() }
+    }
+
+    @Test
+    fun GIVEN_a_ccpa_if_applies_FALSE_VERIFY_USPSTRING() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        val v7CCPALocalState = JSONObject(TestData.storedConsentCCPA_V7)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfCcpa,
+                gdprPmId = "123",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = listOf("metadata_resp_applies_false" to false) + v7CCPALocalState.toList()
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.getString("IABUSPrivacy_String", null).assertEquals("1---")
+            }
+        }
+
+    }
+
+    @Test
+    fun GIVEN_a_ccpa_if_applies_TRUE_VERIFY_USPSTRING() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        val v7CCPALocalState = JSONObject(TestData.storedConsentCCPA_applies_false_V7)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfCcpa,
+                gdprPmId = "123",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = listOf("metadata_resp_applies_true" to true) + v7CCPALocalState.toList()
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.getString("IABUSPrivacy_String", null).assertNotEquals("1---")
+            }
+        }
+
+    }
+
+    @Test
+    fun GIVEN_a_ccpa_if_rejectedAll_from_PM_VERIFY_USPSTRING() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        val v7CCPALocalState = JSONObject(TestData.storedConsentCCPA_V7)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfCcpa,
+                gdprPmId = "123",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = v7CCPALocalState.toList()
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.getString("IABUSPrivacy_String", null).assertEquals("1YNN")
+            }
+        }
+
+        wr { clickOnCcpaReviewConsent() }
+        wr(backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
+
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.getString("IABUSPrivacy_String", null).assertEquals("1YYN")
+            }
+        }
+
     }
 
     private fun <E> check(block: () -> E): E? {
