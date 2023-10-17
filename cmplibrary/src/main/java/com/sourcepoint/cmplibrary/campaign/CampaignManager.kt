@@ -405,29 +405,32 @@ private class CampaignManagerImpl(
 
     override val shouldCallConsentStatus: Boolean
         get() {
-            val gdprUUID = dataStorage.gdprConsentUuid
-            val ccpaUUID = dataStorage.ccpaConsentUuid
-            val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
+            val isGdprOrCcpaUuidPresent =
+                dataStorage.gdprConsentUuid != null || dataStorage.ccpaConsentUuid != null
+            val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
-            val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE_OLD)
-            val isRequireNewConsentData = dataStorage.localDataVersion < DataStorage.HARDCODED_LOCAL_DATA_VERSION
-            val res = ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0) ||
+            val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
+            val hasNonEligibleLocalDataVersion =
+                dataStorage.localDataVersion != DataStorage.HARDCODED_LOCAL_DATA_VERSION
+
+            val isRequireNewConsentStatusData = (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
                 isV6LocalStatePresent ||
                 isV6LocalStatePresent2 ||
-                isRequireNewConsentData
+                hasNonEligibleLocalDataVersion
 
             logger?.computation(
                 tag = "shouldCallConsentStatus",
                 msg = """
-                gdprUUID != null [${gdprUUID != null}] - ccpaUUID != null [${ccpaUUID != null}]
-                localStateSize empty [${localStateSize == 0}]
-                V6.7 ls [$isV6LocalStatePresent] or V6.3 ls [$isV6LocalStatePresent2]
-                isRequireNewConsentData [$isRequireNewConsentData]
-                shouldCallConsentStatus[$res]  
+                    gdprUUID != null [${dataStorage.gdprConsentUuid != null}] - ccpaUUID != null [${dataStorage.ccpaConsentUuid != null}]
+                    isGdprOrCcpaUuidPresent [$isGdprOrCcpaUuidPresent]
+                    isLocalStateEmpty [${isLocalStateEmpty}]
+                    V6.7 ls [$isV6LocalStatePresent] or V6.3 ls [$isV6LocalStatePresent2]
+                    isEligibleLocalDataVersion [$hasNonEligibleLocalDataVersion]
+                    shouldCallConsentStatus[$isRequireNewConsentStatusData]  
                 """.trimIndent()
             )
 
-            return res
+            return isRequireNewConsentStatusData
         }
 
     override var gdprMessageMetaData: MessageMetaData?
