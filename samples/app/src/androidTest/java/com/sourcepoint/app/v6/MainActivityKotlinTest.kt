@@ -1036,6 +1036,54 @@ class MainActivityKotlinTest {
 
     }
 
+    /**
+     * Regression test that verifies if the local data versioning works correctly, meaning that if
+     * the local data version is not the same as the hardcoded one, then the app should call
+     * /consent-status and update the local data version to the hardcoded one
+     */
+    @Test
+    fun given_non_eligible_local_data_version_then_should_call_consent_status_and_update_local_data_version() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+        val initialLocalDataVersion = 0
+
+        /**
+         * This value should be changed each time the HARDCODED_LOCAL_DATA_VERSION value from
+         * DataStorage is updated
+         */
+        val hardcodedLocalDataVersion = 1
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+                getInt("sp.key.localDataVersion", -1).assertEquals(initialLocalDataVersion)
+            }
+        }
+
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptAllOnWebView() }
+        wr { tapAcceptAllOnWebView() }
+
+        verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+                getInt("sp.key.localDataVersion", -1).assertEquals(hardcodedLocalDataVersion)
+            }
+        }
+    }
+
     private fun <E> check(block: () -> E): E? {
         return try {
             block.invoke()
