@@ -1066,7 +1066,7 @@ class MainActivityKotlinTest {
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
-                getInt("sp.key.localDataVersion", -1).assertEquals(initialLocalDataVersion)
+                getInt("sp.key.localDataVersion", 0).assertEquals(initialLocalDataVersion)
             }
         }
 
@@ -1079,7 +1079,7 @@ class MainActivityKotlinTest {
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
-                getInt("sp.key.localDataVersion", -1).assertEquals(hardcodedLocalDataVersion)
+                getInt("sp.key.localDataVersion", 0).assertEquals(hardcodedLocalDataVersion)
             }
         }
     }
