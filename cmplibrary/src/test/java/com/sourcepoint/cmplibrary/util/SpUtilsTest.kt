@@ -21,7 +21,7 @@ internal class SpUtilsTest {
             applies = null,
         )
         val expected = "1---"
-        val generated = updateCcpaUspString(ccpa.toCcpaCS())
+        val generated = updateCcpaUspString(ccpa.toCcpaCS(null))
 
         // WHEN
         val actual = ccpa.uspstring
@@ -40,7 +40,7 @@ internal class SpUtilsTest {
         // GIVEN
         val ccpa = createCCPA(applies = false)
         val expected = "1---"
-        val generated = updateCcpaUspString(ccpa.toCcpaCS())
+        val generated = updateCcpaUspString(ccpa.toCcpaCS(false))
 
         // WHEN
         val actual = ccpa.uspstring
@@ -66,7 +66,7 @@ internal class SpUtilsTest {
         )
 
         val expected = "1YYY"
-        val generated = updateCcpaUspString(ccpa.toCcpaCS())
+        val generated = updateCcpaUspString(ccpa.toCcpaCS(true))
 
         // WHEN
         val actual = ccpa.uspstring
@@ -91,7 +91,7 @@ internal class SpUtilsTest {
             signedLspa = false,
         )
         val expected = "1YYN"
-        val generated = updateCcpaUspString(ccpa.toCcpaCS())
+        val generated = updateCcpaUspString(ccpa.toCcpaCS(true))
 
         // WHEN
         val actual = ccpa.uspstring
@@ -116,7 +116,7 @@ internal class SpUtilsTest {
             signedLspa = false,
         )
         val expected = "1YNN"
-        val generated = updateCcpaUspString(ccpa.toCcpaCS())
+        val generated = updateCcpaUspString(ccpa.toCcpaCS(true))
 
         // WHEN
         val actual = ccpa.uspstring
@@ -130,7 +130,6 @@ internal class SpUtilsTest {
         ccpaStatus: CcpaStatus? = null,
         signedLspa: Boolean? = null,
     ): CCPA = CCPA(
-        applies = applies,
         consentedAll = null,
         dateCreated = null,
         message = null,

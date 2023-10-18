@@ -177,7 +177,7 @@ class MainActivityKotlinTest {
                 onConsentReady(withArg {
                     it.gdpr!!.consent.grants.map { k -> k.key }.sorted().assertEquals(grantsTester)
                 })
-                onSpFinished(any())
+                onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
             }
         }
 
@@ -293,6 +293,7 @@ class MainActivityKotlinTest {
                 onUIFinished(any())
                 onAction(any(), any())
                 onConsentReady(any())
+                onSpFinished(withArg { it.ccpa!!.consent.applies.assertTrue() })
             }
         }
 
@@ -326,11 +327,13 @@ class MainActivityKotlinTest {
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
         wr { spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.consentedAll) }
+        wr { spClient.consentList.last().ccpa!!.consent.applies.assertTrue() }
 
         // check consentedAll
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
         wr { spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.rejectedAll) }
+        wr { spClient.consentList.last().ccpa!!.consent.applies.assertTrue() }
 
         wr {
             scenario.onActivity { activity ->
@@ -374,6 +377,7 @@ class MainActivityKotlinTest {
                     it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(emptyList())
                     it.gdpr?.consent?.grants?.values?.forEach { el -> el.granted.assertFalse() }
                 })
+                onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
             }
         }
     }
@@ -416,7 +420,10 @@ class MainActivityKotlinTest {
                 onAction(any(), any())
                 onUIReady(any())
                 onConsentReady(any())
-                onUIFinished(any())
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
             }
         }
     }
@@ -473,6 +480,14 @@ class MainActivityKotlinTest {
         wr { verify(atLeast = 3) { spClient.onSpFinished(any()) } }
         wr { verify(atLeast = 4) { spClient.onConsentReady(any()) } }
         wr { verify(atLeast = 2) { spClient.onUIReady(any()) } }
+        verify {
+            spClient.run {
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
+            }
+        }
     }
 
     @Test
@@ -495,6 +510,13 @@ class MainActivityKotlinTest {
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
+        verify {
+            spClient.run {
+                onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
+            }
+        }
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
@@ -551,11 +573,14 @@ class MainActivityKotlinTest {
         verify {
             spClient.run {
                 onUIReady(any())
-                onUIFinished(any())
                 onUIReady(any())
                 onAction(any(), any())
                 onUIReady(any())
                 onConsentReady(any())
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
             }
         }
     }
@@ -589,7 +614,10 @@ class MainActivityKotlinTest {
         verify {
             spClient.run {
                 onUIReady(any())
-                onUIFinished(any())
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
                 onUIReady(any())
                 onAction(any(), any())
                 onUIReady(any())
@@ -622,7 +650,9 @@ class MainActivityKotlinTest {
         verify {
             spClient.run {
                 onUIReady(any())
-                onUIFinished(any())
+                onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
                 onAction(any(), any())
                 onConsentReady(any())
                 onSpFinished(any())
@@ -698,6 +728,7 @@ class MainActivityKotlinTest {
         delay(300)
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
+
     }
 
     @Test
@@ -884,6 +915,13 @@ class MainActivityKotlinTest {
                 sp.getString("IABUSPrivacy_String", null).assertEquals("1---")
             }
         }
+        verify {
+            spClient.run {
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertFalse()
+                })
+            }
+        }
 
     }
 
@@ -910,6 +948,13 @@ class MainActivityKotlinTest {
             scenario.onActivity { activity ->
                 val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                 sp.getString("IABUSPrivacy_String", null).assertNotEquals("1---")
+            }
+        }
+        verify {
+            spClient.run {
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                })
             }
         }
 
@@ -948,6 +993,14 @@ class MainActivityKotlinTest {
             scenario.onActivity { activity ->
                 val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                 sp.getString("IABUSPrivacy_String", null).assertEquals("1YYN")
+            }
+        }
+
+        verify {
+            spClient.run {
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                })
             }
         }
 

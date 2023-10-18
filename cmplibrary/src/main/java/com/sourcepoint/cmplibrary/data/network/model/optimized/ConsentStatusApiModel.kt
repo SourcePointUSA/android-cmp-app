@@ -49,8 +49,7 @@ data class ConsentStatusResp(
 
 @Serializable
 data class CcpaCS(
-    @SerialName("applies") val applies: Boolean?,
-    @SerialName("ccpaApplies") val ccpaApplies: Boolean?,
+    val applies: Boolean?,
     @SerialName("consentedAll") val consentedAll: Boolean?,
     @SerialName("dateCreated") val dateCreated: String?,
     @SerialName("gpcEnabled") val gpcEnabled: Boolean?,
@@ -68,8 +67,7 @@ data class CcpaCS(
 
 @Serializable
 data class GdprCS(
-    @SerialName("applies") val applies: Boolean?,
-    @SerialName("gdprApplies") val gdprApplies: Boolean?,
+    val applies: Boolean?,
     @SerialName("categories") val categories: List<String>?,
     @SerialName("consentAllRef") val consentAllRef: String?,
     @SerialName("consentedToAll") val consentedToAll: Boolean?,

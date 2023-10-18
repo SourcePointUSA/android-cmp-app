@@ -86,7 +86,6 @@ data class Campaigns(
 
 @Serializable
 data class CCPA(
-    @SerialName("applies") val applies: Boolean?,
     @SerialName("consentedAll") val consentedAll: Boolean?,
     @SerialName("dateCreated") override val dateCreated: String?,
     @SerialName("message") override val message: JsonElement?,

@@ -451,9 +451,6 @@ private class CampaignManagerImpl(
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.apply {
-                value?.gdprApplies?.let {
-                    gdprApplies = it
-                }
                 gdprConsentStatus = serialised
                 value?.TCData
                     ?.let { this.tcData = it }
@@ -546,10 +543,13 @@ private class CampaignManagerImpl(
 
         // handle gdpr
         response.gdpr?.apply {
-            gdprConsentStatus?.let { gdprCS ->
-                val updatedGdprConsentStatus = gdprCS.copy(applies = applies)
-                gdprConsentStatus = updatedGdprConsentStatus
+            applies?.let { gdprApplies ->
+                gdprConsentStatus?.let { gdprCS ->
+                    val updatedGdprConsentStatus = gdprCS.copy(applies = gdprApplies)
+                    gdprConsentStatus = updatedGdprConsentStatus
+                }
             }
+
             applies?.let { i -> dataStorage.gdprApplies = i }
             childPmId?.let { i -> dataStorage.gdprChildPmId = i }
             sampleRate?.let { i ->
