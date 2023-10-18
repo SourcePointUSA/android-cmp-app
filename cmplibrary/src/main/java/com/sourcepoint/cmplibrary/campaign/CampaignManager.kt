@@ -411,7 +411,7 @@ private class CampaignManagerImpl(
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
             val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
             val hasNonEligibleLocalDataVersion =
-                dataStorage.localDataVersion != DataStorage.HARDCODED_LOCAL_DATA_VERSION
+                dataStorage.localDataVersion != DataStorage.LOCAL_DATA_VERSION_HARDCODED_VALUE
 
             val isRequireNewConsentStatusData = (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
                 isV6LocalStatePresent ||
