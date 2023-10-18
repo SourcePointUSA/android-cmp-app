@@ -1044,6 +1044,7 @@ class MainActivityKotlinTest {
     @Test
     fun given_non_eligible_local_data_version_then_should_call_consent_status_and_update_local_data_version() = runBlocking<Unit> {
 
+        val v7Consent = JSONObject(TestData.storedConsentV7)
         val spClient = mockk<SpClient>(relaxed = true)
         val initialLocalDataVersion = 0
 
@@ -1059,7 +1060,7 @@ class MainActivityKotlinTest {
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
-                diagnostic = mutableListOf(Pair("sp.key.localDataVersion", 0)),
+                diagnostic = v7Consent.toList() + listOf(Pair("sp.key.localDataVersion", 0)),
             )
         )
 
