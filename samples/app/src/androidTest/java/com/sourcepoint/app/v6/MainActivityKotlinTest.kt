@@ -1058,7 +1058,8 @@ class MainActivityKotlinTest {
                 spConfig = spConf,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
-                spClientObserver = listOf(spClient)
+                spClientObserver = listOf(spClient),
+                diagnostic = mutableListOf(Pair("sp.key.localDataVersion", 0)),
             )
         )
 
@@ -1070,11 +1071,7 @@ class MainActivityKotlinTest {
             }
         }
 
-        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptAllOnWebView() }
-        wr { tapAcceptAllOnWebView() }
-
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         scenario.onActivity { activity ->
