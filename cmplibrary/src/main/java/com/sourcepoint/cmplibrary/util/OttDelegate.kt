@@ -1,4 +1,4 @@
 package com.sourcepoint.cmplibrary.util
-interface OttDelegate{
+interface OttDelegate {
     fun onHomePage()
 }
