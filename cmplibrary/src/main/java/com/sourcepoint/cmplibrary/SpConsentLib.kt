@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.util.OttDelegate
 import org.json.JSONObject
 
 interface SpConsentLib {
@@ -82,4 +83,5 @@ interface SpConsentLib {
 
     fun onBackPressed()
     fun isWebviewShown(): Boolean
+    fun verifyHome(ottDelegate: OttDelegate)
 }

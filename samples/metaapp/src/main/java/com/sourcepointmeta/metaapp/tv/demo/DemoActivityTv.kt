@@ -13,6 +13,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import com.sourcepoint.cmplibrary.util.OttDelegate
 import com.sourcepoint.cmplibrary.util.clearAllData
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
@@ -84,10 +85,13 @@ class DemoActivityTv : FragmentActivity() {
     }
 
     override fun onBackPressed() {
-        if (spConsentLib.isWebviewShown().not())
-            super.onBackPressed()
-        else
-            spConsentLib.onBackPressed()
+        val callSuperOnBackPressed = { super.onBackPressed() }
+
+        spConsentLib.verifyHome(object : OttDelegate {
+            override fun onHomePage() {
+                callSuperOnBackPressed()
+            }
+        })
     }
 
     override fun onResume() {
