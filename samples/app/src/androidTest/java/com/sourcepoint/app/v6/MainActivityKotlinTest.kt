@@ -1060,7 +1060,7 @@ class MainActivityKotlinTest {
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
-                diagnostic = v7Consent.toList() + listOf(Pair("sp.key.localDataVersion", 0)),
+                diagnostic = v7Consent.toList() + listOf(Pair("sp.key.localDataVersion", initialLocalDataVersion)),
             )
         )
 
@@ -1073,7 +1073,8 @@ class MainActivityKotlinTest {
         }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        verify(exactly = 0) { spClient.onUIReady(any()) }
+        verify(exactly = 1) { spClient.onSpFinished(any()) }
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
