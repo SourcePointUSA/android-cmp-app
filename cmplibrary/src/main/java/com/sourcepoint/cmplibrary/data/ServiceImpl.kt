@@ -476,7 +476,6 @@ private class ServiceImpl(
         networkClient.storeCcpaChoice(postConsentParams)
             .executeOnRight { postConsentResponse ->
                 campaignManager.ccpaUuid = postConsentResponse.uuid
-                campaignManager.ccpaConsentStatus?.uuid = postConsentResponse.uuid
                 campaignManager.ccpaConsentStatus =
                     if (postConsentResponse.webConsentPayload != null) {
                         postConsentResponse
