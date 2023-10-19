@@ -57,6 +57,9 @@ internal data class GDPRConsentInternal(
 ) : GDPRConsent
 
 interface CCPAConsent {
+    companion object {
+        const val DEFAULT_USPSTRING = "1YNN"
+    }
     val uuid: String?
     val rejectedCategories: List<String>
     val rejectedVendors: List<String>
