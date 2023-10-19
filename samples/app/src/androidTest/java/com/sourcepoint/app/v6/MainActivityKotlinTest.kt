@@ -1072,7 +1072,7 @@ class MainActivityKotlinTest {
             }
         }
 
-        verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
 //        verify(exactly = 0) { spClient.onUIReady(any()) }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 

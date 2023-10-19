@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data
 
+import android.util.Log
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
@@ -197,6 +198,9 @@ private class ServiceImpl(
                     includeDataGppParam = spConfig.extractIncludeGppDataParamIfEligible(),
                 )
 
+                Log.i("DIA-2542", "===== getMessageBody =====")
+                Log.v("DIA-2542", "campaigns4Config = ${campaignManager.campaigns4Config}")
+
                 val messagesParamReq = MessagesParamReq(
                     accountId = messageReq.accountId,
                     propertyId = messageReq.propertyId,
@@ -215,6 +219,10 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
+
+                        Log.i("DIA-2542", "===== getMessages =====")
+                        Log.v("DIA-2542", "messageResp = $it")
+
                         campaignManager.also { _ ->
                             messagesOptimizedLocalState = it.localState
                             nonKeyedLocalState = it.nonKeyedLocalState
