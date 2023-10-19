@@ -9,9 +9,9 @@ import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.core.* // ktlint-disable
 import com.sourcepoint.cmplibrary.core.nativemessage.toNativeMessageDTO
 import com.sourcepoint.cmplibrary.core.web.CampaignModel
+import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
-import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
@@ -514,15 +514,21 @@ internal class SpConsentLibImpl(
     override fun onBackPressed() {
         webview.let {
             (webview as ConsentWebView).evaluateJavascript(
-                    """
+                """
                 window.postMessage({ name: 'sp.BACK' })
                 """.trimIndent(),
-                    null
+                null
             )
         }
     }
 
     override fun isWebviewShown(): Boolean = (webview as? ConsentWebView)?.isShown ?: false
+    override fun verifyHome(ottDelegate: OttDelegate) {
+        if (isWebviewShown().not())
+            ottDelegate.onHomePage()
+        else
+            onBackPressed()
+    }
 
     /** Start Receiver methods */
     inner class JSReceiverDelegate : JSClientLib {
