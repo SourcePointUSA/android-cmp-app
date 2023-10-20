@@ -149,7 +149,13 @@ private class ServiceImpl(
                     onFailure(metaDataError, true)
                     return@executeOnWorkerThread
                 }
-                .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
+                .executeOnRight { metaDataResponse ->
+                    handleMetaDataResponse(metaDataResponse)
+
+                    Log.i("DIA-2542", "===== getMetaData =====")
+                    Log.v("DIA-2542", "gdprUuid = ${campaignManager.gdprUuid}")
+                    Log.v("DIA-2542", "ccpaUuid = ${campaignManager.ccpaUuid}")
+                }
 
             if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
                 triggerConsentStatus(
