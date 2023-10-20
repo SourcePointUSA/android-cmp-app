@@ -1073,7 +1073,6 @@ class MainActivityKotlinTest {
         }
 
         wr { verify(exactly = 0) { spClient.onError(any()) } }
-//        verify(exactly = 0) { spClient.onUIReady(any()) }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         scenario.onActivity { activity ->
