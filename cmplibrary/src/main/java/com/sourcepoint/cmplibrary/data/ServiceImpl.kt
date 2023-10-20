@@ -539,6 +539,10 @@ private class ServiceImpl(
                         ccpaConsentStatus = csd.ccpa?.copy(applies = ccpaApplies)
                         ccpaUuid = csd.ccpa?.uuid
                         ccpaDateCreated = csd.ccpa?.dateCreated
+
+                        Log.i("DIA-2542", "===== getConsentStatus =====")
+                        Log.v("DIA-2542", "gdprConsentStatus = ${csd.gdpr}")
+                        Log.v("DIA-2542", "ccpaConsentStatus = ${csd.ccpa}")
                     }
                 }
             }

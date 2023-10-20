@@ -1044,7 +1044,7 @@ class MainActivityKotlinTest {
     @Test
     fun given_non_eligible_local_data_version_then_should_call_consent_status_and_update_local_data_version() = runBlocking<Unit> {
 
-        val v7Consent = JSONObject(TestData.storedConsentCCPA_V7)
+        val v7Consent = JSONObject(TestData.storedConsentV7)
         val spClient = mockk<SpClient>(relaxed = true)
         val initialLocalDataVersion = 0
 
@@ -1056,7 +1056,7 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfCcpa,
+                spConfig = spConf,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
