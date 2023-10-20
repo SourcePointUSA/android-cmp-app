@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.data
 
-import android.util.Log
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
@@ -149,15 +148,7 @@ private class ServiceImpl(
                     onFailure(metaDataError, true)
                     return@executeOnWorkerThread
                 }
-                .executeOnRight { metaDataResponse ->
-                    handleMetaDataResponse(metaDataResponse)
-
-                    Log.i("DIA-2542", "===== getMetaData =====")
-                    Log.v("DIA-2542", "gdprCS = ${campaignManager.gdprConsentStatus}")
-                    Log.v("DIA-2542", "ccpaCS = ${campaignManager.ccpaConsentStatus}")
-                    Log.v("DIA-2542", "gdprUuid = ${campaignManager.gdprUuid}")
-                    Log.v("DIA-2542", "ccpaUuid = ${campaignManager.ccpaUuid}")
-                }
+                .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
 
             if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
                 triggerConsentStatus(
@@ -206,11 +197,6 @@ private class ServiceImpl(
                     includeDataGppParam = spConfig.extractIncludeGppDataParamIfEligible(),
                 )
 
-                Log.i("DIA-2542", "===== getMessageBody =====")
-                Log.v("DIA-2542", "GDPR cs = ${campaignManager.gdprConsentStatus?.consentStatus}")
-                Log.v("DIA-2542", "CCPA status = ${campaignManager.ccpaConsentStatus?.status?.name}")
-                Log.v("DIA-2542", "campaigns4Config = ${campaignManager.campaigns4Config}")
-
                 val messagesParamReq = MessagesParamReq(
                     accountId = messageReq.accountId,
                     propertyId = messageReq.propertyId,
@@ -229,9 +215,6 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-
-                        Log.i("DIA-2542", "===== getMessages =====")
-                        Log.v("DIA-2542", "CCPA message = ${it.campaigns?.ccpa?.message}")
 
                         campaignManager.also { _ ->
                             messagesOptimizedLocalState = it.localState
@@ -460,9 +443,9 @@ private class ServiceImpl(
 
             networkClient.getChoice(getChoiceParamReq)
                 .executeOnRight { ccpaResponse ->
-                    campaignManager.ccpaConsentStatus = ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaUuid)
+                    campaignManager.ccpaConsentStatus = ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid)
                     val consentHandler = ConsentManager.responseConsentHandler(
-                        ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaUuid),
+                        ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid),
                         consentManagerUtils
                     )
                     sPConsentsSuccess?.invoke(consentHandler)
@@ -480,7 +463,7 @@ private class ServiceImpl(
             messageId = messageId,
             saveAndExitVariables = consentActionImpl.saveAndExitVariablesOptimized,
             authid = authId,
-            uuid = campaignManager.ccpaUuid,
+            uuid = campaignManager.ccpaConsentStatus?.uuid,
             sendPvData = dataStorage.ccpaSamplingResult,
             pubData = consentActionImpl.pubData.toJsonObject(),
         )
@@ -547,9 +530,6 @@ private class ServiceImpl(
                         ccpaConsentStatus = csd.ccpa?.copy(applies = ccpaApplies)
                         ccpaUuid = csd.ccpa?.uuid
                         ccpaDateCreated = csd.ccpa?.dateCreated
-
-                        Log.v("DIA-2542", "gdprConsentStatus = ${csd.gdpr}")
-                        Log.v("DIA-2542", "ccpaConsentStatus = ${csd.ccpa}")
                     }
                 }
             }
