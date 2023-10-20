@@ -153,6 +153,8 @@ private class ServiceImpl(
                     handleMetaDataResponse(metaDataResponse)
 
                     Log.i("DIA-2542", "===== getMetaData =====")
+                    Log.v("DIA-2542", "gdprCS = ${campaignManager.gdprConsentStatus}")
+                    Log.v("DIA-2542", "ccpaCS = ${campaignManager.ccpaConsentStatus}")
                     Log.v("DIA-2542", "gdprUuid = ${campaignManager.gdprUuid}")
                     Log.v("DIA-2542", "ccpaUuid = ${campaignManager.ccpaUuid}")
                 }
