@@ -199,6 +199,8 @@ private class ServiceImpl(
                 )
 
                 Log.i("DIA-2542", "===== getMessageBody =====")
+                Log.v("DIA-2542", "GDPR cs = ${campaignManager.gdprConsentStatus?.consentStatus}")
+                Log.v("DIA-2542", "CCPA status = ${campaignManager.ccpaConsentStatus?.status?.name}")
                 Log.v("DIA-2542", "campaigns4Config = ${campaignManager.campaigns4Config}")
 
                 val messagesParamReq = MessagesParamReq(
@@ -221,7 +223,7 @@ private class ServiceImpl(
                     .executeOnRight {
 
                         Log.i("DIA-2542", "===== getMessages =====")
-                        Log.v("DIA-2542", "messageResp = $it")
+                        Log.v("DIA-2542", "CCPA message = ${it.campaigns?.ccpa?.message}")
 
                         campaignManager.also { _ ->
                             messagesOptimizedLocalState = it.localState
