@@ -70,6 +70,12 @@ class TestUseCase {
             }
         }
 
+        fun tapToEnableSomeOption() {
+            CONSENT_LIST_2.forEach { consent ->
+                tapOnToggle2(property = consent, tapOnlyWhen = false)
+            }
+        }
+
         fun checkAllConsentsOn() {
             CONSENT_LIST_2.forEach { consent ->
                 checkConsentState(consent, true, "tcfv2-stack")

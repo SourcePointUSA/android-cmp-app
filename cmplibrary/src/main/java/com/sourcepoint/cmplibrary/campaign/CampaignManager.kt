@@ -446,7 +446,9 @@ private class CampaignManagerImpl(
 
     override var gdprConsentStatus: GdprCS?
         get() {
-            return dataStorage.gdprConsentStatus?.let { JsonConverter.converter.decodeFromString<GdprCS>(it) }
+            return dataStorage.gdprConsentStatus
+                ?.let { JsonConverter.converter.decodeFromString<GdprCS>(it) }
+                ?.let { cs -> cs.copy(applies = dataStorage.gdprApplies) }
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }

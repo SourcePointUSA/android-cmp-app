@@ -42,6 +42,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSiteVendorsWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableAllConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapToEnableSomeOption
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapZustimmenAllOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
@@ -730,6 +731,35 @@ class MainActivityKotlinTest {
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
 
     }
+
+
+    @Test
+    fun Appplies_usng_SAVE_AND_EXIT_action() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapOptionWebView() }
+        wr { tapToEnableSomeOption() }
+        wr { tapSaveAndExitWebView() }
+        wr {
+            verify(exactly = 1) {
+                spClient.onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
+            }
+        }
+    }
+
 
     @Test
     fun customConsentAction() = runBlocking<Unit> {
