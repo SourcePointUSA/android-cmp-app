@@ -460,9 +460,9 @@ private class ServiceImpl(
 
             networkClient.getChoice(getChoiceParamReq)
                 .executeOnRight { ccpaResponse ->
-                    campaignManager.ccpaConsentStatus = ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid)
+                    campaignManager.ccpaConsentStatus = ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaUuid)
                     val consentHandler = ConsentManager.responseConsentHandler(
-                        ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid),
+                        ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaUuid),
                         consentManagerUtils
                     )
                     sPConsentsSuccess?.invoke(consentHandler)
@@ -480,7 +480,7 @@ private class ServiceImpl(
             messageId = messageId,
             saveAndExitVariables = consentActionImpl.saveAndExitVariablesOptimized,
             authid = authId,
-            uuid = campaignManager.ccpaConsentStatus?.uuid,
+            uuid = campaignManager.ccpaUuid,
             sendPvData = dataStorage.ccpaSamplingResult,
             pubData = consentActionImpl.pubData.toJsonObject(),
         )
