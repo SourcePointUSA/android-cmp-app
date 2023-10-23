@@ -940,19 +940,19 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                sp.getString("IABUSPrivacy_String", null).assertEquals("1---")
-            }
-        }
-
-        wr {
             verify {
                 spClient.run {
                     onSpFinished(withArg {
                         it.ccpa!!.consent.applies.assertFalse()
                     })
                 }
+            }
+        }
+
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.getString("IABUSPrivacy_String", null).assertEquals("1---")
             }
         }
 
