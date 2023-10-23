@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.core.* // ktlint-disable
 import com.sourcepoint.cmplibrary.core.nativemessage.toNativeMessageDTO
 import com.sourcepoint.cmplibrary.core.web.CampaignModel
-import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.core.web.JSClientLib
 import com.sourcepoint.cmplibrary.data.Service
@@ -59,7 +58,6 @@ internal class SpConsentLibImpl(
 
     private val remainingCampaigns: Queue<CampaignModel> = LinkedList()
     private var currentNativeMessageCampaign: CampaignModel? = null
-    private var webview: IConsentWebView? = null
 
     companion object {
         fun MessagesResp.toCampaignModelList(logger: Logger): List<CampaignModel> {
@@ -177,7 +175,6 @@ internal class SpConsentLibImpl(
                                 )
                                 .executeOnLeft { spClient.onError(it) }
                                 .getOrNull()
-                            this.webview = webView
 
                             /** inject the message into the WebView */
                             val url = firstCampaign2Process.url
@@ -504,30 +501,17 @@ internal class SpConsentLibImpl(
     }
 
     override fun dispose() {
-        webview = null
         executor.dispose()
         viewManager.removeAllViews()
     }
 
     private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, mess)
 
-    override fun onBackPressed() {
-        webview.let {
-            (webview as ConsentWebView).evaluateJavascript(
-                """
-                window.postMessage({ name: 'sp.BACK' })
-                """.trimIndent(),
-                null
-            )
-        }
-    }
-
-    override fun isWebviewShown(): Boolean = (webview as? ConsentWebView)?.isShown ?: false
     override fun verifyHome(ottDelegate: OttDelegate) {
-        if (isWebviewShown().not())
+        if (viewManager.isViewInLayout.not())
             ottDelegate.onHomePage()
         else
-            onBackPressed()
+            viewManager.onBackPressed()
     }
 
     /** Start Receiver methods */
