@@ -41,6 +41,7 @@ internal interface ViewsManager {
     fun removeAllViewsExcept(pView: View)
     fun dispose()
 
+    fun onBackPressed()
     companion object
 }
 
@@ -65,6 +66,7 @@ private class ViewsManagerImpl(
     val messageTimeout: Long
 ) : ViewsManager {
 
+    private var webview: IConsentWebView? = null
     val idsSet = LinkedHashSet<Int>()
 
     val mainView: ViewGroup?
@@ -130,7 +132,7 @@ private class ViewsManagerImpl(
     ): Either<IConsentWebView> {
         return weakReference.get()?.let {
             check {
-                ConsentWebView(
+                val newWebView = ConsentWebView(
                     context = it,
                     connectionManager = connectionManager,
                     jsClientLib = jsReceiverDelegate,
@@ -140,6 +142,8 @@ private class ViewsManagerImpl(
                     messageType = messageType,
                     viewId = cmpViewId
                 )
+                this.webview = newWebView
+                newWebView
             }
         } ?: Either.Left(WebViewCreationException(description = "The activity reference in the ViewManager is null!!!"))
     }
@@ -153,7 +157,7 @@ private class ViewsManagerImpl(
     ): Either<IConsentWebView> {
         return weakReference.get()?.let {
             check {
-                ConsentWebView(
+                val newWebView = ConsentWebView(
                     context = it,
                     connectionManager = connectionManager,
                     jsClientLib = jsReceiverDelegate,
@@ -164,12 +168,25 @@ private class ViewsManagerImpl(
                     messageType = messageType,
                     viewId = cmpViewId
                 )
+                this.webview = newWebView
+                newWebView
             }
         } ?: Either.Left(WebViewCreationException(description = "The activity reference in the ViewManager is null!!!"))
     }
-
     override fun dispose() {
+        webview = null
         weakReference.clear()
+    }
+
+    override fun onBackPressed() {
+        webview.let {
+            (webview as ConsentWebView).evaluateJavascript(
+                """
+                window.postMessage({ name: 'sp.BACK' })
+                """.trimIndent(),
+                null
+            )
+        }
     }
 
     override val isViewInLayout: Boolean

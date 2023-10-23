@@ -81,7 +81,5 @@ interface SpConsentLib {
 
     fun dispose()
 
-    fun onBackPressed()
-    fun isWebviewShown(): Boolean
     fun verifyHome(ottDelegate: OttDelegate)
 }
