@@ -405,25 +405,18 @@ private class CampaignManagerImpl(
 
     override val shouldCallConsentStatus: Boolean
         get() {
-            val gdprUUID = dataStorage.gdprConsentUuid
-            val ccpaUUID = dataStorage.ccpaConsentUuid
-            val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
+            val isGdprOrCcpaUuidPresent =
+                dataStorage.gdprConsentUuid != null || dataStorage.ccpaConsentUuid != null
+            val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
-            val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE_OLD)
-            val res =
-                ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0) || isV6LocalStatePresent || isV6LocalStatePresent2
+            val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
+            val hasNonEligibleLocalDataVersion =
+                dataStorage.localDataVersion != DataStorage.LOCAL_DATA_VERSION_HARDCODED_VALUE
 
-            logger?.computation(
-                tag = "shouldCallConsentStatus",
-                msg = """
-                gdprUUID != null [${gdprUUID != null}] - ccpaUUID != null [${ccpaUUID != null}]
-                localStateSize empty [${localStateSize == 0}]
-                V6.7 ls [$isV6LocalStatePresent] or V6.3 ls [$isV6LocalStatePresent2]  
-                shouldCallConsentStatus[$res]  
-                """.trimIndent()
-            )
-
-            return res
+            return (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
+                isV6LocalStatePresent ||
+                isV6LocalStatePresent2 ||
+                hasNonEligibleLocalDataVersion
         }
 
     override var gdprMessageMetaData: MessageMetaData?
@@ -516,7 +509,7 @@ private class CampaignManagerImpl(
         }
 
     override val hasLocalData: Boolean
-        get() = dataStorage.gdprConsentStatus != null || dataStorage.uspstring.isNullOrEmpty().not()
+        get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaConsentStatus != null
 
     override fun handleMetaDataResponse(response: MetaDataResp?) {
         // update meta data response in the data storage

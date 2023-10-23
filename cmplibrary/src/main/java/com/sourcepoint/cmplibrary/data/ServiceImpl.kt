@@ -475,7 +475,7 @@ private class ServiceImpl(
 
         networkClient.storeCcpaChoice(postConsentParams)
             .executeOnRight { postConsentResponse ->
-                campaignManager.ccpaConsentStatus?.uuid = postConsentResponse.uuid
+                campaignManager.ccpaUuid = postConsentResponse.uuid
                 campaignManager.ccpaConsentStatus =
                     if (postConsentResponse.webConsentPayload != null) {
                         postConsentResponse
@@ -516,6 +516,7 @@ private class ServiceImpl(
 
         return getConsentStatus(csParams)
             .executeOnRight {
+                dataStorage.updateLocalDataVersion()
                 campaignManager.apply {
                     campaignManager.handleOldLocalData()
                     messagesOptimizedLocalState = it.localState

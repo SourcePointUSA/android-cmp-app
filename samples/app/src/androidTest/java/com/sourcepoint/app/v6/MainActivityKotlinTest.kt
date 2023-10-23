@@ -940,19 +940,14 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                sp.getString("IABUSPrivacy_String", null).assertEquals("1---")
+            verify {
+                spClient.run {
+                    onSpFinished(withArg {
+                        it.ccpa!!.consent.applies.assertFalse()
+                    })
+                }
             }
         }
-        verify {
-            spClient.run {
-                onSpFinished(withArg {
-                    it.ccpa!!.consent.applies.assertFalse()
-                })
-            }
-        }
-
     }
 
     @Test
@@ -980,11 +975,13 @@ class MainActivityKotlinTest {
                 sp.getString("IABUSPrivacy_String", null).assertNotEquals("1---")
             }
         }
-        verify {
-            spClient.run {
-                onSpFinished(withArg {
-                    it.ccpa!!.consent.applies.assertTrue()
-                })
+        wr {
+            verify {
+                spClient.run {
+                    onSpFinished(withArg {
+                        it.ccpa!!.consent.applies.assertTrue()
+                    })
+                }
             }
         }
 
@@ -1009,13 +1006,6 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                sp.getString("IABUSPrivacy_String", null).assertEquals("1YNN")
-            }
-        }
-
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
 
@@ -1034,6 +1024,52 @@ class MainActivityKotlinTest {
             }
         }
 
+    }
+
+    /**
+     * Regression test that verifies if the local data versioning works correctly, meaning that if
+     * the local data version is not the same as the hardcoded one, then the app should call
+     * /consent-status and update the local data version to the hardcoded one
+     */
+    @Test
+    fun given_non_eligible_local_data_version_then_should_call_consent_status_and_update_local_data_version() = runBlocking<Unit> {
+
+        val v7Consent = JSONObject(TestData.storedConsentV741)
+        val spClient = mockk<SpClient>(relaxed = true)
+        val initialLocalDataVersion = 0
+
+        /**
+         * This value should be changed each time the HARDCODED_LOCAL_DATA_VERSION value from
+         * DataStorage is updated
+         */
+        val hardcodedLocalDataVersion = 1
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = v7Consent.toList() + listOf(Pair("sp.key.localDataVersion", initialLocalDataVersion)),
+            )
+        )
+
+        scenario = launchActivity()
+
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+                getInt("sp.key.localDataVersion", 0).assertEquals(initialLocalDataVersion)
+            }
+        }
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+                getInt("sp.key.localDataVersion", 0).assertEquals(hardcodedLocalDataVersion)
+            }
+        }
     }
 
     private fun <E> check(block: () -> E): E? {

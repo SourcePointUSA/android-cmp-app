@@ -76,7 +76,7 @@ class MainActivityKotlinGracefulDegradationTest {
 
         val spClient = mockk<SpClient>(relaxed = true)
 
-        val storedConsent = JSONObject(TestData.storedConsentV7)
+        val storedConsent = JSONObject(TestData.storedConsentV741)
 
         loadKoinModules(
             TestUseCase.mockModule(
@@ -169,7 +169,7 @@ class MainActivityKotlinGracefulDegradationTest {
 
             val spClient = mockk<SpClient>(relaxed = true)
 
-            val storedConsent = JSONObject(TestData.storedConsentV7)
+            val storedConsent = JSONObject(TestData.storedConsentV741)
 
             loadKoinModules(
                 TestUseCase.mockModule(
@@ -218,7 +218,7 @@ class MainActivityKotlinGracefulDegradationTest {
     @Test
     fun WITH_a_stored_consent_GIVEN_no_internet_connection_exception_VERIFY_the_called_callbacks() = runBlocking<Unit> {
 
-        val v7Consent = JSONObject(TestData.storedConsentV7)
+        val v7Consent = JSONObject(TestData.storedConsentV741)
 
         val spClient = mockk<SpClient>(relaxed = true)
 
