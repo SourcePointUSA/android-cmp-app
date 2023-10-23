@@ -292,6 +292,7 @@ object TestData {
         "sp.key.messages.v7.local.state": "{\n  \"ccpa\": {\n    \"mmsCookies\": [\n      \"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbLKK83J0YlRSkVil4AlqmtrlWIBBrfP6SgAAAA%3D\"\n    ],\n    \"propertyId\": 16893,\n    \"messageId\": 0\n  }\n}",
         "sp.key.meta.data": "{\n  \"ccpa\": {\n    \"applies\": true,\n    \"sampleRate\": 1.0\n  }\n}",
         "sp.gdpr.key.sampling.result": true,
+        "sp.ccpa.consentUUID": "4c99bd2b-b40b-4aef-b762-20397e07d026",
         "sp.key.messages.v7.nonKeyedLocalState": "{\n  \"gdpr\": {\n    \"_sp_v1_data\": \"633830\",\n    \"_sp_v1_p\": \"273\"\n  },\n  \"ccpa\": {\n    \"_sp_v1_data\": \"585620\",\n    \"_sp_v1_p\": \"357\"\n  }\n}"
       }
     """.trimIndent()
@@ -300,11 +301,12 @@ object TestData {
       {
         "IABUSPrivacy_String": "1---",
         "sp.ccpa.key.sampling.result": true,
-        "sp.ccpa.key.consent.status": "{\n  \"applies\": true,\n  \"consentedAll\": true,\n  \"dateCreated\": \"2023-10-10T19:13:32.268Z\",\n  \"rejectedAll\": false,\n  \"rejectedCategories\": [\n  ],\n  \"rejectedVendors\": [\n  ],\n  \"signedLspa\": false,\n  \"status\": \"consentedAll\",\n  \"uuid\": \"60fd5b64-b7ea-45b8-80e7-a180537ba00c\",\n  \"webConsentPayload\": {\n    \"actions\": [\n    ],\n    \"cookies\": [\n      {\n        \"key\": \"ccpaConsentAll\",\n        \"value\": true,\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      },\n      {\n        \"key\": \"ccpaReject\",\n        \"value\": false,\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      },\n      {\n        \"key\": \"consentStatus\",\n        \"value\": \"consentedAll\",\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      }\n    ],\n    \"consentedAll\": true,\n    \"dateCreated\": \"2023-10-10T19:13:32.108Z\",\n    \"expirationDate\": \"2024-10-09T19:13:32.108Z\",\n    \"rejectedAll\": false,\n    \"rejectedCategories\": [\n    ],\n    \"rejectedVendors\": [\n    ],\n    \"signedLspa\": false,\n    \"status\": \"consentedAll\"\n  }\n}",
+        "sp.ccpa.key.consent.status": "{\n  \"applies\": false,\n  \"consentedAll\": true,\n  \"dateCreated\": \"2023-10-10T19:13:32.268Z\",\n  \"rejectedAll\": false,\n  \"rejectedCategories\": [\n  ],\n  \"rejectedVendors\": [\n  ],\n  \"signedLspa\": false,\n  \"status\": \"consentedAll\",\n  \"uuid\": \"60fd5b64-b7ea-45b8-80e7-a180537ba00c\",\n  \"webConsentPayload\": {\n    \"actions\": [\n    ],\n    \"cookies\": [\n      {\n        \"key\": \"ccpaConsentAll\",\n        \"value\": true,\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      },\n      {\n        \"key\": \"ccpaReject\",\n        \"value\": false,\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      },\n      {\n        \"key\": \"consentStatus\",\n        \"value\": \"consentedAll\",\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      }\n    ],\n    \"consentedAll\": true,\n    \"dateCreated\": \"2023-10-10T19:13:32.108Z\",\n    \"expirationDate\": \"2024-10-09T19:13:32.108Z\",\n    \"rejectedAll\": false,\n    \"rejectedCategories\": [\n    ],\n    \"rejectedVendors\": [\n    ],\n    \"signedLspa\": false,\n    \"status\": \"consentedAll\"\n  }\n}",
         "client_pref_key": "client_pref_val",
         "sp.key.messages.v7.local.state": "{\n  \"ccpa\": {\n    \"mmsCookies\": [\n      \"_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbLKK83J0YlRSkVil4AlqmtrlWIBBrfP6SgAAAA%3D\"\n    ],\n    \"propertyId\": 16893,\n    \"messageId\": 0\n  }\n}",
         "sp.key.meta.data": "{\n  \"ccpa\": {\n    \"applies\": true,\n    \"sampleRate\": 1.0\n  }\n}",
         "sp.gdpr.key.sampling.result": true,
+        "sp.ccpa.consentUUID": "4c99bd2b-b40b-4aef-b762-20397e07d026",
         "sp.key.messages.v7.nonKeyedLocalState": "{\n  \"gdpr\": {\n    \"_sp_v1_data\": \"633830\",\n    \"_sp_v1_p\": \"273\"\n  },\n  \"ccpa\": {\n    \"_sp_v1_data\": \"585620\",\n    \"_sp_v1_p\": \"357\"\n  }\n}"
       }
     """.trimIndent()
