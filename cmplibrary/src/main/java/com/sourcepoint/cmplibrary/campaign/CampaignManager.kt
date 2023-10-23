@@ -413,24 +413,10 @@ private class CampaignManagerImpl(
             val hasNonEligibleLocalDataVersion =
                 dataStorage.localDataVersion != DataStorage.LOCAL_DATA_VERSION_HARDCODED_VALUE
 
-            val isRequireNewConsentStatusData = (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
+            return (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
                 isV6LocalStatePresent ||
                 isV6LocalStatePresent2 ||
                 hasNonEligibleLocalDataVersion
-
-            logger?.computation(
-                tag = "shouldCallConsentStatus",
-                msg = """
-                    gdprUUID != null [${dataStorage.gdprConsentUuid != null}] - ccpaUUID != null [${dataStorage.ccpaConsentUuid != null}]
-                    isGdprOrCcpaUuidPresent [$isGdprOrCcpaUuidPresent]
-                    isLocalStateEmpty [$isLocalStateEmpty]
-                    V6.7 ls [$isV6LocalStatePresent] or V6.3 ls [$isV6LocalStatePresent2]
-                    isEligibleLocalDataVersion [$hasNonEligibleLocalDataVersion]
-                    shouldCallConsentStatus[$isRequireNewConsentStatusData]  
-                """.trimIndent()
-            )
-
-            return isRequireNewConsentStatusData
         }
 
     override var gdprMessageMetaData: MessageMetaData?
