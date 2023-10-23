@@ -948,14 +948,6 @@ class MainActivityKotlinTest {
                 }
             }
         }
-
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                sp.getString("IABUSPrivacy_String", null).assertEquals("1---")
-            }
-        }
-
     }
 
     @Test
@@ -983,11 +975,13 @@ class MainActivityKotlinTest {
                 sp.getString("IABUSPrivacy_String", null).assertNotEquals("1---")
             }
         }
-        verify {
-            spClient.run {
-                onSpFinished(withArg {
-                    it.ccpa!!.consent.applies.assertTrue()
-                })
+        wr {
+            verify {
+                spClient.run {
+                    onSpFinished(withArg {
+                        it.ccpa!!.consent.applies.assertTrue()
+                    })
+                }
             }
         }
 

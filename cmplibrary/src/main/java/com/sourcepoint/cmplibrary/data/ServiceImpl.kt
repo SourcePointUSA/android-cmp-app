@@ -215,7 +215,6 @@ private class ServiceImpl(
                         return@executeOnWorkerThread
                     }
                     .executeOnRight {
-
                         campaignManager.also { _ ->
                             messagesOptimizedLocalState = it.localState
                             nonKeyedLocalState = it.nonKeyedLocalState
