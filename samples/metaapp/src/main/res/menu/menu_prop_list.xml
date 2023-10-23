@@ -58,6 +58,18 @@
             app:showAsAction="never"/>
 
     <item
+            android:id="@+id/action_expire_gdpr"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="Expire GDPR"
+            app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/action_expire_ccpa"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="Expire CCPA"
+            app:showAsAction="never"/>
+
+    <item
             android:id="@+id/action_drop_db"
             android:icon="@drawable/ic_baseline_cancel_24"
             android:title="Drop DB"

@@ -17,7 +17,7 @@ class DataStorageImplTest {
 
     @Before
     fun setup() {
-        sut.clearAll()
+        sut.deleteGdprConsent()
     }
 
     @Test

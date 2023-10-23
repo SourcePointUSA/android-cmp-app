@@ -87,7 +87,7 @@ fun campaignApplies(context: Context, campaign: CampaignType): Boolean {
 fun clearAllData(context: Context) {
     val dataStorageGdpr = DataStorageGdpr.create(context)
     val dataStorageCcpa = DataStorageCcpa.create(context)
-    DataStorage.create(context, dataStorageGdpr, dataStorageCcpa).clearAll()
+    DataStorage.create(context, dataStorageGdpr, dataStorageCcpa).deleteGdprConsent()
 }
 
 internal fun userConsents(

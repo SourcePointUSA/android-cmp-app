@@ -113,6 +113,8 @@ class OnlyGdprKotlin : AppCompatActivity() {
 
         override fun onConsentReady(consent: SPConsents) {
             Log.i(this::class.java.name, "onConsentReady: $consent")
+            Log.i(this::class.java.name, "consentedToAll: ${consent.gdpr?.consent?.consentStatus?.consentedAll}")
+            Log.i(this::class.java.name, "gdprApplies: ${consent.gdpr?.consent?.applies}")
         }
 
         override fun onMessageReady(message: JSONObject) {}

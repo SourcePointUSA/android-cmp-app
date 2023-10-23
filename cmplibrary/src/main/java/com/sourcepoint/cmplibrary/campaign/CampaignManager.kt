@@ -27,7 +27,9 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
+import java.text.SimpleDateFormat
 import java.time.Instant
+import java.util.* //ktlint-disable
 
 internal interface CampaignManager {
     val spConfig: SpConfig
@@ -76,13 +78,12 @@ internal interface CampaignManager {
     var gdprUuid: String?
     var ccpaUuid: String?
     val hasLocalData: Boolean
+    val isGdprExpired: Boolean
+    val isCcpaExpired: Boolean
 
     // dateCreated
     var gdprDateCreated: String?
     var ccpaDateCreated: String?
-
-//    var consentStatus: ConsentStatus?zvz
-//    var ccpaStatus: CcpaStatus?
 
     var metaDataResp: MetaDataResp?
     var choiceResp: ChoiceResp?
@@ -95,6 +96,7 @@ internal interface CampaignManager {
     fun handleOldLocalData()
     fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
+    fun deleteExpiredConsents()
 
     companion object {
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
@@ -679,5 +681,46 @@ private class CampaignManagerImpl(
             gdprCs = null,
             ccpaCS = ccpaConsentStatus
         )
+    }
+
+    override val isGdprExpired: Boolean
+        get() {
+
+            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            val gdprExpirationDate = dataStorage.gdprExpirationDate?.let { formatter.parse(it) } ?: return false
+            val currentDate = Date()
+            val isGdprExpired = currentDate.after(gdprExpirationDate)
+
+            logger?.computation(
+                tag = "Expiration Date",
+                msg = """
+                isGdprExpired[$isGdprExpired] 
+                """.trimIndent()
+            )
+
+            return isGdprExpired
+        }
+
+    override val isCcpaExpired: Boolean
+        get() {
+
+            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            val ccpaExpirationDate = dataStorage.ccpaExpirationDate?.let { formatter.parse(it) } ?: return false
+            val currentDate = Date()
+            val isCcpaExpired = currentDate.after(ccpaExpirationDate)
+
+            logger?.computation(
+                tag = "Expiration Date",
+                msg = """
+                isCcpaExpired[$isCcpaExpired] 
+                """.trimIndent()
+            )
+
+            return isCcpaExpired
+        }
+
+    override fun deleteExpiredConsents() {
+        if (isCcpaExpired) dataStorage.deleteCcpaConsent()
+        if (isGdprExpired) dataStorage.deleteGdprConsent()
     }
 }

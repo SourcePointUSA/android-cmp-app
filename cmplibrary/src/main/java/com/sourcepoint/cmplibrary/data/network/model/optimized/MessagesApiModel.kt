@@ -57,6 +57,7 @@ interface CampaignMessage {
     val message: JsonElement?
     val url: String?
     val dateCreated: String?
+    val expirationDate: String?
 }
 
 internal fun CampaignType.toCategoryId() = when (this) {
@@ -101,6 +102,7 @@ data class CCPA(
     @Serializable(with = CampaignTypeSerializer::class) override val type: CampaignType,
     @SerialName("url") override val url: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
+    @SerialName("expirationDate") override val expirationDate: String?,
 ) : CampaignMessage
 
 @Serializable
@@ -118,6 +120,7 @@ data class GDPR(
     @Serializable(with = JsonMapSerializer::class) val TCData: Map<String, JsonElement>?,
     @Serializable(with = CampaignTypeSerializer::class) override val type: CampaignType,
     @SerialName("url") override val url: String?,
+    @SerialName("expirationDate") override val expirationDate: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
 ) : CampaignMessage
 
