@@ -1081,7 +1081,7 @@ class MainActivityKotlinTest {
 
         val spClient = mockk<SpClient>(relaxed = true)
 
-        val storedConsentV7 = JSONObject(TestData.storedConsentV7)
+        val storedConsentV7 = JSONObject(TestData.storedConsentV741)
 
         loadKoinModules(
             mockModule(
