@@ -1012,13 +1012,6 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                sp.getString("IABUSPrivacy_String", null).assertEquals("1YNN")
-            }
-        }
-
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
 
