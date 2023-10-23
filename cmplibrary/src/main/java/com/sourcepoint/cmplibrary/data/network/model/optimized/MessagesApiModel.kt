@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.MessageCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.generateCcpaUspString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -48,8 +47,7 @@ data class MessagesResp(
         }
 
     override fun toString(): String {
-        return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
-            ?: super.toString()
+        return check { JsonConverter.converter.encodeToString(this) }.getOrNull() ?: super.toString()
     }
 }
 
@@ -69,16 +67,14 @@ internal fun CampaignType.toCategoryId() = when (this) {
 @Serializable
 data class MessageMetaData(
     @SerialName("bucket") val bucket: Int?,
-    @Serializable(with = MessageCategorySerializer::class)
-    @SerialName("categoryId") val categoryId: MessageCategory,
+    @Serializable(with = MessageCategorySerializer::class) @SerialName("categoryId") val categoryId: MessageCategory,
     @SerialName("messageId") val messageId: Int?,
     @SerialName("msgDescription") val msgDescription: String?,
     @SerialName("prtnUUID") val prtnUUID: String?,
     @Serializable(with = MessageSubCategorySerializer::class) val subCategoryId: MessageSubCategory
 ) {
     override fun toString(): String {
-        return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
-            ?: "{}"
+        return check { JsonConverter.converter.encodeToString(this) }.getOrNull() ?: "{}"
     }
 }
 
@@ -90,8 +86,6 @@ data class Campaigns(
 
 @Serializable
 data class CCPA(
-    @SerialName("applies")
-    val applies: Boolean?,
     @SerialName("consentedAll")
     val consentedAll: Boolean?,
     @SerialName("dateCreated")
@@ -110,6 +104,8 @@ data class CCPA(
     val rejectedVendors: List<String>?,
     @SerialName("signedLspa")
     val signedLspa: Boolean?,
+    @SerialName("uspstring")
+    val uspstring: String? = null,
     @SerialName("GPPData")
     @Serializable(with = JsonMapSerializer::class)
     val gppData: Map<String, JsonElement>? = null,
@@ -121,15 +117,7 @@ data class CCPA(
     override val url: String?,
     @SerialName("webConsentPayload")
     val webConsentPayload: JsonObject?,
-) : CampaignMessage {
-
-    val uspstring: String
-        get() = generateCcpaUspString(
-            applies = applies,
-            ccpaStatus = status,
-            signedLspa = signedLspa,
-        )
-}
+) : CampaignMessage
 
 @Serializable
 data class GDPR(

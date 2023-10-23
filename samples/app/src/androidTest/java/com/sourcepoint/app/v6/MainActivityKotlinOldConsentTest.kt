@@ -120,7 +120,7 @@ class MainActivityKotlinOldConsentTest {
         propertyName = "mobile.prop-1"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
-        +SpCampaign(campaignType = CampaignType.GDPR, groupPmId = "613056" )
+        +SpCampaign(campaignType = CampaignType.GDPR, groupPmId = "613056")
     }
 
     private val spConf = config {
@@ -161,7 +161,14 @@ class MainActivityKotlinOldConsentTest {
 
         scenario = launchActivity()
 
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr {
+            verify(exactly = 1) {
+                spClient.onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
+            }
+        }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
@@ -195,7 +202,11 @@ class MainActivityKotlinOldConsentTest {
 
         scenario = launchActivity()
 
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr {
+            verify(exactly = 1) {
+                spClient.onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
+            }
+        }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
@@ -227,7 +238,11 @@ class MainActivityKotlinOldConsentTest {
 
         scenario = launchActivity()
 
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr {
+            verify(exactly = 1) {
+                spClient.onSpFinished(withArg { it.ccpa!!.consent.applies.assertTrue() })
+            }
+        }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
@@ -262,7 +277,11 @@ class MainActivityKotlinOldConsentTest {
 
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr {
+            verify(exactly = 1) {
+                spClient.onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
+            }
+        }
         wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
 
         wr {

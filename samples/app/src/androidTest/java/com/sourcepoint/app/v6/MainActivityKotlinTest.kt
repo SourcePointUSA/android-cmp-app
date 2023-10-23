@@ -42,6 +42,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSiteVendorsWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableAllConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapToEnableSomeOption
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapZustimmenAllOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
@@ -177,7 +178,7 @@ class MainActivityKotlinTest {
                 onConsentReady(withArg {
                     it.gdpr!!.consent.grants.map { k -> k.key }.sorted().assertEquals(grantsTester)
                 })
-                onSpFinished(any())
+                onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
             }
         }
 
@@ -293,6 +294,7 @@ class MainActivityKotlinTest {
                 onUIFinished(any())
                 onAction(any(), any())
                 onConsentReady(any())
+                onSpFinished(withArg { it.ccpa!!.consent.applies.assertTrue() })
             }
         }
 
@@ -326,11 +328,20 @@ class MainActivityKotlinTest {
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
         wr { spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.consentedAll) }
+        wr { spClient.consentList.last().ccpa!!.consent.applies.assertTrue() }
 
         // check consentedAll
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
         wr { spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.rejectedAll) }
+        wr { spClient.consentList.last().ccpa!!.consent.applies.assertTrue() }
+
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.getString("IABUSPrivacy_String", null).assertEquals("1YYN")
+            }
+        }
 
     }
 
@@ -367,6 +378,7 @@ class MainActivityKotlinTest {
                     it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(emptyList())
                     it.gdpr?.consent?.grants?.values?.forEach { el -> el.granted.assertFalse() }
                 })
+                onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
             }
         }
     }
@@ -409,7 +421,10 @@ class MainActivityKotlinTest {
                 onAction(any(), any())
                 onUIReady(any())
                 onConsentReady(any())
-                onUIFinished(any())
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
             }
         }
     }
@@ -466,6 +481,14 @@ class MainActivityKotlinTest {
         wr { verify(atLeast = 3) { spClient.onSpFinished(any()) } }
         wr { verify(atLeast = 4) { spClient.onConsentReady(any()) } }
         wr { verify(atLeast = 2) { spClient.onUIReady(any()) } }
+        verify {
+            spClient.run {
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
+            }
+        }
     }
 
     @Test
@@ -488,6 +511,13 @@ class MainActivityKotlinTest {
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
+        verify {
+            spClient.run {
+                onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
+            }
+        }
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
@@ -544,11 +574,14 @@ class MainActivityKotlinTest {
         verify {
             spClient.run {
                 onUIReady(any())
-                onUIFinished(any())
                 onUIReady(any())
                 onAction(any(), any())
                 onUIReady(any())
                 onConsentReady(any())
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
             }
         }
     }
@@ -582,7 +615,10 @@ class MainActivityKotlinTest {
         verify {
             spClient.run {
                 onUIReady(any())
-                onUIFinished(any())
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
                 onUIReady(any())
                 onAction(any(), any())
                 onUIReady(any())
@@ -615,7 +651,9 @@ class MainActivityKotlinTest {
         verify {
             spClient.run {
                 onUIReady(any())
-                onUIFinished(any())
+                onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
                 onAction(any(), any())
                 onConsentReady(any())
                 onSpFinished(any())
@@ -691,7 +729,37 @@ class MainActivityKotlinTest {
         delay(300)
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
+
     }
+
+
+    @Test
+    fun Appplies_usng_SAVE_AND_EXIT_action() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapOptionWebView() }
+        wr { tapToEnableSomeOption() }
+        wr { tapSaveAndExitWebView() }
+        wr {
+            verify(exactly = 1) {
+                spClient.onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                })
+            }
+        }
+    }
+
 
     @Test
     fun customConsentAction() = runBlocking<Unit> {
@@ -850,6 +918,122 @@ class MainActivityKotlinTest {
         // Purposes
         wr { tapPurposesOnWebView() }
         wr { checkPurposesTab() }
+    }
+
+    @Test
+    fun GIVEN_a_ccpa_if_applies_FALSE_VERIFY_USPSTRING() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        val v7CCPALocalState = JSONObject(TestData.storedConsentCCPA_V7)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfCcpa,
+                gdprPmId = "123",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = listOf("metadata_resp_applies_false" to false) + v7CCPALocalState.toList()
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.getString("IABUSPrivacy_String", null).assertEquals("1---")
+            }
+        }
+        verify {
+            spClient.run {
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertFalse()
+                })
+            }
+        }
+
+    }
+
+    @Test
+    fun GIVEN_a_ccpa_if_applies_TRUE_VERIFY_USPSTRING() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        val v7CCPALocalState = JSONObject(TestData.storedConsentCCPA_applies_false_V7)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfCcpa,
+                gdprPmId = "123",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = listOf("metadata_resp_applies_true" to true) + v7CCPALocalState.toList()
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.getString("IABUSPrivacy_String", null).assertNotEquals("1---")
+            }
+        }
+        verify {
+            spClient.run {
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                })
+            }
+        }
+
+    }
+
+    @Test
+    fun GIVEN_a_ccpa_if_rejectedAll_from_PM_VERIFY_USPSTRING() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        val v7CCPALocalState = JSONObject(TestData.storedConsentCCPA_V7)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfCcpa,
+                gdprPmId = "123",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = v7CCPALocalState.toList()
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.getString("IABUSPrivacy_String", null).assertEquals("1YNN")
+            }
+        }
+
+        wr { clickOnCcpaReviewConsent() }
+        wr(backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
+
+        wr {
+            scenario.onActivity { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sp.getString("IABUSPrivacy_String", null).assertEquals("1YYN")
+            }
+        }
+
+        verify {
+            spClient.run {
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                })
+            }
+        }
+
     }
 
     private fun <E> check(block: () -> E): E? {

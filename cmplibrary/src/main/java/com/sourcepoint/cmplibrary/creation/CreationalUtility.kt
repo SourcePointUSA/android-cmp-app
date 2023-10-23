@@ -3,10 +3,6 @@ package com.sourcepoint.cmplibrary.creation
 import android.os.Build
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
-import com.sourcepoint.cmplibrary.data.network.NetworkClient
-import com.sourcepoint.cmplibrary.data.network.createNetworkClient
-import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
-import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import okhttp3.OkHttpClient
 
@@ -31,15 +27,6 @@ internal fun createLogger(errorMessageManager: ErrorMessageManager): Logger {
         networkClient = OkHttpClient(),
         errorMessageManager = errorMessageManager,
         url = BuildConfig.LOGGER_URL
-    )
-}
-
-internal fun networkClient(netClient: OkHttpClient, responseManage: ResponseManager, logger: Logger): NetworkClient {
-    return createNetworkClient(
-        httpClient = netClient,
-        responseManager = responseManage,
-        urlManager = HttpUrlManagerSingleton,
-        logger = logger
     )
 }
 

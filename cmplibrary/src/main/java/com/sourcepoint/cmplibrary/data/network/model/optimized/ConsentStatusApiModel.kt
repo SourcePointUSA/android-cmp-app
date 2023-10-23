@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.generateCcpaUspString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -50,10 +49,7 @@ data class ConsentStatusResp(
 
 @Serializable
 data class CcpaCS(
-    @SerialName("applies")
     val applies: Boolean?,
-    @SerialName("ccpaApplies")
-    val ccpaApplies: Boolean?,
     @SerialName("consentedAll")
     val consentedAll: Boolean?,
     @SerialName("dateCreated")
@@ -70,6 +66,8 @@ data class CcpaCS(
     val rejectedVendors: List<String>?,
     @SerialName("signedLspa")
     val signedLspa: Boolean?,
+    @SerialName("uspstring")
+    val uspstring: String? = null,
     @Serializable(with = CcpaStatusSerializer::class)
     val status: CcpaStatus?,
     @SerialName("GPPData")
@@ -78,23 +76,12 @@ data class CcpaCS(
     @SerialName("uuid")
     var uuid: String?,
     @SerialName("webConsentPayload")
-    val webConsentPayload: JsonObject? = null,
-) {
-
-    val uspstring: String
-        get() = generateCcpaUspString(
-            applies = applies ?: false,
-            ccpaStatus = status,
-            signedLspa = signedLspa,
-        )
-}
+    val webConsentPayload: JsonObject? = null
+)
 
 @Serializable
 data class GdprCS(
-    @SerialName("applies")
     val applies: Boolean?,
-    @SerialName("gdprApplies")
-    val gdprApplies: Boolean?,
     @SerialName("categories")
     val categories: List<String>?,
     @SerialName("consentAllRef")
