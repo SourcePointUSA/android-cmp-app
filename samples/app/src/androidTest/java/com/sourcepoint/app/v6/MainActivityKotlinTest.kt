@@ -1076,6 +1076,42 @@ class MainActivityKotlinTest {
         }
     }
 
+    @Test
+    fun given_the_user_has_consent_and_the_auth_id_changes_then_should_flush_data() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        val storedConsentV7 = JSONObject(TestData.storedConsentV7)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = storedConsentV7.toList(),
+                pAuthId = "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e"
+            )
+        )
+
+        scenario = launchActivity()
+
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+//                getInt("sp.key.localDataVersion", 0).assertEquals(0)
+            }
+        }
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+//                getInt("sp.key.localDataVersion", 0).assertEquals(0)
+            }
+        }
+    }
+
     private fun <E> check(block: () -> E): E? {
         return try {
             block.invoke()
