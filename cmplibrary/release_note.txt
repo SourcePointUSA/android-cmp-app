@@ -1,14 +1,4 @@
-* [DIA-2753] 400 Bad request when Passing authId (#702)
-* [DIA-2824] App crashes at second message load (#702)
-* [DIA-2784] Using an AuthId the pop up is always visualised  (#702)
-* [DIA-2840] Reformat and deprecation fix for manifest files (#702)
-* [DIA-2819] Fix of the migration from v6 to v7 (#699)
-* [DIA-2753] 404 from consent-status
-* [DIA-2555] Refactor network client (#677)
-* [DIA-2561] Crash fix for NPE in SPConsentLib (#679)
-* [DIA-2390] Store GPPData in the local storage (#680)
-* [DIA-2479] Allow user to set GPP Config (#683)
-* [DIA-2753] 404 from consent-status
-* [DIA-2710] Doc for GPP solution (#697)
-* [DIA-2628] Needs to handle no-internet better (#696)
-* [DIA-2646] Fix for GDPR applies (#698)
+* [DIA-2542](https://sourcepoint.atlassian.net/browse/DIA-2542) Local data versioning (#712)
+* [DIA-2757](https://sourcepoint.atlassian.net/browse/DIA-2757) UI test for the applies condition (#714)
+* [DIA-2901](https://sourcepoint.atlassian.net/browse/DIA-2901) onConsentReady Fires GDPR Applies False After Saving Partial Consent (#714)
+* [DIA-2851](https://sourcepoint.atlassian.net/browse/DIA-2851) Automation test for  the no internet exception (#713)

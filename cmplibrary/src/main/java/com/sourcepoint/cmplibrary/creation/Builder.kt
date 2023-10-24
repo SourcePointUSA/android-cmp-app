@@ -80,7 +80,7 @@ class Builder {
         val jsonConverter = JsonConverter.create()
         val connManager = ConnectionManager.create(appCtx)
         val responseManager = ResponseManager.create(jsonConverter, logger)
-        val networkClient = networkClient(okHttpClient, responseManager, logger)
+        val networkClient = networkClient(appCtx, okHttpClient, responseManager, logger)
         val viewManager = ViewsManager.create(activityWeakRef, connManager, spc.messageTimeout)
         val execManager = ExecutorManager.create(appCtx)
         val urlManager: HttpUrlManager = HttpUrlManagerSingleton
