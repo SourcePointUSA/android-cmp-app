@@ -27,7 +27,6 @@ import com.sourcepointmeta.metaapp.ui.sp.PreferencesActivity
 import com.sourcepointmeta.metaapp.util.oldV6Consent
 import com.sourcepointmeta.metaapp.util.oldV6Consent630
 import com.sourcepointmeta.metaapp.util.oldV6ConsentFinnish690
-import com.sourcepointmeta.metaapp.util.v7Consent726
 import kotlinx.android.synthetic.main.fragment_property_list.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
@@ -149,16 +148,6 @@ class PropertyListFragment : Fragment() {
                     val editor = sp.edit()
                     editor.putBoolean(OLD_V6_CONSENT, true)
                     val v6LocalState = JSONObject(oldV6ConsentFinnish690)
-                    v6LocalState.keys().forEach {
-                        check { v6LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
-                        check { v6LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
-                        check { v6LocalState.getInt(it) }?.let { v -> editor.putInt(it, v) }
-                    }
-                    editor.apply()
-                }
-                R.id.action_save_cons_726 -> {
-                    val editor = sp.edit()
-                    val v6LocalState = JSONObject(v7Consent726)
                     v6LocalState.keys().forEach {
                         check { v6LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
                         check { v6LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }

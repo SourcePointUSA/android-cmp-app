@@ -39,8 +39,7 @@ val appModule = module {
             customVendorList = customVendorDataList,
             customCategories = customCategoriesData,
             useGdprGroupPmIfAvailable = false,
-            authId = null, //get(qualifier = named("authId")))
-            diagnostic = emptyList(),
+            authId = null //get(qualifier = named("authId")))
         )
     }
 
