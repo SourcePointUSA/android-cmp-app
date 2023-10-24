@@ -1080,6 +1080,8 @@ class MainActivityKotlinTest {
     fun given_the_user_has_consent_and_the_auth_id_changes_then_should_flush_data() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
+        val mockStoredAuthId = "as2gv7x8-7569-4ay-ne67-2036a74hgg2w"
+        val mockStoredPropertyId = 12345
 
         val storedConsentV7 = JSONObject(TestData.storedConsentV741)
 
@@ -1089,7 +1091,10 @@ class MainActivityKotlinTest {
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
-                diagnostic = storedConsentV7.toList(),
+                diagnostic = storedConsentV7.toList() + listOf(
+                    Pair("sp.gdpr.authId", mockStoredAuthId),
+                    Pair("sp.key.config.propertyId", mockStoredPropertyId),
+                ),
                 pAuthId = "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e"
             )
         )
@@ -1098,7 +1103,8 @@ class MainActivityKotlinTest {
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
-//                getInt("sp.key.localDataVersion", 0).assertEquals(0)
+                getString("sp.gdpr.authId", null).assertEquals(mockStoredAuthId)
+                getInt("sp.key.config.propertyId", 0).assertEquals(mockStoredPropertyId)
             }
         }
 
@@ -1107,7 +1113,8 @@ class MainActivityKotlinTest {
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
-//                getInt("sp.key.localDataVersion", 0).assertEquals(0)
+                getString("sp.gdpr.authId", null).assertEquals("ee7ea3b8-9609-4ba4-be07-0986d32cdd1e")
+                getInt("sp.key.config.propertyId", 0).assertEquals(spConf.propertyId)
             }
         }
     }
