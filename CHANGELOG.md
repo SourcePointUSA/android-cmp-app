@@ -1,3 +1,9 @@
+## 7.4.1 (October, 24, 2023)
+* [DIA-2542](https://sourcepoint.atlassian.net/browse/DIA-2542) Local data versioning (#712)
+* [DIA-2757](https://sourcepoint.atlassian.net/browse/DIA-2757) UI test for the applies condition (#714)
+* [DIA-2901](https://sourcepoint.atlassian.net/browse/DIA-2901) onConsentReady Fires GDPR Applies False After Saving Partial Consent (#714)
+* [DIA-2851](https://sourcepoint.atlassian.net/browse/DIA-2851) Automation test for  the no internet exception (#713)
+
 ## 7.4.0 (October, 06, 2023)
 * [DIA-2753] 400 Bad request when Passing authId (#702)
 * [DIA-2824] App crashes at second message load (#702)
