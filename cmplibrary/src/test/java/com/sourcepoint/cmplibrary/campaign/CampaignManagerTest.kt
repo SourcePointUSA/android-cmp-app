@@ -188,6 +188,7 @@ class CampaignManagerTest {
         // GIVEN
         val mockCcpaConsentStatus = CcpaCS(
             applies = true,
+            ccpaApplies = true,
             consentedAll = true,
             dateCreated = "fake_date",
             gpcEnabled = false,

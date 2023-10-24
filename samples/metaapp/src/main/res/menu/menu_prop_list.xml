@@ -40,12 +40,6 @@
             app:showAsAction="never"/>
 
     <item
-            android:id="@+id/action_save_cons_726"
-            android:icon="@drawable/ic_baseline_old_6_24"
-            android:title="Save 7.2.6"
-            app:showAsAction="never"/>
-
-    <item
             android:id="@+id/action_drop_db"
             android:icon="@drawable/ic_baseline_cancel_24"
             android:title="Drop DB"

@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.util
 
 import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CCPA
-import com.sourcepoint.cmplibrary.data.network.model.optimized.toCcpaCS
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import org.junit.Test
@@ -21,13 +20,18 @@ internal class SpUtilsTest {
             applies = null,
         )
         val expected = "1---"
-        val generated = updateCcpaUspString(ccpa.toCcpaCS(null))
+        val generated = generateCcpaUspString(
+            applies = ccpa.applies,
+            ccpaStatus = ccpa.status,
+            signedLspa = ccpa.signedLspa,
+        )
 
         // WHEN
         val actual = ccpa.uspstring
 
         // THEN
-        generated.assertEquals(expected)
+        actual.assertEquals(expected)
+        actual.assertEquals(generated)
     }
 
     /**
@@ -38,15 +42,22 @@ internal class SpUtilsTest {
     @Test
     fun `generateCcpaUspString - WHEN called with applies as false THEN should return default CCPA consent string`() {
         // GIVEN
-        val ccpa = createCCPA(applies = false)
+        val ccpa = createCCPA(
+            applies = false,
+        )
         val expected = "1---"
-        val generated = updateCcpaUspString(ccpa.toCcpaCS(false))
+        val generated = generateCcpaUspString(
+            applies = ccpa.applies,
+            ccpaStatus = ccpa.status,
+            signedLspa = ccpa.signedLspa,
+        )
 
         // WHEN
         val actual = ccpa.uspstring
 
         // THEN
-        generated.assertEquals(expected)
+        actual.assertEquals(expected)
+        actual.assertEquals(generated)
     }
 
     /**
@@ -66,13 +77,18 @@ internal class SpUtilsTest {
         )
 
         val expected = "1YYY"
-        val generated = updateCcpaUspString(ccpa.toCcpaCS(true))
+        val generated = generateCcpaUspString(
+            applies = ccpa.applies,
+            ccpaStatus = ccpa.status,
+            signedLspa = ccpa.signedLspa,
+        )
 
         // WHEN
         val actual = ccpa.uspstring
 
         // THEN
-        generated.assertEquals(expected)
+        actual.assertEquals(expected)
+        actual.assertEquals(generated)
     }
 
     /**
@@ -91,13 +107,18 @@ internal class SpUtilsTest {
             signedLspa = false,
         )
         val expected = "1YYN"
-        val generated = updateCcpaUspString(ccpa.toCcpaCS(true))
+        val generated = generateCcpaUspString(
+            applies = ccpa.applies,
+            ccpaStatus = ccpa.status,
+            signedLspa = ccpa.signedLspa,
+        )
 
         // WHEN
         val actual = ccpa.uspstring
 
         // THEN
-        generated.assertEquals(expected)
+        actual.assertEquals(expected)
+        actual.assertEquals(generated)
     }
 
     /**
@@ -116,13 +137,18 @@ internal class SpUtilsTest {
             signedLspa = false,
         )
         val expected = "1YNN"
-        val generated = updateCcpaUspString(ccpa.toCcpaCS(true))
+        val generated = generateCcpaUspString(
+            applies = ccpa.applies,
+            ccpaStatus = ccpa.status,
+            signedLspa = ccpa.signedLspa,
+        )
 
         // WHEN
         val actual = ccpa.uspstring
 
         // THEN
-        generated.assertEquals(expected)
+        actual.assertEquals(expected)
+        actual.assertEquals(generated)
     }
 
     private fun createCCPA(
@@ -130,6 +156,7 @@ internal class SpUtilsTest {
         ccpaStatus: CcpaStatus? = null,
         signedLspa: Boolean? = null,
     ): CCPA = CCPA(
+        applies = applies,
         consentedAll = null,
         dateCreated = null,
         message = null,

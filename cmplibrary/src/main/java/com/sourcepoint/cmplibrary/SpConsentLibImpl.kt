@@ -195,7 +195,7 @@ internal class SpConsentLibImpl(
                 }
             },
             onFailure = { error, shouldCallOnErrorCallback ->
-                if (consentManager.hasStoredConsent) {
+                if (consentManager.storedConsent) {
                     executor.executeOnSingleThread {
                         consentManager.sendStoredConsentToClient()
                         clientEventManager.setAction(NativeMessageActionType.GET_MSG_ERROR)

@@ -119,6 +119,7 @@ class JsonConverterImplTest {
             grants!!.size.assertEquals(5)
             euconsent.assertEquals("CPeQ1MAPeQ1MAAGABCENCdCsAP_AAHAAAAYgGMwBAAMgA0AXmAxkDGYAIDGQCgkAMADIANAF5hQAIDGQ4AEBjIkACAxkVABAXmMgAgLzHQAwAMgA0AXmQgAgAZJQAgAMgLzKQAwAMgA0AXmA.YAAAAAAAAAAA")
             dateCreated.toString().assertEquals("2022-08-25T20:56:38.551Z")
+            gdprApplies!!.assertTrue()
             cookieExpirationDays.assertEquals(365)
             localDataCurrent!!.assertFalse()
             vendorListId.assertEquals("5fa9a8fda228635eaf24ceb5")
@@ -133,9 +134,10 @@ class JsonConverterImplTest {
             rejectedAll!!.assertFalse()
             status!!.name.assertEquals("rejectedNone")
             signedLspa!!.assertFalse()
-            uspstring.assertEquals("1YNN")
+            uspstring.assertEquals("1---")
             gpcEnabled!!.assertFalse()
             uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
+            ccpaApplies!!.assertTrue()
         }
     }
 
@@ -150,6 +152,7 @@ class JsonConverterImplTest {
             grants!!.size.assertEquals(5)
             euconsent.assertEquals("CPeeA8APeeA8AAGABCENCeCgAAAAAHAAAAYgAAAMZgAgMZADCgAQGMhwAIDGRIAEBjIA.YAAAAAAAAAAA")
             dateCreated.toString().assertEquals("2022-08-29T13:40:54.754Z")
+            gdprApplies!!.assertTrue()
             cookieExpirationDays.assertEquals(365)
             localDataCurrent!!.assertFalse()
             vendorListId.assertEquals("5fa9a8fda228635eaf24ceb5")
@@ -196,6 +199,7 @@ class JsonConverterImplTest {
             rejectedCategories!!.size.assertEquals(0)
             rejectedVendors!!.size.assertEquals(0)
             uspstring.assertEquals("1YNN")
+            applies!!.assertTrue()
             status!!.name.assertEquals(ccpaTester["status"].toString())
         }
     }
