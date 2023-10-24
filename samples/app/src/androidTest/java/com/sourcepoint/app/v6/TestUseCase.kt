@@ -70,12 +70,6 @@ class TestUseCase {
             }
         }
 
-        fun tapToEnableSomeOption() {
-            CONSENT_LIST_2.forEach { consent ->
-                tapOnToggle2(property = consent, tapOnlyWhen = false)
-            }
-        }
-
         fun checkAllConsentsOn() {
             CONSENT_LIST_2.forEach { consent ->
                 checkConsentState(consent, true, "tcfv2-stack")
@@ -391,8 +385,9 @@ class TestUseCase {
             url: String = "",
             useGdprGroupPmIfAvailable: Boolean = false,
             pResetAll: Boolean = true,
-            spClientObserver: List<SpClient> = emptyList(),
-            diagnostic: List<Pair<String, Any?>> = emptyList()
+            pStoreStateGdpr: Boolean = false,
+            pStoreStateCcpa: Boolean = false,
+            spClientObserver: List<SpClient> = emptyList()
         ): Module {
             return module(override = true) {
                 single<List<SpClient?>> { spClientObserver }
@@ -400,14 +395,15 @@ class TestUseCase {
                     object : DataProvider {
                         override val authId = pAuthId
                         override val resetAll = pResetAll
+                        override val storeStateGdpr: Boolean = pStoreStateGdpr
                         override val useGdprGroupPmIfAvailable: Boolean = useGdprGroupPmIfAvailable
+                        override val storeStateCcpa: Boolean = pStoreStateCcpa
                         override val url = url
                         override val spConfig: SpConfig = spConfig
                         override val gdprPmId: String = gdprPmId
                         override val ccpaPmId: String = ccpaPmId
                         override val customVendorList: List<String> = customVendorDataListProd.map { it.first }
                         override val customCategories: List<String> = customCategoriesDataProd.map { it.first }
-                        override val diagnostic: List<Pair<String, Any?>> = diagnostic
                     }
                 }
             }

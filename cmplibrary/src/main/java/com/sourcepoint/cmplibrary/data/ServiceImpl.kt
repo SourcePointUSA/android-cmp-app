@@ -151,11 +151,7 @@ private class ServiceImpl(
                 .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
 
             if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
-                triggerConsentStatus(
-                    messageReq = messageReq,
-                    gdprApplies = metadataResponse.getOrNull()?.gdpr?.applies,
-                    ccpaApplies = metadataResponse.getOrNull()?.ccpa?.applies
-                )
+                triggerConsentStatus(messageReq)
                     .executeOnLeft { consentStatusError ->
                         onFailure(consentStatusError, true)
                         return@executeOnWorkerThread
@@ -178,10 +174,7 @@ private class ServiceImpl(
                     additionsChangeDate = additionsChangeDate,
                     legalBasisChangeDate = legalBasisChangeDate
                 )
-                campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
-                    consentStatus = consentStatus,
-                    applies = metaDataResp?.gdpr?.applies
-                )
+                campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(consentStatus = consentStatus)
             }
 
             if (campaignManager.shouldCallMessages) {
@@ -233,8 +226,8 @@ private class ServiceImpl(
 
                             campaignManager.run {
                                 if ((messageReq.authId != null || campaignManager.shouldCallConsentStatus).not()) {
-                                    this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS(metadataResponse.getOrNull()?.gdpr?.applies)
-                                    this.ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS(metadataResponse.getOrNull()?.ccpa?.applies)
+                                    this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS()
+                                    this.ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS()
                                 }
                             }
                         }
@@ -475,7 +468,7 @@ private class ServiceImpl(
 
         networkClient.storeCcpaChoice(postConsentParams)
             .executeOnRight { postConsentResponse ->
-                campaignManager.ccpaUuid = postConsentResponse.uuid
+                campaignManager.ccpaConsentStatus?.uuid = postConsentResponse.uuid
                 campaignManager.ccpaConsentStatus =
                     if (postConsentResponse.webConsentPayload != null) {
                         postConsentResponse
@@ -503,11 +496,7 @@ private class ServiceImpl(
         )
     }
 
-    private fun triggerConsentStatus(
-        messageReq: MessagesParamReq,
-        gdprApplies: Boolean?,
-        ccpaApplies: Boolean?
-    ): Either<ConsentStatusResp> {
+    private fun triggerConsentStatus(messageReq: MessagesParamReq): Either<ConsentStatusResp> {
         val csParams = messageReq.toConsentStatusParamReq(
             gdprUuid = campaignManager.gdprUuid,
             ccpaUuid = campaignManager.ccpaUuid,
@@ -516,17 +505,16 @@ private class ServiceImpl(
 
         return getConsentStatus(csParams)
             .executeOnRight {
-                dataStorage.updateLocalDataVersion()
                 campaignManager.apply {
                     campaignManager.handleOldLocalData()
                     messagesOptimizedLocalState = it.localState
                     it.consentStatusData?.let { csd ->
                         // GDPR
-                        gdprConsentStatus = csd.gdpr?.copy(applies = gdprApplies)
+                        gdprConsentStatus = csd.gdpr
                         gdprUuid = csd.gdpr?.uuid
                         gdprDateCreated = csd.gdpr?.dateCreated
                         // CCPA
-                        ccpaConsentStatus = csd.ccpa?.copy(applies = ccpaApplies)
+                        ccpaConsentStatus = csd.ccpa
                         ccpaUuid = csd.ccpa?.uuid
                         ccpaDateCreated = csd.ccpa?.dateCreated
                     }
