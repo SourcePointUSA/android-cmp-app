@@ -29,9 +29,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnOk
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebViewDE
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapCancelOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapFeaturesOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapNetworkOnWebView
@@ -108,15 +106,6 @@ class MainActivityKotlinTest {
     private val spConf = config {
         accountId = 22
         propertyId = 16893
-        propertyName = "mobile.multicampaign.demo"
-        messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
-        +(CampaignType.GDPR)
-        +(CampaignType.CCPA)
-    }
-
-    private val spConfNoPropertyId = config {
-        accountId = 22
         propertyName = "mobile.multicampaign.demo"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
@@ -1098,7 +1087,7 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfNoPropertyId,
+                spConfig = spConf,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
