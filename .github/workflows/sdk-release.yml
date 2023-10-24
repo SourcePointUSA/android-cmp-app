@@ -14,7 +14,7 @@ jobs:
     name: Create Release and tag
     runs-on: macos-latest
     permissions:
-      contents: write-all
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
