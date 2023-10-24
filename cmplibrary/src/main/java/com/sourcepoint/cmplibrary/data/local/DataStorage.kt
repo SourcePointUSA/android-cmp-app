@@ -4,6 +4,9 @@ import android.content.SharedPreferences
 
 internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     companion object {
+        const val LOCAL_DATA_VERSION_KEY = "sp.key.localDataVersion"
+        const val LOCAL_DATA_VERSION_HARDCODED_VALUE = 1
+
         const val LOCAL_STATE = "sp.key.local.state"
         const val LOCAL_STATE_OLD = "key_local_state"
         const val SAVED_CONSENT = "sp.key.saved.consent"
@@ -23,6 +26,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
 
     override val preference: SharedPreferences
 
+    var localDataVersion: Int
     var savedConsent: Boolean
     var messagesOptimized: String?
     var consentStatus: String?
@@ -39,4 +43,5 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
 
     fun saveLocalState(value: String)
     fun getLocalState(): String?
+    fun updateLocalDataVersion()
 }

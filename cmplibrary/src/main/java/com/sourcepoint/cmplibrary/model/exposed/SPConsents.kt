@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
 import com.sourcepoint.cmplibrary.model.toTcfJSONObj
-import com.sourcepoint.cmplibrary.util.generateCcpaUspString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -41,7 +40,7 @@ interface GDPRConsent {
     var tcData: Map<String, Any?>
     var grants: Map<String, GDPRPurposeGrants>
     val acceptedCategories: List<String>?
-    val applies: Boolean?
+    val applies: Boolean
     val webConsentPayload: JsonObject?
 }
 
@@ -51,13 +50,16 @@ internal data class GDPRConsentInternal(
     override var tcData: Map<String, Any?> = emptyMap(),
     override var grants: Map<String, GDPRPurposeGrants> = emptyMap(),
     override val acceptedCategories: List<String>? = null,
-    override val applies: Boolean? = null,
+    override val applies: Boolean = false,
     val childPmId: String? = null,
     val thisContent: JSONObject = JSONObject(),
     override val webConsentPayload: JsonObject? = null,
 ) : GDPRConsent
 
 interface CCPAConsent {
+    companion object {
+        const val DEFAULT_USPSTRING = "1YNN"
+    }
     val uuid: String?
     val rejectedCategories: List<String>
     val rejectedVendors: List<String>
@@ -74,20 +76,13 @@ internal data class CCPAConsentInternal(
     override val rejectedCategories: List<String> = listOf(),
     override val rejectedVendors: List<String> = listOf(),
     override val status: CcpaStatus? = null,
+    override val uspstring: String = "1YNN",
     override val childPmId: String? = null,
     override val applies: Boolean = false,
     val thisContent: JSONObject = JSONObject(),
     override val signedLspa: Boolean? = null,
     override val webConsentPayload: JsonObject? = null,
-) : CCPAConsent {
-
-    override val uspstring: String
-        get() = generateCcpaUspString(
-            applies = applies,
-            ccpaStatus = status,
-            signedLspa = signedLspa,
-        )
-}
+) : CCPAConsent
 
 enum class CcpaStatus {
     rejectedAll,

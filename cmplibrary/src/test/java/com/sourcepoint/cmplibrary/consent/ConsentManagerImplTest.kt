@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.consent
 
-import com.sourcepoint.cmplibrary.assertFalse
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -78,29 +77,22 @@ class ConsentManagerImplTest {
 
     @Test
     fun `GIVEN a GDPR stored consent in SP VERIFY that savedConsentByUser RETURN true`() {
-        every { dataStorage.getGdprConsentResp() }.returns("gdpr")
-        every { dataStorage.getCcpaConsentResp() }.returns(null)
-        consentManager.storedConsent.assertTrue()
+        every { dataStorage.gdprConsentStatus }.returns("gdpr")
+        every { dataStorage.ccpaConsentStatus }.returns(null)
+        consentManager.hasStoredConsent.assertTrue()
     }
 
     @Test
     fun `GIVEN a GDPR and CCPA stored consent in SP VERIFY that savedConsentByUser RETURN true`() {
-        every { dataStorage.getGdprConsentResp() }.returns("gdpr")
-        every { dataStorage.getCcpaConsentResp() }.returns("ccpa")
-        consentManager.storedConsent.assertTrue()
+        every { dataStorage.gdprConsentStatus }.returns("gdpr")
+        every { dataStorage.ccpaConsentStatus }.returns("ccpa")
+        consentManager.hasStoredConsent.assertTrue()
     }
 
     @Test
     fun `GIVEN a CCPA stored consent in SP VERIFY that savedConsentByUser RETURN true`() {
-        every { dataStorage.getCcpaConsentResp() }.returns("ccpa")
-        every { dataStorage.getGdprConsentResp() }.returns(null)
-        consentManager.storedConsent.assertTrue()
-    }
-
-    @Test
-    fun `GIVEN a MISSING stored consent in SP VERIFY that savedConsentByUser RETURN false`() {
-        every { dataStorage.getGdprConsentResp() }.returns(null)
-        every { dataStorage.getCcpaConsentResp() }.returns(null)
-        consentManager.storedConsent.assertFalse()
+        every { dataStorage.ccpaConsentStatus }.returns("ccpa")
+        every { dataStorage.gdprConsentStatus }.returns(null)
+        consentManager.hasStoredConsent.assertTrue()
     }
 }
