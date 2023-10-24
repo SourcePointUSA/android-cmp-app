@@ -131,26 +131,25 @@ internal fun MessagesParamReq.toConsentStatusParamReq(
     )
 }
 
-internal fun CCPA.toCcpaCS() = CcpaCS(
+internal fun CCPA.toCcpaCS(applies: Boolean?) = CcpaCS(
     applies = applies,
     consentedAll = consentedAll,
     dateCreated = dateCreated,
+    gpcEnabled = null,
     newUser = newUser,
     rejectedAll = rejectedAll,
     rejectedCategories = rejectedCategories,
     rejectedVendors = rejectedVendors,
     signedLspa = signedLspa,
+    uspstring = uspstring,
     status = status,
     gppData = gppData,
-    ccpaApplies = null,
     uuid = null,
-    gpcEnabled = null,
     webConsentPayload = webConsentPayload,
 )
 
-internal fun GDPR.toGdprCS() = GdprCS(
-    applies = null,
-    gdprApplies = null,
+internal fun GDPR.toGdprCS(applies: Boolean?) = GdprCS(
+    applies = applies,
     categories = null,
     consentAllRef = null,
     consentedToAll = null,

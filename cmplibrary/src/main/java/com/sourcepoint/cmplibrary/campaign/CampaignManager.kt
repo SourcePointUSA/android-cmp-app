@@ -20,7 +20,7 @@ import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.generateCcpaUspString
+import com.sourcepoint.cmplibrary.util.updateCcpaUspString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
@@ -69,7 +69,6 @@ internal interface CampaignManager {
     var ccpaMessageMetaData: MessageMetaData?
 
     // Consent Status
-    fun saveConsentStatusResponse(c: ConsentStatusResp)
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
     var messagesOptimizedLocalState: JsonElement?
@@ -406,25 +405,18 @@ private class CampaignManagerImpl(
 
     override val shouldCallConsentStatus: Boolean
         get() {
-            val gdprUUID = dataStorage.gdprConsentUuid
-            val ccpaUUID = dataStorage.ccpaConsentUuid
-            val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
+            val isGdprOrCcpaUuidPresent =
+                dataStorage.gdprConsentUuid != null || dataStorage.ccpaConsentUuid != null
+            val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
-            val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(DataStorage.LOCAL_STATE_OLD)
-            val res =
-                ((gdprUUID != null || ccpaUUID != null) && localStateSize == 0) || isV6LocalStatePresent || isV6LocalStatePresent2
+            val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
+            val hasNonEligibleLocalDataVersion =
+                dataStorage.localDataVersion != DataStorage.LOCAL_DATA_VERSION_HARDCODED_VALUE
 
-            logger?.computation(
-                tag = "shouldCallConsentStatus",
-                msg = """
-                gdprUUID != null [${gdprUUID != null}] - ccpaUUID != null [${ccpaUUID != null}]
-                localStateSize empty [${localStateSize == 0}]
-                V6.7 ls [$isV6LocalStatePresent] or V6.3 ls [$isV6LocalStatePresent2]  
-                shouldCallConsentStatus[$res]  
-                """.trimIndent()
-            )
-
-            return res
+            return (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
+                isV6LocalStatePresent ||
+                isV6LocalStatePresent2 ||
+                hasNonEligibleLocalDataVersion
         }
 
     override var gdprMessageMetaData: MessageMetaData?
@@ -445,22 +437,15 @@ private class CampaignManagerImpl(
             dataStorage.ccpaMessageMetaData = serialised
         }
 
-    override fun saveConsentStatusResponse(c: ConsentStatusResp) {
-        gdprConsentStatus = c.consentStatusData?.gdpr
-        ccpaConsentStatus = c.consentStatusData?.ccpa
-        messagesOptimizedLocalState = c.localState
-    }
-
     override var gdprConsentStatus: GdprCS?
         get() {
-            return dataStorage.gdprConsentStatus?.let { JsonConverter.converter.decodeFromString<GdprCS>(it) }
+            return dataStorage.gdprConsentStatus
+                ?.let { JsonConverter.converter.decodeFromString<GdprCS>(it) }
+                ?.let { cs -> cs.copy(applies = dataStorage.gdprApplies) }
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.apply {
-                value?.gdprApplies?.let {
-                    gdprApplies = it
-                }
                 gdprConsentStatus = serialised
                 value?.TCData
                     ?.let { this.tcData = it }
@@ -474,15 +459,11 @@ private class CampaignManagerImpl(
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.ccpaConsentStatus = serialised
-            dataStorage.gppData = value?.gppData
-
-            // regenerate and update US privacy string with new values in the data storage
-            dataStorage.uspstring = generateCcpaUspString(
-                applies = value?.applies,
-                ccpaStatus = value?.status,
-                signedLspa = value?.signedLspa,
-            )
+            dataStorage.run {
+                ccpaConsentStatus = serialised
+                gppData = value?.gppData
+                uspstring = value?.uspstring
+            }
         }
 
     override var messagesOptimizedLocalState: JsonElement?
@@ -528,7 +509,7 @@ private class CampaignManagerImpl(
         }
 
     override val hasLocalData: Boolean
-        get() = dataStorage.gdprConsentStatus != null || dataStorage.uspstring.isNullOrEmpty().not()
+        get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaConsentStatus != null
 
     override fun handleMetaDataResponse(response: MetaDataResp?) {
         // update meta data response in the data storage
@@ -540,8 +521,10 @@ private class CampaignManagerImpl(
         response.ccpa?.apply {
             applies?.let { i ->
                 ccpaConsentStatus?.let { ccpaCS ->
-                    val updatedCcpaConsentStatus = ccpaCS.copy(applies = i)
-                    ccpaConsentStatus = updatedCcpaConsentStatus
+                    val updatedCcpaCS = ccpaCS.copy(applies = i)
+                    // update the new uspstring value based on the applies
+                    val uspstring = updateCcpaUspString(updatedCcpaCS, logger)
+                    ccpaConsentStatus = updatedCcpaCS.copy(uspstring = uspstring)
                 }
             }
 
@@ -555,10 +538,13 @@ private class CampaignManagerImpl(
 
         // handle gdpr
         response.gdpr?.apply {
-            gdprConsentStatus?.let { gdprCS ->
-                val updatedGdprConsentStatus = gdprCS.copy(applies = applies)
-                gdprConsentStatus = updatedGdprConsentStatus
+            applies?.let { gdprApplies ->
+                gdprConsentStatus?.let { gdprCS ->
+                    val updatedGdprConsentStatus = gdprCS.copy(applies = gdprApplies)
+                    gdprConsentStatus = updatedGdprConsentStatus
+                }
             }
+
             applies?.let { i -> dataStorage.gdprApplies = i }
             childPmId?.let { i -> dataStorage.gdprChildPmId = i }
             sampleRate?.let { i ->

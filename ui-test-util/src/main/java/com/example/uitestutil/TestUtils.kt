@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import kotlinx.coroutines.delay
+import org.json.JSONObject
 import org.junit.Assert
 import kotlin.jvm.Throws
 
@@ -60,6 +61,24 @@ fun checkCondition(task: () -> Unit): TestRes {
         TestRes.Verified
     } catch (th: Throwable) {
         TestRes.NotVerified(th)
+    }
+}
+
+fun JSONObject.toList() : List<Pair<String, Any?>> {
+    val list = mutableListOf<Pair<String, Any?>>()
+    this.keys().forEach {
+        check { this.getString(it) }?.let { v -> list.add(Pair(it, v)) }
+        check { this.getBoolean(it) }?.let { v -> list.add(Pair(it, v)) }
+        check { this.getInt(it) }?.let { v -> list.add(Pair(it, v)) }
+    }
+    return list
+}
+
+private fun <E> check(block: () -> E): E? {
+    return try {
+        block.invoke()
+    } catch (e: Exception) {
+        null
     }
 }
 

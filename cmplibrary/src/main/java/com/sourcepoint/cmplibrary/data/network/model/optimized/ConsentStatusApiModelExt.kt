@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
@@ -31,6 +32,7 @@ internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
         thisContent = JSONObject(),
         signedLspa = signedLspa,
         webConsentPayload = webConsentPayload,
+        uspstring = this.uspstring ?: CCPAConsent.DEFAULT_USPSTRING
     )
 }
 

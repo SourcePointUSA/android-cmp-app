@@ -10,6 +10,8 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATU
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATUS_RESPONSE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.DATA_RECORDED_CONSENT
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_CONSENT_STATUS
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_DATA_VERSION_HARDCODED_VALUE
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_DATA_VERSION_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE_OLD
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.MESSAGES_OPTIMIZED
@@ -46,6 +48,14 @@ private class DataStorageImpl(
     override val preference: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
+
+    override var localDataVersion: Int
+        get() = preference
+            .getInt(LOCAL_DATA_VERSION_KEY, 0)
+        set(value) = preference
+            .edit()
+            .putInt(LOCAL_DATA_VERSION_KEY, value)
+            .apply()
 
     override var savedConsent: Boolean
         get() = preference.getBoolean(SAVED_CONSENT, false)
@@ -169,6 +179,10 @@ private class DataStorageImpl(
         return preference.getString(LOCAL_STATE, null)
     }
 
+    override fun updateLocalDataVersion() {
+        localDataVersion = LOCAL_DATA_VERSION_HARDCODED_VALUE
+    }
+
     override fun clearAll() {
         dsCcpa.clearAll()
         dsGdpr.clearAll()
@@ -176,6 +190,7 @@ private class DataStorageImpl(
             .edit()
             .remove(LOCAL_STATE)
             .remove(LOCAL_STATE_OLD)
+            .remove(LOCAL_DATA_VERSION_KEY)
             .remove(SAVED_CONSENT)
             .remove(MESSAGES_OPTIMIZED)
             .remove(META_DATA_RESP)

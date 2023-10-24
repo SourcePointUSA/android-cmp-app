@@ -19,7 +19,6 @@ import com.sourcepoint.cmplibrary.core.nativemessage.NativeComponent
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -67,12 +66,13 @@ class MainActivityKotlin : AppCompatActivity() {
 
         if (dataProvider.resetAll) {
             clearAllData(this)
+            PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply()
         }
+
+        storeDiagnosticObj(dataProvider.diagnostic)
 
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
-
-        gracefulDegradationTest(sp, dataProvider) // 4 testing
 
         setContentView(R.layout.activity_main_v7)
         review_consents_gdpr.setOnClickListener { _v: View? ->
@@ -90,7 +90,10 @@ class MainActivityKotlin : AppCompatActivity() {
                 CampaignType.CCPA
             )
         }
-        clear_all.setOnClickListener { _v: View? -> clearAllData(this) }
+        clear_all.setOnClickListener { _v: View? ->
+            clearAllData(this)
+            PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply()
+        }
         auth_id_activity.setOnClickListener { _v: View? ->
             startActivity(Intent(this, MainActivityAuthId::class.java))
         }
@@ -122,17 +125,6 @@ class MainActivityKotlin : AppCompatActivity() {
 
     private fun openTransferConsentActivity() {
         startActivity(Intent(this, WebConsentTransferTestActivity::class.java))
-    }
-
-    private fun gracefulDegradationTest(sp: SharedPreferences, dataProvider: DataProvider) {
-        if (dataProvider.storeStateGdpr) {
-            sp.edit().putString("sp.gdpr.consent.resp", "fake state").apply()
-            sp.edit().putBoolean("sp.key.saved.consent", true).apply()
-        }
-        if (dataProvider.storeStateCcpa) {
-            sp.edit().putString("sp.ccpa.consent.resp", "fake state").apply()
-            sp.edit().putBoolean("sp.key.saved.consent", true).apply()
-        }
     }
 
     override fun onResume() {
@@ -349,6 +341,17 @@ class MainActivityKotlin : AppCompatActivity() {
         } catch (e: Exception) {
             null
         }
+    }
+
+    private fun storeDiagnosticObj(list: List<Pair<String, Any?>>) {
+        val sp = PreferenceManager.getDefaultSharedPreferences(this)
+        val spEditor = sp.edit()
+        list.forEach {
+            check { it.second as? String }?.let { v -> spEditor.putString(it.first, v) }
+            check { it.second as? Boolean }?.let { v -> spEditor.putBoolean(it.first, v) }
+            check { it.second as? Int }?.let { v -> spEditor.putInt(it.first, v) }
+        }
+        spEditor.apply()
     }
 }
 

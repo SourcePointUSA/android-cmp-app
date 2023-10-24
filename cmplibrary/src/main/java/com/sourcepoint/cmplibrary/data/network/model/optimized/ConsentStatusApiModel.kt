@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.generateCcpaUspString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -50,93 +49,46 @@ data class ConsentStatusResp(
 
 @Serializable
 data class CcpaCS(
-    @SerialName("applies")
     val applies: Boolean?,
-    @SerialName("ccpaApplies")
-    val ccpaApplies: Boolean?,
-    @SerialName("consentedAll")
-    val consentedAll: Boolean?,
-    @SerialName("dateCreated")
-    val dateCreated: String?,
-    @SerialName("gpcEnabled")
-    val gpcEnabled: Boolean?,
-    @SerialName("newUser")
-    val newUser: Boolean?,
-    @SerialName("rejectedAll")
-    val rejectedAll: Boolean?,
-    @SerialName("rejectedCategories")
-    val rejectedCategories: List<String>?,
-    @SerialName("rejectedVendors")
-    val rejectedVendors: List<String>?,
-    @SerialName("signedLspa")
-    val signedLspa: Boolean?,
-    @Serializable(with = CcpaStatusSerializer::class)
-    val status: CcpaStatus?,
-    @SerialName("GPPData")
-    @Serializable(with = JsonMapSerializer::class)
-    val gppData: Map<String, JsonElement>? = null,
-    @SerialName("uuid")
-    var uuid: String?,
-    @SerialName("webConsentPayload")
-    val webConsentPayload: JsonObject? = null,
-) {
-
-    val uspstring: String
-        get() = generateCcpaUspString(
-            applies = applies ?: false,
-            ccpaStatus = status,
-            signedLspa = signedLspa,
-        )
-}
+    @SerialName("consentedAll") val consentedAll: Boolean?,
+    @SerialName("dateCreated") val dateCreated: String?,
+    @SerialName("gpcEnabled") val gpcEnabled: Boolean?,
+    @SerialName("newUser") val newUser: Boolean?,
+    @SerialName("rejectedAll") val rejectedAll: Boolean?,
+    @SerialName("rejectedCategories") val rejectedCategories: List<String>?,
+    @SerialName("rejectedVendors") val rejectedVendors: List<String>?,
+    @SerialName("signedLspa") val signedLspa: Boolean?,
+    @SerialName("uspstring") val uspstring: String? = null,
+    @Serializable(with = CcpaStatusSerializer::class) val status: CcpaStatus?,
+    @SerialName("GPPData") @Serializable(with = JsonMapSerializer::class) val gppData: Map<String, JsonElement>? = null,
+    @SerialName("uuid") var uuid: String?,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null
+)
 
 @Serializable
 data class GdprCS(
-    @SerialName("applies")
     val applies: Boolean?,
-    @SerialName("gdprApplies")
-    val gdprApplies: Boolean?,
-    @SerialName("categories")
-    val categories: List<String>?,
-    @SerialName("consentAllRef")
-    val consentAllRef: String?,
-    @SerialName("consentedToAll")
-    val consentedToAll: Boolean?,
-    @SerialName("legIntCategories")
-    val legIntCategories: List<String>?,
-    @SerialName("legIntVendors")
-    val legIntVendors: List<String>?,
-    @SerialName("postPayload")
-    val postPayload: PostPayload?,
-    @SerialName("rejectedAny")
-    val rejectedAny: Boolean?,
-    @SerialName("specialFeatures")
-    val specialFeatures: List<String>?,
-    @SerialName("vendors")
-    val vendors: List<String>?,
-    @SerialName("addtlConsent")
-    val addtlConsent: String?,
-    @SerialName("consentStatus")
-    val consentStatus: ConsentStatus?,
-    @SerialName("cookieExpirationDays")
-    val cookieExpirationDays: Int?,
-    @SerialName("customVendorsResponse")
-    val customVendorsResponse: CustomVendorsResponse?,
-    @SerialName("dateCreated")
-    val dateCreated: String?,
-    @SerialName("euconsent")
-    val euconsent: String?,
-    @Serializable(with = GrantsSerializer::class)
-    val grants: Map<String, GDPRPurposeGrants>?,
-    @Serializable(with = JsonMapSerializer::class)
-    val TCData: Map<String, JsonElement>?,
-    @SerialName("localDataCurrent")
-    val localDataCurrent: Boolean?,
-    @SerialName("uuid")
-    var uuid: String?,
-    @SerialName("vendorListId")
-    val vendorListId: String?,
-    @SerialName("webConsentPayload")
-    val webConsentPayload: JsonObject? = null,
+    @SerialName("categories") val categories: List<String>?,
+    @SerialName("consentAllRef") val consentAllRef: String?,
+    @SerialName("consentedToAll") val consentedToAll: Boolean?,
+    @SerialName("legIntCategories") val legIntCategories: List<String>?,
+    @SerialName("legIntVendors") val legIntVendors: List<String>?,
+    @SerialName("postPayload") val postPayload: PostPayload?,
+    @SerialName("rejectedAny") val rejectedAny: Boolean?,
+    @SerialName("specialFeatures") val specialFeatures: List<String>?,
+    @SerialName("vendors") val vendors: List<String>?,
+    @SerialName("addtlConsent") val addtlConsent: String?,
+    @SerialName("consentStatus") val consentStatus: ConsentStatus?,
+    @SerialName("cookieExpirationDays") val cookieExpirationDays: Int?,
+    @SerialName("customVendorsResponse") val customVendorsResponse: CustomVendorsResponse?,
+    @SerialName("dateCreated") val dateCreated: String?,
+    @SerialName("euconsent") val euconsent: String?,
+    @Serializable(with = GrantsSerializer::class) val grants: Map<String, GDPRPurposeGrants>?,
+    @Serializable(with = JsonMapSerializer::class) val TCData: Map<String, JsonElement>?,
+    @SerialName("localDataCurrent") val localDataCurrent: Boolean?,
+    @SerialName("uuid") var uuid: String?,
+    @SerialName("vendorListId") val vendorListId: String?,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
 ) {
 
     @Serializable

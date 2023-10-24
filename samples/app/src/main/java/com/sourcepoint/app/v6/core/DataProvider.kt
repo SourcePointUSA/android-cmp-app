@@ -3,13 +3,10 @@ package com.sourcepoint.app.v6.core
 import android.content.Context
 import android.content.SharedPreferences
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import java.util.*
 
 interface DataProvider {
     val authId: String?
     val resetAll: Boolean
-    val storeStateGdpr: Boolean
-    val storeStateCcpa: Boolean
     val url: String
     val gdprPmId: String
     val useGdprGroupPmIfAvailable: Boolean
@@ -17,6 +14,7 @@ interface DataProvider {
     val spConfig: SpConfig
     val customVendorList: List<String>
     val customCategories: List<String>
+    val diagnostic: List<Pair<String, Any?>>
     companion object
 }
 
@@ -28,7 +26,8 @@ fun DataProvider.Companion.create(
     ccpaPmId: String,
     customVendorList: List<String>,
     customCategories: List<String>,
-    authId: String?
+    authId: String?,
+    diagnostic: List<Pair<String, Any?>>
 ): DataProvider = DataProviderImpl(
     context = context,
     spConfig = spConfig,
@@ -37,7 +36,8 @@ fun DataProvider.Companion.create(
     ccpaPmId = ccpaPmId,
     authId = authId,
     customCategories = customCategories,
-    customVendorList = customVendorList
+    customVendorList = customVendorList,
+    diagnostic = diagnostic
 )
 
 private class DataProviderImpl(
@@ -49,9 +49,8 @@ private class DataProviderImpl(
     override val ccpaPmId: String,
     override val useGdprGroupPmIfAvailable: Boolean= false,
     override val resetAll: Boolean = false,
-    override val storeStateGdpr: Boolean = false,
-    override val storeStateCcpa: Boolean = false,
-    override val authId: String? = null
+    override val authId: String? = null,
+    override val diagnostic: List<Pair<String, Any?>> = emptyList()
 ) : DataProvider {
 
     val sharedPref: SharedPreferences by lazy {

@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.MessageCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.cmplibrary.util.generateCcpaUspString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -48,8 +47,7 @@ data class MessagesResp(
         }
 
     override fun toString(): String {
-        return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
-            ?: super.toString()
+        return check { JsonConverter.converter.encodeToString(this) }.getOrNull() ?: super.toString()
     }
 }
 
@@ -69,16 +67,14 @@ internal fun CampaignType.toCategoryId() = when (this) {
 @Serializable
 data class MessageMetaData(
     @SerialName("bucket") val bucket: Int?,
-    @Serializable(with = MessageCategorySerializer::class)
-    @SerialName("categoryId") val categoryId: MessageCategory,
+    @Serializable(with = MessageCategorySerializer::class) @SerialName("categoryId") val categoryId: MessageCategory,
     @SerialName("messageId") val messageId: Int?,
     @SerialName("msgDescription") val msgDescription: String?,
     @SerialName("prtnUUID") val prtnUUID: String?,
     @Serializable(with = MessageSubCategorySerializer::class) val subCategoryId: MessageSubCategory
 ) {
     override fun toString(): String {
-        return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
-            ?: "{}"
+        return check { JsonConverter.converter.encodeToString(this) }.getOrNull() ?: "{}"
     }
 }
 
@@ -90,77 +86,39 @@ data class Campaigns(
 
 @Serializable
 data class CCPA(
-    @SerialName("applies")
-    val applies: Boolean?,
-    @SerialName("consentedAll")
-    val consentedAll: Boolean?,
-    @SerialName("dateCreated")
-    override val dateCreated: String?,
-    @SerialName("message")
-    override val message: JsonElement?,
-    @SerialName("messageMetaData")
-    override val messageMetaData: MessageMetaData?,
-    @SerialName("newUser")
-    val newUser: Boolean?,
-    @SerialName("rejectedAll")
-    val rejectedAll: Boolean?,
-    @SerialName("rejectedCategories")
-    val rejectedCategories: List<String>?,
-    @SerialName("rejectedVendors")
-    val rejectedVendors: List<String>?,
-    @SerialName("signedLspa")
-    val signedLspa: Boolean?,
-    @SerialName("GPPData")
-    @Serializable(with = JsonMapSerializer::class)
-    val gppData: Map<String, JsonElement>? = null,
-    @Serializable(with = CcpaStatusSerializer::class)
-    val status: CcpaStatus?,
-    @Serializable(with = CampaignTypeSerializer::class)
-    override val type: CampaignType,
-    @SerialName("url")
-    override val url: String?,
-    @SerialName("webConsentPayload")
-    val webConsentPayload: JsonObject?,
-) : CampaignMessage {
-
-    val uspstring: String
-        get() = generateCcpaUspString(
-            applies = applies,
-            ccpaStatus = status,
-            signedLspa = signedLspa,
-        )
-}
+    @SerialName("consentedAll") val consentedAll: Boolean?,
+    @SerialName("dateCreated") override val dateCreated: String?,
+    @SerialName("message") override val message: JsonElement?,
+    @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
+    @SerialName("newUser") val newUser: Boolean?,
+    @SerialName("rejectedAll") val rejectedAll: Boolean?,
+    @SerialName("rejectedCategories") val rejectedCategories: List<String>?,
+    @SerialName("rejectedVendors") val rejectedVendors: List<String>?,
+    @SerialName("signedLspa") val signedLspa: Boolean?,
+    @SerialName("uspstring") val uspstring: String? = null,
+    @SerialName("GPPData") @Serializable(with = JsonMapSerializer::class) val gppData: Map<String, JsonElement>? = null,
+    @Serializable(with = CcpaStatusSerializer::class) val status: CcpaStatus?,
+    @Serializable(with = CampaignTypeSerializer::class) override val type: CampaignType,
+    @SerialName("url") override val url: String?,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
+) : CampaignMessage
 
 @Serializable
 data class GDPR(
-    @SerialName("addtlConsent")
-    val addtlConsent: String?,
-    @SerialName("childPmId")
-    val childPmId: String?,
-    @SerialName("consentStatus")
-    val consentStatus: ConsentStatus?,
-    @SerialName("customVendorsResponse")
-    val customVendorsResponse: GdprCS.CustomVendorsResponse?,
-    @SerialName("dateCreated")
-    override val dateCreated: String?,
-    @SerialName("euconsent")
-    val euconsent: String?,
-    @Serializable(with = GrantsSerializer::class)
-    val grants: Map<String, GDPRPurposeGrants>?,
-    @SerialName("hasLocalData")
-    val hasLocalData: Boolean?,
-    @SerialName("message")
-    override val message: JsonElement?,
-    @SerialName("messageMetaData")
-    override val messageMetaData: MessageMetaData?,
-    @Serializable(with = JsonMapSerializer::class)
-    val TCData: Map<String, JsonElement>?,
-    @Serializable(with = CampaignTypeSerializer::class)
-    override val type: CampaignType,
-    @SerialName("url")
-    override val url: String?,
-    @SerialName("webConsentPayload")
-    val webConsentPayload: JsonObject?,
+    @SerialName("addtlConsent") val addtlConsent: String?,
+    @SerialName("childPmId") val childPmId: String?,
+    @SerialName("consentStatus") val consentStatus: ConsentStatus?,
+    @SerialName("customVendorsResponse") val customVendorsResponse: GdprCS.CustomVendorsResponse?,
+    @SerialName("dateCreated") override val dateCreated: String?,
+    @SerialName("euconsent") val euconsent: String?,
+    @Serializable(with = GrantsSerializer::class) val grants: Map<String, GDPRPurposeGrants>?,
+    @SerialName("hasLocalData") val hasLocalData: Boolean?,
+    @SerialName("message") override val message: JsonElement?,
+    @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
+    @Serializable(with = JsonMapSerializer::class) val TCData: Map<String, JsonElement>?,
+    @Serializable(with = CampaignTypeSerializer::class) override val type: CampaignType,
+    @SerialName("url") override val url: String?,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
 ) : CampaignMessage
 
 @Serializable
