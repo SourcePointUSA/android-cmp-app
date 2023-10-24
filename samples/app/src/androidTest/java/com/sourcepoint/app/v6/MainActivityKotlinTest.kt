@@ -115,6 +115,15 @@ class MainActivityKotlinTest {
         +(CampaignType.CCPA)
     }
 
+    private val spConfNoPropertyId = config {
+        accountId = 22
+        propertyName = "mobile.multicampaign.demo"
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 5000
+        +(CampaignType.GDPR)
+        +(CampaignType.CCPA)
+    }
+
     private val spConfNative = config {
         accountId = 22
         propertyId = 18958
@@ -1081,22 +1090,23 @@ class MainActivityKotlinTest {
     fun given_the_user_has_consent_and_the_auth_id_changes_then_should_flush_data() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
+        val mockNewAuthId = "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e"
         val mockStoredAuthId = "as2gv7x8-7569-4ay-ne67-2036a74hgg2w"
-        val mockStoredPropertyId = spConf.propertyId
+//        val mockStoredPropertyId = spConf.propertyId
 
         val storedConsentV7 = JSONObject(TestData.storedConsentV741)
 
         loadKoinModules(
             mockModule(
-                spConfig = spConf,
+                spConfig = spConfNoPropertyId,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
                 diagnostic = storedConsentV7.toList() + listOf(
                     Pair("sp.gdpr.authId", mockStoredAuthId),
-                    Pair("sp.key.config.propertyId", mockStoredPropertyId),
+//                    Pair("sp.key.config.propertyId", mockStoredPropertyId),
                 ),
-                pAuthId = "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e"
+                pAuthId = mockNewAuthId
             )
         )
 
@@ -1119,7 +1129,7 @@ class MainActivityKotlinTest {
             PreferenceManager.getDefaultSharedPreferences(activity).run {
                 Log.v("DIA-2654", "SP authId = ${getString("sp.gdpr.authId", null)}")
                 Log.v("DIA-2654", "SP propertyId = ${getInt("sp.key.config.propertyId", 0)}")
-//                getString("sp.gdpr.authId", null).assertEquals("ee7ea3b8-9609-4ba4-be07-0986d32cdd1e")
+                getString("sp.gdpr.authId", null).assertEquals(mockNewAuthId)
 //                getInt("sp.key.config.propertyId", 0).assertEquals(spConf.propertyId)
             }
         }
