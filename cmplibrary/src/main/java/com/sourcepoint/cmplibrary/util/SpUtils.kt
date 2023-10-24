@@ -16,7 +16,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInternal
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -25,13 +24,11 @@ import kotlinx.serialization.decodeFromString
 
 private const val DEFAULT_CCPA_USP_STRING = "1---"
 
-internal fun updateCcpaUspString(
-    ccpaCS: CcpaCS,
-    logger: Logger? = null,
+fun generateCcpaUspString(
+    applies: Boolean?,
+    ccpaStatus: CcpaStatus?,
+    signedLspa: Boolean?,
 ): String {
-    val applies: Boolean? = ccpaCS.applies
-    val ccpaStatus: CcpaStatus? = ccpaCS.status
-    val signedLspa: Boolean? = ccpaCS.signedLspa
     return if (applies == true) {
         val specificationVersion = "1"
         val opportunityToOptOut = "Y"
@@ -40,27 +37,8 @@ internal fun updateCcpaUspString(
             else -> "N"
         }
         val lspaCoveredTransaction = if (signedLspa == null || signedLspa == false) "N" else "Y"
-        val usPString = "$specificationVersion$opportunityToOptOut$optOutSale$lspaCoveredTransaction"
-        logger?.computation(
-            tag = " Ccpa UspString",
-            msg = """
-                spec Version[1] - oppToOptOut[Y]
-                ccpaStatus[$ccpaStatus] => optOutSale[$optOutSale]
-                signedLspa[$signedLspa] => LspaCovTransac[$lspaCoveredTransaction]
-                usPString[$usPString]
-            """.trimIndent()
-        )
-        usPString
-    } else {
-        logger?.computation(
-            tag = " Ccpa UspString",
-            msg = """
-                applies[$applies]
-                $DEFAULT_CCPA_USP_STRING
-            """.trimIndent()
-        )
-        DEFAULT_CCPA_USP_STRING
-    }
+        "$specificationVersion$opportunityToOptOut$optOutSale$lspaCoveredTransaction"
+    } else DEFAULT_CCPA_USP_STRING
 }
 
 fun userConsents(context: Context): SPConsents {
