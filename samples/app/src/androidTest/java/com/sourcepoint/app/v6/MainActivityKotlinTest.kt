@@ -1082,7 +1082,7 @@ class MainActivityKotlinTest {
 
         val spClient = mockk<SpClient>(relaxed = true)
         val mockStoredAuthId = "as2gv7x8-7569-4ay-ne67-2036a74hgg2w"
-        val mockStoredPropertyId = 12345
+        val mockStoredPropertyId = spConf.propertyId
 
         val storedConsentV7 = JSONObject(TestData.storedConsentV741)
 

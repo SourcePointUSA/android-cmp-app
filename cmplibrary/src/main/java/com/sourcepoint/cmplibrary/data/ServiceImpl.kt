@@ -146,6 +146,7 @@ private class ServiceImpl(
             if (messageReq.authId != null && campaignManager.authId != messageReq.authId ||
                 campaignManager.propertyId != spConfig.propertyId
             ) {
+                Log.v("DIA-2654", "data cleared")
                 dataStorage.clearAll()
             }
             campaignManager.authId = messageReq.authId
