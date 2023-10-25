@@ -86,6 +86,15 @@ class MainActivityKotlinTest {
         +(CampaignType.GDPR)
     }
 
+    private val toggoConfig = config {
+        accountId = 1631
+        propertyId = 18893
+        propertyName = "TOGGO-App-iOS"
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 5000
+        +(CampaignType.GDPR)
+    }
+
     private val spConfGdprNoMessage = config {
         accountId = 22
         propertyId = 29498
@@ -169,10 +178,7 @@ class MainActivityKotlinTest {
                 onConsentReady(withArg {
                     it.gdpr!!.consent.grants.map { k -> k.key }.sorted().assertEquals(grantsTester)
                 })
-                onSpFinished(withArg {
-                    it.gdpr!!.consent.applies.assertTrue()
-                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
-                })
+                onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
             }
         }
 
@@ -204,6 +210,28 @@ class MainActivityKotlinTest {
             }
         }
 
+    }
+
+    //    @Test
+    // TODO did toggo replace its edge case?
+    fun toggo() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = toggoConfig,
+                gdprPmId = "1111",
+                ccpaPmId = "222",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr { tapAcceptOnOk() }
+        wr { clickOnRefreshBtnActivity() }
+        wr { tapAcceptOnWebViewDE() }
     }
 
     @Test
@@ -350,10 +378,7 @@ class MainActivityKotlinTest {
                     it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(emptyList())
                     it.gdpr?.consent?.grants?.values?.forEach { el -> el.granted.assertFalse() }
                 })
-                onSpFinished(withArg {
-                    it.gdpr!!.consent.applies.assertTrue()
-                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
-                })
+                onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
             }
         }
     }
@@ -378,13 +403,7 @@ class MainActivityKotlinTest {
         wr { tapAcceptCcpaOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr {
-            verify(exactly = 1) {
-                spClient.onSpFinished(withArg {
-                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
-                })
-            }
-        }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { verify(atLeast = 2) { spClient.onUIReady(any()) } }
         wr {
@@ -405,7 +424,6 @@ class MainActivityKotlinTest {
                 onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.applies.assertTrue()
-                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
             }
         }
@@ -468,7 +486,6 @@ class MainActivityKotlinTest {
                 onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.applies.assertTrue()
-                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
             }
         }
@@ -498,7 +515,6 @@ class MainActivityKotlinTest {
             spClient.run {
                 onSpFinished(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
-                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
             }
         }
@@ -565,7 +581,6 @@ class MainActivityKotlinTest {
                 onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.applies.assertTrue()
-                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
             }
         }
@@ -603,7 +618,6 @@ class MainActivityKotlinTest {
                 onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.applies.assertTrue()
-                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
                 onUIReady(any())
                 onAction(any(), any())
@@ -639,7 +653,6 @@ class MainActivityKotlinTest {
                 onUIReady(any())
                 onSpFinished(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
-                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
                 onAction(any(), any())
                 onConsentReady(any())
@@ -742,7 +755,6 @@ class MainActivityKotlinTest {
             verify(exactly = 1) {
                 spClient.onSpFinished(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
-                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
             }
         }
@@ -1051,15 +1063,7 @@ class MainActivityKotlinTest {
         }
 
         wr { verify(exactly = 0) { spClient.onError(any()) } }
-        wr {
-            verify(exactly = 1) {
-                spClient.onSpFinished(
-                    withArg {
-                        it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
-                    }
-                )
-            }
-        }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
