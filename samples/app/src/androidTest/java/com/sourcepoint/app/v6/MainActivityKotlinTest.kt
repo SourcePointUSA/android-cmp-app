@@ -178,7 +178,10 @@ class MainActivityKotlinTest {
                 onConsentReady(withArg {
                     it.gdpr!!.consent.grants.map { k -> k.key }.sorted().assertEquals(grantsTester)
                 })
-                onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
+                onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                })
             }
         }
 
@@ -378,7 +381,10 @@ class MainActivityKotlinTest {
                     it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(emptyList())
                     it.gdpr?.consent?.grants?.values?.forEach { el -> el.granted.assertFalse() }
                 })
-                onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
+                onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                })
             }
         }
     }
@@ -403,7 +409,13 @@ class MainActivityKotlinTest {
         wr { tapAcceptCcpaOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr {
+            verify(exactly = 1) {
+                spClient.onSpFinished(withArg {
+                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                })
+            }
+        }
         wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { verify(atLeast = 2) { spClient.onUIReady(any()) } }
         wr {
@@ -424,6 +436,7 @@ class MainActivityKotlinTest {
                 onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
             }
         }
@@ -486,6 +499,7 @@ class MainActivityKotlinTest {
                 onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
             }
         }
@@ -515,6 +529,7 @@ class MainActivityKotlinTest {
             spClient.run {
                 onSpFinished(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
             }
         }
@@ -581,6 +596,7 @@ class MainActivityKotlinTest {
                 onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
             }
         }
@@ -618,6 +634,7 @@ class MainActivityKotlinTest {
                 onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
                 onUIReady(any())
                 onAction(any(), any())
@@ -653,6 +670,7 @@ class MainActivityKotlinTest {
                 onUIReady(any())
                 onSpFinished(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
                 onAction(any(), any())
                 onConsentReady(any())
@@ -755,6 +773,7 @@ class MainActivityKotlinTest {
             verify(exactly = 1) {
                 spClient.onSpFinished(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
             }
         }
@@ -1063,7 +1082,15 @@ class MainActivityKotlinTest {
         }
 
         wr { verify(exactly = 0) { spClient.onError(any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr {
+            verify(exactly = 1) {
+                spClient.onSpFinished(
+                    withArg {
+                        it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    }
+                )
+            }
+        }
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {

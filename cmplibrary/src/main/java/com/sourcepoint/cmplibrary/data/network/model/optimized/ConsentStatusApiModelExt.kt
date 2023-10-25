@@ -15,6 +15,7 @@ internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
         grants = grants ?: emptyMap(),
         euconsent = euconsent ?: "",
         acceptedCategories = grants?.toAcceptedCategories()?.toList(),
+        consentStatus = consentStatus,
         childPmId = null,
         thisContent = JSONObject(),
         webConsentPayload = webConsentPayload,
