@@ -1088,10 +1088,8 @@ class MainActivityKotlinTest {
     fun given_the_user_has_consent_and_the_auth_id_changes_then_should_flush_data() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
-        val mockNewAuthId = "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e"
-        val mockStoredAuthId = "as2gv7x8-7569-4ay-ne67-2036a74hgg2w"
-//        val mockStoredPropertyId = spConf.propertyId
-
+        val storedAuthId = "as2gv7x8-7569-4ay-ne67-2036a74hgg2w"
+        val newAuthId = "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e"
         val storedConsentV7 = JSONObject(TestData.storedConsentV741)
 
         loadKoinModules(
@@ -1101,36 +1099,46 @@ class MainActivityKotlinTest {
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
                 diagnostic = storedConsentV7.toList() + listOf(
-                    Pair("sp.gdpr.authId", mockStoredAuthId),
-//                    Pair("sp.key.config.propertyId", mockStoredPropertyId),
+                    Pair("sp.gdpr.authId", storedAuthId),
                 ),
-                pAuthId = mockNewAuthId
+                pAuthId = newAuthId
             )
         )
 
         scenario = launchActivity()
-
-        scenario.onActivity { activity ->
-            PreferenceManager.getDefaultSharedPreferences(activity).run {
-                Log.v("DIA-2654", "SP authId = ${getString("sp.gdpr.authId", null)}")
-                Log.v("DIA-2654", "SP propertyId = ${getInt("sp.key.config.propertyId", 0)}")
-//                getString("sp.gdpr.authId", null).assertEquals(mockStoredAuthId)
-//                getInt("sp.key.config.propertyId", 0).assertEquals(mockStoredPropertyId)
-            }
-        }
-
 
         wr { verify(exactly = 0) { spClient.onError(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
-                Log.v("DIA-2654", "SP authId = ${getString("sp.gdpr.authId", null)}")
-                Log.v("DIA-2654", "SP propertyId = ${getInt("sp.key.config.propertyId", 0)}")
-                getString("sp.gdpr.authId", null).assertEquals(mockNewAuthId)
-//                getInt("sp.key.config.propertyId", 0).assertEquals(spConf.propertyId)
+                getString("sp.gdpr.authId", null).assertEquals(newAuthId)
             }
         }
+
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+                val dateCreated = getString("sp.gdpr.key.date.created", null)
+                Log.i("DIA-2654", "dateCreated=${dateCreated}")
+            }
+        }
+
+        /**
+         * TODO create test flow
+         * add consent in TestData that has authId
+         * verify that after the flow authId changed
+         * verify that dateCreated changed
+         */
+    }
+
+    @Test
+    fun given_the_user_has_consent_and_the_property_id_changes_then_should_flush_data() = runBlocking {
+        /**
+         * TODO create test flow
+         * add consent in TestData that has propertyId
+         * verify that after the flow propertyId changed
+         * verify that dateCreated changed
+         */
     }
 
     private fun <E> check(block: () -> E): E? {
