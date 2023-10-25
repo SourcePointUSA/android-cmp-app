@@ -1,3 +1,6 @@
+## 7.4.2 (October, 25, 2023)
+* [DIA-2918](https://sourcepoint.atlassian.net/browse/DIA-2918) Fix ConsentStatus missing (#726)
+
 ## 7.4.1 (October, 24, 2023)
 * [DIA-2542](https://sourcepoint.atlassian.net/browse/DIA-2542) Local data versioning (#712)
 * [DIA-2757](https://sourcepoint.atlassian.net/browse/DIA-2757) UI test for the applies condition (#714)
