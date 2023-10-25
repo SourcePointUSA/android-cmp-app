@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
 import com.sourcepoint.cmplibrary.model.toTcfJSONObj
 import kotlinx.serialization.SerialName
@@ -42,6 +43,7 @@ interface GDPRConsent {
     val acceptedCategories: List<String>?
     val applies: Boolean
     val webConsentPayload: JsonObject?
+    val consentStatus: ConsentStatus?
 }
 
 internal data class GDPRConsentInternal(
@@ -51,6 +53,7 @@ internal data class GDPRConsentInternal(
     override var grants: Map<String, GDPRPurposeGrants> = emptyMap(),
     override val acceptedCategories: List<String>? = null,
     override val applies: Boolean = false,
+    override val consentStatus: ConsentStatus? = null,
     val childPmId: String? = null,
     val thisContent: JSONObject = JSONObject(),
     override val webConsentPayload: JsonObject? = null,
