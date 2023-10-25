@@ -86,15 +86,6 @@ class MainActivityKotlinTest {
         +(CampaignType.GDPR)
     }
 
-    private val toggoConfig = config {
-        accountId = 1631
-        propertyId = 18893
-        propertyName = "TOGGO-App-iOS"
-        messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
-        +(CampaignType.GDPR)
-    }
-
     private val spConfGdprNoMessage = config {
         accountId = 22
         propertyId = 29498
@@ -213,28 +204,6 @@ class MainActivityKotlinTest {
             }
         }
 
-    }
-
-    //    @Test
-    // TODO did toggo replace its edge case?
-    fun toggo() = runBlocking<Unit> {
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
-        loadKoinModules(
-            mockModule(
-                spConfig = toggoConfig,
-                gdprPmId = "1111",
-                ccpaPmId = "222",
-                spClientObserver = listOf(spClient)
-            )
-        )
-
-        scenario = launchActivity()
-
-        wr { tapAcceptOnOk() }
-        wr { clickOnRefreshBtnActivity() }
-        wr { tapAcceptOnWebViewDE() }
     }
 
     @Test
