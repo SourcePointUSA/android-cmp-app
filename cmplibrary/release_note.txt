@@ -1,4 +1,1 @@
-* [DIA-2542](https://sourcepoint.atlassian.net/browse/DIA-2542) Local data versioning (#712)
-* [DIA-2757](https://sourcepoint.atlassian.net/browse/DIA-2757) UI test for the applies condition (#714)
-* [DIA-2901](https://sourcepoint.atlassian.net/browse/DIA-2901) onConsentReady Fires GDPR Applies False After Saving Partial Consent (#714)
-* [DIA-2851](https://sourcepoint.atlassian.net/browse/DIA-2851) Automation test for  the no internet exception (#713)
+* [DIA-2918](https://sourcepoint.atlassian.net/browse/DIA-2918) Fix ConsentStatus missing (#726)

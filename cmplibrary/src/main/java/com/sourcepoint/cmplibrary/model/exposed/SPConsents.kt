@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
 import com.sourcepoint.cmplibrary.model.toTcfJSONObj
 import kotlinx.serialization.SerialName
@@ -42,6 +43,7 @@ interface GDPRConsent {
     val acceptedCategories: List<String>?
     val applies: Boolean
     val webConsentPayload: JsonObject?
+    val consentStatus: ConsentStatus?
 }
 
 internal data class GDPRConsentInternal(
@@ -51,6 +53,7 @@ internal data class GDPRConsentInternal(
     override var grants: Map<String, GDPRPurposeGrants> = emptyMap(),
     override val acceptedCategories: List<String>? = null,
     override val applies: Boolean = false,
+    override val consentStatus: ConsentStatus? = null,
     val childPmId: String? = null,
     val thisContent: JSONObject = JSONObject(),
     override val webConsentPayload: JsonObject? = null,
@@ -126,6 +129,31 @@ internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
         put("euconsent", euconsent)
         put("apply", applies)
         put("acceptedCategories", JSONArray(acceptedCategories))
+        put("consentStatus", consentStatus?.toJSONObj())
+    }
+}
+
+internal fun ConsentStatus.toJSONObj(): Any {
+    return JSONObject().apply {
+        put("consentedAll", consentedAll)
+        put("consentedToAny", consentedToAny)
+        put("hasConsentData", hasConsentData)
+        put("rejectedAny", rejectedAny)
+        put("rejectedLI", rejectedLI)
+        put("legalBasisChanges", legalBasisChanges)
+        put("vendorListAdditions", vendorListAdditions)
+        put("granularStatus", granularStatus?.toJSONObj())
+    }
+}
+
+internal fun ConsentStatus.GranularStatus.toJSONObj(): Any {
+    return JSONObject().apply {
+        put("defaultConsent", defaultConsent)
+        put("previousOptInAll", previousOptInAll)
+        put("purposeConsent", purposeConsent?.name)
+        put("purposeLegInt", purposeLegInt?.name)
+        put("vendorConsent", vendorConsent?.name)
+        put("vendorLegInt", vendorLegInt?.name)
     }
 }
 
