@@ -70,5 +70,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:7.4.1'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:7.4.2'
 }
