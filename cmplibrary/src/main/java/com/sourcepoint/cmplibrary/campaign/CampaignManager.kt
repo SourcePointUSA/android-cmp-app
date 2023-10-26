@@ -557,7 +557,6 @@ private class CampaignManagerImpl(
                 }
             }
 
-            applies?.let { i -> dataStorage.gdprApplies = i }
             childPmId?.let { i -> dataStorage.gdprChildPmId = i }
             sampleRate?.let { i ->
                 if (i != dataStorage.gdprSamplingValue) {
