@@ -23,6 +23,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.SAVED_CONSENT
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
 
@@ -101,6 +102,13 @@ private class DataStorageImpl(
     override val ccpaApplies: Boolean
         get() = ccpaConsentStatus?.let { verifiedCcpaConsentStatusString ->
             check { JsonConverter.converter.decodeFromString<CcpaCS>(verifiedCcpaConsentStatusString) }
+                .getOrNull()
+                ?.applies ?: false
+        } ?: false
+
+    override val gdprApplies: Boolean
+        get() = gdprConsentStatus?.let { gdprCS ->
+            check { JsonConverter.converter.decodeFromString<GdprCS>(gdprCS) }
                 .getOrNull()
                 ?.applies ?: false
         } ?: false

@@ -453,7 +453,6 @@ private class CampaignManagerImpl(
         get() {
             return dataStorage.gdprConsentStatus
                 ?.let { JsonConverter.converter.decodeFromString<GdprCS>(it) }
-                ?.let { cs -> cs.copy(applies = dataStorage.gdprApplies) }
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
@@ -557,7 +556,6 @@ private class CampaignManagerImpl(
                 }
             }
 
-            applies?.let { i -> dataStorage.gdprApplies = i }
             childPmId?.let { i -> dataStorage.gdprChildPmId = i }
             sampleRate?.let { i ->
                 if (i != dataStorage.gdprSamplingValue) {
