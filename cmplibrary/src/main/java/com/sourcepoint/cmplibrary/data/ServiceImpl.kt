@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.data
 
-import android.util.Log
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
@@ -136,17 +135,9 @@ private class ServiceImpl(
         onFailure: (Throwable, Boolean) -> Unit,
     ) {
         execManager.executeOnWorkerThread {
-
-            Log.i("DIA-2654", "===== clear all data =====")
-            Log.v("DIA-2654", "messageReq.authId = ${messageReq.authId}")
-            Log.v("DIA-2654", "campaignManager.authId = ${campaignManager.authId}")
-            Log.v("DIA-2654", "campaignManager.propertyId = ${campaignManager.propertyId}")
-            Log.v("DIA-2654", "spConfig.propertyId = ${spConfig.propertyId}")
-
             if (messageReq.authId != null && campaignManager.authId != messageReq.authId ||
                 campaignManager.propertyId != spConfig.propertyId
             ) {
-                Log.v("DIA-2654", "data cleared")
                 dataStorage.clearAll()
             }
             campaignManager.authId = messageReq.authId

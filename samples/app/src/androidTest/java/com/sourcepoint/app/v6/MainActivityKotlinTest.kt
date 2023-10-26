@@ -1141,6 +1141,7 @@ class MainActivityKotlinTest {
         val storedGdprConsentUuid = "14121a31-1531-44a0-85af-bf47a3a12c1b_24"
         val storedCcpaConsentUuid = "4c99bd2b-b40b-4aef-b762-20397e07d026"
         val storedPropertyId = "12345"
+        val newPropertyId = "16893"
 
         loadKoinModules(
             mockModule(
@@ -1164,7 +1165,7 @@ class MainActivityKotlinTest {
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
-                getString("sp.key.config.propertyId", null).assertEquals(spConf.propertyId)
+                getString("sp.key.config.propertyId", null).assertEquals(newPropertyId)
                 getString("sp.gdpr.consentUUID", null).assertNotEquals(storedGdprConsentUuid)
                 getString("sp.ccpa.consentUUID", null).assertNotEquals(storedCcpaConsentUuid)
             }
