@@ -1,12 +1,10 @@
 package com.sourcepoint.app.v6
 
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.*
-import com.google.gson.Gson
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
@@ -46,7 +44,6 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapToEnableSomeOption
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapZustimmenAllOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
-import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -1086,13 +1083,20 @@ class MainActivityKotlinTest {
         }
     }
 
+    /**
+     * UI test that verifies that there was a clean up of local data after the user changed their
+     * auth ID. Due to the fact that the clean up happens, the message flow appears again, the user
+     * make their choice and the consent UUIDs of both campaigns changes.
+     */
     @Test
     fun given_the_user_has_consent_and_the_auth_id_changes_then_should_flush_data() = runBlocking<Unit> {
 
+        val storedConsentV7 = JSONObject(TestData.storedConsentV741)
         val spClient = mockk<SpClient>(relaxed = true)
+        val storedGdprConsentUuid = "14121a31-1531-44a0-85af-bf47a3a12c1b_24"
+        val storedCcpaConsentUuid = "4c99bd2b-b40b-4aef-b762-20397e07d026"
         val storedAuthId = "as2gv7x8-7569-4ay-ne67-2036a74hgg2w"
         val newAuthId = "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e"
-        val storedConsentV7 = JSONObject(TestData.storedConsentV741)
 
         loadKoinModules(
             mockModule(
@@ -1109,17 +1113,8 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        val storedConsentList = storedConsentV7.toList()
-        val ccpaCSPair = storedConsentV7.toList().find { it.first == "sp.ccpa.key.consent.status" }
-        val ccpaCSString = ccpaCSPair?.second as? String ?: ""
-        val ccpaCsObj = Gson().fromJson(ccpaCSString, CcpaCS::class.java)
-        Log.i("DIA-2654", "storedConsentList=${storedConsentList}")
-        Log.i("DIA-2654", "ccpaCSPair=${ccpaCSPair}")
-        Log.i("DIA-2654", "ccpaCSString=${ccpaCSString}")
-        Log.i("DIA-2654", "ccpaCsObj=${ccpaCsObj}")
-
-//        val ccpaConsentStatus = Gson().fromJson(ccpaConsentStatusStringюещІе, CcpaCS::class.java)
-//        Log.i("DIA-2654", "dateCreated=${ccpaConsentStatus?.dateCreated}")
+        wr { tapAcceptAllOnWebView() }
+        wr { tapAcceptAllOnWebView() }
 
         wr { verify(exactly = 0) { spClient.onError(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
@@ -1127,22 +1122,25 @@ class MainActivityKotlinTest {
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
                 getString("sp.gdpr.authId", null).assertEquals(newAuthId)
+                getString("sp.gdpr.consentUUID", null).assertNotEquals(storedGdprConsentUuid)
+                getString("sp.ccpa.consentUUID", null).assertNotEquals(storedCcpaConsentUuid)
             }
         }
-
-        /**
-         * TODO create test flow
-         * add consent in TestData that has authId
-         * verify that after the flow authId changed
-         * verify that dateCreated changed
-         */
     }
 
+    /**
+     * UI test that verifies that there was a clean up of local data after the user changed their
+     * property ID. Due to the fact that the clean up happens, the message flow appears again, the user
+     * make their choice and the consent UUIDs of both campaigns changes.
+     */
     @Test
-    fun given_the_user_has_consent_and_the_property_id_changes_then_should_flush_data() = runBlocking {
+    fun given_the_user_has_consent_and_the_property_id_changes_then_should_flush_data() = runBlocking<Unit> {
 
-        val spClient = mockk<SpClient>(relaxed = true)
         val storedConsentV7 = JSONObject(TestData.storedConsentV741)
+        val spClient = mockk<SpClient>(relaxed = true)
+        val storedGdprConsentUuid = "14121a31-1531-44a0-85af-bf47a3a12c1b_24"
+        val storedCcpaConsentUuid = "4c99bd2b-b40b-4aef-b762-20397e07d026"
+        val storedPropertyId = "12345"
 
         loadKoinModules(
             mockModule(
@@ -1150,18 +1148,27 @@ class MainActivityKotlinTest {
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
-                diagnostic = storedConsentV7.toList(),
+                diagnostic = storedConsentV7.toList() + listOf(
+                    Pair("sp.key.config.propertyId", storedPropertyId),
+                ),
             )
         )
 
         scenario = launchActivity()
 
-        /**
-         * TODO create test flow
-         * add consent in TestData that has propertyId
-         * verify that after the flow propertyId changed
-         * verify that dateCreated changed
-         */
+        wr { tapAcceptAllOnWebView() }
+        wr { tapAcceptAllOnWebView() }
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+                getString("sp.key.config.propertyId", null).assertEquals(spConf.propertyId)
+                getString("sp.gdpr.consentUUID", null).assertNotEquals(storedGdprConsentUuid)
+                getString("sp.ccpa.consentUUID", null).assertNotEquals(storedCcpaConsentUuid)
+            }
+        }
     }
 
     private fun <E> check(block: () -> E): E? {
