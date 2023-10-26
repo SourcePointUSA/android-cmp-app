@@ -1113,9 +1113,6 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr { tapAcceptAllOnWebView() }
-        wr { tapAcceptAllOnWebView() }
-
         wr { verify(exactly = 0) { spClient.onError(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
