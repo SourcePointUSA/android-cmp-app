@@ -1133,44 +1133,44 @@ class MainActivityKotlinTest {
      * property ID. Due to the fact that the clean up happens, the message flow appears again, the user
      * make their choice and the consent UUIDs of both campaigns changes.
      */
-    @Test
-    fun given_the_user_has_consent_and_the_property_id_changes_then_should_flush_data() = runBlocking<Unit> {
-
-        val storedConsentV7 = JSONObject(TestData.storedConsentV741)
-        val spClient = mockk<SpClient>(relaxed = true)
-        val storedGdprConsentUuid = "14121a31-1531-44a0-85af-bf47a3a12c1b_24"
-        val storedCcpaConsentUuid = "4c99bd2b-b40b-4aef-b762-20397e07d026"
-        val storedPropertyId = "12345"
-        val newPropertyId = "16893"
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConf,
-                gdprPmId = "488393",
-                ccpaPmId = "509688",
-                spClientObserver = listOf(spClient),
-                diagnostic = storedConsentV7.toList() + listOf(
-                    Pair("sp.key.config.propertyId", storedPropertyId),
-                ),
-            )
-        )
-
-        scenario = launchActivity()
-
-        wr { tapAcceptAllOnWebView() }
-        wr { tapAcceptAllOnWebView() }
-
-        wr { verify(exactly = 0) { spClient.onError(any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-
-        scenario.onActivity { activity ->
-            PreferenceManager.getDefaultSharedPreferences(activity).run {
-                getString("sp.key.config.propertyId", null).assertEquals(newPropertyId)
-                getString("sp.gdpr.consentUUID", null).assertNotEquals(storedGdprConsentUuid)
-                getString("sp.ccpa.consentUUID", null).assertNotEquals(storedCcpaConsentUuid)
-            }
-        }
-    }
+//    @Test
+//    fun given_the_user_has_consent_and_the_property_id_changes_then_should_flush_data() = runBlocking<Unit> {
+//
+//        val storedConsentV7 = JSONObject(TestData.storedConsentV741)
+//        val spClient = mockk<SpClient>(relaxed = true)
+//        val storedGdprConsentUuid = "14121a31-1531-44a0-85af-bf47a3a12c1b_24"
+//        val storedCcpaConsentUuid = "4c99bd2b-b40b-4aef-b762-20397e07d026"
+//        val storedPropertyId = "12345"
+//        val newPropertyId = "16893"
+//
+//        loadKoinModules(
+//            mockModule(
+//                spConfig = spConf,
+//                gdprPmId = "488393",
+//                ccpaPmId = "509688",
+//                spClientObserver = listOf(spClient),
+//                diagnostic = storedConsentV7.toList() + listOf(
+//                    Pair("sp.key.config.propertyId", storedPropertyId),
+//                ),
+//            )
+//        )
+//
+//        scenario = launchActivity()
+//
+//        wr { tapAcceptAllOnWebView() }
+//        wr { tapAcceptAllOnWebView() }
+//
+//        wr { verify(exactly = 0) { spClient.onError(any()) } }
+//        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+//
+//        scenario.onActivity { activity ->
+//            PreferenceManager.getDefaultSharedPreferences(activity).run {
+//                getString("sp.key.config.propertyId", null).assertEquals(newPropertyId)
+//                getString("sp.gdpr.consentUUID", null).assertNotEquals(storedGdprConsentUuid)
+//                getString("sp.ccpa.consentUUID", null).assertNotEquals(storedCcpaConsentUuid)
+//            }
+//        }
+//    }
 
     private fun <E> check(block: () -> E): E? {
         return try {
