@@ -1095,7 +1095,7 @@ class MainActivityKotlinTest {
         val spClient = mockk<SpClient>(relaxed = true)
         val storedGdprConsentUuid = "14121a31-1531-44a0-85af-bf47a3a12c1b_24"
         val storedCcpaConsentUuid = "4c99bd2b-b40b-4aef-b762-20397e07d026"
-        val storedAuthId = "as2gv7x8-7569-4ay-ne67-2036a74hgg2w"
+        val storedAuthId = null
         val newAuthId = "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e"
 
         loadKoinModules(
