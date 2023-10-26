@@ -79,7 +79,7 @@ fun campaignApplies(context: Context, campaign: CampaignType): Boolean {
         dsCcpa = dataStorageCcpa,
     )
     return when (campaign) {
-        CampaignType.GDPR -> DataStorageGdpr.create(context).gdprApplies
+        CampaignType.GDPR -> dataStorage.gdprApplies
         CampaignType.CCPA -> dataStorage.ccpaApplies
     }
 }

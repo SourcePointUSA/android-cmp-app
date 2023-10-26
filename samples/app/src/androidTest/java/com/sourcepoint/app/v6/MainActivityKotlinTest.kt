@@ -739,6 +739,14 @@ class MainActivityKotlinTest {
         wr { tapToEnableSomeOption() }
         wr { tapSaveAndExitWebView() }
         wr {
+            verify{
+                spClient.onConsentReady(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                })
+            }
+        }
+        wr {
             verify(exactly = 1) {
                 spClient.onSpFinished(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
