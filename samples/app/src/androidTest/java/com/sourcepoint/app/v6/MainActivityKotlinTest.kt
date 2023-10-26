@@ -1110,7 +1110,13 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         val storedConsentList = storedConsentV7.toList()
+        val ccpaCSPair = storedConsentV7.toList().find { it.first == "sp.ccpa.key.consent.status" }
+        val ccpaCSString = ccpaCSPair?.second as? String ?: ""
+        val ccpaCsObj = Gson().fromJson(ccpaCSString, CcpaCS::class.java)
         Log.i("DIA-2654", "storedConsentList=${storedConsentList}")
+        Log.i("DIA-2654", "ccpaCSPair=${ccpaCSPair}")
+        Log.i("DIA-2654", "ccpaCSString=${ccpaCSString}")
+        Log.i("DIA-2654", "ccpaCsObj=${ccpaCsObj}")
 
 //        val ccpaConsentStatus = Gson().fromJson(ccpaConsentStatusStringюещІе, CcpaCS::class.java)
 //        Log.i("DIA-2654", "dateCreated=${ccpaConsentStatus?.dateCreated}")
