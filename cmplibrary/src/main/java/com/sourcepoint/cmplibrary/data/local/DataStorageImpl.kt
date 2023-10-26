@@ -22,8 +22,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PV_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.SAVED_CONSENT
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.decodeFromString
 
@@ -100,15 +99,15 @@ private class DataStorageImpl(
      * By default - false (if there are no ccpaConsentStatus in data storage or applies value is null)
      */
     override val ccpaApplies: Boolean
-        get() = ccpaConsentStatus?.let { verifiedCcpaConsentStatusString ->
-            check { JsonConverter.converter.decodeFromString<CcpaCS>(verifiedCcpaConsentStatusString) }
+        get() = metaDataResp?.let { metaData ->
+            check { JsonConverter.converter.decodeFromString<MetaDataResp>(metaData).ccpa }
                 .getOrNull()
                 ?.applies ?: false
         } ?: false
 
     override val gdprApplies: Boolean
-        get() = gdprConsentStatus?.let { gdprCS ->
-            check { JsonConverter.converter.decodeFromString<GdprCS>(gdprCS) }
+        get() = metaDataResp?.let { metaData ->
+            check { JsonConverter.converter.decodeFromString<MetaDataResp>(metaData).gdpr }
                 .getOrNull()
                 ?.applies ?: false
         } ?: false

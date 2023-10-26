@@ -362,9 +362,8 @@ private class ServiceImpl(
                         campaignManager.gdprConsentStatus = responseGdpr.copy(uuid = campaignManager.gdprUuid)
                     }
                     val consentHandler = ConsentManager.responseConsentHandler(
-                        gdpr = response.gdpr?.copy(uuid = campaignManager.gdprUuid),
+                        gdpr = response.gdpr?.copy(uuid = campaignManager.gdprUuid, applies = dataStorage.gdprApplies),
                         consentManagerUtils = consentManagerUtils,
-                        gdprApplies = dataStorage.gdprApplies,
                     )
                     sPConsentsSuccess?.invoke(consentHandler)
                 }
@@ -406,9 +405,8 @@ private class ServiceImpl(
                 if (actionType != ActionType.ACCEPT_ALL && actionType != ActionType.REJECT_ALL) {
                     campaignManager.gdprConsentStatus = postConsentResponse
                     val cr = ConsentManager.responseConsentHandler(
-                        gdpr = postConsentResponse,
+                        gdpr = postConsentResponse.copy(applies = dataStorage.gdprApplies),
                         consentManagerUtils = consentManagerUtils,
-                        gdprApplies = dataStorage.gdprApplies,
                     )
                     sPConsentsSuccess?.invoke(cr)
                 }
@@ -449,9 +447,8 @@ private class ServiceImpl(
                 .executeOnRight { ccpaResponse ->
                     campaignManager.ccpaConsentStatus = ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid)
                     val consentHandler = ConsentManager.responseConsentHandler(
-                        ccpa = ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid),
+                        ccpa = ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid, applies = dataStorage.ccpaApplies),
                         consentManagerUtils = consentManagerUtils,
-                        ccpaApplies = dataStorage.ccpaApplies
                     )
                     sPConsentsSuccess?.invoke(consentHandler)
                 }
@@ -496,9 +493,8 @@ private class ServiceImpl(
                 // object.
                 if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
                     val consentHandler = ConsentManager.responseConsentHandler(
-                        ccpa = postConsentResponse,
+                        ccpa = postConsentResponse.copy(applies = dataStorage.ccpaApplies),
                         consentManagerUtils = consentManagerUtils,
-                        ccpaApplies = dataStorage.ccpaApplies
                     )
                     sPConsentsSuccess?.invoke(consentHandler)
                 }

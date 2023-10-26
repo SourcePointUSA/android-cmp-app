@@ -37,8 +37,7 @@ internal interface ConsentManager {
 
         internal fun responseConsentHandler(
             gdpr: GdprCS?,
-            consentManagerUtils: ConsentManagerUtils,
-            gdprApplies: Boolean
+            consentManagerUtils: ConsentManagerUtils
         ): SPConsents {
             val ccpaCached = consentManagerUtils.ccpaConsentOptimized.getOrNull()
             return SPConsents(
@@ -49,8 +48,7 @@ internal interface ConsentManager {
 
         internal fun responseConsentHandler(
             ccpa: CcpaCS?,
-            consentManagerUtils: ConsentManagerUtils,
-            ccpaApplies: Boolean
+            consentManagerUtils: ConsentManagerUtils
         ): SPConsents {
             val gdprCached = consentManagerUtils.gdprConsentOptimized.getOrNull()
             return SPConsents(
