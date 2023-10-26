@@ -6,6 +6,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.*
+import com.google.gson.Gson
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
@@ -45,6 +46,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapToEnableSomeOption
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapZustimmenAllOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
+import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -1091,6 +1093,12 @@ class MainActivityKotlinTest {
         val storedAuthId = "as2gv7x8-7569-4ay-ne67-2036a74hgg2w"
         val newAuthId = "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e"
         val storedConsentV7 = JSONObject(TestData.storedConsentV741)
+
+        val ccpaConsentStatusString = storedConsentV7.toList().find {
+            it.first == "sp.ccpa.key.consent.status"
+        }?.second as? String ?: ""
+        val ccpaConsentStatus = Gson().fromJson(ccpaConsentStatusString, CcpaCS::class.java)
+        Log.i("DIA-2654", "dateCreated=${ccpaConsentStatus?.dateCreated}")
 
         loadKoinModules(
             mockModule(
