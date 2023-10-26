@@ -1094,12 +1094,6 @@ class MainActivityKotlinTest {
         val newAuthId = "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e"
         val storedConsentV7 = JSONObject(TestData.storedConsentV741)
 
-        val ccpaConsentStatusString = storedConsentV7.toList().find {
-            it.first == "sp.ccpa.key.consent.status"
-        }?.second as? String ?: ""
-        val ccpaConsentStatus = Gson().fromJson(ccpaConsentStatusString, CcpaCS::class.java)
-        Log.i("DIA-2654", "dateCreated=${ccpaConsentStatus?.dateCreated}")
-
         loadKoinModules(
             mockModule(
                 spConfig = spConf,
@@ -1115,19 +1109,18 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
+        val storedConsentList = storedConsentV7.toList()
+        Log.i("DIA-2654", "storedConsentList=${storedConsentList}")
+
+//        val ccpaConsentStatus = Gson().fromJson(ccpaConsentStatusStringюещІе, CcpaCS::class.java)
+//        Log.i("DIA-2654", "dateCreated=${ccpaConsentStatus?.dateCreated}")
+
         wr { verify(exactly = 0) { spClient.onError(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
                 getString("sp.gdpr.authId", null).assertEquals(newAuthId)
-            }
-        }
-
-        scenario.onActivity { activity ->
-            PreferenceManager.getDefaultSharedPreferences(activity).run {
-                val dateCreated = getString("sp.gdpr.key.date.created", null)
-                Log.i("DIA-2654", "dateCreated=${dateCreated}")
             }
         }
 
@@ -1141,6 +1134,22 @@ class MainActivityKotlinTest {
 
     @Test
     fun given_the_user_has_consent_and_the_property_id_changes_then_should_flush_data() = runBlocking {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+        val storedConsentV7 = JSONObject(TestData.storedConsentV741)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = storedConsentV7.toList(),
+            )
+        )
+
+        scenario = launchActivity()
+
         /**
          * TODO create test flow
          * add consent in TestData that has propertyId
