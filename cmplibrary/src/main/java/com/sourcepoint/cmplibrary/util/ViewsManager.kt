@@ -179,16 +179,13 @@ private class ViewsManagerImpl(
     }
 
     override fun onBackPressed() {
-        webview.let {
-            (webview as ConsentWebView).evaluateJavascript(
-                """
-                window.postMessage({ name: 'sp.BACK' })
-                """.trimIndent(),
-                null
-            )
-        }
+        (webview as? ConsentWebView)?.evaluateJavascript(
+            """
+            window.postMessage({ name: 'sp.BACK' })
+            """.trimIndent(),
+            null
+        )
     }
-
     override val isViewInLayout: Boolean
         get() = idsSet.isNotEmpty()
 }
