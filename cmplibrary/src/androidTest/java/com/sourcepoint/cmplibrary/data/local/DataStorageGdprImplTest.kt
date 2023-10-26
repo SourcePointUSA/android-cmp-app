@@ -17,16 +17,13 @@ class DataStorageGdprImplTest {
         val storage = DataStorageGdpr.create(appContext).apply { clearAll() }
 
         storage.saveAuthId("auth")
-        storage.gdprApplies = true
         storage.saveGdpr("{\"type\":\"GDPR\"}")
 
-        storage.gdprApplies.assertTrue()
         storage.getGdpr().assertEquals("{\"type\":\"GDPR\"}")
 
         storage.clearInternalData()
 
         /** clearInternalData DOES NOT delete these prefs */
-        storage.gdprApplies.assertTrue()
         storage.getGdpr().assertEquals("{\"type\":\"GDPR\"}")
     }
 }
