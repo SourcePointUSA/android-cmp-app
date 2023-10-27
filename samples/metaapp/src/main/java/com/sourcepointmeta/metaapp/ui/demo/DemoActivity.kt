@@ -117,7 +117,9 @@ class DemoActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!sp.contains(PropertyListFragment.OLD_V6_CONSENT)) {
+        if (!sp.contains(PropertyListFragment.OLD_V6_CONSENT) &&
+            !sp.contains(PropertyListFragment.V7_CONSENT)
+        ) {
             clearAllData(this)
         }
         setContentView(R.layout.activity_demo)

@@ -1,3 +1,6 @@
+## 7.4.3 (October, 27, 2023)
+* [DIA-2886](https://sourcepoint.atlassian.net/browse/DIA-2886) Fix Gdpr applies (#729)
+
 ## 7.4.2 (October, 25, 2023)
 * [DIA-2918](https://sourcepoint.atlassian.net/browse/DIA-2918) Fix ConsentStatus missing (#726)
 
