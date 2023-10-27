@@ -94,15 +94,6 @@ class MainActivityKotlinTest {
         +(CampaignType.GDPR)
     }
 
-    private val spConfGdprNoMessage = config {
-        accountId = 22
-        propertyId = 29498
-        propertyName = "ott-ccpa-22"
-        messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
-        +(CampaignType.GDPR)
-    }
-
     private val spConfGdprGroupId = config {
         accountId = 22
         propertyId = 24188
