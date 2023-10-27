@@ -22,15 +22,15 @@
             app:showAsAction="never"/>
 
     <item
-            android:id="@+id/action_save_old_v6_consent"
-            android:icon="@drawable/ic_baseline_old_6_24"
-            android:title="@string/save_old_v6_consent"
-            app:showAsAction="never"/>
-
-    <item
             android:id="@+id/action_save_old_v6_consent630"
             android:icon="@drawable/ic_baseline_old_6_24"
             android:title="Save old v6.3 consent"
+            app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/action_save_old_v6_consent"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="@string/save_old_v6_consent"
             app:showAsAction="never"/>
 
     <item
@@ -40,15 +40,21 @@
             app:showAsAction="never"/>
 
     <item
-            android:id="@+id/action_save_cons_726"
+            android:id="@+id/action_save_cons_711"
             android:icon="@drawable/ic_baseline_old_6_24"
-            android:title="Save 7.2.6"
+            android:title="Save v7.1.1"
             app:showAsAction="never"/>
 
     <item
-            android:id="@+id/action_save_cons_711"
+            android:id="@+id/action_save_cons_726"
             android:icon="@drawable/ic_baseline_old_6_24"
-            android:title="Save 7.1.1"
+            android:title="Save v7.2.6"
+            app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/action_save_cons_742"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="Save v7.4.2"
             app:showAsAction="never"/>
 
     <item

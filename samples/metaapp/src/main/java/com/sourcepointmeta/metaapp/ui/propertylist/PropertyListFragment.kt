@@ -24,8 +24,8 @@ import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
 import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
 import com.sourcepointmeta.metaapp.ui.sp.PreferencesActivity
-import com.sourcepointmeta.metaapp.util.*
-import kotlinx.android.synthetic.main.fragment_property_list.*
+import com.sourcepointmeta.metaapp.util.* //ktlint-disable
+import kotlinx.android.synthetic.main.fragment_property_list.* //ktlint-disable
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -168,6 +168,17 @@ class PropertyListFragment : Fragment() {
                 R.id.action_save_cons_711 -> {
                     val editor = sp.edit()
                     val v7LocalState = JSONObject(v7Consent711)
+                    editor.putBoolean(V7_CONSENT, true)
+                    v7LocalState.keys().forEach {
+                        check { v7LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
+                        check { v7LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
+                        check { v7LocalState.getInt(it) }?.let { v -> editor.putInt(it, v) }
+                    }
+                    editor.apply()
+                }
+                R.id.action_save_cons_742 -> {
+                    val editor = sp.edit()
+                    val v7LocalState = JSONObject(v7Consent742)
                     editor.putBoolean(V7_CONSENT, true)
                     v7LocalState.keys().forEach {
                         check { v7LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
