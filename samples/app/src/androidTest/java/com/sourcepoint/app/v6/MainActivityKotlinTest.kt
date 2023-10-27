@@ -1,7 +1,6 @@
 package com.sourcepoint.app.v6
 
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -1087,7 +1086,6 @@ class MainActivityKotlinTest {
         val storedConsent = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
         val spClient = mockk<SpClient>(relaxed = true)
         val newAuthId = UUID.randomUUID().toString()
-        Log.i("DIA-2654", "newAuthId = $newAuthId")
 
         loadKoinModules(
             mockModule(
@@ -1102,7 +1100,11 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
+        wr { tapAcceptAllOnWebView() }
+        wr { tapAcceptAllOnWebView() }
+
         wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 2) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         scenario.onActivity { activity ->
