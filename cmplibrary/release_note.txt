@@ -1,1 +1,1 @@
-* [DIA-2918](https://sourcepoint.atlassian.net/browse/DIA-2918) Fix ConsentStatus missing (#726)
+* [DIA-2886](https://sourcepoint.atlassian.net/browse/DIA-2886) Fix Gdpr applies (#729)
