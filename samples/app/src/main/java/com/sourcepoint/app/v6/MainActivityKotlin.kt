@@ -50,16 +50,15 @@ class MainActivityKotlin : AppCompatActivity() {
     private val spConsentLib by spConsentLibLazy {
         activity = this@MainActivityKotlin
         spClient = LocalClient()
-//        spConfig = dataProvider.spConfig
-        config {
-            accountId = 22
-            propertyId = 16893
-            propertyName = "mobile.multicampaign.demo"
-            messLanguage = MessageLanguage.ENGLISH
-            messageTimeout = 5000
-            +(CampaignType.GDPR)
-            +(CampaignType.CCPA)
-        }
+        spConfig = dataProvider.spConfig
+//        config {
+//            accountId = 22
+//            propertyName = "sca-ott-newwebpm"
+//            messLanguage = MessageLanguage.ENGLISH
+//            propertyId = 27927
+//            +(CampaignType.GDPR)
+//            +(CampaignType.CCPA to listOf(("location" to "US")))
+//        }
     }
 
 
