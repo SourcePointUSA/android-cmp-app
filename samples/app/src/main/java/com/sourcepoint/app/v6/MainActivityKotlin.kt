@@ -132,6 +132,8 @@ class MainActivityKotlin : AppCompatActivity() {
     }
 
     private fun executeCmpLib() {
+        Log.v("DIA-2654", "=== authId ===")
+        Log.i("DIA-2654", "dataProvider = $dataProvider")
         spConsentLib.loadMessage(authId = dataProvider.authId)
     }
 

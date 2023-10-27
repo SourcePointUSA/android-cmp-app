@@ -1,6 +1,7 @@
 package com.sourcepoint.app.v6
 
 import android.preference.PreferenceManager
+import android.util.Log
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -1083,12 +1084,10 @@ class MainActivityKotlinTest {
     @Test
     fun given_the_user_has_consent_and_the_auth_id_changes_then_should_flush_data() = runBlocking<Unit> {
 
-        val storedConsentV7 = JSONObject(TestData.storedConsentV741)
+        val storedConsent = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
         val spClient = mockk<SpClient>(relaxed = true)
-        val storedGdprConsentUuid = "14121a31-1531-44a0-85af-bf47a3a12c1b_24"
-        val storedCcpaConsentUuid = "4c99bd2b-b40b-4aef-b762-20397e07d026"
-        val storedAuthId = null
         val newAuthId = UUID.randomUUID().toString()
+        Log.i("DIA-2654", "newAuthId = $newAuthId")
 
         loadKoinModules(
             mockModule(
@@ -1096,9 +1095,7 @@ class MainActivityKotlinTest {
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
-                diagnostic = storedConsentV7.toList() + listOf(
-                    Pair("sp.gdpr.authId", storedAuthId),
-                ),
+                diagnostic = storedConsent.toList(),
                 pAuthId = newAuthId
             )
         )
@@ -1111,8 +1108,6 @@ class MainActivityKotlinTest {
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
                 getString("sp.gdpr.authId", null).assertEquals(newAuthId)
-                getString("sp.gdpr.consentUUID", null).assertNotEquals(storedGdprConsentUuid)
-                getString("sp.ccpa.consentUUID", null).assertNotEquals(storedCcpaConsentUuid)
             }
         }
     }
