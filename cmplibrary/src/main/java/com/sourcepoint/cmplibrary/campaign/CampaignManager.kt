@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.campaign
 
+import android.util.Log
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.campaign.CampaignManager.Companion.selectPmId
 import com.sourcepoint.cmplibrary.core.Either
@@ -396,6 +397,14 @@ private class CampaignManagerImpl(
 
             val res = (isNewUser || ccpaToBeCompleted || gdprToBeCompleted)
 
+            Log.v("DIA-2654", "=== shouldCallMessages ===")
+            Log.i("DIA-2654", """
+                isNewUser[$isNewUser]
+                ccpaToBeCompleted[$ccpaToBeCompleted]
+                gdprToBeCompleted[$gdprToBeCompleted]
+                shouldCallMessages[$res]  
+                """.trimIndent())
+
             logger?.computation(
                 tag = "shouldCallMessages",
                 msg = """
@@ -419,22 +428,24 @@ private class CampaignManagerImpl(
             val hasNonEligibleLocalDataVersion =
                 dataStorage.localDataVersion != DataStorage.LOCAL_DATA_VERSION_HARDCODED_VALUE
 
-            val res = (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
+            Log.v("DIA-2654", "=== shouldCallMessages ===")
+            Log.i("DIA-2654", """
+                isGdprOrCcpaUuidPresent[$isGdprOrCcpaUuidPresent]
+                isLocalStateEmpty[$isLocalStateEmpty]
+                isV6LocalStatePresent[$isV6LocalStatePresent]
+                isV6LocalStatePresent2[$isV6LocalStatePresent2]
+                hasNonEligibleLocalDataVersion[$hasNonEligibleLocalDataVersion]  
+                hasNonEligibleLocalDataVersion[$hasNonEligibleLocalDataVersion]
+                res[${(isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
+                isV6LocalStatePresent ||
+                isV6LocalStatePresent2 ||
+                hasNonEligibleLocalDataVersion}]
+                """.trimIndent())
+
+            return (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
                 isV6LocalStatePresent ||
                 isV6LocalStatePresent2 ||
                 hasNonEligibleLocalDataVersion
-
-            logger?.computation(
-                tag = "shouldCallConsentStatus",
-                msg = """
-                isGdprOrCcpaUuidPresent[$isGdprOrCcpaUuidPresent] - isLocalStateEmpty[$isLocalStateEmpty]
-                isV6LocalStatePresent[$isV6LocalStatePresent] - isV6LocalStatePresent2[$isV6LocalStatePresent2]
-                hasNonEligibleLocalDataVersion[$hasNonEligibleLocalDataVersion]
-                res[$res]
-                """.trimIndent()
-            )
-
-            return res
         }
 
     override var gdprMessageMetaData: MessageMetaData?

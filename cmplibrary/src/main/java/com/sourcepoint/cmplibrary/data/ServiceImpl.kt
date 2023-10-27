@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data
 
+import android.util.Log
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
@@ -138,6 +139,7 @@ private class ServiceImpl(
             if (messageReq.authId != null && campaignManager.authId != messageReq.authId ||
                 campaignManager.propertyId != spConfig.propertyId
             ) {
+                Log.v("DIA-2654", "=== dataStorage.clearAll() ===")
                 dataStorage.clearAll()
             }
             campaignManager.authId = messageReq.authId

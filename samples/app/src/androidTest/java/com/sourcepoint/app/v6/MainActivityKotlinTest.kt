@@ -57,6 +57,7 @@ import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
+import java.util.UUID
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinTest {
@@ -1096,7 +1097,7 @@ class MainActivityKotlinTest {
         val storedGdprConsentUuid = "14121a31-1531-44a0-85af-bf47a3a12c1b_24"
         val storedCcpaConsentUuid = "4c99bd2b-b40b-4aef-b762-20397e07d026"
         val storedAuthId = null
-        val newAuthId = "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e"
+        val newAuthId = UUID.randomUUID().toString()
 
         loadKoinModules(
             mockModule(
