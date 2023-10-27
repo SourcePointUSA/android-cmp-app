@@ -398,12 +398,15 @@ private class CampaignManagerImpl(
             val res = (isNewUser || ccpaToBeCompleted || gdprToBeCompleted)
 
             Log.v("DIA-2654", "=== shouldCallMessages ===")
-            Log.i("DIA-2654", """
+            Log.i(
+                "DIA-2654",
+                """
                 isNewUser[$isNewUser]
                 ccpaToBeCompleted[$ccpaToBeCompleted]
                 gdprToBeCompleted[$gdprToBeCompleted]
                 shouldCallMessages[$res]  
-                """.trimIndent())
+                """.trimIndent()
+            )
 
             logger?.computation(
                 tag = "shouldCallMessages",
@@ -428,19 +431,24 @@ private class CampaignManagerImpl(
             val hasNonEligibleLocalDataVersion =
                 dataStorage.localDataVersion != DataStorage.LOCAL_DATA_VERSION_HARDCODED_VALUE
 
+            val res = (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
+                isV6LocalStatePresent ||
+                isV6LocalStatePresent2 ||
+                hasNonEligibleLocalDataVersion
+
             Log.v("DIA-2654", "=== shouldCallMessages ===")
-            Log.i("DIA-2654", """
+            Log.i(
+                "DIA-2654",
+                """
                 isGdprOrCcpaUuidPresent[$isGdprOrCcpaUuidPresent]
                 isLocalStateEmpty[$isLocalStateEmpty]
                 isV6LocalStatePresent[$isV6LocalStatePresent]
                 isV6LocalStatePresent2[$isV6LocalStatePresent2]
                 hasNonEligibleLocalDataVersion[$hasNonEligibleLocalDataVersion]  
                 hasNonEligibleLocalDataVersion[$hasNonEligibleLocalDataVersion]
-                res[${(isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
-                isV6LocalStatePresent ||
-                isV6LocalStatePresent2 ||
-                hasNonEligibleLocalDataVersion}]
-                """.trimIndent())
+                res[$res]
+                """.trimIndent()
+            )
 
             return (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
                 isV6LocalStatePresent ||
