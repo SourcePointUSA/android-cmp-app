@@ -330,6 +330,7 @@ object TestData {
     """.trimIndent()
     val storedConsentCCPA_V7 = """
       {
+        "sp.key.config.propertyId": 16893,
         "IABUSPrivacy_String": "1YNN",
         "sp.ccpa.key.sampling.result": true,
         "sp.ccpa.key.consent.status": "{\n  \"applies\": true,\n  \"consentedAll\": true,\n  \"dateCreated\": \"2023-10-10T19:13:32.268Z\",\n  \"rejectedAll\": false,\n  \"rejectedCategories\": [\n  ],\n  \"rejectedVendors\": [\n  ],\n  \"signedLspa\": false,\n  \"status\": \"consentedAll\",\n  \"uuid\": \"60fd5b64-b7ea-45b8-80e7-a180537ba00c\",\n  \"webConsentPayload\": {\n    \"actions\": [\n    ],\n    \"cookies\": [\n      {\n        \"key\": \"ccpaConsentAll\",\n        \"value\": true,\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      },\n      {\n        \"key\": \"ccpaReject\",\n        \"value\": false,\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      },\n      {\n        \"key\": \"consentStatus\",\n        \"value\": \"consentedAll\",\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      }\n    ],\n    \"consentedAll\": true,\n    \"dateCreated\": \"2023-10-10T19:13:32.108Z\",\n    \"expirationDate\": \"2024-10-09T19:13:32.108Z\",\n    \"rejectedAll\": false,\n    \"rejectedCategories\": [\n    ],\n    \"rejectedVendors\": [\n    ],\n    \"signedLspa\": false,\n    \"status\": \"consentedAll\"\n  }\n}",
@@ -344,6 +345,7 @@ object TestData {
 
     val storedConsentCCPA_applies_false_V7 = """
       {
+        "sp.key.config.propertyId": 16893,
         "IABUSPrivacy_String": "1---",
         "sp.ccpa.key.sampling.result": true,
         "sp.ccpa.key.consent.status": "{\n  \"applies\": false,\n  \"consentedAll\": true,\n  \"dateCreated\": \"2023-10-10T19:13:32.268Z\",\n  \"rejectedAll\": false,\n  \"rejectedCategories\": [\n  ],\n  \"rejectedVendors\": [\n  ],\n  \"signedLspa\": false,\n  \"status\": \"consentedAll\",\n  \"uuid\": \"60fd5b64-b7ea-45b8-80e7-a180537ba00c\",\n  \"webConsentPayload\": {\n    \"actions\": [\n    ],\n    \"cookies\": [\n      {\n        \"key\": \"ccpaConsentAll\",\n        \"value\": true,\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      },\n      {\n        \"key\": \"ccpaReject\",\n        \"value\": false,\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      },\n      {\n        \"key\": \"consentStatus\",\n        \"value\": \"consentedAll\",\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      }\n    ],\n    \"consentedAll\": true,\n    \"dateCreated\": \"2023-10-10T19:13:32.108Z\",\n    \"expirationDate\": \"2024-10-09T19:13:32.108Z\",\n    \"rejectedAll\": false,\n    \"rejectedCategories\": [\n    ],\n    \"rejectedVendors\": [\n    ],\n    \"signedLspa\": false,\n    \"status\": \"consentedAll\"\n  }\n}",
