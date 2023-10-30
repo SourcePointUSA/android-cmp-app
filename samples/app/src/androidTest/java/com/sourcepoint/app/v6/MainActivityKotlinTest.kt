@@ -124,8 +124,8 @@ class MainActivityKotlinTest {
 
     private val spConfigWithChangedPropertyId = config {
         accountId = 22
-        propertyId = 16666
-        propertyName = "mobile.multicampaign.demo"
+        propertyId = 31226
+        propertyName = "mobile.bohdan.test.demo"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
         +(CampaignType.GDPR)
@@ -1134,7 +1134,7 @@ class MainActivityKotlinTest {
 
         val storedConsentV7 = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
         val spClient = mockk<SpClient>(relaxed = true)
-        val newPropertyId = 16666
+        val newPropertyId = 31226
 
         loadKoinModules(
             mockModule(
