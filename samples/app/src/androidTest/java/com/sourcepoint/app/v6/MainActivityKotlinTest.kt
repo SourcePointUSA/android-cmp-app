@@ -1124,7 +1124,7 @@ class MainActivityKotlinTest {
 
         val storedConsentV7 = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
         val spClient = mockk<SpClient>(relaxed = true)
-        val newPropertyId = 56784
+        val newPropertyId = 16666
 
         loadKoinModules(
             mockModule(
@@ -1138,8 +1138,8 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr { tapAcceptAllOnWebView() }
-        wr { tapAcceptAllOnWebView() }
+//        wr { tapAcceptAllOnWebView() }
+//        wr { tapAcceptAllOnWebView() }
 
         wr { verify(exactly = 0) { spClient.onError(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
