@@ -71,8 +71,9 @@ object TestData {
     var FEATURES = "Features"
     var PURPOSES = "Purposes"
 
-    val storedConsentGdprCcap = """
+    val storedConsentGdprCcpa = """
         {
+          "sp.key.config.propertyId": 16893,
           "sp.gdpr.key.date.created": "2022-12-07T15:00:48.255Z",
           "IABTCF_PurposeOneTreatment": 0,
           "sp.ccpa.consentUUID": "08dcd5d5-738f-4e0d-8bd8-7ee9f24ac053",
@@ -119,8 +120,9 @@ object TestData {
         }
     """.trimIndent()
 
-    val storedConsentCcap = """
+    val storedConsentCcpa = """
         {
+          "sp.key.config.propertyId": 16893,
           "sp.ccpa.key": "{\"applies\":true,\"message\":{\"message_choice\":[{\"button_text\":\"Dismiss\",\"choice_id\":5681956,\"type\":15},{\"button_text\":\"1623758277257\",\"choice_id\":5681957,\"iframe_url\":\"https:\\/\\/ccpa-notice.sp-prod.net\\/ccpa_pm\\/index.html?message_id=509688\",\"type\":12},{\"button_text\":\"1623758165801\",\"choice_id\":5681958,\"type\":13},{\"button_text\":\"1623758176582\",\"choice_id\":5681959,\"type\":11}],\"message_json\":{\"message_json_string\":\"{\\\"type\\\":\\\"Notice\\\",\\\"name\\\":\\\"CCPA Message\\\",\\\"settings\\\":{},\\\"children\\\":[{\\\"type\\\":\\\"Text\\\",\\\"name\\\":\\\"Text\\\",\\\"settings\\\":{\\\"languages\\\":{\\\"EN\\\":{\\\"text\\\":\\\"<p>CCPA Message<\\/p>\\\"}},\\\"text\\\":\\\"<p>CCPA Message<\\/p>\\\"},\\\"children\\\":[]},{\\\"type\\\":\\\"Button\\\",\\\"name\\\":\\\"Button\\\",\\\"settings\\\":{\\\"languages\\\":{\\\"EN\\\":{\\\"text\\\":\\\"Show Options\\\"}},\\\"text\\\":\\\"Show Options\\\",\\\"choice_option\\\":{\\\"type\\\":12,\\\"data\\\":{\\\"button_text\\\":\\\"1623758277257\\\",\\\"privacy_manager_iframe_url\\\":\\\"https:\\/\\/ccpa-notice.sp-prod.net\\/ccpa_pm\\/index.html?message_id=509688\\\",\\\"consent_origin\\\":\\\"https:\\/\\/ccpa-service.sp-prod.net\\\"}}},\\\"children\\\":[]},{\\\"type\\\":\\\"Button\\\",\\\"name\\\":\\\"Button\\\",\\\"settings\\\":{\\\"languages\\\":{\\\"EN\\\":{\\\"text\\\":\\\"Reject All\\\"}},\\\"text\\\":\\\"Reject All\\\",\\\"choice_option\\\":{\\\"type\\\":13,\\\"data\\\":{\\\"button_text\\\":\\\"1623758165801\\\",\\\"consent_origin\\\":\\\"https:\\/\\/ccpa-service.sp-prod.net\\\",\\\"consent_language\\\":\\\"EN\\\"}},\\\"background\\\":\\\"#9a244f\\\"},\\\"children\\\":[]},{\\\"type\\\":\\\"Button\\\",\\\"name\\\":\\\"Button\\\",\\\"settings\\\":{\\\"languages\\\":{\\\"EN\\\":{\\\"text\\\":\\\"Accept All\\\"}},\\\"text\\\":\\\"Accept All\\\",\\\"choice_option\\\":{\\\"type\\\":11,\\\"data\\\":{\\\"button_text\\\":\\\"1623758176582\\\",\\\"consent_origin\\\":\\\"https:\\/\\/ccpa-service.sp-prod.net\\\",\\\"consent_language\\\":\\\"EN\\\"}},\\\"background\\\":\\\"#4f7a28\\\"},\\\"children\\\":[]}],\\\"compliance_status\\\":false,\\\"compliance_list\\\":[]}\",\"name\":\"CCPA Message\",\"settings\":{},\"signature\":[180,139,208,159,150,52,33,251,87,207,64,248,255,84,201,7,141,197,107,32,181,3,205,144,199,255,101,82,87,35,123,41,52,2,44,110,7,114,9,78,242,57,177,23,70,241,39,206,92,37,120,165,67,42,243,33,96,114,75,181,13,206,191,7],\"type\":\"Notice\"},\"site_id\":16893},\"messageMetaData\":{\"bucket\":469,\"categoryId\":2,\"messageId\":616558,\"msgDescription\":\"\",\"prtnUUID\":\"5cfc830e-3d3a-4b18-979d-c543dd065516\",\"subCategoryId\":1},\"type\":\"CCPA\",\"url\":\"https:\\/\\/cdn.privacy-mgmt.com\\/index.html?ccpaUUID=41590576-163b-4acf-851e-820e41f415fa&message_id=616558&consentLanguage=EN&preload_message=true&version=v1\",\"userConsent\":{\"dateCreated\":\"2022-12-08T11:30:43.790Z\",\"newUser\":true,\"rejectedAll\":false,\"rejectedCategories\":[],\"rejectedVendors\":[],\"signedLspa\":false,\"status\":\"rejectedNone\",\"uspstring\":\"1YNN\"}}",
           "IABUSPrivacy_String": "1YNN",
           "sp.ccpa.consentUUID": "41590576-163b-4acf-851e-820e41f415fa",
@@ -134,6 +136,7 @@ object TestData {
 
     val storedConsentGdpr = """
         {
+          "sp.key.config.propertyId": 16893,
           "IABTCF_PurposeOneTreatment": 0,
           "IABTCF_PublisherConsent": "0000000000",
           "IABTCF_gdprApplies": 1,
@@ -293,6 +296,7 @@ object TestData {
 
     val storedConsentGDPR_V7 = """
        {
+         "sp.key.config.propertyId": 16893,
          "IABTCF_PurposeOneTreatment": 0,
          "IABTCF_PublisherConsent": "0000000000",
          "IABTCF_gdprApplies": 1,
