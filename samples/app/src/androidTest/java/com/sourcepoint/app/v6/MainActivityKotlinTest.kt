@@ -1132,7 +1132,7 @@ class MainActivityKotlinTest {
     @Test
     fun given_the_user_has_consent_and_the_property_id_changes_then_should_flush_data() = runBlocking<Unit> {
 
-        val storedConsentV7 = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
+        val storedConsent = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
         val spClient = mockk<SpClient>(relaxed = true)
         val storedPropertyId = 31226
         val newPropertyId = 16893
@@ -1143,7 +1143,7 @@ class MainActivityKotlinTest {
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
-                diagnostic = storedConsentV7.toList() + listOf(
+                diagnostic = storedConsent.toList() + listOf(
                     Pair("sp.key.config.propertyId", storedPropertyId)
                 ),
             )
