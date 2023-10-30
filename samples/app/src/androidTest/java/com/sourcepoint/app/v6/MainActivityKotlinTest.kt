@@ -1134,15 +1134,18 @@ class MainActivityKotlinTest {
 
         val storedConsentV7 = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
         val spClient = mockk<SpClient>(relaxed = true)
-        val newPropertyId = 31226
+        val storedPropertyId = 31226
+        val newPropertyId = 16893
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfigWithChangedPropertyId,
+                spConfig = spConf,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
-                diagnostic = storedConsentV7.toList(),
+                diagnostic = storedConsentV7.toList() + listOf(
+                    Pair("sp.key.config.propertyId", storedPropertyId)
+                ),
             )
         )
 
@@ -1152,6 +1155,7 @@ class MainActivityKotlinTest {
         wr { tapAcceptAllOnWebView() }
 
         wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 2) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         scenario.onActivity { activity ->
