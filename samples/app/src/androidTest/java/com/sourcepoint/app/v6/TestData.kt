@@ -208,7 +208,6 @@ object TestData {
     val storedConsentV741 = """
         {
         
-            "sp.gdpr.authId": "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e",
             "sp.key.config.propertyId": 16893,
         
             "sp.ccpa.key.consent.status": "{\n  \"applies\": true,\n  \"consentedAll\": true,\n  \"dateCreated\": \"2023-10-20T12:49:57.066Z\",\n  \"rejectedAll\": false,\n  \"rejectedCategories\": [\n  ],\n  \"rejectedVendors\": [\n  ],\n  \"signedLspa\": false,\n  \"status\": \"consentedAll\",\n  \"uuid\": \"4c99bd2b-b40b-4aef-b762-20397e07d026\",\n  \"webConsentPayload\": {\n    \"actions\": [\n    ],\n    \"cookies\": [\n      {\n        \"key\": \"ccpaConsentAll\",\n        \"value\": true,\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      },\n      {\n        \"key\": \"ccpaReject\",\n        \"value\": false,\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      },\n      {\n        \"key\": \"consentStatus\",\n        \"value\": \"consentedAll\",\n        \"setPath\": true,\n        \"maxAge\": 31536000\n      }\n    ],\n    \"consentedAll\": true,\n    \"dateCreated\": \"2023-10-20T12:48:43.914Z\",\n    \"expirationDate\": \"2024-10-19T12:48:43.914Z\",\n    \"rejectedAll\": false,\n    \"rejectedCategories\": [\n    ],\n    \"rejectedVendors\": [\n    ],\n    \"signedLspa\": false,\n    \"status\": \"consentedAll\"\n  }\n}",
