@@ -1,6 +1,7 @@
 package com.sourcepoint.app.v6
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.method.ScrollingMovementMethod
@@ -132,8 +133,6 @@ class MainActivityKotlin : AppCompatActivity() {
     }
 
     private fun executeCmpLib() {
-        Log.v("DIA-2654", "=== authId ===")
-        Log.i("DIA-2654", "dataProvider = $dataProvider")
         spConsentLib.loadMessage(authId = dataProvider.authId)
     }
 
