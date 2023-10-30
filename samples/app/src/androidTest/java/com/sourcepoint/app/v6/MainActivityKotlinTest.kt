@@ -122,6 +122,16 @@ class MainActivityKotlinTest {
         +(CampaignType.GDPR)
     }
 
+    private val spConfigWithChangedPropertyId = config {
+        accountId = 22
+        propertyId = 16666
+        propertyName = "mobile.multicampaign.demo"
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 5000
+        +(CampaignType.GDPR)
+        +(CampaignType.CCPA)
+    }
+
     @Test
     fun GIVEN_a_gdpr_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
 
@@ -1128,7 +1138,7 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConf,
+                spConfig = spConfigWithChangedPropertyId,
                 gdprPmId = "488393",
                 ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
@@ -1138,8 +1148,8 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-//        wr { tapAcceptAllOnWebView() }
-//        wr { tapAcceptAllOnWebView() }
+        wr { tapAcceptAllOnWebView() }
+        wr { tapAcceptAllOnWebView() }
 
         wr { verify(exactly = 0) { spClient.onError(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
