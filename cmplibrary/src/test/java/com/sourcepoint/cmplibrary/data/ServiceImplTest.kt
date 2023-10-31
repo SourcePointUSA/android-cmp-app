@@ -461,5 +461,4 @@ class ServiceImplTest {
         verify(exactly = 2) { ncMock.postPvData(any()) }
         verify(atLeast = 2) { cm.ccpaConsentStatus = any() }
     }
-
 }
