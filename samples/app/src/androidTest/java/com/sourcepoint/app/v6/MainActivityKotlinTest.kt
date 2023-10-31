@@ -122,16 +122,6 @@ class MainActivityKotlinTest {
         +(CampaignType.GDPR)
     }
 
-    private val spConfigWithChangedPropertyId = config {
-        accountId = 22
-        propertyId = 31226
-        propertyName = "mobile.bohdan.test.demo"
-        messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
-        +(CampaignType.GDPR)
-        +(CampaignType.CCPA)
-    }
-
     @Test
     fun GIVEN_a_gdpr_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
 
