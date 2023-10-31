@@ -135,19 +135,18 @@ private class ServiceImpl(
         onFailure: (Throwable, Boolean) -> Unit,
     ) {
         execManager.executeOnWorkerThread {
-            if (messageReq.authId != null && campaignManager.authId != messageReq.authId ||
-                campaignManager.propertyId != spConfig.propertyId
-            ) {
-                dataStorage.clearAll()
-            }
-            campaignManager.authId = messageReq.authId
-            campaignManager.propertyId = spConfig.propertyId
 
             if (connectionManager.isConnected.not()) {
                 val noInternetConnectionException = NoInternetConnectionException()
                 onFailure(noInternetConnectionException, true)
                 return@executeOnWorkerThread
             }
+
+            // check whether the authId or propertyId changed, and handle the flow accordingly
+            campaignManager.handleAuthIdOrPropertyIdChange(
+                authId = messageReq.authId,
+                propertyId = spConfig.propertyId,
+            )
 
             val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq(campaigns4Config))
                 .executeOnLeft { metaDataError ->

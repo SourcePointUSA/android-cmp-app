@@ -90,6 +90,7 @@ internal interface CampaignManager {
     var authId: String?
     var propertyId: Int
 
+    fun handleAuthIdOrPropertyIdChange(authId: String?, propertyId: Int)
     fun handleMetaDataResponse(response: MetaDataResp?)
     fun handleOldLocalData()
     fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
@@ -364,6 +365,7 @@ private class CampaignManagerImpl(
         set(value) {
             dataStorage.saveAuthId(value)
         }
+
     override var propertyId: Int
         get() = dataStorage.propertyId
         set(value) {
@@ -516,6 +518,29 @@ private class CampaignManagerImpl(
 
     override val hasLocalData: Boolean
         get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaConsentStatus != null
+
+    /**
+     * The method that checks if the authId or propertyId was changed, if so it will flush all the
+     * data. At the end, it will update the authId and propertyId with the corresponding values.
+     *
+     * @param newAuthId - auth id that was passed to a [Service.getMessages()]
+     */
+    override fun handleAuthIdOrPropertyIdChange(
+        newAuthId: String?,
+        newPropertyId: Int,
+    ) {
+        // flush data if eligible
+        val isNewAuthId = newAuthId != null && newAuthId != authId
+        val isNewPropertyId = newPropertyId != propertyId
+        val hasPreviousPropertyId = propertyId != 0
+        if (isNewAuthId || isNewPropertyId && hasPreviousPropertyId) {
+            dataStorage.clearAll()
+        }
+
+        // update stored values of authId and propertyId
+        authId = newAuthId
+        propertyId = newPropertyId
+    }
 
     override fun handleMetaDataResponse(response: MetaDataResp?) {
         // update meta data response in the data storage
