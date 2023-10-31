@@ -144,8 +144,8 @@ private class ServiceImpl(
 
             // check whether the authId or propertyId changed, and handle the flow accordingly
             campaignManager.handleAuthIdOrPropertyIdChange(
-                authId = messageReq.authId,
-                propertyId = spConfig.propertyId,
+                newAuthId = messageReq.authId,
+                newPropertyId = spConfig.propertyId,
             )
 
             val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq(campaigns4Config))
