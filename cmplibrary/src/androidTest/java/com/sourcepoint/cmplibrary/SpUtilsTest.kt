@@ -20,7 +20,7 @@ class SpUtilsTest {
     fun `SAVE_ccpa_andgdpr_groupId`() {
         val dataStorageGdpr = DataStorageGdpr.create(appCtx)
         val dataStorageCcpa = DataStorageCcpa.create(appCtx)
-        val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa).apply { deleteGdprConsent() }
+        val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa).apply { clearAll() }
 
         dataStorage.gdprChildPmId = "1"
         dataStorage.ccpaChildPmId = "2"

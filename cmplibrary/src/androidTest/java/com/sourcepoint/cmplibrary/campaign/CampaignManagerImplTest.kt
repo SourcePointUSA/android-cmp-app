@@ -82,7 +82,7 @@ class CampaignManagerImplTest {
 
     @Before
     fun setup() {
-        ds.deleteGdprConsent()
+        ds.clearAll()
     }
 
     @Test

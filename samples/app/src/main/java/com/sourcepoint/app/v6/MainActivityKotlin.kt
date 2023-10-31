@@ -169,8 +169,6 @@ class MainActivityKotlin : AppCompatActivity() {
             }
             spClientObserver.forEach { it.onConsentReady(consent) }
             Log.i(TAG, "onConsentReady: $consent")
-            Log.i(TAG, "consentedToAll: ${consent.gdpr?.consent?.consentStatus?.consentedAll}")
-            Log.i(TAG, "gdprApplies: ${consent.gdpr?.consent?.applies}")
         }
 
         override fun onUIFinished(view: View) {

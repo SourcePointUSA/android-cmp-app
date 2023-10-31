@@ -176,12 +176,12 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
         }
 
     override var ccpaExpirationDate: String?
-        get() = preference.getString(DataStorageCcpa.CCPA_EXPIRATION_DATE_MESSAGE, null)
+        get() = preference.getString(CCPA_EXPIRATION_DATE_MESSAGE, null)
         set(value) {
             value?.let {
                 preference
                     .edit()
-                    .putString(DataStorageCcpa.CCPA_EXPIRATION_DATE_MESSAGE, it)
+                    .putString(CCPA_EXPIRATION_DATE_MESSAGE, it)
                     .apply()
             }
         }
