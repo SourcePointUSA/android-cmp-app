@@ -4,7 +4,7 @@ import android.content.Context
 import android.preference.PreferenceManager
 
 class Utils {
-    companion object{
+    companion object {
 
         fun <E> check(block: () -> E): E? {
             return try {
@@ -25,7 +25,7 @@ class Utils {
             spEditor.apply()
         }
 
-        fun Context.spEntries(): Map<String, Any?>{
+        fun Context.spEntries(): Map<String, Any?> {
             return PreferenceManager.getDefaultSharedPreferences(this).all
         }
     }

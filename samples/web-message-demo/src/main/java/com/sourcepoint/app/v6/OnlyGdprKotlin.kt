@@ -65,7 +65,7 @@ class OnlyGdprKotlin : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        spConsentLib.loadMessage(authId = "pdber12")
+        spConsentLib.loadMessage()
         /**
          * To send the `pubData` JSONObject you can use the following variant of loadMessage
          */
