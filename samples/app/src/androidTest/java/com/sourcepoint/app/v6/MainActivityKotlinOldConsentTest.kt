@@ -269,7 +269,8 @@ class MainActivityKotlinOldConsentTest {
                 gdprPmId = "662122",
                 ccpaPmId = "-",
                 spClientObserver = listOf(spClient),
-                diagnostic = v6LocalState.toList()
+                diagnostic = v6LocalState.toList(),
+                pAuthId = "testAuth"
             )
         )
 
