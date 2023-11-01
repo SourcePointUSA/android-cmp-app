@@ -17,7 +17,7 @@ class DataStorageCcpaImplTest {
     fun check_DataStorage_TcData_gets_stored() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val storage = DataStorageCcpa.create(appContext).apply { clearAll() }
+        val storage = DataStorageCcpa.create(appContext).apply { deleteCcpaConsent() }
         val map = TreeMap<String, String>()
     }
 
@@ -25,13 +25,13 @@ class DataStorageCcpaImplTest {
     fun clear_data_DataStorage() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val storage = DataStorageCcpa.create(appContext).apply { clearAll() }
+        val storage = DataStorageCcpa.create(appContext).apply { deleteCcpaConsent() }
 
         storage.saveCcpa("{\"type\":\"Ccpa\"}")
 
         storage.getCcpa().assertEquals("{\"type\":\"Ccpa\"}")
 
-        storage.clearAll()
+        storage.deleteCcpaConsent()
 
         storage.getCcpa().assertNull()
     }

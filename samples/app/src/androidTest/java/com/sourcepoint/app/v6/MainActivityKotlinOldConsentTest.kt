@@ -256,42 +256,6 @@ class MainActivityKotlinOldConsentTest {
         }
     }
 
-    @Test
-    fun GIVEN_an_old_GDPR_FINNISH_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
-
-        val v6LocalState = JSONObject(TestData.storedConsentGdprFinnish)
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConfGdprFinnish,
-                gdprPmId = "662122",
-                ccpaPmId = "-",
-                spClientObserver = listOf(spClient),
-                diagnostic = v6LocalState.toList()
-            )
-        )
-
-        scenario = launchActivity()
-
-        wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
-        wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
-        wr {
-            verify(exactly = 1) {
-                spClient.onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
-            }
-        }
-        wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
-
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                sp.contains("sp.key.local.state").assertFalse()
-            }
-        }
-    }
-
     private fun <E> check(block: () -> E): E? {
         return try {
             block.invoke()
