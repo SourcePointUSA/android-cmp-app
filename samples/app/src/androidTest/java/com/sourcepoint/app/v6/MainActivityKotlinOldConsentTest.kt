@@ -145,7 +145,7 @@ class MainActivityKotlinOldConsentTest {
     @Test
     fun GIVEN_an_old_CCPA_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
-        val v6LocalState = JSONObject(TestData.storedConsentGdprCcap)
+        val v6LocalState = JSONObject(TestData.storedConsentGdprCcpa)
 
         val spClient = mockk<SpClient>(relaxed = true)
 
@@ -222,7 +222,7 @@ class MainActivityKotlinOldConsentTest {
     @Test
     fun GIVEN_an_old_CCPAv6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
-        val v6LocalState = JSONObject(TestData.storedConsentCcap)
+        val v6LocalState = JSONObject(TestData.storedConsentCcpa)
 
         val spClient = mockk<SpClient>(relaxed = true)
 

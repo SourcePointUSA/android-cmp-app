@@ -88,7 +88,9 @@ internal interface CampaignManager {
     var choiceResp: ChoiceResp?
     var dataRecordedConsent: Instant?
     var authId: String?
+    var propertyId: Int
 
+    fun handleAuthIdOrPropertyIdChange(newAuthId: String?, newPropertyId: Int)
     fun handleMetaDataResponse(response: MetaDataResp?)
     fun handleOldLocalData()
     fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
@@ -364,6 +366,12 @@ private class CampaignManagerImpl(
             dataStorage.saveAuthId(value)
         }
 
+    override var propertyId: Int
+        get() = dataStorage.propertyId
+        set(value) {
+            dataStorage.propertyId = value
+        }
+
     // Optimized Implementation below
 
     val isNewUser: Boolean
@@ -413,10 +421,11 @@ private class CampaignManagerImpl(
             val hasNonEligibleLocalDataVersion =
                 dataStorage.localDataVersion != DataStorage.LOCAL_DATA_VERSION_HARDCODED_VALUE
 
-            val res = (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
-                isV6LocalStatePresent ||
-                isV6LocalStatePresent2 ||
-                hasNonEligibleLocalDataVersion
+            val isEligibleForCallingConsentStatus =
+                (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
+                    isV6LocalStatePresent ||
+                    isV6LocalStatePresent2 ||
+                    hasNonEligibleLocalDataVersion
 
             logger?.computation(
                 tag = "shouldCallConsentStatus",
@@ -424,11 +433,11 @@ private class CampaignManagerImpl(
                 isGdprOrCcpaUuidPresent[$isGdprOrCcpaUuidPresent] - isLocalStateEmpty[$isLocalStateEmpty]
                 isV6LocalStatePresent[$isV6LocalStatePresent] - isV6LocalStatePresent2[$isV6LocalStatePresent2]
                 hasNonEligibleLocalDataVersion[$hasNonEligibleLocalDataVersion]
-                res[$res]
+                isEligibleForCallingConsentStatus[$isEligibleForCallingConsentStatus]
                 """.trimIndent()
             )
 
-            return res
+            return isEligibleForCallingConsentStatus
         }
 
     override var gdprMessageMetaData: MessageMetaData?
@@ -522,6 +531,27 @@ private class CampaignManagerImpl(
 
     override val hasLocalData: Boolean
         get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaConsentStatus != null
+
+    /**
+     * The method that checks if the authId or propertyId was changed, if so it will flush all the
+     * data. At the end, it will update the authId and propertyId with the corresponding values.
+     */
+    override fun handleAuthIdOrPropertyIdChange(
+        newAuthId: String?,
+        newPropertyId: Int,
+    ) {
+        // flush local data if proper authId or propertyId change was detected
+        val isNewAuthId = newAuthId != null && newAuthId != authId
+        val isNewPropertyId = newPropertyId != propertyId
+        val hasPreviousPropertyId = propertyId != 0
+        if (isNewAuthId || isNewPropertyId && hasPreviousPropertyId) {
+            dataStorage.clearAll()
+        }
+
+        // update stored values of authId and propertyId
+        authId = newAuthId
+        propertyId = newPropertyId
+    }
 
     override fun handleMetaDataResponse(response: MetaDataResp?) {
         // update meta data response in the data storage
