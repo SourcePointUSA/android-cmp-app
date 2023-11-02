@@ -27,7 +27,9 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
+import java.text.SimpleDateFormat
 import java.time.Instant
+import java.util.* //ktlint-disable
 
 internal interface CampaignManager {
     val spConfig: SpConfig
@@ -76,23 +78,25 @@ internal interface CampaignManager {
     var gdprUuid: String?
     var ccpaUuid: String?
     val hasLocalData: Boolean
+    val isGdprExpired: Boolean
+    val isCcpaExpired: Boolean
 
     // dateCreated
     var gdprDateCreated: String?
     var ccpaDateCreated: String?
 
-//    var consentStatus: ConsentStatus?zvz
-//    var ccpaStatus: CcpaStatus?
-
     var metaDataResp: MetaDataResp?
     var choiceResp: ChoiceResp?
     var dataRecordedConsent: Instant?
     var authId: String?
+    var propertyId: Int
 
+    fun handleAuthIdOrPropertyIdChange(newAuthId: String?, newPropertyId: Int)
     fun handleMetaDataResponse(response: MetaDataResp?)
     fun handleOldLocalData()
     fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
+    fun deleteExpiredConsents()
 
     companion object {
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
@@ -364,6 +368,12 @@ private class CampaignManagerImpl(
             dataStorage.saveAuthId(value)
         }
 
+    override var propertyId: Int
+        get() = dataStorage.propertyId
+        set(value) {
+            dataStorage.propertyId = value
+        }
+
     // Optimized Implementation below
 
     val isNewUser: Boolean
@@ -413,10 +423,11 @@ private class CampaignManagerImpl(
             val hasNonEligibleLocalDataVersion =
                 dataStorage.localDataVersion != DataStorage.LOCAL_DATA_VERSION_HARDCODED_VALUE
 
-            val res = (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
-                isV6LocalStatePresent ||
-                isV6LocalStatePresent2 ||
-                hasNonEligibleLocalDataVersion
+            val isEligibleForCallingConsentStatus =
+                (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
+                    isV6LocalStatePresent ||
+                    isV6LocalStatePresent2 ||
+                    hasNonEligibleLocalDataVersion
 
             logger?.computation(
                 tag = "shouldCallConsentStatus",
@@ -424,11 +435,11 @@ private class CampaignManagerImpl(
                 isGdprOrCcpaUuidPresent[$isGdprOrCcpaUuidPresent] - isLocalStateEmpty[$isLocalStateEmpty]
                 isV6LocalStatePresent[$isV6LocalStatePresent] - isV6LocalStatePresent2[$isV6LocalStatePresent2]
                 hasNonEligibleLocalDataVersion[$hasNonEligibleLocalDataVersion]
-                res[$res]
+                isEligibleForCallingConsentStatus[$isEligibleForCallingConsentStatus]
                 """.trimIndent()
             )
 
-            return res
+            return isEligibleForCallingConsentStatus
         }
 
     override var gdprMessageMetaData: MessageMetaData?
@@ -522,6 +533,27 @@ private class CampaignManagerImpl(
 
     override val hasLocalData: Boolean
         get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaConsentStatus != null
+
+    /**
+     * The method that checks if the authId or propertyId was changed, if so it will flush all the
+     * data. At the end, it will update the authId and propertyId with the corresponding values.
+     */
+    override fun handleAuthIdOrPropertyIdChange(
+        newAuthId: String?,
+        newPropertyId: Int,
+    ) {
+        // flush local data if proper authId or propertyId change was detected
+        val isNewAuthId = newAuthId != null && newAuthId != authId
+        val isNewPropertyId = newPropertyId != propertyId
+        val hasPreviousPropertyId = propertyId != 0
+        if (isNewAuthId || isNewPropertyId && hasPreviousPropertyId) {
+            dataStorage.clearAll()
+        }
+
+        // update stored values of authId and propertyId
+        authId = newAuthId
+        propertyId = newPropertyId
+    }
 
     override fun handleMetaDataResponse(response: MetaDataResp?) {
         // update meta data response in the data storage
@@ -649,5 +681,46 @@ private class CampaignManagerImpl(
             gdprCs = null,
             ccpaCS = ccpaConsentStatus
         )
+    }
+
+    override val isGdprExpired: Boolean
+        get() {
+
+            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            val gdprExpirationDate = dataStorage.gdprExpirationDate?.let { formatter.parse(it) } ?: return false
+            val currentDate = Date()
+            val isGdprExpired = currentDate.after(gdprExpirationDate)
+
+            logger?.computation(
+                tag = "Expiration Date",
+                msg = """
+                isGdprExpired[$isGdprExpired] 
+                """.trimIndent()
+            )
+
+            return isGdprExpired
+        }
+
+    override val isCcpaExpired: Boolean
+        get() {
+
+            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            val ccpaExpirationDate = dataStorage.ccpaExpirationDate?.let { formatter.parse(it) } ?: return false
+            val currentDate = Date()
+            val isCcpaExpired = currentDate.after(ccpaExpirationDate)
+
+            logger?.computation(
+                tag = "Expiration Date",
+                msg = """
+                isCcpaExpired[$isCcpaExpired] 
+                """.trimIndent()
+            )
+
+            return isCcpaExpired
+        }
+
+    override fun deleteExpiredConsents() {
+        if (isCcpaExpired) dataStorage.deleteCcpaConsent()
+        if (isGdprExpired) dataStorage.deleteGdprConsent()
     }
 }

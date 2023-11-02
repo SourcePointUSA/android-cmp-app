@@ -3,6 +3,8 @@ package com.sourcepoint.cmplibrary.campaign
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.* //ktlint-disable
+import com.sourcepoint.cmplibrary.Utils.Companion.spEntries
+import com.sourcepoint.cmplibrary.Utils.Companion.storeTestDataObj
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
@@ -20,6 +22,7 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
+import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -177,5 +180,21 @@ class CampaignManagerImplTest {
         cm.metaDataResp = null
 
         cm.metaDataResp.assertNull()
+    }
+
+    @Test
+    fun `GIVEN_an_expired_GDPR_and_a_valid_CCPA_campaign_DELETE_only_the_GDPR_consent`() {
+        val json = JSONObject("v7/expired_gdpr_valid_ccpa.json".file2String())
+        appContext.storeTestDataObj(json.toList())
+        ds.deleteGdprConsent()
+        appContext.spEntries().toList().find { it.first.contains("GDPR") }.assertNull()
+    }
+
+    @Test
+    fun `GIVEN_an_expired_CCPA_and_a_valid_GDPR_campaign_DELETE_only_the_GDPR_consent`() {
+        val json = JSONObject("v7/expired_ccpa_valid_gdpr.json".file2String())
+        appContext.storeTestDataObj(json.toList())
+        ds.deleteCcpaConsent()
+        appContext.spEntries().toList().find { it.first.contains("CCPA") }.assertNull()
     }
 }

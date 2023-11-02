@@ -187,6 +187,16 @@ class PropertyListFragment : Fragment() {
                     }
                     editor.apply()
                 }
+                R.id.action_expire_gdpr -> {
+                    val editor = sp.edit()
+                    editor.putString("sp.gdpr.key.expiration.date", "2022-10-27T17:15:56.953Z")
+                    editor.apply()
+                }
+                R.id.action_expire_ccpa -> {
+                    val editor = sp.edit()
+                    editor.putString("sp.ccpa.key.expiration.date", "2022-10-27T17:15:56.953Z")
+                    editor.apply()
+                }
                 R.id.action_drop_db -> {
                     showDropDbDialog()
                 }

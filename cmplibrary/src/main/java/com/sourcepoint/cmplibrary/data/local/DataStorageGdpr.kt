@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_VERSION_KEY
@@ -14,6 +15,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.DEFAULT_M
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.EU_CONSENT_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_DATE_CREATED
+import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_EXPIRATION_DATE_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_JSON_MESSAGE
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_MESSAGE_METADATA
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.GDPR_POST_CHOICE_RESP
@@ -52,6 +54,8 @@ internal interface DataStorageGdpr {
     var gdprSamplingValue: Double
     var gdprSamplingResult: Boolean?
 
+    var gdprExpirationDate: String?
+
     fun saveGdpr(value: String)
     fun getGdpr(): String?
 
@@ -67,7 +71,7 @@ internal interface DataStorageGdpr {
     fun clearGdprConsent()
     fun clearTCData()
     fun clearInternalData()
-    fun clearAll()
+    fun deleteGdprConsent()
 
     companion object {
         const val CONSENT_UUID_KEY = "sp.gdpr.consentUUID"
@@ -97,6 +101,7 @@ internal interface DataStorageGdpr {
         const val GDPR_DATE_CREATED = "sp.gdpr.key.date.created"
         const val GDPR_SAMPLING_VALUE = "sp.gdpr.key.sampling"
         const val GDPR_SAMPLING_RESULT = "sp.gdpr.key.sampling.result"
+        const val GDPR_EXPIRATION_DATE_MESSAGE = "sp.gdpr.key.expiration.date"
     }
 }
 
@@ -246,6 +251,17 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             }
         }
 
+    override var gdprExpirationDate: String?
+        get() = preference.getString(GDPR_EXPIRATION_DATE_MESSAGE, null)
+        set(value) {
+            value?.let {
+                preference
+                    .edit()
+                    .putString(GDPR_EXPIRATION_DATE_MESSAGE, it)
+                    .apply()
+            }
+        }
+
     override var gdprConsentUuid: String?
         get() = preference.getString(CONSENT_UUID_KEY, null)
         set(value) {
@@ -266,7 +282,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 .apply()
         }
 
-    override fun clearAll() {
+    override fun deleteGdprConsent() {
         val listIABTCF = preference.all.filter { prefix -> prefix.key.startsWith(IABTCF_KEY_PREFIX) }.keys
         preference.edit()
             .apply {
@@ -296,6 +312,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 remove(GDPR_MESSAGE_METADATA)
                 remove(GDPR_SAMPLING_VALUE)
                 remove(GDPR_SAMPLING_RESULT)
+                remove(GDPR_CONSENT_STATUS)
                 listIABTCF.forEach { remove(it) }
             }.apply()
     }

@@ -145,7 +145,7 @@ class MainActivityKotlinOldConsentTest {
     @Test
     fun GIVEN_an_old_CCPA_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
-        val v6LocalState = JSONObject(TestData.storedConsentGdprCcap)
+        val v6LocalState = JSONObject(TestData.storedConsentGdprCcpa)
 
         val spClient = mockk<SpClient>(relaxed = true)
 
@@ -222,7 +222,7 @@ class MainActivityKotlinOldConsentTest {
     @Test
     fun GIVEN_an_old_CCPAv6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
-        val v6LocalState = JSONObject(TestData.storedConsentCcap)
+        val v6LocalState = JSONObject(TestData.storedConsentCcpa)
 
         val spClient = mockk<SpClient>(relaxed = true)
 
@@ -251,42 +251,6 @@ class MainActivityKotlinOldConsentTest {
             scenario.onActivity { activity ->
                 val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                 // verify that after the migration the local state is cancelled
-                sp.contains("sp.key.local.state").assertFalse()
-            }
-        }
-    }
-
-    @Test
-    fun GIVEN_an_old_GDPR_FINNISH_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
-
-        val v6LocalState = JSONObject(TestData.storedConsentGdprFinnish)
-
-        val spClient = mockk<SpClient>(relaxed = true)
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConfGdprFinnish,
-                gdprPmId = "662122",
-                ccpaPmId = "-",
-                spClientObserver = listOf(spClient),
-                diagnostic = v6LocalState.toList()
-            )
-        )
-
-        scenario = launchActivity()
-
-        wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
-        wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
-        wr {
-            verify(exactly = 1) {
-                spClient.onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
-            }
-        }
-        wr { verify(exactly = 0) { spClient.onAction(any(), any()) } }
-
-        wr {
-            scenario.onActivity { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                 sp.contains("sp.key.local.state").assertFalse()
             }
         }

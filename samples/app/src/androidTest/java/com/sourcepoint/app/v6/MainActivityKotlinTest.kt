@@ -28,9 +28,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnOk
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebViewDE
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapCancelOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapFeaturesOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapNetworkOnWebView
@@ -59,6 +57,7 @@ import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
+import java.util.UUID
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinTest {
@@ -1072,6 +1071,86 @@ class MainActivityKotlinTest {
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
                 getInt("sp.key.localDataVersion", 0).assertEquals(hardcodedLocalDataVersion)
+            }
+        }
+    }
+
+    /**
+     * UI test that verifies that there was a clean up of local data after the user changed their
+     * auth ID. Due to the fact that the clean up happens, the message flow appears again, the user
+     * make their choice and the consent UUIDs of both campaigns changes.
+     */
+    @Test
+    fun given_the_user_has_consent_and_the_auth_id_changes_then_should_flush_data() = runBlocking<Unit> {
+
+        val storedConsent = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
+        val spClient = mockk<SpClient>(relaxed = true)
+        val newAuthId = UUID.randomUUID().toString()
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = storedConsent.toList(),
+                pAuthId = newAuthId
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr { tapAcceptAllOnWebView() }
+        wr { tapAcceptAllOnWebView() }
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 2) { spClient.onUIReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+                getString("sp.gdpr.authId", null).assertEquals(newAuthId)
+            }
+        }
+    }
+
+    /**
+     * UI test that verifies that there was a clean up of local data after the user changed their
+     * property ID. Due to the fact that the clean up happens, the message flow appears again, the user
+     * make their choice and the consent UUIDs of both campaigns changes.
+     */
+    @Test
+    fun given_the_user_has_consent_and_the_property_id_changes_then_should_flush_data() = runBlocking<Unit> {
+
+        val storedConsent = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
+        val spClient = mockk<SpClient>(relaxed = true)
+        val storedPropertyId = 31226
+        val newPropertyId = 16893
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = storedConsent.toList() + listOf(
+                    Pair("sp.key.config.propertyId", storedPropertyId)
+                ),
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr { tapAcceptAllOnWebView() }
+        wr { tapAcceptAllOnWebView() }
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 2) { spClient.onUIReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+                getInt("sp.key.config.propertyId", 0).assertEquals(newPropertyId)
             }
         }
     }
