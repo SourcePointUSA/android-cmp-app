@@ -1,1 +1,2 @@
-* [DIA-2886](https://sourcepoint.atlassian.net/browse/DIA-2886) Fix Gdpr applies (#729)
+* [DIA-2896](https://sourcepoint.atlassian.net/browse/DIA-2896) Implement consent expiration (#731)
+* [DIA-2654](https://sourcepoint.atlassian.net/browse/DIA-2654) Flush data if authId or propertyId changes (#711)
