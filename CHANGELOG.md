@@ -1,3 +1,7 @@
+## 7.4.4 (November, 02, 2023)
+* [DIA-2896](https://sourcepoint.atlassian.net/browse/DIA-2896) Implement consent expiration (#731)
+* [DIA-2654](https://sourcepoint.atlassian.net/browse/DIA-2654) Flush data if authId or propertyId changes (#711)
+
 ## 7.4.3 (October, 27, 2023)
 * [DIA-2886](https://sourcepoint.atlassian.net/browse/DIA-2886) Fix Gdpr applies (#729)
 
