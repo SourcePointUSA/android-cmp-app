@@ -26,4 +26,9 @@
             android:icon="@drawable/ic_baseline_delete_48"
             android:title="@string/clear_log"
             app:showAsAction="never"/>
+    <item
+            android:id="@+id/action_clear_sp"
+            android:icon="@drawable/ic_baseline_delete_48"
+            android:title="@string/clear_sp"
+            app:showAsAction="never"/>
 </menu>

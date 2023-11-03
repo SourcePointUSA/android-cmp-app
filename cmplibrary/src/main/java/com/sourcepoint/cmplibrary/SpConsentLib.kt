@@ -4,6 +4,7 @@ import android.view.View
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import org.json.JSONObject
 
@@ -62,6 +63,16 @@ interface SpConsentLib {
     fun loadPrivacyManager(pmId: String, campaignType: CampaignType)
     fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType)
     fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType, useGroupPmIfAvailable: Boolean)
+
+    fun loadPrivacyManager(pmId: String, campaignType: CampaignType, messageType: MessageType)
+    fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType, messageType: MessageType)
+    fun loadPrivacyManager(
+        pmId: String,
+        pmTab: PMTab,
+        campaignType: CampaignType,
+        useGroupPmIfAvailable: Boolean,
+        messageType: MessageType
+    )
 
     fun showView(view: View)
     fun removeView(view: View)

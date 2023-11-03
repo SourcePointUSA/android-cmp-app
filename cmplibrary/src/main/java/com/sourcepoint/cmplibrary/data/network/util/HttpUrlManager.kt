@@ -11,8 +11,8 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceP
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.MessageType
+import com.sourcepoint.cmplibrary.model.exposed.MessageType.* // ktlint-disable
 import kotlinx.serialization.encodeToString
 import okhttp3.HttpUrl
 
@@ -27,7 +27,7 @@ internal interface HttpUrlManager {
         env: Env,
         campaignType: CampaignType,
         pmConfig: PmUrlConfig,
-        messSubCat: MessageSubCategory
+        messageType: MessageType
     ): HttpUrl
 
     // Optimized
@@ -58,12 +58,12 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         env: Env,
         campaignType: CampaignType,
         pmConfig: PmUrlConfig,
-        messSubCat: MessageSubCategory
+        messageType: MessageType
 
     ): HttpUrl {
         return when (campaignType) {
-            CampaignType.GDPR -> urlPmGdpr(pmConfig, env, messSubCat)
-            CampaignType.CCPA -> urlPmCcpa(pmConfig, env, messSubCat)
+            CampaignType.GDPR -> urlPmGdpr(pmConfig, env, messageType)
+            CampaignType.CCPA -> urlPmCcpa(pmConfig, env, messageType)
         }
     }
 
@@ -92,19 +92,19 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    private fun urlPmGdpr(pmConf: PmUrlConfig, env: Env, messSubCat: MessageSubCategory): HttpUrl {
+    private fun urlPmGdpr(pmConf: PmUrlConfig, env: Env, messageType: MessageType): HttpUrl {
 
-        val urlPostFix = when (messSubCat) {
-            OTT -> "privacy-manager-ott/index.html"
-            NATIVE_OTT -> "native-ott/index.html"
-            else -> "privacy-manager/index.html"
+        val pathSegment = when (messageType) {
+            LEGACY_OTT -> "privacy-manager-ott/index.html"
+            OTT -> "native-ott/index.html"
+            MOBILE -> "privacy-manager/index.html"
         }
 
         return HttpUrl.Builder()
             // https://notice.sp-stage.net/privacy-manager/index.html?message_id=<PM_ID>
             .scheme("https")
             .host(env.pmHostGdpr)
-            .addPathSegments(urlPostFix)
+            .addPathSegments(pathSegment)
             .addQueryParameter("pmTab", pmConf.pmTab?.key)
             .addQueryParameter("site_id", pmConf.siteId)
             .addQueryParameter("preload_consent", true.toString())
@@ -119,12 +119,13 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    private fun urlPmCcpa(pmConf: PmUrlConfig, env: Env, messSubCat: MessageSubCategory): HttpUrl {
+    private fun urlPmCcpa(pmConf: PmUrlConfig, env: Env, messageType: MessageType): HttpUrl {
 
-        // ott: https://cdn.privacy-mgmt.com/ccpa_ott/index.html?message_id=527843
-        //      https://ccpa-notice.sp-stage.net/ccpa_pm/index.html?message_id=14777
-
-        val pathSegment = if (messSubCat == OTT) "ccpa_ott/index.html" else "ccpa_pm/index.html"
+        val pathSegment = when (messageType) {
+            LEGACY_OTT -> "ccpa_ott/index.html"
+            OTT -> "native-ott/index.html"
+            MOBILE -> "ccpa_pm/index.html"
+        }
 
         return HttpUrl.Builder()
             .scheme("https")
@@ -132,6 +133,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addPathSegments(pathSegment)
             .addQueryParameter("site_id", pmConf.siteId)
             .addQueryParameter("preload_consent", true.toString())
+            .addQueryParameter("is_ccpa", true.toString())
             .apply {
                 pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
                 pmConf.uuid?.let { addQueryParameter("ccpaUUID", it) }

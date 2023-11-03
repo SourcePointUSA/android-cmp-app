@@ -144,10 +144,11 @@ class DemoActivity : FragmentActivity() {
                     gdprPmId?.toString()
                         ?.let {
                             spConsentLib.loadPrivacyManager(
-                                it,
-                                pTab,
-                                CampaignType.GDPR,
-                                useGroupPmIfAvailable
+                                pmId = it,
+                                pmTab = pTab,
+                                campaignType = CampaignType.GDPR,
+                                useGroupPmIfAvailable = useGroupPmIfAvailable,
+                                messageType = property.messageType,
                             )
                         }
                         ?: pmNotValid()
@@ -156,10 +157,11 @@ class DemoActivity : FragmentActivity() {
                     ccpaPmId?.toString()
                         ?.let {
                             spConsentLib.loadPrivacyManager(
-                                it,
-                                pTab,
-                                CampaignType.CCPA,
-                                useGroupPmIfAvailable
+                                pmId = it,
+                                pmTab = pTab,
+                                campaignType = CampaignType.CCPA,
+                                useGroupPmIfAvailable = useGroupPmIfAvailable,
+                                messageType = property.messageType,
                             )
                         }
                         ?: pmNotValid()
@@ -190,6 +192,7 @@ class DemoActivity : FragmentActivity() {
                 R.id.action_share -> logFr.shareLogs()
                 R.id.action_share_sp -> logFr.sendEmail(getAllPref())
                 R.id.action_clear_log -> logFr.clearLog()
+                R.id.action_clear_sp -> logFr.clearSp()
                 R.id.action_refresh -> triggerLib()
             }
             true

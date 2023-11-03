@@ -23,11 +23,11 @@ import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.LoggerType.NL
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
-import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.OTT
+import com.sourcepoint.cmplibrary.model.exposed.MessageType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.ViewsManager
@@ -164,13 +164,14 @@ internal class SpConsentLibImpl(
                     when (firstCampaign2Process.messageSubCategory) {
                         TCFv2, OTT, NATIVE_OTT -> {
                             /** create a instance of WebView */
-                            val webView = viewManager.createWebView(
-                                this,
-                                JSReceiverDelegate(),
-                                remainingCampaigns,
-                                firstCampaign2Process.messageSubCategory,
-                                cmpViewId
-                            )
+                            val webView = viewManager
+                                .createWebView(
+                                    lib = this,
+                                    jsReceiverDelegate = JSReceiverDelegate(),
+                                    campaignQueue = remainingCampaigns,
+                                    messageType = firstCampaign2Process.messageSubCategory.toMessageType(),
+                                    cmpViewId = cmpViewId,
+                                )
                                 .executeOnLeft { spClient.onError(it) }
                                 .getOrNull()
 
@@ -317,23 +318,70 @@ internal class SpConsentLibImpl(
     override fun loadPrivacyManager(
         pmId: String,
         pmTab: PMTab,
-        campaignType: CampaignType
+        campaignType: CampaignType,
+        messageType: MessageType
     ) {
-        loadPrivacyManager(pmId, pmTab, campaignType, false)
+        loadPm(
+            pmId = pmId,
+            pmTab = pmTab,
+            campaignType = campaignType,
+            messageType = messageType,
+            useGroupPmIfAvailable = false,
+        )
     }
 
     override fun loadPrivacyManager(
         pmId: String,
         pmTab: PMTab,
         campaignType: CampaignType,
-        useGroupPmIfAvailable: Boolean
     ) {
         loadPm(
             pmId = pmId,
             pmTab = pmTab,
             campaignType = campaignType,
-            messSubCat = campaignManager.getMessSubCategoryByCamp(campaignType),
-            useGroupPmIfAvailable = useGroupPmIfAvailable
+            messageType = MOBILE,
+            useGroupPmIfAvailable = false,
+        )
+    }
+
+    override fun loadPrivacyManager(
+        pmId: String,
+        pmTab: PMTab,
+        campaignType: CampaignType,
+        useGroupPmIfAvailable: Boolean,
+        messageType: MessageType
+    ) {
+        loadPm(
+            pmId = pmId,
+            pmTab = pmTab,
+            campaignType = campaignType,
+            messageType = messageType,
+            useGroupPmIfAvailable = useGroupPmIfAvailable,
+        )
+    }
+
+    override fun loadPrivacyManager(
+        pmId: String,
+        pmTab: PMTab,
+        campaignType: CampaignType,
+        useGroupPmIfAvailable: Boolean,
+    ) {
+        loadPm(
+            pmId = pmId,
+            pmTab = pmTab,
+            campaignType = campaignType,
+            messageType = MOBILE,
+            useGroupPmIfAvailable = useGroupPmIfAvailable,
+        )
+    }
+
+    override fun loadPrivacyManager(pmId: String, campaignType: CampaignType, messageType: MessageType) {
+        loadPm(
+            pmId = pmId,
+            pmTab = PMTab.DEFAULT,
+            campaignType = campaignType,
+            messageType = messageType,
+            useGroupPmIfAvailable = false,
         )
     }
 
@@ -342,8 +390,8 @@ internal class SpConsentLibImpl(
             pmId = pmId,
             pmTab = PMTab.DEFAULT,
             campaignType = campaignType,
-            messSubCat = campaignManager.getMessSubCategoryByCamp(campaignType),
-            useGroupPmIfAvailable = false
+            messageType = MOBILE,
+            useGroupPmIfAvailable = false,
         )
     }
 
@@ -351,7 +399,7 @@ internal class SpConsentLibImpl(
         pmId: String,
         pmTab: PMTab,
         campaignType: CampaignType,
-        messSubCat: MessageSubCategory,
+        messageType: MessageType,
         useGroupPmIfAvailable: Boolean
     ) {
 
@@ -366,12 +414,17 @@ internal class SpConsentLibImpl(
         val gdprGroupPmId = campaignManager.getGroupId(campaignType)
 
         // used for testing
-        pLogger.i("loadPm - messSubCat: ", "${messSubCat.code}")
+        pLogger.i("loadPm - messSubCat: ", messageType.name)
 
         val pmConfig = campaignManager.getPmConfig(campaignType, pmId, pmTab, useGroupPmIfAvailable, gdprGroupPmId)
         pmConfig
             .map {
-                val webView = viewManager.createWebView(this, JSReceiverDelegate(), messSubCat, null)
+                val webView = viewManager.createWebView(
+                    lib = this,
+                    jsReceiverDelegate = JSReceiverDelegate(),
+                    messageType = messageType,
+                    cmpViewId = null,
+                )
                     .executeOnLeft { e -> spClient.onError(e) }
                     .getOrNull()
                 val url =
@@ -379,7 +432,7 @@ internal class SpConsentLibImpl(
                         env = env,
                         campaignType = campaignType,
                         pmConfig = it,
-                        messSubCat = messSubCat
+                        messageType = messageType,
                     )
                 pLogger.pm(
                     tag = "${campaignType.name} Privacy Manager",
@@ -616,7 +669,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2,
+                                messageType = MOBILE,
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -643,7 +696,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2,
+                                messageType = MOBILE,
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -676,7 +729,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2,
+                                messageType = MOBILE,
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
@@ -703,7 +756,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messSubCat = TCFv2,
+                                messageType = MOBILE,
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
@@ -731,7 +784,14 @@ internal class SpConsentLibImpl(
             privacyManagerId = pmId
         )
 
-        viewManager.createWebView(this, JSReceiverDelegate(), remainingCampaigns, TCFv2, null)
+        viewManager
+            .createWebView(
+                lib = this,
+                jsReceiverDelegate = JSReceiverDelegate(),
+                campaignQueue = remainingCampaigns,
+                messageType = MOBILE,
+                cmpViewId = null,
+            )
             .map { nativeMessageShowOption(nca, it) }
             .executeOnLeft { spClient.onError(it) }
     }
@@ -792,13 +852,14 @@ internal class SpConsentLibImpl(
                 }
                 TCFv2, OTT, NATIVE_OTT -> {
                     /** create a instance of WebView */
-                    val webView = viewManager.createWebView(
-                        this,
-                        JSReceiverDelegate(),
-                        remainingCampaigns,
-                        it.messageSubCategory,
-                        null
-                    )
+                    val webView = viewManager
+                        .createWebView(
+                            lib = this,
+                            jsReceiverDelegate = JSReceiverDelegate(),
+                            campaignQueue = remainingCampaigns,
+                            messageType = it.messageSubCategory.toMessageType(),
+                            cmpViewId = null,
+                        )
                         .executeOnLeft { e -> spClient.onError(e) }
                         .getOrNull()
 

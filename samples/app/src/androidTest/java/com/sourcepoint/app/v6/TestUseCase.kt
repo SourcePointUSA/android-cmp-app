@@ -30,9 +30,8 @@ import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.di.customCategoriesDataProd
 import com.sourcepoint.app.v6.di.customVendorDataListProd
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import kotlinx.android.synthetic.main.activity_main_consent.*
-import kotlinx.android.synthetic.main.activity_main_v7.*
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -391,6 +390,7 @@ class TestUseCase {
             url: String = "",
             useGdprGroupPmIfAvailable: Boolean = false,
             pResetAll: Boolean = true,
+            messageType: MessageType = MessageType.MOBILE,
             spClientObserver: List<SpClient> = emptyList(),
             diagnostic: List<Pair<String, Any?>> = emptyList()
         ): Module {
@@ -405,6 +405,7 @@ class TestUseCase {
                         override val spConfig: SpConfig = spConfig
                         override val gdprPmId: String = gdprPmId
                         override val ccpaPmId: String = ccpaPmId
+                        override val messageType: MessageType? = messageType
                         override val customVendorList: List<String> = customVendorDataListProd.map { it.first }
                         override val customCategories: List<String> = customCategoriesDataProd.map { it.first }
                         override val diagnostic: List<Pair<String, Any?>> = diagnostic

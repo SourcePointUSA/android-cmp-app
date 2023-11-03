@@ -38,3 +38,15 @@ data class SpCampaign(
 data class TargetingParam(val key: String, val value: String)
 
 fun Pair<String, String>.toTParam() = TargetingParam(this.first, this.second)
+
+enum class MessageType {
+    MOBILE,
+    OTT,
+    LEGACY_OTT
+}
+
+internal fun MessageSubCategory.toMessageType(): MessageType = when (this) {
+    MessageSubCategory.OTT -> MessageType.LEGACY_OTT
+    MessageSubCategory.NATIVE_OTT -> MessageType.OTT
+    else -> MessageType.MOBILE
+}

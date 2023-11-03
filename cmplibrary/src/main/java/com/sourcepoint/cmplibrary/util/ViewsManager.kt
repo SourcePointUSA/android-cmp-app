@@ -11,7 +11,7 @@ import com.sourcepoint.cmplibrary.core.web.ConsentWebView
 import com.sourcepoint.cmplibrary.core.web.IConsentWebView
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.exception.WebViewCreationException
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
+import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import java.lang.ref.WeakReference
 import java.util.* // ktlint-disable
 
@@ -26,14 +26,14 @@ internal interface ViewsManager {
     fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
-        messSubCat: MessageSubCategory,
+        messageType: MessageType,
         cmpViewId: Int?
     ): Either<IConsentWebView>
     fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
         campaignQueue: Queue<CampaignModel>,
-        messSubCat: MessageSubCategory,
+        messageType: MessageType,
         cmpViewId: Int?
     ): Either<IConsentWebView>
     fun removeView(view: View)
@@ -125,7 +125,7 @@ private class ViewsManagerImpl(
     override fun createWebView(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
-        messSubCat: MessageSubCategory,
+        messageType: MessageType,
         cmpViewId: Int?
     ): Either<IConsentWebView> {
         return weakReference.get()?.let {
@@ -137,7 +137,7 @@ private class ViewsManagerImpl(
                     logger = lib.pLogger,
                     executorManager = lib.executor,
                     messageTimeout = messageTimeout,
-                    messSubCat = messSubCat,
+                    messageType = messageType,
                     viewId = cmpViewId
                 )
             }
@@ -148,7 +148,7 @@ private class ViewsManagerImpl(
         lib: SpConsentLibImpl,
         jsReceiverDelegate: SpConsentLibImpl.JSReceiverDelegate,
         campaignQueue: Queue<CampaignModel>,
-        messSubCat: MessageSubCategory,
+        messageType: MessageType,
         cmpViewId: Int?
     ): Either<IConsentWebView> {
         return weakReference.get()?.let {
@@ -161,7 +161,7 @@ private class ViewsManagerImpl(
                     executorManager = lib.executor,
                     campaignQueue = campaignQueue,
                     messageTimeout = messageTimeout,
-                    messSubCat = messSubCat,
+                    messageType = messageType,
                     viewId = cmpViewId
                 )
             }

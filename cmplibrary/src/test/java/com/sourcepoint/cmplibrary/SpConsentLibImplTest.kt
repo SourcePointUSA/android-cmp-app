@@ -109,7 +109,7 @@ class SpConsentLibImplTest {
         every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(OTT)
 
         val sut = createLib()
-        sut.loadPrivacyManager("1234", GDPR)
+        sut.loadPrivacyManager("1234", GDPR,)
 
         verify {
             campaignManager.getPmConfig(

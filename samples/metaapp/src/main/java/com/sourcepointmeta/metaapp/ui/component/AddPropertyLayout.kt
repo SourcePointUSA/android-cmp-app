@@ -7,6 +7,7 @@ import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepointmeta.metaapp.core.UIErrorCode
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam
@@ -35,6 +36,7 @@ internal fun AddPropertyLayout.bind(property: Property) {
     chip_gdpr.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.GDPR }?.enabled ?: false
     chip_ccpa.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.CCPA }?.enabled ?: false
     message_language_autocomplete.setText(property.messageLanguage)
+    message_type_autocomplete.setText(property.messageType.name)
     auth_id_ed.setText(property.authId)
     pm_tab_autocomplete.setText(property.pmTab)
     gdpr_pm_id_ed.setText(property.gdprPmId?.toString() ?: "")
@@ -93,6 +95,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
         timeout = timeout_ed.text.toString().toTimeout(),
         authId = auth_id_ed.text.toString(),
         messageLanguage = message_language_autocomplete.text.toString(),
+        messageType = MessageType.values().find { it.name == message_type_autocomplete.text.toString() } ?: MessageType.MOBILE,
         pmTab = pm_tab_autocomplete.text.toString(),
         statusCampaignSet = setOf(gdprStatus, ccpaStatus),
         campaignsEnv = if (radio_stage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC,
