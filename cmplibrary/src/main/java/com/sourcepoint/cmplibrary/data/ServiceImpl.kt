@@ -410,7 +410,7 @@ private class ServiceImpl(
                 // object.
                 if ((actionType != ActionType.ACCEPT_ALL
                     && actionType != ActionType.REJECT_ALL)
-                    || campaignManager.gdprConsentStatus == null) {
+                    || campaignManager.metaDataResp == null) {
                     campaignManager.gdprConsentStatus = postConsentResponse
                 }
             }
