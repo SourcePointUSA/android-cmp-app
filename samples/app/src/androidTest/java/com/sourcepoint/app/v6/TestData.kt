@@ -26,6 +26,14 @@ object TestData {
 //        "Our Custom Purpose"
     )
 
+    val PM_CONSENT_LIST = listOf(
+        "Store and/or access information on a device cookies",
+        "Use limited data to select advertising cookies",
+        "Create profiles for personalised advertising cookies",
+        "Understand audiences through statistics or combinations of data from different sources cookies",
+        "Our Custom Purpose cookies",
+    )
+
     val VENDORS_LIST = listOf(
         "Unruly Group LLC",
         "QuarticON",

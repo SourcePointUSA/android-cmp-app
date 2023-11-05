@@ -6,8 +6,8 @@ import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
-import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOff
-import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllConsentsOn
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkSomeConsentsOff
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkSomeConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllGdprConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllVendorsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
@@ -39,7 +39,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectAllWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapRejectOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSaveAndExitWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSiteVendorsWebView
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableAllConsent
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableSomeConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapToEnableSomeOption
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapZustimmenAllOnWebView
 import com.sourcepoint.cmplibrary.SpClient
@@ -153,7 +153,7 @@ class MainActivityKotlinTest {
         }
 
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkSomeConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
@@ -334,7 +334,7 @@ class MainActivityKotlinTest {
 
         wr(backup = { clickOnRefreshBtnActivity() }) { tapRejectOnWebView() }
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkSomeConsentsOff() }
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
@@ -666,7 +666,7 @@ class MainActivityKotlinTest {
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOn() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkSomeConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 2) { spClient.onSpFinished(any()) } }
@@ -710,11 +710,11 @@ class MainActivityKotlinTest {
 //            }
 //        }
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { tapToDisableAllConsent() }
+        wr(backup = { clickOnGdprReviewConsent() }) { tapToDisableSomeConsent() }
         wr { tapSaveAndExitWebView() }
         delay(300)
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllConsentsOff() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkSomeConsentsOff() }
 
     }
 

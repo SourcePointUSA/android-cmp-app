@@ -15,6 +15,7 @@ import com.sourcepoint.app.v6.TestData.MESSAGE
 import com.sourcepoint.app.v6.TestData.NETWORK
 import com.sourcepoint.app.v6.TestData.OPTIONS
 import com.sourcepoint.app.v6.TestData.PARTIAL_CONSENT_LIST
+import com.sourcepoint.app.v6.TestData.PM_CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.PRIVACY_MANAGER
 import com.sourcepoint.app.v6.TestData.PURPOSES
 import com.sourcepoint.app.v6.TestData.REJECT
@@ -63,7 +64,7 @@ class TestUseCase {
             }
         }
 
-        fun tapToDisableAllConsent() {
+        fun tapToDisableSomeConsent() {
             CONSENT_LIST_2.forEach { consent ->
                 tapOnToggle2(property = consent, tapOnlyWhen = true)
             }
@@ -75,13 +76,13 @@ class TestUseCase {
             }
         }
 
-        fun checkAllConsentsOn() {
+        fun checkSomeConsentsOn() {
             CONSENT_LIST_2.forEach { consent ->
                 checkConsentState(consent, true, "tcfv2-stack")
             }
         }
 
-        fun checkAllConsentsOff() {
+        fun checkSomeConsentsOff() {
             CONSENT_LIST_2.forEach { consent ->
                 checkConsentState(consent, false, "tcfv2-stack")
             }
@@ -152,6 +153,18 @@ class TestUseCase {
         fun checkAllGdprConsentsOn() {
             GDPR_CONSENT_LIST_2.forEach { consent ->
                 checkConsentState(consent, true, "tcfv2-stack")
+            }
+        }
+
+        fun checkAllTogglesOn() {
+            PM_CONSENT_LIST.forEach { consent ->
+                checkConsentState(consent, true, "tcfv2-stack")
+            }
+        }
+
+        fun checkAllTogglesOFF() {
+            PM_CONSENT_LIST.forEach { consent ->
+                checkConsentState(consent, false, "tcfv2-stack")
             }
         }
 
@@ -390,9 +403,10 @@ class TestUseCase {
             url: String = "",
             useGdprGroupPmIfAvailable: Boolean = false,
             pResetAll: Boolean = true,
+            runLoadMessage: Boolean = true,
             messageType: MessageType = MessageType.MOBILE,
             spClientObserver: List<SpClient> = emptyList(),
-            diagnostic: List<Pair<String, Any?>> = emptyList()
+            diagnostic: List<Pair<String, Any?>> = emptyList(),
         ): Module {
             return module(override = true) {
                 single<List<SpClient?>> { spClientObserver }
@@ -402,6 +416,7 @@ class TestUseCase {
                         override val resetAll = pResetAll
                         override val useGdprGroupPmIfAvailable: Boolean = useGdprGroupPmIfAvailable
                         override val url = url
+                        override val runLoadMessage: Boolean = runLoadMessage
                         override val spConfig: SpConfig = spConfig
                         override val gdprPmId: String = gdprPmId
                         override val ccpaPmId: String = ccpaPmId

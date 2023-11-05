@@ -116,7 +116,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        executeCmpLib()
+        if(dataProvider.runLoadMessage) executeCmpLib()
     }
 
     private fun executeCmpLib() {

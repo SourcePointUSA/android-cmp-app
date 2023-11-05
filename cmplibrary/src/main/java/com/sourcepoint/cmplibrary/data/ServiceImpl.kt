@@ -408,9 +408,12 @@ private class ServiceImpl(
                 // don't overwrite gdpr consents if the action is accept all or reject all
                 // because the response from those endpoints does not contain a full consent
                 // object.
-                if ((actionType != ActionType.ACCEPT_ALL
-                    && actionType != ActionType.REJECT_ALL)
-                    || campaignManager.metaDataResp == null) {
+                if ((
+                    actionType != ActionType.ACCEPT_ALL &&
+                        actionType != ActionType.REJECT_ALL
+                    ) ||
+                    campaignManager.metaDataResp == null
+                ) {
                     campaignManager.gdprConsentStatus = postConsentResponse
                 }
             }
