@@ -207,7 +207,7 @@ class MainActivityKotlinLoadPmTest {
             verify {
                 spClient.onConsentReady(withArg {
 //                    it.gdpr!!.consent.applies.assertTrue()
-                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll!!.assertTrue()
                 })
             }
         }
@@ -215,7 +215,7 @@ class MainActivityKotlinLoadPmTest {
             verify {
                 spClient.onSpFinished(withArg {
 //                    it.gdpr!!.consent.applies.assertTrue()
-                    it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll!!.assertTrue()
                 })
             }
         }
