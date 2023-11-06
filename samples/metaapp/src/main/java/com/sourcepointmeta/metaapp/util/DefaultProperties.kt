@@ -245,6 +245,26 @@ val defaultProperty12 = Property(
     messageType = MessageType.MOBILE,
 )
 
+val defaultProperty13 = Property(
+    propertyName = "automation-test-mobile-newott",
+    accountId = 22,
+    gdprPmId = 899812L,
+    ccpaPmId = 899813L,
+    is_staging = false,
+    targetingParameters = emptyList(),
+    timeout = 3000,
+    authId = null,
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    statusCampaignSet = setOf(
+        StatusCampaign("automation-test-mobile-newott", CampaignType.GDPR, true),
+        StatusCampaign("automation-test-mobile-newott", CampaignType.CCPA, true),
+    ),
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 33914,
+    messageType = MessageType.MOBILE,
+)
+
 val propList = listOf(
     defaultProperty1,
     defaultProperty2,
@@ -257,6 +277,7 @@ val propList = listOf(
     defaultProperty10,
     defaultProperty11,
     defaultProperty12,
+    defaultProperty13,
 )
 val tvPropList = listOf(
     defaultProperty,
