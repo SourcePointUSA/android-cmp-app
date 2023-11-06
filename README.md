@@ -353,12 +353,15 @@ SpConsent
     |   |-- grants: Map<String, GDPRPurposeGrants>
     |   |-- euconsent: String
     |   |-- acceptedCategories: List<String>
+    |   |-- apply: Boolean
+    |   |-- consentStatus: ConsentStatus
     |-- ccpa?
         |-- uuid: String?
         |-- rejectedCategories: List<String>
         |-- rejectedVendors: List<String>
         |-- status: String?
         |-- uspstring: String
+        |-- apply: Boolean
 ```
 
 ### The grants parameter and the GDPRPurposeGrants object
