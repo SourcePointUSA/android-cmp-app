@@ -857,8 +857,8 @@ internal class SpConsentLibImpl(
                             lib = this,
                             jsReceiverDelegate = JSReceiverDelegate(),
                             campaignQueue = remainingCampaigns,
-                            messageType = it.messageSubCategory.toMessageType(),
                             cmpViewId = null,
+                            messageType = it.messageSubCategory.toMessageType(),
                         )
                         .executeOnLeft { e -> spClient.onError(e) }
                         .getOrNull()

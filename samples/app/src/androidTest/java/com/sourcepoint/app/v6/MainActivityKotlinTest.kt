@@ -7,8 +7,8 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkSomeConsentsOff
-import com.sourcepoint.app.v6.TestUseCase.Companion.checkSomeConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllGdprConsentsOn
+import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllTogglesOFF
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllVendorsOff
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomCategoriesData
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkCustomVendorDataList
@@ -153,7 +153,7 @@ class MainActivityKotlinTest {
         }
 
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkSomeConsentsOn() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
@@ -334,7 +334,7 @@ class MainActivityKotlinTest {
 
         wr(backup = { clickOnRefreshBtnActivity() }) { tapRejectOnWebView() }
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkSomeConsentsOff() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkAllTogglesOFF() }
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
@@ -666,7 +666,7 @@ class MainActivityKotlinTest {
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkSomeConsentsOn() }
+        wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 2) { spClient.onSpFinished(any()) } }

@@ -370,6 +370,11 @@ private class ServiceImpl(
                     response.gdpr?.let { responseGdpr ->
                         campaignManager.gdprConsentStatus = responseGdpr.copy(uuid = campaignManager.gdprUuid)
                     }
+                    val consentHandler = ConsentManager.responseConsentHandler(
+                        response.gdpr?.copy(uuid = campaignManager.gdprUuid, applies = dataStorage.gdprApplies),
+                        consentManagerUtils
+                    )
+                    sPConsentsSuccess?.invoke(consentHandler)
                 }
                 .executeOnLeft { error ->
                     (error as? ConsentLibExceptionK)?.let { logger.error(error) }
@@ -402,32 +407,19 @@ private class ServiceImpl(
         networkClient.storeGdprChoice(postConsentParams)
             .executeOnRight { postConsentResponse ->
                 campaignManager.gdprUuid = postConsentResponse.uuid
-                dataStorage.gdprExpirationDate = postConsentResponse.expirationDate
-                dataStorage.gdprDateCreated = postConsentResponse.dateCreated
 
                 // don't overwrite gdpr consents if the action is accept all or reject all
                 // because the response from those endpoints does not contain a full consent
                 // object.
-                if ((
-                    actionType != ActionType.ACCEPT_ALL &&
-                        actionType != ActionType.REJECT_ALL
-                    ) ||
-                    campaignManager.metaDataResp == null
-                ) {
+                if (actionType != ActionType.ACCEPT_ALL && actionType != ActionType.REJECT_ALL) {
                     campaignManager.gdprConsentStatus = postConsentResponse
+                    val cr = ConsentManager.responseConsentHandler(postConsentResponse.copy(applies = dataStorage.gdprApplies), consentManagerUtils)
+                    sPConsentsSuccess?.invoke(cr)
                 }
             }
             .executeOnLeft { error ->
                 (error as? ConsentLibExceptionK)?.let { logger.error(error) }
             }
-
-        campaignManager.gdprConsentStatus?.let {
-            val consentHandler = ConsentManager.responseConsentHandler(
-                it.copy(applies = dataStorage.gdprApplies, uuid = campaignManager.gdprUuid),
-                consentManagerUtils
-            )
-            sPConsentsSuccess?.invoke(consentHandler)
-        }
 
         campaignManager.gdprConsentStatus ?: throw InvalidConsentResponse(
             cause = null,
@@ -459,9 +451,12 @@ private class ServiceImpl(
 
             networkClient.getChoice(getChoiceParamReq)
                 .executeOnRight { ccpaResponse ->
-                    ccpaResponse.ccpa?.let { response ->
-                        campaignManager.ccpaConsentStatus = response.copy(uuid = campaignManager.ccpaConsentStatus?.uuid)
-                    }
+                    campaignManager.ccpaConsentStatus = ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid)
+                    val consentHandler = ConsentManager.responseConsentHandler(
+                        ccpaResponse.ccpa?.copy(uuid = campaignManager.ccpaConsentStatus?.uuid, applies = dataStorage.ccpaApplies),
+                        consentManagerUtils
+                    )
+                    sPConsentsSuccess?.invoke(consentHandler)
                 }
                 .executeOnLeft { error ->
                     (error as? ConsentLibExceptionK)?.let { logger.error(error) }
@@ -490,8 +485,6 @@ private class ServiceImpl(
         networkClient.storeCcpaChoice(postConsentParams)
             .executeOnRight { postConsentResponse ->
                 campaignManager.ccpaUuid = postConsentResponse.uuid
-                dataStorage.ccpaExpirationDate = postConsentResponse.expirationDate
-                dataStorage.ccpaDateCreated = postConsentResponse.dateCreated
                 campaignManager.ccpaConsentStatus =
                     if (postConsentResponse.webConsentPayload != null) {
                         postConsentResponse
@@ -500,18 +493,18 @@ private class ServiceImpl(
                             webConsentPayload = campaignManager.ccpaConsentStatus?.webConsentPayload
                         )
                     }
+
+                // don't overwrite gdpr consents if the action is accept all or reject all
+                // because the response from those endpoints does not contain a full consent
+                // object.
+                if (at != ActionType.ACCEPT_ALL && at != ActionType.REJECT_ALL) {
+                    val consentHandler = ConsentManager.responseConsentHandler(postConsentResponse.copy(applies = dataStorage.ccpaApplies), consentManagerUtils)
+                    sPConsentsSuccess?.invoke(consentHandler)
+                }
             }
             .executeOnLeft { error ->
                 (error as? ConsentLibExceptionK)?.let { logger.error(error) }
             }
-
-        campaignManager.ccpaConsentStatus?.let {
-            val consentHandler = ConsentManager.responseConsentHandler(
-                it.copy(uuid = campaignManager.ccpaConsentStatus?.uuid, applies = dataStorage.ccpaApplies),
-                consentManagerUtils
-            )
-            sPConsentsSuccess?.invoke(consentHandler)
-        }
 
         campaignManager.ccpaConsentStatus ?: throw InvalidConsentResponse(
             cause = null,

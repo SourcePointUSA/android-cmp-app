@@ -403,7 +403,6 @@ class TestUseCase {
             url: String = "",
             useGdprGroupPmIfAvailable: Boolean = false,
             pResetAll: Boolean = true,
-            runLoadMessage: Boolean = true,
             messageType: MessageType = MessageType.MOBILE,
             spClientObserver: List<SpClient> = emptyList(),
             diagnostic: List<Pair<String, Any?>> = emptyList(),
@@ -416,7 +415,6 @@ class TestUseCase {
                         override val resetAll = pResetAll
                         override val useGdprGroupPmIfAvailable: Boolean = useGdprGroupPmIfAvailable
                         override val url = url
-                        override val runLoadMessage: Boolean = runLoadMessage
                         override val spConfig: SpConfig = spConfig
                         override val gdprPmId: String = gdprPmId
                         override val ccpaPmId: String = ccpaPmId
