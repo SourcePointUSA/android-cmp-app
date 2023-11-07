@@ -1159,6 +1159,7 @@ class MainActivityKotlinTest {
         }
     }
 
+    @Test
     fun given_the_user_provides_partial_consent_for_gdpr_then_user_consents_should_return_proper_consent() = runBlocking<Unit> {
 
         val v7Consent = JSONObject(TestData.storedConsentV741)
