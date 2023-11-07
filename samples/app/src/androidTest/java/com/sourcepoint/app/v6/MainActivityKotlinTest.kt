@@ -48,6 +48,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
+import com.sourcepoint.cmplibrary.util.userConsents
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.delay
@@ -1152,6 +1153,31 @@ class MainActivityKotlinTest {
             PreferenceManager.getDefaultSharedPreferences(activity).run {
                 getInt("sp.key.config.propertyId", 0).assertEquals(newPropertyId)
             }
+        }
+    }
+
+    fun given_the_user_provides_partial_consent_for_gdpr_then_user_consents_should_return_proper_consent() = runBlocking<Unit> {
+        // GIVEN
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient),
+            )
+        )
+
+        // WHEN
+        scenario = launchActivity()
+
+        wr { tapOptionWebView() }
+        wr { tapSaveAndExitWebView() }
+
+        // THEN
+        scenario.onActivity { activity ->
+            val gdprAppliesFromUserConsents = userConsents(activity).gdpr?.consent?.applies
+            gdprAppliesFromUserConsents.assertEquals(true)
         }
     }
 
