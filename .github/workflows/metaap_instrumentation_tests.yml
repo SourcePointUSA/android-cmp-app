@@ -1,13 +1,13 @@
 name: Metaap UI Tests
 on:
   push:
-    branches: [ develop, v7 ]
+    branches: [ develop, dia-2031-support-USNat ]
     paths:
       - '!README.md'
       - '!release_note.txt'
   #      - '!samples/nativemessage/*'
   pull_request:
-    branches: [ develop, v7 ]
+    branches: [ develop, dia-2031-support-USNat ]
 #    paths:
 #      - '!README.md'
 #      - '!samples/nativemessage/*'
