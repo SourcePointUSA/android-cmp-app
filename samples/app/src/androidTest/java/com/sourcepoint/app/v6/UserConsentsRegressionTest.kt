@@ -33,7 +33,7 @@ class UserConsentsRegressionTest {
     @Test
     fun given_the_user_provides_partial_consent_for_gdpr_then_user_consents_should_return_proper_consent() = runBlocking<Unit> {
 
-        val v7Consent = JSONObject(TestData.storedConsentV741)
+        val v7Consent = JSONObject(TestData.storedConsentWithSaveAndExitChoicesV741)
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(
