@@ -144,7 +144,7 @@ class MainActivityKotlinOldConsentTest {
     @Test
     fun GIVEN_an_old_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
-        val v6LocalState = JSONObject(TestData.storedConsentGdpr)
+        val v6LocalState = JSONObject(TestData.storedConsentGdpr670)
 
         val spClient = mockk<SpClient>(relaxed = true)
 
