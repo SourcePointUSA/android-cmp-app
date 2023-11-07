@@ -22,14 +22,16 @@ class UserConsentsRegressionTest {
 
     private val appContext by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
 
-    private val spConfGdpr = config {
+    private val spConf = config {
         accountId = 22
-        propertyId = 16893
-        propertyName = "mobile.multicampaign.demo"
+        propertyId = 31226
+        propertyName = "mobile.bohdan.test.demo"
         messLanguage = MessageLanguage.ENGLISH
         +(CampaignType.GDPR)
         +(CampaignType.CCPA)
     }
+    private val gdprPmId = "815371"
+    private val ccpaPmId = "807279"
 
     /**
      * Test case that tests when the user has both campaigns applies value as TRUE then should return
@@ -43,9 +45,9 @@ class UserConsentsRegressionTest {
 
         loadKoinModules(
             TestUseCase.mockModule(
-                spConfig = spConfGdpr,
-                gdprPmId = "488393",
-                ccpaPmId = "509688",
+                spConfig = spConf,
+                gdprPmId = gdprPmId,
+                ccpaPmId = ccpaPmId,
                 spClientObserver = listOf(spClient),
                 diagnostic = v7Consent.toList()
             )
@@ -66,14 +68,14 @@ class UserConsentsRegressionTest {
     @Test
     fun given_stored_consent_with_save_and_exit_choices_and_applies_false_then_user_consents_should_return_false_for_both_applies() = runBlocking {
 
-        val v7Consent = JSONObject(TestData.storedConsentWithSaveAndExitChoicesAndAppliesTrueV741)
+        val v7Consent = JSONObject(TestData.storedConsentWithSaveAndExitChoicesAndAppliesFalseV741)
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(
             TestUseCase.mockModule(
-                spConfig = spConfGdpr,
-                gdprPmId = "488393",
-                ccpaPmId = "509688",
+                spConfig = spConf,
+                gdprPmId = gdprPmId,
+                ccpaPmId = ccpaPmId,
                 spClientObserver = listOf(spClient),
                 diagnostic = v7Consent.toList()
             )
