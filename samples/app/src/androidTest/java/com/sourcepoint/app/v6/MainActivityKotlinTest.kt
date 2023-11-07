@@ -1100,7 +1100,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr { tapAcceptAllOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptAllOnWebView() }
         wr { tapAcceptAllOnWebView() }
 
         wr { verify(exactly = 0) { spClient.onError(any()) } }
@@ -1141,7 +1141,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr { tapAcceptAllOnWebView() }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptAllOnWebView() }
         wr { tapAcceptAllOnWebView() }
 
         wr { verify(exactly = 0) { spClient.onError(any()) } }
