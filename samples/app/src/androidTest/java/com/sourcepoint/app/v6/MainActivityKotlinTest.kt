@@ -4,6 +4,7 @@ import android.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkSomeConsentsOff
@@ -62,6 +63,8 @@ import java.util.UUID
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinTest {
+
+    private val appContext by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
@@ -1157,7 +1160,8 @@ class MainActivityKotlinTest {
     }
 
     fun given_the_user_provides_partial_consent_for_gdpr_then_user_consents_should_return_proper_consent() = runBlocking<Unit> {
-        // GIVEN
+
+        val v7Consent = JSONObject(TestData.storedConsentV741)
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(
@@ -1165,18 +1169,12 @@ class MainActivityKotlinTest {
                 spConfig = spConfGdpr,
                 gdprPmId = "488393",
                 spClientObserver = listOf(spClient),
+                diagnostic = v7Consent.toList()
             )
         )
 
-        // WHEN
-        scenario = launchActivity()
-
-        wr { tapOptionWebView() }
-        wr { tapSaveAndExitWebView() }
-
-        // THEN
-        scenario.onActivity { activity ->
-            val gdprAppliesFromUserConsents = userConsents(activity).gdpr?.consent?.applies
+        wr {
+            val gdprAppliesFromUserConsents = userConsents(appContext).gdpr?.consent?.applies
             gdprAppliesFromUserConsents.assertEquals(true)
         }
     }
