@@ -338,9 +338,6 @@ An OTT privacy manager can be **resurfaced** for your project (_e.g. via a butto
 Kotlin
 
 ```kotlin
-
-import java.awt.TrayIcon.MessageType
-
 spConsentLib.loadPrivacyManager("<PM_ID>", CampaignType.GDPR, MessageType.OTT) // For a GDPR campaign
 ```
 
