@@ -27,12 +27,12 @@ import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.OTT
-import com.sourcepoint.cmplibrary.model.exposed.MessageType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.toJsonObject
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread
+import com.sourcepoint.cmplibrary.util.extensions.toMessageType
 import com.sourcepoint.cmplibrary.util.toConsentLibException
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.json.JSONObject
@@ -339,7 +339,7 @@ internal class SpConsentLibImpl(
             pmId = pmId,
             pmTab = pmTab,
             campaignType = campaignType,
-            messageType = MOBILE,
+            messageType = context.toMessageType(),
             useGroupPmIfAvailable = false,
         )
     }
@@ -370,7 +370,7 @@ internal class SpConsentLibImpl(
             pmId = pmId,
             pmTab = pmTab,
             campaignType = campaignType,
-            messageType = MOBILE,
+            messageType = context.toMessageType(),
             useGroupPmIfAvailable = useGroupPmIfAvailable,
         )
     }
@@ -390,7 +390,7 @@ internal class SpConsentLibImpl(
             pmId = pmId,
             pmTab = PMTab.DEFAULT,
             campaignType = campaignType,
-            messageType = MOBILE,
+            messageType = context.toMessageType(),
             useGroupPmIfAvailable = false,
         )
     }
@@ -669,7 +669,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messageType = MOBILE,
+                                messageType = context.toMessageType(),
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -696,7 +696,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = actionImpl.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messageType = MOBILE,
+                                messageType = context.toMessageType(),
                             )
                         pLogger.pm(
                             tag = "${actionImpl.campaignType.name} Privacy Manager",
@@ -729,7 +729,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messageType = MOBILE,
+                                messageType = context.toMessageType(),
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
@@ -756,7 +756,7 @@ internal class SpConsentLibImpl(
                                 env = env,
                                 campaignType = action.campaignType,
                                 pmConfig = pmUrlConfig,
-                                messageType = MOBILE,
+                                messageType = context.toMessageType(),
                             )
                         pLogger.pm(
                             tag = "${action.campaignType.name} Privacy Manager",
@@ -789,7 +789,7 @@ internal class SpConsentLibImpl(
                 lib = this,
                 jsReceiverDelegate = JSReceiverDelegate(),
                 campaignQueue = remainingCampaigns,
-                messageType = MOBILE,
+                messageType = context.toMessageType(),
                 cmpViewId = null,
             )
             .map { nativeMessageShowOption(nca, it) }
