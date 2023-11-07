@@ -38,7 +38,8 @@ data class ConsentStatusResp(
     @Serializable
     data class ConsentStatusData(
         @SerialName("ccpa") val ccpa: CcpaCS?,
-        @SerialName("gdpr") val gdpr: GdprCS?
+        @SerialName("gdpr") val gdpr: GdprCS?,
+        @SerialName("usnat") val usnat: USNatConsentData?,
     )
 
     override fun toString(): String {
@@ -64,6 +65,16 @@ data class CcpaCS(
     @SerialName("uuid") var uuid: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
     @SerialName("expirationDate") var expirationDate: String?,
+)
+
+@Serializable
+data class USNatConsentData(
+    val applies: Boolean?,
+    @SerialName("consentStatus") val consentStatus: ConsentStatus?,
+    @SerialName("consentString") val consentString: String?,
+    @SerialName("dateCreated") var dateCreated: String?,
+    @SerialName("uuid") var uuid: String?,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject?
 )
 
 @Serializable

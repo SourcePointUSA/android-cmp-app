@@ -35,15 +35,18 @@ import kotlinx.serialization.decodeFromString
 internal fun DataStorage.Companion.create(
     context: Context,
     dsGdpr: DataStorageGdpr,
-    dsCcpa: DataStorageCcpa
-): DataStorage = DataStorageImpl(context, dsGdpr, dsCcpa)
+    dsCcpa: DataStorageCcpa,
+    dsUsNat: DataStorageUSNat,
+): DataStorage = DataStorageImpl(context, dsGdpr, dsCcpa, dsUsNat)
 
 private class DataStorageImpl(
     context: Context,
     val dsGdpr: DataStorageGdpr,
-    val dsCcpa: DataStorageCcpa
+    val dsCcpa: DataStorageCcpa,
+    val dsUsNat: DataStorageUSNat,
 ) : DataStorage,
     DataStorageGdpr by dsGdpr,
+    DataStorageUSNat by dsUsNat,
     DataStorageCcpa by dsCcpa {
 
     override val preference: SharedPreferences by lazy {
@@ -207,6 +210,7 @@ private class DataStorageImpl(
     override fun clearAll() {
         dsCcpa.deleteCcpaConsent()
         dsGdpr.deleteGdprConsent()
+        dsUsNat.deleteUsNatConsent()
         preference
             .edit()
             .remove(LOCAL_STATE)

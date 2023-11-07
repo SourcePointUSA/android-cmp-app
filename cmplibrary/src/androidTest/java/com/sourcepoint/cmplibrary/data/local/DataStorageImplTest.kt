@@ -13,7 +13,8 @@ class DataStorageImplTest {
     private val appContext by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
     private val gdprStorage by lazy { DataStorageGdpr.create(appContext) }
     private val ccpaStorage by lazy { DataStorageCcpa.create(appContext) }
-    private val sut by lazy { DataStorage.create(appContext, gdprStorage, ccpaStorage) }
+    private val usNatStorage by lazy { DataStorageUSNat.create(appContext) }
+    private val sut by lazy { DataStorage.create(appContext, gdprStorage, ccpaStorage, usNatStorage) }
 
     @Before
     fun setup() {

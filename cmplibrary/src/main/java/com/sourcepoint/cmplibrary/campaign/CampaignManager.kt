@@ -73,10 +73,12 @@ internal interface CampaignManager {
     // Consent Status
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
+    var usNatConsentStatus: USNatConsentData?
     var messagesOptimizedLocalState: JsonElement?
     var nonKeyedLocalState: JsonElement?
     var gdprUuid: String?
     var ccpaUuid: String?
+    var usNatUuid: String?
     val hasLocalData: Boolean
     val isGdprExpired: Boolean
     val isCcpaExpired: Boolean
@@ -84,6 +86,7 @@ internal interface CampaignManager {
     // dateCreated
     var gdprDateCreated: String?
     var ccpaDateCreated: String?
+    var usNatDateCreated: String?
 
     var metaDataResp: MetaDataResp?
     var choiceResp: ChoiceResp?
@@ -451,8 +454,9 @@ private class CampaignManagerImpl(
 
     override val shouldCallConsentStatus: Boolean
         get() {
-            val isGdprOrCcpaUuidPresent =
-                dataStorage.gdprConsentUuid != null || dataStorage.ccpaConsentUuid != null
+            val isGdprPresent = dataStorage.gdprConsentUuid != null
+            val isCcpaUuidPresent = dataStorage.ccpaConsentUuid != null
+            val isUSNatUuidPresent = usNatUuid != null
             val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
             val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
@@ -460,7 +464,7 @@ private class CampaignManagerImpl(
                 dataStorage.localDataVersion != DataStorage.LOCAL_DATA_VERSION_HARDCODED_VALUE
 
             val isEligibleForCallingConsentStatus =
-                (isGdprOrCcpaUuidPresent && isLocalStateEmpty) ||
+                ((isGdprPresent || isCcpaUuidPresent || isUSNatUuidPresent) && isLocalStateEmpty) ||
                     isV6LocalStatePresent ||
                     isV6LocalStatePresent2 ||
                     hasNonEligibleLocalDataVersion
@@ -468,7 +472,8 @@ private class CampaignManagerImpl(
             logger?.computation(
                 tag = "shouldCallConsentStatus",
                 msg = """
-                isGdprOrCcpaUuidPresent[$isGdprOrCcpaUuidPresent] - isLocalStateEmpty[$isLocalStateEmpty]
+                isGdprPresent[$isGdprPresent] - isCcpaUuidPresent[$isCcpaUuidPresent]
+                isUSNatUuidPresent[$isUSNatUuidPresent] - isLocalStateEmpty[$isLocalStateEmpty]
                 isV6LocalStatePresent[$isV6LocalStatePresent] - isV6LocalStatePresent2[$isV6LocalStatePresent2]
                 hasNonEligibleLocalDataVersion[$hasNonEligibleLocalDataVersion]
                 isEligibleForCallingConsentStatus[$isEligibleForCallingConsentStatus]
@@ -525,6 +530,17 @@ private class CampaignManagerImpl(
             }
         }
 
+    override var usNatConsentStatus: USNatConsentData?
+        get() {
+            return dataStorage.usNatConsentStatus?.let { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }
+        }
+        set(value) {
+            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
+            dataStorage.run {
+                usNatConsentStatus = serialised
+            }
+        }
+
     override var messagesOptimizedLocalState: JsonElement?
         get() {
             return dataStorage.messagesOptimizedLocalState?.let {
@@ -566,6 +582,10 @@ private class CampaignManagerImpl(
         set(value) {
             dataStorage.ccpaConsentUuid = value
         }
+
+    override var usNatUuid: String?
+        get() = usNatConsentStatus?.uuid
+        set(value) { usNatConsentStatus?.uuid = value }
 
     override val hasLocalData: Boolean
         get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaConsentStatus != null
@@ -663,6 +683,12 @@ private class CampaignManagerImpl(
         get() = dataStorage.ccpaDateCreated
         set(value) {
             dataStorage.ccpaDateCreated = value
+        }
+
+    override var usNatDateCreated: String?
+        get() = usNatConsentStatus?.dateCreated
+        set(value) {
+            usNatConsentStatus?.dateCreated = value
         }
 
     override var metaDataResp: MetaDataResp?
