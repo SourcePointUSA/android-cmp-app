@@ -28,18 +28,24 @@ class UserConsentsRegressionTest {
         propertyName = "mobile.multicampaign.demo"
         messLanguage = MessageLanguage.ENGLISH
         +(CampaignType.GDPR)
+        +(CampaignType.CCPA)
     }
 
+    /**
+     * Test case that tests when the user has both campaigns applies value as TRUE then should return
+     * sane from the userConsents() method
+     */
     @Test
-    fun given_the_user_provides_partial_consent_for_gdpr_then_user_consents_should_return_proper_consent() = runBlocking<Unit> {
+    fun given_stored_consent_with_save_and_exit_choices_and_applies_true_then_user_consents_should_return_true_for_both_applies() = runBlocking {
 
-        val v7Consent = JSONObject(TestData.storedConsentWithSaveAndExitChoicesV741)
+        val v7Consent = JSONObject(TestData.storedConsentWithSaveAndExitChoicesAndAppliesTrueV741)
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(
             TestUseCase.mockModule(
                 spConfig = spConfGdpr,
                 gdprPmId = "488393",
+                ccpaPmId = "509688",
                 spClientObserver = listOf(spClient),
                 diagnostic = v7Consent.toList()
             )
@@ -48,6 +54,36 @@ class UserConsentsRegressionTest {
         wr {
             val gdprAppliesFromUserConsents = userConsents(appContext).gdpr?.consent?.applies
             gdprAppliesFromUserConsents.assertEquals(true)
+            val ccpaAppliesFromUserConsents = userConsents(appContext).ccpa?.consent?.applies
+            ccpaAppliesFromUserConsents.assertEquals(true)
+        }
+    }
+
+    /**
+     * Test case that tests when the user has both campaigns applies value as FALSE then should return
+     * sane from the userConsents() method
+     */
+    @Test
+    fun given_stored_consent_with_save_and_exit_choices_and_applies_false_then_user_consents_should_return_false_for_both_applies() = runBlocking {
+
+        val v7Consent = JSONObject(TestData.storedConsentWithSaveAndExitChoicesAndAppliesTrueV741)
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            TestUseCase.mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = v7Consent.toList()
+            )
+        )
+
+        wr {
+            val gdprAppliesFromUserConsents = userConsents(appContext).gdpr?.consent?.applies
+            gdprAppliesFromUserConsents.assertEquals(false)
+            val ccpaAppliesFromUserConsents = userConsents(appContext).ccpa?.consent?.applies
+            ccpaAppliesFromUserConsents.assertEquals(false)
         }
     }
 }
