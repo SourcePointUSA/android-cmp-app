@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.BaseState
@@ -34,7 +35,6 @@ class AddUpdatePropertyFragment : Fragment() {
     private val pmTabs = PMTab.values()
 
     companion object {
-        val MessageType = listOf("WebView", "App")
         fun instance(propertyName: String) = AddUpdatePropertyFragment().apply {
             arguments = Bundle().apply {
                 putString("property_name", propertyName)
@@ -65,6 +65,13 @@ class AddUpdatePropertyFragment : Fragment() {
         message_language_autocomplete.setAdapter(messageLanguageAdapter)
         message_language_autocomplete.setText(languages.first { it.startsWith("ENG") })
         message_language_autocomplete.threshold = 1
+
+        val types = MessageType.values().map { it.name }
+        val messageTypeAdapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, types)
+        message_type_autocomplete.setAdapter(messageTypeAdapter)
+        message_type_autocomplete.setText(types.first { it.startsWith("MOBILE") })
+        message_type_autocomplete.threshold = 1
 
         val tabs = pmTabs.map { it.name }
         val pmTabsAdapter: ArrayAdapter<String> =

@@ -248,16 +248,40 @@ Java
 
 ## Loading a Privacy Manager on demand
 
-Call `spConsentLib.loadPrivacyManager` to surface the Privacy Manager
+Call `spConsentLib.loadPrivacyManager` to surface the Privacy Manager. There are three Privacy Manager types:
+
+```kotlin
+    enum class MessageType {
+        MOBILE,
+        OTT,
+        LEGACY_OTT
+    }
+```
+
+- MOBILE: it is used for mobile devices,
+- OTT: it presents a new layout and operates on TV devices,
+- LEGACY_OTT: it presents the legacy layout and operates on TV devices.
+
+As a default behavior, the type is determined based on the nature of the device on which your application is executed. 
+For example, if your application is running on a television, the selected type will be 'OTT,' whereas the 'MOBILE' 
+type will be assigned in all other cases.
 
 Kotlin
 
 ```kotlin
-    //...
+    //... IMPLICIT message type selection
     spConsentLib.loadPrivacyManager(
       "<PM_ID>",
       PMTab.PURPOSES,
       CampaignType.GDPR
+    )
+    //...
+    //... EXPLICIT message type selection
+    spConsentLib.loadPrivacyManager(
+      "<PM_ID>",
+      PMTab.PURPOSES,
+      CampaignType.GDPR,
+      MOBILE
     )
     //...
 ```
@@ -265,11 +289,19 @@ Kotlin
 Java
 
 ```java
-    //...
+    //... IMPLICIT message type selection
     spConsentLib.loadPrivacyManager(
             "<PM_ID>",
             PMTab.PURPOSES,
             CampaignType.GDPR
+            ));
+    //...
+    //... EXPLICIT message type selection
+            spConsentLib.loadPrivacyManager(
+            "<PM_ID>",
+            PMTab.PURPOSES,
+            CampaignType.GDPR,
+            MOBILE
             ));
     //...
 ```
@@ -306,13 +338,13 @@ An OTT privacy manager can be **resurfaced** for your project (_e.g. via a butto
 Kotlin
 
 ```kotlin
-    spConsentLib.loadPrivacyManager("<PM_ID>", CampaignType.GDPR) // For a GDPR campaign
+spConsentLib.loadPrivacyManager("<PM_ID>", CampaignType.GDPR, MessageType.OTT) // For a GDPR campaign
 ```
 
 Java
 
 ```java
-    spConsentLib.loadPrivacyManager("<PM_ID>", CampaignType.CCPA); // For a CCPA campaign
+    spConsentLib.loadPrivacyManager("<PM_ID>", CampaignType.CCPA, MessageType.OTT); // For a CCPA campaign
 ```
 
 > In case a property was created from the web builder as OTT/CTV, the Privacy Manager is the first layer message itself, this means that as pmId you should use the message id of your first layer message.

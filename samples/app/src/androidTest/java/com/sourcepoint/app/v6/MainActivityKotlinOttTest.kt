@@ -16,6 +16,7 @@ import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
@@ -55,6 +56,7 @@ class MainActivityKotlinOttTest {
                 spConfig = spConfOtt,
                 gdprPmId = "579231",
                 ccpaPmId = "1",
+                messageType = MessageType.LEGACY_OTT,
                 spClientObserver = listOf(spClient)
             )
         )
@@ -100,6 +102,7 @@ class MainActivityKotlinOttTest {
                 spConfig = spConfOtt,
                 gdprPmId = "579231",
                 ccpaPmId = "1",
+                messageType = MessageType.LEGACY_OTT,
                 spClientObserver = listOf(spClient)
             )
         )

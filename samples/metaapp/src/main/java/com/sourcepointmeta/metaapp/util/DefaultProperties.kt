@@ -2,6 +2,7 @@ package com.sourcepointmeta.metaapp.util
 
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 
@@ -21,7 +22,8 @@ val defaultProperty = Property(
         StatusCampaign("ott.test.suite", CampaignType.CCPA, false),
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
-    propertyId = 22231
+    propertyId = 22231,
+    messageType = MessageType.LEGACY_OTT,
 )
 
 val defaultProperty1 = Property(
@@ -40,7 +42,8 @@ val defaultProperty1 = Property(
         StatusCampaign("mobile.multicampaign.demo", CampaignType.CCPA, true),
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
-    propertyId = 16893
+    propertyId = 16893,
+    messageType = MessageType.MOBILE,
 )
 
 val defaultProperty2 = Property(
@@ -59,7 +62,8 @@ val defaultProperty2 = Property(
         StatusCampaign("mobile.multicampaign.native.demo", CampaignType.CCPA, true),
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
-    propertyId = 18958
+    propertyId = 18958,
+    messageType = MessageType.MOBILE,
 )
 
 val defaultProperty3 = Property(
@@ -78,7 +82,8 @@ val defaultProperty3 = Property(
         StatusCampaign("mobile.multicampaign.native.demo2", CampaignType.CCPA, true),
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
-    propertyId = 19210
+    propertyId = 19210,
+    messageType = MessageType.MOBILE,
 )
 
 val defaultProperty4 = Property(
@@ -97,7 +102,8 @@ val defaultProperty4 = Property(
         StatusCampaign("mobile.multicampaign.fully.native", CampaignType.CCPA, true),
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
-    propertyId = 22758
+    propertyId = 22758,
+    messageType = MessageType.MOBILE,
 )
 
 val defaultProperty5 = Property(
@@ -116,7 +122,8 @@ val defaultProperty5 = Property(
         StatusCampaign("mobile.multicampaign.fully.native2", CampaignType.CCPA, true),
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
-    propertyId = 22932
+    propertyId = 22932,
+    messageType = MessageType.MOBILE,
 )
 
 val defaultProperty6 = Property(
@@ -136,6 +143,7 @@ val defaultProperty6 = Property(
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 27927,
+    messageType = MessageType.OTT,
 )
 
 val defaultProperty7 = Property(
@@ -154,6 +162,7 @@ val defaultProperty7 = Property(
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 17801,
+    messageType = MessageType.MOBILE,
 )
 
 val defaultProperty9 = Property(
@@ -173,6 +182,7 @@ val defaultProperty9 = Property(
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 29498,
+    messageType = MessageType.LEGACY_OTT,
 )
 
 val defaultProperty10 = Property(
@@ -192,6 +202,7 @@ val defaultProperty10 = Property(
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 26891,
+    messageType = MessageType.MOBILE,
 )
 
 val defaultProperty11 = Property(
@@ -211,6 +222,7 @@ val defaultProperty11 = Property(
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 31320,
+    messageType = MessageType.MOBILE,
 )
 
 val defaultProperty12 = Property(
@@ -230,6 +242,27 @@ val defaultProperty12 = Property(
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 146,
+    messageType = MessageType.MOBILE,
+)
+
+val defaultProperty13 = Property(
+    propertyName = "automation-test-mobile-newott",
+    accountId = 22,
+    gdprPmId = 899812L,
+    ccpaPmId = 899813L,
+    is_staging = false,
+    targetingParameters = emptyList(),
+    timeout = 3000,
+    authId = null,
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    statusCampaignSet = setOf(
+        StatusCampaign("automation-test-mobile-newott", CampaignType.GDPR, true),
+        StatusCampaign("automation-test-mobile-newott", CampaignType.CCPA, true),
+    ),
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 33914,
+    messageType = MessageType.MOBILE,
 )
 
 val propList = listOf(
@@ -244,6 +277,7 @@ val propList = listOf(
     defaultProperty10,
     defaultProperty11,
     defaultProperty12,
+    defaultProperty13,
 )
 val tvPropList = listOf(
     defaultProperty,
