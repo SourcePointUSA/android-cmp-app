@@ -1,2 +1,4 @@
-* [DIA-2896](https://sourcepoint.atlassian.net/browse/DIA-2896) Implement consent expiration (#731)
-* [DIA-2654](https://sourcepoint.atlassian.net/browse/DIA-2654) Flush data if authId or propertyId changes (#711)
+* [DIA-2940](https://sourcepoint.atlassian.net/browse/DIA-2940) Fix for the applies parameter after saving partial GDPR consent (#734)
+* [DIA-2786](https://sourcepoint.atlassian.net/browse/DIA-2786) Added support fo the new CCPA OTT PM  (#735)
+* [HCD-452](https://sourcepoint.atlassian.net/browse/DIA-452) Add full structure to SpConsent (#733)
+
