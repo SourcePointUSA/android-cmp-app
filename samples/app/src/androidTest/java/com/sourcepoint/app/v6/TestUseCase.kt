@@ -15,6 +15,7 @@ import com.sourcepoint.app.v6.TestData.MESSAGE
 import com.sourcepoint.app.v6.TestData.NETWORK
 import com.sourcepoint.app.v6.TestData.OPTIONS
 import com.sourcepoint.app.v6.TestData.PARTIAL_CONSENT_LIST
+import com.sourcepoint.app.v6.TestData.PM_CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.PRIVACY_MANAGER
 import com.sourcepoint.app.v6.TestData.PURPOSES
 import com.sourcepoint.app.v6.TestData.REJECT
@@ -30,9 +31,8 @@ import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.di.customCategoriesDataProd
 import com.sourcepoint.app.v6.di.customVendorDataListProd
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import kotlinx.android.synthetic.main.activity_main_consent.*
-import kotlinx.android.synthetic.main.activity_main_v7.*
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -64,7 +64,7 @@ class TestUseCase {
             }
         }
 
-        fun tapToDisableAllConsent() {
+        fun tapToDisableSomeConsent() {
             CONSENT_LIST_2.forEach { consent ->
                 tapOnToggle2(property = consent, tapOnlyWhen = true)
             }
@@ -76,13 +76,13 @@ class TestUseCase {
             }
         }
 
-        fun checkAllConsentsOn() {
+        fun checkSomeConsentsOn() {
             CONSENT_LIST_2.forEach { consent ->
                 checkConsentState(consent, true, "tcfv2-stack")
             }
         }
 
-        fun checkAllConsentsOff() {
+        fun checkSomeConsentsOff() {
             CONSENT_LIST_2.forEach { consent ->
                 checkConsentState(consent, false, "tcfv2-stack")
             }
@@ -153,6 +153,18 @@ class TestUseCase {
         fun checkAllGdprConsentsOn() {
             GDPR_CONSENT_LIST_2.forEach { consent ->
                 checkConsentState(consent, true, "tcfv2-stack")
+            }
+        }
+
+        fun checkAllTogglesOn() {
+            PM_CONSENT_LIST.forEach { consent ->
+                checkConsentState(consent, true, "tcfv2-stack")
+            }
+        }
+
+        fun checkAllTogglesOFF() {
+            PM_CONSENT_LIST.forEach { consent ->
+                checkConsentState(consent, false, "tcfv2-stack")
             }
         }
 
@@ -391,8 +403,9 @@ class TestUseCase {
             url: String = "",
             useGdprGroupPmIfAvailable: Boolean = false,
             pResetAll: Boolean = true,
+            messageType: MessageType = MessageType.MOBILE,
             spClientObserver: List<SpClient> = emptyList(),
-            diagnostic: List<Pair<String, Any?>> = emptyList()
+            diagnostic: List<Pair<String, Any?>> = emptyList(),
         ): Module {
             return module(override = true) {
                 single<List<SpClient?>> { spClientObserver }
@@ -405,6 +418,7 @@ class TestUseCase {
                         override val spConfig: SpConfig = spConfig
                         override val gdprPmId: String = gdprPmId
                         override val ccpaPmId: String = ccpaPmId
+                        override val messageType: MessageType? = messageType
                         override val customVendorList: List<String> = customVendorDataListProd.map { it.first }
                         override val customCategories: List<String> = customCategoriesDataProd.map { it.first }
                         override val diagnostic: List<Pair<String, Any?>> = diagnostic

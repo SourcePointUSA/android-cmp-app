@@ -2,6 +2,7 @@ package com.sourcepointmeta.metaapp.ui.eventlogs
 
 import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,5 +96,10 @@ class LogFragment : Fragment() {
 
     fun clearLog() {
         adapter.deleteAllItems()
+    }
+
+    fun clearSp() {
+        clearLog()
+        PreferenceManager.getDefaultSharedPreferences(requireContext().applicationContext).edit().clear().apply()
     }
 }

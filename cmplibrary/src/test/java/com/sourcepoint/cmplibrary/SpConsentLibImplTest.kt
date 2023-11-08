@@ -16,7 +16,9 @@ import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.OTT
+import com.sourcepoint.cmplibrary.model.exposed.MessageType
+import com.sourcepoint.cmplibrary.model.exposed.MessageType.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -106,10 +108,9 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
-        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(OTT)
 
         val sut = createLib()
-        sut.loadPrivacyManager("1234", GDPR)
+        sut.loadPrivacyManager("1234", GDPR, LEGACY_OTT)
 
         verify {
             campaignManager.getPmConfig(
@@ -121,7 +122,7 @@ class SpConsentLibImplTest {
             )
         }
 
-        verify { logger.i(any(), "${OTT.code}") }
+        verify { logger.i(any(), LEGACY_OTT.name) }
     }
 
     @Test
@@ -129,7 +130,6 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
-        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(TCFv2)
 
         val sut = createLib()
         sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR)
@@ -144,7 +144,7 @@ class SpConsentLibImplTest {
             )
         }
 
-        verify { logger.i(any(), "${TCFv2.code}") }
+        verify { logger.i(any(), MOBILE.name) }
     }
 
     @Test
@@ -152,10 +152,9 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
-        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(NATIVE_OTT)
 
         val sut = createLib()
-        sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR, true)
+        sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR, true, MessageType.OTT)
 
         verify {
             campaignManager.getPmConfig(
@@ -167,7 +166,7 @@ class SpConsentLibImplTest {
             )
         }
 
-        verify { logger.i(any(), "${NATIVE_OTT.code}") }
+        verify { logger.i(any(), OTT.name) }
     }
 
     @Test
@@ -175,10 +174,9 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
-        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(OTT)
 
         val sut = createLib()
-        sut.loadPrivacyManager("1234", GDPR)
+        sut.loadPrivacyManager("1234", GDPR, LEGACY_OTT)
 
         verify {
             campaignManager.getPmConfig(
@@ -190,7 +188,7 @@ class SpConsentLibImplTest {
             )
         }
 
-        verify { logger.i(any(), "${OTT.code}") }
+        verify { logger.i(any(), LEGACY_OTT.name) }
     }
 
     @Test
@@ -198,10 +196,9 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
-        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(OTT)
 
         val sut = createLib()
-        sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR)
+        sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR, LEGACY_OTT)
 
         verify {
             campaignManager.getPmConfig(
@@ -213,7 +210,7 @@ class SpConsentLibImplTest {
             )
         }
 
-        verify { logger.i(any(), "${OTT.code}") }
+        verify { logger.i(any(), LEGACY_OTT.name) }
     }
 
     @Test
@@ -221,10 +218,9 @@ class SpConsentLibImplTest {
 
         every { campaignManager.getPmConfig(any(), any(), any(), any(), any()) }.returns(Either.Left(RuntimeException()))
         every { campaignManager.getGroupId(any()) }.returns(null)
-        every { campaignManager.getMessSubCategoryByCamp(any()) }.returns(OTT)
 
         val sut = createLib()
-        sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR, true)
+        sut.loadPrivacyManager("1234", PMTab.VENDORS, GDPR, true, LEGACY_OTT)
 
         verify {
             campaignManager.getPmConfig(
@@ -236,7 +232,7 @@ class SpConsentLibImplTest {
             )
         }
 
-        verify { logger.i(any(), "${OTT.code}") }
+        verify { logger.i(any(), LEGACY_OTT.name) }
     }
 
     private fun createLib() = SpConsentLibImpl(

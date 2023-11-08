@@ -2,6 +2,7 @@ package com.sourcepoint.app.v6.core
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 
 interface DataProvider {
@@ -12,6 +13,7 @@ interface DataProvider {
     val useGdprGroupPmIfAvailable: Boolean
     val ccpaPmId: String
     val spConfig: SpConfig
+    val messageType: MessageType?
     val customVendorList: List<String>
     val customCategories: List<String>
     val diagnostic: List<Pair<String, Any?>>
@@ -47,7 +49,8 @@ private class DataProviderImpl(
     override val customCategories: List<String>,
     override val gdprPmId: String,
     override val ccpaPmId: String,
-    override val useGdprGroupPmIfAvailable: Boolean= false,
+    override val messageType: MessageType? = MessageType.MOBILE,
+    override val useGdprGroupPmIfAvailable: Boolean = false,
     override val resetAll: Boolean = false,
     override val authId: String? = null,
     override val diagnostic: List<Pair<String, Any?>> = emptyList()

@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.util
 
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.assertEquals
+import com.sourcepoint.cmplibrary.assertFalse
 import com.sourcepoint.cmplibrary.assertNull
 import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
@@ -13,13 +14,132 @@ import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
-import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.MessageType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
 import org.json.JSONObject
 import org.junit.Test
 
 class HttpUrlManagerTest {
+
+    private val initialPmConfig = PmUrlConfig(
+        pmTab = PMTab.PURPOSES,
+        consentLanguage = "EN",
+        uuid = "uuid",
+        messageId = "111",
+        siteId = "000"
+    )
+
+    @Test
+    fun `GIVEN a DEFAULT(MOBILE), CCPA config VERIFY the correct url query parameters`() {
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, initialPmConfig, MOBILE,)
+        sut.run {
+            toString().contains("cdn.privacy-mgmt.com").assertTrue()
+            queryParameter("site_id").assertEquals("000")
+            queryParameter("is_ccpa").assertEquals("true")
+            queryParameter("consentLanguage").assertEquals("EN")
+            queryParameter("ccpaUUID").assertEquals("uuid")
+            queryParameter("message_id").assertEquals("111")
+            queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
+
+            pathSegments.contains("ccpa_pm").assertTrue()
+            pathSegments.contains("native-ott").assertFalse()
+            pathSegments.contains("ccpa_ott").assertFalse()
+        }
+    }
+
+    @Test
+    fun `GIVEN a DEFAULT(MOBILE), GDPR config VERIFY the correct url query parameters`() {
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, initialPmConfig, MOBILE,)
+        sut.run {
+            toString().contains("cdn.privacy-mgmt.com").assertTrue()
+            queryParameter("pmTab").assertEquals("purposes")
+            queryParameter("site_id").assertEquals("000")
+            queryParameter("preload_consent").assertEquals("true")
+            queryParameter("consentLanguage").assertEquals("EN")
+            queryParameter("consentUUID").assertEquals("uuid")
+            queryParameter("message_id").assertEquals("111")
+            queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
+
+            pathSegments.contains("privacy-manager").assertTrue()
+            pathSegments.contains("privacy-manager-ott").assertFalse()
+            pathSegments.contains("native-ott").assertFalse()
+        }
+    }
+
+    @Test
+    fun `GIVEN an OTT, CCPA config VERIFY the correct url query parameters`() {
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, initialPmConfig, OTT,)
+        sut.run {
+            toString().contains("cdn.privacy-mgmt.com").assertTrue()
+            queryParameter("site_id").assertEquals("000")
+            queryParameter("is_ccpa").assertEquals("true")
+            queryParameter("consentLanguage").assertEquals("EN")
+            queryParameter("ccpaUUID").assertEquals("uuid")
+            queryParameter("message_id").assertEquals("111")
+            queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
+
+            pathSegments.contains("native-ott").assertTrue()
+            pathSegments.contains("ccpa_pm").assertFalse()
+            pathSegments.contains("ccpa_ott").assertFalse()
+        }
+    }
+
+    @Test
+    fun `GIVEN an OTT, GDPR config VERIFY the correct url query parameters`() {
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, initialPmConfig, OTT,)
+        sut.run {
+            toString().contains("cdn.privacy-mgmt.com").assertTrue()
+            queryParameter("pmTab").assertEquals("purposes")
+            queryParameter("site_id").assertEquals("000")
+            queryParameter("preload_consent").assertEquals("true")
+            queryParameter("consentLanguage").assertEquals("EN")
+            queryParameter("consentUUID").assertEquals("uuid")
+            queryParameter("message_id").assertEquals("111")
+            queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
+
+            pathSegments.contains("native-ott").assertTrue()
+            pathSegments.contains("privacy-manager").assertFalse()
+            pathSegments.contains("privacy-manager-ott").assertFalse()
+        }
+    }
+
+    @Test
+    fun `GIVEN a LEGACY_OTT, CCPA config VERIFY the correct url query parameters`() {
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, initialPmConfig, LEGACY_OTT,)
+        sut.run {
+            toString().contains("cdn.privacy-mgmt.com").assertTrue()
+            queryParameter("site_id").assertEquals("000")
+            queryParameter("is_ccpa").assertEquals("true")
+            queryParameter("consentLanguage").assertEquals("EN")
+            queryParameter("ccpaUUID").assertEquals("uuid")
+            queryParameter("message_id").assertEquals("111")
+            queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
+
+            pathSegments.contains("ccpa_ott").assertTrue()
+            pathSegments.contains("ccpa_pm").assertFalse()
+            pathSegments.contains("native-ott").assertFalse()
+        }
+    }
+
+    @Test
+    fun `GIVEN a LEGACY_OTT, GDPR config VERIFY the correct url query parameters`() {
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, initialPmConfig, LEGACY_OTT,)
+        sut.run {
+            toString().contains("cdn.privacy-mgmt.com").assertTrue()
+            queryParameter("pmTab").assertEquals("purposes")
+            queryParameter("site_id").assertEquals("000")
+            queryParameter("preload_consent").assertEquals("true")
+            queryParameter("consentLanguage").assertEquals("EN")
+            queryParameter("consentUUID").assertEquals("uuid")
+            queryParameter("message_id").assertEquals("111")
+            queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
+
+            pathSegments.contains("privacy-manager-ott").assertTrue()
+            pathSegments.contains("native-ott").assertFalse()
+            pathSegments.contains("privacy-manager").assertFalse()
+        }
+    }
 
     @Test
     fun `GIVEN a pmConfig RETURN the GDPR URL`() {
@@ -30,7 +150,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = "000"
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, TCFv2)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, MOBILE,)
         sut.run {
             toString().contains("notice.sp-stage.net").assertTrue()
             queryParameter("pmTab").assertEquals("purposes")
@@ -50,7 +170,7 @@ class HttpUrlManagerTest {
             messageId = null,
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, TCFv2)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, MOBILE,)
         sut.run {
             toString().contains("notice.sp-stage.net").assertTrue()
             queryParameter("pmTab").assertEquals("features")
@@ -62,7 +182,7 @@ class HttpUrlManagerTest {
     }
 
     @Test
-    fun `GIVEN a NATIVE_OTT sub cat RETURN a Native OTT GDPR URL`() {
+    fun `GIVEN a OTT sub cat RETURN a Native OTT GDPR URL`() {
         val pmConfig = PmUrlConfig(
             pmTab = PMTab.FEATURES,
             consentLanguage = null,
@@ -70,7 +190,7 @@ class HttpUrlManagerTest {
             messageId = null,
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, NATIVE_OTT)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.GDPR, pmConfig, OTT,)
         sut.run {
             toString().contains("native-ott/index.html").assertTrue()
             queryParameter("pmTab").assertEquals("features")
@@ -90,7 +210,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.CCPA, pmConfig, TCFv2)
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.STAGE, CampaignType.CCPA, pmConfig, MOBILE,)
         sut.run {
             toString().contains("ccpa-notice.sp-stage.net").assertTrue()
             queryParameter("message_id").assertEquals("111")
@@ -132,7 +252,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = OTT).toString()
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messageType = LEGACY_OTT,).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?pmTab&site_id&preload_consent=true&consentUUID=uuid&message_id=111&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
     }
 
@@ -145,7 +265,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = TCFv2).toString()
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messageType = MOBILE,).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager/index.html?pmTab&site_id&preload_consent=true&consentUUID=uuid&message_id=111&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
     }
 
@@ -158,7 +278,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = NATIVE_OTT).toString()
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messageType = OTT,).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/native-ott/index.html?pmTab&site_id&preload_consent=true&consentUUID=uuid&message_id=111&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
     }
 
@@ -171,7 +291,7 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messSubCat = OTT).toString()
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.GDPR, config, messageType = LEGACY_OTT,).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/privacy-manager-ott/index.html?pmTab&site_id&preload_consent=true&consentUUID=uuid&message_id=111&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
     }
 
@@ -184,8 +304,8 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messSubCat = OTT).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_ott/index.html?site_id&preload_consent=true&ccpaUUID=uuid&message_id=111&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messageType = LEGACY_OTT,).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_ott/index.html?site_id&preload_consent=true&is_ccpa=true&ccpaUUID=uuid&message_id=111&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
     }
 
     @Test
@@ -197,8 +317,8 @@ class HttpUrlManagerTest {
             messageId = "111",
             siteId = null
         )
-        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messSubCat = TCFv2).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_pm/index.html?site_id&preload_consent=true&ccpaUUID=uuid&message_id=111&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+        val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messageType = LEGACY_OTT,).toString()
+        sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_ott/index.html?site_id&preload_consent=true&is_ccpa=true&ccpaUUID=uuid&message_id=111&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
     }
 
     @Test

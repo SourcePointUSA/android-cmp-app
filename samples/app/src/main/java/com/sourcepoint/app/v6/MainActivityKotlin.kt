@@ -1,7 +1,6 @@
 package com.sourcepoint.app.v6
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.method.ScrollingMovementMethod
@@ -75,21 +74,8 @@ class MainActivityKotlin : AppCompatActivity() {
         sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
 
         setContentView(R.layout.activity_main_v7)
-        review_consents_gdpr.setOnClickListener { _v: View? ->
-            spConsentLib.loadPrivacyManager(
-                pmId = dataProvider.gdprPmId,
-                pmTab = PMTab.PURPOSES,
-                campaignType = CampaignType.GDPR,
-                useGroupPmIfAvailable = dataProvider.useGdprGroupPmIfAvailable
-            )
-        }
-        review_consents_ccpa.setOnClickListener { _v: View? ->
-            spConsentLib.loadPrivacyManager(
-                dataProvider.ccpaPmId,
-                PMTab.PURPOSES,
-                CampaignType.CCPA
-            )
-        }
+        review_consents_gdpr.setOnClickListener { _v: View? -> selectGDPRPM(dataProvider) }
+        review_consents_ccpa.setOnClickListener { _v: View? -> selectCCPAPM(dataProvider) }
         clear_all.setOnClickListener { _v: View? ->
             clearAllData(this)
             PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply()
@@ -352,6 +338,46 @@ class MainActivityKotlin : AppCompatActivity() {
             check { it.second as? Int }?.let { v -> spEditor.putInt(it.first, v) }
         }
         spEditor.apply()
+    }
+
+    private fun selectGDPRPM(dataProvider: DataProvider){
+        dataProvider.messageType
+            ?.let {
+                spConsentLib.loadPrivacyManager(
+                    pmId = dataProvider.gdprPmId,
+                    pmTab = PMTab.PURPOSES,
+                    campaignType = CampaignType.GDPR,
+                    useGroupPmIfAvailable = dataProvider.useGdprGroupPmIfAvailable,
+                    messageType = it
+                )
+            }
+            ?: run {
+                spConsentLib.loadPrivacyManager(
+                    pmId = dataProvider.gdprPmId,
+                    pmTab = PMTab.PURPOSES,
+                    campaignType = CampaignType.GDPR,
+                    useGroupPmIfAvailable = dataProvider.useGdprGroupPmIfAvailable
+                )
+            }
+    }
+
+    private fun selectCCPAPM(dataProvider: DataProvider){
+        dataProvider.messageType
+            ?.let {
+                spConsentLib.loadPrivacyManager(
+                    pmId = dataProvider.ccpaPmId,
+                    pmTab = PMTab.PURPOSES,
+                    campaignType = CampaignType.CCPA,
+                    messageType = it
+                )
+            }
+            ?: run {
+                spConsentLib.loadPrivacyManager(
+                    pmId = dataProvider.ccpaPmId,
+                    pmTab = PMTab.PURPOSES,
+                    campaignType = CampaignType.CCPA
+                )
+            }
     }
 }
 
