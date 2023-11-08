@@ -97,6 +97,7 @@ internal fun userConsents(
     return SPConsents(
         ccpa = dataStorage.ccpaConsentStatus
             ?.let { check { JsonConverter.converter.decodeFromString<CcpaCS>(it) }.getOrNull() }
+            ?.copy(applies = dataStorage.ccpaApplies)
             ?.toCCPAConsentInternal()
             ?.let {
                 SPCCPAConsent(
@@ -105,6 +106,7 @@ internal fun userConsents(
             },
         gdpr = dataStorage.gdprConsentStatus
             ?.let { check { JsonConverter.converter.decodeFromString<GdprCS>(it) }.getOrNull() }
+            ?.copy(applies = dataStorage.gdprApplies)
             ?.toGDPRUserConsent()
             ?.let {
                 SPGDPRConsent(
