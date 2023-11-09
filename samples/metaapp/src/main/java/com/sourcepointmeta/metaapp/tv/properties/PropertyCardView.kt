@@ -23,6 +23,7 @@ fun PropertyCardView.bind(item: PropertyDTO) {
     account_id.text = "${item.accountId}"
     gdpr_icon.setImageResource(getResStatusResIcon(item.gdprEnabled))
     ccpa_icon.setImageResource(getResStatusResIcon(item.ccpaEnabled))
+    ccpa_icon.setImageResource(getResStatusResIcon(item.usnatEnabled))
 }
 
 fun getResStatusResIcon(enable: Boolean) = when (enable) {

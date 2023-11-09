@@ -357,6 +357,7 @@ class DemoActivity : FragmentActivity() {
                     when (message.campaignType) {
                         CampaignType.GDPR -> gdprPmId
                         CampaignType.CCPA -> ccpaPmId
+                        CampaignType.USNAT -> throw RuntimeException()
                     }?.let { pmId ->
                         messageController.showOptionNativeMessage(message.campaignType, pmId.toString())
                     }

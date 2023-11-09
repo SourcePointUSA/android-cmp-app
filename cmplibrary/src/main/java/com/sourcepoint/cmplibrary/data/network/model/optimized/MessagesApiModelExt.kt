@@ -104,7 +104,12 @@ internal fun MessagesParamReq.toMetaDataParamReq(campaigns: List<CampaignReq>): 
                     .firstOrNull { it.campaignType == CampaignType.CCPA }
                     ?.let {
                         MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
-                    }
+                    },
+                usnat = campaigns
+                    .firstOrNull { it.campaignType == CampaignType.USNAT }
+                    ?.let {
+                        MetaDataMetaDataParam.MetaDataCampaign(groupPmId = it.groupPmId)
+                    },
             )
         ),
     )

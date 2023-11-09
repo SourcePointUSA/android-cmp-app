@@ -16,6 +16,10 @@ import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.util.check
 import kotlinx.android.synthetic.main.add_property_fragment.view.*
+import kotlinx.android.synthetic.main.add_property_fragment.view.chip_ccpa
+import kotlinx.android.synthetic.main.add_property_fragment.view.chip_gdpr
+import kotlinx.android.synthetic.main.add_property_fragment.view.chip_usnat
+import kotlinx.android.synthetic.main.property_item.view.*
 
 class AddPropertyLayout : ConstraintLayout {
     constructor(context: Context) : super(context)
@@ -35,6 +39,7 @@ internal fun AddPropertyLayout.bind(property: Property) {
     radio_prod.isChecked = !property.is_staging
     chip_gdpr.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.GDPR }?.enabled ?: false
     chip_ccpa.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.CCPA }?.enabled ?: false
+    chip_usnat.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.USNAT }?.enabled ?: false
     message_language_autocomplete.setText(property.messageLanguage)
     message_type_autocomplete.setText(property.messageType.name)
     auth_id_ed.setText(property.authId)
@@ -79,9 +84,11 @@ internal fun AddPropertyLayout.toProperty(): Property {
 
     val chipGdprChecked = chip_gdpr.isChecked
     val chipCcpaChecked = chip_ccpa.isChecked
+    val chipUsnatChecked = chip_usnat.isChecked
 
     val gdprStatus = StatusCampaign(prop_name_ed.text.toString(), CampaignType.GDPR, chipGdprChecked)
     val ccpaStatus = StatusCampaign(prop_name_ed.text.toString(), CampaignType.CCPA, chipCcpaChecked)
+    val usnatStatus = StatusCampaign(prop_name_ed.text.toString(), CampaignType.USNAT, chipUsnatChecked)
 
     val gdprGroupPmId = group_pm_id_ed.text.toString()
 
@@ -97,7 +104,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
         messageLanguage = message_language_autocomplete.text.toString(),
         messageType = MessageType.values().find { it.name == message_type_autocomplete.text.toString() } ?: MessageType.MOBILE,
         pmTab = pm_tab_autocomplete.text.toString(),
-        statusCampaignSet = setOf(gdprStatus, ccpaStatus),
+        statusCampaignSet = setOf(gdprStatus, ccpaStatus, usnatStatus),
         campaignsEnv = if (radio_stage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC,
         gdprGroupPmId = if (gdprGroupPmId.isEmpty() || gdprGroupPmId.isBlank()) null else gdprGroupPmId,
         useGdprGroupPmIfAvailable = gdpr_groupId_switch.isChecked,

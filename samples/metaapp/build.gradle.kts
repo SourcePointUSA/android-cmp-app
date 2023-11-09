@@ -33,6 +33,11 @@ android {
             applicationIdSuffix = ".debug"
             buildConfigField("String", "URL_PROPERTY_FILE", "\"https://raw.githubusercontent.com/SourcePointUSA/android-cmp-app/master/cmplibrary/gradle.properties\"")
         }
+        create("stage") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".stage"
+            buildConfigField("String", "URL_PROPERTY_FILE", "\"https://raw.githubusercontent.com/SourcePointUSA/android-cmp-app/master/cmplibrary/gradle.properties\"")
+        }
         create("preprod") {
             initWith(getByName("debug"))
             applicationIdSuffix = ".preprod"

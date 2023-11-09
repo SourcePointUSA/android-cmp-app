@@ -146,6 +146,18 @@ private class CampaignManagerImpl(
                         )
                     }
 
+                    CampaignType.USNAT -> {
+                        addCampaign(
+                            it.campaignType,
+                            CampaignTemplate(
+                                spp.campaignsEnv,
+                                it.targetingParams.filter { tp -> tp.key != "campaignEnv" },
+                                it.campaignType,
+                                it.groupPmId
+                            )
+                        )
+                    }
+
                     CampaignType.CCPA -> {
                         addCampaign(
                             it.campaignType,
@@ -182,6 +194,14 @@ private class CampaignManagerImpl(
                     )
                 }
                 ?.let { campaigns.add(it) }
+            mapTemplate[CampaignType.USNAT.name]
+                ?.let {
+                    it.toCampaignReqImpl(
+                        targetingParams = it.targetingParams,
+                        campaignsEnv = it.campaignsEnv
+                    )
+                }
+                ?.let { campaigns.add(it) }
             return campaigns
         }
 
@@ -209,6 +229,7 @@ private class CampaignManagerImpl(
         return when (campaignType) {
             CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, useGroupPmIfAvailable, groupPmId)
             CampaignType.CCPA -> getCcpaPmConfig(pmId)
+            CampaignType.USNAT -> getUsNatPmConfig(pmId, groupPmId)
         }
     }
 
@@ -220,8 +241,14 @@ private class CampaignManagerImpl(
         return when (campaignType) {
             CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, false, null)
             CampaignType.CCPA -> getCcpaPmConfig(pmId)
+            CampaignType.USNAT -> throw RuntimeException() // TODO
         }
     }
+
+    private fun getUsNatPmConfig(
+        pmId: String?,
+        groupPmId: String?
+    ): Either<PmUrlConfig> = Either.Left(RuntimeException("UsNatPmConfig TODO"))
 
     private fun getGdprPmConfig(
         pmId: String?,
@@ -306,6 +333,7 @@ private class CampaignManagerImpl(
         return when (campaignType) {
             CampaignType.GDPR -> gdprMessageSubCategory
             CampaignType.CCPA -> ccpaMessageSubCategory
+            CampaignType.USNAT -> throw RuntimeException() // TODO
         }
     }
 
@@ -331,6 +359,14 @@ private class CampaignManagerImpl(
             }
             ?.let { campaigns.add(it) }
         mapTemplate[CampaignType.CCPA.name]
+            ?.let {
+                it.toCampaignReqImpl(
+                    targetingParams = it.targetingParams,
+                    campaignsEnv = it.campaignsEnv
+                )
+            }
+            ?.let { campaigns.add(it) }
+        mapTemplate[CampaignType.USNAT.name]
             ?.let {
                 it.toCampaignReqImpl(
                     targetingParams = it.targetingParams,

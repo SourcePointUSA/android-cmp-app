@@ -81,6 +81,7 @@ fun campaignApplies(context: Context, campaign: CampaignType): Boolean {
     return when (campaign) {
         CampaignType.GDPR -> dataStorage.gdprApplies
         CampaignType.CCPA -> dataStorage.ccpaApplies
+        CampaignType.USNAT -> dataStorage.usNatApplies
     }
 }
 
