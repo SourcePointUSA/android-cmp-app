@@ -1,4 +1,4 @@
-## 7.4.5 (November, 08, 2023)
+## 7.5.0 (November, 09, 2023)
 * [DIA-2940](https://sourcepoint.atlassian.net/browse/DIA-2940) Fix for the applies parameter after saving partial GDPR consent (#734)
 * [DIA-2786](https://sourcepoint.atlassian.net/browse/DIA-2786) Added support fo the new CCPA OTT PM  (#735)
 * [HCD-452](https://sourcepoint.atlassian.net/browse/DIA-452) Add full structure to SpConsent (#733)
