@@ -446,6 +446,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
+        <com.google.android.material.chip.Chip
+                android:id="@+id/chip_usnat"
+                app:layout_constraintTop_toBottomOf="@id/ccpa_chip_group"
+                app:layout_constraintStart_toStartOf="parent"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="USNat"/>
+
+        <Button
+                android:id="@+id/btn_targeting_params_usnat"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:layout_constraintTop_toTopOf="@id/chip_usnat"
+                app:layout_constraintBottom_toBottomOf="@id/chip_usnat"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:icon="@drawable/ic_baseline_add_circle_outline_48"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"/>
+
+        <com.google.android.material.chip.ChipGroup
+                android:id="@+id/usnat_chip_group"
+                app:layout_constraintTop_toBottomOf="@id/chip_usnat"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
         <Button
                 android:id="@+id/save_btn"
                 android:layout_width="match_parent"
@@ -456,7 +493,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/ccpa_chip_group"
+                app:layout_constraintTop_toBottomOf="@+id/usnat_chip_group"
                 app:layout_constraintStart_toStartOf="parent"/>
 
     </com.sourcepointmeta.metaapp.ui.component.AddPropertyLayout>

@@ -278,6 +278,8 @@ private class LocalDataSourceImpl(
                             ?.let { spc -> addCampaign(CampaignType.GDPR, spc, p.gdprGroupPmId) }
                         buildSPCampaign(CampaignType.CCPA, p.statusCampaignSet, p.targetingParameters)
                             ?.let { spc -> addCampaign(CampaignType.CCPA, spc, p.ccpaGroupPmId) }
+                        buildSPCampaign(CampaignType.USNAT, p.statusCampaignSet, p.targetingParameters)
+                            ?.let { spc -> addCampaign(CampaignType.USNAT, spc, p.usnatGroupPmId) }
                     }
                 }
                 ?: throw RuntimeException("Inconsistent state! LocalDataSource.getSPConfig cannot have a SpConfig null!!!")

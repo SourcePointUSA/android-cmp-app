@@ -34,12 +34,6 @@
             app:showAsAction="never"/>
 
     <item
-            android:id="@+id/action_save_old_v6_finnish_690"
-            android:icon="@drawable/ic_baseline_old_6_24"
-            android:title="Save old v6.9 consent FINNISH"
-            app:showAsAction="never"/>
-
-    <item
             android:id="@+id/action_save_cons_711"
             android:icon="@drawable/ic_baseline_old_6_24"
             android:title="Save v7.1.1"
