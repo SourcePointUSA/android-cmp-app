@@ -245,6 +245,11 @@ private class CampaignManagerImpl(
         }
     }
 
+    private fun getUsNatPmConfig(
+        pmId: String?,
+        groupPmId: String?
+    ): Either<PmUrlConfig> = Either.Left(RuntimeException("UsNatPmConfig TODO"))
+
     private fun getGdprPmConfig(
         pmId: String?,
         pmTab: PMTab,

@@ -322,6 +322,27 @@ val defaultProperty15 = Property(
     messageType = MessageType.MOBILE,
 )
 
+val defaultProperty14 = Property(
+    propertyName = "staging.mobile.demo",
+    accountId = 22,
+    gdprPmId = 11111L,
+    ccpaPmId = 1111L,
+    is_staging = false,
+    targetingParameters = emptyList(),
+    timeout = 3000,
+    authId = null,
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    statusCampaignSet = setOf(
+        StatusCampaign("staging.mobile.demo", CampaignType.GDPR, true),
+        StatusCampaign("staging.mobile.demo", CampaignType.CCPA, true),
+        StatusCampaign("staging.mobile.demo", CampaignType.USNAT, true),
+    ),
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    propertyId = 8292,
+    messageType = MessageType.MOBILE,
+)
+
 val propList = listOf(
     defaultProperty1,
     defaultProperty2,
