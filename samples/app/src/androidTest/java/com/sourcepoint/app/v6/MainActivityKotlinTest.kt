@@ -113,6 +113,16 @@ class MainActivityKotlinTest {
         +(CampaignType.CCPA)
     }
 
+    private val spConfBohdan = config {
+        accountId = 22
+        propertyId = 31226
+        propertyName = "mobile.bohdan.test.demo"
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 5000
+        +(CampaignType.GDPR)
+        +(CampaignType.CCPA)
+    }
+
     private val spConfNative = config {
         accountId = 22
         propertyId = 18958
@@ -1168,9 +1178,9 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConf,
-                gdprPmId = "488393",
-                ccpaPmId = "509688",
+                spConfig = spConfBohdan,
+                gdprPmId = "815371",
+                ccpaPmId = "807279",
                 spClientObserver = listOf(spClient),
 //                diagnostic = storedConsent.toList(),
             )
