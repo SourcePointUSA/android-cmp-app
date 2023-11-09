@@ -1170,10 +1170,9 @@ class MainActivityKotlinTest {
      * place where GDPR does not apply and moves to the place where GDPR applies.
      */
     @Test
-    fun given_the_user_changes_location_then_should_update_applies_value() = runBlocking<Unit> {
+    fun GIVEN_the_user_changes_location_SHOULD_update_applies_value() = runBlocking<Unit> {
 
-        // TODO get stored consent with both campaigns applies values as FALSE
-//        val storedConsent = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
+        val storedConsent = JSONObject(TestData.storedConsentV741)
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(
@@ -1182,7 +1181,7 @@ class MainActivityKotlinTest {
                 gdprPmId = "815371",
                 ccpaPmId = "807279",
                 spClientObserver = listOf(spClient),
-//                diagnostic = storedConsent.toList(),
+                diagnostic = storedConsent.toList(),
             )
         )
 
@@ -1195,10 +1194,11 @@ class MainActivityKotlinTest {
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         // TODO check if the applies value of GDPR changed to TRUE
-//        scenario.onActivity { activity ->
-//            PreferenceManager.getDefaultSharedPreferences(activity).run {
-//            }
-//        }
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+
+            }
+        }
     }
 
     private fun <E> check(block: () -> E): E? {

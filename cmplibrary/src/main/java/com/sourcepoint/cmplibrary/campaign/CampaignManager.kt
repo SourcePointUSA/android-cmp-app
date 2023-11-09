@@ -561,6 +561,7 @@ private class CampaignManagerImpl(
         metaDataResp = response
 
         Log.v("DIA-2836", "===== handleMetaDataResponse =====")
+        Log.i("DIA-2836", "response = $response}")
         Log.i("DIA-2836", "gdprApplies = ${response?.gdpr?.applies}")
         Log.i("DIA-2836", "ccpaApplies = ${response?.ccpa?.applies}")
 
