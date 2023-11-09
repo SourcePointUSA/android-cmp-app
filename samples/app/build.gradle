@@ -24,6 +24,10 @@ android {
         debug {
             applicationIdSuffix ".debug"
         }
+        stage {
+            initWith debug
+            applicationIdSuffix ".stage"
+        }
         localProd {
             initWith debug
             applicationIdSuffix ".localProd"

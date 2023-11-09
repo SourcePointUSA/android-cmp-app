@@ -106,6 +106,13 @@ private class DataStorageImpl(
                 ?.applies ?: false
         } ?: false
 
+    override val usNatApplies: Boolean
+        get() = metaDataResp?.let { metaData ->
+            check { JsonConverter.converter.decodeFromString<MetaDataResp>(metaData).usNat }
+                .getOrNull()
+                ?.applies ?: false
+        } ?: false
+
     override val gdprApplies: Boolean
         get() = metaDataResp?.let { metaData ->
             check { JsonConverter.converter.decodeFromString<MetaDataResp>(metaData).gdpr }

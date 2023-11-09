@@ -64,6 +64,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         return when (campaignType) {
             CampaignType.GDPR -> urlPmGdpr(pmConfig, env, messageType)
             CampaignType.CCPA -> urlPmCcpa(pmConfig, env, messageType)
+            CampaignType.USNAT -> throw RuntimeException() // TODO
         }
     }
 
@@ -299,7 +300,7 @@ enum class Env(
         "cdn.sp-stage.net",
         "notice.sp-stage.net",
         "ccpa-notice.sp-stage.net",
-        BuildConfig.ENV_QUERY_PARAM
+        "stage"
     ),
     PRE_PROD(
         "preprod-cdn.privacy-mgmt.com",

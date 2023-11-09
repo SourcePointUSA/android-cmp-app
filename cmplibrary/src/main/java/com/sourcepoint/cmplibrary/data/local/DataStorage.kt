@@ -40,6 +40,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     var gdprConsentStatus: String?
     val gdprApplies: Boolean
     val ccpaApplies: Boolean
+    val usNatApplies: Boolean
     var ccpaConsentStatus: String?
     var messagesOptimizedLocalState: String?
     var nonKeyedLocalState: String?
