@@ -21,7 +21,7 @@ internal data class MetaDataParamReq(
 data class MetaDataResp(
     @SerialName("ccpa") val ccpa: Ccpa?,
     @SerialName("gdpr") val gdpr: Gdpr?,
-    @SerialName("usnat") val usNat: USNat?
+    @SerialName("usnat") val usNat: USNat?,
 ) {
     @Serializable
     data class Ccpa(
