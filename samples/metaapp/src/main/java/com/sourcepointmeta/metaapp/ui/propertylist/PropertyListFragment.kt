@@ -124,7 +124,7 @@ class PropertyListFragment : Fragment() {
                 R.id.action_save_old_v6_consent -> {
                     val editor = sp.edit()
                     editor.putBoolean(OLD_V6_CONSENT, true)
-                    val v6LocalState = JSONObject(oldV6Consent)
+                    val v6LocalState = JSONObject(oldV6Consent670)
                     v6LocalState.keys().forEach {
                         check { v6LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
                         check { v6LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
@@ -136,17 +136,6 @@ class PropertyListFragment : Fragment() {
                     val editor = sp.edit()
                     editor.putBoolean(OLD_V6_CONSENT, true)
                     val v6LocalState = JSONObject(oldV6Consent630)
-                    v6LocalState.keys().forEach {
-                        check { v6LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
-                        check { v6LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
-                        check { v6LocalState.getInt(it) }?.let { v -> editor.putInt(it, v) }
-                    }
-                    editor.apply()
-                }
-                R.id.action_save_old_v6_finnish_690 -> {
-                    val editor = sp.edit()
-                    editor.putBoolean(OLD_V6_CONSENT, true)
-                    val v6LocalState = JSONObject(oldV6ConsentFinnish690)
                     v6LocalState.keys().forEach {
                         check { v6LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
                         check { v6LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }

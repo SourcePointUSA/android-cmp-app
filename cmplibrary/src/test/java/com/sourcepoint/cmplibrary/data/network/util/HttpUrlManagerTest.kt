@@ -222,7 +222,7 @@ class HttpUrlManagerTest {
     @Test
     fun `GIVEN a STAGE env inAppMessageUrl RETURN the stage link`() {
         val sut = HttpUrlManagerSingleton.inAppMessageUrl(Env.STAGE).toString()
-        sut.assertEquals("https://cdn.sp-stage.net/wrapper/v2/get_messages?env=${BuildConfig.ENV_QUERY_PARAM}")
+        sut.assertEquals("https://cdn.sp-stage.net/wrapper/v2/get_messages?env=stage")
     }
 
     @Test
@@ -234,7 +234,7 @@ class HttpUrlManagerTest {
     @Test
     fun `GIVEN a STAGE env sendCustomConsentUrl RETURN the prod link`() {
         val sut = HttpUrlManagerSingleton.sendCustomConsentUrl(Env.STAGE).toString()
-        sut.assertEquals("https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?env=${BuildConfig.ENV_QUERY_PARAM}&inApp=true&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+        sut.assertEquals("https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?env=stage&inApp=true&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
     }
 
     @Test

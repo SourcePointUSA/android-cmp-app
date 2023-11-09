@@ -24,6 +24,7 @@ data class Property(
     val gdprGroupPmId: String? = null,
     val useGdprGroupPmIfAvailable: Boolean = false,
     val ccpaGroupPmId: String? = null,
+    val usnatGroupPmId: String? = null,
     val propertyId: Int,
     val useCcpaGroupPmIfAvailable: Boolean = false,
     val messageType: MessageType = MessageType.MOBILE,
