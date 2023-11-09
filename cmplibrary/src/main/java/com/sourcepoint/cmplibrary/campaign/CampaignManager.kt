@@ -241,7 +241,7 @@ private class CampaignManagerImpl(
         return when (campaignType) {
             CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, false, null)
             CampaignType.CCPA -> getCcpaPmConfig(pmId)
-            CampaignType.USNAT -> throw RuntimeException()
+            CampaignType.USNAT -> throw RuntimeException() // TODO
         }
     }
 
@@ -333,7 +333,7 @@ private class CampaignManagerImpl(
         return when (campaignType) {
             CampaignType.GDPR -> gdprMessageSubCategory
             CampaignType.CCPA -> ccpaMessageSubCategory
-            CampaignType.USNAT -> throw RuntimeException()
+            CampaignType.USNAT -> throw RuntimeException() // TODO
         }
     }
 

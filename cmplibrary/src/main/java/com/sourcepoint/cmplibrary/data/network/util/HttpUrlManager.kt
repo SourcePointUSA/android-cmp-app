@@ -64,7 +64,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         return when (campaignType) {
             CampaignType.GDPR -> urlPmGdpr(pmConfig, env, messageType)
             CampaignType.CCPA -> urlPmCcpa(pmConfig, env, messageType)
-            CampaignType.USNAT -> throw RuntimeException()
+            CampaignType.USNAT -> throw RuntimeException() // TODO
         }
     }
 
