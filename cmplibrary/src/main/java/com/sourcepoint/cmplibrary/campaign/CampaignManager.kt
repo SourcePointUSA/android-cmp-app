@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.campaign
 
+import android.util.Log
 import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.campaign.CampaignManager.Companion.selectPmId
 import com.sourcepoint.cmplibrary.core.Either
@@ -558,6 +559,10 @@ private class CampaignManagerImpl(
     override fun handleMetaDataResponse(response: MetaDataResp?) {
         // update meta data response in the data storage
         metaDataResp = response
+
+        Log.v("DIA-2836", "===== handleMetaDataResponse =====")
+        Log.i("DIA-2836", "gdprApplies = ${response?.gdpr?.applies}")
+        Log.i("DIA-2836", "ccpaApplies = ${response?.ccpa?.applies}")
 
         if (response == null) return
 

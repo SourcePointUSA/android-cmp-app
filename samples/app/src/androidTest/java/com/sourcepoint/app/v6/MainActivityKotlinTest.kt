@@ -1155,6 +1155,42 @@ class MainActivityKotlinTest {
         }
     }
 
+    /**
+     * UI test that verifies the change of the GDPR applies value after the user moves out from the
+     * place where GDPR does not apply and moves to the place where GDPR applies.
+     */
+    @Test
+    fun given_the_user_changes_location_then_should_update_applies_value() = runBlocking<Unit> {
+
+        // TODO get stored consent with both campaigns applies values as FALSE
+//        val storedConsent = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+//                diagnostic = storedConsent.toList(),
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptAllOnWebView() }
+        wr { tapAcceptAllOnWebView() }
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+        // TODO check if the applies value of GDPR changed to TRUE
+//        scenario.onActivity { activity ->
+//            PreferenceManager.getDefaultSharedPreferences(activity).run {
+//            }
+//        }
+    }
+
     private fun <E> check(block: () -> E): E? {
         return try {
             block.invoke()
