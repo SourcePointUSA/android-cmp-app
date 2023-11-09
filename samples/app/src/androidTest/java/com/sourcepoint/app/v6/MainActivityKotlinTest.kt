@@ -113,7 +113,7 @@ class MainActivityKotlinTest {
         +(CampaignType.CCPA)
     }
 
-    private val spConfigMobileBohdanTestGdpr = config {
+    private val spConfigMobileTestGdpr = config {
         accountId = 22
         propertyId = 31226
         propertyName = "mobile.bohdan.test.demo"
@@ -1176,7 +1176,7 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfigMobileBohdanTestGdpr,
+                spConfig = spConfigMobileTestGdpr,
                 gdprPmId = "815371",
                 ccpaPmId = "807279",
                 spClientObserver = listOf(spClient),
