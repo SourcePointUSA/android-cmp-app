@@ -185,7 +185,7 @@ class NetworkClientImplTest {
         val mockCall = mockk<Call>()
         every { okHttp.newCall(any()) }.returns(mockCall)
         every { mockCall.execute() }.returns(mockResp)
-        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null))
+        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null, null))
 
         val param = MetaDataParamReq(
             accountId = 22,
@@ -204,7 +204,7 @@ class NetworkClientImplTest {
         val mockCall = mockk<Call>()
         every { okHttp.newCall(any()) }.returns(mockCall)
         every { mockCall.execute() }.throws(RuntimeException("exception"))
-        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null))
+        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null, null))
 
         val param = MetaDataParamReq(
             accountId = 22,
@@ -223,7 +223,7 @@ class NetworkClientImplTest {
         val mockCall = mockk<Call>()
         every { okHttp.newCall(any()) }.returns(mockCall)
         every { mockCall.execute() }.throws(InterruptedIOException("exception"))
-        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null))
+        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null, null))
 
         val param = MetaDataParamReq(
             accountId = 22,

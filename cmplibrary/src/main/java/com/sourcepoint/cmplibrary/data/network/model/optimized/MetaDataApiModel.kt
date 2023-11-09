@@ -20,7 +20,8 @@ internal data class MetaDataParamReq(
 @Serializable
 data class MetaDataResp(
     @SerialName("ccpa") val ccpa: Ccpa?,
-    @SerialName("gdpr") val gdpr: Gdpr?
+    @SerialName("gdpr") val gdpr: Gdpr?,
+    @SerialName("usnat") val usNat: USNat?,
 ) {
     @Serializable
     data class Ccpa(
@@ -40,13 +41,25 @@ data class MetaDataResp(
         @SerialName("childPmId") val childPmId: String?,
     )
 
+    @Serializable
+    data class USNat(
+        @SerialName("_id") val vendorListId: String?,
+        @SerialName("additionsChangeDate") val additionsChangeDate: String?,
+        @SerialName("applies") val applies: Boolean?,
+        @SerialName("sampleRate") val sampleRate: Double?,
+    )
+
     override fun toString(): String {
         return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
             ?: super.toString()
     }
 }
 @Serializable
-data class MetaDataMetaDataParam(val gdpr: MetaDataCampaign?, val ccpa: MetaDataCampaign?) {
+data class MetaDataMetaDataParam(
+    val gdpr: MetaDataCampaign?,
+    val ccpa: MetaDataCampaign?,
+    val usnat: MetaDataCampaign?,
+) {
     @Serializable
     data class MetaDataCampaign(val groupPmId: String?)
 }
@@ -54,7 +67,8 @@ data class MetaDataMetaDataParam(val gdpr: MetaDataCampaign?, val ccpa: MetaData
 @Serializable
 data class MetaDataArg(
     @SerialName("ccpa") val ccpa: CcpaArg?,
-    @SerialName("gdpr") val gdpr: GdprArg?
+    @SerialName("gdpr") val gdpr: GdprArg?,
+    @SerialName("usnat") val usNat: UsNatArg?,
 ) {
     @Serializable
     data class CcpaArg(
@@ -62,7 +76,7 @@ data class MetaDataArg(
         @SerialName("hasLocalData") val hasLocalData: Boolean? = null,
         @SerialName("groupPmId") val groupPmId: String? = null,
         @SerialName("targetingParams") val targetingParams: JsonElement? = null,
-        @SerialName("uuid") val uuid: String? = null
+        @SerialName("uuid") val uuid: String? = null,
     )
 
     @Serializable
@@ -71,11 +85,21 @@ data class MetaDataArg(
         @SerialName("hasLocalData") val hasLocalData: Boolean? = null,
         @SerialName("groupPmId") val groupPmId: String? = null,
         @SerialName("targetingParams") val targetingParams: JsonElement? = null,
-        @SerialName("uuid") val uuid: String? = null
+        @SerialName("uuid") val uuid: String? = null,
+    )
+
+    @Serializable
+    data class UsNatArg(
+        @SerialName("applies") val applies: Boolean?,
+        @SerialName("hasLocalData") val hasLocalData: Boolean? = null,
+        @SerialName("groupPmId") val groupPmId: String? = null,
+        @SerialName("targetingParams") val targetingParams: JsonElement? = null,
+        @SerialName("uuid") val uuid: String? = null,
     )
 }
 
 internal fun MetaDataResp.toMetaDataArg() = MetaDataArg(
     ccpa = MetaDataArg.CcpaArg(applies = ccpa?.applies),
     gdpr = MetaDataArg.GdprArg(applies = gdpr?.applies),
+    usNat = MetaDataArg.UsNatArg(applies = usNat?.applies),
 )
