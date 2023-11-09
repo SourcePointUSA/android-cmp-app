@@ -1,6 +1,7 @@
 package com.sourcepoint.app.v6
 
 import android.preference.PreferenceManager
+import android.util.Log
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -113,14 +114,13 @@ class MainActivityKotlinTest {
         +(CampaignType.CCPA)
     }
 
-    private val spConfBohdan = config {
+    private val spConfigMobileBohdanTestGdpr = config {
         accountId = 22
         propertyId = 31226
         propertyName = "mobile.bohdan.test.demo"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
         +(CampaignType.GDPR)
-        +(CampaignType.CCPA)
     }
 
     private val spConfNative = config {
@@ -1167,17 +1167,17 @@ class MainActivityKotlinTest {
 
     /**
      * UI test that verifies the change of the GDPR applies value after the user moves out from the
-     * place where GDPR does not apply and moves to the place where GDPR applies.
+     * place where GDPR applies to the place where GDPR does not apply.
      */
     @Test
-    fun GIVEN_the_user_changes_location_SHOULD_update_applies_value() = runBlocking<Unit> {
+    fun GIVEN_the_user_changes_location_SHOULD_update_gdpr_applies_value() = runBlocking<Unit> {
 
         val storedConsent = JSONObject(TestData.storedConsentV741)
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfBohdan,
+                spConfig = spConfigMobileBohdanTestGdpr,
                 gdprPmId = "815371",
                 ccpaPmId = "807279",
                 spClientObserver = listOf(spClient),
@@ -1187,16 +1187,15 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptAllOnWebView() }
-        wr { tapAcceptAllOnWebView() }
-
         wr { verify(exactly = 0) { spClient.onError(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         // TODO check if the applies value of GDPR changed to TRUE
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
-
+                val gdprApplies = getBoolean("sp.gdpr.key.applies", true)
+                Log.v("DIA-2836", "===== GIVEN_the_user_changes_location_SHOULD_update_gdpr_applies_value =====")
+                Log.i("DIA-2836", "gdprApplies = $gdprApplies}")
             }
         }
     }
