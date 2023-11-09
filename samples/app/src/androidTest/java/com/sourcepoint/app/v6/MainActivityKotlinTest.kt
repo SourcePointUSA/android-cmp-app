@@ -1190,12 +1190,9 @@ class MainActivityKotlinTest {
         wr { verify(exactly = 0) { spClient.onError(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
-        // TODO check if the applies value of GDPR changed to TRUE
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
-                val gdprApplies = getBoolean("sp.gdpr.key.applies", true)
-                Log.v("DIA-2836", "===== GIVEN_the_user_changes_location_SHOULD_update_gdpr_applies_value =====")
-                Log.i("DIA-2836", "gdprApplies = $gdprApplies}")
+                getBoolean("sp.gdpr.key.applies", true).assertFalse()
             }
         }
     }
