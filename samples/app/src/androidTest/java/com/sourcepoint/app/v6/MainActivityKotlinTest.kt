@@ -1,7 +1,6 @@
 package com.sourcepoint.app.v6
 
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
