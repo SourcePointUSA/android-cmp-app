@@ -526,7 +526,7 @@ private class ServiceImpl(
         val csParams = messageReq.toConsentStatusParamReq(
             gdprUuid = campaignManager.gdprUuid,
             ccpaUuid = campaignManager.ccpaUuid,
-            usNatUuid = campaignManager.usNatUuid ?: "11a0fe1c-bd4a-43bb-b179-c015f63882bc_7", // TODO do not remove until the getMessage call is done
+            usNatUuid = campaignManager.uSNatConsentData?.uuid ?: "11a0fe1c-bd4a-43bb-b179-c015f63882bc_7", // TODO do not remove until the getMessage call is done
             localState = campaignManager.messagesOptimizedLocalState
         )
 
