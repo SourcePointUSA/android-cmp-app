@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.local
 
 import android.content.SharedPreferences
 
-internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
+internal interface DataStorage : DataStorageGdpr, DataStorageCcpa, DataStorageUSNat {
     companion object {
         const val LOCAL_DATA_VERSION_KEY = "sp.key.localDataVersion"
         const val LOCAL_DATA_VERSION_HARDCODED_VALUE = 1
