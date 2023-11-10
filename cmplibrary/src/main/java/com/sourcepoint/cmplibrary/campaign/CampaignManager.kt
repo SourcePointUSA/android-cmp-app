@@ -78,7 +78,6 @@ internal interface CampaignManager {
     var nonKeyedLocalState: JsonElement?
     var gdprUuid: String?
     var ccpaUuid: String?
-    var usNatUuid: String?
     val hasLocalData: Boolean
     val isGdprExpired: Boolean
     val isCcpaExpired: Boolean
@@ -456,7 +455,7 @@ private class CampaignManagerImpl(
         get() {
             val isGdprPresent = dataStorage.gdprConsentUuid != null
             val isCcpaUuidPresent = dataStorage.ccpaConsentUuid != null
-            val isUSNatUuidPresent = usNatUuid != null
+            val isUSNatUuidPresent = usNatConsentStatus?.uuid != null
             val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
             val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
@@ -582,10 +581,6 @@ private class CampaignManagerImpl(
         set(value) {
             dataStorage.ccpaConsentUuid = value
         }
-
-    override var usNatUuid: String?
-        get() = usNatConsentStatus?.uuid
-        set(value) { usNatConsentStatus?.uuid = value }
 
     override val hasLocalData: Boolean
         get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaConsentStatus != null
