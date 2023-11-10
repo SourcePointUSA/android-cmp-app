@@ -198,8 +198,9 @@ private class ServiceImpl(
                 val body = getMessageBody(
                     accountId = messageReq.accountId,
                     propertyHref = messageReq.propertyHref,
-                    cs = campaignManager.gdprConsentStatus?.consentStatus,
-                    ccpaStatus = campaignManager.ccpaConsentStatus?.status?.name,
+                    gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus,
+                    ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
+                    usNatConsentStatus = campaignManager.usNatConsentData?.consentStatus,
                     campaigns = campaignManager.campaigns4Config,
                     consentLanguage = campaignManager.messageLanguage.value,
                     campaignEnv = campaignManager.spConfig.campaignsEnv,
@@ -226,6 +227,7 @@ private class ServiceImpl(
                     .executeOnRight {
                         it.campaigns?.gdpr?.expirationDate?.let { exDate -> dataStorage.gdprExpirationDate = exDate }
                         it.campaigns?.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
+                        it.campaigns?.usNat?.let { usNat -> campaignManager.usNatConsentData = usNat }
                         campaignManager.also { _ ->
                             messagesOptimizedLocalState = it.localState
                             nonKeyedLocalState = it.nonKeyedLocalState
@@ -246,6 +248,7 @@ private class ServiceImpl(
                                 if ((messageReq.authId != null || campaignManager.shouldCallConsentStatus).not()) {
                                     this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS(metadataResponse.getOrNull()?.gdpr?.applies)
                                     this.ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS(metadataResponse.getOrNull()?.ccpa?.applies)
+                                    this.usNatConsentData = usNatConsentData?.copy(applies = metadataResponse.getOrNull()?.usNat?.applies)
                                 }
                             }
                         }
@@ -526,8 +529,8 @@ private class ServiceImpl(
         val csParams = messageReq.toConsentStatusParamReq(
             gdprUuid = campaignManager.gdprUuid,
             ccpaUuid = campaignManager.ccpaUuid,
-            usNatUuid = campaignManager.uSNatConsentData?.uuid ?: "11a0fe1c-bd4a-43bb-b179-c015f63882bc_7", // TODO do not remove until the getMessage call is done
-            localState = campaignManager.messagesOptimizedLocalState
+            usNatUuid = campaignManager.usNatConsentData?.uuid,
+            localState = campaignManager.messagesOptimizedLocalState,
         )
 
         return getConsentStatus(csParams)
@@ -550,7 +553,7 @@ private class ServiceImpl(
                         csd.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
 
                         // USnat
-                        uSNatConsentData = csd.usnat?.copy(applies = usNatApplies)
+                        usNatConsentData = csd.usnat?.copy(applies = usNatApplies)
                     }
                 }
             }

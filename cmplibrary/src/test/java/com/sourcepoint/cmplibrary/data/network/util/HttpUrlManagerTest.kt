@@ -404,13 +404,14 @@ class HttpUrlManagerTest {
 
         val body = getMessageBody(
             accountId = 22,
-            cs = cs.consentStatusData?.gdpr?.consentStatus,
+            gdprConsentStatus = cs.consentStatusData?.gdpr?.consentStatus,
             propertyHref = "tests.unified-script.com",
             campaigns = list,
-            ccpaStatus = null,
+            ccpaConsentStatus = null,
             consentLanguage = "ES",
             campaignEnv = CampaignsEnv.STAGE,
-            includeDataGppParam = IncludeDataGppParam()
+            includeDataGppParam = IncludeDataGppParam(),
+            usNatConsentStatus = null
         )
 
         val param = MessagesParamReq(
