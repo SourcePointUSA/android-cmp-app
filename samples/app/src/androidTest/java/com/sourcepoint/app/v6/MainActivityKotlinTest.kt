@@ -113,6 +113,15 @@ class MainActivityKotlinTest {
         +(CampaignType.CCPA)
     }
 
+    private val spConfigMobileTestGdpr = config {
+        accountId = 22
+        propertyId = 31226
+        propertyName = "mobile.bohdan.test.demo"
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 5000
+        +(CampaignType.GDPR)
+    }
+
     private val spConfNative = config {
         accountId = 22
         propertyId = 18958
@@ -1151,6 +1160,38 @@ class MainActivityKotlinTest {
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
                 getInt("sp.key.config.propertyId", 0).assertEquals(newPropertyId)
+            }
+        }
+    }
+
+    /**
+     * UI test that verifies the change of the GDPR applies value after the user moves out from the
+     * place where GDPR applies to the place where GDPR does not apply.
+     */
+    @Test
+    fun GIVEN_the_user_changes_location_SHOULD_update_gdpr_applies_value() = runBlocking<Unit> {
+
+        val storedConsent = JSONObject(TestData.storedConsentV741)
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfigMobileTestGdpr,
+                gdprPmId = "815371",
+                ccpaPmId = "807279",
+                spClientObserver = listOf(spClient),
+                diagnostic = storedConsent.toList(),
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+
+        scenario.onActivity { activity ->
+            PreferenceManager.getDefaultSharedPreferences(activity).run {
+                getBoolean("sp.gdpr.key.applies", true).assertFalse()
             }
         }
     }
