@@ -6,10 +6,7 @@ import com.example.uitestutil.* //ktlint-disable
 import com.sourcepoint.cmplibrary.Utils.Companion.spEntries
 import com.sourcepoint.cmplibrary.Utils.Companion.storeTestDataObj
 import com.sourcepoint.cmplibrary.core.getOrNull
-import com.sourcepoint.cmplibrary.data.local.DataStorage
-import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
-import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
-import com.sourcepoint.cmplibrary.data.local.create
+import com.sourcepoint.cmplibrary.data.local.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
@@ -49,7 +46,8 @@ class CampaignManagerImplTest {
     private val ds by lazy {
         val gdprDs = DataStorageGdpr.create(appContext)
         val ccpaDs = DataStorageCcpa.create(appContext)
-        DataStorage.create(appContext, gdprDs, ccpaDs)
+        val usNatDs = DataStorageUSNat.create(appContext)
+        DataStorage.create(appContext, gdprDs, ccpaDs, usNatDs)
     }
 
     private val gdprCampaign = SpCampaign(
