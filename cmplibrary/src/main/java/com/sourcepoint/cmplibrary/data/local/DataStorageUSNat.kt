@@ -9,7 +9,7 @@ internal interface DataStorageUSNat {
 
     val preference: SharedPreferences
 
-    var usNatConsentStatus: String?
+    var usNatConsentData: String?
 
     fun deleteUsNatConsent()
 
@@ -28,7 +28,7 @@ private class DataStorageUSNatImpl(context: Context) : DataStorageUSNat {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    override var usNatConsentStatus: String?
+    override var usNatConsentData: String?
         get() = preference.getString(USNAT_CONSENT_STATUS, null)
         set(value) {
             value?.let {

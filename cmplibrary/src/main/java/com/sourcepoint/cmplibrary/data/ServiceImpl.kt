@@ -550,7 +550,7 @@ private class ServiceImpl(
                         csd.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
 
                         // USnat
-                        usNatConsentStatus = csd.usnat?.copy(applies = usNatApplies)
+                        uSNatConsentData = csd.usnat?.copy(applies = usNatApplies)
                     }
                 }
             }

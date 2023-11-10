@@ -73,7 +73,7 @@ internal interface CampaignManager {
     // Consent Status
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
-    var usNatConsentStatus: USNatConsentData?
+    var uSNatConsentData: USNatConsentData?
     var messagesOptimizedLocalState: JsonElement?
     var nonKeyedLocalState: JsonElement?
     var gdprUuid: String?
@@ -85,7 +85,6 @@ internal interface CampaignManager {
     // dateCreated
     var gdprDateCreated: String?
     var ccpaDateCreated: String?
-    var usNatDateCreated: String?
 
     var metaDataResp: MetaDataResp?
     var choiceResp: ChoiceResp?
@@ -455,7 +454,7 @@ private class CampaignManagerImpl(
         get() {
             val isGdprPresent = dataStorage.gdprConsentUuid != null
             val isCcpaUuidPresent = dataStorage.ccpaConsentUuid != null
-            val isUSNatUuidPresent = usNatConsentStatus?.uuid != null
+            val isUSNatUuidPresent = uSNatConsentData?.uuid != null
             val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
             val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
@@ -529,14 +528,14 @@ private class CampaignManagerImpl(
             }
         }
 
-    override var usNatConsentStatus: USNatConsentData?
+    override var uSNatConsentData: USNatConsentData?
         get() {
-            return dataStorage.usNatConsentStatus?.let { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }
+            return dataStorage.usNatConsentData?.let { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.run {
-                usNatConsentStatus = serialised
+                usNatConsentData = serialised
             }
         }
 
@@ -678,12 +677,6 @@ private class CampaignManagerImpl(
         get() = dataStorage.ccpaDateCreated
         set(value) {
             dataStorage.ccpaDateCreated = value
-        }
-
-    override var usNatDateCreated: String?
-        get() = usNatConsentStatus?.dateCreated
-        set(value) {
-            usNatConsentStatus?.dateCreated = value
         }
 
     override var metaDataResp: MetaDataResp?
