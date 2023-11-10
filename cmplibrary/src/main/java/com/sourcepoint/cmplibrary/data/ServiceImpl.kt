@@ -162,7 +162,8 @@ private class ServiceImpl(
                 triggerConsentStatus(
                     messageReq = messageReq,
                     gdprApplies = metadataResponse.getOrNull()?.gdpr?.applies,
-                    ccpaApplies = metadataResponse.getOrNull()?.ccpa?.applies
+                    ccpaApplies = metadataResponse.getOrNull()?.ccpa?.applies,
+                    usNatApplies = metadataResponse.getOrNull()?.usNat?.applies,
                 )
                     .executeOnLeft { consentStatusError ->
                         onFailure(consentStatusError, true)
@@ -519,11 +520,13 @@ private class ServiceImpl(
     private fun triggerConsentStatus(
         messageReq: MessagesParamReq,
         gdprApplies: Boolean?,
-        ccpaApplies: Boolean?
+        ccpaApplies: Boolean?,
+        usNatApplies: Boolean?,
     ): Either<ConsentStatusResp> {
         val csParams = messageReq.toConsentStatusParamReq(
             gdprUuid = campaignManager.gdprUuid,
             ccpaUuid = campaignManager.ccpaUuid,
+            usNatUuid = campaignManager.uSNatConsentData?.uuid ?: "11a0fe1c-bd4a-43bb-b179-c015f63882bc_7", // TODO do not remove until the getMessage call is done
             localState = campaignManager.messagesOptimizedLocalState
         )
 
@@ -545,6 +548,9 @@ private class ServiceImpl(
                         ccpaUuid = csd.ccpa?.uuid
                         ccpaDateCreated = csd.ccpa?.dateCreated
                         csd.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
+
+                        // USnat
+                        uSNatConsentData = csd.usnat?.copy(applies = usNatApplies)
                     }
                 }
             }
