@@ -118,12 +118,14 @@ internal fun MessagesParamReq.toMetaDataParamReq(campaigns: List<CampaignReq>): 
 internal fun MessagesParamReq.toConsentStatusParamReq(
     gdprUuid: String?,
     ccpaUuid: String?,
+    usNatUuid: String?,
     localState: JsonElement?
 ): ConsentStatusParamReq {
 
     val mdArg = metadataArg?.copy(
         gdpr = metadataArg.gdpr?.copy(uuid = gdprUuid),
-        ccpa = metadataArg.ccpa?.copy(uuid = ccpaUuid)
+        ccpa = metadataArg.ccpa?.copy(uuid = ccpaUuid),
+        usNat = metadataArg.usNat?.copy(uuid = usNatUuid),
     )
 
     return ConsentStatusParamReq(
