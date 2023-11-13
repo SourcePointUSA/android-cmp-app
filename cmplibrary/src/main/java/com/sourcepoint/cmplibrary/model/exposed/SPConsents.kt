@@ -5,7 +5,6 @@ import com.sourcepoint.cmplibrary.model.toJSONObjGrant
 import com.sourcepoint.cmplibrary.model.toTcfJSONObj
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
@@ -122,7 +121,7 @@ internal data class UsNatConsentInternal(
     override val uuid: String? = "",
     override val webConsentPayload: JsonObject?,
     override val url: String?,
-): UsNatConsent
+) : UsNatConsent
 
 internal fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObject {
     ccpa?.consent?.let { ccpaConsent ->
