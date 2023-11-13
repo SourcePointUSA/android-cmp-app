@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.Env
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.util.check
@@ -72,10 +73,15 @@ data class USNatConsentData(
     val applies: Boolean?,
     @SerialName("consentStatus") val consentStatus: ConsentStatus?,
     @SerialName("consentString") val consentString: String?,
-    @SerialName("dateCreated") var dateCreated: String?,
+    @SerialName("dateCreated") override var dateCreated: String?,
     @SerialName("uuid") var uuid: String?,
-    @SerialName("webConsentPayload") val webConsentPayload: JsonObject?
-)
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
+    @SerialName("message") override val message: JsonElement?,
+    @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
+    @SerialName("type") override val type: CampaignType = CampaignType.USNAT,
+    @SerialName("url") override val url: String?,
+    @SerialName("expirationDate") override val expirationDate: String?
+) : CampaignMessage
 
 @Serializable
 data class GdprCS(
