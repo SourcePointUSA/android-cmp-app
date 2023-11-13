@@ -112,11 +112,13 @@ private class ClientEventManagerImpl(
     }
 
     private fun getSPConsents() = check<SPConsents> {
-        val ccpaCached = consentManagerUtils.ccpaConsentOptimized.getOrNull()
         val gdprCached = consentManagerUtils.gdprConsentOptimized.getOrNull()
+        val ccpaCached = consentManagerUtils.ccpaConsentOptimized.getOrNull()
+        val usNatCached = consentManagerUtils.usNatConsent.getOrNull()
         SPConsents(
             gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
-            ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
+            ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) },
+            usNat = usNatCached?.let { usNatConsent -> SpUsNatConsent(consent = usNatConsent) },
         )
     }
 }

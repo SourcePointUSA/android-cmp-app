@@ -566,7 +566,6 @@ private class ServiceImpl(
         )
     }
 
-    // TODO replace returned param with the actual UsNatCS
     fun sendConsentUsNat(
         env: Env,
         consentAction: ConsentActionImpl,
@@ -597,7 +596,22 @@ private class ServiceImpl(
 
             getChoiceResponse = networkClient.getChoice(getChoiceParamReq)
                 .executeOnRight { choiceResponse ->
-                    // TODO implement get choice flow
+
+                    // update local UsNatConsentData
+                    choiceResponse.usNat?.let { usNatChoice ->
+                        campaignManager.usNatConsentData = usNatChoice.copy(
+                            uuid = campaignManager.usNatConsentData?.uuid, // TODO verify if we actually need to update UUID in this case, since we have a single source of truth for all the UsNat params as the object of UsNatConsentData
+                        )
+                    }
+
+                    val spConsents = ConsentManager.responseConsentHandler(
+                        choiceResponse.usNat?.copy(
+                            uuid = campaignManager.usNatConsentData?.uuid, // TODO verify if we actually need to update UUID in this case, since we have a single source of truth for all the UsNat params as the object of UsNatConsentData
+                            applies = dataStorage.usNatApplies, // TODO verify if we actually need to update applies in this case, since we have a single source of truth for all the UsNat params as the object of UsNatConsentData
+                        ),
+                        consentManagerUtils
+                    )
+                    onConsentSuccess?.invoke(spConsents)
                 }
                 .executeOnLeft { error ->
                     (error as? ConsentLibExceptionK)?.let { logger.error(error) }
@@ -612,7 +626,9 @@ private class ServiceImpl(
             propertyId = spConfig.propertyId.toLong(),
             pubData = consentAction.pubData.toJsonObject(),
             sendPvData = false, // TODO fix to an actual value after /pv-data task is done
+//            sendPvData = dataStorage.usNatSamplingResult,
             sampleRate = 1.0, // TODO fix to an actual value after /pv-data task is done
+//            sampleRate = dataStorage.usNatSamplingValue,
             uuid = campaignManager.usNatConsentData?.uuid,
             vendorListId = "", // TODO fix to an actual value after get consent flow above is done
         )
@@ -624,8 +640,14 @@ private class ServiceImpl(
         )
 
         networkClient.storeUsNatChoice(usNatPostChoiceParam)
-            .executeOnRight {
-                // TODO implement
+            .executeOnRight { postChoiceUsNatResponse ->
+                if (consentAction.actionType.isAcceptOrRejectAll().not()) {
+                    val spConsents = ConsentManager.responseConsentHandler(
+                        usNat = postChoiceUsNatResponse.copy(applies = dataStorage.usNatApplies),
+                        consentManagerUtils = consentManagerUtils,
+                    )
+                    onConsentSuccess?.invoke(spConsents)
+                }
             }
             .executeOnLeft { error ->
                 (error as? ConsentLibExceptionK)?.let { logger.error(error) }
@@ -669,7 +691,7 @@ private class ServiceImpl(
                         ccpaDateCreated = csd.ccpa?.dateCreated
                         csd.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
 
-                        // USnat
+                        // UsNat
                         usNatConsentData = csd.usnat?.copy(applies = usNatApplies)
                     }
                 }

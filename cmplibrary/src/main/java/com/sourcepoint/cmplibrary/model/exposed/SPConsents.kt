@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.model.toJSONObjGrant
 import com.sourcepoint.cmplibrary.model.toTcfJSONObj
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
@@ -14,7 +15,8 @@ import org.json.JSONObject
 
 data class SPConsents(
     val gdpr: SPGDPRConsent? = null,
-    val ccpa: SPCCPAConsent? = null
+    val ccpa: SPCCPAConsent? = null,
+    val usNat: SpUsNatConsent? = null,
 )
 
 data class SPCustomConsents(
@@ -27,6 +29,10 @@ data class SPGDPRConsent(
 
 data class SPCCPAConsent(
     val consent: CCPAConsent
+)
+
+data class SpUsNatConsent(
+    val consent: UsNatConsent,
 )
 
 @Serializable
@@ -96,6 +102,28 @@ enum class CcpaStatus {
     unknown
 }
 
+// TODO check if this is the full pack of params that UsNatConsent requires
+interface UsNatConsent {
+    val applies: Boolean
+    val consentStatus: ConsentStatus?
+    val consentString: String?
+    val dateCreated: String?
+    val uuid: String?
+    val webConsentPayload: JsonObject?
+    val url: String?
+}
+
+// TODO same as above
+internal data class UsNatConsentInternal(
+    override val applies: Boolean,
+    override val consentStatus: ConsentStatus?,
+    override val consentString: String?,
+    override val dateCreated: String?,
+    override val uuid: String? = "",
+    override val webConsentPayload: JsonObject?,
+    override val url: String?,
+): UsNatConsent
+
 internal fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObject {
     ccpa?.consent?.let { ccpaConsent ->
         if (ccpaConsent.isWebConsentEligible()) {
@@ -113,12 +141,24 @@ internal fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObj
             }
         }
     }
+    usNat?.consent?.let { usNatConsent ->
+        if (usNatConsent.isWebConsentEligible()) {
+            // TODO verify if the key is correct
+            putJsonObject("usnat") {
+                put("uuid", JsonPrimitive(usNatConsent.uuid))
+                put("webConsentPayload", JsonPrimitive(usNatConsent.webConsentPayload.toString()))
+            }
+        }
+    }
 }
 
 internal fun GDPRConsent.isWebConsentEligible(): Boolean =
     uuid.isNullOrEmpty().not() && webConsentPayload.isNullOrEmpty().not()
 
 internal fun CCPAConsent.isWebConsentEligible(): Boolean =
+    uuid.isNullOrEmpty().not() && webConsentPayload.isNullOrEmpty().not()
+
+internal fun UsNatConsent.isWebConsentEligible(): Boolean =
     uuid.isNullOrEmpty().not() && webConsentPayload.isNullOrEmpty().not()
 
 internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
@@ -168,9 +208,22 @@ internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
     }
 }
 
+// TODO verify if the following list of the params is sufficient
+internal fun UsNatConsentInternal.toJsonObject(): JSONObject {
+    return JSONObject().apply {
+        put("applies", applies)
+        put("consentStatus", consentStatus?.toJSONObj())
+        put("consentString", consentString)
+        put("dateCreated", dateCreated)
+        put("uuid", uuid)
+        put("url", url)
+    }
+}
+
 internal fun SPConsents.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("gdpr", (gdpr?.consent as? GDPRConsentInternal)?.toJsonObject())
         put("ccpa", (ccpa?.consent as? CCPAConsentInternal)?.toJsonObject())
+        put("usnat", (usNat?.consent as? UsNatConsentInternal)?.toJsonObject())
     }
 }

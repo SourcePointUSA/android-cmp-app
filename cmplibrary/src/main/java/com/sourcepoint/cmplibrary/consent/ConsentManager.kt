@@ -8,8 +8,10 @@ import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInternal
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
+import com.sourcepoint.cmplibrary.data.network.model.optimized.toUsNatConsentInternal
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
@@ -17,6 +19,7 @@ import com.sourcepoint.cmplibrary.model.NativeConsentAction
 import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.model.exposed.SPGDPRConsent
+import com.sourcepoint.cmplibrary.model.exposed.SpUsNatConsent
 import com.sourcepoint.cmplibrary.model.toConsentAction
 import com.sourcepoint.cmplibrary.util.check
 
@@ -40,9 +43,11 @@ internal interface ConsentManager {
             consentManagerUtils: ConsentManagerUtils
         ): SPConsents {
             val ccpaCached = consentManagerUtils.ccpaConsentOptimized.getOrNull()
+            val usNatCached = consentManagerUtils.usNatConsent.getOrNull()
             return SPConsents(
                 gdpr = gdpr?.let { SPGDPRConsent(it.toGDPRUserConsent()) },
-                ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
+                ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) },
+                usNat = usNatCached?.let { usNatConsent -> SpUsNatConsent(consent = usNatConsent) },
             )
         }
 
@@ -51,9 +56,24 @@ internal interface ConsentManager {
             consentManagerUtils: ConsentManagerUtils
         ): SPConsents {
             val gdprCached = consentManagerUtils.gdprConsentOptimized.getOrNull()
+            val usNatCached = consentManagerUtils.usNatConsent.getOrNull()
             return SPConsents(
                 gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
                 ccpa = ccpa?.let { SPCCPAConsent(it.toCCPAConsentInternal()) },
+                usNat = usNatCached?.let { usNatConsent -> SpUsNatConsent(consent = usNatConsent) },
+            )
+        }
+
+        internal fun responseConsentHandler(
+            usNat: USNatConsentData?,
+            consentManagerUtils: ConsentManagerUtils,
+        ): SPConsents {
+            val gdprCached = consentManagerUtils.gdprConsentOptimized.getOrNull()
+            val ccpaCached = consentManagerUtils.ccpaConsentOptimized.getOrNull()
+            return SPConsents(
+                gdpr = gdprCached?.let { gdprConsent -> SPGDPRConsent(consent = gdprConsent) },
+                ccpa = ccpaCached?.let { ccpaConsent -> SPCCPAConsent(consent = ccpaConsent) },
+                usNat = usNat?.let { SpUsNatConsent(it.toUsNatConsentInternal()) },
             )
         }
     }
@@ -86,7 +106,8 @@ private class ConsentManagerImpl(
     override val hasStoredConsent: Boolean
         get() {
             return dataStorage.ccpaConsentStatus != null ||
-                dataStorage.gdprConsentStatus != null
+                dataStorage.gdprConsentStatus != null ||
+                dataStorage.usNatConsentData != null
         }
 
     override fun enqueueConsent(consentActionImpl: ConsentActionImpl) {
@@ -101,9 +122,11 @@ private class ConsentManagerImpl(
         check {
             val ccpaCached = consentManagerUtils.ccpaConsentOptimized.getOrNull()
             val gdprCached = consentManagerUtils.gdprConsentOptimized.getOrNull()
+            val usNatCached = consentManagerUtils.usNatConsent.getOrNull()
             SPConsents(
                 gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
-                ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) }
+                ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) },
+                usNat = usNatCached?.let { usNatConsent -> SpUsNatConsent(consent = usNatConsent) },
             ).let { sPConsentsSuccess?.invoke(it) }
         }
     }
