@@ -73,7 +73,7 @@ internal interface CampaignManager {
     // Consent Status
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
-    var uSNatConsentData: USNatConsentData?
+    var usNatConsentData: USNatConsentData?
     var messagesOptimizedLocalState: JsonElement?
     var nonKeyedLocalState: JsonElement?
     var gdprUuid: String?
@@ -435,7 +435,11 @@ private class CampaignManagerImpl(
                 ?.let { true }
                 ?: false
 
-            val res = (isNewUser || ccpaToBeCompleted || gdprToBeCompleted)
+            val usNatToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.USNAT }
+                ?.let { true }
+                ?: false
+
+            val res = (isNewUser || ccpaToBeCompleted || gdprToBeCompleted || usNatToBeCompleted)
 
             logger?.computation(
                 tag = "shouldCallMessages",
@@ -443,6 +447,7 @@ private class CampaignManagerImpl(
                 isNewUser[$isNewUser]
                 ccpaToBeCompleted[$ccpaToBeCompleted]
                 gdprToBeCompleted[$gdprToBeCompleted]
+                usNatToBeCompleted[$usNatToBeCompleted]
                 shouldCallMessages[$res]  
                 """.trimIndent()
             )
@@ -454,7 +459,7 @@ private class CampaignManagerImpl(
         get() {
             val isGdprPresent = dataStorage.gdprConsentUuid != null
             val isCcpaUuidPresent = dataStorage.ccpaConsentUuid != null
-            val isUSNatUuidPresent = uSNatConsentData?.uuid != null
+            val isUsNatUuidPresent = usNatConsentData?.uuid != null
             val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
             val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
             val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
@@ -462,7 +467,7 @@ private class CampaignManagerImpl(
                 dataStorage.localDataVersion != DataStorage.LOCAL_DATA_VERSION_HARDCODED_VALUE
 
             val isEligibleForCallingConsentStatus =
-                ((isGdprPresent || isCcpaUuidPresent || isUSNatUuidPresent) && isLocalStateEmpty) ||
+                ((isGdprPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty) ||
                     isV6LocalStatePresent ||
                     isV6LocalStatePresent2 ||
                     hasNonEligibleLocalDataVersion
@@ -471,7 +476,7 @@ private class CampaignManagerImpl(
                 tag = "shouldCallConsentStatus",
                 msg = """
                 isGdprPresent[$isGdprPresent] - isCcpaUuidPresent[$isCcpaUuidPresent]
-                isUSNatUuidPresent[$isUSNatUuidPresent] - isLocalStateEmpty[$isLocalStateEmpty]
+                isUSNatUuidPresent[$isUsNatUuidPresent] - isLocalStateEmpty[$isLocalStateEmpty]
                 isV6LocalStatePresent[$isV6LocalStatePresent] - isV6LocalStatePresent2[$isV6LocalStatePresent2]
                 hasNonEligibleLocalDataVersion[$hasNonEligibleLocalDataVersion]
                 isEligibleForCallingConsentStatus[$isEligibleForCallingConsentStatus]
@@ -528,7 +533,7 @@ private class CampaignManagerImpl(
             }
         }
 
-    override var uSNatConsentData: USNatConsentData?
+    override var usNatConsentData: USNatConsentData?
         get() {
             return dataStorage.usNatConsentData?.let { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }
         }

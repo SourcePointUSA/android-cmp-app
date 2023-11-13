@@ -42,6 +42,7 @@ data class MessagesResp(
             val list = mutableListOf<CampaignMessage>().apply {
                 campaigns?.gdpr?.let { add(it) }
                 campaigns?.ccpa?.let { add(it) }
+                campaigns?.usNat?.let { add(it) }
             }.associateBy { it.type.toCategoryId() }
             return priority.mapNotNull { list[it] }.toSet().toList()
         }
@@ -83,7 +84,8 @@ data class MessageMetaData(
 @Serializable
 data class Campaigns(
     @SerialName("CCPA") val ccpa: CCPA?,
-    @SerialName("GDPR") val gdpr: GDPR?
+    @SerialName("GDPR") val gdpr: GDPR?,
+    @SerialName("usnat") val usNat: USNatConsentData?,
 )
 
 @Serializable

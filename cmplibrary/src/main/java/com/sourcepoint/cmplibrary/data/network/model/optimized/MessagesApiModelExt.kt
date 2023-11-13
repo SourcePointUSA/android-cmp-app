@@ -14,8 +14,9 @@ internal fun getMessageBody(
     propertyHref: String,
     accountId: Long,
     campaigns: List<CampaignReq>,
-    cs: ConsentStatus?,
-    ccpaStatus: String?,
+    gdprConsentStatus: ConsentStatus?,
+    ccpaConsentStatus: String?,
+    usNatConsentStatus: ConsentStatus?,
     consentLanguage: String?,
     campaignEnv: CampaignsEnv?,
     includeDataGppParam: IncludeDataGppParam?,
@@ -38,7 +39,7 @@ internal fun getMessageBody(
         }
         put("propertyHref", "https://$propertyHref")
         put("hasCSP", true)
-        put("campaigns", campaigns.toMetadataBody(cs, ccpaStatus))
+        put("campaigns", campaigns.toMetadataBody(gdprConsentStatus, ccpaConsentStatus, usNatConsentStatus))
         put("consentLanguage", consentLanguage)
         putJsonObject("os") {
             put("name", os.name)
@@ -49,7 +50,8 @@ internal fun getMessageBody(
 
 internal fun List<CampaignReq>.toMetadataBody(
     gdprConsentStatus: ConsentStatus? = null,
-    ccpaConsentStatus: String? = null
+    ccpaConsentStatus: String? = null,
+    usNatConsentStatus: ConsentStatus? = null,
 ): JsonObject {
     return buildJsonObject {
         this@toMetadataBody.forEach { c ->
@@ -64,6 +66,13 @@ internal fun List<CampaignReq>.toMetadataBody(
                 if (c.campaignType == CampaignType.CCPA) {
                     put("status", ccpaConsentStatus ?: "")
                     put("hasLocalData", ccpaConsentStatus != null)
+                }
+                if (c.campaignType == CampaignType.USNAT) {
+                    put(
+                        "consentStatus",
+                        usNatConsentStatus?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonObject(mapOf())
+                    )
+                    put("hasLocalData", usNatConsentStatus != null)
                 }
                 putJsonObject("targetingParams") {
                     c.targetingParams.forEach { t -> put(t.key, t.value) }
