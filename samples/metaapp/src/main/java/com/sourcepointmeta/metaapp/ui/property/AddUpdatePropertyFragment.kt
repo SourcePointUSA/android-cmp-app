@@ -112,6 +112,21 @@ class AddUpdatePropertyFragment : Fragment() {
                 .show()
         }
 
+        btn_targeting_params_usnat.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Add new targeting parameter")
+                .setView(R.layout.add_targeting_parameter)
+                .setPositiveButton("Create") { dialog, _ ->
+                    (dialog as? AlertDialog)?.let { d ->
+                        val key = d.tp_key_ed.text
+                        val value = d.tp_value_et.text
+                        usnat_chip_group.addChip("$key:$value")
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+
         save_btn.setOnClickListener {
             viewModel.createOrUpdateProperty(add_property_layout.toProperty())
         }
