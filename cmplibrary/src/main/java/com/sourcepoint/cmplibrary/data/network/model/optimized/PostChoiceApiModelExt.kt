@@ -72,3 +72,38 @@ internal fun postChoiceCcpaBody(
         }
     }
 }
+
+internal fun postChoiceUsNatBody(
+    granularStatus: ConsentStatus.GranularStatus?,
+    idfaStatus: String? = null,
+    messageId: Long? = null,
+    saveAndExitVariables: JsonObject? = null,
+    propertyId: Long,
+    pubData: JsonObject? = null,
+    sendPvData: Boolean?,
+    sampleRate: Double,
+    uuid: String? = null,
+    vendorListId: String?,
+): JsonObject = buildJsonObject {
+    put("granularStatus", granularStatus?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonNull)
+    idfaStatus?.let { put("idfaStatus", it) } // TODO figure out what is this IDFA status
+    messageId?.let { put("messageId", it) }
+    saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
+    put("propertyId", propertyId)
+    put("pubData", pubData ?: JsonObject(mapOf()))
+    put("sendPVData", sendPvData)
+    put("sampleRate", sampleRate)
+    uuid?.let { put("uuid", it) }
+    put("vendorListId", vendorListId)
+    putJsonObject("includeData") {
+        putJsonObject("TCData") {
+            put("type", "RecordString")
+        }
+        putJsonObject("localState") {
+            put("type", "RecordString")
+        }
+        putJsonObject("webConsentPayload") {
+            put("type", "RecordString")
+        }
+    }
+}

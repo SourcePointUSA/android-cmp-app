@@ -28,6 +28,7 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.extractIncludeGppDataParamIfEligible
+import com.sourcepoint.cmplibrary.util.extensions.isAcceptOrRejectAll
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
@@ -384,7 +385,11 @@ private class ServiceImpl(
                 ).map { ChoiceResp(ccpa = it) }
             }
             USNAT -> {
-                Either.Left(RuntimeException())
+                sendConsentUsNat(
+                    env = env,
+                    consentAction = consentActionImpl,
+                    onConsentSuccess = sPConsentsSuccess,
+                ).map { ChoiceResp(usNat = it) }
             }
         }
     }
@@ -558,6 +563,77 @@ private class ServiceImpl(
         campaignManager.ccpaConsentStatus ?: throw InvalidConsentResponse(
             cause = null,
             "The CCPA consent object cannot be null!!!"
+        )
+    }
+
+    // TODO replace returned param with the actual UsNatCS
+    fun sendConsentUsNat(
+        env: Env,
+        consentAction: ConsentActionImpl,
+        onConsentSuccess: ((SPConsents) -> Unit)?,
+    ): Either<USNatConsentData> = check {
+
+        var getChoiceResponse: ChoiceResp? = null
+
+        if (consentAction.actionType.isAcceptOrRejectAll()) {
+            // TODO implement GET choice flow for UsNat campaign
+
+            val getChoiceParamReq = GetChoiceParamReq(
+                choiceType = consentAction.actionType.toChoiceTypeParam(),
+                accountId = spConfig.accountId.toLong(),
+                propertyId = spConfig.propertyId.toLong(),
+                env = env,
+                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(
+                    gdpr = null,
+                    ccpa = null,
+                ),
+                includeData = IncludeData.generateIncludeDataForGetChoice(
+                    gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                ),
+                hasCsp = true,
+                includeCustomVendorsRes = false,
+                withSiteActions = false,
+            )
+
+            getChoiceResponse = networkClient.getChoice(getChoiceParamReq)
+                .executeOnRight { choiceResponse ->
+                    // TODO implement get choice flow
+                }
+                .executeOnLeft { error ->
+                    (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+                }
+                .getOrNull()
+        }
+
+        val body = postChoiceUsNatBody(
+            granularStatus = campaignManager.usNatConsentData?.consentStatus?.granularStatus,
+            messageId = campaignManager.usNatConsentData?.messageMetaData?.messageId?.toLong(),
+            saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
+            propertyId = spConfig.propertyId.toLong(),
+            pubData = consentAction.pubData.toJsonObject(),
+            sendPvData = false, // TODO fix to an actual value after /pv-data task is done
+            sampleRate = 1.0, // TODO fix to an actual value after /pv-data task is done
+            uuid = campaignManager.usNatConsentData?.uuid,
+            vendorListId = "", // TODO fix to an actual value after get consent flow above is done
+        )
+
+        val usNatPostChoiceParam = PostChoiceParamReq(
+            env = env,
+            actionType = consentAction.actionType,
+            body = body,
+        )
+
+        networkClient.storeUsNatChoice(usNatPostChoiceParam)
+            .executeOnRight {
+                // TODO implement
+            }
+            .executeOnLeft { error ->
+                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+            }
+
+        campaignManager.usNatConsentData ?: throw InvalidConsentResponse(
+            cause = null,
+            description = "The UsNat consent data cannot be null!!!",
         )
     }
 

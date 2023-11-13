@@ -243,4 +243,28 @@ private class NetworkClientImpl(
 
         responseManager.parsePostCcpaChoiceResp(response)
     }
+
+    // TODO replace returned param with the actual UsNatCS
+    override fun storeUsNatChoice(param: PostChoiceParamReq): Either<USNatConsentData> = check(ApiRequestPostfix.POST_CHOICE_USNAT) {
+        val url = urlManager.postUsNatChoiceUrl(param)
+        val mediaType = "application/json".toMediaType()
+        val jsonBody = param.body.toString()
+        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
+
+        logger.req(
+            tag = "storeUsNatChoice",
+            url = url.toString(),
+            body = jsonBody,
+            type = "POST"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parsePostUsNatChoiceResp(response)
+    }
 }
