@@ -82,6 +82,18 @@ internal fun AddPropertyLayout.toProperty(): Property {
         }
         .toMutableList()
 
+    val usNatTp = usnat_chip_group.children
+        .map { (it as Chip).text.split(":") }
+        .map {
+            MetaTargetingParam(
+                propertyName = prop_name_ed.text.toString(),
+                campaign = CampaignType.USNAT,
+                key = it[0],
+                value = it[1]
+            )
+        }
+        .toMutableList()
+
     val chipGdprChecked = chip_gdpr.isChecked
     val chipCcpaChecked = chip_ccpa.isChecked
     val chipUsnatChecked = chip_usnat.isChecked
@@ -98,7 +110,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
         gdprPmId = gdpr_pm_id_ed.text.toString().toLongOrNull(),
         ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull(),
         is_staging = radio_stage.isChecked,
-        targetingParameters = ccpaTp + gdprTp,
+        targetingParameters = ccpaTp + gdprTp + usNatTp,
         timeout = timeout_ed.text.toString().toTimeout(),
         authId = auth_id_ed.text.toString(),
         messageLanguage = message_language_autocomplete.text.toString(),
