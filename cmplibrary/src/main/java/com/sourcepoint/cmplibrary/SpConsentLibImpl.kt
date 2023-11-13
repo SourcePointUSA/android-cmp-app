@@ -688,7 +688,7 @@ internal class SpConsentLibImpl(
                     }
                     .executeOnLeft { spClient.onError(it) }
             }
-            CampaignType.CCPA -> {
+            CampaignType.CCPA, CampaignType.USNAT -> {
                 viewManager.removeView(view)
                 campaignManager.getPmConfig(campaignType = l, pmId = actionImpl.privacyManagerId, pmTab = null)
                     .map { pmUrlConfig ->

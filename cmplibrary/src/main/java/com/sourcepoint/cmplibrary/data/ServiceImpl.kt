@@ -31,6 +31,7 @@ import com.sourcepoint.cmplibrary.util.extensions.isAcceptOrRejectAll
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
+import com.sourcepoint.cmplibrary.util.isIncluded
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONArray

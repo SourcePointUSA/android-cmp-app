@@ -243,7 +243,7 @@ private class CampaignManagerImpl(
         return when (campaignType) {
             CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, false, null)
             CampaignType.CCPA -> getCcpaPmConfig(pmId)
-            CampaignType.USNAT -> throw RuntimeException() // TODO
+            CampaignType.USNAT -> getUsNatPmConfig(pmId)
         }
     }
 
@@ -326,6 +326,34 @@ private class CampaignManagerImpl(
         PmUrlConfig(
             consentLanguage = spConfig.messageLanguage.value,
             uuid = ccpaUuid,
+            siteId = spConfig.propertyId.toString(),
+            messageId = usedPmId
+        )
+    }
+
+    private fun getUsNatPmConfig(pmId: String?): Either<PmUrlConfig> = check {
+        val childPmId: String? = null
+        val isChildPmIdAbsent: Boolean = childPmId == null
+        val hasGroupPmId = false // feature not yet implemented
+        val useGroupPmIfAvailable = false // feature not yet implemented
+
+        if (hasGroupPmId && useGroupPmIfAvailable && isChildPmIdAbsent) {
+            logger?.error(
+                ChildPmIdNotFound(
+                    description = """
+                              childPmId not found!!!
+                              GroupPmId[groupPmId]
+                              useGroupPmIfAvailable [true] 
+                    """.trimIndent()
+                )
+            )
+        }
+
+        val usedPmId = childPmId ?: pmId
+
+        PmUrlConfig(
+            consentLanguage = spConfig.messageLanguage.value,
+            uuid = usNatConsentData?.uuid,
             siteId = spConfig.propertyId.toString(),
             messageId = usedPmId
         )
