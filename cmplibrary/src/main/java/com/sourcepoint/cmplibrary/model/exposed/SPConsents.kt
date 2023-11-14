@@ -103,7 +103,6 @@ enum class CcpaStatus {
     unknown
 }
 
-// TODO check if this is the full pack of params that UsNatConsent requires
 interface UsNatConsent {
     val applies: Boolean
     val consentStatus: USNatConsentStatus?
@@ -114,7 +113,6 @@ interface UsNatConsent {
     val url: String?
 }
 
-// TODO same as above
 internal data class UsNatConsentInternal(
     override val applies: Boolean = false,
     override val consentStatus: USNatConsentStatus? = null,
@@ -144,7 +142,6 @@ internal fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObj
     }
     usNat?.consent?.let { usNatConsent ->
         if (usNatConsent.isWebConsentEligible()) {
-            // TODO verify if the key is correct
             putJsonObject("usnat") {
                 put("uuid", JsonPrimitive(usNatConsent.uuid))
                 put("webConsentPayload", JsonPrimitive(usNatConsent.webConsentPayload.toString()))
@@ -209,7 +206,6 @@ internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
     }
 }
 
-// TODO verify if the following list of the params is sufficient
 internal fun UsNatConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("applies", applies)
