@@ -47,10 +47,13 @@ internal fun AddPropertyLayout.bind(property: Property) {
     gdpr_pm_id_ed.setText(property.gdprPmId?.toString() ?: "")
     ccpa_pm_id_ed.setText(property.ccpaPmId?.toString() ?: "")
     message_language_autocomplete.setText(property.messageLanguage)
-    val (gdprTp, ccpaTp) = property.targetingParameters.partition { it.campaign == CampaignType.GDPR }
+    val gdprTp = property.targetingParameters.filter { it.campaign == CampaignType.GDPR }
+    val ccpaTp = property.targetingParameters.filter { it.campaign == CampaignType.CCPA }
+    val usnatTp = property.targetingParameters.filter { it.campaign == CampaignType.USNAT }
     // campaignEnv is presented as a radio btn, no need to add it as chip
     gdprTp.forEach { gdpr_chip_group.addChip("${it.key}:${it.value}") }
     ccpaTp.forEach { ccpa_chip_group.addChip("${it.key}:${it.value}") }
+    usnatTp.forEach { usnat_chip_group.addChip("${it.key}:${it.value}") }
     timeout_ed.setText("${property.timeout ?: 3000}")
     group_pm_id_ed.setText(property.gdprGroupPmId ?: "")
     gdpr_groupId_switch.isChecked = property.useGdprGroupPmIfAvailable
