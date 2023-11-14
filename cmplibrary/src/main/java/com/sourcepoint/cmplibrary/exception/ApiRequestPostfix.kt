@@ -10,4 +10,5 @@ internal enum class ApiRequestPostfix(
     GET_CHOICE("_get-choice"),
     POST_CHOICE_GDPR("_post-choice_gdpr"),
     POST_CHOICE_CCPA("_post-choice_ccpa"),
+    POST_CHOICE_USNAT("_post-choice_usnat"),
 }

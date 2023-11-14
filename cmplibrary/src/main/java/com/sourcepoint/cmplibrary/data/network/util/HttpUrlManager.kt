@@ -36,6 +36,7 @@ internal interface HttpUrlManager {
     fun getChoiceUrl(param: GetChoiceParamReq): HttpUrl
     fun getGdprChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl
+    fun postUsNatChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun getPvDataUrl(env: Env): HttpUrl
     fun getMessagesUrl(param: MessagesParamReq): HttpUrl
 }
@@ -251,6 +252,16 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
+
+    override fun postUsNatChoiceUrl(param: PostChoiceParamReq): HttpUrl = HttpUrl.Builder()
+        .scheme("https")
+        .host(param.env.host)
+        .addPathSegments("wrapper/v2/choice/usnat/${param.actionType.code}")
+        .addQueryParameter("env", param.env.queryParam)
+        .addQueryParameter("hasCsp", true.toString())
+        .addQueryParameter("scriptType", scriptType)
+        .addQueryParameter("scriptVersion", scriptVersion)
+        .build()
 
     override fun getPvDataUrl(env: Env): HttpUrl {
         // http://localhost:3000/wrapper/v2/pv-data?env=localProd
