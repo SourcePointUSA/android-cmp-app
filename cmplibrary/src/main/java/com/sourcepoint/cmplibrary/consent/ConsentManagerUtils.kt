@@ -4,7 +4,6 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInternal
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
@@ -32,7 +31,7 @@ internal interface ConsentManagerUtils {
 
     val shouldTriggerByGdprSample: Boolean
     val shouldTriggerByCcpaSample: Boolean
-    var messagesResp: MessagesResp?
+    val shouldTriggerByUsNatSample: Boolean
 
     companion object {
         const val DEFAULT_SAMPLE_RATE: Double = 1.0
@@ -168,9 +167,26 @@ private class ConsentManagerUtilsImpl(
             }
         }
 
-    override var messagesResp: MessagesResp?
-        get() = TODO("Not yet implemented")
-        set(value) {
-            ds
+    override val shouldTriggerByUsNatSample: Boolean
+        get() {
+            return ds.usNatSamplingResult ?: kotlin.run {
+                val sampling = (ds.usNatSamplingValue * 100).toInt()
+                when {
+                    sampling <= 0 -> {
+                        ds.usNatSamplingResult = false
+                        false
+                    }
+                    sampling >= 100 -> {
+                        ds.usNatSamplingResult = true
+                        true
+                    }
+                    else -> {
+                        val num = (1 until 100).random()
+                        val res = num in (1..sampling)
+                        ds.usNatSamplingResult = res
+                        res
+                    }
+                }
+            }
         }
 }

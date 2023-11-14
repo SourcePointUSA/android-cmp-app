@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
@@ -176,7 +177,11 @@ private class ResponseManagerImpl(
         return if (r.isSuccessful) {
             when (val either: Either<PvDataResp> = jsonConverter.toPvDataResp(body)) {
                 is Either.Right -> {
-                    val campaign = either.r.gdpr?.let { "GDPR" } ?: ("" + either.r.ccpa?.let { "CCPA" })
+                    val campaign = either.getOrNull()?.let {
+                        it.gdpr?.let { "GDPR" }
+                            ?: it.ccpa?.let { "CCPA" }
+                            ?: it.usnat?.let { "USNAT" }
+                    }
                     logger.res(
                         tag = "PvDataResp - $campaign",
                         msg = mess,

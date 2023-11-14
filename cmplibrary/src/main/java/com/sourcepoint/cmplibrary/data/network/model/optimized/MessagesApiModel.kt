@@ -14,6 +14,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.encodeToJsonElement
 
 @Serializable
 internal data class MessagesParamReq(
@@ -147,4 +148,28 @@ data class ConsentStatus(
         @Serializable(with = GranularStateSerializer::class) val vendorConsent: GranularState?,
         @Serializable(with = GranularStateSerializer::class) val vendorLegInt: GranularState?
     )
+}
+
+@Serializable
+data class USNatConsentStatus(
+    @SerialName("rejectedAny") val rejectedAny: Boolean?,
+    @SerialName("consentedToAll") var consentedToAll: Boolean?,
+    @SerialName("consentedToAny") val consentedToAny: Boolean?,
+    @SerialName("granularStatus") val granularStatus: USNatGranularStatus?,
+    @SerialName("hasConsentData") val hasConsentData: Boolean?,
+) {
+    @Serializable
+    data class USNatGranularStatus(
+        @SerialName("sellStatus") val sellStatus: Boolean?,
+        @SerialName("shareStatus") val shareStatus: Boolean?,
+        @SerialName("sensitiveDataStatus") val sensitiveDataStatus: Boolean?,
+        @SerialName("gpcStatus") val gpcStatus: Boolean?,
+        @SerialName("defaultConsent") val defaultConsent: Boolean?,
+        @SerialName("previousOptInAll") var previousOptInAll: Boolean?,
+        @SerialName("purposeConsent") var purposeConsent: String?,
+    )
+}
+
+fun USNatConsentStatus.stringify(): JsonElement {
+    return JsonConverter.converter.encodeToJsonElement(this)
 }
