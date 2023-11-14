@@ -97,6 +97,7 @@ internal interface CampaignManager {
     fun handleOldLocalData()
     fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
+    fun getUsNatPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun deleteExpiredConsents()
 
     companion object {
@@ -478,8 +479,7 @@ private class CampaignManagerImpl(
                 isGdprPresent[$isGdprPresent] - isCcpaUuidPresent[$isCcpaUuidPresent]
                 isUSNatUuidPresent[$isUsNatUuidPresent] - isLocalStateEmpty[$isLocalStateEmpty]
                 isV6LocalStatePresent[$isV6LocalStatePresent] - isV6LocalStatePresent2[$isV6LocalStatePresent2]
-                hasNonEligibleLocalDataVersion[$hasNonEligibleLocalDataVersion]
-                isEligibleForCallingConsentStatus[$isEligibleForCallingConsentStatus]
+                hasDataVersion[$hasNonEligibleLocalDataVersion] - shouldCallConsentStatus[$isEligibleForCallingConsentStatus]
                 """.trimIndent()
             )
 
@@ -714,13 +714,13 @@ private class CampaignManagerImpl(
         return toPvDataBody(
             accountId = messageReq.accountId,
             propertyId = messageReq.propertyId,
-            gdprMessageMetaData = gdprMessageMetaData,
-            ccpaMessageMetaData = null,
-            gdprApplies = dataStorage.gdprApplies,
-            ccpaApplies = dataStorage.ccpaApplies,
             pubData = messageReq.pubData,
+            metaDataResp = metaDataResp,
+            gdprMessageMetaData = gdprMessageMetaData,
             gdprCs = gdprConsentStatus,
+            ccpaMessageMetaData = null,
             ccpaCS = null,
+            usNatCS = null,
         )
     }
 
@@ -728,13 +728,27 @@ private class CampaignManagerImpl(
         return toPvDataBody(
             accountId = messageReq.accountId,
             propertyId = messageReq.propertyId,
-            gdprMessageMetaData = null,
-            ccpaMessageMetaData = ccpaMessageMetaData,
-            gdprApplies = dataStorage.gdprApplies,
-            ccpaApplies = dataStorage.ccpaApplies,
             pubData = messageReq.pubData,
+            metaDataResp = metaDataResp,
+            ccpaMessageMetaData = ccpaMessageMetaData,
+            ccpaCS = ccpaConsentStatus,
+            usNatCS = null,
+            gdprMessageMetaData = null,
             gdprCs = null,
-            ccpaCS = ccpaConsentStatus
+        )
+    }
+
+    override fun getUsNatPvDataBody(messageReq: MessagesParamReq): JsonObject {
+        return toPvDataBody(
+            accountId = messageReq.accountId,
+            propertyId = messageReq.propertyId,
+            pubData = messageReq.pubData,
+            metaDataResp = metaDataResp,
+            usNatCS = usNatConsentData,
+            ccpaMessageMetaData = null,
+            gdprMessageMetaData = null,
+            ccpaCS = null,
+            gdprCs = null,
         )
     }
 

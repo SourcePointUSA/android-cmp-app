@@ -28,6 +28,7 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.extractIncludeGppDataParamIfEligible
+import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import kotlinx.serialization.decodeFromString
@@ -227,7 +228,17 @@ private class ServiceImpl(
                     .executeOnRight {
                         it.campaigns?.gdpr?.expirationDate?.let { exDate -> dataStorage.gdprExpirationDate = exDate }
                         it.campaigns?.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
-                        it.campaigns?.usNat?.let { usNat -> campaignManager.usNatConsentData = usNat }
+                        it.campaigns?.usNat?.let { usNat ->
+                            campaignManager.usNatConsentData
+                                ?.let {
+                                    campaignManager.usNatConsentData = campaignManager.usNatConsentData?.copy(
+                                        message = usNat.message,
+                                        messageMetaData = usNat.messageMetaData,
+                                        url = usNat.url,
+                                        type = usNat.type
+                                    )
+                                } ?: kotlin.run { campaignManager.usNatConsentData = usNat }
+                        }
                         campaignManager.also { _ ->
                             messagesOptimizedLocalState = it.localState
                             nonKeyedLocalState = it.nonKeyedLocalState
@@ -259,7 +270,7 @@ private class ServiceImpl(
                 execManager.executeOnMain { showConsent() }
             }
 
-            val isGdprInConfig = spConfig.campaigns.find { it.campaignType == GDPR } != null
+            val isGdprInConfig = spConfig.isIncluded(GDPR)
 
             logger.computation(
                 tag = "PvData condition GdprSample",
@@ -289,7 +300,7 @@ private class ServiceImpl(
                     }
             }
 
-            val isCcpaInConfig = spConfig.campaigns.find { it.campaignType == CCPA } != null
+            val isCcpaInConfig = spConfig.isIncluded(CCPA)
 
             logger.computation(
                 tag = "PvData condition CcpaSample",
@@ -315,6 +326,36 @@ private class ServiceImpl(
                     .executeOnRight { pvDataResponse ->
                         campaignManager.ccpaConsentStatus = campaignManager.ccpaConsentStatus?.copy(
                             uuid = pvDataResponse.ccpa?.uuid
+                        )
+                    }
+            }
+
+            val isUsNatInConfig = spConfig.isIncluded(USNAT)
+
+            logger.computation(
+                tag = "PvData condition UsNatSample",
+                msg = """
+                    isUsNatInConfig[$isUsNatInConfig]
+                    shouldTriggerByUsNatSample[${consentManagerUtils.shouldTriggerByUsNatSample}]
+                    res[${consentManagerUtils.shouldTriggerByUsNatSample && isUsNatInConfig}]
+                """.trimIndent()
+            )
+
+            if (consentManagerUtils.shouldTriggerByUsNatSample && isUsNatInConfig) {
+                val pvParams = PvDataParamReq(
+                    env = messageReq.env,
+                    body = campaignManager.getUsNatPvDataBody(messageReq),
+                    campaignType = USNAT
+                )
+
+                postPvData(pvParams)
+                    .executeOnLeft { usNatPvDataError ->
+                        onFailure(usNatPvDataError, false)
+                        return@executeOnWorkerThread
+                    }
+                    .executeOnRight { pvDataResponse ->
+                        campaignManager.usNatConsentData = campaignManager.usNatConsentData?.copy(
+                            uuid = pvDataResponse.usnat?.uuid
                         )
                     }
             }
