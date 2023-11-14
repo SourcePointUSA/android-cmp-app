@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInternal
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
+import com.sourcepoint.cmplibrary.data.network.model.optimized.toUsNatConsentInternal
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
@@ -21,6 +22,7 @@ internal interface ConsentManagerUtils {
 
     val gdprConsentOptimized: Either<GDPRConsentInternal>
     val ccpaConsentOptimized: Either<CCPAConsentInternal>
+    val usNatConsent: Either<UsNatConsentInternal>
 
     fun updateGdprConsent(
         dataRecordedConsent: String,
@@ -114,6 +116,13 @@ private class ConsentManagerUtilsImpl(
             cm.ccpaConsentStatus?.toCCPAConsentInternal() ?: throw InvalidConsentResponse(
                 cause = null,
                 "The CCPA consent is null!!!"
+            )
+        }
+    override val usNatConsent: Either<UsNatConsentInternal>
+        get() = check {
+            cm.usNatConsentData?.toUsNatConsentInternal() ?: throw InvalidConsentResponse(
+                cause = null,
+                "The UsNat consent is null!!!"
             )
         }
 

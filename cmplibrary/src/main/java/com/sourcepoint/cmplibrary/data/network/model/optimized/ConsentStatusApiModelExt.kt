@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
+import com.sourcepoint.cmplibrary.model.exposed.UsNatConsentInternal
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import org.json.JSONObject
 
@@ -36,6 +37,16 @@ internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
         uspstring = this.uspstring ?: CCPAConsent.DEFAULT_USPSTRING
     )
 }
+
+internal fun USNatConsentData.toUsNatConsentInternal(): UsNatConsentInternal = UsNatConsentInternal(
+    applies = applies ?: false,
+    consentStatus = consentStatus,
+    consentString = consentString,
+    dateCreated = dateCreated,
+    uuid = uuid,
+    webConsentPayload = webConsentPayload,
+    url = url,
+)
 
 internal fun Map<String, GDPRPurposeGrants>.toAcceptedCategories(): Iterable<String> {
     val map = this.toList().fold(mutableMapOf<String, Map<String, Boolean>>()) { acc, elem ->
