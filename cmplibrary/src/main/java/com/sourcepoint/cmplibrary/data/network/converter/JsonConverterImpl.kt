@@ -97,6 +97,10 @@ private class JsonConverterImpl : JsonConverter {
         JsonConverter.converter.decodeFromString(body)
     }
 
+    override fun toUsNatPostChoiceResp(body: String): Either<USNatConsentData> = check(ApiRequestPostfix.POST_CHOICE_USNAT) {
+        JsonConverter.converter.decodeFromString(body)
+    }
+
     override fun toPvDataResp(body: String): Either<PvDataResp> = check(ApiRequestPostfix.PV_DATA) {
         JsonConverter.converter.decodeFromString(body)
     }
