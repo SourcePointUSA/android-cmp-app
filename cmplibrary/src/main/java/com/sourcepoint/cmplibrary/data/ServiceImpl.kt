@@ -28,6 +28,7 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.extractIncludeGppDataParamIfEligible
+import com.sourcepoint.cmplibrary.util.extensions.isAcceptOrRejectAll
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
@@ -384,7 +385,11 @@ private class ServiceImpl(
                 ).map { ChoiceResp(ccpa = it) }
             }
             USNAT -> {
-                Either.Left(RuntimeException())
+                sendConsentUsNat(
+                    env = env,
+                    consentAction = consentActionImpl,
+                    onConsentSuccess = sPConsentsSuccess,
+                ).map { ChoiceResp(usNat = it) }
             }
         }
     }
@@ -561,6 +566,50 @@ private class ServiceImpl(
         )
     }
 
+    fun sendConsentUsNat(
+        env: Env,
+        consentAction: ConsentActionImpl,
+        onConsentSuccess: ((SPConsents) -> Unit)?,
+    ): Either<USNatConsentData> = check {
+
+        val body = postChoiceUsNatBody(
+            granularStatus = campaignManager.usNatConsentData?.consentStatus?.granularStatus,
+            messageId = campaignManager.usNatConsentData?.messageMetaData?.messageId?.toLong(),
+            saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
+            propertyId = spConfig.propertyId.toLong(),
+            pubData = consentAction.pubData.toJsonObject(),
+            sendPvData = dataStorage.usNatSamplingResult,
+            sampleRate = dataStorage.usNatSamplingValue,
+            uuid = campaignManager.usNatConsentData?.uuid,
+            vendorListId = campaignManager.metaDataResp?.usNat?.vendorListId,
+        )
+
+        val usNatPostChoiceParam = PostChoiceParamReq(
+            env = env,
+            actionType = consentAction.actionType,
+            body = body,
+        )
+
+        networkClient.storeUsNatChoice(usNatPostChoiceParam)
+            .executeOnRight { postChoiceUsNatResponse ->
+                if (consentAction.actionType.isAcceptOrRejectAll().not()) {
+                    val spConsents = ConsentManager.responseConsentHandler(
+                        usNat = postChoiceUsNatResponse.copy(applies = dataStorage.usNatApplies),
+                        consentManagerUtils = consentManagerUtils,
+                    )
+                    onConsentSuccess?.invoke(spConsents)
+                }
+            }
+            .executeOnLeft { error ->
+                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+            }
+
+        campaignManager.usNatConsentData ?: throw InvalidConsentResponse(
+            cause = null,
+            description = "The UsNat consent data cannot be null!!!",
+        )
+    }
+
     private fun triggerConsentStatus(
         messageReq: MessagesParamReq,
         gdprApplies: Boolean?,
@@ -593,7 +642,7 @@ private class ServiceImpl(
                         ccpaDateCreated = csd.ccpa?.dateCreated
                         csd.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
 
-                        // USnat
+                        // UsNat
                         usNatConsentData = csd.usnat?.copy(applies = usNatApplies)
                     }
                 }
