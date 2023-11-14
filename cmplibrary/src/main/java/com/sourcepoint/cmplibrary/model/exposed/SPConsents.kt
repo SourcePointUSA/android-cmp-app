@@ -1,6 +1,8 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
+import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentStatus
+import com.sourcepoint.cmplibrary.data.network.model.optimized.stringify
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
 import com.sourcepoint.cmplibrary.model.toTcfJSONObj
 import kotlinx.serialization.SerialName
@@ -104,7 +106,7 @@ enum class CcpaStatus {
 // TODO check if this is the full pack of params that UsNatConsent requires
 interface UsNatConsent {
     val applies: Boolean
-    val consentStatus: ConsentStatus?
+    val consentStatus: USNatConsentStatus?
     val consentString: String?
     val dateCreated: String?
     val uuid: String?
@@ -115,7 +117,7 @@ interface UsNatConsent {
 // TODO same as above
 internal data class UsNatConsentInternal(
     override val applies: Boolean,
-    override val consentStatus: ConsentStatus?,
+    override val consentStatus: USNatConsentStatus?,
     override val consentString: String?,
     override val dateCreated: String?,
     override val uuid: String? = "",
@@ -211,7 +213,7 @@ internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
 internal fun UsNatConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("applies", applies)
-        put("consentStatus", consentStatus?.toJSONObj())
+        put("consentStatus", consentStatus?.stringify())
         put("consentString", consentString)
         put("dateCreated", dateCreated)
         put("uuid", uuid)
