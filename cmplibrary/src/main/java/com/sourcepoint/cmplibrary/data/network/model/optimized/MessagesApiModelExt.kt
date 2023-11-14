@@ -16,7 +16,7 @@ internal fun getMessageBody(
     campaigns: List<CampaignReq>,
     gdprConsentStatus: ConsentStatus?,
     ccpaConsentStatus: String?,
-    usNatConsentStatus: ConsentStatus?,
+    usNatConsentStatus: USNatConsentStatus?,
     consentLanguage: String?,
     campaignEnv: CampaignsEnv?,
     includeDataGppParam: IncludeDataGppParam?,
@@ -51,7 +51,7 @@ internal fun getMessageBody(
 internal fun List<CampaignReq>.toMetadataBody(
     gdprConsentStatus: ConsentStatus? = null,
     ccpaConsentStatus: String? = null,
-    usNatConsentStatus: ConsentStatus? = null,
+    usNatConsentStatus: USNatConsentStatus? = null,
 ): JsonObject {
     return buildJsonObject {
         this@toMetadataBody.forEach { c ->
