@@ -18,7 +18,10 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInte
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
+import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
+import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.model.exposed.SPGDPRConsent
 import kotlinx.serialization.decodeFromString
 
 private const val DEFAULT_CCPA_USP_STRING = "1---"
@@ -118,6 +121,3 @@ internal fun userConsents(
             }
     )
 }
-
-internal fun SpConfig.isIncluded(campaign: CampaignType) =
-    campaigns.find { it.campaignType == campaign } != null
