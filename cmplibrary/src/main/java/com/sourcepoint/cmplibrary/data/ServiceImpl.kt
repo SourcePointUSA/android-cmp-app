@@ -572,65 +572,16 @@ private class ServiceImpl(
         onConsentSuccess: ((SPConsents) -> Unit)?,
     ): Either<USNatConsentData> = check {
 
-        var getChoiceResponse: ChoiceResp? = null
-
-        if (consentAction.actionType.isAcceptOrRejectAll()) {
-            // TODO implement GET choice flow for UsNat campaign
-
-            val getChoiceParamReq = GetChoiceParamReq(
-                choiceType = consentAction.actionType.toChoiceTypeParam(),
-                accountId = spConfig.accountId.toLong(),
-                propertyId = spConfig.propertyId.toLong(),
-                env = env,
-                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(
-                    gdpr = null,
-                    ccpa = null,
-                ),
-                includeData = IncludeData.generateIncludeDataForGetChoice(
-                    gppData = spConfig.extractIncludeGppDataParamIfEligible(),
-                ),
-                hasCsp = true,
-                includeCustomVendorsRes = false,
-                withSiteActions = false,
-            )
-
-            getChoiceResponse = networkClient.getChoice(getChoiceParamReq)
-                .executeOnRight { choiceResponse ->
-
-                    // update local UsNatConsentData
-                    choiceResponse.usNat?.let { usNatChoice ->
-                        campaignManager.usNatConsentData = usNatChoice.copy(
-                            uuid = campaignManager.usNatConsentData?.uuid, // TODO verify if we actually need to update UUID in this case, since we have a single source of truth for all the UsNat params as the object of UsNatConsentData
-                        )
-                    }
-
-                    val spConsents = ConsentManager.responseConsentHandler(
-                        choiceResponse.usNat?.copy(
-                            uuid = campaignManager.usNatConsentData?.uuid, // TODO verify if we actually need to update UUID in this case, since we have a single source of truth for all the UsNat params as the object of UsNatConsentData
-                            applies = dataStorage.usNatApplies, // TODO verify if we actually need to update applies in this case, since we have a single source of truth for all the UsNat params as the object of UsNatConsentData
-                        ),
-                        consentManagerUtils
-                    )
-                    onConsentSuccess?.invoke(spConsents)
-                }
-                .executeOnLeft { error ->
-                    (error as? ConsentLibExceptionK)?.let { logger.error(error) }
-                }
-                .getOrNull()
-        }
-
         val body = postChoiceUsNatBody(
             granularStatus = campaignManager.usNatConsentData?.consentStatus?.granularStatus,
             messageId = campaignManager.usNatConsentData?.messageMetaData?.messageId?.toLong(),
             saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
             propertyId = spConfig.propertyId.toLong(),
             pubData = consentAction.pubData.toJsonObject(),
-            sendPvData = false, // TODO fix to an actual value after /pv-data task is done
-//            sendPvData = dataStorage.usNatSamplingResult,
-            sampleRate = 1.0, // TODO fix to an actual value after /pv-data task is done
-//            sampleRate = dataStorage.usNatSamplingValue,
+            sendPvData = dataStorage.usNatSamplingResult,
+            sampleRate = dataStorage.usNatSamplingValue,
             uuid = campaignManager.usNatConsentData?.uuid,
-            vendorListId = "", // TODO fix to an actual value after get consent flow above is done
+            vendorListId = campaignManager.metaDataResp?.usNat?.vendorListId,
         )
 
         val usNatPostChoiceParam = PostChoiceParamReq(

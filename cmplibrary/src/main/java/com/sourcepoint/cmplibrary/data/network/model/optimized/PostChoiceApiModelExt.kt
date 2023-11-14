@@ -74,8 +74,7 @@ internal fun postChoiceCcpaBody(
 }
 
 internal fun postChoiceUsNatBody(
-    granularStatus: ConsentStatus.GranularStatus?,
-    idfaStatus: String? = null,
+    granularStatus: USNatConsentStatus.USNatGranularStatus?,
     messageId: Long? = null,
     saveAndExitVariables: JsonObject? = null,
     propertyId: Long,
@@ -86,7 +85,6 @@ internal fun postChoiceUsNatBody(
     vendorListId: String?,
 ): JsonObject = buildJsonObject {
     put("granularStatus", granularStatus?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonNull)
-    idfaStatus?.let { put("idfaStatus", it) } // TODO figure out what is this IDFA status
     messageId?.let { put("messageId", it) }
     saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
     put("propertyId", propertyId)
