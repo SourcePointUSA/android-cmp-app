@@ -38,6 +38,7 @@ class ClientEventManagerTest {
 
         every { consentManagerUtils.gdprConsentOptimized }.returns(Either.Right(GDPRConsentInternal()))
         every { consentManagerUtils.ccpaConsentOptimized }.returns(Either.Right(CCPAConsentInternal()))
+        every { consentManagerUtils.usNatConsent }.returns(Either.Right(UsNatConsentInternal()))
     }
 
     @Test

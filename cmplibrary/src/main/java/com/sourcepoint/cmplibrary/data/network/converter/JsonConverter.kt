@@ -38,6 +38,8 @@ internal interface JsonConverter {
 
     fun toCcpaPostChoiceResp(body: String): Either<CcpaCS>
 
+    fun toUsNatPostChoiceResp(body: String): Either<USNatConsentData>
+
     fun toPvDataResp(body: String): Either<PvDataResp>
 
     fun toMessagesResp(body: String): Either<MessagesResp>

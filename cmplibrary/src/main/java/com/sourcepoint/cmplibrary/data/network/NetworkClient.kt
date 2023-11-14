@@ -55,4 +55,8 @@ internal interface NetworkClient {
     fun storeCcpaChoice(
         param: PostChoiceParamReq
     ): Either<CcpaCS>
+
+    fun storeUsNatChoice(
+        param: PostChoiceParamReq,
+    ): Either<USNatConsentData>
 }
