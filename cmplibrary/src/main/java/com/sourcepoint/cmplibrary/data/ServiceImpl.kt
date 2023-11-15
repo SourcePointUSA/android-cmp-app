@@ -363,31 +363,30 @@ private class ServiceImpl(
     }
 
     override fun sendConsent(
-        consentActionImpl: ConsentActionImpl,
         env: Env,
-        sPConsentsSuccess: ((SPConsents) -> Unit)?,
-        pmId: String? // TODO figure out if we actually need this param, since we DO NOT use it
+        consentAction: ConsentActionImpl,
+        onSpConsentsSuccess: ((SPConsents) -> Unit)?,
     ): Either<ChoiceResp> {
-        return when (consentActionImpl.campaignType) {
+        return when (consentAction.campaignType) {
             GDPR -> {
                 sendConsentGdpr(
                     env = env,
-                    consentAction = consentActionImpl,
-                    onSpConsentsSuccess = sPConsentsSuccess,
+                    consentAction = consentAction,
+                    onSpConsentsSuccess = onSpConsentsSuccess,
                 ).map { gdpr -> ChoiceResp(gdpr = gdpr) }
             }
             CCPA -> {
                 sendConsentCcpa(
                     env = env,
-                    consentAction = consentActionImpl,
-                    onSpConsentsSuccess = sPConsentsSuccess,
+                    consentAction = consentAction,
+                    onSpConsentsSuccess = onSpConsentsSuccess,
                 ).map { ccpa -> ChoiceResp(ccpa = ccpa) }
             }
             USNAT -> {
                 sendConsentUsNat(
                     env = env,
-                    consentAction = consentActionImpl,
-                    onSpConsentSuccess = sPConsentsSuccess,
+                    consentAction = consentAction,
+                    onSpConsentSuccess = onSpConsentsSuccess,
                 ).map { usNat -> ChoiceResp(usNat = usNat) }
             }
         }

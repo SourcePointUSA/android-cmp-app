@@ -133,11 +133,15 @@ private class ConsentManagerImpl(
 
     override fun sendConsent(actionImpl: ConsentActionImpl) {
         executorManager.executeOnSingleThread {
-            service.sendConsent(actionImpl, env, sPConsentsSuccess, actionImpl.privacyManagerId)
-                .executeOnLeft { sPConsentsError?.invoke(it) }
-                .executeOnRight {
-                    clientEventManager.registerConsentResponse()
-                }
+            service.sendConsent(
+                env = env,
+                consentAction = actionImpl,
+                onSpConsentsSuccess = sPConsentsSuccess,
+            ).executeOnRight {
+                clientEventManager.registerConsentResponse()
+            }.executeOnLeft { exception ->
+                sPConsentsError?.invoke(exception)
+            }
         }
     }
 }
