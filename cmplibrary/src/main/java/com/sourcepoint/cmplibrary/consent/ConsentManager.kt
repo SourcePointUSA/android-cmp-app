@@ -127,7 +127,7 @@ private class ConsentManagerImpl(
                 gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
                 ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) },
                 usNat = usNatCached?.let { usNatConsent -> SpUsNatConsent(consent = usNatConsent) },
-            ).let { sPConsentsSuccess?.invoke(it) }
+            ).let { spConsents -> sPConsentsSuccess?.invoke(spConsents) }
         }
     }
 
