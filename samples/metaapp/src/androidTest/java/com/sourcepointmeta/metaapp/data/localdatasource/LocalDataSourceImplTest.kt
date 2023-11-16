@@ -28,6 +28,7 @@ class LocalDataSourceImplTest {
         accountId = 1,
         gdprPmId = 1212L,
         ccpaPmId = 1313L,
+        usnatPmId = 1313L,
         is_staging = false,
         targetingParameters = tp,
         timeout = 1,
