@@ -9,6 +9,7 @@ import com.sourcepoint.app.v6.TestData.CANCEL
 import com.sourcepoint.app.v6.TestData.CCPA_CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST_2
+import com.sourcepoint.app.v6.TestData.CONSENT_WEB_VIEW_TAG_NAME
 import com.sourcepoint.app.v6.TestData.FEATURES
 import com.sourcepoint.app.v6.TestData.GDPR_CONSENT_LIST_2
 import com.sourcepoint.app.v6.TestData.MESSAGE
@@ -394,6 +395,26 @@ class TestUseCase {
                 .contains("authId=")
                 .assertFalse()
         }
+
+        fun clickAcceptAllOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+            tag = CONSENT_WEB_VIEW_TAG_NAME,
+            text = ACCEPT_ALL,
+        )
+
+        fun clickRejectAllOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+            tag = CONSENT_WEB_VIEW_TAG_NAME,
+            text = REJECT_ALL,
+        )
+
+        fun clickOptionsOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+            tag = CONSENT_WEB_VIEW_TAG_NAME,
+            text = OPTIONS,
+        )
+
+        fun clickSaveAndExitOnConsentWebView() = clickOnButtonByTextOnWebViewByTag(
+            tag = CONSENT_WEB_VIEW_TAG_NAME,
+            text = SAVE_AND_EXIT,
+        )
 
         fun mockModule(
             spConfig: SpConfig,

@@ -87,6 +87,8 @@ object TestData {
     var FEATURES = "Features"
     var PURPOSES = "Purposes"
 
+    const val CONSENT_WEB_VIEW_TAG_NAME = "consent-web-view"
+
     val storedConsentGdprCcpa = """
         {
           "IABTCF_PurposeOneTreatment": 0,
