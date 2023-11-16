@@ -127,17 +127,21 @@ private class ConsentManagerImpl(
                 gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
                 ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) },
                 usNat = usNatCached?.let { usNatConsent -> SpUsNatConsent(consent = usNatConsent) },
-            ).let { sPConsentsSuccess?.invoke(it) }
+            ).let { spConsents -> sPConsentsSuccess?.invoke(spConsents) }
         }
     }
 
     override fun sendConsent(actionImpl: ConsentActionImpl) {
         executorManager.executeOnSingleThread {
-            service.sendConsent(actionImpl, env, sPConsentsSuccess, actionImpl.privacyManagerId)
-                .executeOnLeft { sPConsentsError?.invoke(it) }
-                .executeOnRight {
-                    clientEventManager.registerConsentResponse()
-                }
+            service.sendConsent(
+                env = env,
+                consentAction = actionImpl,
+                onSpConsentsSuccess = sPConsentsSuccess,
+            ).executeOnRight {
+                clientEventManager.registerConsentResponse()
+            }.executeOnLeft { exception ->
+                sPConsentsError?.invoke(exception)
+            }
         }
     }
 }
