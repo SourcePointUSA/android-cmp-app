@@ -71,8 +71,6 @@ data class CcpaCS(
 @Serializable
 data class USNatConsentData(
     val applies: Boolean?,
-    @SerialName("categories") val categories: List<String>?,
-    @SerialName("shownCategories") val shownCategories: List<String>?,
     @SerialName("consentStatus") val consentStatus: USNatConsentStatus?,
     @SerialName("consentString") val consentString: String?,
     @SerialName("dateCreated") override var dateCreated: String?,

@@ -162,7 +162,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("preload_consent", true.toString())
             .apply {
                 pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
-                pmConf.uuid?.let { addQueryParameter("ccpaUUID", it) }
+                pmConf.uuid?.let { addQueryParameter("uuid", it) }
                 pmConf.messageId?.let { addQueryParameter("message_id", it) }
             }
             .addQueryParameter("scriptType", scriptType)

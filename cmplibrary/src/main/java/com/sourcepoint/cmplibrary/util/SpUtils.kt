@@ -118,6 +118,3 @@ internal fun userConsents(
             }
     )
 }
-
-internal fun SpConfig.isIncluded(campaign: CampaignType) =
-    campaigns.find { it.campaignType == campaign } != null
