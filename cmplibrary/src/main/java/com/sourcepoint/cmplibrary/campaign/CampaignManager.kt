@@ -229,7 +229,7 @@ private class CampaignManagerImpl(
         return when (campaignType) {
             CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, useGroupPmIfAvailable, groupPmId)
             CampaignType.CCPA -> getCcpaPmConfig(pmId)
-            CampaignType.USNAT -> getUsNatPmConfig(pmId)
+            CampaignType.USNAT -> getUsNatPmConfig(pmId, groupPmId)
         }
     }
 
@@ -324,7 +324,47 @@ private class CampaignManagerImpl(
         )
     }
 
-    private fun getUsNatPmConfig(pmId: String?): Either<PmUrlConfig> = check {
+    private fun getUsNatPmConfig(
+        pmId: String?,
+        groupPmId: String? = null,
+        useGroupPmIfAvailable: Boolean = false
+    ): Either<PmUrlConfig> = check {
+        val childPmId: String? = dataStorage.usnatChildPmId
+        val isChildPmIdAbsent: Boolean = childPmId == null
+        val hasGroupPmId: Boolean = groupPmId != null
+
+        val usedPmId = selectPmId(pmId, childPmId, useGroupPmIfAvailable)
+
+        if (hasGroupPmId && useGroupPmIfAvailable && isChildPmIdAbsent) {
+            logger?.error(
+                ChildPmIdNotFound(
+                    description = """
+                              childPmId not found!!!
+                              GroupPmId[$groupPmId]
+                              useGroupPmIfAvailable [true] 
+                    """.trimIndent()
+                )
+            )
+            logger?.e(
+                tag = "The childPmId is missing",
+                msg = """
+                              childPmId [null]
+                              GroupPmId[$groupPmId]
+                              useGroupPmIfAvailable [true] 
+                """.trimIndent()
+            )
+        }
+
+        logger?.computation(
+            tag = "Property group - USNAT PM",
+            msg = """
+                pmId[$pmId]
+                childPmId[$childPmId]
+                useGroupPmIfAvailable [$useGroupPmIfAvailable] 
+                Query Parameter pmId[$usedPmId]
+            """.trimIndent()
+        )
+
         PmUrlConfig(
             consentLanguage = spConfig.messageLanguage.value,
             uuid = usNatConsentData?.uuid,
@@ -516,7 +556,9 @@ private class CampaignManagerImpl(
 
     override var ccpaConsentStatus: CcpaCS?
         get() {
-            return dataStorage.ccpaConsentStatus?.let { JsonConverter.converter.decodeFromString<CcpaCS>(it) }
+            return dataStorage.ccpaConsentStatus
+                ?.let { JsonConverter.converter.decodeFromString<CcpaCS>(it) }
+                ?.let { cs -> cs.copy(applies = metaDataResp?.usNat?.applies) }
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
@@ -529,7 +571,9 @@ private class CampaignManagerImpl(
 
     override var usNatConsentData: USNatConsentData?
         get() {
-            return dataStorage.usNatConsentData?.let { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }
+            return dataStorage.usNatConsentData
+                ?.let { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }
+                ?.let { cs -> cs.copy(applies = metaDataResp?.usNat?.applies) }
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
