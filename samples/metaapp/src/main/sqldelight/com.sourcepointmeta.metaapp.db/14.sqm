@@ -1,0 +1,5 @@
+BEGIN TRANSACTION;
+    ALTER TABLE property ADD COLUMN usnat_pm_id INTEGER DEFAULT 0;
+COMMIT;
+
+--  adb shell "run-as com.sourcepointmeta.metaapp.debug  rm /data/user/0/com.sourcepointmeta.metaapp.debug/databases/newmetaapp.db"

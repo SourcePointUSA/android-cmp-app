@@ -46,6 +46,7 @@ internal fun AddPropertyLayout.bind(property: Property) {
     pm_tab_autocomplete.setText(property.pmTab)
     gdpr_pm_id_ed.setText(property.gdprPmId?.toString() ?: "")
     ccpa_pm_id_ed.setText(property.ccpaPmId?.toString() ?: "")
+    usnat_pm_id_ed.setText(property.usnatPmId?.toString() ?: "")
     message_language_autocomplete.setText(property.messageLanguage)
     val gdprTp = property.targetingParameters.filter { it.campaign == CampaignType.GDPR }
     val ccpaTp = property.targetingParameters.filter { it.campaign == CampaignType.CCPA }
@@ -123,7 +124,8 @@ internal fun AddPropertyLayout.toProperty(): Property {
         campaignsEnv = if (radio_stage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC,
         gdprGroupPmId = if (gdprGroupPmId.isEmpty() || gdprGroupPmId.isBlank()) null else gdprGroupPmId,
         useGdprGroupPmIfAvailable = gdpr_groupId_switch.isChecked,
-        propertyId = prop_id_ed.text.toString().toInt()
+        propertyId = prop_id_ed.text.toString().toInt(),
+        usnatPmId = usnat_pm_id_ed.text.toString().toLongOrNull(),
     )
 }
 

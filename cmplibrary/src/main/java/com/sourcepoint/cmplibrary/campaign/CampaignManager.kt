@@ -231,7 +231,7 @@ private class CampaignManagerImpl(
         return when (campaignType) {
             CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, useGroupPmIfAvailable, groupPmId)
             CampaignType.CCPA -> getCcpaPmConfig(pmId)
-            CampaignType.USNAT -> getUsNatPmConfig(pmId, groupPmId)
+            CampaignType.USNAT -> getUsNatPmConfig(pmId)
         }
     }
 
@@ -246,11 +246,6 @@ private class CampaignManagerImpl(
             CampaignType.USNAT -> getUsNatPmConfig(pmId)
         }
     }
-
-    private fun getUsNatPmConfig(
-        pmId: String?,
-        groupPmId: String?
-    ): Either<PmUrlConfig> = Either.Left(RuntimeException("UsNatPmConfig TODO"))
 
     private fun getGdprPmConfig(
         pmId: String?,
@@ -326,6 +321,34 @@ private class CampaignManagerImpl(
         PmUrlConfig(
             consentLanguage = spConfig.messageLanguage.value,
             uuid = ccpaUuid,
+            siteId = spConfig.propertyId.toString(),
+            messageId = usedPmId
+        )
+    }
+
+    private fun getUSNatPmConfig(pmId: String?): Either<PmUrlConfig> = check {
+        val childPmId: String? = dataStorage.usnatChildPmId
+        val isChildPmIdAbsent: Boolean = childPmId == null
+        val hasGroupPmId = false // feature not yet implemented
+        val useGroupPmIfAvailable = false // feature not yet implemented
+
+        if (hasGroupPmId && useGroupPmIfAvailable && isChildPmIdAbsent) {
+            logger?.error(
+                ChildPmIdNotFound(
+                    description = """
+                              childPmId not found!!!
+                              GroupPmId[groupPmId]
+                              useGroupPmIfAvailable [true] 
+                    """.trimIndent()
+                )
+            )
+        }
+
+        val usedPmId = childPmId ?: pmId
+
+        PmUrlConfig(
+            consentLanguage = spConfig.messageLanguage.value,
+            uuid = usNatConsentData?.uuid,
             siteId = spConfig.propertyId.toString(),
             messageId = usedPmId
         )
