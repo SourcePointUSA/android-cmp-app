@@ -71,11 +71,15 @@ data class CcpaCS(
 @Serializable
 data class USNatConsentData(
     val applies: Boolean?,
+    @SerialName("categories") val categories: List<String>?,
+    @SerialName("shownCategories") val shownCategories: List<String>?,
     @SerialName("consentStatus") val consentStatus: USNatConsentStatus?,
     @SerialName("consentString") val consentString: String?,
     @SerialName("dateCreated") override var dateCreated: String?,
     @SerialName("uuid") var uuid: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
+    @SerialName("userConsents") val userConsents: JsonObject?,
+    @SerialName("cookies") val cookies: JsonElement?,
     @SerialName("message") override val message: JsonElement?,
     @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
     @SerialName("type") override val type: CampaignType = CampaignType.USNAT,
