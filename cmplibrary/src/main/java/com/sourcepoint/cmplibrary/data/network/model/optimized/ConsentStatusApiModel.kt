@@ -78,8 +78,6 @@ data class USNatConsentData(
     @SerialName("dateCreated") override var dateCreated: String?,
     @SerialName("uuid") var uuid: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
-    @SerialName("userConsents") val userConsents: JsonObject?,
-    @SerialName("cookies") val cookies: JsonElement?,
     @SerialName("message") override val message: JsonElement?,
     @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
     @SerialName("type") override val type: CampaignType = CampaignType.USNAT,
