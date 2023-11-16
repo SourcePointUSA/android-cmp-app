@@ -83,7 +83,7 @@ class WebConsentTransferTestActivityTest {
      * 4. user seeing the consent for both GDPR and CCPA and no message
      */
     @Test
-    fun user_consents_gdpr_as_accept_all_and_ccpa_as_accept_all(): Unit = runBlocking {
+    fun GIVEN_user_consents_gdpr_as_accept_all_and_ccpa_as_accept_all_THEN_should_see_no_message(): Unit = runBlocking {
         // clear data before the test
         onView(withId(R.id.web_consent_clear_data_button))
             .perform(click())
@@ -147,7 +147,7 @@ class WebConsentTransferTestActivityTest {
      * 4. user seeing the consent for both GDPR and CCPA and no message
      */
     @Test
-    fun user_consents_gdpr_as_save_and_exit_and_ccpa_as_accept_all(): Unit = runBlocking {
+    fun GIVEN_user_consents_gdpr_as_save_and_exit_and_ccpa_as_accept_all_THEN_should_see_no_message(): Unit = runBlocking {
         // clear data before the test
         onView(withId(R.id.web_consent_clear_data_button))
             .perform(click())
@@ -212,7 +212,7 @@ class WebConsentTransferTestActivityTest {
      * 4. user seeing the consent for both GDPR and CCPA and no message
      */
     @Test
-    fun user_consents_gdpr_as_accept_all_and_ccpa_as_save_and_exit(): Unit = runBlocking {
+    fun GIVEN_user_consents_gdpr_as_accept_all_and_ccpa_as_save_and_exit_THEN_should_see_no_message(): Unit = runBlocking {
         // clear data before the test
         onView(withId(R.id.web_consent_clear_data_button))
             .perform(click())
@@ -277,7 +277,7 @@ class WebConsentTransferTestActivityTest {
      * 4. user seeing the consent for both GDPR and CCPA and no message
      */
     @Test
-    fun user_consents_gdpr_as_reject_all_and_ccpa_as_reject_all(): Unit = runBlocking {
+    fun GIVEN_user_consents_gdpr_as_reject_all_and_ccpa_as_reject_all_THEN_should_see_no_message(): Unit = runBlocking {
         // clear data before the test
         onView(withId(R.id.web_consent_clear_data_button))
             .perform(click())
