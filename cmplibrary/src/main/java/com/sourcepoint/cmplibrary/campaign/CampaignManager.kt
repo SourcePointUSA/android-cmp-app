@@ -324,34 +324,6 @@ private class CampaignManagerImpl(
         )
     }
 
-    private fun getUSNatPmConfig(pmId: String?): Either<PmUrlConfig> = check {
-        val childPmId: String? = dataStorage.usnatChildPmId
-        val isChildPmIdAbsent: Boolean = childPmId == null
-        val hasGroupPmId = false // feature not yet implemented
-        val useGroupPmIfAvailable = false // feature not yet implemented
-
-        if (hasGroupPmId && useGroupPmIfAvailable && isChildPmIdAbsent) {
-            logger?.error(
-                ChildPmIdNotFound(
-                    description = """
-                              childPmId not found!!!
-                              GroupPmId[groupPmId]
-                              useGroupPmIfAvailable [true] 
-                    """.trimIndent()
-                )
-            )
-        }
-
-        val usedPmId = childPmId ?: pmId
-
-        PmUrlConfig(
-            consentLanguage = spConfig.messageLanguage.value,
-            uuid = usNatConsentData?.uuid,
-            siteId = spConfig.propertyId.toString(),
-            messageId = usedPmId
-        )
-    }
-
     private fun getUsNatPmConfig(pmId: String?): Either<PmUrlConfig> = check {
         PmUrlConfig(
             consentLanguage = spConfig.messageLanguage.value,
