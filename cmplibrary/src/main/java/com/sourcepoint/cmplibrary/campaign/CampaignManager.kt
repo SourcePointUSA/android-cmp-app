@@ -39,8 +39,6 @@ internal interface CampaignManager {
     val gdprMessageSubCategory: MessageSubCategory
     fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate)
 
-    fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory
-
     fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>>
     fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate>
 
@@ -361,14 +359,6 @@ private class CampaignManagerImpl(
             siteId = spConfig.propertyId.toString(),
             messageId = pmId
         )
-    }
-
-    override fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory {
-        return when (campaignType) {
-            CampaignType.GDPR -> gdprMessageSubCategory
-            CampaignType.CCPA -> ccpaMessageSubCategory
-            CampaignType.USNAT -> throw RuntimeException() // TODO
-        }
     }
 
     override fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>> = check {
