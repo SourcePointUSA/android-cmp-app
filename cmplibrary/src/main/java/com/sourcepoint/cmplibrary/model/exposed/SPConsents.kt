@@ -226,7 +226,7 @@ internal fun SPConsents.toJsonObject(): JSONObject {
 
 internal fun USNatConsentStatus.toJsonObject(): JSONObject {
     return JSONObject().apply {
-        put("rejectedAny", hasConsentData)
+        put("rejectedAny", rejectedAny)
         put("consentedToAll", consentedToAll)
         put("consentedToAny", consentedToAny)
         put("granularStatus", granularStatus?.toJsonObject())
