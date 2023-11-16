@@ -606,13 +606,12 @@ private class ServiceImpl(
 
         networkClient.storeUsNatChoice(usNatPostChoiceParam)
             .executeOnRight { postChoiceUsNatResponse ->
-                if (consentAction.actionType.isAcceptOrRejectAll().not()) {
-                    val spConsents = ConsentManager.responseConsentHandler(
-                        usNat = postChoiceUsNatResponse.copy(applies = dataStorage.usNatApplies),
-                        consentManagerUtils = consentManagerUtils,
-                    )
-                    onSpConsentSuccess?.invoke(spConsents)
-                }
+                campaignManager.usNatConsentData = postChoiceUsNatResponse
+                val spConsents = ConsentManager.responseConsentHandler(
+                    usNat = postChoiceUsNatResponse.copy(applies = dataStorage.usNatApplies),
+                    consentManagerUtils = consentManagerUtils,
+                )
+                onSpConsentSuccess?.invoke(spConsents)
             }
             .executeOnLeft { error ->
                 (error as? ConsentLibExceptionK)?.let { logger.error(error) }

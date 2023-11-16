@@ -26,7 +26,8 @@ function actionFromMessage(payload) {
         pmTab: getQueryParam("pmTab", actionPayload.iframe_url),
         saveAndExitVariables: {},
         consentLanguage: payload.consentLanguage,
-        customActionId: actionPayload.customAction
+        customActionId: actionPayload.customAction,
+        actionPayload: actionPayload
     };
 }
 
@@ -42,7 +43,8 @@ function actionFromPM(payload) {
         pmTab: null,
         saveAndExitVariables: payload.payload,
         consentLanguage: payload.consentLanguage,
-        customActionId: payload.customAction
+        customActionId: payload.customAction,
+        payload: payload
     };
 }
 
