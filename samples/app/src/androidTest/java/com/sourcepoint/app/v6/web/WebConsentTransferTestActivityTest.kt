@@ -323,8 +323,10 @@ class WebConsentTransferTestActivityTest {
         wr(delay = 1000L) { performClickByIdCompletelyDisplayed(R.id.to_web_view_consent_action) }
 
         // check if the callbacks are returned inside the web view
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_LOAD_CONSENT)
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_ON_CONSENT_READY)
+        wr(delay = 1000L) {
+            assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_LOAD_CONSENT)
+            assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_ON_CONSENT_READY)
+        }
 
         // check if CCPA and GDPR UUIDs are present in the postMessage response
         val ccpaUuid = readTextFromTextViewById(R.id.ccpa_uuid_value_text_view)
