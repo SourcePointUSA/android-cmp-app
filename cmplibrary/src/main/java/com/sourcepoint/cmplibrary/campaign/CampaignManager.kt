@@ -542,7 +542,7 @@ private class CampaignManagerImpl(
         get() {
             return dataStorage.gdprConsentStatus
                 ?.let { JsonConverter.converter.decodeFromString<GdprCS>(it) }
-                ?.let { cs -> cs.copy(applies = dataStorage.gdprApplies) }
+                ?.copy(applies = dataStorage.gdprApplies)
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
@@ -558,7 +558,7 @@ private class CampaignManagerImpl(
         get() {
             return dataStorage.ccpaConsentStatus
                 ?.let { JsonConverter.converter.decodeFromString<CcpaCS>(it) }
-                ?.let { cs -> cs.copy(applies = metaDataResp?.usNat?.applies) }
+                ?.copy(applies = metaDataResp?.ccpa?.applies)
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
@@ -573,7 +573,7 @@ private class CampaignManagerImpl(
         get() {
             return dataStorage.usNatConsentData
                 ?.let { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }
-                ?.let { cs -> cs.copy(applies = metaDataResp?.usNat?.applies) }
+                ?.copy(applies = metaDataResp?.usNat?.applies)
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
@@ -693,7 +693,7 @@ private class CampaignManagerImpl(
     }
 
     override fun handleOldLocalData() {
-        if (dataStorage.preference.contains(DataStorage.LOCAL_STATE) || dataStorage.preference.contains(DataStorage.LOCAL_STATE_OLD)) {
+        if (dataStorage.preference.contains(LOCAL_STATE) || dataStorage.preference.contains(LOCAL_STATE_OLD)) {
             dataStorage.preference
                 .edit().apply {
                     remove(LOCAL_STATE)
