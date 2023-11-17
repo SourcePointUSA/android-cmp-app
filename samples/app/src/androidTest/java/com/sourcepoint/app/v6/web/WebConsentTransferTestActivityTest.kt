@@ -63,7 +63,7 @@ class WebConsentTransferTestActivityTest {
                 spConfig = sourcePointConfig,
                 gdprPmId = MOCK_GDPR_PM_ID,
                 ccpaPmId = MOCK_CCPA_PM_ID,
-                spClientObserver = listOf(sourcePointClient)
+                spClientObserver = listOf(sourcePointClient),
             )
         )
 
@@ -101,7 +101,12 @@ class WebConsentTransferTestActivityTest {
         }
 
         // check if the web view contains readyForConsent callback
-        assertTextInWebViewByTagName(tagName = "h1", CONSENT_TRANSFER_TEST_HEADER)
+        wr(delay = 1000L) {
+            assertTextInWebViewByTagName(
+                tagName = "h1",
+                text = CONSENT_TRANSFER_TEST_HEADER,
+            )
+        }
 
         // load messages for CCPA and GDPR
         onView(withId(R.id.web_consent_refresh_button))
@@ -119,24 +124,54 @@ class WebConsentTransferTestActivityTest {
 
         // check if the sdk returned proper CCPA and GDPR UUIDs
         wr(delay = 1000L) {
-            checkTextNotInTextView(id = R.id.ccpa_uuid_value_text_view, text = "")
-            checkTextNotInTextView(id = R.id.ccpa_uuid_value_text_view, text = "NULL")
-            checkTextNotInTextView(id = R.id.gdpr_uuid_value_text_view, text = "")
-            checkTextNotInTextView(id = R.id.gdpr_uuid_value_text_view, text = "NULL")
+            checkTextNotInTextView(
+                id = R.id.ccpa_uuid_value_text_view,
+                text = "",
+            )
+            checkTextNotInTextView(
+                id = R.id.ccpa_uuid_value_text_view,
+                text = "NULL",
+            )
+            checkTextNotInTextView(
+                id = R.id.gdpr_uuid_value_text_view,
+                text = "",
+            )
+            checkTextNotInTextView(
+                id = R.id.gdpr_uuid_value_text_view,
+                text = "NULL",
+            )
         }
 
         // transfer consent to the web view
-        wr(delay = 1000L) { performClickByIdCompletelyDisplayed(R.id.to_web_view_consent_action) }
+        wr(delay = 1000L) {
+            performClickByIdCompletelyDisplayed(resId = R.id.to_web_view_consent_action)
+        }
 
         // check if the callbacks are returned inside the web view
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_LOAD_CONSENT)
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_ON_CONSENT_READY)
+        wr(delay = 1000L) {
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = EVENT_SP_LOAD_CONSENT,
+            )
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = EVENT_SP_ON_CONSENT_READY,
+            )
+        }
 
         // check if CCPA and GDPR UUIDs are present in the postMessage response
-        val ccpaUuid = readTextFromTextViewById(R.id.ccpa_uuid_value_text_view)
-        val gdprUuid = readTextFromTextViewById(R.id.gdpr_uuid_value_text_view)
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = ccpaUuid)
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = gdprUuid)
+        wr(delay = 1000L) {
+            val ccpaUuid = readTextFromTextViewById(id = R.id.ccpa_uuid_value_text_view)
+            val gdprUuid = readTextFromTextViewById(id = R.id.gdpr_uuid_value_text_view)
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = ccpaUuid,
+            )
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = gdprUuid,
+            )
+        }
     }
 
     /**
@@ -165,7 +200,12 @@ class WebConsentTransferTestActivityTest {
         }
 
         // check if the web view contains readyForConsent callback
-        assertTextInWebViewByTagName(tagName = "h1", CONSENT_TRANSFER_TEST_HEADER)
+        wr(delay = 1000L) {
+            assertTextInWebViewByTagName(
+                tagName = "h1",
+                text = CONSENT_TRANSFER_TEST_HEADER,
+            )
+        }
 
         // load messages for CCPA and GDPR
         onView(withId(R.id.web_consent_refresh_button))
@@ -184,24 +224,54 @@ class WebConsentTransferTestActivityTest {
 
         // check if the sdk returned proper CCPA and GDPR UUIDs
         wr(delay = 1000L) {
-            checkTextNotInTextView(id = R.id.ccpa_uuid_value_text_view, text = "")
-            checkTextNotInTextView(id = R.id.ccpa_uuid_value_text_view, text = "NULL")
-            checkTextNotInTextView(id = R.id.gdpr_uuid_value_text_view, text = "")
-            checkTextNotInTextView(id = R.id.gdpr_uuid_value_text_view, text = "NULL")
+            checkTextNotInTextView(
+                id = R.id.ccpa_uuid_value_text_view,
+                text = "",
+            )
+            checkTextNotInTextView(
+                id = R.id.ccpa_uuid_value_text_view,
+                text = "NULL",
+            )
+            checkTextNotInTextView(
+                id = R.id.gdpr_uuid_value_text_view,
+                text = "",
+            )
+            checkTextNotInTextView(
+                id = R.id.gdpr_uuid_value_text_view,
+                text = "NULL",
+            )
         }
 
         // transfer consent to the web view
-        wr(delay = 1000L) { performClickByIdCompletelyDisplayed(R.id.to_web_view_consent_action) }
+        wr(delay = 1000L) {
+            performClickByIdCompletelyDisplayed(resId = R.id.to_web_view_consent_action)
+        }
 
         // check if the callbacks are returned inside the web view
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_LOAD_CONSENT)
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_ON_CONSENT_READY)
+        wr(delay = 1000L) {
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = EVENT_SP_LOAD_CONSENT,
+            )
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = EVENT_SP_ON_CONSENT_READY,
+            )
+        }
 
         // check if CCPA and GDPR UUIDs are present in the postMessage response
-        val ccpaUuid = readTextFromTextViewById(R.id.ccpa_uuid_value_text_view)
-        val gdprUuid = readTextFromTextViewById(R.id.gdpr_uuid_value_text_view)
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = ccpaUuid)
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = gdprUuid)
+        wr(delay = 1000L) {
+            val ccpaUuid = readTextFromTextViewById(id = R.id.ccpa_uuid_value_text_view)
+            val gdprUuid = readTextFromTextViewById(id = R.id.gdpr_uuid_value_text_view)
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = ccpaUuid,
+            )
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = gdprUuid,
+            )
+        }
     }
 
     /**
@@ -230,7 +300,12 @@ class WebConsentTransferTestActivityTest {
         }
 
         // check if the web view contains readyForConsent callback
-        assertTextInWebViewByTagName(tagName = "h1", CONSENT_TRANSFER_TEST_HEADER)
+        wr(delay = 1000L) {
+            assertTextInWebViewByTagName(
+                tagName = "h1",
+                text = CONSENT_TRANSFER_TEST_HEADER,
+            )
+        }
 
         // load messages for CCPA and GDPR
         onView(withId(R.id.web_consent_refresh_button))
@@ -249,24 +324,54 @@ class WebConsentTransferTestActivityTest {
 
         // check if the sdk returned proper CCPA and GDPR UUIDs
         wr(delay = 1000L) {
-            checkTextNotInTextView(id = R.id.ccpa_uuid_value_text_view, text = "")
-            checkTextNotInTextView(id = R.id.ccpa_uuid_value_text_view, text = "NULL")
-            checkTextNotInTextView(id = R.id.gdpr_uuid_value_text_view, text = "")
-            checkTextNotInTextView(id = R.id.gdpr_uuid_value_text_view, text = "NULL")
+            checkTextNotInTextView(
+                id = R.id.ccpa_uuid_value_text_view,
+                text = "",
+            )
+            checkTextNotInTextView(
+                id = R.id.ccpa_uuid_value_text_view,
+                text = "NULL",
+            )
+            checkTextNotInTextView(
+                id = R.id.gdpr_uuid_value_text_view,
+                text = "",
+            )
+            checkTextNotInTextView(
+                id = R.id.gdpr_uuid_value_text_view,
+                text = "NULL",
+            )
         }
 
         // transfer consent to the web view
-        wr(delay = 1000L) { performClickByIdCompletelyDisplayed(R.id.to_web_view_consent_action) }
+        wr(delay = 1000L) {
+            performClickByIdCompletelyDisplayed(resId = R.id.to_web_view_consent_action)
+        }
 
         // check if the callbacks are returned inside the web view
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_LOAD_CONSENT)
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_ON_CONSENT_READY)
+        wr(delay = 1000L) {
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = EVENT_SP_LOAD_CONSENT,
+            )
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = EVENT_SP_ON_CONSENT_READY,
+            )
+        }
 
         // check if CCPA and GDPR UUIDs are present in the postMessage response
-        val ccpaUuid = readTextFromTextViewById(R.id.ccpa_uuid_value_text_view)
-        val gdprUuid = readTextFromTextViewById(R.id.gdpr_uuid_value_text_view)
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = ccpaUuid)
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = gdprUuid)
+        wr(delay = 1000L) {
+            val ccpaUuid = readTextFromTextViewById(id = R.id.ccpa_uuid_value_text_view)
+            val gdprUuid = readTextFromTextViewById(id = R.id.gdpr_uuid_value_text_view)
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = ccpaUuid,
+            )
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = gdprUuid,
+            )
+        }
     }
 
     /**
@@ -295,7 +400,12 @@ class WebConsentTransferTestActivityTest {
         }
 
         // check if the web view contains readyForConsent callback
-        assertTextInWebViewByTagName(tagName = "h1", CONSENT_TRANSFER_TEST_HEADER)
+        wr(delay = 1000L) {
+            assertTextInWebViewByTagName(
+                tagName = "h1",
+                text = CONSENT_TRANSFER_TEST_HEADER,
+            )
+        }
 
         // load messages for CCPA and GDPR
         onView(withId(R.id.web_consent_refresh_button))
@@ -313,26 +423,54 @@ class WebConsentTransferTestActivityTest {
 
         // check if the sdk returned proper CCPA and GDPR UUIDs
         wr(delay = 1000L) {
-            checkTextNotInTextView(id = R.id.ccpa_uuid_value_text_view, text = "")
-            checkTextNotInTextView(id = R.id.ccpa_uuid_value_text_view, text = "NULL")
-            checkTextNotInTextView(id = R.id.gdpr_uuid_value_text_view, text = "")
-            checkTextNotInTextView(id = R.id.gdpr_uuid_value_text_view, text = "NULL")
+            checkTextNotInTextView(
+                id = R.id.ccpa_uuid_value_text_view,
+                text = "",
+            )
+            checkTextNotInTextView(
+                id = R.id.ccpa_uuid_value_text_view,
+                text = "NULL",
+            )
+            checkTextNotInTextView(
+                id = R.id.gdpr_uuid_value_text_view,
+                text = "",
+            )
+            checkTextNotInTextView(
+                id = R.id.gdpr_uuid_value_text_view,
+                text = "NULL",
+            )
         }
 
         // transfer consent to the web view
-        wr(delay = 1000L) { performClickByIdCompletelyDisplayed(R.id.to_web_view_consent_action) }
+        wr(delay = 1000L) {
+            performClickByIdCompletelyDisplayed(resId = R.id.to_web_view_consent_action)
+        }
 
         // check if the callbacks are returned inside the web view
         wr(delay = 1000L) {
-            assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_LOAD_CONSENT)
-            assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = EVENT_SP_ON_CONSENT_READY)
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = EVENT_SP_LOAD_CONSENT,
+            )
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = EVENT_SP_ON_CONSENT_READY,
+            )
         }
 
         // check if CCPA and GDPR UUIDs are present in the postMessage response
-        val ccpaUuid = readTextFromTextViewById(R.id.ccpa_uuid_value_text_view)
-        val gdprUuid = readTextFromTextViewById(R.id.gdpr_uuid_value_text_view)
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = ccpaUuid)
-        assertTextInWebViewById(id = CONSENT_WEB_VIEW_CONTAINER_ID, text = gdprUuid)
+        wr(delay = 1000L) {
+            val ccpaUuid = readTextFromTextViewById(id = R.id.ccpa_uuid_value_text_view)
+            val gdprUuid = readTextFromTextViewById(id = R.id.gdpr_uuid_value_text_view)
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = ccpaUuid,
+            )
+            assertTextInWebViewById(
+                id = CONSENT_WEB_VIEW_CONTAINER_ID,
+                text = gdprUuid,
+            )
+        }
     }
 
     companion object {
