@@ -26,10 +26,9 @@ import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.extensions.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.extensions.extractIncludeGppDataParamIfEligible
-import com.sourcepoint.cmplibrary.util.extensions.isAcceptOrRejectAll
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
-import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.jsonObject
@@ -426,7 +425,7 @@ private class ServiceImpl(
                     }
                     val spConsents = ConsentManager.responseConsentHandler(
                         gdpr = response.gdpr?.copy(
-                            uuid = campaignManager.gdprUuid,
+                            uuid = campaignManager.gdprConsentStatus?.uuid,
                             applies = dataStorage.gdprApplies,
                         ),
                         consentManagerUtils = consentManagerUtils,
@@ -607,13 +606,12 @@ private class ServiceImpl(
 
         networkClient.storeUsNatChoice(usNatPostChoiceParam)
             .executeOnRight { postChoiceUsNatResponse ->
-                if (consentAction.actionType.isAcceptOrRejectAll().not()) {
-                    val spConsents = ConsentManager.responseConsentHandler(
-                        usNat = postChoiceUsNatResponse.copy(applies = dataStorage.usNatApplies),
-                        consentManagerUtils = consentManagerUtils,
-                    )
-                    onSpConsentSuccess?.invoke(spConsents)
-                }
+                campaignManager.usNatConsentData = postChoiceUsNatResponse
+                val spConsents = ConsentManager.responseConsentHandler(
+                    usNat = postChoiceUsNatResponse.copy(applies = dataStorage.usNatApplies),
+                    consentManagerUtils = consentManagerUtils,
+                )
+                onSpConsentSuccess?.invoke(spConsents)
             }
             .executeOnLeft { error ->
                 (error as? ConsentLibExceptionK)?.let { logger.error(error) }

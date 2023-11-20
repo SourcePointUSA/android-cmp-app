@@ -101,6 +101,7 @@ class DemoActivity : FragmentActivity() {
     private val gdprPmId by lazy { property.gdprPmId }
     private val useGroupPmIfAvailable by lazy { property.useGdprGroupPmIfAvailable }
     private val ccpaPmId by lazy { property.ccpaPmId }
+    private val usnatPmId by lazy { property.usnatPmId }
     private val authId by lazy { property.authId }
 
     private val spConsentLib by spConsentLibLazy {
@@ -160,6 +161,19 @@ class DemoActivity : FragmentActivity() {
                                 pmId = it,
                                 pmTab = pTab,
                                 campaignType = CampaignType.CCPA,
+                                useGroupPmIfAvailable = useGroupPmIfAvailable,
+                                messageType = property.messageType,
+                            )
+                        }
+                        ?: pmNotValid()
+                }
+                DemoFragment.DemoAction.USNAT_PM -> {
+                    usnatPmId?.toString()
+                        ?.let {
+                            spConsentLib.loadPrivacyManager(
+                                pmId = it,
+                                pmTab = pTab,
+                                campaignType = CampaignType.USNAT,
                                 useGroupPmIfAvailable = useGroupPmIfAvailable,
                                 messageType = property.messageType,
                             )

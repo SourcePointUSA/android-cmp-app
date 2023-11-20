@@ -14,7 +14,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.encodeToJsonElement
 
 @Serializable
 internal data class MessagesParamReq(
@@ -168,8 +167,4 @@ data class USNatConsentStatus(
         @SerialName("previousOptInAll") var previousOptInAll: Boolean?,
         @SerialName("purposeConsent") var purposeConsent: String?,
     )
-}
-
-fun USNatConsentStatus.stringify(): JsonElement {
-    return JsonConverter.converter.encodeToJsonElement(this)
 }

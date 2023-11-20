@@ -14,6 +14,8 @@
 
 
 
+
+
 CREATE TABLE property (
     property_name TEXT PRIMARY KEY,
     account_id INTEGER NOT NULL,
@@ -30,7 +32,8 @@ CREATE TABLE property (
     group_pm_id TEXT,
     use_gdpr_groupid_if_available INTEGER,
     property_id TEXT,
-    preloading INTEGER
+    preloading INTEGER,
+    usnat_pm_id INTEGER
 );
 
 CREATE TABLE targeting_param (
@@ -61,8 +64,8 @@ FROM property
 WHERE property.property_name = ?;
 
 insertProperty:
-INSERT OR REPLACE INTO property (property_name, account_id, is_staging, timestamp, message_type, timeout, auth_Id, gdpr_pm_id, ccpa_pm_id, message_language, pm_tab, campaign_env, group_pm_id, use_gdpr_groupid_if_available, property_id, preloading)
-VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO property (property_name, account_id, is_staging, timestamp, message_type, timeout, auth_Id, gdpr_pm_id, ccpa_pm_id, message_language, pm_tab, campaign_env, group_pm_id, use_gdpr_groupid_if_available, property_id, preloading, usnat_pm_id)
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- TargetingParameters
 
