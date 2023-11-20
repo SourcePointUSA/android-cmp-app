@@ -2,7 +2,10 @@ package com.sourcepointmeta.metaapp.util
 
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionBinary.NO
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionTernary.NOT_APPLICABLE
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
+import com.sourcepointmeta.metaapp.data.localdatasource.GPP
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 
@@ -322,11 +325,12 @@ val defaultProperty15 = Property(
     messageType = MessageType.MOBILE,
 )
 
-val defaultProperty14 = Property(
-    propertyName = "staging.mobile.demo",
+val defaultProperty16 = Property(
+    propertyName = "automation-mobile-usnat",
     accountId = 22,
-    gdprPmId = 11111L,
-    ccpaPmId = 1111L,
+    gdprPmId = 930471L,
+    ccpaPmId = 930569L,
+    usnatPmId = 930374L,
     is_staging = false,
     targetingParameters = emptyList(),
     timeout = 3000,
@@ -334,13 +338,19 @@ val defaultProperty14 = Property(
     messageLanguage = "ENGLISH",
     pmTab = "DEFAULT",
     statusCampaignSet = setOf(
-        StatusCampaign("staging.mobile.demo", CampaignType.GDPR, true),
-        StatusCampaign("staging.mobile.demo", CampaignType.CCPA, true),
-        StatusCampaign("staging.mobile.demo", CampaignType.USNAT, true),
+        StatusCampaign("automation-mobile-usnat", CampaignType.GDPR, true),
+        StatusCampaign("automation-mobile-usnat", CampaignType.CCPA, false),
+        StatusCampaign("automation-mobile-usnat", CampaignType.USNAT, true),
     ),
     campaignsEnv = CampaignsEnv.PUBLIC,
-    propertyId = 8292,
+    propertyId = 34049,
     messageType = MessageType.MOBILE,
+//    gpp = GPP(
+//        propertyName = "automation-mobile-usnat",
+//        coveredTransaction = NO,
+//        serviceProviderMode = NOT_APPLICABLE,
+//        optOutOptionMode = NOT_APPLICABLE
+//    )
 )
 
 val propList = listOf(
@@ -358,6 +368,7 @@ val propList = listOf(
     defaultProperty13,
     defaultProperty14,
     defaultProperty15,
+    defaultProperty16,
 )
 val tvPropList = listOf(
     defaultProperty,

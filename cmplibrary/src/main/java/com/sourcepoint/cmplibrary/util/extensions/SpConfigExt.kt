@@ -2,6 +2,8 @@ package com.sourcepoint.cmplibrary.util.extensions
 
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeDataGppParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
+import com.sourcepoint.cmplibrary.exception.CampaignType.USNAT
 import com.sourcepoint.cmplibrary.exposed.gpp.SpGppConfig
 import com.sourcepoint.cmplibrary.gpp.utils.toIncludeDataGppParam
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -16,7 +18,7 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
  */
 internal fun SpConfig.extractIncludeGppDataParamIfEligible(): IncludeDataGppParam? =
     (this.spGppConfig ?: SpGppConfig())
-        .takeIf { this.campaigns.containsCcpa() }
+        .takeIf { this.isIncluded(CCPA) || this.isIncluded(USNAT) }
         ?.toIncludeDataGppParam()
 
 internal fun SpConfig.isIncluded(campaign: CampaignType) =

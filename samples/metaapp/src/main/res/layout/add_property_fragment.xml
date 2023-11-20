@@ -507,6 +507,56 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
+        <Switch
+                android:text="Enable GPP"
+                android:switchPadding="20dp"
+                android:id="@+id/gpp_switch"
+                app:layout_constraintTop_toBottomOf="@id/usnat_chip_group"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+        <Switch
+                android:text="Covered Transaction"
+                android:switchPadding="20dp"
+                android:id="@+id/gpp_field_coveredTransaction"
+                app:layout_constraintTop_toBottomOf="@id/gpp_switch"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+        <Switch
+                android:text="Opt Out Option Mode"
+                android:switchPadding="20dp"
+                android:id="@+id/gpp_field_optOutOptionMode"
+                app:layout_constraintTop_toBottomOf="@id/gpp_field_coveredTransaction"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+        <Switch
+                android:text="Service Provider Mode"
+                android:switchPadding="20dp"
+                android:id="@+id/gpp_field_serviceProviderMode"
+                app:layout_constraintTop_toBottomOf="@id/gpp_field_optOutOptionMode"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+
+
         <Button
                 android:id="@+id/save_btn"
                 android:layout_width="match_parent"
@@ -517,7 +567,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/usnat_chip_group"
+                app:layout_constraintTop_toBottomOf="@+id/gpp_field_serviceProviderMode"
                 app:layout_constraintStart_toStartOf="parent"/>
 
     </com.sourcepointmeta.metaapp.ui.component.AddPropertyLayout>
