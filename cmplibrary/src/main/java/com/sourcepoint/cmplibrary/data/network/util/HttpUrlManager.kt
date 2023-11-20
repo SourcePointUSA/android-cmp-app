@@ -65,7 +65,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         return when (campaignType) {
             CampaignType.GDPR -> urlPmGdpr(pmConfig, env, messageType)
             CampaignType.CCPA -> urlPmCcpa(pmConfig, env, messageType)
-            CampaignType.USNAT -> throw RuntimeException() // TODO
+            CampaignType.USNAT -> urlPmUsNat(pmConfig, env, messageType)
         }
     }
 
@@ -139,6 +139,30 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .apply {
                 pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
                 pmConf.uuid?.let { addQueryParameter("ccpaUUID", it) }
+                pmConf.messageId?.let { addQueryParameter("message_id", it) }
+            }
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
+            .build()
+    }
+
+    private fun urlPmUsNat(pmConf: PmUrlConfig, env: Env, messageType: MessageType): HttpUrl {
+
+        val pathSegment = when (messageType) {
+            LEGACY_OTT -> "ccpa_ott/index.html"
+            OTT -> "native-ott/index.html"
+            MOBILE -> "us_pm/index.html"
+        }
+
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(env.pmHostUSNat)
+            .addPathSegments(pathSegment)
+            .addQueryParameter("site_id", pmConf.siteId)
+            .addQueryParameter("preload_consent", true.toString())
+            .apply {
+                pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
+                pmConf.uuid?.let { addQueryParameter("uuid", it) }
                 pmConf.messageId?.let { addQueryParameter("message_id", it) }
             }
             .addQueryParameter("scriptType", scriptType)
@@ -305,15 +329,18 @@ enum class Env(
     val host: String,
     val pmHostGdpr: String,
     val pmHostCcpa: String,
-    val queryParam: String
+    val pmHostUSNat: String,
+    val queryParam: String,
 ) {
     STAGE(
         "cdn.sp-stage.net",
         "notice.sp-stage.net",
         "ccpa-notice.sp-stage.net",
+        "ccpa-notice.sp-stage.net",
         "stage"
     ),
     PRE_PROD(
+        "preprod-cdn.privacy-mgmt.com",
         "preprod-cdn.privacy-mgmt.com",
         "preprod-cdn.privacy-mgmt.com",
         "preprod-cdn.privacy-mgmt.com",
@@ -323,9 +350,11 @@ enum class Env(
         "cdn.privacy-mgmt.com",
         "cdn.privacy-mgmt.com",
         "cdn.privacy-mgmt.com",
+        "cdn.privacy-mgmt.com",
         "localProd"
     ),
     PROD(
+        "cdn.privacy-mgmt.com",
         "cdn.privacy-mgmt.com",
         "cdn.privacy-mgmt.com",
         "cdn.privacy-mgmt.com",

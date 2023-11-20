@@ -63,7 +63,7 @@ internal fun toPvDataBody(
                     put("accountId", accountId)
                     put("applies", metaDataResp?.usNat?.applies)
                     put("siteId", propertyId)
-                    cs.consentStatus?.let { put("consentStatus", it.stringify()) }
+                    cs.consentStatus?.let { put("consentStatus", JsonConverter.converter.encodeToJsonElement(it)) }
                     put("messageId", usNatCS?.messageMetaData?.messageId)
                     put("uuid", cs.uuid)
                     put("sampleRate", metaDataResp?.usNat?.sampleRate ?: DEFAULT_SAMPLE_RATE)
