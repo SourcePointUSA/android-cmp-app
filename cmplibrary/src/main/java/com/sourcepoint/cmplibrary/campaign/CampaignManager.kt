@@ -39,8 +39,6 @@ internal interface CampaignManager {
     val gdprMessageSubCategory: MessageSubCategory
     fun addCampaign(campaignType: CampaignType, campaign: CampaignTemplate)
 
-    fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory
-
     fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>>
     fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate>
 
@@ -243,14 +241,9 @@ private class CampaignManagerImpl(
         return when (campaignType) {
             CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, false, null)
             CampaignType.CCPA -> getCcpaPmConfig(pmId)
-            CampaignType.USNAT -> throw RuntimeException() // TODO
+            CampaignType.USNAT -> getUsNatPmConfig(pmId)
         }
     }
-
-    private fun getUsNatPmConfig(
-        pmId: String?,
-        groupPmId: String?
-    ): Either<PmUrlConfig> = Either.Left(RuntimeException("UsNatPmConfig TODO"))
 
     private fun getGdprPmConfig(
         pmId: String?,
@@ -331,12 +324,53 @@ private class CampaignManagerImpl(
         )
     }
 
-    override fun getMessSubCategoryByCamp(campaignType: CampaignType): MessageSubCategory {
-        return when (campaignType) {
-            CampaignType.GDPR -> gdprMessageSubCategory
-            CampaignType.CCPA -> ccpaMessageSubCategory
-            CampaignType.USNAT -> throw RuntimeException() // TODO
+    private fun getUsNatPmConfig(
+        pmId: String?,
+        groupPmId: String? = null,
+        useGroupPmIfAvailable: Boolean = false
+    ): Either<PmUrlConfig> = check {
+        val childPmId: String? = dataStorage.usnatChildPmId
+        val isChildPmIdAbsent: Boolean = childPmId == null
+        val hasGroupPmId: Boolean = groupPmId != null
+
+        val usedPmId = selectPmId(pmId, childPmId, useGroupPmIfAvailable)
+
+        if (hasGroupPmId && useGroupPmIfAvailable && isChildPmIdAbsent) {
+            logger?.error(
+                ChildPmIdNotFound(
+                    description = """
+                              childPmId not found!!!
+                              GroupPmId[$groupPmId]
+                              useGroupPmIfAvailable [true] 
+                    """.trimIndent()
+                )
+            )
+            logger?.e(
+                tag = "The childPmId is missing",
+                msg = """
+                              childPmId [null]
+                              GroupPmId[$groupPmId]
+                              useGroupPmIfAvailable [true] 
+                """.trimIndent()
+            )
         }
+
+        logger?.computation(
+            tag = "Property group - USNAT PM",
+            msg = """
+                pmId[$pmId]
+                childPmId[$childPmId]
+                useGroupPmIfAvailable [$useGroupPmIfAvailable] 
+                Query Parameter pmId[$usedPmId]
+            """.trimIndent()
+        )
+
+        PmUrlConfig(
+            consentLanguage = spConfig.messageLanguage.value,
+            uuid = usNatConsentData?.uuid,
+            siteId = spConfig.propertyId.toString(),
+            messageId = pmId
+        )
     }
 
     override fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>> = check {
@@ -508,7 +542,7 @@ private class CampaignManagerImpl(
         get() {
             return dataStorage.gdprConsentStatus
                 ?.let { JsonConverter.converter.decodeFromString<GdprCS>(it) }
-                ?.let { cs -> cs.copy(applies = dataStorage.gdprApplies) }
+                ?.copy(applies = dataStorage.gdprApplies)
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
@@ -522,7 +556,9 @@ private class CampaignManagerImpl(
 
     override var ccpaConsentStatus: CcpaCS?
         get() {
-            return dataStorage.ccpaConsentStatus?.let { JsonConverter.converter.decodeFromString<CcpaCS>(it) }
+            return dataStorage.ccpaConsentStatus
+                ?.let { JsonConverter.converter.decodeFromString<CcpaCS>(it) }
+                ?.copy(applies = metaDataResp?.ccpa?.applies)
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
@@ -535,7 +571,9 @@ private class CampaignManagerImpl(
 
     override var usNatConsentData: USNatConsentData?
         get() {
-            return dataStorage.usNatConsentData?.let { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }
+            return dataStorage.usNatConsentData
+                ?.let { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }
+                ?.copy(applies = metaDataResp?.usNat?.applies)
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
@@ -655,7 +693,7 @@ private class CampaignManagerImpl(
     }
 
     override fun handleOldLocalData() {
-        if (dataStorage.preference.contains(DataStorage.LOCAL_STATE) || dataStorage.preference.contains(DataStorage.LOCAL_STATE_OLD)) {
+        if (dataStorage.preference.contains(LOCAL_STATE) || dataStorage.preference.contains(LOCAL_STATE_OLD)) {
             dataStorage.preference
                 .edit().apply {
                     remove(LOCAL_STATE)

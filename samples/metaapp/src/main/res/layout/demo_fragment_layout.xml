@@ -49,4 +49,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+    <Button
+            android:id="@+id/review_consents_usnat_fr"
+            android:text="@string/review_consents_usnat"
+            app:layout_constraintStart_toStartOf="@id/review_consents_gdpr_fr"
+            app:layout_constraintEnd_toEndOf="@id/review_consents_gdpr_fr"
+            app:layout_constraintBottom_toTopOf="@id/review_consents_ccpa_fr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
 </com.sourcepointmeta.metaapp.ui.component.DemoFragmentLayout>
