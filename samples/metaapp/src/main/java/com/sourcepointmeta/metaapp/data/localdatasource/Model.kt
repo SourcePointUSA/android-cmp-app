@@ -11,7 +11,7 @@ data class Property(
     val propertyName: String,
     val accountId: Long,
     val gdprPmId: Long?,
-    val ccpaPmId: Long?,
+    val usnatPmId: Long?,
     val is_staging: Boolean = false,
     val targetingParameters: List<MetaTargetingParam> = emptyList(),
     val timeout: Long = DEFAULT_TIMEOUT,
@@ -28,6 +28,7 @@ data class Property(
     val propertyId: Int,
     val useCcpaGroupPmIfAvailable: Boolean = false,
     val messageType: MessageType = MessageType.MOBILE,
+    val ccpaPmId: Long? = null,
 )
 
 data class MetaTargetingParam(
@@ -92,7 +93,8 @@ fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<Statu
     gdprGroupPmId = group_pm_id,
     useGdprGroupPmIfAvailable = use_gdpr_groupid_if_available != 0L,
     propertyId = property_id.toString().toInt(),
-    messageType = MessageType.values().find { it.name == message_type } ?: MessageType.MOBILE
+    messageType = MessageType.values().find { it.name == message_type } ?: MessageType.MOBILE,
+    usnatPmId = usnat_pm_id
 )
 
 fun CampaignQueries.getTargetingParams(propName: String) =

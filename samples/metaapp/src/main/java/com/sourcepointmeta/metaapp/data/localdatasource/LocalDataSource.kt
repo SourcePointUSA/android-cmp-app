@@ -181,6 +181,7 @@ private class LocalDataSourceImpl(
                     use_gdpr_groupid_if_available = if (property.useGdprGroupPmIfAvailable) 1 else 0,
                     property_id = property.propertyId.toString(),
                     preloading = 0,
+                    usnat_pm_id = property.usnatPmId
                 )
                 deleteTargetingParameterByPropName(property.propertyName)
                 property.targetingParameters.forEach {

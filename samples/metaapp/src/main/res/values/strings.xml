@@ -126,6 +126,7 @@
     <string name="source_point_logo">LOGO</string>
     <string name="authid_activity">AuthId activity</string>
     <string name="review_consents_ccpa">Review Consents CCPA</string>
+    <string name="review_consents_usnat">Review Consents USNat</string>
     <string name="clear_all_data">Clear all data</string>
     <string name="custom_consent">Custom consent</string>
     <string name="pm_tab">Privacy Manager Tab</string>

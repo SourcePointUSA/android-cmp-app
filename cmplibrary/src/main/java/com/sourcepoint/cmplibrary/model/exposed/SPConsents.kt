@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
 import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentStatus
-import com.sourcepoint.cmplibrary.data.network.model.optimized.stringify
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
 import com.sourcepoint.cmplibrary.model.toTcfJSONObj
 import kotlinx.serialization.SerialName
@@ -209,7 +208,7 @@ internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
 internal fun UsNatConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("applies", applies)
-        put("consentStatus", consentStatus?.stringify())
+        put("consentStatus", consentStatus?.toJsonObject())
         put("consentString", consentString)
         put("dateCreated", dateCreated)
         put("uuid", uuid)
@@ -222,5 +221,27 @@ internal fun SPConsents.toJsonObject(): JSONObject {
         put("gdpr", (gdpr?.consent as? GDPRConsentInternal)?.toJsonObject())
         put("ccpa", (ccpa?.consent as? CCPAConsentInternal)?.toJsonObject())
         put("usnat", (usNat?.consent as? UsNatConsentInternal)?.toJsonObject())
+    }
+}
+
+internal fun USNatConsentStatus.toJsonObject(): JSONObject {
+    return JSONObject().apply {
+        put("rejectedAny", rejectedAny)
+        put("consentedToAll", consentedToAll)
+        put("consentedToAny", consentedToAny)
+        put("granularStatus", granularStatus?.toJsonObject())
+        put("hasConsentData", hasConsentData)
+    }
+}
+
+internal fun USNatConsentStatus.USNatGranularStatus.toJsonObject(): JSONObject {
+    return JSONObject().apply {
+        put("sellStatus", sellStatus)
+        put("shareStatus", shareStatus)
+        put("sensitiveDataStatus", sensitiveDataStatus)
+        put("gpcStatus", gpcStatus)
+        put("defaultConsent", defaultConsent)
+        put("previousOptInAll", previousOptInAll)
+        put("purposeConsent", purposeConsent)
     }
 }
