@@ -109,7 +109,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/account_id_container"
+                app:layout_constraintTop_toBottomOf="@id/usnat_pm_id_container"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/ccpa_pm_id_container"
                 android:hint="GDPR Pm Id"
@@ -133,7 +133,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/account_id_container"
+                app:layout_constraintTop_toBottomOf="@id/usnat_pm_id_container"
                 app:layout_constraintStart_toEndOf="@id/gdpr_pm_id_container"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:hint="CCPA Pm Id"
@@ -205,6 +205,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:ignore="UseSwitchCompatOrMaterialXml"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/usnat_pm_id_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toBottomOf="@id/account_id_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:hint="USNAT Pm Id"
+                app:helperText="USNAT Privacy Manager Id"
+                app:helperTextEnabled="true"
+                app:placeholderText="i.e. 121212">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/usnat_pm_id_ed"
+                    android:maxLines="1"
+                    android:layout_width="match_parent"
+                    android:inputType="number"
+                    android:nextFocusDown="@id/timeout_ed"
+                    android:layout_height="60dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/timeout_container"

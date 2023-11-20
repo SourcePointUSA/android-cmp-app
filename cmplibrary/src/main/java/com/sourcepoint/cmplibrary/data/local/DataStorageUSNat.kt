@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat.Companion.KEY_USNAT_CHILD_PM_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat.Companion.USNAT_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat.Companion.USNAT_SAMPLING_RESULT
 import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat.Companion.USNAT_SAMPLING_VALUE
@@ -12,6 +13,7 @@ internal interface DataStorageUSNat {
     val preference: SharedPreferences
 
     var usNatConsentData: String?
+    var usnatChildPmId: String?
 
     var usNatSamplingValue: Double
     var usNatSamplingResult: Boolean?
@@ -22,6 +24,7 @@ internal interface DataStorageUSNat {
         const val USNAT_CONSENT_STATUS = "sp.usnat.key.consent.status"
         const val USNAT_SAMPLING_VALUE = "sp.usnat.key.sampling"
         const val USNAT_SAMPLING_RESULT = "sp.usnat.key.sampling.result"
+        const val KEY_USNAT_CHILD_PM_ID = "sp.usnat.key.childPmId"
     }
 }
 
@@ -44,6 +47,15 @@ private class DataStorageUSNatImpl(context: Context) : DataStorageUSNat {
                     .putString(USNAT_CONSENT_STATUS, it)
                     .apply()
             }
+        }
+
+    override var usnatChildPmId: String?
+        get() = preference.getString(KEY_USNAT_CHILD_PM_ID, null)
+        set(value) {
+            preference
+                .edit()
+                .putString(KEY_USNAT_CHILD_PM_ID, value)
+                .apply()
         }
 
     override var usNatSamplingValue: Double
