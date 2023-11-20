@@ -399,9 +399,6 @@ private class ServiceImpl(
                     onSpConsentSuccess = onSpConsentsSuccess,
                 ).map { usNat -> ChoiceResp(usNat = usNat) }
             }
-            USNAT -> {
-                Either.Left(RuntimeException())
-            }
         }
     }
 
