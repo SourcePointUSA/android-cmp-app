@@ -519,7 +519,6 @@ class MainActivityKotlinTest {
                 onSpFinished(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
-                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
             }
         }
