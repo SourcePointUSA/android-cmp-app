@@ -368,10 +368,10 @@ private class ServiceImpl(
             getResp = networkClient.getChoice(getChoiceParamReq)
                 .executeOnRight { response ->
                     response.gdpr?.let { responseGdpr ->
-                        campaignManager.gdprConsentStatus = responseGdpr.copy(uuid = campaignManager.gdprUuid)
+                        campaignManager.gdprConsentStatus = responseGdpr.copy(uuid = campaignManager.gdprConsentStatus?.uuid)
                     }
                     val consentHandler = ConsentManager.responseConsentHandler(
-                        response.gdpr?.copy(uuid = campaignManager.gdprUuid, applies = dataStorage.gdprApplies),
+                        response.gdpr?.copy(uuid = campaignManager.gdprConsentStatus?.uuid, applies = dataStorage.gdprApplies),
                         consentManagerUtils
                     )
                     sPConsentsSuccess?.invoke(consentHandler)
@@ -393,7 +393,7 @@ private class ServiceImpl(
             vendorListId = getResp?.gdpr?.vendorListId,
             saveAndExitVariables = consentActionImpl.saveAndExitVariablesOptimized,
             authid = authId,
-            uuid = campaignManager.gdprUuid,
+            uuid = campaignManager.gdprConsentStatus?.uuid,
             sendPvData = dataStorage.gdprSamplingResult,
             pubData = consentActionImpl.pubData.toJsonObject(),
         )
