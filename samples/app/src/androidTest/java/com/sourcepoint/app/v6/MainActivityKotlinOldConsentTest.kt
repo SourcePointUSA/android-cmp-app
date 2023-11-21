@@ -123,7 +123,9 @@ class MainActivityKotlinOldConsentTest {
             verify(exactly = 1) {
                 spClient.onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
+                    it.ccpa!!.consent.uuid.assertNotNull()
                     it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
             }
         }
@@ -162,7 +164,10 @@ class MainActivityKotlinOldConsentTest {
 
         wr {
             verify(exactly = 1) {
-                spClient.onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
+                spClient.onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.uuid.assertNotNull()
+                })
             }
         }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
@@ -198,7 +203,10 @@ class MainActivityKotlinOldConsentTest {
 
         wr {
             verify(exactly = 1) {
-                spClient.onSpFinished(withArg { it.ccpa!!.consent.applies.assertTrue() })
+                spClient.onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.ccpa!!.consent.uuid.assertNotNull()
+                })
             }
         }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }

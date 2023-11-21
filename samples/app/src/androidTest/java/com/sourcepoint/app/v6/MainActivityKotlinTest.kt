@@ -176,9 +176,11 @@ class MainActivityKotlinTest {
                 onAction(any(), any())
                 onConsentReady(withArg {
                     it.gdpr!!.consent.grants.map { k -> k.key }.sorted().assertEquals(grantsTester)
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
                 onSpFinished(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.uuid.assertNotNull()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                 })
             }
@@ -238,6 +240,7 @@ class MainActivityKotlinTest {
                     clickOnConsentActivity()
                     checkEuconsent(euconsent)
                     checkGdprApplies(gdprApplies)
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
             }
         }
@@ -274,7 +277,10 @@ class MainActivityKotlinTest {
                 onUIFinished(any())
                 onAction(any(), any())
                 onConsentReady(any())
-                onSpFinished(withArg { it.ccpa!!.consent.applies.assertTrue() })
+                onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.ccpa!!.consent.uuid.assertNotNull()
+                })
             }
         }
 
@@ -357,10 +363,12 @@ class MainActivityKotlinTest {
                 onConsentReady(withArg {
                     it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(emptyList())
                     it.gdpr?.consent?.grants?.values?.forEach { el -> el.granted.assertFalse() }
+                    it.gdpr?.consent?.uuid.assertNotNull()
                 })
                 onSpFinished(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
             }
         }
@@ -414,6 +422,8 @@ class MainActivityKotlinTest {
                     it.ccpa!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.ccpa!!.consent.uuid.assertNotNull()
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
             }
         }
@@ -477,6 +487,8 @@ class MainActivityKotlinTest {
                     it.ccpa!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.ccpa!!.consent.uuid.assertNotNull()
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
             }
         }
@@ -574,6 +586,8 @@ class MainActivityKotlinTest {
                     it.ccpa!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.ccpa!!.consent.uuid.assertNotNull()
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
             }
         }
@@ -612,6 +626,8 @@ class MainActivityKotlinTest {
                     it.ccpa!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.ccpa!!.consent.uuid.assertNotNull()
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
                 onUIReady(any())
                 onAction(any(), any())
@@ -648,6 +664,7 @@ class MainActivityKotlinTest {
                 onSpFinished(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
                 onAction(any(), any())
                 onConsentReady(any())
@@ -687,6 +704,7 @@ class MainActivityKotlinTest {
                 onAction(any(), any())
                 onConsentReady(withArg {
                     it.gdpr?.consent?.grants?.values?.forEach { el -> el.granted.assertTrue() }
+                    it.gdpr?.consent?.uuid.assertNotNull()
                 })
             }
         }
@@ -751,6 +769,7 @@ class MainActivityKotlinTest {
                 spClient.onConsentReady(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
             }
         }
@@ -759,6 +778,7 @@ class MainActivityKotlinTest {
                 spClient.onSpFinished(withArg {
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
             }
         }
@@ -794,6 +814,7 @@ class MainActivityKotlinTest {
             spClient.run {
                 onConsentReady(withArg {
                     it.gdpr?.consent?.grants!!["5e7ced57b8e05c485246cce0"]!!.purposeGrants.values.first().assertTrue()
+                    it.gdpr?.consent?.uuid.assertNotNull()
                 })
             }
         }
@@ -948,6 +969,7 @@ class MainActivityKotlinTest {
                 spClient.run {
                     onSpFinished(withArg {
                         it.ccpa!!.consent.applies.assertFalse()
+                        it.ccpa!!.consent.uuid.assertNotNull()
                     })
                 }
             }
@@ -984,6 +1006,7 @@ class MainActivityKotlinTest {
                 spClient.run {
                     onSpFinished(withArg {
                         it.ccpa!!.consent.applies.assertTrue()
+                        it.ccpa!!.consent.uuid.assertNotNull()
                     })
                 }
             }
@@ -1024,6 +1047,7 @@ class MainActivityKotlinTest {
             spClient.run {
                 onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
+                    it.ccpa!!.consent.uuid.assertNotNull()
                 })
             }
         }
