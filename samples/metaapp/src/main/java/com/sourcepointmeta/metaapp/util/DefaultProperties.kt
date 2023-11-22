@@ -345,12 +345,12 @@ val defaultProperty16 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 34049,
     messageType = MessageType.MOBILE,
-//    gpp = GPP(
-//        propertyName = "automation-mobile-usnat",
-//        coveredTransaction = NO,
-//        serviceProviderMode = NOT_APPLICABLE,
-//        optOutOptionMode = NOT_APPLICABLE
-//    )
+    gpp = GPP(
+        propertyName = "automation-mobile-usnat",
+        coveredTransaction = NO,
+        serviceProviderMode = NOT_APPLICABLE,
+        optOutOptionMode = NOT_APPLICABLE
+    )
 )
 
 val propList = listOf(

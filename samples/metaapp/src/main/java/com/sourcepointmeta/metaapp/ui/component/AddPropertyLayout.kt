@@ -7,6 +7,11 @@ import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionBinary
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionTernary
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionTernary.NOT_APPLICABLE
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionTernary.NO
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionTernary.YES
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepointmeta.metaapp.core.UIErrorCode
 import com.sourcepointmeta.metaapp.core.getOrNull
@@ -19,7 +24,6 @@ import kotlinx.android.synthetic.main.add_property_fragment.view.*
 import kotlinx.android.synthetic.main.add_property_fragment.view.chip_ccpa
 import kotlinx.android.synthetic.main.add_property_fragment.view.chip_gdpr
 import kotlinx.android.synthetic.main.add_property_fragment.view.chip_usnat
-import kotlinx.android.synthetic.main.property_item.view.*
 
 class AddPropertyLayout : ConstraintLayout {
     constructor(context: Context) : super(context)
@@ -58,6 +62,39 @@ internal fun AddPropertyLayout.bind(property: Property) {
     timeout_ed.setText("${property.timeout ?: 3000}")
     group_pm_id_ed.setText(property.gdprGroupPmId ?: "")
     gdpr_groupId_switch.isChecked = property.useGdprGroupPmIfAvailable
+
+    property.gpp
+        ?.let {
+            gpp_switch.isChecked = true
+            it.coveredTransaction?.let { ct -> gpp_field_coveredTransaction.isChecked = (ct == SpGppOptionBinary.YES) }
+            it.optOutOptionMode?.let { ooo ->
+                when(ooo){
+                    NOT_APPLICABLE -> { opt_out_option_radio_na.isChecked = true}
+                    NO -> { opt_out_option_radio_no.isChecked = true}
+                    YES -> { opt_out_option_radio_yes.isChecked = true}
+                }
+            }
+            it.serviceProviderMode?.let { spm ->
+                when(spm){
+                    NOT_APPLICABLE -> { service_provider_radio_na.isChecked = true}
+                    NO -> { service_provider_radio_no.isChecked = true}
+                    YES -> { service_provider_radio_yes.isChecked = true}
+                }
+            }
+        }
+        ?: run {
+            gpp_switch.isChecked = false
+            opt_out_option_radio_group.isEnabled = false
+            service_provider_mode_radio_group.isEnabled = false
+            opt_out_option_radio_na.isEnabled = false
+            opt_out_option_radio_no.isEnabled = false
+            opt_out_option_radio_yes.isEnabled = false
+            service_provider_radio_na.isEnabled = false
+            service_provider_radio_no.isEnabled = false
+            service_provider_radio_yes.isEnabled = false
+            gpp_field_coveredTransaction.isEnabled = false
+        }
+
 }
 
 internal fun AddPropertyLayout.toProperty(): Property {
@@ -118,7 +155,8 @@ internal fun AddPropertyLayout.toProperty(): Property {
         timeout = timeout_ed.text.toString().toTimeout(),
         authId = auth_id_ed.text.toString(),
         messageLanguage = message_language_autocomplete.text.toString(),
-        messageType = MessageType.values().find { it.name == message_type_autocomplete.text.toString() } ?: MessageType.MOBILE,
+        messageType = MessageType.values().find { it.name == message_type_autocomplete.text.toString() }
+            ?: MessageType.MOBILE,
         pmTab = pm_tab_autocomplete.text.toString(),
         statusCampaignSet = setOf(gdprStatus, ccpaStatus, usnatStatus),
         campaignsEnv = if (radio_stage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC,
