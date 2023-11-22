@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Consent</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            background-color: black;
+            margin: 0;
+            color: white;
+        }
+
+        button {
+            margin-bottom: 15px;
+            padding: 15px 25px;
+            font-size: 18px;
+            background-color: #e74c3c; /* Red color for the Cancel button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #c0392b; /* Darker red color on hover */
+        }
+
+        button.reload {
+            background-color: #3498db; /* Blue color for the Reload button */
+        }
+
+        button.reload:hover {
+            background-color: #2980b9; /* Darker blue color on hover */
+        }
+
+        input {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+    <script>
+        (function () {
+            var e = false, c = window, t = document;
+
+            function r() {
+                if (!c.frames["__uspapiLocator"]) {
+                    if (t.body) {
+                        var a = t.body, e = t.createElement("iframe");
+                        e.style.cssText = "display:none";
+                        e.name = "__uspapiLocator";
+                        a.appendChild(e);
+                    } else {
+                        setTimeout(r, 5);
+                    }
+                }
+            }
+
+            r();
+
+            function p() {
+                var a = arguments;
+                __uspapi.a = __uspapi.a || [];
+                if (!a.length) return __uspapi.a;
+                else if (a[0] === "ping") a[2]({gdprAppliesGlobally: e, cmpLoaded: false}, true);
+                else __uspapi.a.push([].slice.apply(a));
+            }
+
+            function l(t) {
+                var r = typeof t.data === "string";
+                try {
+                    var a = r ? JSON.parse(t.data) : t.data;
+                    if (a.__cmpCall) {
+                        var n = a.__cmpCall;
+                        c.__uspapi(n.command, n.parameter, function (a, e) {
+                            var c = {__cmpReturn: {returnValue: a, success: e, callId: n.callId}};
+                            t.source.postMessage(r ? JSON.stringify(c) : c, "*");
+                        });
+                    }
+                } catch (a) {}
+            }
+
+            if (typeof __uspapi !== "function") {
+                c.__uspapi = p;
+                __uspapi.msgHandler = l;
+                c.addEventListener("message", l, false);
+            }
+        })();
+    </script>
+
+    <script>
+        window._sp_ = {
+            config: {
+                accountId: 22,
+                baseEndpoint: 'https://preprod-cdn.privacy-mgmt.com',
+                propertyHref: 'https://mobile.multicampaign.demo',
+                propertyId: 16893,
+                gdpr: {},
+                ccpa: {},
+                events: {
+                    onConsentReady: function (campaignType, uuid, consent) {
+                        window.postMessage({
+                            name: 'onConsentReady',
+                            payload: {
+                                campaignType,
+                                uuid,
+                                consent
+                            }
+                        }, '*');
+                        console.log("onConsentReady")
+                    },
+                    onError: function () {
+                        window.postMessage({
+                            name: 'onError',
+                            payload: {
+                                ...arguments
+                            }
+                        }, '*');
+                    },
+                }
+            }
+        }
+    </script>
+    <script src='https://cdn.privacy-mgmt.com/unified/wrapperMessagingWithoutDetection.js' async></script>
+    <script src='https://d3fkv551xkjrmm.cloudfront.net/js/messaging.js'></script>
+</head>
+
+<body>
+<button onclick="cancelLocalStorage()">Cancel Local Storage</button>
+<button class="reload" onclick="reloadPage()">Reload Page</button>
+<button class="reload" onclick="setValues()">Show contentedAll values</button>
+<button class="reload" onclick="loadGdprPM()">GDPR PM</button>
+<button class="reload" onclick="loadCcpaPM()">CCPA PM</button>
+
+<input type="text" id="gdprConsentedAll" placeholder="GDPR Consented All" readonly>
+<input type="text" id="ccpaConsentedAll" placeholder="CCPA Consented All" readonly>
+<div id="errorMessage" style="color: red; margin-top: 10px;"></div>
+
+<script>
+        function cancelLocalStorage() {
+            // Clear local storage
+            localStorage.clear();
+            console.log("Local storage canceled");
+        }
+
+        function reloadPage() {
+            location.reload();
+        }
+
+        function loadGdprPM() {
+            try {
+                window._sp_.gdpr.loadPrivacyManagerModal("488393");
+            } catch (error) {
+                // Display the error message
+                document.getElementById("errorMessage").innerText = "Error: " + error.message;
+            }
+        }
+
+        function loadCcpaPM() {
+            try {
+                window._sp_.ccpa.loadPrivacyManagerModal("509688");
+            } catch (error) {
+                // Display the error message
+                document.getElementById("errorMessage").innerText = "Error: " + error.message;
+            }
+        }
+
+        function setValues() {
+            var consentData = JSON.parse(localStorage.getItem("_sp_user_consent_16893")) || {};
+
+            // Set gdprConsentData to false if null or undefined
+            var gdprConsentData = consentData.gdpr ?? false;
+            var ccpaConsentData = consentData.ccpa ?? false;
+
+            // Display the consentedAll values in the input fields
+            document.getElementById("gdprConsentedAll").value = "gdprConsentedAll-" + (gdprConsentData?.consentStatus?.consentedAll.toString() ?? 'null');
+            document.getElementById("ccpaConsentedAll").value = "ccpaConsentedAll-" + (ccpaConsentData?.consentedAll?.toString() ?? 'null');
+        }
+
+    </script>
+</body>
+
+</html>
