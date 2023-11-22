@@ -141,6 +141,7 @@
     <string name="descr_deleteall_action">Delete all</string>
     <string name="clear_log">Clear Log</string>
     <string name="clear_sp">Delete SP</string>
+    <string name="consent_transfer">Transfer the consent</string>
     <string name="add_properties">Add properties</string>
     <string name="save_old_v6_consent">Save old v6.7 consent</string>
     <string name="show_preferences">Show preferences</string>

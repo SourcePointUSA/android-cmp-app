@@ -32,6 +32,7 @@ import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.RemoteDataSource
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
+import com.sourcepointmeta.metaapp.ui.consent.transfer.ConsentTransferActivity
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
 import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListFragment
 import com.sourcepointmeta.metaapp.ui.sp.SpFragment
@@ -194,6 +195,7 @@ class DemoActivity : FragmentActivity() {
                 R.id.action_clear_log -> logFr.clearLog()
                 R.id.action_clear_sp -> logFr.clearSp()
                 R.id.action_refresh -> triggerLib()
+                R.id.action_transfer -> startActivity(Intent(this, ConsentTransferActivity::class.java))
             }
             true
         }

@@ -101,11 +101,11 @@
         window._sp_ = {
             config: {
                 accountId: 22,
-                baseEndpoint: 'https://preprod-cdn.privacy-mgmt.com',
+                baseEndpoint: 'https://cdn.privacy-mgmt.com',
                 propertyHref: 'https://mobile.multicampaign.demo',
                 propertyId: 16893,
-                gdpr: {},
                 ccpa: {},
+                gdpr: {},
                 events: {
                     onConsentReady: function (campaignType, uuid, consent) {
                         window.postMessage({
@@ -137,7 +137,7 @@
 <body>
 <button onclick="cancelLocalStorage()">Cancel Local Storage</button>
 <button class="reload" onclick="reloadPage()">Reload Page</button>
-<button class="reload" onclick="setValues()">Show contentedAll values</button>
+<button class="reload" onclick="setValues()">Show consentedAll values</button>
 <button class="reload" onclick="loadGdprPM()">GDPR PM</button>
 <button class="reload" onclick="loadCcpaPM()">CCPA PM</button>
 

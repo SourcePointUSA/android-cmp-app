@@ -31,4 +31,9 @@
             android:icon="@drawable/ic_baseline_delete_48"
             android:title="@string/clear_sp"
             app:showAsAction="never"/>
+    <item
+            android:id="@+id/action_transfer"
+            android:icon="@drawable/ic_baseline_ios_share_24"
+            android:title="@string/consent_transfer"
+            app:showAsAction="never"/>
 </menu>
