@@ -1,3 +1,7 @@
+## 7.5.1 (November, 22, 2023)
+* [DIA-2759](https://sourcepoint.atlassian.net/browse/DIA-2759) Regression test for consent UUID null fix (#751)
+* [DIA-2836](https://sourcepoint.atlassian.net/browse/DIA-2836) Regression test for the GDPR applies fix (#740)
+
 ## 7.5.0 (November, 09, 2023)
 * [DIA-2940](https://sourcepoint.atlassian.net/browse/DIA-2940) Fix for the applies parameter after saving partial GDPR consent (#734)
 * [DIA-2786](https://sourcepoint.atlassian.net/browse/DIA-2786) Added support fo the new CCPA OTT PM  (#735)
