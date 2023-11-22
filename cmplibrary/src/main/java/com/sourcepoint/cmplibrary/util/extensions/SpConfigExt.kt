@@ -4,7 +4,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.Inclu
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.USNAT
-import com.sourcepoint.cmplibrary.exposed.gpp.SpGppConfig
 import com.sourcepoint.cmplibrary.gpp.utils.toIncludeDataGppParam
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 
@@ -16,8 +15,8 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
  * If not - the default SpGppConfig will be used, which is and empty SpGppConfig object (all the
  * params are nulls).
  */
-internal fun SpConfig.extractIncludeGppDataParamIfEligible(): IncludeDataGppParam? =
-    (this.spGppConfig ?: SpGppConfig())
+internal fun SpConfig.getGppDataOrNull(): IncludeDataGppParam? =
+    this.spGppConfig
         .takeIf { this.isIncluded(CCPA) || this.isIncluded(USNAT) }
         ?.toIncludeDataGppParam()
 
