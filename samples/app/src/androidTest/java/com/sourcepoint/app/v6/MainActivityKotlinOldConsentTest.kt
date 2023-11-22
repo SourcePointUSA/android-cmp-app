@@ -123,7 +123,9 @@ class MainActivityKotlinOldConsentTest {
             verify(exactly = 1) {
                 spClient.onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
+                    it.ccpa!!.consent.uuid.assertNotNull()
                     it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
             }
         }
@@ -144,7 +146,7 @@ class MainActivityKotlinOldConsentTest {
     @Test
     fun GIVEN_an_old_GDPR_v6LocalState_VERIFY_that_the_migration_is_performed() = runBlocking<Unit> {
 
-        val v6LocalState = JSONObject(TestData.storedConsentGdpr)
+        val v6LocalState = JSONObject(TestData.storedConsentGdpr670)
 
         val spClient = mockk<SpClient>(relaxed = true)
 
@@ -162,7 +164,10 @@ class MainActivityKotlinOldConsentTest {
 
         wr {
             verify(exactly = 1) {
-                spClient.onSpFinished(withArg { it.gdpr!!.consent.applies.assertTrue() })
+                spClient.onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.uuid.assertNotNull()
+                })
             }
         }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
@@ -198,7 +203,10 @@ class MainActivityKotlinOldConsentTest {
 
         wr {
             verify(exactly = 1) {
-                spClient.onSpFinished(withArg { it.ccpa!!.consent.applies.assertTrue() })
+                spClient.onSpFinished(withArg {
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.ccpa!!.consent.uuid.assertNotNull()
+                })
             }
         }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }

@@ -66,6 +66,7 @@ class MainActivityExpirationConsent {
             verify(exactly = 1) {
                 spClient.onSpFinished(withArg {
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.gdpr!!.consent.uuid.assertNotNull()
                 })
             }
         }
@@ -105,6 +106,7 @@ class MainActivityExpirationConsent {
             spClient.run {
                 onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
+                    it.ccpa!!.consent.uuid.assertNotNull()
                 })
             }
         }
@@ -141,6 +143,7 @@ class MainActivityExpirationConsent {
             spClient.run {
                 onSpFinished(withArg {
                     it.ccpa!!.consent.applies.assertTrue()
+                    it.ccpa!!.consent.uuid.assertNotNull()
                 })
             }
         }
