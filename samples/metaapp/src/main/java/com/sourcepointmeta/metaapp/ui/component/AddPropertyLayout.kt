@@ -9,12 +9,13 @@ import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionBinary
 import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionTernary
-import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionTernary.NOT_APPLICABLE
 import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionTernary.NO
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionTernary.NOT_APPLICABLE
 import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionTernary.YES
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepointmeta.metaapp.core.UIErrorCode
 import com.sourcepointmeta.metaapp.core.getOrNull
+import com.sourcepointmeta.metaapp.data.localdatasource.GPP
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
@@ -68,17 +69,17 @@ internal fun AddPropertyLayout.bind(property: Property) {
             gpp_switch.isChecked = true
             it.coveredTransaction?.let { ct -> gpp_field_coveredTransaction.isChecked = (ct == SpGppOptionBinary.YES) }
             it.optOutOptionMode?.let { ooo ->
-                when(ooo){
-                    NOT_APPLICABLE -> { opt_out_option_radio_na.isChecked = true}
-                    NO -> { opt_out_option_radio_no.isChecked = true}
-                    YES -> { opt_out_option_radio_yes.isChecked = true}
+                when (ooo) {
+                    NOT_APPLICABLE -> { opt_out_option_radio_na.isChecked = true }
+                    NO -> { opt_out_option_radio_no.isChecked = true }
+                    YES -> { opt_out_option_radio_yes.isChecked = true }
                 }
             }
             it.serviceProviderMode?.let { spm ->
-                when(spm){
-                    NOT_APPLICABLE -> { service_provider_radio_na.isChecked = true}
-                    NO -> { service_provider_radio_no.isChecked = true}
-                    YES -> { service_provider_radio_yes.isChecked = true}
+                when (spm) {
+                    NOT_APPLICABLE -> { service_provider_radio_na.isChecked = true }
+                    NO -> { service_provider_radio_no.isChecked = true }
+                    YES -> { service_provider_radio_yes.isChecked = true }
                 }
             }
         }
@@ -94,7 +95,6 @@ internal fun AddPropertyLayout.bind(property: Property) {
             service_provider_radio_yes.isEnabled = false
             gpp_field_coveredTransaction.isEnabled = false
         }
-
 }
 
 internal fun AddPropertyLayout.toProperty(): Property {
@@ -135,6 +135,15 @@ internal fun AddPropertyLayout.toProperty(): Property {
         }
         .toMutableList()
 
+    val gpp = if (gpp_switch.isChecked) {
+        GPP(
+            propertyName = prop_name_ed.text.toString(),
+            coveredTransaction = if (gpp_field_coveredTransaction.isChecked) SpGppOptionBinary.YES else SpGppOptionBinary.NO,
+            optOutOptionMode = this.getOptOutOptionMode(),
+            serviceProviderMode = this.getServiceProviderMode()
+        )
+    } else null
+
     val chipGdprChecked = chip_gdpr.isChecked
     val chipCcpaChecked = chip_ccpa.isChecked
     val chipUsnatChecked = chip_usnat.isChecked
@@ -164,7 +173,22 @@ internal fun AddPropertyLayout.toProperty(): Property {
         useGdprGroupPmIfAvailable = gdpr_groupId_switch.isChecked,
         propertyId = prop_id_ed.text.toString().toInt(),
         usnatPmId = usnat_pm_id_ed.text.toString().toLongOrNull(),
+        gpp = gpp
     )
+}
+
+private fun AddPropertyLayout.getServiceProviderMode(): SpGppOptionTernary? {
+    return if (service_provider_radio_na.isChecked) NOT_APPLICABLE
+    else if (service_provider_radio_no.isChecked) NO
+    else if (service_provider_radio_yes.isChecked) YES
+    else null
+}
+
+private fun AddPropertyLayout.getOptOutOptionMode(): SpGppOptionTernary? {
+    return if (opt_out_option_radio_na.isChecked) NOT_APPLICABLE
+    else if (opt_out_option_radio_no.isChecked) NO
+    else if (opt_out_option_radio_yes.isChecked) YES
+    else null
 }
 
 fun String.toTimeout(): Long = check { toLong() }.getOrNull() ?: 3000L

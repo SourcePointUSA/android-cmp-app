@@ -23,4 +23,3 @@ enum class SpGppOptionTernary(
     NO("no"),
     NOT_APPLICABLE("na"),
 }
-
