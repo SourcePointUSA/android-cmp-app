@@ -124,7 +124,7 @@ class PropertyListFragment : Fragment() {
                 R.id.action_save_old_v6_consent -> {
                     val editor = sp.edit()
                     editor.putBoolean(OLD_V6_CONSENT, true)
-                    val v6LocalState = JSONObject(oldV6Consent670)
+                    val v6LocalState = JSONObject(oldV6Consent690)
                     v6LocalState.keys().forEach {
                         check { v6LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
                         check { v6LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
