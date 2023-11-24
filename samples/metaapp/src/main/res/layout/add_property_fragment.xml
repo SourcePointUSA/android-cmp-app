@@ -507,6 +507,134 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
+        <Switch
+                android:text="Enable GPP"
+                android:switchPadding="20dp"
+                android:id="@+id/gpp_switch"
+                app:layout_constraintTop_toBottomOf="@id/usnat_chip_group"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+        <Switch
+                android:text="Covered Transaction"
+                android:switchPadding="20dp"
+                android:id="@+id/gpp_field_coveredTransaction"
+                app:layout_constraintTop_toBottomOf="@id/gpp_switch"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+
+        <TextView
+                android:id="@+id/gpp_opt_out_option_mode_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Opt Out Option Mode"
+                app:layout_constraintTop_toBottomOf="@id/gpp_field_coveredTransaction"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:padding="3dp"
+                android:textAppearance="?attr/textAppearanceSubtitle2"/>
+
+        <RadioGroup
+                android:id="@+id/opt_out_option_radio_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintTop_toBottomOf="@id/gpp_opt_out_option_mode_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:orientation="horizontal"
+                android:checkedButton="@+id/radio_prod">
+
+            <RadioButton
+                    android:id="@+id/opt_out_option_radio_no"
+                    android:layout_width="0dp"
+                    android:checked="true"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="No"/>
+
+            <RadioButton
+                    android:id="@+id/opt_out_option_radio_yes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Yes"/>
+
+            <RadioButton
+                    android:id="@+id/opt_out_option_radio_na"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="NA"/>
+        </RadioGroup>
+
+        <TextView
+                android:id="@+id/gpp_service_provider_mode_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Service Provider Mode"
+                app:layout_constraintTop_toBottomOf="@id/opt_out_option_radio_group"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:padding="3dp"
+                android:textAppearance="?attr/textAppearanceSubtitle2"/>
+
+        <RadioGroup
+                android:id="@+id/service_provider_mode_radio_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintTop_toBottomOf="@id/gpp_service_provider_mode_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:orientation="horizontal"
+                android:checkedButton="@+id/radio_prod">
+
+            <RadioButton
+                    android:id="@+id/service_provider_radio_no"
+                    android:layout_width="0dp"
+                    android:checked="true"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="No"/>
+
+            <RadioButton
+                    android:id="@+id/service_provider_radio_yes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Yes"/>
+
+            <RadioButton
+                    android:id="@+id/service_provider_radio_na"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="NA"/>
+        </RadioGroup>
+
+
         <Button
                 android:id="@+id/save_btn"
                 android:layout_width="match_parent"
@@ -517,7 +645,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/usnat_chip_group"
+                app:layout_constraintTop_toBottomOf="@+id/service_provider_mode_radio_group"
                 app:layout_constraintStart_toStartOf="parent"/>
 
     </com.sourcepointmeta.metaapp.ui.component.AddPropertyLayout>
