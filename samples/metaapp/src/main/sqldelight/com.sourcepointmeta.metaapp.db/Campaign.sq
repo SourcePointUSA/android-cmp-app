@@ -113,3 +113,30 @@ WHERE status_campaign.property_name = ?;
 insertStatusCampaign:
 INSERT OR REPLACE INTO status_campaign (property_name, campaign_type, enabled)
 VALUES ( ?, ?, ?);
+
+-- gpp table
+
+CREATE TABLE gpp (
+    property_name TEXT NOT NULL,
+    opt_out_option_mode TEXT,
+    covered_transaction TEXT,
+    service_provider_mode TEXT,
+    PRIMARY KEY(property_name),
+    FOREIGN KEY (property_name) REFERENCES property(property_name) ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+selectGppByPropertyName:
+SELECT *
+FROM gpp
+WHERE gpp.property_name = ?;
+
+deleteGpp:
+DELETE FROM gpp;
+
+deleteGppByPropName:
+DELETE FROM gpp
+WHERE gpp.property_name = ?;
+
+insertGpp:
+INSERT OR REPLACE INTO gpp (property_name, covered_transaction, opt_out_option_mode, service_provider_mode)
+VALUES ( ?, ?, ?, ?);

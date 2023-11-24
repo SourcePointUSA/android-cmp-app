@@ -27,7 +27,7 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.* //ktlint-disable
-import com.sourcepoint.cmplibrary.util.extensions.extractIncludeGppDataParamIfEligible
+import com.sourcepoint.cmplibrary.util.extensions.getGppDataOrNull
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import kotlinx.serialization.decodeFromString
@@ -204,7 +204,7 @@ private class ServiceImpl(
                     campaigns = campaignManager.campaigns4Config,
                     consentLanguage = campaignManager.messageLanguage.value,
                     campaignEnv = campaignManager.spConfig.campaignsEnv,
-                    includeDataGppParam = spConfig.extractIncludeGppDataParamIfEligible(),
+                    includeDataGppParam = spConfig.getGppDataOrNull(),
                 )
 
                 val messagesParamReq = MessagesParamReq(
@@ -252,13 +252,24 @@ private class ServiceImpl(
                                 dataStorage.tcData = tcData.toMapOfAny()
                             }
 
-                            dataStorage.gppData = it.campaigns?.ccpa?.gppData?.toMapOfAny()
+                            if (spConfig.isIncluded(CCPA)) {
+                                dataStorage.gppData = it.campaigns?.ccpa?.gppData?.toMapOfAny()
+                            }
+                            if (spConfig.isIncluded(USNAT)) {
+                                dataStorage.gppData = it.campaigns?.usNat?.gppData?.toMapOfAny()
+                            }
 
                             campaignManager.run {
                                 if ((messageReq.authId != null || campaignManager.shouldCallConsentStatus).not()) {
-                                    this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS(metadataResponse.getOrNull()?.gdpr?.applies)
-                                    this.ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS(metadataResponse.getOrNull()?.ccpa?.applies)
-                                    this.usNatConsentData = usNatConsentData?.copy(applies = metadataResponse.getOrNull()?.usNat?.applies)
+                                    if (spConfig.isIncluded(GDPR)) {
+                                        this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS(metadataResponse.getOrNull()?.gdpr?.applies)
+                                    }
+                                    if (spConfig.isIncluded(CCPA)) {
+                                        this.ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS(metadataResponse.getOrNull()?.ccpa?.applies)
+                                    }
+                                    if (spConfig.isIncluded(USNAT)) {
+                                        this.usNatConsentData = usNatConsentData?.copy(applies = metadataResponse.getOrNull()?.usNat?.applies)
+                                    }
                                 }
                             }
                         }
@@ -411,7 +422,7 @@ private class ServiceImpl(
                     usNat = null,
                 ),
                 includeData = IncludeData.generateIncludeDataForGetChoice(
-                    gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                    gppData = spConfig.getGppDataOrNull(),
                 ),
                 hasCsp = true,
                 includeCustomVendorsRes = false,
@@ -504,7 +515,7 @@ private class ServiceImpl(
                     usNat = null,
                 ),
                 includeData = IncludeData.generateIncludeDataForGetChoice(
-                    gppData = spConfig.extractIncludeGppDataParamIfEligible(),
+                    gppData = spConfig.getGppDataOrNull(),
                 ),
                 hasCsp = true,
                 includeCustomVendorsRes = false,
@@ -644,19 +655,25 @@ private class ServiceImpl(
                     messagesOptimizedLocalState = it.localState
                     it.consentStatusData?.let { csd ->
                         // GDPR
-                        gdprConsentStatus = csd.gdpr?.copy(applies = gdprApplies)
-                        gdprUuid = csd.gdpr?.uuid
-                        gdprDateCreated = csd.gdpr?.dateCreated
-                        csd.gdpr?.expirationDate?.let { exDate -> dataStorage.gdprExpirationDate = exDate }
+                        if (spConfig.isIncluded(GDPR)) {
+                            gdprConsentStatus = csd.gdpr?.copy(applies = gdprApplies)
+                            gdprUuid = csd.gdpr?.uuid
+                            gdprDateCreated = csd.gdpr?.dateCreated
+                            csd.gdpr?.expirationDate?.let { exDate -> dataStorage.gdprExpirationDate = exDate }
+                        }
 
                         // CCPA
-                        ccpaConsentStatus = csd.ccpa?.copy(applies = ccpaApplies)
-                        ccpaUuid = csd.ccpa?.uuid
-                        ccpaDateCreated = csd.ccpa?.dateCreated
-                        csd.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
+                        if (spConfig.isIncluded(CCPA)) {
+                            ccpaConsentStatus = csd.ccpa?.copy(applies = ccpaApplies)
+                            ccpaUuid = csd.ccpa?.uuid
+                            ccpaDateCreated = csd.ccpa?.dateCreated
+                            csd.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
+                        }
 
                         // UsNat
-                        usNatConsentData = csd.usnat?.copy(applies = usNatApplies)
+                        if (spConfig.isIncluded(USNAT)) {
+                            usNatConsentData = csd.usnat?.copy(applies = usNatApplies)
+                        }
                     }
                 }
             }
