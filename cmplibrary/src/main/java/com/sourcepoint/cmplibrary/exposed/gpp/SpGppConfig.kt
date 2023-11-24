@@ -8,3 +8,18 @@ data class SpGppConfig(
     val optOutOptionMode: SpGppOptionTernary? = null,
     val serviceProviderMode: SpGppOptionTernary? = null,
 )
+
+enum class SpGppOptionBinary(
+    val type: String,
+) {
+    YES("yes"),
+    NO("no"),
+}
+
+enum class SpGppOptionTernary(
+    val type: String,
+) {
+    YES("yes"),
+    NO("no"),
+    NOT_APPLICABLE("na"),
+}

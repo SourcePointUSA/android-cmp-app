@@ -2,6 +2,7 @@ package com.sourcepointmeta.metaapp.data.localdatasource
 
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exposed.gpp.SpGppConfig
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
@@ -91,7 +92,11 @@ private class LocalDataSourceImpl(
                         .executeAsList()
                         .map { it.toStatusCampaign() }
                         .toSet()
-                    row.toProperty(tp, statusCampaignList)
+                    val gpp = cQueries.selectGppByPropertyName(row.property_name)
+                        .executeAsList()
+                        .map { it.toGpp() }
+                        .firstOrNull()
+                    row.toProperty(tp, statusCampaignList, gpp)
                 }
         }
     }
@@ -109,7 +114,11 @@ private class LocalDataSourceImpl(
                     .executeAsList()
                     .map { it.toStatusCampaign() }
                     .toSet()
-                row.toProperty(tp, statusCampaignList)
+                val gpp = cQueries.selectGppByPropertyName(row.property_name)
+                    .executeAsList()
+                    .map { it.toGpp() }
+                    .firstOrNull()
+                row.toProperty(tp, statusCampaignList, gpp)
             }
     }
 
@@ -199,6 +208,15 @@ private class LocalDataSourceImpl(
                         enabled = sc.enabled.toValueDB(),
                     )
                 }
+                deleteGppByPropName(property.propertyName)
+                property.gpp?.let { gpp ->
+                    insertGpp(
+                        property_name = property.propertyName,
+                        covered_transaction = gpp.coveredTransaction?.type,
+                        opt_out_option_mode = gpp.optOutOptionMode?.type,
+                        service_provider_mode = gpp.serviceProviderMode?.type
+                    )
+                }
 
                 fetchPropByName(property.propertyName)
             }
@@ -281,6 +299,13 @@ private class LocalDataSourceImpl(
                             ?.let { spc -> addCampaign(CampaignType.CCPA, spc, p.ccpaGroupPmId) }
                         buildSPCampaign(CampaignType.USNAT, p.statusCampaignSet, p.targetingParameters)
                             ?.let { spc -> addCampaign(CampaignType.USNAT, spc, p.usnatGroupPmId) }
+                        p.gpp?.let {
+                            spGppConfig = SpGppConfig(
+                                coveredTransaction = it.coveredTransaction,
+                                serviceProviderMode = it.serviceProviderMode,
+                                optOutOptionMode = it.optOutOptionMode
+                            )
+                        }
                     }
                 }
                 ?: throw RuntimeException("Inconsistent state! LocalDataSource.getSPConfig cannot have a SpConfig null!!!")

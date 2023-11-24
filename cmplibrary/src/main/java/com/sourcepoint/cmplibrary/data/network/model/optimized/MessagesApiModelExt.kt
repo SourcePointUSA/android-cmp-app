@@ -35,7 +35,7 @@ internal fun getMessageBody(
             putJsonObject("webConsentPayload") {
                 put("type", "RecordString")
             }
-            put("GPPData", JsonConverter.converter.encodeToJsonElement(includeDataGppParam))
+            includeDataGppParam?.let { gpp -> put("GPPData", JsonConverter.converter.encodeToJsonElement(gpp)) }
         }
         put("propertyHref", "https://$propertyHref")
         put("hasCSP", true)
