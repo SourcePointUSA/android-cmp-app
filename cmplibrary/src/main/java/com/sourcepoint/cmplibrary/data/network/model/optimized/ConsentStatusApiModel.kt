@@ -77,6 +77,7 @@ data class USNatConsentData(
     @SerialName("uuid") var uuid: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
     @SerialName("message") override val message: JsonElement?,
+    @SerialName("GPPData") @Serializable(with = JsonMapSerializer::class) val gppData: Map<String, JsonElement>?,
     @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
     @SerialName("type") override val type: CampaignType = CampaignType.USNAT,
     @SerialName("url") override val url: String?,
