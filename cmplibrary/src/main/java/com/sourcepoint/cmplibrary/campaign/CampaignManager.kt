@@ -18,7 +18,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disabl
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
-import com.sourcepoint.cmplibrary.exception.CampaignType.*
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
