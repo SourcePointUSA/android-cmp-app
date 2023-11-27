@@ -61,7 +61,7 @@ private class ConsentManagerUtilsImpl(
         legalBasisChangeDate: String
     ): ConsentStatus {
 
-        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        val formatter = SimpleDateFormat(CampaignManager.SIMPLE_DATE_FORMAT_PATTERN, Locale.getDefault())
 
         val dataRecordedConsentDate = formatter.parse(dataRecordedConsent)
         val additionsChangeDateDate = formatter.parse(additionsChangeDate)
