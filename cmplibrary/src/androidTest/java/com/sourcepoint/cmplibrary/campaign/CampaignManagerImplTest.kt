@@ -11,6 +11,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -76,6 +77,24 @@ class CampaignManagerImplTest {
 
     private val cm by lazy {
         CampaignManager.create(ds, spConfig)
+    }
+
+    private val usnatMock by lazy {
+        USNatConsentData(
+            uuid = null,
+            consentStatus = null,
+            type = CampaignType.USNAT,
+            url = null,
+            messageMetaData = null,
+            message = null,
+            applies = null,
+            expirationDate = null,
+            dateCreated = null,
+            consentString = null,
+            gppData = null,
+            webConsentPayload = null
+
+        )
     }
 
     @Before
@@ -194,5 +213,41 @@ class CampaignManagerImplTest {
         appContext.storeTestDataObj(json.toList())
         ds.deleteCcpaConsent()
         appContext.spEntries().toList().find { it.first.contains("CCPA") }.assertNull()
+    }
+
+    @Test
+    fun `GIVEN_an_expired_GDPR_isGdprExpired_RETURN_true`() {
+
+        ds.gdprExpirationDate = "2022-10-27T17:15:57.006Z"
+        ds.ccpaExpirationDate = "2024-10-27T17:15:57.006Z"
+        cm.usNatConsentData = usnatMock.copy(expirationDate = "2024-10-27T17:15:57.006Z")
+
+        cm.isGdprExpired.assertTrue()
+        cm.isCcpaExpired.assertFalse()
+        cm.isUsnatExpired.assertFalse()
+    }
+
+    @Test
+    fun `GIVEN_an_expired_CCPA_isCcpaExpired_RETURN_true`() {
+
+        ds.gdprExpirationDate = "2024-10-27T17:15:57.006Z"
+        ds.ccpaExpirationDate = "2022-10-27T17:15:57.006Z"
+        cm.usNatConsentData = usnatMock.copy(expirationDate = "2024-10-27T17:15:57.006Z")
+
+        cm.isGdprExpired.assertFalse()
+        cm.isCcpaExpired.assertTrue()
+        cm.isUsnatExpired.assertFalse()
+    }
+
+    @Test
+    fun `GIVEN_an_expired_USNAT_isUsnatExpired_RETURN_true`() {
+
+        ds.gdprExpirationDate = "2024-10-27T17:15:57.006Z"
+        ds.ccpaExpirationDate = "2024-10-27T17:15:57.006Z"
+        cm.usNatConsentData = usnatMock.copy(expirationDate = "2022-10-27T17:15:57.006Z")
+
+        cm.isGdprExpired.assertFalse()
+        cm.isCcpaExpired.assertFalse()
+        cm.isUsnatExpired.assertTrue()
     }
 }

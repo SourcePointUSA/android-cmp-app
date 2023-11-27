@@ -91,6 +91,9 @@ private class DataStorageUSNatImpl(context: Context) : DataStorageUSNat {
         preference.edit()
             .apply {
                 remove(USNAT_CONSENT_STATUS)
+                remove(KEY_USNAT_CHILD_PM_ID)
+                remove(USNAT_SAMPLING_RESULT)
+                remove(USNAT_SAMPLING_VALUE)
             }
             .apply()
     }
