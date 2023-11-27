@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.campaign
 
 import com.example.cmplibrary.BuildConfig
+import com.sourcepoint.cmplibrary.campaign.CampaignManager.Companion.SIMPLE_DATE_FORMAT_PATTERN
 import com.sourcepoint.cmplibrary.campaign.CampaignManager.Companion.selectPmId
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
@@ -17,6 +18,8 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disabl
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
+import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
+import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
@@ -79,6 +82,7 @@ internal interface CampaignManager {
     val hasLocalData: Boolean
     val isGdprExpired: Boolean
     val isCcpaExpired: Boolean
+    val isUsnatExpired: Boolean
 
     // dateCreated
     var gdprDateCreated: String?
@@ -99,6 +103,7 @@ internal interface CampaignManager {
     fun deleteExpiredConsents()
 
     companion object {
+        const val SIMPLE_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         fun selectPmId(userPmId: String?, childPmId: String?, useGroupPmIfAvailable: Boolean): String {
             return when {
                 useGroupPmIfAvailable && !childPmId.isNullOrEmpty() && childPmId.isNotBlank() -> childPmId
@@ -134,7 +139,7 @@ private class CampaignManagerImpl(
         spConfig.also { spp ->
             spp.campaigns.forEach {
                 when (it.campaignType) {
-                    CampaignType.GDPR -> {
+                    GDPR -> {
                         addCampaign(
                             it.campaignType,
                             CampaignTemplate(
@@ -158,7 +163,7 @@ private class CampaignManagerImpl(
                         )
                     }
 
-                    CampaignType.CCPA -> {
+                    CCPA -> {
                         addCampaign(
                             it.campaignType,
                             CampaignTemplate(
@@ -177,7 +182,7 @@ private class CampaignManagerImpl(
     override val campaigns4Config: List<CampaignReq>
         get() {
             val campaigns = mutableListOf<CampaignReq>()
-            mapTemplate[CampaignType.GDPR.name]
+            mapTemplate[GDPR.name]
                 ?.let {
                     it.toCampaignReqImpl(
                         targetingParams = it.targetingParams,
@@ -186,7 +191,7 @@ private class CampaignManagerImpl(
                     )
                 }
                 ?.let { campaigns.add(it) }
-            mapTemplate[CampaignType.CCPA.name]
+            mapTemplate[CCPA.name]
                 ?.let {
                     it.toCampaignReqImpl(
                         targetingParams = it.targetingParams,
@@ -227,8 +232,8 @@ private class CampaignManagerImpl(
         groupPmId: String?
     ): Either<PmUrlConfig> {
         return when (campaignType) {
-            CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, useGroupPmIfAvailable, groupPmId)
-            CampaignType.CCPA -> getCcpaPmConfig(pmId)
+            GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, useGroupPmIfAvailable, groupPmId)
+            CCPA -> getCcpaPmConfig(pmId)
             CampaignType.USNAT -> getUsNatPmConfig(pmId, groupPmId)
         }
     }
@@ -239,8 +244,8 @@ private class CampaignManagerImpl(
         pmTab: PMTab?
     ): Either<PmUrlConfig> {
         return when (campaignType) {
-            CampaignType.GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, false, null)
-            CampaignType.CCPA -> getCcpaPmConfig(pmId)
+            GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, false, null)
+            CCPA -> getCcpaPmConfig(pmId)
             CampaignType.USNAT -> getUsNatPmConfig(pmId)
         }
     }
@@ -376,16 +381,16 @@ private class CampaignManagerImpl(
     override fun getAppliedCampaign(): Either<Pair<CampaignType, CampaignTemplate>> = check {
         when {
             dataStorage
-                .getGdprMessage().isNotBlank() -> Pair(CampaignType.GDPR, mapTemplate[CampaignType.GDPR.name]!!)
+                .getGdprMessage().isNotBlank() -> Pair(GDPR, mapTemplate[GDPR.name]!!)
             dataStorage
-                .getCcpaMessage().isNotBlank() -> Pair(CampaignType.CCPA, mapTemplate[CampaignType.CCPA.name]!!)
+                .getCcpaMessage().isNotBlank() -> Pair(CCPA, mapTemplate[CCPA.name]!!)
             else -> throw MissingPropertyException(description = "Inconsistent Legislation!!!")
         }
     }
 
     override fun getMessageOptimizedReq(authId: String?, pubData: JSONObject?): MessagesParamReq {
         val campaigns = mutableListOf<CampaignReq>()
-        mapTemplate[CampaignType.GDPR.name]
+        mapTemplate[GDPR.name]
             ?.let {
                 it.toCampaignReqImpl(
                     targetingParams = it.targetingParams,
@@ -394,7 +399,7 @@ private class CampaignManagerImpl(
                 )
             }
             ?.let { campaigns.add(it) }
-        mapTemplate[CampaignType.CCPA.name]
+        mapTemplate[CCPA.name]
             ?.let {
                 it.toCampaignReqImpl(
                     targetingParams = it.targetingParams,
@@ -460,13 +465,13 @@ private class CampaignManagerImpl(
     override val shouldCallMessages: Boolean
         get() {
 
-            val gdprToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.GDPR }
+            val gdprToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == GDPR }
                 ?.let {
                     dataStorage.gdprApplies && (gdprConsentStatus?.consentStatus?.consentedAll != true)
                 }
                 ?: false
 
-            val ccpaToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.CCPA }
+            val ccpaToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == CCPA }
                 ?.let { true }
                 ?: false
 
@@ -792,42 +797,40 @@ private class CampaignManagerImpl(
 
     override val isGdprExpired: Boolean
         get() {
-
-            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            val formatter = SimpleDateFormat(SIMPLE_DATE_FORMAT_PATTERN, Locale.getDefault())
             val gdprExpirationDate = dataStorage.gdprExpirationDate?.let { formatter.parse(it) } ?: return false
             val currentDate = Date()
-            val isGdprExpired = currentDate.after(gdprExpirationDate)
-
-            logger?.computation(
-                tag = "Expiration Date",
-                msg = """
-                isGdprExpired[$isGdprExpired] 
-                """.trimIndent()
-            )
-
-            return isGdprExpired
+            return currentDate.after(gdprExpirationDate)
         }
 
     override val isCcpaExpired: Boolean
         get() {
-
-            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            val formatter = SimpleDateFormat(SIMPLE_DATE_FORMAT_PATTERN, Locale.getDefault())
             val ccpaExpirationDate = dataStorage.ccpaExpirationDate?.let { formatter.parse(it) } ?: return false
             val currentDate = Date()
-            val isCcpaExpired = currentDate.after(ccpaExpirationDate)
+            return currentDate.after(ccpaExpirationDate)
+        }
 
-            logger?.computation(
-                tag = "Expiration Date",
-                msg = """
-                isCcpaExpired[$isCcpaExpired] 
-                """.trimIndent()
-            )
-
-            return isCcpaExpired
+    override val isUsnatExpired: Boolean
+        get() {
+            val formatter = SimpleDateFormat(SIMPLE_DATE_FORMAT_PATTERN, Locale.getDefault())
+            val usnatExpirationDate = usNatConsentData?.expirationDate?.let { formatter.parse(it) } ?: return false
+            val currentDate = Date()
+            return currentDate.after(usnatExpirationDate)
         }
 
     override fun deleteExpiredConsents() {
+        if (isUsnatExpired) dataStorage.deleteUsNatConsent()
         if (isCcpaExpired) dataStorage.deleteCcpaConsent()
         if (isGdprExpired) dataStorage.deleteGdprConsent()
+
+        logger?.computation(
+            tag = "Expiration Date",
+            msg = """
+                isGdprExpired[$isGdprExpired] 
+                isCcpaExpired[$isCcpaExpired] 
+                isUsnatExpired[$isUsnatExpired] 
+            """.trimIndent()
+        )
     }
 }
