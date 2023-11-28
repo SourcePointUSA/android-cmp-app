@@ -41,7 +41,7 @@
   - [`pubData`](#pubdata)
   - [The Nativemessage](NATIVEMESSAGE_GUIDE.md)
   - [Google Additional Consent](#google-additional-consent)
-  - [Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support](#global-privacy-platform-gpp-multi-state-privacy-msps-support)
+  - [Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support for OTT](#global-privacy-platform-multi-state-privacy-msps-support-for-ott)
   - [Delete user data](#delete-user-data)
   - [Frequently Asked Questions](#frequently-asked-questions)
 - [React Native Integration](docs-reactnative/README-REACTNATIVE.md)
@@ -74,8 +74,8 @@ Kotlin
                   messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
                   campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
                   messageTimeout = 15000 // Optional, default 10000ms
-                  +CampaignType.CCPA
-                  +CampaignType.GDPR
+                  +CampaignType.CCPA // See campaign table
+                  +CampaignType.GDPR // See campaign table
                 }
 ```
 
@@ -92,11 +92,19 @@ Java
             .addMessageLanguage(MessageLanguage.ENGLISH) // Optional, default ENGLISH
             .addCampaignsEnv(CampaignsEnv.PUBLIC) // Optional, default PUBLIC
             .addMessageTimeout(4000) // Optional, default 3000ms
-            .addCampaign(CampaignType.GDPR)
-            .addCampaign(CampaignType.CCPA)
+            .addCampaign(CampaignType.GDPR) //see campaign table
+            .addCampaign(CampaignType.CCPA) //see campaign table
             .build();
 
 ```
+
+Refer to the table below regarding the different campaigns that can be implemented via the SDK:
+
+| Campaign | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GDPR`   | Used if your property runs a GDPR TCF or GDPR Standard campaign                                                                                                                                                                                                                                                                                                                                                                                 |
+| `CCPA`   | Used if your property runs a U.S. Privacy (Legacy) campaign                                                                                                                                                                                                                                                                                                                                                                                     |
+| `USNAT`  | Used if your property runs a U.S. Multi-State Privacy campaign. Please do not attempt to utilize both `CCPA` and `USNAT` simultaneously as this poses a compliance risk for your organization. <br><br>This campaign type should only be implemented via the config object on mobile devices. [Click here](#global-privacy-platform-multi-state-privacy-msps-support-for-ott) to learn more about implementing U.S. Multi-State Privacy on OTT. |
 
 ## Create an instance of the CMP library
 
@@ -262,8 +270,8 @@ Call `spConsentLib.loadPrivacyManager` to surface the Privacy Manager. There are
 - OTT: it presents a new layout and operates on TV devices,
 - LEGACY_OTT: it presents the legacy layout and operates on TV devices.
 
-As a default behavior, the type is determined based on the nature of the device on which your application is executed. 
-For example, if your application is running on a television, the selected type will be 'OTT,' whereas the 'MOBILE' 
+As a default behavior, the type is determined based on the nature of the device on which your application is executed.
+For example, if your application is running on a television, the selected type will be 'OTT,' whereas the 'MOBILE'
 type will be assigned in all other cases.
 
 Kotlin
@@ -922,14 +930,15 @@ Google additional consent is a concept created by Google and the IAB Framework t
 
 Google additional consent is supported in our mobile SDKs and is stored in the `IABTCF_AddtlConsent` key in the user's local storage. Look for the key in the user's local storage and pass the value to Google's SDKs.
 
-## Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support
+## Global Privacy Platform Multi-State Privacy (MSPS) Support for OTT
 
 Starting with version 7.3.0, if your configuration contains a ccpa campaign, it will automatically set GPP data. Unless configured otherwise, the following MSPA attributes will default to:
+
 - MspaCoveredTransaction: `NO`
 - MspaOptOutOptionMode: `NOT_APPLICABLE`
 - MspaServiceProviderMode: `NOT_APPLICABLE`
 
-Optionally, your organization can customize support for the MSPS by configuring the above attributes as part of the GPP config. [Click here](https://github.com/SourcePointUSA/android-cmp-app/wiki/Global-Privacy-Platform-(GPP)-Multi%E2%80%90State-Privacy-(MSPS)) for more information on each attribute, possible values, and examples for signatories and non-signatories of the MSPA.
+Optionally, your organization can customize support for the MSPS by configuring the above attributes as part of the GPP config. [Click here](<https://github.com/SourcePointUSA/android-cmp-app/wiki/Global-Privacy-Platform-(GPP)-Multi%E2%80%90State-Privacy-(MSPS)>) for more information on each attribute, possible values, and examples for signatories and non-signatories of the MSPA.
 
 Kotlin
 
@@ -957,7 +966,7 @@ Java
 
 ```java
 public class MainActivityJava extends AppCompatActivity {
-    
+
     private SpGppConfig sourcePointGppConfig = new SpGppConfig(
             SpGppOptionBinary.NO,
             SpGppOptionTernary.NOT_APPLICABLE,
