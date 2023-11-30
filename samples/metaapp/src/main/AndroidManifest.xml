@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sourcepointmeta.metaapp">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.sourcepointmeta.metaapp"
+    tools:ignore="MissingLeanbackLauncher">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -38,21 +40,24 @@
 
         <activity android:name=".ui.sp.PreferencesActivity" />
         <activity android:name=".ui.demo.DemoActivity" />
-        <activity
-            android:name=".tv.demo.DemoActivityTv"
-            android:theme="@style/Theme.DemoAppTv" />
+
+<!--    Commented out because we don't have a plan to release MetaApp for AndroidTV    -->
+<!--        <activity-->
+<!--            android:name=".tv.demo.DemoActivityTv"-->
+<!--            android:theme="@style/Theme.DemoAppTv" />-->
         <activity android:name=".ui.viewer.JsonViewerActivity" />
         <activity
             android:name=".tv.viewer.JsonViewerActivityTv"
             android:theme="@style/Theme.JsonViewerAppTv" />
 
-        <activity
-            android:name=".tv.MainActivityTV"
-            android:banner="@mipmap/ic_launcher"
-            android:configChanges="keyboard|keyboardHidden|navigation"
-            android:exported="true"
-            android:theme="@style/Theme.MainActivityAppTv">
-        </activity>
+<!--    Commented out because we don't have a plan to release MetaApp for AndroidTV    -->
+<!--        <activity-->
+<!--            android:name=".tv.MainActivityTV"-->
+<!--            android:banner="@mipmap/ic_launcher"-->
+<!--            android:configChanges="keyboard|keyboardHidden|navigation"-->
+<!--            android:exported="true"-->
+<!--            android:theme="@style/Theme.MainActivityAppTv">-->
+<!--        </activity>-->
 
         <activity
             android:name=".ui.LinkActivity"
