@@ -338,5 +338,4 @@ class CampaignManagerImplTest {
         cm.gdprConsentStatus.assertNull()
         cm.usNatConsentData.assertNull()
     }
-
 }

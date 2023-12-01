@@ -101,7 +101,7 @@ internal interface CampaignManager {
     fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun getUsNatPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun deleteExpiredConsents()
-    fun clearConsentIfVendorListIdChanged(gdprVendorListId: String?,usNatVendorListId: String?)
+    fun clearConsentIfVendorListIdChanged(gdprVendorListId: String?, usNatVendorListId: String?)
 
     companion object {
         const val SIMPLE_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
