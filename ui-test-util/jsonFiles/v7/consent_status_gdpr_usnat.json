@@ -1,0 +1,226 @@
+{
+  "consentStatusData": {
+    "gdpr": {
+      "customVendorsResponse": {
+        "consentedVendors": [],
+        "consentedPurposes": [],
+        "legIntPurposes": []
+      },
+      "addtlConsent": "1~",
+      "grants": {
+        "6446b3bd47d19a7d945926ef": {
+          "vendorGrant": false,
+          "purposeGrants": {
+            "64e6274ddf2f7b0014eaa9f4": false,
+            "64e6274ddf2f7b0014eaa9fb": false,
+            "64e6274ddf2f7b0014eaaa01": false,
+            "64e6274ddf2f7b0014eaaa07": false,
+            "64e6274ddf2f7b0014eaaa0d": false,
+            "64e6274ddf2f7b0014eaaa13": false,
+            "64e6274ddf2f7b0014eaaa19": false,
+            "64e6274ddf2f7b0014eaaa1f": false,
+            "64e6274ddf2f7b0014eaaa2a": false,
+            "64e6274ddf2f7b0014eaaa30": false
+          }
+        },
+        "6446b3bcb67746001a82ee7c": {
+          "vendorGrant": false,
+          "purposeGrants": {
+            "64e6274ddf2f7b0014eaa9f4": false
+          }
+        }
+      },
+      "euconsent": "CP2G1QAP2G1QAAGABCENAdEgAAAAAAAAACiQAAAAAAAA.YAAAAAAAAAAA",
+      "consentStatus": {
+        "rejectedAny": null,
+        "rejectedLI": false,
+        "consentedAll": false,
+        "granularStatus": {
+          "vendorConsent": "NONE",
+          "vendorLegInt": "EMPTY_VL",
+          "purposeConsent": "NONE",
+          "purposeLegInt": "EMPTY_VL",
+          "previousOptInAll": false,
+          "defaultConsent": true
+        },
+        "hasConsentData": false,
+        "consentedToAny": null
+      },
+      "cookies": [],
+      "actions": [],
+      "dateCreated": "2023-12-01T12:39:29.271Z",
+      "consentUUID": "69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10",
+      "gdprApplies": true,
+      "cookieExpirationDays": 365,
+      "localDataCurrent": false,
+      "vendorListId": "64e6274d0b16535566446d38",
+      "expirationDate": "2024-11-30T12:39:29.271Z",
+      "categories": [],
+      "legIntCategories": [],
+      "vendors": [],
+      "legIntVendors": [],
+      "specialFeatures": [],
+      "uuid": "69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10",
+      "TCData": {
+        "IABTCF_AddtlConsent": "1~",
+        "IABTCF_CmpSdkID": 6,
+        "IABTCF_CmpSdkVersion": 2,
+        "IABTCF_PolicyVersion": 4,
+        "IABTCF_PublisherCC": "US",
+        "IABTCF_PurposeOneTreatment": 0,
+        "IABTCF_UseNonStandardTexts": 0,
+        "IABTCF_TCString": "CP2G1QAP2G1QAAGABCENAdEgAAAAAAAAACiQAAAAAAAA.YAAAAAAAAAAA",
+        "IABTCF_VendorConsents": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "IABTCF_VendorLegitimateInterests": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "IABTCF_PurposeConsents": "0000000000",
+        "IABTCF_PurposeLegitimateInterests": "0000000000",
+        "IABTCF_SpecialFeaturesOptIns": "00",
+        "IABTCF_PublisherConsent": "0000000000",
+        "IABTCF_PublisherLegitimateInterests": "0000000000",
+        "IABTCF_PublisherCustomPurposesConsents": "0000000000",
+        "IABTCF_PublisherCustomPurposesLegitimateInterests": "0000000000",
+        "IABTCF_gdprApplies": 1
+      },
+      "webConsentPayload": {
+        "actions": [],
+        "addtlConsent": "1~",
+        "cookies": [],
+        "consentStatus": {
+          "rejectedAny": null,
+          "rejectedLI": false,
+          "consentedAll": false,
+          "granularStatus": {
+            "vendorConsent": "NONE",
+            "vendorLegInt": "EMPTY_VL",
+            "purposeConsent": "NONE",
+            "purposeLegInt": "EMPTY_VL",
+            "previousOptInAll": false,
+            "defaultConsent": true
+          },
+          "hasConsentData": false,
+          "consentedToAny": null
+        },
+        "customVendorsResponse": {
+          "consentedVendors": [],
+          "consentedPurposes": [],
+          "legIntPurposes": []
+        },
+        "dateCreated": "2023-12-01T12:39:29.271Z",
+        "expirationDate": "2024-11-30T12:39:29.271Z",
+        "euconsent": "CP2G1QAP2G1QAAGABCENAdEgAAAAAAAAACiQAAAAAAAA.YAAAAAAAAAAA",
+        "gdprApplies": true,
+        "grants": {
+          "6446b3bd47d19a7d945926ef": {
+            "vendorGrant": false,
+            "purposeGrants": {
+              "64e6274ddf2f7b0014eaa9f4": false,
+              "64e6274ddf2f7b0014eaa9fb": false,
+              "64e6274ddf2f7b0014eaaa01": false,
+              "64e6274ddf2f7b0014eaaa07": false,
+              "64e6274ddf2f7b0014eaaa0d": false,
+              "64e6274ddf2f7b0014eaaa13": false,
+              "64e6274ddf2f7b0014eaaa19": false,
+              "64e6274ddf2f7b0014eaaa1f": false,
+              "64e6274ddf2f7b0014eaaa2a": false,
+              "64e6274ddf2f7b0014eaaa30": false
+            }
+          },
+          "6446b3bcb67746001a82ee7c": {
+            "vendorGrant": false,
+            "purposeGrants": {
+              "64e6274ddf2f7b0014eaa9f4": false
+            }
+          }
+        },
+        "vendorListId": "64e6274d0b16535566446d38",
+        "uuid": "69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10"
+      }
+    },
+    "usnat": {
+      "actions": [],
+      "categories": [],
+      "consentStatus": {
+        "rejectedAny": false,
+        "consentedToAll": true,
+        "consentedToAny": false,
+        "granularStatus": {
+          "sellStatus": false,
+          "shareStatus": false,
+          "sensitiveDataStatus": true,
+          "gpcStatus": false
+        },
+        "hasConsentData": true
+      },
+      "consentStrings": [
+        {
+          "sectionId": 9,
+          "sectionName": "usvav1",
+          "consentString": "BAAAACo"
+        }
+      ],
+      "cookies": [],
+      "dateCreated": "2023-11-08T20:37:51.807Z",
+      "expirationDate": "2024-11-07T20:37:51.807Z",
+      "GPPData": {
+        "IABGPP_HDR_Version": "1",
+        "IABGPP_HDR_Sections": "9",
+        "IABGPP_HDR_GppString": "DBABRg~BAAAACo",
+        "IABGPP_GppSID": "9",
+        "IABGPP_9_String": "BAAAACo",
+        "IABGPP_USVA_Version": 1,
+        "IABGPP_USVA_SharingNotice": 0,
+        "IABGPP_USVA_SaleOptOutNotice": 0,
+        "IABGPP_USVA_TargetedAdvertisingOptOutNotice": 0,
+        "IABGPP_USVA_SaleOptOut": 0,
+        "IABGPP_USVA_TargetedAdvertisingOptOut": 0,
+        "IABGPP_USVA_SensitiveDataProcessing": "0_0_0_0_0_0_0_0",
+        "IABGPP_USVA_KnownChildSensitiveDataConsents": 0,
+        "IABGPP_USVA_MspaCoveredTransaction": 2,
+        "IABGPP_USVA_MspaOptOutOptionMode": 2,
+        "IABGPP_USVA_MspaServiceProviderMode": 2
+      },
+      "localDataCurrent": false,
+      "userConsents": {
+        "categories": []
+      },
+      "uuid": "11a0fe1c-bd4a-43bb-b179-c015f63882bc_7",
+      "webConsentPayload": {
+        "actions": [],
+        "categories": [],
+        "consentStatus": {
+          "rejectedAny": false,
+          "consentedToAll": true,
+          "consentedToAny": false,
+          "granularStatus": {
+            "sellStatus": false,
+            "shareStatus": false,
+            "sensitiveDataStatus": true,
+            "gpcStatus": false
+          },
+          "hasConsentData": true
+        },
+        "consentStrings": [
+          {
+            "sectionId": 9,
+            "sectionName": "usvav1",
+            "consentString": "BAAAACo"
+          }
+        ],
+        "cookies": [],
+        "dateCreated": "2023-11-08T20:37:51.807Z",
+        "userConsents": {
+          "categories": []
+        },
+        "uuid": "11a0fe1c-bd4a-43bb-b179-c015f63882bc_7"
+      }
+    }
+  },
+  "localState": {
+    "gdpr": {
+      "propertyId": 8292
+    },
+    "usnat": {
+      "propertyId": 8292
+    }
+  }
+}

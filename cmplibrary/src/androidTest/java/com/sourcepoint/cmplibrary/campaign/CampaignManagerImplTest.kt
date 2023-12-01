@@ -250,4 +250,93 @@ class CampaignManagerImplTest {
         cm.isCcpaExpired.assertFalse()
         cm.isUsnatExpired.assertTrue()
     }
+
+    @Test
+    fun GIVEN_vendor_list_ids_did_not_change_THEN_should_not_clear_consent() {
+        // GIVEN
+        val consentStatusJson = "v7/consent_status_gdpr_usnat.json".file2String()
+        val storedConsentStatus = JsonConverter.converter.decodeFromString<ConsentStatusResp>(consentStatusJson)
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        cm.gdprConsentStatus = storedConsentStatus.consentStatusData!!.gdpr
+        cm.usNatConsentData = storedConsentStatus.consentStatusData!!.usnat
+
+        // WHEN
+        cm.clearConsentIfVendorListIdChanged(
+            gdprVendorListId = storedMetaData.gdpr?.vendorListId,
+            usNatVendorListId = storedMetaData.usNat?.vendorListId,
+        )
+
+        // THEN
+        cm.gdprConsentStatus.assertNotNull()
+        cm.usNatConsentData.assertNotNull()
+    }
+
+    @Test
+    fun GIVEN_gdpr_vendor_list_id_changed_THEN_should_clear_gdpr_consent_only() {
+        // GIVEN
+        val consentStatusJson = "v7/consent_status_gdpr_usnat.json".file2String()
+        val storedConsentStatus = JsonConverter.converter.decodeFromString<ConsentStatusResp>(consentStatusJson)
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        cm.gdprConsentStatus = storedConsentStatus.consentStatusData!!.gdpr
+        cm.usNatConsentData = storedConsentStatus.consentStatusData!!.usnat
+
+        // WHEN
+        cm.clearConsentIfVendorListIdChanged(
+            gdprVendorListId = "new_fake_gdpr_vendor_list_id",
+            usNatVendorListId = storedMetaData.usNat?.vendorListId,
+        )
+
+        // THEN
+        cm.gdprConsentStatus.assertNull()
+        cm.usNatConsentData.assertNotNull()
+    }
+
+    @Test
+    fun GIVEN_usnat_vendor_list_id_changed_THEN_should_clear_usnat_consent_only() {
+        // GIVEN
+        val consentStatusJson = "v7/consent_status_gdpr_usnat.json".file2String()
+        val storedConsentStatus = JsonConverter.converter.decodeFromString<ConsentStatusResp>(consentStatusJson)
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        cm.gdprConsentStatus = storedConsentStatus.consentStatusData!!.gdpr
+        cm.usNatConsentData = storedConsentStatus.consentStatusData!!.usnat
+
+        // WHEN
+        cm.clearConsentIfVendorListIdChanged(
+            gdprVendorListId = storedMetaData.gdpr?.vendorListId,
+            usNatVendorListId = "new_fake_usnat_vendor_list_id",
+        )
+
+        // THEN
+        cm.gdprConsentStatus.assertNotNull()
+        cm.usNatConsentData.assertNull()
+    }
+
+    @Test
+    fun GIVEN_both_vendor_list_id_changed_THEN_should_clear_both_consents() {
+        // GIVEN
+        val consentStatusJson = "v7/consent_status_gdpr_usnat.json".file2String()
+        val storedConsentStatus = JsonConverter.converter.decodeFromString<ConsentStatusResp>(consentStatusJson)
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        cm.gdprConsentStatus = storedConsentStatus.consentStatusData!!.gdpr
+        cm.usNatConsentData = storedConsentStatus.consentStatusData!!.usnat
+
+        // WHEN
+        cm.clearConsentIfVendorListIdChanged(
+            gdprVendorListId = "new_fake_gdpr_vendor_list_id",
+            usNatVendorListId = "new_fake_usnat_vendor_list_id",
+        )
+
+        // THEN
+        cm.gdprConsentStatus.assertNull()
+        cm.usNatConsentData.assertNull()
+    }
+
 }

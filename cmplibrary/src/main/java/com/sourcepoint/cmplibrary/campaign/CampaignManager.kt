@@ -101,6 +101,7 @@ internal interface CampaignManager {
     fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun getUsNatPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun deleteExpiredConsents()
+    fun clearConsentIfVendorListIdChanged(gdprVendorListId: String?,usNatVendorListId: String?)
 
     companion object {
         const val SIMPLE_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
@@ -707,18 +708,18 @@ private class CampaignManagerImpl(
     /**
      * Method that clears out local consent if the vendor list id of a specific campaign changed
      */
-    private fun clearConsentIfVendorListIdChanged(
+    override fun clearConsentIfVendorListIdChanged(
         gdprVendorListId: String?,
         usNatVendorListId: String?
     ) {
 
         // delete GDPR consent if GDPR vendor list id changed
-        if (isNewGdprVendorListId(gdprVendorListId)) {
+        if (hasGdprVendorListIdChanged(gdprVendorListId)) {
             dataStorage.deleteGdprConsent()
         }
 
         // delete USNAT consent if USNAT vendor list id changed
-        if (isNewUsNatVendorListId(usNatVendorListId)) {
+        if (hasUsNatVendorListIdChanged(usNatVendorListId)) {
             dataStorage.deleteUsNatConsent()
         }
     }
@@ -727,24 +728,24 @@ private class CampaignManagerImpl(
      * Method that verifies if vendorListId of GDPR changed qualitatively, basically a string value
      * to a new string value
      *
-     * @param responseGdprVendorListId - vendor list id of GDPR from a new /meta-data response
+     * @param newGdprVendorListId - vendor list id of GDPR from a new /meta-data response
      */
-    private fun isNewGdprVendorListId(responseGdprVendorListId: String?): Boolean {
+    private fun hasGdprVendorListIdChanged(newGdprVendorListId: String?): Boolean {
         val storedGdprVendorListId = metaDataResp?.gdpr?.vendorListId
-        return responseGdprVendorListId != null && storedGdprVendorListId != null &&
-            storedGdprVendorListId != responseGdprVendorListId
+        return newGdprVendorListId != null && storedGdprVendorListId != null &&
+            storedGdprVendorListId != newGdprVendorListId
     }
 
     /**
      * Method that verifies if vendorListId of USNAT changed qualitatively, basically a string value
      * to a new string value
      *
-     * @param responseUsNatVendorListId - vendor list id of USNAT from a new /meta-data response
+     * @param newUsNatVendorListId - vendor list id of USNAT from a new /meta-data response
      */
-    private fun isNewUsNatVendorListId(responseUsNatVendorListId: String?): Boolean {
+    private fun hasUsNatVendorListIdChanged(newUsNatVendorListId: String?): Boolean {
         val storedUsNatVendorListId = metaDataResp?.usNat?.vendorListId
-        return responseUsNatVendorListId != null && storedUsNatVendorListId != null &&
-            storedUsNatVendorListId != responseUsNatVendorListId
+        return newUsNatVendorListId != null && storedUsNatVendorListId != null &&
+            storedUsNatVendorListId != newUsNatVendorListId
     }
 
     override fun handleOldLocalData() {
