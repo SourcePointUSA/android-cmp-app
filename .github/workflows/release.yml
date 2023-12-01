@@ -12,6 +12,8 @@ jobs:
   build:
     name: Build APK and Create release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v2
     - name: set up JDK 1.8
