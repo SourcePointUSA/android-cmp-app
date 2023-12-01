@@ -45,6 +45,7 @@ data class MetaDataResp(
     data class USNat(
         @SerialName("_id") val vendorListId: String?,
         @SerialName("additionsChangeDate") val additionsChangeDate: String?,
+        @SerialName("legalBasisChangeDate") val legalBasisChangeDate: String?,
         @SerialName("applies") val applies: Boolean?,
         @SerialName("sampleRate") val sampleRate: Double?,
         @SerialName("applicableSections") val applicableSections: JsonElement?,

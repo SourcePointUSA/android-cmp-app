@@ -171,27 +171,22 @@ private class ServiceImpl(
                     }
             }
 
-            val gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus
-            val additionsChangeDate = metadataResponse.getOrNull()?.gdpr?.additionsChangeDate
-            val legalBasisChangeDate = metadataResponse.getOrNull()?.gdpr?.legalBasisChangeDate
-            val dataRecordedConsent = campaignManager.gdprConsentStatus?.dateCreated
+            campaignManager.reConsentGdpr(
+                additionsChangeDate = campaignManager.gdprAdditionsChangeDate,
+                legalBasisChangeDate = campaignManager.gdprLegalBasisChangeDate,
+            )
+                ?.let {
+                    campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
+                        consentStatus = it,
+                        applies = metaDataResp?.gdpr?.applies
+                    )
+                }
 
-            if (dataRecordedConsent != null &&
-                gdprConsentStatus != null &&
-                additionsChangeDate != null &&
-                legalBasisChangeDate != null
-            ) {
-                val consentStatus = consentManagerUtils.updateGdprConsent(
-                    dataRecordedConsent = dataRecordedConsent,
-                    gdprConsentStatus = gdprConsentStatus,
-                    additionsChangeDate = additionsChangeDate,
-                    legalBasisChangeDate = legalBasisChangeDate
-                )
-                campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
-                    consentStatus = consentStatus,
-                    applies = metaDataResp?.gdpr?.applies
-                )
-            }
+            campaignManager.reConsentUsnat(
+                additionsChangeDate = campaignManager.usnatAdditionsChangeDate,
+                legalBasisChangeDate = campaignManager.usnatLegalBasisChangeDate,
+            )
+                ?.let { campaignManager.usNatConsentData = campaignManager.usNatConsentData?.copy(consentStatus = it) }
 
             if (campaignManager.shouldCallMessages) {
 

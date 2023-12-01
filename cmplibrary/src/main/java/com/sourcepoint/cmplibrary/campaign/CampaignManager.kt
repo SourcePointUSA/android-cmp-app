@@ -94,6 +94,12 @@ internal interface CampaignManager {
     var authId: String?
     var propertyId: Int
 
+    // reconsent
+    val gdprLegalBasisChangeDate: String?
+    val gdprAdditionsChangeDate: String?
+    val usnatLegalBasisChangeDate: String?
+    val usnatAdditionsChangeDate: String?
+
     fun handleAuthIdOrPropertyIdChange(newAuthId: String?, newPropertyId: Int)
     fun handleMetaDataResponse(response: MetaDataResp?)
     fun handleOldLocalData()
@@ -101,6 +107,8 @@ internal interface CampaignManager {
     fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun getUsNatPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun deleteExpiredConsents()
+    fun reConsentGdpr(additionsChangeDate: String?, legalBasisChangeDate: String?): ConsentStatus?
+    fun reConsentUsnat(additionsChangeDate: String?, legalBasisChangeDate: String?): USNatConsentStatus?
 
     companion object {
         const val SIMPLE_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
@@ -124,6 +132,7 @@ private class CampaignManagerImpl(
 ) : CampaignManager {
 
     override val messageLanguage: MessageLanguage = spConfig.messageLanguage
+    val formatter by lazy { SimpleDateFormat(SIMPLE_DATE_FORMAT_PATTERN, Locale.getDefault()) }
 
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
     val logger: Logger? = spConfig.logger
@@ -476,7 +485,9 @@ private class CampaignManagerImpl(
                 ?: false
 
             val usNatToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.USNAT }
-                ?.let { true }
+                ?.let {
+                    dataStorage.usNatApplies && (usNatConsentData?.consentStatus?.consentedToAll != true)
+                }
                 ?: false
 
             val res = (isNewUser || ccpaToBeCompleted || gdprToBeCompleted || usNatToBeCompleted)
@@ -632,6 +643,18 @@ private class CampaignManagerImpl(
     override val hasLocalData: Boolean
         get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaConsentStatus != null
 
+    override val gdprAdditionsChangeDate: String?
+        get() = metaDataResp?.gdpr?.additionsChangeDate
+
+    override val gdprLegalBasisChangeDate: String?
+        get() = metaDataResp?.gdpr?.legalBasisChangeDate
+
+    override val usnatLegalBasisChangeDate: String?
+        get() = metaDataResp?.usNat?.legalBasisChangeDate
+
+    override val usnatAdditionsChangeDate: String?
+        get() = metaDataResp?.usNat?.legalBasisChangeDate
+
     /**
      * The method that checks if the authId or propertyId was changed, if so it will flush all the
      * data. At the end, it will update the authId and propertyId with the corresponding values.
@@ -695,6 +718,118 @@ private class CampaignManagerImpl(
                 }
             }
         }
+    }
+
+    override fun reConsentGdpr(
+        additionsChangeDate: String?,
+        legalBasisChangeDate: String?
+    ): ConsentStatus? {
+
+        val dataRecordedConsent = gdprConsentStatus?.dateCreated
+
+        val updatedGdprConsentStatus = gdprConsentStatus?.consentStatus
+
+        return if (dataRecordedConsent != null &&
+            updatedGdprConsentStatus != null &&
+            additionsChangeDate != null &&
+            legalBasisChangeDate != null
+        ) {
+
+            val dataRecordedConsentDate = formatter.parse(dataRecordedConsent)
+            val additionsChangeDateDate = formatter.parse(additionsChangeDate)
+            val legalBasisChangeDateConsentDate = formatter.parse(legalBasisChangeDate)
+
+            val creationLessThanAdditions = dataRecordedConsentDate.before(additionsChangeDateDate)
+            val creationLessThanLegalBasis = dataRecordedConsentDate.before(legalBasisChangeDateConsentDate)
+
+            val shouldReconsent = creationLessThanAdditions || creationLessThanLegalBasis
+
+            if (!shouldReconsent) return null
+
+            val map = mapOf(
+                "dataRecordedConsentDate" to "$dataRecordedConsentDate",
+                "additionsChangeDateDate" to "$additionsChangeDateDate",
+                "legalBasisChangeDateConsentDate" to "$legalBasisChangeDateConsentDate",
+                "creationLessThanAdditions OR creationLessThanLegalBasis" to "$shouldReconsent",
+            )
+
+            logger?.computation(
+                tag = "Reconsent updatedGdprConsentStatus",
+                msg = JSONObject(map).toString(),
+                json = JSONObject(map)
+            )
+
+            if (creationLessThanAdditions) {
+                updatedGdprConsentStatus.vendorListAdditions = true
+            }
+            if (creationLessThanLegalBasis) {
+                updatedGdprConsentStatus.legalBasisChanges = true
+            }
+            if (creationLessThanAdditions || creationLessThanLegalBasis) {
+                if (updatedGdprConsentStatus.consentedAll == true) {
+                    updatedGdprConsentStatus.granularStatus?.previousOptInAll = true
+                    updatedGdprConsentStatus.consentedAll = false
+                }
+            }
+
+            updatedGdprConsentStatus
+        } else null
+    }
+
+    override fun reConsentUsnat(
+        additionsChangeDate: String?,
+        legalBasisChangeDate: String?
+    ): USNatConsentStatus? {
+
+        val dataRecordedConsent = usNatConsentData?.dateCreated
+
+        val updatedUSNatConsentStatus = usNatConsentData?.consentStatus
+
+        return if (dataRecordedConsent != null &&
+            updatedUSNatConsentStatus != null &&
+            additionsChangeDate != null &&
+            legalBasisChangeDate != null
+        ) {
+
+            val dataRecordedConsentDate = formatter.parse(dataRecordedConsent)
+            val additionsChangeDateDate = formatter.parse(additionsChangeDate)
+            val legalBasisChangeDateConsentDate = formatter.parse(legalBasisChangeDate)
+
+            val creationLessThanAdditions = dataRecordedConsentDate.before(additionsChangeDateDate)
+            val creationLessThanLegalBasis = dataRecordedConsentDate.before(legalBasisChangeDateConsentDate)
+
+            val shouldReconsent = creationLessThanAdditions || creationLessThanLegalBasis
+
+            if (!shouldReconsent) return null
+
+            val map = mapOf(
+                "dataRecordedConsentDate" to "$dataRecordedConsentDate",
+                "additionsChangeDateDate" to "$additionsChangeDateDate",
+                "legalBasisChangeDateConsentDate" to "$legalBasisChangeDateConsentDate",
+                "creationLessThanAdditions OR creationLessThanLegalBasis" to "$shouldReconsent",
+            )
+
+            logger?.computation(
+                tag = "Reconsent updateUSNATConsent",
+                msg = JSONObject(map).toString(),
+                json = JSONObject(map)
+            )
+
+            if (creationLessThanAdditions) {
+                updatedUSNatConsentStatus.vendorListAdditions = true
+            }
+            if (creationLessThanLegalBasis) {
+                updatedUSNatConsentStatus.legalBasisChanges = true
+            }
+            if (creationLessThanAdditions || creationLessThanLegalBasis) {
+                if (updatedUSNatConsentStatus.consentedToAll == true) {
+                    updatedUSNatConsentStatus.granularStatus?.previousOptInAll = true
+                    updatedUSNatConsentStatus.consentedToAll = false
+                }
+            }
+
+            updatedUSNatConsentStatus
+        } else null
     }
 
     override fun handleOldLocalData() {
@@ -797,7 +932,6 @@ private class CampaignManagerImpl(
 
     override val isGdprExpired: Boolean
         get() {
-            val formatter = SimpleDateFormat(SIMPLE_DATE_FORMAT_PATTERN, Locale.getDefault())
             val gdprExpirationDate = dataStorage.gdprExpirationDate?.let { formatter.parse(it) } ?: return false
             val currentDate = Date()
             return currentDate.after(gdprExpirationDate)
@@ -805,7 +939,6 @@ private class CampaignManagerImpl(
 
     override val isCcpaExpired: Boolean
         get() {
-            val formatter = SimpleDateFormat(SIMPLE_DATE_FORMAT_PATTERN, Locale.getDefault())
             val ccpaExpirationDate = dataStorage.ccpaExpirationDate?.let { formatter.parse(it) } ?: return false
             val currentDate = Date()
             return currentDate.after(ccpaExpirationDate)
@@ -813,7 +946,6 @@ private class CampaignManagerImpl(
 
     override val isUsnatExpired: Boolean
         get() {
-            val formatter = SimpleDateFormat(SIMPLE_DATE_FORMAT_PATTERN, Locale.getDefault())
             val usnatExpirationDate = usNatConsentData?.expirationDate?.let { formatter.parse(it) } ?: return false
             val currentDate = Date()
             return currentDate.after(usnatExpirationDate)
