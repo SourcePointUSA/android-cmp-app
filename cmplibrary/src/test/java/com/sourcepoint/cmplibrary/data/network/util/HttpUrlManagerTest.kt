@@ -422,7 +422,15 @@ class HttpUrlManagerTest {
             propertyId = 12,
             propertyHref = "asdfasdfasd"
         )
-        val sut = HttpUrlManagerSingleton.getMessagesUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/messages?env=prod&nonKeyedLocalState=%7B%7D&body={%22accountId%22:22,%22campaignEnv%22:%22stage%22,%22includeData%22:{%22TCData%22:{%22type%22:%22RecordString%22},%22campaigns%22:{%22type%22:%22RecordString%22},%22webConsentPayload%22:{%22type%22:%22RecordString%22},%22GPPData%22:{}},%22propertyHref%22:%22https://tests.unified-script.com%22,%22hasCSP%22:true,%22campaigns%22:{%22gdpr%22:{%22consentStatus%22:{%22consentedAll%22:true,%22consentedToAny%22:false,%22granularStatus%22:{%22defaultConsent%22:false,%22previousOptInAll%22:false,%22purposeConsent%22:%22ALL%22,%22purposeLegInt%22:%22ALL%22,%22vendorConsent%22:%22ALL%22,%22vendorLegInt%22:%22ALL%22},%22hasConsentData%22:false,%22rejectedAny%22:false,%22rejectedLI%22:false},%22hasLocalData%22:true,%22targetingParams%22:{}}},%22consentLanguage%22:%22ES%22,%22os%22:{%22name%22:%22android%22,%22version%22:%220%22}}&metadata={%20%20%22ccpa%22:%20{%20%20%20%20%22applies%22:%20true%20%20},%20%20%22gdpr%22:%20{%20%20%20%20%22applies%22:%20true%20%20}}&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+        val sut = HttpUrlManagerSingleton.getMessagesUrl(param)
+        sut.run {
+            toString().contains("cdn.privacy-mgmt.com").assertTrue()
+            queryParameter("env").assertEquals("prod")
+            queryParameter("nonKeyedLocalState").assertEquals("{}")
+            queryParameter("metadata").assertEquals("""{  "ccpa": {    "applies": true  },  "gdpr": {    "applies": true  }}""")
+            queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
+            queryParameter("scriptType").assertEquals("android")
+            queryParameter("body").assertEquals("""{"accountId":22,"campaignEnv":"stage","includeData":{"TCData":{"type":"RecordString"},"campaigns":{"type":"RecordString"},"webConsentPayload":{"type":"RecordString"},"GPPData":{}},"propertyHref":"https://tests.unified-script.com","hasCSP":true,"campaigns":{"gdpr":{"consentStatus":{"consentedAll":true,"consentedToAny":false,"granularStatus":{"defaultConsent":false,"previousOptInAll":false,"purposeConsent":"ALL","purposeLegInt":"ALL","vendorConsent":"ALL","vendorLegInt":"ALL"},"hasConsentData":false,"rejectedAny":false,"rejectedLI":false},"hasLocalData":true,"targetingParams":{}}},"consentLanguage":"ES","os":{"name":"android","version":"0"}}""")
+        }
     }
 }
