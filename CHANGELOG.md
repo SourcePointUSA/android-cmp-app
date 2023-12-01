@@ -1,3 +1,6 @@
+## 7.5.2 (December, 01, 2023)
+* [DIA-3183](https://sourcepoint.atlassian.net/browse/DIA-3183) Re-add localstate as query param in the messages url (#758)
+
 ## 7.5.1 (November, 22, 2023)
 * [DIA-2759](https://sourcepoint.atlassian.net/browse/DIA-2759) Regression test for consent UUID null fix (#751)
 * [DIA-2836](https://sourcepoint.atlassian.net/browse/DIA-2836) Regression test for the GDPR applies fix (#740)
