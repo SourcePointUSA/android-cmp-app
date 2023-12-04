@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
+import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentStatus
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
 import com.sourcepoint.cmplibrary.model.toTcfJSONObj
@@ -105,7 +106,7 @@ enum class CcpaStatus {
 interface UsNatConsent {
     val applies: Boolean
     val consentStatus: USNatConsentStatus?
-    val consentString: String?
+    val consentStrings: List<USNatConsentData.ConsentStrings>?
     val dateCreated: String?
     val uuid: String?
     val webConsentPayload: JsonObject?
@@ -115,7 +116,7 @@ interface UsNatConsent {
 internal data class UsNatConsentInternal(
     override val applies: Boolean = false,
     override val consentStatus: USNatConsentStatus? = null,
-    override val consentString: String? = null,
+    override val consentStrings: List<USNatConsentData.ConsentStrings>? = null,
     override val dateCreated: String? = null,
     override val uuid: String? = null,
     override val webConsentPayload: JsonObject? = null,
@@ -209,7 +210,7 @@ internal fun UsNatConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("applies", applies)
         put("consentStatus", consentStatus?.toJsonObject())
-        put("consentString", consentString)
+        put("consentStrings", consentStrings?.toJsonObjectList())
         put("dateCreated", dateCreated)
         put("uuid", uuid)
         put("url", url)
@@ -231,6 +232,16 @@ internal fun USNatConsentStatus.toJsonObject(): JSONObject {
         put("consentedToAny", consentedToAny)
         put("granularStatus", granularStatus?.toJsonObject())
         put("hasConsentData", hasConsentData)
+    }
+}
+
+internal fun List<USNatConsentData.ConsentStrings>.toJsonObjectList(): List<JSONObject> {
+    return this.map { consentString ->
+        JSONObject().apply {
+            put("sectionId", consentString.sectionId)
+            put("sectionName", consentString.sectionName)
+            put("consentString", consentString.consentString)
+        }
     }
 }
 

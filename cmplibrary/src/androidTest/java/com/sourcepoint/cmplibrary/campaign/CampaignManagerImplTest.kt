@@ -90,10 +90,9 @@ class CampaignManagerImplTest {
             applies = null,
             expirationDate = null,
             dateCreated = null,
-            consentString = null,
+            consentStrings = null,
             gppData = null,
             webConsentPayload = null
-
         )
     }
 
