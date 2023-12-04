@@ -677,12 +677,12 @@ private class CampaignManagerImpl(
     override fun handleMetaDataResponse(response: MetaDataResp?) {
 
         // delete GDPR consent if GDPR vendor list id changed
-        if (hasGdprVendorListIdChanged(response?.gdpr?.vendorListId)) {
+        if (hasGdprVendorListIdChanged(gdprVendorListId = response?.gdpr?.vendorListId)) {
             dataStorage.deleteGdprConsent()
         }
 
         // delete USNAT consent if USNAT vendor list id changed
-        if (hasUsNatVendorListIdChanged(response?.usNat?.vendorListId)) {
+        if (hasUsNatVendorListIdChanged(usNatVendorListId = response?.usNat?.vendorListId)) {
             dataStorage.deleteUsNatConsent()
         }
 
