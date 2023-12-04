@@ -796,17 +796,14 @@ private class CampaignManagerImpl(
             val legalBasisChangeDateConsentDate = formatter.parse(legalBasisChangeDate)
 
             val creationLessThanAdditions = dataRecordedConsentDate.before(additionsChangeDateDate)
-            val creationLessThanLegalBasis = dataRecordedConsentDate.before(legalBasisChangeDateConsentDate)
 
-            val shouldReconsent = creationLessThanAdditions || creationLessThanLegalBasis
-
-            if (!shouldReconsent) return null
+            if (!creationLessThanAdditions) return null
 
             val map = mapOf(
                 "dataRecordedConsentDate" to "$dataRecordedConsentDate",
                 "additionsChangeDateDate" to "$additionsChangeDateDate",
                 "legalBasisChangeDateConsentDate" to "$legalBasisChangeDateConsentDate",
-                "creationLessThanAdditions OR creationLessThanLegalBasis" to "$shouldReconsent",
+                "creationLessThanAdditions" to "$creationLessThanAdditions",
             )
 
             logger?.computation(
@@ -815,17 +812,11 @@ private class CampaignManagerImpl(
                 json = JSONObject(map)
             )
 
-            if (creationLessThanAdditions) {
-                updatedUSNatConsentStatus.vendorListAdditions = true
-            }
-            if (creationLessThanLegalBasis) {
-                updatedUSNatConsentStatus.legalBasisChanges = true
-            }
-            if (creationLessThanAdditions || creationLessThanLegalBasis) {
-                if (updatedUSNatConsentStatus.consentedToAll == true) {
-                    updatedUSNatConsentStatus.granularStatus?.previousOptInAll = true
-                    updatedUSNatConsentStatus.consentedToAll = false
-                }
+            updatedUSNatConsentStatus.vendorListAdditions = true
+
+            if (updatedUSNatConsentStatus.consentedToAll == true) {
+                updatedUSNatConsentStatus.granularStatus?.previousOptInAll = true
+                updatedUSNatConsentStatus.consentedToAll = false
             }
 
             updatedUSNatConsentStatus

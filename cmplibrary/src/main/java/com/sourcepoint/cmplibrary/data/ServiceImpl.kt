@@ -152,11 +152,11 @@ private class ServiceImpl(
             campaignManager.deleteExpiredConsents()
 
             val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq(campaigns4Config))
+                .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
                 .executeOnLeft { metaDataError ->
                     onFailure(metaDataError, true)
                     return@executeOnWorkerThread
                 }
-                .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
 
             if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
                 triggerConsentStatus(
@@ -176,10 +176,7 @@ private class ServiceImpl(
                 legalBasisChangeDate = campaignManager.gdprLegalBasisChangeDate,
             )
                 ?.let {
-                    campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
-                        consentStatus = it,
-                        applies = metaDataResp?.gdpr?.applies
-                    )
+                    campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(consentStatus = it)
                 }
 
             campaignManager.reConsentUsnat(

@@ -267,7 +267,7 @@ class CampaignManagerTest {
     }
 
     @Test
-    fun `GIVEN an older usnat dataRecordedConsent compare to legalBasisChangeDateConsentDate RETURN an updated USNatConsentStatus`() {
+    fun `GIVEN an older usnat dataRecordedConsent compare to legalBasisChangeDateConsentDate RETURN a null object`() {
 
         every { dataStorage.usNatConsentData }.returns(usnatConsentData)
         every { dataStorage.metaDataResp }.returns(metaData)
@@ -275,12 +275,7 @@ class CampaignManagerTest {
         sut.reConsentUsnat(
             additionsChangeDate = "2021-11-07T15:21:00.414Z",
             legalBasisChangeDate = "2023-11-07T15:21:00.414Z",
-        )!!.apply {
-            vendorListAdditions!!.assertFalse()
-            legalBasisChanges!!.assertTrue()
-            consentedToAll!!.assertFalse()
-            granularStatus!!.previousOptInAll!!.assertTrue()
-        }
+        ).assertNull()
     }
 
     @Test
