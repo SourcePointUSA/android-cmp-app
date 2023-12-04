@@ -41,21 +41,24 @@
         <activity android:name=".ui.sp.PreferencesActivity" />
         <activity android:name=".ui.demo.DemoActivity" />
 
-        <activity
-            android:name=".tv.demo.DemoActivityTv"
-            android:theme="@style/Theme.DemoAppTv" />
-        <activity android:name=".ui.viewer.JsonViewerActivity" />
+<!--        Commented out because we don't have a plan to release MetaApp for AndroidTV-->
+<!--        <activity-->
+<!--            android:name=".tv.demo.DemoActivityTv"-->
+<!--            android:theme="@style/Theme.DemoAppTv" />-->
+<!--        <activity android:name=".ui.viewer.JsonViewerActivity" />-->
+
         <activity
             android:name=".tv.viewer.JsonViewerActivityTv"
             android:theme="@style/Theme.JsonViewerAppTv" />
 
-        <activity
-            android:name=".tv.MainActivityTV"
-            android:banner="@mipmap/ic_app_banner_xhdpi"
-            android:configChanges="keyboard|keyboardHidden|navigation"
-            android:exported="true"
-            android:theme="@style/Theme.MainActivityAppTv">
-        </activity>
+<!--        Commented out because we don't have a plan to release MetaApp for AndroidTV-->
+<!--        <activity-->
+<!--            android:name=".tv.MainActivityTV"-->
+<!--            android:banner="@mipmap/ic_app_banner_xhdpi"-->
+<!--            android:configChanges="keyboard|keyboardHidden|navigation"-->
+<!--            android:exported="true"-->
+<!--            android:theme="@style/Theme.MainActivityAppTv">-->
+<!--        </activity>-->
 
         <activity
             android:name=".ui.LinkActivity"
