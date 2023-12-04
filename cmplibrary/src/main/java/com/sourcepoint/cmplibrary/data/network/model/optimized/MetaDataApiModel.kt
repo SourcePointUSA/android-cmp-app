@@ -34,7 +34,7 @@ data class MetaDataResp(
         @SerialName("additionsChangeDate") val additionsChangeDate: String?,
         @SerialName("applies") val applies: Boolean?,
         @SerialName("getMessageAlways") val getMessageAlways: Boolean?,
-        @SerialName("_id") val id: String?,
+        @SerialName("_id") val vendorListId: String?,
         @SerialName("legalBasisChangeDate") val legalBasisChangeDate: String?,
         @SerialName("version") val version: Int?,
         @SerialName("sampleRate") val sampleRate: Double?,
