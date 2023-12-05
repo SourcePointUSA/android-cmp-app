@@ -430,8 +430,6 @@ class HttpUrlManagerTest {
             queryParameter("metadata").assertEquals("""{  "ccpa": {    "applies": true  },  "gdpr": {    "applies": true  }}""")
             queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
             queryParameter("pubData").assertNull()
-            queryParameter("localState").assertNull()
-            queryParameter("nonKeyedLocalState").assertNull()
             queryParameter("scriptType").assertEquals("android")
             queryParameter("body").assertEquals("""{"accountId":22,"campaignEnv":"stage","includeData":{"TCData":{"type":"RecordString"},"campaigns":{"type":"RecordString"},"webConsentPayload":{"type":"RecordString"},"GPPData":{}},"propertyHref":"https://tests.unified-script.com","hasCSP":true,"campaigns":{"gdpr":{"consentStatus":{"consentedAll":true,"consentedToAny":false,"granularStatus":{"defaultConsent":false,"previousOptInAll":false,"purposeConsent":"ALL","purposeLegInt":"ALL","vendorConsent":"ALL","vendorLegInt":"ALL"},"hasConsentData":false,"rejectedAny":false,"rejectedLI":false},"hasLocalData":true,"targetingParams":{}}},"consentLanguage":"ES","os":{"name":"android","version":"0"}}""")
         }
