@@ -280,7 +280,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("env", param.env.queryParam)
             .addQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState.toString())
             .addQueryParameter("localState", param.localState.toString())
-            .addQueryParameter("pubData", param.pubData.toString())
             .addEncodedQueryParameter("body", param.body)
             .addEncodedQueryParameter("metadata", metaData)
             .addQueryParameter("scriptType", scriptType)
