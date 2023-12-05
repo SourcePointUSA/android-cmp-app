@@ -47,6 +47,7 @@ data class MetaDataResp(
         @SerialName("additionsChangeDate") val additionsChangeDate: String?,
         @SerialName("applies") val applies: Boolean?,
         @SerialName("sampleRate") val sampleRate: Double?,
+        @SerialName("applicableSections") val applicableSections: JsonElement?,
     )
 
     override fun toString(): String {
