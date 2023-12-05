@@ -46,7 +46,7 @@ internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
 internal fun USNatConsentData.toUsNatConsentInternal(): UsNatConsentInternal = UsNatConsentInternal(
     applies = applies ?: false,
     consentStatus = consentStatus,
-    consentString = consentString,
+    consentStrings = consentStrings,
     dateCreated = dateCreated,
     uuid = uuid,
     webConsentPayload = webConsentPayload,
