@@ -25,7 +25,6 @@ internal data class MessagesParamReq(
     @SerialName("metadataArg") val metadataArg: MetaDataArg?,
     @SerialName("body") val body: String,
     @SerialName("nonKeyedLocalState") val nonKeyedLocalState: JsonObject? = JsonObject(mapOf()),
-    @SerialName("pubData") val pubData: JsonObject = JsonObject(mapOf()),
     @SerialName("localState") val localState: JsonObject? = JsonObject(mapOf()),
 )
 
