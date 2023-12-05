@@ -181,7 +181,6 @@ private class ServiceImpl(
 
             campaignManager.reConsentUsnat(
                 additionsChangeDate = campaignManager.usnatAdditionsChangeDate,
-                legalBasisChangeDate = campaignManager.usnatLegalBasisChangeDate,
             )
                 ?.let { campaignManager.usNatConsentData = campaignManager.usNatConsentData?.copy(consentStatus = it) }
 

@@ -107,7 +107,7 @@ internal interface CampaignManager {
     fun getUsNatPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun deleteExpiredConsents()
     fun reConsentGdpr(additionsChangeDate: String?, legalBasisChangeDate: String?): ConsentStatus?
-    fun reConsentUsnat(additionsChangeDate: String?, legalBasisChangeDate: String?): USNatConsentStatus?
+    fun reConsentUsnat(additionsChangeDate: String?): USNatConsentStatus?
 
     companion object {
         const val SIMPLE_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
@@ -773,8 +773,7 @@ private class CampaignManagerImpl(
     }
 
     override fun reConsentUsnat(
-        additionsChangeDate: String?,
-        legalBasisChangeDate: String?
+        additionsChangeDate: String?
     ): USNatConsentStatus? {
 
         val dataRecordedConsent = usNatConsentData?.dateCreated
@@ -783,13 +782,11 @@ private class CampaignManagerImpl(
 
         return if (dataRecordedConsent != null &&
             updatedUSNatConsentStatus != null &&
-            additionsChangeDate != null &&
-            legalBasisChangeDate != null
+            additionsChangeDate != null
         ) {
 
             val dataRecordedConsentDate = formatter.parse(dataRecordedConsent)
             val additionsChangeDateDate = formatter.parse(additionsChangeDate)
-            val legalBasisChangeDateConsentDate = formatter.parse(legalBasisChangeDate)
 
             val creationLessThanAdditions = dataRecordedConsentDate.before(additionsChangeDateDate)
 
@@ -798,7 +795,6 @@ private class CampaignManagerImpl(
             val map = mapOf(
                 "dataRecordedConsentDate" to "$dataRecordedConsentDate",
                 "additionsChangeDateDate" to "$additionsChangeDateDate",
-                "legalBasisChangeDateConsentDate" to "$legalBasisChangeDateConsentDate",
                 "creationLessThanAdditions" to "$creationLessThanAdditions",
             )
 

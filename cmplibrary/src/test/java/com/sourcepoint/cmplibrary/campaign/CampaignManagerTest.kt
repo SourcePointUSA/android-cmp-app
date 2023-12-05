@@ -216,7 +216,6 @@ class CampaignManagerTest {
 
         sut.reConsentUsnat(
             additionsChangeDate = "2023-11-07T15:21:00.414Z",
-            legalBasisChangeDate = "2021-11-07T15:21:00.414Z",
         )!!.apply {
             vendorListAdditions!!.assertTrue()
             consentedToAll!!.assertFalse()
@@ -232,7 +231,6 @@ class CampaignManagerTest {
 
         sut.reConsentUsnat(
             additionsChangeDate = "2021-11-07T15:21:00.414Z",
-            legalBasisChangeDate = "2021-11-07T15:21:00.414Z",
         ).assertNull()
     }
 
@@ -266,18 +264,6 @@ class CampaignManagerTest {
     }
 
     @Test
-    fun `GIVEN an older usnat dataRecordedConsent compare to legalBasisChangeDateConsentDate RETURN a null object`() {
-
-        every { dataStorage.usNatConsentData }.returns(usnatConsentData)
-        every { dataStorage.metaDataResp }.returns(metaData)
-
-        sut.reConsentUsnat(
-            additionsChangeDate = "2021-11-07T15:21:00.414Z",
-            legalBasisChangeDate = "2023-11-07T15:21:00.414Z",
-        ).assertNull()
-    }
-
-    @Test
     fun `GIVEN an older gdpr dataRecordedConsent compare to legalBasisChangeDateConsentDate RETURN an updated GdprConsentStatus`() {
 
         every { dataStorage.gdprConsentStatus }.returns(gdprConsentStatus)
@@ -302,7 +288,6 @@ class CampaignManagerTest {
 
         sut.reConsentUsnat(
             additionsChangeDate = "2021-11-07T15:21:00.414Z",
-            legalBasisChangeDate = "2021-11-07T15:21:00.414Z",
         ).assertNull()
     }
 
