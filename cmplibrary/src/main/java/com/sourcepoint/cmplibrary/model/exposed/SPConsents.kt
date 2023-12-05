@@ -106,7 +106,7 @@ enum class CcpaStatus {
 interface UsNatConsent {
     val applies: Boolean
     val consentStatus: USNatConsentStatus?
-    val consentStrings: List<USNatConsentData.ConsentStrings>?
+    val consentStrings: List<USNatConsentData.ConsentString>?
     val dateCreated: String?
     val uuid: String?
     val webConsentPayload: JsonObject?
@@ -116,7 +116,7 @@ interface UsNatConsent {
 internal data class UsNatConsentInternal(
     override val applies: Boolean = false,
     override val consentStatus: USNatConsentStatus? = null,
-    override val consentStrings: List<USNatConsentData.ConsentStrings>? = null,
+    override val consentStrings: List<USNatConsentData.ConsentString>? = null,
     override val dateCreated: String? = null,
     override val uuid: String? = null,
     override val webConsentPayload: JsonObject? = null,
@@ -235,7 +235,7 @@ internal fun USNatConsentStatus.toJsonObject(): JSONObject {
     }
 }
 
-internal fun List<USNatConsentData.ConsentStrings>.toJsonObjectList(): List<JSONObject> {
+internal fun List<USNatConsentData.ConsentString>.toJsonObjectList(): List<JSONObject> {
     return this.map { consentString ->
         JSONObject().apply {
             put("sectionId", consentString.sectionId)

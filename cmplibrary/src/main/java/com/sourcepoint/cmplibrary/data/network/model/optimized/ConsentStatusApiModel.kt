@@ -72,7 +72,7 @@ data class CcpaCS(
 data class USNatConsentData(
     val applies: Boolean?,
     @SerialName("consentStatus") val consentStatus: USNatConsentStatus?,
-    @SerialName("consentStrings") val consentStrings: List<ConsentStrings>?,
+    @SerialName("consentStrings") val consentStrings: List<ConsentString>?,
     @SerialName("dateCreated") override var dateCreated: String?,
     @SerialName("uuid") var uuid: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
@@ -84,7 +84,7 @@ data class USNatConsentData(
     @SerialName("expirationDate") override val expirationDate: String?
 ) : CampaignMessage {
     @Serializable
-    data class ConsentStrings(
+    data class ConsentString(
         @SerialName("sectionId") val sectionId: Int?,
         @SerialName("sectionName") val sectionName: String?,
         @SerialName("consentString") val consentString: String?
