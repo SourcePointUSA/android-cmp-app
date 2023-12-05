@@ -347,6 +347,9 @@ private class CampaignManagerImpl(
             accountId = spConfig.accountId.toLong(),
             authId = authId,
             propertyId = spConfig.propertyId.toLong(),
+            pubData = pubData?.toString()
+                ?.let { check { JsonConverter.converter.decodeFromString<JsonObject>(it) }.getOrNull() }
+                ?: JsonObject(mapOf())
         )
     }
 
@@ -660,6 +663,7 @@ private class CampaignManagerImpl(
             ccpaMessageMetaData = null,
             gdprApplies = dataStorage.gdprApplies,
             ccpaApplies = dataStorage.ccpaApplies,
+            pubData = messageReq.pubData,
             gdprCs = gdprConsentStatus,
             ccpaCS = null,
         )
@@ -673,6 +677,7 @@ private class CampaignManagerImpl(
             ccpaMessageMetaData = ccpaMessageMetaData,
             gdprApplies = dataStorage.gdprApplies,
             ccpaApplies = dataStorage.ccpaApplies,
+            pubData = messageReq.pubData,
             gdprCs = null,
             ccpaCS = ccpaConsentStatus
         )
