@@ -97,7 +97,6 @@ internal interface CampaignManager {
     // reconsent
     val gdprLegalBasisChangeDate: String?
     val gdprAdditionsChangeDate: String?
-    val usnatLegalBasisChangeDate: String?
     val usnatAdditionsChangeDate: String?
 
     fun handleAuthIdOrPropertyIdChange(newAuthId: String?, newPropertyId: Int)
@@ -649,11 +648,8 @@ private class CampaignManagerImpl(
     override val gdprLegalBasisChangeDate: String?
         get() = metaDataResp?.gdpr?.legalBasisChangeDate
 
-    override val usnatLegalBasisChangeDate: String?
-        get() = metaDataResp?.usNat?.legalBasisChangeDate
-
     override val usnatAdditionsChangeDate: String?
-        get() = metaDataResp?.usNat?.legalBasisChangeDate
+        get() = metaDataResp?.usNat?.additionsChangeDate
 
     /**
      * The method that checks if the authId or propertyId was changed, if so it will flush all the

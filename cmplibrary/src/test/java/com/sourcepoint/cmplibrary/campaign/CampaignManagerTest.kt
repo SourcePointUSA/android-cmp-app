@@ -219,7 +219,6 @@ class CampaignManagerTest {
             legalBasisChangeDate = "2021-11-07T15:21:00.414Z",
         )!!.apply {
             vendorListAdditions!!.assertTrue()
-            legalBasisChanges!!.assertFalse()
             consentedToAll!!.assertFalse()
             granularStatus!!.previousOptInAll!!.assertTrue()
         }

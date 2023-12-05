@@ -156,7 +156,6 @@ data class USNatConsentStatus(
     @SerialName("consentedToAny") val consentedToAny: Boolean?,
     @SerialName("granularStatus") val granularStatus: USNatGranularStatus?,
     @SerialName("hasConsentData") val hasConsentData: Boolean?,
-    @SerialName("legalBasisChanges") var legalBasisChanges: Boolean? = null,
     @SerialName("vendorListAdditions") var vendorListAdditions: Boolean? = null,
 ) {
     @Serializable
