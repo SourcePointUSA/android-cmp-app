@@ -106,6 +106,8 @@ internal interface CampaignManager {
     fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun getUsNatPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun deleteExpiredConsents()
+    fun hasGdprVendorListIdChanged(gdprVendorListId: String?): Boolean
+    fun hasUsNatVendorListIdChanged(usNatVendorListId: String?): Boolean
     fun reConsentGdpr(additionsChangeDate: String?, legalBasisChangeDate: String?): ConsentStatus?
     fun reConsentUsnat(additionsChangeDate: String?): USNatConsentStatus?
 
@@ -673,6 +675,17 @@ private class CampaignManagerImpl(
     }
 
     override fun handleMetaDataResponse(response: MetaDataResp?) {
+
+        // delete GDPR consent if GDPR vendor list id changed
+        if (hasGdprVendorListIdChanged(gdprVendorListId = response?.gdpr?.vendorListId)) {
+            dataStorage.deleteGdprConsent()
+        }
+
+        // delete USNAT consent if USNAT vendor list id changed
+        if (hasUsNatVendorListIdChanged(usNatVendorListId = response?.usNat?.vendorListId)) {
+            dataStorage.deleteUsNatConsent()
+        }
+
         // update meta data response in the data storage
         metaDataResp = response
 
@@ -714,6 +727,30 @@ private class CampaignManagerImpl(
                 }
             }
         }
+    }
+
+    /**
+     * Method that verifies if vendorListId of GDPR changed qualitatively, basically a string value
+     * to a new string value
+     *
+     * @param gdprVendorListId - vendor list id of GDPR from a new /meta-data response
+     */
+    override fun hasGdprVendorListIdChanged(gdprVendorListId: String?): Boolean {
+        val storedGdprVendorListId = metaDataResp?.gdpr?.vendorListId
+        return gdprVendorListId != null && storedGdprVendorListId != null &&
+            storedGdprVendorListId != gdprVendorListId
+    }
+
+    /**
+     * Method that verifies if vendorListId of USNAT changed qualitatively, basically a string value
+     * to a new string value
+     *
+     * @param usNatVendorListId - vendor list id of USNAT from a new /meta-data response
+     */
+    override fun hasUsNatVendorListIdChanged(usNatVendorListId: String?): Boolean {
+        val storedUsNatVendorListId = metaDataResp?.usNat?.vendorListId
+        return usNatVendorListId != null && storedUsNatVendorListId != null &&
+            storedUsNatVendorListId != usNatVendorListId
     }
 
     override fun reConsentGdpr(

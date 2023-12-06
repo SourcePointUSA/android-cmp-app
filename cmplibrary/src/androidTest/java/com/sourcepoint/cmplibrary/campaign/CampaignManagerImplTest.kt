@@ -186,7 +186,7 @@ class CampaignManagerImplTest {
         cm.metaDataResp?.run {
             gdpr?.also {
                 it.applies!!.assertFalse()
-                it.id!!.assertEquals("5fa9a8fda228635eaf24ceb5")
+                it.vendorListId!!.assertEquals("5fa9a8fda228635eaf24ceb5")
             }
             ccpa?.also {
                 it.applies!!.assertTrue()
@@ -248,5 +248,119 @@ class CampaignManagerImplTest {
         cm.isGdprExpired.assertFalse()
         cm.isCcpaExpired.assertFalse()
         cm.isUsnatExpired.assertTrue()
+    }
+
+    @Test
+    fun GIVEN_gdpr_vendor_list_id_changed_from_null_to_something_THEN_should_return_false() {
+        // GIVEN
+        val gdprVendorListId = "new_gdpr_vendor_list_id"
+
+        // WHEN
+        val actual = cm.hasGdprVendorListIdChanged(gdprVendorListId)
+
+        // THEN
+        actual.assertFalse()
+    }
+
+    @Test
+    fun GIVEN_gdpr_vendor_list_id_did_not_change_THEN_should_return_false() {
+        // GIVEN
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        val gdprVendorListId = "5fa9a8fda228635eaf24ceb5"
+
+        // WHEN
+        val actual = cm.hasGdprVendorListIdChanged(gdprVendorListId)
+
+        // THEN
+        actual.assertFalse()
+    }
+
+    @Test
+    fun GIVEN_gdpr_vendor_list_id_changed_from_something_to_something_else_THEN_should_return_true() {
+        // GIVEN
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        val gdprVendorListId = "6cb1e2bcb337524aed35abc4"
+
+        // WHEN
+        val actual = cm.hasGdprVendorListIdChanged(gdprVendorListId)
+
+        // THEN
+        actual.assertTrue()
+    }
+
+    @Test
+    fun GIVEN_gdpr_vendor_list_id_changed_from_something_to_null_THEN_should_return_false() {
+        // GIVEN
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        val gdprVendorListId = null
+
+        // WHEN
+        val actual = cm.hasGdprVendorListIdChanged(gdprVendorListId)
+
+        // THEN
+        actual.assertFalse()
+    }
+
+    @Test
+    fun GIVEN_usnat_vendor_list_id_changed_from_null_to_something_THEN_should_return_false() {
+        // GIVEN
+        val usNatVendorListId = "new_usnat_vendor_list_id"
+
+        // WHEN
+        val actual = cm.hasUsNatVendorListIdChanged(usNatVendorListId)
+
+        // THEN
+        actual.assertFalse()
+    }
+
+    @Test
+    fun GIVEN_usnat_vendor_list_id_did_not_change_THEN_should_return_false() {
+        // GIVEN
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        val usNatVendorListId = "64e6268d5ee47ddf019bfa22"
+
+        // WHEN
+        val actual = cm.hasUsNatVendorListIdChanged(usNatVendorListId)
+
+        // THEN
+        actual.assertFalse()
+    }
+
+    @Test
+    fun GIVEN_usnat_vendor_list_id_changed_from_something_to_something_else_THEN_should_return_true() {
+        // GIVEN
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        val usnatVendorListId = "6cb1e2bcb337524aed35abc4"
+
+        // WHEN
+        val actual = cm.hasUsNatVendorListIdChanged(usnatVendorListId)
+
+        // THEN
+        actual.assertTrue()
+    }
+
+    @Test
+    fun GIVEN_usnat_vendor_list_id_changed_from_something_to_null_THEN_should_return_false() {
+        // GIVEN
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        val usnatVendorListId = null
+
+        // WHEN
+        val actual = cm.hasUsNatVendorListIdChanged(usnatVendorListId)
+
+        // THEN
+        actual.assertFalse()
     }
 }
