@@ -1195,7 +1195,7 @@ class MainActivityKotlinTest {
     @Test
     fun GIVEN_the_user_changes_location_SHOULD_update_gdpr_applies_value() = runBlocking<Unit> {
 
-        val storedConsent = JSONObject(TestData.storedConsentV741)
+        val storedConsent = JSONObject(TestData.storedConsentMobileTestV741)
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(
