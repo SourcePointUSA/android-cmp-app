@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeDataGppParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.model.PMTab
@@ -410,7 +409,6 @@ class HttpUrlManagerTest {
             ccpaConsentStatus = null,
             consentLanguage = "ES",
             campaignEnv = CampaignsEnv.STAGE,
-            includeDataGppParam = IncludeDataGppParam(),
             usNatConsentStatus = null
         )
 
@@ -432,7 +430,7 @@ class HttpUrlManagerTest {
             queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
             queryParameter("pubData").assertNull()
             queryParameter("scriptType").assertEquals("android")
-            queryParameter("body").assertEquals("""{"accountId":22,"campaignEnv":"stage","includeData":{"TCData":{"type":"RecordString"},"campaigns":{"type":"RecordString"},"webConsentPayload":{"type":"RecordString"},"GPPData":{}},"propertyHref":"https://tests.unified-script.com","hasCSP":true,"campaigns":{"gdpr":{"consentStatus":{"consentedAll":true,"consentedToAny":false,"granularStatus":{"defaultConsent":false,"previousOptInAll":false,"purposeConsent":"ALL","purposeLegInt":"ALL","vendorConsent":"ALL","vendorLegInt":"ALL"},"hasConsentData":false,"rejectedAny":false,"rejectedLI":false},"hasLocalData":true,"targetingParams":{}}},"consentLanguage":"ES","os":{"name":"android","version":"0"}}""")
+            queryParameter("body").assertEquals("""{"accountId":22,"campaignEnv":"stage","includeData":{"TCData":{"type":"RecordString"},"campaigns":{"type":"RecordString"},"webConsentPayload":{"type":"RecordString"},"GPPData":true},"propertyHref":"https://tests.unified-script.com","hasCSP":true,"campaigns":{"gdpr":{"consentStatus":{"consentedAll":true,"consentedToAny":false,"granularStatus":{"defaultConsent":false,"previousOptInAll":false,"purposeConsent":"ALL","purposeLegInt":"ALL","vendorConsent":"ALL","vendorLegInt":"ALL"},"hasConsentData":false,"rejectedAny":false,"rejectedLI":false},"hasLocalData":true,"targetingParams":{}}},"consentLanguage":"ES","os":{"name":"android","version":"0"}}""")
         }
     }
 }

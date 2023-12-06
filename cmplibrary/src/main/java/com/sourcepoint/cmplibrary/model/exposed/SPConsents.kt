@@ -3,8 +3,8 @@ package com.sourcepoint.cmplibrary.model.exposed
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
 import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentStatus
+import com.sourcepoint.cmplibrary.model.toConsentJSONObj
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
-import com.sourcepoint.cmplibrary.model.toTcfJSONObj
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -71,6 +71,7 @@ interface CCPAConsent {
         const val DEFAULT_USPSTRING = "1YNN"
     }
     val uuid: String?
+    var gppData: Map<String, Any?>
     val rejectedCategories: List<String>
     val rejectedVendors: List<String>
     val status: CcpaStatus?
@@ -83,6 +84,7 @@ interface CCPAConsent {
 
 internal data class CCPAConsentInternal(
     override val uuid: String? = null,
+    override var gppData: Map<String, Any?> = emptyMap(),
     override val rejectedCategories: List<String> = listOf(),
     override val rejectedVendors: List<String> = listOf(),
     override val status: CcpaStatus? = null,
@@ -104,6 +106,7 @@ enum class CcpaStatus {
 }
 
 interface UsNatConsent {
+    var gppData: Map<String, Any?>
     val applies: Boolean
     val consentStatus: USNatConsentStatus?
     val consentStrings: List<USNatConsentData.ConsentString>?
@@ -114,6 +117,7 @@ interface UsNatConsent {
 }
 
 internal data class UsNatConsentInternal(
+    override var gppData: Map<String, Any?> = emptyMap(),
     override val applies: Boolean = false,
     override val consentStatus: USNatConsentStatus? = null,
     override val consentStrings: List<USNatConsentData.ConsentString>? = null,
@@ -162,7 +166,7 @@ internal fun UsNatConsent.isWebConsentEligible(): Boolean =
 internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("uuid", uuid)
-        put("tcData", tcData.toTcfJSONObj())
+        put("tcData", tcData.toConsentJSONObj())
         put("grants", grants.toJSONObjGrant())
         put("euconsent", euconsent)
         put("apply", applies)
@@ -197,6 +201,7 @@ internal fun ConsentStatus.GranularStatus.toJSONObj(): Any {
 
 internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
+        put("gppData", gppData.toConsentJSONObj())
         put("uuid", uuid)
         put("status", status)
         put("uspstring", uspstring)
@@ -208,6 +213,7 @@ internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
 
 internal fun UsNatConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
+        put("gppData", gppData.toConsentJSONObj())
         put("applies", applies)
         put("consentStatus", consentStatus?.toJsonObject())
         put("consentStrings", consentStrings?.toJsonObjectList())

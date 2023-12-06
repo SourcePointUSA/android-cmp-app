@@ -12,7 +12,7 @@ internal data class GetChoiceParamReq(
     val metadataArg: MetaDataArg?,
     val propertyId: Long,
     val accountId: Long,
-    val includeData: IncludeData,
+    val includeData: IncludeData = IncludeData(),
     val hasCsp: Boolean = true,
     val includeCustomVendorsRes: Boolean = false,
     val withSiteActions: Boolean = false,
