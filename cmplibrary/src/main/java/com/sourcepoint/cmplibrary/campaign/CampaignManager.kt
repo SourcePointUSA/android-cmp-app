@@ -110,6 +110,7 @@ internal interface CampaignManager {
     fun hasUsNatVendorListIdChanged(usNatVendorListId: String?): Boolean
     fun reConsentGdpr(additionsChangeDate: String?, legalBasisChangeDate: String?): ConsentStatus?
     fun reConsentUsnat(additionsChangeDate: String?): USNatConsentStatus?
+    fun hasUsnatApplicableSectionsChanged(response: MetaDataResp?): Boolean
 
     companion object {
         const val SIMPLE_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
@@ -137,6 +138,7 @@ private class CampaignManagerImpl(
 
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
     val logger: Logger? = spConfig.logger
+    var shouldUpdateUsnat: Boolean = false
 
     init {
         if (!spConfig.propertyName.contains(validPattern)) {
@@ -518,23 +520,24 @@ private class CampaignManagerImpl(
             val hasNonEligibleLocalDataVersion =
                 dataStorage.localDataVersion != DataStorage.LOCAL_DATA_VERSION_HARDCODED_VALUE
 
-            val isEligibleForCallingConsentStatus =
+            val shouldCallConsentStatus =
                 ((isGdprPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty) ||
                     isV6LocalStatePresent ||
                     isV6LocalStatePresent2 ||
-                    hasNonEligibleLocalDataVersion
+                    hasNonEligibleLocalDataVersion ||
+                    shouldUpdateUsnat
 
             logger?.computation(
                 tag = "shouldCallConsentStatus",
                 msg = """
-                isGdprPresent[$isGdprPresent] - isCcpaUuidPresent[$isCcpaUuidPresent]
-                isUSNatUuidPresent[$isUsNatUuidPresent] - isLocalStateEmpty[$isLocalStateEmpty]
+                is Gdpr||Ccpa||Usnat Present[${isGdprPresent || isCcpaUuidPresent || isUsNatUuidPresent}] - isLocalStateEmpty[$isLocalStateEmpty]
                 isV6LocalStatePresent[$isV6LocalStatePresent] - isV6LocalStatePresent2[$isV6LocalStatePresent2]
-                hasDataVersion[$hasNonEligibleLocalDataVersion] - shouldCallConsentStatus[$isEligibleForCallingConsentStatus]
+                hasDataVersion[$hasNonEligibleLocalDataVersion] - shouldUpdateUsnat[$shouldUpdateUsnat]
+                shouldCallConsentStatus[$shouldCallConsentStatus]
                 """.trimIndent()
             )
 
-            return isEligibleForCallingConsentStatus
+            return shouldCallConsentStatus
         }
 
     override var gdprMessageMetaData: MessageMetaData?
@@ -686,6 +689,10 @@ private class CampaignManagerImpl(
             dataStorage.deleteUsNatConsent()
         }
 
+        if(hasUsnatApplicableSectionsChanged(response)){
+            shouldUpdateUsnat = true
+        }
+
         // update meta data response in the data storage
         metaDataResp = response
 
@@ -725,6 +732,16 @@ private class CampaignManagerImpl(
                     dataStorage.gdprSamplingValue = i
                     dataStorage.gdprSamplingResult = null
                 }
+            }
+        }
+    }
+
+    override fun hasUsnatApplicableSectionsChanged(response: MetaDataResp?): Boolean {
+        return when{
+            metaDataResp == null || metaDataResp?.usNat == null  || response?.usNat == null -> false
+            metaDataResp?.usNat == null -> false
+            else -> {
+                metaDataResp?.usNat?.applicableSections?.equals(response.usNat.applicableSections) == false
             }
         }
     }

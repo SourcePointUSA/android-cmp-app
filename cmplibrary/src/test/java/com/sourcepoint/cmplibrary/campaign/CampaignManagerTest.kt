@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
@@ -12,6 +13,8 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 import org.junit.Before
@@ -290,6 +293,42 @@ class CampaignManagerTest {
             additionsChangeDate = "2021-11-07T15:21:00.414Z",
         ).assertNull()
     }
+
+    @Test
+    fun `GIVEN a different applicableSections compared with the stored one RETURN true`() {
+
+        every { dataStorage.metaDataResp }.returns("""
+           {"usnat":{"applicableSections":[7]}} 
+        """.trimIndent())
+
+        val response = createMetaDataResp(""" [ 8 ] """)
+
+        sut.hasUsnatApplicableSectionsChanged(response).assertTrue()
+    }
+
+    @Test
+    fun `GIVEN an applicableSections without changes compared with the stored one RETURN false`() {
+
+        every { dataStorage.metaDataResp }.returns("""
+           {"usnat":{"applicableSections":[7]}} 
+        """.trimIndent())
+
+        val response = createMetaDataResp(""" [ 7 ] """)
+
+        sut.hasUsnatApplicableSectionsChanged(response).assertFalse()
+    }
+
+    private fun createMetaDataResp(json : String) = MetaDataResp(
+        usNat = MetaDataResp.USNat(
+            vendorListId = null,
+            applies = true,
+            sampleRate = null,
+            additionsChangeDate = null,
+            applicableSections = Json.parseToJsonElement(json),
+        ),
+        ccpa = null,
+        gdpr = null
+    )
 
     private val usnatConsentData = """
         {
