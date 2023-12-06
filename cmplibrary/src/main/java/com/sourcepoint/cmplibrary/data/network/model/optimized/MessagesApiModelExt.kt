@@ -36,7 +36,6 @@ internal fun getMessageBody(
             put("GPPData", true)
             put("translateMessage", true)
             put("categories", true)
-
         }
         put("propertyHref", "https://$propertyHref")
         put("hasCSP", true)
