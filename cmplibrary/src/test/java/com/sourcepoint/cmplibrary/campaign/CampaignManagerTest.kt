@@ -14,7 +14,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 import org.junit.Before
@@ -297,9 +296,11 @@ class CampaignManagerTest {
     @Test
     fun `GIVEN a different applicableSections compared with the stored one RETURN true`() {
 
-        every { dataStorage.metaDataResp }.returns("""
+        every { dataStorage.metaDataResp }.returns(
+            """
            {"usnat":{"applicableSections":[7]}} 
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         val response = createMetaDataResp(""" [ 8 ] """)
 
@@ -309,16 +310,18 @@ class CampaignManagerTest {
     @Test
     fun `GIVEN an applicableSections without changes compared with the stored one RETURN false`() {
 
-        every { dataStorage.metaDataResp }.returns("""
+        every { dataStorage.metaDataResp }.returns(
+            """
            {"usnat":{"applicableSections":[7]}} 
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         val response = createMetaDataResp(""" [ 7 ] """)
 
         sut.hasUsnatApplicableSectionsChanged(response).assertFalse()
     }
 
-    private fun createMetaDataResp(json : String) = MetaDataResp(
+    private fun createMetaDataResp(json: String) = MetaDataResp(
         usNat = MetaDataResp.USNat(
             vendorListId = null,
             applies = true,

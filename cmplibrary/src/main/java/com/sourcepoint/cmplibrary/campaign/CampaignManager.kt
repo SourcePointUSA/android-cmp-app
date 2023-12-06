@@ -689,7 +689,7 @@ private class CampaignManagerImpl(
             dataStorage.deleteUsNatConsent()
         }
 
-        if(hasUsnatApplicableSectionsChanged(response)){
+        if (hasUsnatApplicableSectionsChanged(response)) {
             shouldUpdateUsnat = true
         }
 
@@ -737,8 +737,8 @@ private class CampaignManagerImpl(
     }
 
     override fun hasUsnatApplicableSectionsChanged(response: MetaDataResp?): Boolean {
-        return when{
-            metaDataResp == null || metaDataResp?.usNat == null  || response?.usNat == null -> false
+        return when {
+            metaDataResp == null || metaDataResp?.usNat == null || response?.usNat == null -> false
             metaDataResp?.usNat == null -> false
             else -> {
                 metaDataResp?.usNat?.applicableSections?.equals(response.usNat.applicableSections) == false
