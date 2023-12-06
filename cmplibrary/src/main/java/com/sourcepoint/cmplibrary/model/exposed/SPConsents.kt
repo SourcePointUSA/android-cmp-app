@@ -201,8 +201,8 @@ internal fun ConsentStatus.GranularStatus.toJSONObj(): Any {
 
 internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
-        put("gppData", gppData.toConsentJSONObj())
         put("uuid", uuid)
+        put("gppData", gppData.toConsentJSONObj())
         put("status", status)
         put("uspstring", uspstring)
         put("rejectedCategories", JSONArray(rejectedCategories))
@@ -213,8 +213,8 @@ internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
 
 internal fun UsNatConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
-        put("gppData", gppData.toConsentJSONObj())
         put("applies", applies)
+        put("gppData", gppData.toConsentJSONObj())
         put("consentStatus", consentStatus?.toJsonObject())
         put("consentStrings", consentStrings?.toJsonObjectList())
         put("dateCreated", dateCreated)

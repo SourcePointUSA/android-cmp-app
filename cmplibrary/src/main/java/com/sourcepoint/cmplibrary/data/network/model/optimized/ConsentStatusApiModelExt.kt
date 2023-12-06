@@ -31,8 +31,8 @@ internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
 internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
     return CCPAConsentInternal(
         uuid = uuid,
-        gppData = gppData?.toMapOfAny() ?: emptyMap(),
         applies = applies ?: false,
+        gppData = gppData?.toMapOfAny() ?: emptyMap(),
         status = status,
         childPmId = null,
         rejectedVendors = rejectedVendors ?: emptyList(),
@@ -45,8 +45,8 @@ internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
 }
 
 internal fun USNatConsentData.toUsNatConsentInternal(): UsNatConsentInternal = UsNatConsentInternal(
-    gppData = gppData?.toMapOfAny() ?: emptyMap(),
     applies = applies ?: false,
+    gppData = gppData?.toMapOfAny() ?: emptyMap(),
     consentStatus = consentStatus,
     consentStrings = consentStrings,
     dateCreated = dateCreated,
