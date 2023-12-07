@@ -20,9 +20,11 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
+import com.sourcepoint.cmplibrary.exception.CampaignType.USNAT
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.updateCcpaUspString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -689,9 +691,7 @@ private class CampaignManagerImpl(
             dataStorage.deleteUsNatConsent()
         }
 
-        if (hasUsnatApplicableSectionsChanged(response)) {
-            shouldUpdateUsnat = true
-        }
+        shouldUpdateUsnat = hasUsnatApplicableSectionsChanged(response)
 
         // update meta data response in the data storage
         metaDataResp = response
@@ -737,13 +737,10 @@ private class CampaignManagerImpl(
     }
 
     override fun hasUsnatApplicableSectionsChanged(response: MetaDataResp?): Boolean {
-        return when {
-            metaDataResp == null || metaDataResp?.usNat == null || response?.usNat == null -> false
-            metaDataResp?.usNat == null -> false
-            else -> {
-                metaDataResp?.usNat?.applicableSections?.equals(response.usNat.applicableSections) == false
-            }
+        if (!spConfig.isIncluded(USNAT) || metaDataResp == null || response == null) {
+            return false
         }
+        return metaDataResp?.usNat?.applicableSections != response.usNat?.applicableSections
     }
 
     /**

@@ -58,6 +58,24 @@ class CampaignManagerTest {
         messageTimeout = 3000,
     )
 
+    private val spConfigWithUsnat = SpConfig(
+        accountId = 22,
+        propertyName = "carm.uw.con",
+        messageLanguage = MessageLanguage.ENGLISH,
+        propertyId = 9090,
+        messageTimeout = 3000,
+        campaigns = listOf(SpCampaign(CampaignType.USNAT), SpCampaign(CampaignType.GDPR))
+    )
+
+    private val spConfigWithoutUsnat = SpConfig(
+        accountId = 22,
+        propertyName = "carm.uw.con",
+        messageLanguage = MessageLanguage.ENGLISH,
+        propertyId = 9090,
+        messageTimeout = 3000,
+        campaigns = listOf(SpCampaign(CampaignType.GDPR))
+    )
+
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
@@ -303,7 +321,7 @@ class CampaignManagerTest {
         )
 
         val response = createMetaDataResp(""" [ 8 ] """)
-
+        val sut = CampaignManager.create(dataStorage, spConfigWithUsnat)
         sut.hasUsnatApplicableSectionsChanged(response).assertTrue()
     }
 
@@ -316,8 +334,47 @@ class CampaignManagerTest {
             """.trimIndent()
         )
 
+        val response = createMetaDataResp(""" [ 8 ] """)
+        val sut = CampaignManager.create(dataStorage, spConfigWithUsnat)
+        sut.hasUsnatApplicableSectionsChanged(response).assertTrue()
+    }
+
+    @Test
+    fun `GIVEN response obj null RETURN false`() {
+
+        every { dataStorage.metaDataResp }.returns(
+            """
+           {"usnat":{"applicableSections":[7]}} 
+            """.trimIndent()
+        )
+
+        val response = null
+        val sut = CampaignManager.create(dataStorage, spConfigWithUsnat)
+        sut.hasUsnatApplicableSectionsChanged(response).assertFalse()
+    }
+
+    @Test
+    fun `GIVEN metaDataResp obj null RETURN false`() {
+
+        every { dataStorage.metaDataResp }.returns(null)
+
+        val response = null
+        val sut = CampaignManager.create(dataStorage, spConfigWithUsnat)
+        sut.hasUsnatApplicableSectionsChanged(response).assertFalse()
+    }
+
+    @Test
+    fun `GIVEN an applicableSections without usnat configured RETURN false`() {
+
+        every { dataStorage.metaDataResp }.returns(
+            """
+           {"usnat":{"applicableSections":[7]}} 
+            """.trimIndent()
+        )
+
         val response = createMetaDataResp(""" [ 7 ] """)
 
+        val sut = CampaignManager.create(dataStorage, spConfigWithoutUsnat)
         sut.hasUsnatApplicableSectionsChanged(response).assertFalse()
     }
 
